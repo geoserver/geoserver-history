@@ -18,20 +18,14 @@ import java.util.Map;
 
 
 /**
- * Loads the GeoServer catalog on container startup.
- * <p>
- * This bean needs to be defined in a spring context as follows:
- * <pre>
- *         <code>
+ * Loads the GeoServer catalog on container startup.<p>This bean needs to
+ * be defined in a spring context as follows:<pre>        <code>
  *         &lt;bean id="catalog" class="org.geoserver.data.GeoServerCatalog"/&gt;
  *  &lt;bean id="serviceFinder" class="org.geoserver.data.GeoServerServiceFinder"/&gt;
  *         &lt;bean id="catalogLoader" class="org.geoserver.data.CatalogLoader"&gt;
  *                 &lt;constructor-arg ref="catalog"/&gt;
  *              &lt;constructor-arg ref="serviceFinder"/&gt;
- *         &lt;/bean&gt;
- *         </code>
- * </pre>
- * </p>
+ *         &lt;/bean&gt;        </code></pre></p>
  */
 public class CatalogLoader implements ResourceLoaderAware, InitializingBean, DisposableBean {
     GeoServerCatalog catalog;

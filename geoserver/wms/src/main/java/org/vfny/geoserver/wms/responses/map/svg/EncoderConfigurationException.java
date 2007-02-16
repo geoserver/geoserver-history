@@ -8,6 +8,9 @@ import org.vfny.geoserver.wms.WmsException;
 
 
 /**
+ *
+DOCUMENT ME!
+ *
  * @author Gabriel Rold?n
  * @version $Id: EncoderConfigurationException.java,v 1.1 2004/03/14 16:15:22 groldan Exp $
  */

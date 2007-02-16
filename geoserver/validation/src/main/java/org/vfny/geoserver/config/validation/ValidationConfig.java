@@ -16,10 +16,7 @@ import java.util.Set;
 
 
 /**
- * ValidationConfig purpose.
- * <p>
- * Description of ValidationConfig ...
- * </p>
+ * ValidationConfig purpose.<p>Description of ValidationConfig ...</p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
@@ -31,12 +28,12 @@ public class ValidationConfig {
     private Map testSuites;
 
     /**
-     * ValidationConfig constructor.
-     * <p>
-     * Description
-     * </p>
-     *
-     */
+         * ValidationConfig constructor.
+         * <p>
+         * Description
+         * </p>
+         *
+         */
     public ValidationConfig() {
         super();
         plugIns = new HashMap();
@@ -44,24 +41,24 @@ public class ValidationConfig {
     }
 
     /**
-     * ValidationConfig constructor.
-     * <p>
-     * Description
-     * </p>
-     * @param validator GeoValidator
-     */
+         * ValidationConfig constructor.
+         * <p>
+         * Description
+         * </p>
+         * @param validator GeoValidator
+         */
     public ValidationConfig(GeoValidator validator) {
         this(validator.getPlugIns(), validator.getTestSuites());
     }
 
     /**
-     * ValidationConfig constructor.
-     * <p>
-     * Description
-     * </p>
-     * @param plugIns a List of PlugInDTO objects
-     * @param testSuites a List of TestSuiteDTO objects
-     */
+         * ValidationConfig constructor.
+         * <p>
+         * Description
+         * </p>
+         * @param plugIns a List of PlugInDTO objects
+         * @param testSuites a List of TestSuiteDTO objects
+         */
     public ValidationConfig(Map plugIns, Map testSuites) {
         this.plugIns = new HashMap();
         this.testSuites = new HashMap();
@@ -85,12 +82,10 @@ public class ValidationConfig {
     }
 
     /**
+     * getPlugIn purpose.<p>Gets a PlugInConfig</p>
      *
-     * getPlugIn purpose.
-     * <p>
-     * Gets a PlugInConfig
-     * </p>
      * @param name
+     *
      * @return PlugInConfig or null if one does not exist
      */
     public PlugInConfig getPlugIn(String name) {
@@ -102,12 +97,10 @@ public class ValidationConfig {
     }
 
     /**
+     * getTestSuite purpose.<p>Gets a TestSuiteConfig</p>
      *
-     * getTestSuite purpose.
-     * <p>
-     * Gets a TestSuiteConfig
-     * </p>
      * @param name
+     *
      * @return TestSuiteConfig or null if one does not exist
      */
     public TestSuiteConfig getTestSuite(String name) {
@@ -119,13 +112,11 @@ public class ValidationConfig {
     }
 
     /**
+     * getTest purpose.<p>Gets a TestConfig</p>
      *
-     * getTest purpose.
-     * <p>
-     * Gets a TestConfig
-     * </p>
      * @param name
      * @param testSuite
+     *
      * @return TestSuiteConfig or null if one does not exist
      */
     public TestConfig getTest(String name, String testSuite) {
@@ -143,12 +134,10 @@ public class ValidationConfig {
     }
 
     /**
+     * addPlugIn purpose.<p>Adds the plugin.</p>
      *
-     * addPlugIn purpose.
-     * <p>
-     * Adds the plugin.
-     * </p>
      * @param plugIn
+     *
      * @return true
      */
     public boolean addPlugIn(PlugInConfig plugIn) {
@@ -158,14 +147,13 @@ public class ValidationConfig {
     }
 
     /**
+     * addTest purpose.<p>Adds the test to the specified testSuite.</p>
      *
-     * addTest purpose.
-     * <p>
-     * Adds the test to the specified testSuite.
-     * </p>
      * @param test
      * @param testSuite
-     * @return true on sucess (requires specified plugin to exist), false otherwise.
+     *
+     * @return true on sucess (requires specified plugin to exist), false
+     *         otherwise.
      */
     public boolean addTest(TestConfig test, String testSuite) {
         TestSuiteConfig tsc = (TestSuiteConfig) testSuites.get(testSuite);
@@ -209,12 +197,12 @@ public class ValidationConfig {
     }
 
     /**
-     * toDTO purpose.
-     * <p>
-     * Creates a representation as DTOs
-     * </p>
+     * toDTO purpose.<p>Creates a representation as DTOs</p>
+     *
      * @param plugIns List an empty list to store the resulting plugInDTOs
-     * @param testSuites List an empty list to store the resulting TestSuiteDTOs
+     * @param testSuites List an empty list to store the resulting
+     *        TestSuiteDTOs
+     *
      * @return true if the lists contain the data, false otherwise.
      */
     public boolean toDTO(Map plugIns, Map testSuites) {

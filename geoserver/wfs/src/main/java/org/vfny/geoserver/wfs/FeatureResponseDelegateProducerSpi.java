@@ -18,26 +18,26 @@ public interface FeatureResponseDelegateProducerSpi extends Factory {
     String getName();
 
     /**
-     * Returns a <code>java.util.Set&lt;String&gt;</code> of the MIME types the
-     * map producers this factory can create are able to handle.
+     * Returns a <code>java.util.Set&lt;String&gt;</code> of the MIME
+     * types the map producers this factory can create are able to handle.
      *
      * @return the Set of supported output image mime types.
      */
     Set getSupportedFormats();
 
     /**
-     * Checks if the FeatureResponseDelegate instances this factory serves will be able
-     * of working properly (e.g., external dependencies are in place). This
-     * method should be used to avoid asking for producer instances if they
-     * are likely to fail.
+     * Checks if the FeatureResponseDelegate instances this factory
+     * serves will be able of working properly (e.g., external dependencies
+     * are in place). This method should be used to avoid asking for producer
+     * instances if they are likely to fail.
      *
      * @return wether this factory is able to produce producer instances.
      */
     boolean isAvailable();
 
     /**
-     * Returns wether the FeatureResponseDelegate created by this factory can create
-     * output in the specified output format.
+     * Returns wether the FeatureResponseDelegate created by this
+     * factory can create output in the specified output format.
      *
      * @param format a MIME type string to check if this producer is able to
      *        handle.
@@ -48,13 +48,13 @@ public interface FeatureResponseDelegateProducerSpi extends Factory {
     boolean canProduce(String format);
 
     /**
-     * Creates and instance of a FeatureDelegateProducer suitable to create output
-     * in the specified  format.
+     * Creates and instance of a FeatureDelegateProducer suitable to
+     * create output in the specified  format.
      *
      * @param format the MIME type of the desired image
      *
-     * @return a FeatureDelegateProducer capable of creating putput in <code>format</code>
-     *          format.
+     * @return a FeatureDelegateProducer capable of creating putput in
+     *         <code>format</code> format.
      *
      * @throws IllegalArgumentException if <code>format</code> is not one of
      *         the MIME types this producer can create images in.

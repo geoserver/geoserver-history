@@ -23,11 +23,9 @@ import java.util.logging.Logger;
 
 /**
  * Parameter object wich represents the results of a GetFeature or
- * GetFeatureWithLock WFS request.
- * <p>
- * Holds the request, feature lock, feature types info and feature results
- * produced when a succesfull execution of a GetFeature/GetFeatureWithLock ends
- * </p>
+ * GetFeatureWithLock WFS request.<p>Holds the request, feature lock,
+ * feature types info and feature results produced when a succesfull execution
+ * of a GetFeature/GetFeatureWithLock ends</p>
  *
  * @author Gabriel Rold?n
  * @version $Id: GetFeatureResults.java,v 1.1 2004/03/10 23:39:06 groldan Exp $
@@ -36,8 +34,8 @@ public class GetFeatureResults {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
 
     /**
-     * the GetFeature or GetFeatureWithLock request who's processing has
-     * originated this results
+     * the GetFeature or GetFeatureWithLock request who's processing
+     * has originated this results
      */
     private final FeatureRequest request;
 
@@ -45,8 +43,8 @@ public class GetFeatureResults {
     private FeatureLock featureLock;
 
     /**
-     * List of FeatureResults obtained from excecuting the queries from the
-     * GetFeature request
+     * List of FeatureResults obtained from excecuting the queries from
+     * the GetFeature request
      */
     private List features;
 
@@ -54,11 +52,11 @@ public class GetFeatureResults {
     private List typeInfo;
 
     /**
-     * Creates a new GetFeatureResults object.
-     *
-     * @param request the GetFeature or GetFeatureWithLock request who's
-     *        processing has originated the results this object will hold
-     */
+         * Creates a new GetFeatureResults object.
+         *
+         * @param request the GetFeature or GetFeatureWithLock request who's
+         *        processing has originated the results this object will hold
+         */
     public GetFeatureResults(FeatureRequest request) {
         this.request = request;
         features = new ArrayList(2);
@@ -66,8 +64,8 @@ public class GetFeatureResults {
     }
 
     /**
-     * returns the GetFeature or GetFeatureWithLock request who's processing
-     * has originated this results
+     * returns the GetFeature or GetFeatureWithLock request who's
+     * processing has originated this results
      *
      * @return the GetFeature or GetFeatureWithLock request who's processing
      *         has originated this results
@@ -105,10 +103,10 @@ public class GetFeatureResults {
      * @param index the position in the list of FeatureResults to return
      *
      * @return the feature results object of the queried featuretype at index
-     * <code>index</code>
+     *         <code>index</code>
      *
      * @throws ArrayIndexOutOfBoundsException if index is not in the range from
-     * 0(zero) to FeatureResults' count -1
+     *         0(zero) to FeatureResults' count -1
      */
     public FeatureResults getFeatures(int index) throws ArrayIndexOutOfBoundsException {
         return (FeatureResults) features.get(index);
@@ -121,10 +119,10 @@ public class GetFeatureResults {
      * @param index the position in the list of typeinfos to return
      *
      * @return the type info object of the queried featuretype at index
-     * <code>index</code>
+     *         <code>index</code>
      *
      * @throws ArrayIndexOutOfBoundsException if index is not in the range from
-     * 0(zero) to FeatureTypeInfo's count -1
+     *         0(zero) to FeatureTypeInfo's count -1
      */
     public FeatureTypeInfo getTypeInfo(int index) throws ArrayIndexOutOfBoundsException {
         return (FeatureTypeInfo) typeInfo.get(index);
@@ -151,8 +149,8 @@ public class GetFeatureResults {
     }
 
     /**
-     * Adds the results and metadata of a queries FeatureType to the list of
-     * GetFeature results this object holds
+     * Adds the results and metadata of a queries FeatureType to the
+     * list of GetFeature results this object holds
      *
      * @param meta the metadata object of the queried FeatureType
      * @param features the resulting features from the queries FeatureType

@@ -31,8 +31,8 @@ import java.util.logging.Logger;
 
 
 /**
- * Based on the <code>org.geotools.xml.transform</code> framework, does the job
- * of encoding a WFS 1.0 Capabilities document.
+ * Based on the <code>org.geotools.xml.transform</code> framework, does the
+ * job of encoding a WFS 1.0 Capabilities document.
  *
  * @author Gabriel Roldan, Axios Engineering
  * @author Chris Holmes
@@ -65,8 +65,8 @@ public class WFSCapsTransformer extends TransformerBase {
     protected WFSRequest request;
 
     /**
-     * Creates a new WFSCapsTransformer object.
-     */
+         * Creates a new WFSCapsTransformer object.
+         */
     public WFSCapsTransformer() {
         super();
         setNamespaceDeclarationEnabled(false);
@@ -90,17 +90,17 @@ public class WFSCapsTransformer extends TransformerBase {
      * @version $Id
      */
     private static class WFSCapsTranslator extends TranslatorSupport {
-        /** DOCUMENT ME!  */
+        /** DOCUMENT ME! */
         private static final String EPSG = "EPSG:";
 
         /** DOCUMENT ME! */
         private CapabilitiesRequest request;
 
         /**
-         * Creates a new WFSCapsTranslator object.
-         *
-         * @param handler DOCUMENT ME!
-         */
+                 * Creates a new WFSCapsTranslator object.
+                 *
+                 * @param handler DOCUMENT ME!
+                 */
         public WFSCapsTranslator(ContentHandler handler) {
             super(handler, null, null);
         }
@@ -341,8 +341,8 @@ public class WFSCapsTransformer extends TransformerBase {
         }
 
         /**
-         * Encodes a <code>DCPType</code> fragment for HTTP GET and POST
-         * methods.
+         * Encodes a <code>DCPType</code> fragment for HTTP GET and
+         * POST methods.
          *
          * @param capabilityName the URL of the onlineresource for HTTP GET
          *        method requests
@@ -422,8 +422,8 @@ public class WFSCapsTransformer extends TransformerBase {
         }
 
         /**
-         * Default handle of a FeatureTypeInfo content that writes the
-         * latLongBBox as well as the GlobalBasic's parameters
+         * Default handle of a FeatureTypeInfo content that writes
+         * the latLongBBox as well as the GlobalBasic's parameters
          *
          * @param ftype The FeatureType configuration to report capabilities
          *        on.
@@ -446,10 +446,9 @@ public class WFSCapsTransformer extends TransformerBase {
             element("Title", ftype.getTitle());
             element("Abstract", ftype.getAbstract());
             handleKeywords(ftype.getKeywords());
-
             /**
-             * @task REVISIT: should getSRS() return the full URL?
-             */
+                         * @task REVISIT: should getSRS() return the full URL?
+                         */
             element("SRS", EPSG + ftype.getSRS());
 
             String minx = String.valueOf(bbox.getMinX());

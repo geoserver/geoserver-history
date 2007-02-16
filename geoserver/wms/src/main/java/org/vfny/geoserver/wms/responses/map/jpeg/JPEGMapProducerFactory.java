@@ -16,6 +16,7 @@ import java.util.Set;
  * Factory for a JPEG writer.
  *
  * @author Simone Giannecchini
+ *
  * @since 1.4.x
  */
 public final class JPEGMapProducerFactory implements GetMapProducerFactorySpi {

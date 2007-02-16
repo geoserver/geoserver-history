@@ -69,7 +69,9 @@ public class DescribeResponse implements Response {
     private String xmlResponse = new String();
 
     /**
-     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * Returns any extra headers that this service might want to set in
+     * the HTTP response object.
+     *
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
@@ -79,7 +81,7 @@ public class DescribeResponse implements Response {
     /**
      * Constructor with request.
      *
-     * @param request The DescribeFeatureType request object.
+     * @param req The DescribeFeatureType request object.
      *
      * @throws WfsException For any problems making the xml response.
      */
@@ -149,8 +151,8 @@ public class DescribeResponse implements Response {
     }
 
     /**
-     * Internal method to generate the XML response object, using feature
-     * types.
+     * Internal method to generate the XML response object, using
+     * feature types.
      *
      * @param wfsRequest The request object.
      *
@@ -237,8 +239,8 @@ public class DescribeResponse implements Response {
     }
 
     /**
-     * Creates a import namespace element, for cases when requests contain
-     * multiple namespaces, as you can not have more than one target
+     * Creates a import namespace element, for cases when requests
+     * contain multiple namespaces, as you can not have more than one target
      * namespace.  See wfs spec. 8.3.1.  All the typeNames that have the
      * correct prefix are added to the import statement.
      *
@@ -279,12 +281,12 @@ public class DescribeResponse implements Response {
     }
 
     /**
-     * Internal method to print just the requested types.  They should all be
-     * in the same namespace, that handling should be done before.  This will
-     * not do any namespace handling, just prints up either what's in the
-     * schema file, or if it's not there then generates the types from their
-     * FeatureTypes.  Also appends the global element so that the types can
-     * substitute as features.
+     * Internal method to print just the requested types.  They should
+     * all be in the same namespace, that handling should be done before.
+     * This will not do any namespace handling, just prints up either what's
+     * in the schema file, or if it's not there then generates the types from
+     * their FeatureTypes.  Also appends the global element so that the types
+     * can substitute as features.
      *
      * @param requestedTypes The requested table names.
      * @param gs DOCUMENT ME!
@@ -417,7 +419,7 @@ public class DescribeResponse implements Response {
     /**
      * Adds a feature type object to the final output buffer
      *
-     * @param inputFileName The name of the feature type.
+     * @param inputFile The name of the feature type.
      *
      * @return The string representation of the file containing the schema.
      *
@@ -450,9 +452,9 @@ public class DescribeResponse implements Response {
     }
 
     /**
-     * Checks that the collection of featureTypeNames all have the same prefix.
-     * Used to determine if their schemas are all in the same namespace or if
-     * imports need to be done.
+     * Checks that the collection of featureTypeNames all have the same
+     * prefix. Used to determine if their schemas are all in the same
+     * namespace or if imports need to be done.
      *
      * @param featureTypeNames list of featureTypes, generally from a
      *        DescribeFeatureType request.

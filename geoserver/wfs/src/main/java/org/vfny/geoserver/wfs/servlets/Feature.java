@@ -15,9 +15,9 @@ import java.util.Map;
 
 
 /**
- * Implements the WFS GetFeature interface, which responds to requests for GML.
- * This servlet accepts a getFeatures request and returns GML2.1 structured
- * XML docs.
+ * Implements the WFS GetFeature interface, which responds to requests for
+ * GML. This servlet accepts a getFeatures request and returns GML2.1
+ * structured XML docs.
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
@@ -30,10 +30,10 @@ public class Feature extends WFService {
     }
 
     /**
-    * DOCUMENT ME!
-    *
-    * @return DOCUMENT ME!
-    */
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     protected Response getResponseHandler() {
         return new FeatureResponse();
     }

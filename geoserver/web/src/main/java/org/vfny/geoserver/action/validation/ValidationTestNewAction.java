@@ -23,24 +23,14 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * ValidationTestNewAction purpose.
- * <p>
- * Description of ValidationTestNewAction ...
- * </p>
- *
- * <p>
- * Capabilities:
- * </p>
- * <ul>
- * <li>
- * Feature: description
- * </li>
- * </ul>
- * <p>
- * Example Use:
- * </p>
- * <pre><code>
- * ValidationTestNewAction x = new ValidationTestNewAction(...);
+ * ValidationTestNewAction purpose.<p>Description of
+ * ValidationTestNewAction ...</p>
+ *  <p>Capabilities:</p>
+ *  <ul>
+ *      <li>Feature: description</li>
+ *  </ul>
+ *  <p>Example Use:</p>
+<pre><code>ValidationTestNewAction x = new ValidationTestNewAction(...);
  * </code></pre>
  *
  * @author User, Refractions Research, Inc.

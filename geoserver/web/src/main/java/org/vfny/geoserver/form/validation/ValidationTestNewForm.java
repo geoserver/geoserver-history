@@ -16,24 +16,14 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * ValidationTestNewForm purpose.
- * <p>
- * Description of ValidationTestNewForm ...
- * </p>
- *
- * <p>
- * Capabilities:
- * </p>
- * <ul>
- * <li>
- * Feature: description
- * </li>
- * </ul>
- * <p>
- * Example Use:
- * </p>
- * <pre><code>
- * ValidationTestNewForm x = new ValidationTestNewForm(...);
+ * ValidationTestNewForm purpose.<p>Description of ValidationTestNewForm
+ * ...</p>
+ *  <p>Capabilities:</p>
+ *  <ul>
+ *      <li>Feature: description</li>
+ *  </ul>
+ *  <p>Example Use:</p>
+<pre><code>ValidationTestNewForm x = new ValidationTestNewForm(...);
  * </code></pre>
  *
  * @author User, Refractions Research, Inc.

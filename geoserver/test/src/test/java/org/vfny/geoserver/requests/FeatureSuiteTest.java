@@ -42,16 +42,15 @@ public class FeatureSuiteTest extends RequestTestCase {
     //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
     //java.util.logging.Level.FINE);
     //}
-
     /** Class logger */
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
     Feature service;
 
     /**
-     * Constructor with super.
-     *
-     * @param testName The name of the test.
-     */
+         * Constructor with super.
+         *
+         * @param testName The name of the test.
+         */
     public FeatureSuiteTest(String testName) {
         super(testName);
     }

@@ -25,11 +25,12 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * @author rgould
- * @author bowens
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+DOCUMENT ME!
+ *
+ * @author rgould
+ * @author bowens TODO To change the template for this generated type comment
+ *         go to Window - Preferences - Java - Code Style - Code Templates
  */
 public class ValidationRunnable implements Runnable {
     /** Standard logging instance for class */
@@ -54,32 +55,32 @@ public class ValidationRunnable implements Runnable {
         this.request = request;
 
         /*
-                        LOGGER.finer("testSuites.size() = " + testSuites.size());
-                        LOGGER.finer("plugins.size() = " + plugins.size());
-                        LOGGER.finer("" + (TestSuiteDTO) testSuites.values().toArray()[0]);
+           LOGGER.finer("testSuites.size() = " + testSuites.size());
+           LOGGER.finer("plugins.size() = " + plugins.size());
+           LOGGER.finer("" + (TestSuiteDTO) testSuites.values().toArray()[0]);
         
-                        //DataConfig dataConfig = (DataConfig) getDataConfig();
-                        Map dataStoreConfigs = dataConfig.getDataStores();
-                        DefaultRepository dataRepository = new DefaultRepository();
-                        Iterator it = dataStoreConfigs.keySet().iterator();
+           //DataConfig dataConfig = (DataConfig) getDataConfig();
+           Map dataStoreConfigs = dataConfig.getDataStores();
+           DefaultRepository dataRepository = new DefaultRepository();
+           Iterator it = dataStoreConfigs.keySet().iterator();
         
-                        // get all the data stores and build up our dataRepository
-                        while (it.hasNext())
-                        {
-                                String dsKey = it.next().toString();
-                                DataStoreConfig dsc = (DataStoreConfig) dataStoreConfigs.get(dsKey);
-                                DataStore ds = null;
-                                try {
-                                        ds = dsc.findDataStore(context);
-                                        dataRepository.register(dsKey, ds);
-                                }
-                                catch (Exception e) {
-                                        e.printStackTrace();
-                                }
-                        }
+           // get all the data stores and build up our dataRepository
+           while (it.hasNext())
+           {
+                   String dsKey = it.next().toString();
+                   DataStoreConfig dsc = (DataStoreConfig) dataStoreConfigs.get(dsKey);
+                   DataStore ds = null;
+                   try {
+                           ds = dsc.findDataStore(context);
+                           dataRepository.register(dsKey, ds);
+                   }
+                   catch (Exception e) {
+                           e.printStackTrace();
+                   }
+           }
         
-                        validator = new Validator(dataRepository, gv);
-                        */
+           validator = new Validator(dataRepository, gv);
+         */
     }
 
     public void setup(TestValidationResults vr, Repository repo, Map plugins, Map testSuites)
@@ -127,7 +128,6 @@ public class ValidationRunnable implements Runnable {
         }
 
         /** ------------------------------------------------------------------ */
-
         /** run INTEGRITY validations */
 
         // this is stupid

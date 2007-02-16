@@ -19,10 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Admin Index Action.
- * <p>
- * DOCUMENT ME.
- * </p>
+ * Admin Index Action.<p>DOCUMENT ME.</p>
+ *
  * @author $Author: Alessio Fabiani $ (last modification)
  */
 public class AdminIndexAction extends ConfigAction {
@@ -33,8 +31,8 @@ public class AdminIndexAction extends ConfigAction {
     private static final String JAI_MEM_CAPACITY = "JAI_MEM_CAPACITY"; //$NON-NLS-1$
 
     /* (non-Javadoc)
-    * @see org.vfny.geoserver.action.ConfigAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, org.vfny.geoserver.global.UserContainer, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
+     * @see org.vfny.geoserver.action.ConfigAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, org.vfny.geoserver.global.UserContainer, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
     public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
         HttpServletRequest request, HttpServletResponse response)
         throws Exception {

@@ -79,20 +79,22 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     /** holds the list of features for an insert request. */
     private List curFeatures;
 
-    /** Collects string chunks in {@link #characters(char[], int, int)}
-     * callback to be handled at the beggining of {@link #endElement(String, String, String)}
+    /**
+     * Collects string chunks in {@link #characters(char[], int, int)}
+     * callback to be handled at the beggining of {@link #endElement(String,
+     * String, String)}
      */
     private StringBuffer characters = new StringBuffer();
 
     /**
-     * Flag to alert signal we are within a Property element.  The state thing
-     * was not giving enough information.
+     * Flag to alert signal we are within a Property element.  The
+     * state thing was not giving enough information.
      */
     private boolean inProperty = false;
 
     /**
-     * Empty constructor.
-     */
+         * Empty constructor.
+         */
     public TransactionHandler(WFService service) {
         super();
         request = new TransactionRequest(service);
@@ -100,6 +102,8 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
 
     /**
      * Returns the Transaction request.
+     *
+     * @param req DOCUMENT ME!
      *
      * @return The request constructed by this handler.
      */
@@ -149,7 +153,8 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     }
 
     /**
-     * Notes the start of the element and sets type names and query attributes.
+     * Notes the start of the element and sets type names and query
+     * attributes.
      *
      * @param namespaceURI URI for namespace appended to element.
      * @param localName Local name of element.
@@ -272,8 +277,8 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     }
 
     /**
-     * Checks if inside parsed element and adds its contents to appropriate
-     * variable.
+     * Checks if inside parsed element and adds its contents to
+     * appropriate variable.
      *
      * @param ch URI for namespace appended to element.
      * @param start Local name of element.
@@ -305,9 +310,9 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
             /*
              * GR: this was wrong. It prevents String attribute values that have
              * \n or \n\r characters from being parsed correctly.
-            //if curProperty is not null then there is a geometry there.
-            } else if ((state == VALUE) && (curPropertyValue == null)) {
-            */
+               //if curProperty is not null then there is a geometry there.
+               } else if ((state == VALUE) && (curPropertyValue == null)) {
+             */
 
             //if curProperty is not null then there is a geometry there.
         } else if (state == VALUE) {
@@ -348,9 +353,9 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     }
 
     /**
-     * Gets a feature and adds it to the list of current features, to be added
-     * to the insert request when it finishes.  This class is called by
-     * children filters, needed to implement GMLHandlerFilter.
+     * Gets a feature and adds it to the list of current features, to
+     * be added to the insert request when it finishes.  This class is called
+     * by children filters, needed to implement GMLHandlerFilter.
      *
      * @param feature to be added to the request.
      */
@@ -360,8 +365,8 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     }
 
     /**
-     * If no children claim the geometry it comes here, and is used if we are
-     * looking for a value for a property element.
+     * If no children claim the geometry it comes here, and is used if
+     * we are looking for a value for a property element.
      *
      * @param geometry The geometry to set as a property.
      */

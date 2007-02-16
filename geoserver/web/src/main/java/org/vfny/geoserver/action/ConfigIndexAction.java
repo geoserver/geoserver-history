@@ -18,10 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Admin Index Action.
- * <p>
- * DOCUMENT ME.
- * </p>
+ * Admin Index Action.<p>DOCUMENT ME.</p>
+ *
  * @author $Author: Alessio Fabiani $ (last modification)
  */
 public class ConfigIndexAction extends ConfigAction {

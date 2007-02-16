@@ -29,10 +29,13 @@ public class AttributeDisplay {
     }
 
     /*public AttributeDisplay( AttributeTypeInfoDTO dto ){
-        this( new AttributeTypeInfoConfig( dto ));
-    }   */
+       this( new AttributeTypeInfoConfig( dto ));
+       }   */
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the fragment.
      */
     public String getFragment() {
@@ -40,6 +43,9 @@ public class AttributeDisplay {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the maxOccurs.
      */
     public String getMaxOccurs() {
@@ -47,6 +53,9 @@ public class AttributeDisplay {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the minOccurs.
      */
     public String getMinOccurs() {
@@ -54,6 +63,9 @@ public class AttributeDisplay {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the name.
      */
     public String getName() {
@@ -61,6 +73,9 @@ public class AttributeDisplay {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the nillible.
      */
     public boolean isNillable() {
@@ -68,6 +83,9 @@ public class AttributeDisplay {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the selectedType.
      */
     public String getType() {

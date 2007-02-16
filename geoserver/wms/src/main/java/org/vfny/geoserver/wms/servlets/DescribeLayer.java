@@ -14,8 +14,8 @@ import java.util.Map;
 
 
 /**
- * Provides the artifacts to manage a WMS DescribeLayer request
- * following the {@link org.vfny.geoserver.servlet.AbstractService}'s workflow.
+ * Provides the artifacts to manage a WMS DescribeLayer request following
+ * the {@link org.vfny.geoserver.servlet.AbstractService}'s workflow.
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
@@ -26,9 +26,8 @@ public class DescribeLayer extends WMService {
     }
 
     /**
-     * Creates and returns a response handler to encode
-     * the list of requested layers into a DescribeLayer
-     * document.
+     * Creates and returns a response handler to encode the list of
+     * requested layers into a DescribeLayer document.
      *
      * @return a <code>DescribeLayerResponse</code>
      */
@@ -37,8 +36,8 @@ public class DescribeLayer extends WMService {
     }
 
     /**
-     * Builds a KVP reader to parse the parameters of
-     * a DescribeLayer request.
+     * Builds a KVP reader to parse the parameters of a DescribeLayer
+     * request.
      *
      * @param params the request kvp parameters
      *
@@ -49,12 +48,13 @@ public class DescribeLayer extends WMService {
     }
 
     /**
-     * Throws an UnsupportedOperationException allways, since
-     * there are no standard XML encoding for DescribeLayer requests.
+     * Throws an UnsupportedOperationException allways, since there are
+     * no standard XML encoding for DescribeLayer requests.
      *
      * @return none
-     * @throws UnsupportedOperationException allways, since
-     * there are no standard XML encoding for DescribeLayer requests.
+     *
+     * @throws UnsupportedOperationException allways, since there are no
+     *         standard XML encoding for DescribeLayer requests.
      */
     protected XmlRequestReader getXmlRequestReader() {
         throw new UnsupportedOperationException(

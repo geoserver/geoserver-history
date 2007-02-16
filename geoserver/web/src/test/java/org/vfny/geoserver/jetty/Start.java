@@ -19,7 +19,6 @@ import java.util.logging.Logger;
  * between the sources of the various modules (such as Eclipse).
  *
  * @author wolf
- *
  */
 public class Start {
     private static final Logger log = Logger.getLogger(Start.class.getName());

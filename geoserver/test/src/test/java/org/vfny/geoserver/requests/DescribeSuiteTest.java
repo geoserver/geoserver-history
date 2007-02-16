@@ -36,10 +36,10 @@ public class DescribeSuiteTest extends RequestTestCase {
     private DescribeRequest[] baseRequest = new DescribeRequest[10];
 
     /**
-     * Constructor with super.
-     *
-     * @param testName The name of this test.
-     */
+         * Constructor with super.
+         *
+         * @param testName The name of this test.
+         */
     public DescribeSuiteTest(String testName) {
         super(testName);
     }
@@ -74,8 +74,8 @@ public class DescribeSuiteTest extends RequestTestCase {
     }
 
     /**
-     * Gets a BufferedReader from the file to be passed as if it were from a
-     * servlet.
+     * Gets a BufferedReader from the file to be passed as if it were
+     * from a servlet.
      *
      * @throws Exception If anything goes wrong.
      */
@@ -89,7 +89,8 @@ public class DescribeSuiteTest extends RequestTestCase {
        }*/
 
     /**
-     * Check to make sure that a standard XML request is handled correctly.
+     * Check to make sure that a standard XML request is handled
+     * correctly.
      *
      * @throws Exception If anything goes wrong.
      */
@@ -106,7 +107,8 @@ public class DescribeSuiteTest extends RequestTestCase {
     }
 
     /**
-     * Check to make sure that a standard XML request is handled correctly.
+     * Check to make sure that a standard XML request is handled
+     * correctly.
      *
      * @throws Exception If anything goes wrong.
      */
@@ -123,7 +125,8 @@ public class DescribeSuiteTest extends RequestTestCase {
     }
 
     /**
-     * Checks to make sure that a standard KVP request is handled correctly.
+     * Checks to make sure that a standard KVP request is handled
+     * correctly.
      *
      * @throws Exception If anything goes wrong.
      */
@@ -138,8 +141,8 @@ public class DescribeSuiteTest extends RequestTestCase {
     }
 
     /**
-     * Checks to make sure that a standard non-matching KVP request is  handled
-     * correctly.
+     * Checks to make sure that a standard non-matching KVP request is
+     * handled correctly.
      *
      * @throws Exception If anything goes wrong.
      */

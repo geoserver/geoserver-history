@@ -43,8 +43,13 @@ public interface FeatureResponseDelegate {
 
     /**
      * Returns the content disposition header, or null if not needed.<br>
-     * It is advised that the returned file name, if present, matches the feature type name.
-     * See <a href="http://www.ietf.org/rfc/rfc1806.txt">rfc1806</a> for details.
+     * It is advised that the returned file name, if present, matches the
+     * feature type name. See <a
+     * href="http://www.ietf.org/rfc/rfc1806.txt">rfc1806</a> for details.
+     *
+     * @param featureTypeName DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
      */
     String getContentDisposition(String featureTypeName);
 }

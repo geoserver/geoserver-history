@@ -37,7 +37,9 @@ public class WFSCapabilitiesResponse implements Response {
     private byte[] rawResponse;
 
     /**
-     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * Returns any extra headers that this service might want to set in
+     * the HTTP response object.
+     *
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
@@ -51,7 +53,7 @@ public class WFSCapabilitiesResponse implements Response {
      *
      * @throws ServiceException DOCUMENT ME!
      * @throws IllegalArgumentException DOCUMENT ME!
-     * @throws WmsException DOCUMENT ME!
+     * @throws WfsException DOCUMENT ME!
      */
     public void execute(Request request) throws ServiceException {
         if (!(request instanceof CapabilitiesRequest)) {
@@ -74,8 +76,9 @@ public class WFSCapabilitiesResponse implements Response {
     }
 
     /**
-     * Returns the fixed capabilities MIME type  (application/vnd.ogc.wms_xml)
-     * as specified in whe WMS spec, version 1.1.1, section 6.5.3, table 3.
+     * Returns the fixed capabilities MIME type
+     * (application/vnd.ogc.wms_xml) as specified in whe WMS spec, version
+     * 1.1.1, section 6.5.3, table 3.
      *
      * @param gs DOCUMENT ME!
      *
@@ -92,8 +95,8 @@ public class WFSCapabilitiesResponse implements Response {
     }
 
     /**
-     * Just returns <code>null</code>, since no special encoding is applyed to
-     * the output data.
+     * Just returns <code>null</code>, since no special encoding is
+     * applyed to the output data.
      *
      * @return <code>null</code>
      */
@@ -102,8 +105,8 @@ public class WFSCapabilitiesResponse implements Response {
     }
 
     /**
-     * Writes the capabilities document generated in <code>execute()</code> to
-     * the given output stream.
+     * Writes the capabilities document generated in
+     * <code>execute()</code> to the given output stream.
      *
      * @param out the capabilities document destination
      *
@@ -122,8 +125,8 @@ public class WFSCapabilitiesResponse implements Response {
     }
 
     /**
-     * Does nothing, since no processing is done after <code>execute()</code>
-     * has returned.
+     * Does nothing, since no processing is done after
+     * <code>execute()</code> has returned.
      *
      * @param gs the service instance
      */

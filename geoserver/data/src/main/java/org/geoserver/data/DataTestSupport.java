@@ -21,14 +21,10 @@ import java.util.List;
 
 
 /**
- * Abstract test class for tests which need data or a catalog.
- * <p>
- * This class creates populates the catalog with data mimicing the WMS cite
- * setup.
- * </p>
+ * Abstract test class for tests which need data or a catalog.<p>This class
+ * creates populates the catalog with data mimicing the WMS cite setup.</p>
  *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
  */
 public class DataTestSupport extends TestCase {
     /** featuretype name for CITE BasicPolygons features */
@@ -64,26 +60,22 @@ public class DataTestSupport extends TestCase {
     /** featuretype name for CITE Streams features */
     public static String STREAMS_TYPE = "Streams";
 
-    /**
-     * cite namespace + uri
-     */
+    /** cite namespace + uri */
     public static String CITE_PREFIX = "cite";
     public static String CITE_URI = "http://www.opengis.net/cite";
 
-    /**
-     * Temporary directory for property files.
-     */
+    /** Temporary directory for property files. */
     File tmp;
 
-    /**
-     * The catalog
-     */
+    /** The catalog */
     protected GeoServerCatalog catalog;
 
     /**
-         * Creates an instance of the geoserver catalog populated with cite data.
-         *
-         */
+     * Creates an instance of the geoserver catalog populated with cite
+     * data.
+     *
+     * @throws Exception DOCUMENT ME!
+     */
     protected void setUp() throws Exception {
         tmp = File.createTempFile("cite", "test");
         tmp.delete();
@@ -123,12 +115,11 @@ public class DataTestSupport extends TestCase {
     }
 
     /**
-     * Creates the geosrever catalog and populates it with cite data.
-     * <p>
-     * Subclasses should override/extend as necessary to provide a custom
-     * catalog. This default implementation returns an instanceof
-     * {@link DefaultGeoServerCatalog}.
-     * </p>
+     * Creates the geosrever catalog and populates it with cite data.<p>Subclasses
+     * should override/extend as necessary to provide a custom catalog. This
+     * default implementation returns an instanceof {@link
+     * DefaultGeoServerCatalog}.</p>
+     *
      * @return A popluated geoserver catalog.
      */
     protected GeoServerCatalog createCiteCatalog() {
@@ -167,6 +158,9 @@ public class DataTestSupport extends TestCase {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The cite type names as an array of strings.
      */
     protected String[] citeTypeNames() {

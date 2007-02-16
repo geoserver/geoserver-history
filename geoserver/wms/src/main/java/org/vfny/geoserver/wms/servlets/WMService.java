@@ -13,28 +13,27 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Base servlet for all Web Map Server requests.
- *
- * <p>
- * Subclasses should supply the handler, request and response mapping for the
- * service they implement.
- * </p>
+ * Base servlet for all Web Map Server requests.<p>Subclasses should supply
+ * the handler, request and response mapping for the service they implement.</p>
  *
  * @author Gabriel Rold?n
  * @version $Id: WMService.java,v 1.6 2004/02/17 22:42:32 dmzwiers Exp $
  */
 abstract public class WMService extends AbstractService {
     /**
-     * Constructor for WMS service.
-     *
-     * @param request The service request being made (GetCaps,GetFeature,...)
-     * @param wms The WMS service reference.
-     */
+         * Constructor for WMS service.
+         *
+         * @param request The service request being made (GetCaps,GetFeature,...)
+         * @param wms The WMS service reference.
+         */
     public WMService(String request, WMS wms) {
         super("WMS", request, wms);
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The wms service ref.
      */
     public WMS getWMS() {
@@ -43,6 +42,7 @@ abstract public class WMService extends AbstractService {
 
     /**
      * Sets the wms service ref.
+     *
      * @param wms
      */
     public void setWMS(WMS wms) {
@@ -50,10 +50,10 @@ abstract public class WMService extends AbstractService {
     }
 
     /**
-    * returns a Web Map ServiceConfig exception handler
-    *
-    * @return WmsExceptionHandler
-    */
+     * returns a Web Map ServiceConfig exception handler
+     *
+     * @return WmsExceptionHandler
+     */
     protected ExceptionHandler getExceptionHandler() {
         return WmsExceptionHandler.getInstance();
     }

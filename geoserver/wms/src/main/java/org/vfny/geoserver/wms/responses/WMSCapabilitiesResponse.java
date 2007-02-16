@@ -23,11 +23,9 @@ import javax.xml.transform.TransformerException;
 
 
 /**
- * Processes a WMS GetCapabilities request.
- * <p>
- * The response of a GetCapabilities request is general information about the
- * service itself and specific information about the available maps.
- * </p>
+ * Processes a WMS GetCapabilities request.<p>The response of a
+ * GetCapabilities request is general information about the service itself and
+ * specific information about the available maps.</p>
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id: WMSCapabilitiesResponse.java,v 1.9 2004/09/05 17:19:05 cholmesny Exp $
@@ -43,9 +41,7 @@ public class WMSCapabilitiesResponse implements Response {
      */
     private byte[] rawResponse;
 
-    /**
-     * List of formats accessible via a GetMap request.
-     */
+    /** List of formats accessible via a GetMap request. */
     private Set formats;
     private ApplicationContext applicationContext;
 
@@ -55,9 +51,11 @@ public class WMSCapabilitiesResponse implements Response {
     }
 
     /**
-    * Returns any extra headers that this service might want to set in the HTTP response object.
-    * @see org.vfny.geoserver.Response#getResponseHeaders()
-    */
+     * Returns any extra headers that this service might want to set in
+     * the HTTP response object.
+     *
+     * @see org.vfny.geoserver.Response#getResponseHeaders()
+     */
     public HashMap getResponseHeaders() {
         return null;
     }
@@ -95,8 +93,9 @@ public class WMSCapabilitiesResponse implements Response {
     }
 
     /**
-     * Returns the fixed capabilities MIME type  (application/vnd.ogc.wms_xml)
-     * as specified in whe WMS spec, version 1.1.1, section 6.5.3, table 3.
+     * Returns the fixed capabilities MIME type
+     * (application/vnd.ogc.wms_xml) as specified in whe WMS spec, version
+     * 1.1.1, section 6.5.3, table 3.
      *
      * @param gs DOCUMENT ME!
      *
@@ -113,8 +112,8 @@ public class WMSCapabilitiesResponse implements Response {
     }
 
     /**
-     * Just returns <code>null</code>, since no special encoding is applyed to
-     * the output data.
+     * Just returns <code>null</code>, since no special encoding is
+     * applyed to the output data.
      *
      * @return <code>null</code>
      */
@@ -123,8 +122,8 @@ public class WMSCapabilitiesResponse implements Response {
     }
 
     /**
-     * Writes the capabilities document generated in <code>execute()</code> to
-     * the given output stream.
+     * Writes the capabilities document generated in
+     * <code>execute()</code> to the given output stream.
      *
      * @param out the capabilities document destination
      *
@@ -143,8 +142,8 @@ public class WMSCapabilitiesResponse implements Response {
     }
 
     /**
-     * Does nothing, since no processing is done after <code>execute()</code>
-     * has returned.
+     * Does nothing, since no processing is done after
+     * <code>execute()</code> has returned.
      *
      * @param gs the service instance
      */

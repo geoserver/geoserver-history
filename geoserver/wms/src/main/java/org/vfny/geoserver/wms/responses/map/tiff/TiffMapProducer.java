@@ -23,8 +23,8 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
  * Map producer for producing Tiff images out of a map.
  *
  * @author Simone Giannecchini
- * @since 1.4.x
  *
+ * @since 1.4.x
  */
 public final class TiffMapProducer extends DefaultRasterMapProducer {
     /** A logger for this class. */
@@ -34,39 +34,35 @@ public final class TiffMapProducer extends DefaultRasterMapProducer {
     private static final String DEFAULT_MAP_FORMAT = "image/tiff";
 
     /**
-     * Creates a map producer that relies on JAI to encode the BufferedImage
-     * generated the default (image/png) image format.
-     */
+         * Creates a map producer that relies on JAI to encode the BufferedImage
+         * generated the default (image/png) image format.
+         */
     public TiffMapProducer(WMS wms) {
         this(DEFAULT_MAP_FORMAT, wms);
     }
 
     /**
-     * Creates a map producer that relies on JAI to encode the BufferedImage
-     * generated in <code>outputFormat</code> format.
-     *
-     * @param outputFormat
-     *            the output format MIME type.
-     */
+         * Creates a map producer that relies on JAI to encode the BufferedImage
+         * generated in <code>outputFormat</code> format.
+         *
+         * @param outputFormat
+         *            the output format MIME type.
+         */
     public TiffMapProducer(String outputFormat, WMS wms) {
         super(outputFormat, wms);
         setOutputFormat(outputFormat);
     }
 
     /**
-     * Transforms the rendered image into the appropriate format, streaming to
-     * the output stream.
+     * Transforms the rendered image into the appropriate format,
+     * streaming to the output stream.
      *
-     * @param format
-     *            The name of the format
-     * @param image
-     *            The image to be formatted.
-     * @param outStream
-     *            The stream to write to.
-     * @throws WmsException
-     *             not really.
-     * @throws IOException
-     *             if the image writing fails.
+     * @param format The name of the format
+     * @param image The image to be formatted.
+     * @param outStream The stream to write to.
+     *
+     * @throws WmsException not really.
+     * @throws IOException if the image writing fails.
      */
     protected void formatImageOutputStream(String format, BufferedImage image,
         OutputStream outStream) throws WmsException, IOException {

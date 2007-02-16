@@ -16,14 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Uses SAX to extract a LockRequest from an incoming LockFeature
- *
- * <p>
- * Note that this Handler extension ignores Filters completely and must be
- * chained as a parent to the PredicateFilter method in order to recognize
- * them. If it is not chained, it will still generate valid queries, but with
- * no filtering whatsoever.
- * </p>
+ * Uses SAX to extract a LockRequest from an incoming LockFeature<p>Note
+ * that this Handler extension ignores Filters completely and must be chained
+ * as a parent to the PredicateFilter method in order to recognize them. If it
+ * is not chained, it will still generate valid queries, but with no filtering
+ * whatsoever.</p>
  *
  * @author Chris Holmes, TOPP
  * @version $Id: LockHandler.java,v 1.7 2004/02/13 19:30:39 dmzwiers Exp $
@@ -55,8 +52,8 @@ public class LockHandler extends XMLFilterImpl implements ContentHandler, Filter
     private String curHandle;
 
     /**
-     * Empty constructor.
-     */
+         * Empty constructor.
+         */
     public LockHandler(WFService service) {
         super();
         request = new LockRequest(service);
@@ -64,6 +61,8 @@ public class LockHandler extends XMLFilterImpl implements ContentHandler, Filter
 
     /**
      * Returns the Lock request.
+     *
+     * @param req DOCUMENT ME!
      *
      * @return The lock request found by this handler.
      */
@@ -78,7 +77,8 @@ public class LockHandler extends XMLFilterImpl implements ContentHandler, Filter
      * ***********************************************************************/
 
     /**
-     * Notes the start of the element and sets type names and query attributes.
+     * Notes the start of the element and sets type names and query
+     * attributes.
      *
      * @param namespaceURI URI for namespace appended to element.
      * @param localName Local name of element.

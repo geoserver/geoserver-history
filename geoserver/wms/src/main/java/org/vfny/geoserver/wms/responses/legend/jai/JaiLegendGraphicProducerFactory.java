@@ -20,13 +20,14 @@ import java.util.Set;
  */
 public class JaiLegendGraphicProducerFactory implements GetLegendGraphicProducerSpi {
     /**
-     *
-     */
+         *
+         */
     public JaiLegendGraphicProducerFactory() {
         super();
     }
 
     /**
+     *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#getName()
      */
     public String getName() {
@@ -34,6 +35,7 @@ public class JaiLegendGraphicProducerFactory implements GetLegendGraphicProducer
     }
 
     /**
+     *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#getSupportedFormats()
      */
     public Set getSupportedFormats() {
@@ -41,6 +43,7 @@ public class JaiLegendGraphicProducerFactory implements GetLegendGraphicProducer
     }
 
     /**
+     *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#isAvailable()
      */
     public boolean isAvailable() {
@@ -48,6 +51,7 @@ public class JaiLegendGraphicProducerFactory implements GetLegendGraphicProducer
     }
 
     /**
+     *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#canProduce(java.lang.String)
      */
     public boolean canProduce(String mimeType) {
@@ -55,6 +59,7 @@ public class JaiLegendGraphicProducerFactory implements GetLegendGraphicProducer
     }
 
     /**
+     *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#createLegendProducer(java.lang.String)
      */
     public GetLegendGraphicProducer createLegendProducer(String format)
@@ -67,9 +72,9 @@ public class JaiLegendGraphicProducerFactory implements GetLegendGraphicProducer
     }
 
     /* (non-Javadoc)
-         * @see org.geotools.factory.Factory#getImplementationHints()
-         * This just returns java.util.Collections.EMPTY_MAP
-         */
+     * @see org.geotools.factory.Factory#getImplementationHints()
+     * This just returns java.util.Collections.EMPTY_MAP
+     */
     public Map getImplementationHints() {
         return java.util.Collections.EMPTY_MAP;
     }

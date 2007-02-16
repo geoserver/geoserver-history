@@ -45,7 +45,8 @@ import java.util.logging.Logger;
 
 
 /**
- * Handles a Get Feature request and creates a Get Feature response GML string.
+ * Handles a Get Feature request and creates a Get Feature response GML
+ * string.
  *
  * @author Chris Holmes, TOPP
  * @author Jody Garnett, Refractions Research
@@ -58,38 +59,32 @@ public class FeatureResponse implements Response {
     String featureTypeName;
 
     /**
-     * This is the request provided to the execute( Request ) method.
-     *
-     * <p>
-     * We save it so we can access the handle provided by the user for error
-     * reporting during the writeTo( OutputStream ) opperation.
-     * </p>
-     *
-     * <p>
-     * This value will be <code>null</code> until execute is called.
-     * </p>
+     * This is the request provided to the execute( Request ) method.<p>We
+     * save it so we can access the handle provided by the user for error
+     * reporting during the writeTo( OutputStream ) opperation.</p>
+     *  <p>This value will be <code>null</code> until execute is
+     * called.</p>
      */
     private FeatureRequest request;
 
     /**
-     * This is the FeatureLock provided by execute( Request ) method.
-     *
-     * <p>
-     * This will only be non null if RequestFeatureWithLock.
-     * </p>
+     * This is the FeatureLock provided by execute( Request ) method.<p>This
+     * will only be non null if RequestFeatureWithLock.</p>
      */
     FeatureLock featureLock;
 
     /**
-     * Empty constructor
-     */
+         * Empty constructor
+         */
     public FeatureResponse() {
         request = null;
         featureLock = null;
     }
 
     /**
-     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * Returns any extra headers that this service might want to set in
+     * the HTTP response object.
+     *
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
@@ -112,17 +107,11 @@ public class FeatureResponse implements Response {
     }
 
     /**
-     * Jody here with one pass replacement for writeTo.
-     *
-     * <p>
-     * This code is a discussion point, when everyone has had there input we
-     * will try and set things up properly.
-     * </p>
-     *
-     * <p>
-     * I am providing a mirror of the existing desing: - execute gathers the
-     * resultList - sets up the header
-     * </p>
+     * Jody here with one pass replacement for writeTo.<p>This code is
+     * a discussion point, when everyone has had there input we will try and
+     * set things up properly.</p>
+     *  <p>I am providing a mirror of the existing desing: - execute
+     * gathers the resultList - sets up the header</p>
      *
      * @param out DOCUMENT ME!
      *
@@ -139,11 +128,8 @@ public class FeatureResponse implements Response {
     }
 
     /**
-     * Executes FeatureRequest.
-     *
-     * <p>
-     * Willing to execute a FetureRequest, or FeatureRequestWith Lock.
-     * </p>
+     * Executes FeatureRequest.<p>Willing to execute a FetureRequest,
+     * or FeatureRequestWith Lock.</p>
      *
      * @param req DOCUMENT ME!
      *
@@ -158,7 +144,10 @@ public class FeatureResponse implements Response {
      * specified output format.
      *
      * @param outputFormat
+     *
      * @return
+     *
+     * @throws NoSuchElementException DOCUMENT ME!
      */
     public static FeatureResponseDelegate getDelegate(String outputFormat)
         throws NoSuchElementException {
@@ -177,12 +166,9 @@ public class FeatureResponse implements Response {
     }
 
     /**
-     * Performs a getFeatures, or getFeaturesWithLock (using gt2 locking ).
-     *
-     * <p>
-     * The idea is to grab the FeatureResulsts during execute, and use them
-     * during writeTo.
-     * </p>
+     * Performs a getFeatures, or getFeaturesWithLock (using gt2
+     * locking ).<p>The idea is to grab the FeatureResulsts during
+     * execute, and use them during writeTo.</p>
      *
      * @param request
      *
@@ -418,11 +404,14 @@ public class FeatureResponse implements Response {
 
     /**
      * Counts features by scrolling thru the feature reader
+     *
      * @param reader
+     *
      * @return
-     * @throws IllegalAttributeException
-     * @throws IOException
+     *
      * @throws NoSuchElementException
+     * @throws IOException
+     * @throws IllegalAttributeException
      */
     private int bruteForceCount(FeatureReader reader)
         throws NoSuchElementException, IOException, IllegalAttributeException {
@@ -437,8 +426,8 @@ public class FeatureResponse implements Response {
     }
 
     /**
-     * Convenience method to get the handle information from a query, if it
-     * exists.
+     * Convenience method to get the handle information from a query,
+     * if it exists.
      *
      * @param query the query to get the handle from.
      *

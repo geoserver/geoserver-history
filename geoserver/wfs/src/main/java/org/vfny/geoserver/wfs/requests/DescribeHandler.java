@@ -14,15 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Uses SAX to extact a DescribeFeatureType query from and incoming GetFeature
- * request XML stream.
- *
- * <p>
- * Note that this Handler extension ignores Filters completely and must be
- * chained as a parent to the PredicateFilter method in order to recognize
- * them.  If it is not chained, it will still generate valid queries, but with
- * no filtering whatsoever.
- * </p>
+ * Uses SAX to extact a DescribeFeatureType query from and incoming
+ * GetFeature request XML stream.<p>Note that this Handler extension
+ * ignores Filters completely and must be chained as a parent to the
+ * PredicateFilter method in order to recognize them.  If it is not chained,
+ * it will still generate valid queries, but with no filtering whatsoever.</p>
  *
  * @author Rob Hranac, TOPP
  * @version $Id: DescribeHandler.java,v 1.7 2004/02/13 19:30:39 dmzwiers Exp $
@@ -37,22 +33,26 @@ public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
     /** Local variable to track current tag */
     private String currentTag = "";
 
-    /** Collects string chunks in {@link #characters(char[], int, int)}
-     * callback to be handled at the beggining of {@link #endElement(String, String, String)}
+    /**
+     * Collects string chunks in {@link #characters(char[], int, int)}
+     * callback to be handled at the beggining of {@link #endElement(String,
+     * String, String)}
      */
     private StringBuffer characters = new StringBuffer();
 
     /**
-     * Creates a new describe request handler.
-     *
-     * @param request The describe request.
-     */
+         * Creates a new describe request handler.
+         *
+         * @param request The describe request.
+         */
     public DescribeHandler(DescribeRequest request) {
         this.request = request;
     }
 
     /**
      * Returns the GetCapabilities request.
+     *
+     * @param req DOCUMENT ME!
      *
      * @return GetCapabilities request.
      */

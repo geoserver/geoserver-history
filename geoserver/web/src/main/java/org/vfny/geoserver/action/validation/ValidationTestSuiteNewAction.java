@@ -20,23 +20,14 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * ValidationTestSuiteNewAction purpose.
- * <p>
- * Description of ValidationTestSuiteNewAction ...
- * </p>
- *
- * <p>
- * Capabilities:
- * </p>
- * <ul>
- * <li>
- * Feature: description
- * </li>
- * </ul>
- * <p>
- * Example Use:
- * </p>
- * <pre><code>
+ * ValidationTestSuiteNewAction purpose.<p>Description of
+ * ValidationTestSuiteNewAction ...</p>
+ *  <p>Capabilities:</p>
+ *  <ul>
+ *      <li>Feature: description</li>
+ *  </ul>
+ *  <p>Example Use:</p>
+<pre><code>
  * ValidationTestSuiteNewAction x = new ValidationTestSuiteNewAction(...);
  * </code></pre>
  *

@@ -21,17 +21,17 @@ import org.vfny.geoserver.ServiceException;
  */
 public class WfsException extends ServiceException {
     /**
-     * Empty constructor.
-     */
+         * Empty constructor.
+         */
     public WfsException() {
         super();
     }
 
     /**
-     * Message constructor.
-     *
-     * @param message The message for the .
-     */
+         * Message constructor.
+         *
+         * @param message The message for the .
+         */
     public WfsException(String message) {
         super(message);
     }
@@ -41,20 +41,20 @@ public class WfsException extends ServiceException {
     }
 
     /**
-     * Throwable constructor.
-     *
-     * @param e The message for the .
-     */
+         * Throwable constructor.
+         *
+         * @param e The message for the .
+         */
     public WfsException(Throwable e) {
         super(e);
     }
 
     /**
-     * Message Locator constructor.
-     *
-     * @param message The message for the .
-     * @param locator The java class that caused the problem
-     */
+         * Message Locator constructor.
+         *
+         * @param message The message for the .
+         * @param locator The java class that caused the problem
+         */
     public WfsException(String message, String locator) {
         super(message, locator);
     }
@@ -64,12 +64,12 @@ public class WfsException extends ServiceException {
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @param e The cause of failure
-     * @param preMessage The message to tack on the front.
-     * @param locator The java class that caused the problem
-     */
+         * DOCUMENT ME!
+         *
+         * @param e The cause of failure
+         * @param preMessage The message to tack on the front.
+         * @param locator The java class that caused the problem
+         */
     public WfsException(Throwable e, String preMessage, String locator) {
         super(e, preMessage, locator);
     }

@@ -15,14 +15,9 @@ import java.util.Map;
 
 
 /**
- * This is my attempt at testing FeatureResponse using normal JUnit tests.
- *
- * <p>
- * Due to the interaction with ModelConfig.getInstance() this may not be
- * possible.
- * </p>
- *
- * <p></p>
+ * This is my attempt at testing FeatureResponse using normal JUnit tests.<p>Due
+ * to the interaction with ModelConfig.getInstance() this may not be possible.</p>
+ *  <p></p>
  *
  * @author jgarnett
  */
@@ -31,10 +26,10 @@ public class FeatureResponseTest extends DataTestCase {
     FeatureResponse response;
 
     /**
-     * Constructor for FeatureResponseTest.
-     *
-     * @param arg0
-     */
+         * Constructor for FeatureResponseTest.
+         *
+         * @param arg0
+         */
     public FeatureResponseTest(String arg0) {
         super(arg0);
     }

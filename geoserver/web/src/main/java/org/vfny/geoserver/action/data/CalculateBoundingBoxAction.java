@@ -25,24 +25,14 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * CalculateBoundingBoxAction purpose.
- * <p>
- * Description of CalculateBoundingBoxAction ...
- * </p>
- *
- * <p>
- * Capabilities:
- * </p>
- * <ul>
- * <li>
- * Feature: description
- * </li>
- * </ul>
- * <p>
- * Example Use:
- * </p>
- * <pre><code>
- * CalculateBoundingBoxAction x = new CalculateBoundingBoxAction(...);
+ * CalculateBoundingBoxAction purpose.<p>Description of
+ * CalculateBoundingBoxAction ...</p>
+ *  <p>Capabilities:</p>
+ *  <ul>
+ *      <li>Feature: description</li>
+ *  </ul>
+ *  <p>Example Use:</p>
+<pre><code>CalculateBoundingBoxAction x = new CalculateBoundingBoxAction(...);
  * </code></pre>
  *
  * @author rgould, Refractions Research, Inc.

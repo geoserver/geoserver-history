@@ -13,33 +13,19 @@ package org.vfny.geoserver.action;
 
 
 /**
- * HTMLEncoder purpose.
- *
- * <p>
- * This is a class taken from the java.sun.com Developer forums that  can be
- * used to encode/decode a String to/from HTML text.
- * </p>
- *
- * <p>
- * Capabilities:
- * </p>
- *
- * <ul>
- * <li>
- * encode: Encodes a String into HTML text
- * </li>
- * <li>
- * decode: Takes an HTML text and decodes it to a normal String
- * </li>
- * </ul>
- *
- * <p>
- * Example Use:
- * </p>
- * <pre><code>
+ * HTMLEncoder purpose.<p>This is a class taken from the java.sun.com
+ * Developer forums that  can be used to encode/decode a String to/from HTML
+ * text.</p>
+ *  <p>Capabilities:</p>
+ *  <ul>
+ *      <li>encode: Encodes a String into HTML text</li>
+ *      <li>decode: Takes an HTML text and decodes it to a normal
+ *      String</li>
+ *  </ul>
+ *  <p>Example Use:</p>
+<pre><code>
  * HTMLEncoder.encode("König"); //will return "K&ouml;nig" (For JavaDocs: "K&amp;ouml;nig")
- * HTMLEncoder.decode("K&ouml;nig"); //will return "König"
- * </code></pre>
+ * HTMLEncoder.decode("K&ouml;nig"); //will return "König"</code></pre>
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
@@ -49,8 +35,11 @@ public class HTMLEncoder {
     private static java.util.Hashtable chars = null;
 
     /**
-     * Translate a String from HTML-text to a regular human-readable String
+     * Translate a String from HTML-text to a regular human-readable
+     * String
+     *
      * @param val the String to be decoded
+     *
      * @return
      */
     public static String decode(String val) {
@@ -71,14 +60,14 @@ public class HTMLEncoder {
                         res = val.substring(i);
                         /*
                          * drichard 2005-06-20 : indice should be relative to res :
-                                                indice = val.indexOf(';'); // Hasta el ;
+                                                  indice = val.indexOf(';'); // Hasta el ;
                          */
                         indice = res.indexOf(';'); // Hasta el ;
 
                         if (indice != -1) {
                             /*
                              * drichard 2005-06-20 : d should be relative to res :
-                                                        d = val.charAt(1);
+                                                          d = val.charAt(1);
                              */
                             d = res.charAt(1);
 
@@ -128,7 +117,9 @@ public class HTMLEncoder {
 
     /**
      * Translate a String to an HTML-encoded version of itself
+     *
      * @param val The String to be encoded
+     *
      * @return
      */
     public static String encode(String val) {
@@ -168,18 +159,18 @@ public class HTMLEncoder {
                 // This shows up lower in the other numbered cases.
 
                 /*case 'á':
-                case 'é':
-                case 'í':
-                case 'ó':
-                case 'ú':
-                case 'Á':
-                case 'É':
-                case 'Í':
-                case 'Ó':
-                case 'Ú':
-                    buf.append(c + "&acute;");
+                   case 'é':
+                   case 'í':
+                   case 'ó':
+                   case 'ú':
+                   case 'Á':
+                   case 'É':
+                   case 'Í':
+                   case 'Ó':
+                   case 'Ú':
+                       buf.append(c + "&acute;");
                 
-                    break;*/
+                       break;*/
                 case 160:
                 case 161:
                 case 162:

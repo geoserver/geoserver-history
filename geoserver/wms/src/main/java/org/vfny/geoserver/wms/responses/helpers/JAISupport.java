@@ -34,13 +34,13 @@ public final class JAISupport {
     private static final Logger LOGGER = Logger.getLogger(JAISupport.class.getPackage().getName());
 
     /**
-     *  Array of mime types that have been tested to work.
-     *  Many of the mime types that JAI says it supports does not actually work.
-     *  These are mostly because of colour problems (ie. only supports grey scale, and we're giving it a ARGB).
-     *  Update this list as the supported formats are handled better!
-     *  If you dont do this, clients might request an non-functional format (cite does this).
-     *
-     *  The getSupportedFormats() will return a sub-set of these formats.
+     * Array of mime types that have been tested to work. Many of the
+     * mime types that JAI says it supports does not actually work. These are
+     * mostly because of colour problems (ie. only supports grey scale, and
+     * we're giving it a ARGB). Update this list as the supported formats are
+     * handled better! If you dont do this, clients might request an
+     * non-functional format (cite does this). The getSupportedFormats() will
+     * return a sub-set of these formats.
      */
     static ArrayList testedFormats = new ArrayList();
 
@@ -51,14 +51,14 @@ public final class JAISupport {
     }
 
     /**
-     * Set&lt;String&gt; of the MIME types the available JAI library supports,
-     * or the empty set if it is not available.
+     * Set&lt;String&gt; of the MIME types the available JAI library
+     * supports, or the empty set if it is not available.
      */
     private static Set supportedFormats;
 
     /**
-     * Returns the set of supported formats by the available JAI library, or
-     * the empty set if not available.
+     * Returns the set of supported formats by the available JAI
+     * library, or the empty set if not available.
      *
      * @return Set&lt;String&gt; of the MIME types the available JAI library
      *         supports, or the empty set if it is not available.
@@ -121,8 +121,8 @@ public final class JAISupport {
     }
 
     /**
-     * Returns wether the JAI library is available by checking  the available
-     * formats.
+     * Returns wether the JAI library is available by checking  the
+     * available formats.
      *
      * @return <code>true</code> if JAI is available
      *
@@ -133,8 +133,8 @@ public final class JAISupport {
     }
 
     /**
-     * Encodes a BufferedImage using JAI in <code>format</code> format and
-     * sends it to <code>outStream</code>.
+     * Encodes a BufferedImage using JAI in <code>format</code> format
+     * and sends it to <code>outStream</code>.
      *
      * @param format the MIME type of the output image in which to encode
      *        <code>image</code> through JAI

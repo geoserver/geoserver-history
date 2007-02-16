@@ -34,8 +34,8 @@ import javax.media.jai.PlanarImage;
  */
 public final class GIFMapProducer extends DefaultRasterMapProducer {
     /**
-     * Since the default palette has not transparency I am here tryin to create
-     * a default one with transparency information inside.
+     * Since the default palette has not transparency I am here tryin
+     * to create a default one with transparency information inside.
      */
     private final static IndexColorModel DEFAULT_PALETTE;
 
@@ -71,19 +71,16 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
     }
 
     /**
-     * Transforms the rendered image into the appropriate format, streaming to
-     * the output stream.
+     * Transforms the rendered image into the appropriate format,
+     * streaming to the output stream.
      *
-     * @param format
-     *            The name of the format
-     * @param image
-     *            The image to be formatted.
-     * @param outStream
-     *            The stream to write to.cd
-     * @throws WmsException
-     *             not really.
-     * @throws IOException
-     *             if encoding to <code>outStream</code> fails.
+     * @param format The name of the format
+     * @param image The image to be formatted.
+     * @param outStream The stream to write to.cd
+     *
+     * @throws WmsException not really.
+     * @throws IOException if encoding to <code>outStream</code> fails.
+     * @throws IllegalArgumentException DOCUMENT ME!
      */
     protected void formatImageOutputStream(String format, BufferedImage image,
         OutputStream outStream) throws WmsException, IOException {

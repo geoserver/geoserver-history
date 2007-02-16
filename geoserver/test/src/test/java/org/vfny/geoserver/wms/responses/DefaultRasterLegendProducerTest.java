@@ -85,9 +85,9 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
     }
 
     /**
-     * Tests that a legend is produced for the explicitly specified rule, when
-     * the FeatureTypeStyle has more than one rule, and one of them is
-     * requested by the RULE parameter.
+     * Tests that a legend is produced for the explicitly specified
+     * rule, when the FeatureTypeStyle has more than one rule, and one of them
+     * is requested by the RULE parameter.
      *
      * @throws Exception DOCUMENT ME!
      */
@@ -149,11 +149,10 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
     //        legend = this.legendProducer.getLegendGraphic();
     //        assertEquals("Expected only one symbol", HEIGHT_HINT, legend.getHeight());
     //    }
-
     /**
-     * Creates a Style with two rules: the first with a polygon symbolizer with
-     * all red fill  for scale up to 1:1000, the second with a polygon
-     * symbolizer with an all blue fill for scale up to 1:5000.
+     * Creates a Style with two rules: the first with a polygon
+     * symbolizer with all red fill  for scale up to 1:1000, the second with a
+     * polygon symbolizer with an all blue fill for scale up to 1:5000.
      *
      * @return
      */
@@ -184,14 +183,11 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
     }
 
     /**
-     * Tests the legend production for the default style of the given cite type
-     * name, as defined in AbstractCiteDataTest.
-     *
-     * <p>
-     * The number of rules the default style for the given cite type name is
-     * expected at the <code>ruleCount</code> value. It is used to assert that
-     * the generated legend graphic has as many stacked graphics as rules.
-     * </p>
+     * Tests the legend production for the default style of the given
+     * cite type name, as defined in AbstractCiteDataTest.<p>The number
+     * of rules the default style for the given cite type name is expected at
+     * the <code>ruleCount</code> value. It is used to assert that the
+     * generated legend graphic has as many stacked graphics as rules.</p>
      *
      * @param citeTypeName
      * @param ruleCount the pre-known number of rules the default style for the

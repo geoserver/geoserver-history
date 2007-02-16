@@ -39,22 +39,17 @@ import java.util.Map;
 
 
 /**
- * Provides utility methods for the creation of mock objects to help in unit
- * testing specific geoserver classes.
- * <p>
- * Of interest is the {@linkplain #newHttpRequest(Map, boolean)} method which
- * provides a fully functional mocked up GeoServer instance configured with a
- * PropertyDataStore holding CITE FeatureTypes and convenient styles, etc.
- * </p>
- * <p>
- * The PropertyDataStore is created against a temporary directory so it is safe
- * to make transactions on each test. A further improvement would be to create
- * just a MemoryDataStore, but it was easier to reuse the code in
- * AbstractCiteDataTest in the while.
- * </p>
+ * Provides utility methods for the creation of mock objects to help in
+ * unit testing specific geoserver classes.<p>Of interest is the
+ * {@linkPlain #newHttpRequest(Map, boolean)} method which provides a fully
+ * functional mocked up GeoServer instance configured with a PropertyDataStore
+ * holding CITE FeatureTypes and convenient styles, etc.</p>
+ *  <p>The PropertyDataStore is created against a temporary directory so it
+ * is safe to make transactions on each test. A further improvement would be
+ * to create just a MemoryDataStore, but it was easier to reuse the code in
+ * AbstractCiteDataTest in the while.</p>
  *
  * @author Gabriel Roldan
- *
  */
 public class MockUtils {
     private MockUtils() {
@@ -62,12 +57,17 @@ public class MockUtils {
 
     /**
      *
-     * @param includeMockGeoserver
-     *            if <code>true</code>, the generated HttpServletRequest
-     *            includes a mock geoserver configuration for the cite test
-     *            data, so you can use it, for example, for unit testing request
-     *            readers.
+    DOCUMENT ME!
+     *
+     * @param includeMockGeoserver if <code>true</code>, the generated
+     *        HttpServletRequest includes a mock geoserver configuration for
+     *        the cite test data, so you can use it, for example, for unit
+     *        testing request readers.
+     *
      * @return
+     *
+     * @throws ConfigurationException DOCUMENT ME!
+     * @throws IOException DOCUMENT ME!
      */
     public static MockHttpServletRequest newHttpRequest(boolean includeMockGeoserver)
         throws ConfigurationException, IOException {
@@ -75,21 +75,24 @@ public class MockUtils {
     }
 
     /**
-     * Creates a mock HttpServletRequest with the provided set of request
-     * parameters, and possibly a fully configured GeoServer with cite test data
-     * on the request's HttpServletContext.
+     * Creates a mock HttpServletRequest with the provided set of
+     * request parameters, and possibly a fully configured GeoServer with cite
+     * test data on the request's HttpServletContext.
      *
-     * @param initialParams
-     *            a map of request parameters to construct the mock http request
-     *            with, where keys are parameter names, and values may be a
-     *            single String or a String[] if there are multiple values for
-     *            the same request parameter.
-     * @param includeMockGeoserver
-     *            if <code>true</code>, the generated HttpServletRequest
-     *            includes a mock geoserver configuration for the cite test
-     *            data, so you can use it, for example, for unit testing request
-     *            readers.
+     * @param initialParams a map of request parameters to construct the mock
+     *        http request with, where keys are parameter names, and values
+     *        may be a single String or a String[] if there are multiple
+     *        values for the same request parameter.
+     * @param includeMockGeoServer if<code>true</code>, the generated
+     *        HttpServletRequest includes a mock geoserver configuration for
+     *        the cite test data, so you can use it, for example, for unit
+     *        testing request readers.
+     *
      * @return
+     *
+     * @throws ConfigurationException DOCUMENT ME!
+     * @throws IOException DOCUMENT ME!
+     * @throws IllegalArgumentException DOCUMENT ME!
      */
     public static MockHttpServletRequest newHttpRequest(Map /* <String, String> */ initialParams,
         boolean includeMockGeoServer) throws ConfigurationException, IOException {
@@ -121,13 +124,16 @@ public class MockUtils {
     }
 
     /**
-     * * public static WMS getWMS(HttpServletRequest request) { ServletRequest
-     * req = request; HttpSession session = request.getSession(); ServletContext
-     * context = session.getServletContext();
-     *
-     * return (WMS) context.getAttribute(WMS.WEB_CONTAINER_KEY); }
+     * public static WMS getWMS(HttpServletRequest request) {
+     * ServletRequest req = request; HttpSession session =
+     * request.getSession(); ServletContext context =
+     * session.getServletContext(); return (WMS)
+     * context.getAttribute(WMS.WEB_CONTAINER_KEY); }
      *
      * @param request
+     *
+     * @throws ConfigurationException DOCUMENT ME!
+     * @throws IOException DOCUMENT ME!
      */
     private static void setUpMockGeoServer(MockHttpServletRequest request)
         throws ConfigurationException, IOException {
@@ -159,10 +165,8 @@ public class MockUtils {
     }
 
     /**
-     * Creates a new mock WMS config object.
-     * <p>
-     * The creates WMS config object has no data (i.e. getData() returns null)
-     * </p>
+     * Creates a new mock WMS config object.<p>The creates WMS config
+     * object has no data (i.e. getData() returns null)</p>
      *
      * @return
      */
@@ -192,10 +196,8 @@ public class MockUtils {
     }
 
     /**
-     * Creates a new mock WMS config object.
-     * <p>
-     * The creates WMS config object has no data (i.e. getData() returns null)
-     * </p>
+     * Creates a new mock WMS config object.<p>The creates WMS config
+     * object has no data (i.e. getData() returns null)</p>
      *
      * @return
      */
@@ -227,8 +229,12 @@ public class MockUtils {
 
     /**
      *
+    DOCUMENT ME!
+     *
      * @param geoserver
+     *
      * @return
+     *
      * @throws ConfigurationException
      * @throws IOException
      */
@@ -364,11 +370,12 @@ public class MockUtils {
     /**
      * Returns a <code>DataStore</code> containing CITE feature types.
      *
+     * @param tempDir DOCUMENT ME!
+     *
      * @return a property files backed DataStore which forces all the
      *         FeatureTypes it serves to be in WGS84 CRS.
      *
-     * @throws IOException
-     *             DOCUMENT ME!
+     * @throws IOException DOCUMENT ME!
      */
     public static DataStore createCiteDataStore(File tempDir)
         throws IOException {
@@ -382,8 +389,9 @@ public class MockUtils {
     /**
      * DOCUMENT ME!
      *
-     * @throws IOException
-     *             DOCUMENT ME!
+     * @param tempDir DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
      */
     private static void writeTempFiles(File tempDir) throws IOException {
         if (tempDir.exists()) {
@@ -404,13 +412,11 @@ public class MockUtils {
     /**
      * DOCUMENT ME!
      *
-     * @param typeName
-     *            DOCUMENT ME!
+     * @param tempDir DOCUMENT ME!
+     * @param typeName DOCUMENT ME!
      *
-     * @throws IOException
-     *             DOCUMENT ME!
-     * @throws NullPointerException
-     *             DOCUMENT ME!
+     * @throws IOException DOCUMENT ME!
+     * @throws NullPointerException DOCUMENT ME!
      */
     private static void writeTempFile(File tempDir, final String typeName)
         throws IOException {
@@ -453,8 +459,8 @@ public class MockUtils {
     /**
      * DOCUMENT ME!
      *
-     * @param typeName
-     *            DOCUMENT ME!
+     * @param tempDir DOCUMENT ME!
+     * @param typeName DOCUMENT ME!
      */
     private static void deleteTempFile(File tempDir, String typeName) {
         deleteTempFile(new File(tempDir, typeName + ".properties"));
@@ -463,8 +469,7 @@ public class MockUtils {
     /**
      * DOCUMENT ME!
      *
-     * @param f
-     *            DOCUMENT ME!
+     * @param f DOCUMENT ME!
      */
     private static void deleteTempFile(File f) {
         f.delete();
@@ -478,11 +483,11 @@ public class MockUtils {
      */
     private static class ForceWGS84PropertyDataStore extends PropertyDataStore {
         /**
-         * Creates a new ForceWGS84PropertyDataStore object.
-         *
-         * @param dir
-         *            DOCUMENT ME!
-         */
+                 * Creates a new ForceWGS84PropertyDataStore object.
+                 *
+                 * @param dir
+                 *            DOCUMENT ME!
+                 */
         public ForceWGS84PropertyDataStore(File dir) {
             super(dir);
         }
@@ -490,15 +495,12 @@ public class MockUtils {
         /**
          * DOCUMENT ME!
          *
-         * @param typeName
-         *            DOCUMENT ME!
+         * @param typeName DOCUMENT ME!
          *
          * @return DOCUMENT ME!
          *
-         * @throws IOException
-         *             DOCUMENT ME!
-         * @throws DataSourceException
-         *             DOCUMENT ME!
+         * @throws IOException DOCUMENT ME!
+         * @throws DataSourceException DOCUMENT ME!
          */
         public FeatureType getSchema(String typeName) throws IOException {
             FeatureType schema = super.getSchema(typeName);
@@ -511,8 +513,8 @@ public class MockUtils {
         }
 
         /**
-         * DOCUMENT ME!
-         */
+                 * DOCUMENT ME!
+                 */
 
         /*
          * public FeatureReader getFeatureReader(Query query, Transaction

@@ -13,13 +13,9 @@ import java.util.logging.Logger;
 
 
 /**
- * WriterUtils purpose.
- *
- * <p>
- * Used to provide assitance writing xml to a Writer.
- * </p>
- *
- * <p></p>
+ * WriterUtils purpose.<p>Used to provide assitance writing xml to a
+ * Writer.</p>
+ *  <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id: WriterHelper.java,v 1.9 2004/02/09 23:29:49 dmzwiers Exp $
@@ -32,34 +28,31 @@ public class WriterHelper {
     protected Writer writer;
 
     /**
-     * WriterUtils constructor.
-     *
-     * <p>
-     * Should never be called.
-     * </p>
-     */
+         * WriterUtils constructor.
+         *
+         * <p>
+         * Should never be called.
+         * </p>
+         */
     protected WriterHelper() {
     }
 
     /**
-     * WriterUtils constructor.
-     *
-     * <p>
-     * Stores the specified writer to use for output.
-     * </p>
-     *
-     * @param writer the writer which will be used for outputing the xml.
-     */
+         * WriterUtils constructor.
+         *
+         * <p>
+         * Stores the specified writer to use for output.
+         * </p>
+         *
+         * @param writer the writer which will be used for outputing the xml.
+         */
     public WriterHelper(Writer writer) {
         this.writer = writer;
     }
 
     /**
-     * write purpose.
-     *
-     * <p>
-     * Writes the String specified to the stored output writer.
-     * </p>
+     * write purpose.<p>Writes the String specified to the stored
+     * output writer.</p>
      *
      * @param s The String to write.
      *
@@ -75,11 +68,8 @@ public class WriterHelper {
     }
 
     /**
-     * writeln purpose.
-     *
-     * <p>
-     * Writes the String specified to the stored output writer.
-     * </p>
+     * writeln purpose.<p>Writes the String specified to the stored
+     * output writer.</p>
      *
      * @param s The String to write.
      *
@@ -95,12 +85,8 @@ public class WriterHelper {
     }
 
     /**
-     * openTag purpose.
-     *
-     * <p>
-     * Writes an open xml tag with the name specified to the stored output
-     * writer.
-     * </p>
+     * openTag purpose.<p>Writes an open xml tag with the name
+     * specified to the stored output writer.</p>
      *
      * @param tagName The tag name to write.
      *
@@ -111,12 +97,8 @@ public class WriterHelper {
     }
 
     /**
-     * openTag purpose.
-     *
-     * <p>
-     * Writes an open xml tag with the name and attributes specified to the
-     * stored output writer.
-     * </p>
+     * openTag purpose.<p>Writes an open xml tag with the name and
+     * attributes specified to the stored output writer.</p>
      *
      * @param tagName The tag name to write.
      * @param attributes The tag attributes to write.
@@ -141,12 +123,8 @@ public class WriterHelper {
     }
 
     /**
-     * closeTag purpose.
-     *
-     * <p>
-     * Writes an close xml tag with the name specified to the stored output
-     * writer.
-     * </p>
+     * closeTag purpose.<p>Writes an close xml tag with the name
+     * specified to the stored output writer.</p>
      *
      * @param tagName The tag name to write.
      *
@@ -157,12 +135,8 @@ public class WriterHelper {
     }
 
     /**
-     * textTag purpose.
-     *
-     * <p>
-     * Writes a text xml tag with the name and text specified to the stored
-     * output writer.
-     * </p>
+     * textTag purpose.<p>Writes a text xml tag with the name and text
+     * specified to the stored output writer.</p>
      *
      * @param tagName The tag name to write.
      * @param data The text data to write.
@@ -174,12 +148,8 @@ public class WriterHelper {
     }
 
     /**
-     * valueTag purpose.
-     *
-     * <p>
-     * Writes an xml tag with the name and value specified to the stored output
-     * writer.
-     * </p>
+     * valueTag purpose.<p>Writes an xml tag with the name and value
+     * specified to the stored output writer.</p>
      *
      * @param tagName The tag name to write.
      * @param value The text data to write.
@@ -192,12 +162,8 @@ public class WriterHelper {
     }
 
     /**
-     * attrTag purpose.
-     *
-     * <p>
-     * Writes an xml tag with the name and attributes specified to the stored
-     * output writer.
-     * </p>
+     * attrTag purpose.<p>Writes an xml tag with the name and
+     * attributes specified to the stored output writer.</p>
      *
      * @param tagName The tag name to write.
      * @param attributes The tag attributes to write.
@@ -222,12 +188,8 @@ public class WriterHelper {
     }
 
     /**
-     * textTag purpose.
-     *
-     * <p>
-     * Writes an xml tag with the name, text and attributes specified to the
-     * stored output writer.
-     * </p>
+     * textTag purpose.<p>Writes an xml tag with the name, text and
+     * attributes specified to the stored output writer.</p>
      *
      * @param tagName The tag name to write.
      * @param attributes The tag attributes to write.
@@ -253,12 +215,8 @@ public class WriterHelper {
     }
 
     /**
-     * comment purpose.
-     *
-     * <p>
-     * Writes an xml comment with the text specified to the stored output
-     * writer.
-     * </p>
+     * comment purpose.<p>Writes an xml comment with the text specified
+     * to the stored output writer.</p>
      *
      * @param comment The comment text to write.
      *

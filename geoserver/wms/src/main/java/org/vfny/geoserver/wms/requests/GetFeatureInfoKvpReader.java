@@ -19,11 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * Builds a GetFeatureInfo request object given by a set of CGI parameters
- * supplied in the constructor.
- *
- * <p>
- * Request parameters:
- * </p>
+ * supplied in the constructor.<p>Request parameters:</p>
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id: GetFeatureInfoKvpReader.java,v 1.2 2004/07/16 19:28:52 jmacgill Exp $
@@ -39,18 +35,18 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
     private GetMapKvpReader getMapReader;
 
     /**
-     * Creates a new GetMapKvpReader object.
-     * @param kvpPairs Key Values pairs of the request
-     * @param service The service handling the request
-     */
+         * Creates a new GetMapKvpReader object.
+         * @param kvpPairs Key Values pairs of the request
+         * @param service The service handling the request
+         */
     public GetFeatureInfoKvpReader(Map kvpPairs, WMService service) {
         super(kvpPairs, service);
         getMapReader = new GetMapKvpReader(kvpPairs, service);
     }
 
     /**
-     * Produces a <code>GetMapRequest</code> instance by parsing the GetMap
-     * mandatory, optional and custom parameters.
+     * Produces a <code>GetMapRequest</code> instance by parsing the
+     * GetMap mandatory, optional and custom parameters.
      *
      * @param httpRequest the servlet request who's application object holds
      *        the server configuration
@@ -115,13 +111,14 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
     }
 
     /**
-     * Obtains the FeatureTypeInfo objects of the layers to query
-     * given by the <code>QUERY_LAYERS</code>parameter.
+     * Obtains the FeatureTypeInfo objects of the layers to query given
+     * by the <code>QUERY_LAYERS</code>parameter.
      *
      * @return the list of layers to query.
      *
      * @throws WmsException if the parameter <code>QUERY_LAYERS</code> does not
-     * exists, has no layer names, or has at least an invalid layer name.
+     *         exists, has no layer names, or has at least an invalid layer
+     *         name.
      */
     private FeatureTypeInfo[] parseLayers() throws WmsException {
         List layers = readFlat(getValue("QUERY_LAYERS"), INNER_DELIMETER);

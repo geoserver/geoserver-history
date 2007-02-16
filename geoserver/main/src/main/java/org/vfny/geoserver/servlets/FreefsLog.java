@@ -60,7 +60,8 @@ public class FreefsLog extends HttpServlet {
     }
 
     /**
-     * Closes down the zserver if it is running, and frees up resources.
+     * Closes down the zserver if it is running, and frees up
+     * resources.
      *
      * @task REVISIT: what we should consider is having geotools provide a
      *       nicer way to clean up datastores's resources, something like a

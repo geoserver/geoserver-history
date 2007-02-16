@@ -10,92 +10,60 @@ import java.util.Map;
 
 
 /**
- * Bean containing the properties of an Open Web Service (OWS).
- * <p>
- * An OWS bean is a proper java bean which contains properties common to
- * various types of open web services. This class is intended to be subclassed.
- * </p>
- * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
+ * Bean containing the properties of an Open Web Service (OWS).<p>An OWS
+ * bean is a proper java bean which contains properties common to various
+ * types of open web services. This class is intended to be subclassed.</p>
  *
+ * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  */
 public class OWS {
-    /**
-     * Service enabled flag
-     */
+    /** Service enabled flag */
     private boolean enabled;
 
-    /**
-     * Url pointing to the service
-     */
+    /** Url pointing to the service */
     private URL onlineResource;
 
-    /**
-     * Name
-     */
+    /** Name */
     private String name;
 
-    /**
-     * Title
-     */
+    /** Title */
     private String title;
 
-    /**
-     * Abstract
-     */
+    /** Abstract */
     private String serverAbstract;
 
-    /**
-     * Fees for using the service.
-     */
+    /** Fees for using the service. */
     private String fees;
 
-    /**
-     * Service access constraints.
-     */
+    /** Service access constraints. */
     private String accessConstraints;
 
-    /**
-     * Maintainer of the service.
-     */
+    /** Maintainer of the service. */
     private String maintainer;
 
-    /**
-     * Character set to use.
-     */
+    /** Character set to use. */
     private Charset charSet;
 
-    /**
-     * List of keywords associated with the service.
-     */
+    /** List of keywords associated with the service. */
     private String[] keywords;
 
-    /**
-     * Client properties
-     */
+    /** Client properties */
     private Map clientProperties;
 
-    /**
-     * Flag indicating wether the service should be verbose or not.
-     */
+    /** Flag indicating wether the service should be verbose or not. */
     private boolean isVerbose;
 
-    /**
-     * Number of decimals used when encoding data.
-     */
+    /** Number of decimals used when encoding data. */
     private int numDecimals;
 
-    /**
-     * Local used to look up schemas.
-     */
+    /** Local used to look up schemas. */
     private String schemaBaseURL;
 
     /**
-    * <p>
-    * Returns whether is service is enabled.
-    * </p>
-    *
-    * @return true when enabled.
-    */
+     * <p>Returns whether is service is enabled.</p>
+     *
+     * @return true when enabled.
+     */
     public boolean isEnabled() {
         return enabled;
     }
@@ -105,9 +73,7 @@ public class OWS {
     }
 
     /**
-     * <p>
-     * Returns the Online Resource for this Service.
-     * </p>
+     * <p>Returns the Online Resource for this Service.</p>
      *
      * @return URL The Online resource.
      */
@@ -120,9 +86,7 @@ public class OWS {
     }
 
     /**
-     * <p>
-     * A description of this service.
-     * </p>
+     * <p>A description of this service.</p>
      *
      * @return String This Service's abstract.
      */
@@ -135,9 +99,7 @@ public class OWS {
     }
 
     /**
-     * <p>
-     * A description of this service's access constraints.
-     * </p>
+     * <p>A description of this service's access constraints.</p>
      *
      * @return String This service's access constraints.
      */
@@ -150,9 +112,7 @@ public class OWS {
     }
 
     /**
-     * <p>
-     * A description of the fees for this service.
-     * </p>
+     * <p>A description of the fees for this service.</p>
      *
      * @return String the fees for this service.
      */
@@ -165,9 +125,7 @@ public class OWS {
     }
 
     /**
-     * <p>
-     * A list of the keywords for this service.
-     * </p>
+     * <p>A list of the keywords for this service.</p>
      *
      * @return List keywords for this service
      */
@@ -180,9 +138,7 @@ public class OWS {
     }
 
     /**
-     * <p>
-     * The name of the maintainer for this service.
-     * </p>
+     * <p>The name of the maintainer for this service.</p>
      *
      * @return String maintainer for this service.
      */
@@ -195,9 +151,7 @@ public class OWS {
     }
 
     /**
-     * <p>
-     * The name for this service.
-     * </p>
+     * <p>The name for this service.</p>
      *
      * @return String the service's name.
      */
@@ -210,9 +164,7 @@ public class OWS {
     }
 
     /**
-     * <p>
-     * The title for this service.
-     * </p>
+     * <p>The title for this service.</p>
      *
      * @return String the service's title.
      */
@@ -225,6 +177,9 @@ public class OWS {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return the character set for the service.
      */
     public Charset getCharSet() {
@@ -236,9 +191,9 @@ public class OWS {
     }
 
     /**
-     * <p>
-     * Client properties for the service.
-     * </p>
+     * <p>Client properties for the service.</p>
+     *
+     * @return DOCUMENT ME!
      */
     public Map getClientProperties() {
         return clientProperties;
@@ -249,8 +204,8 @@ public class OWS {
     }
 
     /**
-     * Flag indicating wether the service should be verbose, for things like
-     * responding to requests, etc...
+     * Flag indicating wether the service should be verbose, for things
+     * like responding to requests, etc...
      *
      * @return True if verboseness on, other wise false.
      */
@@ -290,6 +245,9 @@ public class OWS {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The base url from which to locate schemas from.
      */
     public String getSchemaBaseURL() {

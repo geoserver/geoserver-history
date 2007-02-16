@@ -6,8 +6,9 @@ package org.mortbay.start;
 
 
 /**
- * Utility class for parsing and comparing version strings.
- * JDK 1.1 compatible.
+ * Utility class for parsing and comparing version strings. JDK 1.1
+ * compatible.
+ *
  * @author Jan Hlavat�
  */
 public class Version {
@@ -24,8 +25,10 @@ public class Version {
     }
 
     /**
-     * parses version string in the form version[.revision[.subrevision[extension]]]
-     * into this instance.
+     * parses version string in the form
+     * version[.revision[.subrevision[extension]]] into this instance.
+     *
+     * @param version_string DOCUMENT ME!
      */
     public void parse(String version_string) {
         try {
@@ -73,6 +76,9 @@ public class Version {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return string representation of this version
      */
     public String toString() {
@@ -89,11 +95,15 @@ public class Version {
 
     // java.lang.Comparable is Java 1.2! Cannot use it
     /**
-     * Compares with other version. Does not take extension into account,
-     * as there is no reliable way to order them.
-     * @return -1 if this is older version that other,
-     *         0 if its same version,
-     *         1 if it's newer version than other
+     * Compares with other version. Does not take extension into
+     * account, as there is no reliable way to order them.
+     *
+     * @param other DOCUMENT ME!
+     *
+     * @return -1 if this is older version that other, 0 if its same version, 1
+     *         if it's newer version than other
+     *
+     * @throws NullPointerException DOCUMENT ME!
      */
     public int compare(Version other) {
         if (other == null) {
@@ -129,6 +139,11 @@ public class Version {
 
     /**
      * Check whether this verion is in range of versions specified
+     *
+     * @param low DOCUMENT ME!
+     * @param high DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
      */
     public boolean isInRange(Version low, Version high) {
         return ((compare(low) >= 0) && (compare(high) <= 0));

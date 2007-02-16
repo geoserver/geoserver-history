@@ -13,34 +13,30 @@ import java.util.Set;
 
 
 /**
- * XMLSchemaTranslator purpose.
- * <p>
- * This instance of the NameSpaceTranslator should be used with http://www.w3.org/2001/XMLSchema namespace.
- * </p>
- * <p>
- * Instances of this object should always be retrieved through the NameSpaceTranslatorFactory.
- * </p>
- * <p>
- * Added a bit of a hack to get the right default mappings.  Added isDefault to
- * the classes we want.  Note that this list comes from
- * org.geotools.gml.producer.FeatureTypeTransformer.
- * </p>
- * @see NameSpaceTranslatorFactory
+ * XMLSchemaTranslator purpose.<p>This instance of the NameSpaceTranslator
+ * should be used with http://www.w3.org/2001/XMLSchema namespace.</p>
+ *  <p>Instances of this object should always be retrieved through the
+ * NameSpaceTranslatorFactory.</p>
+ *  <p>Added a bit of a hack to get the right default mappings.  Added
+ * isDefault to the classes we want.  Note that this list comes from
+ * org.geotools.gml.producer.FeatureTypeTransformer.</p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
  * @version $Id: XMLSchemaTranslator.java,v 1.3 2004/04/06 18:45:02 dmzwiers Exp $
+ *
+ * @see NameSpaceTranslatorFactory
  */
 public class XMLSchemaTranslator extends NameSpaceTranslator {
     private HashSet elements;
 
     /**
-     * XMLSchemaTranslator constructor.
-     * <p>
-     * Description
-     * </p>
-     * @param prefix
-     */
+         * XMLSchemaTranslator constructor.
+         * <p>
+         * Description
+         * </p>
+         * @param prefix
+         */
     public XMLSchemaTranslator(String prefix) {
         super(prefix);
         elements = new HashSet();
@@ -88,9 +84,9 @@ public class XMLSchemaTranslator extends NameSpaceTranslator {
     /**
      * Implementation of getElements.
      *
-     * @see org.vfny.geoserver.global.xml.NameSpaceTranslator#getElements()
-     *
      * @return
+     *
+     * @see org.vfny.geoserver.global.xml.NameSpaceTranslator#getElements()
      */
     public Set getElements() {
         return elements;
@@ -99,9 +95,9 @@ public class XMLSchemaTranslator extends NameSpaceTranslator {
     /**
      * Implementation of getNameSpace.
      *
-     * @see org.vfny.geoserver.global.xml.NameSpaceTranslator#getNameSpace()
-     *
      * @return
+     *
+     * @see org.vfny.geoserver.global.xml.NameSpaceTranslator#getNameSpace()
      */
     public String getNameSpace() {
         return "http://www.w3.org/2001/XMLSchema";

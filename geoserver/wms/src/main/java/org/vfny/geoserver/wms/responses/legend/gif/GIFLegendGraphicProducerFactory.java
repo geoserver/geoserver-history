@@ -13,20 +13,22 @@ import java.util.Set;
 
 
 /**
- * Factory of legend graphic producers for the <code>"image/gif"</code> format.
+ * Factory of legend graphic producers for the <code>"image/gif"</code>
+ * format.
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
  */
 public class GIFLegendGraphicProducerFactory implements GetLegendGraphicProducerSpi {
     /**
-     * Empty constructor, as required by the factory strategy.
-     */
+         * Empty constructor, as required by the factory strategy.
+         */
     public GIFLegendGraphicProducerFactory() {
         super();
     }
 
     /**
+     *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#getName()
      */
     public String getName() {
@@ -47,8 +49,8 @@ public class GIFLegendGraphicProducerFactory implements GetLegendGraphicProducer
     /**
      * Returns wether the gif legend producer is available to be used.
      *
-     * @return <code>true</code> iif JAI is available, since the actual image generation
-     * depends on JAI availability.
+     * @return <code>true</code> iif JAI is available, since the actual image
+     *         generation depends on JAI availability.
      *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#isAvailable()
      */
@@ -57,8 +59,8 @@ public class GIFLegendGraphicProducerFactory implements GetLegendGraphicProducer
     }
 
     /**
-     * Evaluates if the prioducer this factory serves can create images in
-     * <code>mimeType</code> format.
+     * Evaluates if the prioducer this factory serves can create images
+     * in <code>mimeType</code> format.
      *
      * @param mimeType DOCUMENT ME!
      *
@@ -71,8 +73,8 @@ public class GIFLegendGraphicProducerFactory implements GetLegendGraphicProducer
     }
 
     /**
-     * Creates a legend graphics producer for the given format, which in this
-     * case must be <code>"image/gif"</code>
+     * Creates a legend graphics producer for the given format, which
+     * in this case must be <code>"image/gif"</code>
      *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#createLegendProducer(java.lang.String)
      */
@@ -86,9 +88,9 @@ public class GIFLegendGraphicProducerFactory implements GetLegendGraphicProducer
     }
 
     /* (non-Javadoc)
-         * @see org.geotools.factory.Factory#getImplementationHints()
-         * This just returns java.util.Collections.EMPTY_MAP
-         */
+     * @see org.geotools.factory.Factory#getImplementationHints()
+     * This just returns java.util.Collections.EMPTY_MAP
+     */
     public Map getImplementationHints() {
         return java.util.Collections.EMPTY_MAP;
     }

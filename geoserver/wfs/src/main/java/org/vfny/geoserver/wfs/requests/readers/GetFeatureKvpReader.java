@@ -21,13 +21,10 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * This utility reads in a GetFeature KVP request and turns it into a
- * GetFeature type request object.
- *
- * <p>
- * If you pass this utility a KVP request (everything after the '?' in the
- * URI), it will translate this into a GetFeature type request object.  Note
- * that you  must check for validity before passing the request.
- * </p>
+ * GetFeature type request object.<p>If you pass this utility a KVP request
+ * (everything after the '?' in the URI), it will translate this into a
+ * GetFeature type request object.  Note that you  must check for validity
+ * before passing the request.</p>
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
@@ -39,11 +36,11 @@ public class GetFeatureKvpReader extends WfsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
     /**
-     * Constructor with raw request string.  Calls parent.
-     *
-     * @param kvPairs key/value pairs for a GetFeature request
-     * @param service sevlet or service handling the request.
-     */
+         * Constructor with raw request string.  Calls parent.
+         *
+         * @param kvPairs key/value pairs for a GetFeature request
+         * @param service sevlet or service handling the request.
+         */
     public GetFeatureKvpReader(Map kvPairs, WFService service) {
         super(kvPairs, service);
     }
@@ -58,6 +55,7 @@ public class GetFeatureKvpReader extends WfsKvpRequestReader {
      *
      * @param withLock Whether this should be a GetFeatureWithLock request.
      * @param srequest to set the request's servlet request
+     *
      * @return Feature request object.
      *
      * @throws WfsException If no typename or featureid is present, or if the

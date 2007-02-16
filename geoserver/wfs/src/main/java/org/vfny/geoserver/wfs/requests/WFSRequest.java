@@ -21,18 +21,20 @@ abstract public class WFSRequest extends Request {
     public static final String WFS_SERVICE_TYPE = "WFS";
 
     /**
-     * Creates the new request, supplying the request name and the sevlet
-     * handling the request.
-     *
-     * @param requestType name of hte request, (Example, GetCapabiliites)
-     * @param service The servlet handling the WFS request.
-     */
+         * Creates the new request, supplying the request name and the sevlet
+         * handling the request.
+         *
+         * @param requestType name of hte request, (Example, GetCapabiliites)
+         * @param service The servlet handling the WFS request.
+         */
     public WFSRequest(String requestType, WFService service) {
         super(WFS_SERVICE_TYPE, requestType, service);
     }
 
     /**
      * Sets the wfs service object.
+     *
+     * @param wfs DOCUMENT ME!
      */
     public void setWFService(WFService wfs) {
         setServiceRef(wfs);
@@ -40,13 +42,18 @@ abstract public class WFSRequest extends Request {
 
     /**
      * Returns the wfs service object..
+     *
+     * @return DOCUMENT ME!
      */
     public WFService getWFService() {
         return (WFService) getServiceRef();
     }
 
     /**
-     * Convenience method for obtaining the global wfs service instance.
+     * Convenience method for obtaining the global wfs service
+     * instance.
+     *
+     * @return DOCUMENT ME!
      */
     public WFS getWFS() {
         return getWFService().getWFS();
@@ -54,6 +61,8 @@ abstract public class WFSRequest extends Request {
 
     /**
      * Convenience method for obtaining the global geoserver instance.
+     *
+     * @return DOCUMENT ME!
      */
     public GeoServer getGeoServer() {
         GeoServer gs = getWFS().getGeoServer();

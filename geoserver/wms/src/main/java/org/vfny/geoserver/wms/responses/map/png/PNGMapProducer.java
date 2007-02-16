@@ -38,7 +38,7 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
     /** Logger */
     private static final Logger LOGGER = Logger.getLogger(PNGMapProducer.class.getPackage().getName());
 
-    /** PNG Native Acceleration Mode * */
+    /** PNG Native Acceleration Mode */
     private Boolean PNGNativeAcc;
 
     public PNGMapProducer(String format, WMS wms) {
@@ -47,19 +47,16 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
     }
 
     /**
-     * Transforms the rendered image into the appropriate format, streaming to
-     * the output stream.
+     * Transforms the rendered image into the appropriate format,
+     * streaming to the output stream.
      *
-     * @param format
-     *            The name of the format
-     * @param image
-     *            The image to be formatted.
-     * @param outStream
-     *            The stream to write to.
-     * @throws WmsException
-     *             not really.
-     * @throws IOException
-     *             if encoding to <code>outStream</code> fails.
+     * @param format The name of the format
+     * @param image The image to be formatted.
+     * @param outStream The stream to write to.
+     *
+     * @throws WmsException not really.
+     * @throws IOException if encoding to <code>outStream</code> fails.
+     * @throws IllegalArgumentException DOCUMENT ME!
      */
     public void formatImageOutputStream(String format, BufferedImage image, OutputStream outStream)
         throws WmsException, IOException {

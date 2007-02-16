@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Uses SAX to extact a Transactional request from and incoming XML stream. It
- * now makes use of the FeatureType of the typename to parse the attribute
+ * Uses SAX to extact a Transactional request from and incoming XML stream.
+ * It now makes use of the FeatureType of the typename to parse the attribute
  * values correctly.  Right now this leads to a bit of loose parsing, for
  * example if the attributes passed in are in the wrong order we correct for
  * that.  If an attribute is passed in twice for some reason the code right
@@ -34,7 +34,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class TransactionFeatureHandler extends GMLFilterFeature {
     //    implements ContentHandler, FilterHandler, GMLHandlerFeature {
-
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
@@ -50,16 +49,16 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     private boolean insideInsert = false;
 
     /**
-     * Stores current feature attributes.
-     * Its value is parsed from the string representation built on
-     * <code>processingAttributeValue</code>, once we get the end
-     * of the element's content (aka, at endElement())
+     * Stores current feature attributes. Its value is parsed from the
+     * string representation built on <code>processingAttributeValue</code>,
+     * once we get the end of the element's content (aka, at endElement())
      */
     private Object tempValue = null;
 
-    /** actual attribute value is built here since multiple calls to
-     * {@linkplain #characters(char[], int, int)} may occur until the
-     * whole attribute value gets completely parsed.
+    /**
+     * actual attribute value is built here since multiple calls to
+     * {@linkPlain #characters(char[], int, int)} may occur until the whole
+     * attribute value gets completely parsed.
      */
     private StringBuffer processingAttributeValue;
     private String attName = "";
@@ -73,17 +72,19 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     private FeatureType curFeatureType;
     private AttributeType curAttributeType;
 
-    /** Collects string chunks in {@link #characters(char[], int, int)}
-     * callback to be handled at the beggining of {@link #endElement(String, String, String)}
+    /**
+     * Collects string chunks in {@link #characters(char[], int, int)}
+     * callback to be handled at the beggining of {@link #endElement(String,
+     * String, String)}
      */
     private StringBuffer characters = new StringBuffer();
 
     /**
-     * Constructor with parent, which must implement GMLHandlerJTS.
-     *
-     * @param parent The parent of this filter.
-     * @param r DOCUMENT ME!
-     */
+         * Constructor with parent, which must implement GMLHandlerJTS.
+         *
+         * @param parent The parent of this filter.
+         * @param r DOCUMENT ME!
+         */
     public TransactionFeatureHandler(TransactionFilterHandler parent, HttpServletRequest r,
         Data catalog) {
         super(parent);
@@ -93,16 +94,19 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
 
     /**
      * Sets the catalog reference.
+     *
+     * @param catalog DOCUMENT ME!
      */
     public void setCatalog(Data catalog) {
         this.catalog = catalog;
     }
 
     /**
-     * Checks for GML element start and - if not a coordinates element - sends
-     * it directly on down the chain to the appropriate parent handler.  If it
-     * is a coordinates (or coord) element, it uses internal methods to set
-     * the current state of the coordinates reader appropriately.
+     * Checks for GML element start and - if not a coordinates element
+     * - sends it directly on down the chain to the appropriate parent
+     * handler.  If it is a coordinates (or coord) element, it uses internal
+     * methods to set the current state of the coordinates reader
+     * appropriately.
      *
      * @param namespaceURI The namespace of the element.
      * @param localName The local name of the element.
@@ -214,10 +218,10 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     }
 
     /**
-     * Reads the only internal characters read by pure GML parsers, which are
-     * coordinates.  These coordinates are sent to the coordinates reader
-     * class which interprets them appropriately, depending on the its current
-     * state.
+     * Reads the only internal characters read by pure GML parsers,
+     * which are coordinates.  These coordinates are sent to the coordinates
+     * reader class which interprets them appropriately, depending on the its
+     * current state.
      *
      * @param ch Raw coordinate string from the GML document.
      * @param start Beginning character position of raw coordinate string.
@@ -232,10 +236,10 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     }
 
     /**
-     * Checks for GML element end and - if not a coordinates element - sends it
-     * directly on down the chain to the appropriate parent handler.  If it is
-     * a coordinates (or coord) element, it uses internal methods to set the
-     * current state of the coordinates reader appropriately.
+     * Checks for GML element end and - if not a coordinates element -
+     * sends it directly on down the chain to the appropriate parent handler.
+     * If it is a coordinates (or coord) element, it uses internal methods to
+     * set the current state of the coordinates reader appropriately.
      *
      * @param namespaceURI NameSpaceInfo of the element.
      * @param localName Local name of the element.
@@ -347,11 +351,11 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     }
 
     /**
-     * Manages the start of a new main or sub geometry.  This method looks at
-     * the status of the current handler and either returns a new sub-handler
-     * (if the last one was successfully returned already) or passes the
-     * element start notification along to the current handler as a sub
-     * geometry notice.
+     * Manages the start of a new main or sub geometry.  This method
+     * looks at the status of the current handler and either returns a new
+     * sub-handler (if the last one was successfully returned already) or
+     * passes the element start notification along to the current handler as a
+     * sub geometry notice.
      *
      * @param geometry The geometry from the child.
      */
@@ -388,6 +392,8 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
 
     /**
      * Handles the string chunks collected in {@link #characters}.
+     *
+     * @throws SAXException DOCUMENT ME!
      */
     private void handleCharacters() throws SAXException {
         if (characters.length() == 0) {

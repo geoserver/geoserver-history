@@ -27,15 +27,14 @@ public class DeleteSuiteTest extends TransactionSuiteTest {
     //static {
     //    org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", Level.FINEST);
     //}
-
     /** Class logger */
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /**
-     * Constructor with super.
-     *
-     * @param testName DOCUMENT ME!
-     */
+         * Constructor with super.
+         *
+         * @param testName DOCUMENT ME!
+         */
     public DeleteSuiteTest(String testName) {
         super(testName);
     }

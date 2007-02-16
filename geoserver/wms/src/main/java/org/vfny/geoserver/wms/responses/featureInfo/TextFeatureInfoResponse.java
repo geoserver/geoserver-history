@@ -26,21 +26,20 @@ import java.util.HashMap;
  * class handle the rest.
  *
  * @author James Macgill, PSU
- * @version $Id: TextFeatureInfoResponse.java,v 1.3 2004/07/19 22:31:40 jmacgill
- *          Exp $
+ * @version $Id: TextFeatureInfoResponse.java,v 1.3 2004/07/19 22:31:40 jmacgill Exp $
  */
 public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
     /**
-     *
-     */
+         *
+         */
     public TextFeatureInfoResponse() {
         format = "text/plain";
         supportedFormats = Collections.singletonList("text/plain");
     }
 
     /**
-     * Returns any extra headers that this service might want to set in the HTTP
-     * response object.
+     * Returns any extra headers that this service might want to set in
+     * the HTTP response object.
      *
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
@@ -49,15 +48,10 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
     }
 
     /**
-     * Writes the feature information to the client in text/plain format.
+     * Writes the feature information to the client in text/plain
+     * format.
      *
-     * @param out
-     *            The output stream to write to.
-     *
-     * @throws org.vfny.geoserver.ServiceException
-     *             DOCUMENT ME!
-     * @throws java.io.IOException
-     *             DOCUMENT ME!
+     * @param out The output stream to write to.
      */
     public void writeTo(OutputStream out)
         throws org.vfny.geoserver.ServiceException, java.io.IOException {

@@ -30,10 +30,9 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Holds the current selection, and set of styles.
- * <p>
- * Current style selection is held in the UserContainer.
- * </p>
+ * Holds the current selection, and set of styles.<p>Current style
+ * selection is held in the UserContainer.</p>
+ *
  * @author jgarnett, Refractions Research
  */
 public class StylesSelectForm extends ActionForm {

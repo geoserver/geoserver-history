@@ -14,12 +14,12 @@ import java.util.logging.Logger;
 
 
 /**
- * Implements the WFS GetFeature interface, which responds to requests for GML.
- * This servlet accepts a getFeatures request and returns GML2.0 structured
- * XML docs.  It is made up of the standard request params, plus one or  more
- * {@link Query} objects, plus a user-assigned handle.  There are also params
- * for feature versioning and alternate formats, but GeoServer does not yet
- * support those.
+ * Implements the WFS GetFeature interface, which responds to requests for
+ * GML. This servlet accepts a getFeatures request and returns GML2.0
+ * structured XML docs.  It is made up of the standard request params, plus
+ * one or  more {@link Query} objects, plus a user-assigned handle.  There are
+ * also params for feature versioning and alternate formats, but GeoServer
+ * does not yet support those.
  *
  * @author Rob Hranac, TOPP
  * @version $Id: FeatureRequest.java,v 1.8 2004/03/14 05:18:31 cholmesny Exp $
@@ -29,21 +29,19 @@ public class FeatureRequest extends WFSRequest {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /**
-     * The maximum returned if the user requests no limit of features at all,
-     * but the other request parameters don't restrict to below 500.
+     * The maximum returned if the user requests no limit of features
+     * at all, but the other request parameters don't restrict to below 500.
      */
 
     //protected static final int SOFT_MAX_FEATURES = GeoServer.getInstance()
     //                                                           .getGlobalConfig()
     //                                                           .getMaxFeatures();
-
     /**
-     * This is the maximum that is returned if the user specifically requests
-     * more than the soft max.
+     * This is the maximum that is returned if the user specifically
+     * requests more than the soft max.
      */
 
     //protected static final int HARD_MAX_FEATURES = SOFT_MAX_FEATURES + 1000;
-
     /** Creates a max features constraint for the entire request */
     protected int maxFeatures = Integer.MAX_VALUE; //SOFT_MAX_FEATURES;
 
@@ -60,10 +58,10 @@ public class FeatureRequest extends WFSRequest {
     protected List queries = new ArrayList();
 
     /**
-     * Creates a new GetFeature request.
-     *
-     * @param service The wfs service handling the request.
-     */
+         * Creates a new GetFeature request.
+         *
+         * @param service The wfs service handling the request.
+         */
     public FeatureRequest(WFService service) {
         super("GetFeature", service);
     }
@@ -152,8 +150,8 @@ public class FeatureRequest extends WFSRequest {
     }
 
     /**
-     * Returns the version for the entire GetFeature request. Not currently
-     * used in GeoServer.
+     * Returns the version for the entire GetFeature request. Not
+     * currently used in GeoServer.
      *
      * @param version The version of the feature to retrieve.
      */
@@ -162,8 +160,8 @@ public class FeatureRequest extends WFSRequest {
     }
 
     /**
-     * Returns the version for the entire GetFeature request. Not currently
-     * used in GeoServer.
+     * Returns the version for the entire GetFeature request. Not
+     * currently used in GeoServer.
      *
      * @return The version of the feature to retrieve.
      */

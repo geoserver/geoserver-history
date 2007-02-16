@@ -48,9 +48,9 @@ import java.util.logging.Logger;
 
 
 /**
- * A GetMapResponse object is responsible of generating a map based on a GetMap
- * request. The way the map is generated is independent of this class, wich will
- * use a delegate object based on the output format requested
+ * A GetMapResponse object is responsible of generating a map based on a
+ * GetMap request. The way the map is generated is independent of this class,
+ * wich will use a delegate object based on the output format requested
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id: GetMapResponse.java,v 1.11 2004/03/14 23:29:30 groldan Exp $
@@ -60,33 +60,27 @@ public class GetMapResponse implements Response {
     private static final Logger LOGGER = Logger.getLogger(GetMapResponse.class.getPackage().getName());
 
     /**
-     * The map producer that will be used for the production of a map in the
-     * requested format.
+     * The map producer that will be used for the production of a map
+     * in the requested format.
      */
     private GetMapProducer delegate;
 
-    /**
-     * The map context
-     */
+    /** The map context */
     private WMSMapContext map;
 
-    /**
-     * WMS module
-     */
+    /** WMS module */
     private WMS wms;
 
-    /**
-     * custom response headers
-     */
+    /** custom response headers */
     private HashMap responseHeaders;
     String headerContentDisposition;
     private ApplicationContext applicationContext;
 
     /**
-     * Creates a new GetMapResponse object.
-     *
-     * @param applicationContext
-     */
+         * Creates a new GetMapResponse object.
+         *
+         * @param applicationContext
+         */
     public GetMapResponse(WMS wms, ApplicationContext applicationContext) {
         this.wms = wms;
         this.applicationContext = applicationContext;
@@ -94,8 +88,10 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * Returns any extra headers that this service might want to set in the HTTP
-     * response object.
+     * Returns any extra headers that this service might want to set in
+     * the HTTP response object.
+     *
+     * @return DOCUMENT ME!
      */
     public HashMap getResponseHeaders() {
         return responseHeaders;
@@ -104,13 +100,10 @@ public class GetMapResponse implements Response {
     /**
      * DOCUMENT ME!
      *
-     * @param req
-     *            DOCUMENT ME!
+     * @param req DOCUMENT ME!
      *
-     * @throws ServiceException
-     *             DOCUMENT ME!
-     * @throws WmsException
-     *             DOCUMENT ME!
+     * @throws ServiceException DOCUMENT ME!
+     * @throws WmsException DOCUMENT ME!
      */
     public void execute(Request req) throws ServiceException {
         GetMapRequest request = (GetMapRequest) req;
@@ -359,16 +352,14 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * asks the internal GetMapDelegate for the MIME type of the map that it
-     * will generate or is ready to, and returns it
+     * asks the internal GetMapDelegate for the MIME type of the map
+     * that it will generate or is ready to, and returns it
      *
-     * @param gs
-     *            DOCUMENT ME!
+     * @param gs DOCUMENT ME!
      *
      * @return the MIME type of the map generated or ready to generate
      *
-     * @throws IllegalStateException
-     *             if a GetMapDelegate is not setted yet
+     * @throws IllegalStateException if a GetMapDelegate is not setted yet
      */
     public String getContentType(GeoServer gs) throws IllegalStateException {
         if (this.delegate == null) {
@@ -392,10 +383,10 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * if a GetMapDelegate is set, calls it's abort method. Elsewere do nothing.
+     * if a GetMapDelegate is set, calls it's abort method. Elsewere do
+     * nothing.
      *
-     * @param gs
-     *            DOCUMENT ME!
+     * @param gs DOCUMENT ME!
      */
     public void abort(Service gs) {
         if (this.delegate != null) {
@@ -408,22 +399,18 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * delegates the writing and encoding of the results of the request to the
-     * <code>GetMapDelegate</code> wich is actually processing it, and has
-     * been obtained when <code>execute(Request)</code> was called
+     * delegates the writing and encoding of the results of the request
+     * to the <code>GetMapDelegate</code> wich is actually processing it, and
+     * has been obtained when <code>execute(Request)</code> was called
      *
-     * @param out
-     *            the output to where the map must be written
+     * @param out the output to where the map must be written
      *
-     * @throws ServiceException
-     *             if the delegate throws a ServiceException inside its
-     *             <code>writeTo(OuptutStream)</code>, mostly due to
-     * @throws IOException
-     *             if the delegate throws an IOException inside its
-     *             <code>writeTo(OuptutStream)</code>, mostly due to
-     * @throws IllegalStateException
-     *             if this method is called before <code>execute(Request)</code>
-     *             has succeed
+     * @throws ServiceException if the delegate throws a ServiceException
+     *         inside its <code>writeTo(OuptutStream)</code>, mostly due to
+     * @throws IOException if the delegate throws an IOException inside its
+     *         <code>writeTo(OuptutStream)</code>, mostly due to
+     * @throws IllegalStateException if this method is called before
+     *         <code>execute(Request)</code> has succeed
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         try { // mapcontext can leak memory -- we make sure we done (see
@@ -454,20 +441,19 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * Creates a GetMapDelegate specialized in generating the requested map
-     * format
+     * Creates a GetMapDelegate specialized in generating the requested
+     * map format
      *
-     * @param outputFormat
-     *            a request parameter object wich holds the processed request
-     *            objects, such as layers, bbox, outpu format, etc.
+     * @param outputFormat a request parameter object wich holds the processed
+     *        request objects, such as layers, bbox, outpu format, etc.
+     * @param wms DOCUMENT ME!
      *
-     * @return A specialization of <code>GetMapDelegate</code> wich can
-     *         produce the requested output map format
+     * @return A specialization of <code>GetMapDelegate</code> wich can produce
+     *         the requested output map format
      *
-     * @throws WmsException
-     *             if no specialization is configured for the output format
-     *             specified in <code>request</code> or if it can't be
-     *             instantiated
+     * @throws WmsException if no specialization is configured for the output
+     *         format specified in <code>request</code> or if it can't be
+     *         instantiated
      */
     private GetMapProducer getDelegate(String outputFormat, WMS wms)
         throws WmsException {
@@ -503,12 +489,12 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * Convenience method for processing the GetMapProducerFactorySpi extension
-     * point and returning the set of available image formats.
+     * Convenience method for processing the GetMapProducerFactorySpi
+     * extension point and returning the set of available image formats.
      *
-     * @param applicationContext
-     *            The application context.
+     * @param applicationContext The application context.
      *
+     * @return DOCUMENT ME!
      */
     public static Set loadImageFormats(ApplicationContext applicationContext) {
         Map beans = applicationContext.getBeansOfType(GetMapProducerFactorySpi.class);

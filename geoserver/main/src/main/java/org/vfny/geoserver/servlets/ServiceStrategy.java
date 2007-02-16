@@ -26,16 +26,16 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface ServiceStrategy extends Cloneable {
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return A string used to identify the strategy.
      */
     public String getId();
 
     /**
-     * Get a OutputStream we can use to add content.
-     *
-     * <p>
-     * JG - Can we replace this with a Writer?
-     * </p>
+     * Get a OutputStream we can use to add content.<p>JG - Can we
+     * replace this with a Writer?</p>
      *
      * @param response
      *
@@ -47,29 +47,25 @@ public interface ServiceStrategy extends Cloneable {
         throws IOException;
 
     /**
-     * Complete opperation in the positive.
-     *
-     * <p>
-     * Gives service a chance to finish with destination, and clean up any
-     * resources.
-     * </p>
+     * Complete opperation in the positive.<p>Gives service a chance to
+     * finish with destination, and clean up any resources.</p>
      *
      * @throws IOException DOCUMENT ME!
      */
     public void flush() throws IOException;
 
     /**
-     * Complete opperation in the negative.
-     *
-     * <p>
-     * Gives ServiceConfig a chance to clean up resources
-     * </p>
+     * Complete opperation in the negative.<p>Gives ServiceConfig a
+     * chance to clean up resources</p>
      */
     public void abort();
 
     /**
      * Clones the service strategy.
      *
+     * @return DOCUMENT ME!
+     *
+     * @throws CloneNotSupportedException DOCUMENT ME!
      */
     public Object clone() throws CloneNotSupportedException;
 }

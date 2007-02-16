@@ -13,10 +13,10 @@ import java.util.logging.Logger;
 
 
 /**
- * Implements the WFS GetFeatureWithLock interface, which  responds to requests
- * for GML and locks the features. It extends GetFeature with the ability to
- * turn itself into a lock request, and with an expiry element.  The
- * lockAction didn't make it in to the 1.0 spec, as far as I can tell, but
+ * Implements the WFS GetFeatureWithLock interface, which  responds to
+ * requests for GML and locks the features. It extends GetFeature with the
+ * ability to turn itself into a lock request, and with an expiry element.
+ * The lockAction didn't make it in to the 1.0 spec, as far as I can tell, but
  * will likely be a part of the next one, so that will have to be added, but
  * should be trivial, as it's already a part of lockRequest.
  *
@@ -31,41 +31,27 @@ public class FeatureWithLockRequest extends FeatureRequest {
     protected int expiry = 0;
 
     /**
-     * Creates a new FeatureWithLock request.
-     *
-     * @param service The service handling the request.
-     */
+         * Creates a new FeatureWithLock request.
+         *
+         * @param service The service handling the request.
+         */
     public FeatureWithLockRequest(WFService service) {
         super(service);
         setRequest("GetFeatureWithLock");
     }
 
     /**
-     * Turn this request into a FeatureLock.
-     *
-     * <p>
-     * You will return FeatureLock.getAuthorization() to your user so they can
-     * refer to this lock again.
-     * </p>
-     *
-     * <p>
-     * The getAuthorization() value is based on getHandle(), with a default of
-     * "GeoServer" if the user has not provided a handle.
-     * </p>
-     * The FeatureLock produced is based on expiry:
-     *
-     * <ul>
-     * <li>
-     * negative expiry: reports if lock is available
-     * </li>
-     * <li>
-     * zero expiry: perma lock that never expires!
-     * </li>
-     * <li>
-     * postive expiry: lock expires in a number of minuets
-     * </li>
-     * </ul>
-     *
+     * Turn this request into a FeatureLock.<p>You will return
+     * FeatureLock.getAuthorization() to your user so they can refer to this
+     * lock again.</p>
+     *  <p>The getAuthorization() value is based on getHandle(), with a
+     * default of "GeoServer" if the user has not provided a handle.</p>
+     *  The FeatureLock produced is based on expiry:
+     *  <ul>
+     *      <li>negative expiry: reports if lock is available</li>
+     *      <li>zero expiry: perma lock that never expires!</li>
+     *      <li>postive expiry: lock expires in a number of minuets</li>
+     *  </ul>
      *
      * @return
      */

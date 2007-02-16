@@ -24,15 +24,12 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Create a new Style for editing (based on StyleNewForm information).
- * <p>
- * The new style will be placed in the UserContainer for editing,
- * the session will be redirected to the editor.
- * </p>
- * <p>
- * The new Style will not actually be added to the Configuration until
- * the editor form is submitted.
- * <p>
+ * Create a new Style for editing (based on StyleNewForm information).<p>The
+ * new style will be placed in the UserContainer for editing, the session will
+ * be redirected to the editor.</p>
+ *  <p>The new Style will not actually be added to the Configuration until
+ * the editor form is submitted.</p>
+ *  <p></p>
  */
 public class StylesNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,

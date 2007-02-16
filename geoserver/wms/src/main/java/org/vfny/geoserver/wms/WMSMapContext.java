@@ -12,27 +12,16 @@ import java.awt.Color;
 
 
 /**
- * Extends DefaultMapContext to provide the whole set of request parameters a
- * WMS GetMap request can have.
- *
- * <p>
- * In particular, adds holding for the following parameter values:
- *
- * <ul>
- * <li>
- * WIDTH
- * </li>
- * <li>
- * HEIGHT
- * </li>
- * <li>
- * BGCOLOR
- * </li>
- * <li>
- * TRANSPARENT
- * </li>
- * </ul>
- * </p>
+ * Extends DefaultMapContext to provide the whole set of request parameters
+ * a WMS GetMap request can have.<p>In particular, adds holding for the
+ * following parameter values:
+ *  <ul>
+ *      <li>WIDTH</li>
+ *      <li>HEIGHT</li>
+ *      <li>BGCOLOR</li>
+ *      <li>TRANSPARENT</li>
+ *  </ul>
+ *  </p>
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
@@ -50,14 +39,16 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
     /** true if background transparency is requested */
     private boolean transparent;
 
-    /** the rendering buffer used to avoid issues with tiled rendering and big strokes
-     *  that may cross tile boundaries */
+    /**
+     * the rendering buffer used to avoid issues with tiled rendering
+     * and big strokes that may cross tile boundaries
+     */
     private int buffer;
     private GetMapRequest request; // hold onto it so we can grab info from it (request URL etc...)
 
     /**
-     *
-     */
+         *
+         */
     public WMSMapContext() {
         super();
     }
@@ -68,10 +59,10 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @param layers
-     */
+         * DOCUMENT ME!
+         *
+         * @param layers
+         */
     public WMSMapContext(MapLayer[] layers) {
         super(layers);
     }

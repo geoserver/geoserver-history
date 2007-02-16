@@ -15,8 +15,8 @@ import java.util.Map;
 
 
 /**
- * Implements the WFS DescribeFeatureTypes inteface, which tells clients the
- * schema for each feature type. This servlet returns descriptions of all
+ * Implements the WFS DescribeFeatureTypes inteface, which tells clients
+ * the schema for each feature type. This servlet returns descriptions of all
  * feature types served by the server. Note that this assumes that the
  * possible schemas are only single tables, with no foreign key relationships
  * with other tables.
@@ -30,10 +30,10 @@ public class Describe extends WFService {
     }
 
     /**
-    * DOCUMENT ME!
-    *
-    * @return DOCUMENT ME!
-    */
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     protected Response getResponseHandler() {
         return new DescribeResponse();
     }

@@ -23,28 +23,27 @@ import java.util.Map;
  */
 public abstract class WmsKvpRequestReader extends KvpRequestReader {
     /**
-     * DOCUMENT ME!
-     *
-     * @param params DOCUMENT ME!
-     */
+         * DOCUMENT ME!
+         *
+         * @param params DOCUMENT ME!
+         */
 
     //protected static final GeoServer config = GeoServer.getInstance();
-
     /**
-     * Creates a new kvp reader for a WMS request.
-     *
-     * @param kvpPairs The raw key value pairs.
-     * @param service The servlet handling the request.
-     */
+         * Creates a new kvp reader for a WMS request.
+         *
+         * @param kvpPairs The raw key value pairs.
+         * @param service The servlet handling the request.
+         */
     public WmsKvpRequestReader(Map kvpPairs, WMService service) {
         super(kvpPairs, service);
     }
 
     /**
-    * DOCUMENT ME!
-    *
-    * @return DOCUMENT ME!
-    */
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     protected String getRequestVersion() {
         String version = getValue("VERSION");
 

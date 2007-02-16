@@ -24,50 +24,35 @@ import java.util.zip.ZipOutputStream;
 
 
 /**
- * Returns a shapefile from a GetFeature response. This is still a bit of an
- * experiment, but we are returning a zipped shapefile at the moment.
- *
- * <p>
- * This version just uses a Shapefile DataStore to write out the files. Right
- * now it will write out the first shapefile, and it only does the dbf and shp
+ * Returns a shapefile from a GetFeature response. This is still a bit of
+ * an experiment, but we are returning a zipped shapefile at the moment.<p>This
+ * version just uses a Shapefile DataStore to write out the files. Right now
+ * it will write out the first shapefile, and it only does the dbf and shp
  * files. The rest should not be too hard to handle though. In the future we
- * should use the Shapefile's writing methods directly, but this may take a bit
- * of refactoring. It would be nice if instead of the DataStore low level writer
- * (which is probably getting deprecated anyways), we had output writers for
- * DataStores, that would write to a stream. This would open up the possibility
- * of a gt2gt converter, read in with a postgis datastore, write to a shapefile.
- * </p>
- *
- * <p>
- * The other big problem we have right now is that when you go to the url the
- * method that a browser gives you to save is not very nice. The default for
- * mine seems to be GetFeature - not even GetFeature.zip or anything nice like
- * that.
- * </p>
- *
- * <p>
- * There also seem to be problems parsing with a postgis datastore, we get the
- * shapefile expecting a double, but getting a multi line string. Not clear at
- * all why, it is weird, because it doesn't happen write at the beginning, seems
- * about half way or something.
- * </p>
- *
- * <p>
- * At present we only write out the first of the FeatureResults, but should not
- * be too hard to write them all out, just fill up the zip file with several
- * different shapefiles.
- * </p>
- *
- * <p>
- * Another interesting thought could be to have all generated files like this
- * just return a url location to the browser. Then the user could go to the file
- * and download it. This gets into interesting implications for geoserver as a
- * real spatial data download manager.
- * </p>
+ * should use the Shapefile's writing methods directly, but this may take a
+ * bit of refactoring. It would be nice if instead of the DataStore low level
+ * writer (which is probably getting deprecated anyways), we had output
+ * writers for DataStores, that would write to a stream. This would open up
+ * the possibility of a gt2gt converter, read in with a postgis datastore,
+ * write to a shapefile.</p>
+ *  <p>The other big problem we have right now is that when you go to the
+ * url the method that a browser gives you to save is not very nice. The
+ * default for mine seems to be GetFeature - not even GetFeature.zip or
+ * anything nice like that.</p>
+ *  <p>There also seem to be problems parsing with a postgis datastore, we
+ * get the shapefile expecting a double, but getting a multi line string. Not
+ * clear at all why, it is weird, because it doesn't happen write at the
+ * beginning, seems about half way or something.</p>
+ *  <p>At present we only write out the first of the FeatureResults, but
+ * should not be too hard to write them all out, just fill up the zip file
+ * with several different shapefiles.</p>
+ *  <p>Another interesting thought could be to have all generated files
+ * like this just return a url location to the browser. Then the user could go
+ * to the file and download it. This gets into interesting implications for
+ * geoserver as a real spatial data download manager.</p>
  *
  * @author Chris Holmes
- * @version $Id: ShapeFeatureResponseDelegate.java 4665 2006-07-03 18:14:54Z
- *          jdeolive $
+ * @version $Id$
  *
  * @task TODO: lots of cleanup. Get working with more than one feature result,
  *       get rid of duplicate code in writing out shp and dbf files, and add
@@ -87,25 +72,26 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     String vmTempDir = null;
 
     /** will be true if Shape-ZIP output format was requested */
+
     // private boolean compressOutput = false; // already in ZIP by default
     /**
-     * the results of a getfeature request wich this object will encode as Shape
+     * the results of a getfeature request wich this object will encode
+     * as Shape
      */
     private GetFeatureResults results;
     private String featureTypeName;
 
     /**
-     * empty constructor required to be instantiated through
-     * this.class.newInstance()
-     */
+         * empty constructor required to be instantiated through
+         * this.class.newInstance()
+         */
     public ShapeFeatureResponseDelegate() {
     }
 
     /**
      * DOCUMENT ME!
      *
-     * @param outputFormat
-     *            DOCUMENT ME!
+     * @param outputFormat DOCUMENT ME!
      *
      * @return true if <code>outputFormat</code> is Shape or Shape-GZIP
      */
@@ -114,16 +100,15 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     }
 
     /**
-     * prepares for encoding into Shape format, optionally compressing its
-     * output in gzip, if outputFormat is equal to SHAPE-ZIP
+     * prepares for encoding into Shape format, optionally compressing
+     * its output in gzip, if outputFormat is equal to SHAPE-ZIP
      *
-     * @param outputFormat
-     *            DOCUMENT ME!
-     * @param results
-     *            DOCUMENT ME!
+     * @param outputFormat DOCUMENT ME!
+     * @param results DOCUMENT ME!
      *
-     * @throws IOException
-     *             DOCUMENT ME!
+     * @throws IOException DOCUMENT ME!
+     * @throws IllegalStateException DOCUMENT ME!
+     * @throws NullPointerException DOCUMENT ME!
      */
     public void prepare(String outputFormat, GetFeatureResults results)
         throws IOException {
@@ -145,8 +130,7 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     /**
      * DOCUMENT ME!
      *
-     * @param gs
-     *            DOCUMENT ME!
+     * @param gs DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
@@ -170,23 +154,18 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     }
 
     /**
-     * encode()
+     * encode() Description: This will save out the features to a
+     * shapefile using the ShapefileWriter and DbaseWriter that live
+     * underneath the ShapefileDataStore. Once they are written out, they are
+     * read back in and streamed out to a zip output stream to the user. Each
+     * entry, .shp and .dbf, are read in separately but bundled in the same
+     * zip file.
      *
-     * Description: This will save out the features to a shapefile using the
-     * ShapefileWriter and DbaseWriter that live underneath the
-     * ShapefileDataStore. Once they are written out, they are read back in and
-     * streamed out to a zip output stream to the user. Each entry, .shp and
-     * .dbf, are read in separately but bundled in the same zip file.
+     * @param output DOCUMENT ME!
      *
-     * @param output
-     *            DOCUMENT ME!
-     *
-     * @throws ServiceException
-     *             DOCUMENT ME!
-     * @throws IOException
-     *             DOCUMENT ME!
-     * @throws IllegalStateException
-     *             DOCUMENT ME!
+     * @throws ServiceException DOCUMENT ME!
+     * @throws IOException DOCUMENT ME!
+     * @throws IllegalStateException DOCUMENT ME!
      */
     public void encode(OutputStream output) throws ServiceException, IOException {
         if (results == null) {
@@ -295,15 +274,14 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     }
 
     /**
-         * readInWriteOutBytes
-         *
-         * Description: Reads in the bytes from the input stream and writes them to
-         * the output stream.
-         *
-         * @param output
-         * @param in
-         * @throws IOException
-         */
+     * readInWriteOutBytes Description: Reads in the bytes from the
+     * input stream and writes them to the output stream.
+     *
+     * @param output
+     * @param in
+     *
+     * @throws IOException
+     */
     private void readInWriteOutBytes(OutputStream output, InputStream in)
         throws IOException {
         int c;
@@ -314,7 +292,6 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     }
 
     /**
-     *
      * Description: Write the old way Chris had it. It creates a
      * ShapefileDataStore to write out the shapefile, which we don't think is
      * quick, O(n^2): addFeature() loads all stored features and then adds the
@@ -324,14 +301,15 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
      * first time you add a feature to the shapefile, it has to crawl to the
      * end, O(n). It saves this point and uses it as reference for future
      * appends. So each time after when you add another feature, it jsut calls
-     * that pointer to the end, and appends there. So it it only O(n) once, then
-     * constant time after that. - brent
-     *
-     * In the end, a shapefile is written to disk.
+     * that pointer to the end, and appends there. So it it only O(n) once,
+     * then constant time after that. - brent In the end, a shapefile is
+     * written to disk.
      *
      * @param name
-     * @param featureResults
+     * @param tempDir
+     * @param schema DOCUMENT ME!
      * @param reader
+     *
      * @throws IOException
      * @throws ServiceException
      */
@@ -363,7 +341,12 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     }
 
     /**
-     * Temporary folder generator. Folders should be manually deleted afterwards
+     * Temporary folder generator. Folders should be manually deleted
+     * afterwards
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
      */
     private synchronized File createTempDirectory() throws IOException {
         while (true) {

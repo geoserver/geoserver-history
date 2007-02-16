@@ -21,17 +21,12 @@ import java.util.Set;
 
 
 /**
- * Generate Data Transfer Objects from "real" objects in the system.
- *
- * <p>
- * This class is used to isolate the DTO from the details of generating them.
- * This allows DTO objects to be safely used as a wire protocol with out
- * unrequired dependencies on such things as AttributeType and FeatureType.
- * </p>
- *
- * <p>
- * This class may choose to opperate as a facade on the services of global.xml?
- * </p>
+ * Generate Data Transfer Objects from "real" objects in the system.<p>This
+ * class is used to isolate the DTO from the details of generating them. This
+ * allows DTO objects to be safely used as a wire protocol with out unrequired
+ * dependencies on such things as AttributeType and FeatureType.</p>
+ *  <p>This class may choose to opperate as a facade on the services of
+ * global.xml?</p>
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
@@ -68,13 +63,11 @@ public class DataTransferObjectFactory {
     }
 
     /**
-     * Construct DTO based on provided AttributeType.
+     * Construct DTO based on provided AttributeType.<p>GMLUtils is
+     * used to provide the mapping from
+     * attributeType.getName/attributeType.getType() to an XML type/fragement.</p>
      *
-     * <p>
-     * GMLUtils is used to provide the mapping from
-     * attributeType.getName/attributeType.getType() to an XML type/fragement.
-     * </p>
-     *
+     * @param schemaBase DOCUMENT ME!
      * @param attributeType Real geotools2 AttributeType
      *
      * @return Data Transfer Object for provided attributeType
@@ -112,17 +105,16 @@ public class DataTransferObjectFactory {
     }
 
     /**
-     * Construct any of the well-known GML attributeTypes.
-     * <p>
-     * SchemaBase is used to ensure that attribute required by the XMLSchema
-     * have a minOccurs of 1.
-     * </p>
-     * <p>
-     * This method uses NameSpaceTranslatorFactorys for xs and gml in order to
-     * provide accurate type information describing the provided attribute
-     * </p>
+     * Construct any of the well-known GML attributeTypes.<p>SchemaBase
+     * is used to ensure that attribute required by the XMLSchema have a
+     * minOccurs of 1.</p>
+     *  <p>This method uses NameSpaceTranslatorFactorys for xs and gml
+     * in order to provide accurate type information describing the provided
+     * attribute</p>
+     *
      * @param schemaBase used to determine manditory attributes
      * @param attributeName Name of attribute being described
+     *
      * @return DataTransferObject encapsulating attribute information.
      */
     public static AttributeTypeInfoDTO create(String schemaBase, String attributeName) {
@@ -155,12 +147,8 @@ public class DataTransferObjectFactory {
     }
 
     /**
-     * Construct DTO based on provided schema.
-     *
-     * <p>
-     * GMLUtils is used to provide the mapping   to an XML type/fragement for
-     * each attribute
-     * </p>
+     * Construct DTO based on provided schema.<p>GMLUtils is used to
+     * provide the mapping   to an XML type/fragement for each attribute</p>
      *
      * @param dataStoreId Used as a backpointer to locate dataStore
      * @param schema Real geotools2 FeatureType
@@ -197,6 +185,7 @@ public class DataTransferObjectFactory {
      * List of attributes DTO information gernated from schema.
      *
      * @param schema
+     *
      * @return
      */
     public static List generateAttributes(FeatureType schema) {
@@ -211,21 +200,19 @@ public class DataTransferObjectFactory {
     }
 
     /**
-     * List of attribtue DTO information generated from schemaBase.
-     * <p>
-     * Please note this is currently only used for display by TypesForm,
-     * TypeInfo simply makes use of getRequiredBaseAttributes to select
-     * AttributeTypes from the FeatureType schema.
-     * </p>
-     * <p>
-     * More specifically the values of isNillable, minOccurs and maxOccurs
-     * provided by the DataStore may not agree with the results of this
-     * function. TypeInfo opperatates on the assumption minOccurs=1, maxOccurs=1
-     * and AttributeType.isNillable() is correct.
-     * </p>
+     * List of attribtue DTO information generated from schemaBase.<p>Please
+     * note this is currently only used for display by TypesForm, TypeInfo
+     * simply makes use of getRequiredBaseAttributes to select AttributeTypes
+     * from the FeatureType schema.</p>
+     *  <p>More specifically the values of isNillable, minOccurs and
+     * maxOccurs provided by the DataStore may not agree with the results of
+     * this function. TypeInfo opperatates on the assumption minOccurs=1,
+     * maxOccurs=1 and AttributeType.isNillable() is correct.</p>
+     *
      * @param schemaBase SchemaBase
-     * @return List of AttributeTypeInfoDTO representative of schemaBase required
-     *         Attributes
+     *
+     * @return List of AttributeTypeInfoDTO representative of schemaBase
+     *         required Attributes
      */
     public static List generateRequiredAttributes(String schemaBase) {
         String[] attributeNames = getRequiredBaseAttributes(schemaBase);
@@ -242,6 +229,9 @@ public class DataTransferObjectFactory {
     /**
      * Test is attribute is a required attribtue of schemaBase.
      *
+     * @param schemaBase DOCUMENT ME!
+     * @param attribute DOCUMENT ME!
+     *
      * @return <code>True</code> if attribute is required for schemaBase
      */
     public static boolean isManditory(String schemaBase, String attribute) {
@@ -257,12 +247,12 @@ public class DataTransferObjectFactory {
     }
 
     /**
-     * Required Attributes for schemaBase.
-     * <p>
-     * This information is a hardcoded representation of what woudl be available
-     * if we had actually parsed the GML XMLSchema.
-     * </p>
+     * Required Attributes for schemaBase.<p>This information is a
+     * hardcoded representation of what woudl be available if we had actually
+     * parsed the GML XMLSchema.</p>
+     *
      * @param schemaBase
+     *
      * @return
      */
     public static String[] getRequiredBaseAttributes(String schemaBase) {
@@ -274,47 +264,49 @@ public class DataTransferObjectFactory {
     }
 
     /**
-     * Mappings for name and type, or null if not found.
-     * <p>
-     * List construction order:
-     * <ul>
-     * <li>Use of property types if name and exact type match one of the gml
-     *     properties references.<br>
-     *     For <code>name="pointProperty", type=com.vividsolutions.jts.geom.Point</code> maps to:
-     *     <b>gml:PointPropertyType</b>
-     *     </li>
-     * <li>Search the schema for defined types are checked for an exact match
-     *     based on type.<br>
-     *     For <code>type=java.lang.String</code> maps to:
-     *      <b>xs:string</b>
-     *      </li>
-     * <li>A linear seach of the defined types is made making use of
-     *     isAssignable.<br>
-     *     For <code>type=com.vividsolutions.jts.geom.Geometry</code> maps to:
-     *     <b>gml:PointType gml:LineStringType gml:LinearRingType gml:BoxType gml:PolygonType gml:GeometryCollectionType gml:MultiPointType gml:MultiLineStringType, gml:MultiPolygonType</b>
-     *     </li>
-     * <li>As a wild assumption we assume <code>xs:string</code> can be used.<br>
-     *     For <code>type=java.net.URL</code> maps to: <b>xs:string</b>
-     *    </li>
-     * </ul>
-     * <p>
-     * All mappings are consulted using using a linear search.
-     * The list is returned in the order of most specific to least specific.
-     * </p>
-     * Complete Example:
-     * <code>name="pointProperty", class=type=com.vividsolutions.jts.geom.Point</code>
-     * <p>
-     * Expected Mapping:
-     * </p>
-     * <ul>
-     * <li>gml:PointPropertyType - pointProperty & Point.class match</li>
-     * <li>gml:PointType - Point.class match</li>
-     * <li>gml:AbstractGeometry - Point instance of Geometry match</li>
-     * <li>xs:string - String assumption</li>
-     * </ul>
+     * Mappings for name and type, or null if not found.<p>List
+     * construction order:
+     *  <ul>
+     *      <li>Use of property types if name and exact type match
+     *      one of the gml properties references.<br>
+     *      For <code>name="pointProperty",
+     *      type=com.vividsolutions.jts.geom.Point</code> maps to:
+     *      <b>gml:PointPropertyType</b></li>
+     *      <li>Search the schema for defined types are checked for
+     *      an exact match based on type.<br>
+     *      For <code>type=java.lang.String</code> maps to: <b>xs:string</b></li>
+     *      <li>A linear seach of the defined types is made making
+     *      use of isAssignable.<br>
+     *      For <code>type=com.vividsolutions.jts.geom.Geometry</code> maps to:
+     *      <b>gml:PointType gml:LineStringType gml:LinearRingType gml:BoxType
+     *      gml:PolygonType gml:GeometryCollectionType gml:MultiPointType
+     *      gml:MultiLineStringType, gml:MultiPolygonType</b></li>
+     *      <li>As a wild assumption we assume
+     *      <code>xs:string</code> can be used.<br>
+     *      For <code>type=java.net.URL</code> maps to: <b>xs:string</b></li>
+     *  </ul>
+     *  </p>
+     *  <p>All mappings are consulted using using a linear search. The
+     * list is returned in the order of most specific to least specific.</p>
+     *  Complete Example: <code>name="pointProperty",
+     * class=type=com.vividsolutions.jts.geom.Point</code><p>Expected
+     * Mapping:</p>
+     *  <ul>
+     *      <li>gml:PointPropertyType - pointProperty & Point.class
+     *      match</li>
+     *      <li>gml:PointType - Point.class match</li>
+     *      <li>gml:AbstractGeometry - Point instance of Geometry
+     *      match</li>
+     *      <li>xs:string - String assumption</li>
+     *  </ul>
+     *
      * @param name attribute name
      * @param type attribtue type
-     * @return List of NameSpaceElements is returned in the order of most specific to least specific.
+     *
+     * @return List of NameSpaceElements is returned in the order of most
+     *         specific to least specific.
+     *
+     * @throws NullPointerException DOCUMENT ME!
      */
     public static List getElements(String name, Class type) {
         NameSpaceTranslator xs = NameSpaceTranslatorFactory.getInstance()
@@ -400,12 +392,13 @@ public class DataTransferObjectFactory {
     }
 
     /**
-     * Retrive best NameSpaceElement match for provided attribtue name and type.
-     * <p>
-     * Best match is determined by the search order defined by getElements.
-     * </p>
+     * Retrive best NameSpaceElement match for provided attribtue name
+     * and type.<p>Best match is determined by the search order defined
+     * by getElements.</p>
+     *
      * @param name
      * @param type
+     *
      * @return Closest NameSapceElement
      */
     private static final NameSpaceElement getBestMatch(String name, Class type) {

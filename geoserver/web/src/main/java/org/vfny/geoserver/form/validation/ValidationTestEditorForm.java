@@ -23,10 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * ValidationTestEditorForm purpose.
- * <p>
- * Description of ValidationTestEditorForm ...
- * </p>
+ * ValidationTestEditorForm purpose.<p>Description of
+ * ValidationTestEditorForm ...</p>
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
@@ -94,10 +92,15 @@ public class ValidationTestEditorForm extends ActionForm {
     }
 
     /**
-     * Translate text representation of arguments to real values.
-     * <p>
-     * Victim is required for access to BeanInfo
-     * </p>
+     * Translate text representation of arguments to real values.<p>Victim
+     * is required for access to BeanInfo</p>
+     *
+     * @param victim DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws Exception DOCUMENT ME!
+     * @throws IllegalArgumentException DOCUMENT ME!
      */
     public Map toArgumentMap(TestConfig victim) throws Exception {
         Map map = new HashMap();
@@ -128,27 +131,30 @@ public class ValidationTestEditorForm extends ActionForm {
     }
 
     /**
-     * List of attribtue keys as text.
-     * <p>
-     * These keys are really the propertyName associated with a BeanInfo
-     * </p>
+     * List of attribtue keys as text.<p>These keys are really the
+     * propertyName associated with a BeanInfo</p>
+     *
+     * @return DOCUMENT ME!
      */
     public List getAttributeKeys() {
         return attributeKeys;
     }
 
     /**
-     * List of attribtue vales as text.
-     * <p>
-     * To convert this value to a real java object you will need to use
-     * a BeanInfo Property descriptor.
-     * </p>
+     * List of attribtue vales as text.<p>To convert this value to a
+     * real java object you will need to use a BeanInfo Property descriptor.</p>
+     *
+     * @return DOCUMENT ME!
      */
     public List getAttributeValues() {
         return attributeValues;
     }
 
-    /** Help text gernated from PropertyDescriptor.getShortDescription() */
+    /**
+     * Help text gernated from PropertyDescriptor.getShortDescription()
+     *
+     * @return DOCUMENT ME!
+     */
     public String[] getAttributeHelps() {
         return (String[]) attributeHelps.toArray(new String[attributeHelps.size()]);
     }

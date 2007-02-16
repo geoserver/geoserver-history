@@ -14,10 +14,10 @@ import java.util.logging.Logger;
 
 
 /**
- * This class represents an update request.  An update request consists of one
- * or more properties, which consist of a name and an attribute, and a filter.
- * A property is represented by an inner class called Property, which are
- * added to the property list by calling add Property.
+ * This class represents an update request.  An update request consists of
+ * one or more properties, which consist of a name and an attribute, and a
+ * filter. A property is represented by an inner class called Property, which
+ * are added to the property list by calling add Property.
  *
  * @author Chris Holmes, TOPP
  * @version $Id: UpdateRequest.java,v 1.7 2004/03/31 05:05:31 cholmesny Exp $
@@ -36,8 +36,8 @@ public class UpdateRequest extends SubTransactionRequest {
     protected boolean releaseAll = true;
 
     /**
-     * Constructor
-     */
+         * Constructor
+         */
     public UpdateRequest() {
         properties = new ArrayList();
     }
@@ -160,8 +160,8 @@ public class UpdateRequest extends SubTransactionRequest {
     }
 
     /**
-     * Gets the attribute types that correspond to the names of properties in
-     * the passed in schema.
+     * Gets the attribute types that correspond to the names of
+     * properties in the passed in schema.
      *
      * @param schema Queried with property names to find the types.
      *
@@ -203,8 +203,8 @@ public class UpdateRequest extends SubTransactionRequest {
     }
 
     /**
-     * Helper function for equals.  Checks for nulls, as this class can hold
-     * nulls, and will be equal if two of the fields are both null.
+     * Helper function for equals.  Checks for nulls, as this class can
+     * hold nulls, and will be equal if two of the fields are both null.
      *
      * @param mine The field of this object.
      * @param test the field of to test.
@@ -266,11 +266,11 @@ public class UpdateRequest extends SubTransactionRequest {
         private Object value;
 
         /**
-         * constructor.
-         *
-         * @param name The property name to update.
-         * @param value The new value to be assigned.
-         */
+                 * constructor.
+                 *
+                 * @param name The property name to update.
+                 * @param value The new value to be assigned.
+                 */
         public Property(String name, Object value) {
             this.name = name;
             this.value = value;

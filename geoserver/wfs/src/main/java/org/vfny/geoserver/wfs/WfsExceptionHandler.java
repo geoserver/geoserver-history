@@ -9,8 +9,8 @@ import org.vfny.geoserver.ServiceException;
 
 
 /**
- * ServiceConfig exception handler for WFS services GR: should we rename it?
- * ExceptionHandler don't seems appropiate.
+ * ServiceConfig exception handler for WFS services GR: should we rename
+ * it? ExceptionHandler don't seems appropiate.
  *
  * @author Gabriel Rold?n
  * @version $Id: WfsExceptionHandler.java,v 1.5 2004/01/31 00:27:27 jive Exp $

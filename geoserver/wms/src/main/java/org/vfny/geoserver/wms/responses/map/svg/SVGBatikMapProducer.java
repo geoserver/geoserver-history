@@ -38,10 +38,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Renders svg using the Batik SVG Toolkit. An SVG context is created for a
- * map and then passed of to {@link org.geotools.renderer.lite.StreamingRenderer}.
+ * map and then passed of to {@link
+ * org.geotools.renderer.lite.StreamingRenderer}.
  *
  * @author Justin Deoliveira, The Open Planning Project
- *
  */
 public class SVGBatikMapProducer implements GetMapProducer {
     StreamingRenderer renderer;

@@ -15,8 +15,8 @@ import java.util.Map;
 
 
 /**
- * Implements the WFS GetFeatureWithLock interface, which responds to requests
- * for GML, locking the features as well. This servlet accepts a
+ * Implements the WFS GetFeatureWithLock interface, which responds to
+ * requests for GML, locking the features as well. This servlet accepts a
  * getFeatureWithLock request and returns GML2.1 structured XML docs.
  *
  * @author Chris Holmes, TOPP
@@ -28,16 +28,18 @@ public class FeatureWithLock extends WFService {
     }
 
     /**
-    * Gets the response handler.  FeatureResponse handles GetFeatureWithLock.
-    *
-    * @return A new FeatureResponse object.
-    */
+     * Gets the response handler.  FeatureResponse handles
+     * GetFeatureWithLock.
+     *
+     * @return A new FeatureResponse object.
+     */
     protected Response getResponseHandler() {
         return new FeatureResponse();
     }
 
     /**
-     * Gets a FeatureKvpReader guaranteed to have a GETFEAUTREWITHLOCK request.
+     * Gets a FeatureKvpReader guaranteed to have a GETFEAUTREWITHLOCK
+     * request.
      *
      * @param params the kvp pairs to turn into the request object.
      *

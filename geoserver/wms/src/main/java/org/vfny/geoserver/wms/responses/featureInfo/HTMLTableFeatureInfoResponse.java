@@ -20,31 +20,29 @@ import java.util.HashMap;
 
 
 /**
- * Produces a FeatureInfo response in HTML.  Relies on abstractfeatureinfo and
- * the feature delegate to do most of the work, just implements an html based
- * writeTo method.
- *
- * <p>
- * In the future James suggested that we allow some sort of template system, so
- * that one can control the formatting of the html output, since now we just
- * hard code some minimal header stuff. See
- * http://jira.codehaus.org/browse/GEOS-196
- * </p>
+ * Produces a FeatureInfo response in HTML.  Relies on abstractfeatureinfo
+ * and the feature delegate to do most of the work, just implements an html
+ * based writeTo method.<p>In the future James suggested that we allow some
+ * sort of template system, so that one can control the formatting of the html
+ * output, since now we just hard code some minimal header stuff. See
+ * http://jira.codehaus.org/browse/GEOS-196</p>
  *
  * @author James Macgill, PSU
  * @version $Id: HTMLTableFeatureInfoResponse.java,v 1.1 2004/07/19 22:32:22 jmacgill Exp $
  */
 public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
     /**
-     *
-     */
+         *
+         */
     public HTMLTableFeatureInfoResponse() {
         format = "text/html";
         supportedFormats = Collections.singletonList(format);
     }
 
     /**
-     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * Returns any extra headers that this service might want to set in
+     * the HTTP response object.
+     *
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
@@ -55,9 +53,6 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
      * Writes the image to the client.
      *
      * @param out The output stream to write to.
-     *
-     * @throws org.vfny.geoserver.ServiceException For problems with geoserver
-     * @throws java.io.IOException For problems writing the output.
      */
     public void writeTo(OutputStream out)
         throws org.vfny.geoserver.ServiceException, java.io.IOException {

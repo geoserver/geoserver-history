@@ -40,58 +40,31 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Represents a service that all others extend from.  Subclasses should provide
- * response and exception handlers as appropriate.
- *
- * <p>
- * It is <b>really</b> important to adhere to the following workflow:
- *
- * <ol>
- * <li>
- * get a Request reader
- * </li>
- * <li>
- * ask the Request Reader for the Request object
- * </li>
- * <li>
- * Provide the resulting Request with the ServletRequest that generated it
- * </li>
- * <li>
- * get the appropiate ResponseHandler
- * </li>
- * <li>
- * ask it to execute the Request
- * </li>
- * <li>
- * set the response content type
- * </li>
- * <li>
- * write to the http response's output stream
- * </li>
- * <li>
- * pending - call Response cleanup
- * </li>
- * </ol>
- * </p>
- *
- * <p>
- * If anything goes wrong a ServiceException can be thrown and will be written
- * to the output stream instead.
- * </p>
- *
- * <p>
- * This is because we have to be sure that no exception have been produced
- * before setting the response's content type, so we can set the exception
- * specific content type; and that Response.getContentType is called AFTER
- * Response.execute, since the MIME type can depend on any request parameter
- * or another kind of desission making during the execute process. (i.e.
- * FORMAT in WMS GetMap)
- * </p>
- *
- * <p>
- * TODO: We need to call Response.abort() if anything goes wrong to allow the
- * Response a chance to cleanup after itself.
- * </p>
+ * Represents a service that all others extend from.  Subclasses should
+ * provide response and exception handlers as appropriate.<p>It is
+ * <b>really</b> important to adhere to the following workflow:
+ *  <ol>
+ *      <li>get a Request reader</li>
+ *      <li>ask the Request Reader for the Request object</li>
+ *      <li>Provide the resulting Request with the ServletRequest that
+ *      generated it</li>
+ *      <li>get the appropiate ResponseHandler</li>
+ *      <li>ask it to execute the Request</li>
+ *      <li>set the response content type</li>
+ *      <li>write to the http response's output stream</li>
+ *      <li>pending - call Response cleanup</li>
+ *  </ol>
+ *  </p>
+ *  <p>If anything goes wrong a ServiceException can be thrown and will be
+ * written to the output stream instead.</p>
+ *  <p>This is because we have to be sure that no exception have been
+ * produced before setting the response's content type, so we can set the
+ * exception specific content type; and that Response.getContentType is called
+ * AFTER Response.execute, since the MIME type can depend on any request
+ * parameter or another kind of desission making during the execute process.
+ * (i.e. FORMAT in WMS GetMap)</p>
+ *  <p>TODO: We need to call Response.abort() if anything goes wrong to
+ * allow the Response a chance to cleanup after itself.</p>
  *
  * @author Gabriel Rold?n
  * @author Chris Holmes
@@ -102,63 +75,43 @@ public abstract class AbstractService extends HttpServlet implements Application
     /** Class logger */
     protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets");
 
-    /**
-     * Servivce group (maps to 'SERVICE' parameter in OGC service urls)
-     */
+    /** Servivce group (maps to 'SERVICE' parameter in OGC service urls) */
     String service;
 
-    /**
-     * Request type (maps to 'REQUEST' parameter in OGC service urls)
-     */
+    /** Request type (maps to 'REQUEST' parameter in OGC service urls) */
     String request;
 
-    /**
-     * Application context used to look up "Services"
-     */
+    /** Application context used to look up "Services" */
     WebApplicationContext context;
 
-    /**
-     * Reference to the global geoserver instnace.
-     */
+    /** Reference to the global geoserver instnace. */
     GeoServer geoServer;
 
-    /**
-     * Reference to the catalog.
-     */
+    /** Reference to the catalog. */
     Data catalog;
 
-    /**
-     * Id of the service strategy to use.
-     */
+    /** Id of the service strategy to use. */
     String serviceStrategy;
 
-    /**
-     * buffer size to use when PARTIAL-BUFFER is being used
-     */
+    /** buffer size to use when PARTIAL-BUFFER is being used */
     int partialBufferSize;
 
-    /**
-     * Cached service strategy object
-     */
+    /** Cached service strategy object */
 
     //    ServiceStrategy strategy;
-
-    /**
-     * Reference to the service
-     */
+    /** Reference to the service */
     Service serviceRef;
     private String kvpString;
 
     //    /** DOCUMENT ME!  */
     //    protected HttpServletRequest curRequest;
-
     /**
-     * Constructor for abstract service.
-     *
-     * @param service The service group the service falls into (WFS,WMS,...)
-     * @param request The service being requested (GetCapabilities, GetMap, ...)
-     * @param serviceRef The global service this "servlet" falls into
-     */
+         * Constructor for abstract service.
+         *
+         * @param service The service group the service falls into (WFS,WMS,...)
+         * @param request The service being requested (GetCapabilities, GetMap, ...)
+         * @param serviceRef The global service this "servlet" falls into
+         */
     public AbstractService(String service, String request, Service serviceRef) {
         this.service = service;
         this.request = request;
@@ -166,6 +119,9 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the "service group" that this service falls into.
      */
     public String getService() {
@@ -173,6 +129,9 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the "request" this service maps to.
      */
     public String getRequest() {
@@ -181,12 +140,17 @@ public abstract class AbstractService extends HttpServlet implements Application
 
     /**
      * Sets a refeference to the global service instance.
+     *
+     * @param serviceRef DOCUMENT ME!
      */
     public void setServiceRef(Service serviceRef) {
         this.serviceRef = serviceRef;
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The reference to the global service instance.
      */
     public Service getServiceRef() {
@@ -194,10 +158,12 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
-     * Sets the application context.
-     * <p>
-     * Used to process the {@link Service} extension point.
-     * </p>
+     * Sets the application context.<p>Used to process the {@link
+     * Service} extension point.</p>
+     *
+     * @param context DOCUMENT ME!
+     *
+     * @throws BeansException DOCUMENT ME!
      */
     public void setApplicationContext(ApplicationContext context)
         throws BeansException {
@@ -205,6 +171,9 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The application context.
      */
     public WebApplicationContext getApplicationContext() {
@@ -213,12 +182,17 @@ public abstract class AbstractService extends HttpServlet implements Application
 
     /**
      * Sets the reference to the global geoserver instance.
+     *
+     * @param geoServer DOCUMENT ME!
      */
     public void setGeoServer(GeoServer geoServer) {
         this.geoServer = geoServer;
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return the reference to the global geoserver instance.
      */
     public GeoServer getGeoServer() {
@@ -226,6 +200,9 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The reference to the global catalog instance.
      */
     public Data getCatalog() {
@@ -235,13 +212,18 @@ public abstract class AbstractService extends HttpServlet implements Application
     /**
      * Sets the reference to the global catalog instance.
      *
+     * @param catalog DOCUMENT ME!
      */
     public void setCatalog(Data catalog) {
         this.catalog = catalog;
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The id used to identify the service strategy to be used.
+     *
      * @see ServiceStrategy#getId()
      */
     public String getServiceStrategy() {
@@ -250,17 +232,21 @@ public abstract class AbstractService extends HttpServlet implements Application
 
     /**
      * Sets the id used to identify the service strategy to be used.
+     *
+     * @param serviceStrategy DOCUMENT ME!
      */
     public void setServiceStrategy(String serviceStrategy) {
         this.serviceStrategy = serviceStrategy;
     }
 
     /**
-     * Determines if the service is enabled.
-     * <p>
-     * Subclass should override this method if the service can be turned on/off.
-     * This implementation returns <code>true</code>
-     * </p>
+     * Determines if the service is enabled.<p>Subclass should override
+     * this method if the service can be turned on/off. This implementation
+     * returns <code>true</code></p>
+     *
+     * @param req DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
      */
     protected boolean isServiceEnabled(HttpServletRequest req) {
         return true;
@@ -268,6 +254,8 @@ public abstract class AbstractService extends HttpServlet implements Application
 
     /**
      * Override and use spring set servlet context.
+     *
+     * @return DOCUMENT ME!
      */
     public ServletContext getServletContext() {
         //override and use spring 
@@ -335,8 +323,11 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
-     * Sends the standard disabled service error message (a 503 error followed by an english description).
+     * Sends the standard disabled service error message (a 503 error
+     * followed by an english description).
+     *
      * @param response
+     *
      * @throws IOException
      */
     protected void sendDisabledServiceError(HttpServletResponse response)
@@ -346,8 +337,8 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
-     * Performs the post method.  Simply passes itself on to the three argument
-     * doPost method, with null for the reader, because the
+     * Performs the post method.  Simply passes itself on to the three
+     * argument doPost method, with null for the reader, because the
      * request.getReader() will not have been used if this servlet is called
      * directly.
      *
@@ -464,18 +455,12 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
-     * Peforms service according to ServiceStrategy.
-     *
-     * <p>
-     * This method has very strict requirements, please see the class
-     * description for the specifics.
-     * </p>
-     *
-     * <p>
-     * It has a lot of try/catch blocks, but they are fairly necessary to
-     * handle things correctly and to avoid as many ugly servlet responses, so
-     * that everything is wrapped correctly.
-     * </p>
+     * Peforms service according to ServiceStrategy.<p>This method has
+     * very strict requirements, please see the class description for the
+     * specifics.</p>
+     *  <p>It has a lot of try/catch blocks, but they are fairly
+     * necessary to handle things correctly and to avoid as many ugly servlet
+     * responses, so that everything is wrapped correctly.</p>
      *
      * @param request The httpServlet of the request.
      * @param response The response to be returned.
@@ -659,12 +644,9 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
-     * Gets the response class that should handle the request of this service.
-     * All subclasses must implement.
-     * <p>
-     * This method is not abstract to support subclasses that use the
-     * request-response mechanism.
-     * </p>
+     * Gets the response class that should handle the request of this
+     * service. All subclasses must implement.<p>This method is not
+     * abstract to support subclasses that use the request-response mechanism.</p>
      *
      * @return The response that the request read by this servlet should be
      *         passed to.
@@ -674,12 +656,10 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
-     * Gets a reader that will figure out the correct Key Vaule Pairs for this
-     * service.
-     * <p>
-     * Subclasses should override to supply a specific kvp reader. Default
-     * implementation returns <code>null</code>
-     * </p>
+     * Gets a reader that will figure out the correct Key Vaule Pairs
+     * for this service.<p>Subclasses should override to supply a
+     * specific kvp reader. Default implementation returns <code>null</code></p>
+     *
      * @param params A map of the kvp pairs.
      *
      * @return An initialized KVP reader to decode the request.
@@ -689,11 +669,10 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
-     * Gets a reader that will handle a posted xml request for this servlet.
-     * <p>
-     * Subclasses should override to supply a specific xml reader. Default
-     * implementation returns <code>null</code>
-     * </p>
+     * Gets a reader that will handle a posted xml request for this
+     * servlet.<p>Subclasses should override to supply a specific xml
+     * reader. Default implementation returns <code>null</code></p>
+     *
      * @return An XmlRequestReader appropriate to this service.
      */
     protected XmlRequestReader getXmlRequestReader() {
@@ -708,34 +687,29 @@ public abstract class AbstractService extends HttpServlet implements Application
     protected abstract ExceptionHandler getExceptionHandler();
 
     /**
-     * Gets the strategy for outputting the response.  This method gets the
-     * strategy from the serviceStrategy param in the web.xml file.  This is
-     * sort of odd behavior, as all other such parameters are set in the
+     * Gets the strategy for outputting the response.  This method gets
+     * the strategy from the serviceStrategy param in the web.xml file.  This
+     * is sort of odd behavior, as all other such parameters are set in the
      * services and catalog xml files, and this param may move there.  But as
      * it is much  more of a programmer configuration than a user
-     * configuration there is  no rush to move it.
-     *
-     * <p>
-     * Subclasses may choose to override this method in order to get a strategy
-     * more suited to their response.  Currently only Transaction will do
-     * this, since the commit is only called after writeTo, and it often
-     * messes up, so we want to be able to see the error message (SPEED writes
-     * the output directly, so errors in writeTo do not show up.)
-     * </p>
-     *
-     * <p>
-     * Most subclasses should not override, this method will most always return
-     * the SPEED  strategy, since it is the fastest response and should work
-     * fine if everything is well tested.  FILE and BUFFER should be used when
-     * there  are errors in writeTo methods of child classes, set by the
-     * programmer in the web.xml file.
-     * </p>
+     * configuration there is  no rush to move it.<p>Subclasses may
+     * choose to override this method in order to get a strategy more suited
+     * to their response.  Currently only Transaction will do this, since the
+     * commit is only called after writeTo, and it often messes up, so we want
+     * to be able to see the error message (SPEED writes the output directly,
+     * so errors in writeTo do not show up.)</p>
+     *  <p>Most subclasses should not override, this method will most
+     * always return the SPEED  strategy, since it is the fastest response and
+     * should work fine if everything is well tested.  FILE and BUFFER should
+     * be used when there  are errors in writeTo methods of child classes, set
+     * by the programmer in the web.xml file.</p>
      *
      * @return The service strategy found in the web.xml serviceStrategy
      *         parameter.   The code that finds this is in the init method
      *
      * @throws ServiceException If the service strategy set in #init() is not
      *         valid.
+     * @throws RuntimeException DOCUMENT ME!
      *
      * @see #init() for the code that sets the serviceStrategy.
      */
@@ -855,20 +829,15 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
-     * Send error produced during getService opperation.
-     *
-     * <p>
-     * Some errors know how to write themselves out WfsTransactionException for
-     * instance. It looks like this might be is handled by
+     * Send error produced during getService opperation.<p>Some errors
+     * know how to write themselves out WfsTransactionException for instance.
+     * It looks like this might be is handled by
      * getExceptionHandler().newServiceException( t, pre, null ). I still
-     * would not mind seeing a check for ServiceConfig Exception here.
-     * </p>
+     * would not mind seeing a check for ServiceConfig Exception here.</p>
+     *  <p>This code says that it deals with UNCAUGHT EXCEPTIONS, so I
+     * think it would be wise to explicitly catch ServiceExceptions.</p>
      *
-     * <p>
-     * This code says that it deals with UNCAUGHT EXCEPTIONS, so I think it
-     * would be wise to explicitly catch ServiceExceptions.
-     * </p>
-     *
+     * @param request DOCUMENT ME!
      * @param response DOCUMENT ME!
      * @param t DOCUMENT ME!
      */
@@ -897,6 +866,7 @@ public abstract class AbstractService extends HttpServlet implements Application
     /**
      * Send a serviceException produced during getService opperation.
      *
+     * @param request DOCUMENT ME!
      * @param response DOCUMENT ME!
      * @param se DOCUMENT ME!
      */
@@ -914,6 +884,7 @@ public abstract class AbstractService extends HttpServlet implements Application
     /**
      * DOCUMENT ME!
      *
+     * @param httpRequest DOCUMENT ME!
      * @param response DOCUMENT ME!
      * @param result DOCUMENT ME!
      */
@@ -945,8 +916,8 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
-     * Checks if the client requests supports gzipped responses by quering it's
-     * 'accept-encoding' header.
+     * Checks if the client requests supports gzipped responses by
+     * quering it's 'accept-encoding' header.
      *
      * @param request the request to query the HTTP header from
      *

@@ -12,22 +12,24 @@ import org.vfny.geoserver.global.WFS;
  * Abstract base class for all WFS Resonse implementations.
  *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
  */
 public abstract class WFSResponse implements Response {
-    /**
-     * Reference to the WFS service.
-     */
+    /** Reference to the WFS service. */
     WFS wfs;
 
     /**
      * Sets the wfs service reference.
+     *
+     * @param wfs DOCUMENT ME!
      */
     public void setWFS(WFS wfs) {
         this.wfs = wfs;
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The wfs service reference.
      */
     public WFS getWFS() {

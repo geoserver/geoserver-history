@@ -11,11 +11,7 @@ import java.util.Set;
 
 
 /**
- * ShapefileFeatureResponseDelegateFactory
- * Sep 6, 2005
- *
- * Purpose:
- *
+ * ShapefileFeatureResponseDelegateFactory Sep 6, 2005 Purpose:
  *
  * @author Brent Owens, TOPP
  * @version
@@ -28,8 +24,8 @@ public class ShapefileFeatureResponseDelegateFactory implements FeatureResponseD
     }
 
     /**
-     * Creates a new GifMapProducerFactory object.
-     */
+         * Creates a new GifMapProducerFactory object.
+         */
     public ShapefileFeatureResponseDelegateFactory() {
         super();
     }
@@ -52,6 +48,8 @@ public class ShapefileFeatureResponseDelegateFactory implements FeatureResponseD
 
     /**
      *
+    DOCUMENT ME!
+     *
      * @return <code>true</code>
      */
     public boolean isAvailable() {
@@ -59,11 +57,11 @@ public class ShapefileFeatureResponseDelegateFactory implements FeatureResponseD
     }
 
     /**
-     * Returns wether the  producers created by this factory can create output
-     * in the passed output format.
+     * Returns wether the  producers created by this factory can create
+     * output in the passed output format.
      *
-     * @param format a MIME type string to check if this producer is able to
-     *        handle.
+     * @param outputFormat a MIME type string to check if this producer is able
+     *        to handle.
      *
      * @return <code>true</code>  or false
      */
@@ -72,9 +70,9 @@ public class ShapefileFeatureResponseDelegateFactory implements FeatureResponseD
     }
 
     /* (non-Javadoc)
-         * @see org.geotools.factory.Factory#getImplementationHints()
-         * This just returns java.util.Collections.EMPTY_MAP
-         */
+     * @see org.geotools.factory.Factory#getImplementationHints()
+     * This just returns java.util.Collections.EMPTY_MAP
+     */
     public Map getImplementationHints() {
         return java.util.Collections.EMPTY_MAP;
     }

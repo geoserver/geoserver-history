@@ -25,13 +25,10 @@ import javax.xml.transform.TransformerException;
 
 /**
  * handles the encoding the results of a GetFeature or GetFeatureWithLock
- * request's results to GML2 and GML2-GZIP formats.
- *
- * <p>
- * GML2-GZIP format is just GML2 with gzip compression. If GML2-GZIP format was
- * requested, <code>getContentEncoding()</code> will retutn
- * <code>"gzip"</code>, otherwise will return <code>null</code>
- * </p>
+ * request's results to GML2 and GML2-GZIP formats.<p>GML2-GZIP format is
+ * just GML2 with gzip compression. If GML2-GZIP format was requested,
+ * <code>getContentEncoding()</code> will retutn <code>"gzip"</code>,
+ * otherwise will return <code>null</code></p>
  *
  * @author Gabriel Rold?n
  * @version $Id: GML2FeatureResponseDelegate.java,v 1.10 2004/09/09 16:48:54 cholmesny Exp $
@@ -43,19 +40,13 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     public static final String formatNameCompressed = "GML2-GZIP";
 
     /**
-     * This is a "magic" class provided by Geotools that writes out GML for an
-     * array of FeatureResults.
-     *
-     * <p>
-     * This class seems to do all the work, if you have a problem with GML you
-     * will need to hunt it down. We supply all of the header information in
-     * the execute method, and work through the featureList in the writeTo
-     * method.
-     * </p>
-     *
-     * <p>
-     * This value will be <code>null</code> until execute is called.
-     * </p>
+     * This is a "magic" class provided by Geotools that writes out GML
+     * for an array of FeatureResults.<p>This class seems to do all the
+     * work, if you have a problem with GML you will need to hunt it down. We
+     * supply all of the header information in the execute method, and work
+     * through the featureList in the writeTo method.</p>
+     *  <p>This value will be <code>null</code> until execute is
+     * called.</p>
      */
     private FeatureTransformer transformer;
 
@@ -63,14 +54,15 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     private boolean compressOutput = false;
 
     /**
-     * the results of a getfeature request wich this object will encode as GML2
+     * the results of a getfeature request wich this object will encode
+     * as GML2
      */
     private GetFeatureResults results;
 
     /**
-     * empty constructor required to be instantiated through
-     * this.class.newInstance()
-     */
+         * empty constructor required to be instantiated through
+         * this.class.newInstance()
+         */
     public GML2FeatureResponseDelegate() {
     }
 
@@ -87,8 +79,8 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     }
 
     /**
-     * prepares for encoding into GML2 format, optionally compressing its
-     * output in gzip, if outputFormat is equal to GML2-GZIP
+     * prepares for encoding into GML2 format, optionally compressing
+     * its output in gzip, if outputFormat is equal to GML2-GZIP
      *
      * @param outputFormat DOCUMENT ME!
      * @param results DOCUMENT ME!

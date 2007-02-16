@@ -14,13 +14,8 @@ import java.util.Map;
 
 
 /**
- * WMS purpose.
- *
- * <p>
- * Description of WMS  Used to store WMS data.
- * </p>
- *
- * <p></p>
+ * WMS purpose.<p>Description of WMS  Used to store WMS data.</p>
+ *  <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id: WMSConfig.java,v 1.8 2004/04/01 23:24:17 emperorkefka Exp $
@@ -29,39 +24,35 @@ public class WMSConfig extends ServiceConfig {
     private static final String WMS_VERSION = "1.1.1";
     public static final String CONFIG_KEY = "Config.WMS";
 
-    /**
-     * SVG renderers.
-     */
+    /** SVG renderers. */
     public static final String SVG_SIMPLE = "Simple";
     public static final String SVG_BATIK = "Batik";
 
-    /**
-     * Interpolation Types
-     */
+    /** Interpolation Types */
     public static final String INT_NEAREST = "Nearest";
     public static final String INT_BIlINEAR = "Bilinear";
     public static final String INT_BICUBIC = "Bicubic";
 
-    /** current svg renderer **/
+    /** current svg renderer */
     private String svgRenderer;
 
-    /** anti aliasing hint for svg renderer **/
+    /** anti aliasing hint for svg renderer */
     private boolean svgAntiAlias;
 
-    /** rendering interpolation **/
+    /** rendering interpolation */
     private Map baseMapLayers;
     private Map baseMapStyles;
     private String allowInterpolation;
 
     /**
-     * WMS constructor.
-     *
-     * <p>
-     * Creates a WMS to represent an instance with default data.
-     * </p>
-     *
-     * @see defaultSettings()
-     */
+         * WMS constructor.
+         *
+         * <p>
+         * Creates a WMS to represent an instance with default data.
+         * </p>
+         *
+         * @see defaultSettings()
+         */
     public WMSConfig() {
         super();
         svgRenderer = SVG_SIMPLE;
@@ -72,15 +63,15 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
-     * WMS constructor.
-     *
-     * <p>
-     * Creates a copy of the WMSDTO provided. All the data structures are
-     * cloned.
-     * </p>
-     *
-     * @param w The WMSDTO to copy.
-     */
+         * WMS constructor.
+         *
+         * <p>
+         * Creates a copy of the WMSDTO provided. All the data structures are
+         * cloned.
+         * </p>
+         *
+         * @param w The WMSDTO to copy.
+         */
     public WMSConfig(WMSDTO w) {
         super(w.getService());
         svgRenderer = w.getSvgRenderer();
@@ -91,20 +82,17 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
-     * Creates the WMSConfig.
-     *
-     * @param wms The wms module.
-     */
+         * Creates the WMSConfig.
+         *
+         * @param wms The wms module.
+         */
     public WMSConfig(WMS wms) {
         this((WMSDTO) wms.toDTO());
     }
 
     /**
-     * Implement loadDTO.
-     *
-     * <p>
-     * Takes a WMSDTO and loads it into this WMSConfig Object
-     * </p>
+     * Implement loadDTO.<p>Takes a WMSDTO and loads it into this
+     * WMSConfig Object</p>
      *
      * @param dto an instance of WMSDTO
      *
@@ -126,11 +114,8 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
-     * Implement toDTO.
-     *
-     * <p>
-     * Returns a copy of the data in a ServiceDTO object
-     * </p>
+     * Implement toDTO.<p>Returns a copy of the data in a ServiceDTO
+     * object</p>
      *
      * @return a copy of the data in a ServiceDTO object
      *
@@ -149,7 +134,11 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The constant identifying the current svg renderer.
+     *
      * @see org.vfny.geoserver.config.WMSConfig#SVG_SIMPLE
      * @see org.vfny.geoserver.config.WMSConfig#SVG_BATIK
      */
@@ -158,7 +147,11 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
-     * @param The constant identifying the current svg renderer.
+     *
+    DOCUMENT ME!
+     *
+     * @param svgRenderer constant identifying the current svg renderer.
+     *
      * @see org.vfny.geoserver.config.WMSConfig#SVG_SIMPLE
      * @see org.vfny.geoserver.config.WMSConfig#SVG_BATIK
      */
@@ -167,6 +160,9 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @param svgAntiAlias anti alias hint.
      */
     public void setSvgAntiAlias(boolean svgAntiAlias) {
@@ -174,6 +170,9 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The value of the anti aliasing rendering hint.
      */
     public boolean getSvgAntiAlias() {
@@ -181,6 +180,9 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @param allowInterpolation rendering interpolation hint.
      */
     public void setAllowInterpolation(String allowInterpolation) {
@@ -188,6 +190,9 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The value of the rendering interpolation rendering hint.
      */
     public String getAllowInterpolation() {
@@ -197,6 +202,7 @@ public class WMSConfig extends ServiceConfig {
     /**
      * The comma separated list of feature types that make up the
      * base-map layer list.
+     *
      * @return
      */
     public Map getBaseMapLayers() {
@@ -208,8 +214,9 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
-     * The comma separated list of Styles that make up the
-     * base-map style list.
+     * The comma separated list of Styles that make up the base-map
+     * style list.
+     *
      * @return
      */
     public Map getBaseMapStyles() {

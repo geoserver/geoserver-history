@@ -24,17 +24,16 @@ import javax.servlet.UnavailableException;
 
 
 public class MultipleActionServlet extends ActionServlet {
-    /**
-     *
-     */
+    /**  */
     private static final long serialVersionUID = -5222456011963238678L;
 
     /**
-     * <p>Initialize this servlet.  Most of the processing has been factored into
-     * support methods so that you can override particular functionality at a
-     * fairly granular level.</p>
+     * <p>Initialize this servlet.  Most of the processing has been
+     * factored into support methods so that you can override particular
+     * functionality at a fairly granular level.</p>
      *
      * @exception ServletException if we cannot configure ourselves correctly
+     * @throws UnavailableException DOCUMENT ME!
      */
     public void init() throws ServletException {
         // Wraps the entire initialization in a try/catch to better handle
@@ -95,9 +94,12 @@ public class MultipleActionServlet extends ActionServlet {
      *
      * @param prefix Module prefix for this module
      * @param paths Comma-separated list of context-relative resource path(s)
-     *  for this modules's configuration resource(s)
+     *        for this modules's configuration resource(s)
+     *
+     * @return DOCUMENT ME!
      *
      * @exception ServletException if initialization cannot be performed
+     *
      * @since Struts 1.1
      */
     protected ModuleConfig initModuleConfig(String prefix, String paths)
@@ -159,6 +161,7 @@ public class MultipleActionServlet extends ActionServlet {
      * @param path The path to the config file to parse.
      *
      * @throws UnavailableException if file cannot be read or parsed
+     *
      * @since Struts 1.2
      */
     protected void parseModuleConfigFile(Digester digester, String path)
@@ -209,9 +212,13 @@ public class MultipleActionServlet extends ActionServlet {
     }
 
     /**
-     * <p>Simplifies exception handling in the <code>parseModuleConfigFile</code> method.<p>
+     * <p>Simplifies exception handling in the
+     * <code>parseModuleConfigFile</code> method.</p>
+     *  <p></p>
+     *
      * @param path
      * @param e
+     *
      * @throws UnavailableException as a wrapper around Exception
      */
     private void handleConfigException(String path, Exception e)

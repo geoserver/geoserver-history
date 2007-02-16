@@ -43,64 +43,46 @@ public class FeatureTypeConfig {
     private int SRS;
 
     /**
-     * This is an ordered list of AttributeTypeInfoConfig.
-     * <p>
-     * These attribtue have been defined by the user (or schema.xml file).
-     * Additional attribute may be assumed based on the schemaBase
-     * </p>
-     * <p>
-     * If this is <code>null</code>, all Attribtue information
-     * will be generated. An empty list is used to indicate that only
-     * attribtues indicated by the schemaBase will be returned.
-     * </p>
+     * This is an ordered list of AttributeTypeInfoConfig.<p>These
+     * attribtue have been defined by the user (or schema.xml file).
+     * Additional attribute may be assumed based on the schemaBase</p>
+     *  <p>If this is <code>null</code>, all Attribtue information will
+     * be generated. An empty list is used to indicate that only attribtues
+     * indicated by the schemaBase will be returned.</p>
      */
     private List schemaAttributes;
 
     /** Name (must match DataStore typeName). */
     private String name;
 
-    /**
-     *
-     */
+    /**  */
     private String wmsPath;
 
     /**
-    * The schema name.
-    * <p>
-    * Usually  name + "_Type"
-    * </p>
-    */
+     * The schema name.<p>Usually  name + "_Type"</p>
+     */
     private String schemaName;
 
     /**
-     * The schema base.
-     * <p>
-     * The schema base is used to indicate additional attribtues, not defined
-     * by the user. These attribute are fixed -not be edited by the user.
-     * </p>
-     * <p>
-     * This easiest is "AbstractFeatureType"
-     * </p>
+     * The schema base.<p>The schema base is used to indicate
+     * additional attribtues, not defined by the user. These attribute are
+     * fixed -not be edited by the user.</p>
+     *  <p>This easiest is "AbstractFeatureType"</p>
      */
     private String schemaBase;
 
     /**
-     * The featuretype directory name.
-     * <p>
-     * This is used to write to, and is  stored because it may be longer than
-     * the name, as this often includes information about the source of the
-     * featuretype.
-     * </p>
-     * <p>
-     * A common naming convention is: <code>dataStoreId + "_" + name</code>
-     * </p>
+     * The featuretype directory name.<p>This is used to write to, and
+     * is  stored because it may be longer than the name, as this often
+     * includes information about the source of the featuretype.</p>
+     *  <p>A common naming convention is: <code>dataStoreId + "_" +
+     * name</code></p>
      */
     private String dirName;
 
     /**
-     * The featuretype title.
-     * <p>
-     * Not sure what this is used for - usually name+"_Type"
+     * The featuretype title.<p>Not sure what this is used for -
+     * usually name+"_Type"</p>
      */
     private String title;
 
@@ -108,19 +90,15 @@ public class FeatureTypeConfig {
     private String _abstract;
 
     /**
-     * A list of keywords to associate with this featuretype.
-     * <p>
-     * Keywords are destinct strings, often rendered surrounded by brackets
-     * to aid search engines.
-     * </p>
+     * A list of keywords to associate with this featuretype.<p>Keywords
+     * are destinct strings, often rendered surrounded by brackets to aid
+     * search engines.</p>
      */
     private Set keywords;
 
     /**
-     * A list of metadata links to associate with this featuretype.
-     * <p>
-     * Metadata URLs are distinct URLs.
-     * </p>
+     * A list of metadata links to associate with this featuretype.<p>Metadata
+     * URLs are distinct URLs.</p>
      */
     private Set metadataLinks;
 
@@ -128,51 +106,48 @@ public class FeatureTypeConfig {
     private int numDecimals;
 
     /**
-     * Filter used to limit query.
-     * <p>
-     * TODO: Check the following comment - I don't belive it.
-     * The list of exposed attributes. If the list is empty or not present at
-     * all, all the FeatureTypeInfo's attributes are exposed, if is present,
-     * only those oattributes in this list will be exposed by the services
-     * </p>
+     * Filter used to limit query.<p>TODO: Check the following comment
+     * - I don't belive it. The list of exposed attributes. If the list is
+     * empty or not present at all, all the FeatureTypeInfo's attributes are
+     * exposed, if is present, only those oattributes in this list will be
+     * exposed by the services</p>
      */
     private Filter definitionQuery = null;
 
-    /**
-     * The default style name.
-     */
+    /** The default style name. */
     private String defaultStyle;
 
-    /**
-     * Other WMS Styles
-     */
+    /** Other WMS Styles */
     private ArrayList styles;
 
     /**
-     * A featureType-specific override for the defaultMaxAge defined in WMSConfig.  This value is added the
-     * headers of generated maps, marking them as being both "cache-able" and designating the time for which
-     * they are to remain valid.  The specific header added is "CacheControl: max-age="
+     * A featureType-specific override for the defaultMaxAge defined in
+     * WMSConfig.  This value is added the headers of generated maps, marking
+     * them as being both "cache-able" and designating the time for which they
+     * are to remain valid.  The specific header added is "CacheControl:
+     * max-age="
      */
     private String cacheMaxAge;
 
     /**
-     * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
+     * Should we be adding the CacheControl: max-age header to outgoing
+     * maps which include this layer?
      */
     private boolean cachingEnabled;
 
     /**
-     * Package visible constructor for test cases
-     */
+         * Package visible constructor for test cases
+         */
     FeatureTypeConfig() {
     }
 
     /**
-     * Creates a FeatureTypeInfo to represent an instance with default data.
-     *
-     * @param dataStoreId ID for data store in catalog
-     * @param schema Geotools2 FeatureType
-     * @param generate True to generate entries for all attribtues
-     */
+         * Creates a FeatureTypeInfo to represent an instance with default data.
+         *
+         * @param dataStoreId ID for data store in catalog
+         * @param schema Geotools2 FeatureType
+         * @param generate True to generate entries for all attribtues
+         */
     public FeatureTypeConfig(String dataStoreId, FeatureType schema, boolean generate) {
         if ((dataStoreId == null) || (dataStoreId.length() == 0)) {
             throw new IllegalArgumentException("dataStoreId is required for FeatureTypeConfig");
@@ -218,17 +193,17 @@ public class FeatureTypeConfig {
     }
 
     /**
-     * FeatureTypeInfo constructor.
-     *
-     * <p>
-     * Creates a copy of the FeatureTypeInfoDTO provided. All the data
-     * structures are cloned.
-     * </p>
-     *
-     * @param dto The FeatureTypeInfoDTO to copy.
-     *
-     * @throws NullPointerException DOCUMENT ME!
-     */
+         * FeatureTypeInfo constructor.
+         *
+         * <p>
+         * Creates a copy of the FeatureTypeInfoDTO provided. All the data
+         * structures are cloned.
+         * </p>
+         *
+         * @param dto The FeatureTypeInfoDTO to copy.
+         *
+         * @throws NullPointerException DOCUMENT ME!
+         */
     public FeatureTypeConfig(FeatureTypeInfoDTO dto) {
         if (dto == null) {
             throw new NullPointerException("Non null FeatureTypeInfoDTO required");
@@ -280,9 +255,12 @@ public class FeatureTypeConfig {
     }
 
     /**
-     * TODO: this method is duplicated with CoveragesEditorAction and should be replaced by
-     * an equivalent method in CRS class. Once the methods is added, forward to the CRS class.
+     * TODO: this method is duplicated with CoveragesEditorAction and
+     * should be replaced by an equivalent method in CRS class. Once the
+     * methods is added, forward to the CRS class.
+     *
      * @param defaultGeometry
+     *
      * @return
      */
     private int lookupSRS(GeometryAttributeType defaultGeometry) {
@@ -318,11 +296,8 @@ public class FeatureTypeConfig {
     }
 
     /**
-     * Implement toDTO.
-     *
-     * <p>
-     * Creates a represetation of this object as a FeatureTypeInfoDTO
-     * </p>
+     * Implement toDTO.<p>Creates a represetation of this object as a
+     * FeatureTypeInfoDTO</p>
      *
      * @return a representation of this object as a FeatureTypeInfoDTO
      *
@@ -380,8 +355,9 @@ public class FeatureTypeConfig {
     }
 
     /**
-     * Searches through the schema looking for an AttributeTypeInfoConfig that
-     * matches the name passed in attributeTypeName
+     * Searches through the schema looking for an
+     * AttributeTypeInfoConfig that matches the name passed in
+     * attributeTypeName
      *
      * @param attributeTypeName the name of the AttributeTypeInfo to search
      *        for.
@@ -403,11 +379,8 @@ public class FeatureTypeConfig {
     }
 
     /**
-     * Convience method for dataStoreId.typeName.
-     *
-     * <p>
-     * This key may be used to store this FeatureType in a Map for later.
-     * </p>
+     * Convience method for dataStoreId.typeName.<p>This key may be
+     * used to store this FeatureType in a Map for later.</p>
      *
      * @return dataStoreId.typeName
      */

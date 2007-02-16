@@ -78,26 +78,26 @@ public interface GetMapProducerFactorySpi extends Factory {
     String getName();
 
     /**
-     * Returns a <code>java.util.Set&lt;String&gt;</code> of the MIME types the
-     * map producers this factory can create are able to handle.
+     * Returns a <code>java.util.Set&lt;String&gt;</code> of the MIME
+     * types the map producers this factory can create are able to handle.
      *
      * @return the Set of supported output image mime types.
      */
     Set getSupportedFormats();
 
     /**
-     * Checks if the GetMapProducer instances this factory serves will be able
-     * of working properly (e.g., external dependencies are in place). This
-     * method should be used to avoid asking for producer instances if they
-     * are likely to fail.
+     * Checks if the GetMapProducer instances this factory serves will
+     * be able of working properly (e.g., external dependencies are in place).
+     * This method should be used to avoid asking for producer instances if
+     * they are likely to fail.
      *
      * @return wether this factory is able to produce producer instances.
      */
     boolean isAvailable();
 
     /**
-     * Returns wether the legend producers created by this factory can create
-     * map images in the specified output format.
+     * Returns wether the legend producers created by this factory can
+     * create map images in the specified output format.
      *
      * @param mapFormat a MIME type string to check if this producer is able to
      *        handle.
@@ -108,8 +108,8 @@ public interface GetMapProducerFactorySpi extends Factory {
     boolean canProduce(String mapFormat);
 
     /**
-     * Creates and instance of a GetMapProducer suitable to create map images
-     * in the specified image format.
+     * Creates and instance of a GetMapProducer suitable to create map
+     * images in the specified image format.
      *
      * @param mapFormat the MIME type of the desired image
      * @param wms the WMS module

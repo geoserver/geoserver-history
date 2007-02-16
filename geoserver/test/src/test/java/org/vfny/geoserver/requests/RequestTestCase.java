@@ -33,7 +33,6 @@ public abstract class RequestTestCase extends TestCase {
     // org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
     //					       java.util.logging.Level.FINER);
     //}
-
     /** Class logger */
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
@@ -48,10 +47,10 @@ public abstract class RequestTestCase extends TestCase {
     private static final String CONFIG_DIR = System.getProperty("user.dir") + "/misc/unit/config/";
 
     /**
-     * Constructor with super.
-     *
-     * @param testName The name of the test.
-     */
+         * Constructor with super.
+         *
+         * @param testName The name of the test.
+         */
     public RequestTestCase(String testName) {
         super(testName);
     }
@@ -93,8 +92,8 @@ public abstract class RequestTestCase extends TestCase {
     }
 
     /**
-     * This should return the appropriate xml reader to be used in running the
-     * tests.
+     * This should return the appropriate xml reader to be used in
+     * running the tests.
      *
      * @return DOCUMENT ME!
      */
@@ -133,8 +132,10 @@ public abstract class RequestTestCase extends TestCase {
     }
 
     /**
-     * This should return the appropriate xml reader to be used in running the
-     * tests.
+     * This should return the appropriate xml reader to be used in
+     * running the tests.
+     *
+     * @param kvps DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */

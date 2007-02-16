@@ -25,10 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * ValidationTestSelectAction purpose.
- * <p>
- * Description of ValidationTestSelectAction ...
- * </p>
+ * ValidationTestSelectAction purpose.<p>Description of
+ * ValidationTestSelectAction ...</p>
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)

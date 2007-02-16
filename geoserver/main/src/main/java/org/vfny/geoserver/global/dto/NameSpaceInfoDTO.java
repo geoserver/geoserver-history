@@ -6,34 +6,22 @@ package org.vfny.geoserver.global.dto;
 
 
 /**
- * Data Transfer Object for GeoServer NameSpaceInfo information.
- *
- * <p>
- * Represents the portion of a namespace required for the configuration of
- * geoserver. Defines namespaces to be used by the datastores.
- * </p>
- *
- * <p>
- * Data Transfer object are used to communicate between the GeoServer
+ * Data Transfer Object for GeoServer NameSpaceInfo information.<p>Represents
+ * the portion of a namespace required for the configuration of geoserver.
+ * Defines namespaces to be used by the datastores.</p>
+ *  <p>Data Transfer object are used to communicate between the GeoServer
  * application and its configuration and persistent layers. As such the class
- * is final - to allow for its future use as an on-the-wire message.
- * </p>
- *
- * <p>
- * Jody here - does this actual defin the namespace used by the GML?
- * </p>
- *
- * <p>
- * NameSpaceInfoDTO nsDto = new NameSpaceInfoDTO(); nsDto.setDefault(false);
- * nsDto.setPrefix("me"); nsDto.setUri("dzwiers.refraction.net");
- * </p>
+ * is final - to allow for its future use as an on-the-wire message.</p>
+ *  <p>Jody here - does this actual defin the namespace used by the GML?</p>
+ *  <p>NameSpaceInfoDTO nsDto = new NameSpaceInfoDTO();
+ * nsDto.setDefault(false); nsDto.setPrefix("me");
+ * nsDto.setUri("dzwiers.refraction.net");</p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id: NameSpaceInfoDTO.java,v 1.5 2004/04/16 16:16:37 cholmesny Exp $
  */
 public final class NameSpaceInfoDTO implements DataTransferObject {
     //public static final String PREFIX_DELIMITER = ":";
-
     /** The namespace prefix. */
     private String prefix;
 
@@ -44,28 +32,28 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
     private boolean _default = false;
 
     /**
-     * NameSpaceConfig constructor.
-     *
-     * <p>
-     * does nothing
-     * </p>
-     */
+         * NameSpaceConfig constructor.
+         *
+         * <p>
+         * does nothing
+         * </p>
+         */
     public NameSpaceInfoDTO() {
     }
 
     /**
-     * NameSpaceConfig constructor.
-     *
-     * <p>
-     * Creates a copy of the NameSpaceConfig provided. If the NameSpaceConfig
-     * provided  is null then default values are used. All the data structures
-     * are cloned.
-     * </p>
-     *
-     * @param ns The namespace to copy.
-     *
-     * @throws NullPointerException DOCUMENT ME!
-     */
+         * NameSpaceConfig constructor.
+         *
+         * <p>
+         * Creates a copy of the NameSpaceConfig provided. If the NameSpaceConfig
+         * provided  is null then default values are used. All the data structures
+         * are cloned.
+         * </p>
+         *
+         * @param ns The namespace to copy.
+         *
+         * @throws NullPointerException DOCUMENT ME!
+         */
     public NameSpaceInfoDTO(NameSpaceInfoDTO ns) {
         if (ns == null) {
             throw new NullPointerException();
@@ -77,11 +65,7 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
     }
 
     /**
-     * Implement clone.
-     *
-     * <p>
-     * creates a clone of this object
-     * </p>
+     * Implement clone.<p>creates a clone of this object</p>
      *
      * @return A copy of this NameSpaceConfig
      *
@@ -92,12 +76,8 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
     }
 
     /**
-     * Implement equals.
-     *
-     * <p>
-     * recursively tests to determine if the object passed in is a copy of this
-     * object.
-     * </p>
+     * Implement equals.<p>recursively tests to determine if the object
+     * passed in is a copy of this object.</p>
      *
      * @param obj The NameSpaceConfig object to test.
      *
@@ -138,11 +118,7 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
     }
 
     /**
-     * isDefault purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * isDefault purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -151,11 +127,7 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
     }
 
     /**
-     * getPrefix purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getPrefix purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -164,11 +136,7 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
     }
 
     /**
-     * getUri purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getUri purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -177,11 +145,7 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setDdefault purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setDdefault purpose.<p>Description ...</p>
      *
      * @param b
      */
@@ -190,11 +154,7 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setPrefix purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setPrefix purpose.<p>Description ...</p>
      *
      * @param string
      */
@@ -203,11 +163,7 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setUri purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setUri purpose.<p>Description ...</p>
      *
      * @param string
      */

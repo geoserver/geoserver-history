@@ -31,11 +31,13 @@ public class StylesNewForm extends ActionForm {
     /**
      * Implementation of validate.
      *
-     * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
-     *
      * @param mapping
      * @param request
+     *
      * @return Any ActionErrors produced by validation
+     *
+     * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping,
+     *      javax.servlet.http.HttpServletRequest)
      */
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();

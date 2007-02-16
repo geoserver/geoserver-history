@@ -6,36 +6,22 @@ package org.vfny.geoserver.global.dto;
 
 
 /**
- * Data Transfer Object for Contact information.
- *
- * <p>
- * Data Transfer object are used to communicate between the GeoServer
- * application and its configuration and persistent layers. As such the class
- * is final - to allow for its future use as an on-the-wire message.
- * </p>
- *
- * <p>
- * Represents a ContactDTO Information element such as:
- * </p>
- * <pre><code>
- * {ContactInformation}
- *   {ContactPersonPrimary}
+ * Data Transfer Object for Contact information.<p>Data Transfer object are
+ * used to communicate between the GeoServer application and its configuration
+ * and persistent layers. As such the class is final - to allow for its future
+ * use as an on-the-wire message.</p>
+ *  <p>Represents a ContactDTO Information element such as:</p>
+<pre><code>{ContactInformation}  {ContactPersonPrimary}
  *     {ContactPerson}Chris Holmes{/ContactPerson}
- *     {ContactOrganization}TOPP{/ContactOrganization}
- *   {/ContactPersonPrimary}
- *   {ContactPosition}Computer Scientist{/ContactPosition}
- *   {ContactAddress}
+ *     {ContactOrganization}TOPP{/ContactOrganization}  {/ContactPersonPrimary}
+ *   {ContactPosition}Computer Scientist{/ContactPosition}  {ContactAddress}
  *     {AddressType}postal{/AddressType}
- *     {Address}Street addresss here{/Address}
- *     {City}New York{/City}
- *     {StateOrProvince}New York{/StateOrProvince}
- *     {PostCode}0001{/PostCode}
- *     {Country}USA{/Country}
- *   {/ContactAddress}
+ *     {Address}Street addresss here{/Address}    {City}New York{/City}
+ *     {StateOrProvince}New York{/StateOrProvince}    {PostCode}0001{/PostCode}
+ *     {Country}USA{/Country}  {/ContactAddress}
  *   {ContactVoiceTelephone}+1 301 283-1569{/ContactVoiceTelephone}
  *   {ContactFacsimileTelephone}+1 301 283-1569{/ContactFacsimileTelephone}
- * {/ContactInformation}
- * </code></pre>
+ * {/ContactInformation}</code></pre>
  *
  * @author David Zwiers, Refractions Research, Inc.
  * @version $Id: ContactDTO.java,v 1.4 2004/01/31 00:27:26 jive Exp $
@@ -77,33 +63,30 @@ public final class ContactDTO implements DataTransferObject {
     /** The contact email address. */
     private String contactEmail;
 
-    /**
-     * The contact online resource.
-     *
-     */
+    /** The contact online resource. */
     private String onlineResource;
 
     /**
-     * ContactConfig constructor.
-     *
-     * <p>
-     * does nothing
-     * </p>
-     */
+         * ContactConfig constructor.
+         *
+         * <p>
+         * does nothing
+         * </p>
+         */
     public ContactDTO() {
     }
 
     /**
-     * Contact Data Transfer Object constructor.
-     *
-     * <p>
-     * Creates a copy of the ContactDTO specified.
-     * </p>
-     *
-     * @param c The ContactDTO to create a copy of.
-     *
-     * @throws NullPointerException DOCUMENT ME!
-     */
+         * Contact Data Transfer Object constructor.
+         *
+         * <p>
+         * Creates a copy of the ContactDTO specified.
+         * </p>
+         *
+         * @param c The ContactDTO to create a copy of.
+         *
+         * @throws NullPointerException DOCUMENT ME!
+         */
     public ContactDTO(ContactDTO c) {
         if (c == null) {
             throw new NullPointerException("Requires a non null ContactDTO");
@@ -125,11 +108,8 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * Implement clone.
-     *
-     * <p>
-     * Creates a clone of the object. For exact notes see
-     * </p>
+     * Implement clone.<p>Creates a clone of the object. For exact
+     * notes see</p>
      *
      * @return A new ContactConfig object.
      *
@@ -141,12 +121,8 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * Implement equals.
-     *
-     * <p>
-     * Checks to see that the ContactConfig passed in is the same as this
-     * ContactConfig.
-     * </p>
+     * Implement equals.<p>Checks to see that the ContactConfig passed
+     * in is the same as this ContactConfig.</p>
      *
      * @param obj A ContactConfig object.
      *
@@ -198,11 +174,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * getAddress purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getAddress purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -211,11 +183,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * getAddressCity purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getAddressCity purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -224,11 +192,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * getAddressCountry purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getAddressCountry purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -237,11 +201,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * getAddressPostalCode purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getAddressPostalCode purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -250,11 +210,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * getAddressState purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getAddressState purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -263,11 +219,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * getAddressType purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getAddressType purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -276,11 +228,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * getContactEmail purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getContactEmail purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -289,11 +237,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * getContactFacsimile purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getContactFacsimile purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -302,11 +246,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * getContactOrganization purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getContactOrganization purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -315,11 +255,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * getContactPerson purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getContactPerson purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -328,11 +264,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * getContactPosition purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getContactPosition purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -341,11 +273,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * getContactVoice purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getContactVoice purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -354,11 +282,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * setAddress purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setAddress purpose.<p>Description ...</p>
      *
      * @param string
      */
@@ -369,11 +293,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * setAddressCity purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setAddressCity purpose.<p>Description ...</p>
      *
      * @param string
      */
@@ -384,11 +304,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * setAddressCountry purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setAddressCountry purpose.<p>Description ...</p>
      *
      * @param string
      */
@@ -399,11 +315,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * setAddressPostalCode purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setAddressPostalCode purpose.<p>Description ...</p>
      *
      * @param string
      */
@@ -414,11 +326,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * setAddressState purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setAddressState purpose.<p>Description ...</p>
      *
      * @param string
      */
@@ -429,11 +337,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * setAddressType purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setAddressType purpose.<p>Description ...</p>
      *
      * @param string
      */
@@ -444,11 +348,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * setContactEmail purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setContactEmail purpose.<p>Description ...</p>
      *
      * @param string
      */
@@ -459,11 +359,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * setContactFacsimile purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setContactFacsimile purpose.<p>Description ...</p>
      *
      * @param string
      */
@@ -474,11 +370,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * setContactOrganization purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setContactOrganization purpose.<p>Description ...</p>
      *
      * @param string
      */
@@ -489,11 +381,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * setContactPerson purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setContactPerson purpose.<p>Description ...</p>
      *
      * @param string
      */
@@ -504,11 +392,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * setContactPosition purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setContactPosition purpose.<p>Description ...</p>
      *
      * @param string
      */
@@ -519,11 +403,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * setContactVoice purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setContactVoice purpose.<p>Description ...</p>
      *
      * @param string
      */
@@ -534,16 +414,20 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     * @return Returns the onlineResource.
      *
+    DOCUMENT ME!
+     *
+     * @return Returns the onlineResource.
      */
     public String getOnlineResource() {
         return onlineResource;
     }
 
     /**
-     * @param onlineResource The onlineResource to set.
      *
+    DOCUMENT ME!
+     *
+     * @param onlineResource The onlineResource to set.
      */
     public void setOnlineResource(String onlineResource) {
         if (onlineResource != null) {

@@ -15,15 +15,18 @@ import javax.imageio.ImageIO;
 
 
 /**
- * @task TODO: do some decent testing
+ *
+DOCUMENT ME!
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
+ *
+ * @task TODO: do some decent testing
  */
 public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
     /**
-     *
-     */
+         *
+         */
     public GIFMapProducerTest() {
         super();
     }

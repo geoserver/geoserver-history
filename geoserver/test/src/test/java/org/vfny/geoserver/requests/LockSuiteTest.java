@@ -39,16 +39,15 @@ public class LockSuiteTest extends RequestTestCase {
     //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
     //java.util.logging.Level.FINE);
     //}
-
     /** Class logger */
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
     Lock service;
 
     /**
-     * Constructor with super.
-     *
-     * @param testName The name of the test.
-     */
+         * Constructor with super.
+         *
+         * @param testName The name of the test.
+         */
     public LockSuiteTest(String testName) {
         super(testName);
     }
@@ -121,10 +120,10 @@ public class LockSuiteTest extends RequestTestCase {
     }
 
     /**
-     * KVP TESTS KVP GetFeature parsing tests.  Each test reads from a specific
-     * KVP string and compares it to the base request defined in the test
-     * itself. Tests are run via the static methods in this suite.  The tests
-     * themselves are quite generic, so documentation is minimal.
+     * KVP TESTS KVP GetFeature parsing tests.  Each test reads from a
+     * specific KVP string and compares it to the base request defined in the
+     * test itself. Tests are run via the static methods in this suite.  The
+     * tests themselves are quite generic, so documentation is minimal.
      *
      * @throws Exception DOCUMENT ME!
      */

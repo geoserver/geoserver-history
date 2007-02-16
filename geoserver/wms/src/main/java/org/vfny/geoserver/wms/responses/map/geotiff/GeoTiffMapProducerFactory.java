@@ -12,22 +12,24 @@ import java.util.Set;
 
 
 /**
- * @author Simone Giannecchini
  *
+DOCUMENT ME!
+ *
+ * @author Simone Giannecchini
  */
 public class GeoTiffMapProducerFactory implements GetMapProducerFactorySpi {
     /** the only MIME type this map producer supports */
     static final String MIME_TYPE = "image/geotiff";
 
     /**
-     * convenient singleton Set to expose the output format this producer
-     * supports
+     * convenient singleton Set to expose the output format this
+     * producer supports
      */
     private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
 
     /**
-     *
-     */
+         *
+         */
     public GeoTiffMapProducerFactory() {
         super();
     }
@@ -58,9 +60,9 @@ public class GeoTiffMapProducerFactory implements GetMapProducerFactorySpi {
     }
 
     /* (non-Javadoc)
-    * @see org.geotools.factory.Factory#getImplementationHints()
-    * This just returns java.util.Collections.EMPTY_MAP
-    */
+     * @see org.geotools.factory.Factory#getImplementationHints()
+     * This just returns java.util.Collections.EMPTY_MAP
+     */
     public Map getImplementationHints() {
         return java.util.Collections.EMPTY_MAP;
     }

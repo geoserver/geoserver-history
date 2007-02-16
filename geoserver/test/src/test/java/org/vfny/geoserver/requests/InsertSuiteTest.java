@@ -29,12 +29,11 @@ public class InsertSuiteTest extends TransactionSuiteTest {
     //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
     //java.util.logging.Level.FINER);
     //}
-
     /**
-     * Constructor with super.
-     *
-     * @param testName The name of the test.
-     */
+         * Constructor with super.
+         *
+         * @param testName The name of the test.
+         */
     public InsertSuiteTest(String testName) {
         super(testName);
     }

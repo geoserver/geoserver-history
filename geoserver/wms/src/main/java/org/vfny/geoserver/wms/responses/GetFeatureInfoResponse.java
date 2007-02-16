@@ -26,24 +26,22 @@ import java.util.logging.Logger;
 
 
 /**
- * A GetFeatureInfoResponse object is responsible for generating GetFeatureInfo
- * content in the format specified. The way the content is generated is
- * independent of this class, wich will use a delegate object based on the
- * output format requested
+ * A GetFeatureInfoResponse object is responsible for generating
+ * GetFeatureInfo content in the format specified. The way the content is
+ * generated is independent of this class, wich will use a delegate object
+ * based on the output format requested
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id: GetFeatureInfoResponse.java,v 1.3 2004/07/21 18:43:30 jmacgill Exp $
  */
 public class GetFeatureInfoResponse implements Response {
-    /** package logger   */
+    /** package logger */
     private static final Logger LOGGER = Logger.getLogger(GetMapResponse.class.getPackage().getName());
 
     /** list of output format specialists */
     private static final List delegates = new LinkedList();
 
-    /**
-     * The list of all the supported output formats
-     */
+    /** The list of all the supported output formats */
     private static final List supportedMimeTypes = new LinkedList();
 
     static {
@@ -62,19 +60,19 @@ public class GetFeatureInfoResponse implements Response {
         delegates.add(producer);
     }
 
-    /**
-     * A delegate specialized in producing the required output format.
-     */
+    /** A delegate specialized in producing the required output format. */
     private GetFeatureInfoDelegate delegate;
 
     /**
-     * Creates a new GetMapResponse object.
-     */
+         * Creates a new GetMapResponse object.
+         */
     public GetFeatureInfoResponse() {
     }
 
     /**
-     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * Returns any extra headers that this service might want to set in
+     * the HTTP response object.
+     *
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
@@ -82,8 +80,8 @@ public class GetFeatureInfoResponse implements Response {
     }
 
     /**
-     * Obtains a <code>GetFeatureInfoDelegate</code> for the requested output format,
-     * and tells it to execute the request.
+     * Obtains a <code>GetFeatureInfoDelegate</code> for the requested
+     * output format, and tells it to execute the request.
      *
      * @param request DOCUMENT ME!
      *
@@ -98,8 +96,8 @@ public class GetFeatureInfoResponse implements Response {
     }
 
     /**
-     * Asks the internal GetFeatureInfoDelegate for the MIME type of the result that it
-     * will generate or is ready to, and returns it
+     * Asks the internal GetFeatureInfoDelegate for the MIME type of
+     * the result that it will generate or is ready to, and returns it
      *
      * @param gs the global app context
      *
@@ -133,8 +131,8 @@ public class GetFeatureInfoResponse implements Response {
     }
 
     /**
-     * if a GetFeatureInfoDelegate is set, calls it's abort method. Elsewere do
-     * nothing.
+     * if a GetFeatureInfoDelegate is set, calls it's abort method.
+     * Elsewere do nothing.
      *
      * @param gs DOCUMENT ME!
      */
@@ -149,9 +147,9 @@ public class GetFeatureInfoResponse implements Response {
     }
 
     /**
-     * delegates the writing and encoding of the results of the request to the
-     * <code>GetMapDelegate</code> wich is actually processing it, and has
-     * been obtained when <code>execute(Request)</code> was called
+     * delegates the writing and encoding of the results of the request
+     * to the <code>GetMapDelegate</code> wich is actually processing it, and
+     * has been obtained when <code>execute(Request)</code> was called
      *
      * @param out the output to where the map must be written
      *
@@ -176,8 +174,8 @@ public class GetFeatureInfoResponse implements Response {
     }
 
     /**
-     * Creates a GetMapDelegate specialized in generating the requested map
-     * format
+     * Creates a GetMapDelegate specialized in generating the requested
+     * map format
      *
      * @param request a request parameter object wich holds the processed
      *        request objects, such as layers, bbox, outpu format, etc.
@@ -233,8 +231,8 @@ public class GetFeatureInfoResponse implements Response {
     }
 
     /**
-     * iterates over the registered Map producers and fills a list with all the
-     * map formats' MIME types that the producers can handle
+     * iterates over the registered Map producers and fills a list with
+     * all the map formats' MIME types that the producers can handle
      *
      * @return DOCUMENT ME!
      */

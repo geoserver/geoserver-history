@@ -38,27 +38,27 @@ public class GetLegendGraphicResponse implements Response {
                                                                                         .getName());
 
     /**
-     * The legend graphic producer that will be used for the production of a legend in the
-     * requested format.
+     * The legend graphic producer that will be used for the production
+     * of a legend in the requested format.
      */
     private GetLegendGraphicProducer delegate;
 
-    /**
-     * Application Context
-     */
+    /** Application Context */
     private ApplicationContext applicationContext;
 
     /**
-     * Creates a new GetLegendGraphicResponse object.
-     *
-     * @param applicationContext
-     */
+         * Creates a new GetLegendGraphicResponse object.
+         *
+         * @param applicationContext
+         */
     public GetLegendGraphicResponse(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
     /**
-     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * Returns any extra headers that this service might want to set in
+     * the HTTP response object.
+     *
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
@@ -111,8 +111,8 @@ public class GetLegendGraphicResponse implements Response {
     }
 
     /**
-     * Asks the GetLegendGraphicProducer obtained in execute() to abort the
-     * process.
+     * Asks the GetLegendGraphicProducer obtained in execute() to abort
+     * the process.
      *
      * @param gs not used.
      */
@@ -133,7 +133,6 @@ public class GetLegendGraphicResponse implements Response {
      *
      * @throws ServiceException DOCUMENT ME!
      * @throws IOException DOCUMENT ME!
-     * @throws IllegalStateException DOCUMENT ME!
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         try { // mapcontext can leak memory -- we make sure we done (see
@@ -158,20 +157,18 @@ public class GetLegendGraphicResponse implements Response {
     }
 
     /**
-     * Creates a GetMapDelegate specialized in generating the requested map
-     * format
+     * Creates a GetMapDelegate specialized in generating the requested
+     * map format
      *
-     * @param outputFormat
-     *            a request parameter object wich holds the processed request
-     *            objects, such as layers, bbox, outpu format, etc.
+     * @param outputFormat a request parameter object wich holds the processed
+     *        request objects, such as layers, bbox, outpu format, etc.
      *
-     * @return A specialization of <code>GetMapDelegate</code> wich can
-     *         produce the requested output map format
+     * @return A specialization of <code>GetMapDelegate</code> wich can produce
+     *         the requested output map format
      *
-     * @throws WmsException
-     *             if no specialization is configured for the output format
-     *             specified in <code>request</code> or if it can't be
-     *             instantiated
+     * @throws WmsException if no specialization is configured for the output
+     *         format specified in <code>request</code> or if it can't be
+     *         instantiated
      */
     private GetLegendGraphicProducer getDelegate(String outputFormat)
         throws WmsException {
@@ -198,6 +195,7 @@ public class GetLegendGraphicResponse implements Response {
      *
      * @param mimeType the MIME type of the desired legend format (e.g.
      *        "image/png").
+     * @param context DOCUMENT ME!
      *
      * @return wether a legend producer can manage the specified format or not.
      */
@@ -206,8 +204,10 @@ public class GetLegendGraphicResponse implements Response {
     }
 
     /**
-     * Convenient method to search and return all the supported image formats
-     * for the creation of legend graphics.
+     * Convenient method to search and return all the supported image
+     * formats for the creation of legend graphics.
+     *
+     * @param context DOCUMENT ME!
      *
      * @return the set of all the supported legend graphic formats.
      */
@@ -216,12 +216,12 @@ public class GetLegendGraphicResponse implements Response {
     }
 
     /**
-     * Convenience method for processing the GetMapProducerFactorySpi extension
-     * point and returning the set of available image formats.
+     * Convenience method for processing the GetMapProducerFactorySpi
+     * extension point and returning the set of available image formats.
      *
-     * @param applicationContext
-     *            The application context.
+     * @param applicationContext The application context.
      *
+     * @return DOCUMENT ME!
      */
     private static Set loadLegendFormats(ApplicationContext applicationContext) {
         Map beans = applicationContext.getBeansOfType(GetLegendGraphicProducerSpi.class);

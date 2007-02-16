@@ -18,10 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * ValidationTestSelectForm purpose.
- * <p>
- * Description of ValidationTestSelectForm ...
- * </p>
+ * ValidationTestSelectForm purpose.<p>Description of
+ * ValidationTestSelectForm ...</p>
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)

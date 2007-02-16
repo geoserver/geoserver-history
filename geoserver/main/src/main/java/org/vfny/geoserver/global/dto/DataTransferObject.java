@@ -27,11 +27,8 @@ package org.vfny.geoserver.global.dto;
  */
 public interface DataTransferObject extends Cloneable {
     /**
-     * Implement clone as a Deep Copy.
-     *
-     * <p>
-     * Create a clone of this object and return it.
-     * </p>
+     * Implement clone as a Deep Copy.<p>Create a clone of this object
+     * and return it.</p>
      *
      * @return A new DataStructure which is a copy of this DataStructure.
      *
@@ -42,7 +39,7 @@ public interface DataTransferObject extends Cloneable {
     /**
      * Compares the equality of the two objects.
      *
-     * @param obj The object to checked for equivalence.
+     * @param other The object to checked for equivalence.
      *
      * @return <code>true</code> when the objects are the same.
      *

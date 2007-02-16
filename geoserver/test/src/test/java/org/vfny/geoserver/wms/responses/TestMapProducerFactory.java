@@ -19,8 +19,8 @@ import java.util.Set;
 
 
 /**
- * A GetMapProducerFactorySpi just for testing GetMapResponse without depending
- * on a real one.
+ * A GetMapProducerFactorySpi just for testing GetMapResponse without
+ * depending on a real one.
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
@@ -30,8 +30,8 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
     public static final String TESTING_MIME_TYPE = "image/unit+testing";
 
     /**
-     * whether an instance returns it is available or not. Set from inside
-     * GetMapResponseTest.
+     * whether an instance returns it is available or not. Set from
+     * inside GetMapResponseTest.
      */
     public static boolean available = true;
 
@@ -77,6 +77,7 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
      * DOCUMENT ME!
      *
      * @param mapFormat DOCUMENT ME!
+     * @param wms DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      *

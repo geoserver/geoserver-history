@@ -15,37 +15,29 @@ import java.util.Map;
 
 
 //import com.vividsolutions.jts.geom.*;
-
 /**
- * Utility methods with custom equals implementation against Maps and Lists.
- *
- * <p>
- * Static Library class for testing equality of complex structures independant
- * of their contents.
- * </p>
- *
- * <p></p>
+ * Utility methods with custom equals implementation against Maps and
+ * Lists.<p>Static Library class for testing equality of complex structures
+ * independant of their contents.</p>
+ *  <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id: EqualsLibrary.java,v 1.4 2004/01/31 00:27:26 jive Exp $
  */
 public final class EqualsLibrary {
     /**
-     * EqualsLibrary constructor.
-     *
-     * <p>
-     * Should never be called, static class.
-     * </p>
-     */
+         * EqualsLibrary constructor.
+         *
+         * <p>
+         * Should never be called, static class.
+         * </p>
+         */
     private EqualsLibrary() {
     }
 
     /**
-     * equals purpose.
-     *
-     * <p>
-     * Performs a complex equality check between two Lists
-     * </p>
+     * equals purpose.<p>Performs a complex equality check between two
+     * Lists</p>
      *
      * @param a One List to be compared
      * @param b The other List to be compared
@@ -84,11 +76,8 @@ public final class EqualsLibrary {
     }
 
     /**
-     * equals purpose.
-     *
-     * <p>
-     * Performs a complex equality check between two Maps
-     * </p>
+     * equals purpose.<p>Performs a complex equality check between two
+     * Maps</p>
      *
      * @param a One Map to be compared
      * @param b The other Map to be compared

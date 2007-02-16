@@ -15,15 +15,12 @@ import java.util.logging.Logger;
 
 
 /**
- * GetKMLReflectKvpReader:
- *
- * This class is a refinement of GetMapKvpReader. It just moves some
- * of the mandatory parameters to "optional" parameters. This is to allow
- * the kml reflector (KMLReflector) to accept brief/simple requests and it
- * will fill in the rest of the information.
+ * GetKMLReflectKvpReader: This class is a refinement of GetMapKvpReader.
+ * It just moves some of the mandatory parameters to "optional" parameters.
+ * This is to allow the kml reflector (KMLReflector) to accept brief/simple
+ * requests and it will fill in the rest of the information.
  *
  * @author Brent Owens
- *
  */
 public class GetKMLReflectKvpReader extends GetMapKvpReader {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers.wms");
@@ -34,10 +31,11 @@ public class GetKMLReflectKvpReader extends GetMapKvpReader {
     }
 
     /**
-     * Optional parameters are:
-     * width
-     * height
-     * format
+     * Optional parameters are: width height format
+     *
+     * @param request DOCUMENT ME!
+     *
+     * @throws WmsException DOCUMENT ME!
      */
     public void parseOptionalParameters(GetMapRequest request)
         throws WmsException {
@@ -64,8 +62,13 @@ public class GetKMLReflectKvpReader extends GetMapKvpReader {
     }
 
     /**
-     * Mandatory parameters are 'bbox' and 'layers'. Styles are optional, but they
-     * are parsed at the same time as layers.
+     * Mandatory parameters are 'bbox' and 'layers'. Styles are
+     * optional, but they are parsed at the same time as layers.
+     *
+     * @param request DOCUMENT ME!
+     * @param parseStylesLayers DOCUMENT ME!
+     *
+     * @throws WmsException DOCUMENT ME!
      */
     public void parseMandatoryParameters(GetMapRequest request, boolean parseStylesLayers)
         throws WmsException {
@@ -80,8 +83,12 @@ public class GetKMLReflectKvpReader extends GetMapKvpReader {
     }
 
     /**
-     * Changed from the parent class to allow for missing style parameter.
-     * The parameter is optional now.
+     * Changed from the parent class to allow for missing style
+     * parameter. The parameter is optional now.
+     *
+     * @param request DOCUMENT ME!
+     *
+     * @throws WmsException DOCUMENT ME!
      */
     protected void parseLayersAndStyles(GetMapRequest request)
         throws WmsException {

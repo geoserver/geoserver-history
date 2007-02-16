@@ -20,8 +20,8 @@ import java.util.logging.Logger;
 
 
 /**
- * Java representation of a WFS_TransactionResponse xml element. The status and
- * handle are required, so they are in the constructor, and a locator, a
+ * Java representation of a WFS_TransactionResponse xml element. The status
+ * and handle are required, so they are in the constructor, and a locator, a
  * message, and any number of InsertResults can be added.  This object can
  * then write itself out to xml for a response.
  *
@@ -39,7 +39,8 @@ public class WfsTransResponse {
     public static final short FAILED = 1;
 
     /**
-     * Status for transaction partially succeeding, data in incosistent state.
+     * Status for transaction partially succeeding, data in incosistent
+     * state.
      */
     public static final short PARTIAL = 2;
 
@@ -75,8 +76,8 @@ public class WfsTransResponse {
     private String handle;
 
     /**
-     * Optional element, Used in the case of an error, to figure out which
-     * transaction failed.
+     * Optional element, Used in the case of an error, to figure out
+     * which transaction failed.
      */
     private String locator = null;
 
@@ -87,11 +88,11 @@ public class WfsTransResponse {
     private List insertResults;
 
     /**
-     * Only constructor, as status is mandatory
-     *
-     * @param status The status of the transaction.
-     * @param verbose DOCUMENT ME!
-     */
+         * Only constructor, as status is mandatory
+         *
+         * @param status The status of the transaction.
+         * @param verbose DOCUMENT ME!
+         */
     public WfsTransResponse(short status, boolean verbose) {
         this.status = status;
         this.verbose = verbose;
@@ -100,13 +101,13 @@ public class WfsTransResponse {
     }
 
     /**
-     * Convenience constructor, for status and handle
-     *
-     * @param status The status of the transaction.
-     * @param handle the handle of the response.  Should be the same as the
-     *        handle of the transaction request.
-     * @param verbose DOCUMENT ME!
-     */
+         * Convenience constructor, for status and handle
+         *
+         * @param status The status of the transaction.
+         * @param handle the handle of the response.  Should be the same as the
+         *        handle of the transaction request.
+         * @param verbose DOCUMENT ME!
+         */
     public WfsTransResponse(short status, String handle, boolean verbose) {
         this.status = status;
         this.handle = handle;
@@ -126,8 +127,8 @@ public class WfsTransResponse {
     }
 
     /**
-     * Sets the string to indicate which part of the transaction failed. Should
-     * be the handle of the sub-request that failed.
+     * Sets the string to indicate which part of the transaction
+     * failed. Should be the handle of the sub-request that failed.
      *
      * @param locator the handle of the failed transaction.
      */
@@ -163,11 +164,11 @@ public class WfsTransResponse {
      *
      * @param writer DOCUMENT ME!
      * @param request The request that made the response for this to generate.
-     * It will be the source of the geoserver configuration values.  This gets
-     * hacky with our exceptions, since they do not now have knowledge of the
-     * requests made (though that should probably change).  So a null value
-     * is acceptable for request, it will just use schemas.opengis.net for the
-     * baseUrl.
+     *        It will be the source of the geoserver configuration values.
+     *        This gets hacky with our exceptions, since they do not now have
+     *        knowledge of the requests made (though that should probably
+     *        change).  So a null value is acceptable for request, it will
+     *        just use schemas.opengis.net for the baseUrl.
      *
      * @throws IOException DOCUMENT ME!
      */
@@ -278,7 +279,8 @@ public class WfsTransResponse {
     }
 
     /**
-     * Helper to determine if a string is not null and not an empty string.
+     * Helper to determine if a string is not null and not an empty
+     * string.
      *
      * @param s the string to test
      *
@@ -299,11 +301,11 @@ public class WfsTransResponse {
         private Collection featureIds;
 
         /**
-         * Constructor.
-         *
-         * @param handle The handle for the insert operation.
-         * @param featureIds The fids that were added by the insert operation.
-         */
+                 * Constructor.
+                 *
+                 * @param handle The handle for the insert operation.
+                 * @param featureIds The fids that were added by the insert operation.
+                 */
         public InsertResult(String handle, Collection featureIds) {
             this.handle = handle;
             this.featureIds = featureIds;

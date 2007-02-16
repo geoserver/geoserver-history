@@ -24,10 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * JSPCompiler purpose.
- * <p>
- * Description of JSPCompiler ...
- * </p>
+ * JSPCompiler purpose.<p>Description of JSPCompiler ...</p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dgricci $ (last modification)

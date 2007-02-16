@@ -52,52 +52,42 @@ import java.util.Map;
 
 
 /**
- * Represents a FeatureTypeInfo, its user config and autodefined information.
- * <p>
- * This class implements {@link org.geotools.catalog.Service} interface as a
- * link to a catalog.
- * </p>
+ * Represents a FeatureTypeInfo, its user config and autodefined
+ * information.<p>This class implements {@link
+ * org.geotools.catalog.Service} interface as a link to a catalog.</p>
+ *
  * @author Gabriel Rold?n
  * @author Chris Holmes
  * @author dzwiers
  * @author Charles Kolbowicz
- *
  * @version $Id: FeatureTypeInfo.java,v 1.41 2004/06/26 19:51:24 jive Exp $
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource {
-    /** hash table that takes a epsg# to its definition**/
+    /** hash table that takes a epsg# to its definition */
     private static Hashtable SRSLookup = new Hashtable();
 
     /** Default constant */
     private static final int DEFAULT_NUM_DECIMALS = 8;
 
-    /**
-     * Id used to locate parent DataStoreInfo using Data Catalog.
-     */
+    /** Id used to locate parent DataStoreInfo using Data Catalog. */
     private String dataStoreId;
 
     /**
-     * Bounding box in Lat Long of the extent of this FeatureType.
-     * <p>
-     * Note reprojection may be required to derive this value.
-     * </p>
+     * Bounding box in Lat Long of the extent of this FeatureType.<p>Note
+     * reprojection may be required to derive this value.</p>
      */
     private Envelope latLongBBox;
 
     /**
-     * SRS number used to locate Coordidate Reference Systems
-     * <p>
-     * This will be used for reprojection and such like.
-     * </p>
+     * SRS number used to locate Coordidate Reference Systems<p>This
+     * will be used for reprojection and such like.</p>
      */
     private int SRS;
 
     /**
-     * List of AttributeTypeInfo representing the schema.xml information.
-     * <p>
-     * Used to define the order and manditoryness of FeatureType attributes
-     * during query (re)construction.
-     * </p>
+     * List of AttributeTypeInfo representing the schema.xml
+     * information.<p>Used to define the order and manditoryness of
+     * FeatureType attributes during query (re)construction.</p>
      */
     private List schema;
 
@@ -110,139 +100,107 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     /** typeName as defined by gt2 DataStore */
     private String typeName;
 
-    /**
-     *
-     */
+    /**  */
     private String wmsPath;
 
     /**
-    * Directory where featureType is loaded from.
-    *
-    * This may contain metadata files.
-    */
+     * Directory where featureType is loaded from. This may contain
+     * metadata files.
+     */
     private String dirName;
 
-    /**
-     * Abstract used to describe FeatureType
-     */
+    /** Abstract used to describe FeatureType */
     private String _abstract;
 
-    /**
-     * List of keywords for Web Register Services
-     */
+    /** List of keywords for Web Register Services */
     private List keywords;
 
-    /**
-     * List of keywords for Web Register Services
-     */
+    /** List of keywords for Web Register Services */
     private List metadataLinks;
 
-    /**
-     * Number of decimals used in GML output.
-     */
+    /** Number of decimals used in GML output. */
     private int numDecimals;
 
-    /**
-     * Magic query used to limit scope of this FeatureType.
-     */
+    /** Magic query used to limit scope of this FeatureType. */
     private Filter definitionQuery = null;
 
-    /**
-     * Default style used to render this FeatureType with WMS
-     */
+    /** Default style used to render this FeatureType with WMS */
     private String defaultStyle;
 
-    /**
-     * Other WMS Styles
-     */
+    /** Other WMS Styles */
     private ArrayList styles;
 
     /**
-     * Title of this FeatureType as presented to End-Users.
-     * <p>
-     * Think of this as the display name on the off chance that typeName
-     * is considered ugly.
-     * </p>
+     * Title of this FeatureType as presented to End-Users.<p>Think of
+     * this as the display name on the off chance that typeName is considered
+     * ugly.</p>
      */
     private String title;
 
     /**
-     * ref to parent set of datastores.
-     * <p>
-     * This backpointer to our Catalog can be used to locate our DataStore
-     * using the dataStoreId.
-     * </p>
+     * ref to parent set of datastores.<p>This backpointer to our
+     * Catalog can be used to locate our DataStore using the dataStoreId.</p>
      */
     private Data data;
 
-    /**
-     * MetaData used by apps to squirel information away for a rainy day.
-     */
+    /** MetaData used by apps to squirel information away for a rainy day. */
     private Map meta;
 
     /**
-     * AttributeTypeInfo by attribute name.
-     *
-     * <p>
-     * This will be null unless populated by schema or DTO.
-     * Even if the DTO provides one this list will be lazily
-     * created - so use the accessors.
-     * </p>
+     * AttributeTypeInfo by attribute name.<p>This will be null unless
+     * populated by schema or DTO. Even if the DTO provides one this list will
+     * be lazily created - so use the accessors.</p>
      */
     private String xmlSchemaFrag;
 
     /**
-     * The real geotools2 featureType cached for sanity checks.
-     * <p>
-     * This will be lazily created so use the accessors
-     * </p>
+     * The real geotools2 featureType cached for sanity checks.<p>This
+     * will be lazily created so use the accessors</p>
      */
     private FeatureType ft;
 
     // Modif C. Kolbowicz - 07/10/2004
-    /**
-     * Holds value of property legendURL.
-     */
+    /** Holds value of property legendURL. */
     private LegendURL legendURL;
 
     //-- Modif C. Kolbowicz - 07/10/2004
-
     /** Holds the location of the file that contains schema information. */
     private File schemaFile;
 
     /**
-     * This value is added the headers of generated maps, marking them as being both
-     * "cache-able" and designating the time for which they are to remain valid.
-     *  The specific header added is "Cache-Control: max-age="
+     * This value is added the headers of generated maps, marking them
+     * as being both "cache-able" and designating the time for which they are
+     * to remain valid. The specific header added is "Cache-Control: max-age="
      */
     private String cacheMaxAge;
 
     /**
-     * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
+     * Should we be adding the CacheControl: max-age header to outgoing
+     * maps which include this layer?
      */
     private boolean cachingEnabled;
     private boolean forcedCRS;
 
     /**
-     * dont use this unless you know what you're doing.  its for TemporaryFeatureTypeInfo.
-     *
-     */
+         * dont use this unless you know what you're doing.  its for TemporaryFeatureTypeInfo.
+         *
+         */
     public FeatureTypeInfo() {
     }
 
     /**
-     * FeatureTypeInfo constructor.
-     *
-     * <p>
-     * Generates a new object from the data provided.
-     * </p>
-     *
-     * @param dto FeatureTypeInfoDTO The data to populate this class with.
-     * @param data Data a reference for future use to get at DataStoreInfo
-     *        instances
-     *
-     * @throws ConfigurationException
-     */
+         * FeatureTypeInfo constructor.
+         *
+         * <p>
+         * Generates a new object from the data provided.
+         * </p>
+         *
+         * @param dto FeatureTypeInfoDTO The data to populate this class with.
+         * @param data Data a reference for future use to get at DataStoreInfo
+         *        instances
+         *
+         * @throws ConfigurationException
+         */
     public FeatureTypeInfo(FeatureTypeInfoDTO dto, Data data)
         throws ConfigurationException {
         this.data = data;
@@ -286,13 +244,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * toDTO purpose.
-     *
-     * <p>
-     * This method is package visible only, and returns a reference to the
-     * GeoServerDTO. This method is unsafe, and should only be used with
-     * extreme caution.
-     * </p>
+     * toDTO purpose.<p>This method is package visible only, and
+     * returns a reference to the GeoServerDTO. This method is unsafe, and
+     * should only be used with extreme caution.</p>
      *
      * @return FeatureTypeInfoDTO the generated object
      */
@@ -337,11 +291,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * getNumDecimals purpose.
-     *
-     * <p>
-     * The default number of decimals allowed in the data.
-     * </p>
+     * getNumDecimals purpose.<p>The default number of decimals allowed
+     * in the data.</p>
      *
      * @return int the default number of decimals allowed in the data.
      */
@@ -350,15 +301,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * getDataStore purpose.
-     *
-     * <p>
-     * gets the string of the path to the schema file.  This is set during
-     * feature reading, the schema file should be in the same folder as the
-     * feature type info, with the name schema.xml.  This function does not
-     * guarantee that the schema file actually exists, it just gives the
-     * location where it _should_ be located.
-     * </p>
+     * getDataStore purpose.<p>gets the string of the path to the
+     * schema file.  This is set during feature reading, the schema file
+     * should be in the same folder as the feature type info, with the name
+     * schema.xml.  This function does not guarantee that the schema file
+     * actually exists, it just gives the location where it _should_ be
+     * located.</p>
      *
      * @return DataStoreInfo the requested DataStoreInfo if it was found.
      *
@@ -370,9 +318,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
 
     /**
      * By now just return the default style to be able to declare it in
-     * WMS capabilities, but all this stuff needs to be revisited since it seems
-     * currently there is no way of retrieving all the styles declared for
-     * a given FeatureType.
+     * WMS capabilities, but all this stuff needs to be revisited since it
+     * seems currently there is no way of retrieving all the styles declared
+     * for a given FeatureType.
      *
      * @return the default Style for the FeatureType
      */
@@ -391,8 +339,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * Indicates if this FeatureTypeInfo is enabled.  For now just gets whether
-     * the backing datastore is enabled.
+     * Indicates if this FeatureTypeInfo is enabled.  For now just gets
+     * whether the backing datastore is enabled.
      *
      * @return <tt>true</tt> if this FeatureTypeInfo is enabled.
      *
@@ -407,11 +355,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * Returns the XML prefix used for GML output of this FeatureType.
-     *
-     * <p>
-     * Returns the namespace prefix for this FeatureTypeInfo.
-     * </p>
+     * Returns the XML prefix used for GML output of this FeatureType.<p>Returns
+     * the namespace prefix for this FeatureTypeInfo.</p>
      *
      * @return String the namespace prefix.
      */
@@ -420,13 +365,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * Gets the namespace for this featureType.
-     * <p>
-     * This isn't _really_ necessary,
-     * but I'm putting it in in case we change namespaces,  letting
+     * Gets the namespace for this featureType.<p>This isn't _really_
+     * necessary, but I'm putting it in in case we change namespaces,  letting
      * FeatureTypes set their own namespaces instead of being dependant on
      * datasources.  This method will allow us to make that change more easily
-     * in the future.
+     * in the future.</p>
      *
      * @return NameSpaceInfo the namespace specified for the specified
      *         DataStoreInfo (by ID)
@@ -442,9 +385,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * Complete xml name (namespace:element> for this FeatureType.
-     *
-     * This is the full type name with namespace prefix.
+     * Complete xml name (namespace:element> for this FeatureType. This
+     * is the full type name with namespace prefix.
      *
      * @return String the FeatureTypeInfo name - should be unique for the
      *         parent Data instance.
@@ -454,11 +396,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * getFeatureSource purpose.
-     *
-     * <p>
-     * Returns a real FeatureSource.
-     * </p>
+     * getFeatureSource purpose.<p>Returns a real FeatureSource.</p>
      *
      * @return FeatureSource the feature source represented by this info class
      *
@@ -508,11 +446,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
        }*/
 
     /**
-     * getBoundingBox purpose.
-     *
-     * <p>
-     * The feature source bounds.
-     * </p>
+     * getBoundingBox purpose.<p>The feature source bounds.</p>
      *
      * @return Envelope the feature source bounds.
      *
@@ -547,11 +481,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * getDefinitionQuery purpose.
-     *
-     * <p>
-     * Returns the definition query for this feature source
-     * </p>
+     * getDefinitionQuery purpose.<p>Returns the definition query for
+     * this feature source</p>
      *
      * @return Filter the definition query
      */
@@ -560,11 +491,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * getLatLongBoundingBox purpose.
-     *
-     * <p>
-     * The feature source lat/long bounds.
-     * </p>
+     * getLatLongBoundingBox purpose.<p>The feature source lat/long
+     * bounds.</p>
      *
      * @return Envelope the feature source lat/long bounds.
      *
@@ -579,11 +507,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * getSRS purpose.
-     *
-     * <p>
-     * Proprietary identifier number
-     * </p>
+     * getSRS purpose.<p>Proprietary identifier number</p>
      *
      * @return int the SRS number.
      */
@@ -592,8 +516,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * Returns the declared CRS, that is, the CRS specified in the feature type
-     * editor form
+     * Returns the declared CRS, that is, the CRS specified in the
+     * feature type editor form
+     *
+     * @return DOCUMENT ME!
      */
     public CoordinateReferenceSystem getDeclaredCRS() {
         return getSRS(SRS);
@@ -618,16 +544,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * Get XMLSchema for this FeatureType.
-     *
-     * <p>
-     * Note this may require connection to the real geotools2 DataStore and as
-     * such is subject to IOExceptions.
-     * </p>
-     *
-     * <p>
-     * You have been warned.
-     * </p>
+     * Get XMLSchema for this FeatureType.<p>Note this may require
+     * connection to the real geotools2 DataStore and as such is subject to
+     * IOExceptions.</p>
+     *  <p>You have been warned.</p>
      *
      * @return XMLFragment
      *
@@ -655,18 +575,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
        }*/
 
     /**
-     * Will return our delegate with all information filled out
-     *
-     * <p>
-     * This is a hack because we cache our DTO delegate, this method combines
-     * or ftc delegate with possibly generated schema information for use by
-     * XMLConfigWriter among others.
-     * </p>
-     *
-     * <p>
-     * Call this method to receive a complete featureTypeInfoDTO that incldues
-     * all schema information.
-     * </p>
+     * Will return our delegate with all information filled out<p>This
+     * is a hack because we cache our DTO delegate, this method combines or
+     * ftc delegate with possibly generated schema information for use by
+     * XMLConfigWriter among others.</p>
+     *  <p>Call this method to receive a complete featureTypeInfoDTO
+     * that incldues all schema information.</p>
      *
      * @return
      *
@@ -678,11 +592,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * getAttribute purpose.
-     *
-     * <p>
-     * XLM helper method.
-     * </p>
+     * getAttribute purpose.<p>XLM helper method.</p>
      *
      * @param elem The element to work on.
      * @param attName The attribute name to find
@@ -725,11 +635,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
        }*/
 
     /**
-     * loadConfig purpose.
-     *
-     * <p>
-     * Parses the specified file into a DOM tree.
-     * </p>
+     * loadConfig purpose.<p>Parses the specified file into a DOM tree.</p>
      *
      * @param fromSrId The file to parse int a DOM tree.
      * @param bbox DOCUMENT ME!
@@ -774,12 +680,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
        }*/
 
     /**
-     * here we must make the transformation. Crhis: do you know how to do it? I
-     * don't know.  Ask martin or geotools devel.  This will be better when
-     * our geometries actually have their srs objects.  And I think that we
-     * may need some MS Access database, not sure, but I saw some stuff about
-     * that on the list.  Hopefully they'll do it all in java soon.  I'm sorta
-     * tempted to just have users define for now.
+     * here we must make the transformation. Crhis: do you know how to
+     * do it? I don't know.  Ask martin or geotools devel.  This will be
+     * better when our geometries actually have their srs objects.  And I
+     * think that we may need some MS Access database, not sure, but I saw
+     * some stuff about that on the list.  Hopefully they'll do it all in java
+     * soon.  I'm sorta tempted to just have users define for now.
      *
      * @param fromSrId
      * @param bbox Envelope
@@ -800,11 +706,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * Keywords describing content of FeatureType.
-     *
-     * <p>
-     * Keywords are often used by Search engines or Catalog services.
-     * </p>
+     * Keywords describing content of FeatureType.<p>Keywords are often
+     * used by Search engines or Catalog services.</p>
      *
      * @return List the FeatureTypeInfo keywords
      */
@@ -822,11 +725,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * getTitle purpose.
-     *
-     * <p>
-     * returns the FeatureTypeInfo title
-     * </p>
+     * getTitle purpose.<p>returns the FeatureTypeInfo title</p>
      *
      * @return String the FeatureTypeInfo title
      */
@@ -848,11 +747,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * setSchemaName purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setSchemaName purpose.<p>Description ...</p>
      *
      * @param string
      */
@@ -861,11 +756,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * getSchemaName purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getSchemaName purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -874,11 +765,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * setSchemaName purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setSchemaName purpose.<p>Description ...</p>
      *
      * @param string
      */
@@ -890,12 +777,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     // FeatureTypeMetaData Interface
     //
     /**
-     * Access the name of this FeatureType.
-     * <p>
-     * This is the typeName as provided by the real gt2 DataStore.
-     * </p>
+     * Access the name of this FeatureType.<p>This is the typeName as
+     * provided by the real gt2 DataStore.</p>
      *
      * @return String getName()
+     *
      * @see org.geotools.data.FeatureTypeMetaData#getTypeName()
      */
     public String getTypeName() {
@@ -916,8 +802,14 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * Fixes the data store feature type so that it has the right CRS (only in case they are missing)
-     * and the requiered base attributes
+     * Fixes the data store feature type so that it has the right CRS
+     * (only in case they are missing) and the requiered base attributes
+     *
+     * @param fs DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
      */
     private FeatureType getFeatureType(FeatureSource fs)
         throws IOException {
@@ -1005,13 +897,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * FeatureType attributes names as a List.
-     *
-     * <p>
-     * Convience method for accessing attribute names as a Collection. You may
-     * use the names for AttributeTypeMetaData lookup or with the schema for
-     * XPATH queries.
-     * </p>
+     * FeatureType attributes names as a List.<p>Convience method for
+     * accessing attribute names as a Collection. You may use the names for
+     * AttributeTypeMetaData lookup or with the schema for XPATH queries.</p>
      *
      * @return List of attribute names
      *
@@ -1055,8 +943,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * Returns a list of the attributeTypeInfo objects that make up this
-     * FeatureType.
+     * Returns a list of the attributeTypeInfo objects that make up
+     * this FeatureType.
      *
      * @return list of attributeTypeInfo objects.
      */
@@ -1065,11 +953,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * Implement AttributeTypeMetaData.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * Implement AttributeTypeMetaData.<p>Description ...</p>
      *
      * @param attributeName
      *
@@ -1147,11 +1031,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * getLegendURL purpose.
-     *
-     * <p>
-     * returns the FeatureTypeInfo legendURL
-     * </p>
+     * getLegendURL purpose.<p>returns the FeatureTypeInfo legendURL</p>
      *
      * @return String the FeatureTypeInfo legendURL
      */
@@ -1162,25 +1042,28 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     //-- Modif C. Kolbowicz - 07/10/2004
-
     /**
-     * Gets the schema.xml file associated with this FeatureType.  This is set
-     * during the reading of configuration, it is not persisted as an element
-     * of the FeatureTypeInfoDTO, since it is just whether the schema.xml file
-     * was persisted, and its location.  If there is no schema.xml file then
-     * this method will return a File object with the location where the schema
-     * file would be located, but the file will return false for exists().
+     * Gets the schema.xml file associated with this FeatureType.  This
+     * is set during the reading of configuration, it is not persisted as an
+     * element of the FeatureTypeInfoDTO, since it is just whether the
+     * schema.xml file was persisted, and its location.  If there is no
+     * schema.xml file then this method will return a File object with the
+     * location where the schema file would be located, but the file will
+     * return false for exists().
+     *
+     * @return DOCUMENT ME!
      */
     public File getSchemaFile() {
         return this.schemaFile;
     }
 
     /**
-     *  simple way of getting epsg #.
-     *  We cache them so that we dont have to keep reading the DB or the epsg.properties file.
-     *   I cannot image a system with more than a dozen CRSs in it...
+     * simple way of getting epsg #. We cache them so that we dont have
+     * to keep reading the DB or the epsg.properties file. I cannot image a
+     * system with more than a dozen CRSs in it...
      *
      * @param epsg
+     *
      * @return
      */
     private CoordinateReferenceSystem getSRS(int epsg) {
@@ -1219,10 +1102,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * This value is added the headers of generated maps, marking them as being both
-     * "cache-able" and designating the time for which they are to remain valid.
-     *  The specific header added is "Cache-Control: max-age="
-     * @return a string representing the number of seconds to be added to the "Cache-Control: max-age=" header
+     * This value is added the headers of generated maps, marking them
+     * as being both "cache-able" and designating the time for which they are
+     * to remain valid. The specific header added is "Cache-Control: max-age="
+     *
+     * @return a string representing the number of seconds to be added to the
+     *         "Cache-Control: max-age=" header
      */
     public String getCacheMaxAge() {
         return cacheMaxAge;
@@ -1230,14 +1115,19 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
 
     /**
      *
-     * @param cacheMaxAge a string representing the number of seconds to be added to the "Cache-Control: max-age=" header
+    DOCUMENT ME!
+     *
+     * @param cacheMaxAge a string representing the number of seconds to be
+     *        added to the "Cache-Control: max-age=" header
      */
     public void setCacheMaxAge(String cacheMaxAge) {
         this.cacheMaxAge = cacheMaxAge;
     }
 
     /**
-     * Should we add the cache-control: max-age header to maps containing this layer?
+     * Should we add the cache-control: max-age header to maps
+     * containing this layer?
+     *
      * @return true if we should, false if we should omit the header
      */
     public boolean isCachingEnabled() {
@@ -1245,8 +1135,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     * Sets whether we should add the cache-control: max-age header to maps containing this layer
-     * @param cachingEnabled true if we should add the header, false if we should omit the header
+     * Sets whether we should add the cache-control: max-age header to
+     * maps containing this layer
+     *
+     * @param cachingEnabled true if we should add the header, false if we
+     *        should omit the header
      */
     public void setCachingEnabled(boolean cachingEnabled) {
         this.cachingEnabled = cachingEnabled;

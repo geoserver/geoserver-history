@@ -12,14 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * <b>PartialBufferStrategy</b><br>
- * Oct 19, 2005<br>
- *
+ * <b>PartialBufferStrategy</b><br> Oct 19, 2005<br>
  * <b>Purpose:</b><br>
  * This strategy will buffer the response before it starts streaming it to the
- * user. This will allow for errors to be caught early so a proper error message
- * can be sent to the user. Right now it buffers the first 20KB, enough for a
- * full getCapabilities document.
+ * user. This will allow for errors to be caught early so a proper error
+ * message can be sent to the user. Right now it buffers the first 20KB,
+ * enough for a full getCapabilities document.
  *
  * @author Brent Owens (The Open Planning Project)
  * @version

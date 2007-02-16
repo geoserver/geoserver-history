@@ -18,7 +18,6 @@ import javax.servlet.ServletContext;
  * The application configuratoin facade.
  *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
  */
 public class Config implements ApplicationContextAware {
     WebApplicationContext context;

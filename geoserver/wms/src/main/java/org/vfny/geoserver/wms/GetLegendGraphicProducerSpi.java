@@ -74,17 +74,17 @@ public interface GetLegendGraphicProducerSpi extends Factory {
     String getName();
 
     /**
-     * Returns a <code>java.util.Set&lt;String&gt;</code> of the MIME types the
-     * legend producers this factory can create are able to handle.
+     * Returns a <code>java.util.Set&lt;String&gt;</code> of the MIME
+     * types the legend producers this factory can create are able to handle.
      *
      * @return the Set of supported output image mime types.
      */
     Set getSupportedFormats();
 
     /**
-     * Checks if the GetLegendGraphicProducer instances this factory serves
-     * will be able of working properly (e.g., external dependencies are in
-     * place). This method should be used to avoid asking for producer
+     * Checks if the GetLegendGraphicProducer instances this factory
+     * serves will be able of working properly (e.g., external dependencies
+     * are in place). This method should be used to avoid asking for producer
      * instances if they are likely to fail.
      *
      * @return wether this factory is able to produce producer instances.
@@ -92,8 +92,8 @@ public interface GetLegendGraphicProducerSpi extends Factory {
     boolean isAvailable();
 
     /**
-     * Returns wether the legend producers created by this factory can create
-     * legend graphics in the specified output format.
+     * Returns wether the legend producers created by this factory can
+     * create legend graphics in the specified output format.
      *
      * @param mimeType a MIME type string to check if this producer is able to
      *        handle.
@@ -104,8 +104,8 @@ public interface GetLegendGraphicProducerSpi extends Factory {
     boolean canProduce(String mimeType);
 
     /**
-     * Creates and instance of a GetLegendGraphicProducer suitable to create
-     * legend graphics in the specified image format.
+     * Creates and instance of a GetLegendGraphicProducer suitable to
+     * create legend graphics in the specified image format.
      *
      * @param format the MIME type of the desired image
      *

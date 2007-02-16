@@ -24,7 +24,6 @@ import java.util.logging.Logger;
  */
 public class Query {
     //back this by geotools query?  Have a get datasource query?
-
     /** Standard logging instance for the class */
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
@@ -33,10 +32,9 @@ public class Query {
 
     // UNIMPLEMENTED - YOU CAN SET THIS BUT IT DOES NOTHING
     // NOTE THAT THIS IS FOR 'EVOLVING FEATURES' OR WHATEVER
-
     /**
-     * The version of the feature to request - current implementation  ignores
-     * entirely.
+     * The version of the feature to request - current implementation
+     * ignores entirely.
      */
     protected String version = new String();
 
@@ -53,8 +51,8 @@ public class Query {
     protected boolean allRequested = true;
 
     /**
-     * Empty constructor.
-     */
+         * Empty constructor.
+         */
     public Query() {
     }
 
@@ -225,17 +223,10 @@ public class Query {
     }
 
     /**
-     * Get this query as a geotools Query.
-     *
-     * <p>
-     * if maxFeatures is a not positive value DefaultQuery.DEFAULT_MAX will be
-     * used.
-     * </p>
-     *
-     * <p>
-     * The method name is changed to toDataStoreQuery since this is a one way
-     * conversion.
-     * </p>
+     * Get this query as a geotools Query.<p>if maxFeatures is a not
+     * positive value DefaultQuery.DEFAULT_MAX will be used.</p>
+     *  <p>The method name is changed to toDataStoreQuery since this is
+     * a one way conversion.</p>
      *
      * @param maxFeatures number of features, or 0 for DefaultQuery.DEFAULT_MAX
      *

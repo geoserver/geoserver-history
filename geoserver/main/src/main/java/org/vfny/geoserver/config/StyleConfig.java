@@ -9,15 +9,10 @@ import java.io.File;
 
 
 /**
- * StyleConfig purpose.
- *
- * <p>
- * Defines the style ids to be used by the wms.
- * The files  must be contained in geoserver/misc/wms/styles.
- * We're  working on finding a better place for them,
- * but for now  that's where you must put them if you want them
- * on the server.
- * </p>
+ * StyleConfig purpose.<p>Defines the style ids to be used by the wms. The
+ * files  must be contained in geoserver/misc/wms/styles. We're  working on
+ * finding a better place for them, but for now  that's where you must put
+ * them if you want them on the server.</p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id: StyleConfig.java,v 1.7 2004/02/28 07:45:13 jive Exp $
@@ -33,14 +28,14 @@ public class StyleConfig {
     private boolean _default = false;
 
     /**
-     * StyleConfig constructor.
-     *
-     * <p>
-     * Creates a StyleConfig to represent an instance with default data.
-     * </p>
-     *
-     * @see defaultSettings()
-     */
+         * StyleConfig constructor.
+         *
+         * <p>
+         * Creates a StyleConfig to represent an instance with default data.
+         * </p>
+         *
+         * @see defaultSettings()
+         */
     public StyleConfig() {
         id = "";
         filename = null;
@@ -48,12 +43,12 @@ public class StyleConfig {
     }
 
     /**
-     * Simple copy constructor.
-     * <p>
-     * Used to duplicate a StyleConfig during editing.
-     * </p>
-     * @param style StyleConfig to copy
-     */
+         * Simple copy constructor.
+         * <p>
+         * Used to duplicate a StyleConfig during editing.
+         * </p>
+         * @param style StyleConfig to copy
+         */
     public StyleConfig(StyleConfig style) {
         if (style == null) {
             throw new NullPointerException("Non null StyleConfig required");
@@ -65,17 +60,17 @@ public class StyleConfig {
     }
 
     /**
-     * StyleConfig constructor.
-     *
-     * <p>
-     * Creates a copy of the StyleDTO provided. All the data structures are
-     * cloned.
-     * </p>
-     *
-     * @param style The style to copy.
-     *
-     * @throws NullPointerException DOCUMENT ME!
-     */
+         * StyleConfig constructor.
+         *
+         * <p>
+         * Creates a copy of the StyleDTO provided. All the data structures are
+         * cloned.
+         * </p>
+         *
+         * @param style The style to copy.
+         *
+         * @throws NullPointerException DOCUMENT ME!
+         */
     public StyleConfig(StyleDTO style) {
         if (style == null) {
             throw new NullPointerException("Non null StyleDTO required");
@@ -87,11 +82,8 @@ public class StyleConfig {
     }
 
     /**
-     * Implement loadDTO.
-     *
-     * <p>
-     * Stores the data provided for the specified StyleDTO object
-     * </p>
+     * Implement loadDTO.<p>Stores the data provided for the specified
+     * StyleDTO object</p>
      *
      * @param obj a StyleDTO object
      *
@@ -111,11 +103,8 @@ public class StyleConfig {
     }
 
     /**
-     * Implement toDTO.
-     *
-     * <p>
-     * Creates a StyleDTO which represents the data in this config object.
-     * </p>
+     * Implement toDTO.<p>Creates a StyleDTO which represents the data
+     * in this config object.</p>
      *
      * @return a copy of this classes data in a StyleDTO object.
      *
@@ -131,11 +120,7 @@ public class StyleConfig {
     }
 
     /**
-     * isDefault purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * isDefault purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -144,11 +129,7 @@ public class StyleConfig {
     }
 
     /**
-     * getFilename purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getFilename purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -157,11 +138,7 @@ public class StyleConfig {
     }
 
     /**
-     * getId purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getId purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -170,11 +147,7 @@ public class StyleConfig {
     }
 
     /**
-     * setDefault purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setDefault purpose.<p>Description ...</p>
      *
      * @param b
      */
@@ -183,11 +156,7 @@ public class StyleConfig {
     }
 
     /**
-     * setFilename purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setFilename purpose.<p>Description ...</p>
      *
      * @param file
      */
@@ -196,11 +165,7 @@ public class StyleConfig {
     }
 
     /**
-     * setId purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setId purpose.<p>Description ...</p>
      *
      * @param string
      */

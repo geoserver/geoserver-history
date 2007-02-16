@@ -25,8 +25,8 @@ public class FilterHandlerImpl extends XMLFilterImpl implements ContentHandler, 
     private Filter currentFilter = null;
 
     /**
-     * Empty constructor.
-     */
+         * Empty constructor.
+         */
     public FilterHandlerImpl() {
         super();
     }

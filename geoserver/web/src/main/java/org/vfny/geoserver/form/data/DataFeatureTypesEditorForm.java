@@ -39,12 +39,9 @@ public class DataFeatureTypesEditorForm extends ActionForm {
     private boolean defaultChecked;
 
     /**
-     * Set up FeatureTypeEditor from from Web Container.
-     *
-     * <p>
-     * The key DataConfig.SELECTED_FEATURE_TYPE is used to look up the selected
-     * from the web container.
-     * </p>
+     * Set up FeatureTypeEditor from from Web Container.<p>The key
+     * DataConfig.SELECTED_FEATURE_TYPE is used to look up the selected from
+     * the web container.</p>
      *
      * @param mapping
      * @param request

@@ -34,13 +34,12 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * <b>MapPreviewAction</b><br>
- * Sep 26, 2005<br>
- *
+ * <b>MapPreviewAction</b><br> Sep 26, 2005<br>
  * <b>Purpose:</b><br>
- * Gathers up all the FeatureTypes in use and returns the informaion to the .jsp .<br>
- * It will also generate three files per FeatureType that will be used for MapBuilder to
- * render the data. The files are labeled as such:<br>
+ * Gathers up all the FeatureTypes in use and returns the informaion to the
+ * .jsp .<br>
+ * It will also generate three files per FeatureType that will be used for
+ * MapBuilder to render the data. The files are labeled as such:<br>
  * - [FeatureTypeName].html<br>
  * - [FeatureTypeName]Config.xml<br>
  * - [FeatureTypeName].xml <br>
@@ -49,12 +48,10 @@ import javax.servlet.http.HttpServletResponse;
  * - The Featuretype's name<br>
  * - The DataStore name of the FeatureType<br>
  * - The bounding box of the FeatureType<br>
- *
  * To change what data is output to the .jsp, you must change <b>struts-config.xml</b>.<br>
  * Look for the line:<br>
  * &lt;form-bean <br>
- *          name="mapPreviewForm"<br>
- *
+ * name="mapPreviewForm"<br>
  *
  * @author Brent Owens (The Open Planning Project)
  * @version
@@ -176,14 +173,13 @@ public class MapPreviewAction extends GeoServerAction {
     }
 
     /**
-     * emptyGeneratedDirectory
-     *
-     * Description:
-     * Deletes all files in the supplied directory (file). The directory itself will
-     * not be deleted. It will also recursively go in all sub directories and delete
-     * their files as well.
+     * emptyGeneratedDirectory Description: Deletes all files in the
+     * supplied directory (file). The directory itself will not be deleted. It
+     * will also recursively go in all sub directories and delete their files
+     * as well.
      *
      * @param dir The directory to be cleaned
+     *
      * @throws FileNotFoundException
      * @throws ConfigurationException
      */
@@ -218,21 +214,21 @@ public class MapPreviewAction extends GeoServerAction {
     }
 
     /**
-     * makeMapBuilderFiles
+     * makeMapBuilderFiles Description: Generates the three required
+     * files to show the data in MapBuilder. The first file is the
+     * FeatureTypeName.html file that points to the xml configuration to load
+     * the data. The second file is the configuration file,
+     * FeatureTypeNameConfig.xml that contains all the tools that MapBuilder
+     * will be using (zoom widgets, preview map, etc...). The third file
+     * points to the FeatureType, FeatureTypeName.xml.
      *
-     * Description:
-     * Generates the three required files to show the data in MapBuilder.
-     * The first file is the FeatureTypeName.html file that points to the xml
-     * configuration to load the data.
-     * The second file is the configuration file, FeatureTypeNameConfig.xml that
-     * contains all the tools that MapBuilder will be using (zoom widgets,
-     * preview map, etc...).
-     * The third file points to the FeatureType, FeatureTypeName.xml.
-     *
-     *
-     * @param previewDir the root generated directory where the files will be written to
-     * @param layer the FeatureType in question
+     * @param previewDir the root generated directory where the files will be
+     *        written to
+     * @param layerName the FeatureType in question
+     * @param namespace DOCUMENT ME!
      * @param bbox the bounding box of the FeatureType
+     * @param srsValue DOCUMENT ME!
+     *
      * @throws FileNotFoundException
      * @throws IOException
      */

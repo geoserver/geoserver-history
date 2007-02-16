@@ -16,10 +16,8 @@ import java.util.logging.Logger;
 
 
 /**
- * TestValidationResults purpose.
- * <p>
- * Description of TestValidationResults ...
- * </p>
+ * TestValidationResults purpose.<p>Description of TestValidationResults
+ * ...</p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)

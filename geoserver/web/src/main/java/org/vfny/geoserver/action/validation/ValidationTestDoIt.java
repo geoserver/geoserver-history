@@ -23,10 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * ValidationTestDoIt purpose.
- * <p>
- * Description of ValidationTestDoIt ...
- * </p>
+ * ValidationTestDoIt purpose.<p>Description of ValidationTestDoIt ...</p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: sploreg $ (last modification)

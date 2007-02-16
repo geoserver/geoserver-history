@@ -61,6 +61,9 @@ public class AttributeForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the fragment.
      */
     public String getFragment() {
@@ -68,6 +71,9 @@ public class AttributeForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @param fragment The fragment to set.
      */
     public void setFragment(String fragment) {
@@ -75,6 +81,9 @@ public class AttributeForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the maxOccurs.
      */
     public String getMaxOccurs() {
@@ -82,6 +91,9 @@ public class AttributeForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @param maxOccurs The maxOccurs to set.
      */
     public void setMaxOccurs(String maxOccurs) {
@@ -89,6 +101,9 @@ public class AttributeForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the minOccurs.
      */
     public String getMinOccurs() {
@@ -96,6 +111,9 @@ public class AttributeForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @param minOccurs The minOccurs to set.
      */
     public void setMinOccurs(String minOccurs) {
@@ -103,6 +121,9 @@ public class AttributeForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the name.
      */
     public String getName() {
@@ -110,6 +131,9 @@ public class AttributeForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @param name The name to set.
      */
     public void setName(String name) {
@@ -117,6 +141,9 @@ public class AttributeForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the nillible.
      */
     public boolean isNillable() {
@@ -124,6 +151,9 @@ public class AttributeForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @param nillible The nillible to set.
      */
     public void setNillable(boolean nillible) {
@@ -131,6 +161,9 @@ public class AttributeForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the selectedType.
      */
     public String getType() {
@@ -138,6 +171,9 @@ public class AttributeForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @param selectedType The selectedType to set.
      */
     public void setType(String selectedType) {
@@ -154,10 +190,10 @@ public class AttributeForm {
     }
 
     /**
-     * List of Types available for this attribtue.
-     * <p>
-     * The names are returned as references (like xs:string).
-     * </p>
+     * List of Types available for this attribtue.<p>The names are
+     * returned as references (like xs:string).</p>
+     *
+     * @return DOCUMENT ME!
      */
     public List getTypes() {
         List elements = DataTransferObjectFactory.getElements(name, attributeType.getType());

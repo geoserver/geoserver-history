@@ -39,9 +39,9 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * This class takes care of processing new sld files.  It makes use of a nice
- * upload button, checks to make sure the file isn't already in the system,
- * does a bit of validation, and then adds it to data config.
+ * This class takes care of processing new sld files.  It makes use of a
+ * nice upload button, checks to make sure the file isn't already in the
+ * system, does a bit of validation, and then adds it to data config.
  *
  * @author rgould
  * @author Chris Holmes, Fulbright
@@ -205,14 +205,13 @@ public class StylesEditorAction extends ConfigAction {
     }
 
     /**
-     *   make the validation report for the bean
-     *   its a listing of the original file (prefixed by line #)
-     *   and any validation errors
+     * make the validation report for the bean its a listing of the
+     * original file (prefixed by line #) and any validation errors
      *
-         * @param l
-         * @param file
-         * @param stylesForm
-         */
+     * @param errors
+     * @param file
+     * @param stylesForm
+     */
     private void handleValidationErrors(List errors, FormFile file, StylesEditorForm stylesForm) {
         ArrayList lines = new ArrayList();
         BufferedReader reader = null;
@@ -292,9 +291,12 @@ public class StylesEditorAction extends ConfigAction {
     }
 
     /**
-    *   Check the .sld file and check to see if it passes the validation test!
-    *
+     * Check the .sld file and check to see if it passes the validation
+     * test!
+     *
      * @param file
+     * @param request DOCUMENT ME!
+     *
      * @return
      */
     private List getSchemaExceptions(FormFile file, HttpServletRequest request) {
@@ -315,11 +317,11 @@ public class StylesEditorAction extends ConfigAction {
     }
 
     /*
-    * Called when there is trouble parsing the file.  Note that we
-    * also delete the file here, so it doesn't stick on the system.
-    * Would be a bit better to write to a temp file before putting
-    * it in the style directory, but so it goes.
-    */
+     * Called when there is trouble parsing the file.  Note that we
+     * also delete the file here, so it doesn't stick on the system.
+     * Would be a bit better to write to a temp file before putting
+     * it in the style directory, but so it goes.
+     */
     private void doStyleParseError(String message, File newSldFile, HttpServletRequest request) {
         LOGGER.fine("parse error message is: " + message);
 

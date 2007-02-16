@@ -23,18 +23,12 @@ import javax.servlet.ServletException;
 
 
 /**
- * This class represents the state of the GeoServer appliaction.
- *
- * <p>
- * ApplicationState used by the state.jsp tile as a single view on the state of
- * the GeoServer application. This class may be extended in the future to
- * provide runtime statistics.
- * </p>
- *
- * <p>
- * This class is not a bean - content is updated based on methods. As an
- * example consider the following State diagram:
- * </p>
+ * This class represents the state of the GeoServer appliaction.<p>ApplicationState
+ * used by the state.jsp tile as a single view on the state of the GeoServer
+ * application. This class may be extended in the future to provide runtime
+ * statistics.</p>
+ *  <p>This class is not a bean - content is updated based on methods. As
+ * an example consider the following State diagram:</p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id: ApplicationState.java,v 1.15 2004/04/03 13:13:03 cholmesny Exp $
@@ -58,35 +52,29 @@ public class ApplicationState implements PlugIn, InitializingBean {
     private Map geoserverDSErrors;
     private Map geoserverVPErrors;
 
-    /**
-     * Data module
-     */
+    /** Data module */
     Data data;
 
-    /**
-     * Validation module
-     */
+    /** Validation module */
     GeoValidator validator;
 
-    /**
-     * Configuration module
-     */
+    /** Configuration module */
     Config config;
 
     /**
-     *
-     * @deprecated use {@link #ApplicationState(Data, GeoValidator, Config)}
-     */
+         *
+         * @deprecated use {@link #ApplicationState(Data, GeoValidator, Config)}
+         */
     public ApplicationState() {
         this(null, null, null);
     }
 
     /**
-     * Creates a new appliction state.
-     *
-     * @param data The data modle.
-     * @param validator The validation module
-     */
+         * Creates a new appliction state.
+         *
+         * @param data The data modle.
+         * @param validator The validation module
+         */
     public ApplicationState(Data data, GeoValidator validator, Config config) {
         this.data = data;
         this.validator = validator;
@@ -94,11 +82,8 @@ public class ApplicationState implements PlugIn, InitializingBean {
     }
 
     /**
-     * Clean up the Configuration State during application exit.
-     *
-     * <p>
-     * Since this class just holds data, no resources need to be released.
-     * </p>
+     * Clean up the Configuration State during application exit.<p>Since
+     * this class just holds data, no resources need to be released.</p>
      *
      * @see org.apache.struts.action.PlugIn#destroy()
      */
@@ -106,12 +91,9 @@ public class ApplicationState implements PlugIn, InitializingBean {
     }
 
     /**
-     * Set up the ApplicationState during Application start up.
-     *
-     * <p>
-     * ApplicationState simply registers itself with the WEB_CONTAINER_KEY
-     * ("GeoServer.ApplicationState") during start up.
-     * </p>
+     * Set up the ApplicationState during Application start up.<p>ApplicationState
+     * simply registers itself with the WEB_CONTAINER_KEY
+     * ("GeoServer.ApplicationState") during start up.</p>
      *
      * @param actionServlet ActionServlet representing the Application
      * @param moduleConfig Configuration used to set up this plug in
@@ -120,9 +102,8 @@ public class ApplicationState implements PlugIn, InitializingBean {
      *
      * @see org.apache.struts.action.PlugIn#init(org.apache.struts.action.ActionServlet,
      *      org.apache.struts.config.ModuleConfig)
-     *
-     * @deprecated This class is no longer loaded with struts,
-     *  use {@link #afterPropertiesSet()}
+     * @deprecated This class is no longer loaded with struts, use {@link
+     *             #afterPropertiesSet()}
      */
     public void init(ActionServlet actionServlet, ModuleConfig moduleConfig)
         throws ServletException {
@@ -141,7 +122,8 @@ public class ApplicationState implements PlugIn, InitializingBean {
     }
 
     /**
-     * True if the user has changed the Configuration and not yet applied them.
+     * True if the user has changed the Configuration and not yet
+     * applied them.
      *
      * @return <code>true</code> if Configuration needs changing.
      */
@@ -150,13 +132,18 @@ public class ApplicationState implements PlugIn, InitializingBean {
         && ((appTimestamp == null) || configTimestamp.after(appTimestamp));
     }
 
-    /** Validation is part of the Configuration Process */
+    /**
+     * Validation is part of the Configuration Process
+     *
+     * @return DOCUMENT ME!
+     */
     private boolean isValidationChanged() {
         return isConfigChanged();
     }
 
     /**
-     * True if the user has changed GeoServer and not yet saved the changes.
+     * True if the user has changed GeoServer and not yet saved the
+     * changes.
      *
      * @return <code>true</code> if GeoServer has been changed (but not saved)
      */
@@ -194,7 +181,11 @@ public class ApplicationState implements PlugIn, InitializingBean {
         configTimestamp = new Date();
     }
 
-    /** Q: what is this supposed to do? */
+    /**
+     * Q: what is this supposed to do?
+     *
+     * @return DOCUMENT ME!
+     */
     public int getWcsGood() {
         if (geoserverStatus[0] != ((isAppChanged() ? 1 : 0) + (isConfigChanged() ? 2 : 0)
                 + (isValidationChanged() ? 4 : 0))) {
@@ -204,7 +195,11 @@ public class ApplicationState implements PlugIn, InitializingBean {
         return geoserverStatus[4];
     }
 
-    /** q: What foul manner of magic is this? */
+    /**
+     * q: What foul manner of magic is this?
+     *
+     * @return DOCUMENT ME!
+     */
     public int getWcsBad() {
         if (geoserverStatus[0] != ((isAppChanged() ? 1 : 0) + (isConfigChanged() ? 2 : 0)
                 + (isValidationChanged() ? 4 : 0))) {
@@ -214,7 +209,12 @@ public class ApplicationState implements PlugIn, InitializingBean {
         return geoserverStatus[5];
     }
 
-    /** q: This does not make a lot of sense - did you want to consult both ConfigChanged and GeoServer changed? */
+    /**
+     * q: This does not make a lot of sense - did you want to consult
+     * both ConfigChanged and GeoServer changed?
+     *
+     * @return DOCUMENT ME!
+     */
     public int getWcsDisabled() {
         if (geoserverStatus[0] != ((isAppChanged() ? 1 : 0) + (isConfigChanged() ? 2 : 0)
                 + (isValidationChanged() ? 4 : 0))) {
@@ -224,7 +224,11 @@ public class ApplicationState implements PlugIn, InitializingBean {
         return geoserverStatus[6];
     }
 
-    /** Q: what is this supposed to do? */
+    /**
+     * Q: what is this supposed to do?
+     *
+     * @return DOCUMENT ME!
+     */
     public int getWfsGood() {
         if (geoserverStatus[0] != ((isAppChanged() ? 1 : 0) + (isConfigChanged() ? 2 : 0)
                 + (isValidationChanged() ? 4 : 0))) {
@@ -234,7 +238,11 @@ public class ApplicationState implements PlugIn, InitializingBean {
         return geoserverStatus[1];
     }
 
-    /** q: What foul manner of magic is this? */
+    /**
+     * q: What foul manner of magic is this?
+     *
+     * @return DOCUMENT ME!
+     */
     public int getWfsBad() {
         if (geoserverStatus[0] != ((isAppChanged() ? 1 : 0) + (isConfigChanged() ? 2 : 0)
                 + (isValidationChanged() ? 4 : 0))) {
@@ -244,7 +252,12 @@ public class ApplicationState implements PlugIn, InitializingBean {
         return geoserverStatus[2];
     }
 
-    /** q: This does not make a lot of sense - did you want to consult both ConfigChanged and GeoServer changed? */
+    /**
+     * q: This does not make a lot of sense - did you want to consult
+     * both ConfigChanged and GeoServer changed?
+     *
+     * @return DOCUMENT ME!
+     */
     public int getWfsDisabled() {
         if (geoserverStatus[0] != ((isAppChanged() ? 1 : 0) + (isConfigChanged() ? 2 : 0)
                 + (isValidationChanged() ? 4 : 0))) {
@@ -254,7 +267,11 @@ public class ApplicationState implements PlugIn, InitializingBean {
         return geoserverStatus[3];
     }
 
-    /** Q: scary magic */
+    /**
+     * Q: scary magic
+     *
+     * @return DOCUMENT ME!
+     */
     public int getWmsGood() {
         if (geoserverStatus[0] != ((isAppChanged() ? 1 : 0) + (isConfigChanged() ? 2 : 0)
                 + (isValidationChanged() ? 4 : 0))) {
@@ -264,7 +281,11 @@ public class ApplicationState implements PlugIn, InitializingBean {
         return geoserverStatus[4];
     }
 
-    /** Q: scary magic */
+    /**
+     * Q: scary magic
+     *
+     * @return DOCUMENT ME!
+     */
     public int getWmsBad() {
         if (geoserverStatus[0] != ((isAppChanged() ? 1 : 0) + (isConfigChanged() ? 2 : 0)
                 + (isValidationChanged() ? 4 : 0))) {
@@ -274,7 +295,11 @@ public class ApplicationState implements PlugIn, InitializingBean {
         return geoserverStatus[5];
     }
 
-    /** Q: scary magic */
+    /**
+     * Q: scary magic
+     *
+     * @return DOCUMENT ME!
+     */
     public int getWmsDisabled() {
         if (geoserverStatus[0] != ((isAppChanged() ? 1 : 0) + (isConfigChanged() ? 2 : 0)
                 + (isValidationChanged() ? 4 : 0))) {
@@ -339,22 +364,19 @@ public class ApplicationState implements PlugIn, InitializingBean {
     }
 
     /**
-     *
-     * loadStatus purpose.
-     * <p>
-     * Magic occurs here, so be careful. This sets the values in the geoserverStatus array.
-     * </p>
-     * <p>
-     * The array is broken into four blocks, [0],[1-3],[4-6],[7-9].
-     * <ul>
-     * <li>[0] -  The first block represtents the application state at the time
-     *            of data creation. Use to test whether the array needs to be
-     *            reloaded.</li>
-     * <li>[1-3] - wfs (working, broken, disabled) percentages</li>
-     * <li>[4-6] - wms (working, broken, disabled) percentages</li>
-     * <li>[7-9] - data (working, broken, disabled) percentages</li>
-     * </ul>
-     * </p>
+     * loadStatus purpose.<p>Magic occurs here, so be careful. This
+     * sets the values in the geoserverStatus array.</p>
+     *  <p>The array is broken into four blocks, [0],[1-3],[4-6],[7-9].
+     *  <ul>
+     *      <li>[0] -  The first block represtents the application
+     *      state at the time of data creation. Use to test whether the array
+     *      needs to be reloaded.</li>
+     *      <li>[1-3] - wfs (working, broken, disabled) percentages</li>
+     *      <li>[4-6] - wms (working, broken, disabled) percentages</li>
+     *      <li>[7-9] - data (working, broken, disabled)
+     *      percentages</li>
+     *  </ul>
+     *  </p>
      */
     private void loadStatus() {
         // what does isGeoServerChanged() have to do with this
@@ -541,11 +563,9 @@ public class ApplicationState implements PlugIn, InitializingBean {
     }
 
     /**
-     * Namespace Exceptions by prefix:typeName.
-     * <p>
-     * This only includes problems! If this map is null or isEmpty
-     * status is "ready".
-     * </p>
+     * Namespace Exceptions by prefix:typeName.<p>This only includes
+     * problems! If this map is null or isEmpty status is "ready".</p>
+     *
      * @return
      */
     public Map getNameSpaceErrors() {
@@ -558,22 +578,28 @@ public class ApplicationState implements PlugIn, InitializingBean {
         return geoserverNSErrors;
     }
 
-    /** Flattened for your JSP pleasure */
+    /**
+     * Flattened for your JSP pleasure
+     *
+     * @return DOCUMENT ME!
+     */
     public List getNameSpaceErrorKeys() {
         return new LinkedList(getNameSpaceErrors().keySet());
     }
 
-    /** Flattened for your JSP pleasure */
+    /**
+     * Flattened for your JSP pleasure
+     *
+     * @return DOCUMENT ME!
+     */
     public List getNameSpaceErrorValues() {
         return new LinkedList(getNameSpaceErrors().values());
     }
 
     /**
-     * DataStore Exceptions by dataStoreId:typeName
-     * <p>
-     * This only includes problems! If this map is null or isEmpty
-     * status is "ready".
-     * </p>
+     * DataStore Exceptions by dataStoreId:typeName<p>This only
+     * includes problems! If this map is null or isEmpty status is "ready".</p>
+     *
      * @return
      */
     public Map getDataStoreErrors() {
@@ -586,22 +612,29 @@ public class ApplicationState implements PlugIn, InitializingBean {
         return geoserverDSErrors;
     }
 
-    /** Flattened for your JSP pleasure */
+    /**
+     * Flattened for your JSP pleasure
+     *
+     * @return DOCUMENT ME!
+     */
     public List getDataStoreErrorKeys() {
         return new LinkedList(getDataStoreErrors().keySet());
     }
 
-    /** Flattened for your JSP pleasure */
+    /**
+     * Flattened for your JSP pleasure
+     *
+     * @return DOCUMENT ME!
+     */
     public List getDataStoreErrorValues() {
         return new LinkedList(getDataStoreErrors().values());
     }
 
     /**
-     * Validation Exceptions by obejct type : name where object type is one of TestSuite, Test, PlugIn
-     * <p>
-     * This only includes problems! If this map is null or isEmpty
-     * status is "ready".
-     * </p>
+     * Validation Exceptions by obejct type : name where object type is
+     * one of TestSuite, Test, PlugIn<p>This only includes problems! If
+     * this map is null or isEmpty status is "ready".</p>
+     *
      * @return
      */
     public Map getValidationErrors() {
@@ -614,12 +647,20 @@ public class ApplicationState implements PlugIn, InitializingBean {
         return geoserverVPErrors;
     }
 
-    /** Flattened for your JSP pleasure */
+    /**
+     * Flattened for your JSP pleasure
+     *
+     * @return DOCUMENT ME!
+     */
     public List getValidationErrorKeys() {
         return new LinkedList(getValidationErrors().keySet());
     }
 
-    /** Flattened for your JSP pleasure */
+    /**
+     * Flattened for your JSP pleasure
+     *
+     * @return DOCUMENT ME!
+     */
     public List getValidationErrorValues() {
         return new LinkedList(getValidationErrors().values());
     }
@@ -670,6 +711,8 @@ public class ApplicationState implements PlugIn, InitializingBean {
      * Access xmlTimestamp property.
      *
      * @return Returns the xmlTimestamp.
+     *
+     * @throws RuntimeException DOCUMENT ME!
      */
     public Date getXmlTimestamp() {
         if (xmlTimestamp == null) {

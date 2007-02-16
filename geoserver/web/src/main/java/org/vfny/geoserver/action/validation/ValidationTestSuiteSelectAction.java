@@ -24,12 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * ValidationTestSuiteSelect purpose.
- * <p>
- * Used to look up a test suite indicated by the ActionForm
- * (ValidationTestSuiteSelectForm) passed to it, save it into
- * session and pass it to the test selector.
- * </p>
+ * ValidationTestSuiteSelect purpose.<p>Used to look up a test suite
+ * indicated by the ActionForm (ValidationTestSuiteSelectForm) passed to it,
+ * save it into session and pass it to the test selector.</p>
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)

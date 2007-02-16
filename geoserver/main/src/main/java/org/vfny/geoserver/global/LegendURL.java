@@ -27,16 +27,16 @@ public class LegendURL extends GlobalLayerSupertype {
     private String onlineResource;
 
     /**
-     * Legend constructor.
-     *
-     * <p>
-     * Stores the new LegendURLDTO data for this LegendURL.
-     * </p>
-     *
-     * @param dto
-     *
-     * @throws NullPointerException when the param is null
-     */
+         * Legend constructor.
+         *
+         * <p>
+         * Stores the new LegendURLDTO data for this LegendURL.
+         * </p>
+         *
+         * @param dto
+         *
+         * @throws NullPointerException when the param is null
+         */
     public LegendURL(LegendURLDTO dto) {
         if (dto == null) {
             throw new NullPointerException();
@@ -49,11 +49,7 @@ public class LegendURL extends GlobalLayerSupertype {
     }
 
     /**
-     * load purpose.
-     *
-     * <p>
-     * loads a new copy of data into this object.
-     * </p>
+     * load purpose.<p>loads a new copy of data into this object.</p>
      *
      * @param dto
      *

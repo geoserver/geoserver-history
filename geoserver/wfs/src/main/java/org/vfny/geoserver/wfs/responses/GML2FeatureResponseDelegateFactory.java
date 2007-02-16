@@ -22,14 +22,16 @@ public class GML2FeatureResponseDelegateFactory implements FeatureResponseDelega
     }
 
     /**
-     * Creates a new GifMapProducerFactory object.
-     */
+         * Creates a new GifMapProducerFactory object.
+         */
     public GML2FeatureResponseDelegateFactory() {
         super();
     }
 
     /**
      * see interface def'n
+     *
+     * @return DOCUMENT ME!
      */
     public String getName() {
         return "GML2 Ouput (uncompressed or gziped)";
@@ -46,6 +48,8 @@ public class GML2FeatureResponseDelegateFactory implements FeatureResponseDelega
 
     /**
      *
+    DOCUMENT ME!
+     *
      * @return <code>true</code>
      */
     public boolean isAvailable() {
@@ -53,11 +57,11 @@ public class GML2FeatureResponseDelegateFactory implements FeatureResponseDelega
     }
 
     /**
-     * Returns wether the  producers created by this factory can create output
-     * in the passed output format.
+     * Returns wether the  producers created by this factory can create
+     * output in the passed output format.
      *
-     * @param format a MIME type string to check if this producer is able to
-     *        handle.
+     * @param outputFormat a MIME type string to check if this producer is able
+     *        to handle.
      *
      * @return <code>true</code>  or false
      */
@@ -67,9 +71,9 @@ public class GML2FeatureResponseDelegateFactory implements FeatureResponseDelega
     }
 
     /* (non-Javadoc)
-         * @see org.geotools.factory.Factory#getImplementationHints()
-         * This just returns java.util.Collections.EMPTY_MAP
-         */
+     * @see org.geotools.factory.Factory#getImplementationHints()
+     * This just returns java.util.Collections.EMPTY_MAP
+     */
     public Map getImplementationHints() {
         return java.util.Collections.EMPTY_MAP;
     }

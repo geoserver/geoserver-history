@@ -17,24 +17,14 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * GeoServerConfigurationForm purpose.
- * <p>
- * Description of GeoServerConfigurationForm ...
- * </p>
- *
- * <p>
- * Capabilities:
- * </p>
- * <ul>
- * <li>
- * Feature: description
- * </li>
- * </ul>
- * <p>
- * Example Use:
- * </p>
- * <pre><code>
- * GeoServerConfigurationForm x = new GeoServerConfigurationForm(...);
+ * GeoServerConfigurationForm purpose.<p>Description of
+ * GeoServerConfigurationForm ...</p>
+ *  <p>Capabilities:</p>
+ *  <ul>
+ *      <li>Feature: description</li>
+ *  </ul>
+ *  <p>Example Use:</p>
+<pre><code>GeoServerConfigurationForm x = new GeoServerConfigurationForm(...);
  * </code></pre>
  *
  * @author User, Refractions Research, Inc.
@@ -91,7 +81,7 @@ public class GeoServerConfigurationForm extends ActionForm {
     private boolean verboseChecked;
     private boolean verboseExceptionsChecked;
 
-    /** log to disk ? **/
+    /** log to disk ? */
     private boolean loggingToFile;
     private boolean loggingToFileChecked;
     private String logLocation;
@@ -230,10 +220,10 @@ public class GeoServerConfigurationForm extends ActionForm {
     }
 
     /**
-             * Access verboseChecked property.
-             *
-             * @return Returns the verboseChecked.
-             */
+     * Access verboseChecked property.
+     *
+     * @return Returns the verboseChecked.
+     */
     public boolean isVerboseChecked() {
         return verboseChecked;
     }
@@ -248,10 +238,10 @@ public class GeoServerConfigurationForm extends ActionForm {
     }
 
     /**
-             * Access verboseChecked property.
-             *
-             * @return Returns the verboseChecked.
-             */
+     * Access verboseChecked property.
+     *
+     * @return Returns the verboseChecked.
+     */
     public boolean isVerboseExceptionsChecked() {
         return verboseExceptionsChecked;
     }
@@ -259,7 +249,7 @@ public class GeoServerConfigurationForm extends ActionForm {
     /**
      * Set verboseChecked to verboseChecked.
      *
-     * @param verboseChecked The verboseChecked to set.
+     * @param verboseExceptionsChecked The verboseChecked to set.
      */
     public void setVerboseExceptionsChecked(boolean verboseExceptionsChecked) {
         this.verboseExceptionsChecked = verboseExceptionsChecked;
@@ -600,16 +590,22 @@ public class GeoServerConfigurationForm extends ActionForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The string representation of the path on disk in which the
-     * server logs to.
+     *         server logs to.
      */
     public String getLogLocation() {
         return logLocation;
     }
 
     /**
-     * @param logLocation The string representation of the path on disk in which
-     * the server logs to.
+     *
+    DOCUMENT ME!
+     *
+     * @param logLocation The string representation of the path on disk in
+     *        which the server logs to.
      */
     public void setLogLocation(String logLocation) {
         this.logLocation = logLocation;
@@ -618,7 +614,7 @@ public class GeoServerConfigurationForm extends ActionForm {
     /**
      * Set loggingToFile to loggingToFile.
      *
-     * @param verbose The loggingToFile to set.
+     * @param loggingToFile The loggingToFile to set.
      */
     public void setLoggingToFile(boolean loggingToFile) {
         loggingToFileChecked = true;
@@ -717,7 +713,7 @@ public class GeoServerConfigurationForm extends ActionForm {
     /**
      * Set recyclingChecked to recyclingChecked.
      *
-     * @param recyclingChecked The recyclingChecked to set.
+     * @param jaiRecyclingChecked The recyclingChecked to set.
      */
     public void setJaiRecyclingChecked(boolean jaiRecyclingChecked) {
         this.jaiRecyclingChecked = jaiRecyclingChecked;
@@ -726,7 +722,7 @@ public class GeoServerConfigurationForm extends ActionForm {
     /**
      * Set nativeChecked to nativeChecked.
      *
-     * @param nativeChecked The nativeChecked to set.
+     * @param jaiJPEGNativeChecked The nativeChecked to set.
      */
     public void setJaiJPEGNativeChecked(boolean jaiJPEGNativeChecked) {
         this.jaiJPEGNativeChecked = jaiJPEGNativeChecked;
@@ -735,7 +731,7 @@ public class GeoServerConfigurationForm extends ActionForm {
     /**
      * Set nativeChecked to nativeChecked.
      *
-     * @param nativeChecked The nativeChecked to set.
+     * @param jaiPNGNativeChecked The nativeChecked to set.
      */
     public void setJaiPNGNativeChecked(boolean jaiPNGNativeChecked) {
         this.jaiPNGNativeChecked = jaiPNGNativeChecked;
@@ -762,7 +758,7 @@ public class GeoServerConfigurationForm extends ActionForm {
     /**
      * Set verboseChecked to verboseChecked.
      *
-     * @param verboseChecked The verboseChecked to set.
+     * @param imageIOCacheChecked The verboseChecked to set.
      */
     public void setImageIOCacheChecked(boolean imageIOCacheChecked) {
         this.imageIOCacheChecked = imageIOCacheChecked;

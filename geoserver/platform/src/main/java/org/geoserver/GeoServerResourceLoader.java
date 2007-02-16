@@ -14,53 +14,41 @@ import java.util.TreeSet;
 
 
 /**
- * Manages resources in GeoServer.
- * <p>
- * GeoServer has the notion of a "data directory", where it keeps all the data
- * used to configure the server. This maps to the {@link #baseDirectory}
- * property of the resource loader. The loader also maintains a search path in
- * which it will also use to look up resources. The baseDirectory is implicitly
- * added to the search path.
- * </p>
- * <p>
- * File dataDirectory = ...
- * GeoServerResourceLoader loader = new GeoServerResourceLoader( dataDirectory );
- * loader.addSearchLocation( new File( "/WEB-INF/" ) );
- * loader.addSearchLocation( new File( "/data" ) );
- * ...
- * File catalog = loader.find( "catalog.xml" );
- * </p>
+ * Manages resources in GeoServer.<p>GeoServer has the notion of a "data
+ * directory", where it keeps all the data used to configure the server. This
+ * maps to the {@link #baseDirectory} property of the resource loader. The
+ * loader also maintains a search path in which it will also use to look up
+ * resources. The baseDirectory is implicitly added to the search path.</p>
+ *  <p>File dataDirectory = ... GeoServerResourceLoader loader = new
+ * GeoServerResourceLoader( dataDirectory ); loader.addSearchLocation( new
+ * File( "/WEB-INF/" ) ); loader.addSearchLocation( new File( "/data" ) ); ...
+ * File catalog = loader.find( "catalog.xml" );</p>
  *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
  */
 public class GeoServerResourceLoader extends DefaultResourceLoader {
-    /**
-     * "path" for resource lookups
-     */
+    /** "path" for resource lookups */
     Set searchLocations;
 
-    /**
-     * Base directory
-     */
+    /** Base directory */
     File baseDirectory;
 
     /**
-     * Creates a new resource loader with no base directory.
-     * <p>
-     * Such a constructed resource loader is not capable of creating resources
-     * from relative paths.
-     * </p>
-     */
+         * Creates a new resource loader with no base directory.
+         * <p>
+         * Such a constructed resource loader is not capable of creating resources
+         * from relative paths.
+         * </p>
+         */
     public GeoServerResourceLoader() {
         searchLocations = new TreeSet();
     }
 
     /**
-     * Creates a new resource loader.
-     *
-     * @param baseDirectory The directory in which
-     */
+         * Creates a new resource loader.
+         *
+         * @param baseDirectory The directory in which
+         */
     public GeoServerResourceLoader(File baseDirectory) {
         this();
         this.baseDirectory = baseDirectory;
@@ -70,13 +58,16 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
     /**
      * Adds a location to the path used for resource lookups.
      *
-     * @param A directory containing resources.
+     * @param searchLocation directory containing resources.
      */
     public void addSearchLocation(File searchLocation) {
         searchLocations.add(searchLocation);
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The base directory.
      */
     public File getBaseDirectory() {
@@ -87,10 +78,10 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
      * Performs a resource lookup.
      *
      * @param location The name of the resource to lookup, can be absolute or
-     * relative.
+     *        relative.
      *
      * @return The file handle representing the resource, or null if the
-     * resource could not be found.
+     *         resource could not be found.
      *
      * @throws IOException In the event of an I/O error.
      */
@@ -122,13 +113,12 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
     }
 
     /**
-     * Creates a new directory.
-     * <p>
-     * Relative paths are created relative to {@link #baseDirectory}.
-     * </p>
-     * .
+     * Creates a new directory.<p>Relative paths are created relative
+     * to {@link #baseDirectory}.</p>
+     *  .
+     *
      * @param location Location of directory to create, either absolute or
-     * relative.
+     *        relative.
      *
      * @return The file handle of the created directory.
      *
@@ -165,11 +155,10 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
     }
 
     /**
-     * Creates a new file.
-     * <p>
-     * Relative paths are created relative to {@link #baseDirectory}.
-     * </p>
-     * .
+     * Creates a new file.<p>Relative paths are created relative to
+     * {@link #baseDirectory}.</p>
+     *  .
+     *
      * @param location Location of file to create, either absolute or relative.
      *
      * @return The file handle of the created file.

@@ -20,18 +20,20 @@ public class WMSRequest extends Request {
     public static final String WMS_SERVICE_TYPE = "WMS";
 
     /**
-     * Creates the new request, supplying the request name and the sevlet
-     * handling the request.
-     *
-     * @param requestType name of hte request, (Example, GetCapabiliites)
-     * @param service The servlet handling the WMS request.
-     */
+         * Creates the new request, supplying the request name and the sevlet
+         * handling the request.
+         *
+         * @param requestType name of hte request, (Example, GetCapabiliites)
+         * @param service The servlet handling the WMS request.
+         */
     public WMSRequest(String requestType, WMService service) {
         super(WMS_SERVICE_TYPE, requestType, service);
     }
 
     /**
      * Sets the wms service object.
+     *
+     * @param wms DOCUMENT ME!
      */
     public void setWMService(WMService wms) {
         setServiceRef(wms);
@@ -39,13 +41,18 @@ public class WMSRequest extends Request {
 
     /**
      * Returns the wms service object..
+     *
+     * @return DOCUMENT ME!
      */
     public WMService getWMService() {
         return (WMService) getServiceRef();
     }
 
     /**
-     * Convenience method for obtaining the global wms service instance.
+     * Convenience method for obtaining the global wms service
+     * instance.
+     *
+     * @return DOCUMENT ME!
      */
     public WMS getWMS() {
         return getWMService().getWMS();
@@ -53,6 +60,8 @@ public class WMSRequest extends Request {
 
     /**
      * Convenience method for obtaining the global geoserver instance.
+     *
+     * @return DOCUMENT ME!
      */
     public GeoServer getGeoServer() {
         GeoServer gs = getWMS().getGeoServer();

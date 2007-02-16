@@ -31,18 +31,20 @@ import javax.xml.parsers.SAXParserFactory;
  */
 public class CapabilitiesXmlReader extends XmlRequestReader {
     /**
-     * Constructs a new reader.
-     *
-     * @param service The WFS service handling the request.
-     */
+         * Constructs a new reader.
+         *
+         * @param service The WFS service handling the request.
+         */
     public CapabilitiesXmlReader(WFService service) {
         super(service);
     }
 
     /**
-     * Reads the Capabilities XML request into a CapabilitiesRequest object.
+     * Reads the Capabilities XML request into a CapabilitiesRequest
+     * object.
      *
      * @param reader The plain POST text from the client.
+     * @param req DOCUMENT ME!
      *
      * @return The read CapabilitiesRequest object.
      *

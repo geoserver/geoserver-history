@@ -13,28 +13,28 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Base servlet for all Web Feature Server requests.
- *
- * <p>
- * Subclasses should supply the handler, request and response mapping for the
- * service they implement.
- * </p>
+ * Base servlet for all Web Feature Server requests.<p>Subclasses should
+ * supply the handler, request and response mapping for the service they
+ * implement.</p>
  *
  * @author Gabriel Rold?n
  * @version $Id: WFService.java,v 1.6 2004/02/17 22:42:32 dmzwiers Exp $
  */
 abstract public class WFService extends AbstractService {
     /**
-         * Constructor for WFS service.
-         *
-         * @param request The service request being made (GetCaps,GetFeature,...)
-         * @param wfs The WFS service reference.
-         */
+             * Constructor for WFS service.
+             *
+             * @param request The service request being made (GetCaps,GetFeature,...)
+             * @param wfs The WFS service reference.
+             */
     public WFService(String request, WFS wfs) {
         super("WFS", request, wfs);
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The wfs service ref.
      */
     public WFS getWFS() {
@@ -43,6 +43,7 @@ abstract public class WFService extends AbstractService {
 
     /**
      * Sets the wfs service ref.
+     *
      * @param wfs
      */
     public void setWFS(WFS wfs) {

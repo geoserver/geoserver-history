@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * This utility reads in a DescribeFeatureType KVP request and turns it into an
- * appropriate internal DescribeRequest object.
+ * This utility reads in a DescribeFeatureType KVP request and turns it
+ * into an appropriate internal DescribeRequest object.
  *
  * @author Rob Hranac, TOPP
  * @author Gabriel Rold?n
@@ -23,12 +23,12 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class DescribeKvpReader extends KvpRequestReader {
     /**
-     * Constructor with raw request string and servlet handling
-     * request. Calls parent.
-     *
-     * @param kvPairs the key/value pairs containing DESCRIBE
-     * @param service the servlet / service handling the request.
-     */
+         * Constructor with raw request string and servlet handling
+         * request. Calls parent.
+         *
+         * @param kvPairs the key/value pairs containing DESCRIBE
+         * @param service the servlet / service handling the request.
+         */
     public DescribeKvpReader(Map kvPairs, AbstractService service) {
         super(kvPairs, service);
     }

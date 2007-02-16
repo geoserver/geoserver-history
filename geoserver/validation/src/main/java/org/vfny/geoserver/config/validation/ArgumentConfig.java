@@ -14,10 +14,7 @@ import java.util.Locale;
 
 
 /**
- * ArgumentConfig purpose.
- * <p>
- * Description of ArgumentConfig ...
- * </p>
+ * ArgumentConfig purpose.<p>Description of ArgumentConfig ...</p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
@@ -29,12 +26,12 @@ public class ArgumentConfig {
     private Object value;
 
     /**
-     * ArgumentConfig constructor.
-     * <p>
-     * Description
-     * </p>
-     *
-     */
+         * ArgumentConfig constructor.
+         * <p>
+         * Description
+         * </p>
+         *
+         */
     public ArgumentConfig() {
     }
 
@@ -151,6 +148,8 @@ public class ArgumentConfig {
      * Set value to value.
      *
      * @param value The value to set.
+     *
+     * @throws NullPointerException DOCUMENT ME!
      */
     public void setValue(Object value) {
         if (value == null) {
@@ -161,16 +160,14 @@ public class ArgumentConfig {
     }
 
     /**
+     * getDisplayName purpose.<p>This is used to provide the locale to
+     * the property descriptor if it is required. This method is thread safe.</p>
+     *  <p>This method must be both synchornized and static. The global
+     * locale is maintained from start to completion of execution, even when
+     * an unexpected exception occurs.</p>
      *
-     * getDisplayName purpose.
-     * <p>
-     * This is used to provide the locale to the property descriptor if it is required. This method is thread safe.
-     * </p>
-     * <p>
-     * This method must be both synchornized and static. The global locale is maintained from start to completion of execution, even when an unexpected exception occurs.
-     * </p>
      * @param pd PropertyDescriptor to get the display name from
-     * @param locale Locale to use if required.
+     *
      * @return String the Display Name
      */
     public static synchronized String getDisplayName(PropertyDescriptor pd) {
@@ -206,16 +203,12 @@ public class ArgumentConfig {
     }
 
     /**
+     * getDescription purpose.<p>This is used to provide the locale to
+     * the property descriptor if it is required. This method is thread safe.</p>
+     *  <p>This method must be both synchornized and static.</p>
      *
-     * getDescription purpose.
-     * <p>
-     * This is used to provide the locale to the property descriptor if it is required. This method is thread safe.
-     * </p>
-     * <p>
-     * This method must be both synchornized and static.
-     * </p>
      * @param pd PropertyDescriptor to get the display description from
-     * @param locale Locale to use if required.
+     *
      * @return String the display description
      */
     public static synchronized String getDescription(PropertyDescriptor pd) {

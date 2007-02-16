@@ -11,13 +11,10 @@ import javax.servlet.ServletContext;
 
 
 /**
- * Data Transfer Object for Global GeoServer Configuration information.
- *
- * <p>
- * Data Transfer object are used to communicate between the GeoServer
- * application and its configuration and persistent layers. As such the class
- * is final - to allow for its future use as an on-the-wire message.
- * </p>
+ * Data Transfer Object for Global GeoServer Configuration information.<p>Data
+ * Transfer object are used to communicate between the GeoServer application
+ * and its configuration and persistent layers. As such the class is final -
+ * to allow for its future use as an on-the-wire message.</p>
  *
  * @author David Zwiers, Refractions Research, Inc.
  * @version $Id: GeoServerDTO.java,v 1.12 2004/09/09 16:51:58 cholmesny Exp $
@@ -27,91 +24,61 @@ public final class GeoServerDTO implements DataTransferObject {
     private int maxFeatures = Defaults.MaxFeatures;
 
     /**
-     * XML Verbosity.
-     *
-     * <p>
-     * Whether newlines and indents should be returned in XML responses.
-     * </p>
-     *
-     * <p>
-     * This should be called something other than verbose. Verbose should
-     * control things like printing out "magic" comments that tell people how
-     * to edit the xml files by hand.
-     * </p>
-     * Default is false
+     * XML Verbosity.<p>Whether newlines and indents should be returned
+     * in XML responses.</p>
+     *  <p>This should be called something other than verbose. Verbose
+     * should control things like printing out "magic" comments that tell
+     * people how to edit the xml files by hand.</p>
+     *  Default is false
      */
     private boolean verbose = Defaults.Verbose;
 
     /**
-     * Number of decimal places returned in a GetFeature response.
-     *
-     * <p>
-     * Sets the max number of decimal places past the zero returned in a
-     * GetFeature response.  Default is 4.
-     * </p>
-     * DZ - should it be moved to FeatureTypeInfo level? JG - no WMS also has a
-     * getFeature response
+     * Number of decimal places returned in a GetFeature response.<p>Sets
+     * the max number of decimal places past the zero returned in a GetFeature
+     * response.  Default is 4.</p>
+     *  DZ - should it be moved to FeatureTypeInfo level? JG - no WMS
+     * also has a getFeature response
      */
     private int numDecimals = Defaults.NumDecimals;
 
     /**
-     * Sets the global character set.
-     *
-     * <p>
-     * This could use some more testing from international users. What it does
-     * is sets the encoding globally for all postgis database connections (the
-     * charset tag in FeatureTypeInfo), as well as specifying the encoding in
-     * the return
+     * Sets the global character set.<p>This could use some more
+     * testing from international users. What it does is sets the encoding
+     * globally for all postgis database connections (the charset tag in
+     * FeatureTypeInfo), as well as specifying the encoding in the return
      * <code>org.vfny.geoserver.config.org.vfny.geoserver.global.xml</code>
-     * header and mime type.
-     * </p>
-     *
-     * <p>
-     * The default is UTF-8
-     * </p>
-     *
-     * <p>
-     * Also be warned that GeoServer does not check if the CharSet is valid
-     * before attempting to use it, so it will fail miserably if a bad charset
-     * is used.
-     * </p>
+     * header and mime type.</p>
+     *  <p>The default is UTF-8</p>
+     *  <p>Also be warned that GeoServer does not check if the CharSet
+     * is valid before attempting to use it, so it will fail miserably if a
+     * bad charset is used.</p>
      */
     private Charset charSet = Defaults.Encoding;
 
     /**
-     * The public network URL base, to be used when Geoserver is behind a reverse proxy
-     * so that getCapabilities return the proper URLs.
+     * The public network URL base, to be used when Geoserver is behind
+     * a reverse proxy so that getCapabilities return the proper URLs.
      */
     private String proxyBaseUrl;
 
     /**
-     * Define a base url for the location of the wfs schemas.
-     *
-     * <p>
-     * By default GeoServer  loads and references its own at
-     * <code>/data/capabilities</code>.
-     * </p>
-     *
-     * <p>
-     * The standalone Tomcat server needs SchemaBaseUrl defined for validation.
-     * </p>
+     * Define a base url for the location of the wfs schemas.<p>By
+     * default GeoServer  loads and references its own at
+     * <code>/data/capabilities</code>.</p>
+     *  <p>The standalone Tomcat server needs SchemaBaseUrl defined for
+     * validation.</p>
      */
     private String schemaBaseUrl;
 
     /**
-     * Defines the Application logging level.
-     *
-     * <p>
-     * Common options are SEVERE, WARNING, INFO, CONFIG,  FINER, FINEST, in
-     * order of Increasing statements logged.
-     * </p>
-     *
-     * <p>
-     * There may be more then one point of control - the web containers often
-     * controls logging, the jakarta commons logging system is used by struts,
-     * these names seem taken from the jdk14 logging framework and GeoServer
-     * seems to also use log4j.
-     * </p>
+     * Defines the Application logging level.<p>Common options are
+     * SEVERE, WARNING, INFO, CONFIG,  FINER, FINEST, in order of Increasing
+     * statements logged.</p>
+     *  <p>There may be more then one point of control - the web
+     * containers often controls logging, the jakarta commons logging system
+     * is used by struts, these names seem taken from the jdk14 logging
+     * framework and GeoServer seems to also use log4j.</p>
      */
     private Level loggingLevel = Defaults.LoggingLevel;
 
@@ -124,13 +91,16 @@ public final class GeoServerDTO implements DataTransferObject {
     /** The password for the administrator log-in to perform configuration */
     private String adminPassword = Defaults.AdminPassword;
 
-    /** Whether the exceptions returned to the client should contain full stack traces */
+    /**
+     * Whether the exceptions returned to the client should contain
+     * full stack traces
+     */
     private boolean verboseExceptions = Defaults.VerboseExceptions;
 
-    /** to log to disk or not to log to disk **/
+    /** to log to disk or not to log to disk */
     private boolean loggingToFile = Defaults.LoggingToFile;
 
-    /** Where on disk the server should log to **/
+    /** Where on disk the server should log to */
     private String logLocation = Defaults.LogLocation;
     private double jaiMemoryCapacity = Defaults.JaiMemoryCapacity;
     private double jaiMemoryThreshold = Defaults.JaiMemoryThreshold;
@@ -142,28 +112,28 @@ public final class GeoServerDTO implements DataTransferObject {
     private Boolean jaiPNGNative = Defaults.JaiPNGNative;
 
     /**
-     * GlobalConfig constructor.
-     *
-     * <p>
-     * does nothing
-     * </p>
-     */
+         * GlobalConfig constructor.
+         *
+         * <p>
+         * does nothing
+         * </p>
+         */
     public GeoServerDTO() {
     }
 
     /**
-     * GlobalConfig constructor.
-     *
-     * <p>
-     * Creates a copy of the GlobalConfig object provided, or sets the values
-     * to default if one is not provided.  Charset is not cloned, everything
-     * else is.
-     * </p>
-     *
-     * @param g
-     *
-     * @throws NullPointerException DOCUMENT ME!
-     */
+         * GlobalConfig constructor.
+         *
+         * <p>
+         * Creates a copy of the GlobalConfig object provided, or sets the values
+         * to default if one is not provided.  Charset is not cloned, everything
+         * else is.
+         * </p>
+         *
+         * @param g
+         *
+         * @throws NullPointerException DOCUMENT ME!
+         */
     public GeoServerDTO(GeoServerDTO g) {
         if (g == null) {
             throw new NullPointerException();
@@ -198,12 +168,9 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * Implement clone.
-     *
-     * <p>
-     * Charset is not cloned, everything else is. Strings are reference  copied
-     * because of the Hashtable implementation in memory.
-     * </p>
+     * Implement clone.<p>Charset is not cloned, everything else is.
+     * Strings are reference  copied because of the Hashtable implementation
+     * in memory.</p>
      *
      * @return A new GlobalConfig object which is a copy of this object.
      *
@@ -214,11 +181,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * Implement equals.
-     *
-     * <p>
-     * Compares the equality of the two objects.
-     * </p>
+     * Implement equals.<p>Compares the equality of the two objects.</p>
      *
      * @param obj The object to checked for equivalence.
      *
@@ -292,11 +255,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * getCharSet purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getCharSet purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -305,11 +264,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * getContact purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getContact purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -318,11 +273,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * getLoggingLevel purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getLoggingLevel purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -330,13 +281,8 @@ public final class GeoServerDTO implements DataTransferObject {
     //public Level getLoggingLevel() {
     //	return loggingLevel;
     //}
-
     /**
-     * getMaxFeatures purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getMaxFeatures purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -345,11 +291,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * getNumDecimals purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getNumDecimals purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -359,6 +301,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * Getter for the {@link #proxyBaseUrl} property
+     *
      * @return
      */
     public String getProxyBaseUrl() {
@@ -366,11 +309,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * getSchemaBaseUrl purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getSchemaBaseUrl purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -379,11 +318,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * isVerbose purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * isVerbose purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -392,11 +327,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * setCharSet purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setCharSet purpose.<p>Description ...</p>
      *
      * @param charset
      */
@@ -409,11 +340,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * setContact purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setContact purpose.<p>Description ...</p>
      *
      * @param contact
      */
@@ -426,11 +353,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * setMaxFeatures purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setMaxFeatures purpose.<p>Description ...</p>
      *
      * @param i
      */
@@ -439,11 +362,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * setNumDecimals purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setNumDecimals purpose.<p>Description ...</p>
      *
      * @param i
      */
@@ -452,11 +371,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * setSchemaBaseUrl purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setSchemaBaseUrl purpose.<p>Description ...</p>
      *
      * @param url
      */
@@ -465,7 +380,8 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * Setter for the {@linkplain #proxyBaseUrl} property
+     * Setter for the {@linkPlain #proxyBaseUrl} property
+     *
      * @param url
      */
     public void setProxyBaseUrl(String url) {
@@ -473,11 +389,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * setVerbose purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setVerbose purpose.<p>Description ...</p>
      *
      * @param b
      */
@@ -486,11 +398,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * getLoggingLevel purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getLoggingLevel purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -499,11 +407,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * setLoggingLevel purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setLoggingLevel purpose.<p>Description ...</p>
      *
      * @param level
      */
@@ -533,7 +437,8 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * Gets the password of the administrator of GeoServer, for login purposes.
+     * Gets the password of the administrator of GeoServer, for login
+     * purposes.
      *
      * @return The password of the administrator.
      */
@@ -542,7 +447,8 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * Sets the password of the administrator of GeoServer, for login purposes.
+     * Sets the password of the administrator of GeoServer, for login
+     * purposes.
      *
      * @param password The password to set as the login password.
      */
@@ -551,8 +457,8 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * Should we display stackTraces or not? (And give them a nice little
-     * message instead?)
+     * Should we display stackTraces or not? (And give them a nice
+     * little message instead?)
      *
      * @return Returns the showStackTraces.
      */
@@ -561,8 +467,8 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     * If set to true, response exceptions will throw their stack trace back to
-     * the end user.
+     * If set to true, response exceptions will throw their stack trace
+     * back to the end user.
      *
      * @param showStackTraces The showStackTraces to set.
      */
@@ -571,25 +477,32 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-          * Returns the location of where the server ouputs logs. Note that this may
-          * not reference an actual physical location on disk.
-          * Call {@link GeoServer#getLogLocation(String, ServletContext)} to map this
-          * string to a file on disk.
-          *
-          */
+     * Returns the location of where the server ouputs logs. Note that
+     * this may not reference an actual physical location on disk. Call {@link
+     * GeoServer#getLogLocation(String, ServletContext)} to map this string to
+     * a file on disk.
+     *
+     * @return DOCUMENT ME!
+     */
     public String getLogLocation() {
         return logLocation;
     }
 
     /**
-     * @param logLocation The string representation of the path on disk in which
-     * the server logs to.
+     *
+    DOCUMENT ME!
+     *
+     * @param logLocation The string representation of the path on disk in
+     *        which the server logs to.
      */
     public void setLogLocation(String logLocation) {
         this.logLocation = logLocation;
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return True if the server is logging to file, otherwise false.
      */
     public boolean getLoggingToFile() {
@@ -598,6 +511,8 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /**
      * Toggles server logging to file.
+     *
+     * @param loggingToFile DOCUMENT ME!
      */
     public void setLoggingToFile(boolean loggingToFile) {
         this.loggingToFile = loggingToFile;
@@ -658,6 +573,9 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the imageIOCache.
      */
     public Boolean getImageIOCache() {
@@ -665,6 +583,9 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @param imageIOCache The imageIOCache to set.
      */
     public void setImageIOCache(Boolean imageIOCache) {
@@ -718,15 +639,15 @@ public final class GeoServerDTO implements DataTransferObject {
         public static final String AdminPassword = "geoserver";
 
         /**
-         * The default verboseExceptions is false, so that by default the
-         * service exceptions don't look like someone 'kacked'.
+         * The default verboseExceptions is false, so that by
+         * default the service exceptions don't look like someone 'kacked'.
          */
         public static final boolean VerboseExceptions = false;
 
-        /** Default of wether to log to disk **/
+        /** Default of wether to log to disk */
         public static final boolean LoggingToFile = false;
 
-        /** Default logging location on disk **/
+        /** Default logging location on disk */
         public static final String LogLocation = null;
         public static final long JaiMemoryCapacity = 200 * 1024 * 1024;
         public static final double JaiMemoryThreshold = 0.75;

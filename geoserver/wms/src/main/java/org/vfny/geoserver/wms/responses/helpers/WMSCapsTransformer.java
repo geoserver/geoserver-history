@@ -43,7 +43,8 @@ import javax.xml.transform.TransformerException;
 
 
 /**
- * Geotools xml framework based encoder for a Capabilities WMS 1.1.1 document.
+ * Geotools xml framework based encoder for a Capabilities WMS 1.1.1
+ * document.
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id
@@ -58,16 +59,16 @@ public class WMSCapsTransformer extends TransformerBase {
     private ApplicationContext applicationContext;
 
     /**
-     * Creates a new WMSCapsTransformer object.
-     *
-     * @param schemaBaseUrl
-     *            needed to get the schema base URL
-     * @param formats
-     * @param applicationContext
-     *
-     * @throws NullPointerException
-     *             if <code>schemaBaseUrl</code> is null;
-     */
+         * Creates a new WMSCapsTransformer object.
+         *
+         * @param schemaBaseUrl
+         *            needed to get the schema base URL
+         * @param formats
+         * @param applicationContext
+         *
+         * @throws NullPointerException
+         *             if <code>schemaBaseUrl</code> is null;
+         */
     public WMSCapsTransformer(String schemaBaseUrl, Set formats,
         ApplicationContext applicationContext) {
         super();
@@ -85,8 +86,7 @@ public class WMSCapsTransformer extends TransformerBase {
     /**
      * DOCUMENT ME!
      *
-     * @param handler
-     *            DOCUMENT ME!
+     * @param handler DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
@@ -95,21 +95,18 @@ public class WMSCapsTransformer extends TransformerBase {
     }
 
     /**
-     * Gets the <code>Transformer</code> created by the overriden method in
-     * the superclass and adds it the system DOCTYPE token pointing to the
-     * Capabilities DTD on this server instance.
-     *
-     * <p>
-     * The DTD is set at the fixed location given by the
-     * <code>schemaBaseUrl</code> passed to the constructor <code>+
-     * "wms/1.1.1/WMS_MS_Capabilities.dtd</code>.
-     * </p>
+     * Gets the <code>Transformer</code> created by the overriden
+     * method in the superclass and adds it the system DOCTYPE token pointing
+     * to the Capabilities DTD on this server instance.<p>The DTD is
+     * set at the fixed location given by the <code>schemaBaseUrl</code>
+     * passed to the constructor <code>+
+     * "wms/1.1.1/WMS_MS_Capabilities.dtd</code>.</p>
      *
      * @return a Transformer propoerly configured to produce DescribeLayer
      *         responses.
      *
-     * @throws TransformerException
-     *             if it is thrown by <code>super.createTransformer()</code>
+     * @throws TransformerException if it is thrown by
+     *         <code>super.createTransformer()</code>
      */
     public Transformer createTransformer() throws TransformerException {
         Transformer transformer = super.createTransformer();
@@ -147,19 +144,19 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
-         * The request from wich all the information needed to produce the
-         * capabilities document can be obtained
+         * The request from wich all the information needed to
+         * produce the capabilities document can be obtained
          */
         private CapabilitiesRequest request;
         private Set formats;
         private ApplicationContext applicationContext;
 
         /**
-         * Creates a new CapabilitiesTranslator object.
-         *
-         * @param handler
-         *            content handler to send sax events to.
-         */
+                 * Creates a new CapabilitiesTranslator object.
+                 *
+                 * @param handler
+                 *            content handler to send sax events to.
+                 */
         public CapabilitiesTranslator(ContentHandler handler, Set formats,
             ApplicationContext applicationContext) {
             super(handler, null, null);
@@ -170,11 +167,9 @@ public class WMSCapsTransformer extends TransformerBase {
         /**
          * DOCUMENT ME!
          *
-         * @param o
-         *            the <code>CapabilitiesRequest</code>
+         * @param o the <code>CapabilitiesRequest</code>
          *
-         * @throws IllegalArgumentException
-         *             DOCUMENT ME!
+         * @throws IllegalArgumentException DOCUMENT ME!
          */
         public void encode(Object o) throws IllegalArgumentException {
             if (!(o instanceof CapabilitiesRequest)) {
@@ -195,7 +190,8 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
-         * Encodes the service metadata section of a WMS capabilities document.
+         * Encodes the service metadata section of a WMS
+         * capabilities document.
          */
         private void handleService() {
             WMS wms = (WMS) request.getServiceRef().getServiceRef();
@@ -222,7 +218,9 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
-         * Encodes contact information in the WMS capabilities document
+         * Encodes contact information in the WMS capabilities
+         * document
+         *
          * @param geoServer
          */
         public void handleContactInfo(GeoServer geoServer) {
@@ -269,7 +267,7 @@ public class WMSCapsTransformer extends TransformerBase {
         /**
          * Turns the metadata URL list to XML
          *
-         * @param keywords
+         * @param metadataURLs
          */
         private void handleMetadataList(List metadataURLs) {
             if (metadataURLs == null) {
@@ -296,8 +294,8 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
-         * Encodes the capabilities metadata section of a WMS capabilities
-         * document
+         * Encodes the capabilities metadata section of a WMS
+         * capabilities document
          */
         private void handleCapability() {
             start("Capability");
@@ -362,8 +360,8 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
-         * Encodes a <code>DCPType</code> fragment for HTTP GET and POST
-         * methods.
+         * Encodes a <code>DCPType</code> fragment for HTTP GET and
+         * POST methods.
          *
          * @param getUrl the URL of the onlineresource for HTTP GET method
          *        requests
@@ -435,27 +433,21 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
-         * Handles the encoding of the layers elements.
-         *
-         * <p>
-         * This method does a search over the SRS of all the layers to see if
-         * there are at least a common one, as needed by the spec: "<i>The root
+         * Handles the encoding of the layers elements.<p>This
+         * method does a search over the SRS of all the layers to see if there
+         * are at least a common one, as needed by the spec: "<i>The root
          * Layer element shall include a sequence of zero or more &lt;SRS&gt;
-         * elements listing all SRSes that are common to all subsidiary layers.
-         * Use a single SRS element with empty content (like so:
-         * "&lt;SRS&gt;&lt;/SRS&gt;") if there is no common SRS."</i>
-         * </p>
-         *
-         * <p>
-         * By the other hand, this search is also used to collecto the whole
-         * latlon bbox, as stated by the spec: <i>"The bounding box metadata in
-         * Capabilities XML specify the minimum enclosing rectangle for the
-         * layer as a whole."</i>
-         * </p>
+         * elements listing all SRSes that are common to all subsidiary
+         * layers. Use a single SRS element with empty content (like so:
+         * "&lt;SRS&gt;&lt;/SRS&gt;") if there is no common SRS."</i></p>
+         *  <p>By the other hand, this search is also used to
+         * collecto the whole latlon bbox, as stated by the spec: <i>"The
+         * bounding box metadata in Capabilities XML specify the minimum
+         * enclosing rectangle for the layer as a whole."</i></p>
          *
          * @task TODO: manage this differently when we have the layer list of
-         *       the WMS service decoupled from the feature types configured for
-         *       the server instance. (This involves nested layers,
+         *       the WMS service decoupled from the feature types configured
+         *       for the server instance. (This involves nested layers,
          *       gridcoverages, etc)
          */
         private void handleLayers() {
@@ -482,20 +474,16 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
-         * Called from <code>handleLayers()</code>, does the first iteration
-         * over the available featuretypes to look for common SRS's and
-         * summarize their LatLonBBox'es, to state at the root layer.
+         * Called from <code>handleLayers()</code>, does the first
+         * iteration over the available featuretypes to look for common SRS's
+         * and summarize their LatLonBBox'es, to state at the root layer.<p>NOTE:
+         * by now we just have "layer.getSRS()", so the search is done against
+         * this only SRS.</p>
          *
-         * <p>
-         * NOTE: by now we just have "layer.getSRS()", so the search is done
-         * against this only SRS.
-         * </p>
+         * @param ftypes DOCUMENT ME!
+         * @param TYPE DOCUMENT ME!
          *
-         * @param ftypes
-         *            DOCUMENT ME!
-         *
-         * @throws RuntimeException
-         *             DOCUMENT ME!
+         * @throws RuntimeException DOCUMENT ME!
          *
          * @task TODO: figure out how to incorporate multiple SRS using the
          *       reprojection facilities from gt2
@@ -664,6 +652,9 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
+         *
+        DOCUMENT ME!
+         *
          * @param featuresLayerTree
          */
         private void handleFeaturesTree(LayerTree featuresLayerTree) {
@@ -692,15 +683,13 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
-         * Calls super.handleFeatureType to add common FeatureType content such
-         * as Name, Title and LatLonBoundingBox, and then writes WMS specific
-         * layer properties as Styles, Scale Hint, etc.
+         * Calls super.handleFeatureType to add common FeatureType
+         * content such as Name, Title and LatLonBoundingBox, and then writes
+         * WMS specific layer properties as Styles, Scale Hint, etc.
          *
-         * @param ftype
-         *            The featureType to write out.
+         * @param ftype The featureType to write out.
          *
-         * @throws RuntimeException
-         *             DOCUMENT ME!
+         * @throws RuntimeException DOCUMENT ME!
          *
          * @task TODO: write wms specific elements.
          */
@@ -715,11 +704,10 @@ public class WMSCapsTransformer extends TransformerBase {
             element("Abstract", ftype.getAbstract());
 
             handleKeywordList(ftype.getKeywords());
-
             /**
-             * @task REVISIT: should getSRS() return the full URL? no - the spec
-             *       says it should be a set of <SRS>EPSG:#</SRS>...
-             */
+                         * @task REVISIT: should getSRS() return the full URL? no - the spec
+                         *       says it should be a set of <SRS>EPSG:#</SRS>...
+                         */
             element("SRS", EPSG + ftype.getSRS());
 
             // DJB: I want to be nice to the people reading the capabilities
@@ -781,6 +769,9 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
+         *
+        DOCUMENT ME!
+         *
          * @param coveragesLayerTree
          */
         private void handleCoveragesTree(LayerTree coveragesLayerTree) {
@@ -828,32 +819,32 @@ public class WMSCapsTransformer extends TransformerBase {
             String authority = coverage.getSrsName();
 
             /*CoordinateReferenceSystem crs = coverage.getCrs();
-            if (crs != null && !crs.getIdentifiers().isEmpty()) {
-                    Identifier[] idents = (Identifier[]) crs.getIdentifiers()
-                                    .toArray(new Identifier[crs.getIdentifiers().size()]);
-                    authority = idents[0].toString();
-            } else if (crs != null && crs instanceof DerivedCRS) {
-                    final CoordinateReferenceSystem baseCRS = ((DerivedCRS) crs)
-                                    .getBaseCRS();
-                    if (baseCRS != null && !baseCRS.getIdentifiers().isEmpty())
-                            authority = ((Identifier[]) baseCRS.getIdentifiers()
-                                            .toArray(
-                                                            new Identifier[baseCRS.getIdentifiers()
-                                                                            .size()]))[0].toString();
-                    else
-                            authority = coverage.getNativeCRS();
-            } else if (crs != null && crs instanceof ProjectedCRS) {
-                    final CoordinateReferenceSystem baseCRS = ((ProjectedCRS) crs)
-                                    .getBaseCRS();
-                    if (baseCRS != null && !baseCRS.getIdentifiers().isEmpty())
-                            authority = ((Identifier[]) baseCRS.getIdentifiers()
-                                            .toArray(
-                                                            new Identifier[baseCRS.getIdentifiers()
-                                                                            .size()]))[0].toString();
-                    else
-                            authority = coverage.getNativeCRS();
-            } else
-                    authority = coverage.getNativeCRS();*/
+               if (crs != null && !crs.getIdentifiers().isEmpty()) {
+                       Identifier[] idents = (Identifier[]) crs.getIdentifiers()
+                                       .toArray(new Identifier[crs.getIdentifiers().size()]);
+                       authority = idents[0].toString();
+               } else if (crs != null && crs instanceof DerivedCRS) {
+                       final CoordinateReferenceSystem baseCRS = ((DerivedCRS) crs)
+                                       .getBaseCRS();
+                       if (baseCRS != null && !baseCRS.getIdentifiers().isEmpty())
+                               authority = ((Identifier[]) baseCRS.getIdentifiers()
+                                               .toArray(
+                                                               new Identifier[baseCRS.getIdentifiers()
+                                                                               .size()]))[0].toString();
+                       else
+                               authority = coverage.getNativeCRS();
+               } else if (crs != null && crs instanceof ProjectedCRS) {
+                       final CoordinateReferenceSystem baseCRS = ((ProjectedCRS) crs)
+                                       .getBaseCRS();
+                       if (baseCRS != null && !baseCRS.getIdentifiers().isEmpty())
+                               authority = ((Identifier[]) baseCRS.getIdentifiers()
+                                               .toArray(
+                                                               new Identifier[baseCRS.getIdentifiers()
+                                                                               .size()]))[0].toString();
+                       else
+                               authority = coverage.getNativeCRS();
+               } else
+                       authority = coverage.getNativeCRS();*/
             element("SRS", authority);
 
             GeneralEnvelope bounds = null;
@@ -919,21 +910,17 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
-         * Writes layer LegendURL pointing to the user supplied icon URL, if
-         * any, or to the proper GetLegendGraphic operation if an URL was not
-         * supplied by configuration file.
+         * Writes layer LegendURL pointing to the user supplied
+         * icon URL, if any, or to the proper GetLegendGraphic operation if an
+         * URL was not supplied by configuration file.<p>It is
+         * common practice to supply a URL to a WMS accesible legend graphic
+         * when it is difficult to create a dynamic legend for a layer.</p>
          *
-         * <p>
-         * It is common practice to supply a URL to a WMS accesible legend
-         * graphic when it is difficult to create a dynamic legend for a layer.
-         * </p>
+         * @param layer The FeatureTypeInfo that holds the legendURL to write
+         *        out, or<code>null</code> if dynamically generated.
          *
-         * @param ft
-         *            The FeatureTypeInfo that holds the legendURL to write out,
-         *            or<code>null</code> if dynamically generated.
-         *
-         * @task TODO: figure out how to unhack legend parameters such as WIDTH,
-         *       HEIGHT and FORMAT
+         * @task TODO: figure out how to unhack legend parameters such as
+         *       WIDTH, HEIGHT and FORMAT
          */
         protected void handleLegendURL(Object layer) {
             LegendURL legend = null;
@@ -1055,8 +1042,8 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
-         * adds a comment to the output xml file. THIS IS A BIG HACK. TODO: do
-         * this in the correct manner!
+         * adds a comment to the output xml file. THIS IS A BIG
+         * HACK. TODO: do this in the correct manner!
          *
          * @param comment
          */
@@ -1082,6 +1069,7 @@ public class WMSCapsTransformer extends TransformerBase {
          * Encodes a BoundingBox for the given Envelope.
          *
          * @param bbox
+         * @param SRS DOCUMENT ME!
          */
         private void handleBBox(Envelope bbox, String SRS) {
             String minx = String.valueOf(bbox.getMinX());
@@ -1105,10 +1093,8 @@ public class WMSCapsTransformer extends TransformerBase {
 /**
  * A Class to manage the WMS Layer structure
  *
- * @author fabiania
- *
- * TODO To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Style - Code Templates
+ * @author fabiania TODO To change the template for this generated type comment
+ *         go to Window - Preferences - Java - Code Style - Code Templates
  */
 class LayerTree {
     private String name;
@@ -1116,9 +1102,9 @@ class LayerTree {
     private Collection data;
 
     /**
-     * @param name
-     *            String
-     */
+         * @param name
+         *            String
+         */
     public LayerTree(String name) {
         this.name = name;
         this.childrens = new ArrayList();
@@ -1126,9 +1112,9 @@ class LayerTree {
     }
 
     /**
-     * @param c
-     *            Collection
-     */
+         * @param c
+         *            Collection
+         */
     public LayerTree(Collection c) {
         this.name = "";
         this.childrens = new ArrayList();
@@ -1170,6 +1156,9 @@ class LayerTree {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @param tree
      * @param treeStructure
      * @param layer
@@ -1213,7 +1202,11 @@ class LayerTree {
     }
 
     /**
-     * @param string
+     *
+    DOCUMENT ME!
+     *
+     * @param name
+     *
      * @return
      */
     public LayerTree getNode(String name) {

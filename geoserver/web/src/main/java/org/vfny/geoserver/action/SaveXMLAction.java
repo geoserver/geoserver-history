@@ -32,11 +32,8 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Save GeoServer state to XML.
- *
- * <p>
- * This is a propert ConfigAction - you need to be logged in for this to work.
- * </p>
+ * Save GeoServer state to XML.<p>This is a propert ConfigAction - you need
+ * to be logged in for this to work.</p>
  */
 public class SaveXMLAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,

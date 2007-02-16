@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * This utility reads in XML requests and returns them as appropriate request
- * objects.
+ * This utility reads in XML requests and returns them as appropriate
+ * request objects.
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
@@ -25,30 +25,34 @@ public abstract class XmlRequestReader {
     /** Class logger */
     protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
-    /** The service handling the request **/
+    /** The service handling the request */
     private AbstractService service;
 
     /**
-     * This will create a new XmlRequestReader
-     * @param service The service handling the request
-     */
+         * This will create a new XmlRequestReader
+         * @param service The service handling the request
+         */
     public XmlRequestReader(AbstractService service) {
         this.service = service;
     }
 
     /**
-    * DOCUMENT ME!
-    *
-    * @param reader DOCUMENT ME!
-    *
-    * @return DOCUMENT ME!
-    *
-    * @throws ServiceException DOCUMENT ME!
-    */
+     * DOCUMENT ME!
+     *
+     * @param reader DOCUMENT ME!
+     * @param req DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     *
+     * @throws ServiceException DOCUMENT ME!
+     */
     public abstract Request read(Reader reader, HttpServletRequest req)
         throws ServiceException;
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return the service handling the request
      */
     public AbstractService getServiceRef() {
@@ -57,6 +61,8 @@ public abstract class XmlRequestReader {
 
     /**
      * sets the service handling the request
+     *
+     * @param service DOCUMENT ME!
      */
     public void setServiceRef(AbstractService service) {
         this.service = service;

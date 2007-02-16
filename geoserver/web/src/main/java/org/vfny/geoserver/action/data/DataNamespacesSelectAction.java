@@ -119,11 +119,12 @@ public class DataNamespacesSelectAction extends ConfigAction {
     }
 
     /**
-     *  return true if the namespace is being used by a datastore.
-     *  You dont want to delete a namespace thats actually being used.
+     * return true if the namespace is being used by a datastore. You
+     * dont want to delete a namespace thats actually being used.
      *
      * @param dataConfig
      * @param nsSelected
+     *
      * @return
      */
     private boolean dataStoresUseNamespace(DataConfig dataConfig, String nsSelected) {

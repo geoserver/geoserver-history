@@ -74,15 +74,15 @@ class PDFMapProducer implements GetMapProducer {
     private WMSMapContext mapContext;
 
     /**
-             *
-             */
+                 *
+                 */
     public PDFMapProducer() {
         this(DEFAULT_MAP_FORMAT);
     }
 
     /**
-             *
-             */
+                 *
+                 */
     public PDFMapProducer(String outputFormat) {
         setOutputFormat(outputFormat);
     }

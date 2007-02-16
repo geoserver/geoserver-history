@@ -10,27 +10,24 @@ import java.net.URL;
 
 
 /**
- * ServiceConfig purpose.
- *
- * <p>
- * ServiceConfig is intended to be extended to provide some basic data storage
- * facilities.  This class represents the basic properties of a web service.
- * </p>
- *
- * <p></p>
+ * ServiceConfig purpose.<p>ServiceConfig is intended to be extended to
+ * provide some basic data storage facilities.  This class represents the
+ * basic properties of a web service.</p>
+ *  <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id: ServiceConfig.java,v 1.16 2004/02/09 23:30:05 dmzwiers Exp $
  */
 public class ServiceConfig {
     /**
-     * Represents when the web service is enabled/disabled. True when enabled.
+     * Represents when the web service is enabled/disabled. True when
+     * enabled.
      */
     private boolean enabled = true;
 
     /**
-     * Online Reference URL for the web service. A location to look for when
-     * additional assistance is required.
+     * Online Reference URL for the web service. A location to look for
+     * when additional assistance is required.
      */
     private URL onlineResource;
 
@@ -47,33 +44,33 @@ public class ServiceConfig {
     private String[] keywords;
 
     /**
-     * The fees associated with the service. When there are not any fees, the
-     * value  "NONE" is used.
+     * The fees associated with the service. When there are not any
+     * fees, the value  "NONE" is used.
      */
     private String fees;
 
     /**
-     * The access constraints associated with the service. When there are not
-     * any,  the value "NONE" is used.
+     * The access constraints associated with the service. When there
+     * are not any,  the value "NONE" is used.
      */
     private String accessConstraints = "NONE";
 
     /**
-     * Name of the person who maintains the web service. Should ideally be
-     * contact  information such as webmaster&amp;geoserver.org .
+     * Name of the person who maintains the web service. Should ideally
+     * be contact  information such as webmaster&amp;geoserver.org .
      */
     private String maintainer;
     private MetaDataLink metadataLink;
 
     /**
-     * ServiceConfig constructor.
-     *
-     * <p>
-     * Creates an empty ServiceConfig representation with default values.
-     * </p>
-     *
-     * @see defaultSettings()
-     */
+         * ServiceConfig constructor.
+         *
+         * <p>
+         * Creates an empty ServiceConfig representation with default values.
+         * </p>
+         *
+         * @see defaultSettings()
+         */
     public ServiceConfig() {
         enabled = true;
         name = "";
@@ -87,20 +84,20 @@ public class ServiceConfig {
     }
 
     /**
-     * ServiceConfig constructor.
-     *
-     * <p>
-     * This is equivalent to calling the load method. When a null value is
-     * passed in,  the default values are used. All non-primary datatypes are
-     * cloned with the  exception of Strings (which have a singleton hash
-     * table in memory representation).
-     * </p>
-     *
-     * @param dto The ServiceDTO object to copy into the new ServiceConfig
-     *        object.
-     *
-     * @throws NullPointerException if dto was null;
-     */
+         * ServiceConfig constructor.
+         *
+         * <p>
+         * This is equivalent to calling the load method. When a null value is
+         * passed in,  the default values are used. All non-primary datatypes are
+         * cloned with the  exception of Strings (which have a singleton hash
+         * table in memory representation).
+         * </p>
+         *
+         * @param dto The ServiceDTO object to copy into the new ServiceConfig
+         *        object.
+         *
+         * @throws NullPointerException if dto was null;
+         */
     public ServiceConfig(ServiceDTO dto) {
         if (dto == null) {
             throw new NullPointerException("Non null ServiceDTO required");
@@ -110,11 +107,8 @@ public class ServiceConfig {
     }
 
     /**
-     * Implement loadDTO.
-     *
-     * <p>
-     * Takes a ServiceDTO and loads it into this ServiceConfig Object
-     * </p>
+     * Implement loadDTO.<p>Takes a ServiceDTO and loads it into this
+     * ServiceConfig Object</p>
      *
      * @param dto an instance of ServiceDTO
      *
@@ -151,11 +145,8 @@ public class ServiceConfig {
     }
 
     /**
-     * Implement toDTO.
-     *
-     * <p>
-     * Returns a copy of the data in a ServiceDTO object
-     * </p>
+     * Implement toDTO.<p>Returns a copy of the data in a ServiceDTO
+     * object</p>
      *
      * @return a copy of the data in a ServiceDTO object
      *
@@ -348,16 +339,20 @@ public class ServiceConfig {
     }
 
     /**
-     * @return Returns the metadataLink.
      *
+    DOCUMENT ME!
+     *
+     * @return Returns the metadataLink.
      */
     public MetaDataLink getMetadataLink() {
         return metadataLink;
     }
 
     /**
-     * @param metadataLink The metadataLink to set.
      *
+    DOCUMENT ME!
+     *
+     * @param metadataLink The metadataLink to set.
      */
     public void setMetadataLink(MetaDataLink metadataLink) {
         this.metadataLink = metadataLink;

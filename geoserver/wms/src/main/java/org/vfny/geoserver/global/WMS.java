@@ -10,20 +10,14 @@ import java.util.Map;
 
 
 /**
- * WMS
- *
- * <p>
- * Represents the GeoServer information required to configure an  instance of
- * the WMS Server. This class holds the currently used  configuration and is
- * instantiated initially by the GeoServerPlugIn  at start-up, but may be
- * modified by the Configuration Interface  during runtime. Such modifications
- * come from the GeoServer Object  in the SessionContext.
- * </p>
- *
- * <p>
- * WMS wms = new WMS(dto); System.out.println(wms.getName() + wms.WMS_VERSION);
- * System.out.println(wms.getAbstract());
- * </p>
+ * WMS<p>Represents the GeoServer information required to configure an
+ * instance of the WMS Server. This class holds the currently used
+ * configuration and is instantiated initially by the GeoServerPlugIn  at
+ * start-up, but may be modified by the Configuration Interface  during
+ * runtime. Such modifications come from the GeoServer Object  in the
+ * SessionContext.</p>
+ *  <p>WMS wms = new WMS(dto); System.out.println(wms.getName() +
+ * wms.WMS_VERSION); System.out.println(wms.getAbstract());</p>
  *
  * @author Gabriel Rold???n
  * @version $Id: WMS.java,v 1.7 2004/02/24 02:08:50 cholmesny Exp $
@@ -43,28 +37,28 @@ public class WMS extends Service {
         };
     public static final String WEB_CONTAINER_KEY = "WMS";
 
-    /** svg Renderer to use **/
+    /** svg Renderer to use */
     private String svgRenderer;
 
-    /** svg anitalias or not **/
+    /** svg anitalias or not */
     private boolean svgAntiAlias;
 
-    /** rendering interpolation or not **/
+    /** rendering interpolation or not */
     private Map baseMapLayers;
     private Map baseMapStyles;
     private String allowInterpolation;
     private WFS wfs;
 
     /**
-     * WMS constructor.
-     *
-     * <p>
-     * Stores the data specified in the WMSDTO object in this WMS Object for
-     * GeoServer to use.
-     * </p>
-     *
-     * @param config The data intended for GeoServer to use.
-     */
+         * WMS constructor.
+         *
+         * <p>
+         * Stores the data specified in the WMSDTO object in this WMS Object for
+         * GeoServer to use.
+         * </p>
+         *
+         * @param config The data intended for GeoServer to use.
+         */
     public WMS(WMSDTO config) {
         super(config.getService());
         svgRenderer = config.getSvgRenderer();
@@ -75,14 +69,14 @@ public class WMS extends Service {
     }
 
     /**
-     * Creates the WMS service by getting the WMSDTO object from the
-     * config and calling {@link #WMS(WMSDTO)}.
-     *
-     * @param config
-     * @param data
-     * @param geoServer
-     * @throws ConfigurationException
-     */
+         * Creates the WMS service by getting the WMSDTO object from the
+         * config and calling {@link #WMS(WMSDTO)}.
+         *
+         * @param config
+         * @param data
+         * @param geoServer
+         * @throws ConfigurationException
+         */
     public WMS(Config config, Data data, GeoServer geoServer, WFS wfs)
         throws ConfigurationException {
         this(config.getXMLReader().getWms());
@@ -92,21 +86,22 @@ public class WMS extends Service {
     }
 
     /**
-     * WMS constructor.
-     *
-     * <p>
-     * Package constructor intended for default use by GeoServer
-     * </p>
-     *
-     * @see GeoServer#GeoServer()
-     */
+         * WMS constructor.
+         *
+         * <p>
+         * Package constructor intended for default use by GeoServer
+         * </p>
+         *
+         * @see GeoServer#GeoServer()
+         */
     WMS() {
         super(new ServiceDTO());
     }
 
     /**
-     * Quick hack to fix geot-770, need a full class rewrite otherwise and
-     * we are too near release to do that
+     * Quick hack to fix geot-770, need a full class rewrite otherwise
+     * and we are too near release to do that
+     *
      * @return
      */
     public WFS getWFS() {
@@ -114,12 +109,10 @@ public class WMS extends Service {
     }
 
     /**
-    * load purpose.
-    * <p>
-    * loads a new instance of data into this object.
-    * </p>
-    * @param config
-    */
+     * load purpose.<p>loads a new instance of data into this object.</p>
+     *
+     * @param config
+     */
     public void load(WMSDTO config) {
         super.load(config.getService());
         svgRenderer = config.getSvgRenderer();
@@ -130,13 +123,9 @@ public class WMS extends Service {
     }
 
     /**
-     * Implement toDTO.
-     *
-     * <p>
-     * Package method used by GeoServer. This method may return references, and
-     * does not clone, so extreme caution sould be used when traversing the
-     * results.
-     * </p>
+     * Implement toDTO.<p>Package method used by GeoServer. This method
+     * may return references, and does not clone, so extreme caution sould be
+     * used when traversing the results.</p>
      *
      * @return WMSDTO An instance of the data this class represents. Please see
      *         Caution Above.
@@ -157,11 +146,8 @@ public class WMS extends Service {
     }
 
     /**
-     * getExceptionFormats purpose.
-     *
-     * <p>
-     * Returns a static list of Exception Formats in as Strings
-     * </p>
+     * getExceptionFormats purpose.<p>Returns a static list of
+     * Exception Formats in as Strings</p>
      *
      * @return String[] a static list of Exception Formats
      */
@@ -170,8 +156,8 @@ public class WMS extends Service {
     }
 
     /**
-     * overrides getName() to return the fixed service name as specified by OGC
-     * WMS 1.1 spec
+     * overrides getName() to return the fixed service name as
+     * specified by OGC WMS 1.1 spec
      *
      * @return static service name.
      */
@@ -190,10 +176,8 @@ public class WMS extends Service {
 
     /**
      * Informs the user that this WMS supports SLD.  We don't currently
-     * handle sld, still needs to be rolled in from geotools, so this now
-     * must be false.
-     *
-     *  //djb: we support it now
+     * handle sld, still needs to be rolled in from geotools, so this now must
+     * be false. //djb: we support it now
      *
      * @return false
      */
@@ -229,6 +213,9 @@ public class WMS extends Service {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return the id of the SVG renderer being used by the wms.
      */
     public String getSvgRenderer() {
@@ -237,26 +224,38 @@ public class WMS extends Service {
 
     /**
      * Sets the id of the SVG renderer being used by the wms.
+     *
+     * @param svgRenderer DOCUMENT ME!
      */
     public void setSvgRenderer(String svgRenderer) {
         this.svgRenderer = svgRenderer;
     }
 
     /**
-     * @return Flag indicating wether the svg renderer should anti-alias or not.
+     *
+    DOCUMENT ME!
+     *
+     * @return Flag indicating wether the svg renderer should anti-alias or
+     *         not.
      */
     public boolean isSvgAntiAlias() {
         return svgAntiAlias;
     }
 
     /**
-     * Sets the Flag indicating wether the svg renderer should anti-alias or not.
+     * Sets the Flag indicating wether the svg renderer should
+     * anti-alias or not.
+     *
+     * @param svgAntiAlias DOCUMENT ME!
      */
     public void setSvgAntiAlias(boolean svgAntiAlias) {
         this.svgAntiAlias = svgAntiAlias;
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Flag indicating wether the renderer should interpolate or not.
      */
     public String getAllowInterpolation() {
@@ -264,7 +263,10 @@ public class WMS extends Service {
     }
 
     /**
-     * Sets the Flag indicating wether the renderer should interpolate or not.
+     * Sets the Flag indicating wether the renderer should interpolate
+     * or not.
+     *
+     * @param allowInterpolation DOCUMENT ME!
      */
     public void setAllowInterpolation(String allowInterpolation) {
         this.allowInterpolation = allowInterpolation;

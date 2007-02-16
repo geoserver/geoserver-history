@@ -18,42 +18,23 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * GeoServerAction is a common super class used by STRUTS Actions.
- *
- * <p>
- * GeoServerAction is used to store shared services, such as looking up the
- * GeoServer Application.
- * </p>
- * Capabilities:
- *
- * <ul>
- * <li>
- * LoggedIn: Convience routines for checking if User has been Authenticated.
- * These will need to be extended in the future if we allow User based
- * Capabilities documents.
- * </li>
- * <li>
- * GeoServer (Application) Access: Convience routines have been writen to allow
- * access to the GeoServer Application from the Web Container.
- * </li>
- * </ul>
- *
- * Example Use:
- * <pre><code>
- * class MyAction extends GeoServerAction {
- *   ...
- * }
- * </code></pre>
- *
- * <p>
- * Please remember that Actions (like servlets) should never make use of
- * instance variables in order to remain thread-safe.
- * </p>
- *
- * <p>
- * The Services provided by this class are convience methods for the Services
- * provided by the Requests utiltiy class.
- * </p>
+ * GeoServerAction is a common super class used by STRUTS Actions.<p>GeoServerAction
+ * is used to store shared services, such as looking up the GeoServer
+ * Application.</p>
+ *  Capabilities:
+ *  <ul>
+ *      <li>LoggedIn: Convience routines for checking if User has been
+ *      Authenticated. These will need to be extended in the future if we allow
+ *      User based Capabilities documents.</li>
+ *      <li>GeoServer (Application) Access: Convience routines have
+ *      been writen to allow access to the GeoServer Application from the Web
+ *      Container.</li>
+ *  </ul>
+ *  Example Use:<pre><code>class MyAction extends GeoServerAction {  ...}
+ * </code></pre><p>Please remember that Actions (like servlets) should
+ * never make use of instance variables in order to remain thread-safe.</p>
+ *  <p>The Services provided by this class are convience methods for the
+ * Services provided by the Requests utiltiy class.</p>
  *
  * @author Jody Garnett, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
@@ -84,11 +65,8 @@ public class GeoServerAction extends ActionSupport {
     }
 
     /**
-     * Aquire type safe session information in a UserContainer.
-     *
-     * <p>
-     * Please note that the UserContainer may be lazyly created.
-     * </p>
+     * Aquire type safe session information in a UserContainer.<p>Please
+     * note that the UserContainer may be lazyly created.</p>
      *
      * @param request Http Request used to aquire session reference
      *
@@ -99,13 +77,9 @@ public class GeoServerAction extends ActionSupport {
     }
 
     /**
-     * Aquire WMS from Web Container.
-     *
-     * <p>
-     * The WMS instance is create by a STRUTS plug-in and is available
-     * through the Web container. (Test cases may seed the request object with
-     * a Mock WebContainer and a Mock WMS)
-     * </p>
+     * Aquire WMS from Web Container.<p>The WMS instance is create by a
+     * STRUTS plug-in and is available through the Web container. (Test cases
+     * may seed the request object with a Mock WebContainer and a Mock WMS)</p>
      *
      * @param request HttpServletRequest used to aquire session reference
      *
@@ -116,13 +90,9 @@ public class GeoServerAction extends ActionSupport {
     }
 
     /**
-     * Aquire WCS from Web Container.
-     *
-     * <p>
-     * The WCS instance is create by a STRUTS plug-in and is available
-     * through the Web container. (Test cases may seed the request object with
-     * a Mock WebContainer and a Mock WMS)
-     * </p>
+     * Aquire WCS from Web Container.<p>The WCS instance is create by a
+     * STRUTS plug-in and is available through the Web container. (Test cases
+     * may seed the request object with a Mock WebContainer and a Mock WMS)</p>
      *
      * @param request HttpServletRequest used to aquire session reference
      *
@@ -133,13 +103,9 @@ public class GeoServerAction extends ActionSupport {
     }
 
     /**
-     * Aquire WFS from Web Container.
-     *
-     * <p>
-     * The WFS instance is create by a STRUTS plug-in and is available
-     * through the Web container. (Test cases may seed the request object with
-     * a Mock WebContainer and a Mock WFS)
-     * </p>
+     * Aquire WFS from Web Container.<p>The WFS instance is create by a
+     * STRUTS plug-in and is available through the Web container. (Test cases
+     * may seed the request object with a Mock WebContainer and a Mock WFS)</p>
      *
      * @param request HttpServletRequest used to aquire session reference
      *
@@ -151,7 +117,7 @@ public class GeoServerAction extends ActionSupport {
 
     /**
      * Aquire global configuration from the Spring context.
-    
+     *
      * @return Global configuration of this web app
      */
     public GeoServer getGeoServer() {

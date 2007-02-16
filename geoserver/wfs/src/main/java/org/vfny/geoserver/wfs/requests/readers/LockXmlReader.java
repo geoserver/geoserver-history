@@ -32,10 +32,10 @@ import javax.xml.parsers.SAXParserFactory;
  */
 public class LockXmlReader extends XmlRequestReader {
     /**
-     * Creates a new LockXmlReader object.
-     *
-     * @param service The WFS service handling the request.
-     */
+         * Creates a new LockXmlReader object.
+         *
+         * @param service The WFS service handling the request.
+         */
     public LockXmlReader(WFService service) {
         super(service);
     }
@@ -44,6 +44,7 @@ public class LockXmlReader extends XmlRequestReader {
      * Reads the Lock XML request into a LockRequest object.
      *
      * @param reader The plain POST text from the client.
+     * @param req DOCUMENT ME!
      *
      * @return The read LockRequest object.
      *

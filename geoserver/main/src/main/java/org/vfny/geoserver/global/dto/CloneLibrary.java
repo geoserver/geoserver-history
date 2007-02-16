@@ -12,36 +12,23 @@ import java.util.Map;
 
 
 /**
- * CloneLibrary purpose is used to try and Set up a Deep Copy for DTO objets.
- *
- * <p>
- * Static Library class for cloning complex structures independant of their
- * contents.
- * </p>
- *
- * <p>
- * Jody here - this is much more accessable when presented to the user as new
- * Type( Type ) idiom. Java clone is messed up, I have seen several projects
- * move to a copy() method or the above idom.
- * </p>
- *
- * <p>
- * For the here and now we can use the above Idom. This will even work with all
- * of our lists and Maps since we are only ever using Strings (imutable) in
- * them.
- * </p>
+ * CloneLibrary purpose is used to try and Set up a Deep Copy for DTO
+ * objets.<p>Static Library class for cloning complex structures
+ * independant of their contents.</p>
+ *  <p>Jody here - this is much more accessable when presented to the user
+ * as new Type( Type ) idiom. Java clone is messed up, I have seen several
+ * projects move to a copy() method or the above idom.</p>
+ *  <p>For the here and now we can use the above Idom. This will even work
+ * with all of our lists and Maps since we are only ever using Strings
+ * (imutable) in them.</p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id: CloneLibrary.java,v 1.5 2004/02/09 23:29:48 dmzwiers Exp $
  */
 public final class CloneLibrary {
     /**
-     * clone purpose.
-     *
-     * <p>
-     * Clones a List so that it matches the requirements that the returned
-     * object  would be equal to the source.
-     * </p>
+     * clone purpose.<p>Clones a List so that it matches the
+     * requirements that the returned object  would be equal to the source.</p>
      *
      * @param source The list to be cloned.
      *
@@ -78,12 +65,8 @@ public final class CloneLibrary {
     }
 
     /**
-     * clone purpose.
-     *
-     * <p>
-     * Clones a Map so that it matches the requirements that the returned
-     * object  would be equal to the source.
-     * </p>
+     * clone purpose.<p>Clones a Map so that it matches the
+     * requirements that the returned object  would be equal to the source.</p>
      *
      * @param source The Map to be cloned.
      *
@@ -122,12 +105,8 @@ public final class CloneLibrary {
     }
 
     /**
-     * clone purpose.
-     *
-     * <p>
-     * Clones a Envelope so that it matches the requirements that the returned
-     * object  would be equal to the source.
-     * </p>
+     * clone purpose.<p>Clones a Envelope so that it matches the
+     * requirements that the returned object  would be equal to the source.</p>
      *
      * @param e The Envelope to be cloned.
      *
@@ -143,11 +122,7 @@ public final class CloneLibrary {
     }
 
     /**
-     * clone purpose.
-     *
-     * <p>
-     * used to check class type and clone it.
-     * </p>
+     * clone purpose.<p>used to check class type and clone it.</p>
      *
      * @param ds the DataStructure to clone.
      *
@@ -172,11 +147,8 @@ public final class CloneLibrary {
     }
 
     /**
-     * clone purpose.
-     *
-     * <p>
-     * to make the compiler happy, should never be here.
-     * </p>
+     * clone purpose.<p>to make the compiler happy, should never be
+     * here.</p>
      *
      * @param obj the parameter to return, does nothing.
      *

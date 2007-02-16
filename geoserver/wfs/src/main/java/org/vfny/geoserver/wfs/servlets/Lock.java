@@ -17,9 +17,9 @@ import javax.servlet.ServletContext;
 
 
 /**
- * Implements the WFS Lock interface, which performs insert, update and delete
- * functions on the dataset. This servlet accepts a Lock request and returns a
- * LockResponse xml element.
+ * Implements the WFS Lock interface, which performs insert, update and
+ * delete functions on the dataset. This servlet accepts a Lock request and
+ * returns a LockResponse xml element.
  *
  * @author Chris Holmes, TOPP
  * @version $Id: Lock.java,v 1.6 2004/02/09 23:29:46 dmzwiers Exp $
@@ -30,10 +30,10 @@ public class Lock extends WFService {
     }
 
     /**
-    * DOCUMENT ME!
-    *
-    * @return DOCUMENT ME!
-    */
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     protected Response getResponseHandler() {
         return new LockResponse(getWFS().getGeoServer());
     }

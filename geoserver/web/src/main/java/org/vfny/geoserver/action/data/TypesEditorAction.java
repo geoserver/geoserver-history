@@ -50,31 +50,20 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * These Action handles all the buttons for the FeatureType Editor.
- *
- * <p>
- * This one is more complicated then usual since not all the actions require
- * the form bean to be validated! I am going to have to hack a little bit to
- * make that happen, I may end up making the form bean validation differ
- * depending on the selected action.
- * </p>
- *
- * <p>
- * Buttons that make this action go:
- *
- * <ul>
- * <li>
- * Submit: update the FeatureTypeConfig held by the user, punt it back into
- * DataConfig and return to the FeatureTypeSelect screen.
- * </li>
- * <li>
- * Up and Down (for each attribute): not quite sure how to make these work yet
- * - I hope I dont have to give them different names.
- * </li>
- * </ul>
- *
- * As usual we will have to uninternationlize the action name provided to us.
- * </p>
+ * These Action handles all the buttons for the FeatureType Editor.<p>This
+ * one is more complicated then usual since not all the actions require the
+ * form bean to be validated! I am going to have to hack a little bit to make
+ * that happen, I may end up making the form bean validation differ depending
+ * on the selected action.</p>
+ *  <p>Buttons that make this action go:
+ *  <ul>
+ *      <li>Submit: update the FeatureTypeConfig held by the user, punt
+ *      it back into DataConfig and return to the FeatureTypeSelect screen.</li>
+ *      <li>Up and Down (for each attribute): not quite sure how to
+ *      make these work yet - I hope I dont have to give them different names.</li>
+ *  </ul>
+ *  As usual we will have to uninternationlize the action name provided to
+ * us.</p>
  *
  * @author Richard Gould
  * @author Jody Garnett
@@ -180,8 +169,8 @@ public class TypesEditorAction extends ConfigAction {
     }
 
     /**
-     * Populate the bounding box fields from the source and pass control back
-     * to the UI
+     * Populate the bounding box fields from the source and pass
+     * control back to the UI
      *
      * @param mapping DOCUMENT ME!
      * @param typeForm DOCUMENT ME!
@@ -317,6 +306,7 @@ public class TypesEditorAction extends ConfigAction {
      *
      * @param form
      * @param config
+     * @param request DOCUMENT ME!
      */
     private void sync(TypesEditorForm form, FeatureTypeConfig config, HttpServletRequest request) {
         config.setName(form.getTypeName());

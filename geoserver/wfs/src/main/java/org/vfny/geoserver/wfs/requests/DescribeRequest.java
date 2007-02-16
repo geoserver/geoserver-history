@@ -30,10 +30,10 @@ public class DescribeRequest extends WFSRequest {
     protected String outputFormat = "XMLSCHEMA";
 
     /**
-     * Creates a new DescribeFeatureType request.
-     *
-     * @param service The wfs service handling the request.
-     */
+         * Creates a new DescribeFeatureType request.
+         *
+         * @param service The wfs service handling the request.
+         */
     public DescribeRequest(WFService service) {
         super("DescribeFeatureType", service);
     }
@@ -86,7 +86,8 @@ public class DescribeRequest extends WFSRequest {
     }
 
     /**
-     * Sets the outputFormat.  Right now XMLSCHEMA is the only allowed format.
+     * Sets the outputFormat.  Right now XMLSCHEMA is the only allowed
+     * format.
      *
      * @param outputFormat the new outputFormat
      */

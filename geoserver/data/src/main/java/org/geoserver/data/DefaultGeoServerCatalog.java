@@ -19,7 +19,6 @@ import java.util.List;
  * Default catalog implementation.
  *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
  */
 public class DefaultGeoServerCatalog extends DefaultCatalog implements GeoServerCatalog {
     NamespaceSupport namespaceSupport;

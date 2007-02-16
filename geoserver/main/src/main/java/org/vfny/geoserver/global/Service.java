@@ -12,12 +12,8 @@ import java.util.List;
 
 /**
  * Default configuration for services. This class represents all the
- * commonalities to the WFS and WMS services.
- *
- * <p>
- * WFS wfs = new WFS(dto); Service serv = (Service)WFS;
- * System.out.println(serv.getName());
- * </p>
+ * commonalities to the WFS and WMS services.<p>WFS wfs = new WFS(dto);
+ * Service serv = (Service)WFS; System.out.println(serv.getName());</p>
  *
  * @author Gabriel Rold?n
  * @author Chris Holmes
@@ -43,16 +39,16 @@ public abstract class Service extends GlobalLayerSupertype {
     private Data dt;
 
     /**
-     * Service constructor.
-     *
-     * <p>
-     * Stores the new ServiceDTO data for this service.
-     * </p>
-     *
-     * @param config
-     *
-     * @throws NullPointerException when the param is null
-     */
+         * Service constructor.
+         *
+         * <p>
+         * Stores the new ServiceDTO data for this service.
+         * </p>
+         *
+         * @param config
+         *
+         * @throws NullPointerException when the param is null
+         */
     public Service(ServiceDTO dto) {
         if (dto == null) {
             throw new NullPointerException();
@@ -73,11 +69,11 @@ public abstract class Service extends GlobalLayerSupertype {
     }
 
     /**
-     * load purpose.
-     * <p>
-     * loads a new copy of data into this object.
-     * </p>
+     * load purpose.<p>loads a new copy of data into this object.</p>
+     *
      * @param dto
+     *
+     * @throws NullPointerException DOCUMENT ME!
      */
     public void load(ServiceDTO dto) {
         if (dto == null) {
@@ -99,11 +95,7 @@ public abstract class Service extends GlobalLayerSupertype {
     }
 
     /**
-     * isEnabled purpose.
-     *
-     * <p>
-     * Returns whether is service is enabled.
-     * </p>
+     * isEnabled purpose.<p>Returns whether is service is enabled.</p>
      *
      * @return true when enabled.
      */
@@ -112,11 +104,8 @@ public abstract class Service extends GlobalLayerSupertype {
     }
 
     /**
-     * getOnlineResource purpose.
-     *
-     * <p>
-     * Returns the Online Resource for this Service.
-     * </p>
+     * getOnlineResource purpose.<p>Returns the Online Resource for
+     * this Service.</p>
      *
      * @return URL The Online resource.
      */
@@ -125,11 +114,7 @@ public abstract class Service extends GlobalLayerSupertype {
     }
 
     /**
-     * getAbstract purpose.
-     *
-     * <p>
-     * A description of this service.
-     * </p>
+     * getAbstract purpose.<p>A description of this service.</p>
      *
      * @return String This Service's abstract.
      */
@@ -138,11 +123,8 @@ public abstract class Service extends GlobalLayerSupertype {
     }
 
     /**
-     * getAccessConstraints purpose.
-     *
-     * <p>
-     * A description of this service's access constraints.
-     * </p>
+     * getAccessConstraints purpose.<p>A description of this service's
+     * access constraints.</p>
      *
      * @return String This service's access constraints.
      */
@@ -151,11 +133,7 @@ public abstract class Service extends GlobalLayerSupertype {
     }
 
     /**
-     * getFees purpose.
-     *
-     * <p>
-     * A description of the fees for this service.
-     * </p>
+     * getFees purpose.<p>A description of the fees for this service.</p>
      *
      * @return String the fees for this service.
      */
@@ -164,11 +142,7 @@ public abstract class Service extends GlobalLayerSupertype {
     }
 
     /**
-     * getKeywords purpose.
-     *
-     * <p>
-     * A list of the keywords for this service.
-     * </p>
+     * getKeywords purpose.<p>A list of the keywords for this service.</p>
      *
      * @return List keywords for this service
      */
@@ -183,11 +157,8 @@ public abstract class Service extends GlobalLayerSupertype {
     }
 
     /**
-     * getMaintainer purpose.
-     *
-     * <p>
-     * The name of the maintainer for this service.
-     * </p>
+     * getMaintainer purpose.<p>The name of the maintainer for this
+     * service.</p>
      *
      * @return String maintainer for this service.
      */
@@ -196,11 +167,7 @@ public abstract class Service extends GlobalLayerSupertype {
     }
 
     /**
-     * getName purpose.
-     *
-     * <p>
-     * The name for this service.
-     * </p>
+     * getName purpose.<p>The name for this service.</p>
      *
      * @return String the service's name.
      */
@@ -209,11 +176,7 @@ public abstract class Service extends GlobalLayerSupertype {
     }
 
     /**
-     * getTitle purpose.
-     *
-     * <p>
-     * The title for this service.
-     * </p>
+     * getTitle purpose.<p>The title for this service.</p>
      *
      * @return String the service's title.
      */
@@ -222,14 +185,19 @@ public abstract class Service extends GlobalLayerSupertype {
     }
 
     /**
-     * Sets the strategy used by the service when performing a response.
+     * Sets the strategy used by the service when performing a
+     * response.
      *
+     * @param strategy DOCUMENT ME!
      */
     public void setStrategy(String strategy) {
         this.strategy = strategy;
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The strategy used by the service when performing a response.
      */
     public String getStrategy() {
@@ -237,8 +205,12 @@ public abstract class Service extends GlobalLayerSupertype {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The size of the buffer used by the PARTIAL-BUFFER strategy.
-     * TODO: this should be factored out when config is splittable among modules.
+     *         TODO: this should be factored out when config is splittable
+     *         among modules.
      */
     public int getPartialBufferSize() {
         return partialBufferSize;
@@ -246,7 +218,10 @@ public abstract class Service extends GlobalLayerSupertype {
 
     /**
      * Sets the size of the buffer used by the PARTIAL-BUFFER strategy.
-     * TODO: this should be factored out when config is splittable among modules.
+     * TODO: this should be factored out when config is splittable among
+     * modules.
+     *
+     * @param partialBufferSize DOCUMENT ME!
      */
     public void setPartialBufferSize(int partialBufferSize) {
         this.partialBufferSize = partialBufferSize;
@@ -307,8 +282,10 @@ public abstract class Service extends GlobalLayerSupertype {
     }
 
     /**
-     * @return Returns the metadataLink.
      *
+    DOCUMENT ME!
+     *
+     * @return Returns the metadataLink.
      */
     public MetaDataLink getMetadataLink() {
         return metadataLink;

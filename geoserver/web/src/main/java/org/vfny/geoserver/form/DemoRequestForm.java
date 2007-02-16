@@ -23,14 +23,10 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * <b>DemoRequestForm</b><br>
- * Oct 7, 2005<br>
- *
+ * <b>DemoRequestForm</b><br> Oct 7, 2005<br>
  * <b>Purpose:</b><br>
- * DemoForm collects the list of avialable requests for the demo.
- * <p>
- * Stores the request & post for the demo page, to be used by the DemoAction.
- * </p>
+ * DemoForm collects the list of avialable requests for the demo.<p>Stores
+ * the request & post for the demo page, to be used by the DemoAction.</p>
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author Brent Owens (The Open Planning Project)
@@ -48,10 +44,11 @@ public class DemoRequestForm extends ActionForm {
     /**
      * Sets request & post based on file selection.
      *
-     * @see org.apache.struts.action.ActionForm#reset(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
-     *
      * @param arg0
      * @param request
+     *
+     * @see org.apache.struts.action.ActionForm#reset(org.apache.struts.action.ActionMapping,
+     *      javax.servlet.http.HttpServletRequest)
      */
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
@@ -105,15 +102,16 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
-     *
-     * Verifies that username is not null or empty.
-     * Could potentially do the same for password later.
-     *
-     * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
+     * Verifies that username is not null or empty. Could potentially
+     * do the same for password later.
      *
      * @param mapping
      * @param request
+     *
      * @return
+     *
+     * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping,
+     *      javax.servlet.http.HttpServletRequest)
      */
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
@@ -122,6 +120,9 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the demo.
      */
     public String getDemo() {
@@ -129,6 +130,9 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @param demo The demo to set.
      */
     public void setDemo(String demo) {
@@ -136,6 +140,9 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the dir.
      */
     public File[] getDirs() {
@@ -143,6 +150,9 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the url.
      */
     public String getUrl() {
@@ -150,6 +160,9 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @param url The url to set.
      */
     public void setUrl(String url) {
@@ -157,6 +170,9 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the demoList.
      */
     public List getDemoList() {
@@ -164,6 +180,9 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the action.
      */
     public String getAction() {
@@ -171,6 +190,9 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @param action The action to set.
      */
     public void setAction(String action) {
@@ -178,6 +200,9 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return Returns the body.
      */
     public String getBody() {
@@ -185,6 +210,9 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @param body The body to set.
      */
     public void setBody(String body) {

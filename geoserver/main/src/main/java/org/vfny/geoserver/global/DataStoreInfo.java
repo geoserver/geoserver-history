@@ -31,12 +31,10 @@ import java.util.NoSuchElementException;
 
 
 /**
- * This is the configuration iformation for one DataStore. This class can also
- * generate real datastores.
- * <p>
- * This class implements {@link org.geotools.catalog.Service} interface as a
- * link to a catalog.
- * </p>
+ * This is the configuration iformation for one DataStore. This class can
+ * also generate real datastores.<p>This class implements {@link
+ * org.geotools.catalog.Service} interface as a link to a catalog.</p>
+ *
  * @author Gabriel Rold?n
  * @author dzwiers
  * @author Justin Deoliveira
@@ -58,26 +56,18 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     /** Storage for metadata */
     private Map meta;
 
-    /**
-     * Catalog
-     */
+    /** Catalog */
     private Catalog catalog;
 
     /**
-     * Directory associated with this DataStore.
-     *
-     * <p>
-     * This directory may be used for File based relative paths.
-     * </p>
+     * Directory associated with this DataStore.<p>This directory may
+     * be used for File based relative paths.</p>
      */
     File baseDir;
 
     /**
-     * URL associated with this DataStore.
-     *
-     * <p>
-     * This directory may be used for URL based relative paths.
-     * </p>
+     * URL associated with this DataStore.<p>This directory may be used
+     * for URL based relative paths.</p>
      */
     URL baseURL;
 
@@ -86,15 +76,15 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     ServiceInfo info;
 
     /**
-     * DataStoreInfo constructor.
-     *
-     * <p>
-     * Stores the specified data for later use.
-     * </p>
-     *
-     * @param config DataStoreInfoDTO the current configuration to use.
-     * @param data Data a ref to use later to look up related informtion
-     */
+         * DataStoreInfo constructor.
+         *
+         * <p>
+         * Stores the specified data for later use.
+         * </p>
+         *
+         * @param config DataStoreInfoDTO the current configuration to use.
+         * @param data Data a ref to use later to look up related informtion
+         */
     public DataStoreInfo(DataStoreInfoDTO config, Data data) {
         this.data = data;
         meta = new HashMap();
@@ -110,13 +100,9 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     }
 
     /**
-     * toDTO purpose.
-     *
-     * <p>
-     * This method is package visible only, and returns a reference to the
-     * GeoServerDTO. This method is unsafe, and should only be used with
-     * extreme caution.
-     * </p>
+     * toDTO purpose.<p>This method is package visible only, and
+     * returns a reference to the GeoServerDTO. This method is unsafe, and
+     * should only be used with extreme caution.</p>
      *
      * @return DataStoreInfoDTO the generated object
      */
@@ -133,11 +119,7 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     }
 
     /**
-     * getId purpose.
-     *
-     * <p>
-     * Returns the dataStore's id.
-     * </p>
+     * getId purpose.<p>Returns the dataStore's id.</p>
      *
      * @return String the id.
      */
@@ -153,13 +135,12 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     }
 
     /**
-     * Get Connect params.
+     * Get Connect params.<p>This is used to smooth any relative path
+     * kind of issues for any file URLS. This code should be expanded to deal
+     * with any other context sensitve isses dataStores tend to have.</p>
      *
-     * <p>
-     * This is used to smooth any relative path kind of issues for any file
-     * URLS. This code should be expanded to deal with any other context
-     * sensitve isses dataStores tend to have.
-     * </p>
+     * @param m DOCUMENT ME!
+     * @param baseDir DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      *
@@ -202,13 +183,10 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
      * DataStoreInfo capable of process <code>connectionParams</code>. In the
      * future we can see if it is better to cache or pool DataStores for
      * performance, but definitely we shouldn't maintain a single
-     * DataStoreInfo as instance variable for synchronizing reassons
-     *
-     * <p>
-     * JG: Umm we actually require a single DataStoreInfo for for locking &
+     * DataStoreInfo as instance variable for synchronizing reassons<p>JG:
+     * Umm we actually require a single DataStoreInfo for for locking &
      * transaction support to work. DataStoreInfo is expected to be thread
-     * aware (that is why it has Transaction Support).
-     * </p>
+     * aware (that is why it has Transaction Support).</p>
      *
      * @return DataStore
      *
@@ -248,11 +226,7 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     }
 
     /**
-     * getTitle purpose.
-     *
-     * <p>
-     * Returns the dataStore's title.
-     * </p>
+     * getTitle purpose.<p>Returns the dataStore's title.</p>
      *
      * @return String the title.
      */
@@ -261,11 +235,7 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     }
 
     /**
-     * getAbstract purpose.
-     *
-     * <p>
-     * Returns the dataStore's abstract.
-     * </p>
+     * getAbstract purpose.<p>Returns the dataStore's abstract.</p>
      *
      * @return String the abstract.
      */
@@ -274,11 +244,8 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     }
 
     /**
-     * isEnabled purpose.
-     *
-     * <p>
-     * Returns true when the data store is enabled.
-     * </p>
+     * isEnabled purpose.<p>Returns true when the data store is
+     * enabled.</p>
      *
      * @return true when the data store is enabled.
      */
@@ -287,11 +254,8 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     }
 
     /**
-     * getNameSpace purpose.
-     *
-     * <p>
-     * Returns the namespace for this datastore.
-     * </p>
+     * getNameSpace purpose.<p>Returns the namespace for this
+     * datastore.</p>
      *
      * @return NameSpaceInfo the namespace for this datastore.
      */

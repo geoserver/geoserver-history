@@ -32,10 +32,10 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
     private DataStore ds;
 
     /**
-     *
-     * @param ds
-     * @param ft
-     */
+         *
+         * @param ds
+         * @param ft
+         */
     public TemporaryFeatureTypeInfo(DataStore ds /*, FeatureType ft*/) {
         super();
         this.ds = ds;
@@ -47,8 +47,8 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
 
     public Filter getDefinitionQuery() {
         /**
-             * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
-             */
+                     * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
+                     */
         return Filter.NONE;
     }
 
@@ -70,8 +70,8 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
 
     public boolean isEnabled() {
         /**
-             * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
-             */
+                     * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
+                     */
         return true;
     }
 
@@ -97,8 +97,8 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
 
     public String getSRS() {
         /**
-             * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
-             */
+                     * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
+                     */
         try {
             return ds.getSchema(ds.getTypeNames()[0]).getDefaultGeometry().getCoordinateSystem()
             + "";

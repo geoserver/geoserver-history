@@ -169,7 +169,12 @@ public class DataDataStoresEditorAction extends ConfigAction {
         return mapping.findForward("config.data.store");
     }
 
-    /** Used to debug connection parameters */
+    /**
+     * Used to debug connection parameters
+     *
+     * @param msg DOCUMENT ME!
+     * @param params DOCUMENT ME!
+     */
     public void dump(String msg, Map params) {
         if (msg != null) {
             System.out.print(msg + " ");

@@ -37,27 +37,30 @@ public abstract class WfsKvpRequestReader extends KvpRequestReader {
     private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
     /**
-     * Creates a new kvp reader for a WFS request.
-     *
-     * @param kvpPairs The raw key value pairs.
-     * @param service The servlet handling the request.
-     */
+         * Creates a new kvp reader for a WFS request.
+         *
+         * @param kvpPairs The raw key value pairs.
+         * @param service The servlet handling the request.
+         */
     public WfsKvpRequestReader(Map kvpPairs, WFService service) {
         super(kvpPairs, service);
     }
 
     /**
-    * Reads in three strings, representing some sort of feature constraints,
-    * and translates them into filters.  If no filters exist, it returns an
-    * empty list.
-    *
-    * @param fid A group of feature IDs, as a String.
-    * @param ogcFilter A group of filters, as a String.
-    * @param bbox A group of boxes, as a String.
-    *
-    * @return A list filters.
-    *
-    */
+     * Reads in three strings, representing some sort of feature
+     * constraints, and translates them into filters.  If no filters exist, it
+     * returns an empty list.
+     *
+     * @param typeNames DOCUMENT ME!
+     * @param fid A group of feature IDs, as a String.
+     * @param ogcFilter A group of filters, as a String.
+     * @param cqlFilter DOCUMENT ME!
+     * @param bbox A group of boxes, as a String.
+     *
+     * @return A list filters.
+     *
+     * @throws WfsException DOCUMENT ME!
+     */
     protected List readFilters(List typeNames, String fid, String ogcFilter, String cqlFilter,
         String bbox) throws WfsException {
         // handles feature id(es) case

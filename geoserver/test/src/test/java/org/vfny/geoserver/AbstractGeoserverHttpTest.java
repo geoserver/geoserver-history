@@ -14,7 +14,7 @@ import java.util.PropertyResourceBundle;
 
 
 public abstract class AbstractGeoserverHttpTest extends TestCase {
-    /** test fixture properties **/
+    /** test fixture properties */
     PropertyResourceBundle properties;
 
     protected void setUp() throws Exception {

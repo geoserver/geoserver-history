@@ -12,13 +12,8 @@ import org.vfny.geoserver.global.dto.WFSDTO;
 
 
 /**
- * WFS purpose.
- *
- * <p>
- * Description of WFS  Used to store WFS data.
- * </p>
- *
- * <p></p>
+ * WFS purpose.<p>Description of WFS  Used to store WFS data.</p>
+ *  <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id: WFSConfig.java,v 1.10 2004/09/09 17:05:10 cholmesny Exp $
@@ -31,29 +26,29 @@ public class WFSConfig extends ServiceConfig {
     private boolean srsXmlStyle = true;
 
     /**
-     * WFS constructor.
-     *
-     * <p>
-     * Creates a WFS to represent an instance with default data.
-     * </p>
-     *
-     * @see defaultSettings()
-     */
+         * WFS constructor.
+         *
+         * <p>
+         * Creates a WFS to represent an instance with default data.
+         * </p>
+         *
+         * @see defaultSettings()
+         */
     public WFSConfig() {
         super();
         srsXmlStyle = true;
     }
 
     /**
-     * WFS constructor.
-     *
-     * <p>
-     * Creates a copy of the WFS provided. If the WFS provided  is null then
-     * default values are used. All the data structures are cloned.
-     * </p>
-     *
-     * @param w The WFS to copy.
-     */
+         * WFS constructor.
+         *
+         * <p>
+         * Creates a copy of the WFS provided. If the WFS provided  is null then
+         * default values are used. All the data structures are cloned.
+         * </p>
+         *
+         * @param w The WFS to copy.
+         */
     public WFSConfig(WFSDTO w) {
         super(w.getService());
         serviceLevel = w.getServiceLevel();
@@ -63,21 +58,18 @@ public class WFSConfig extends ServiceConfig {
     }
 
     /**
-     * Creates the WFSConfig.
-     *
-     * @param wfs The wfs module.
-     *
-     */
+         * Creates the WFSConfig.
+         *
+         * @param wfs The wfs module.
+         *
+         */
     public WFSConfig(WFS wfs) {
         this((WFSDTO) wfs.toDTO());
     }
 
     /**
-     * Implement loadDTO.
-     *
-     * <p>
-     * Takes a WMSDTO and loads it into this WMSConfig Object
-     * </p>
+     * Implement loadDTO.<p>Takes a WMSDTO and loads it into this
+     * WMSConfig Object</p>
      *
      * @param dto an instance of WMSDTO
      *
@@ -99,11 +91,8 @@ public class WFSConfig extends ServiceConfig {
     }
 
     /**
-     * Implement toDTO.
-     *
-     * <p>
-     * Returns a copy of the data in a ServiceDTO object
-     * </p>
+     * Implement toDTO.<p>Returns a copy of the data in a ServiceDTO
+     * object</p>
      *
      * @return a copy of the data in a ServiceDTO object
      *
@@ -140,8 +129,9 @@ public class WFSConfig extends ServiceConfig {
     }
 
     /**
-     * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
+     * Whether the srs xml attribute should be in the EPSG:4326
+     * (non-xml) style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
+     * style.
      *
      * @return <tt>true</tt> if the srs is reported with the xml style
      */
@@ -150,8 +140,9 @@ public class WFSConfig extends ServiceConfig {
     }
 
     /**
-     * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
+     * Sets whether the srs xml attribute should be in the EPSG:4326
+     * (non-xml) style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
+     * style.
      *
      * @param doXmlStyle whether the srs style should be xml or not.
      */
@@ -189,8 +180,8 @@ public class WFSConfig extends ServiceConfig {
     }
 
     /**
-     * Sets whether the gml returned by getFeature includes an auto-calculated
-     * bounds element on each feature or not.
+     * Sets whether the gml returned by getFeature includes an
+     * auto-calculated bounds element on each feature or not.
      *
      * @param featureBounding <tt>true</tt> if gml features should have
      *        boundedBy automatically generated.

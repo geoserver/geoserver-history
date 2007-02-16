@@ -15,10 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * DataNamespacesNewForm purpose.
- * <p>
- * Description of DataNamespacesNewForm ...
- * </p>
+ * DataNamespacesNewForm purpose.<p>Description of DataNamespacesNewForm
+ * ...</p>
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
@@ -36,11 +34,13 @@ public class DataNamespacesNewForm extends ActionForm {
     /**
      * Implementation of validate.
      *
-     * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
-     *
      * @param mapping
      * @param request
+     *
      * @return Any ActionErrors produced by validation
+     *
+     * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping,
+     *      javax.servlet.http.HttpServletRequest)
      */
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();

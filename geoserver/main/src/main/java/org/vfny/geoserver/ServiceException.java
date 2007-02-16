@@ -14,54 +14,27 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Represents a standard OGC service exception.  Able to turn itself into the
- * proper xml response.
- *
- * <p>
- * JG - here is my guess on what the parameters do:
- * </p>
- * <pre><code>
- * [?xml version="1.0" ?
- * [ServiceExceptionReport
- *    version="1.2.0"
+ * Represents a standard OGC service exception.  Able to turn itself into
+ * the proper xml response.<p>JG - here is my guess on what the parameters
+ * do:</p>
+<pre><code>[?xml version="1.0" ?[ServiceExceptionReport   version="1.2.0"
  *    xmlns="http://www.opengis.net/ogc"
  *    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  *    xsi:schemaLocation="http://www.opengis.net/ogc <i>SchemaBaseUrl</i> wfs/1.0.0/OGC-exception.xsd"]
  *   [ServiceException code="<i>code</i>"
  *                     locator="<i>locator</i>"]
- *     </i>preMessage<i>:<i>getMessage()</i>
- *     <i>stack trace</i>
- *   [/ServiceException]
- * [/ServiceExceptionReport]
- * </code></pre>
- *
- * <p>
- * Where:
- * </p>
- *
- * <ul>
- * <li>
- * code: is a diagnostic code
- * </li>
- * <li>
- * locator: is the java class that caused the problem
- * </li>
- * <li>
- * preMessage: is your chance to place things in user terms
- * </li>
- * <li>
- * message: is the exception message
- * </li>
- * <li>
- * stack trace: is the exception strack trace
- * </li>
- * </ul>
- *
- * <p>
- * Java Exception have recently developed the ability to contain other
+ *     </i>preMessage<i>:<i>getMessage()</i>    <i>stack trace</i>
+ *   [/ServiceException][/ServiceExceptionReport]</code></pre><p>Where:</p>
+ *  <ul>
+ *      <li>code: is a diagnostic code</li>
+ *      <li>locator: is the java class that caused the problem</li>
+ *      <li>preMessage: is your chance to place things in user terms</li>
+ *      <li>message: is the exception message</li>
+ *      <li>stack trace: is the exception strack trace</li>
+ *  </ul>
+ *  <p>Java Exception have recently developed the ability to contain other
  * exceptions. By calling initCause on your ServiceConfig Exception you can
- * get the real exception included in the stacktrace above.
- * </p>
+ * get the real exception included in the stacktrace above.</p>
  *
  * @author Gabriel Rold?n
  * @author Chris Holmes
@@ -84,17 +57,17 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
     protected String locator = new String();
 
     /**
-     * Empty constructor.
-     */
+         * Empty constructor.
+         */
     public ServiceException() {
         super(null);
     }
 
     /**
-     * Empty constructor.
-     *
-     * @param message The message for the .
-     */
+         * Empty constructor.
+         *
+         * @param message The message for the .
+         */
     public ServiceException(String message) {
         super(message, null);
 
@@ -102,20 +75,20 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
     }
 
     /**
-     * This should be the most used entry point.
-     *
-     * @param message User message
-     * @param cause The origional exception that caused failure
-     */
+         * This should be the most used entry point.
+         *
+         * @param message User message
+         * @param cause The origional exception that caused failure
+         */
     public ServiceException(String message, Throwable cause) {
         super(message, cause, null);
     }
 
     /**
-     * Empty constructor.
-     *
-     * @param e The message for the .
-     */
+         * Empty constructor.
+         *
+         * @param e The message for the .
+         */
     public ServiceException(Throwable e) {
         super(e, null);
 
@@ -123,11 +96,11 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
     }
 
     /**
-     * Empty constructor.
-     *
-     * @param message The message for the .
-     * @param locator The message for the .
-     */
+         * Empty constructor.
+         *
+         * @param message The message for the .
+         * @param locator The message for the .
+         */
     public ServiceException(String message, String locator) {
         super(message);
 
@@ -137,12 +110,12 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @param e The message for the .
-     * @param preMessage The message to tack on the front.
-     * @param locator The message for the .
-     */
+         * DOCUMENT ME!
+         *
+         * @param e The message for the .
+         * @param preMessage The message to tack on the front.
+         * @param locator The message for the .
+         */
     public ServiceException(Throwable e, String preMessage, String locator) {
         this(e);
 
@@ -182,10 +155,10 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
     //public String getXmlResponse() {
     //	return getXmlResponse(true);
     //}
-
     /**
-     * gets the message, encoding it with the proper escaped xml characters. If
-     * requested it prints the whole stack trace in the response.
+     * gets the message, encoding it with the proper escaped xml
+     * characters. If requested it prints the whole stack trace in the
+     * response.
      *
      * @param printStackTrace set to <tt>true</tt> if the full stack trace
      *        should be returned to client apps.
@@ -237,6 +210,7 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
      *
      * @param printStackTrace whether the stack trace should be included.
      * @param request DOCUMENT ME!
+     * @param geoserver DOCUMENT ME!
      *
      * @return The ServiceExceptionReport of this error.
      *
@@ -295,12 +269,11 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
     }
 
     /**
-     * Returns the mime type that should be exposed to the client
-     * when sending the exception message.
+     * Returns the mime type that should be exposed to the client when
+     * sending the exception message.<p>Defaults to
+     * <code>geoserver.getMimeType()</code></p>
      *
-     * <p>
-     * Defaults to <code>geoserver.getMimeType()</code>
-     * </p>
+     * @param geoserver DOCUMENT ME!
      *
      * @return
      */

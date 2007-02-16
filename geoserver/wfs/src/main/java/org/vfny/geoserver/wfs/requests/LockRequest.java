@@ -19,6 +19,7 @@ import java.util.logging.Logger;
  * Represents a lock request.
  *
  * @author Rob Hranac, TOPP <br>
+ *
  * @author Chris Holmes, TOPP
  * @version $Id: LockRequest.java,v 1.6 2004/02/09 23:29:41 dmzwiers Exp $
  */
@@ -35,40 +36,26 @@ public class LockRequest extends WFSRequest {
     protected List locks = new ArrayList();
 
     /**
-     * Creates a LockFeature request.
-     *
-     * @param service The wfs service handling the request.
-     */
+         * Creates a LockFeature request.
+         *
+         * @param service The wfs service handling the request.
+         */
     public LockRequest(WFService service) {
         super("LockFeature", service);
     }
 
     /**
-     * Turn this request into a FeatureLock.
-     *
-     * <p>
-     * You will return FeatureLock.getAuthorization() to your user so they can
-     * refer to this lock again.
-     * </p>
-     *
-     * <p>
-     * The getAuthorization() value is based on getHandle(), with a default of
-     * "GeoServer" if the user has not provided a handle.
-     * </p>
-     * The FeatureLock produced is based on expiry:
-     *
-     * <ul>
-     * <li>
-     * negative expiry: reports if lock is available
-     * </li>
-     * <li>
-     * zero expiry: perma lock that never expires!
-     * </li>
-     * <li>
-     * postive expiry: lock expires in a number of minuets
-     * </li>
-     * </ul>
-     *
+     * Turn this request into a FeatureLock.<p>You will return
+     * FeatureLock.getAuthorization() to your user so they can refer to this
+     * lock again.</p>
+     *  <p>The getAuthorization() value is based on getHandle(), with a
+     * default of "GeoServer" if the user has not provided a handle.</p>
+     *  The FeatureLock produced is based on expiry:
+     *  <ul>
+     *      <li>negative expiry: reports if lock is available</li>
+     *      <li>zero expiry: perma lock that never expires!</li>
+     *      <li>postive expiry: lock expires in a number of minuets</li>
+     *  </ul>
      *
      * @return
      */
@@ -142,8 +129,8 @@ public class LockRequest extends WFSRequest {
     }
 
     /**
-     * Gets a list of the locks held by this request(as LockRequest.Lock
-     * objects)
+     * Gets a list of the locks held by this request(as
+     * LockRequest.Lock objects)
      *
      * @return The list of the locks.
      */
@@ -161,7 +148,8 @@ public class LockRequest extends WFSRequest {
     }
 
     /**
-     * Sets the lock list for this request.  Gets rid of the old lock list.
+     * Sets the lock list for this request.  Gets rid of the old lock
+     * list.
      *
      * @param locks The list of locks to add.
      */
@@ -170,10 +158,10 @@ public class LockRequest extends WFSRequest {
     }
 
     /**
-     * Sets the locks for this request according to the two lists passed in
-     * Little error checking is done, as this is a convenience method for
-     * LockKVP Reader, which does its own error checking.  None of the locks
-     * created will have handles (kvp's don't have handles).
+     * Sets the locks for this request according to the two lists
+     * passed in Little error checking is done, as this is a convenience
+     * method for LockKVP Reader, which does its own error checking.  None of
+     * the locks created will have handles (kvp's don't have handles).
      *
      * @param typeList a list of featureTypes as Strings.
      * @param filterList a list of Filters.  Should either be null, in which
@@ -200,8 +188,8 @@ public class LockRequest extends WFSRequest {
     }
 
     /**
-     * Creates a lock of the given featureType, filter and handle and adds it
-     * to the lock list.
+     * Creates a lock of the given featureType, filter and handle and
+     * adds it to the lock list.
      *
      * @param featureType the typeName to lock.
      * @param filter which features of the featureType to lock.
@@ -215,8 +203,8 @@ public class LockRequest extends WFSRequest {
     }
 
     /**
-     * Creates a lock of the given featureType and filter and adds it to the
-     * lock list.
+     * Creates a lock of the given featureType and filter and adds it
+     * to the lock list.
      *
      * @param featureType the typeName to lock.
      * @param filter which features of the featureType to lock.
@@ -303,8 +291,8 @@ public class LockRequest extends WFSRequest {
     }
 
     /**
-     * helper function for equals.  Checks for nulls, as this class can hold
-     * nulls, and will be equal if two of the fields are both null.
+     * helper function for equals.  Checks for nulls, as this class can
+     * hold nulls, and will be equal if two of the fields are both null.
      *
      * @param mine The field of this object.
      * @param test the field of to test.

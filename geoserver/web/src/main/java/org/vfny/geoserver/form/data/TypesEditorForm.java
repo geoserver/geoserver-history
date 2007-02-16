@@ -77,33 +77,25 @@ public class TypesEditorForm extends ActionForm {
     private String[] otherSelectedStyles;
 
     /**
-     * Name of featureType.
-     *
-     * <p>
-     * An exact match for typeName provided by a DataStore.
-     * </p>
+     * Name of featureType.<p>An exact match for typeName provided by a
+     * DataStore.</p>
      */
     private String typeName;
 
-    /**
-         *
-         */
+    /**  */
     private String wmsPath;
 
     /**
-     * Representation of the Spatial Reference System.
-     *
-     * <p>
-     * Empty represents unknown, usually assumed to be Cartisian Coordinates.
-     * </p>
-    */
+     * Representation of the Spatial Reference System.<p>Empty
+     * represents unknown, usually assumed to be Cartisian Coordinates.</p>
+     */
     private String SRS;
 
     /**
-     *  WKT representation of the SRS
-     *  This is read-only since it gets generated from the SRS id.
-     *  Everytime SRS is updates (#setSRS()), this will also be re-set.
-     *  If there's a problem with the SRS, this will try to give some info about the error.
+     * WKT representation of the SRS This is read-only since it gets
+     * generated from the SRS id. Everytime SRS is updates (#setSRS()), this
+     * will also be re-set. If there's a problem with the SRS, this will try
+     * to give some info about the error.
      */
     private String SRSWKT;
 
@@ -125,46 +117,43 @@ public class TypesEditorForm extends ActionForm {
     /** List of keywords, often grouped with brackets */
     private String keywords;
 
-    /** Metadata URL
-     *  This is a quick hack, the user interface and configuration code is really too broken
-     *  to waste time on it...
-     **/
+    /**
+     * Metadata URL This is a quick hack, the user interface and
+     * configuration code is really too broken to waste time on it...
+     */
     private MetaDataLink[] metadataLinks;
 
-    /** Metadata URL types **/
+    /** Metadata URL types */
     private String[] metadataURLTypes;
 
     /** FeatureType abstract */
     private String description;
 
-    /** The amount of time to use for the CacheControl: max-age parameter in maps generated from this featuretype **/
+    /**
+     * The amount of time to use for the CacheControl: max-age
+     * parameter in maps generated from this featuretype
+     */
     private String cacheMaxAge;
 
-    /** Should we add the CacheControl: max-age header to maps generated from this featureType? **/
+    /**
+     * Should we add the CacheControl: max-age header to maps generated
+     * from this featureType?
+     */
     private boolean cachingEnabled;
     private boolean cachingEnabledChecked = false;
 
     /**
-     * One of a select list - simplest is AbstractBaseClass.
-     *
-     * <p>
-     * The value "--" will be used to indicate default schema completly
-     * generated from FeatureType information at runtime.
-     * </p>
-     *
-     * <p>
-     * When generated the schema will make use a schemaBase of
-     * "AbstractFeatureType".
-     * </p>
+     * One of a select list - simplest is AbstractBaseClass.<p>The
+     * value "--" will be used to indicate default schema completly generated
+     * from FeatureType information at runtime.</p>
+     *  <p>When generated the schema will make use a schemaBase of
+     * "AbstractFeatureType".</p>
      */
     private String schemaBase;
 
     /**
-     * The name of the complex element of type schemaBase.
-     *
-     * <p>
-     * We only need this for non generated schemaBase.
-     * </p>
+     * The name of the complex element of type schemaBase.<p>We only
+     * need this for non generated schemaBase.</p>
      */
     private String schemaName;
 
@@ -183,22 +172,21 @@ public class TypesEditorForm extends ActionForm {
     /** Stores the name of the new attribute they wish to create */
     private String newAttribute;
 
-    /** these store the bounding box of DATASET - in it coordinate system.
-         *  normally, you'll have these set to "" or null.
-         *  They're only for information purposes (presentation), they are never persisted or used in any calculations.
-         */
+    /**
+     * these store the bounding box of DATASET - in it coordinate
+     * system. normally, you'll have these set to "" or null. They're only for
+     * information purposes (presentation), they are never persisted or used
+     * in any calculations.
+     */
     private String dataMinX;
     private String dataMinY;
     private String dataMaxX;
     private String dataMaxY;
 
     /**
-     * Set up FeatureTypeEditor from from Web Container.
-     *
-     * <p>
-     * The key DataConfig.SELECTED_FEATURE_TYPE is used to look up the selected
-     * from the web container.
-     * </p>
+     * Set up FeatureTypeEditor from from Web Container.<p>The key
+     * DataConfig.SELECTED_FEATURE_TYPE is used to look up the selected from
+     * the web container.</p>
      *
      * @param mapping
      * @param request
@@ -420,16 +408,11 @@ public class TypesEditorForm extends ActionForm {
     }
 
     /**
-     * Generate DTO attributes List for the TypesEditorAction.
-     *
-     * <p>
-     * This list only includes entries defined by the user, not those generated
-     * by the schemaBase.
-     * </p>
-     *
-     * <p>
-     * If the user has chosen -- then this list will be <code>null</code>.
-     * </p>
+     * Generate DTO attributes List for the TypesEditorAction.<p>This
+     * list only includes entries defined by the user, not those generated by
+     * the schemaBase.</p>
+     *  <p>If the user has chosen -- then this list will be
+     * <code>null</code>.</p>
      *
      * @return List of user supplied AttributeTypeInfoConfig, or
      *         <code>null</code>
@@ -511,12 +494,8 @@ public class TypesEditorForm extends ActionForm {
     }
 
     /**
-     * Are belong to us.
-     *
-     * <p>
-     * What can I say it is near a deadline! Easy access for
-     * <code>Editor.jsp</code>.
-     * </p>
+     * Are belong to us.<p>What can I say it is near a deadline! Easy
+     * access for <code>Editor.jsp</code>.</p>
      *
      * @return Possible schemaBase options
      */
@@ -531,7 +510,6 @@ public class TypesEditorForm extends ActionForm {
     //
     // Generated Accessors for Editor.jsp
     //
-
     /**
      * Access attributes property.
      *
@@ -654,7 +632,8 @@ public class TypesEditorForm extends ActionForm {
     }
 
     /**
-     * Access SRSWKT property.  There is no setSRSWKT() because its derived from the SRS id.
+     * Access SRSWKT property.  There is no setSRSWKT() because its
+     * derived from the SRS id.
      *
      * @return Returns the sRS.
      */
@@ -663,10 +642,8 @@ public class TypesEditorForm extends ActionForm {
     }
 
     /**
-     * Set sRS to srs.
-     *
-     *  Also sets WKTSRS.
-     *  srs should be an Integer (in string form) - according to FeatureTypeConfig
+     * Set sRS to srs. Also sets WKTSRS. srs should be an Integer (in
+     * string form) - according to FeatureTypeConfig
      *
      * @param srs The sRS to set.
      */

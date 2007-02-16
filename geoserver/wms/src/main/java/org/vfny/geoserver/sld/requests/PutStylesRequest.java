@@ -43,28 +43,29 @@ public class PutStylesRequest extends Request {
 
     private class MandatoryParameters {
         /**
-         * This gives the mode of the ?put?: either ?InsertAndReplace? or
-         * ?ReplaceAll?. In InsertAndReplace mode, all new styles for
-         * a layer are inserted and all existing styles which are defined in the
-         * SLD are replaced. In ReplaceAll mode, all existing styles for a
-         * layer are logically deleted, and then the SLD-defined styles are
-         * inserted. This is similar to InsertAndReplace mode, except
-         * that all styles not in the SLD are deleted.
+         * This gives the mode of the ?put?: either
+         * ?InsertAndReplace? or ?ReplaceAll?. In InsertAndReplace mode, all
+         * new styles for a layer are inserted and all existing styles which
+         * are defined in the SLD are replaced. In ReplaceAll mode, all
+         * existing styles for a layer are logically deleted, and then the
+         * SLD-defined styles are inserted. This is similar to
+         * InsertAndReplace mode, except that all styles not in the SLD are
+         * deleted.
          */
         String mode = ""; // either 'InsertAndReplace' or 'ReplaceAll'
     }
 
     private class OptionalParameters {
         /**
-         * This parameter specifies a reference to an external SLD document.
-         * It works in the same way as the SLD= parameter of the WMS
+         * This parameter specifies a reference to an external SLD
+         * document. It works in the same way as the SLD= parameter of the WMS
          * GetMap operation.
          */
         String sld = null;
 
         /**
-         * This parameter allows an SLD document to be included directly in
-         * an HTTP-GET request. It works in the same way as the
+         * This parameter allows an SLD document to be included
+         * directly in an HTTP-GET request. It works in the same way as the
          * SLD_BODY= parameter of the WMS GetMap operation.
          */
         String sld_body = "";

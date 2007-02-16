@@ -34,13 +34,9 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Root dispatcher which handles all incoming requests.
- * <p>
- *
- * </p>
+ * Root dispatcher which handles all incoming requests.<p></p>
  *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
  */
 public class Dispatcher extends AbstractController {
     GeoServer geoServer;
@@ -175,8 +171,8 @@ public class Dispatcher extends AbstractController {
         }
 
         /**
-         * ALFA: this is a HACK to let GeoServer do a getCapabilities request by default.
-         */
+                 * ALFA: this is a HACK to let GeoServer do a getCapabilities request by default.
+                 */
 
         /*request = (request == null ? "GetCapabilities" : request);*/
         if ((service == null) || (request == null)) {

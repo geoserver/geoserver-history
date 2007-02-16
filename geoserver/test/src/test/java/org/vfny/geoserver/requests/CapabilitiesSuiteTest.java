@@ -31,7 +31,6 @@ public class CapabilitiesSuiteTest extends RequestTestCase {
     //org.vfny.geoserver.config.Log4JFormatter.init("org.vfny.geoserver", 
     //java.util.logging.Level.FINE);
     //}
-
     /** Standard logging instance */
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
@@ -42,10 +41,10 @@ public class CapabilitiesSuiteTest extends RequestTestCase {
     private CapabilitiesRequest[] baseRequest = new CapabilitiesRequest[10];
 
     /**
-     * Initializes the database and request handler.
-     *
-     * @param testName The name of this test.
-     */
+         * Initializes the database and request handler.
+         *
+         * @param testName The name of this test.
+         */
     public CapabilitiesSuiteTest(String testName) {
         super(testName);
     }
@@ -82,7 +81,8 @@ public class CapabilitiesSuiteTest extends RequestTestCase {
     }
 
     /**
-     * Check to make sure that a standard XML request is handled correctly.
+     * Check to make sure that a standard XML request is handled
+     * correctly.
      *
      * @throws Exception If anything goes wrong.
      */
@@ -91,8 +91,8 @@ public class CapabilitiesSuiteTest extends RequestTestCase {
     }
 
     /**
-     * Check to make sure that a standard non-matching XML request is handled
-     * correctly.
+     * Check to make sure that a standard non-matching XML request is
+     * handled correctly.
      *
      * @throws Exception If anything goes wrong.
      */
@@ -109,7 +109,8 @@ public class CapabilitiesSuiteTest extends RequestTestCase {
     }
 
     /**
-     * Checks to make sure that a standard KVP request is handled correctly.
+     * Checks to make sure that a standard KVP request is handled
+     * correctly.
      *
      * @throws Exception If anything goes wrong.
      */
@@ -121,8 +122,8 @@ public class CapabilitiesSuiteTest extends RequestTestCase {
     }
 
     /**
-     * Checks to make sure that a standard non-matching KVP request is  handled
-     * correctly.
+     * Checks to make sure that a standard non-matching KVP request is
+     * handled correctly.
      *
      * @throws Exception If anything goes wrong.
      */

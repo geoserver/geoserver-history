@@ -18,12 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Free Memory by running the garbage collector.
- * <p>
- * This represents an action that interacts with the running GeoServer
- * application (it is not really a config action, it is just that I want the
- * user to be logged in).
- * </p>
+ * Free Memory by running the garbage collector.<p>This represents an
+ * action that interacts with the running GeoServer application (it is not
+ * really a config action, it is just that I want the user to be logged in).</p>
+ *
  * @author Jody Garnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
  * @version $Id: FreeMemoryAction.java,v 1.1 2004/03/15 08:16:10 jive Exp $

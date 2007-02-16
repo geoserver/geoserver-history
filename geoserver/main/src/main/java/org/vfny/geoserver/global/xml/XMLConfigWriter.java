@@ -43,15 +43,9 @@ import javax.xml.transform.TransformerException;
 
 
 /**
- * XMLConfigWriter purpose.
- *
- * <p>
- * This class is intended to store a configuration to be written and complete
- * the output to XML.
- * </p>
- *
- * <p>
- * </p>
+ * XMLConfigWriter purpose.<p>This class is intended to store a
+ * configuration to be written and complete the output to XML.</p>
+ *  <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id: XMLConfigWriter.java,v 1.32 2004/09/20 20:43:37 cholmesny Exp $
@@ -61,12 +55,12 @@ public class XMLConfigWriter {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 
     /**
-     * XMLConfigWriter constructor.
-     *
-     * <p>
-     * Should never be called.
-     * </p>
-     */
+         * XMLConfigWriter constructor.
+         *
+         * <p>
+         * Should never be called.
+         * </p>
+         */
     private XMLConfigWriter() {
     }
 
@@ -154,23 +148,16 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeServices purpose.
+     * storeServices purpose.<p>Writes the services.xml file from the
+     * model in memory.</p>
      *
-     * <p>
-     * Writes the services.xml file from the model in memory.
-     * </p>
+     * @param cw The Configuration Writer
+     * @param wcs DOCUMENT ME!
+     * @param wms DOCUMENT ME!
+     * @param wfs DOCUMENT ME!
+     * @param geoServer DOCUMENT ME!
      *
-     * @param cw
-     *            The Configuration Writer
-     * @param wms
-     *            DOCUMENT ME!
-     * @param wfs
-     *            DOCUMENT ME!
-     * @param geoServer
-     *            DOCUMENT ME!
-     *
-     * @throws ConfigurationException
-     *             When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      */
     protected static void storeServices(WriterHelper cw, WCSDTO wcs, WMSDTO wms, WFSDTO wfs,
         GeoServerDTO geoServer) throws ConfigurationException {
@@ -298,20 +285,13 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeContact purpose.
+     * storeContact purpose.<p>Writes a contact into the WriterUtils
+     * provided from the ContactConfig provided.</p>
      *
-     * <p>
-     * Writes a contact into the WriterUtils provided from the ContactConfig
-     * provided.
-     * </p>
+     * @param c The ContactConfig to write.
+     * @param cw The Configuration Writer
      *
-     * @param c
-     *            The ContactConfig to write.
-     * @param cw
-     *            The Configuration Writer
-     *
-     * @throws ConfigurationException
-     *             When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      */
     protected static void storeContact(ContactDTO c, WriterHelper cw)
         throws ConfigurationException {
@@ -343,21 +323,14 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeService purpose.
+     * storeService purpose.<p>Writes a service into the WriterUtils
+     * provided from the WFS or WMS object provided.</p>
      *
-     * <p>
-     * Writes a service into the WriterUtils provided from the WFS or WMS object
-     * provided.
-     * </p>
+     * @param obj either a WFS or WMS object.
+     * @param cw The Configuration Writer
      *
-     * @param obj
-     *            either a WFS or WMS object.
-     * @param cw
-     *            The Configuration Writer
-     *
-     * @throws ConfigurationException
-     *             When an IO exception occurs or the object provided is not of
-     *             the correct type.
+     * @throws ConfigurationException When an IO exception occurs or the object
+     *         provided is not of the correct type.
      */
     protected static void storeService(Object obj, WriterHelper cw)
         throws ConfigurationException {
@@ -521,20 +494,13 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeCatalog purpose.
+     * storeCatalog purpose.<p>Writes a catalog into the WriterUtils
+     * provided from Data provided in memory.</p>
      *
-     * <p>
-     * Writes a catalog into the WriterUtils provided from Data provided in
-     * memory.
-     * </p>
+     * @param cw The Configuration Writer
+     * @param data DOCUMENT ME!
      *
-     * @param cw
-     *            The Configuration Writer
-     * @param data
-     *            DOCUMENT ME!
-     *
-     * @throws ConfigurationException
-     *             When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      */
     protected static void storeCatalog(WriterHelper cw, DataDTO data)
         throws ConfigurationException {
@@ -622,19 +588,13 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeDataStore purpose.
+     * storeDataStore purpose.<p>Writes a DataStoreInfo into the
+     * WriterUtils provided.</p>
      *
-     * <p>
-     * Writes a DataStoreInfo into the WriterUtils provided.
-     * </p>
+     * @param cw The Configuration Writer
+     * @param ds The Datastore.
      *
-     * @param cw
-     *            The Configuration Writer
-     * @param ds
-     *            The Datastore.
-     *
-     * @throws ConfigurationException
-     *             When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      */
     protected static void storeDataStore(WriterHelper cw, DataStoreInfoDTO ds)
         throws ConfigurationException {
@@ -684,19 +644,13 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeFormat purpose.
+     * storeFormat purpose.<p>Writes a CoverageStoreInfo into the
+     * WriterUtils provided.</p>
      *
-     * <p>
-     * Writes a CoverageStoreInfo into the WriterUtils provided.
-     * </p>
+     * @param cw The Configuration Writer
+     * @param df The Format.
      *
-     * @param cw
-     *            The Configuration Writer
-     * @param ds
-     *            The Format.
-     *
-     * @throws ConfigurationException
-     *             When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      */
     protected static void storeFormat(WriterHelper cw, CoverageStoreInfoDTO df)
         throws ConfigurationException {
@@ -738,19 +692,13 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeNameSpace purpose.
+     * storeNameSpace purpose.<p>Writes a NameSpaceInfoDTO into the
+     * WriterUtils provided.</p>
      *
-     * <p>
-     * Writes a NameSpaceInfoDTO into the WriterUtils provided.
-     * </p>
+     * @param cw The Configuration Writer
+     * @param ns The NameSpaceInfo.
      *
-     * @param cw
-     *            The Configuration Writer
-     * @param ns
-     *            The NameSpaceInfo.
-     *
-     * @throws ConfigurationException
-     *             When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      */
     protected static void storeNameSpace(WriterHelper cw, NameSpaceInfoDTO ns)
         throws ConfigurationException {
@@ -778,19 +726,13 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeStyle purpose.
+     * storeStyle purpose.<p>Writes a StyleDTO into the WriterUtils
+     * provided.</p>
      *
-     * <p>
-     * Writes a StyleDTO into the WriterUtils provided.
-     * </p>
+     * @param cw The Configuration Writer
+     * @param s The StyleDTO.
      *
-     * @param cw
-     *            The Configuration Writer
-     * @param s
-     *            The StyleDTO.
-     *
-     * @throws ConfigurationException
-     *             When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      */
     protected static void storeStyle(WriterHelper cw, StyleDTO s)
         throws ConfigurationException {
@@ -822,19 +764,13 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeStyle purpose.
+     * storeStyle purpose.<p>Sets up writing FeatureTypes into their
+     * Directories.</p>
      *
-     * <p>
-     * Sets up writing FeatureTypes into their Directories.
-     * </p>
+     * @param dir The FeatureTypes directory
+     * @param data DOCUMENT ME!
      *
-     * @param dir
-     *            The FeatureTypes directory
-     * @param data
-     *            DOCUMENT ME!
-     *
-     * @throws ConfigurationException
-     *             When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      *
      * @see storeFeature(FeatureTypeInfo,File)
      */
@@ -953,19 +889,12 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeStyle purpose.
+     * storeStyle purpose.<p>Writes a FeatureTypes into it's Directory.</p>
      *
-     * <p>
-     * Writes a FeatureTypes into it's Directory.
-     * </p>
+     * @param ft DOCUMENT ME!
+     * @param dir The particular FeatureTypeInfo directory
      *
-     * @param ft
-     *            DOCUMENT ME!
-     * @param dir
-     *            The particular FeatureTypeInfo directory
-     *
-     * @throws ConfigurationException
-     *             When an IO exception occurs.
+     * @throws ConfigurationException When an IO exception occurs.
      *
      * @see storeFeatures(File)
      */
@@ -1612,51 +1541,38 @@ public class XMLConfigWriter {
     }
 
     /**
-     * WriterUtils purpose.
-     *
-     * <p>
-     * This is a static class which is used by XMLConfigWriter for File IO
-     * validation tests.
-     * </p>
-     *
-     * <p>
-     * </p>
+     * WriterUtils purpose.<p>This is a static class which is used by
+     * XMLConfigWriter for File IO validation tests.</p>
+     *  <p></p>
      *
      * @author dzwiers, Refractions Research, Inc.
-     * @version $Id: XMLConfigWriter.java,v 1.32 2004/09/20 20:43:37 cholmesny
-     *          Exp $
+     * @version $Id: XMLConfigWriter.java,v 1.32 2004/09/20 20:43:37 cholmesny Exp $
      */
     public static class WriterUtils {
         /** Used internally to create log information to detect errors. */
         private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 
         /**
-         * WriterUtils constructor.
-         *
-         * <p>
-         * Static class, should never be used.
-         * </p>
-         */
+                 * WriterUtils constructor.
+                 *
+                 * <p>
+                 * Static class, should never be used.
+                 * </p>
+                 */
         private WriterUtils() {
         }
 
         /**
-         * initFile purpose.
+         * initFile purpose.<p>Checks to ensure the handle exists.
+         * If the handle is a directory and not created, it is created</p>
          *
-         * <p>
-         * Checks to ensure the handle exists. If the handle is a directory and
-         * not created, it is created
-         * </p>
-         *
-         * @param f
-         *            the File handle
-         * @param isDir
-         *            true when the handle is intended to be a directory.
+         * @param f the File handle
+         * @param isDir true when the handle is intended to be a directory.
          *
          * @return The file passed in.
          *
-         * @throws ConfigurationException
-         *             When an IO error occurs or the handle is invalid.
+         * @throws ConfigurationException When an IO error occurs or the handle
+         *         is invalid.
          */
         public static File initFile(File f, boolean isDir)
             throws ConfigurationException {
@@ -1705,22 +1621,17 @@ public class XMLConfigWriter {
         }
 
         /**
-         * initFile purpose.
+         * initFile purpose.<p>Checks to ensure the handle exists
+         * and can be writen to. If the handle is a directory and not created,
+         * it is created</p>
          *
-         * <p>
-         * Checks to ensure the handle exists and can be writen to. If the
-         * handle is a directory and not created, it is created
-         * </p>
-         *
-         * @param f
-         *            the File handle
-         * @param isDir
-         *            true when the handle is intended to be a directory.
+         * @param f the File handle
+         * @param isDir true when the handle is intended to be a directory.
          *
          * @return The file passed in.
          *
-         * @throws ConfigurationException
-         *             When an IO error occurs or the handle is invalid.
+         * @throws ConfigurationException When an IO error occurs or the handle
+         *         is invalid.
          */
         public static File initWriteFile(File f, boolean isDir)
             throws ConfigurationException {

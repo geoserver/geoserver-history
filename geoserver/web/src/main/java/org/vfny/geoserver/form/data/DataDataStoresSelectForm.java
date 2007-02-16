@@ -103,12 +103,8 @@ public class DataDataStoresSelectForm extends ActionForm {
     }
 
     /**
-     * DataStoreID selected by User.
-     *
-     * <p>
-     * If the user has not selected anything (is this possible?) we will return
-     * <code>null</code>.
-     * </p>
+     * DataStoreID selected by User.<p>If the user has not selected
+     * anything (is this possible?) we will return <code>null</code>.</p>
      *
      * @return Selected DataStoreID or <code>null</code> if nothing is selected
      */
@@ -117,12 +113,8 @@ public class DataDataStoresSelectForm extends ActionForm {
     }
 
     /**
-     * The button the user hit to submit this form.
-     *
-     * <p>
-     * We are doubling up and having the Same action process both Edit and
-     * Delete.
-     * </p>
+     * The button the user hit to submit this form.<p>We are doubling
+     * up and having the Same action process both Edit and Delete.</p>
      *
      * @return Either <code>edit</code> or <code>delete</code>
      */

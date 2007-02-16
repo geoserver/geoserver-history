@@ -21,9 +21,7 @@ import java.util.Map;
  * @version $Id$
  */
 public class GetLegendGraphic extends WMService {
-    /**
-     *
-     */
+    /**  */
     private static final long serialVersionUID = 4957246942172056598L;
 
     public GetLegendGraphic(WMS wms) {
@@ -51,8 +49,8 @@ public class GetLegendGraphic extends WMService {
     }
 
     /**
-     * Throws an UnsupportedOperationException since GetLegendGraphic does
-     * not defines an xml encoding for HTTP POST method.
+     * Throws an UnsupportedOperationException since GetLegendGraphic
+     * does not defines an xml encoding for HTTP POST method.
      *
      * @return never, allways fails since it is an unsupported method for this
      *         request

@@ -14,9 +14,9 @@ import java.util.logging.Logger;
 
 
 /**
- * This exception can turn itself into the appropriate WFS_TransactionResponse
- * xml, allowing transaction classes to throw exceptions that can be reported
- * back to the clients.
+ * This exception can turn itself into the appropriate
+ * WFS_TransactionResponse xml, allowing transaction classes to throw
+ * exceptions that can be reported back to the clients.
  *
  * @author Chris Holmes, TOPP
  * @version $VERSION$
@@ -32,59 +32,59 @@ public class WfsTransactionException extends WfsException {
     protected String handle = new String();
 
     /**
-     * Empty constructor.
-     */
+         * Empty constructor.
+         */
     public WfsTransactionException() {
         super();
     }
 
     /**
-     * Constructor for message and handle.
-     *
-     * @param message indicates to the user what went wrong.
-     */
+         * Constructor for message and handle.
+         *
+         * @param message indicates to the user what went wrong.
+         */
     public WfsTransactionException(String message) {
         super(message);
     }
 
     /**
-     * Constructor for an exception and a handle.
-     *
-     * @param cause indicates to the user what went wrong.
-     */
+         * Constructor for an exception and a handle.
+         *
+         * @param cause indicates to the user what went wrong.
+         */
     public WfsTransactionException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @param message indicates to the user what went wrong.
-     * @param locator The message for the .
-     */
+         * DOCUMENT ME!
+         *
+         * @param message indicates to the user what went wrong.
+         * @param locator The message for the .
+         */
     public WfsTransactionException(String message, String locator) {
         super(message, locator);
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @param message indicates to the user what went wrong.
-     * @param locator The message for the .
-     * @param handle the string of the transaction that failed.
-     */
+         * DOCUMENT ME!
+         *
+         * @param message indicates to the user what went wrong.
+         * @param locator The message for the .
+         * @param handle the string of the transaction that failed.
+         */
     public WfsTransactionException(String message, String locator, String handle) {
         super(message, locator);
         this.handle = handle;
     }
 
     /**
-     * Constructor for an exception, messages and handles.
-     *
-     * @param e the root exception.
-     * @param preMessage more information about exception.
-     * @param locator indicates to the user what went wrong.
-     */
+         * Constructor for an exception, messages and handles.
+         *
+         * @param e the root exception.
+         * @param preMessage more information about exception.
+         * @param locator indicates to the user what went wrong.
+         */
     public WfsTransactionException(Exception e, String preMessage, String locator) {
         super(e, preMessage, locator);
     }
@@ -99,11 +99,11 @@ public class WfsTransactionException extends WfsException {
     }
 
     /**
-     * Returns a WFS_TransactionResponse xml string indicating the failure.
-     * Please don't change the method signature, unless you are refactoring all
-     * serviceExceptions - I had a lame bug with these not printed correctly
-     * because someone changed the method signature, as it no longer did the
-     * proper override.
+     * Returns a WFS_TransactionResponse xml string indicating the
+     * failure. Please don't change the method signature, unless you are
+     * refactoring all serviceExceptions - I had a lame bug with these not
+     * printed correctly because someone changed the method signature, as it
+     * no longer did the proper override.
      *
      * @return DOCUMENT ME!
      */

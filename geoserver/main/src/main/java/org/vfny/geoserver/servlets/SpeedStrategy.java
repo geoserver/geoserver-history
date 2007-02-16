@@ -10,22 +10,16 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 
-/** Fast and Dangeroud service strategy.
- *
- * <p>
- * Will fail when a ServiceException is encountered on writeTo, and will not
- * tell the user about it!
- * </p>
- *
- * <p>
- * This is the worst case scenario, you are trading speed for danger by using
- * this ServiceStrategy.
- * </p>
+/**
+ * Fast and Dangeroud service strategy.<p>Will fail when a ServiceException
+ * is encountered on writeTo, and will not tell the user about it!</p>
+ *  <p>This is the worst case scenario, you are trading speed for danger by
+ * using this ServiceStrategy.</p>
  *
  * @author jgarnett
  */
 public class SpeedStrategy implements ServiceStrategy {
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     private OutputStream out = null;
 
     public String getId() {
@@ -33,11 +27,8 @@ public class SpeedStrategy implements ServiceStrategy {
     }
 
     /**
-     * Works against the real output stream provided by the response.
-     *
-     * <p>
-     * This is dangerous of course, but fast and exciting.
-     * </p>
+     * Works against the real output stream provided by the response.<p>This
+     * is dangerous of course, but fast and exciting.</p>
      *
      * @param response Response provided by doService
      *

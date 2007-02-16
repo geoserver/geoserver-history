@@ -17,26 +17,27 @@ import java.util.logging.Logger;
  * Factory for producing Tiff images.
  *
  * @author Simone Giannecchini
- * @since .1.4.x
  * @version $Id$
+ *
+ * @since .1.4.x
  */
 public final class TiffMapProducerFactory implements GetMapProducerFactorySpi {
     /** the only MIME type this map producer supports */
     static final String MIME_TYPE = "image/tiff";
 
     /**
-     * Convenient singleton Set to expose the output format this producer
-     * supports
+     * Convenient singleton Set to expose the output format this
+     * producer supports
      */
     private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
 
-    /**Logger */
+    /** Logger */
     private static final Logger LOGGER = Logger.getLogger(TiffMapProducerFactory.class.getPackage()
                                                                                       .getName());
 
     /**
-     * Default constructor.
-     */
+         * Default constructor.
+         */
     public TiffMapProducerFactory() {
     }
 
@@ -64,13 +65,12 @@ public final class TiffMapProducerFactory implements GetMapProducerFactorySpi {
     /**
      * DOCUMENT ME!
      *
-     * @param mapFormat
-     *            DOCUMENT ME!
+     * @param mapFormat DOCUMENT ME!
+     * @param wms DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      *
-     * @throws IllegalArgumentException
-     *             DOCUMENT ME!
+     * @throws IllegalArgumentException DOCUMENT ME!
      */
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {

@@ -26,21 +26,30 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author Simone Giannecchini, GeoSolutions
+DOCUMENT ME!
  *
+ * @author Simone Giannecchini, GeoSolutions
  */
 public class SrsHelpAction extends Action {
     private final static Logger LOGGER = Logger.getLogger(SrsHelpAction.class.toString());
 
     /**
-     *  This is a simple action - it reads in the GT2 supported EPSG codes.
+     * This is a simple action - it reads in the GT2 supported EPSG
+     * codes. DONE: once geosever support EPSG thats not in the properties
+     * file, this should be a bit more abstract and get a list of all EPSG
+     * defs from the GDSFactory (if possible).  Use toWKT() as its nicer to
+     * read. Form has two properies - ids  (list of String - the epsg #) defs
+     * (list of String - the epsg WKT definitions)
      *
-     * DONE: once geosever support EPSG thats not in the properties file, this should
-     *       be a bit more abstract and get a list of all EPSG defs from the
-     *       GDSFactory (if possible).  Use toWKT() as its nicer to read.
+     * @param mapping DOCUMENT ME!
+     * @param form DOCUMENT ME!
+     * @param request DOCUMENT ME!
+     * @param response DOCUMENT ME!
      *
-     *   Form has two properies - ids  (list of String - the epsg #)
-     *                            defs (list of String - the epsg WKT definitions)
+     * @return DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     * @throws ServletException DOCUMENT ME!
      */
     public ActionForward execute(ActionMapping mapping, ActionForm form,
         HttpServletRequest request, HttpServletResponse response)

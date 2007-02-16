@@ -31,8 +31,8 @@ public class PDFMapProducerFactory implements GetMapProducerFactorySpi {
     private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
 
     /**
-         * Creates a new PdfMapProducerFactory object.
-         */
+             * Creates a new PdfMapProducerFactory object.
+             */
     public PDFMapProducerFactory() {
         super();
     }
@@ -97,7 +97,7 @@ public class PDFMapProducerFactory implements GetMapProducerFactorySpi {
      *
      * @param mapFormat a MIME type string to check if this producer is able to
      *        handle.
-     * @param config DOCUMENT ME!
+     * @param wms DOCUMENT ME!
      *
      * @return an instance of the PDFMapProducer if mapFormat is supported an
      *         IllegalArgumentException otherwise

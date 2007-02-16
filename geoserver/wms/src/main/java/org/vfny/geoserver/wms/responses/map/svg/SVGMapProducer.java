@@ -39,8 +39,6 @@ public class SVGMapProducer implements GetMapProducer {
     /**
      * DOCUMENT ME!
      *
-     * @param gs DOCUMENT ME!
-     *
      * @return DOCUMENT ME!
      */
     public String getContentType() {
@@ -72,7 +70,6 @@ public class SVGMapProducer implements GetMapProducer {
      * DOCUMENT ME!
      *
      * @param map DOCUMENT ME!
-     * @param format DOCUMENT ME!
      *
      * @throws WmsException DOCUMENT ME!
      */

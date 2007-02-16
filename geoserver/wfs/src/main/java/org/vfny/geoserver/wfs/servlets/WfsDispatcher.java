@@ -34,11 +34,11 @@ import javax.servlet.http.HttpSession;
 
 
 /**
- * Routes requests made at the top-level URI to appropriate interface servlet.
- * Note that the logic of this method could be generously described as
- * 'loose.' It is not checking for request validity in any way (this is done
- * by the reqeust- specific servlets).  Rather, it is attempting to make a
- * reasonable guess as to what servlet to call, given that the client is
+ * Routes requests made at the top-level URI to appropriate interface
+ * servlet. Note that the logic of this method could be generously described
+ * as 'loose.' It is not checking for request validity in any way (this is
+ * done by the reqeust- specific servlets).  Rather, it is attempting to make
+ * a reasonable guess as to what servlet to call, given that the client is
  * routing to the top level URI as opposed to the request-specific URI, as
  * specified in the GetCapabilities response. Thus, this is a convenience
  * method, which allows for some slight client laziness and helps explain to
@@ -61,19 +61,27 @@ public class WfsDispatcher extends Dispatcher {
     private static final Pattern ENCODING_PATTERN = Pattern.compile(
             "encoding\\s*\\=\\s*\"([^\"]+)\"");
 
-    /** Temporary file used to store the request */
-    //private File temp;
-
     /**
-     * This figures out a dispatched post request.  It writes the request to a
-     * temp file, and then reads it in twice from there.  I found no other way
-     * to do this, but this solution doesn't seem to bad.  Obviously it is
-     * better to use the servlets directly, without having to go through this
-     * random file writing and reading.  If our xml handlers were written more
-     * dynamically this probably wouldn't be necessary, but it is.  Hopefully
-     * this should help GeoServer's interoperability with clients, since most
-     * of them are kinda stupid, and can't handle different url locations for
-     * the different requests.
+     * Temporary file used to store the request
+     *
+     * @param request DOCUMENT ME!
+     * @param response DOCUMENT ME!
+     *
+     * @throws ServletException DOCUMENT ME!
+     * @throws IOException DOCUMENT ME!
+     */
+
+    //private File temp;
+    /**
+     * This figures out a dispatched post request.  It writes the
+     * request to a temp file, and then reads it in twice from there.  I found
+     * no other way to do this, but this solution doesn't seem to bad.
+     * Obviously it is better to use the servlets directly, without having to
+     * go through this random file writing and reading.  If our xml handlers
+     * were written more dynamically this probably wouldn't be necessary, but
+     * it is.  Hopefully this should help GeoServer's interoperability with
+     * clients, since most of them are kinda stupid, and can't handle
+     * different url locations for the different requests.
      *
      * @param request The servlet request object.
      * @param response The servlet response object.
@@ -188,8 +196,8 @@ public class WfsDispatcher extends Dispatcher {
     }
 
     /**
-     * Handles all Get requests.  This method implements the main matching
-     * logic for the class.
+     * Handles all Get requests.  This method implements the main
+     * matching logic for the class.
      *
      * @param request The servlet request object.
      * @param response The servlet response object.
@@ -217,18 +225,14 @@ public class WfsDispatcher extends Dispatcher {
     }
 
     /**
-     * Does the actual response, creates the appropriate servlet to handle the
-     * detected request.  Note that the requestReader is a bit of a hack, if
-     * it is null then it is from a get Request, if not then that means the
-     * request is being stored as a file, and needs to be read with this
-     * particular reader.
-     *
-     * <p>
-     * This does have the downside of forcing us to have doGet and doPost
-     * methods of AbstractService be public, perhaps there is a good pattern
-     * for handling  this.  Or we could try to re-write Dispatcher to extend
-     * AbstractService, but it may be tricky.
-     * </p>
+     * Does the actual response, creates the appropriate servlet to
+     * handle the detected request.  Note that the requestReader is a bit of a
+     * hack, if it is null then it is from a get Request, if not then that
+     * means the request is being stored as a file, and needs to be read with
+     * this particular reader.<p>This does have the downside of forcing
+     * us to have doGet and doPost methods of AbstractService be public,
+     * perhaps there is a good pattern for handling  this.  Or we could try to
+     * re-write Dispatcher to extend AbstractService, but it may be tricky.</p>
      *
      * @param requestReader The reader of a file that contains the request,
      *        null if from a get request.

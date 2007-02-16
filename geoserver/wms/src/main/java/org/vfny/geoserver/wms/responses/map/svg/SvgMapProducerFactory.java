@@ -21,10 +21,10 @@ import java.util.Set;
  */
 public class SvgMapProducerFactory implements GetMapProducerFactorySpi {
     /**
-     * this is just to check the requested mime type starts with this string,
-     * since the most common error when performing the HTTP request is not to
-     * escape the '+' sign in "image/svg+xml", which is decoded as a space
-     * character at server side.
+     * this is just to check the requested mime type starts with this
+     * string, since the most common error when performing the HTTP request is
+     * not to escape the '+' sign in "image/svg+xml", which is decoded as a
+     * space character at server side.
      */
     private static final String PRODUCE_TYPE = "image/svg";
 
@@ -35,8 +35,8 @@ public class SvgMapProducerFactory implements GetMapProducerFactorySpi {
     private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
 
     /**
-     * Creates a new SvgMapProducerFactory object.
-     */
+         * Creates a new SvgMapProducerFactory object.
+         */
     public SvgMapProducerFactory() {
         super();
     }
@@ -60,13 +60,10 @@ public class SvgMapProducerFactory implements GetMapProducerFactorySpi {
     }
 
     /**
-     * By now SVG map producer does not have external dependencied (such as
-     * Batik), so just returns <code>true</code>.
-     *
-     * <p>
-     * It is most probable that this situation change in the future, like when
-     * adding Styling support.
-     * </p>
+     * By now SVG map producer does not have external dependencied
+     * (such as Batik), so just returns <code>true</code>.<p>It is most
+     * probable that this situation change in the future, like when adding
+     * Styling support.</p>
      *
      * @return <code>true</code>
      */
@@ -75,14 +72,11 @@ public class SvgMapProducerFactory implements GetMapProducerFactorySpi {
     }
 
     /**
-     * evaluates if this Map producer can generate the map format specified by
-     * <code>mapFormat</code>
-     *
-     * <p>
-     * In this case, true if <code>mapFormat</code> starts with "image/svg", as
-     * both <code>"image/svg"</code> and <code>"image/svg+xml"</code> are
-     * commonly passed.
-     * </p>
+     * evaluates if this Map producer can generate the map format
+     * specified by <code>mapFormat</code><p>In this case, true if
+     * <code>mapFormat</code> starts with "image/svg", as both
+     * <code>"image/svg"</code> and <code>"image/svg+xml"</code> are commonly
+     * passed.</p>
      *
      * @param mapFormat the mime type of the output map format requiered
      *
@@ -96,6 +90,7 @@ public class SvgMapProducerFactory implements GetMapProducerFactorySpi {
      * Returns an svg renderer based on the current wms configuration.
      *
      * @param mapFormat DOCUMENT ME!
+     * @param wms DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      *
@@ -118,9 +113,9 @@ public class SvgMapProducerFactory implements GetMapProducerFactorySpi {
     }
 
     /* (non-Javadoc)
-         * @see org.geotools.factory.Factory#getImplementationHints()
-         * This just returns java.util.Collections.EMPTY_MAP
-         */
+     * @see org.geotools.factory.Factory#getImplementationHints()
+     * This just returns java.util.Collections.EMPTY_MAP
+     */
     public Map getImplementationHints() {
         return java.util.Collections.EMPTY_MAP;
     }

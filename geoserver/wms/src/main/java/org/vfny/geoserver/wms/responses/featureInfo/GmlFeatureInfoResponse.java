@@ -26,16 +26,12 @@ import java.util.List;
 
 
 /**
- * A GetFeatureInfo response handler specialized in producing GML data for a
- * GetFeatureInfo request.
- *
- * <p>
- * This class does not deals directly with GML encoding. Instead, it works by
- * taking the FeatureResults produced in <code>execute()</code> and constructs
- * a <code>GetFeaturesResult</code> wich is passed to a
- * <code>GML2FeatureResponseDelegate</code>, as if it where the result of a
- * GetFeature WFS request.
- * </p>
+ * A GetFeatureInfo response handler specialized in producing GML data for
+ * a GetFeatureInfo request.<p>This class does not deals directly with GML
+ * encoding. Instead, it works by taking the FeatureResults produced in
+ * <code>execute()</code> and constructs a <code>GetFeaturesResult</code> wich
+ * is passed to a <code>GML2FeatureResponseDelegate</code>, as if it where the
+ * result of a GetFeature WFS request.</p>
  *
  * @author Gabriel Roldan, Axios Engineering
  */
@@ -47,15 +43,15 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
     private static final String FORMAT = "application/vnd.ogc.gml";
 
     /**
-     * Default constructor, sets up the supported output format string.
-     */
+         * Default constructor, sets up the supported output format string.
+         */
     public GmlFeatureInfoResponse() {
         super.supportedFormats = Collections.singletonList(FORMAT);
     }
 
     /**
-     * Returns any extra headers that this service might want to set in the HTTP
-     * response object.
+     * Returns any extra headers that this service might want to set in
+     * the HTTP response object.
      *
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
@@ -69,13 +65,10 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
      * <code>GetFeaturesResult</code> wich is passed to a
      * <code>GML2FeatureResponseDelegate</code>.
      *
-     * @param out
-     *            DOCUMENT ME!
+     * @param out DOCUMENT ME!
      *
-     * @throws ServiceException
-     *             DOCUMENT ME!
-     * @throws IOException
-     *             DOCUMENT ME!
+     * @throws ServiceException DOCUMENT ME!
+     * @throws IOException DOCUMENT ME!
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         GetFeatureInfoRequest fInfoReq = (GetFeatureInfoRequest) getRequest();
@@ -116,13 +109,12 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
     }
 
     /**
-     * Crude hack to make the FeatureRequest, expecting a WFService, work
-     * anyways. In fact FeatureRequest does not use anything specific from
-     * WFService and it's happy with whatever service has been provided to it...
-     * but that's a knowledge you can get only inspecting its code...
+     * Crude hack to make the FeatureRequest, expecting a WFService,
+     * work anyways. In fact FeatureRequest does not use anything specific
+     * from WFService and it's happy with whatever service has been provided
+     * to it... but that's a knowledge you can get only inspecting its code...
      *
      * @author aaime
-     *
      */
     private static class MockWFService extends WFService {
         public MockWFService(String request, WFS wfs) {

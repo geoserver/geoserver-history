@@ -17,32 +17,28 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * LoginForm purpose.
- * <p>
- * Stores the username/password information for the login page, to be used by the LoginAction
- * </p>
+ * LoginForm purpose.<p>Stores the username/password information for the
+ * login page, to be used by the LoginAction</p>
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
  * @version $Id: LoginForm.java,v 1.2 2004/02/09 23:30:06 dmzwiers Exp $
  */
 public class LoginForm extends ActionForm {
-    /**
-     * Comment for <code>serialVersionUID</code>
-     */
+    /** Comment for <code>serialVersionUID</code> */
     private static final long serialVersionUID = 3258410616858358324L;
     private String username;
     private String password;
     private String confirm;
 
     /**
-     *
      * sets username and password to empty strings
-     *
-     * @see org.apache.struts.action.ActionForm#reset(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
      *
      * @param arg0
      * @param request
+     *
+     * @see org.apache.struts.action.ActionForm#reset(org.apache.struts.action.ActionMapping,
+     *      javax.servlet.http.HttpServletRequest)
      */
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
@@ -53,15 +49,16 @@ public class LoginForm extends ActionForm {
     }
 
     /**
-     *
-     * Verifies that username is not null or empty.
-     * Could potentially do the same for password later.
-     *
-     * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
+     * Verifies that username is not null or empty. Could potentially
+     * do the same for password later.
      *
      * @param mapping
      * @param request
+     *
      * @return
+     *
+     * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping,
+     *      javax.servlet.http.HttpServletRequest)
      */
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();

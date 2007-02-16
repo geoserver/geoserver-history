@@ -34,18 +34,20 @@ import javax.xml.parsers.SAXParserFactory;
  */
 public class TransactionXmlReader extends XmlRequestReader {
     /**
-     * Creates a new reader.
-     *
-     * @param service The WFS service handling the request.
-     */
+         * Creates a new reader.
+         *
+         * @param service The WFS service handling the request.
+         */
     public TransactionXmlReader(WFService service) {
         super(service);
     }
 
     /**
-     * Reads the Transaction XML request into a TransactionRequest object.
+     * Reads the Transaction XML request into a TransactionRequest
+     * object.
      *
      * @param reader The plain POST text from the client.
+     * @param req DOCUMENT ME!
      *
      * @return The read TransactionRequest object.
      *

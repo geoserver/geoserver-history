@@ -19,8 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * DataNamespacesSelectForm
- * <p>
+ * DataNamespacesSelectForm<p></p>
+ *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
  * @version $Id: DataNamespacesSelectForm.java,v 1.5 2004/04/03 00:24:28 emperorkefka Exp $

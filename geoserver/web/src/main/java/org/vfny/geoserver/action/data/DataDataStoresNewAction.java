@@ -18,11 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Create a new DataStoreConfig based on user's input.
- *
- * <p>
- * Will need to update the current DataStoreId as stored in session context.
- * </p>
+ * Create a new DataStoreConfig based on user's input.<p>Will need to
+ * update the current DataStoreId as stored in session context.</p>
  *
  * @author User, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)

@@ -26,23 +26,14 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * GeoServerConfigurationSubmit purpose.
- * <p>
- * Description of GeoServerConfigurationSubmit ...
- * </p>
- *
- * <p>
- * Capabilities:
- * </p>
- * <ul>
- * <li>
- * Feature: description
- * </li>
- * </ul>
- * <p>
- * Example Use:
- * </p>
- * <pre><code>
+ * GeoServerConfigurationSubmit purpose.<p>Description of
+ * GeoServerConfigurationSubmit ...</p>
+ *  <p>Capabilities:</p>
+ *  <ul>
+ *      <li>Feature: description</li>
+ *  </ul>
+ *  <p>Example Use:</p>
+<pre><code>
  * GeoServerConfigurationSubmit x = new GeoServerConfigurationSubmit(...);
  * </code></pre>
  *

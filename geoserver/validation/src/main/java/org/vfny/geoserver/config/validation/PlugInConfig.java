@@ -25,11 +25,8 @@ import java.util.Map;
 
 
 /**
- * PlugInConfig purpose.
- *
- * <p>
- * Used to represent a copy of the config information required for the UI.
- * </p>
+ * PlugInConfig purpose.<p>Used to represent a copy of the config
+ * information required for the UI.</p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
@@ -51,25 +48,25 @@ public class PlugInConfig {
     private Map args;
 
     /**
-     * PlugInConfig constructor.
-     *
-     * <p>
-     * Does nothing.
-     * </p>
-     */
+         * PlugInConfig constructor.
+         *
+         * <p>
+         * Does nothing.
+         * </p>
+         */
     public PlugInConfig() {
         args = new HashMap();
     }
 
     /**
-     * PlugInConfig constructor.
-     *
-     * <p>
-     * Creates a copy of the PlugInConfig passed in in this object.
-     * </p>
-     *
-     * @param pi
-     */
+         * PlugInConfig constructor.
+         *
+         * <p>
+         * Creates a copy of the PlugInConfig passed in in this object.
+         * </p>
+         *
+         * @param pi
+         */
     public PlugInConfig(PlugInConfig pi) {
         name = pi.getName();
         description = pi.getDescription();
@@ -89,14 +86,14 @@ public class PlugInConfig {
     }
 
     /**
-     * PlugInConfig constructor.
-     *
-     * <p>
-     * Creates a copy of the PlugInDTO passed in in this object.
-     * </p>
-     *
-     * @param pi
-     */
+         * PlugInConfig constructor.
+         *
+         * <p>
+         * Creates a copy of the PlugInDTO passed in in this object.
+         * </p>
+         *
+         * @param pi
+         */
     public PlugInConfig(PlugInDTO pi) {
         name = pi.getName();
         description = pi.getDescription();
@@ -200,12 +197,11 @@ public class PlugInConfig {
     }
 
     /**
-     * toDTO purpose.
-     * <p>
-     * Clones this config as a DTO.
-     * </p>
-     * @see java.lang.Object#clone()
+     * toDTO purpose.<p>Clones this config as a DTO.</p>
+     *
      * @return PlugInDTO
+     *
+     * @see java.lang.Object#clone()
      */
     public PlugInDTO toDTO() {
         PlugInDTO dto = new PlugInDTO();
@@ -250,11 +246,10 @@ public class PlugInConfig {
     }
 
     /**
-     * getArgStringValue purpose.
-     * <p>
-     * Returns a human friendly version
-     * </p>
+     * getArgStringValue purpose.<p>Returns a human friendly version</p>
+     *
      * @param name
+     *
      * @return
      */
     public String getArgStringValue(String name) {
@@ -268,11 +263,10 @@ public class PlugInConfig {
     }
 
     /**
-     * getArgValue purpose.
-     * <p>
-     * Returns an Object version
-     * </p>
+     * getArgValue purpose.<p>Returns an Object version</p>
+     *
      * @param name
+     *
      * @return
      */
     public Object getArgValue(String name) {
@@ -286,13 +280,14 @@ public class PlugInConfig {
     }
 
     /**
-     * setArgStringValue purpose.
-     * <p>
-     * Stores a human friendly version
-     * </p>
+     * setArgStringValue purpose.<p>Stores a human friendly version</p>
+     *
      * @param name
      * @param value
+     *
      * @return
+     *
+     * @throws IllegalArgumentException DOCUMENT ME!
      */
     public boolean setArgStringValue(String name, String value) {
         if ((value == null) || value.equals("")) {
@@ -328,12 +323,11 @@ public class PlugInConfig {
     }
 
     /**
-     * setArgStringValue purpose.
-     * <p>
-     * Stores a human friendly version.
-     * </p>
+     * setArgStringValue purpose.<p>Stores a human friendly version.</p>
+     *
      * @param name
      * @param value
+     *
      * @return
      */
     public boolean addArgStringValue(String name, String value) {
@@ -385,13 +379,14 @@ public class PlugInConfig {
     }
 
     /**
-     * setArgStringValue purpose.
-     * <p>
-     * Stores a human friendly version
-     * </p>
+     * setArgStringValue purpose.<p>Stores a human friendly version</p>
+     *
      * @param name
      * @param value
+     *
      * @return
+     *
+     * @throws IllegalArgumentException DOCUMENT ME!
      */
     public boolean setArgValue(String name, Object value) {
         if ((value == null) || value.equals("")) {
@@ -418,10 +413,9 @@ public class PlugInConfig {
     }
 
     /**
-     * getPropertyDescriptors purpose.
-     * <p>
-     * Get the descriptors for this plugin's map of attributes
-     * </p>
+     * getPropertyDescriptors purpose.<p>Get the descriptors for this
+     * plugin's map of attributes</p>
+     *
      * @return
      */
     public PropertyDescriptor[] getPropertyDescriptors() {
@@ -438,12 +432,14 @@ public class PlugInConfig {
     }
 
     /**
-     * PropertyDescriptor purpose.
-     * <p>
-     * Get the descriptor for this plugin's attribute named
-     * </p>
+     * PropertyDescriptor purpose.<p>Get the descriptor for this
+     * plugin's attribute named</p>
+     *
      * @param name
+     *
      * @return
+     *
+     * @throws NullPointerException DOCUMENT ME!
      */
     public PropertyDescriptor getPropertyDescriptor(String name) {
         if (name == null) {

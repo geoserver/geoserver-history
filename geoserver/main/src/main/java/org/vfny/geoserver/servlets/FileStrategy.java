@@ -47,11 +47,8 @@ public class FileStrategy implements ServiceStrategy {
     }
 
     /**
-     * Provides a outputs stream on a temporary file.
-     *
-     * <p>
-     * I have changed this to use a BufferedWriter to agree with SpeedStrategy.
-     * </p>
+     * Provides a outputs stream on a temporary file.<p>I have changed
+     * this to use a BufferedWriter to agree with SpeedStrategy.</p>
      *
      * @param response Response being handled
      *

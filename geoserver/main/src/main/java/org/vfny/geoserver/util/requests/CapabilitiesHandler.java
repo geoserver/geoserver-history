@@ -24,26 +24,28 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
-    /** Service **/
+    /** Service */
     private AbstractService service;
 
     /** Internal Capabilities request for construction. */
     private CapabilitiesRequest request = null;
 
     /**
-     * Creates a new CapabilitiesHandler
-     * @param service this is the AbstractService Handling the Request
-     */
+         * Creates a new CapabilitiesHandler
+         * @param service this is the AbstractService Handling the Request
+         */
     public CapabilitiesHandler(AbstractService service) {
         this.service = service;
         request = new CapabilitiesRequest("WFS", service);
     }
 
     /**
-    * Returns the GetCapabilities request.
-    *
-    * @return GetCapabilities request.
-    */
+     * Returns the GetCapabilities request.
+     *
+     * @param req DOCUMENT ME!
+     *
+     * @return GetCapabilities request.
+     */
     public CapabilitiesRequest getRequest(HttpServletRequest req) {
         request.setHttpServletRequest(req);
 
@@ -55,8 +57,8 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
      * ***********************************************************************/
 
     /**
-     * Notes the start of the element and sets version and service tags, as
-     * required.
+     * Notes the start of the element and sets version and service
+     * tags, as required.
      *
      * @param namespaceURI URI for namespace appended to element.
      * @param localName Local name of element.

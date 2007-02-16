@@ -29,71 +29,49 @@ import java.util.List;
 
 /**
  * Base class for GetFeatureInfo delegates responsible of creating
- * GetFeatureInfo responses in different formats.
- *
- * <p>
- * Subclasses should implement one or more output formats, wich will be
- * returned in a list of mime type strings in
- * <code>getSupportedFormats</code>. For example, a subclass can be created to
- * write one of the following output formats:
- *
- * <ul>
- * <li>
- * text/plain
- * </li>
- * <li>
- * text/html
- * </li>
- * </ul>
- * </p>
- *
- * <p>
- * This abstract class takes care of executing the request in the sense of
- * taking the GetFeatureInfo request parameters such as query_layers, bbox, x,
- * y, etc., create the gt2 query objects for each featuretype and executing
+ * GetFeatureInfo responses in different formats.<p>Subclasses should
+ * implement one or more output formats, wich will be returned in a list of
+ * mime type strings in <code>getSupportedFormats</code>. For example, a
+ * subclass can be created to write one of the following output formats:
+ *  <ul>
+ *      <li>text/plain</li>
+ *      <li>text/html</li>
+ *  </ul>
+ *  </p>
+ *  <p>This abstract class takes care of executing the request in the sense
+ * of taking the GetFeatureInfo request parameters such as query_layers, bbox,
+ * x, y, etc., create the gt2 query objects for each featuretype and executing
  * it. This process leads to a set of FeatureResults objects and its metadata,
  * wich will be given to the <code>execute(FeatureTypeInfo[] ,
  * FeatureResults[])</code> method, that a subclass should implement as a
- * matter of setting up any resource/state it needs to later encoding.
- * </p>
- *
- * <p>
- * So, it should be enough to a subclass to implement the following methods in
- * order to produce the requested output format:
- *
- * <ul>
- * <li>
- * execute(FeatureTypeInfo[], FeatureResults[], int, int)
- * </li>
- * <li>
- * canProduce(String mapFormat)
- * </li>
- * <li>
- * getSupportedFormats()
- * </li>
- * <li>
- * writeTo(OutputStream)
- * </li>
- * </ul>
- * </p>
+ * matter of setting up any resource/state it needs to later encoding.</p>
+ *  <p>So, it should be enough to a subclass to implement the following
+ * methods in order to produce the requested output format:
+ *  <ul>
+ *      <li>execute(FeatureTypeInfo[], FeatureResults[], int, int)</li>
+ *      <li>canProduce(String mapFormat)</li>
+ *      <li>getSupportedFormats()</li>
+ *      <li>writeTo(OutputStream)</li>
+ *  </ul>
+ *  </p>
  *
  * @author Gabriel Roldan, Axios Engineering
  * @author Chris Holmes
  * @version $Id: GetFeatureInfoDelegate.java,v 1.1 2004/07/15 21:13:14 jmacgill Exp $
  */
 public abstract class GetFeatureInfoDelegate implements Response {
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     private GetFeatureInfoRequest request;
 
     /**
-     * Creates a new GetMapDelegate object.
-     */
+         * Creates a new GetMapDelegate object.
+         */
     public GetFeatureInfoDelegate() {
     }
 
     /**
-     * Executes a Request, which must be a GetMapRequest.  Any other will cause
-     * a class cast exception.
+     * Executes a Request, which must be a GetMapRequest.  Any other
+     * will cause a class cast exception.
      *
      * @param request A valid GetMapRequest.
      *
@@ -104,8 +82,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
     }
 
     /**
-     * Executes a GetFeatureInfo request.  Builds the proper objects from the
-     * request names.
+     * Executes a GetFeatureInfo request.  Builds the proper objects
+     * from the request names.
      *
      * @param request A valid GetMapRequest.
      *
@@ -134,8 +112,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
     }
 
     /**
-     * Execute method for concrete children to implement.  Each param is an
-     * array in the order things should be processed.
+     * Execute method for concrete children to implement.  Each param
+     * is an array in the order things should be processed.
      *
      * @param requestedLayers Array of config information of the FeatureTypes
      *        to be processed.
@@ -154,12 +132,9 @@ public abstract class GetFeatureInfoDelegate implements Response {
         throws WmsException;
 
     /**
-     * Creates the array of queries to be executed for the request.
-     *
-     * <p>
-     * Each query is setted up to retrieve the features that matches the BBOX
-     * specified in the GetMap request
-     * </p>
+     * Creates the array of queries to be executed for the request.<p>Each
+     * query is setted up to retrieve the features that matches the BBOX
+     * specified in the GetMap request</p>
      *
      * @param layers The layers to request against.
      *
@@ -199,8 +174,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
     }
 
     /**
-     * Builds the filter for a layer containing the BBOX filter defined by the
-     * extent queries (BBOX param).
+     * Builds the filter for a layer containing the BBOX filter defined
+     * by the extent queries (BBOX param).
      *
      * @param requestExtent The extent to filter out.
      * @param ffactory A filterFactory to create new filters.
@@ -225,29 +200,21 @@ public abstract class GetFeatureInfoDelegate implements Response {
     }
 
     /**
-     * Tries to guesss exactly wich property names are needed to query for a
-     * given FeatureTypeInfo and the Filter that will be applied to it. By
-     * this way, only the needed propertied will be queried to the underlying
-     * FeatureSource in the hope that it will speed up the query
-     *
-     * <p>
-     * Note that just the attributes exposed by the FeatureTypeInfo will be
-     * taken in count. a FeatureTypeInfo exposes all it's attributes except if
-     * the subset of desiref exposed attributes are specified in the catalog
-     * configuration.
-     * </p>
-     *
-     * <p>
-     * This method guarantiees that at lest the default geometry attribute of
-     * <code>layer</code> will be returned.
-     * </p>
+     * Tries to guesss exactly wich property names are needed to query
+     * for a given FeatureTypeInfo and the Filter that will be applied to it.
+     * By this way, only the needed propertied will be queried to the
+     * underlying FeatureSource in the hope that it will speed up the query<p>Note
+     * that just the attributes exposed by the FeatureTypeInfo will be taken
+     * in count. a FeatureTypeInfo exposes all it's attributes except if the
+     * subset of desiref exposed attributes are specified in the catalog
+     * configuration.</p>
+     *  <p>This method guarantiees that at lest the default geometry
+     * attribute of <code>layer</code> will be returned.</p>
      *
      * @param layer The layer to process.
      * @param filter The filter to process with.
      *
      * @return An array of the propertyNames needed.
-     *
-     * @throws java.io.IOException DOCUMENT ME!
      *
      * @task TODO: by now just returns the geometry att. Implement the rest of
      *       the method to find the rest of attributes needed by inspecting
@@ -271,8 +238,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
     }
 
     /**
-     * Gets the map request.  Used by delegate children to find out more
-     * information about the request.
+     * Gets the map request.  Used by delegate children to find out
+     * more information about the request.
      *
      * @return The request to be processed.
      */
@@ -281,9 +248,9 @@ public abstract class GetFeatureInfoDelegate implements Response {
     }
 
     /**
-     * Evaluates if this GetFeatureInfo producer can generate the map format
-     * specified by <code>mapFormat</code>, where <code>mapFormat</code> is
-     * the MIME type of the requested response.
+     * Evaluates if this GetFeatureInfo producer can generate the map
+     * format specified by <code>mapFormat</code>, where
+     * <code>mapFormat</code> is the MIME type of the requested response.
      *
      * @param mapFormat the MIME type of the output map format requiered
      *

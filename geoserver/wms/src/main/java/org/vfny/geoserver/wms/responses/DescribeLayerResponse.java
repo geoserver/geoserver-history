@@ -22,13 +22,10 @@ import javax.xml.transform.TransformerException;
 
 
 /**
- * Executes a <code>DescribeLayer</code> WMS request.
- *
- * <p>
- * Recieves a <code>DescribeLayerRequest</code> object holding the references to
- * the requested layers and utilizes a transformer based on the org.geotools.xml.transform
- * framework to encode the response.
- * </p>
+ * Executes a <code>DescribeLayer</code> WMS request.<p>Recieves a
+ * <code>DescribeLayerRequest</code> object holding the references to the
+ * requested layers and utilizes a transformer based on the
+ * org.geotools.xml.transform framework to encode the response.</p>
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
@@ -42,8 +39,9 @@ public class DescribeLayerResponse implements Response {
     /** the request holding the required FeatureTypeInfo's */
     private DescribeLayerRequest request;
 
-    /** the transformer wich takes care of xmlencoding the
-     * DescribeLayer response
+    /**
+     * the transformer wich takes care of xmlencoding the DescribeLayer
+     * response
      */
     private DescribeLayerTransformer transformer;
 
@@ -51,7 +49,9 @@ public class DescribeLayerResponse implements Response {
     private byte[] content;
 
     /**
-     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * Returns any extra headers that this service might want to set in
+     * the HTTP response object.
+     *
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
@@ -110,8 +110,8 @@ public class DescribeLayerResponse implements Response {
     }
 
     /**
-     * Do nothing, since <code>execute()</code> took care of obtaining the
-     * response, and after that nothing remains to be done but sending the
+     * Do nothing, since <code>execute()</code> took care of obtaining
+     * the response, and after that nothing remains to be done but sending the
      * response content to the client.
      *
      * @param gs
@@ -120,8 +120,8 @@ public class DescribeLayerResponse implements Response {
     }
 
     /**
-     * Returns the fixed <code>"application/vnd.ogc.wms_xml"</code> MIME type
-     * of this response, as specified in SLD 1.0 spec, section 6.7.
+     * Returns the fixed <code>"application/vnd.ogc.wms_xml"</code>
+     * MIME type of this response, as specified in SLD 1.0 spec, section 6.7.
      *
      * @param gs the geoserver instance config. Not used here.
      *
@@ -135,8 +135,8 @@ public class DescribeLayerResponse implements Response {
     }
 
     /**
-     * Returns <code>null</code> since no special encoding is applyed to the
-     * response content.
+     * Returns <code>null</code> since no special encoding is applyed
+     * to the response content.
      *
      * @return <code>null</code>
      */

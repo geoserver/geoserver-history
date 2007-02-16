@@ -17,11 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * ValidationTestSuiteSelectForm purpose.
- * <p>
- * Used to store data coming in from the web form, to be passed to
- * the ValidationTestSuiteSelectAction.
- * </p>
+ * ValidationTestSuiteSelectForm purpose.<p>Used to store data coming in
+ * from the web form, to be passed to the ValidationTestSuiteSelectAction.</p>
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)

@@ -28,15 +28,12 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * LoginAction purpose.
- *
- * <p>
- * Processes the login of a user to gain access to the GeoServer Configuration.
- * Currently the defaults are "admin" for username, "geoserver" for password,
- * case insensitive.  This value can be changed in the services.xml file,
- * found in the WEB-INF directory of a running GeoServer.  A page to change
- * the log in would be nice, but it's not here yet.
- * </p>
+ * LoginAction purpose.<p>Processes the login of a user to gain access to
+ * the GeoServer Configuration. Currently the defaults are "admin" for
+ * username, "geoserver" for password, case insensitive.  This value can be
+ * changed in the services.xml file, found in the WEB-INF directory of a
+ * running GeoServer.  A page to change the log in would be nice, but it's not
+ * here yet.</p>
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)

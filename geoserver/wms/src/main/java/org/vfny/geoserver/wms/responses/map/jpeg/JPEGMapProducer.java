@@ -28,21 +28,21 @@ import javax.media.jai.PlanarImage;
  * Map producer for JPEG image format.
  *
  * @author Simone Giannecchini
- * @since 1.4.x
  *
+ * @since 1.4.x
  */
 public final class JPEGMapProducer extends DefaultRasterMapProducer {
     /** Logger. */
     private final static Logger LOGGER = Logger.getLogger(JPEGMapProducer.class.toString());
 
-    /** JPEG Native Acceleration Mode * */
+    /** JPEG Native Acceleration Mode */
     private Boolean JPEGNativeAcc;
 
     public JPEGMapProducer(String outputFormat, WMS wms) {
         super(outputFormat, wms);
         /**
-         * TODO To check Native Acceleration mode use the following variable
-         */
+                 * TODO To check Native Acceleration mode use the following variable
+                 */
         this.JPEGNativeAcc = wms.getGeoServer().getJPEGNativeAcceleration();
     }
 

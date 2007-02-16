@@ -11,20 +11,17 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * A safe Service strategy that buffers output until writeTo completes.
- *
- * <p>
- * This strategy wastes memory, for saftey. It represents a middle ground
- * between SpeedStrategy and FileStrategy
- * </p>
+ * A safe Service strategy that buffers output until writeTo completes.<p>This
+ * strategy wastes memory, for saftey. It represents a middle ground between
+ * SpeedStrategy and FileStrategy</p>
  *
  * @author jgarnett
  */
 public class BufferStrategy implements ServiceStrategy {
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     ByteArrayOutputStream buffer = null;
 
-    /** DOCUMENT ME!  */
+    /** DOCUMENT ME! */
     private HttpServletResponse response;
 
     public String getId() {

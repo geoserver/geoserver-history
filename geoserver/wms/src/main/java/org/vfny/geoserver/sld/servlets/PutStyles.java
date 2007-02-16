@@ -81,9 +81,9 @@ public class PutStyles extends AbstractService {
 
     protected XmlRequestReader getXmlRequestReader() {
         /**
-        * @todo Implement this org.vfny.geoserver.servlets.AbstractService
-        *       abstract method
-        */
+                * @todo Implement this org.vfny.geoserver.servlets.AbstractService
+                *       abstract method
+                */
         throw new java.lang.UnsupportedOperationException(
             "Method getXmlRequestReader() not yet implemented.");
     }
@@ -91,9 +91,9 @@ public class PutStyles extends AbstractService {
     protected ExceptionHandler getExceptionHandler() {
         // TODO Auto-generated method stub
         /**
-        * @todo Implement this org.vfny.geoserver.servlets.AbstractService
-        *       abstract method
-        */
+                * @todo Implement this org.vfny.geoserver.servlets.AbstractService
+                *       abstract method
+                */
         throw new java.lang.UnsupportedOperationException(
             "Method getXmlRequestReader() not yet implemented.");
     }
@@ -101,7 +101,11 @@ public class PutStyles extends AbstractService {
     /**
      * doGet:
      *
+     * @param request DOCUMENT ME!
+     * @param response DOCUMENT ME!
      *
+     * @throws ServletException DOCUMENT ME!
+     * @throws IOException DOCUMENT ME!
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
@@ -144,7 +148,13 @@ public class PutStyles extends AbstractService {
     /**
      * doPost:
      *
+     * @param request DOCUMENT ME!
+     * @param response DOCUMENT ME!
+     * @param requestXml DOCUMENT ME!
      *
+     * @throws ServletException DOCUMENT ME!
+     * @throws IOException DOCUMENT ME!
+     * @throws NullPointerException DOCUMENT ME!
      */
     public void doPost(HttpServletRequest request, HttpServletResponse response, Reader requestXml)
         throws ServletException, IOException {
@@ -223,14 +233,14 @@ public class PutStyles extends AbstractService {
     }
 
     /**
-    * Give a node and the name of a child of that node, return it. This doesnt
-    * do anything complex.
-    *
-    * @param parentNode
-    * @param wantedChildName
-    *
-    * @return
-    */
+     * Give a node and the name of a child of that node, return it.
+     * This doesnt do anything complex.
+     *
+     * @param parentNode
+     * @param wantedChildName
+     *
+     * @return
+     */
     public Node getNode(Node parentNode, String wantedChildName) {
         NodeList children = parentNode.getChildNodes();
 
@@ -259,6 +269,7 @@ public class PutStyles extends AbstractService {
      * Convenience method to get the value from the specified node.
      *
      * @param node
+     *
      * @return
      */
     public String getNodeValue(Node node) {
@@ -266,8 +277,8 @@ public class PutStyles extends AbstractService {
     }
 
     /**
-     * Give a node and the name of a child of that node, find its (string)
-     * value. This doesnt do anything complex.
+     * Give a node and the name of a child of that node, find its
+     * (string) value. This doesnt do anything complex.
      *
      * @param parentNode
      * @param wantedChildName
@@ -299,7 +310,8 @@ public class PutStyles extends AbstractService {
     }
 
     /**
-     * returns true if this node is named "name".  Ignores case and namespaces.
+     * returns true if this node is named "name".  Ignores case and
+     * namespaces.
      *
      * @param n
      * @param name
@@ -326,16 +338,18 @@ public class PutStyles extends AbstractService {
     }
 
     /**
-     * processSLD:
+     * processSLD: Makes the SLD into a DOM object and validates it. It
+     * will then get the layer names and update for each layer.
      *
-     * Makes the SLD into a DOM object and validates it.
-     * It will then get the layer names and update for each layer.
-     *
-     * @param sld
-     * @param rootNode the root node of the DOM document for parsing
+     * @param serviceRequest
+     * @param request the root node of the DOM document for parsing
      * @param response
+     * @param context DOCUMENT ME!
+     *
      * @throws IOException
-     * @throws WmsException
+     * @throws IOException
+     * @throws . DOCUMENT ME!
+     * @throws IllegalArgumentException DOCUMENT ME!
      */
     private void processSLD(PutStylesRequest serviceRequest, HttpServletRequest request,
         HttpServletResponse response, ServletContext context)

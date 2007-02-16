@@ -6,15 +6,12 @@ package org.geoserver.ows;
 
 
 /**
- *  A standard OGC service exception.
+ * A standard OGC service exception.
  *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
  */
 public class ServiceException extends Exception {
-    /**
-     * Application specfic code.
-     */
+    /** Application specfic code. */
     String code;
 
     public ServiceException(String message) {
@@ -37,6 +34,9 @@ public class ServiceException extends Exception {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The application specifc code of the exception.
      */
     public String getCode() {

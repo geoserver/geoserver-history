@@ -18,8 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * This utility reads in a Delete KVP request and turns it into an appropriate
- * internal Delete type request object.
+ * This utility reads in a Delete KVP request and turns it into an
+ * appropriate internal Delete type request object.
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
@@ -31,12 +31,12 @@ public class DeleteKvpReader extends WfsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
     /**
-     * Constructor with raw request string, and servlet handling request.
-     * Calls parent.
-     *
-     * @param kvPairs The raw request string from the servlet.
-     * @param service The servlet/service handling the request.
-     */
+         * Constructor with raw request string, and servlet handling request.
+         * Calls parent.
+         *
+         * @param kvPairs The raw request string from the servlet.
+         * @param service The servlet/service handling the request.
+         */
     public DeleteKvpReader(Map kvpPairs, WFService service) {
         super(kvpPairs, service);
     }

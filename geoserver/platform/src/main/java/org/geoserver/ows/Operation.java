@@ -8,29 +8,20 @@ import java.lang.reflect.Method;
 
 
 /**
- * Bean wrapper for an operation.
- * <p>
- * An operation is nothing more then a Plain Old Java Object (POJO). It does
- * not implement any GeoServer specific interface.
- * </p>
+ * Bean wrapper for an operation.<p>An operation is nothing more then a
+ * Plain Old Java Object (POJO). It does not implement any GeoServer specific
+ * interface.</p>
  *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
  */
 public final class Operation {
-    /**
-     * Unique identifier withing service of the operation.
-     */
+    /** Unique identifier withing service of the operation. */
     String id;
 
-    /**
-     * Service this operation is a component of.
-     */
+    /** Service this operation is a component of. */
     Service service;
 
-    /**
-     * The operation itself.
-     */
+    /** The operation itself. */
     Object operation;
 
     public Operation(String id, Service service, Object operation) {

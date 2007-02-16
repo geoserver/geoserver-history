@@ -15,8 +15,8 @@ import java.util.Map;
 
 
 /**
- * Implements the WFS GetCapabilities interface, which tells clients what the
- * server can do.
+ * Implements the WFS GetCapabilities interface, which tells clients what
+ * the server can do.
  *
  * @author Rob Hranac, TOPP
  * @author Gabriel Rold?n
@@ -28,12 +28,12 @@ public class Capabilities extends WFService {
     }
 
     /**
-    * DOCUMENT ME!
-    *
-    * @param params DOCUMENT ME!
-    *
-    * @return DOCUMENT ME!
-    */
+     * DOCUMENT ME!
+     *
+     * @param params DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     protected KvpRequestReader getKvpReader(Map params) {
         return new CapabilitiesKvpReader(params, this);
     }

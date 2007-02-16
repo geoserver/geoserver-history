@@ -18,12 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Used to accept information from user for a New DataStore Action.
- *
- * <p>
- * This form contains a convience property getDataStoreDescrptions() which is
- * simply to make writing the JSP easier.
- * </p>
+ * Used to accept information from user for a New DataStore Action.<p>This
+ * form contains a convience property getDataStoreDescrptions() which is
+ * simply to make writing the JSP easier.</p>
  *
  * @author User, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
@@ -51,11 +48,8 @@ public class DataDataStoresNewForm extends ActionForm {
     }
 
     /**
-     * List of available DataStoreDescriptions.
-     *
-     * <p>
-     * Convience method for DataStureUtils.listDataStoresDescriptions().
-     * </p>
+     * List of available DataStoreDescriptions.<p>Convience method for
+     * DataStureUtils.listDataStoresDescriptions().</p>
      *
      * @return Sorted set of DataStore Descriptions.
      */

@@ -36,7 +36,7 @@ public class DispatcherKvpReader {
     /**
      * Constructor with raw request string.  Calls parent.
      *
-     * @param reader A reader of the request from the http client.
+     * @param requestReader A reader of the request from the http client.
      * @param req The actual request made.
      *
      * @throws ServiceException DOCUMENT ME!
@@ -125,6 +125,9 @@ public class DispatcherKvpReader {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The service, WFS,WMS,WCS,etc...
      */
     public String getService() {
@@ -136,6 +139,9 @@ public class DispatcherKvpReader {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The request, GetCapabilities,GetMap,etc...
      */
     public String getRequest() {

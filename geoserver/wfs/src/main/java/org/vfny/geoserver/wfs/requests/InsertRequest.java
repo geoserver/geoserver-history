@@ -15,10 +15,10 @@ import java.util.logging.Logger;
 
 
 /**
- * Represents a request for an insert operation.  Does some type checking by
- * making sure that all features added have the same schema names  (which is
- * also the type name).   TODO: add increased typechecking, make sure schemas
- * match one another.
+ * Represents a request for an insert operation.  Does some type checking
+ * by making sure that all features added have the same schema names  (which
+ * is also the type name).   TODO: add increased typechecking, make sure
+ * schemas match one another.
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
@@ -35,8 +35,8 @@ public class InsertRequest extends SubTransactionRequest {
     private boolean releaseAll;
 
     /**
-     * Empty constructor.
-     */
+         * Empty constructor.
+         */
     public InsertRequest() {
         features = FeatureCollections.newCollection();
     }
@@ -62,10 +62,10 @@ public class InsertRequest extends SubTransactionRequest {
     }
 
     /**
-     * Adds a feature to this insert request.  Currently fairly permissive,
-     * just checks that the typenames match. The datasource will eventually
-     * complain, but it would be nice to do some more type-checking, to make
-     * sure the schemas match.
+     * Adds a feature to this insert request.  Currently fairly
+     * permissive, just checks that the typenames match. The datasource will
+     * eventually complain, but it would be nice to do some more
+     * type-checking, to make sure the schemas match.
      *
      * @param feature To be inserted into the database.
      *
@@ -114,29 +114,30 @@ public class InsertRequest extends SubTransactionRequest {
     }
 
     /**
-     * Sets the name.  This method should generally not be used, as features
-     * that are added set their own name and throw exceptions if they don't
-     * match the typename.  But this can be set before adding features if you
-     * want to ensure that they all match this name.
+     * Sets the name.  This method should generally not be used, as
+     * features that are added set their own name and throw exceptions if they
+     * don't match the typename.  But this can be set before adding features
+     * if you want to ensure that they all match this name.
      *
      * @param typeName the name of the schema of the added features.
-     * @task REVISIT: This is hacked, so that the typename can be set to
-     * use the proper prefix when it can be found out (currently in
-     * TransactionResponse).  The getTypeName is a bit funky for insert
-     * requests though, in many ways it should just not be used, for example
-     * when there are different featureTypes in an insert request.  The
-     * stores to use should really be determined by each Feature.  Also,
-     * this should be noted elsewhere, but we probably should not be relying
-     * on our internal prefixes for the typename.  It might make more sense
-     * for each Request to contain a typeName and a typeURI.  Of course that
-     * does not work super well either, since kvp requests will sometimes
-     * just use the prefix, without it referencing anything (though strictly
-     * accoring to the spec that is illegal, but it's nice to be able to do).
-     * But if we actually use the uris then that can make this method less
-     * hacky. ch
-     * Another option to this problem would be a getType(Data) method to
-     * replace String getTypeName(), as then the insert request could do
-     * the right lookup with its uri.
+     *
+     * @task REVISIT: This is hacked, so that the typename can be set to use
+     *       the proper prefix when it can be found out (currently in
+     *       TransactionResponse).  The getTypeName is a bit funky for insert
+     *       requests though, in many ways it should just not be used, for
+     *       example when there are different featureTypes in an insert
+     *       request.  The stores to use should really be determined by each
+     *       Feature.  Also, this should be noted elsewhere, but we probably
+     *       should not be relying on our internal prefixes for the typename.
+     *       It might make more sense for each Request to contain a typeName
+     *       and a typeURI.  Of course that does not work super well either,
+     *       since kvp requests will sometimes just use the prefix, without it
+     *       referencing anything (though strictly accoring to the spec that
+     *       is illegal, but it's nice to be able to do). But if we actually
+     *       use the uris then that can make this method less hacky. ch
+     *       Another option to this problem would be a getType(Data) method to
+     *       replace String getTypeName(), as then the insert request could do
+     *       the right lookup with its uri.
      */
     public void setTypeName(String typeName) {
         this.typeName = typeName;
@@ -152,8 +153,8 @@ public class InsertRequest extends SubTransactionRequest {
     }
 
     /**
-     * Filters can not be added to an insert request.  This is just an override
-     * of the setFilter method that throws an exception if called.
+     * Filters can not be added to an insert request.  This is just an
+     * override of the setFilter method that throws an exception if called.
      *
      * @param filter a filter.
      *

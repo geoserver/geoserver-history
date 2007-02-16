@@ -18,18 +18,16 @@ import java.util.Map;
 
 
 /**
- * Implements the WFS Transaction interface, which performs insert, update and
- * delete functions on the dataset. This servlet accepts a Transaction request
- * and returns a TransactionResponse xml element.
+ * Implements the WFS Transaction interface, which performs insert, update
+ * and delete functions on the dataset. This servlet accepts a Transaction
+ * request and returns a TransactionResponse xml element.
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Rold?n
  * @version $Id: Transaction.java,v 1.11 2004/06/03 19:34:36 cholmesny Exp $
  */
 public class Transaction extends WFService {
-    /**
-     * The file strategy prototype
-     */
+    /** The file strategy prototype */
     FileStrategy fileStrategy;
 
     public Transaction(WFS wfs) {
@@ -37,36 +35,37 @@ public class Transaction extends WFService {
     }
 
     /**
-     * Sets the file strategy prototype to be used in calls to {@link #createServiceStrategy()}
+     * Sets the file strategy prototype to be used in calls to {@link
+     * #createServiceStrategy()}
      *
+     * @param fileStrategy DOCUMENT ME!
      */
     public void setFileStrategy(FileStrategy fileStrategy) {
         this.fileStrategy = fileStrategy;
     }
 
     /**
-     * Returns the file strategy prototype.
-     * <p>
-     * This prototype is cloned in {@link #createServiceStrategy()}
-     * </p>
+     * Returns the file strategy prototype.<p>This prototype is cloned
+     * in {@link #createServiceStrategy()}</p>
      *
+     * @return DOCUMENT ME!
      */
     public FileStrategy getFileStrategy() {
         return fileStrategy;
     }
 
     /**
-    * Returns the handler for a transaction.
-    *
-    * @return An instance of the TransactionResponse class.
-    */
+     * Returns the handler for a transaction.
+     *
+     * @return An instance of the TransactionResponse class.
+     */
     protected Response getResponseHandler() {
         return new TransactionResponse();
     }
 
     /**
-     * Returns the delete kvp reader, as delete is the only transaction that
-     * can be made with key value pairs.
+     * Returns the delete kvp reader, as delete is the only transaction
+     * that can be made with key value pairs.
      *
      * @param params A map of the kvps.
      *
@@ -88,11 +87,11 @@ public class Transaction extends WFService {
     }
 
     /**
-     * Override to always return a FILE strategy.  This ensures that errors
-     * with commits will always be reported.  The expense of using a FILE
-     * response here is not that great, as transaction responses are generally
-     * not very long.  The importance of reporting an error with a commit is
-     * far greater than returning a slightly quicker response time.
+     * Override to always return a FILE strategy.  This ensures that
+     * errors with commits will always be reported.  The expense of using a
+     * FILE response here is not that great, as transaction responses are
+     * generally not very long.  The importance of reporting an error with a
+     * commit is far greater than returning a slightly quicker response time.
      *
      * @return The fileStrategy.
      *

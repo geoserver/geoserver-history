@@ -12,27 +12,24 @@ import java.util.List;
 
 
 /**
- * Holds the pre-validated parameters of a <code>DescribeLayer</code> request.
- *
- * <p>
- * This pre-validation must to be done by the request reader, so the content
- * of this object is assumed to be valid.
- * </p>
+ * Holds the pre-validated parameters of a <code>DescribeLayer</code>
+ * request.<p>This pre-validation must to be done by the request reader, so
+ * the content of this object is assumed to be valid.</p>
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
  */
 public class DescribeLayerRequest extends WMSRequest {
     /**
-     * Holds the FeatureTypes parsed from the
-     * request's <code>LAYERS</code> parameter.
+     * Holds the FeatureTypes parsed from the request's
+     * <code>LAYERS</code> parameter.
      */
     private List layers = new ArrayList(2);
 
     /**
-     * Creates a new DescribeLayerRequest
-     * @param service the service that handles the request
-     */
+         * Creates a new DescribeLayerRequest
+         * @param service the service that handles the request
+         */
     public DescribeLayerRequest(WMService service) {
         super("DescribeLayer", service);
     }

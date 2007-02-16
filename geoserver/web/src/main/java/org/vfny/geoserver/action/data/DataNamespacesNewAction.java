@@ -20,9 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * DataNamespacesNewAction purpose.
- * <p>
- * Description of DataNamespacesNewAction ...
+ * DataNamespacesNewAction purpose.<p>Description of
+ * DataNamespacesNewAction ...</p>
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)

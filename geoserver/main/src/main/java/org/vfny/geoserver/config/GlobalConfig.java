@@ -14,12 +14,8 @@ import java.util.logging.Level;
 
 
 /**
- * Global GeoServer Configuration model.
- *
- * <p>
- * GlobalConfig represents the configuration model needed to set up GeoServer
- * for use.
- * </p>
+ * Global GeoServer Configuration model.<p>GlobalConfig represents the
+ * configuration model needed to set up GeoServer for use.</p>
  *
  * @author David Zwiers, Refractions Research, Inc.
  * @version $Id: GlobalConfig.java,v 1.12 2004/09/09 17:05:10 cholmesny Exp $
@@ -31,119 +27,83 @@ public class GlobalConfig {
     private int maxFeatures = 20000;
 
     /**
-     * XML Verbosity.
-     *
-     * <p>
-     * Whether newlines and indents should be returned in XML responses.
-     * </p>
-     *
-     * <p>
-     * This should be called something other than verbose. Verbose should
-     * control things like printing out "magic" comments that tell people how
-     * to edit the xml files by hand.
-     * </p>
-     * Default is true
+     * XML Verbosity.<p>Whether newlines and indents should be returned
+     * in XML responses.</p>
+     *  <p>This should be called something other than verbose. Verbose
+     * should control things like printing out "magic" comments that tell
+     * people how to edit the xml files by hand.</p>
+     *  Default is true
      */
     private boolean verbose = true;
 
     /**
-     * Number of decimal places returned in a GetFeature response.
-     *
-     * <p>
-     * Sets the max number of decimal places past the zero returned in a
-     * GetFeature response.  Default is 4.
-     * </p>
-     * DZ - should it be moved to FeatureTypeInfo level? JG - no WMS also has a
-     * getFeature response
+     * Number of decimal places returned in a GetFeature response.<p>Sets
+     * the max number of decimal places past the zero returned in a GetFeature
+     * response.  Default is 4.</p>
+     *  DZ - should it be moved to FeatureTypeInfo level? JG - no WMS
+     * also has a getFeature response
      */
     private int numDecimals = 8;
 
     /**
-     * Sets the global character set.
-     *
-     * <p>
-     * This could use some more testing from international users. What it does
-     * is sets the encoding globally for all postgis database connections (the
-     * charset tag in FeatureTypeInfo), as well as specifying the encoding in
-     * the return
+     * Sets the global character set.<p>This could use some more
+     * testing from international users. What it does is sets the encoding
+     * globally for all postgis database connections (the charset tag in
+     * FeatureTypeInfo), as well as specifying the encoding in the return
      * <code>org.vfny.geoserver.config.org.vfny.geoserver.global.xml</code>
-     * header and mime type.
-     * </p>
-     *
-     * <p>
-     * The default is UTF-8
-     * </p>
-     *
-     * <p>
-     * Also be warned that GeoServer does not check if the CharSet is valid
-     * before attempting to use it, so it will fail miserably if a bad charset
-     * is used.
-     * </p>
+     * header and mime type.</p>
+     *  <p>The default is UTF-8</p>
+     *  <p>Also be warned that GeoServer does not check if the CharSet
+     * is valid before attempting to use it, so it will fail miserably if a
+     * bad charset is used.</p>
      */
     private Charset charSet;
 
     /**
-     * The base URL where this servlet will run.
-     *
-     * <p>
-     * If running locally then <code>http://localhost:8080</code> (or whatever
-     * port you're running on) should work.
-     * </p>
-     *
-     * <p>
-     * If you are serving to the world then this must be the location where the
-     * geoserver servlets appear
-     * </p>
-     *
-     * <p>
-     * JG - can we figure this out at runtime?
-     * </p>
+     * The base URL where this servlet will run.<p>If running locally
+     * then <code>http://localhost:8080</code> (or whatever port you're
+     * running on) should work.</p>
+     *  <p>If you are serving to the world then this must be the
+     * location where the geoserver servlets appear</p>
+     *  <p>JG - can we figure this out at runtime?</p>
      */
     private String proxyBaseUrl;
 
     /**
-     * Define a base url for the location of the wfs schemas.
-     *
-     * <p>
-     * By default GeoServer  loads and references its own at
-     * <code>/data/capabilities</code>.
-     * </p>
-     *
-     * <p>
-     * The standalone Tomcat server needs SchemaBaseUrl defined for validation.
-     * </p>
+     * Define a base url for the location of the wfs schemas.<p>By
+     * default GeoServer  loads and references its own at
+     * <code>/data/capabilities</code>.</p>
+     *  <p>The standalone Tomcat server needs SchemaBaseUrl defined for
+     * validation.</p>
      */
     private String schemaBaseUrl;
 
     /**
-     * Defines the Application logging level.
-     *
-     * <p>
-     * Common options are SEVERE, WARNING, INFO, CONFIG,  FINER, FINEST, in
-     * order of Increasing statements logged.
-     * </p>
-     *
-     * <p>
-     * There may be more then one point of control - the web containers often
-     * controls logging, the jakarta commons logging system is used by struts,
-     * these names seem taken from the jdk14 logging framework and GeoServer
-     * seems to also use log4j.
-     * </p>
+     * Defines the Application logging level.<p>Common options are
+     * SEVERE, WARNING, INFO, CONFIG,  FINER, FINEST, in order of Increasing
+     * statements logged.</p>
+     *  <p>There may be more then one point of control - the web
+     * containers often controls logging, the jakarta commons logging system
+     * is used by struts, these names seem taken from the jdk14 logging
+     * framework and GeoServer seems to also use log4j.</p>
      */
     private Level loggingLevel = null;
     private String adminUserName;
     private String adminPassword;
 
-    /** Whether the exceptions returned to the client should contain full stack traces */
+    /**
+     * Whether the exceptions returned to the client should contain
+     * full stack traces
+     */
     private boolean verboseExceptions;
 
     /** The Server contact person and their contact information. */
     private ContactConfig contact = null;
 
-    /** to log to disk or not to log to disk **/
+    /** to log to disk or not to log to disk */
     private boolean loggingToFile = false;
 
-    /** location on disk to log to **/
+    /** location on disk to log to */
     private String logLocation = null;
     private double jaiMemoryCapacity;
     private double jaiMemoryThreshold;
@@ -155,14 +115,14 @@ public class GlobalConfig {
     private boolean jaiPNGNative;
 
     /**
-     * GlobalConfig constructor.
-     *
-     * <p>
-     * Creates an instance of GlobalConfig and initializes to default settings.
-     * </p>
-     *
-     * @see defaultSettings()
-     */
+         * GlobalConfig constructor.
+         *
+         * <p>
+         * Creates an instance of GlobalConfig and initializes to default settings.
+         * </p>
+         *
+         * @see defaultSettings()
+         */
     public GlobalConfig() {
         maxFeatures = 20000;
         verbose = true;
@@ -176,26 +136,26 @@ public class GlobalConfig {
     }
 
     /**
-     * Instantiates the global config from the geoServer module.
-     *
-     * @param geoserver The geoServer module.
-     */
+         * Instantiates the global config from the geoServer module.
+         *
+         * @param geoserver The geoServer module.
+         */
     public GlobalConfig(GeoServer geoserver) {
         this((GeoServerDTO) geoserver.toDTO());
     }
 
     /**
-     * GlobalConfig constructor.
-     *
-     * <p>
-     * Creates a copy of the GeoServerDTO object provided.  Charset is not
-     * cloned, everything else is.
-     * </p>
-     *
-     * @param g
-     *
-     * @throws NullPointerException DOCUMENT ME!
-     */
+         * GlobalConfig constructor.
+         *
+         * <p>
+         * Creates a copy of the GeoServerDTO object provided.  Charset is not
+         * cloned, everything else is.
+         * </p>
+         *
+         * @param g
+         *
+         * @throws NullPointerException DOCUMENT ME!
+         */
     public GlobalConfig(GeoServerDTO g) {
         if (g == null) {
             throw new NullPointerException();
@@ -232,11 +192,8 @@ public class GlobalConfig {
     }
 
     /**
-     * Implement updateDTO.
-     *
-     * <p>
-     * Populates this instance with the GeoServerDTO object provided.
-     * </p>
+     * Implement updateDTO.<p>Populates this instance with the
+     * GeoServerDTO object provided.</p>
      *
      * @param g A valid GeoServerDTO object to populate this object from
      *
@@ -279,11 +236,8 @@ public class GlobalConfig {
     }
 
     /**
-     * Implement toDTO.
-     *
-     * <p>
-     * Creates a copy of the data in a GeoServerDTO representation
-     * </p>
+     * Implement toDTO.<p>Creates a copy of the data in a GeoServerDTO
+     * representation</p>
      *
      * @return a copy of the data in a GeoServerDTO representation
      *
@@ -317,11 +271,7 @@ public class GlobalConfig {
     }
 
     /**
-     * getBaseUrl purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getBaseUrl purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -330,11 +280,7 @@ public class GlobalConfig {
     }
 
     /**
-     * getCharSet purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getCharSet purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -343,11 +289,7 @@ public class GlobalConfig {
     }
 
     /**
-     * getContact purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getContact purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -356,11 +298,7 @@ public class GlobalConfig {
     }
 
     /**
-     * getMaxFeatures purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getMaxFeatures purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -369,11 +307,7 @@ public class GlobalConfig {
     }
 
     /**
-     * getNumDecimals purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getNumDecimals purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -382,11 +316,7 @@ public class GlobalConfig {
     }
 
     /**
-     * getSchemaBaseUrl purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getSchemaBaseUrl purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -395,11 +325,7 @@ public class GlobalConfig {
     }
 
     /**
-     * isVerbose purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * isVerbose purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -408,11 +334,7 @@ public class GlobalConfig {
     }
 
     /**
-     * setBaseUrl purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setBaseUrl purpose.<p>Description ...</p>
      *
      * @param url
      */
@@ -421,11 +343,7 @@ public class GlobalConfig {
     }
 
     /**
-     * setCharSet purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setCharSet purpose.<p>Description ...</p>
      *
      * @param charset
      */
@@ -438,11 +356,7 @@ public class GlobalConfig {
     }
 
     /**
-     * setContact purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setContact purpose.<p>Description ...</p>
      *
      * @param contact
      */
@@ -455,11 +369,7 @@ public class GlobalConfig {
     }
 
     /**
-     * setMaxFeatures purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setMaxFeatures purpose.<p>Description ...</p>
      *
      * @param i
      */
@@ -468,11 +378,7 @@ public class GlobalConfig {
     }
 
     /**
-     * setNumDecimals purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setNumDecimals purpose.<p>Description ...</p>
      *
      * @param i
      */
@@ -481,11 +387,7 @@ public class GlobalConfig {
     }
 
     /**
-     * setSchemaBaseUrl purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setSchemaBaseUrl purpose.<p>Description ...</p>
      *
      * @param url
      */
@@ -494,11 +396,7 @@ public class GlobalConfig {
     }
 
     /**
-     * setVerbose purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setVerbose purpose.<p>Description ...</p>
      *
      * @param b
      */
@@ -507,11 +405,7 @@ public class GlobalConfig {
     }
 
     /**
-     * getLoggingLevel purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * getLoggingLevel purpose.<p>Description ...</p>
      *
      * @return
      */
@@ -520,11 +414,7 @@ public class GlobalConfig {
     }
 
     /**
-     * setLoggingLevel purpose.
-     *
-     * <p>
-     * Description ...
-     * </p>
+     * setLoggingLevel purpose.<p>Description ...</p>
      *
      * @param level
      */
@@ -561,7 +451,8 @@ public class GlobalConfig {
     }
 
     /**
-     * Sets the password of the administrator of GeoServer, for login purposes.
+     * Sets the password of the administrator of GeoServer, for login
+     * purposes.
      *
      * @param password The password to set as the login password.
      */
@@ -570,8 +461,8 @@ public class GlobalConfig {
     }
 
     /**
-     * Should we display stackTraces or not? (And give them a nice little
-     * message instead?)
+     * Should we display stackTraces or not? (And give them a nice
+     * little message instead?)
      *
      * @return Returns the showStackTraces.
      */
@@ -580,8 +471,8 @@ public class GlobalConfig {
     }
 
     /**
-     * If set to true, response exceptions will throw their stack trace back to
-     * the end user.
+     * If set to true, response exceptions will throw their stack trace
+     * back to the end user.
      *
      * @param showStackTraces The showStackTraces to set.
      */
@@ -590,22 +481,31 @@ public class GlobalConfig {
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return The string representation of the path on disk in which the
-     * server logs to.
+     *         server logs to.
      */
     public String getLogLocation() {
         return logLocation;
     }
 
     /**
-     * @param logLocation The string representation of the path on disk in which
-     * the server logs to.
+     *
+    DOCUMENT ME!
+     *
+     * @param logLocation The string representation of the path on disk in
+     *        which the server logs to.
      */
     public void setLogLocation(String logLocation) {
         this.logLocation = logLocation;
     }
 
     /**
+     *
+    DOCUMENT ME!
+     *
      * @return True if the server is logging to file, otherwise false.
      */
     public boolean getLoggingToFile() {
@@ -614,6 +514,8 @@ public class GlobalConfig {
 
     /**
      * Toggles server logging to file.
+     *
+     * @param loggingToFile DOCUMENT ME!
      */
     public void setLoggingToFile(boolean loggingToFile) {
         this.loggingToFile = loggingToFile;

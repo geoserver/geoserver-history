@@ -29,11 +29,11 @@ public class TransactionFilterHandler extends FilterFilter implements GMLHandler
     private TransactionHandler parent;
 
     /**
-     * Empty constructor.
-     *
-     * @param parent The handler to pass filters and features to.
-     * @param schema The schema (not used, this needs to be redone in geotools)
-     */
+         * Empty constructor.
+         *
+         * @param parent The handler to pass filters and features to.
+         * @param schema The schema (not used, this needs to be redone in geotools)
+         */
     public TransactionFilterHandler(TransactionHandler parent, FeatureType schema) {
         super((FilterHandler) parent, schema);
         this.parent = parent;
@@ -66,8 +66,8 @@ public class TransactionFilterHandler extends FilterFilter implements GMLHandler
     }
 
     /**
-     * Recieves the feature for an insert request.  Just passes it up to the
-     * transaction handler.
+     * Recieves the feature for an insert request.  Just passes it up
+     * to the transaction handler.
      *
      * @param feature The feature read by child parsers.
      */

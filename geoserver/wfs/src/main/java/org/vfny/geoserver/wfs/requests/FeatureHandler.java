@@ -17,15 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Uses SAX to extact a GetFeature query from and incoming GetFeature request
- * XML stream.
- *
- * <p>
- * Note that this Handler extension ignores Filters completely and must be
- * chained as a parent to the PredicateFilter method in order to recognize
- * them. If it is not chained, it will still generate valid queries, but with
- * no filtering whatsoever.
- * </p>
+ * Uses SAX to extact a GetFeature query from and incoming GetFeature
+ * request XML stream.<p>Note that this Handler extension ignores Filters
+ * completely and must be chained as a parent to the PredicateFilter method in
+ * order to recognize them. If it is not chained, it will still generate valid
+ * queries, but with no filtering whatsoever.</p>
  *
  * @author Rob Hranac, TOPP
  * @version $Id: FeatureHandler.java,v 1.7 2004/02/13 19:30:39 dmzwiers Exp $
@@ -49,14 +45,16 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler, Fil
     /** Tracks current query */
     private Query currentQuery = new Query();
 
-    /** Collects string chunks in {@link #characters(char[], int, int)}
-     * callback to be handled at the beggining of {@link #endElement(String, String, String)}
+    /**
+     * Collects string chunks in {@link #characters(char[], int, int)}
+     * callback to be handled at the beggining of {@link #endElement(String,
+     * String, String)}
      */
     private StringBuffer characters = new StringBuffer();
 
     /**
-     * Empty constructor.
-     */
+         * Empty constructor.
+         */
     public FeatureHandler(WFService service) {
         super();
         this.service = service;
@@ -65,6 +63,8 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler, Fil
 
     /**
      * Returns the GetFeature request.
+     *
+     * @param req DOCUMENT ME!
      *
      * @return The request read by this handler.
      */
@@ -75,7 +75,8 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler, Fil
     }
 
     /**
-     * Notes the start of the element and sets type names and query attributes.
+     * Notes the start of the element and sets type names and query
+     * attributes.
      *
      * @param namespaceURI URI for namespace appended to element.
      * @param localName Local name of element.
@@ -168,8 +169,8 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler, Fil
     }
 
     /**
-     * Checks if inside parsed element and adds its contents to the appropriate
-     * variable.
+     * Checks if inside parsed element and adds its contents to the
+     * appropriate variable.
      *
      * @param ch URI for namespace appended to element.
      * @param start Local name of element.

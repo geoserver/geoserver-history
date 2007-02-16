@@ -81,14 +81,16 @@ public class TransactionResponse implements Response {
     protected Transaction transaction;
 
     /**
-     * Constructor
-     */
+         * Constructor
+         */
     public TransactionResponse() {
         transaction = null;
     }
 
     /**
-     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * Returns any extra headers that this service might want to set in
+     * the HTTP response object.
+     *
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
@@ -118,39 +120,24 @@ public class TransactionResponse implements Response {
     }
 
     /**
-     * Execute Transaction request.
-     *
-     * <p>
-     * The results of this opperation are stored for use by writeTo:
-     *
-     * <ul>
-     * <li>
-     * transaction: used by abort & writeTo to commit/rollback
-     * </li>
-     * <li>
-     * request: used for users getHandle information to report errors
-     * </li>
-     * <li>
-     * stores: FeatureStores required for Transaction
-     * </li>
-     * <li>
-     * failures: List of failures produced
-     * </li>
-     * </ul>
-     * </p>
-     *
-     * <p>
-     * Because we are using geotools2 locking facilities our modification will
-     * simply fail with IOException if we have not provided proper
-     * authorization.
-     * </p>
-     *
-     * <p>
-     * The specification allows a WFS to implement PARTIAL sucess if it is
-     * unable to rollback all the requested changes.  This implementation is
-     * able to offer full Rollback support and will not require the use of
-     * PARTIAL success.
-     * </p>
+     * Execute Transaction request.<p>The results of this opperation
+     * are stored for use by writeTo:
+     *  <ul>
+     *      <li>transaction: used by abort & writeTo to
+     *      commit/rollback</li>
+     *      <li>request: used for users getHandle information to
+     *      report errors</li>
+     *      <li>stores: FeatureStores required for Transaction</li>
+     *      <li>failures: List of failures produced</li>
+     *  </ul>
+     *  </p>
+     *  <p>Because we are using geotools2 locking facilities our
+     * modification will simply fail with IOException if we have not provided
+     * proper authorization.</p>
+     *  <p>The specification allows a WFS to implement PARTIAL sucess
+     * if it is unable to rollback all the requested changes.  This
+     * implementation is able to offer full Rollback support and will not
+     * require the use of PARTIAL success.</p>
      *
      * @param transactionRequest
      *
@@ -767,16 +754,12 @@ public class TransactionResponse implements Response {
     }
 
     /**
-     * Writes generated xmlResponse.
-     *
-     * <p>
-     * I have delayed commiting the result until we have returned it to the
-     * user, this gives us a chance to rollback if we are not able to provide
-     * a response.
-     * </p>
-     * I could not quite figure out what to about releasing locks. It could be
-     * we are supposed to release locks even if the transaction fails, or only
-     * if it succeeds.
+     * Writes generated xmlResponse.<p>I have delayed commiting the
+     * result until we have returned it to the user, this gives us a chance to
+     * rollback if we are not able to provide a response.</p>
+     *  I could not quite figure out what to about releasing locks. It
+     * could be we are supposed to release locks even if the transaction
+     * fails, or only if it succeeds.
      *
      * @param out DOCUMENT ME!
      *

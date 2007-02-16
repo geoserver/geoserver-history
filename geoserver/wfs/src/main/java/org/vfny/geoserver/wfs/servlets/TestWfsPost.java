@@ -21,8 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Simple tester for WFS post requests. Can be called two ways. If called with
- * no parameters, it displays the form, otherwise it displays the result page.
+ * Simple tester for WFS post requests. Can be called two ways. If called
+ * with no parameters, it displays the form, otherwise it displays the result
+ * page.
  *
  * @author Doug Cates: Moxi Media Inc.
  * @version 1.0
@@ -83,8 +84,8 @@ public class TestWfsPost extends HttpServlet {
     }
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Processes requests for both HTTP <code>GET</code> and
+     * <code>POST</code> methods.
      *
      * @param request servlet request
      * @param response servlet response

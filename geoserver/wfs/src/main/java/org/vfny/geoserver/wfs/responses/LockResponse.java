@@ -66,10 +66,10 @@ public class LockResponse implements Response {
     LockRequest request;
 
     /**
-     * Constructor
-     *
-     * @param gs DOCUMENT ME!
-     */
+         * Constructor
+         *
+         * @param gs DOCUMENT ME!
+         */
     public LockResponse(GeoServer gs) {
         featureLock = null;
         request = null;
@@ -78,7 +78,9 @@ public class LockResponse implements Response {
     }
 
     /**
-     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * Returns any extra headers that this service might want to set in
+     * the HTTP response object.
+     *
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
@@ -119,8 +121,8 @@ public class LockResponse implements Response {
     }
 
     /**
-     * Parses the LockFeature reqeust and returns either the full xml lock
-     * result or just the lockId.
+     * Parses the LockFeature reqeust and returns either the full xml
+     * lock result or just the lockId.
      *
      * @param request the locks to attempt
      * @param getXml if <tt>true</tt> then the full xml response is returned,
@@ -259,8 +261,8 @@ public class LockResponse implements Response {
     }
 
     /**
-     * Convenience function for backwards compatability, gets the full xml
-     * response.
+     * Convenience function for backwards compatability, gets the full
+     * xml response.
      *
      * @param request the locks to attempt.
      *
