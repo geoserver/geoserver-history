@@ -73,7 +73,7 @@ public class DemoRequestAction extends GeoServerAction {
             demo = "";
         }
 
-        if (demo.equals("")) {
+        if ("".equals(demo)) {
             demoForm.setUrl(baseUrl);
             demoForm.setBody("");
         }

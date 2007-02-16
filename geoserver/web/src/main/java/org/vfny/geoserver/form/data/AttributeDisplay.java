@@ -11,6 +11,7 @@ import org.vfny.geoserver.config.AttributeTypeInfoConfig;
  * Present Attribute information to user input.
  */
 public class AttributeDisplay {
+    private static final String NAMESPACE_SEPARATOR = ":"; //$NON-NLS-1$
     private String name;
     private boolean nillable;
     private String minOccurs;
@@ -77,6 +78,6 @@ public class AttributeDisplay {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return name + ":" + type;
+        return name + NAMESPACE_SEPARATOR + type;
     }
 }

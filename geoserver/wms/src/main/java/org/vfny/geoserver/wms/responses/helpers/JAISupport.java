@@ -49,7 +49,6 @@ public final class JAISupport {
 
         //testedFormats.add("image/png");
     }
-    ;
 
     /**
      * Set&lt;String&gt; of the MIME types the available JAI library supports,

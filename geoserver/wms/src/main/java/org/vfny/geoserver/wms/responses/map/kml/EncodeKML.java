@@ -70,6 +70,14 @@ public class EncodeKML {
     /** the KML closing element */
     private static final String KML_FOOTER = "</kml>\n";
 
+    /** Used for reprojection */
+    private final static CoordinateOperationFactory operationFactory;
+
+    static {
+        Hints hints = new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
+        operationFactory = FactoryFinder.getCoordinateOperationFactory(hints);
+    }
+
     /**
      * Map context document - layers, styles aoi etc.
      *
@@ -91,14 +99,6 @@ public class EncodeKML {
 
     /** Flag to be monotored by writer loops */
     private boolean abortProcess;
-
-    /** Used for reprojection */
-    private final static CoordinateOperationFactory operationFactory;
-
-    static {
-        Hints hints = new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
-        operationFactory = FactoryFinder.getCoordinateOperationFactory(hints);
-    }
 
     /**
      * Creates a new EncodeKML object.

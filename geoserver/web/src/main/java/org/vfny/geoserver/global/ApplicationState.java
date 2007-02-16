@@ -389,13 +389,13 @@ public class ApplicationState implements PlugIn, InitializingBean {
             Object key = i.next();
             Object o = geoserverNSErrors.get(key);
 
-            if (o.equals(Boolean.TRUE)) {
+            if (Boolean.TRUE.equals(o)) {
                 g++;
                 i.remove();
 
                 //geoserverNSErrors.remove(key);
             } else {
-                if (o.equals(Boolean.FALSE)) {
+                if (Boolean.FALSE.equals(o)) {
                     d++;
                     i.remove();
 
@@ -426,13 +426,13 @@ public class ApplicationState implements PlugIn, InitializingBean {
             Object key = i.next();
             Object o = geoserverDSErrors.get(key);
 
-            if (o.equals(Boolean.TRUE)) {
+            if (Boolean.TRUE.equals(o)) {
                 g++;
                 i.remove();
 
                 //geoserverDSErrors.remove(key);
             } else {
-                if (o.equals(Boolean.FALSE)) {
+                if (Boolean.FALSE.equals(o)) {
                     d++;
                     i.remove();
 
@@ -466,13 +466,13 @@ public class ApplicationState implements PlugIn, InitializingBean {
                 Object key = i.next();
                 Object o = tmpVP.get(key);
 
-                if (o.equals(Boolean.TRUE)) {
+                if (Boolean.TRUE.equals(o)) {
                     g++;
                     i.remove();
 
                     //geoserverDSErrors.remove(key);
                 } else {
-                    if (o.equals(Boolean.FALSE)) {
+                    if (Boolean.FALSE.equals(o)) {
                         d++;
                         i.remove();
 

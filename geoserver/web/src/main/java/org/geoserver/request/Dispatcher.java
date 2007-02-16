@@ -292,14 +292,14 @@ public class Dispatcher extends AbstractController {
             throw new ServiceException(msg);
         }
 
-        if (!kvpRequestContent) {
+        if (kvpRequestContent) {
+            target.doGet(httpRequest, httpResponse);
+        } else {
             if (requestReader != null) {
                 target.doPost(httpRequest, httpResponse, requestReader);
             } else {
                 target.doPost(httpRequest, httpResponse);
             }
-        } else {
-            target.doGet(httpRequest, httpResponse);
         }
 
         disReader.close();

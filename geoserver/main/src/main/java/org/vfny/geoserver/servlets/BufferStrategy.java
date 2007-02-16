@@ -21,15 +21,15 @@ import javax.servlet.http.HttpServletResponse;
  * @author jgarnett
  */
 public class BufferStrategy implements ServiceStrategy {
-    public String getId() {
-        return "BUFFER";
-    }
-
     /** DOCUMENT ME!  */
     ByteArrayOutputStream buffer = null;
 
     /** DOCUMENT ME!  */
     private HttpServletResponse response;
+
+    public String getId() {
+        return "BUFFER";
+    }
 
     /**
      * Provides a ByteArrayOutputStream for writeTo.

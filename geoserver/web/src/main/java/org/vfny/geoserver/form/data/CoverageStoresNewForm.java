@@ -76,7 +76,7 @@ public final class CoverageStoresNewForm extends ActionForm {
                 new ActionError("error.dataFormatFactory.invalid", getSelectedDescription()));
         }
 
-        if ((getDataFormatID() == null) || getDataFormatID().equals("")) {
+        if ((getDataFormatID() == null) || "".equals(getDataFormatID())) {
             errors.add("dataFormatID",
                 new ActionError("error.dataFormatId.required", getDataFormatID()));
         } else if (!Pattern.matches("^[a-zA-Z](\\w|\\.)*$", getDataFormatID())) {

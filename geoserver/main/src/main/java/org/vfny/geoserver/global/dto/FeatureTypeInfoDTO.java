@@ -118,16 +118,6 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     private File schemaFile;
 
     /**
-     * FeatureTypeInfo constructor.
-     *
-     * <p>
-     * does nothing
-     * </p>
-     */
-    public FeatureTypeInfoDTO() {
-    }
-
-    /**
      * This value is added the headers of generated maps, marking them as being both
      * "cache-able" and designating the time for which they are to remain valid.
      *  The specific header added is "Cache-Control: max-age="
@@ -138,6 +128,16 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
      */
     private boolean cachingEnabled;
+
+    /**
+     * FeatureTypeInfo constructor.
+     *
+     * <p>
+     * does nothing
+     * </p>
+     */
+    public FeatureTypeInfoDTO() {
+    }
 
     /**
      * FeatureTypeInfo constructor.

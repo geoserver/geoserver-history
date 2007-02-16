@@ -21,12 +21,6 @@ import java.util.List;
 public class TransactionRequest extends WFSRequest {
     public static final String TRANSACTION_REQUEST_TYPE = "Transaction";
 
-    /** Assume this is a list of SubTransactionRequest */
-    protected List subRequests = new ArrayList();
-
-    /** Assume null value means no lockID specified */
-    protected String lockId = null;
-
     /** Replaced with releaseAction */
     //protected boolean releaseAll = true;
 
@@ -62,6 +56,12 @@ public class TransactionRequest extends WFSRequest {
      * </p>
      */
     public final static ReleaseAction SOME = new ReleaseAction("SOME");
+
+    /** Assume this is a list of SubTransactionRequest */
+    protected List subRequests = new ArrayList();
+
+    /** Assume null value means no lockID specified */
+    protected String lockId = null;
 
     /**
      * Control how locked features are treated when a transaction is completed.

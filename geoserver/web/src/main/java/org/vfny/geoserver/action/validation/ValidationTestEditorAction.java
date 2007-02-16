@@ -76,7 +76,7 @@ public class ValidationTestEditorAction extends ConfigAction {
 
             String val = (String) attributeValues.get(i);
 
-            if ((val != null) && (val != "")) {
+            if ((val != null) && (!val.equals(""))) {
                 testConfig.setArgStringValue((String) attributeKeys.get(i), val);
             }
         }

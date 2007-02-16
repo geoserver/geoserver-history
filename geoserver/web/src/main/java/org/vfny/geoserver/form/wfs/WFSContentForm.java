@@ -185,7 +185,7 @@ public class WFSContentForm extends ActionForm {
             errors.add("serviceLevel", new ActionError("error.serviceLevel.invalid"));
         }
 
-        if ((onlineResource == null) || onlineResource.equals("")) {
+        if ((onlineResource == null) || "".equals(onlineResource)) {
             errors.add("onlineResource", new ActionError("error.wfs.onlineResource.required"));
         } else {
             try {

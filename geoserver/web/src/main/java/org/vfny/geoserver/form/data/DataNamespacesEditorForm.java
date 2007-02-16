@@ -63,13 +63,13 @@ public class DataNamespacesEditorForm extends ActionForm {
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if ((prefix == null) || prefix.equals("")) {
+        if ((prefix == null) || "".equals(prefix)) {
             errors.add("prefix", new ActionError("error.prefix.required", getPrefix()));
         } else if (!Pattern.matches("^\\w*$", prefix)) {
             errors.add("dataStoreID", new ActionError("error.prefix.invalid", prefix));
         }
 
-        if ((URI == null) || URI.equals("")) {
+        if ((URI == null) || "".equals(URI)) {
             errors.add("URI", new ActionError("error.uri.required", prefix));
         } else {
             try {

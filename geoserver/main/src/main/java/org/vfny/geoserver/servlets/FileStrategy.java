@@ -24,10 +24,6 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Revision: 1.23 $
  */
 public class FileStrategy implements ServiceStrategy {
-    public String getId() {
-        return "FILE";
-    }
-
     /** Buffer size used to copy safe to response.getOutputStream() */
     private static int BUFF_SIZE = 4096;
 
@@ -45,6 +41,10 @@ public class FileStrategy implements ServiceStrategy {
 
     /** Temporary file used by safe */
     private File temp;
+
+    public String getId() {
+        return "FILE";
+    }
 
     /**
      * Provides a outputs stream on a temporary file.

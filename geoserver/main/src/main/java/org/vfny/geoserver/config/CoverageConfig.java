@@ -397,6 +397,38 @@ public class CoverageConfig {
         parameters = CoverageUtils.getParametersKVP(format.getReadParameters());
     }
 
+    public CoverageConfig(CoverageInfoDTO dto) {
+        if (dto == null) {
+            throw new NullPointerException("Non null CoverageInfoDTO required");
+        }
+
+        formatId = dto.getFormatId();
+        name = dto.getName();
+        wmsPath = dto.getWmsPath();
+        label = dto.getLabel();
+        description = dto.getDescription();
+        metadataLink = dto.getMetadataLink();
+        keywords = dto.getKeywords();
+        crs = dto.getCrs();
+        srsName = dto.getSrsName();
+        srsWKT = dto.getSrsWKT();
+        envelope = dto.getEnvelope();
+        lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
+        grid = dto.getGrid();
+        dimensions = dto.getDimensions();
+        dimentionNames = dto.getDimensionNames();
+        nativeFormat = dto.getNativeFormat();
+        dirName = dto.getDirName();
+        requestCRSs = dto.getRequestCRSs();
+        responseCRSs = dto.getResponseCRSs();
+        supportedFormats = dto.getSupportedFormats();
+        defaultInterpolationMethod = dto.getDefaultInterpolationMethod();
+        interpolationMethods = dto.getInterpolationMethods();
+        defaultStyle = dto.getDefaultStyle();
+        styles = dto.getStyles();
+        parameters = dto.getParameters();
+    }
+
     /**
      * @param sampleDimensions
      * @return
@@ -471,38 +503,6 @@ public class CoverageConfig {
         uomString = uomString.replaceAll("Å", "A");
         uomString = uomString.replaceAll("°", "");
         label2.append(uomString);
-    }
-
-    public CoverageConfig(CoverageInfoDTO dto) {
-        if (dto == null) {
-            throw new NullPointerException("Non null CoverageInfoDTO required");
-        }
-
-        formatId = dto.getFormatId();
-        name = dto.getName();
-        wmsPath = dto.getWmsPath();
-        label = dto.getLabel();
-        description = dto.getDescription();
-        metadataLink = dto.getMetadataLink();
-        keywords = dto.getKeywords();
-        crs = dto.getCrs();
-        srsName = dto.getSrsName();
-        srsWKT = dto.getSrsWKT();
-        envelope = dto.getEnvelope();
-        lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
-        grid = dto.getGrid();
-        dimensions = dto.getDimensions();
-        dimentionNames = dto.getDimensionNames();
-        nativeFormat = dto.getNativeFormat();
-        dirName = dto.getDirName();
-        requestCRSs = dto.getRequestCRSs();
-        responseCRSs = dto.getResponseCRSs();
-        supportedFormats = dto.getSupportedFormats();
-        defaultInterpolationMethod = dto.getDefaultInterpolationMethod();
-        interpolationMethods = dto.getInterpolationMethods();
-        defaultStyle = dto.getDefaultStyle();
-        styles = dto.getStyles();
-        parameters = dto.getParameters();
     }
 
     public CoverageInfoDTO toDTO() {

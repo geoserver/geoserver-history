@@ -59,7 +59,7 @@ public class DemoAction extends GeoServerAction {
         String demo = demoForm.getDemo();
         String baseUrl = Requests.getBaseUrl(request, getGeoServer());
 
-        if (demo.equals("")) {
+        if ("".equals(demo)) {
             demoForm.setUrl(baseUrl);
             demoForm.setBody("");
         }

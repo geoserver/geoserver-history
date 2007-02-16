@@ -91,6 +91,14 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
         return new TestingMapProducer();
     }
 
+    /* (non-Javadoc)
+     * @see org.geotools.factory.Factory#getImplementationHints()
+     * This just returns java.util.Collections.EMPTY_MAP
+     */
+    public Map getImplementationHints() {
+        return java.util.Collections.EMPTY_MAP;
+    }
+
     /**
      * DOCUMENT ME!
      *
@@ -140,13 +148,5 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
             // can be null
             return null;
         }
-    }
-
-    /* (non-Javadoc)
-     * @see org.geotools.factory.Factory#getImplementationHints()
-     * This just returns java.util.Collections.EMPTY_MAP
-     */
-    public Map getImplementationHints() {
-        return java.util.Collections.EMPTY_MAP;
     }
 }

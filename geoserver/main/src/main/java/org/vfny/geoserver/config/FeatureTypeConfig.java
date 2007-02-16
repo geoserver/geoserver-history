@@ -218,44 +218,6 @@ public class FeatureTypeConfig {
     }
 
     /**
-     * TODO: this method is duplicated with CoveragesEditorAction and should be replaced by
-     * an equivalent method in CRS class. Once the methods is added, forward to the CRS class.
-     * @param defaultGeometry
-     * @return
-     */
-    private int lookupSRS(GeometryAttributeType defaultGeometry) {
-        // NPE avoidance
-        if (defaultGeometry == null) {
-            return -1;
-        }
-
-        // try the (deprecated) geometry factory, we don't want to break data stores that
-        // do correctly set it
-        GeometryFactory geometryFactory = defaultGeometry.getGeometryFactory();
-
-        if ((geometryFactory != null) && (geometryFactory.getSRID() != 0)) {
-            return geometryFactory.getSRID();
-        }
-
-        return 0;
-
-        //        // try to reverse engineer the SRID from the coordinate system
-        //        CoordinateReferenceSystem ref = defaultGeometry.getCoordinateSystem();
-        //        String code = CRS.lookupIdentifier(ref, Collections.singleton("EPSG"), true);
-        //        if(code == null)
-        //            return 0;
-        //        if(code.startsWith("EPSG:")) {
-        //            code = code.substring(5);
-        //        }
-        //        try {
-        //            return Integer.parseInt(code);
-        //        } catch(NumberFormatException e) {
-        //            LOGGER.severe("Could not parse EPSG code: " + code);
-        //            return 0;
-        //        }
-    }
-
-    /**
      * FeatureTypeInfo constructor.
      *
      * <p>
@@ -315,6 +277,44 @@ public class FeatureTypeConfig {
 
         cachingEnabled = dto.isCachingEnabled();
         cacheMaxAge = dto.getCacheMaxAge();
+    }
+
+    /**
+     * TODO: this method is duplicated with CoveragesEditorAction and should be replaced by
+     * an equivalent method in CRS class. Once the methods is added, forward to the CRS class.
+     * @param defaultGeometry
+     * @return
+     */
+    private int lookupSRS(GeometryAttributeType defaultGeometry) {
+        // NPE avoidance
+        if (defaultGeometry == null) {
+            return -1;
+        }
+
+        // try the (deprecated) geometry factory, we don't want to break data stores that
+        // do correctly set it
+        GeometryFactory geometryFactory = defaultGeometry.getGeometryFactory();
+
+        if ((geometryFactory != null) && (geometryFactory.getSRID() != 0)) {
+            return geometryFactory.getSRID();
+        }
+
+        return 0;
+
+        //        // try to reverse engineer the SRID from the coordinate system
+        //        CoordinateReferenceSystem ref = defaultGeometry.getCoordinateSystem();
+        //        String code = CRS.lookupIdentifier(ref, Collections.singleton("EPSG"), true);
+        //        if(code == null)
+        //            return 0;
+        //        if(code.startsWith("EPSG:")) {
+        //            code = code.substring(5);
+        //        }
+        //        try {
+        //            return Integer.parseInt(code);
+        //        } catch(NumberFormatException e) {
+        //            LOGGER.severe("Could not parse EPSG code: " + code);
+        //            return 0;
+        //        }
     }
 
     /**

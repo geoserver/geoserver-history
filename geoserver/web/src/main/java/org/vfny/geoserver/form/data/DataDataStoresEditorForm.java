@@ -118,7 +118,7 @@ public class DataDataStoresEditorForm extends ActionForm {
         enabled = dsConfig.isEnabled();
         namespaceId = dsConfig.getNameSpaceId();
 
-        if (namespaceId.equals("")) {
+        if ("".equals(namespaceId)) {
             namespaceId = config.getDefaultNameSpace().getPrefix();
         }
 

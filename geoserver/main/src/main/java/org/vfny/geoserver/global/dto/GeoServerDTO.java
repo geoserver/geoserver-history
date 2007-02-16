@@ -23,58 +23,6 @@ import javax.servlet.ServletContext;
  * @version $Id: GeoServerDTO.java,v 1.12 2004/09/09 16:51:58 cholmesny Exp $
  */
 public final class GeoServerDTO implements DataTransferObject {
-    public static class Defaults {
-        /**
-         * The default MaxFeatures is 10000
-         *
-         * @see #getMaxFeatures(int)
-         */
-        public static final int MaxFeatures = 10000;
-
-        /**
-         * The default encoding for GeoServer it UTF-8.
-         *
-         * @see #getCharSet()
-         */
-        public static final Charset Encoding = Charset.forName("UTF-8");
-
-        /** The default verbosity is true, human readable. */
-        public static final boolean Verbose = true;
-
-        /** Default is four decimal places. */
-        public static final int NumDecimals = 4;
-
-        /** The default logging level is info. */
-        public static final Level LoggingLevel = Level.INFO;
-
-        /** The default Administrator's user name (admin) */
-        public static final String AdminUserName = "admin";
-
-        /** The default Administrator's password (geoserver) */
-        public static final String AdminPassword = "geoserver";
-
-        /**
-         * The default verboseExceptions is false, so that by default the
-         * service exceptions don't look like someone 'kacked'.
-         */
-        public static final boolean VerboseExceptions = false;
-
-        /** Default of wether to log to disk **/
-        public static final boolean LoggingToFile = false;
-
-        /** Default logging location on disk **/
-        public static final String LogLocation = null;
-        public static final long JaiMemoryCapacity = 200 * 1024 * 1024;
-        public static final double JaiMemoryThreshold = 0.75;
-        public static final int JaiTileThreads = 7;
-        public static final int JaiTilePriority = Thread.NORM_PRIORITY;
-        public static final Boolean JaiRecycling = Boolean.TRUE;
-        public static final Boolean ImageIOCache = Boolean.FALSE;
-        public static final Boolean JaiJPEGNative = Boolean.TRUE;
-        public static final Boolean JaiPNGNative = Boolean.TRUE;
-        public static final String BaseURL = null;
-    }
-
     /** Sets the max number of Features returned by GetFeature */
     private int maxFeatures = Defaults.MaxFeatures;
 
@@ -737,5 +685,57 @@ public final class GeoServerDTO implements DataTransferObject {
 
     public void setJaiTileThreads(int jaiTileThreads) {
         this.jaiTileThreads = jaiTileThreads;
+    }
+
+    public static class Defaults {
+        /**
+         * The default MaxFeatures is 10000
+         *
+         * @see #getMaxFeatures(int)
+         */
+        public static final int MaxFeatures = 10000;
+
+        /**
+         * The default encoding for GeoServer it UTF-8.
+         *
+         * @see #getCharSet()
+         */
+        public static final Charset Encoding = Charset.forName("UTF-8");
+
+        /** The default verbosity is true, human readable. */
+        public static final boolean Verbose = true;
+
+        /** Default is four decimal places. */
+        public static final int NumDecimals = 4;
+
+        /** The default logging level is info. */
+        public static final Level LoggingLevel = Level.INFO;
+
+        /** The default Administrator's user name (admin) */
+        public static final String AdminUserName = "admin";
+
+        /** The default Administrator's password (geoserver) */
+        public static final String AdminPassword = "geoserver";
+
+        /**
+         * The default verboseExceptions is false, so that by default the
+         * service exceptions don't look like someone 'kacked'.
+         */
+        public static final boolean VerboseExceptions = false;
+
+        /** Default of wether to log to disk **/
+        public static final boolean LoggingToFile = false;
+
+        /** Default logging location on disk **/
+        public static final String LogLocation = null;
+        public static final long JaiMemoryCapacity = 200 * 1024 * 1024;
+        public static final double JaiMemoryThreshold = 0.75;
+        public static final int JaiTileThreads = 7;
+        public static final int JaiTilePriority = Thread.NORM_PRIORITY;
+        public static final Boolean JaiRecycling = Boolean.TRUE;
+        public static final Boolean ImageIOCache = Boolean.FALSE;
+        public static final Boolean JaiJPEGNative = Boolean.TRUE;
+        public static final Boolean JaiPNGNative = Boolean.TRUE;
+        public static final String BaseURL = null;
     }
 }

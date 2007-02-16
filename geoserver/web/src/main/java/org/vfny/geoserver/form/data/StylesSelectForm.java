@@ -77,7 +77,7 @@ public class StylesSelectForm extends ActionForm {
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if ((selectedStyle == null) || selectedStyle.equals("")) {
+        if ((selectedStyle == null) || "".equals(selectedStyle)) {
             errors.add("selectedStyle", new ActionError("error.style.required", selectedStyle));
         }
 
@@ -135,8 +135,9 @@ public class StylesSelectForm extends ActionForm {
 
         TreeSet sorted = new TreeSet();
 
-        for (int i = 0; i < keys.length; i++)
+        for (int i = 0; i < keys.length; i++) {
             sorted.add(keys[i]);
+        }
 
         return sorted;
     }

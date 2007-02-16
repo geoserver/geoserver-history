@@ -75,9 +75,8 @@ public class SaveXMLAction extends ConfigAction {
         return mapping.findForward("config");
     }
 
-    private ActionForward saveValidation(ActionMapping mapping, ActionForm form,
-        //UserContainer user,
-    HttpServletRequest request, HttpServletResponse response)
+    private ActionForward saveValidation(ActionMapping mapping, ActionForm form, //UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         ServletContext sc = request.getSession().getServletContext();
 
@@ -173,9 +172,10 @@ public class SaveXMLAction extends ConfigAction {
                 boolean found = false;
                 i = testSuites.keySet().iterator();
 
-                while (!found && i.hasNext())
+                while (!found && i.hasNext()) {
                     found = (((TestSuiteDTO) testSuites.get(i.next())).getName().replaceAll(" ", "")
                         + ".xml").equals(testsFL[j].getName());
+                }
 
                 if (!found) {
                     testsFL[j].delete();

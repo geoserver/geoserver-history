@@ -75,11 +75,11 @@ public class LoginForm extends ActionForm {
         String usernameLabel = messages.getMessage(locale, "label.username");
         String passwordLabel = messages.getMessage(locale, "label.password");
 
-        if ((username == null) || username.equals("")) {
+        if ((username == null) || "".equals(username)) {
             errors.add("username", new ActionError("errors.required", usernameLabel));
         }
 
-        if ((password == null) || password.equals("")) {
+        if ((password == null) || "".equals(password)) {
             errors.add("password", new ActionError("errors.required", passwordLabel));
         }
 

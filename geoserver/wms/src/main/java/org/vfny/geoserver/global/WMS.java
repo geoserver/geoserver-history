@@ -92,6 +92,19 @@ public class WMS extends Service {
     }
 
     /**
+     * WMS constructor.
+     *
+     * <p>
+     * Package constructor intended for default use by GeoServer
+     * </p>
+     *
+     * @see GeoServer#GeoServer()
+     */
+    WMS() {
+        super(new ServiceDTO());
+    }
+
+    /**
      * Quick hack to fix geot-770, need a full class rewrite otherwise and
      * we are too near release to do that
      * @return
@@ -114,19 +127,6 @@ public class WMS extends Service {
         allowInterpolation = config.getAllowInterpolation();
         baseMapLayers = config.getBaseMapLayers();
         baseMapStyles = config.getBaseMapStyles();
-    }
-
-    /**
-     * WMS constructor.
-     *
-     * <p>
-     * Package constructor intended for default use by GeoServer
-     * </p>
-     *
-     * @see GeoServer#GeoServer()
-     */
-    WMS() {
-        super(new ServiceDTO());
     }
 
     /**

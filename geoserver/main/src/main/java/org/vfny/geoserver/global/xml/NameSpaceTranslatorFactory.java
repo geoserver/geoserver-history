@@ -22,14 +22,14 @@ import java.util.Map;
  * @version $Id: NameSpaceTranslatorFactory.java,v 1.3 2004/02/09 18:00:02 dmzwiers Exp $
  */
 public class NameSpaceTranslatorFactory {
+    /** the only instance */
+    private final static NameSpaceTranslatorFactory instance = new NameSpaceTranslatorFactory();
+
     /** map of namespace names as Strings -> Class representations of NameSpaceTranslators */
     private Map namespaceTranslators;
 
     /** map of prefixs as String -> Instances of NameSpaceTranslators */
     private Map namespaceTranslatorInstances;
-
-    /** the only instance */
-    private final static NameSpaceTranslatorFactory instance = new NameSpaceTranslatorFactory();
 
     /**
      * NameSpaceTranslatorFactory constructor.

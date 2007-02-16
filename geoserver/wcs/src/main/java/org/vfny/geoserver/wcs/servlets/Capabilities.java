@@ -23,14 +23,14 @@ import java.util.Map;
  * @version $Id: Capabilities.java,v 0.1 Feb 15, 2005 12:15:13 PM $
  */
 public class Capabilities extends WCService {
-    public Capabilities(WCS wcs) {
-        super("GetCapabilities", wcs);
-    }
-
     /**
      * Comment for <code>serialVersionUID</code>
      */
     private static final long serialVersionUID = 3258129176207636277L;
+
+    public Capabilities(WCS wcs) {
+        super("GetCapabilities", wcs);
+    }
 
     /**
     * DOCUMENT ME!

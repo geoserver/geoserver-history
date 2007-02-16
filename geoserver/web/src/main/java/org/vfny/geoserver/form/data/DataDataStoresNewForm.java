@@ -85,7 +85,7 @@ public class DataDataStoresNewForm extends ActionForm {
                 new ActionError("error.dataStoreFactory.invalid", getSelectedDescription()));
         }
 
-        if ((getDataStoreID() == null) || getDataStoreID().equals("")) {
+        if ((getDataStoreID() == null) || "".equals(getDataStoreID())) {
             errors.add("dataStoreID",
                 new ActionError("error.dataStoreId.required", getDataStoreID()));
         } else if (!Pattern.matches("^[a-zA-Z](\\w|\\.)*$", getDataStoreID())) {

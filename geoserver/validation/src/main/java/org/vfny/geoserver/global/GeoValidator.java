@@ -39,6 +39,9 @@ import java.util.logging.Logger;
  */
 public class GeoValidator extends ValidationProcessor {
     public static final String WEB_CONTAINER_KEY = "GeoValidator";
+    private Map testSuites;
+    private Map plugIns;
+    private Map errors;
 
     /**
      * GeoValidator constructor.
@@ -58,6 +61,22 @@ public class GeoValidator extends ValidationProcessor {
      */
     public GeoValidator(Config config) {
         loadPlugins(config.dataDirectory());
+    }
+
+    /**
+     * ValidationProcessor constructor.
+     *
+     * <p>
+     * Builds a ValidationProcessor with the DTO provided.
+     * </p>
+     *
+     * @see load(Map,Map)
+     * @param testSuites Map a map of names -> TestSuiteDTO objects
+     * @param plugIns Map a map of names -> PlugInDTO objects
+     */
+    public GeoValidator(Map testSuites, Map plugIns) {
+        super();
+        load(testSuites, plugIns);
     }
 
     /**
@@ -93,26 +112,6 @@ public class GeoValidator extends ValidationProcessor {
 
         load(testSuites, plugIns);
     }
-
-    /**
-     * ValidationProcessor constructor.
-     *
-     * <p>
-     * Builds a ValidationProcessor with the DTO provided.
-     * </p>
-     *
-     * @see load(Map,Map)
-     * @param testSuites Map a map of names -> TestSuiteDTO objects
-     * @param plugIns Map a map of names -> PlugInDTO objects
-     */
-    public GeoValidator(Map testSuites, Map plugIns) {
-        super();
-        load(testSuites, plugIns);
-    }
-
-    private Map testSuites;
-    private Map plugIns;
-    private Map errors;
 
     /**
      * Map of errors encountered during loading process

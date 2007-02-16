@@ -149,9 +149,8 @@ public class LoadXMLAction extends ConfigAction {
         return mapping.findForward("config");
     }
 
-    private ActionForward loadValidation(ActionMapping mapping, ActionForm form,
-        //UserContainer user,
-    HttpServletRequest request, HttpServletResponse response)
+    private ActionForward loadValidation(ActionMapping mapping, ActionForm form, //UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         ServletContext sc = request.getSession().getServletContext();
 

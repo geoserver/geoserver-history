@@ -24,18 +24,18 @@ import java.util.List;
  */
 public class DescribeLayerRequest extends WMSRequest {
     /**
+     * Holds the FeatureTypes parsed from the
+     * request's <code>LAYERS</code> parameter.
+     */
+    private List layers = new ArrayList(2);
+
+    /**
      * Creates a new DescribeLayerRequest
      * @param service the service that handles the request
      */
     public DescribeLayerRequest(WMService service) {
         super("DescribeLayer", service);
     }
-
-    /**
-     * Holds the FeatureTypes parsed from the
-     * request's <code>LAYERS</code> parameter.
-     */
-    private List layers = new ArrayList(2);
 
     public void addLayer(MapLayerInfo layer) {
         if (layer == null) {

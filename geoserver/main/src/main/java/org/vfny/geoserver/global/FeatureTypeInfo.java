@@ -211,13 +211,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     private File schemaFile;
 
     /**
-     * dont use this unless you know what you're doing.  its for TemporaryFeatureTypeInfo.
-     *
-     */
-    public FeatureTypeInfo() {
-    }
-
-    /**
      * This value is added the headers of generated maps, marking them as being both
      * "cache-able" and designating the time for which they are to remain valid.
      *  The specific header added is "Cache-Control: max-age="
@@ -229,6 +222,13 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
      */
     private boolean cachingEnabled;
     private boolean forcedCRS;
+
+    /**
+     * dont use this unless you know what you're doing.  its for TemporaryFeatureTypeInfo.
+     *
+     */
+    public FeatureTypeInfo() {
+    }
 
     /**
      * FeatureTypeInfo constructor.

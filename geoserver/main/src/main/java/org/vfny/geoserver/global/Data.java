@@ -71,6 +71,9 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
     /** used to create styles */
     private static StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
 
+    /** used to cache layer names and types **/
+    private volatile Map layerNames = new HashMap();
+
     /** holds the mappings between prefixes and NameSpaceInfo objects */
     private Map nameSpaces;
 
@@ -387,6 +390,8 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
             }
 
             map.put(id, coverageInfo);
+            // set layer name, type raster (1)
+            layerNames.put(id, new Integer(1));
 
             if (dto.getFormats().get(coverageDTO.getFormatId()) != null) {
                 if (LOGGER.isLoggable(Level.FINE)) {
@@ -729,6 +734,8 @@ SCHEMA:
                 }
 
                 map.put(key2, featureTypeInfo);
+                // set layer name, type vector (0)
+                layerNames.put(key2, new Integer(0));
 
                 // set catalog hierarchy
                 dataStoreInfo.addMember(featureTypeInfo);
@@ -1826,5 +1833,9 @@ SCHEMA:
      */
     public File getBaseDir() {
         return baseDir;
+    }
+
+    public Map getLayerNames() {
+        return layerNames;
     }
 }

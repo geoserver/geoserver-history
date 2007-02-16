@@ -51,9 +51,8 @@ public class UpdateGSAction extends ConfigAction {
         return mapping.findForward("config");
     }
 
-    public ActionForward updateGeoserver(ActionMapping mapping, ActionForm form,
-        // UserContainer user,
-    HttpServletRequest request, HttpServletResponse response)
+    public ActionForward updateGeoserver(ActionMapping mapping, ActionForm form, // UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         GeoServer gs;
         ServletContext sc = request.getSession().getServletContext();
@@ -85,9 +84,8 @@ public class UpdateGSAction extends ConfigAction {
         return mapping.findForward("config");
     }
 
-    public ActionForward updateValidation(ActionMapping mapping, ActionForm form,
-        // UserContainer user,
-    HttpServletRequest request, HttpServletResponse response)
+    public ActionForward updateValidation(ActionMapping mapping, ActionForm form, // UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         GeoServer gs;
         ServletContext sc = request.getSession().getServletContext();

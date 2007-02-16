@@ -82,8 +82,9 @@ import java.util.zip.ZipOutputStream;
  */
 public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.wfs.responses");
-    String vmTempDir = null;
     public static final String formatName = "SHAPE-ZIP";
+    private static int counter = 0;
+    String vmTempDir = null;
 
     /** will be true if Shape-ZIP output format was requested */
     // private boolean compressOutput = false; // already in ZIP by default
@@ -360,8 +361,6 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     public String getContentDisposition(String featureTypeName) {
         return "attachment; filename=" + featureTypeName + ".zip";
     }
-
-    private static int counter = 0;
 
     /**
      * Temporary folder generator. Folders should be manually deleted afterwards

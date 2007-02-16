@@ -111,19 +111,19 @@ public class TypesEditorAction extends ConfigAction {
         final String NEWSLD = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.sldWizard.label"));
 
-        if (action.equals(SUBMIT)) {
+        if (SUBMIT.equals(action)) {
             return executeSubmit(mapping, typeForm, user, request);
         }
 
-        if (action.equals(BBOX)) {
+        if (BBOX.equals(action)) {
             return executeBBox(mapping, typeForm, user, request);
         }
 
-        if (action.equals(LOOKUP_SRS)) {
+        if (LOOKUP_SRS.equals(action)) {
             return executeLookupSRS(mapping, typeForm, user, request);
         }
 
-        if (action.equals(NEWSLD)) { // if the SLDWizard button was hit
+        if (NEWSLD.equals(action)) { // if the SLDWizard button was hit
 
             return mapping.findForward("SLDWizard");
         }
@@ -141,7 +141,7 @@ public class TypesEditorAction extends ConfigAction {
         } else if (action.startsWith("delete_")) {
             int index = Integer.parseInt(action.substring(7));
             attributes.remove(index);
-        } else if (action.equals(ADD)) {
+        } else if (ADD.equals(action)) {
             executeAdd(mapping, typeForm, user, request);
         }
 
@@ -346,7 +346,7 @@ public class TypesEditorAction extends ConfigAction {
 
         String schemaBase = form.getSchemaBase();
 
-        if ((schemaBase == null) || schemaBase.equals("") || schemaBase.equals("--")) {
+        if ((schemaBase == null) || "".equals(schemaBase) || "--".equals(schemaBase)) {
             config.setSchemaBase(null);
             config.setSchemaName(null);
             config.setSchemaAttributes(null);
@@ -514,7 +514,7 @@ public class TypesEditorAction extends ConfigAction {
     private MetaDataLink getLink(TypesEditorForm typeForm, int index) {
         MetaDataLink link = typeForm.getMetadataLink(index);
 
-        if ((link.getContent() == null) || link.getContent().trim().equals("")) {
+        if ((link.getContent() == null) || "".equals(link.getContent().trim())) {
             return null;
         }
 

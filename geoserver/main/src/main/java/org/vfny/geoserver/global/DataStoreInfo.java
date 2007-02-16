@@ -81,6 +81,10 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
      */
     URL baseURL;
 
+    //catalog methods
+    List /*<FeatureTypeInfo>*/ members = new ArrayList();
+    ServiceInfo info;
+
     /**
      * DataStoreInfo constructor.
      *
@@ -360,10 +364,6 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     public Object getMetaData(String key) {
         return meta.get(key);
     }
-
-    //catalog methods
-    List /*<FeatureTypeInfo>*/ members = new ArrayList();
-    ServiceInfo info;
 
     public void addMember(FeatureTypeInfo ftInfo) {
         members.add(ftInfo);

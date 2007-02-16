@@ -104,7 +104,7 @@ public class StylesEditorForm extends ActionForm {
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if ((styleID == null) || styleID.equals("")) {
+        if ((styleID == null) || "".equals(styleID)) {
             errors.add("styleID", new ActionError("error.styleID.required", styleID));
 
             return errors;
@@ -293,8 +293,9 @@ public class StylesEditorForm extends ActionForm {
             StringBuffer sb = new StringBuffer();
             String s;
 
-            while ((s = br.readLine()) != null)
+            while ((s = br.readLine()) != null) {
                 sb.append(s.replaceAll("\t", "  ")).append("\n");
+            }
 
             br.close();
 

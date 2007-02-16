@@ -38,7 +38,7 @@ public class ValidationTestDoIt extends ConfigAction {
         boolean stopThread = false;
         String parameter = mapping.getParameter();
 
-        if ((parameter != null) && parameter.equals("stop")) {
+        if ((parameter != null) && "stop".equals(parameter)) {
             stopThread = true;
         }
 

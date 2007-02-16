@@ -65,6 +65,22 @@ public class DescribeResponse implements Response {
     private static final String FOOTER = "\n</CoverageDescription>";
 
     /**
+     * The default coordinate reference system factory.
+     */
+
+    // protected final static CRSFactory crsFactory =
+    // FactoryFinder.getCRSFactory(new
+    // Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+    protected final static CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(
+                Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
+
+    /**
+     * The default transformations factory.
+     */
+    protected final static CoordinateOperationFactory opFactory = FactoryFinder
+        .getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
+
+    /**
      *
      * @uml.property name="request"
      * @uml.associationEnd multiplicity="(0 1)"
@@ -83,24 +99,6 @@ public class DescribeResponse implements Response {
     protected final DatumFactory datumFactory = FactoryFinder.getDatumFactory(null);
 
     /**
-     * Returns any extra headers that this service might want to set in the HTTP response object.
-     * @see org.vfny.geoserver.Response#getResponseHeaders()
-     */
-    public HashMap getResponseHeaders() {
-        return null;
-    }
-
-    /**
-     * The default coordinate reference system factory.
-     */
-
-    // protected final static CRSFactory crsFactory =
-    // FactoryFinder.getCRSFactory(new
-    // Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-    protected final static CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(
-                Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
-
-    /**
      * The default math transform factory.
      *
      * @uml.property name="mtFactory"
@@ -109,10 +107,12 @@ public class DescribeResponse implements Response {
     protected final MathTransformFactory mtFactory = FactoryFinder.getMathTransformFactory(null);
 
     /**
-     * The default transformations factory.
+     * Returns any extra headers that this service might want to set in the HTTP response object.
+     * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
-    protected final static CoordinateOperationFactory opFactory = FactoryFinder
-        .getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
+    public HashMap getResponseHeaders() {
+        return null;
+    }
 
     public void execute(Request req) throws WcsException {
         WCSRequest request = (WCSRequest) req;

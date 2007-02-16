@@ -363,7 +363,7 @@ public final class CoveragesEditorForm extends ActionForm {
             styles.add(sc.getId());
 
             if (sc.isDefault()) {
-                if ((styleId == null) || styleId.equals("")) {
+                if ((styleId == null) || "".equals(styleId)) {
                     styleId.equals(sc.getId());
                 }
             }
@@ -416,7 +416,7 @@ public final class CoveragesEditorForm extends ActionForm {
         // Pass Attribute Management Actions through without
         // much validation.
         if (action.startsWith("Up") || action.startsWith("Down") || action.startsWith("Remove")
-                || action.equals(ENVELOPE)) {
+                || ENVELOPE.equals(action)) {
             return errors;
         }
 
@@ -432,7 +432,7 @@ public final class CoveragesEditorForm extends ActionForm {
         //
         //
         // //
-        if ("UNKNOWN".equals(srsName) && !action.equals(LOOKUP_SRS)) {
+        if ("UNKNOWN".equals(srsName) && !LOOKUP_SRS.equals(action)) {
             errors.add("envelope", new ActionError("error.coverage.nativeCRS.required"));
         }
 

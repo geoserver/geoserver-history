@@ -342,7 +342,7 @@ public class TypesEditorForm extends ActionForm {
             styles.add(sc.getId());
 
             if (sc.isDefault()) {
-                if ((styleId == null) || styleId.equals("")) {
+                if ((styleId == null) || "".equals(styleId)) {
                     styleId.equals(sc.getId());
                 }
             }
@@ -435,7 +435,7 @@ public class TypesEditorForm extends ActionForm {
      *         <code>null</code>
      */
     public List toSchemaAttributes() {
-        if ((schemaBase == null) || schemaBase.equals("--")) {
+        if ((schemaBase == null) || "--".equals(schemaBase)) {
             return null;
         }
 
@@ -471,7 +471,7 @@ public class TypesEditorForm extends ActionForm {
         // Pass Attribute Management Actions through without
         // much validation.
         if (action.startsWith("Up") || action.startsWith("Down") || action.startsWith("Remove")
-                || action.equals(BBOX) || action.equals(SLDWIZARD) || action.equals(LOOKUP_SRS)) {
+                || BBOX.equals(action) || SLDWIZARD.equals(action) || LOOKUP_SRS.equals(action)) {
             return errors;
         }
 

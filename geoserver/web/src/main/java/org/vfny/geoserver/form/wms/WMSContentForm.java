@@ -135,7 +135,7 @@ public class WMSContentForm extends ActionForm {
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if ((onlineResource == null) || onlineResource.equals("")) {
+        if ((onlineResource == null) || "".equals(onlineResource)) {
             errors.add("onlineResource",
                 new ActionError("error.wms.onlineResource.required", onlineResource));
         } else {

@@ -89,27 +89,8 @@ public class KMLWriter extends OutputStreamWriter {
      */
     private static DecimalFormat formatter;
 
-    /**
-     * Resolves the FeatureTypeStyle info per feature into a Style2D object.
-     */
-    private SLDStyleFactory styleFactory = new SLDStyleFactory();
-
-    //TODO: calcuate a real value based on image size to bbox ratio, as image size has no meanining for KML yet this is a fudge.
-    private double scaleDenominator = 1;
-
     /** Tolerance used to compare doubles for equality */
     private static final double TOLERANCE = 1e-6;
-
-    /**
-     * The CRS of the data we are querying. It is a bit of a hack because sometimes when we grab the
-     * CRS from the feature itself, we get null. This variable is paired with setSourceCrs() so EncodeKML
-     * can can use the feature type's schema to set the CRS.*/
-    private CoordinateReferenceSystem sourceCrs;
-
-    /**
-     * Handles the outputing of geometries as GML
-     **/
-    private GeometryTransformer transformer;
 
     static {
         Locale locale = new Locale("en", "US");
@@ -132,6 +113,25 @@ public class KMLWriter extends OutputStreamWriter {
         //minimun fraction digits to 0 so they get not rendered if not needed
         formatter.setMinimumFractionDigits(0);
     }
+
+    /**
+     * Resolves the FeatureTypeStyle info per feature into a Style2D object.
+     */
+    private SLDStyleFactory styleFactory = new SLDStyleFactory();
+
+    //TODO: calcuate a real value based on image size to bbox ratio, as image size has no meanining for KML yet this is a fudge.
+    private double scaleDenominator = 1;
+
+    /**
+     * The CRS of the data we are querying. It is a bit of a hack because sometimes when we grab the
+     * CRS from the feature itself, we get null. This variable is paired with setSourceCrs() so EncodeKML
+     * can can use the feature type's schema to set the CRS.*/
+    private CoordinateReferenceSystem sourceCrs;
+
+    /**
+     * Handles the outputing of geometries as GML
+     **/
+    private GeometryTransformer transformer;
 
     /** Holds the map layer set, styling info and area of interest bounds */
     private WMSMapContext mapContext;

@@ -45,7 +45,7 @@ public class DataNamespacesNewForm extends ActionForm {
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if ((getPrefix() == null) || getPrefix().equals("")) {
+        if ((getPrefix() == null) || "".equals(getPrefix())) {
             errors.add("prefix", new ActionError("error.prefix.required", getPrefix()));
         } else if (!Pattern.matches("^\\w*$", getPrefix())) {
             errors.add("dataStoreID", new ActionError("error.prefix.invalid", getPrefix()));

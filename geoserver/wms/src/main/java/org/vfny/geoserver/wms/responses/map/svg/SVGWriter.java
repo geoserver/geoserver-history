@@ -48,11 +48,6 @@ public class SVGWriter extends OutputStreamWriter {
      */
     private static DecimalFormat formatter;
 
-    /**
-     * map of geometry class to writer
-     */
-    private HashMap writers;
-
     static {
         Locale locale = new Locale("en", "US");
         DecimalFormatSymbols decimalSymbols = new DecimalFormatSymbols(locale);
@@ -73,6 +68,11 @@ public class SVGWriter extends OutputStreamWriter {
         //minimun fraction digits to 0 so they get not rendered if not needed
         formatter.setMinimumFractionDigits(0);
     }
+
+    /**
+     * map of geometry class to writer
+     */
+    private HashMap writers;
 
     /** DOCUMENT ME! */
     private double minY;

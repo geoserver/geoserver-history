@@ -40,7 +40,7 @@ public class StylesNewForm extends ActionForm {
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if ((styleID == null) || styleID.equals("")) {
+        if ((styleID == null) || "".equals(styleID)) {
             errors.add("styleID", new ActionError("error.styleID.required", styleID));
         } else if (!Pattern.matches("^[-\\w.:]*$", styleID)) {
             errors.add("styleID", new ActionError("error.styleID.invalid", styleID));

@@ -22,6 +22,10 @@ public final class JPEGMapProducerFactory implements GetMapProducerFactorySpi {
     /** the only MIME type this map producer supports */
     static final String MIME_TYPE = "image/jpeg";
 
+    public JPEGMapProducerFactory() {
+        super();
+    }
+
     public boolean canProduce(String mapFormat) {
         return MIME_TYPE.equalsIgnoreCase(mapFormat);
     }
@@ -34,10 +38,6 @@ public final class JPEGMapProducerFactory implements GetMapProducerFactorySpi {
         }
 
         return new JPEGMapProducer(MIME_TYPE, wms);
-    }
-
-    public JPEGMapProducerFactory() {
-        super();
     }
 
     public String getName() {

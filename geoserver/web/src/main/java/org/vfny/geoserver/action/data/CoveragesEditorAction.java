@@ -102,11 +102,11 @@ public final class CoveragesEditorAction extends ConfigAction {
             LOGGER.finer(new StringBuffer("ENVELOPE: ").append(ENVELOPE).toString());
         }
 
-        if (action.equals(SUBMIT)) {
+        if (SUBMIT.equals(action)) {
             return executeSubmit(mapping, coverageForm, user, request);
         }
 
-        if ((newCoverage != null) && newCoverage.equals("true")) {
+        if ((newCoverage != null) && "true".equals(newCoverage)) {
             if (LOGGER.isLoggable(Level.FINER)) {
                 LOGGER.finer(new StringBuffer("NEW COVERAGE: ").append(newCoverage).toString());
             }
@@ -114,11 +114,11 @@ public final class CoveragesEditorAction extends ConfigAction {
             request.setAttribute(DataCoveragesNewAction.NEW_COVERAGE_KEY, "true");
         }
 
-        if (action.equals(ENVELOPE)) {
+        if (ENVELOPE.equals(action)) {
             return executeEnvelope(mapping, coverageForm, user, request);
         }
 
-        if (action.equals(LOOKUP_SRS)) {
+        if (LOOKUP_SRS.equals(action)) {
             return executeLookupSRS(mapping, coverageForm, user, request);
         }
 
@@ -180,19 +180,7 @@ public final class CoveragesEditorAction extends ConfigAction {
             final GeneralEnvelope targetEnvelope = gEnvelope;
             GeneralEnvelope envelope = targetEnvelope;
 
-            if (!sourceCRS.getIdentifiers().isEmpty()) {
-                String identifier = sourceCRS.getIdentifiers().toArray()[0].toString();
-
-                /*
-                 * CRS.lookupIdentifier(sourceCRS, Collections
-                 * .singleton("EPSG"), false);
-                 */
-                if ((identifier != null) && !identifier.startsWith("EPSG:")) {
-                    identifier = "EPSG:" + identifier;
-                }
-
-                coverageForm.setSrsName(identifier);
-            } else {
+            if (sourceCRS.getIdentifiers().isEmpty()) {
                 String nativeCRS = coverageForm.getSrsName();
 
                 if (nativeCRS != null) {
@@ -214,6 +202,18 @@ public final class CoveragesEditorAction extends ConfigAction {
                 } else {
                     coverageForm.setSrsName("UNKNOWN");
                 }
+            } else {
+                String identifier = sourceCRS.getIdentifiers().toArray()[0].toString();
+
+                /*
+                 * CRS.lookupIdentifier(sourceCRS, Collections
+                 * .singleton("EPSG"), false);
+                 */
+                if ((identifier != null) && !identifier.startsWith("EPSG:")) {
+                    identifier = "EPSG:" + identifier;
+                }
+
+                coverageForm.setSrsName(identifier);
             }
 
             coverageForm.setWKTString(sourceCRS.toWKT());
@@ -260,7 +260,7 @@ public final class CoveragesEditorAction extends ConfigAction {
         config.setSrsName(form.getSrsName());
         config.setSrsWKT(form.getWKTString());
 
-        if (!config.getSrsName().equals("UNKNOWN") && (config.getSrsName() != null)
+        if (!"UNKNOWN".equals(config.getSrsName()) && (config.getSrsName() != null)
                 && config.getSrsName().toUpperCase().startsWith("EPSG:")) {
             config.setCrs(CRS.decode(config.getSrsName()));
         }
@@ -355,7 +355,7 @@ public final class CoveragesEditorAction extends ConfigAction {
         final CoordinateSystem cs = crs.getCoordinateSystem();
         boolean lonFirst = true;
 
-        if (cs.getAxis(0).getDirection().absolute().equals(AxisDirection.NORTH)) {
+        if (AxisDirection.NORTH.equals(cs.getAxis(0).getDirection().absolute())) {
             lonFirst = false;
         }
 
@@ -431,10 +431,10 @@ public final class CoveragesEditorAction extends ConfigAction {
 
             if (s == null) {
                 coverageForm.setSrsName("UNKNOWN");
-            } else if (!s.toUpperCase().startsWith("EPSG:")) {
-                coverageForm.setSrsName("EPSG:" + s);
-            } else {
+            } else if (s.toUpperCase().startsWith("EPSG:")) {
                 coverageForm.setSrsName(s);
+            } else {
+                coverageForm.setSrsName("EPSG:" + s);
             }
         } catch (Exception e) {
             coverageForm.setSrsName("UNKNOWN");

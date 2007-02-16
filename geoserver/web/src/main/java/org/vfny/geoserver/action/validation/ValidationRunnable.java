@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 public class ValidationRunnable implements Runnable {
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
+    public final static String KEY = "validationTestDoItThread.key";
     private Map testSuites;
     private Map plugins;
     private DataConfig dataConfig;
@@ -43,7 +44,6 @@ public class ValidationRunnable implements Runnable {
     ValidationProcessor gv;
     public TestValidationResults results; // I get filled up with goodies
     Repository repository;
-    public final static String KEY = "validationTestDoItThread.key";
 
     //public ValidationRunnable(Map ts, Map plugins, DataConfig dataConfig, ServletContext context, HttpServletRequest request) throws Exception
     public ValidationRunnable(HttpServletRequest request) {
