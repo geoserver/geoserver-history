@@ -47,7 +47,7 @@ public class FilterKvpReader extends KvpParser {
                 filters.add(filter);
             } catch (Exception e) {
                 String msg = "Unable to parse filter: " + string;
-                throw new IllegalArgumentException(msg);
+                throw new RuntimeException(msg, e);
             }
         }
 
