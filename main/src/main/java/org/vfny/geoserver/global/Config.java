@@ -41,9 +41,10 @@ public class Config implements ApplicationContextAware {
         // if the server admin did not set it up otherwise, force X/Y axis ordering
         // This one is a good place because we need to initialize this property
         // before any other opeation can trigger the initialization of the CRS subsystem
-        //        if (System.getProperty("org.geotools.referencing.forceXY") == null) {
-        //            System.setProperty("org.geotools.referencing.forceXY", "true");
-        //        }
+        if (System.getProperty("org.geotools.referencing.forceXY") == null) {
+            System.setProperty("org.geotools.referencing.forceXY", "true");
+        }
+
         ServletContext sc = this.context.getServletContext();
 
         try {
