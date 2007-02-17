@@ -644,7 +644,7 @@
       <descriptor>release/ext-wfs.xml</descriptor>
       <descriptor>release/ext-arcsde.xml</descriptor>
      </descriptors>
-     <finalName>geoserver-1.6-SNAPSHOT</finalName>
+     <finalName>geoserver-1.6-alpha2</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
     </configuration>
    </plugin>
