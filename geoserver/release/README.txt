@@ -1,3 +1,24 @@
+GeoServer 1.6-alpha2
+---------------------
+
+This is the first alpha release in the 1.6 series of GeoServer 
+which contains integrated WFS 1.1 support. Along with WFS 1.1 
+come some other interesting new features:
+
+- Sorting in a GetFeature request
+- Reprojection in a GetFeature request
+- GML3 Simple Feature Profile 0 as an output format
+- Filter 1.1 support
+- A dynamic dispatch system for Open Web Services
+- Improved xml parsing and encoding 
+
+The issue log for this release can be found here:
+
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=13200
+
+This release is based on Geotools 2.4-SNAPSHOT, tag = geoserver-1.6-alpha2,
+revision = 24440
+
 GeoServer 1.5.0-beta1
 ---------------------
 
