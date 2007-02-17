@@ -53,7 +53,6 @@ import java.util.NoSuchElementException;
  *
  */
 public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
-   
     /**
      * The schema of reprojected features
      */
@@ -84,8 +83,8 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
         CoordinateReferenceSystem target)
         throws SchemaException, OperationNotFoundException, FactoryRegistryException,
             FactoryException {
-    	super( delegate );
-        
+        super(delegate);
+
         this.target = target;
         this.schema = FeatureTypes.transform(delegate.getFeatureType(), target);
 
@@ -189,7 +188,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
         return array;
     }
 
-  public Envelope getBounds() {
+    public Envelope getBounds() {
         Envelope bounds = new Envelope();
         Iterator i = iterator();
 
