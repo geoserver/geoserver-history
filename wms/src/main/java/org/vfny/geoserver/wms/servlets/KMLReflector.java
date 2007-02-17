@@ -24,7 +24,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -70,16 +69,14 @@ public class KMLReflector extends WMService {
         super("kml_reflect", null);
     }
 
-    public void init( ServletConfig config ) throws ServletException {
-    	super.init ( config );
-    	setWMS( (WMS) config.getServletContext().getAttribute(WMS.WEB_CONTAINER_KEY) );
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        setWMS((WMS) config.getServletContext().getAttribute(WMS.WEB_CONTAINER_KEY));
     }
-    
+
     protected Response getResponseHandler() {
-        
-        ApplicationContext context = 
-        	WebApplicationContextUtils.getWebApplicationContext( getServletContext() );
-        
+        ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+
         //return new GetMapResponse(config);
         return new GetMapResponse(getWMS(), context);
     }
