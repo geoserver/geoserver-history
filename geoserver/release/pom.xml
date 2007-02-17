@@ -108,7 +108,7 @@
   </dependencies>
 
 	<properties>
-		<gt.version>2.2.2-SNAPSHOT</gt.version>
+		<gt.version>2.4-SNAPSHOT</gt.version>
 	</properties>
 
 	<build>
