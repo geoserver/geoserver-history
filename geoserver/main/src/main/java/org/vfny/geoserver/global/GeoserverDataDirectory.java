@@ -177,7 +177,7 @@ public class GeoserverDataDirectory {
                     // its defined!!
                     isTrueDataDir = true;
                     dataDir = new File(prop);
-                    loader = new GeoServerResourceLoader(dataDir);
+                    loader.setBaseDirectory(dataDir);
                     loader.addSearchLocation(new File(dataDir, "data"));
                     loader.addSearchLocation(new File(dataDir, "WEB-INF"));
                     System.out.println("----------------------------------");
@@ -199,7 +199,7 @@ public class GeoserverDataDirectory {
                 // its defined!!
                 isTrueDataDir = true;
                 dataDir = new File(loc);
-                loader = new GeoServerResourceLoader(dataDir);
+                loader.setBaseDirectory(dataDir);
                 loader.addSearchLocation(new File(dataDir, "data"));
                 loader.addSearchLocation(new File(dataDir, "WEB-INF"));
                 System.out.println("----------------------------------");
