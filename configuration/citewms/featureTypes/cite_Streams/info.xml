@@ -1,0 +1,17 @@
+<featureType datastore = "Streams" >
+<name>Streams</name>
+<!--
+native wich EPGS code for the FeatureTypeInfoDTO
+-->
+<SRS>4326</SRS>
+<title>cite:Streams</title>
+<abstract>Generated from cite</abstract>
+<numDecimals value = "8" />
+<keywords>Streams cite</keywords>
+<latLonBoundingBox dynamic = "false" miny = "-0.0024" maxy = "0.0024" maxx = "0.0036" minx = "-4.0E-4"  />
+<!--
+the default style this FeatureTypeInfoDTO can be represented by.
+at least must contain the "default" attribute 
+-->
+<styles default = "cite_streams"  />
+</featureType>
