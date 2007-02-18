@@ -4,8 +4,8 @@
  */
 package org.vfny.geoserver.util;
 
-import org.geotools.data.coverage.grid.GridFormatFactorySpi;
-import org.geotools.data.coverage.grid.GridFormatFinder;
+import org.geotools.coverage.grid.io.GridFormatFactorySpi;
+import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -18,7 +18,6 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-import org.vfny.geoserver.global.CoverageStoreInfo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;

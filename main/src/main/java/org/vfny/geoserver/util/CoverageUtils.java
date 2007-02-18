@@ -5,7 +5,7 @@
 package org.vfny.geoserver.util;
 
 import org.geotools.coverage.grid.GeneralGridGeometry;
-import org.geotools.data.coverage.grid.AbstractGridFormat;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.parameter.DefaultParameterDescriptor;

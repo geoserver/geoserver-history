@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
-import org.geotools.data.coverage.grid.AbstractGridFormat;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverageReader;
@@ -12,13 +12,8 @@ import org.opengis.parameter.InvalidParameterValueException;
 import org.opengis.parameter.ParameterNotFoundException;
 import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
 import org.vfny.geoserver.util.CoverageStoreUtils;
-import org.vfny.geoserver.util.CoverageUtils;
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
