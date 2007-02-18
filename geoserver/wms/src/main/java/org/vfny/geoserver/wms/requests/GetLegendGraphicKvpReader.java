@@ -4,10 +4,10 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import org.geotools.data.DataUtilities;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
+import org.geotools.resources.coverage.CoverageUtilities;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
 import org.geotools.styling.SLDParser;
@@ -119,7 +119,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
                 CoverageInfo cvi = request.getWMS().getData().getCoverageInfo(layer);
                 mli.setCoverage(cvi);
 
-                FeatureCollection feature = DataUtilities.wrapGc(cvi.getCoverage(null, null));
+                FeatureCollection feature = CoverageUtilities.wrapGc(cvi.getCoverage(null, null));
                 request.setLayer(feature.getFeatureType());
             } catch (NoSuchElementException ne) {
                 throw new WmsException(ne,

@@ -5,17 +5,18 @@
 package org.vfny.geoserver.wms.responses;
 
 import com.vividsolutions.jts.geom.Envelope;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
-import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
 import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.resources.coverage.CoverageUtilities;
 import org.geotools.styling.Style;
 import org.opengis.filter.Filter;
 import org.opengis.parameter.ParameterValueGroup;
@@ -292,7 +293,7 @@ public class GetMapResponse implements Response {
                         final ParameterValueGroup params = reader.getFormat().getReadParameters();
 
                         try {
-                            layer = new DefaultMapLayer(DataUtilities.wrapGc(reader.read(
+                            layer = new DefaultMapLayer(CoverageUtilities.wrapGc(reader.read(
                                             CoverageUtils.getParameters(params,
                                                 layers[i].getCoverage().getParameters()))), style);
                             layer.setTitle(layers[i].getName());
