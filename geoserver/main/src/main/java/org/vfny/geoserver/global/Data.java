@@ -229,6 +229,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
         styles = loadStyles(config);
 
         // Step 3: load featureTypes
+        layerNames.clear();
         featureTypes = loadFeatureTypes(config);
         coverages = loadCoverages(config);
     }
