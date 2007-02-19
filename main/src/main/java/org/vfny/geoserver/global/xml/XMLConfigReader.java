@@ -1263,7 +1263,7 @@ public class XMLConfigReader {
      *
      * <ul>
      * <li>
-     * rootDir/
+     * rootDir
      * </li>
      * <li>
      * rootDir/featureType1/info.xml - required
