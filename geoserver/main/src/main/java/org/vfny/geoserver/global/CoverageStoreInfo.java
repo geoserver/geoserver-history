@@ -349,7 +349,7 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
     }
 
     public synchronized GridCoverageReader getReader() {
-        if (reader != null) {
+        if (reader != null && reader.get() != null) {
             return (GridCoverageReader) reader.get();
         }
 
@@ -390,9 +390,9 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
     }
 
     public synchronized GridCoverageReader createReader(Hints hints) {
-        if (hintReader != null) {
+        if (hintReader != null && hintReader.get() != null) {
             return (GridCoverageReader) hintReader.get();
-        } else if ((hints == null) && (reader != null)) {
+        } else if ((hints == null) && (reader != null && reader.get() != null)) {
             return (GridCoverageReader) reader.get();
         }
 
