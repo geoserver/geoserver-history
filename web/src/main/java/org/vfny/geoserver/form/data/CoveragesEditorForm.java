@@ -13,7 +13,7 @@ import org.apache.struts.config.ControllerConfig;
 import org.apache.struts.upload.CommonsMultipartRequestHandler;
 import org.apache.struts.upload.MultipartRequestHandler;
 import org.apache.struts.util.MessageResources;
-import org.geotools.data.coverage.grid.AbstractGridFormat;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.Format;
 import org.opengis.parameter.ParameterValue;
