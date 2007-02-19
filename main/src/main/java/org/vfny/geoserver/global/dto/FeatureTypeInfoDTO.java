@@ -35,7 +35,7 @@ import java.util.List;
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.13 2004/04/16 06:28:57 jive Exp $
+ * @version $Id$
  */
 public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The Id of the datastore which should be used to get this featuretype. */

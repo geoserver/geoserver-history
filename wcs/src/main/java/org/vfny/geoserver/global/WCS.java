@@ -28,7 +28,7 @@ import org.vfny.geoserver.global.dto.WCSDTO;
  *         modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
- * @version $Id: WCS.java,v 0.1 Feb 15, 2005 12:22:10 PM $
+ * @version $Id$
  */
 public final class WCS extends Service {
     public static final String WEB_CONTAINER_KEY = "WCS";

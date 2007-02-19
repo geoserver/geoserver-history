@@ -90,7 +90,7 @@ import javax.servlet.ServletContext;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigReader.java,v 1.43 2004/09/13 16:04:26 cholmesny Exp $
+ * @version $Id$
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */

@@ -42,7 +42,7 @@ import javax.servlet.ServletContext;
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
- * @version $Id: DataConfig.java,v 1.17 2004/06/29 17:19:12 jive Exp $
+ * @version $Id$
  *
  * @see DataSource
  * @see FeatureTypeInfo

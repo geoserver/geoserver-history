@@ -31,7 +31,7 @@ import javax.servlet.ServletContext;
  *
  * @author Gabriel Rold?n
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.23 2004/09/09 16:54:19 cholmesny Exp $
+ * @version $Id$
  */
 public class GeoServer extends GlobalLayerSupertype implements DisposableBean, InitializingBean {
     /**

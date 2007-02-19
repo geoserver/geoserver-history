@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
- * @version $Id: TypesEditorForm.java,v 1.20 2004/09/13 16:18:40 cholmesny Exp $
+ * @version $Id$
  */
 public class TypesEditorForm extends ActionForm {
     static final List schemaBases;

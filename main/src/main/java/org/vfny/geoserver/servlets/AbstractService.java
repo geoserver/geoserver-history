@@ -97,7 +97,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Gabriel Rold?n
  * @author Chris Holmes
  * @author Jody Garnett, Refractions Research
- * @version $Id: AbstractService.java,v 1.23 2004/09/08 17:34:38 cholmesny Exp $
+ * @version $Id$
  */
 public abstract class AbstractService extends HttpServlet implements ApplicationContextAware {
     /** Class logger */

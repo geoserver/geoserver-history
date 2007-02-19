@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
  * <p>
  * @author rgould, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataNamespacesSelectForm.java,v 1.5 2004/04/03 00:24:28 emperorkefka Exp $
+ * @version $Id$
  */
 public class DataNamespacesSelectForm extends ActionForm {
     /** namespace the user selected (value is a prefix) */

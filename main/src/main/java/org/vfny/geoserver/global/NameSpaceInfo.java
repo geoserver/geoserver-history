@@ -31,7 +31,7 @@ import java.util.Set;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceInfo.java,v 1.11 2004/06/26 19:51:24 jive Exp $
+ * @version $Id$
  */
 public class NameSpaceInfo extends GlobalLayerSupertype {
     private String prefix;

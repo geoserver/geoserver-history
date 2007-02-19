@@ -31,7 +31,7 @@ import java.util.Set;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: GMLSchemaTranslator.java,v 1.6 2004/04/06 18:45:02 dmzwiers Exp $
+ * @version $Id$
  */
 public class GMLSchemaTranslator extends NameSpaceTranslator {
     private HashSet elements;

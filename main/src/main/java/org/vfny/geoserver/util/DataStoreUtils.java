@@ -28,7 +28,7 @@ import javax.servlet.ServletContext;
  *
  * @author Richard Gould, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
- * @version $Id: DataStoreUtils.java,v 1.12 2004/09/21 21:14:48 cholmesny Exp $
+ * @version $Id$
  */
 public abstract class DataStoreUtils {
     public static DataStore acquireDataStore(Map params, ServletContext sc)

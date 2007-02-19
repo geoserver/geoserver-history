@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
- * @version $Id: LoginAction.java,v 1.7 2004/04/20 18:58:39 cholmesny Exp $
+ * @version $Id$
  *
  * @task TODO: add a page to change the username and password from the ui.
  */

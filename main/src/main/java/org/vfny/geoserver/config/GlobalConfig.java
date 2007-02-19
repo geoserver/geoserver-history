@@ -22,7 +22,7 @@ import java.util.logging.Level;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GlobalConfig.java,v 1.12 2004/09/09 17:05:10 cholmesny Exp $
+ * @version $Id$
  */
 public class GlobalConfig {
     public static final String CONFIG_KEY = "Config.Global";

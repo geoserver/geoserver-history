@@ -43,7 +43,7 @@ package org.vfny.geoserver.action;
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: HTMLEncoder.java,v 1.2 2004/02/18 00:52:57 dmzwiers Exp $
+ * @version $Id$
  */
 public class HTMLEncoder {
     private static java.util.Hashtable chars = null;

@@ -16,7 +16,7 @@ import java.util.TreeSet;
  * available JAI library.
  *
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id: PNGLegendGraphicProducerFactory.java 4107 2006-01-18 22:20:30Z jdeolive $
+ * @version $Id$
  */
 public class PNGLegendGraphicProducerFactory implements GetLegendGraphicProducerSpi {
     /**

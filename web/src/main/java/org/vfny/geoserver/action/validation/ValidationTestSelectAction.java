@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationTestSelectAction.java,v 1.5 2004/02/25 00:50:29 dmzwiers Exp $
+ * @version $Id$
  */
 public class ValidationTestSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,

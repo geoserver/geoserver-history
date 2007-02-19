@@ -29,7 +29,7 @@ import java.util.Set;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: XMLSchemaTranslator.java,v 1.3 2004/04/06 18:45:02 dmzwiers Exp $
+ * @version $Id$
  */
 public class XMLSchemaTranslator extends NameSpaceTranslator {
     private HashSet elements;

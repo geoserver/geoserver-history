@@ -29,7 +29,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ConfigRequests.java,v 1.4 2004/01/31 00:27:27 jive Exp $
+ * @version $Id$
  */
 public class ConfigRequests {
     /**

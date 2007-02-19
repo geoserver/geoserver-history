@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: AttributeTypeInfo.java,v 1.12 2004/06/26 19:51:24 jive Exp $
+ * @version $Id$
  */
 public class AttributeTypeInfo {
     private String name;

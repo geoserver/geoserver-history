@@ -72,7 +72,7 @@ import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoConfig.java,v 1.19 2004/02/16 23:46:54 dmzwiers Exp $
+ * @version $Id$
  */
 public class AttributeTypeInfoConfig {
     /** Value of getType() used to indicate that fragement is in use */

@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author rgould, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
  * @author bowens, TOPP
- * @version $Id: DataDataStoresSelectForm.java,v 1.9 2004/03/16 19:57:40 emperorkefka Exp $
+ * @version $Id$
  */
 public class DataDataStoresSelectForm extends ActionForm {
     /** Action that spawned us must be "edit" or "delete" */

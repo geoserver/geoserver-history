@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: sploreg $ (last modification)
- * @version $Id: ValidationTestDoIt.java,v 1.11 2004/06/29 18:36:11 sploreg Exp $
+ * @version $Id$
  */
 public class ValidationTestDoIt extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,

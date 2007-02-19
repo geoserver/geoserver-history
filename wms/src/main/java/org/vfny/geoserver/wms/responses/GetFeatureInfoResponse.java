@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  * output format requested
  *
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id: GetFeatureInfoResponse.java,v 1.3 2004/07/21 18:43:30 jmacgill Exp $
+ * @version $Id$
  */
 public class GetFeatureInfoResponse implements Response {
     /** package logger   */

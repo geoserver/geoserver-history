@@ -23,7 +23,7 @@ import org.vfny.geoserver.config.validation.TestConfig;
  * 
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ValidationTest.java,v 1.1 2004/01/31 00:17:53 jive Exp $
+ * @version $Id$
  */
 public class ValidationTest extends TestCase {
 

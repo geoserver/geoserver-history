@@ -59,7 +59,7 @@ import javax.xml.parsers.SAXParserFactory;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: KvpRequestReader.java,v 1.6 2004/02/09 23:29:47 dmzwiers Exp $
+ * @version $Id$
  */
 abstract public class KvpRequestReader {
     /** Class logger */

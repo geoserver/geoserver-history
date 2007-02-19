@@ -52,7 +52,7 @@ import java.util.Map;
  * @author dzwiers
  * @author Charles Kolbowicz
  *
- * @version $Id: FeatureTypeInfo.java,v 1.41 2004/06/26 19:51:24 jive Exp $
+ * @version $Id$
  */
 public class FeatureTypeInfo extends GlobalLayerSupertype {
     /** hash table that takes a epsg# to its definition**/

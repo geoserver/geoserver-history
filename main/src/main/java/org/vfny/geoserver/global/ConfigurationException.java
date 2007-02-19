@@ -11,7 +11,7 @@ package org.vfny.geoserver.global;
  *
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: ConfigurationException.java,v 1.3 2004/01/31 00:27:23 jive Exp $
+ * @version $Id$
  */
 public class ConfigurationException extends Exception {
     /**

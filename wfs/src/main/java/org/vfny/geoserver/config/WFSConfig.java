@@ -19,7 +19,7 @@ import org.vfny.geoserver.global.dto.WFSDTO;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSConfig.java,v 1.10 2004/09/09 17:05:10 cholmesny Exp $
+ * @version $Id$
  */
 public class WFSConfig extends ServiceConfig {
     public static final String CONFIG_KEY = "Config.WFS";

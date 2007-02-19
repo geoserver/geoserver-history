@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author User, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationTestEditorAction.java,v 1.5 2004/04/08 21:58:25 dmzwiers Exp $
+ * @version $Id$
  */
 public class ValidationTestEditorAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,

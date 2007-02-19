@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletRequest;
  * </p>
  *
  * @author Chris Holmes
- * @version $Id: DispatcherXmlReader.java,v 1.1 2004/03/30 04:37:32 cholmesny Exp $
+ * @version $Id$
  *
  * @task REVISIT: This might be better implemented to extend XmlRequestReader,
  *       and to actually construct the requests with the DispatcherHandler.

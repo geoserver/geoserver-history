@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author Gabriel Roldan, Axios Engineering
  * @author Simone Giannecchini
- * @version $Id: GetMapRequest.java,v 1.8 2004/03/14 16:00:54 groldan Exp $
+ * @version $Id$
  */
 public class GetMapRequest extends WMSRequest {
     /** DOCUMENT ME! */

@@ -34,7 +34,7 @@ import java.util.Set;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TestConfig.java,v 1.4 2004/04/08 21:58:26 dmzwiers Exp $
+ * @version $Id$
  */
 public class TestConfig {
     public final static String CURRENTLY_SELECTED_KEY = "selectedTest";

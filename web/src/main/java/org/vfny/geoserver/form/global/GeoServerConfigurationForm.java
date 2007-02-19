@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author User, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
- * @version $Id: GeoServerConfigurationForm.java,v 1.3 2004/09/09 17:04:42 cholmesny Exp $
+ * @version $Id$
  */
 public class GeoServerConfigurationForm extends ActionForm {
     private int maxFeatures;

@@ -58,7 +58,7 @@ import javax.media.jai.JAI;
  *
  * @author Chris Holmes, TOPP
  * @author Simone Giannecchini, GeoSolutions
- * @version $Id: JAIMapResponse.java,v 1.29 2004/09/16 21:44:28 cholmesny Exp $
+ * @version $Id$
  */
 public abstract class DefaultRasterMapProducer implements GetMapProducer {
     private final static Interpolation NN_INTERPOLATION = new InterpolationNearest();

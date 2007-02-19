@@ -24,7 +24,7 @@ import org.vfny.geoserver.global.dto.EqualsLibrary;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: EqualsLibraryTest.java,v 1.4 2004/01/31 00:17:52 jive Exp $
+ * @version $Id$
  */
 public class EqualsLibraryTest extends TestCase {
     /**

@@ -14,7 +14,7 @@ import org.vfny.geoserver.wms.servlets.WMService;
  * DOCUMENT ME!
  *
  * @author Gabriel Rold?n
- * @version $Id: WMSRequest.java,v 1.6 2004/02/09 23:11:33 dmzwiers Exp $
+ * @version $Id$
  */
 public class WMSRequest extends Request {
     public static final String WMS_SERVICE_TYPE = "WMS";

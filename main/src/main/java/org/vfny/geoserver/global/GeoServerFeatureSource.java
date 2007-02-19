@@ -44,7 +44,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author Gabriel Rold�n
- * @version $Id: GeoServerFeatureSource.java,v 1.8 2004/02/13 18:45:50 dmzwiers Exp $
+ * @version $Id$
  */
 public class GeoServerFeatureSource implements FeatureSource {
     /** Shared package logger */

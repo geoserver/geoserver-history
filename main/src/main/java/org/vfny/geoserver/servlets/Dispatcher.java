@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: Dispatcher.java,v 1.13 2004/07/15 21:13:12 jmacgill Exp $
+ * @version $Id$
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded

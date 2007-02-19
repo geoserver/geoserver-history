@@ -33,7 +33,7 @@ import java.util.Map;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: PlugInConfig.java,v 1.2 2004/02/03 20:09:15 dmzwiers Exp $
+ * @version $Id$
  */
 public class PlugInConfig {
     public static final String CONFIG_KEY = "Validation.PlugIn";

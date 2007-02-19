@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  * User interface FeatureType staging area.
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeConfig.java,v 1.20 2004/03/09 10:59:56 jive Exp $
+ * @version $Id$
  */
 public class FeatureTypeConfig {
     protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.config");

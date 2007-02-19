@@ -20,7 +20,7 @@ import java.util.Set;
  * DOCUMENT ME!
  *
  * @author Gabriel Rold?n
- * @version $Id: Capabilities.java,v 1.6 2004/02/09 23:29:46 dmzwiers Exp $
+ * @version $Id$
  */
 public class Capabilities extends WMService {
     public Capabilities(WMS wms) {

@@ -27,7 +27,7 @@ import java.util.Map;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TestSuiteConfig.java,v 1.3 2004/02/09 23:29:48 dmzwiers Exp $
+ * @version $Id$
  */
 public class TestSuiteConfig {
     public static final String CONFIG_KEY = "Validation.TestSuite";

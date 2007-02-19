@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author dmzwiers
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
- * @version $Id: CoverageStoresNewAction.java,v 1.12 2004/02/25 21:51:11 dmzwiers Exp $
+ * @version $Id$
  */
 public final class CoverageStoresNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,

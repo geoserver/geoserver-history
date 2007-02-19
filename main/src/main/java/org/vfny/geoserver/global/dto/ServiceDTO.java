@@ -32,7 +32,7 @@ import java.util.List;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ServiceDTO.java,v 1.4 2004/01/31 00:27:26 jive Exp $
+ * @version $Id$
  */
 public final class ServiceDTO implements DataTransferObject {
     /**

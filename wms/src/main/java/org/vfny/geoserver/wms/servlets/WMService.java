@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  * </p>
  *
  * @author Gabriel Rold?n
- * @version $Id: WMService.java,v 1.6 2004/02/17 22:42:32 dmzwiers Exp $
+ * @version $Id$
  */
 abstract public class WMService extends AbstractService {
     /**

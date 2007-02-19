@@ -149,7 +149,7 @@ import javax.servlet.http.HttpServletRequest;
  * </p>
  *
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id: GetMapKvpReader.java,v 1.12 2004/09/16 22:20:54 cholmesny Exp $
+ * @version $Id$
  *
  * @task TODO: parse and respect SRS parameter (needs reprojection support)
  */

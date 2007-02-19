@@ -18,7 +18,7 @@ import org.vfny.geoserver.wms.servlets.WMService;
  * </p>
  *
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id: GetFeatureInfoRequest.java,v 1.1 2004/07/15 21:13:13 jmacgill Exp $
+ * @version $Id$
  */
 public class GetFeatureInfoRequest extends WMSRequest {
     private static final String DEFAULT_EXCEPTION_FORMAT = "application/vnd.ogc.se_xml";

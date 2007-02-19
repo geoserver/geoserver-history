@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataFeatureTypesNewForm.java,v 1.6 2004/03/09 01:37:39 dmzwiers Exp $
+ * @version $Id$
  */
 public class DataFeatureTypesNewForm extends ActionForm {
     String selectedNewFeatureType;

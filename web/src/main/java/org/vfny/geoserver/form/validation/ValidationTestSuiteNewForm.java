@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author User, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ValidationTestSuiteNewForm.java,v 1.1 2004/01/31 00:27:28 jive Exp $
+ * @version $Id$
  */
 public class ValidationTestSuiteNewForm extends ActionForm {
     private String newName;

@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Jody Garnett, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
- * @version $Id: GeoServerAction.java,v 1.7 2004/04/16 16:33:31 cholmesny Exp $
+ * @version $Id$
  */
 public class GeoServerAction extends ActionSupport {
     /** Class logger */

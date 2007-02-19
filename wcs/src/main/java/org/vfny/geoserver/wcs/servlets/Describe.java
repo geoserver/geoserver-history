@@ -24,7 +24,7 @@ import java.util.Map;
  * @author Rob Hranac, TOPP
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
- * @version $Id: Describe.java,v 1.6 2004/02/09 23:29:46 dmzwiers Exp $
+ * @version $Id$
  */
 public class Describe extends WCService {
     public Describe(WCS wcs) {

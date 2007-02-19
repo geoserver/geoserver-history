@@ -22,7 +22,7 @@ import javax.servlet.ServletException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: GeoServerPlugIn.java,v 1.9 2004/02/20 00:28:19 dmzwiers Exp $
+ * @version $Id$
  *
  * @see org.vfny.geoserver.config.ConfigPlugIn
  * @REVISIT: There seems to be quite a bit of code duplication in this class

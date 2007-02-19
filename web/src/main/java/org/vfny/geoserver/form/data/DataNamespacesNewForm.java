@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: DataNamespacesNewForm.java,v 1.4 2004/03/02 10:06:42 jive Exp $
+ * @version $Id$
  */
 public class DataNamespacesNewForm extends ActionForm {
     private String prefix;

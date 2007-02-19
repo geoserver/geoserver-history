@@ -21,7 +21,7 @@ import java.util.Locale;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ArgumentConfig.java,v 1.2 2004/04/07 19:37:48 dmzwiers Exp $
+ * @version $Id$
  */
 public class ArgumentConfig {
     private String name;

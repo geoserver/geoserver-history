@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
- * @version $Id: ValidationTestEditorForm.java,v 1.5 2004/04/21 21:30:51 emperorkefka Exp $
+ * @version $Id$
  */
 public class ValidationTestEditorForm extends ActionForm {
     private String name;

@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: StylesSelectAction.java,v 1.3 2004/03/01 19:47:45 dmzwiers Exp $
+ * @version $Id$
  */
 public class StylesSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,

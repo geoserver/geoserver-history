@@ -17,7 +17,7 @@ package org.geoserver.wfs.xml;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: NameSpaceElement.java,v 1.5 2004/04/06 18:45:02 dmzwiers Exp $
+ * @version $Id$
  */
 public abstract class NameSpaceElement {
     /** the namespace prefix to use for qualification*/

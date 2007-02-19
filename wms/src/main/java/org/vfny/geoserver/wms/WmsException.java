@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
  * this before returning to clients.
  *
  * @author Gabriel Rold?n
- * @version $Id: WmsException.java,v 1.7 2004/09/08 17:34:04 cholmesny Exp $
+ * @version $Id$
  */
 public class WmsException extends ServiceException {
     /**

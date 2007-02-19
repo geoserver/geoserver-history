@@ -19,7 +19,7 @@ import java.util.Map;
  * @see NameSpaceTranslator
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: NameSpaceTranslatorFactory.java,v 1.3 2004/02/09 18:00:02 dmzwiers Exp $
+ * @version $Id$
  */
 public class NameSpaceTranslatorFactory {
     /** map of namespace names as Strings -> Class representations of NameSpaceTranslators */

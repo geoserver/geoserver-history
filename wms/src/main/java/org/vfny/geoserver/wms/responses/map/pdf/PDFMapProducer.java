@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  * Handles a GetMap request that spects a map in PDF format.
  *
  * @author Pierre-Emmanuel Balageas, ALCER (http://www.alcer.com)
- * @version $Id: hacking.xml 2976 2004-10-13 23:25:25Z cholmes $
+ * @version $Id$
  */
 class PDFMapProducer implements GetMapProducer {
     /** A logger for this class. */

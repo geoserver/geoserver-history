@@ -35,7 +35,7 @@ import java.util.Set;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataTransferObjectFactory.java,v 1.20 2004/04/16 21:42:09 dmzwiers Exp $
+ * @version $Id$
  */
 public class DataTransferObjectFactory {
     /**

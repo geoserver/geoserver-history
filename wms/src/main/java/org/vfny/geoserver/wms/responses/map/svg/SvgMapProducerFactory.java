@@ -17,7 +17,7 @@ import java.util.Set;
  * DOCUMENT ME!
  *
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id: SvgMapProducerFactory.java 4801 2006-08-02 23:38:05Z afabiani $
+ * @version $Id$
  */
 public class SvgMapProducerFactory implements GetMapProducerFactorySpi {
     /**
