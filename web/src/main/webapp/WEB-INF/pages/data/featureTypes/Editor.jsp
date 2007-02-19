@@ -116,7 +116,7 @@ function prepareFormData(){
         </html:submit>
         </td>
 		<td>
-		      <a href="<bean:message key="label.SRSHelp.URL"/>">
+		    <a href="<bean:message key="label.SRSHelp.URL"/>">
               <bean:message key="label.SRSHelp"/>
             </a>
         </td>

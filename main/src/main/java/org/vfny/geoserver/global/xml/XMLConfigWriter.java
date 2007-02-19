@@ -1347,10 +1347,6 @@ public class XMLConfigWriter {
                     m.put("srsName", cv.getSrsName());
                 }
 
-                if ((cv.getNativeCRS() != null) && (cv.getNativeCRS() != "")) {
-                    m.put("nativeCRS", cv.getNativeCRS());
-                }
-
                 m.put("crs", cv.getCrs().toWKT().replaceAll("\"", "'"));
 
                 if (!e.isNull()) {

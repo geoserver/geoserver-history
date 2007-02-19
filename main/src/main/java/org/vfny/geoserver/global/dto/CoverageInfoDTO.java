@@ -134,11 +134,6 @@ public final class CoverageInfoDTO implements DataTransferObject {
     /**
      *
      */
-    private String nativeCRS;
-
-    /**
-     *
-     */
     private CoordinateReferenceSystem crs;
 
     /**
@@ -179,7 +174,6 @@ public final class CoverageInfoDTO implements DataTransferObject {
         crs = dto.getCrs();
         srsName = dto.getSrsName();
         srsWKT = dto.getSrsWKT();
-        nativeCRS = dto.getNativeCRS();
         envelope = dto.getEnvelope();
         lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
         grid = dto.getGrid();
@@ -240,7 +234,6 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
         r = r && (srsName == f.getSrsName());
         r = r && (srsWKT == f.getSrsWKT());
-        r = r && (nativeCRS == f.getNativeCRS());
         r = r && (crs == f.getCrs());
         r = r && (name == f.getName());
         r = r && (wmsPath == f.getWmsPath());
@@ -292,10 +285,6 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
         if (srsWKT != null) {
             r *= srsWKT.hashCode();
-        }
-
-        if (nativeCRS != null) {
-            r *= nativeCRS.hashCode();
         }
 
         if (crs != null) {
@@ -802,14 +791,6 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
     public void setWmsPath(String wmsPath) {
         this.wmsPath = wmsPath;
-    }
-
-    public String getNativeCRS() {
-        return nativeCRS;
-    }
-
-    public void setNativeCRS(String nativeCRS) {
-        this.nativeCRS = nativeCRS;
     }
 
     /**

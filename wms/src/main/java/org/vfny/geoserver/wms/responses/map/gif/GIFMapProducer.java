@@ -95,10 +95,7 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
                                                                                        .toString());
         }
 
-        /*
-        new ImageWorker(image).forceIndexColorModelForGIF().writeGIF(outStream, "LZW", 0.75f);
-        */
-        ImageIO.write(image, "GIF", outStream);
+        new ImageWorker(image).forceIndexColorModelForGIF(true).writeGIF(outStream, "LZW", 0.75f);
     }
 
     protected BufferedImage prepareImage(int width, int height) {

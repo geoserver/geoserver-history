@@ -253,6 +253,8 @@ public class XMLConfigReader {
         loadGlobal(elem);
 
         NodeList configuredServices = configElem.getElementsByTagName("service");
+        boolean foundWCS = false; // record if we have found them or not
+
         int nServices = configuredServices.getLength();
 
         for (int i = 0; i < nServices; i++) {
@@ -261,6 +263,7 @@ public class XMLConfigReader {
             String serviceType = elem.getAttribute("type");
 
             if ("WCS".equalsIgnoreCase(serviceType)) {
+                foundWCS = true;
                 loadWCS(elem);
             } else if ("WFS".equalsIgnoreCase(serviceType)) {
                 loadWFS(elem);
@@ -270,6 +273,50 @@ public class XMLConfigReader {
                 LOGGER.warning("Ignoring unknown service type: " + serviceType);
             }
         }
+
+        if (!foundWCS) {
+            wcs = defaultWcsDto();
+        }
+    }
+
+    /**
+     * This is a very poor, but effective tempory method of setting a
+     * default service value for WCS, until we get a new config system.
+     *
+     * @return
+     */
+    private WCSDTO defaultWcsDto() {
+        WCSDTO dto = new WCSDTO();
+        ServiceDTO service = new ServiceDTO();
+        service.setName("My GeoServer WCS");
+        service.setTitle("My GeoServer WCS");
+        service.setEnabled(true);
+
+        List keyWords = new ArrayList();
+        keyWords.add("WCS");
+        keyWords.add("WMS");
+        keyWords.add("GEOSERVER");
+        service.setKeywords(keyWords);
+
+        MetaDataLink mdl = new MetaDataLink();
+        mdl.setAbout("http://geoserver.org");
+        mdl.setType("undef");
+        mdl.setMetadataType("other");
+        mdl.setContent("NONE");
+        service.setMetadataLink(mdl);
+        service.setFees("NONE");
+        service.setAccessConstraints("NONE");
+        service.setMaintainer("http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311");
+
+        try {
+            service.setOnlineResource(new URL("http://geoserver.org"));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        dto.setService(service);
+
+        return dto;
     }
 
     /**
@@ -1028,6 +1075,12 @@ public class XMLConfigReader {
     protected Map loadFormats(Element fmRoot) throws ConfigurationException {
         Map formats = new HashMap();
 
+        if (fmRoot == null) { // if there are no formats (they are using
+                              // v.1.4)
+
+            return formats; // just return the empty list
+        }
+
         NodeList fmElements = fmRoot.getElementsByTagName("format");
         int fmCnt = fmElements.getLength();
         CoverageStoreInfoDTO fmConfig;
@@ -1564,6 +1617,12 @@ public class XMLConfigReader {
             LOGGER.finest(new StringBuffer("is dir: ").append(coverageRoot.isDirectory()).toString());
         }
 
+        if (coverageRoot == null) { // no coverages have been specified by the
+                                    // user (that is ok)
+
+            return Collections.EMPTY_MAP;
+        }
+
         if (!coverageRoot.isDirectory()) {
             throw new IllegalArgumentException("coverageRoot must be a directoy");
         }
@@ -1727,7 +1786,6 @@ public class XMLConfigReader {
             // /////////////////////////////////////////////////////////////////////
             final Element envelope = ReaderUtils.getChildElement(coverageRoot, "envelope");
             cv.setSrsName(ReaderUtils.getAttribute(envelope, "srsName", true));
-            cv.setNativeCRS(ReaderUtils.getAttribute(envelope, "nativeCRS", false));
 
             final CoordinateReferenceSystem crs;
 

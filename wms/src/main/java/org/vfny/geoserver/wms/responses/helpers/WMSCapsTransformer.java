@@ -564,7 +564,7 @@ public class WMSCapsTransformer extends TransformerBase {
                         currentSRS = it.next().toString();
 
                         if (!currentSRS.equals(commonSRS)) {
-                            element("SRS", currentSRS);
+                            element("SRS", EPSG + currentSRS);
                         }
                     }
                 } catch (Exception e) {
@@ -593,8 +593,7 @@ public class WMSCapsTransformer extends TransformerBase {
 
                         latlonBbox.expandToInclude(layerBbox);
 
-                        String layerSRS = ((!layer.getSrsName().equals("UNKNOWN"))
-                            ? layer.getSrsName() : layer.getNativeCRS());
+                        String layerSRS = layer.getSrsName();
 
                         if ("".equals(commonSRS)) {
                             commonSRS = layerSRS;
@@ -645,7 +644,7 @@ public class WMSCapsTransformer extends TransformerBase {
 
                                 if (!currentSRS.equals(commonSRS) && !SRSs.contains(currentSRS)) {
                                     SRSs.add(currentSRS);
-                                    element("SRS", EPSG + currentSRS);
+                                    element("SRS", currentSRS);
                                 }
                             }
                         }
@@ -826,8 +825,8 @@ public class WMSCapsTransformer extends TransformerBase {
             String desc = "WKT definition of this CRS:\n" + coverage.getSrsWKT();
             comment(desc);
 
-            String authority = ((!coverage.getSrsName().equals("UNKNOWN")) ? coverage.getSrsName()
-                                                                           : coverage.getNativeCRS());
+            String authority = coverage.getSrsName();
+
             /*CoordinateReferenceSystem crs = coverage.getCrs();
             if (crs != null && !crs.getIdentifiers().isEmpty()) {
                     Identifier[] idents = (Identifier[]) crs.getIdentifiers()

@@ -97,16 +97,18 @@ public final class CoveragesEditorAction extends ConfigAction {
         final String SUBMIT = HTMLEncoder.decode(messages.getMessage(locale, "label.submit"));
         final String ENVELOPE = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.calculateBoundingBox.label"));
+        final String LOOKUP_SRS = HTMLEncoder.decode(messages.getMessage(locale,
+                    "config.data.lookupSRS.label"));
 
         if (LOGGER.isLoggable(Level.FINER)) {
             LOGGER.finer(new StringBuffer("ENVELOPE: ").append(ENVELOPE).toString());
         }
 
-        if (action.equals(SUBMIT)) {
+        if (SUBMIT.equals(action)) {
             return executeSubmit(mapping, coverageForm, user, request);
         }
 
-        if ((newCoverage != null) && newCoverage.equals("true")) {
+        if ((newCoverage != null) && "true".equals(newCoverage)) {
             if (LOGGER.isLoggable(Level.FINER)) {
                 LOGGER.finer(new StringBuffer("NEW COVERAGE: ").append(newCoverage).toString());
             }
@@ -114,8 +116,12 @@ public final class CoveragesEditorAction extends ConfigAction {
             request.setAttribute(DataCoveragesNewAction.NEW_COVERAGE_KEY, "true");
         }
 
-        if (action.equals(ENVELOPE)) {
+        if (ENVELOPE.equals(action)) {
             return executeEnvelope(mapping, coverageForm, user, request);
+        }
+
+        if (LOOKUP_SRS.equals(action)) {
+            return executeLookupSRS(mapping, coverageForm, user, request);
         }
 
         // Update, Up, Down, Add, Remove need to resync
@@ -176,25 +182,40 @@ public final class CoveragesEditorAction extends ConfigAction {
             final GeneralEnvelope targetEnvelope = gEnvelope;
             GeneralEnvelope envelope = targetEnvelope;
 
-            if (!sourceCRS.getIdentifiers().isEmpty()) {
-                String identifier = CRS.lookupIdentifier(sourceCRS, Collections.singleton("EPSG"),
-                        false);
+            if (sourceCRS.getIdentifiers().isEmpty()) {
+                String nativeCRS = coverageForm.getSrsName();
 
-                if (!identifier.startsWith("EPSG:")) {
+                if (nativeCRS != null) {
+                    MathTransform transform;
+
+                    if (!nativeCRS.toUpperCase().startsWith("EPSG:")) {
+                        try {
+                            nativeCRS = "EPSG:" + Integer.decode(nativeCRS);
+                            transform = CRS.findMathTransform(sourceCRS, CRS.decode(nativeCRS), true);
+                            envelope = CRSUtilities.transform(transform, envelope);
+                            coverageForm.setSrsName(nativeCRS);
+                        } catch (NumberFormatException e) {
+                            coverageForm.setSrsName("UNKNOWN");
+                        }
+                    } else {
+                        transform = CRS.findMathTransform(sourceCRS, CRS.decode(nativeCRS), true);
+                        envelope = CRSUtilities.transform(transform, envelope);
+                    }
+                } else {
+                    coverageForm.setSrsName("UNKNOWN");
+                }
+            } else {
+                String identifier = sourceCRS.getIdentifiers().toArray()[0].toString();
+
+                /*
+                 * CRS.lookupIdentifier(sourceCRS, Collections
+                 * .singleton("EPSG"), false);
+                 */
+                if ((identifier != null) && !identifier.startsWith("EPSG:")) {
                     identifier = "EPSG:" + identifier;
                 }
 
                 coverageForm.setSrsName(identifier);
-            } else {
-                coverageForm.setSrsName("UNKNOWN");
-
-                String nativeCRS = coverageForm.getNativeCRS();
-
-                if ((nativeCRS != null) && nativeCRS.toUpperCase().startsWith("EPSG:")) {
-                    MathTransform transform = CRS.findMathTransform(sourceCRS,
-                            CRS.decode(nativeCRS), true);
-                    envelope = CRSUtilities.transform(transform, envelope);
-                }
             }
 
             coverageForm.setWKTString(sourceCRS.toWKT());
@@ -240,11 +261,10 @@ public final class CoveragesEditorAction extends ConfigAction {
         config.setCrs(CRS.parseWKT(form.getWKTString()));
         config.setSrsName(form.getSrsName());
         config.setSrsWKT(form.getWKTString());
-        config.setNativeCRS(form.getNativeCRS());
 
-        if (config.getSrsName().equals("UNKNOWN") && (config.getNativeCRS() != null)
-                && config.getNativeCRS().startsWith("EPSG:")) {
-            config.setCrs(CRS.decode(config.getNativeCRS()));
+        if (!"UNKNOWN".equals(config.getSrsName()) && (config.getSrsName() != null)
+                && config.getSrsName().toUpperCase().startsWith("EPSG:")) {
+            config.setCrs(CRS.decode(config.getSrsName()));
         }
 
         config.setEnvelope(getEnvelope(form, config.getCrs()));
@@ -337,7 +357,7 @@ public final class CoveragesEditorAction extends ConfigAction {
         final CoordinateSystem cs = crs.getCoordinateSystem();
         boolean lonFirst = true;
 
-        if (cs.getAxis(0).getDirection().absolute().equals(AxisDirection.NORTH)) {
+        if (AxisDirection.NORTH.equals(cs.getAxis(0).getDirection().absolute())) {
             lonFirst = false;
         }
 
@@ -382,6 +402,47 @@ public final class CoveragesEditorAction extends ConfigAction {
         envelope.setCoordinateReferenceSystem(crs);
 
         return envelope;
+    }
+
+    private ActionForward executeLookupSRS(ActionMapping mapping, CoveragesEditorForm coverageForm,
+        UserContainer user, HttpServletRequest request)
+        throws IOException, ServletException {
+        final String formatID = coverageForm.getFormatId();
+        final Data catalog = getData();
+        CoverageStoreInfo cvStoreInfo = catalog.getFormatInfo(formatID);
+
+        if (cvStoreInfo == null) {
+            cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(formatID).toDTO(),
+                    catalog);
+        }
+
+        final Format format = cvStoreInfo.getFormat();
+        AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cvStoreInfo.getReader();
+
+        if (reader == null) {
+            reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(GeoserverDataDirectory
+                    .findDataFile(cvStoreInfo.getUrl()));
+        }
+
+        try {
+            final CoordinateReferenceSystem sourceCRS = reader.getCrs();
+            final GeneralEnvelope gEnvelope = reader.getOriginalEnvelope();
+            final GeneralEnvelope targetEnvelope = gEnvelope;
+            GeneralEnvelope envelope = targetEnvelope;
+            String s = CRS.lookupIdentifier(sourceCRS, Collections.singleton("EPSG"), true);
+
+            if (s == null) {
+                coverageForm.setSrsName("UNKNOWN");
+            } else if (s.toUpperCase().startsWith("EPSG:")) {
+                coverageForm.setSrsName(s);
+            } else {
+                coverageForm.setSrsName("EPSG:" + s);
+            }
+        } catch (Exception e) {
+            coverageForm.setSrsName("UNKNOWN");
+        }
+
+        return mapping.findForward("config.data.coverage.editor");
     }
 
     private MetaDataLink metadataLink(CoveragesEditorForm coverageForm) {

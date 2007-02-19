@@ -71,6 +71,9 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
     /** used to create styles */
     private static StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
 
+    /** used to cache layer names and types **/
+    private volatile Map layerNames = new HashMap();
+
     /** holds the mappings between prefixes and NameSpaceInfo objects */
     private Map nameSpaces;
 
@@ -229,7 +232,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
 
     private final Map loadFormats(DataDTO dto) {
         if ((dto == null) || (dto.getFormats() == null)) {
-            throw new NullPointerException("Non null list of Formats required");
+            return Collections.EMPTY_MAP; // we *are* allowed no datasets
         }
 
         Map map = new HashMap();
@@ -284,7 +287,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
      */
     private final Map loadDataStores(DataDTO dto) {
         if ((dto == null) || (dto.getDataStores() == null)) {
-            throw new NullPointerException("Non null list of DataStores required");
+            return Collections.EMPTY_MAP; // we *are* allowed no datasets
         }
 
         Map map = new HashMap(dto.getDataStores().size());
@@ -337,7 +340,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
      */
     private final Map loadNamespaces(DataDTO dto) {
         if ((dto == null) || (dto.getNameSpaces() == null)) {
-            throw new NullPointerException("Non null list of NameSpaces required");
+            return Collections.EMPTY_MAP; // we *are* allowed no datasets
         }
 
         Map map = new HashMap(dto.getNameSpaces().size());
@@ -357,7 +360,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
 
     private final Map loadCoverages(DataDTO dto) {
         if ((dto == null) || (dto.getCoverages() == null)) {
-            throw new NullPointerException("Non null list of Coverages required");
+            return Collections.EMPTY_MAP; // we *are* allowed no datasets
         }
 
         Map map = new HashMap(dto.getCoverages().size());
@@ -376,6 +379,8 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
             }
 
             map.put(id, coverageInfo);
+            // set layer name, type raster (1)
+            layerNames.put(id, new Integer(1));
 
             if (dto.getFormats().get(coverageDTO.getFormatId()) != null) {
                 if (LOGGER.isLoggable(Level.FINE)) {
@@ -425,7 +430,8 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
 
         if ((dto == null) || (dto.getFeaturesTypes() == null)) {
             errors = null;
-            throw new NullPointerException("Non null list of FeatureTypes required");
+
+            return Collections.EMPTY_MAP; // we *are* allowed no datasets
         }
 
         Map map = new HashMap(dto.getFeaturesTypes().size());
@@ -717,6 +723,8 @@ SCHEMA:
                 }
 
                 map.put(key2, featureTypeInfo);
+                // set layer name, type vector (0)
+                layerNames.put(key2, new Integer(0));
 
                 if (LOGGER.isLoggable(Level.FINEST)) {
                     LOGGER.finest(new StringBuffer("FeatureTypeInfo '").append(key2)
@@ -767,7 +775,7 @@ SCHEMA:
         stFiles = new HashMap();
 
         if ((dto == null) || (dto.getStyles() == null)) {
-            throw new NullPointerException("List of styles is required");
+            return Collections.EMPTY_MAP; // we *are* allowed no datasets
         }
 
         for (Iterator i = dto.getStyles().values().iterator(); i.hasNext();) {
@@ -1846,5 +1854,9 @@ SCHEMA:
      */
     public File getBaseDir() {
         return baseDir;
+    }
+
+    public Map getLayerNames() {
+        return layerNames;
     }
 }
