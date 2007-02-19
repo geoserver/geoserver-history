@@ -58,12 +58,12 @@ public class ValidationRunnable implements Runnable {
                         LOGGER.finer("testSuites.size() = " + testSuites.size());
                         LOGGER.finer("plugins.size() = " + plugins.size());
                         LOGGER.finer("" + (TestSuiteDTO) testSuites.values().toArray()[0]);
-
+        
                         //DataConfig dataConfig = (DataConfig) getDataConfig();
                         Map dataStoreConfigs = dataConfig.getDataStores();
                         DefaultRepository dataRepository = new DefaultRepository();
                         Iterator it = dataStoreConfigs.keySet().iterator();
-
+        
                         // get all the data stores and build up our dataRepository
                         while (it.hasNext())
                         {
@@ -78,7 +78,7 @@ public class ValidationRunnable implements Runnable {
                                         e.printStackTrace();
                                 }
                         }
-
+        
                         validator = new Validator(dataRepository, gv);
                         */
     }

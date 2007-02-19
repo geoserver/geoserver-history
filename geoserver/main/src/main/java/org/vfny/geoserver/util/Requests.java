@@ -47,7 +47,7 @@ public final class Requests {
      * @param request HttpServletRequest used to aquire servlet context
      *
      * @return GeoServer instance for the current Web Application
-
+    
     /*
      * This is the parameter used to get the proxy from the
      * web.xml file.  This is a bit hacky, it should be moved to
@@ -114,14 +114,14 @@ public final class Requests {
 
     /**
      * Get base url used - it is not any more assumed to be
-     * http://server:port/geoserver/
+     * http://server:port/geoserver
      *
      * Removed the hardcoded "http://" and replaced it with
      * httpServletRequest.getScheme() because the https case was not being
      * handled.
      *
      * @param httpServletRequest
-     * @return http://server:port/path-defined-context/
+     * @return http://server:port/path-defined-context
      */
     public static String getBaseUrl(HttpServletRequest httpServletRequest, GeoServer geoserver) {
         // try with the web interface configuration, if it fails, look into
