@@ -32,7 +32,7 @@ import java.io.IOException;
  * </p>
  *
  * @author Gabriel Rold�n
- * @version $Id: GeoServerFeatureLocking.java,v 1.5 2004/02/09 23:29:42 dmzwiers Exp $
+ * @version $Id$
  */
 public class GeoServerFeatureLocking extends GeoServerFeatureStore implements FeatureLocking {
     /**

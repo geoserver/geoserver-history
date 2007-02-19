@@ -32,7 +32,7 @@ import java.util.Map;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: CloneLibrary.java,v 1.5 2004/02/09 23:29:48 dmzwiers Exp $
+ * @version $Id$
  */
 public final class CloneLibrary {
     /**

@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Rold?n
- * @version $Id: XmlRequestReader.java,v 1.7 2004/02/13 01:07:09 dmzwiers Exp $
+ * @version $Id$
  */
 public abstract class XmlRequestReader {
     /** Class logger */

@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author Chris Holmes, TOPP
- * @version $Id: DispatcherHandler.java,v 1.5 2004/07/15 21:13:12 jmacgill Exp $
+ * @version $Id$
  */
 public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */

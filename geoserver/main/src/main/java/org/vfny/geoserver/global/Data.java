@@ -60,7 +60,7 @@ import javax.xml.namespace.QName;
  *         modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
- * @version $Id: Data.java,v 1.45 2004/09/13 16:05:10 cholmesny Exp $
+ * @version $Id$
  */
 public class Data extends GlobalLayerSupertype /* implements Repository */ {
     public static final String WEB_CONTAINER_KEY = "DATA";

@@ -14,7 +14,7 @@ import junit.framework.TestCase;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ServiceDTOTest.java,v 1.5 2004/03/03 09:39:08 jive Exp $
+ * @version $Id$
  */
 public class ServiceDTOTest extends TestCase {
     ServiceDTO dto;

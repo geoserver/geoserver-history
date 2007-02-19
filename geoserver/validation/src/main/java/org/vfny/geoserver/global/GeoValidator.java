@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: GeoValidator.java,v 1.4 2004/04/21 07:42:35 jive Exp $
+ * @version $Id$
  */
 public class GeoValidator extends ValidationProcessor {
     public static final String WEB_CONTAINER_KEY = "GeoValidator";

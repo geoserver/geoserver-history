@@ -47,7 +47,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: CalculateBoundingBoxAction.java,v 1.3 2004/03/09 01:37:40 dmzwiers Exp $
+ * @version $Id$
  */
 public final class CalculateBoundingBoxAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,

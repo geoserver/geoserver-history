@@ -30,7 +30,7 @@ import javax.xml.transform.TransformerException;
  * </p>
  *
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id: WMSCapabilitiesResponse.java,v 1.9 2004/09/05 17:19:05 cholmesny Exp $
+ * @version $Id$
  */
 public class WMSCapabilitiesResponse implements Response {
     /** package's logger */

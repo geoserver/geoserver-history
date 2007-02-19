@@ -27,7 +27,7 @@ import java.util.Map;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: EqualsLibrary.java,v 1.4 2004/01/31 00:27:26 jive Exp $
+ * @version $Id$
  */
 public final class EqualsLibrary {
     /**

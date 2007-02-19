@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author Gabriel Rold?n
  * @author Chris Holmes
- * @version $Id: Service.java,v 1.7 2004/02/09 23:29:42 dmzwiers Exp $
+ * @version $Id$
  *
  * @see WMS
  * @see WFS

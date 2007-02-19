@@ -25,7 +25,7 @@ import javax.xml.namespace.QName;
  * @author Chris Holmes, TOPP
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
- * @version $Id: DescribeResponse.java,v 1.22 2004/04/16 07:06:10 jive Exp $
+ * @version $Id$
  */
 public class DescribeFeatureType {
     /**

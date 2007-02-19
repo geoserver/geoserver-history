@@ -18,7 +18,7 @@ import java.util.Set;
  * enables new format producers to be plugged in.
  *
  * @author Pierre-Emmanuel Balageas, ALCER (http://www.alcer.com)
- * @version $Id: hacking.xml 2976 2004-10-13 23:25:25Z cholmes $
+ * @version $Id$
  */
 public class PDFMapProducerFactory implements GetMapProducerFactorySpi {
     /** the only MIME type this map producer supports */

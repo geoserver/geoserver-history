@@ -27,7 +27,7 @@ import java.util.Map;
  * </p>
  *
  * @author Gabriel Rold???n
- * @version $Id: WMS.java,v 1.7 2004/02/24 02:08:50 cholmesny Exp $
+ * @version $Id$
  */
 public class WMS extends Service {
     /** WMS version spec implemented */

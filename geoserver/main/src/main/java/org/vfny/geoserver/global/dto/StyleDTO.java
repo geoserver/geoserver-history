@@ -28,7 +28,7 @@ import java.io.File;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: StyleDTO.java,v 1.5 2004/05/22 05:07:59 cholmesny Exp $
+ * @version $Id$
  */
 public final class StyleDTO implements DataTransferObject {
     /** The syle id. */

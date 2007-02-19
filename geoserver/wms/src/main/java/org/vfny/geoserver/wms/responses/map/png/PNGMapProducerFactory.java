@@ -17,7 +17,7 @@ import java.util.Set;
  *
  * @author Didier Richard, IGN-F
  * @author Simone Giannecchini
- * @version $Id: PNGMapProducerFactory.java 4316 2006-03-17 13:11:24Z simboss $
+ * @version $Id$
  */
 public final class PNGMapProducerFactory implements GetMapProducerFactorySpi {
     /** the only MIME type this map producer supports */

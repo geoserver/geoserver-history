@@ -79,7 +79,7 @@ import java.util.List;
  *
  * @author Gabriel Roldan, Axios Engineering
  * @author Chris Holmes
- * @version $Id: GetFeatureInfoDelegate.java,v 1.1 2004/07/15 21:13:14 jmacgill Exp $
+ * @version $Id$
  */
 public abstract class GetFeatureInfoDelegate implements Response {
     /** DOCUMENT ME!  */

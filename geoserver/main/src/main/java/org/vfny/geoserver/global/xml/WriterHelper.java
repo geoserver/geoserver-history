@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WriterHelper.java,v 1.9 2004/02/09 23:29:49 dmzwiers Exp $
+ * @version $Id$
  */
 public class WriterHelper {
     /** Used internally to create log information to detect errors. */

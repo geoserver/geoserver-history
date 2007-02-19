@@ -23,7 +23,7 @@ import java.util.Map;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSConfig.java,v 1.8 2004/04/01 23:24:17 emperorkefka Exp $
+ * @version $Id$
  */
 public class WMSConfig extends ServiceConfig {
     private static final String WMS_VERSION = "1.1.1";

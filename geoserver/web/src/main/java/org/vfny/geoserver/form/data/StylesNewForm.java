@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: StylesNewForm.java,v 1.1 2004/02/28 07:45:00 jive Exp $
+ * @version $Id$
  */
 public class StylesNewForm extends ActionForm {
     /** StyleID entered by user */

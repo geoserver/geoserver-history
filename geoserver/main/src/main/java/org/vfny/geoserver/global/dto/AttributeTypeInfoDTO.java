@@ -44,7 +44,7 @@ import java.util.logging.Logger;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: AttributeTypeInfoDTO.java,v 1.15 2004/04/07 18:50:44 jive Exp $
+ * @version $Id$
  */
 public class AttributeTypeInfoDTO implements DataTransferObject {
     /** For debugging */

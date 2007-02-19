@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author User, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ValidationTestSuiteNewAction.java,v 1.3 2004/02/07 01:29:55 jive Exp $
+ * @version $Id$
  */
 public class ValidationTestSuiteNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,

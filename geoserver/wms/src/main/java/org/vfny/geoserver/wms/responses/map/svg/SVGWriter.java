@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Gabriel Rold?n
- * @version $Id: SVGWriter.java,v 1.5 2004/09/05 17:16:53 cholmesny Exp $
+ * @version $Id$
  */
 public class SVGWriter extends OutputStreamWriter {
     private static final Logger LOGGER = Logger.getLogger(SVGWriter.class.getPackage().getName());

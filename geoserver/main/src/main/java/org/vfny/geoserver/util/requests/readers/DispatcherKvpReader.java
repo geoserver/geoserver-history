@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Rold?n
- * @version $Id: DispatcherKvpReader.java,v 1.11 2004/08/02 17:38:04 cholmesny Exp $
+ * @version $Id$
  */
 public class DispatcherKvpReader {
     /** Class logger */

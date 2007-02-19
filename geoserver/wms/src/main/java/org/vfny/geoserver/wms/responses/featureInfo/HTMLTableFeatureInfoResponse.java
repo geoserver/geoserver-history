@@ -33,7 +33,7 @@ import java.util.HashMap;
  * </p>
  *
  * @author James Macgill, PSU
- * @version $Id: HTMLTableFeatureInfoResponse.java,v 1.1 2004/07/19 22:32:22 jmacgill Exp $
+ * @version $Id$
  */
 public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
     /**

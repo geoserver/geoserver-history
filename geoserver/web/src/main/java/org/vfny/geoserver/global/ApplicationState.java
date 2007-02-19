@@ -37,7 +37,7 @@ import javax.servlet.ServletException;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ApplicationState.java,v 1.15 2004/04/03 13:13:03 cholmesny Exp $
+ * @version $Id$
  */
 public class ApplicationState implements PlugIn, InitializingBean {
     /** The key used to store this value in the Web Container */

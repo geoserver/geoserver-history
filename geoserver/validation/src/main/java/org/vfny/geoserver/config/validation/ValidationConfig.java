@@ -23,7 +23,7 @@ import java.util.Set;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationConfig.java,v 1.5 2004/03/09 02:12:25 dmzwiers Exp $
+ * @version $Id$
  */
 public class ValidationConfig {
     public static final String CONFIG_KEY = "Validation.Config";

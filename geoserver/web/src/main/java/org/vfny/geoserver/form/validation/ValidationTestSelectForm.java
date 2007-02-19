@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ValidationTestSelectForm.java,v 1.1 2004/01/31 00:27:28 jive Exp $
+ * @version $Id$
  */
 public class ValidationTestSelectForm extends ActionForm {
     private String selectedTest;

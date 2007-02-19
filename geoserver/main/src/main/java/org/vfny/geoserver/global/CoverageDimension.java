@@ -12,7 +12,7 @@ import org.geotools.util.NumberRange;
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
- * @version $Id: CoverageDimension.java,v 0.1 Feb 16, 2005 1:32:39 PM $
+ * @version $Id$
  */
 public class CoverageDimension extends GlobalLayerSupertype {
     /**

@@ -13,7 +13,7 @@ import org.vfny.geoserver.servlets.AbstractService;
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
- * @version $Id: CapabilitiesRequest.java,v 1.4 2004/01/31 00:27:25 jive Exp $
+ * @version $Id$
  */
 public class CapabilitiesRequest extends Request {
     /**

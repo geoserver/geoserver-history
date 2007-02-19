@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
  * request
  *
  * @author Gabriel Rold?n
- * @version $Id: GetMap.java,v 1.7 2004/03/30 11:12:40 cholmesny Exp $
+ * @version $Id$
  */
 public class GetMap extends WMService {
     /**

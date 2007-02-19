@@ -29,7 +29,7 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceInfoDTO.java,v 1.5 2004/04/16 16:16:37 cholmesny Exp $
+ * @version $Id$
  */
 public final class NameSpaceInfoDTO implements DataTransferObject {
     //public static final String PREFIX_DELIMITER = ":";

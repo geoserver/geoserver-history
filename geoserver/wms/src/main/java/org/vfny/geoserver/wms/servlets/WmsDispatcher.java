@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
  * most requests for this will likely come with get.
  *
  * @author Chris Holmes, TOPP
- * @version $Id: WmsDispatcher.java,v 1.8 2004/09/08 17:35:15 cholmesny Exp $
+ * @version $Id$
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded

@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
  * request
  *
  * @author Gabriel Rold?n
- * @version $Id: GetFeatureInfo.java,v 1.1 2004/07/15 21:13:13 jmacgill Exp $
+ * @version $Id$
  */
 public class GetFeatureInfo extends WMService {
     /**

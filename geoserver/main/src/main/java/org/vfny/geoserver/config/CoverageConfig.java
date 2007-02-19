@@ -45,7 +45,7 @@ import javax.units.Unit;
  *         modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
- * @version $Id: FeatureTypeConfig.java,v 1.20 2004/03/09 10:59:56 jive Exp $
+ * @version $Id$
  */
 public class CoverageConfig {
     /**

@@ -54,7 +54,7 @@ import java.util.logging.Logger;
  * use a delegate object based on the output format requested
  *
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id: GetMapResponse.java,v 1.11 2004/03/14 23:29:30 groldan Exp $
+ * @version $Id$
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */

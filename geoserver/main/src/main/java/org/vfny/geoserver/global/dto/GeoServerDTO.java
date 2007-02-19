@@ -20,7 +20,7 @@ import javax.servlet.ServletContext;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: GeoServerDTO.java,v 1.12 2004/09/09 16:51:58 cholmesny Exp $
+ * @version $Id$
  */
 public final class GeoServerDTO implements DataTransferObject {
     public static class Defaults {

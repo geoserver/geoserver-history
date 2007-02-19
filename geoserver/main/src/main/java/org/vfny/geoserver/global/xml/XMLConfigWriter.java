@@ -54,7 +54,7 @@ import javax.xml.transform.TransformerException;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.32 2004/09/20 20:43:37 cholmesny Exp $
+ * @version $Id$
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
@@ -1580,7 +1580,7 @@ public class XMLConfigWriter {
      * <p></p>
      *
      * @author dzwiers, Refractions Research, Inc.
-     * @version $Id: XMLConfigWriter.java,v 1.32 2004/09/20 20:43:37 cholmesny Exp $
+     * @version $Id$
      */
     public static class WriterUtils {
         /** Used internally to create log information to detect errors. */

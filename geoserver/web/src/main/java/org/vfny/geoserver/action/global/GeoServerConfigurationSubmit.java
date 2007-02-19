@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author User, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
- * @version $Id: GeoServerConfigurationSubmit.java,v 1.8 2004/09/09 17:07:44 cholmesny Exp $
+ * @version $Id$
  */
 public class GeoServerConfigurationSubmit extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,

@@ -24,7 +24,7 @@ import javax.xml.parsers.SAXParserFactory;
  * reads a WMS GetCapabilities request from an XML stream
  *
  * @author Gabriel Rold?n
- * @version $Id: CapabilitiesXmlReader.java,v 1.8 2004/02/13 19:30:39 dmzwiers Exp $
+ * @version $Id$
  *
  * @task TODO: see if it must be refactored to read WMS GetCapabilities too
  */

@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Gabriel Rold?n
- * @version $Id: EncodeSVG.java,v 1.4 2004/04/16 06:28:56 jive Exp $
+ * @version $Id$
  */
 public class EncodeSVG {
     /** DOCUMENT ME! */

@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  *
  * @author Gabriel Rold�n
  * @author dzwiers
- * @version $Id: GlobalLayerSupertype.java,v 1.3 2004/01/31 00:27:23 jive Exp $
+ * @version $Id$
  */
 abstract class GlobalLayerSupertype {
     /** for debugging */

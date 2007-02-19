@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
- * @version $Id: DataFeatureTypesNewAction.java,v 1.15 2004/09/17 16:34:47 cholmesny Exp $
+ * @version $Id$
  */
 public class DataFeatureTypesNewAction extends ConfigAction {
     public final static String NEW_FEATURE_TYPE_KEY = "newFeatureType";

@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
- * @version $Id: CapabilitiesKvpReader.java,v 0.1 Feb 15, 2005 12:34:52 PM $
+ * @version $Id$
  */
 public class CapabilitiesKvpReader extends KvpRequestReader {
     /**

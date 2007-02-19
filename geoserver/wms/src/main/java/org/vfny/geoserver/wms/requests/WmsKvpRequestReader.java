@@ -18,7 +18,7 @@ import java.util.Map;
  * "WMTVER" parameter, wich is deprecated but it is recomended to recognize it
  *
  * @author Gabriel Rold?n
- * @version $Id: WmsKvpRequestReader.java,v 1.6 2004/02/09 23:29:47 dmzwiers Exp $
+ * @version $Id$
  */
 public abstract class WmsKvpRequestReader extends KvpRequestReader {
     /**

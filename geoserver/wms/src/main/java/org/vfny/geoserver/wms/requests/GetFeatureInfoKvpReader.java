@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  * </p>
  *
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id: GetFeatureInfoKvpReader.java,v 1.2 2004/07/16 19:28:52 jmacgill Exp $
+ * @version $Id$
  */
 public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
     /** DOCUMENT ME! */

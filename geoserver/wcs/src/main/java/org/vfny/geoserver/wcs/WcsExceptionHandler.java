@@ -14,7 +14,7 @@ import org.vfny.geoserver.ServiceException;
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
- * @version $Id: WcsExceptionHandler.java,v 0.1 Feb 15, 2005 11:14:22 AM $
+ * @version $Id$
  */
 public class WcsExceptionHandler implements ExceptionHandler {
     /** DOCUMENT ME! */

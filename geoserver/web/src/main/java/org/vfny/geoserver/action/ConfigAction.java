@@ -76,7 +76,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author jive
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
- * @version $Id: ConfigAction.java,v 1.11 2004/03/02 02:36:00 jive Exp $
+ * @version $Id$
  */
 public class ConfigAction extends GeoServerAction {
     /**

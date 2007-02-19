@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  * </p>
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: LogoutAction.java,v 1.4 2004/02/09 23:29:40 dmzwiers Exp $
+ * @version $Id$
  */
 public class LogoutAction extends GeoServerAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,

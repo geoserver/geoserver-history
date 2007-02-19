@@ -39,7 +39,7 @@ import java.util.Iterator;
  * @author Chris Holmes
  * @author Justin Deoliveira
  *
- * @version $Id: WFS.java,v 1.8 2004/09/09 16:54:19 cholmesny Exp $
+ * @version $Id$
  */
 public class WFS extends org.vfny.geoserver.global.Service {
     /** web container key */

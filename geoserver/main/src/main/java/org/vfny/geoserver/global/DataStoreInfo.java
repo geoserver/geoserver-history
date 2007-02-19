@@ -27,7 +27,7 @@ import java.util.NoSuchElementException;
  * @author Gabriel Rold?n
  * @author dzwiers
  * @author Justin Deoliveira
- * @version $Id: DataStoreInfo.java,v 1.14 2004/06/26 19:51:24 jive Exp $
+ * @version $Id$
  */
 public class DataStoreInfo extends GlobalLayerSupertype {
     /** DataStoreInfo we are representing */

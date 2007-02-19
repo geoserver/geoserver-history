@@ -50,7 +50,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
- * @version $Id: WcsDispatcher.java,v 0.1 2005/02/15 10:55:15 $
+ * @version $Id$
  */
 public class WcsDispatcher extends Dispatcher {
     /**

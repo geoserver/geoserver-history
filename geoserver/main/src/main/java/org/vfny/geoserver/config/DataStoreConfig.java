@@ -25,7 +25,7 @@ import javax.servlet.ServletContext;
  * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreConfig.java,v 1.11 2004/04/30 02:49:24 sploreg Exp $
+ * @version $Id$
  */
 public class DataStoreConfig {
     /** unique datasore identifier */

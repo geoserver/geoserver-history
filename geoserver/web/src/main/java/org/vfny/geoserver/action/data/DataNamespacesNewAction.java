@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataNamespacesNewAction.java,v 1.3 2004/02/26 00:17:29 dmzwiers Exp $
+ * @version $Id$
  */
 public class DataNamespacesNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,

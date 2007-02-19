@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: TestValidationResults.java,v 1.6 2004/04/21 08:16:22 jive Exp $
+ * @version $Id$
  */
 public class TestValidationResults implements ValidationResults {
     public static final String CURRENTLY_SELECTED_KEY = "TestValidationResults";

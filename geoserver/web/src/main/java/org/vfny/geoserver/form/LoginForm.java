@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: LoginForm.java,v 1.2 2004/02/09 23:30:06 dmzwiers Exp $
+ * @version $Id$
  */
 public class LoginForm extends ActionForm {
     /**
