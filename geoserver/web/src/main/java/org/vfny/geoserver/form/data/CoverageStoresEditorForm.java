@@ -12,7 +12,7 @@ import org.apache.struts.config.ControllerConfig;
 import org.apache.struts.upload.CommonsMultipartRequestHandler;
 import org.apache.struts.upload.FormFile;
 import org.apache.struts.upload.MultipartRequestHandler;
-import org.geotools.data.coverage.grid.AbstractGridFormat;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.opengis.coverage.grid.Format;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;

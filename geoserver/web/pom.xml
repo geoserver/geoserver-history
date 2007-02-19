@@ -145,6 +145,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
+			<artifactId>gt2-coverage</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
 			<artifactId>gt2-shapefile</artifactId>
 		</dependency>
 		<dependency>
