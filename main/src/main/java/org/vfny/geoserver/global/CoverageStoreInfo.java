@@ -14,7 +14,6 @@ import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
 import org.vfny.geoserver.util.CoverageStoreUtils;
 import java.io.File;
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -48,8 +47,8 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
      *
      */
     private String id;
-    private WeakReference reader = null;
-    private WeakReference hintReader = null;
+    private SoftReference reader = null;
+    private SoftReference hintReader = null;
 
     /**
      *
@@ -350,7 +349,7 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
     }
 
     public synchronized GridCoverageReader getReader() {
-        if (reader != null && reader.get() != null) {
+        if ((reader != null) && (reader.get() != null)) {
             return (GridCoverageReader) reader.get();
         }
 
@@ -374,7 +373,7 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
             final File obj = GeoserverDataDirectory.findDataFile(gcInfo.getUrl());
 
             // XXX CACHING READERS HERE
-            reader = new WeakReference(((AbstractGridFormat) gcInfo.getFormat()).getReader(obj));
+            reader = new SoftReference(((AbstractGridFormat) gcInfo.getFormat()).getReader(obj));
 
             return (GridCoverageReader) reader.get();
         } catch (InvalidParameterValueException e) {
@@ -391,9 +390,9 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
     }
 
     public synchronized GridCoverageReader createReader(Hints hints) {
-        if (hintReader != null && hintReader.get() != null) {
+        if ((hintReader != null) && (hintReader.get() != null)) {
             return (GridCoverageReader) hintReader.get();
-        } else if ((hints == null) && (reader != null && reader.get() != null)) {
+        } else if ((hints == null) && ((reader != null) && (reader.get() != null))) {
             return (GridCoverageReader) reader.get();
         }
 
@@ -417,7 +416,7 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
             final File obj = GeoserverDataDirectory.findDataFile(gcInfo.getUrl());
 
             // XXX CACHING READERS HERE
-            hintReader = new WeakReference(((AbstractGridFormat) gcInfo.getFormat()).getReader(
+            hintReader = new SoftReference(((AbstractGridFormat) gcInfo.getFormat()).getReader(
                         obj, hints));
 
             return (GridCoverageReader) hintReader.get();
