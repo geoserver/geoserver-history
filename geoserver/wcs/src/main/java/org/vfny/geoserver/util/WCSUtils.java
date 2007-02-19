@@ -304,7 +304,7 @@ public class WCSUtils {
      */
     public static GridCoverage2D crop(final Coverage coverage,
         final GeneralEnvelope sourceEnvelope, final CoordinateReferenceSystem sourceCRS,
-        final GeneralEnvelope destinationEnvelopeInSourceCRS)
+        final GeneralEnvelope destinationEnvelopeInSourceCRS, final Boolean conserveEnvelope)
         throws WcsException {
         // ///////////////////////////////////////////////////////////////////
         //
@@ -333,6 +333,7 @@ public class WCSUtils {
             final ParameterValueGroup param = (ParameterValueGroup) cropParams.clone();
             param.parameter("Source").setValue(coverage);
             param.parameter("Envelope").setValue(intersectionEnvelope);
+            param.parameter("ConserveEnvelope").setValue(conserveEnvelope);
 
             croppedGridCoverage = (GridCoverage2D) cropFactory.doOperation(param, hints);
         } else {

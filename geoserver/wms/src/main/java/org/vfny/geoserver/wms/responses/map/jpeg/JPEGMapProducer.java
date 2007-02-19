@@ -59,10 +59,7 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
             LOGGER.fine("About to write a JPEG image.");
         }
 
-        /*
         new ImageWorker(image).writeJPEG(outStream, "JPEG", 0.75f, JPEGNativeAcc.booleanValue());
-        */
-        ImageIO.write(image, "JPG", outStream);
 
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Writing a JPEG done!!!");

@@ -5,8 +5,13 @@
 package org.vfny.geoserver.wcs.responses.coverage;
 
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.coverage.grid.io.imageio.GeoToolsWriteParams;
 import org.geotools.gce.geotiff.GeoTiffFormat;
+import org.geotools.gce.geotiff.GeoTiffWriteParams;
 import org.opengis.coverage.grid.GridCoverageWriter;
+import org.opengis.parameter.GeneralParameterValue;
+import org.opengis.parameter.ParameterValueGroup;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
@@ -75,26 +80,21 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
         }
 
         final GeoTiffFormat format = new GeoTiffFormat();
+        final GeoTiffWriteParams wp = new GeoTiffWriteParams();
+        wp.setCompressionMode(GeoTiffWriteParams.MODE_EXPLICIT);
+        wp.setCompressionType("LZW");
+        wp.setCompressionQuality(0.75F);
+        wp.setTilingMode(GeoToolsWriteParams.MODE_EXPLICIT);
+        wp.setTiling(256, 256);
 
-        /*
-         * final GeoTiffWriteParams wp = new GeoTiffWriteParams();
-         * wp.setCompressionMode(GeoTiffWriteParams.MODE_EXPLICIT);
-         * wp.setCompressionType("LZW"); wp.setCompressionQuality(0.75F);
-         * wp.setTilingMode(GeoToolsWriteParams.MODE_EXPLICIT);
-         * wp.setTiling(256, 256);
-         */
+        final ParameterValueGroup writerParams = format.getWriteParameters();
+        writerParams.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString())
+                    .setValue(wp);
 
-        /*
-         * final ParameterValueGroup writerParams = format.getWriteParameters();
-         * writerParams.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString())
-         * .setValue(wp);
-         */
         GridCoverageWriter writer = format.getWriter(output);
-        writer.write(sourceCoverage, null);
-        /*
-         * (GeneralParameterValue[]) writerParams.values().toArray(new
-         * GeneralParameterValue[1]));
-         */
+        writer.write(sourceCoverage,
+            (GeneralParameterValue[]) writerParams.values().toArray(new GeneralParameterValue[1]));
+
         writer.dispose();
 
         this.sourceCoverage.dispose();

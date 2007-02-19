@@ -224,7 +224,6 @@ public final class CoveragesEditorForm extends ActionForm {
         // //
         srsName = cvConfig.getSrsName();
         WKTString = cvConfig.getSrsWKT();
-        nativeCRS = cvConfig.getNativeCRS();
 
         // //
         //
@@ -369,7 +368,7 @@ public final class CoveragesEditorForm extends ActionForm {
             styles.add(sc.getId());
 
             if (sc.isDefault()) {
-                if ((styleId == null) || styleId.equals("")) {
+                if ((styleId == null) || "".equals(styleId)) {
                     styleId.equals(sc.getId());
                 }
             }
@@ -416,11 +415,13 @@ public final class CoveragesEditorForm extends ActionForm {
         MessageResources messages = (MessageResources) request.getAttribute(Globals.MESSAGES_KEY);
         final String ENVELOPE = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.calculateBoundingBox.label"));
+        final String LOOKUP_SRS = HTMLEncoder.decode(messages.getMessage(locale,
+                    "config.data.lookupSRS.label"));
 
         // Pass Attribute Management Actions through without
         // much validation.
         if (action.startsWith("Up") || action.startsWith("Down") || action.startsWith("Remove")
-                || action.equals(ENVELOPE)) {
+                || ENVELOPE.equals(action)) {
             return errors;
         }
 
@@ -436,7 +437,7 @@ public final class CoveragesEditorForm extends ActionForm {
         //
         //
         // //
-        if ("".equals(nativeCRS) && "UNKNOWN".equals(srsName)) {
+        if ("UNKNOWN".equals(srsName) && !LOOKUP_SRS.equals(action)) {
             errors.add("envelope", new ActionError("error.coverage.nativeCRS.required"));
         }
 
@@ -1008,14 +1009,6 @@ public final class CoveragesEditorForm extends ActionForm {
      */
     public String getParamHelp(int index) {
         return (String) paramHelp.get(index).toString();
-    }
-
-    public String getNativeCRS() {
-        return nativeCRS;
-    }
-
-    public void setNativeCRS(String nativeCRS) {
-        this.nativeCRS = nativeCRS;
     }
 
     public String[] getOtherSelectedStyles() {

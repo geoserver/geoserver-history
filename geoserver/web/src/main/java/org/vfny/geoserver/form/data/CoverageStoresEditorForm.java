@@ -166,7 +166,7 @@ public final class CoverageStoresEditorForm extends ActionForm {
         enabled = dfConfig.isEnabled();
         namespaceId = dfConfig.getNameSpaceId();
 
-        if (namespaceId.equals("") && (config.getDefaultNameSpace() != null)) {
+        if ("".equals(namespaceId) && (config.getDefaultNameSpace() != null)) {
             namespaceId = config.getDefaultNameSpace().getPrefix();
         }
 

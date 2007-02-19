@@ -1302,13 +1302,17 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         throws WmsException {
         Data catalog = request.getWMS().getData();
         FeatureTypeInfo ftype = null;
+        Integer layerType = (Integer) catalog.getLayerNames().get(layerName);
+        layerType = (layerType != null) ? layerType
+                                        : (Integer) catalog.getLayerNames()
+                                                           .get(layerName.substring(layerName
+                    .indexOf(":") + 1, layerName.length()));
 
-        try {
+        if ((layerType == null) || (layerType.intValue() != MapLayerInfo.TYPE_VECTOR)) {
+            throw new WmsException(new StringBuffer(layerName).append(
+                    ": no such layer on this server").toString(), "LayerNotDefined");
+        } else {
             ftype = catalog.getFeatureTypeInfo(layerName);
-        } catch (NoSuchElementException ex) {
-            throw new WmsException(ex,
-                new StringBuffer(layerName).append(": no such layer on this server").toString(),
-                "LayerNotDefined", "LayerNotDefined");
         }
 
         return ftype;
@@ -1318,13 +1322,17 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         throws WmsException {
         Data catalog = request.getWMS().getData();
         CoverageInfo cv = null;
+        Integer layerType = (Integer) catalog.getLayerNames().get(layerName);
+        layerType = (layerType != null) ? layerType
+                                        : (Integer) catalog.getLayerNames()
+                                                           .get(layerName.substring(layerName
+                    .indexOf(":") + 1, layerName.length()));
 
-        try {
+        if ((layerType == null) || (layerType.intValue() != MapLayerInfo.TYPE_RASTER)) {
+            throw new WmsException(new StringBuffer(layerName).append(
+                    ": no such layer on this server").toString(), "LayerNotDefined");
+        } else {
             cv = catalog.getCoverageInfo(layerName);
-        } catch (NoSuchElementException ex) {
-            throw new WmsException(ex,
-                new StringBuffer(layerName).append(": no such layer on this server").toString(),
-                "LayerNotDefined", "LayerNotDefined");
         }
 
         return cv;

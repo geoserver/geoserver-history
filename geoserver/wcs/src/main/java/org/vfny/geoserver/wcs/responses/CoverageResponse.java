@@ -434,14 +434,20 @@ public class CoverageResponse implements Response {
          * Crop
          */
         final GridCoverage2D croppedGridCoverage = WCSUtils.crop(bandSelectedCoverage,
-                (GeneralEnvelope) coverage.getEnvelope(), cvCRS, destinationEnvelopeInSourceCRS);
+                (GeneralEnvelope) coverage.getEnvelope(), cvCRS, destinationEnvelopeInSourceCRS,
+                Boolean.TRUE);
 
         /**
-         * Scale
+         * Scale/Resampling (if necessary)
          */
+        GridCoverage2D subCoverage = croppedGridCoverage;
         final GeneralGridRange newGridrange = new GeneralGridRange(destinationSize);
-        GridCoverage2D subCoverage = WCSUtils.scale(croppedGridCoverage, newGridrange,
-                croppedGridCoverage, cvCRS, destinationEnvelopeInSourceCRS);
+
+        /*if (!newGridrange.equals(croppedGridCoverage.getGridGeometry()
+                        .getGridRange())) {*/
+        subCoverage = WCSUtils.scale(croppedGridCoverage, newGridrange, croppedGridCoverage, cvCRS,
+                destinationEnvelopeInSourceCRS);
+        //}
 
         /**
          * Reproject

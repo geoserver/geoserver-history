@@ -312,20 +312,45 @@ function generateColorPicker(colorFieldName, fieldValue)
         </span>
       </td>
 	  <td class="datum">
-	  <logic:equal name="coveragesEditorForm" property="srsName" value="UNKNOWN">
-		<html:text property="srsName" size="60" readonly="true"/>
-	  </logic:equal>
-	  <logic:notEqual name="coveragesEditorForm" property="srsName" value="UNKNOWN">
-		<html:text property="srsName" size="60"/>
-	  </logic:notEqual>
-	</td></tr>
+	  	<table>
+	  	<tr>
+			<td>
+			<html:text property="srsName" size="32"/>
+			</td>
+			<td>
+	        <html:submit property="action">
+	          <bean:message key="config.data.lookupSRS.label"/>
+	        </html:submit>
+	        </td>
+			<td>
+			    <a href="<bean:message key="label.SRSHelp.URL"/>">
+	              <bean:message key="label.SRSHelp"/>
+	            </a>
+	        </td>
+	        <td>
+	        &nbsp;-&nbsp;
+	        <a href="../../../srsHelp.do">
+	              <bean:message key="label.SRSList"/>
+	            </a>
+	        </td>
+        </tr>
+        </table>
+	  </td>
+	</tr>
+	<tr>
+	  <td>
+	  </td>
+	  <td class="greyedOut2">
+      	* <bean:message key="help.coverage.nativeCRS"/>
+      </td>
+	</tr>
 	<!------------------------->
 	<!------ This puts in the SRS WKT definition --->
 	
 	<tr>
 	<td class="label">
 		<span class="help" title="<bean:message key="help.type.srswkt"/>">
-          <bean:message key="label.type.srswkt"/>:
+          <bean:message key="label.type.crswkt"/>:
         </span>
 	  </td>
 	  <td class="greyedOut2">
@@ -336,29 +361,7 @@ function generateColorPicker(colorFieldName, fieldValue)
 	
 	
 	<!-------------------------->
-
-  <!------ NATIVE CRS TextBox--->
-  <logic:equal name="coveragesEditorForm" property="srsName" value="UNKNOWN">
-	<tr>
-      <td class="label">
-		<span class="help" title="<bean:message key="help.coverage.nativeCRS"/>">
-          <bean:message key="label.nativeCRS"/>:
-        </span>
-      </td>
-	  <td class="datum">
-		<html:text property="nativeCRS" size="60"/>
-	  </td>
-	</tr>
-	<tr>
-	  <td>
-	  </td>
-	  <td class="greyedOut2">
-      	* <bean:message key="help.coverage.nativeCRS"/>
-      </td>
-	</tr>
-  </logic:equal>
-  <!-------------------------->
-
+	
     <tr>
       <td class="label">
 		<span class="help" title="<bean:message key="help.coverage.label"/>">

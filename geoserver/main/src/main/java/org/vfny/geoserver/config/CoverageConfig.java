@@ -156,11 +156,6 @@ public class CoverageConfig {
     /**
      *
      */
-    private String nativeCRS;
-
-    /**
-     *
-     */
     private CoordinateReferenceSystem crs;
 
     /**
@@ -220,7 +215,6 @@ public class CoverageConfig {
         srsName = (((crs != null) && !crs.getIdentifiers().isEmpty())
             ? crs.getIdentifiers().toArray()[0].toString() : "UNKNOWN");
         srsWKT = ((crs != null) ? crs.toWKT() : "UNKNOWN");
-        nativeCRS = ((!srsName.equals("UNKNOWN")) ? null : "");
         envelope = reader.getOriginalEnvelope();
 
         try {
@@ -496,7 +490,6 @@ public class CoverageConfig {
         crs = dto.getCrs();
         srsName = dto.getSrsName();
         srsWKT = dto.getSrsWKT();
-        nativeCRS = dto.getNativeCRS();
         envelope = dto.getEnvelope();
         lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
         grid = dto.getGrid();
@@ -526,7 +519,6 @@ public class CoverageConfig {
         c.setCrs(crs);
         c.setSrsName(srsName);
         c.setSrsWKT(srsWKT);
-        c.setNativeCRS(nativeCRS);
         c.setEnvelope(envelope);
         c.setLonLatWGS84Envelope(lonLatWGS84Envelope);
         c.setGrid(grid);
@@ -959,14 +951,6 @@ public class CoverageConfig {
 
     public void setWmsPath(String wmsPath) {
         this.wmsPath = wmsPath;
-    }
-
-    public String getNativeCRS() {
-        return nativeCRS;
-    }
-
-    public void setNativeCRS(String nativeCRS) {
-        this.nativeCRS = nativeCRS;
     }
 
     public Map getParameters() {

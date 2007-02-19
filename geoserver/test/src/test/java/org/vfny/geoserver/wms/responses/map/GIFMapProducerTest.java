@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses.map;
 
+import org.geotools.image.ImageWorker;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducerTest;
 import org.vfny.geoserver.wms.responses.map.gif.GIFMapProducer;
@@ -54,7 +55,8 @@ public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
             out.flush();
             out.close();
 
-            product = ImageIO.read(tmpGif);
+            product = ImageWorker.loadPlanarImageImage(tmpGif.getAbsolutePath(), null, 0, true)
+                                 .getAsBufferedImage();
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
