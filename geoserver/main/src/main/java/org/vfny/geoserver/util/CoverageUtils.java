@@ -51,18 +51,16 @@ public class CoverageUtils {
         final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
 
         if ((params != null) && (params.values().size() > 0)) {
-            List list = params.values();
-            Iterator it = list.iterator();
-            ParameterDescriptor descr = null;
-            ParameterValue val = null;
+            final List list = params.values();
+            final Iterator it = list.iterator();
 
             while (it.hasNext()) {
-                val = (ParameterValue) it.next();
+                final ParameterValue val = (ParameterValue) it.next();
 
                 if (val != null) {
-                    descr = (ParameterDescriptor) val.getDescriptor();
+                    final ParameterDescriptor descr = (ParameterDescriptor) val.getDescriptor();
 
-                    String _key = descr.getName().toString();
+                    final String _key = descr.getName().toString();
 
                     if ("namespace".equals(_key)) {
                         // skip namespace as it is *magic* and
@@ -81,8 +79,7 @@ public class CoverageUtils {
                         continue;
                     }
 
-                    Object value = val.getValue();
-
+                    final Object value = val.getValue();
                     parameters.add(new DefaultParameterDescriptor(_key, value.getClass(), null,
                             value).createValue());
                 }
@@ -108,16 +105,14 @@ public class CoverageUtils {
         if ((params != null) && (params.values().size() > 0)) {
             List list = params.values();
             Iterator it = list.iterator();
-            ParameterDescriptor descr = null;
-            ParameterValue val = null;
 
             while (it.hasNext()) {
-                val = (ParameterValue) it.next();
+                final ParameterValue val = (ParameterValue) it.next();
 
                 if (val != null) {
-                    descr = (ParameterDescriptor) val.getDescriptor();
+                    final ParameterDescriptor descr = (ParameterDescriptor) val.getDescriptor();
 
-                    String _key = descr.getName().toString();
+                    final String _key = descr.getName().toString();
 
                     if ("namespace".equals(_key)) {
                         // skip namespace as it is *magic* and
@@ -141,7 +136,7 @@ public class CoverageUtils {
                     // format specific params
                     //
                     // /////////////////////////////////////////////////////////
-                    Object value = CoverageUtils.getCvParamValue(_key, val, values);
+                    final Object value = CoverageUtils.getCvParamValue(_key, val, values);
 
                     if ((value == null)
                             && (_key.equalsIgnoreCase("InputTransparentColor")
@@ -170,15 +165,12 @@ public class CoverageUtils {
         if ((params != null) && (params.values().size() > 0)) {
             List list = params.values();
             Iterator it = list.iterator();
-            ParameterDescriptor descr = null;
-            ParameterValue val = null;
 
             while (it.hasNext()) {
-                val = (ParameterValue) it.next();
+                final ParameterValue val = (ParameterValue) it.next();
 
                 if (val != null) {
-                    descr = (ParameterDescriptor) val.getDescriptor();
-
+                    final ParameterDescriptor descr = (ParameterDescriptor) val.getDescriptor();
                     String _key = descr.getName().toString();
 
                     if ("namespace".equals(_key)) {
@@ -264,23 +256,6 @@ public class CoverageUtils {
                         }
                     }
                 }
-            } else if (key.equalsIgnoreCase("values_palette")) {
-                if ((getParamValue(paramValues, index) != null)
-                        && (((String) getParamValue(paramValues, index)).length() > 0)) {
-                    String tmp = (String) getParamValue(paramValues, index);
-                    String[] strColors = tmp.split(";");
-                    Vector colors = new Vector();
-
-                    for (int col = 0; col < strColors.length; col++) {
-                        if (Color.decode(strColors[col]) != null) {
-                            colors.add(Color.decode(strColors[col]));
-                        }
-                    }
-
-                    value = colors.toArray(new Color[colors.size()]);
-                } else {
-                    value = "#000000;#3C3C3C;#FFFFFF";
-                }
             } else {
                 Class[] clArray = { getParamValue(paramValues, index).getClass() };
                 Object[] inArray = { getParamValue(paramValues, index) };
@@ -289,6 +264,10 @@ public class CoverageUtils {
 
             // Intentionally generic exception catched
         } catch (Exception e) {
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.log(Level.FINE, e.getLocalizedMessage(), e);
+            }
+
             value = null;
 
             // errors.add("paramValue[" + i + "]",
@@ -384,26 +363,13 @@ public class CoverageUtils {
                 value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
             }
         } catch (Exception e) {
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.log(Level.FINE, e.getLocalizedMessage(), e);
+            }
+
             value = param.getValue();
         }
 
         return value;
-    }
-
-    public static MathTransform getMathTransform(CoordinateReferenceSystem sourceCRS,
-        CoordinateReferenceSystem destCRS) {
-        try {
-            CoordinateOperation op = operationFactory.createOperation(sourceCRS, destCRS);
-
-            if (op != null) {
-                return op.getMathTransform();
-            }
-        } catch (OperationNotFoundException e) {
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        } catch (FactoryException e) {
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-        }
-
-        return null;
     }
 }

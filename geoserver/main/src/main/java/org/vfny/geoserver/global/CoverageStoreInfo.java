@@ -103,11 +103,13 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
     }
 
     private Format lookupFormat() {
-        final int length = CoverageStoreUtils.formats.length;
+        final Format[] formats = CoverageStoreUtils.formats;
 
-        for (int i = 0; i < length; i++) {
-            if (CoverageStoreUtils.formats[i].getName().equals(type)) {
-                return CoverageStoreUtils.formats[i];
+        for (int i = 0; i < formats.length; i++) {
+            final Format tempFormat = CoverageStoreUtils.formats[i];
+
+            if (tempFormat.getName().equals(type)) {
+                return tempFormat;
             }
         }
 
@@ -150,57 +152,6 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
     public String getId() {
         return id;
     }
-
-    // /**
-    // * Get Connect params.
-    // *
-    // * @return DOCUMENT ME!
-    // */
-    //
-    // public static Map getParams(Map m, String baseDir) {
-    // Map params = Collections.synchronizedMap(new HashMap(m));
-    //
-    // for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
-    // Map.Entry entry = (Map.Entry) i.next();
-    // String key = (String) entry.getKey();
-    // Object value = entry.getValue();
-    //
-    // try {
-    // if ("url".equals(key) && value instanceof String) {
-    // String path = (String) value;
-    // if (LOGGER.isLoggable(Level.INFO)) {
-    // LOGGER.info("in string url");
-    // }
-    // if (path.startsWith("file:data/")) {
-    // path = path.substring(5); // remove 'file:' prefix
-    //
-    // File file = new File(baseDir, path);
-    // entry.setValue(file.toURL().toExternalForm());
-    // }
-    // // Not sure about this
-    // } else if (value instanceof URL
-    // && ((URL) value).getProtocol().equals("file")) {
-    // if (LOGGER.isLoggable(Level.INFO)) {
-    // LOGGER.info("in URL url");
-    // }
-    // URL url = (URL) value;
-    // String path = url.getPath();
-    // if (LOGGER.isLoggable(Level.INFO)) {
-    // LOGGER.info(new StringBuffer("path is ").append(path)
-    // .toString());
-    // }
-    // if (path.startsWith("data/")) {
-    // File file = new File(baseDir, path);
-    // entry.setValue(file.toURL());
-    // }
-    // }
-    // } catch (MalformedURLException ignore) {
-    // // ignore attempt to fix relative paths
-    // }
-    // }
-    //
-    // return params;
-    // }
 
     /**
      * DOCUMENT ME !
@@ -349,31 +300,33 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
     }
 
     public synchronized GridCoverageReader getReader() {
-        if (reader != null && reader.get() != null) {
+        // /////////////////////////////////////////////////////////
+        //
+        // Trying to leverage cached GridCoverageReader
+        //
+        // /////////////////////////////////////////////////////////
+        if ((reader != null) && (reader.get() != null)) {
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine("Reusing cached GridCoverageReader");
+            }
+
             return (GridCoverageReader) reader.get();
         }
 
         try {
             // /////////////////////////////////////////////////////////
             //
-            // Getting coverage config
-            //
-            // /////////////////////////////////////////////////////////
-            final CoverageStoreInfo gcInfo = data.getFormatInfo(id);
-
-            if (gcInfo == null) {
-                return null;
-            }
-
-            // /////////////////////////////////////////////////////////
-            //
             // Getting coverage reader using the format and the real path.
             //
             // /////////////////////////////////////////////////////////
-            final File obj = GeoserverDataDirectory.findDataFile(gcInfo.getUrl());
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine("Creating a new GridCoverageReader");
+            }
+
+            final File obj = GeoserverDataDirectory.findDataFile(getUrl());
 
             // XXX CACHING READERS HERE
-            reader = new SoftReference(((AbstractGridFormat) gcInfo.getFormat()).getReader(obj));
+            reader = new SoftReference(((AbstractGridFormat) getFormat()).getReader(obj));
 
             return (GridCoverageReader) reader.get();
         } catch (InvalidParameterValueException e) {
@@ -390,34 +343,39 @@ public final class CoverageStoreInfo extends GlobalLayerSupertype {
     }
 
     public synchronized GridCoverageReader createReader(Hints hints) {
-        if (hintReader != null && hintReader.get() != null) {
+        // /////////////////////////////////////////////////////////
+        //
+        // Trying to leverage cached GridCoverageReader
+        //
+        // /////////////////////////////////////////////////////////
+        if ((hintReader != null) && (hintReader.get() != null)) {
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine("Reusing cached GridCoverageReader");
+            }
+
             return (GridCoverageReader) hintReader.get();
-        } else if ((hints == null) && (reader != null && reader.get() != null)) {
+        } else if ((hints == null) && ((reader != null) && (reader.get() != null))) {
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine("Reusing cached GridCoverageReader");
+            }
+
             return (GridCoverageReader) reader.get();
         }
 
         try {
             // /////////////////////////////////////////////////////////
             //
-            // Getting coverage config
-            //
-            // /////////////////////////////////////////////////////////
-            final CoverageStoreInfo gcInfo = data.getFormatInfo(id);
-
-            if (gcInfo == null) {
-                return null;
-            }
-
-            // /////////////////////////////////////////////////////////
-            //
             // Getting coverage reader using the format and the real path.
             //
             // /////////////////////////////////////////////////////////
-            final File obj = GeoserverDataDirectory.findDataFile(gcInfo.getUrl());
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine("Creating a new GridCoverageReader");
+            }
+
+            final File obj = GeoserverDataDirectory.findDataFile(getUrl());
 
             // XXX CACHING READERS HERE
-            hintReader = new SoftReference(((AbstractGridFormat) gcInfo.getFormat()).getReader(
-                        obj, hints));
+            hintReader = new SoftReference(((AbstractGridFormat) getFormat()).getReader(obj, hints));
 
             return (GridCoverageReader) hintReader.get();
         } catch (InvalidParameterValueException e) {

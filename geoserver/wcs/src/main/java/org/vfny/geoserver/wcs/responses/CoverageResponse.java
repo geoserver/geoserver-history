@@ -208,7 +208,6 @@ public class CoverageResponse implements Response {
 
         final Data catalog = request.getWCS().getData();
         CoverageInfo meta = null;
-        GridCoverage coverage = null;
 
         try {
             meta = catalog.getCoverageInfo(request.getCoverage());
@@ -221,7 +220,6 @@ public class CoverageResponse implements Response {
                 throw newEx;
             }
 
-            final Format format = meta.getFormatInfo().getFormat();
             final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta
                 .createReader(hints);
 
@@ -332,8 +330,8 @@ public class CoverageResponse implements Response {
         // This is the CRS of the Coverage Envelope
         final CoordinateReferenceSystem cvCRS = ((GeneralEnvelope) coverageReader
             .getOriginalEnvelope()).getCoordinateReferenceSystem();
-        final MathTransform GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform = CRS.transform(cvCRS,
-                sourceCRS, true);
+        final MathTransform GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform = CRS
+            .findMathTransform(cvCRS, sourceCRS, true);
         final MathTransform GCCRSTodeviceCRSTransform = CRS.transform(cvCRS, targetCRS, true);
         final MathTransform deviceCRSToGCCRSTransform = GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform
             .inverse();

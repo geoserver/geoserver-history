@@ -234,9 +234,8 @@ public abstract class DataStoreUtils {
 
         // Convert Params into the kind of Map we actually need
         for (Iterator i = params.keySet().iterator(); i.hasNext();) {
-            String key = (String) i.next();
-
-            Object value = find(info, key).lookUp(params);
+            final String key = (String) i.next();
+            final Object value = find(info, key).lookUp(params);
 
             if (value != null) {
                 map.put(key, value);
