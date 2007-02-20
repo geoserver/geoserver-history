@@ -11,8 +11,6 @@
 
 	<groupId>org.geoserver.maven</groupId>
 	<artifactId>build-configs</artifactId>
-	<!-- do not change the version of this plugin -->
-	<version>1.0</version>
 	<packaging>jar</packaging>
 	<name>Plugins configuration files</name>
 	<description>
