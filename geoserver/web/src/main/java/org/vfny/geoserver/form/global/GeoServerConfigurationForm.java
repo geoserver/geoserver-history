@@ -12,6 +12,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.ContactConfig;
 import org.vfny.geoserver.config.GlobalConfig;
+import org.vfny.geoserver.global.dto.GeoServerDTO.Defaults;
+
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 
@@ -171,10 +173,9 @@ public class GeoServerConfigurationForm extends ActionForm {
         ActionErrors errors = new ActionErrors();
 
         final long maxMemoryAvailable = Runtime.getRuntime().maxMemory() - (4 * 1024 * 1024);
-
-        if ((jaiMemoryCapacity < 0) || (jaiMemoryCapacity > 1.0)) {
+        if ((jaiMemoryCapacity < 0) || (jaiMemoryCapacity > Defaults.JaiMemoryCapacity)) {
             errors.add("jaiMemCapacity",
-                new ActionError("error.geoserver.JAIMemCapacity", new Long(maxMemoryAvailable)));
+                new ActionError("error.geoserver.JAIMemCapacity", Defaults.JaiMemoryCapacity));
         }
 
         if ((jaiMemoryThreshold < 0.0) || (jaiMemoryThreshold > 1.0)) {
