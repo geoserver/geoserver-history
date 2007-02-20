@@ -188,7 +188,7 @@ abstract public class KvpRequestReader {
         List kvpList = null;
 
         // handles implicit unconstrained case
-        if (rawList == null) {
+        if (rawList == null || "".equals(rawList)) {
             return Collections.EMPTY_LIST;
 
             // handles explicit unconstrained case
