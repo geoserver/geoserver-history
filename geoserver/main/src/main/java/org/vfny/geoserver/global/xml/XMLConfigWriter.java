@@ -55,12 +55,12 @@ public class XMLConfigWriter {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 
     /**
-         * XMLConfigWriter constructor.
-         *
-         * <p>
-         * Should never be called.
-         * </p>
-         */
+             * XMLConfigWriter constructor.
+             *
+             * <p>
+             * Should never be called.
+             * </p>
+             */
     private XMLConfigWriter() {
     }
 
@@ -1553,12 +1553,12 @@ public class XMLConfigWriter {
         private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 
         /**
-                 * WriterUtils constructor.
-                 *
-                 * <p>
-                 * Static class, should never be used.
-                 * </p>
-                 */
+                         * WriterUtils constructor.
+                         *
+                         * <p>
+                         * Static class, should never be used.
+                         * </p>
+                         */
         private WriterUtils() {
         }
 

@@ -182,25 +182,25 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     private boolean forcedCRS;
 
     /**
-         * dont use this unless you know what you're doing.  its for TemporaryFeatureTypeInfo.
-         *
-         */
+             * dont use this unless you know what you're doing.  its for TemporaryFeatureTypeInfo.
+             *
+             */
     public FeatureTypeInfo() {
     }
 
     /**
-         * FeatureTypeInfo constructor.
-         *
-         * <p>
-         * Generates a new object from the data provided.
-         * </p>
-         *
-         * @param dto FeatureTypeInfoDTO The data to populate this class with.
-         * @param data Data a reference for future use to get at DataStoreInfo
-         *        instances
-         *
-         * @throws ConfigurationException
-         */
+             * FeatureTypeInfo constructor.
+             *
+             * <p>
+             * Generates a new object from the data provided.
+             * </p>
+             *
+             * @param dto FeatureTypeInfoDTO The data to populate this class with.
+             * @param data Data a reference for future use to get at DataStoreInfo
+             *        instances
+             *
+             * @throws ConfigurationException
+             */
     public FeatureTypeInfo(FeatureTypeInfoDTO dto, Data data)
         throws ConfigurationException {
         this.data = data;
@@ -1114,8 +1114,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param cacheMaxAge a string representing the number of seconds to be
      *        added to the "Cache-Control: max-age=" header

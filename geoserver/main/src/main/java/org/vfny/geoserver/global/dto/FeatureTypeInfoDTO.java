@@ -113,28 +113,28 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     private boolean cachingEnabled;
 
     /**
-         * FeatureTypeInfo constructor.
-         *
-         * <p>
-         * does nothing
-         * </p>
-         */
+             * FeatureTypeInfo constructor.
+             *
+             * <p>
+             * does nothing
+             * </p>
+             */
     public FeatureTypeInfoDTO() {
     }
 
     /**
-         * FeatureTypeInfo constructor.
-         *
-         * <p>
-         * Creates a copy of the FeatureTypeInfo provided. If the FeatureTypeInfo
-         * provided  is null then default values are used. All the data structures
-         * are cloned.
-         * </p>
-         *
-         * @param dto The featuretype to copy.
-         *
-         * @throws NullPointerException DOCUMENT ME!
-         */
+             * FeatureTypeInfo constructor.
+             *
+             * <p>
+             * Creates a copy of the FeatureTypeInfo provided. If the FeatureTypeInfo
+             * provided  is null then default values are used. All the data structures
+             * are cloned.
+             * </p>
+             *
+             * @param dto The featuretype to copy.
+             *
+             * @throws NullPointerException DOCUMENT ME!
+             */
     public FeatureTypeInfoDTO(FeatureTypeInfoDTO dto) {
         if (dto == null) {
             throw new NullPointerException("Non null FeatureTypeInfoDTO required");

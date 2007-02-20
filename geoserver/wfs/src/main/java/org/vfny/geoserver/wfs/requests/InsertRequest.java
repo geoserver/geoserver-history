@@ -35,8 +35,8 @@ public class InsertRequest extends SubTransactionRequest {
     private boolean releaseAll;
 
     /**
-         * Empty constructor.
-         */
+             * Empty constructor.
+             */
     public InsertRequest() {
         features = FeatureCollections.newCollection();
     }

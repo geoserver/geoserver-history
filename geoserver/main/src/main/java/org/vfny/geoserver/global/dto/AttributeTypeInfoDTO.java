@@ -61,24 +61,24 @@ public class AttributeTypeInfoDTO implements DataTransferObject {
     private boolean isComplex = false;
 
     /**
-         * AttributeTypeInfoDTO constructor, see DataTransferObjectFactory.
-         *
-         * <p>
-         * Default constructor, does nothing
-         * </p>
-         */
+             * AttributeTypeInfoDTO constructor, see DataTransferObjectFactory.
+             *
+             * <p>
+             * Default constructor, does nothing
+             * </p>
+             */
     public AttributeTypeInfoDTO() {
     }
 
     /**
-         * AttributeTypeInfoDTO constructor, see DataTransferObjectFactory.
-         *
-         * <p>
-         * Copies the data from the specified DTO to this one.
-         * </p>
-         *
-         * @param dto AttributeTypeInfoDTO The data source to copy from.
-         */
+             * AttributeTypeInfoDTO constructor, see DataTransferObjectFactory.
+             *
+             * <p>
+             * Copies the data from the specified DTO to this one.
+             * </p>
+             *
+             * @param dto AttributeTypeInfoDTO The data source to copy from.
+             */
     public AttributeTypeInfoDTO(AttributeTypeInfoDTO dto) {
         name = dto.getName();
         type = dto.getType();

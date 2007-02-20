@@ -64,8 +64,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
     private GetFeatureInfoRequest request;
 
     /**
-         * Creates a new GetMapDelegate object.
-         */
+             * Creates a new GetMapDelegate object.
+             */
     public GetFeatureInfoDelegate() {
     }
 

@@ -26,12 +26,12 @@ import java.util.Map;
  */
 public final class EqualsLibrary {
     /**
-         * EqualsLibrary constructor.
-         *
-         * <p>
-         * Should never be called, static class.
-         * </p>
-         */
+             * EqualsLibrary constructor.
+             *
+             * <p>
+             * Should never be called, static class.
+             * </p>
+             */
     private EqualsLibrary() {
     }
 

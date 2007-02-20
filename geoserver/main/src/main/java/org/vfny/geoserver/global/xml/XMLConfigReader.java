@@ -103,12 +103,12 @@ public class XMLConfigReader {
     ServletContext context;
 
     /**
-         * XMLConfigReader constructor.
-         *
-         * <p>
-         * Should never be called.
-         * </p>
-         */
+             * XMLConfigReader constructor.
+             *
+             * <p>
+             * Should never be called.
+             * </p>
+             */
     protected XMLConfigReader(ServletContext context) {
         this.context = context;
         wms = new WMSDTO();
@@ -120,27 +120,27 @@ public class XMLConfigReader {
     }
 
     /**
-         * <p>
-         * This method loads the config files from the specified directory into a
-         * ModelConfig. If the path is incorrect, or the directory is formed
-         * correctly, a ConfigException will be thrown and/or null returned. <br>
-         * <br>
-         * The config directory is as follows:<br>
-         *
-         * <ul>
-         * <li> ./WEB-INF/catalog.xml </li>
-         * <li> ./WEB-INF/services.xml </li>
-         * <li> ./data/featuretypes/ /info.xml </li>
-         * <li> ./data/featuretypes/ /schema.xml </li>
-         * </ul>
-         * </p>
-         *
-         * @param root
-         *            A directory which contains the config files.
-         *
-         * @throws ConfigurationException
-         *             When an error occurs.
-         */
+             * <p>
+             * This method loads the config files from the specified directory into a
+             * ModelConfig. If the path is incorrect, or the directory is formed
+             * correctly, a ConfigException will be thrown and/or null returned. <br>
+             * <br>
+             * The config directory is as follows:<br>
+             *
+             * <ul>
+             * <li> ./WEB-INF/catalog.xml </li>
+             * <li> ./WEB-INF/services.xml </li>
+             * <li> ./data/featuretypes/ /info.xml </li>
+             * <li> ./data/featuretypes/ /schema.xml </li>
+             * </ul>
+             * </p>
+             *
+             * @param root
+             *            A directory which contains the config files.
+             *
+             * @throws ConfigurationException
+             *             When an error occurs.
+             */
     public XMLConfigReader(File root, ServletContext context)
         throws ConfigurationException {
         this.root = root;
@@ -1959,8 +1959,7 @@ public class XMLConfigReader {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param gridElem
      *

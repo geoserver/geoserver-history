@@ -30,10 +30,10 @@ public class InsertSuiteTest extends TransactionSuiteTest {
     //java.util.logging.Level.FINER);
     //}
     /**
-         * Constructor with super.
-         *
-         * @param testName The name of the test.
-         */
+             * Constructor with super.
+             *
+             * @param testName The name of the test.
+             */
     public InsertSuiteTest(String testName) {
         super(testName);
     }

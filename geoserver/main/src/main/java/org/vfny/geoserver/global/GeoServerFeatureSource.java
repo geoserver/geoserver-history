@@ -65,13 +65,13 @@ public class GeoServerFeatureSource implements FeatureSource {
     private CoordinateReferenceSystem forcedCRS;
 
     /**
-         * Creates a new GeoServerFeatureSource object.
-         *
-         * @param source GeoTools2 FeatureSource
-         * @param schema FeatureType returned by this FeatureSource
-         * @param definitionQuery Filter used to limit results
-         * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
-         */
+             * Creates a new GeoServerFeatureSource object.
+             *
+             * @param source GeoTools2 FeatureSource
+             * @param schema FeatureType returned by this FeatureSource
+             * @param definitionQuery Filter used to limit results
+             * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
+             */
     GeoServerFeatureSource(FeatureSource source, FeatureType schema, Filter definitionQuery,
         CoordinateReferenceSystem forcedCRS) {
         this.source = source;

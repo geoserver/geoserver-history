@@ -51,8 +51,8 @@ public class Query {
     protected boolean allRequested = true;
 
     /**
-         * Empty constructor.
-         */
+             * Empty constructor.
+             */
     public Query() {
     }
 

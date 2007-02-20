@@ -34,21 +34,21 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
     File baseDirectory;
 
     /**
-         * Creates a new resource loader with no base directory.
-         * <p>
-         * Such a constructed resource loader is not capable of creating resources
-         * from relative paths.
-         * </p>
-         */
+             * Creates a new resource loader with no base directory.
+             * <p>
+             * Such a constructed resource loader is not capable of creating resources
+             * from relative paths.
+             * </p>
+             */
     public GeoServerResourceLoader() {
         searchLocations = new TreeSet();
     }
 
     /**
-         * Creates a new resource loader.
-         *
-         * @param baseDirectory The directory in which
-         */
+             * Creates a new resource loader.
+             *
+             * @param baseDirectory The directory in which
+             */
     public GeoServerResourceLoader(File baseDirectory) {
         this();
         this.baseDirectory = baseDirectory;
@@ -65,8 +65,7 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The base directory.
      */

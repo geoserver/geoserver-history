@@ -33,9 +33,9 @@ public class GetMap extends WMService {
     public static final String URLENCODED = "application/x-www-form-urlencoded";
 
     /**
-         * Creates a new GetMap object.
-         *
-         */
+             * Creates a new GetMap object.
+             *
+             */
     public GetMap(WMS wms) {
         super("GetMap", wms);
     }

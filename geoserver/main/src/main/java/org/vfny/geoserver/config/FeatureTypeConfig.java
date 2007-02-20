@@ -136,18 +136,18 @@ public class FeatureTypeConfig {
     private boolean cachingEnabled;
 
     /**
-         * Package visible constructor for test cases
-         */
+             * Package visible constructor for test cases
+             */
     FeatureTypeConfig() {
     }
 
     /**
-         * Creates a FeatureTypeInfo to represent an instance with default data.
-         *
-         * @param dataStoreId ID for data store in catalog
-         * @param schema Geotools2 FeatureType
-         * @param generate True to generate entries for all attribtues
-         */
+             * Creates a FeatureTypeInfo to represent an instance with default data.
+             *
+             * @param dataStoreId ID for data store in catalog
+             * @param schema Geotools2 FeatureType
+             * @param generate True to generate entries for all attribtues
+             */
     public FeatureTypeConfig(String dataStoreId, FeatureType schema, boolean generate) {
         if ((dataStoreId == null) || (dataStoreId.length() == 0)) {
             throw new IllegalArgumentException("dataStoreId is required for FeatureTypeConfig");
@@ -193,17 +193,17 @@ public class FeatureTypeConfig {
     }
 
     /**
-         * FeatureTypeInfo constructor.
-         *
-         * <p>
-         * Creates a copy of the FeatureTypeInfoDTO provided. All the data
-         * structures are cloned.
-         * </p>
-         *
-         * @param dto The FeatureTypeInfoDTO to copy.
-         *
-         * @throws NullPointerException DOCUMENT ME!
-         */
+             * FeatureTypeInfo constructor.
+             *
+             * <p>
+             * Creates a copy of the FeatureTypeInfoDTO provided. All the data
+             * structures are cloned.
+             * </p>
+             *
+             * @param dto The FeatureTypeInfoDTO to copy.
+             *
+             * @throws NullPointerException DOCUMENT ME!
+             */
     public FeatureTypeConfig(FeatureTypeInfoDTO dto) {
         if (dto == null) {
             throw new NullPointerException("Non null FeatureTypeInfoDTO required");

@@ -34,20 +34,20 @@ public final class TiffMapProducer extends DefaultRasterMapProducer {
     private static final String DEFAULT_MAP_FORMAT = "image/tiff";
 
     /**
-         * Creates a map producer that relies on JAI to encode the BufferedImage
-         * generated the default (image/png) image format.
-         */
+             * Creates a map producer that relies on JAI to encode the BufferedImage
+             * generated the default (image/png) image format.
+             */
     public TiffMapProducer(WMS wms) {
         this(DEFAULT_MAP_FORMAT, wms);
     }
 
     /**
-         * Creates a map producer that relies on JAI to encode the BufferedImage
-         * generated in <code>outputFormat</code> format.
-         *
-         * @param outputFormat
-         *            the output format MIME type.
-         */
+             * Creates a map producer that relies on JAI to encode the BufferedImage
+             * generated in <code>outputFormat</code> format.
+             *
+             * @param outputFormat
+             *            the output format MIME type.
+             */
     public TiffMapProducer(String outputFormat, WMS wms) {
         super(outputFormat, wms);
         setOutputFormat(outputFormat);

@@ -35,28 +35,28 @@ public final class StyleDTO implements DataTransferObject {
     private boolean _default;
 
     /**
-         * StyleConfig constructor.
-         *
-         * <p>
-         * does nothing
-         * </p>
-         */
+             * StyleConfig constructor.
+             *
+             * <p>
+             * does nothing
+             * </p>
+             */
     public StyleDTO() {
     }
 
     /**
-         * StyleConfig constructor.
-         *
-         * <p>
-         * Creates a copy of the StyleConfig provided. If the StyleConfig provided
-         * is null then default values are used. All the data structures are
-         * cloned.
-         * </p>
-         *
-         * @param style The style to copy.
-         *
-         * @throws NullPointerException DOCUMENT ME!
-         */
+             * StyleConfig constructor.
+             *
+             * <p>
+             * Creates a copy of the StyleConfig provided. If the StyleConfig provided
+             * is null then default values are used. All the data structures are
+             * cloned.
+             * </p>
+             *
+             * @param style The style to copy.
+             *
+             * @throws NullPointerException DOCUMENT ME!
+             */
     public StyleDTO(StyleDTO style) {
         if (style == null) {
             throw new NullPointerException();

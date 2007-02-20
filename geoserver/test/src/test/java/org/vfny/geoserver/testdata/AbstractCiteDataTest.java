@@ -115,8 +115,8 @@ public abstract class AbstractCiteDataTest extends TestCase {
     private PropertyDataStore propsDS;
 
     /**
-         * Creates a new CiteTestData object.
-         */
+             * Creates a new CiteTestData object.
+             */
     public AbstractCiteDataTest() {
         super("Cite Data based test case, using the propery datastore");
     }
@@ -397,10 +397,10 @@ public abstract class AbstractCiteDataTest extends TestCase {
      */
     static class ForceWGS84PropertyDataStore extends PropertyDataStore {
         /**
-                 * Creates a new ForceWGS84PropertyDataStore object.
-                 *
-                 * @param dir DOCUMENT ME!
-                 */
+                         * Creates a new ForceWGS84PropertyDataStore object.
+                         *
+                         * @param dir DOCUMENT ME!
+                         */
         public ForceWGS84PropertyDataStore(File dir) {
             super(dir);
         }
@@ -426,8 +426,8 @@ public abstract class AbstractCiteDataTest extends TestCase {
         }
 
         /**
-                 * DOCUMENT ME!
-                 */
+                         * DOCUMENT ME!
+                         */
 
         /*
            public FeatureReader getFeatureReader(Query query,

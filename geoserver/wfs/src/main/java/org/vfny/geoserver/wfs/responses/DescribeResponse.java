@@ -282,11 +282,11 @@ public class DescribeResponse implements Response {
 
     /**
      * Internal method to print just the requested types.  They should
-     * all be in the same namespace, that handling should be done before.
-     * This will not do any namespace handling, just prints up either what's
-     * in the schema file, or if it's not there then generates the types from
-     * their FeatureTypes.  Also appends the global element so that the types
-     * can substitute as features.
+     * all be in the same namespace, that handling should be done before. This
+     * will not do any namespace handling, just prints up either what's in the
+     * schema file, or if it's not there then generates the types from their
+     * FeatureTypes.  Also appends the global element so that the types can
+     * substitute as features.
      *
      * @param requestedTypes The requested table names.
      * @param gs DOCUMENT ME!

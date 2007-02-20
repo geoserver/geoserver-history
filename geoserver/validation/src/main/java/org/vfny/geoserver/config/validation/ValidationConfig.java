@@ -28,12 +28,12 @@ public class ValidationConfig {
     private Map testSuites;
 
     /**
-         * ValidationConfig constructor.
-         * <p>
-         * Description
-         * </p>
-         *
-         */
+             * ValidationConfig constructor.
+             * <p>
+             * Description
+             * </p>
+             *
+             */
     public ValidationConfig() {
         super();
         plugIns = new HashMap();
@@ -41,24 +41,24 @@ public class ValidationConfig {
     }
 
     /**
-         * ValidationConfig constructor.
-         * <p>
-         * Description
-         * </p>
-         * @param validator GeoValidator
-         */
+             * ValidationConfig constructor.
+             * <p>
+             * Description
+             * </p>
+             * @param validator GeoValidator
+             */
     public ValidationConfig(GeoValidator validator) {
         this(validator.getPlugIns(), validator.getTestSuites());
     }
 
     /**
-         * ValidationConfig constructor.
-         * <p>
-         * Description
-         * </p>
-         * @param plugIns a List of PlugInDTO objects
-         * @param testSuites a List of TestSuiteDTO objects
-         */
+             * ValidationConfig constructor.
+             * <p>
+             * Description
+             * </p>
+             * @param plugIns a List of PlugInDTO objects
+             * @param testSuites a List of TestSuiteDTO objects
+             */
     public ValidationConfig(Map plugIns, Map testSuites) {
         this.plugIns = new HashMap();
         this.testSuites = new HashMap();

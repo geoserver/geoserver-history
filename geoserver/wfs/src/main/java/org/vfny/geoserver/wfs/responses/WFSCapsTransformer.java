@@ -65,8 +65,8 @@ public class WFSCapsTransformer extends TransformerBase {
     protected WFSRequest request;
 
     /**
-         * Creates a new WFSCapsTransformer object.
-         */
+             * Creates a new WFSCapsTransformer object.
+             */
     public WFSCapsTransformer() {
         super();
         setNamespaceDeclarationEnabled(false);
@@ -97,10 +97,10 @@ public class WFSCapsTransformer extends TransformerBase {
         private CapabilitiesRequest request;
 
         /**
-                 * Creates a new WFSCapsTranslator object.
-                 *
-                 * @param handler DOCUMENT ME!
-                 */
+                         * Creates a new WFSCapsTranslator object.
+                         *
+                         * @param handler DOCUMENT ME!
+                         */
         public WFSCapsTranslator(ContentHandler handler) {
             super(handler, null, null);
         }
@@ -447,8 +447,8 @@ public class WFSCapsTransformer extends TransformerBase {
             element("Abstract", ftype.getAbstract());
             handleKeywords(ftype.getKeywords());
             /**
-                         * @task REVISIT: should getSRS() return the full URL?
-                         */
+                                     * @task REVISIT: should getSRS() return the full URL?
+                                     */
             element("SRS", EPSG + ftype.getSRS());
 
             String minx = String.valueOf(bbox.getMinX());

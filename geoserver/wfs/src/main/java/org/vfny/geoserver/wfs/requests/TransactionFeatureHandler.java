@@ -80,11 +80,11 @@ public class TransactionFeatureHandler extends GMLFilterFeature {
     private StringBuffer characters = new StringBuffer();
 
     /**
-         * Constructor with parent, which must implement GMLHandlerJTS.
-         *
-         * @param parent The parent of this filter.
-         * @param r DOCUMENT ME!
-         */
+             * Constructor with parent, which must implement GMLHandlerJTS.
+             *
+             * @param parent The parent of this filter.
+             * @param r DOCUMENT ME!
+             */
     public TransactionFeatureHandler(TransactionFilterHandler parent, HttpServletRequest r,
         Data catalog) {
         super(parent);

@@ -125,8 +125,7 @@ public class DispatcherKvpReader {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The service, WFS,WMS,WCS,etc...
      */
@@ -139,8 +138,7 @@ public class DispatcherKvpReader {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The request, GetCapabilities,GetMap,etc...
      */

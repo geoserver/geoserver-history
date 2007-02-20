@@ -47,10 +47,10 @@ public abstract class RequestTestCase extends TestCase {
     private static final String CONFIG_DIR = System.getProperty("user.dir") + "/misc/unit/config/";
 
     /**
-         * Constructor with super.
-         *
-         * @param testName The name of the test.
-         */
+             * Constructor with super.
+             *
+             * @param testName The name of the test.
+             */
     public RequestTestCase(String testName) {
         super(testName);
     }

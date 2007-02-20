@@ -21,8 +21,8 @@ import java.util.Set;
  */
 public class GIFLegendGraphicProducerFactory implements GetLegendGraphicProducerSpi {
     /**
-         * Empty constructor, as required by the factory strategy.
-         */
+             * Empty constructor, as required by the factory strategy.
+             */
     public GIFLegendGraphicProducerFactory() {
         super();
     }

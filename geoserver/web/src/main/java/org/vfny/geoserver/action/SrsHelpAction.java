@@ -25,8 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- *
-DOCUMENT ME!
+ * DOCUMENT ME!
  *
  * @author Simone Giannecchini, GeoSolutions
  */

@@ -38,18 +38,18 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     private Map meta;
 
     /**
-         * NameSpaceConfig constructor.
-         *
-         * <p>
-         * Creates a NameSpaceConfig based on the data provided. All the data
-         * structures are cloned.
-         * </p>
-         *
-         * @param data DOCUMENT ME!
-         * @param ns The namespace to copy.
-         *
-         * @throws NullPointerException when the param is null
-         */
+             * NameSpaceConfig constructor.
+             *
+             * <p>
+             * Creates a NameSpaceConfig based on the data provided. All the data
+             * structures are cloned.
+             * </p>
+             *
+             * @param data DOCUMENT ME!
+             * @param ns The namespace to copy.
+             *
+             * @throws NullPointerException when the param is null
+             */
     public NameSpaceInfo(Data data, NameSpaceInfoDTO ns) {
         if (ns == null) {
             throw new NullPointerException("Non null NameSpaceInfoDTO required");
@@ -67,17 +67,17 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     }
 
     /**
-         * NameSpaceConfig constructor.
-         *
-         * <p>
-         * Creates a copy of the NameSpaceConfig provided. All the data structures
-         * are cloned.
-         * </p>
-         *
-         * @param ns The namespace to copy.
-         *
-         * @throws NullPointerException when the param is null
-         */
+             * NameSpaceConfig constructor.
+             *
+             * <p>
+             * Creates a copy of the NameSpaceConfig provided. All the data structures
+             * are cloned.
+             * </p>
+             *
+             * @param ns The namespace to copy.
+             *
+             * @throws NullPointerException when the param is null
+             */
     public NameSpaceInfo(NameSpaceInfo ns) {
         if (ns == null) {
             throw new NullPointerException();

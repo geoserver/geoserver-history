@@ -30,28 +30,28 @@ public final class LegendURLDTO implements DataTransferObject {
     private String onlineResource;
 
     /**
-         * LegendConfig constructor.
-         *
-         * <p>
-         * does nothing
-         * </p>
-         */
+             * LegendConfig constructor.
+             *
+             * <p>
+             * does nothing
+             * </p>
+             */
     public LegendURLDTO() {
     }
 
     /**
-         * LegendConfig constructor.
-         *
-         * <p>
-         * Creates a copy of the LegendConfig provided. If the LegendConfig
-         * provided is null then default values are used. All the data structures
-         * are cloned.
-         * </p>
-         *
-         * @param legend The legend to copy.
-         *
-         * @throws NullPointerException DOCUMENT ME!
-         */
+             * LegendConfig constructor.
+             *
+             * <p>
+             * Creates a copy of the LegendConfig provided. If the LegendConfig
+             * provided is null then default values are used. All the data structures
+             * are cloned.
+             * </p>
+             *
+             * @param legend The legend to copy.
+             *
+             * @throws NullPointerException DOCUMENT ME!
+             */
     public LegendURLDTO(LegendURLDTO legend) {
         if (legend == null) {
             throw new NullPointerException();

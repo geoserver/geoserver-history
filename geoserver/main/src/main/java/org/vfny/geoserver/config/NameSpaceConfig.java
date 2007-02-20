@@ -28,14 +28,14 @@ public class NameSpaceConfig {
     private boolean _default;
 
     /**
-         * NameSpaceConfig constructor.
-         *
-         * <p>
-         * Creates a NameSpaceConfig to represent an instance with default data.
-         * </p>
-         *
-         * @see defaultSettings()
-         */
+             * NameSpaceConfig constructor.
+             *
+             * <p>
+             * Creates a NameSpaceConfig to represent an instance with default data.
+             * </p>
+             *
+             * @see defaultSettings()
+             */
     public NameSpaceConfig() {
         prefix = "";
         uri = "";
@@ -43,18 +43,18 @@ public class NameSpaceConfig {
     }
 
     /**
-         * NameSpaceConfig constructor.
-         *
-         * <p>
-         * Creates a copy of the NameSpaceConfig provided. If the NameSpaceConfig
-         * provided  is null then default values are used. All the data structures
-         * are cloned.
-         * </p>
-         *
-         * @param ns The namespace to copy.
-         *
-         * @throws NullPointerException DOCUMENT ME!
-         */
+             * NameSpaceConfig constructor.
+             *
+             * <p>
+             * Creates a copy of the NameSpaceConfig provided. If the NameSpaceConfig
+             * provided  is null then default values are used. All the data structures
+             * are cloned.
+             * </p>
+             *
+             * @param ns The namespace to copy.
+             *
+             * @throws NullPointerException DOCUMENT ME!
+             */
     public NameSpaceConfig(NameSpaceInfoDTO ns) {
         if (ns == null) {
             throw new NullPointerException("");

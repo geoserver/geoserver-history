@@ -101,16 +101,16 @@ public class AttributeTypeInfoConfig {
     public String type;
 
     /**
-         * Set up AttributeTypeInfo based on attributeType.
-         *
-         * <p>
-         * Set up is determined by the AttributeTypeInfoDTO( AttributeType )
-         * constructor. This allows all Schema generation to be acomplished in the
-         * same palce.
-         * </p>
-         *
-         * @param attributeType GeoTools2 attributeType used for configuration
-         */
+             * Set up AttributeTypeInfo based on attributeType.
+             *
+             * <p>
+             * Set up is determined by the AttributeTypeInfoDTO( AttributeType )
+             * constructor. This allows all Schema generation to be acomplished in the
+             * same palce.
+             * </p>
+             *
+             * @param attributeType GeoTools2 attributeType used for configuration
+             */
     public AttributeTypeInfoConfig(AttributeType attributeType) {
         name = attributeType.getName();
         minOccurs = 1;
@@ -147,10 +147,10 @@ public class AttributeTypeInfoConfig {
     }
 
     /**
-         * Set up AttributeTypeInfo based on Data Transfer Object.
-         *
-         * @param dto AttributeTypeInfoDTO used for configuration
-         */
+             * Set up AttributeTypeInfo based on Data Transfer Object.
+             *
+             * @param dto AttributeTypeInfoDTO used for configuration
+             */
     public AttributeTypeInfoConfig(AttributeTypeInfoDTO dto) {
         name = dto.getName();
 

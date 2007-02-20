@@ -28,14 +28,14 @@ public class StyleConfig {
     private boolean _default = false;
 
     /**
-         * StyleConfig constructor.
-         *
-         * <p>
-         * Creates a StyleConfig to represent an instance with default data.
-         * </p>
-         *
-         * @see defaultSettings()
-         */
+             * StyleConfig constructor.
+             *
+             * <p>
+             * Creates a StyleConfig to represent an instance with default data.
+             * </p>
+             *
+             * @see defaultSettings()
+             */
     public StyleConfig() {
         id = "";
         filename = null;
@@ -43,12 +43,12 @@ public class StyleConfig {
     }
 
     /**
-         * Simple copy constructor.
-         * <p>
-         * Used to duplicate a StyleConfig during editing.
-         * </p>
-         * @param style StyleConfig to copy
-         */
+             * Simple copy constructor.
+             * <p>
+             * Used to duplicate a StyleConfig during editing.
+             * </p>
+             * @param style StyleConfig to copy
+             */
     public StyleConfig(StyleConfig style) {
         if (style == null) {
             throw new NullPointerException("Non null StyleConfig required");
@@ -60,17 +60,17 @@ public class StyleConfig {
     }
 
     /**
-         * StyleConfig constructor.
-         *
-         * <p>
-         * Creates a copy of the StyleDTO provided. All the data structures are
-         * cloned.
-         * </p>
-         *
-         * @param style The style to copy.
-         *
-         * @throws NullPointerException DOCUMENT ME!
-         */
+             * StyleConfig constructor.
+             *
+             * <p>
+             * Creates a copy of the StyleDTO provided. All the data structures are
+             * cloned.
+             * </p>
+             *
+             * @param style The style to copy.
+             *
+             * @throws NullPointerException DOCUMENT ME!
+             */
     public StyleConfig(StyleDTO style) {
         if (style == null) {
             throw new NullPointerException("Non null StyleDTO required");

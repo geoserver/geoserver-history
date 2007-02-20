@@ -52,8 +52,8 @@ public class LockHandler extends XMLFilterImpl implements ContentHandler, Filter
     private String curHandle;
 
     /**
-         * Empty constructor.
-         */
+             * Empty constructor.
+             */
     public LockHandler(WFService service) {
         super();
         request = new LockRequest(service);

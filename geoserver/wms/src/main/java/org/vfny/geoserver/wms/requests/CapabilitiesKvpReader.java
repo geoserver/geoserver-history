@@ -24,12 +24,12 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CapabilitiesKvpReader extends KvpRequestReader {
     /**
-         * Constructor with raw request string.  Calls parent.
-         *
-         * @param kvPairs The raw string of a capabilities kvp request.
-         *
-         *
-         */
+             * Constructor with raw request string.  Calls parent.
+             *
+             * @param kvPairs The raw string of a capabilities kvp request.
+             *
+             *
+             */
     public CapabilitiesKvpReader(Map kvPairs, WMService service) {
         super(kvPairs, service);
     }

@@ -40,8 +40,8 @@ public class DeleteRequest extends SubTransactionRequest {
     protected boolean releaseAll = true;
 
     /**
-         * Empty constructor.
-         */
+             * Empty constructor.
+             */
     public DeleteRequest() {
     }
 

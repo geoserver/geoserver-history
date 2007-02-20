@@ -35,12 +35,12 @@ public class ReaderUtils {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 
     /**
-         * ReaderUtils constructor.
-         *
-         * <p>
-         * Static class, this should never be called.
-         * </p>
-         */
+             * ReaderUtils constructor.
+             *
+             * <p>
+             * Static class, this should never be called.
+             * </p>
+             */
     private ReaderUtils() {
     }
 

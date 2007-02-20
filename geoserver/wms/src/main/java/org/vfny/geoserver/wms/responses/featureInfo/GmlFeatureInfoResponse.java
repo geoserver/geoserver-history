@@ -43,8 +43,8 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
     private static final String FORMAT = "application/vnd.ogc.gml";
 
     /**
-         * Default constructor, sets up the supported output format string.
-         */
+             * Default constructor, sets up the supported output format string.
+             */
     public GmlFeatureInfoResponse() {
         super.supportedFormats = Collections.singletonList(FORMAT);
     }

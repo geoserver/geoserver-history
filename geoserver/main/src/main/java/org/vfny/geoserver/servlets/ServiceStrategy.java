@@ -26,8 +26,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface ServiceStrategy extends Cloneable {
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return A string used to identify the strategy.
      */

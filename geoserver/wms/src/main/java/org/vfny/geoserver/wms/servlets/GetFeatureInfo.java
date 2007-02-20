@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class GetFeatureInfo extends WMService {
     /**
-         * Creates a new GetMap object.
-         */
+             * Creates a new GetMap object.
+             */
     public GetFeatureInfo(WMS wms) {
         super("GetFeatureInfo", wms);
     }
@@ -55,9 +55,9 @@ public class GetFeatureInfo extends WMService {
      */
     protected XmlRequestReader getXmlRequestReader() {
         /**
-                 * @todo Implement this org.vfny.geoserver.servlets.AbstractService
-                 *       abstract method
-                 */
+                         * @todo Implement this org.vfny.geoserver.servlets.AbstractService
+                         *       abstract method
+                         */
         throw new java.lang.UnsupportedOperationException(
             "Method getXmlRequestReader() not yet implemented.");
     }

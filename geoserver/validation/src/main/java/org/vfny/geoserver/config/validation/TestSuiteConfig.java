@@ -40,25 +40,25 @@ public class TestSuiteConfig {
     private Map tests;
 
     /**
-         * TestSuiteConfig constructor.
-         * <p>
-         * Creates a blank HashMap for tests
-         * </p>
-         *
-         */
+             * TestSuiteConfig constructor.
+             * <p>
+             * Creates a blank HashMap for tests
+             * </p>
+             *
+             */
     public TestSuiteConfig() {
         tests = new HashMap();
     }
 
     /**
-         * TestSuiteConfig constructor.
-         *
-         * <p>
-         * Creates a copy of the TestSuiteConfig passed in.
-         * </p>
-         *
-         * @param ts The Test Suite to copy
-         */
+             * TestSuiteConfig constructor.
+             *
+             * <p>
+             * Creates a copy of the TestSuiteConfig passed in.
+             * </p>
+             *
+             * @param ts The Test Suite to copy
+             */
     public TestSuiteConfig(TestSuiteConfig ts) {
         name = ts.getName();
         description = ts.getDescription();
@@ -73,14 +73,14 @@ public class TestSuiteConfig {
     }
 
     /**
-         * TestSuiteConfig constructor.
-         *
-         * <p>
-         * Creates a copy of the TestSuiteConfig passed in.
-         * </p>
-         *
-         * @param ts The Test Suite to copy
-         */
+             * TestSuiteConfig constructor.
+             *
+             * <p>
+             * Creates a copy of the TestSuiteConfig passed in.
+             * </p>
+             *
+             * @param ts The Test Suite to copy
+             */
     public TestSuiteConfig(TestSuiteDTO ts, Map plugInConfigs) {
         name = ts.getName();
         description = ts.getDescription();

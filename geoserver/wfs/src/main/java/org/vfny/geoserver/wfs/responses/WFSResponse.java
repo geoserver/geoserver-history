@@ -27,8 +27,7 @@ public abstract class WFSResponse implements Response {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The wfs service reference.
      */

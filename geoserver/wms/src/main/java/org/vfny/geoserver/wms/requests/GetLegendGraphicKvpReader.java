@@ -64,10 +64,10 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
     private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
 
     /**
-         * Creates a new GetLegendGraphicKvpReader object.
-         * @param params map of key/value pairs with the parameters for a GetLegendGraphic request
-         * @param service service handle request
-         */
+             * Creates a new GetLegendGraphicKvpReader object.
+             * @param params map of key/value pairs with the parameters for a GetLegendGraphic request
+             * @param service service handle request
+             */
     public GetLegendGraphicKvpReader(Map params, WMService service) {
         super(params, service);
     }

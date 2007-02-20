@@ -20,8 +20,8 @@ import java.util.Set;
  */
 public class JaiLegendGraphicProducerFactory implements GetLegendGraphicProducerSpi {
     /**
-         *
-         */
+             *
+             */
     public JaiLegendGraphicProducerFactory() {
         super();
     }

@@ -93,49 +93,49 @@ public class RewindableInputStream extends InputStream {
     protected int fMark;
 
     /**
-         * Creates new <code>RewindableInputStream</code> object with internal
-         * buffer of default size and default value of chunked reading flag (which
-         * is _currently_ <code>true</code>).
-         *
-         * @param  is  InputStream that needs basic reset/rewind functionality.
-         */
+             * Creates new <code>RewindableInputStream</code> object with internal
+             * buffer of default size and default value of chunked reading flag (which
+             * is _currently_ <code>true</code>).
+             *
+             * @param  is  InputStream that needs basic reset/rewind functionality.
+             */
     public RewindableInputStream(InputStream is) {
         this(is, true, DEFAULT_XMLDECL_BUFFER_SIZE);
     }
 
     /**
-         * Creates new RewindableInputStream with internal buffer of specified size
-         * and no chunk reading beyound the buffer limits allowed.
-         *
-         * @param  is  InputStream that needs some reset/rewind functionality.
-         *
-         * @param  chunkedMode  See the <code>RewindableInputStream(InputStream,
-         *                      boolean, int)</code> constructor description.
-         */
+             * Creates new RewindableInputStream with internal buffer of specified size
+             * and no chunk reading beyound the buffer limits allowed.
+             *
+             * @param  is  InputStream that needs some reset/rewind functionality.
+             *
+             * @param  chunkedMode  See the <code>RewindableInputStream(InputStream,
+             *                      boolean, int)</code> constructor description.
+             */
     public RewindableInputStream(InputStream is, boolean chunkedMode) {
         this(is, chunkedMode, DEFAULT_XMLDECL_BUFFER_SIZE);
     }
 
     /**
-         * Primary constructor that allows to specify all parameters exlicitly
-         * affecting class work (initial size of the internal buffer and
-         * chunk read mode).
-         *
-         * @param  is  InputStream that needs some reset/rewind functionality.
-         *
-         * @param  chunkedMode
-         *
-         *         Initial value of <code>fMayReadChunks</code> flag which determines
-         *         whether multiple bytes can be read from the underlying stream in
-         *         single reading operation or not. This value can be changed using
-         *         <code>setChunkedMode</code> (or its aliases). For specific
-         *         purpose of inferring encoding/charset of XML document typical
-         *         usage policy is to disable chunked reads while obtaining XML
-         *         declaration and then enable it to speed up reading the rest of
-         *         document.
-         *
-         * @param  initialSize  Initial size of the internal buffer array.
-         */
+             * Primary constructor that allows to specify all parameters exlicitly
+             * affecting class work (initial size of the internal buffer and
+             * chunk read mode).
+             *
+             * @param  is  InputStream that needs some reset/rewind functionality.
+             *
+             * @param  chunkedMode
+             *
+             *         Initial value of <code>fMayReadChunks</code> flag which determines
+             *         whether multiple bytes can be read from the underlying stream in
+             *         single reading operation or not. This value can be changed using
+             *         <code>setChunkedMode</code> (or its aliases). For specific
+             *         purpose of inferring encoding/charset of XML document typical
+             *         usage policy is to disable chunked reads while obtaining XML
+             *         declaration and then enable it to speed up reading the rest of
+             *         document.
+             *
+             * @param  initialSize  Initial size of the internal buffer array.
+             */
     public RewindableInputStream(InputStream is, boolean chunkedMode, int initialSize) {
         if (0 >= initialSize) {
             initialSize = DEFAULT_XMLDECL_BUFFER_SIZE;

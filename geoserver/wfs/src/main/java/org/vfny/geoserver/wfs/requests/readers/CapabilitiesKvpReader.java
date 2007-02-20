@@ -23,11 +23,11 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CapabilitiesKvpReader extends KvpRequestReader {
     /**
-         * Creates a new reader from kvp pairs and service.
-         *
-         * @param kvpPairs The raw string of a capabilities kvp request.
-         * @param service The
-         */
+             * Creates a new reader from kvp pairs and service.
+             *
+             * @param kvpPairs The raw string of a capabilities kvp request.
+             * @param service The
+             */
     public CapabilitiesKvpReader(Map kvpPairs, WFService service) {
         super(kvpPairs, service);
     }

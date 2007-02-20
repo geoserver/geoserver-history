@@ -31,12 +31,12 @@ public class XMLSchemaTranslator extends NameSpaceTranslator {
     private HashSet elements;
 
     /**
-         * XMLSchemaTranslator constructor.
-         * <p>
-         * Description
-         * </p>
-         * @param prefix
-         */
+             * XMLSchemaTranslator constructor.
+             * <p>
+             * Description
+             * </p>
+             * @param prefix
+             */
     public XMLSchemaTranslator(String prefix) {
         super(prefix);
         elements = new HashSet();

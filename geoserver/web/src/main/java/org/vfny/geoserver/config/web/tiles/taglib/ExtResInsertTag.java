@@ -12,8 +12,8 @@ package org.vfny.geoserver.config.web.tiles.taglib;
  */
 public class ExtResInsertTag /*extends InsertTag*/ {
     /**
-         *
-         */
+             *
+             */
 
     /*
        private static final long serialVersionUID = -8363215424989241582L;
@@ -21,13 +21,13 @@ public class ExtResInsertTag /*extends InsertTag*/ {
      */
 
     /**
-        * Do an include of specified page.
-        * This method is used internally to do all includes from this class. It delegates
-        * the include call to the TilesUtil.doInclude().
-        * @param page The page that will be included
-        * @throws ServletException - Thrown by call to pageContext.include()
-        * @throws IOException - Thrown by call to pageContext.include()
-        */
+            * Do an include of specified page.
+            * This method is used internally to do all includes from this class. It delegates
+            * the include call to the TilesUtil.doInclude().
+            * @param page The page that will be included
+            * @throws ServletException - Thrown by call to pageContext.include()
+            * @throws IOException - Thrown by call to pageContext.include()
+            */
 
     /*
        protected void doInclude(String page)

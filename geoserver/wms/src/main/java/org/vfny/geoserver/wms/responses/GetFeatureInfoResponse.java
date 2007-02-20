@@ -64,8 +64,8 @@ public class GetFeatureInfoResponse implements Response {
     private GetFeatureInfoDelegate delegate;
 
     /**
-         * Creates a new GetMapResponse object.
-         */
+             * Creates a new GetMapResponse object.
+             */
     public GetFeatureInfoResponse() {
     }
 

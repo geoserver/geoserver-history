@@ -106,12 +106,12 @@ public abstract class AbstractService extends HttpServlet implements Application
     //    /** DOCUMENT ME!  */
     //    protected HttpServletRequest curRequest;
     /**
-         * Constructor for abstract service.
-         *
-         * @param service The service group the service falls into (WFS,WMS,...)
-         * @param request The service being requested (GetCapabilities, GetMap, ...)
-         * @param serviceRef The global service this "servlet" falls into
-         */
+             * Constructor for abstract service.
+             *
+             * @param service The service group the service falls into (WFS,WMS,...)
+             * @param request The service being requested (GetCapabilities, GetMap, ...)
+             * @param serviceRef The global service this "servlet" falls into
+             */
     public AbstractService(String service, String request, Service serviceRef) {
         this.service = service;
         this.request = request;
@@ -119,8 +119,7 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the "service group" that this service falls into.
      */
@@ -129,8 +128,7 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the "request" this service maps to.
      */
@@ -148,8 +146,7 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The reference to the global service instance.
      */
@@ -171,8 +168,7 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The application context.
      */
@@ -190,8 +186,7 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return the reference to the global geoserver instance.
      */
@@ -200,8 +195,7 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The reference to the global catalog instance.
      */
@@ -219,8 +213,7 @@ public abstract class AbstractService extends HttpServlet implements Application
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The id used to identify the service strategy to be used.
      *

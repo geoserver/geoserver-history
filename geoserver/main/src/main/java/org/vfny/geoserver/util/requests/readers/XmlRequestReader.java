@@ -29,9 +29,9 @@ public abstract class XmlRequestReader {
     private AbstractService service;
 
     /**
-         * This will create a new XmlRequestReader
-         * @param service The service handling the request
-         */
+             * This will create a new XmlRequestReader
+             * @param service The service handling the request
+             */
     public XmlRequestReader(AbstractService service) {
         this.service = service;
     }
@@ -50,8 +50,7 @@ public abstract class XmlRequestReader {
         throws ServiceException;
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return the service handling the request
      */

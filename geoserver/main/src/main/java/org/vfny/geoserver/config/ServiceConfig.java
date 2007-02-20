@@ -63,14 +63,14 @@ public class ServiceConfig {
     private MetaDataLink metadataLink;
 
     /**
-         * ServiceConfig constructor.
-         *
-         * <p>
-         * Creates an empty ServiceConfig representation with default values.
-         * </p>
-         *
-         * @see defaultSettings()
-         */
+             * ServiceConfig constructor.
+             *
+             * <p>
+             * Creates an empty ServiceConfig representation with default values.
+             * </p>
+             *
+             * @see defaultSettings()
+             */
     public ServiceConfig() {
         enabled = true;
         name = "";
@@ -84,20 +84,20 @@ public class ServiceConfig {
     }
 
     /**
-         * ServiceConfig constructor.
-         *
-         * <p>
-         * This is equivalent to calling the load method. When a null value is
-         * passed in,  the default values are used. All non-primary datatypes are
-         * cloned with the  exception of Strings (which have a singleton hash
-         * table in memory representation).
-         * </p>
-         *
-         * @param dto The ServiceDTO object to copy into the new ServiceConfig
-         *        object.
-         *
-         * @throws NullPointerException if dto was null;
-         */
+             * ServiceConfig constructor.
+             *
+             * <p>
+             * This is equivalent to calling the load method. When a null value is
+             * passed in,  the default values are used. All non-primary datatypes are
+             * cloned with the  exception of Strings (which have a singleton hash
+             * table in memory representation).
+             * </p>
+             *
+             * @param dto The ServiceDTO object to copy into the new ServiceConfig
+             *        object.
+             *
+             * @throws NullPointerException if dto was null;
+             */
     public ServiceConfig(ServiceDTO dto) {
         if (dto == null) {
             throw new NullPointerException("Non null ServiceDTO required");
@@ -339,8 +339,7 @@ public class ServiceConfig {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the metadataLink.
      */
@@ -349,8 +348,7 @@ public class ServiceConfig {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param metadataLink The metadataLink to set.
      */

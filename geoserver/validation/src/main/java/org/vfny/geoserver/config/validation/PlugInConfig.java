@@ -48,25 +48,25 @@ public class PlugInConfig {
     private Map args;
 
     /**
-         * PlugInConfig constructor.
-         *
-         * <p>
-         * Does nothing.
-         * </p>
-         */
+             * PlugInConfig constructor.
+             *
+             * <p>
+             * Does nothing.
+             * </p>
+             */
     public PlugInConfig() {
         args = new HashMap();
     }
 
     /**
-         * PlugInConfig constructor.
-         *
-         * <p>
-         * Creates a copy of the PlugInConfig passed in in this object.
-         * </p>
-         *
-         * @param pi
-         */
+             * PlugInConfig constructor.
+             *
+             * <p>
+             * Creates a copy of the PlugInConfig passed in in this object.
+             * </p>
+             *
+             * @param pi
+             */
     public PlugInConfig(PlugInConfig pi) {
         name = pi.getName();
         description = pi.getDescription();
@@ -86,14 +86,14 @@ public class PlugInConfig {
     }
 
     /**
-         * PlugInConfig constructor.
-         *
-         * <p>
-         * Creates a copy of the PlugInDTO passed in in this object.
-         * </p>
-         *
-         * @param pi
-         */
+             * PlugInConfig constructor.
+             *
+             * <p>
+             * Creates a copy of the PlugInDTO passed in in this object.
+             * </p>
+             *
+             * @param pi
+             */
     public PlugInConfig(PlugInDTO pi) {
         name = pi.getName();
         description = pi.getDescription();

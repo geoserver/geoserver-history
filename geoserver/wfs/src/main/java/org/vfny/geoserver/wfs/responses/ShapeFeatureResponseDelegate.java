@@ -82,9 +82,9 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
     private String featureTypeName;
 
     /**
-         * empty constructor required to be instantiated through
-         * this.class.newInstance()
-         */
+             * empty constructor required to be instantiated through
+             * this.class.newInstance()
+             */
     public ShapeFeatureResponseDelegate() {
     }
 

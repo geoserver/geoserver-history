@@ -59,16 +59,16 @@ public class WMSCapsTransformer extends TransformerBase {
     private ApplicationContext applicationContext;
 
     /**
-         * Creates a new WMSCapsTransformer object.
-         *
-         * @param schemaBaseUrl
-         *            needed to get the schema base URL
-         * @param formats
-         * @param applicationContext
-         *
-         * @throws NullPointerException
-         *             if <code>schemaBaseUrl</code> is null;
-         */
+             * Creates a new WMSCapsTransformer object.
+             *
+             * @param schemaBaseUrl
+             *            needed to get the schema base URL
+             * @param formats
+             * @param applicationContext
+             *
+             * @throws NullPointerException
+             *             if <code>schemaBaseUrl</code> is null;
+             */
     public WMSCapsTransformer(String schemaBaseUrl, Set formats,
         ApplicationContext applicationContext) {
         super();
@@ -152,11 +152,11 @@ public class WMSCapsTransformer extends TransformerBase {
         private ApplicationContext applicationContext;
 
         /**
-                 * Creates a new CapabilitiesTranslator object.
-                 *
-                 * @param handler
-                 *            content handler to send sax events to.
-                 */
+                         * Creates a new CapabilitiesTranslator object.
+                         *
+                         * @param handler
+                         *            content handler to send sax events to.
+                         */
         public CapabilitiesTranslator(ContentHandler handler, Set formats,
             ApplicationContext applicationContext) {
             super(handler, null, null);
@@ -652,8 +652,7 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
-         *
-        DOCUMENT ME!
+         * DOCUMENT ME!
          *
          * @param featuresLayerTree
          */
@@ -705,9 +704,9 @@ public class WMSCapsTransformer extends TransformerBase {
 
             handleKeywordList(ftype.getKeywords());
             /**
-                         * @task REVISIT: should getSRS() return the full URL? no - the spec
-                         *       says it should be a set of <SRS>EPSG:#</SRS>...
-                         */
+                                     * @task REVISIT: should getSRS() return the full URL? no - the spec
+                                     *       says it should be a set of <SRS>EPSG:#</SRS>...
+                                     */
             element("SRS", EPSG + ftype.getSRS());
 
             // DJB: I want to be nice to the people reading the capabilities
@@ -769,8 +768,7 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
-         *
-        DOCUMENT ME!
+         * DOCUMENT ME!
          *
          * @param coveragesLayerTree
          */
@@ -1102,9 +1100,9 @@ class LayerTree {
     private Collection data;
 
     /**
-         * @param name
-         *            String
-         */
+             * @param name
+             *            String
+             */
     public LayerTree(String name) {
         this.name = name;
         this.childrens = new ArrayList();
@@ -1112,9 +1110,9 @@ class LayerTree {
     }
 
     /**
-         * @param c
-         *            Collection
-         */
+             * @param c
+             *            Collection
+             */
     public LayerTree(Collection c) {
         this.name = "";
         this.childrens = new ArrayList();
@@ -1156,8 +1154,7 @@ class LayerTree {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param tree
      * @param treeStructure
@@ -1202,8 +1199,7 @@ class LayerTree {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param name
      *

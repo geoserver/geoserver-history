@@ -35,12 +35,12 @@ public class GMLSchemaTranslator extends NameSpaceTranslator {
     private HashSet elements;
 
     /**
-         * XMLSchemaTranslator constructor.
-         * <p>
-         * Description
-         * </p>
-         * @param prefix
-         */
+             * XMLSchemaTranslator constructor.
+             * <p>
+             * Description
+             * </p>
+             * @param prefix
+             */
     public GMLSchemaTranslator(String prefix) {
         super(prefix);
         elements = new HashSet();

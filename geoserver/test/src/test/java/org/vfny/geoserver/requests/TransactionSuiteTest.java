@@ -59,10 +59,10 @@ public class TransactionSuiteTest extends RequestTestCase {
     Transaction service;
 
     /**
-         * Constructor with super.
-         *
-         * @param testName The name of the test.
-         */
+             * Constructor with super.
+             *
+             * @param testName The name of the test.
+             */
     public TransactionSuiteTest(String testName) {
         super(testName);
     }

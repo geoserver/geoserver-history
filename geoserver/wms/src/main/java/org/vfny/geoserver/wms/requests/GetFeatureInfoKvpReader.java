@@ -35,10 +35,10 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
     private GetMapKvpReader getMapReader;
 
     /**
-         * Creates a new GetMapKvpReader object.
-         * @param kvpPairs Key Values pairs of the request
-         * @param service The service handling the request
-         */
+             * Creates a new GetMapKvpReader object.
+             * @param kvpPairs Key Values pairs of the request
+             * @param service The service handling the request
+             */
     public GetFeatureInfoKvpReader(Map kvpPairs, WMService service) {
         super(kvpPairs, service);
         getMapReader = new GetMapKvpReader(kvpPairs, service);

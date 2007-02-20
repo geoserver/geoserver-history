@@ -56,18 +56,18 @@ public interface GeoServerCatalog extends Catalog {
     List resources(Class resolvee) throws IOException;
 
     /**
-         * Loads the feature type metata from the catalog correspoding to a
-         * feature type name.
-         *
-         * @param name A feature type name.
-         * @param monitor Monitor for blocking I/O calls, may be null.
-         *
-         * @return A list of FeatureTypeInfo objects which match the given name,
-         * or empty if no such match.
-         *
-         * @throws IOException Any I/O errors.
-         *
-         */
+             * Loads the feature type metata from the catalog correspoding to a
+             * feature type name.
+             *
+             * @param name A feature type name.
+             * @param monitor Monitor for blocking I/O calls, may be null.
+             *
+             * @return A list of FeatureTypeInfo objects which match the given name,
+             * or empty if no such match.
+             *
+             * @throws IOException Any I/O errors.
+             *
+             */
 
     //	List/*FeatureTypeInfo*/ featureTypes( String name, ProgressListener monitor) 
     //		throws IOException;

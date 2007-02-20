@@ -20,8 +20,8 @@ import java.util.TreeSet;
  */
 public class PNGLegendGraphicProducerFactory implements GetLegendGraphicProducerSpi {
     /**
-         *
-         */
+             *
+             */
     public PNGLegendGraphicProducerFactory() {
         super();
     }

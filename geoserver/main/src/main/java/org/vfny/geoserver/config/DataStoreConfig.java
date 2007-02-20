@@ -45,17 +45,17 @@ public class DataStoreConfig {
     private DataStoreFactorySpi factory;
 
     /**
-         * Create a new DataStoreConfig from a dataStoreId and factoryDescription
-         *
-         * <p>
-         * Creates a DataStoreInfo to represent an instance with default data.
-         * </p>
-         *
-         * @param dataStoreId Description of DataStore (see DataStoreUtils)
-         * @param factoryDescription DOCUMENT ME!
-         *
-         * @see defaultSettings()
-         */
+             * Create a new DataStoreConfig from a dataStoreId and factoryDescription
+             *
+             * <p>
+             * Creates a DataStoreInfo to represent an instance with default data.
+             * </p>
+             *
+             * @param dataStoreId Description of DataStore (see DataStoreUtils)
+             * @param factoryDescription DOCUMENT ME!
+             *
+             * @see defaultSettings()
+             */
     public DataStoreConfig(String dataStoreId, String factoryDescription) {
         this(dataStoreId, DataStoreUtils.aquireFactory(factoryDescription));
     }
@@ -72,15 +72,15 @@ public class DataStoreConfig {
     }
 
     /**
-         * DataStoreInfo constructor.
-         *
-         * <p>
-         * Creates a copy of the DataStoreInfoDTO provided. All the datastructures
-         * are cloned.
-         * </p>
-         *
-         * @param dto The datastore to copy.
-         */
+             * DataStoreInfo constructor.
+             *
+             * <p>
+             * Creates a copy of the DataStoreInfoDTO provided. All the datastructures
+             * are cloned.
+             * </p>
+             *
+             * @param dto The datastore to copy.
+             */
     public DataStoreConfig(DataStoreInfoDTO dto) {
         reset(dto);
     }

@@ -52,11 +52,11 @@ public class GetFeatureResults {
     private List typeInfo;
 
     /**
-         * Creates a new GetFeatureResults object.
-         *
-         * @param request the GetFeature or GetFeatureWithLock request who's
-         *        processing has originated the results this object will hold
-         */
+             * Creates a new GetFeatureResults object.
+             *
+             * @param request the GetFeature or GetFeatureWithLock request who's
+             *        processing has originated the results this object will hold
+             */
     public GetFeatureResults(FeatureRequest request) {
         this.request = request;
         features = new ArrayList(2);

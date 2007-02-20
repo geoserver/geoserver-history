@@ -115,14 +115,14 @@ public class GlobalConfig {
     private boolean jaiPNGNative;
 
     /**
-         * GlobalConfig constructor.
-         *
-         * <p>
-         * Creates an instance of GlobalConfig and initializes to default settings.
-         * </p>
-         *
-         * @see defaultSettings()
-         */
+             * GlobalConfig constructor.
+             *
+             * <p>
+             * Creates an instance of GlobalConfig and initializes to default settings.
+             * </p>
+             *
+             * @see defaultSettings()
+             */
     public GlobalConfig() {
         maxFeatures = 20000;
         verbose = true;
@@ -136,26 +136,26 @@ public class GlobalConfig {
     }
 
     /**
-         * Instantiates the global config from the geoServer module.
-         *
-         * @param geoserver The geoServer module.
-         */
+             * Instantiates the global config from the geoServer module.
+             *
+             * @param geoserver The geoServer module.
+             */
     public GlobalConfig(GeoServer geoserver) {
         this((GeoServerDTO) geoserver.toDTO());
     }
 
     /**
-         * GlobalConfig constructor.
-         *
-         * <p>
-         * Creates a copy of the GeoServerDTO object provided.  Charset is not
-         * cloned, everything else is.
-         * </p>
-         *
-         * @param g
-         *
-         * @throws NullPointerException DOCUMENT ME!
-         */
+             * GlobalConfig constructor.
+             *
+             * <p>
+             * Creates a copy of the GeoServerDTO object provided.  Charset is not
+             * cloned, everything else is.
+             * </p>
+             *
+             * @param g
+             *
+             * @throws NullPointerException DOCUMENT ME!
+             */
     public GlobalConfig(GeoServerDTO g) {
         if (g == null) {
             throw new NullPointerException();
@@ -481,8 +481,7 @@ public class GlobalConfig {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The string representation of the path on disk in which the
      *         server logs to.
@@ -492,8 +491,7 @@ public class GlobalConfig {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param logLocation The string representation of the path on disk in
      *        which the server logs to.
@@ -503,8 +501,7 @@ public class GlobalConfig {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return True if the server is logging to file, otherwise false.
      */

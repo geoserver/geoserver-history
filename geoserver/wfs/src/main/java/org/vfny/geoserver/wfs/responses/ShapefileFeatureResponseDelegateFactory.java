@@ -24,8 +24,8 @@ public class ShapefileFeatureResponseDelegateFactory implements FeatureResponseD
     }
 
     /**
-         * Creates a new GifMapProducerFactory object.
-         */
+             * Creates a new GifMapProducerFactory object.
+             */
     public ShapefileFeatureResponseDelegateFactory() {
         super();
     }
@@ -47,8 +47,7 @@ public class ShapefileFeatureResponseDelegateFactory implements FeatureResponseD
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return <code>true</code>
      */

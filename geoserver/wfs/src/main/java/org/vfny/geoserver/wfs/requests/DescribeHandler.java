@@ -41,10 +41,10 @@ public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
     private StringBuffer characters = new StringBuffer();
 
     /**
-         * Creates a new describe request handler.
-         *
-         * @param request The describe request.
-         */
+             * Creates a new describe request handler.
+             *
+             * @param request The describe request.
+             */
     public DescribeHandler(DescribeRequest request) {
         this.request = request;
     }

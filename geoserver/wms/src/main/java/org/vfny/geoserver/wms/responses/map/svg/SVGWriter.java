@@ -103,11 +103,11 @@ public class SVGWriter extends OutputStreamWriter {
     private WMSMapContext mapContext;
 
     /**
-         * Creates a new SVGWriter object.
-         *
-         * @param out DOCUMENT ME!
-         * @param config DOCUMENT ME!
-         */
+             * Creates a new SVGWriter object.
+             *
+             * @param out DOCUMENT ME!
+             * @param config DOCUMENT ME!
+             */
     public SVGWriter(OutputStream out, WMSMapContext mapContext) {
         super(out);
         this.mapContext = mapContext;
@@ -485,10 +485,10 @@ public class SVGWriter extends OutputStreamWriter {
         private SVGFeatureWriter featureWriter;
 
         /**
-                 * Creates a new CollectSVGHandler object.
-                 *
-                 * @param featureWriter DOCUMENT ME!
-                 */
+                         * Creates a new CollectSVGHandler object.
+                         *
+                         * @param featureWriter DOCUMENT ME!
+                         */
         public CollectSVGHandler(SVGFeatureWriter featureWriter) {
             this.featureWriter = featureWriter;
         }
@@ -514,10 +514,10 @@ public class SVGWriter extends OutputStreamWriter {
         private SVGFeatureWriterHandler handler;
 
         /**
-                 * Creates a new NormalSVGHandler object.
-                 *
-                 * @param handler DOCUMENT ME!
-                 */
+                         * Creates a new NormalSVGHandler object.
+                         *
+                         * @param handler DOCUMENT ME!
+                         */
         public FIDSVGHandler(SVGFeatureWriterHandler handler) {
             this.handler = handler;
         }
@@ -554,10 +554,10 @@ public class SVGWriter extends OutputStreamWriter {
         private SVGFeatureWriterHandler handler;
 
         /**
-                 * Creates a new NormalSVGHandler object.
-                 *
-                 * @param handler DOCUMENT ME!
-                 */
+                         * Creates a new NormalSVGHandler object.
+                         *
+                         * @param handler DOCUMENT ME!
+                         */
         public BoundsSVGHandler(SVGFeatureWriterHandler handler) {
             this.handler = handler;
         }
@@ -596,10 +596,10 @@ public class SVGWriter extends OutputStreamWriter {
         private SVGFeatureWriterHandler handler;
 
         /**
-                 * Creates a new NormalSVGHandler object.
-                 *
-                 * @param handler DOCUMENT ME!
-                 */
+                         * Creates a new NormalSVGHandler object.
+                         *
+                         * @param handler DOCUMENT ME!
+                         */
         public AttributesSVGHandler(SVGFeatureWriterHandler handler) {
             this.handler = handler;
         }
@@ -823,8 +823,8 @@ public class SVGWriter extends OutputStreamWriter {
      */
     private class PointWriter extends SVGFeatureWriter {
         /**
-                 * Creates a new PointWriter object.
-                 */
+                         * Creates a new PointWriter object.
+                         */
         public PointWriter() {
         }
 
@@ -917,8 +917,8 @@ public class SVGWriter extends OutputStreamWriter {
      */
     private class MultiPointWriter extends PointWriter {
         /**
-                 * Creates a new MultiPointWriter object.
-                 */
+                         * Creates a new MultiPointWriter object.
+                         */
         public MultiPointWriter() {
         }
 
@@ -1013,8 +1013,8 @@ public class SVGWriter extends OutputStreamWriter {
      */
     private class LineStringWriter extends SVGFeatureWriter {
         /**
-                 * Creates a new LineStringWriter object.
-                 */
+                         * Creates a new LineStringWriter object.
+                         */
         public LineStringWriter() {
         }
 
@@ -1057,8 +1057,8 @@ public class SVGWriter extends OutputStreamWriter {
      */
     private class MultiLineStringWriter extends LineStringWriter {
         /**
-                 * Creates a new MultiLineStringWriter object.
-                 */
+                         * Creates a new MultiLineStringWriter object.
+                         */
         public MultiLineStringWriter() {
         }
 
@@ -1083,8 +1083,8 @@ public class SVGWriter extends OutputStreamWriter {
      */
     private class PolygonWriter extends SVGFeatureWriter {
         /**
-                 * Creates a new PolygonWriter object.
-                 */
+                         * Creates a new PolygonWriter object.
+                         */
         public PolygonWriter() {
         }
 
@@ -1133,8 +1133,8 @@ public class SVGWriter extends OutputStreamWriter {
      */
     private class MultiPolygonWriter extends PolygonWriter {
         /**
-                 * Creates a new MultiPolygonWriter object.
-                 */
+                         * Creates a new MultiPolygonWriter object.
+                         */
         public MultiPolygonWriter() {
         }
 

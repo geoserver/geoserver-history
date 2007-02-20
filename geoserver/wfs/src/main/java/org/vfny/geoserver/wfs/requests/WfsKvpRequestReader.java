@@ -37,11 +37,11 @@ public abstract class WfsKvpRequestReader extends KvpRequestReader {
     private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
     /**
-         * Creates a new kvp reader for a WFS request.
-         *
-         * @param kvpPairs The raw key value pairs.
-         * @param service The servlet handling the request.
-         */
+             * Creates a new kvp reader for a WFS request.
+             *
+             * @param kvpPairs The raw key value pairs.
+             * @param service The servlet handling the request.
+             */
     public WfsKvpRequestReader(Map kvpPairs, WFService service) {
         super(kvpPairs, service);
     }

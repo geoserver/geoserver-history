@@ -35,12 +35,12 @@ public class NameSpaceTranslatorFactory {
     private Map namespaceTranslatorInstances;
 
     /**
-         * NameSpaceTranslatorFactory constructor.
-         * <p>
-         * Loads some default prefixes into memory when the class is first loaded.
-         * </p>
-         *
-         */
+             * NameSpaceTranslatorFactory constructor.
+             * <p>
+             * Loads some default prefixes into memory when the class is first loaded.
+             * </p>
+             *
+             */
     private NameSpaceTranslatorFactory() {
         namespaceTranslators = new HashMap();
         namespaceTranslatorInstances = new HashMap();

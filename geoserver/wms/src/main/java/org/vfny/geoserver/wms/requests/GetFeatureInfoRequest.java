@@ -56,16 +56,15 @@ public class GetFeatureInfoRequest extends WMSRequest {
     private String exeptionFormat = DEFAULT_EXCEPTION_FORMAT;
 
     /**
-         * Creates a new GetMapRequest object.
-         * @param service The service that will handle the request
-         */
+             * Creates a new GetMapRequest object.
+             * @param service The service that will handle the request
+             */
     public GetFeatureInfoRequest(WMService service) {
         super("GetFeatureInfo", service);
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the exeptionFormat.
      */
@@ -74,8 +73,7 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param exeptionFormat The exeptionFormat to set.
      */
@@ -84,8 +82,7 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the featureCount.
      */
@@ -94,8 +91,7 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param featureCount The featureCount to set.
      */
@@ -104,8 +100,7 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the getMapRequest.
      */
@@ -114,8 +109,7 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param getMapRequest The getMapRequest to set.
      */
@@ -124,8 +118,7 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the infoFormat.
      */
@@ -134,8 +127,7 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param infoFormat The infoFormat to set.
      */
@@ -144,8 +136,7 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the queryLayers.
      */
@@ -154,8 +145,7 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param queryLayers The queryLayers to set.
      */
@@ -164,8 +154,7 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the xPixel.
      */
@@ -174,8 +163,7 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param pixel The xPixel to set.
      */
@@ -184,8 +172,7 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the yPixel.
      */
@@ -194,8 +181,7 @@ public class GetFeatureInfoRequest extends WMSRequest {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param pixel The yPixel to set.
      */

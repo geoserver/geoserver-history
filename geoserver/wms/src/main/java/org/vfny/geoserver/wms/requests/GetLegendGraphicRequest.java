@@ -115,9 +115,9 @@ public class GetLegendGraphicRequest extends WMSRequest {
     private String exceptionsFormat = GetMapRequest.SE_XML;
 
     /**
-         * Creates a new GetLegendGraphicRequest object.
-         * @param service The service that will handle the request
-         */
+             * Creates a new GetLegendGraphicRequest object.
+             * @param service The service that will handle the request
+             */
     public GetLegendGraphicRequest(WMService service) {
         super("GetLegendGraphic", service);
     }

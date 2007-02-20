@@ -66,10 +66,10 @@ public class LockResponse implements Response {
     LockRequest request;
 
     /**
-         * Constructor
-         *
-         * @param gs DOCUMENT ME!
-         */
+             * Constructor
+             *
+             * @param gs DOCUMENT ME!
+             */
     public LockResponse(GeoServer gs) {
         featureLock = null;
         request = null;

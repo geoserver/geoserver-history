@@ -49,8 +49,8 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
     private DefaultRasterMapProducer rasterMapProducer;
 
     /**
-         *
-         */
+             *
+             */
     public DefaultRasterMapProducerTest() {
         super();
     }

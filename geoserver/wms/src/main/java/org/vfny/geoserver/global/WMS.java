@@ -50,15 +50,15 @@ public class WMS extends Service {
     private WFS wfs;
 
     /**
-         * WMS constructor.
-         *
-         * <p>
-         * Stores the data specified in the WMSDTO object in this WMS Object for
-         * GeoServer to use.
-         * </p>
-         *
-         * @param config The data intended for GeoServer to use.
-         */
+             * WMS constructor.
+             *
+             * <p>
+             * Stores the data specified in the WMSDTO object in this WMS Object for
+             * GeoServer to use.
+             * </p>
+             *
+             * @param config The data intended for GeoServer to use.
+             */
     public WMS(WMSDTO config) {
         super(config.getService());
         svgRenderer = config.getSvgRenderer();
@@ -69,14 +69,14 @@ public class WMS extends Service {
     }
 
     /**
-         * Creates the WMS service by getting the WMSDTO object from the
-         * config and calling {@link #WMS(WMSDTO)}.
-         *
-         * @param config
-         * @param data
-         * @param geoServer
-         * @throws ConfigurationException
-         */
+             * Creates the WMS service by getting the WMSDTO object from the
+             * config and calling {@link #WMS(WMSDTO)}.
+             *
+             * @param config
+             * @param data
+             * @param geoServer
+             * @throws ConfigurationException
+             */
     public WMS(Config config, Data data, GeoServer geoServer, WFS wfs)
         throws ConfigurationException {
         this(config.getXMLReader().getWms());
@@ -86,14 +86,14 @@ public class WMS extends Service {
     }
 
     /**
-         * WMS constructor.
-         *
-         * <p>
-         * Package constructor intended for default use by GeoServer
-         * </p>
-         *
-         * @see GeoServer#GeoServer()
-         */
+             * WMS constructor.
+             *
+             * <p>
+             * Package constructor intended for default use by GeoServer
+             * </p>
+             *
+             * @see GeoServer#GeoServer()
+             */
     WMS() {
         super(new ServiceDTO());
     }
@@ -213,8 +213,7 @@ public class WMS extends Service {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return the id of the SVG renderer being used by the wms.
      */
@@ -232,8 +231,7 @@ public class WMS extends Service {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Flag indicating wether the svg renderer should anti-alias or
      *         not.
@@ -253,8 +251,7 @@ public class WMS extends Service {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Flag indicating wether the renderer should interpolate or not.
      */

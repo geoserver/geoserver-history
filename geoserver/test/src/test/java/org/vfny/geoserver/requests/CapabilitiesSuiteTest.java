@@ -41,10 +41,10 @@ public class CapabilitiesSuiteTest extends RequestTestCase {
     private CapabilitiesRequest[] baseRequest = new CapabilitiesRequest[10];
 
     /**
-         * Initializes the database and request handler.
-         *
-         * @param testName The name of this test.
-         */
+             * Initializes the database and request handler.
+             *
+             * @param testName The name of this test.
+             */
     public CapabilitiesSuiteTest(String testName) {
         super(testName);
     }

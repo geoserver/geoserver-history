@@ -56,8 +56,7 @@ public class MockUtils {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param includeMockGeoserver if <code>true</code>, the generated
      *        HttpServletRequest includes a mock geoserver configuration for
@@ -228,8 +227,7 @@ public class MockUtils {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param geoserver
      *
@@ -483,11 +481,11 @@ public class MockUtils {
      */
     private static class ForceWGS84PropertyDataStore extends PropertyDataStore {
         /**
-                 * Creates a new ForceWGS84PropertyDataStore object.
-                 *
-                 * @param dir
-                 *            DOCUMENT ME!
-                 */
+                         * Creates a new ForceWGS84PropertyDataStore object.
+                         *
+                         * @param dir
+                         *            DOCUMENT ME!
+                         */
         public ForceWGS84PropertyDataStore(File dir) {
             super(dir);
         }
@@ -513,8 +511,8 @@ public class MockUtils {
         }
 
         /**
-                 * DOCUMENT ME!
-                 */
+                         * DOCUMENT ME!
+                         */
 
         /*
          * public FeatureReader getFeatureReader(Query query, Transaction

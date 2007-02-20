@@ -28,24 +28,24 @@ public class WriterHelper {
     protected Writer writer;
 
     /**
-         * WriterUtils constructor.
-         *
-         * <p>
-         * Should never be called.
-         * </p>
-         */
+             * WriterUtils constructor.
+             *
+             * <p>
+             * Should never be called.
+             * </p>
+             */
     protected WriterHelper() {
     }
 
     /**
-         * WriterUtils constructor.
-         *
-         * <p>
-         * Stores the specified writer to use for output.
-         * </p>
-         *
-         * @param writer the writer which will be used for outputing the xml.
-         */
+             * WriterUtils constructor.
+             *
+             * <p>
+             * Stores the specified writer to use for output.
+             * </p>
+             *
+             * @param writer the writer which will be used for outputing the xml.
+             */
     public WriterHelper(Writer writer) {
         this.writer = writer;
     }

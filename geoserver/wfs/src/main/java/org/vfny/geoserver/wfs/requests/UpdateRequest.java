@@ -36,8 +36,8 @@ public class UpdateRequest extends SubTransactionRequest {
     protected boolean releaseAll = true;
 
     /**
-         * Constructor
-         */
+             * Constructor
+             */
     public UpdateRequest() {
         properties = new ArrayList();
     }
@@ -266,11 +266,11 @@ public class UpdateRequest extends SubTransactionRequest {
         private Object value;
 
         /**
-                 * constructor.
-                 *
-                 * @param name The property name to update.
-                 * @param value The new value to be assigned.
-                 */
+                         * constructor.
+                         *
+                         * @param name The property name to update.
+                         * @param value The new value to be assigned.
+                         */
         public Property(String name, Object value) {
             this.name = name;
             this.value = value;

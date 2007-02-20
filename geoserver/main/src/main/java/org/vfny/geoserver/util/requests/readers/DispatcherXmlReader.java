@@ -82,8 +82,7 @@ public class DispatcherXmlReader {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The service, WFS,WMS,WCS,etc...
      */
@@ -92,8 +91,7 @@ public class DispatcherXmlReader {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The request, GetCapabilities,GetMap,etc...
      */

@@ -47,10 +47,10 @@ public class GetLegendGraphicResponse implements Response {
     private ApplicationContext applicationContext;
 
     /**
-         * Creates a new GetLegendGraphicResponse object.
-         *
-         * @param applicationContext
-         */
+             * Creates a new GetLegendGraphicResponse object.
+             *
+             * @param applicationContext
+             */
     public GetLegendGraphicResponse(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }

@@ -57,17 +57,17 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
     protected String locator = new String();
 
     /**
-         * Empty constructor.
-         */
+             * Empty constructor.
+             */
     public ServiceException() {
         super(null);
     }
 
     /**
-         * Empty constructor.
-         *
-         * @param message The message for the .
-         */
+             * Empty constructor.
+             *
+             * @param message The message for the .
+             */
     public ServiceException(String message) {
         super(message, null);
 
@@ -75,20 +75,20 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
     }
 
     /**
-         * This should be the most used entry point.
-         *
-         * @param message User message
-         * @param cause The origional exception that caused failure
-         */
+             * This should be the most used entry point.
+             *
+             * @param message User message
+             * @param cause The origional exception that caused failure
+             */
     public ServiceException(String message, Throwable cause) {
         super(message, cause, null);
     }
 
     /**
-         * Empty constructor.
-         *
-         * @param e The message for the .
-         */
+             * Empty constructor.
+             *
+             * @param e The message for the .
+             */
     public ServiceException(Throwable e) {
         super(e, null);
 
@@ -96,11 +96,11 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
     }
 
     /**
-         * Empty constructor.
-         *
-         * @param message The message for the .
-         * @param locator The message for the .
-         */
+             * Empty constructor.
+             *
+             * @param message The message for the .
+             * @param locator The message for the .
+             */
     public ServiceException(String message, String locator) {
         super(message);
 
@@ -110,12 +110,12 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
     }
 
     /**
-         * DOCUMENT ME!
-         *
-         * @param e The message for the .
-         * @param preMessage The message to tack on the front.
-         * @param locator The message for the .
-         */
+             * DOCUMENT ME!
+             *
+             * @param e The message for the .
+             * @param preMessage The message to tack on the front.
+             * @param locator The message for the .
+             */
     public ServiceException(Throwable e, String preMessage, String locator) {
         this(e);
 

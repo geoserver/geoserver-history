@@ -60,14 +60,14 @@ public class HTMLEncoder {
                         res = val.substring(i);
                         /*
                          * drichard 2005-06-20 : indice should be relative to res :
-                                                  indice = val.indexOf(';'); // Hasta el ;
+                                                      indice = val.indexOf(';'); // Hasta el ;
                          */
                         indice = res.indexOf(';'); // Hasta el ;
 
                         if (indice != -1) {
                             /*
                              * drichard 2005-06-20 : d should be relative to res :
-                                                          d = val.charAt(1);
+                                                              d = val.charAt(1);
                              */
                             d = res.charAt(1);
 

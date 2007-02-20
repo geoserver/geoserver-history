@@ -77,10 +77,10 @@ public class GetMapResponse implements Response {
     private ApplicationContext applicationContext;
 
     /**
-         * Creates a new GetMapResponse object.
-         *
-         * @param applicationContext
-         */
+             * Creates a new GetMapResponse object.
+             *
+             * @param applicationContext
+             */
     public GetMapResponse(WMS wms, ApplicationContext applicationContext) {
         this.wms = wms;
         this.applicationContext = applicationContext;

@@ -30,8 +30,8 @@ public final class PNGMapProducerFactory implements GetMapProducerFactorySpi {
     private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
 
     /**
-         * Creates a new PNGMapProducerFactory object.
-         */
+             * Creates a new PNGMapProducerFactory object.
+             */
     public PNGMapProducerFactory() {
         super();
     }

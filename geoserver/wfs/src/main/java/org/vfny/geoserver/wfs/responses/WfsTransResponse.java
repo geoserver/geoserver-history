@@ -88,11 +88,11 @@ public class WfsTransResponse {
     private List insertResults;
 
     /**
-         * Only constructor, as status is mandatory
-         *
-         * @param status The status of the transaction.
-         * @param verbose DOCUMENT ME!
-         */
+             * Only constructor, as status is mandatory
+             *
+             * @param status The status of the transaction.
+             * @param verbose DOCUMENT ME!
+             */
     public WfsTransResponse(short status, boolean verbose) {
         this.status = status;
         this.verbose = verbose;
@@ -101,13 +101,13 @@ public class WfsTransResponse {
     }
 
     /**
-         * Convenience constructor, for status and handle
-         *
-         * @param status The status of the transaction.
-         * @param handle the handle of the response.  Should be the same as the
-         *        handle of the transaction request.
-         * @param verbose DOCUMENT ME!
-         */
+             * Convenience constructor, for status and handle
+             *
+             * @param status The status of the transaction.
+             * @param handle the handle of the response.  Should be the same as the
+             *        handle of the transaction request.
+             * @param verbose DOCUMENT ME!
+             */
     public WfsTransResponse(short status, String handle, boolean verbose) {
         this.status = status;
         this.handle = handle;
@@ -301,11 +301,11 @@ public class WfsTransResponse {
         private Collection featureIds;
 
         /**
-                 * Constructor.
-                 *
-                 * @param handle The handle for the insert operation.
-                 * @param featureIds The fids that were added by the insert operation.
-                 */
+                         * Constructor.
+                         *
+                         * @param handle The handle for the insert operation.
+                         * @param featureIds The fids that were added by the insert operation.
+                         */
         public InsertResult(String handle, Collection featureIds) {
             this.handle = handle;
             this.featureIds = featureIds;

@@ -22,11 +22,11 @@ class JaiLegendGraphicProducer extends DefaultRasterLegendProducer {
     private String outputFormat;
 
     /**
-         * Creates a new JAI based legend producer for creating
-         * <code>outputFormat</code> type images.
-         *
-         * @param outputFormat DOCUMENT ME!
-         */
+             * Creates a new JAI based legend producer for creating
+             * <code>outputFormat</code> type images.
+             *
+             * @param outputFormat DOCUMENT ME!
+             */
     JaiLegendGraphicProducer(String outputFormat) {
         super();
         this.outputFormat = outputFormat;

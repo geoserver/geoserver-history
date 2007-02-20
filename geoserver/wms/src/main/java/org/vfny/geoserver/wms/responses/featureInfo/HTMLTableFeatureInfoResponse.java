@@ -32,8 +32,8 @@ import java.util.HashMap;
  */
 public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
     /**
-         *
-         */
+             *
+             */
     public HTMLTableFeatureInfoResponse() {
         format = "text/html";
         supportedFormats = Collections.singletonList(format);

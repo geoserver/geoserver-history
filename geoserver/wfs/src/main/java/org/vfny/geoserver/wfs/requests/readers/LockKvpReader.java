@@ -29,11 +29,11 @@ public class LockKvpReader extends WfsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
     /**
-         * Constructor with raw request string and servlet handling request.
-         *
-         * @param kvPairs key/value pairs ser to construct a Lock request
-         * @param service servlet/service handling request.
-         */
+             * Constructor with raw request string and servlet handling request.
+             *
+             * @param kvPairs key/value pairs ser to construct a Lock request
+             * @param service servlet/service handling request.
+             */
     public LockKvpReader(Map kvPairs, WFService service) {
         super(kvPairs, service);
     }

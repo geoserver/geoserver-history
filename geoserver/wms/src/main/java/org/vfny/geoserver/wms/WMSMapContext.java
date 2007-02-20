@@ -47,8 +47,8 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
     private GetMapRequest request; // hold onto it so we can grab info from it (request URL etc...)
 
     /**
-         *
-         */
+             *
+             */
     public WMSMapContext() {
         super();
     }
@@ -59,10 +59,10 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
     }
 
     /**
-         * DOCUMENT ME!
-         *
-         * @param layers
-         */
+             * DOCUMENT ME!
+             *
+             * @param layers
+             */
     public WMSMapContext(MapLayer[] layers) {
         super(layers);
     }

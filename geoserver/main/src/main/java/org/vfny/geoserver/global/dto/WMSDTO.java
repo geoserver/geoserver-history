@@ -42,23 +42,23 @@ public final class WMSDTO implements DataTransferObject {
     private String allowInterpolation;
 
     /**
-         * WMS constructor.  does nothing
-         */
+             * WMS constructor.  does nothing
+             */
     public WMSDTO() {
     }
 
     /**
-         * WMS constructor.
-         *
-         * <p>
-         * Creates a copy of the WMS provided. If the WMS provided  is null then
-         * default values are used. All the data structures are cloned.
-         * </p>
-         *
-         * @param other The WMS to copy.
-         *
-         * @throws NullPointerException DOCUMENT ME!
-         */
+             * WMS constructor.
+             *
+             * <p>
+             * Creates a copy of the WMS provided. If the WMS provided  is null then
+             * default values are used. All the data structures are cloned.
+             * </p>
+             *
+             * @param other The WMS to copy.
+             *
+             * @throws NullPointerException DOCUMENT ME!
+             */
     public WMSDTO(WMSDTO other) {
         if (other == null) {
             throw new NullPointerException("Data Transfer Object required");
@@ -198,8 +198,7 @@ public final class WMSDTO implements DataTransferObject {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The constant identifying the current svg renderer.
      *
@@ -211,8 +210,7 @@ public final class WMSDTO implements DataTransferObject {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param svgRenderer constant identifying the current svg renderer.
      *
@@ -224,8 +222,7 @@ public final class WMSDTO implements DataTransferObject {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param svgAntiAlias anti alias hint.
      */
@@ -234,8 +231,7 @@ public final class WMSDTO implements DataTransferObject {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The value of the anti aliasing rendering hint.
      */
@@ -260,8 +256,7 @@ public final class WMSDTO implements DataTransferObject {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param allowInterpolation interpolation hint.
      */
@@ -270,8 +265,7 @@ public final class WMSDTO implements DataTransferObject {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The value of the interpolation rendering hint.
      */

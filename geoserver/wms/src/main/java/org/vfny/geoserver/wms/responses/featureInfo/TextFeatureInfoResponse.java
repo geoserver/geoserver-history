@@ -30,8 +30,8 @@ import java.util.HashMap;
  */
 public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
     /**
-         *
-         */
+             *
+             */
     public TextFeatureInfoResponse() {
         format = "text/plain";
         supportedFormats = Collections.singletonList("text/plain");

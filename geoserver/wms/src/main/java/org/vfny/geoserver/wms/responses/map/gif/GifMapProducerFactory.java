@@ -30,8 +30,8 @@ public final class GifMapProducerFactory implements GetMapProducerFactorySpi {
     private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
 
     /**
-         * Creates a new GifMapProducerFactory object.
-         */
+             * Creates a new GifMapProducerFactory object.
+             */
     public GifMapProducerFactory() {
         super();
     }
@@ -56,8 +56,7 @@ public final class GifMapProducerFactory implements GetMapProducerFactorySpi {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return <code>true</code>
      */

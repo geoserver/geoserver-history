@@ -81,9 +81,9 @@ public class PutStyles extends AbstractService {
 
     protected XmlRequestReader getXmlRequestReader() {
         /**
-                * @todo Implement this org.vfny.geoserver.servlets.AbstractService
-                *       abstract method
-                */
+                        * @todo Implement this org.vfny.geoserver.servlets.AbstractService
+                        *       abstract method
+                        */
         throw new java.lang.UnsupportedOperationException(
             "Method getXmlRequestReader() not yet implemented.");
     }
@@ -91,9 +91,9 @@ public class PutStyles extends AbstractService {
     protected ExceptionHandler getExceptionHandler() {
         // TODO Auto-generated method stub
         /**
-                * @todo Implement this org.vfny.geoserver.servlets.AbstractService
-                *       abstract method
-                */
+                        * @todo Implement this org.vfny.geoserver.servlets.AbstractService
+                        *       abstract method
+                        */
         throw new java.lang.UnsupportedOperationException(
             "Method getXmlRequestReader() not yet implemented.");
     }

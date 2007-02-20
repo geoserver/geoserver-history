@@ -22,8 +22,8 @@ public class GML2FeatureResponseDelegateFactory implements FeatureResponseDelega
     }
 
     /**
-         * Creates a new GifMapProducerFactory object.
-         */
+             * Creates a new GifMapProducerFactory object.
+             */
     public GML2FeatureResponseDelegateFactory() {
         super();
     }
@@ -47,8 +47,7 @@ public class GML2FeatureResponseDelegateFactory implements FeatureResponseDelega
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return <code>true</code>
      */

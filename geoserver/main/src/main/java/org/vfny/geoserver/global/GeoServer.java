@@ -92,10 +92,10 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
     }
 
     /**
-         * Creates a GeoServer instance and loads its configuration.
-         *
-         * @throws ConfigurationException
-         */
+             * Creates a GeoServer instance and loads its configuration.
+             *
+             * @throws ConfigurationException
+             */
     public GeoServer(Config config) throws ConfigurationException {
         LOGGER.fine("Creating GeoServer");
         load(config.getXMLReader().getGeoServer());
@@ -654,8 +654,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param logLocation The string representation of the path on disk in
      *        which the server logs to.
@@ -665,8 +664,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return True if the server is logging to file, otherwise false.
      */
@@ -712,8 +710,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the imageIOCache.
      */

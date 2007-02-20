@@ -58,10 +58,10 @@ public class FeatureRequest extends WFSRequest {
     protected List queries = new ArrayList();
 
     /**
-         * Creates a new GetFeature request.
-         *
-         * @param service The wfs service handling the request.
-         */
+             * Creates a new GetFeature request.
+             *
+             * @param service The wfs service handling the request.
+             */
     public FeatureRequest(WFService service) {
         super("GetFeature", service);
     }

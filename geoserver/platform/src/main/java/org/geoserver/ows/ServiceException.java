@@ -34,8 +34,7 @@ public class ServiceException extends Exception {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The application specifc code of the exception.
      */

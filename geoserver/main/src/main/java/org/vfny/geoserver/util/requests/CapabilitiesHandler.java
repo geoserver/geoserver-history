@@ -31,9 +31,9 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
     private CapabilitiesRequest request = null;
 
     /**
-         * Creates a new CapabilitiesHandler
-         * @param service this is the AbstractService Handling the Request
-         */
+             * Creates a new CapabilitiesHandler
+             * @param service this is the AbstractService Handling the Request
+             */
     public CapabilitiesHandler(AbstractService service) {
         this.service = service;
         request = new CapabilitiesRequest("WFS", service);

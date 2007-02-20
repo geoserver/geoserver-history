@@ -36,11 +36,11 @@ public class GetFeatureKvpReader extends WfsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
     /**
-         * Constructor with raw request string.  Calls parent.
-         *
-         * @param kvPairs key/value pairs for a GetFeature request
-         * @param service sevlet or service handling the request.
-         */
+             * Constructor with raw request string.  Calls parent.
+             *
+             * @param kvPairs key/value pairs for a GetFeature request
+             * @param service sevlet or service handling the request.
+             */
     public GetFeatureKvpReader(Map kvPairs, WFService service) {
         super(kvPairs, service);
     }

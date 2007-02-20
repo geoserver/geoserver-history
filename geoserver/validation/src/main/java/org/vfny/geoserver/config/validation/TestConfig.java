@@ -58,25 +58,25 @@ public class TestConfig {
     private Map args;
 
     /**
-         * TestConfig constructor.
-         *
-         * <p>
-         * Does nothing
-         * </p>
-         */
+             * TestConfig constructor.
+             *
+             * <p>
+             * Does nothing
+             * </p>
+             */
     public TestConfig() {
         args = new HashMap();
     }
 
     /**
-         * TestConfig constructor.
-         *
-         * <p>
-         * Creates a copy from the TestConfig specified.
-         * </p>
-         *
-         * @param t the data to copy
-         */
+             * TestConfig constructor.
+             *
+             * <p>
+             * Creates a copy from the TestConfig specified.
+             * </p>
+             *
+             * @param t the data to copy
+             */
     public TestConfig(TestConfig t) {
         name = t.getName();
         description = t.getDescription();
@@ -96,14 +96,14 @@ public class TestConfig {
     }
 
     /**
-         * TestConfig constructor.
-         *
-         * <p>
-         * Creates a copy from the TestDTO specified.
-         * </p>
-         *
-         * @param t the data to copy
-         */
+             * TestConfig constructor.
+             *
+             * <p>
+             * Creates a copy from the TestDTO specified.
+             * </p>
+             *
+             * @param t the data to copy
+             */
     public TestConfig(TestDTO t, Map plugInConfigs) {
         name = t.getName();
         description = t.getDescription();

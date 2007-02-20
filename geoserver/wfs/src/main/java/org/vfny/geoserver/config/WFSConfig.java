@@ -26,29 +26,29 @@ public class WFSConfig extends ServiceConfig {
     private boolean srsXmlStyle = true;
 
     /**
-         * WFS constructor.
-         *
-         * <p>
-         * Creates a WFS to represent an instance with default data.
-         * </p>
-         *
-         * @see defaultSettings()
-         */
+             * WFS constructor.
+             *
+             * <p>
+             * Creates a WFS to represent an instance with default data.
+             * </p>
+             *
+             * @see defaultSettings()
+             */
     public WFSConfig() {
         super();
         srsXmlStyle = true;
     }
 
     /**
-         * WFS constructor.
-         *
-         * <p>
-         * Creates a copy of the WFS provided. If the WFS provided  is null then
-         * default values are used. All the data structures are cloned.
-         * </p>
-         *
-         * @param w The WFS to copy.
-         */
+             * WFS constructor.
+             *
+             * <p>
+             * Creates a copy of the WFS provided. If the WFS provided  is null then
+             * default values are used. All the data structures are cloned.
+             * </p>
+             *
+             * @param w The WFS to copy.
+             */
     public WFSConfig(WFSDTO w) {
         super(w.getService());
         serviceLevel = w.getServiceLevel();
@@ -58,11 +58,11 @@ public class WFSConfig extends ServiceConfig {
     }
 
     /**
-         * Creates the WFSConfig.
-         *
-         * @param wfs The wfs module.
-         *
-         */
+             * Creates the WFSConfig.
+             *
+             * @param wfs The wfs module.
+             *
+             */
     public WFSConfig(WFS wfs) {
         this((WFSDTO) wfs.toDTO());
     }

@@ -221,12 +221,12 @@ public final class Requests {
     }
 
     /**
-         * Access GeoServer Application State from the WebContainer.
-         *
-         * @param request DOCUMENT ME!
-         *
-         * @return Configuration model for Catalog information.
-         */
+             * Access GeoServer Application State from the WebContainer.
+             *
+             * @param request DOCUMENT ME!
+             *
+             * @return Configuration model for Catalog information.
+             */
 
     //JD: kill this
     //    public static ApplicationState getApplicationState(

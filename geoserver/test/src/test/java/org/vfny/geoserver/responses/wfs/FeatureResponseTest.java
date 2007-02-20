@@ -26,10 +26,10 @@ public class FeatureResponseTest extends DataTestCase {
     FeatureResponse response;
 
     /**
-         * Constructor for FeatureResponseTest.
-         *
-         * @param arg0
-         */
+             * Constructor for FeatureResponseTest.
+             *
+             * @param arg0
+             */
     public FeatureResponseTest(String arg0) {
         super(arg0);
     }

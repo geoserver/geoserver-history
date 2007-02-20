@@ -30,10 +30,10 @@ import javax.xml.parsers.SAXParserFactory;
  */
 public class DescribeXmlReader extends XmlRequestReader {
     /**
-         * Creates a new DescribeXmlReader object.
-         *
-         * @param service The service handling the request.
-         */
+             * Creates a new DescribeXmlReader object.
+             *
+             * @param service The service handling the request.
+             */
     public DescribeXmlReader(WFService service) {
         super(service);
     }

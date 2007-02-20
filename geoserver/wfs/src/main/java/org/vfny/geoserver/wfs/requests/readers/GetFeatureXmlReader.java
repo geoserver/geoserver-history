@@ -32,10 +32,10 @@ import javax.xml.parsers.SAXParserFactory;
  */
 public class GetFeatureXmlReader extends XmlRequestReader {
     /**
-         * Creates a new GetFeatureXmlReader object.
-         *
-         * @param The WFS Service handling the request.
-         */
+             * Creates a new GetFeatureXmlReader object.
+             *
+             * @param The WFS Service handling the request.
+             */
     public GetFeatureXmlReader(WFService service) {
         super(service);
     }

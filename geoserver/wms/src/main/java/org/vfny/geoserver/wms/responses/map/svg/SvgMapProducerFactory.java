@@ -35,8 +35,8 @@ public class SvgMapProducerFactory implements GetMapProducerFactorySpi {
     private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
 
     /**
-         * Creates a new SvgMapProducerFactory object.
-         */
+             * Creates a new SvgMapProducerFactory object.
+             */
     public SvgMapProducerFactory() {
         super();
     }

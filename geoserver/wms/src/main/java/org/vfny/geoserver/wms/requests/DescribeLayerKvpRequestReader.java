@@ -33,10 +33,10 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
                                                                                              .getName());
 
     /**
-         * Constructs a new DescribeLayer request parser.
-         * @param params
-         * @param service The service that handles the request
-         */
+             * Constructs a new DescribeLayer request parser.
+             * @param params
+             * @param service The service that handles the request
+             */
     public DescribeLayerKvpRequestReader(Map params, WMService service) {
         super(params, service);
     }

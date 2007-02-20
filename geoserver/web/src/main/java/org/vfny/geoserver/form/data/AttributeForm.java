@@ -61,8 +61,7 @@ public class AttributeForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the fragment.
      */
@@ -71,8 +70,7 @@ public class AttributeForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param fragment The fragment to set.
      */
@@ -81,8 +79,7 @@ public class AttributeForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the maxOccurs.
      */
@@ -91,8 +88,7 @@ public class AttributeForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param maxOccurs The maxOccurs to set.
      */
@@ -101,8 +97,7 @@ public class AttributeForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the minOccurs.
      */
@@ -111,8 +106,7 @@ public class AttributeForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param minOccurs The minOccurs to set.
      */
@@ -121,8 +115,7 @@ public class AttributeForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the name.
      */
@@ -131,8 +124,7 @@ public class AttributeForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param name The name to set.
      */
@@ -141,8 +133,7 @@ public class AttributeForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the nillible.
      */
@@ -151,8 +142,7 @@ public class AttributeForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param nillible The nillible to set.
      */
@@ -161,8 +151,7 @@ public class AttributeForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the selectedType.
      */
@@ -171,8 +160,7 @@ public class AttributeForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param selectedType The selectedType to set.
      */

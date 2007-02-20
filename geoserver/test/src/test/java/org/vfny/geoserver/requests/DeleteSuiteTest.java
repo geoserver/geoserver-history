@@ -31,10 +31,10 @@ public class DeleteSuiteTest extends TransactionSuiteTest {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /**
-         * Constructor with super.
-         *
-         * @param testName DOCUMENT ME!
-         */
+             * Constructor with super.
+             *
+             * @param testName DOCUMENT ME!
+             */
     public DeleteSuiteTest(String testName) {
         super(testName);
     }

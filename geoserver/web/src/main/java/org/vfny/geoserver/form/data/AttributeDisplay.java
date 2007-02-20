@@ -33,8 +33,7 @@ public class AttributeDisplay {
        }   */
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the fragment.
      */
@@ -43,8 +42,7 @@ public class AttributeDisplay {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the maxOccurs.
      */
@@ -53,8 +51,7 @@ public class AttributeDisplay {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the minOccurs.
      */
@@ -63,8 +60,7 @@ public class AttributeDisplay {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the name.
      */
@@ -73,8 +69,7 @@ public class AttributeDisplay {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the nillible.
      */
@@ -83,8 +78,7 @@ public class AttributeDisplay {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the selectedType.
      */

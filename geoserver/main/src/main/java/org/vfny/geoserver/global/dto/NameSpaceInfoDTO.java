@@ -32,28 +32,28 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
     private boolean _default = false;
 
     /**
-         * NameSpaceConfig constructor.
-         *
-         * <p>
-         * does nothing
-         * </p>
-         */
+             * NameSpaceConfig constructor.
+             *
+             * <p>
+             * does nothing
+             * </p>
+             */
     public NameSpaceInfoDTO() {
     }
 
     /**
-         * NameSpaceConfig constructor.
-         *
-         * <p>
-         * Creates a copy of the NameSpaceConfig provided. If the NameSpaceConfig
-         * provided  is null then default values are used. All the data structures
-         * are cloned.
-         * </p>
-         *
-         * @param ns The namespace to copy.
-         *
-         * @throws NullPointerException DOCUMENT ME!
-         */
+             * NameSpaceConfig constructor.
+             *
+             * <p>
+             * Creates a copy of the NameSpaceConfig provided. If the NameSpaceConfig
+             * provided  is null then default values are used. All the data structures
+             * are cloned.
+             * </p>
+             *
+             * @param ns The namespace to copy.
+             *
+             * @throws NullPointerException DOCUMENT ME!
+             */
     public NameSpaceInfoDTO(NameSpaceInfoDTO ns) {
         if (ns == null) {
             throw new NullPointerException();

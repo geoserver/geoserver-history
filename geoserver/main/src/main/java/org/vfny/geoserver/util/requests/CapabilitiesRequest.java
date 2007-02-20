@@ -17,11 +17,11 @@ import org.vfny.geoserver.servlets.AbstractService;
  */
 public class CapabilitiesRequest extends Request {
     /**
-         * Creates a new capabilities request object.
-         *
-         * @param serviceType The id of the service being handled.
-         * @param service The service handing the request.
-         */
+             * Creates a new capabilities request object.
+             *
+             * @param serviceType The id of the service being handled.
+             * @param service The service handing the request.
+             */
     public CapabilitiesRequest(String serviceType, AbstractService service) {
         super(serviceType, "GetCapabilities", service);
     }

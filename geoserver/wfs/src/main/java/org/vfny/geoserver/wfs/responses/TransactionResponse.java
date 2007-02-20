@@ -81,8 +81,8 @@ public class TransactionResponse implements Response {
     protected Transaction transaction;
 
     /**
-         * Constructor
-         */
+             * Constructor
+             */
     public TransactionResponse() {
         transaction = null;
     }

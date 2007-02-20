@@ -62,19 +62,19 @@ public class ApplicationState implements PlugIn, InitializingBean {
     Config config;
 
     /**
-         *
-         * @deprecated use {@link #ApplicationState(Data, GeoValidator, Config)}
-         */
+             *
+             * @deprecated use {@link #ApplicationState(Data, GeoValidator, Config)}
+             */
     public ApplicationState() {
         this(null, null, null);
     }
 
     /**
-         * Creates a new appliction state.
-         *
-         * @param data The data modle.
-         * @param validator The validation module
-         */
+             * Creates a new appliction state.
+             *
+             * @param data The data modle.
+             * @param validator The validation module
+             */
     public ApplicationState(Data data, GeoValidator validator, Config config) {
         this.data = data;
         this.validator = validator;

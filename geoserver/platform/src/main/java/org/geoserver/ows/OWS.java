@@ -177,8 +177,7 @@ public class OWS {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return the character set for the service.
      */
@@ -245,8 +244,7 @@ public class OWS {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The base url from which to locate schemas from.
      */

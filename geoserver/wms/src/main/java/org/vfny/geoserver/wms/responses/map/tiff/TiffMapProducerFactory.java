@@ -36,8 +36,8 @@ public final class TiffMapProducerFactory implements GetMapProducerFactorySpi {
                                                                                       .getName());
 
     /**
-         * Default constructor.
-         */
+             * Default constructor.
+             */
     public TiffMapProducerFactory() {
     }
 

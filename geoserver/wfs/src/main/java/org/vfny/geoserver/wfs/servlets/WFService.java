@@ -22,18 +22,17 @@ import javax.servlet.http.HttpServletRequest;
  */
 abstract public class WFService extends AbstractService {
     /**
-             * Constructor for WFS service.
-             *
-             * @param request The service request being made (GetCaps,GetFeature,...)
-             * @param wfs The WFS service reference.
-             */
+                 * Constructor for WFS service.
+                 *
+                 * @param request The service request being made (GetCaps,GetFeature,...)
+                 * @param wfs The WFS service reference.
+                 */
     public WFService(String request, WFS wfs) {
         super("WFS", request, wfs);
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The wfs service ref.
      */

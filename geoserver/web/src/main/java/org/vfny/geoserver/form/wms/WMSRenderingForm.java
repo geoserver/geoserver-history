@@ -95,8 +95,7 @@ public class WMSRenderingForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param svgAntiAlias anti alias hint.
      */
@@ -106,8 +105,7 @@ public class WMSRenderingForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The value of the anti aliasing rendering hint.
      */
@@ -125,8 +123,7 @@ public class WMSRenderingForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param allowInterpolation interpolation rendering hint.
      */
@@ -135,8 +132,7 @@ public class WMSRenderingForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The value of the interpolation rendering hint.
      */

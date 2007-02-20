@@ -120,8 +120,7 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the demo.
      */
@@ -130,8 +129,7 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param demo The demo to set.
      */
@@ -140,8 +138,7 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the dir.
      */
@@ -150,8 +147,7 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the url.
      */
@@ -160,8 +156,7 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param url The url to set.
      */
@@ -170,8 +165,7 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the demoList.
      */
@@ -180,8 +174,7 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the action.
      */
@@ -190,8 +183,7 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param action The action to set.
      */
@@ -200,8 +192,7 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the body.
      */
@@ -210,8 +201,7 @@ public class DemoRequestForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param body The body to set.
      */

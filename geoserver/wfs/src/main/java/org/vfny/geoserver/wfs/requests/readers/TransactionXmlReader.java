@@ -34,10 +34,10 @@ import javax.xml.parsers.SAXParserFactory;
  */
 public class TransactionXmlReader extends XmlRequestReader {
     /**
-         * Creates a new reader.
-         *
-         * @param service The WFS service handling the request.
-         */
+             * Creates a new reader.
+             *
+             * @param service The WFS service handling the request.
+             */
     public TransactionXmlReader(WFService service) {
         super(service);
     }

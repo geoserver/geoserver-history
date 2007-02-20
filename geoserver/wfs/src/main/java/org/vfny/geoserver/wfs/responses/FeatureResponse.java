@@ -74,8 +74,8 @@ public class FeatureResponse implements Response {
     FeatureLock featureLock;
 
     /**
-         * Empty constructor
-         */
+             * Empty constructor
+             */
     public FeatureResponse() {
         request = null;
         featureLock = null;

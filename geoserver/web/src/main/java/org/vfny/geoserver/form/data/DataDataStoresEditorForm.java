@@ -483,8 +483,7 @@ public class DataDataStoresEditorForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return list containing the name of the class of each paramter.
      */
@@ -493,8 +492,7 @@ public class DataDataStoresEditorForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param index paramter index.
      *
@@ -506,8 +504,7 @@ public class DataDataStoresEditorForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return list containing java.lang.Boolean values representing which
      *         paramters are required.
@@ -517,8 +514,7 @@ public class DataDataStoresEditorForm extends ActionForm {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param index paramter index.
      *

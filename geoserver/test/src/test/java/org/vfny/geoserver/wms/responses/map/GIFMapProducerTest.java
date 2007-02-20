@@ -15,8 +15,7 @@ import javax.imageio.ImageIO;
 
 
 /**
- *
-DOCUMENT ME!
+ * DOCUMENT ME!
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
@@ -25,8 +24,8 @@ DOCUMENT ME!
  */
 public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
     /**
-         *
-         */
+             *
+             */
     public GIFMapProducerTest() {
         super();
     }

@@ -67,26 +67,26 @@ public final class ContactDTO implements DataTransferObject {
     private String onlineResource;
 
     /**
-         * ContactConfig constructor.
-         *
-         * <p>
-         * does nothing
-         * </p>
-         */
+             * ContactConfig constructor.
+             *
+             * <p>
+             * does nothing
+             * </p>
+             */
     public ContactDTO() {
     }
 
     /**
-         * Contact Data Transfer Object constructor.
-         *
-         * <p>
-         * Creates a copy of the ContactDTO specified.
-         * </p>
-         *
-         * @param c The ContactDTO to create a copy of.
-         *
-         * @throws NullPointerException DOCUMENT ME!
-         */
+             * Contact Data Transfer Object constructor.
+             *
+             * <p>
+             * Creates a copy of the ContactDTO specified.
+             * </p>
+             *
+             * @param c The ContactDTO to create a copy of.
+             *
+             * @throws NullPointerException DOCUMENT ME!
+             */
     public ContactDTO(ContactDTO c) {
         if (c == null) {
             throw new NullPointerException("Requires a non null ContactDTO");
@@ -414,8 +414,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the onlineResource.
      */
@@ -424,8 +423,7 @@ public final class ContactDTO implements DataTransferObject {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param onlineResource The onlineResource to set.
      */

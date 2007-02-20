@@ -76,15 +76,15 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     ServiceInfo info;
 
     /**
-         * DataStoreInfo constructor.
-         *
-         * <p>
-         * Stores the specified data for later use.
-         * </p>
-         *
-         * @param config DataStoreInfoDTO the current configuration to use.
-         * @param data Data a ref to use later to look up related informtion
-         */
+             * DataStoreInfo constructor.
+             *
+             * <p>
+             * Stores the specified data for later use.
+             * </p>
+             *
+             * @param config DataStoreInfoDTO the current configuration to use.
+             * @param data Data a ref to use later to look up related informtion
+             */
     public DataStoreInfo(DataStoreInfoDTO config, Data data) {
         this.data = data;
         meta = new HashMap();

@@ -45,14 +45,14 @@ public class WMSConfig extends ServiceConfig {
     private String allowInterpolation;
 
     /**
-         * WMS constructor.
-         *
-         * <p>
-         * Creates a WMS to represent an instance with default data.
-         * </p>
-         *
-         * @see defaultSettings()
-         */
+             * WMS constructor.
+             *
+             * <p>
+             * Creates a WMS to represent an instance with default data.
+             * </p>
+             *
+             * @see defaultSettings()
+             */
     public WMSConfig() {
         super();
         svgRenderer = SVG_SIMPLE;
@@ -63,15 +63,15 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
-         * WMS constructor.
-         *
-         * <p>
-         * Creates a copy of the WMSDTO provided. All the data structures are
-         * cloned.
-         * </p>
-         *
-         * @param w The WMSDTO to copy.
-         */
+             * WMS constructor.
+             *
+             * <p>
+             * Creates a copy of the WMSDTO provided. All the data structures are
+             * cloned.
+             * </p>
+             *
+             * @param w The WMSDTO to copy.
+             */
     public WMSConfig(WMSDTO w) {
         super(w.getService());
         svgRenderer = w.getSvgRenderer();
@@ -82,10 +82,10 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
-         * Creates the WMSConfig.
-         *
-         * @param wms The wms module.
-         */
+             * Creates the WMSConfig.
+             *
+             * @param wms The wms module.
+             */
     public WMSConfig(WMS wms) {
         this((WMSDTO) wms.toDTO());
     }
@@ -134,8 +134,7 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The constant identifying the current svg renderer.
      *
@@ -147,8 +146,7 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param svgRenderer constant identifying the current svg renderer.
      *
@@ -160,8 +158,7 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param svgAntiAlias anti alias hint.
      */
@@ -170,8 +167,7 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The value of the anti aliasing rendering hint.
      */
@@ -180,8 +176,7 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param allowInterpolation rendering interpolation hint.
      */
@@ -190,8 +185,7 @@ public class WMSConfig extends ServiceConfig {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The value of the rendering interpolation rendering hint.
      */

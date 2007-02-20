@@ -51,28 +51,28 @@ public final class DataStoreInfoDTO implements DataTransferObject {
     private Map connectionParams;
 
     /**
-         * DataStoreInfo constructor.
-         *
-         * <p>
-         * does nothing
-         * </p>
-         */
+             * DataStoreInfo constructor.
+             *
+             * <p>
+             * does nothing
+             * </p>
+             */
     public DataStoreInfoDTO() {
     }
 
     /**
-         * DataStoreInfo constructor.
-         *
-         * <p>
-         * Creates a copy of the DataStoreInfo provided. If the DataStoreInfo
-         * provided  is null then default values are used. All the datastructures
-         * are cloned.
-         * </p>
-         *
-         * @param dto The datastore to copy.
-         *
-         * @throws NullPointerException DOCUMENT ME!
-         */
+             * DataStoreInfo constructor.
+             *
+             * <p>
+             * Creates a copy of the DataStoreInfo provided. If the DataStoreInfo
+             * provided  is null then default values are used. All the datastructures
+             * are cloned.
+             * </p>
+             *
+             * @param dto The datastore to copy.
+             *
+             * @throws NullPointerException DOCUMENT ME!
+             */
     public DataStoreInfoDTO(DataStoreInfoDTO dto) {
         if (dto == null) {
             throw new NullPointerException("Non-Null DataStoreDTO is requried");

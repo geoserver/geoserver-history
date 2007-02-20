@@ -31,15 +31,15 @@ public class WFS extends Service {
     private boolean featureBounding;
 
     /**
-         * WFS constructor.
-         *
-         * <p>
-         * Stores the data specified in the WFSDTO object in this WFS Object for
-         * GeoServer to use.
-         * </p>
-         *
-         * @param config The data intended for GeoServer to use.
-         */
+             * WFS constructor.
+             *
+             * <p>
+             * Stores the data specified in the WFSDTO object in this WFS Object for
+             * GeoServer to use.
+             * </p>
+             *
+             * @param config The data intended for GeoServer to use.
+             */
     public WFS(WFSDTO config) {
         super(config.getService());
         srsXmlStyle = config.isSrsXmlStyle();
@@ -49,11 +49,11 @@ public class WFS extends Service {
     }
 
     /**
-         * Creates the WFS service by getting the WFSDTO object from the
-         * config and calling {@link #WFS(WFSDTO)}.
-         *
-         * @throws ConfigurationException
-         */
+             * Creates the WFS service by getting the WFSDTO object from the
+             * config and calling {@link #WFS(WFSDTO)}.
+             *
+             * @throws ConfigurationException
+             */
     public WFS(Config config, Data data, GeoServer geoServer, GeoValidator validator)
         throws ConfigurationException {
         this(config.getXMLReader().getWfs());
@@ -63,14 +63,14 @@ public class WFS extends Service {
     }
 
     /**
-         * WFS constructor.
-         *
-         * <p>
-         * Package constructor intended for default use by GeoServer
-         * </p>
-         *
-         * @see GeoServer#GeoServer()
-         */
+             * WFS constructor.
+             *
+             * <p>
+             * Package constructor intended for default use by GeoServer
+             * </p>
+             *
+             * @see GeoServer#GeoServer()
+             */
     WFS() {
         super(new ServiceDTO());
     }

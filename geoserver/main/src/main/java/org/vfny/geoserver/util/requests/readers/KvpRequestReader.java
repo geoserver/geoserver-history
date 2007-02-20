@@ -85,11 +85,11 @@ abstract public class KvpRequestReader {
     protected AbstractService service;
 
     /**
-         * Creates a reader from paramters and a service.
-         *
-         * @param kvpPairs The key-value pairs.
-         * @param service The service using the reader.
-         */
+             * Creates a reader from paramters and a service.
+             *
+             * @param kvpPairs The key-value pairs.
+             * @param service The service using the reader.
+             */
     public KvpRequestReader(Map kvpPairs, AbstractService service) {
         this.kvpPairs = kvpPairs;
         this.service = service;
@@ -185,7 +185,7 @@ abstract public class KvpRequestReader {
         List kvpList = null;
 
         // handles implicit unconstrained case
-        if (rawList == null) {
+        if ((rawList == null) || "".equals(rawList)) {
             return Collections.EMPTY_LIST;
 
             // handles explicit unconstrained case
@@ -195,10 +195,10 @@ abstract public class KvpRequestReader {
             // handles explicit, constrained element lists
         } else {
             /**
-                         * GR: avoid using StringTokenizer because it does not returns empty
-                         * trailing strings (i.e. if the string after the last match of the
-                         * pattern is empty)
-                         */
+                                     * GR: avoid using StringTokenizer because it does not returns empty
+                                     * trailing strings (i.e. if the string after the last match of the
+                                     * pattern is empty)
+                                     */
 
             // HACK: if there are more than one character in delimiter, I assume
             // they are the parenthesis, for wich I don't know how to create

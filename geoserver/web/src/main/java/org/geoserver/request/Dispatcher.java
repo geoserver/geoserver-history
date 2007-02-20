@@ -171,8 +171,8 @@ public class Dispatcher extends AbstractController {
         }
 
         /**
-                 * ALFA: this is a HACK to let GeoServer do a getCapabilities request by default.
-                 */
+                         * ALFA: this is a HACK to let GeoServer do a getCapabilities request by default.
+                         */
 
         /*request = (request == null ? "GetCapabilities" : request);*/
         if ((service == null) || (request == null)) {

@@ -29,12 +29,12 @@ import javax.media.jai.PlanarImage;
  */
 class PNGLegendGraphicProducer extends DefaultRasterLegendProducer {
     /**
-         * Creates a new JAI based legend producer for creating
-         * <code>outputFormat</code> type images.
-         *
-         * @param outputFormat
-         *            DOCUMENT ME!
-         */
+             * Creates a new JAI based legend producer for creating
+             * <code>outputFormat</code> type images.
+             *
+             * @param outputFormat
+             *            DOCUMENT ME!
+             */
     PNGLegendGraphicProducer() {
         super();
     }

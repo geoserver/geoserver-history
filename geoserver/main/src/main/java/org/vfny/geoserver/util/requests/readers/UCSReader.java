@@ -148,30 +148,30 @@ public class UCSReader extends Reader {
     // Constructors
     //
     /**
-         * Constructs an <code>ISO-10646-UCS-(2|4)</code> reader from the specified
-         * input stream using default buffer size. The Endianness and exact input
-         * encoding (<code>UCS-2</code> or <code>UCS-4</code>) also should be known
-         * in advance.
-         *
-         * @param inputStream input stream with UCS-2|4 encoded data
-         * @param encoding    One of UCS2LE, UCS2BE, UCS4LE or UCS4BE.
-         */
+             * Constructs an <code>ISO-10646-UCS-(2|4)</code> reader from the specified
+             * input stream using default buffer size. The Endianness and exact input
+             * encoding (<code>UCS-2</code> or <code>UCS-4</code>) also should be known
+             * in advance.
+             *
+             * @param inputStream input stream with UCS-2|4 encoded data
+             * @param encoding    One of UCS2LE, UCS2BE, UCS4LE or UCS4BE.
+             */
     public UCSReader(InputStream inputStream, short encoding) {
         this(inputStream, DEFAULT_BUFFER_SIZE, encoding);
     } // <init>(InputStream, short)
 
     /**
-         * Constructs an <code>ISO-10646-UCS-(2|4)</code> reader from the source
-         * input stream using explicitly specified initial buffer size. Endianness
-         * and exact input encoding (<code>UCS-2</code> or <code>UCS-4</code>) also
-         * should be known in advance.
-         *
-         * @param inputStream input stream with UCS-2|4 encoded data
-         * @param size        The initial buffer size. You better make sure
-         *                    this number is divisible by 4 if you plan to
-         *                    to read UCS-4 with this class.
-         * @param encoding    One of UCS2LE, UCS2BE, UCS4LE or UCS4BE
-         */
+             * Constructs an <code>ISO-10646-UCS-(2|4)</code> reader from the source
+             * input stream using explicitly specified initial buffer size. Endianness
+             * and exact input encoding (<code>UCS-2</code> or <code>UCS-4</code>) also
+             * should be known in advance.
+             *
+             * @param inputStream input stream with UCS-2|4 encoded data
+             * @param size        The initial buffer size. You better make sure
+             *                    this number is divisible by 4 if you plan to
+             *                    to read UCS-4 with this class.
+             * @param encoding    One of UCS2LE, UCS2BE, UCS4LE or UCS4BE
+             */
     public UCSReader(InputStream inputStream, int size, short encoding) {
         fInputStream = inputStream;
         fBuffer = new byte[size];

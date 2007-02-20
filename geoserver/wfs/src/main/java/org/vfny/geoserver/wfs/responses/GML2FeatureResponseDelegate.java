@@ -60,9 +60,9 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
     private GetFeatureResults results;
 
     /**
-         * empty constructor required to be instantiated through
-         * this.class.newInstance()
-         */
+             * empty constructor required to be instantiated through
+             * this.class.newInstance()
+             */
     public GML2FeatureResponseDelegate() {
     }
 

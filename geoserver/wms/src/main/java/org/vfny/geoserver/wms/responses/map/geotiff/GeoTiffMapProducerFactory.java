@@ -12,8 +12,7 @@ import java.util.Set;
 
 
 /**
- *
-DOCUMENT ME!
+ * DOCUMENT ME!
  *
  * @author Simone Giannecchini
  */
@@ -28,8 +27,8 @@ public class GeoTiffMapProducerFactory implements GetMapProducerFactorySpi {
     private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
 
     /**
-         *
-         */
+             *
+             */
     public GeoTiffMapProducerFactory() {
         super();
     }

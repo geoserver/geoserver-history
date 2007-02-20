@@ -96,35 +96,35 @@ public final class ServiceDTO implements DataTransferObject {
     private int partialBufferSize;
 
     /**
-         * ServiceConfig constructor.
-         *
-         * <p>
-         * does nothing
-         * </p>
-         *
-         * @see defaultSettings()
-         */
+             * ServiceConfig constructor.
+             *
+             * <p>
+             * does nothing
+             * </p>
+             *
+             * @see defaultSettings()
+             */
     public ServiceDTO() {
     }
 
     /**
-         * ServiceConfig constructor.
-         *
-         * <p>
-         * This is equivalent to calling the clone method. When a null value is
-         * passed in,  the default values are used. All non-primary datatypes are
-         * cloned with the  exception of Strings (which have a singleton hash
-         * table in memory representation).
-         * </p>
-         *
-         * @param dto The ServiceConfig object to copy into the new ServiceConfig
-         *        object.
-         *
-         * @throws NullPointerException If dto is null
-         *
-         * @see defaultSettings()
-         * @see clone()
-         */
+             * ServiceConfig constructor.
+             *
+             * <p>
+             * This is equivalent to calling the clone method. When a null value is
+             * passed in,  the default values are used. All non-primary datatypes are
+             * cloned with the  exception of Strings (which have a singleton hash
+             * table in memory representation).
+             * </p>
+             *
+             * @param dto The ServiceConfig object to copy into the new ServiceConfig
+             *        object.
+             *
+             * @throws NullPointerException If dto is null
+             *
+             * @see defaultSettings()
+             * @see clone()
+             */
     public ServiceDTO(ServiceDTO dto) {
         if (dto == null) {
             throw new NullPointerException("ServiceDTO object required");
@@ -418,8 +418,7 @@ public final class ServiceDTO implements DataTransferObject {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the metadataLink.
      */
@@ -428,8 +427,7 @@ public final class ServiceDTO implements DataTransferObject {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param metadataLink The metadataLink to set.
      */
@@ -448,8 +446,7 @@ public final class ServiceDTO implements DataTransferObject {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The strategy used by the service when performing a response.
      */
@@ -458,8 +455,7 @@ public final class ServiceDTO implements DataTransferObject {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The size of the buffer used by the PARTIAL-BUFFER strategy.
      *         TODO: this should be factored out when config is splittable

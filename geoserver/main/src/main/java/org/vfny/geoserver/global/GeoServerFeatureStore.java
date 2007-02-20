@@ -31,13 +31,13 @@ import java.util.Set;
  */
 public class GeoServerFeatureStore extends GeoServerFeatureSource implements FeatureStore {
     /**
-         * Creates a new DEFQueryFeatureLocking object.
-         *
-         * @param store GeoTools2 FeatureSource
-         * @param schema FeatureType served by source
-         * @param definitionQuery Filter that constrains source
-         * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
-         */
+             * Creates a new DEFQueryFeatureLocking object.
+             *
+             * @param store GeoTools2 FeatureSource
+             * @param schema FeatureType served by source
+             * @param definitionQuery Filter that constrains source
+             * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
+             */
     GeoServerFeatureStore(FeatureStore store, FeatureType schema, Filter definitionQuery,
         CoordinateReferenceSystem forcedCRS) {
         super(store, schema, definitionQuery, forcedCRS);

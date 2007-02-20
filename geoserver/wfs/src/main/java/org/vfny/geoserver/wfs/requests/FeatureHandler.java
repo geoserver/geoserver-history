@@ -53,8 +53,8 @@ public class FeatureHandler extends XMLFilterImpl implements ContentHandler, Fil
     private StringBuffer characters = new StringBuffer();
 
     /**
-         * Empty constructor.
-         */
+             * Empty constructor.
+             */
     public FeatureHandler(WFService service) {
         super();
         this.service = service;

@@ -27,9 +27,9 @@ public class DescribeLayerRequest extends WMSRequest {
     private List layers = new ArrayList(2);
 
     /**
-         * Creates a new DescribeLayerRequest
-         * @param service the service that handles the request
-         */
+             * Creates a new DescribeLayerRequest
+             * @param service the service that handles the request
+             */
     public DescribeLayerRequest(WMService service) {
         super("DescribeLayer", service);
     }

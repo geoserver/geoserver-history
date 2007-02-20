@@ -42,8 +42,7 @@ public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
     private boolean gotType = false;
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return the service type.
      */
@@ -52,8 +51,7 @@ public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The request type.
      */

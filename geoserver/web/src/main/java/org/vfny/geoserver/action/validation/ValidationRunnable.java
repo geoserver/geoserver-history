@@ -25,8 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- *
-DOCUMENT ME!
+ * DOCUMENT ME!
  *
  * @author rgould
  * @author bowens TODO To change the template for this generated type comment

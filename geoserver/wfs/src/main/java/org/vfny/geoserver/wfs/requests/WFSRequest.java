@@ -21,12 +21,12 @@ abstract public class WFSRequest extends Request {
     public static final String WFS_SERVICE_TYPE = "WFS";
 
     /**
-         * Creates the new request, supplying the request name and the sevlet
-         * handling the request.
-         *
-         * @param requestType name of hte request, (Example, GetCapabiliites)
-         * @param service The servlet handling the WFS request.
-         */
+             * Creates the new request, supplying the request name and the sevlet
+             * handling the request.
+             *
+             * @param requestType name of hte request, (Example, GetCapabiliites)
+             * @param service The servlet handling the WFS request.
+             */
     public WFSRequest(String requestType, WFService service) {
         super(WFS_SERVICE_TYPE, requestType, service);
     }

@@ -53,10 +53,10 @@ public class EncodeSVG {
     private boolean abortProcess;
 
     /**
-         * Creates a new EncodeSVG object.
-         *
-         * @param mapContext DOCUMENT ME!
-         */
+             * Creates a new EncodeSVG object.
+             *
+             * @param mapContext DOCUMENT ME!
+             */
     public EncodeSVG(WMSMapContext mapContext) {
         this.mapContext = mapContext;
     }

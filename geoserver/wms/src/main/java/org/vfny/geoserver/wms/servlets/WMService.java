@@ -21,18 +21,17 @@ import javax.servlet.http.HttpServletRequest;
  */
 abstract public class WMService extends AbstractService {
     /**
-         * Constructor for WMS service.
-         *
-         * @param request The service request being made (GetCaps,GetFeature,...)
-         * @param wms The WMS service reference.
-         */
+             * Constructor for WMS service.
+             *
+             * @param request The service request being made (GetCaps,GetFeature,...)
+             * @param wms The WMS service reference.
+             */
     public WMService(String request, WMS wms) {
         super("WMS", request, wms);
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The wms service ref.
      */

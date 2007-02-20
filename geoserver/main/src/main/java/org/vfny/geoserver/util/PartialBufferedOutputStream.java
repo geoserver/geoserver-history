@@ -76,17 +76,17 @@ public class PartialBufferedOutputStream extends OutputStream {
     private boolean closed = false;
 
     /**
-         * Constructor Defaults buffer size to 50KB
-         * @param response
-         */
+             * Constructor Defaults buffer size to 50KB
+             * @param response
+             */
     public PartialBufferedOutputStream(HttpServletResponse response) {
         this(response, DEFAULT_BUFFER_SIZE); // default to 50KB
     }
 
     /**
-         * @param response the response with its output stream to write to once the buffer is full
-         * @param kilobytes size, in kilobytes, of the buffer
-         */
+             * @param response the response with its output stream to write to once the buffer is full
+             * @param kilobytes size, in kilobytes, of the buffer
+             */
     public PartialBufferedOutputStream(HttpServletResponse response, int kilobytes) {
         if (kilobytes < 1) {
             throw new IllegalArgumentException("Buffer size not greater than 0: " + kilobytes);

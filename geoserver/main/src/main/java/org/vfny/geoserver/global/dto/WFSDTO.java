@@ -60,23 +60,23 @@ public final class WFSDTO implements DataTransferObject {
     private boolean citeConformanceHacks = false; //default to normal operations
 
     /**
-         * WFS Data Transfer Object constructor.  does nothing
-         */
+             * WFS Data Transfer Object constructor.  does nothing
+             */
     public WFSDTO() {
     }
 
     /**
-         * WFS constructor.
-         *
-         * <p>
-         * Creates a copy of the WFS provided. If the WFS provided  is null then
-         * default values are used. All the data structures are cloned.
-         * </p>
-         *
-         * @param other The WFS to copy.
-         *
-         * @throws NullPointerException DOCUMENT ME!
-         */
+             * WFS constructor.
+             *
+             * <p>
+             * Creates a copy of the WFS provided. If the WFS provided  is null then
+             * default values are used. All the data structures are cloned.
+             * </p>
+             *
+             * @param other The WFS to copy.
+             *
+             * @throws NullPointerException DOCUMENT ME!
+             */
     public WFSDTO(WFSDTO other) {
         if (other == null) {
             throw new NullPointerException("Data Transfer Object required");

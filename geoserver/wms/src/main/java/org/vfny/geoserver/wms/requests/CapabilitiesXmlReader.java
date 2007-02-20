@@ -30,10 +30,10 @@ import javax.xml.parsers.SAXParserFactory;
  */
 public class CapabilitiesXmlReader extends XmlRequestReader {
     /**
-         * Creates the new reader.
-         *
-         * @param service The WMS service hanlding the request.
-         */
+             * Creates the new reader.
+             *
+             * @param service The WMS service hanlding the request.
+             */
     public CapabilitiesXmlReader(WMService service) {
         super(service);
     }

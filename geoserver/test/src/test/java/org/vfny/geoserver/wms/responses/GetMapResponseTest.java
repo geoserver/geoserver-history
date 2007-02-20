@@ -17,10 +17,10 @@ public class GetMapResponseTest extends TestCase {
     private GetMapResponse getMapResponse;
 
     /**
-         * Constructor for GetMapResponseTest.
-         *
-         * @param arg0
-         */
+             * Constructor for GetMapResponseTest.
+             *
+             * @param arg0
+             */
     public GetMapResponseTest(String arg0) {
         super(arg0);
     }

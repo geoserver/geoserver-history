@@ -93,8 +93,8 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
     private boolean inProperty = false;
 
     /**
-         * Empty constructor.
-         */
+             * Empty constructor.
+             */
     public TransactionHandler(WFService service) {
         super();
         request = new TransactionRequest(service);
@@ -310,8 +310,8 @@ public class TransactionHandler extends XMLFilterImpl implements ContentHandler,
             /*
              * GR: this was wrong. It prevents String attribute values that have
              * \n or \n\r characters from being parsed correctly.
-               //if curProperty is not null then there is a geometry there.
-               } else if ((state == VALUE) && (curPropertyValue == null)) {
+                   //if curProperty is not null then there is a geometry there.
+                   } else if ((state == VALUE) && (curPropertyValue == null)) {
              */
 
             //if curProperty is not null then there is a geometry there.

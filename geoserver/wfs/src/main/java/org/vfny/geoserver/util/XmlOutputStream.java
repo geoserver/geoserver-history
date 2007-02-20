@@ -26,17 +26,17 @@ public class XmlOutputStream extends ByteArrayOutputStream {
     private static final int ENCODING_LENGTH = 40;
 
     /**
-         * Empty constructor, calls super.
-         */
+             * Empty constructor, calls super.
+             */
     public XmlOutputStream() {
         super();
     }
 
     /**
-         * Constructor with XML length set.
-         *
-         * @param length The column/XML tag name.
-         */
+             * Constructor with XML length set.
+             *
+             * @param length The column/XML tag name.
+             */
     public XmlOutputStream(int length) {
         super(length);
     }

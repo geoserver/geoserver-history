@@ -76,8 +76,7 @@ public class Version {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return string representation of this version
      */

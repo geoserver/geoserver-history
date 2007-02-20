@@ -28,11 +28,11 @@ public class DescribeLayerTransformer extends TransformerBase {
     private String schemaBaseUrl;
 
     /**
-         * Creates a new DescribeLayerTransformer object.
-         *
-         * @param schemaBaseUrl the url string wich holds the validation
-         * schemas and DTD's on this server instance.
-         */
+             * Creates a new DescribeLayerTransformer object.
+             *
+             * @param schemaBaseUrl the url string wich holds the validation
+             * schemas and DTD's on this server instance.
+             */
     public DescribeLayerTransformer(String schemaBaseUrl) {
         super();
 
@@ -85,10 +85,10 @@ public class DescribeLayerTransformer extends TransformerBase {
      */
     private static class DescribeLayerTranslator extends TranslatorSupport {
         /**
-                 * Creates a new DescribeLayerTranslator object.
-                 *
-                 * @param handler DOCUMENT ME!
-                 */
+                         * Creates a new DescribeLayerTranslator object.
+                         *
+                         * @param handler DOCUMENT ME!
+                         */
         public DescribeLayerTranslator(ContentHandler handler) {
             super(handler, null, null);
         }

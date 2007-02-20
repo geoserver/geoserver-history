@@ -100,14 +100,14 @@ public class Log4JFormatter extends Formatter {
     private final LineWriter writer;
 
     /**
-         * Construct a <code>Log4JFormatter</code>.
-         *
-         * @param base The base logger name. This is used for shortening the logger
-         *        name when formatting message. For example, if the base  logger
-         *        name is "org.geotools" and a log record come from  the
-         *        "org.geotools.core" logger, it will be formatted as  "[LEVEL
-         *        core]" (i.e. the "org.geotools" part is ommited).
-         */
+             * Construct a <code>Log4JFormatter</code>.
+             *
+             * @param base The base logger name. This is used for shortening the logger
+             *        name when formatting message. For example, if the base  logger
+             *        name is "org.geotools" and a log record come from  the
+             *        "org.geotools.core" logger, it will be formatted as  "[LEVEL
+             *        core]" (i.e. the "org.geotools" part is ommited).
+             */
     public Log4JFormatter(final String base) {
         this.base = base.trim();
         this.margin = getHeaderWidth();
@@ -338,13 +338,13 @@ public class Log4JFormatter extends Formatter {
         }
 
         /**
-                 * Construct a handler.
-                 *
-                 * @param handler The handler to copy properties from.
-                 * @param formatter The formatter to use.
-                 *
-                 * @throws UnsupportedEncodingException if the encoding is not valid.
-                 */
+                         * Construct a handler.
+                         *
+                         * @param handler The handler to copy properties from.
+                         * @param formatter The formatter to use.
+                         *
+                         * @throws UnsupportedEncodingException if the encoding is not valid.
+                         */
         public Stdout(final Handler handler, final Formatter formatter)
             throws UnsupportedEncodingException {
             super(System.out, formatter);

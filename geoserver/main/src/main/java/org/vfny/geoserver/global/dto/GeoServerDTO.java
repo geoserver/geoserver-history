@@ -112,28 +112,28 @@ public final class GeoServerDTO implements DataTransferObject {
     private Boolean jaiPNGNative = Defaults.JaiPNGNative;
 
     /**
-         * GlobalConfig constructor.
-         *
-         * <p>
-         * does nothing
-         * </p>
-         */
+             * GlobalConfig constructor.
+             *
+             * <p>
+             * does nothing
+             * </p>
+             */
     public GeoServerDTO() {
     }
 
     /**
-         * GlobalConfig constructor.
-         *
-         * <p>
-         * Creates a copy of the GlobalConfig object provided, or sets the values
-         * to default if one is not provided.  Charset is not cloned, everything
-         * else is.
-         * </p>
-         *
-         * @param g
-         *
-         * @throws NullPointerException DOCUMENT ME!
-         */
+             * GlobalConfig constructor.
+             *
+             * <p>
+             * Creates a copy of the GlobalConfig object provided, or sets the values
+             * to default if one is not provided.  Charset is not cloned, everything
+             * else is.
+             * </p>
+             *
+             * @param g
+             *
+             * @throws NullPointerException DOCUMENT ME!
+             */
     public GeoServerDTO(GeoServerDTO g) {
         if (g == null) {
             throw new NullPointerException();
@@ -489,8 +489,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param logLocation The string representation of the path on disk in
      *        which the server logs to.
@@ -500,8 +499,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return True if the server is logging to file, otherwise false.
      */
@@ -573,8 +571,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the imageIOCache.
      */
@@ -583,8 +580,7 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @param imageIOCache The imageIOCache to set.
      */

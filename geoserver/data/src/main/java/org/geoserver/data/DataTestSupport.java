@@ -158,8 +158,7 @@ public class DataTestSupport extends TestCase {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The cite type names as an array of strings.
      */

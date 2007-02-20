@@ -47,10 +47,10 @@ public class FeatureSuiteTest extends RequestTestCase {
     Feature service;
 
     /**
-         * Constructor with super.
-         *
-         * @param testName The name of the test.
-         */
+             * Constructor with super.
+             *
+             * @param testName The name of the test.
+             */
     public FeatureSuiteTest(String testName) {
         super(testName);
     }

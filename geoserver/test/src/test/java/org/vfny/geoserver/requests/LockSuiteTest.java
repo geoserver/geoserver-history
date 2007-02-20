@@ -44,10 +44,10 @@ public class LockSuiteTest extends RequestTestCase {
     Lock service;
 
     /**
-         * Constructor with super.
-         *
-         * @param testName The name of the test.
-         */
+             * Constructor with super.
+             *
+             * @param testName The name of the test.
+             */
     public LockSuiteTest(String testName) {
         super(testName);
     }

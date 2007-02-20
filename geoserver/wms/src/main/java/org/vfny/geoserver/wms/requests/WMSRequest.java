@@ -20,12 +20,12 @@ public class WMSRequest extends Request {
     public static final String WMS_SERVICE_TYPE = "WMS";
 
     /**
-         * Creates the new request, supplying the request name and the sevlet
-         * handling the request.
-         *
-         * @param requestType name of hte request, (Example, GetCapabiliites)
-         * @param service The servlet handling the WMS request.
-         */
+             * Creates the new request, supplying the request name and the sevlet
+             * handling the request.
+             *
+             * @param requestType name of hte request, (Example, GetCapabiliites)
+             * @param service The servlet handling the WMS request.
+             */
     public WMSRequest(String requestType, WMService service) {
         super(WMS_SERVICE_TYPE, requestType, service);
     }

@@ -32,59 +32,59 @@ public class WfsTransactionException extends WfsException {
     protected String handle = new String();
 
     /**
-         * Empty constructor.
-         */
+             * Empty constructor.
+             */
     public WfsTransactionException() {
         super();
     }
 
     /**
-         * Constructor for message and handle.
-         *
-         * @param message indicates to the user what went wrong.
-         */
+             * Constructor for message and handle.
+             *
+             * @param message indicates to the user what went wrong.
+             */
     public WfsTransactionException(String message) {
         super(message);
     }
 
     /**
-         * Constructor for an exception and a handle.
-         *
-         * @param cause indicates to the user what went wrong.
-         */
+             * Constructor for an exception and a handle.
+             *
+             * @param cause indicates to the user what went wrong.
+             */
     public WfsTransactionException(Throwable cause) {
         super(cause);
     }
 
     /**
-         * DOCUMENT ME!
-         *
-         * @param message indicates to the user what went wrong.
-         * @param locator The message for the .
-         */
+             * DOCUMENT ME!
+             *
+             * @param message indicates to the user what went wrong.
+             * @param locator The message for the .
+             */
     public WfsTransactionException(String message, String locator) {
         super(message, locator);
     }
 
     /**
-         * DOCUMENT ME!
-         *
-         * @param message indicates to the user what went wrong.
-         * @param locator The message for the .
-         * @param handle the string of the transaction that failed.
-         */
+             * DOCUMENT ME!
+             *
+             * @param message indicates to the user what went wrong.
+             * @param locator The message for the .
+             * @param handle the string of the transaction that failed.
+             */
     public WfsTransactionException(String message, String locator, String handle) {
         super(message, locator);
         this.handle = handle;
     }
 
     /**
-         * Constructor for an exception, messages and handles.
-         *
-         * @param e the root exception.
-         * @param preMessage more information about exception.
-         * @param locator indicates to the user what went wrong.
-         */
+             * Constructor for an exception, messages and handles.
+             *
+             * @param e the root exception.
+             * @param preMessage more information about exception.
+             * @param locator indicates to the user what went wrong.
+             */
     public WfsTransactionException(Exception e, String preMessage, String locator) {
         super(e, preMessage, locator);
     }

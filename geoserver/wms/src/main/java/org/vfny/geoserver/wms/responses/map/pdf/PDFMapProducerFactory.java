@@ -31,8 +31,8 @@ public class PDFMapProducerFactory implements GetMapProducerFactorySpi {
     private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
 
     /**
-             * Creates a new PdfMapProducerFactory object.
-             */
+                 * Creates a new PdfMapProducerFactory object.
+                 */
     public PDFMapProducerFactory() {
         super();
     }

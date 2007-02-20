@@ -119,20 +119,20 @@ public class MultipleDefinitionsFactory extends FactorySet {
     private Map loaded = null;
 
     /**
-         * Parameterless Constructor.
-         * Method {@link #initFactory} must be called prior to any use of created factory.
-         */
+             * Parameterless Constructor.
+             * Method {@link #initFactory} must be called prior to any use of created factory.
+             */
     public MultipleDefinitionsFactory() {
         super();
     }
 
     /**
-         * Constructor.
-         * Init the factory by reading appropriate configuration file.
-         * @param servletContext Servlet context.
-         * @param properties Map containing all properties.
-         * @throws FactoryNotFoundException Can't find factory configuration file.
-         */
+             * Constructor.
+             * Init the factory by reading appropriate configuration file.
+             * @param servletContext Servlet context.
+             * @param properties Map containing all properties.
+             * @throws FactoryNotFoundException Can't find factory configuration file.
+             */
     public MultipleDefinitionsFactory(ServletContext servletContext, Map properties)
         throws DefinitionsFactoryException {
         initFactory(servletContext, properties);

@@ -1274,7 +1274,80 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         MapLayerInfo[] layers;
         String layersParam = getValue("LAYERS");
         List layerNames = readFlat(layersParam, INNER_DELIMETER);
-        int layerCount = layerNames.size();
+        List realLayerNames = new ArrayList();
+
+        String layerName = null;
+        Data catalog = request.getWMS().getData();
+
+        String rawStyles = getValue("STYLES");
+        List styleNames = readFlat(rawStyles, INNER_DELIMETER);
+
+        int l_counter = 0;
+        int s_counter = styleNames.size();
+
+        ////
+        // Expand the eventually WMS grouped layers into the same WMS Path element
+        ////
+        for (Iterator it = layerNames.iterator(); it.hasNext();) {
+            layerName = (String) it.next();
+
+            Integer layerType = (Integer) catalog.getLayerNames().get(layerName);
+            layerType = (layerType != null) ? layerType
+                                            : (Integer) catalog.getLayerNames()
+                                                               .get(layerName.substring(layerName
+                        .indexOf(":") + 1, layerName.length()));
+
+            if (layerType == null) {
+                ////
+                // Search for grouped layers (attention: heavy process)
+                ////
+                String catalogLayerName = null;
+
+                for (Iterator c_keys = catalog.getLayerNames().keySet().iterator();
+                        c_keys.hasNext();) {
+                    catalogLayerName = (String) c_keys.next();
+
+                    try {
+                        FeatureTypeInfo ftype = findFeatureLayer(request, catalogLayerName);
+                        String wmsPath = ftype.getWmsPath();
+
+                        if ((wmsPath != null) && wmsPath.matches(".*/" + layerName)) {
+                            realLayerNames.add(catalogLayerName);
+                            l_counter++;
+
+                            if (l_counter > s_counter) {
+                                rawStyles = ((rawStyles.length() > 0) ? (rawStyles + ",") : rawStyles)
+                                    + ftype.getDefaultStyle().getName();
+                            }
+                        }
+                    } catch (WmsException e_1) {
+                        try {
+                            CoverageInfo cv = findCoverageLayer(request, catalogLayerName);
+                            String wmsPath = cv.getWmsPath();
+
+                            if ((wmsPath != null) && wmsPath.matches(".*/" + layerName)) {
+                                realLayerNames.add(catalogLayerName);
+                                l_counter++;
+
+                                if (l_counter > s_counter) {
+                                    rawStyles = ((rawStyles.length() > 0) ? (rawStyles + ",")
+                                                                          : rawStyles)
+                                        + cv.getDefaultStyle().getName();
+                                }
+                            }
+                        } catch (WmsException e_2) {
+                        }
+                    }
+                }
+            } else {
+                realLayerNames.add(layerName);
+                l_counter++;
+            }
+        }
+
+        kvpPairs.put("STYLES", rawStyles);
+
+        int layerCount = realLayerNames.size();
 
         if (layerCount == 0) {
             throw new WmsException("No LAYERS has been requested", getClass().getName());
@@ -1282,10 +1355,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         layers = new MapLayerInfo[layerCount];
 
-        String layerName = null;
-
         for (int i = 0; i < layerCount; i++) {
-            layerName = (String) layerNames.get(i);
+            layerName = (String) realLayerNames.get(i);
             layers[i] = new MapLayerInfo();
 
             try {

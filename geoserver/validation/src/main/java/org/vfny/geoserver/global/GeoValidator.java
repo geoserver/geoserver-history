@@ -41,36 +41,36 @@ public class GeoValidator extends ValidationProcessor {
     private Map errors;
 
     /**
-         * GeoValidator constructor.
-         * <p>
-         * super();
-         * </p>
-         *
-         */
+             * GeoValidator constructor.
+             * <p>
+             * super();
+             * </p>
+             *
+             */
     public GeoValidator() {
         super();
     }
 
     /**
-         * Creates a new geo validator.
-         *
-         * @param config The configuration module.
-         */
+             * Creates a new geo validator.
+             *
+             * @param config The configuration module.
+             */
     public GeoValidator(Config config) {
         loadPlugins(config.dataDirectory());
     }
 
     /**
-         * ValidationProcessor constructor.
-         *
-         * <p>
-         * Builds a ValidationProcessor with the DTO provided.
-         * </p>
-         *
-         * @see load(Map,Map)
-         * @param testSuites Map a map of names -> TestSuiteDTO objects
-         * @param plugIns Map a map of names -> PlugInDTO objects
-         */
+             * ValidationProcessor constructor.
+             *
+             * <p>
+             * Builds a ValidationProcessor with the DTO provided.
+             * </p>
+             *
+             * @see load(Map,Map)
+             * @param testSuites Map a map of names -> TestSuiteDTO objects
+             * @param plugIns Map a map of names -> PlugInDTO objects
+             */
     public GeoValidator(Map testSuites, Map plugIns) {
         super();
         load(testSuites, plugIns);

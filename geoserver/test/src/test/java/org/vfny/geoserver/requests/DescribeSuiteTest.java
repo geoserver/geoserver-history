@@ -36,10 +36,10 @@ public class DescribeSuiteTest extends RequestTestCase {
     private DescribeRequest[] baseRequest = new DescribeRequest[10];
 
     /**
-         * Constructor with super.
-         *
-         * @param testName The name of this test.
-         */
+             * Constructor with super.
+             *
+             * @param testName The name of this test.
+             */
     public DescribeSuiteTest(String testName) {
         super(testName);
     }

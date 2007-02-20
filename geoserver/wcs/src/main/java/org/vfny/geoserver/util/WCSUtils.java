@@ -33,8 +33,7 @@ import javax.media.jai.InterpolationNearest;
 
 
 /**
- *
-DOCUMENT ME!
+ * DOCUMENT ME!
  *
  * @author Simone Giannecchini, GeoSolutions
  * @author Alessio Fabiani, GeoSolutions

@@ -39,16 +39,16 @@ public abstract class Service extends GlobalLayerSupertype {
     private Data dt;
 
     /**
-         * Service constructor.
-         *
-         * <p>
-         * Stores the new ServiceDTO data for this service.
-         * </p>
-         *
-         * @param config
-         *
-         * @throws NullPointerException when the param is null
-         */
+             * Service constructor.
+             *
+             * <p>
+             * Stores the new ServiceDTO data for this service.
+             * </p>
+             *
+             * @param config
+             *
+             * @throws NullPointerException when the param is null
+             */
     public Service(ServiceDTO dto) {
         if (dto == null) {
             throw new NullPointerException();
@@ -195,8 +195,7 @@ public abstract class Service extends GlobalLayerSupertype {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The strategy used by the service when performing a response.
      */
@@ -205,8 +204,7 @@ public abstract class Service extends GlobalLayerSupertype {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return The size of the buffer used by the PARTIAL-BUFFER strategy.
      *         TODO: this should be factored out when config is splittable
@@ -282,8 +280,7 @@ public abstract class Service extends GlobalLayerSupertype {
     }
 
     /**
-     *
-    DOCUMENT ME!
+     * DOCUMENT ME!
      *
      * @return Returns the metadataLink.
      */
