@@ -326,6 +326,8 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
             //create the final image
             finalLegend = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_ARGB);
             Graphics2D finalGraphics = finalLegend.createGraphics();
+            finalGraphics.setColor(BG_COLOR);
+            finalGraphics.fillRect(0, 0, totalWidth, totalHeight);
             
             int h = 0;
             for (int i = 0; i < imgCount; i++) {
