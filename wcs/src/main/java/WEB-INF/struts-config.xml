@@ -27,7 +27,7 @@
     		
     	<form-bean
     		name="dataCoveragePluginsForm"
-    		type="org.vfny.geoserver.form.data.DataCoveragePluginsForm"/>
+    		type="org.vfny.geoserver.form.wcs.DataCoveragePluginsForm"/>
 
     	<form-bean
     		name="dataFormatsSelectForm"
@@ -71,6 +71,9 @@
        	<forward
        		name="config.wcs.content"
        		path="/config/wcs/content.do"/>
+       	<forward
+       		name="config.wcs.coverageplugins"
+       		path="/config/wcs/coverageplugins.do"/>
        		
        	<forward
        		name="wcsConfigDescription"
@@ -78,11 +81,14 @@
        	<forward
        		name="wcsConfigContent"
        		path="/config/wcs/content.do"/>
+       	<forward
+       		name="wcsConfigCoveragePlugins"
+       		path="/config/wcs/coverageplugins.do"/>
 
         <!-- CONFIG data coverage plugins -->
-       	<forward
+       	<!--forward
        		name="config.data.coverageplugins"
-       		path="/config/data/coverageplugins.do"/>
+       		path="/config/data/coverageplugins.do"/-->
 
         <!-- CONFIG data formats -->
        	<forward
@@ -133,9 +139,9 @@
 
        <!-- DATA COVERAGE PLUGINS -->
         <action
-        	path="/config/data/coverageplugins"
+        	path="/config/wcs/coverageplugins"
         	type="org.apache.struts.actions.ForwardAction"
-        	parameter="config.data.coverageplugins"/>
+        	parameter="config.wcs.coverageplugins"/>
 
        <!-- DATA FORMATS -->
         <action
@@ -185,12 +191,12 @@
         	
        	<!-- DATA Coverage Plugins Actions -->
         <action
-        	path="/config/data/coveragePlugins"
-        	type="org.vfny.geoserver.action.data.DataCoveragePluginsAction"
+        	path="/config/wcs/coveragePlugins"
+        	type="org.vfny.geoserver.action.wcs.CoveragePluginsAction"
         	name="dataCoveragePluginsForm"
         	scope="request"
         	validate="true"
-        	input="/config/data/coverageplugins.do"/>        	
+        	input="/config/wcs/coverageplugins.do"/>
 
        	<!-- DATA Formats Actions -->
         <action

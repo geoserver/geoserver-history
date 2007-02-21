@@ -99,13 +99,16 @@ label.toGeoserver=GeoServerã?¸
 label.saveXML=XMLã?®ä¿?å­˜
 label.loadXML=XMLã?®èª­è¾¼
 label.onlineResource=ã‚ªãƒ³ãƒ©ã‚¤ãƒ³ãƒ»ãƒªã‚½ãƒ¼ã‚¹
+label.coverages=Coverages
 label.featureTypes=ãƒ•ãƒ¥ãƒ¼ãƒ?ãƒ£ãƒ¼(åœ°ç‰©)ã?®ã‚¿ã‚¤ãƒ—
+label.createNewFormat=Create a new Coverage Data Set
 label.namespace=å??å‰?ç©ºé–“
 label.namespaceID=å??å‰?ç©ºé–“ID
 label.namespaces=å??å‰?ç©ºé–“
 label.new=æ–°è¦?
 label.edit=ç·¨é›†
 label.delete=å‰Šé™¤
+label.dataFormatID=Coverage Data Set ID
 label.dataStoreID=ãƒ‡ãƒ¼ã‚¿ã‚¹ãƒˆã‚¢ID
 label.enabled=æœ‰åŠ¹
 label.srsXmlStyle=XMLã?®srsName
@@ -120,6 +123,8 @@ label.prefix=ãƒ—ãƒªãƒ•ãƒƒã‚¯ã‚¹
 label.filename=ãƒ•ã‚¡ã‚¤ãƒ«å??
 label.SRS=SRS
 label.latLonBoundingBox=çµŒç·¯åº¦å¢ƒç•Œãƒœãƒƒã‚¯ã‚¹
+label.parameters=Parameters
+label.dataFormatDescription=Coverage Data Set Description
 label.connectionParameters=æŽ¥ç¶šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 label.dataStoreDescription=ãƒ‡ãƒ¼ã‚¿ã‚¹ãƒˆã‚¢ã?®èª¬æ˜Ž
 label.attributeTypes=å±žæ€§ã‚¿ã‚¤ãƒ—
@@ -128,6 +133,7 @@ label.isNillible=ãƒŒãƒ«å?¯
 label.isRef=isRef
 label.minOccurs=æœ€å°?ã?Œå­˜åœ¨
 label.maxOccurs=æœ€å¤§ã?Œå­˜åœ¨
+label.coverage=Coverages
 label.type=ã‚¿ã‚¤ãƒ—
 label.messages=ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 label.mainMenu=ãƒ¡ã‚¤ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼
@@ -159,6 +165,18 @@ help.dataFeatureTypeKeywords_service=ãƒ•ãƒ¥ãƒ¼ãƒ?ãƒ£ãƒ¼ã‚¿ã‚¤ãƒ—ã?®ã‚­ãƒ¼ãƒ¯ãƒ¼ã
 help.abstract_service=ã‚µãƒ¼ãƒ“ã‚¹ã?«ã?¤ã?„ã?¦ã?®çŸ­ã?„è¦?ç´„
 help.onlineResource_service=Webã‚µãƒ¼ãƒ“ã‚¹ã?®ã‚ªãƒ³ãƒ©ã‚¤ãƒ³ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹URL
 help.serviceType_service=ã‚µãƒ¼ãƒ“ã‚¹ã‚¿ã‚¤ãƒ—
+help.cacheControl_defaultMaxAge=The time (in seconds) to instruct external caches to save generated maps.
+help.dataFormat_id=A unique Coverage Data Set identifier.
+help.dataFormat_enabled=Checked to enable this Coverage Data Set
+help.dataFormat_nameSpace=A namespace Prefix to associate with this Coverage Data Set.
+help.dataFormat_type=Coverage Data Set type.
+help.dataFormat_url=The URL of the associated resource.
+help.dataFormat_nameSpace=A namespace Prefix to associate with this Coverage Data Set.
+help.dataFormat_description=A short description about this Coverage Data Set.
+help.dataFormat_server=The name of the server to connect to.
+help.dataFormat_port=The connection port on the server.
+help.dataFormat_username=The username to login to the server with.
+help.dataFormat_password=The password to login to the server with.
 
 help.dataStore_id=ãƒ¦ãƒ‹ãƒ¼ã‚¯ã?ªãƒ‡ãƒ¼ã‚¿ã‚¹ãƒˆã‚¢è­˜åˆ¥å­?
 help.dataStore_enabled=ãƒ‡ãƒ¼ã‚¿ã‚¹ãƒˆã‚¢ã‚’æœ‰åŠ¹ã?«ã?™ã‚‹ã?Ÿã‚?ã?«ãƒ?ã‚§ãƒƒã‚¯ã?•ã‚Œã?¾ã?™ã€‚
@@ -187,6 +205,18 @@ error.keywords.required=ã‚­ãƒ¼ãƒ¯ãƒ¼ãƒ‰ã?Œå¿…è¦?ã?§ã?™ã€‚
 error.abstract.required=è¦?ç´„ã?Œå¿…è¦?ã?§ã?™ã€‚
 error.accessConstraints.required=ã‚¢ã‚¯ã‚»ã‚¹åˆ¶é™?ã?Œå¿…è¦?ã?§ã?™ã€‚
 
+error.geoserver.JAIMemCapacity=JAI Memory Capacity value must be between 0.0 and 1.0
+error.geoserver.JAIMemThreshold=JAI Memory Threshold value must be between 0.0 and 1.0
+error.geoserver.JAITileThreads=JAI Tile Scheduler Threads value must be between 0 and 100
+error.geoserver.JAITilePriority=JAI Tile Scheduler Thread Priority value must be between 1 and 10
+
+error.dataFormatId.invalid=Coverage Data Set ID '{0}' must contain only alphanumeric characters (A-Z, a-z, 0-9)
+error.dataFormatId.required=Coverage Data Set ID is required.
+error.dataFormatFactory.invalid=Invalid Coverage Data Set Factory (Please choose one from the list)
+error.dataFormatEditor.param.required={0} is a required parameter
+error.dataFormatEditor.param.parse={0} must be a valid {1}: {2}
+error.dataformatEditor.validation=Provided parameters can not be processed
+
 error.dataStoreId.invalid=ãƒ‡ãƒ¼ã‚¿ã‚¹ãƒˆã‚¢ID '{0}'ã?¯è‹±æ•°å­—ã?«åˆ¶é™?ã?•ã‚Œã?¦ã?¾ã?™ã€‚(A-Z, a-z, 0-9)
 error.dataStoreId.required=ãƒ‡ãƒ¼ã‚¿ã‚¹ãƒˆã‚¢IDã?Œå¿…è¦?ã?§ã?™ã€‚
 error.dataStoreFactory.invalid=ç„¡åŠ¹ã?ªãƒ‡ãƒ¼ã‚¿ã‚¹ãƒˆã‚¢ãƒ»ãƒ•ã‚¡ã‚¯ãƒˆãƒªã?§ã?™ã€‚(ãƒªã‚¹ãƒˆã?‹ã‚‰ä¸€ã?¤é?¸æŠžã?—ã?¦ã??ã? ã?•ã?„)
@@ -206,6 +236,8 @@ error.prefix.invalid=å??å‰?ç©ºé–“ã?®ãƒ—ãƒ¬ãƒ•ãƒƒã‚¯ã‚¹ '(0}' ã?¯è‹±æ•°å­—ã?®ã?¿ã
 error.prefix.required=å??å‰?ç©ºé–“ã?®ãƒ—ãƒ¬ãƒ•ãƒƒã‚¯ã‚¹ã?Œå¿…è¦?ã?§ã?™ã€‚
 error.uri.malformed=å??å‰?ç©ºé–“ã?®URIã?Œå¥‡å¦™ã?§ã?™ã€‚: {0}
 error.uri.required=Namå??å‰?ç©ºé–“ã?®URIã?Œå¿…è¦?ã?§ã?™ã€‚
+error.coveragedir.create=Cannot create Coverage Format Dir: {0}
+error.coveragedir.write=Cannot write into Coverage Format Dir: {0}
 
 error.style.required=é?¸æŠžã?•ã‚Œã?Ÿã‚¹ã‚¿ã‚¤ãƒ«ã?Œå¿…è¦?ã?§ã?™ã€‚
 error.style.invalid=é?¸æŠžã?•ã‚Œã?Ÿã‚¹ã‚¿ã‚¤ãƒ«ã?Œå®šç¾©ã?•ã‚Œã?¦ã?„ã?¾ã?›ã‚“ã€‚
@@ -217,6 +249,7 @@ welcome.heading=Welcomeã€€ã‚ˆã?†ã?“ã??
 geoserver.logo=GeoServer
 
 label.defaultTitle=GeoServer
+label.coverageName=Coverage Data Set ID
 label.featureTypeName=ãƒ•ãƒ¥ãƒ¼ãƒ?ãƒ£ãƒ¼ã‚¿ã‚¤ãƒ—å??
 label.moveUp=ä¸‹ã?«ç§»å‹•
 label.moveDown=ä¸Šã?«ç§»å‹•
@@ -250,6 +283,7 @@ label.addressCountry=å›½
 label.contactVoice=é›»è©±ç•ªå?·
 label.contactFacsimile=ãƒ•ã‚¡ãƒƒã‚¯ã‚¹ç•ªå?·
 label.contactEmail=Eãƒ¡ãƒ¼ãƒ«
+label.wcs=Web Coverage Server
 label.wfs=Webãƒ•ãƒ¥ãƒ¼ãƒ?ãƒ£ãƒ¼ãƒ»ã‚µãƒ¼ãƒ?
 label.wms=Webãƒžãƒƒãƒ—ãƒ»ã‚µãƒ¼ãƒ?ãƒ¼
 label.data=ãƒ‡ãƒ¼ã‚¿
@@ -265,7 +299,9 @@ label.wfsContent=WFSã‚³ãƒ³ãƒ†ãƒ³ãƒ„
 label.wmsDescription=WMSã?®èª¬æ˜Ž
 label.wmsContent=WMSã‚³ãƒ³ãƒ†ãƒ³ãƒ„
 label.wmsRendering=WMSæ??ç”»
+label.formats=CoverageStores
 label.dataStores=ãƒ‡ãƒ¼ã‚¿ã‚¹ãƒˆã‚¢
+label.coverages=Coverages
 label.createNewDataStore=æ–°ã?—ã?„ãƒ‡ãƒ¼ã‚¿ã‚¹ãƒˆã‚¢ã‚’ä½œæˆ?ã?—ã?¾ã?™ã€‚
 label.createNewNamespace=æ–°ã?—ã?„å??å‰?ç©ºé–“ã‚’ä½œæˆ?ã?—ã?¾ã?™ã€‚
 label.serviceLevel=ã‚µãƒ¼ãƒ“ã‚¹ãƒ¬ãƒ™ãƒ«
@@ -314,6 +350,7 @@ help.wms.path=Specifies the layer hierarchy in the WMS capabilities
 
 tab.description=èª¬æ˜Ž
 tab.content=ã‚³ãƒ³ãƒ†ãƒ³ãƒ„
+tab.formats=Coverage Data Sets
 tab.dataStores=ãƒ‡ãƒ¼ã‚¿ãƒ»ã‚¹ãƒˆã‚¢
 tab.namespaces=å??å‰?ç©ºé–“
 tab.styles=ã‚¹ã‚¿ã‚¤ãƒ«
@@ -325,6 +362,12 @@ error.login.required=ã?“ã?®ãƒ•ãƒ¥ãƒ¼ãƒ?ãƒ£ãƒ¼ã?«ã‚¢ã‚¯ã‚»ã‚¹ã?™ã‚‹ã?Ÿã‚?ã?«ã?¯ãƒ
 error.latLonBoundingBox.required=çµŒç·¯åº¦å¢ƒç•Œä¸Šã?®å…¨ã‚¨ãƒ¬ãƒ¡ãƒ³ãƒˆã?Œå¿…è¦?ã?§ã?™ã€‚
 error.latLonBoundingBox.invalid=ç„¡åŠ¹ã?ªçµŒç·¯åº¦å¢ƒç•Œã?§ã?™ã€‚: {0}
 error.serviceLevel.invalid=ç„¡åŠ¹ã?ªã‚µãƒ¼ãƒ“ã‚¹ãƒ¬ãƒ™ãƒ«ã?Œé?¸æŠžã?•ã‚Œã?¾ã?—ã?Ÿã€‚
+
+error.envelope.required=All elements on the Envelope are required.
+error.envelope.invalid=Invalid Envelope: {0}
+error.coverage.name.required=The Coverage Name is required.
+error.coverage.name.invalid=Invalid Coverage Name: {0}
+error.coverage.nativeCRS.required=Native CRS is required if SRS is UNKNOWN.
 
 link.geoserver=http://geoserver.sourceforge.net/
 link.license=http://geoserver.sourceforge.net/documentation/developer/license.htm
@@ -341,7 +384,7 @@ message.dataOkay=ãƒ‡ãƒ¼ã‚¿ã?Œéšœå®³ã?ªã??èª­è¾¼ã?¾ã‚Œã?¾ã?—ã?Ÿã€‚
 # WELCOME
 welcome.label=Welcome
 welcome.title=Welcome GeoServer
-welcome.short=ã‚ˆã?†ã?“ã??ã€€GeoServer 1.4.0-RC1ã?¸ã€€ã€€GeoServerã?®ã?”åˆ©ç”¨ã?‚ã‚Šã?Œã?¨ã?†ã?”ã?–ã?„ã?¾ã?™!
+welcome.short=ã‚ˆã?†ã?“ã??ã€€GeoServer 1.6-alpha2ã?¸ã€€ã€€GeoServerã?®ã?”åˆ©ç”¨ã?‚ã‚Šã?Œã?¨ã?†ã?”ã?–ã?„ã?¾ã?™!
 welcome.words=(GeoServer) (GIS) (Geographic Information Systems) (WFS)
 
 welcome.contact.label=é€£çµ¡å…ˆ
@@ -485,6 +528,26 @@ config.validation.displayResults.runCompleted=å®Ÿè¡Œã?¯å®Œäº†
 config.validation.displayResults.runNotCompleted=å®Ÿè¡Œã?¯å®Œäº†ã?—ã?¾ã?›ã‚“ã?§ã?—ã?Ÿ
 config.validation.displayResults.stop=å?œæ­¢
 
+# CONFIG wcs
+config.wcs.label=WCS
+config.wcs.title=Web Coverage Server Configuration
+config.wcs.short=Configuration of Web Coverage Server
+config.wcs.words=(WCS) (Web Coverage Server) (Configure)
+
+config.wcs.content.label=Contents
+config.wcs.content.title=Web Coverage Server Contents
+config.wcs.content.short=Configuration of Web Coverage Server functionality
+config.wcs.content.words=(WCS) (Web Coverage Server) (Configure)
+
+config.wcs.description.label=Description
+config.wcs.description.title=Web Coverage Server Description
+config.wcs.description.short=Configuration of Web Coverage Server information and metadata
+config.wcs.description.words=(WCS) (Web Coverage Server) (Configure)
+
+
+error.wcs.onlineResource.required=Online Resource is required.
+error.wcs.onlineResource.malformed=Online Resource is malformed: {0}
+
 # CONFIG wfs
 config.wfs.label=WFS
 config.wfs.title=Web Feature Serverã?®è¨­å®š
@@ -533,6 +596,29 @@ config.data.label=ãƒ‡ãƒ¼ã‚¿
 config.data.title=GeoServerã?®ãƒ‡ãƒ¼ã‚¿è¨­å®š
 config.data.short=GeoServerã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã?®config.dataã?®ã‚¢ã‚¯ã‚»ã‚¹ã?¨è¡¨ç¤ºã‚’è¨­å®šã?—ã?¾ã?™ã€‚
 config.data.words=(è¨­å®š) (ãƒ‡ãƒ¼ã‚¿) (ç©ºé–“ãƒ‡ãƒ¼ã‚¿)
+
+# DATA - config.data.coverageplugins
+config.wcs.coverageplugins.label=CoveragePlugins
+config.wcs.coverageplugins.title=Coverage Plugins List
+config.wcs.coverageplugins.short=List of installed Formats
+config.wcs.coverageplugins.words=(Configure) (Coverage) (Plugin) (Format)
+
+# DATA - config.dataFormats
+config.data.format.label=CoverageStores
+config.data.format.title=Coverage Data Set Configuration
+config.data.format.short=Select Coverage Data Set for configuration
+config.data.format.words=(Configure) (Coverage) (Spatial Data) (Data)
+
+config.data.format.new.label=New
+config.data.format.new.title=Create New Coverage Data Set
+config.data.format.new.short=Create source of spatial information
+config.data.format.new.words=(Configure) (Coverage) (Spatial Data) (Data)
+
+config.data.format.editor.label=Edit
+config.data.format.editor.title=Coverage Data Set Editor
+config.data.format.editor.short=Edit a source of spatial information
+config.data.format.editor.words=(Configure) (Coverage) (Spatial Data) (Data)
+config.data.format.editor.requiredField=required field
 
 # DATA - config.dataStores
 config.data.store.label=ãƒ‡ãƒ¼ã‚¿ã‚¹ãƒˆã‚¢
@@ -599,7 +685,7 @@ error.file.nonexistent=ãƒ•ã‚¡ã‚¤ãƒ« {0} ã?Œã?‚ã‚Šã?¾ã?›ã‚“ã€‚
 error.file.maxLengthExceeded=SLDæ–‡æ›¸ã?®æœ€å¤§ã‚¢ãƒƒãƒ—ãƒ­ãƒ¼ãƒ‰é•·ã‚’è¶Šã?ˆã?¾ã?—ã?Ÿã€‚ ({0} ãƒ?ã‚¤ãƒˆã?¾ã?§è¨±å®¹ï¼‰
 error.action.invalid=ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ '{0}' ã?¯ç?†è§£ã?•ã‚Œã?¾ã?›ã‚“ã?§ã?—ã?Ÿã€‚
 error.styleID.required=StyleID ã?Œå¿…è¦?ã?§ã?™ã€‚
-error.styleID.invalid=StyleIDã?¯è‹±æ•°å­—ã?§å§‹ã?¾ã‚‰ã?ªã?‘ã‚Œã?°ã?ªã‚Šã?¾ã?›ã‚“ã€‚
+error.styleID.invalid=StyleID must begin with an alpha-numeric character and cannot contain spaces.
 error.style.sldFileExists=æ—¢ã?«{0}ã?Œã?‚ã‚Šã?¾ã?™ã€€ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒªãƒ?ãƒ¼ãƒ ã?—ã?¦å®Ÿè¡Œã?—ã?¦ã??ã? ã?•ã?„ã€‚
 
 
@@ -664,6 +750,16 @@ label.type.minx=Min çµŒåº¦
 label.type.miny=Min ç·¯åº¦
 label.type.maxx=Max çµŒåº¦
 label.type.maxy=Max ç·¯åº¦
+
+label.envelope=Envelope
+label.coverageLabel=Label
+label.copverageDescription=Description
+label.metadataLink=Online-Resource
+label.coverage.minx=Min X
+label.coverage.miny=Min Y
+label.coverage.maxx=Max X
+label.coverage.maxy=Max Y
+
 label.base=ã‚¹ã‚­ãƒ¼ãƒžãƒ»ãƒ™ãƒ¼ã‚¹
 label.schemaName=ã‚¹ã‚­ãƒ¼ãƒžå??
 label.style=ã‚¹ã‚¿ã‚¤ãƒ«
@@ -683,6 +779,27 @@ help.type.maxx=ãƒ•ãƒ¥ãƒ¼ãƒ?ãƒ£ãƒ¼ã‚¿ã‚¤ãƒ—ã?®æœ€å¤§ç·¯åº¦
 help.type.maxy=ãƒ•ãƒ¥ãƒ¼ãƒ?ãƒ£ãƒ¼ã‚¿ã‚¤ãƒ—ã?®æœ€å¤§çµŒåº¦
 help.type.base=ãƒ™ãƒ¼ã‚¹XMLã‚¹ã‚­ãƒ¼ãƒžè¦?ç´ (å¿…é ˆã?ªå±žæ€§ã‚’å®šç¾©ã?™ã‚‹ã?‹ã€?ç”Ÿæˆ?ã?™ã‚‹)
 help.type.schemaName=ã‚¿ã‚¤ãƒ—ã‚’èª¬æ˜Žã?™ã‚‹XMLã‚¹ã‚­ãƒ¼ãƒžè¦?ç´ å??
+help.type.cachingEnabled=Instruct other servers to cache maps generated from this featuretype?
+help.type.cacheMaxAge=Time (in seconds) other servers should cache maps generated from this featuretype.
+help.coverage.name=Name of Coverage
+help.coverage.srsName=Spatial Reference System for Coverage
+help.coverage.nativeCRS=Native Spatial Reference System for Coverage: Generate Envelope after setting the property.
+help.coverage.label=Human-Readable label for end users of this Coverage
+help.coverage.description=Human-Readable description for end users of this Coverage
+help.coverage.metadataLink=Online-Resource for this Coverage
+help.coverage.envelope=Envelope of the entire Coverage
+help.coverage.minx=Minimum Long value for Coverage
+help.coverage.miny=Minimum Lat value for Coverage
+help.coverage.maxx=Maximum Long value for Coverage
+help.coverage.maxy=Maximum Lat value for Coverage
+help.dataCoverageKeywords=Keywords for this Coverage
+help.coverage.requestCRSs=Request Coordinate Reference Systems for Coverage
+help.coverage.responseCRSs=Response Coordinate Reference Systems for Coverage
+help.coverage.nativeFormat=Native Format of this Coverage
+help.coverage.supportedFormats=Supported Output Formats for this Coverage
+help.coverage.defaultInterpolationMethod=Default Interpolation Method
+help.coverage.interpolationMethods=Interpolation Methods for Coverage
+
 error.styleId.notFound=ã‚¹ã‚¿ã‚¤ãƒ«Id '{0}'ã?Œå®šç¾©ã?•ã‚Œã?¦ã?¾ã?›ã‚“ã€‚
 
 type.title.up=ã?“ã?®ã‚¿ã‚¤ãƒ—ã‚’1ãƒ¬ãƒ™ãƒ«ä¸Šã?«å‹•ã?‹ã?—ã?¦ã??ã? ã?•ã?„ã€‚
