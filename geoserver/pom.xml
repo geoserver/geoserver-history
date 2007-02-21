@@ -8,7 +8,7 @@
 	<artifactId>geoserver</artifactId>
 	<packaging>pom</packaging>
 	<version>1.5.0-RC1</version>
-	<name>GeoServer</name>
+	<name>GeoServer 1.5.x</name>
 
  <scm>
   <connection>scm:svn:http://svn.codehaus.org/geoserver/branches/1.5.x/geoserver</connection>
