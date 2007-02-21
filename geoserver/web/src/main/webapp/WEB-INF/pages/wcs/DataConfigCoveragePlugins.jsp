@@ -2,7 +2,7 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<html:form action="/config/data/coveragePlugins">
+<html:form action="/config/wcs/coveragePlugins">
 <table class="info" align="center">
   	<tr>
 			<td class="datum">

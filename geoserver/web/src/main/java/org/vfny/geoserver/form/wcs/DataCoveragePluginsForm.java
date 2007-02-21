@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.form.data;
+package org.vfny.geoserver.form.wcs;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -82,6 +82,10 @@ public class DataCoveragePluginsForm extends ActionForm {
         return formatDescriptions;
     }
 
+    public void setFormatDescriptions(List desc) {
+        formatDescriptions = desc;
+    }
+
     /**
      *
      */
@@ -89,10 +93,18 @@ public class DataCoveragePluginsForm extends ActionForm {
         return formatIDs;
     }
 
+    public void setFormatIDs(List ids) {
+        formatIDs = ids;
+    }
+
     /**
      *
      */
     public List getFormats() {
         return formats;
+    }
+
+    public void setFormats(List f) {
+        formats = f;
     }
 }

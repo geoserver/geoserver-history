@@ -15,7 +15,7 @@
         <put name="locationForwards" value="welcome:config"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
         <put name="menuForwards"
-             value="config.wcs.content:config.wcs.description"/>
+             value="config.wcs.content:config.wcs.description:config.wcs.coverageplugins"/>
    	</definition>
 
    	<definition name="config.wcs.description" extends=".mainLayout">
@@ -37,16 +37,26 @@
         <put name="locationForwards" value="welcome:config:config.wcs"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
    	</definition>
+   	
+   	<definition name="config.wcs.coverageplugins" extends=".mainLayout">
+   		<put name="key" value="config.wcs.coverageplugins"/>
+		<put name="body" value="/WEB-INF/pages/wcs/DataConfigCoveragePlugins.jsp"/>
+		<put name="status" value="/WEB-INF/pages/wcs/status.jsp"/>
+		<put name="serviceName" value="/WEB-INF/pages/wcs/serviceName.jsp"/>		
+   		<put name="layer" value="data"/>
+        <put name="locationForwards" value="welcome:config:config.wcs"/>
+   		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
+   	</definition>
 
 	<!-- coverageplugins -->
-   	<definition name="config.data.coverageplugins" extends=".mainLayout">
+   	<!--definition name="config.data.coverageplugins" extends=".mainLayout">
    		<put name="key" value="config.data.coverageplugins"/>
 		<put name="body" value="/WEB-INF/pages/data/DataConfigCoveragePlugins.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>		
    		<put name="layer" value="data"/>   				
         <put name="locationForwards" value="welcome:config:config.data"/>
    		<put name="configActions" value="/WEB-INF/pages/configActions.jsp"/>
-   	</definition>
+   	</definition-->
 	
 	<!-- dataformats -->
    	<definition name="config.data.format" extends=".mainLayout">
