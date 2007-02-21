@@ -108,7 +108,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
      * for the GetLegendGraphic operation.
      */
     public static final Color BG_COLOR = Color.WHITE;
-    
+
     /**
      * Image observer to help in creating the stack like legend graphic from
      * the images created for each rule
@@ -117,10 +117,10 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
 
     /** padding percentaje factor at both sides of the legend. */
     private static final float hpaddingFactor = 0.15f;
-    
+
     /** top & bottom padding percentaje factor for the legend */
     private static final float vpaddingFactor = 0.15f;
-    
+
     /** The image produced at <code>produceLegendGraphic</code> */
     private BufferedImage legendGraphic;
 
@@ -242,7 +242,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
         }
 
         //this.legendGraphic = scaleImage(mergeLegends(legendsStack,applicableRules), request);
-        this.legendGraphic = mergeLegends(legendsStack,applicableRules);
+        this.legendGraphic = mergeLegends(legendsStack, applicableRules);
     }
 
     /**
@@ -277,12 +277,12 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
     *        Rule
     * @param rules The applicable rules, one for each image in the stack
     * @param request The request.
-    * 
+    *
     * @return the stack image with all the images on the argument list.
     *
     * @throws IllegalArgumentException if the list is empty
     */
-    private static BufferedImage mergeLegends(List imageStack,Rule[] rules) {
+    private static BufferedImage mergeLegends(List imageStack, Rule[] rules) {
         if (imageStack.size() == 0) {
             throw new IllegalArgumentException("No legend graphics passed");
         }
@@ -294,69 +294,77 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
         } else {
             final int imgCount = imageStack.size();
             final String[] labels = new String[imgCount];
-            
-            BufferedImage img = ((BufferedImage)imageStack.get( 0 ));
+
+            BufferedImage img = ((BufferedImage) imageStack.get(0));
             FontMetrics fontMetrics = img.getGraphics().getFontMetrics();
-            
-            final int rowHeight = Math.max( fontMetrics.getHeight(), img.getHeight() );
-             
+
+            final int rowHeight = Math.max(fontMetrics.getHeight(), img.getHeight());
+
             //calculate the total dimensions of the image
-            int totalHeight =  rowHeight * imgCount;
+            int totalHeight = rowHeight * imgCount;
             int totalWidth = 0;
+
             for (int i = 0; i < imgCount; i++) {
                 img = (BufferedImage) imageStack.get(i);
+
                 Rule rule = rules[i];
-            
+
                 //does this rule have a label
                 labels[i] = rule.getTitle();
-                if ( labels[i] == null ) {
-                	labels[i] = rule.getName();
+
+                if (labels[i] == null) {
+                    labels[i] = rule.getName();
                 }
-               
+
                 int w = img.getWidth();
-               
-                if ( labels[i] != null ) {
-                	Graphics g = img.getGraphics();
-                	w += g.getFontMetrics().stringWidth( labels[i] );
+
+                if (labels[i] != null) {
+                    Graphics g = img.getGraphics();
+                    w += g.getFontMetrics().stringWidth(labels[i]);
                 }
-                
-                totalWidth = Math.max( w, totalWidth );
+
+                totalWidth = Math.max(w, totalWidth);
             }
-            
+
             //create the final image
             finalLegend = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_ARGB);
+
             Graphics2D finalGraphics = finalLegend.createGraphics();
+
             finalGraphics.setColor(BG_COLOR);
             finalGraphics.fillRect(0, 0, totalWidth, totalHeight);
-            
+
             int h = 0;
+
             for (int i = 0; i < imgCount; i++) {
                 img = (BufferedImage) imageStack.get(i);
-                
+
                 //draw the image
                 int y = h;
-                if ( img.getHeight() < rowHeight ) {
-                	//move the image to the center of the row
-                	y += (int)(( rowHeight - img.getHeight() ) / 2d );
+
+                if (img.getHeight() < rowHeight) {
+                    //move the image to the center of the row
+                    y += (int) ((rowHeight - img.getHeight()) / 2d);
                 }
+
                 finalGraphics.drawImage(img, 0, y, imgObs);
-                
+
                 //draw the label
-                if ( labels[ i ] != null ) {
-                	finalGraphics.setColor( Color.BLACK );
-                	
-                	y = h + rowHeight - fontMetrics.getDescent();
-                	if ( fontMetrics.getHeight() < rowHeight ) {
-                		//move the baseline to the center of the row
-                		y -= (int) (( rowHeight - fontMetrics.getHeight() ) / 2d ); 
-                	}
-                	
-                	finalGraphics.drawString( labels[i], img.getWidth(), y );	
+                if (labels[i] != null) {
+                    finalGraphics.setColor(Color.BLACK);
+
+                    y = (h + rowHeight) - fontMetrics.getDescent();
+
+                    if (fontMetrics.getHeight() < rowHeight) {
+                        //move the baseline to the center of the row
+                        y -= (int) ((rowHeight - fontMetrics.getHeight()) / 2d);
+                    }
+
+                    finalGraphics.drawString(labels[i], img.getWidth(), y);
                 }
-                
+
                 h += rowHeight;
             }
-            
         }
 
         return finalLegend;
