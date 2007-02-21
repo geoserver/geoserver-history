@@ -152,4 +152,5 @@ This is a description of your Web Map Server.
 <svgAntiAlias>true</svgAntiAlias>
 </service>
 </services>
+
 </serverConfiguration>
