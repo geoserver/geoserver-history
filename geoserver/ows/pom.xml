@@ -69,18 +69,22 @@
           <generateBindingConfiguration>false</generateBindingConfiguration>
           <generateBindingInterface>false</generateBindingInterface>
           <generateSchemaLocationResolver>false</generateSchemaLocationResolver>
-					<generateElements>true</generateElements>
-					<includes>
+          <generateElements>true</generateElements>
+          <includes>
             <include>ExceptionReport</include>
             <include>ExceptionType</include>
-					</includes>
-				</configuration>
-		  </plugin>
+          </includes>
+        </configuration>
+       </plugin>
 	
       <!-- ====    Code Formatting  ============================== -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jalopy-maven-plugin</artifactId>
+        <configuration>
+          <srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
+          <testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
+        </configuration>
         <executions>
           <execution>
             <goals>
@@ -90,7 +94,7 @@
           </execution>
         </executions>
       </plugin>
-		</plugins>
-	</build>
+     </plugins>
+   </build>
 
 </project>

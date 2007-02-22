@@ -56,6 +56,10 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jalopy-maven-plugin</artifactId>
+        <configuration>
+          <srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
+          <testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
+        </configuration>
         <executions>
           <execution>
             <goals>
