@@ -3,6 +3,9 @@
 http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd" version="1.0.0">
 <UserLayer>
 	<Name>raster_layer</Name>
+        <LayerFeatureConstraints>
+            <FeatureTypeConstraint/>
+        </LayerFeatureConstraints>
 	<UserStyle>
 		<Name>raster</Name>
 		<Title>A boring default style</Title>
@@ -12,6 +15,9 @@ http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd" version="1.0.0">
 			<Rule>
 				<RasterSymbolizer>
 				    <Opacity>1.0</Opacity>
+				    <OverlapBehavior>
+				       <AVERAGE/>
+				    </OverlapBehavior>
 				    <ColorMap>
 				       <ColorMapEntry color="#000000" quantity="-500" label="nodata" opacity="0.0"/>
 				       <ColorMapEntry color="#00ff00" quantity="-500" label="values"/>
@@ -35,9 +41,6 @@ http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd" version="1.0.0">
 				       <ColorMapEntry color="#ffffff" quantity="5000" label="values"/>
 				       <ColorMapEntry color="#ffffff" quantity="13000" label="values"/>
 				    </ColorMap>
-				    <OverlapBehavior>
-				       <AVERAGE/>
-				    </OverlapBehavior>
 				    <ShadedRelief/>
 				</RasterSymbolizer>
 			</Rule>
