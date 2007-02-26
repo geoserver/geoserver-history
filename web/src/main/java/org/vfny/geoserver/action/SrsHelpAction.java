@@ -15,7 +15,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,18 +55,17 @@ public class SrsHelpAction extends Action {
         Set codes = CRS.getSupportedCodes("EPSG");
 
         // make an array of each code (as an int)
-        ArrayList ids = new ArrayList();
+        HashSet idSet = new HashSet();
         Iterator codeIt = codes.iterator();
 
         while (codeIt.hasNext()) {
             String code = (String) codeIt.next();
             String id = code.substring(code.indexOf(':') + 1); //just the number
 
-            if (!ids.contains(Integer.valueOf(id))) {
-                ids.add(Integer.valueOf(id));
-            }
+            idSet.add(Integer.valueOf(id));
         }
 
+        List ids = new ArrayList(idSet);
         Collections.sort(ids); //sort to get them in order
 
         CoordinateReferenceSystem crs;
@@ -76,12 +79,17 @@ public class SrsHelpAction extends Action {
             id = (Integer) codeIt.next();
 
             try { //get its definition
-                crs = CRS.decode(new StringBuffer("EPSG:").append(id).toString());
+                crs = CRS.decode("EPSG:"+ id);
                 def = crs.toWKT();
                 defs.add(def);
                 ids_string.add(id.toString());
             } catch (Exception e) {
-                LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+                if(LOGGER.isLoggable(Level.FINER))
+                    LOGGER.log(Level.FINER, "Issues converting EPSG:" + id, e);
+                else
+                    LOGGER.log(Level.WARNING, "Issues converting EPSG:" + id + ". " 
+                        + e.getLocalizedMessage() + " Stack trace included at FINER logging level");
+                
             }
         }
 
