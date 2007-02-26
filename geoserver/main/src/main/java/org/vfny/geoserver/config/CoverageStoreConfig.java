@@ -85,7 +85,7 @@ public class CoverageStoreConfig {
         id = dataFormatId;
         nameSpaceId = "";
         type = factory.getName();
-        url = "file:data/coverages/";
+        url = "file:coverages/";
         enabled = true;
         title = "";
         _abstract = "";
