@@ -7,12 +7,11 @@
 package net.opengis.wfs.impl;
 
 import net.opengis.wfs.ActionType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
@@ -108,7 +107,7 @@ public class ActionTypeImpl extends EObjectImpl implements ActionType {
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getActionType();
+		return WfsPackage.Literals.ACTION_TYPE;
 	}
 
 	/**
@@ -129,7 +128,7 @@ public class ActionTypeImpl extends EObjectImpl implements ActionType {
 		String oldMessage = message;
 		message = newMessage;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.ACTION_TYPE__MESSAGE, oldMessage, message));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.ACTION_TYPE__MESSAGE, oldMessage, message));
 	}
 
 	/**
@@ -150,7 +149,7 @@ public class ActionTypeImpl extends EObjectImpl implements ActionType {
 		String oldCode = code;
 		code = newCode;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.ACTION_TYPE__CODE, oldCode, code));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.ACTION_TYPE__CODE, oldCode, code));
 	}
 
 	/**
@@ -171,7 +170,7 @@ public class ActionTypeImpl extends EObjectImpl implements ActionType {
 		String oldLocator = locator;
 		locator = newLocator;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.ACTION_TYPE__LOCATOR, oldLocator, locator));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.ACTION_TYPE__LOCATOR, oldLocator, locator));
 	}
 
 	/**
@@ -179,16 +178,16 @@ public class ActionTypeImpl extends EObjectImpl implements ActionType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.ACTION_TYPE__MESSAGE:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.ACTION_TYPE__MESSAGE:
 				return getMessage();
-			case WFSPackage.ACTION_TYPE__CODE:
+			case WfsPackage.ACTION_TYPE__CODE:
 				return getCode();
-			case WFSPackage.ACTION_TYPE__LOCATOR:
+			case WfsPackage.ACTION_TYPE__LOCATOR:
 				return getLocator();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -196,19 +195,19 @@ public class ActionTypeImpl extends EObjectImpl implements ActionType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.ACTION_TYPE__MESSAGE:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.ACTION_TYPE__MESSAGE:
 				setMessage((String)newValue);
 				return;
-			case WFSPackage.ACTION_TYPE__CODE:
+			case WfsPackage.ACTION_TYPE__CODE:
 				setCode((String)newValue);
 				return;
-			case WFSPackage.ACTION_TYPE__LOCATOR:
+			case WfsPackage.ACTION_TYPE__LOCATOR:
 				setLocator((String)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -216,19 +215,19 @@ public class ActionTypeImpl extends EObjectImpl implements ActionType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.ACTION_TYPE__MESSAGE:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.ACTION_TYPE__MESSAGE:
 				setMessage(MESSAGE_EDEFAULT);
 				return;
-			case WFSPackage.ACTION_TYPE__CODE:
+			case WfsPackage.ACTION_TYPE__CODE:
 				setCode(CODE_EDEFAULT);
 				return;
-			case WFSPackage.ACTION_TYPE__LOCATOR:
+			case WfsPackage.ACTION_TYPE__LOCATOR:
 				setLocator(LOCATOR_EDEFAULT);
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -236,16 +235,16 @@ public class ActionTypeImpl extends EObjectImpl implements ActionType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.ACTION_TYPE__MESSAGE:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.ACTION_TYPE__MESSAGE:
 				return MESSAGE_EDEFAULT == null ? message != null : !MESSAGE_EDEFAULT.equals(message);
-			case WFSPackage.ACTION_TYPE__CODE:
+			case WfsPackage.ACTION_TYPE__CODE:
 				return CODE_EDEFAULT == null ? code != null : !CODE_EDEFAULT.equals(code);
-			case WFSPackage.ACTION_TYPE__LOCATOR:
+			case WfsPackage.ACTION_TYPE__LOCATOR:
 				return LOCATOR_EDEFAULT == null ? locator != null : !LOCATOR_EDEFAULT.equals(locator);
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

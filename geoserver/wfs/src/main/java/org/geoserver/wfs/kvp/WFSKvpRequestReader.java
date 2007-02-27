@@ -4,7 +4,7 @@
  */
 package org.geoserver.wfs.kvp;
 
-import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WfsFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.ows.KvpRequestReader;
 import org.geoserver.ows.util.OwsUtils;
@@ -27,7 +27,7 @@ public class WFSKvpRequestReader extends KvpRequestReader {
     /**
      * WFs factory used to create model objects / requests.
      */
-    WFSFactory wfsFactory;
+    WfsFactory wfsFactory;
 
     /**
      * Creates the Wfs Kvp Request reader.
@@ -43,7 +43,7 @@ public class WFSKvpRequestReader extends KvpRequestReader {
             throw new IllegalArgumentException(msg);
         }
 
-        wfsFactory = WFSFactory.eINSTANCE;
+        wfsFactory = WfsFactory.eINSTANCE;
     }
 
     /**
@@ -59,7 +59,7 @@ public class WFSKvpRequestReader extends KvpRequestReader {
             className = className.substring(index + 1);
         }
 
-        Method create = OwsUtils.method(WFSFactory.class, "create" + className);
+        Method create = OwsUtils.method(WfsFactory.class, "create" + className);
 
         try {
             return create.invoke(wfsFactory, null);

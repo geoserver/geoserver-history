@@ -26,11 +26,11 @@ import org.opengis.filter.Filter;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getDeleteElementType()
+ * @see net.opengis.wfs.WfsPackage#getDeleteElementType()
  * @model extendedMetaData="name='DeleteElementType' kind='elementOnly'"
  * @generated
  */
-public interface DeleteElementType extends EObject{
+public interface DeleteElementType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Filter</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -85,7 +85,7 @@ public interface DeleteElementType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Handle</em>' attribute.
 	 * @see #setHandle(String)
-	 * @see net.opengis.wfs.WFSPackage#getDeleteElementType_Handle()
+	 * @see net.opengis.wfs.WfsPackage#getDeleteElementType_Handle()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='attribute' name='handle'"
 	 * @generated

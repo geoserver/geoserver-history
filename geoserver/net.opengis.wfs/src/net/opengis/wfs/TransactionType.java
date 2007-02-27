@@ -37,11 +37,11 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getTransactionType()
+ * @see net.opengis.wfs.WfsPackage#getTransactionType()
  * @model extendedMetaData="name='TransactionType' kind='elementOnly'"
  * @generated
  */
-public interface TransactionType extends BaseRequestType{
+public interface TransactionType extends BaseRequestType {
 	/**
 	 * Returns the value of the '<em><b>Lock Id</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -64,7 +64,7 @@ public interface TransactionType extends BaseRequestType{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Lock Id</em>' attribute.
 	 * @see #setLockId(String)
-	 * @see net.opengis.wfs.WFSPackage#getTransactionType_LockId()
+	 * @see net.opengis.wfs.WfsPackage#getTransactionType_LockId()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='element' name='LockId' namespace='##targetNamespace'"
 	 * @generated
@@ -91,7 +91,7 @@ public interface TransactionType extends BaseRequestType{
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Group</em>' attribute list.
-	 * @see net.opengis.wfs.WFSPackage#getTransactionType_Group()
+	 * @see net.opengis.wfs.WfsPackage#getTransactionType_Group()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry" many="true"
 	 *        extendedMetaData="kind='group' name='group:4'"
 	 * @generated
@@ -108,8 +108,8 @@ public interface TransactionType extends BaseRequestType{
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Insert</em>' containment reference list.
-	 * @see net.opengis.wfs.WFSPackage#getTransactionType_Insert()
-	 * @model type="net.opengis.wfs.InsertElementType" containment="true" resolveProxies="false" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getTransactionType_Insert()
+	 * @model type="net.opengis.wfs.InsertElementType" containment="true" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='Insert' namespace='##targetNamespace' group='#group:4'"
 	 * @generated
 	 */
@@ -125,8 +125,8 @@ public interface TransactionType extends BaseRequestType{
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Update</em>' containment reference list.
-	 * @see net.opengis.wfs.WFSPackage#getTransactionType_Update()
-	 * @model type="net.opengis.wfs.UpdateElementType" containment="true" resolveProxies="false" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getTransactionType_Update()
+	 * @model type="net.opengis.wfs.UpdateElementType" containment="true" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='Update' namespace='##targetNamespace' group='#group:4'"
 	 * @generated
 	 */
@@ -142,8 +142,8 @@ public interface TransactionType extends BaseRequestType{
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Delete</em>' containment reference list.
-	 * @see net.opengis.wfs.WFSPackage#getTransactionType_Delete()
-	 * @model type="net.opengis.wfs.DeleteElementType" containment="true" resolveProxies="false" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getTransactionType_Delete()
+	 * @model type="net.opengis.wfs.DeleteElementType" containment="true" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='Delete' namespace='##targetNamespace' group='#group:4'"
 	 * @generated
 	 */
@@ -159,8 +159,8 @@ public interface TransactionType extends BaseRequestType{
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Native</em>' containment reference list.
-	 * @see net.opengis.wfs.WFSPackage#getTransactionType_Native()
-	 * @model type="net.opengis.wfs.NativeType" containment="true" resolveProxies="false" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getTransactionType_Native()
+	 * @model type="net.opengis.wfs.NativeType" containment="true" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='Native' namespace='##targetNamespace' group='#group:4'"
 	 * @generated
 	 */
@@ -203,7 +203,7 @@ public interface TransactionType extends BaseRequestType{
 	 * @see #isSetReleaseAction()
 	 * @see #unsetReleaseAction()
 	 * @see #setReleaseAction(AllSomeType)
-	 * @see net.opengis.wfs.WFSPackage#getTransactionType_ReleaseAction()
+	 * @see net.opengis.wfs.WfsPackage#getTransactionType_ReleaseAction()
 	 * @model default="ALL" unique="false" unsettable="true"
 	 *        extendedMetaData="kind='attribute' name='releaseAction'"
 	 * @generated

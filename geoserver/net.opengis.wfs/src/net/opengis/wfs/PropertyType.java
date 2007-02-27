@@ -23,11 +23,11 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getPropertyType()
+ * @see net.opengis.wfs.WfsPackage#getPropertyType()
  * @model extendedMetaData="name='PropertyType' kind='elementOnly'"
  * @generated
  */
-public interface PropertyType extends EObject{
+public interface PropertyType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->

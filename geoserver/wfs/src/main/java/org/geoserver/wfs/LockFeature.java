@@ -8,7 +8,7 @@ import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.LockFeatureResponseType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
-import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WfsFactory;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.DefaultTransaction;
@@ -114,10 +114,10 @@ public class LockFeature {
             fLock = newFeatureLock(request);
 
             // prepare the response object
-            LockFeatureResponseType response = WFSFactory.eINSTANCE.createLockFeatureResponseType();
+            LockFeatureResponseType response = WfsFactory.eINSTANCE.createLockFeatureResponseType();
             response.setLockId(fLock.getAuthorization());
-            response.setFeaturesLocked(WFSFactory.eINSTANCE.createFeaturesLockedType());
-            response.setFeaturesNotLocked(WFSFactory.eINSTANCE.createFeaturesNotLockedType());
+            response.setFeaturesLocked(WfsFactory.eINSTANCE.createFeaturesLockedType());
+            response.setFeaturesNotLocked(WfsFactory.eINSTANCE.createFeaturesNotLockedType());
 
             // go thru each lock request, and try to perform locks on a feature
             // by feature basis

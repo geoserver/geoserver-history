@@ -6,29 +6,24 @@
  */
 package net.opengis.wfs.impl;
 
-import net.opengis.ows.v1_0_0.OperationsMetadataType;
-import net.opengis.ows.v1_0_0.ServiceIdentificationType;
-import net.opengis.ows.v1_0_0.ServiceProviderType;
-
-import net.opengis.ows.v1_0_0.impl.CapabilitiesBaseTypeImpl;
+import net.opengis.ows.impl.CapabilitiesBaseTypeImpl;
 
 import net.opengis.wfs.FeatureTypeListType;
 import net.opengis.wfs.GMLObjectTypeListType;
 import net.opengis.wfs.WFSCapabilitiesType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Capabilities Type</b></em>'.
+ * An implementation of the model object '<em><b>WFS Capabilities Type</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
@@ -108,7 +103,7 @@ public class WFSCapabilitiesTypeImpl extends CapabilitiesBaseTypeImpl implements
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getWFSCapabilitiesType();
+		return WfsPackage.Literals.WFS_CAPABILITIES_TYPE;
 	}
 
 	/**
@@ -129,7 +124,7 @@ public class WFSCapabilitiesTypeImpl extends CapabilitiesBaseTypeImpl implements
 		FeatureTypeListType oldFeatureTypeList = featureTypeList;
 		featureTypeList = newFeatureTypeList;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WFSPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST, oldFeatureTypeList, newFeatureTypeList);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WfsPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST, oldFeatureTypeList, newFeatureTypeList);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -144,14 +139,14 @@ public class WFSCapabilitiesTypeImpl extends CapabilitiesBaseTypeImpl implements
 		if (newFeatureTypeList != featureTypeList) {
 			NotificationChain msgs = null;
 			if (featureTypeList != null)
-				msgs = ((InternalEObject)featureTypeList).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WFSPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST, null, msgs);
+				msgs = ((InternalEObject)featureTypeList).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WfsPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST, null, msgs);
 			if (newFeatureTypeList != null)
-				msgs = ((InternalEObject)newFeatureTypeList).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WFSPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST, null, msgs);
+				msgs = ((InternalEObject)newFeatureTypeList).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WfsPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST, null, msgs);
 			msgs = basicSetFeatureTypeList(newFeatureTypeList, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST, newFeatureTypeList, newFeatureTypeList));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST, newFeatureTypeList, newFeatureTypeList));
 	}
 
 	/**
@@ -172,7 +167,7 @@ public class WFSCapabilitiesTypeImpl extends CapabilitiesBaseTypeImpl implements
 		GMLObjectTypeListType oldServesGMLObjectTypeList = servesGMLObjectTypeList;
 		servesGMLObjectTypeList = newServesGMLObjectTypeList;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WFSPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST, oldServesGMLObjectTypeList, newServesGMLObjectTypeList);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WfsPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST, oldServesGMLObjectTypeList, newServesGMLObjectTypeList);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -187,14 +182,14 @@ public class WFSCapabilitiesTypeImpl extends CapabilitiesBaseTypeImpl implements
 		if (newServesGMLObjectTypeList != servesGMLObjectTypeList) {
 			NotificationChain msgs = null;
 			if (servesGMLObjectTypeList != null)
-				msgs = ((InternalEObject)servesGMLObjectTypeList).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WFSPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST, null, msgs);
+				msgs = ((InternalEObject)servesGMLObjectTypeList).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WfsPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST, null, msgs);
 			if (newServesGMLObjectTypeList != null)
-				msgs = ((InternalEObject)newServesGMLObjectTypeList).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WFSPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST, null, msgs);
+				msgs = ((InternalEObject)newServesGMLObjectTypeList).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WfsPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST, null, msgs);
 			msgs = basicSetServesGMLObjectTypeList(newServesGMLObjectTypeList, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST, newServesGMLObjectTypeList, newServesGMLObjectTypeList));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST, newServesGMLObjectTypeList, newServesGMLObjectTypeList));
 	}
 
 	/**
@@ -215,7 +210,7 @@ public class WFSCapabilitiesTypeImpl extends CapabilitiesBaseTypeImpl implements
 		GMLObjectTypeListType oldSupportsGMLObjectTypeList = supportsGMLObjectTypeList;
 		supportsGMLObjectTypeList = newSupportsGMLObjectTypeList;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WFSPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST, oldSupportsGMLObjectTypeList, newSupportsGMLObjectTypeList);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WfsPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST, oldSupportsGMLObjectTypeList, newSupportsGMLObjectTypeList);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -230,14 +225,14 @@ public class WFSCapabilitiesTypeImpl extends CapabilitiesBaseTypeImpl implements
 		if (newSupportsGMLObjectTypeList != supportsGMLObjectTypeList) {
 			NotificationChain msgs = null;
 			if (supportsGMLObjectTypeList != null)
-				msgs = ((InternalEObject)supportsGMLObjectTypeList).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WFSPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST, null, msgs);
+				msgs = ((InternalEObject)supportsGMLObjectTypeList).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WfsPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST, null, msgs);
 			if (newSupportsGMLObjectTypeList != null)
-				msgs = ((InternalEObject)newSupportsGMLObjectTypeList).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WFSPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST, null, msgs);
+				msgs = ((InternalEObject)newSupportsGMLObjectTypeList).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WfsPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST, null, msgs);
 			msgs = basicSetSupportsGMLObjectTypeList(newSupportsGMLObjectTypeList, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST, newSupportsGMLObjectTypeList, newSupportsGMLObjectTypeList));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST, newSupportsGMLObjectTypeList, newSupportsGMLObjectTypeList));
 	}
 
 	/**
@@ -258,7 +253,7 @@ public class WFSCapabilitiesTypeImpl extends CapabilitiesBaseTypeImpl implements
 		Object oldFilterCapabilities = filterCapabilities;
 		filterCapabilities = newFilterCapabilities;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.WFS_CAPABILITIES_TYPE__FILTER_CAPABILITIES, oldFilterCapabilities, filterCapabilities));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.WFS_CAPABILITIES_TYPE__FILTER_CAPABILITIES, oldFilterCapabilities, filterCapabilities));
 	}
 
 	/**
@@ -266,26 +261,16 @@ public class WFSCapabilitiesTypeImpl extends CapabilitiesBaseTypeImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
-		if (featureID >= 0) {
-			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
-				case WFSPackage.WFS_CAPABILITIES_TYPE__SERVICE_IDENTIFICATION:
-					return basicSetServiceIdentification(null, msgs);
-				case WFSPackage.WFS_CAPABILITIES_TYPE__SERVICE_PROVIDER:
-					return basicSetServiceProvider(null, msgs);
-				case WFSPackage.WFS_CAPABILITIES_TYPE__OPERATIONS_METADATA:
-					return basicSetOperationsMetadata(null, msgs);
-				case WFSPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST:
-					return basicSetFeatureTypeList(null, msgs);
-				case WFSPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST:
-					return basicSetServesGMLObjectTypeList(null, msgs);
-				case WFSPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST:
-					return basicSetSupportsGMLObjectTypeList(null, msgs);
-				default:
-					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
-			}
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case WfsPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST:
+				return basicSetFeatureTypeList(null, msgs);
+			case WfsPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST:
+				return basicSetServesGMLObjectTypeList(null, msgs);
+			case WfsPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST:
+				return basicSetSupportsGMLObjectTypeList(null, msgs);
 		}
-		return eBasicSetContainer(null, featureID, msgs);
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -293,28 +278,18 @@ public class WFSCapabilitiesTypeImpl extends CapabilitiesBaseTypeImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.WFS_CAPABILITIES_TYPE__SERVICE_IDENTIFICATION:
-				return getServiceIdentification();
-			case WFSPackage.WFS_CAPABILITIES_TYPE__SERVICE_PROVIDER:
-				return getServiceProvider();
-			case WFSPackage.WFS_CAPABILITIES_TYPE__OPERATIONS_METADATA:
-				return getOperationsMetadata();
-			case WFSPackage.WFS_CAPABILITIES_TYPE__UPDATE_SEQUENCE:
-				return getUpdateSequence();
-			case WFSPackage.WFS_CAPABILITIES_TYPE__VERSION:
-				return getVersion();
-			case WFSPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST:
 				return getFeatureTypeList();
-			case WFSPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST:
+			case WfsPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST:
 				return getServesGMLObjectTypeList();
-			case WFSPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST:
+			case WfsPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST:
 				return getSupportsGMLObjectTypeList();
-			case WFSPackage.WFS_CAPABILITIES_TYPE__FILTER_CAPABILITIES:
+			case WfsPackage.WFS_CAPABILITIES_TYPE__FILTER_CAPABILITIES:
 				return getFilterCapabilities();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -322,37 +297,22 @@ public class WFSCapabilitiesTypeImpl extends CapabilitiesBaseTypeImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.WFS_CAPABILITIES_TYPE__SERVICE_IDENTIFICATION:
-				setServiceIdentification((ServiceIdentificationType)newValue);
-				return;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__SERVICE_PROVIDER:
-				setServiceProvider((ServiceProviderType)newValue);
-				return;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__OPERATIONS_METADATA:
-				setOperationsMetadata((OperationsMetadataType)newValue);
-				return;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__UPDATE_SEQUENCE:
-				setUpdateSequence((String)newValue);
-				return;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__VERSION:
-				setVersion((String)newValue);
-				return;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST:
 				setFeatureTypeList((FeatureTypeListType)newValue);
 				return;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST:
+			case WfsPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST:
 				setServesGMLObjectTypeList((GMLObjectTypeListType)newValue);
 				return;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST:
+			case WfsPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST:
 				setSupportsGMLObjectTypeList((GMLObjectTypeListType)newValue);
 				return;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__FILTER_CAPABILITIES:
+			case WfsPackage.WFS_CAPABILITIES_TYPE__FILTER_CAPABILITIES:
 				setFilterCapabilities((Object)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -360,37 +320,22 @@ public class WFSCapabilitiesTypeImpl extends CapabilitiesBaseTypeImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.WFS_CAPABILITIES_TYPE__SERVICE_IDENTIFICATION:
-				setServiceIdentification((ServiceIdentificationType)null);
-				return;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__SERVICE_PROVIDER:
-				setServiceProvider((ServiceProviderType)null);
-				return;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__OPERATIONS_METADATA:
-				setOperationsMetadata((OperationsMetadataType)null);
-				return;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__UPDATE_SEQUENCE:
-				setUpdateSequence(UPDATE_SEQUENCE_EDEFAULT);
-				return;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__VERSION:
-				setVersion(VERSION_EDEFAULT);
-				return;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST:
 				setFeatureTypeList((FeatureTypeListType)null);
 				return;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST:
+			case WfsPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST:
 				setServesGMLObjectTypeList((GMLObjectTypeListType)null);
 				return;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST:
+			case WfsPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST:
 				setSupportsGMLObjectTypeList((GMLObjectTypeListType)null);
 				return;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__FILTER_CAPABILITIES:
+			case WfsPackage.WFS_CAPABILITIES_TYPE__FILTER_CAPABILITIES:
 				setFilterCapabilities(FILTER_CAPABILITIES_EDEFAULT);
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -398,28 +343,18 @@ public class WFSCapabilitiesTypeImpl extends CapabilitiesBaseTypeImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.WFS_CAPABILITIES_TYPE__SERVICE_IDENTIFICATION:
-				return serviceIdentification != null;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__SERVICE_PROVIDER:
-				return serviceProvider != null;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__OPERATIONS_METADATA:
-				return operationsMetadata != null;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__UPDATE_SEQUENCE:
-				return UPDATE_SEQUENCE_EDEFAULT == null ? updateSequence != null : !UPDATE_SEQUENCE_EDEFAULT.equals(updateSequence);
-			case WFSPackage.WFS_CAPABILITIES_TYPE__VERSION:
-				return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
-			case WFSPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.WFS_CAPABILITIES_TYPE__FEATURE_TYPE_LIST:
 				return featureTypeList != null;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST:
+			case WfsPackage.WFS_CAPABILITIES_TYPE__SERVES_GML_OBJECT_TYPE_LIST:
 				return servesGMLObjectTypeList != null;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST:
+			case WfsPackage.WFS_CAPABILITIES_TYPE__SUPPORTS_GML_OBJECT_TYPE_LIST:
 				return supportsGMLObjectTypeList != null;
-			case WFSPackage.WFS_CAPABILITIES_TYPE__FILTER_CAPABILITIES:
+			case WfsPackage.WFS_CAPABILITIES_TYPE__FILTER_CAPABILITIES:
 				return FILTER_CAPABILITIES_EDEFAULT == null ? filterCapabilities != null : !FILTER_CAPABILITIES_EDEFAULT.equals(filterCapabilities);
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

@@ -39,11 +39,11 @@ import org.eclipse.emf.common.util.EList;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getGetFeatureType()
+ * @see net.opengis.wfs.WfsPackage#getGetFeatureType()
  * @model extendedMetaData="name='GetFeatureType' kind='elementOnly'"
  * @generated
  */
-public interface GetFeatureType extends BaseRequestType{
+public interface GetFeatureType extends BaseRequestType {
 	/**
 	 * Returns the value of the '<em><b>Query</b></em>' containment reference list.
 	 * The list contents are of type {@link net.opengis.wfs.QueryType}.
@@ -54,8 +54,8 @@ public interface GetFeatureType extends BaseRequestType{
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Query</em>' containment reference list.
-	 * @see net.opengis.wfs.WFSPackage#getGetFeatureType_Query()
-	 * @model type="net.opengis.wfs.QueryType" containment="true" resolveProxies="false" required="true"
+	 * @see net.opengis.wfs.WfsPackage#getGetFeatureType_Query()
+	 * @model type="net.opengis.wfs.QueryType" containment="true" required="true"
 	 *        extendedMetaData="kind='element' name='Query' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -73,7 +73,7 @@ public interface GetFeatureType extends BaseRequestType{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Max Features</em>' attribute.
 	 * @see #setMaxFeatures(BigInteger)
-	 * @see net.opengis.wfs.WFSPackage#getGetFeatureType_MaxFeatures()
+	 * @see net.opengis.wfs.WfsPackage#getGetFeatureType_MaxFeatures()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.PositiveInteger"
 	 *        extendedMetaData="kind='attribute' name='maxFeatures'"
 	 * @generated
@@ -116,7 +116,7 @@ public interface GetFeatureType extends BaseRequestType{
 	 * @see #isSetOutputFormat()
 	 * @see #unsetOutputFormat()
 	 * @see #setOutputFormat(String)
-	 * @see net.opengis.wfs.WFSPackage#getGetFeatureType_OutputFormat()
+	 * @see net.opengis.wfs.WfsPackage#getGetFeatureType_OutputFormat()
 	 * @model default="text/xml; subtype=gml/3.1.1" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='attribute' name='outputFormat'"
 	 * @generated
@@ -185,7 +185,7 @@ public interface GetFeatureType extends BaseRequestType{
 	 * @see #isSetResultType()
 	 * @see #unsetResultType()
 	 * @see #setResultType(ResultTypeType)
-	 * @see net.opengis.wfs.WFSPackage#getGetFeatureType_ResultType()
+	 * @see net.opengis.wfs.WfsPackage#getGetFeatureType_ResultType()
 	 * @model default="results" unique="false" unsettable="true"
 	 *        extendedMetaData="kind='attribute' name='resultType'"
 	 * @generated
@@ -254,7 +254,7 @@ public interface GetFeatureType extends BaseRequestType{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Traverse Xlink Depth</em>' attribute.
 	 * @see #setTraverseXlinkDepth(String)
-	 * @see net.opengis.wfs.WFSPackage#getGetFeatureType_TraverseXlinkDepth()
+	 * @see net.opengis.wfs.WfsPackage#getGetFeatureType_TraverseXlinkDepth()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='attribute' name='traverseXlinkDepth'"
 	 * @generated
@@ -286,7 +286,7 @@ public interface GetFeatureType extends BaseRequestType{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Traverse Xlink Expiry</em>' attribute.
 	 * @see #setTraverseXlinkExpiry(BigInteger)
-	 * @see net.opengis.wfs.WFSPackage#getGetFeatureType_TraverseXlinkExpiry()
+	 * @see net.opengis.wfs.WfsPackage#getGetFeatureType_TraverseXlinkExpiry()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.PositiveInteger"
 	 *        extendedMetaData="kind='attribute' name='traverseXlinkExpiry'"
 	 * @generated

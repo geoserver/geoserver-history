@@ -31,11 +31,11 @@ import java.math.BigInteger;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getGetGmlObjectType()
+ * @see net.opengis.wfs.WfsPackage#getGetGmlObjectType()
  * @model extendedMetaData="name='GetGmlObjectType' kind='elementOnly'"
  * @generated
  */
-public interface GetGmlObjectType extends BaseRequestType{
+public interface GetGmlObjectType extends BaseRequestType {
 	/**
 	 * Returns the value of the '<em><b>Gml Object Id</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -46,7 +46,7 @@ public interface GetGmlObjectType extends BaseRequestType{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Gml Object Id</em>' attribute.
 	 * @see #setGmlObjectId(Object)
-	 * @see net.opengis.wfs.WFSPackage#getGetGmlObjectType_GmlObjectId()
+	 * @see net.opengis.wfs.WfsPackage#getGetGmlObjectType_GmlObjectId()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.AnySimpleType" required="true"
 	 *        extendedMetaData="kind='element' name='GmlObjectId' namespace='http://www.opengis.net/ogc'"
 	 * @generated
@@ -76,7 +76,7 @@ public interface GetGmlObjectType extends BaseRequestType{
 	 * @see #isSetOutputFormat()
 	 * @see #unsetOutputFormat()
 	 * @see #setOutputFormat(String)
-	 * @see net.opengis.wfs.WFSPackage#getGetGmlObjectType_OutputFormat()
+	 * @see net.opengis.wfs.WfsPackage#getGetGmlObjectType_OutputFormat()
 	 * @model default="GML3" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='attribute' name='outputFormat'"
 	 * @generated
@@ -142,7 +142,7 @@ public interface GetGmlObjectType extends BaseRequestType{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Traverse Xlink Depth</em>' attribute.
 	 * @see #setTraverseXlinkDepth(String)
-	 * @see net.opengis.wfs.WFSPackage#getGetGmlObjectType_TraverseXlinkDepth()
+	 * @see net.opengis.wfs.WfsPackage#getGetGmlObjectType_TraverseXlinkDepth()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
 	 *        extendedMetaData="kind='attribute' name='traverseXlinkDepth'"
 	 * @generated
@@ -172,7 +172,7 @@ public interface GetGmlObjectType extends BaseRequestType{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Traverse Xlink Expiry</em>' attribute.
 	 * @see #setTraverseXlinkExpiry(BigInteger)
-	 * @see net.opengis.wfs.WFSPackage#getGetGmlObjectType_TraverseXlinkExpiry()
+	 * @see net.opengis.wfs.WfsPackage#getGetGmlObjectType_TraverseXlinkExpiry()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.PositiveInteger"
 	 *        extendedMetaData="kind='attribute' name='traverseXlinkExpiry'"
 	 * @generated

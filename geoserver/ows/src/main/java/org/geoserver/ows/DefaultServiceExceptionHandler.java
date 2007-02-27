@@ -4,9 +4,9 @@
  */
 package org.geoserver.ows;
 
-import net.opengis.ows.v1_0_0.ExceptionReportType;
-import net.opengis.ows.v1_0_0.ExceptionType;
-import net.opengis.ows.v1_0_0.OWSFactory;
+import net.opengis.ows.ExceptionReportType;
+import net.opengis.ows.ExceptionType;
+import net.opengis.ows.OwsFactory;
 import org.apache.xml.serialize.OutputFormat;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.xml.v1_0.OWSConfiguration;
@@ -56,7 +56,7 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
      */
     public void handleServiceException(ServiceException exception, Service service,
         HttpServletRequest request, HttpServletResponse response) {
-        OWSFactory factory = OWSFactory.eINSTANCE;
+        OwsFactory factory = OwsFactory.eINSTANCE;
 
         ExceptionType e = factory.createExceptionType();
 

@@ -12,9 +12,9 @@
 
   <extension point="org.eclipse.emf.ecore.generated_package">
     <package 
-       uri = "http://www.opengis.net/wfs" 
+       uri = "http:///net/opengis/wfs.ecore" 
        class = "net.opengis.wfs.WfsPackage"
-       genModel = "" /> 
+       genModel = "wfs.genmodel" /> 
   </extension>
 
 </plugin>

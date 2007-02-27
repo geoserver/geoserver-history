@@ -23,11 +23,11 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getInsertedFeatureType()
+ * @see net.opengis.wfs.WfsPackage#getInsertedFeatureType()
  * @model extendedMetaData="name='InsertedFeatureType' kind='elementOnly'"
  * @generated
  */
-public interface InsertedFeatureType extends EObject{
+public interface InsertedFeatureType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Feature Id</b></em>' attribute list.
 	 * The list contents are of type {@link java.lang.Object}.
@@ -61,7 +61,7 @@ public interface InsertedFeatureType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Handle</em>' attribute.
 	 * @see #setHandle(String)
-	 * @see net.opengis.wfs.WFSPackage#getInsertedFeatureType_Handle()
+	 * @see net.opengis.wfs.WfsPackage#getInsertedFeatureType_Handle()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='attribute' name='handle'"
 	 * @generated

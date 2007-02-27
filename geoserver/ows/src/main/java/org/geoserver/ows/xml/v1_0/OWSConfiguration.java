@@ -4,7 +4,7 @@
  */
 package org.geoserver.ows.xml.v1_0;
 
-import net.opengis.ows.v1_0_0.OWSFactory;
+import net.opengis.ows.OwsFactory;
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.geotools.xlink.XLINKConfiguration;
 import org.geotools.xml.BindingConfiguration;
@@ -62,13 +62,13 @@ public class OWSConfiguration extends Configuration {
     * <p>
     * The following factories are registered:
     * <ul>
-    * <li>{@link OWSFactory}
+    * <li>{@link OwsFactory}
     * </ul>
     * </p>
     */
     protected void configureContext(MutablePicoContainer container) {
         super.configureContext(container);
 
-        container.registerComponentInstance(OWSFactory.eINSTANCE);
+        container.registerComponentInstance(OwsFactory.eINSTANCE);
     }
 }

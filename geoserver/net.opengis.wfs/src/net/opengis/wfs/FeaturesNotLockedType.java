@@ -25,7 +25,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getFeaturesNotLockedType()
+ * @see net.opengis.wfs.WfsPackage#getFeaturesNotLockedType()
  * @model extendedMetaData="name='FeaturesNotLockedType' kind='elementOnly'"
  * @generated
  */
@@ -40,7 +40,7 @@ public interface FeaturesNotLockedType extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Group</em>' attribute list.
-	 * @see net.opengis.wfs.WFSPackage#getFeaturesNotLockedType_Group()
+	 * @see net.opengis.wfs.WfsPackage#getFeaturesNotLockedType_Group()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry" many="true"
 	 *        extendedMetaData="kind='group' name='group:0'"
 	 * @generated

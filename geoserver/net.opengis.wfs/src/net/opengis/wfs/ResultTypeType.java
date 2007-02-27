@@ -17,7 +17,7 @@ import org.eclipse.emf.common.util.AbstractEnumerator;
  * A representation of the literals of the enumeration '<em><b>Result Type Type</b></em>',
  * and utility methods for working with them.
  * <!-- end-user-doc -->
- * @see net.opengis.wfs.WFSPackage#getResultTypeType()
+ * @see net.opengis.wfs.WfsPackage#getResultTypeType()
  * @model
  * @generated
  */
@@ -67,7 +67,7 @@ public final class ResultTypeType extends AbstractEnumerator {
 	 * @generated
 	 * @ordered
 	 */
-	public static final ResultTypeType RESULTS_LITERAL = new ResultTypeType(RESULTS, "results");
+	public static final ResultTypeType RESULTS_LITERAL = new ResultTypeType(RESULTS, "results", "results");
 
 	/**
 	 * The '<em><b>Hits</b></em>' literal object.
@@ -77,7 +77,7 @@ public final class ResultTypeType extends AbstractEnumerator {
 	 * @generated
 	 * @ordered
 	 */
-	public static final ResultTypeType HITS_LITERAL = new ResultTypeType(HITS, "hits");
+	public static final ResultTypeType HITS_LITERAL = new ResultTypeType(HITS, "hits", "hits");
 
 	/**
 	 * An array of all the '<em><b>Result Type Type</b></em>' enumerators.
@@ -100,15 +100,15 @@ public final class ResultTypeType extends AbstractEnumerator {
 	public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
 	/**
-	 * Returns the '<em><b>Result Type Type</b></em>' literal with the specified name.
+	 * Returns the '<em><b>Result Type Type</b></em>' literal with the specified literal value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static ResultTypeType get(String name) {
+	public static ResultTypeType get(String literal) {
 		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
 			ResultTypeType result = VALUES_ARRAY[i];
-			if (result.toString().equals(name)) {
+			if (result.toString().equals(literal)) {
 				return result;
 			}
 		}
@@ -116,7 +116,23 @@ public final class ResultTypeType extends AbstractEnumerator {
 	}
 
 	/**
-	 * Returns the '<em><b>Result Type Type</b></em>' literal with the specified value.
+	 * Returns the '<em><b>Result Type Type</b></em>' literal with the specified name.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public static ResultTypeType getByName(String name) {
+		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
+			ResultTypeType result = VALUES_ARRAY[i];
+			if (result.getName().equals(name)) {
+				return result;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the '<em><b>Result Type Type</b></em>' literal with the specified integer value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -135,8 +151,8 @@ public final class ResultTypeType extends AbstractEnumerator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private ResultTypeType(int value, String name) {
-		super(value, name);
+	private ResultTypeType(int value, String name, String literal) {
+		super(value, name, literal);
 	}
 
 } //ResultTypeType

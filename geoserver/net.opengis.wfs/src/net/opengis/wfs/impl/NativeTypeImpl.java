@@ -7,12 +7,11 @@
 package net.opengis.wfs.impl;
 
 import net.opengis.wfs.NativeType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
@@ -96,7 +95,7 @@ public class NativeTypeImpl extends EObjectImpl implements NativeType {
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getNativeType();
+		return WfsPackage.Literals.NATIVE_TYPE;
 	}
 
 	/**
@@ -119,7 +118,7 @@ public class NativeTypeImpl extends EObjectImpl implements NativeType {
 		boolean oldSafeToIgnoreESet = safeToIgnoreESet;
 		safeToIgnoreESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.NATIVE_TYPE__SAFE_TO_IGNORE, oldSafeToIgnore, safeToIgnore, !oldSafeToIgnoreESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.NATIVE_TYPE__SAFE_TO_IGNORE, oldSafeToIgnore, safeToIgnore, !oldSafeToIgnoreESet));
 	}
 
 	/**
@@ -133,7 +132,7 @@ public class NativeTypeImpl extends EObjectImpl implements NativeType {
 		safeToIgnore = SAFE_TO_IGNORE_EDEFAULT;
 		safeToIgnoreESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, WFSPackage.NATIVE_TYPE__SAFE_TO_IGNORE, oldSafeToIgnore, SAFE_TO_IGNORE_EDEFAULT, oldSafeToIgnoreESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, WfsPackage.NATIVE_TYPE__SAFE_TO_IGNORE, oldSafeToIgnore, SAFE_TO_IGNORE_EDEFAULT, oldSafeToIgnoreESet));
 	}
 
 	/**
@@ -163,7 +162,7 @@ public class NativeTypeImpl extends EObjectImpl implements NativeType {
 		String oldVendorId = vendorId;
 		vendorId = newVendorId;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.NATIVE_TYPE__VENDOR_ID, oldVendorId, vendorId));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.NATIVE_TYPE__VENDOR_ID, oldVendorId, vendorId));
 	}
 
 	/**
@@ -171,14 +170,14 @@ public class NativeTypeImpl extends EObjectImpl implements NativeType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.NATIVE_TYPE__SAFE_TO_IGNORE:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.NATIVE_TYPE__SAFE_TO_IGNORE:
 				return isSafeToIgnore() ? Boolean.TRUE : Boolean.FALSE;
-			case WFSPackage.NATIVE_TYPE__VENDOR_ID:
+			case WfsPackage.NATIVE_TYPE__VENDOR_ID:
 				return getVendorId();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -186,16 +185,16 @@ public class NativeTypeImpl extends EObjectImpl implements NativeType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.NATIVE_TYPE__SAFE_TO_IGNORE:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.NATIVE_TYPE__SAFE_TO_IGNORE:
 				setSafeToIgnore(((Boolean)newValue).booleanValue());
 				return;
-			case WFSPackage.NATIVE_TYPE__VENDOR_ID:
+			case WfsPackage.NATIVE_TYPE__VENDOR_ID:
 				setVendorId((String)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -203,16 +202,16 @@ public class NativeTypeImpl extends EObjectImpl implements NativeType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.NATIVE_TYPE__SAFE_TO_IGNORE:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.NATIVE_TYPE__SAFE_TO_IGNORE:
 				unsetSafeToIgnore();
 				return;
-			case WFSPackage.NATIVE_TYPE__VENDOR_ID:
+			case WfsPackage.NATIVE_TYPE__VENDOR_ID:
 				setVendorId(VENDOR_ID_EDEFAULT);
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -220,14 +219,14 @@ public class NativeTypeImpl extends EObjectImpl implements NativeType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.NATIVE_TYPE__SAFE_TO_IGNORE:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.NATIVE_TYPE__SAFE_TO_IGNORE:
 				return isSetSafeToIgnore();
-			case WFSPackage.NATIVE_TYPE__VENDOR_ID:
+			case WfsPackage.NATIVE_TYPE__VENDOR_ID:
 				return VENDOR_ID_EDEFAULT == null ? vendorId != null : !VENDOR_ID_EDEFAULT.equals(vendorId);
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

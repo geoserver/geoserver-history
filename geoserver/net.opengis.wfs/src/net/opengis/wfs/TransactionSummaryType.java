@@ -30,11 +30,11 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getTransactionSummaryType()
+ * @see net.opengis.wfs.WfsPackage#getTransactionSummaryType()
  * @model extendedMetaData="name='TransactionSummaryType' kind='elementOnly'"
  * @generated
  */
-public interface TransactionSummaryType extends EObject{
+public interface TransactionSummaryType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Total Inserted</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -45,7 +45,7 @@ public interface TransactionSummaryType extends EObject{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Total Inserted</em>' attribute.
 	 * @see #setTotalInserted(BigInteger)
-	 * @see net.opengis.wfs.WFSPackage#getTransactionSummaryType_TotalInserted()
+	 * @see net.opengis.wfs.WfsPackage#getTransactionSummaryType_TotalInserted()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.NonNegativeInteger"
 	 *        extendedMetaData="kind='element' name='totalInserted' namespace='##targetNamespace'"
 	 * @generated
@@ -72,7 +72,7 @@ public interface TransactionSummaryType extends EObject{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Total Updated</em>' attribute.
 	 * @see #setTotalUpdated(BigInteger)
-	 * @see net.opengis.wfs.WFSPackage#getTransactionSummaryType_TotalUpdated()
+	 * @see net.opengis.wfs.WfsPackage#getTransactionSummaryType_TotalUpdated()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.NonNegativeInteger"
 	 *        extendedMetaData="kind='element' name='totalUpdated' namespace='##targetNamespace'"
 	 * @generated
@@ -99,7 +99,7 @@ public interface TransactionSummaryType extends EObject{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Total Deleted</em>' attribute.
 	 * @see #setTotalDeleted(BigInteger)
-	 * @see net.opengis.wfs.WFSPackage#getTransactionSummaryType_TotalDeleted()
+	 * @see net.opengis.wfs.WfsPackage#getTransactionSummaryType_TotalDeleted()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.NonNegativeInteger"
 	 *        extendedMetaData="kind='element' name='totalDeleted' namespace='##targetNamespace'"
 	 * @generated

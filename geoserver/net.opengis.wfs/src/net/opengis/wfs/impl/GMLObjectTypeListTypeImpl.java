@@ -10,14 +10,13 @@ import java.util.Collection;
 
 import net.opengis.wfs.GMLObjectTypeListType;
 import net.opengis.wfs.GMLObjectTypeType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.EObjectImpl;
@@ -64,7 +63,7 @@ public class GMLObjectTypeListTypeImpl extends EObjectImpl implements GMLObjectT
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getGMLObjectTypeListType();
+		return WfsPackage.Literals.GML_OBJECT_TYPE_LIST_TYPE;
 	}
 
 	/**
@@ -74,7 +73,7 @@ public class GMLObjectTypeListTypeImpl extends EObjectImpl implements GMLObjectT
 	 */
 	public EList getGMLObjectType() {
 		if (gMLObjectType == null) {
-			gMLObjectType = new EObjectContainmentEList(GMLObjectTypeType.class, this, WFSPackage.GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE);
+			gMLObjectType = new EObjectContainmentEList(GMLObjectTypeType.class, this, WfsPackage.GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE);
 		}
 		return gMLObjectType;
 	}
@@ -84,16 +83,12 @@ public class GMLObjectTypeListTypeImpl extends EObjectImpl implements GMLObjectT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
-		if (featureID >= 0) {
-			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
-				case WFSPackage.GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE:
-					return ((InternalEList)getGMLObjectType()).basicRemove(otherEnd, msgs);
-				default:
-					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
-			}
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case WfsPackage.GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE:
+				return ((InternalEList)getGMLObjectType()).basicRemove(otherEnd, msgs);
 		}
-		return eBasicSetContainer(null, featureID, msgs);
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -101,12 +96,12 @@ public class GMLObjectTypeListTypeImpl extends EObjectImpl implements GMLObjectT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE:
 				return getGMLObjectType();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -114,14 +109,14 @@ public class GMLObjectTypeListTypeImpl extends EObjectImpl implements GMLObjectT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE:
 				getGMLObjectType().clear();
 				getGMLObjectType().addAll((Collection)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -129,13 +124,13 @@ public class GMLObjectTypeListTypeImpl extends EObjectImpl implements GMLObjectT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE:
 				getGMLObjectType().clear();
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -143,12 +138,12 @@ public class GMLObjectTypeListTypeImpl extends EObjectImpl implements GMLObjectT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE:
 				return gMLObjectType != null && !gMLObjectType.isEmpty();
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 } //GMLObjectTypeListTypeImpl

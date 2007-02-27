@@ -34,11 +34,11 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getInsertElementType()
+ * @see net.opengis.wfs.WfsPackage#getInsertElementType()
  * @model extendedMetaData="name='InsertElementType' kind='elementOnly'"
  * @generated
  */
-public interface InsertElementType extends EObject{
+public interface InsertElementType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Feature</b></em>' attribute list.
 	 * The list contents are of type {@link java.lang.Object}.
@@ -72,7 +72,7 @@ public interface InsertElementType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Handle</em>' attribute.
 	 * @see #setHandle(String)
-	 * @see net.opengis.wfs.WFSPackage#getInsertElementType_Handle()
+	 * @see net.opengis.wfs.WfsPackage#getInsertElementType_Handle()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='attribute' name='handle'"
 	 * @generated
@@ -108,7 +108,7 @@ public interface InsertElementType extends EObject{
 	 * @see #isSetIdgen()
 	 * @see #unsetIdgen()
 	 * @see #setIdgen(IdentifierGenerationOptionType)
-	 * @see net.opengis.wfs.WFSPackage#getInsertElementType_Idgen()
+	 * @see net.opengis.wfs.WfsPackage#getInsertElementType_Idgen()
 	 * @model default="GenerateNew" unique="false" unsettable="true"
 	 *        extendedMetaData="kind='attribute' name='idgen'"
 	 * @generated
@@ -172,7 +172,7 @@ public interface InsertElementType extends EObject{
 	 * @see #isSetInputFormat()
 	 * @see #unsetInputFormat()
 	 * @see #setInputFormat(String)
-	 * @see net.opengis.wfs.WFSPackage#getInsertElementType_InputFormat()
+	 * @see net.opengis.wfs.WfsPackage#getInsertElementType_InputFormat()
 	 * @model default="text/xml; subtype=gml/3.1.1" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='attribute' name='inputFormat'"
 	 * @generated

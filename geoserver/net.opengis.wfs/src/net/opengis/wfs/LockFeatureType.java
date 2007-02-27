@@ -34,11 +34,11 @@ import org.eclipse.emf.common.util.EList;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getLockFeatureType()
+ * @see net.opengis.wfs.WfsPackage#getLockFeatureType()
  * @model extendedMetaData="name='LockFeatureType' kind='elementOnly'"
  * @generated
  */
-public interface LockFeatureType extends BaseRequestType{
+public interface LockFeatureType extends BaseRequestType {
 	/**
 	 * Returns the value of the '<em><b>Lock</b></em>' containment reference list.
 	 * The list contents are of type {@link net.opengis.wfs.LockType}.
@@ -50,8 +50,8 @@ public interface LockFeatureType extends BaseRequestType{
 	 *                         instances of particular type are to be locked.
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Lock</em>' containment reference list.
-	 * @see net.opengis.wfs.WFSPackage#getLockFeatureType_Lock()
-	 * @model type="net.opengis.wfs.LockType" containment="true" resolveProxies="false" required="true"
+	 * @see net.opengis.wfs.WfsPackage#getLockFeatureType_Lock()
+	 * @model type="net.opengis.wfs.LockType" containment="true" required="true"
 	 *        extendedMetaData="kind='element' name='Lock' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -76,7 +76,7 @@ public interface LockFeatureType extends BaseRequestType{
 	 * @see #isSetExpiry()
 	 * @see #unsetExpiry()
 	 * @see #setExpiry(BigInteger)
-	 * @see net.opengis.wfs.WFSPackage#getLockFeatureType_Expiry()
+	 * @see net.opengis.wfs.WfsPackage#getLockFeatureType_Expiry()
 	 * @model default="5" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.PositiveInteger"
 	 *        extendedMetaData="kind='attribute' name='expiry'"
 	 * @generated
@@ -147,7 +147,7 @@ public interface LockFeatureType extends BaseRequestType{
 	 * @see #isSetLockAction()
 	 * @see #unsetLockAction()
 	 * @see #setLockAction(AllSomeType)
-	 * @see net.opengis.wfs.WFSPackage#getLockFeatureType_LockAction()
+	 * @see net.opengis.wfs.WfsPackage#getLockFeatureType_LockAction()
 	 * @model default="ALL" unique="false" unsettable="true"
 	 *        extendedMetaData="kind='attribute' name='lockAction'"
 	 * @generated

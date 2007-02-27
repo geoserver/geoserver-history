@@ -25,16 +25,16 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link net.opengis.wfs.TransactionResultsType#getAction <em>Action</em>}</li>
  *   <li>{@link net.opengis.wfs.TransactionResultsType#getHandle <em>Handle</em>}</li>
+ *   <li>{@link net.opengis.wfs.TransactionResultsType#getAction <em>Action</em>}</li>
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getTransactionResultsType()
+ * @see net.opengis.wfs.WfsPackage#getTransactionResultsType()
  * @model extendedMetaData="name='TransactionResultsType' kind='elementOnly'"
  * @generated
  */
-public interface TransactionResultsType extends EObject{
+public interface TransactionResultsType extends EObject {
 	
 	/**
 	 * The handle used for the request.
@@ -73,8 +73,8 @@ public interface TransactionResultsType extends EObject{
 	 *                   failed.
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Action</em>' containment reference list.
-	 * @see net.opengis.wfs.WFSPackage#getTransactionResultsType_Action()
-	 * @model type="net.opengis.wfs.ActionType" containment="true" resolveProxies="false"
+	 * @see net.opengis.wfs.WfsPackage#getTransactionResultsType_Action()
+	 * @model type="net.opengis.wfs.ActionType" containment="true"
 	 *        extendedMetaData="kind='element' name='Action' namespace='##targetNamespace'"
 	 * @generated
 	 */

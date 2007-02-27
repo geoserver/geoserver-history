@@ -22,11 +22,11 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getGMLObjectTypeListType()
+ * @see net.opengis.wfs.WfsPackage#getGMLObjectTypeListType()
  * @model extendedMetaData="name='GMLObjectTypeListType' kind='elementOnly'"
  * @generated
  */
-public interface GMLObjectTypeListType extends EObject{
+public interface GMLObjectTypeListType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>GML Object Type</b></em>' containment reference list.
 	 * The list contents are of type {@link net.opengis.wfs.GMLObjectTypeType}.
@@ -37,8 +37,8 @@ public interface GMLObjectTypeListType extends EObject{
 	 *                   Name of this GML object type, including any namespace prefix
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>GML Object Type</em>' containment reference list.
-	 * @see net.opengis.wfs.WFSPackage#getGMLObjectTypeListType_GMLObjectType()
-	 * @model type="net.opengis.wfs.GMLObjectTypeType" containment="true" resolveProxies="false" required="true"
+	 * @see net.opengis.wfs.WfsPackage#getGMLObjectTypeListType_GMLObjectType()
+	 * @model type="net.opengis.wfs.GMLObjectTypeType" containment="true" required="true"
 	 *        extendedMetaData="kind='element' name='GMLObjectType' namespace='##targetNamespace'"
 	 * @generated
 	 */

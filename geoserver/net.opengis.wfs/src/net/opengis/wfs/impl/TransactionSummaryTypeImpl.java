@@ -9,12 +9,11 @@ package net.opengis.wfs.impl;
 import java.math.BigInteger;
 
 import net.opengis.wfs.TransactionSummaryType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
@@ -110,7 +109,7 @@ public class TransactionSummaryTypeImpl extends EObjectImpl implements Transacti
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getTransactionSummaryType();
+		return WfsPackage.Literals.TRANSACTION_SUMMARY_TYPE;
 	}
 
 	/**
@@ -131,7 +130,7 @@ public class TransactionSummaryTypeImpl extends EObjectImpl implements Transacti
 		BigInteger oldTotalInserted = totalInserted;
 		totalInserted = newTotalInserted;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_INSERTED, oldTotalInserted, totalInserted));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_INSERTED, oldTotalInserted, totalInserted));
 	}
 
 	/**
@@ -152,7 +151,7 @@ public class TransactionSummaryTypeImpl extends EObjectImpl implements Transacti
 		BigInteger oldTotalUpdated = totalUpdated;
 		totalUpdated = newTotalUpdated;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_UPDATED, oldTotalUpdated, totalUpdated));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_UPDATED, oldTotalUpdated, totalUpdated));
 	}
 
 	/**
@@ -173,7 +172,7 @@ public class TransactionSummaryTypeImpl extends EObjectImpl implements Transacti
 		BigInteger oldTotalDeleted = totalDeleted;
 		totalDeleted = newTotalDeleted;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_DELETED, oldTotalDeleted, totalDeleted));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_DELETED, oldTotalDeleted, totalDeleted));
 	}
 
 	/**
@@ -181,16 +180,16 @@ public class TransactionSummaryTypeImpl extends EObjectImpl implements Transacti
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_INSERTED:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_INSERTED:
 				return getTotalInserted();
-			case WFSPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_UPDATED:
+			case WfsPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_UPDATED:
 				return getTotalUpdated();
-			case WFSPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_DELETED:
+			case WfsPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_DELETED:
 				return getTotalDeleted();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -198,19 +197,19 @@ public class TransactionSummaryTypeImpl extends EObjectImpl implements Transacti
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_INSERTED:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_INSERTED:
 				setTotalInserted((BigInteger)newValue);
 				return;
-			case WFSPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_UPDATED:
+			case WfsPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_UPDATED:
 				setTotalUpdated((BigInteger)newValue);
 				return;
-			case WFSPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_DELETED:
+			case WfsPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_DELETED:
 				setTotalDeleted((BigInteger)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -218,19 +217,19 @@ public class TransactionSummaryTypeImpl extends EObjectImpl implements Transacti
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_INSERTED:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_INSERTED:
 				setTotalInserted(TOTAL_INSERTED_EDEFAULT);
 				return;
-			case WFSPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_UPDATED:
+			case WfsPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_UPDATED:
 				setTotalUpdated(TOTAL_UPDATED_EDEFAULT);
 				return;
-			case WFSPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_DELETED:
+			case WfsPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_DELETED:
 				setTotalDeleted(TOTAL_DELETED_EDEFAULT);
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -238,16 +237,16 @@ public class TransactionSummaryTypeImpl extends EObjectImpl implements Transacti
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_INSERTED:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_INSERTED:
 				return TOTAL_INSERTED_EDEFAULT == null ? totalInserted != null : !TOTAL_INSERTED_EDEFAULT.equals(totalInserted);
-			case WFSPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_UPDATED:
+			case WfsPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_UPDATED:
 				return TOTAL_UPDATED_EDEFAULT == null ? totalUpdated != null : !TOTAL_UPDATED_EDEFAULT.equals(totalUpdated);
-			case WFSPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_DELETED:
+			case WfsPackage.TRANSACTION_SUMMARY_TYPE__TOTAL_DELETED:
 				return TOTAL_DELETED_EDEFAULT == null ? totalDeleted != null : !TOTAL_DELETED_EDEFAULT.equals(totalDeleted);
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

@@ -9,12 +9,11 @@ package net.opengis.wfs.impl;
 import java.math.BigInteger;
 
 import net.opengis.wfs.GetGmlObjectType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
@@ -139,7 +138,7 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl implements GetGmlO
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getGetGmlObjectType();
+		return WfsPackage.Literals.GET_GML_OBJECT_TYPE;
 	}
 
 	/**
@@ -160,7 +159,7 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl implements GetGmlO
 		Object oldGmlObjectId = gmlObjectId;
 		gmlObjectId = newGmlObjectId;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.GET_GML_OBJECT_TYPE__GML_OBJECT_ID, oldGmlObjectId, gmlObjectId));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.GET_GML_OBJECT_TYPE__GML_OBJECT_ID, oldGmlObjectId, gmlObjectId));
 	}
 
 	/**
@@ -183,7 +182,7 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl implements GetGmlO
 		boolean oldOutputFormatESet = outputFormatESet;
 		outputFormatESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT, oldOutputFormat, outputFormat, !oldOutputFormatESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT, oldOutputFormat, outputFormat, !oldOutputFormatESet));
 	}
 
 	/**
@@ -197,7 +196,7 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl implements GetGmlO
 		outputFormat = OUTPUT_FORMAT_EDEFAULT;
 		outputFormatESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, WFSPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT, oldOutputFormat, OUTPUT_FORMAT_EDEFAULT, oldOutputFormatESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, WfsPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT, oldOutputFormat, OUTPUT_FORMAT_EDEFAULT, oldOutputFormatESet));
 	}
 
 	/**
@@ -227,7 +226,7 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl implements GetGmlO
 		String oldTraverseXlinkDepth = traverseXlinkDepth;
 		traverseXlinkDepth = newTraverseXlinkDepth;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_DEPTH, oldTraverseXlinkDepth, traverseXlinkDepth));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_DEPTH, oldTraverseXlinkDepth, traverseXlinkDepth));
 	}
 
 	/**
@@ -248,7 +247,7 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl implements GetGmlO
 		BigInteger oldTraverseXlinkExpiry = traverseXlinkExpiry;
 		traverseXlinkExpiry = newTraverseXlinkExpiry;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_EXPIRY, oldTraverseXlinkExpiry, traverseXlinkExpiry));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_EXPIRY, oldTraverseXlinkExpiry, traverseXlinkExpiry));
 	}
 
 	/**
@@ -256,24 +255,18 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl implements GetGmlO
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GET_GML_OBJECT_TYPE__HANDLE:
-				return getHandle();
-			case WFSPackage.GET_GML_OBJECT_TYPE__SERVICE:
-				return getService();
-			case WFSPackage.GET_GML_OBJECT_TYPE__VERSION:
-				return getVersion();
-			case WFSPackage.GET_GML_OBJECT_TYPE__GML_OBJECT_ID:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.GET_GML_OBJECT_TYPE__GML_OBJECT_ID:
 				return getGmlObjectId();
-			case WFSPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT:
+			case WfsPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT:
 				return getOutputFormat();
-			case WFSPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_DEPTH:
+			case WfsPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_DEPTH:
 				return getTraverseXlinkDepth();
-			case WFSPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_EXPIRY:
+			case WfsPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_EXPIRY:
 				return getTraverseXlinkExpiry();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -281,31 +274,22 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl implements GetGmlO
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GET_GML_OBJECT_TYPE__HANDLE:
-				setHandle((String)newValue);
-				return;
-			case WFSPackage.GET_GML_OBJECT_TYPE__SERVICE:
-				setService((String)newValue);
-				return;
-			case WFSPackage.GET_GML_OBJECT_TYPE__VERSION:
-				setVersion((String)newValue);
-				return;
-			case WFSPackage.GET_GML_OBJECT_TYPE__GML_OBJECT_ID:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.GET_GML_OBJECT_TYPE__GML_OBJECT_ID:
 				setGmlObjectId((Object)newValue);
 				return;
-			case WFSPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT:
+			case WfsPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT:
 				setOutputFormat((String)newValue);
 				return;
-			case WFSPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_DEPTH:
+			case WfsPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_DEPTH:
 				setTraverseXlinkDepth((String)newValue);
 				return;
-			case WFSPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_EXPIRY:
+			case WfsPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_EXPIRY:
 				setTraverseXlinkExpiry((BigInteger)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -313,31 +297,22 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl implements GetGmlO
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GET_GML_OBJECT_TYPE__HANDLE:
-				setHandle(HANDLE_EDEFAULT);
-				return;
-			case WFSPackage.GET_GML_OBJECT_TYPE__SERVICE:
-				unsetService();
-				return;
-			case WFSPackage.GET_GML_OBJECT_TYPE__VERSION:
-				unsetVersion();
-				return;
-			case WFSPackage.GET_GML_OBJECT_TYPE__GML_OBJECT_ID:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.GET_GML_OBJECT_TYPE__GML_OBJECT_ID:
 				setGmlObjectId(GML_OBJECT_ID_EDEFAULT);
 				return;
-			case WFSPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT:
+			case WfsPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT:
 				unsetOutputFormat();
 				return;
-			case WFSPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_DEPTH:
+			case WfsPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_DEPTH:
 				setTraverseXlinkDepth(TRAVERSE_XLINK_DEPTH_EDEFAULT);
 				return;
-			case WFSPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_EXPIRY:
+			case WfsPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_EXPIRY:
 				setTraverseXlinkExpiry(TRAVERSE_XLINK_EXPIRY_EDEFAULT);
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -345,24 +320,18 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl implements GetGmlO
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GET_GML_OBJECT_TYPE__HANDLE:
-				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
-			case WFSPackage.GET_GML_OBJECT_TYPE__SERVICE:
-				return isSetService();
-			case WFSPackage.GET_GML_OBJECT_TYPE__VERSION:
-				return isSetVersion();
-			case WFSPackage.GET_GML_OBJECT_TYPE__GML_OBJECT_ID:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.GET_GML_OBJECT_TYPE__GML_OBJECT_ID:
 				return GML_OBJECT_ID_EDEFAULT == null ? gmlObjectId != null : !GML_OBJECT_ID_EDEFAULT.equals(gmlObjectId);
-			case WFSPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT:
+			case WfsPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT:
 				return isSetOutputFormat();
-			case WFSPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_DEPTH:
+			case WfsPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_DEPTH:
 				return TRAVERSE_XLINK_DEPTH_EDEFAULT == null ? traverseXlinkDepth != null : !TRAVERSE_XLINK_DEPTH_EDEFAULT.equals(traverseXlinkDepth);
-			case WFSPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_EXPIRY:
+			case WfsPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_EXPIRY:
 				return TRAVERSE_XLINK_EXPIRY_EDEFAULT == null ? traverseXlinkExpiry != null : !TRAVERSE_XLINK_EXPIRY_EDEFAULT.equals(traverseXlinkExpiry);
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

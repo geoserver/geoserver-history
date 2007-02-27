@@ -4,7 +4,7 @@
  */
 package org.geoserver.ows.xml.v1_0;
 
-import net.opengis.ows.v1_0_0.ExceptionReportType;
+import net.opengis.ows.ExceptionReportType;
 import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;

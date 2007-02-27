@@ -5,7 +5,7 @@
 package org.geoserver.wfs.xml.v1_0_0;
 
 import net.opengis.wfs.PropertyType;
-import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WfsFactory;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -52,14 +52,14 @@ public class PropertyTypeBinding extends AbstractComplexBinding {
     /**
      * The wfs factory
      */
-    WFSFactory wfsfactory;
+    WfsFactory wfsfactory;
 
     /**
      * Namespace support
      */
     NamespaceContext namespaceContext;
 
-    public PropertyTypeBinding(WFSFactory wfsfactory, NamespaceContext namespaceContext) {
+    public PropertyTypeBinding(WfsFactory wfsfactory, NamespaceContext namespaceContext) {
         this.wfsfactory = wfsfactory;
         this.namespaceContext = namespaceContext;
     }

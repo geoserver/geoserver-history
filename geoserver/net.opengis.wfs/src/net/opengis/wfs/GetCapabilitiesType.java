@@ -33,11 +33,11 @@ package net.opengis.wfs;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getGetCapabilitiesType()
+ * @see net.opengis.wfs.WfsPackage#getGetCapabilitiesType()
  * @model extendedMetaData="name='GetCapabilitiesType' kind='elementOnly'"
  * @generated
  */
-public interface GetCapabilitiesType extends net.opengis.ows.v1_0_0.GetCapabilitiesType{
+public interface GetCapabilitiesType extends net.opengis.ows.GetCapabilitiesType {
 	/**
 	 * Returns the value of the '<em><b>Service</b></em>' attribute.
 	 * The default value is <code>"WFS"</code>.
@@ -51,8 +51,8 @@ public interface GetCapabilitiesType extends net.opengis.ows.v1_0_0.GetCapabilit
 	 * @see #isSetService()
 	 * @see #unsetService()
 	 * @see #setService(String)
-	 * @see net.opengis.wfs.WFSPackage#getGetCapabilitiesType_Service()
-	 * @model default="WFS" unique="false" unsettable="true" dataType="net.opengis.ows.v1_0_0.ServiceType"
+	 * @see net.opengis.wfs.WfsPackage#getGetCapabilitiesType_Service()
+	 * @model default="WFS" unique="false" unsettable="true" dataType="net.opengis.wfs.ServiceType_1"
 	 *        extendedMetaData="kind='attribute' name='service'"
 	 * @generated
 	 */

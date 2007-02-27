@@ -17,7 +17,7 @@ import org.eclipse.emf.common.util.AbstractEnumerator;
  * A representation of the literals of the enumeration '<em><b>All Some Type</b></em>',
  * and utility methods for working with them.
  * <!-- end-user-doc -->
- * @see net.opengis.wfs.WFSPackage#getAllSomeType()
+ * @see net.opengis.wfs.WfsPackage#getAllSomeType()
  * @model
  * @generated
  */
@@ -60,7 +60,7 @@ public final class AllSomeType extends AbstractEnumerator {
 	 * @generated
 	 * @ordered
 	 */
-	public static final AllSomeType ALL_LITERAL = new AllSomeType(ALL, "ALL");
+	public static final AllSomeType ALL_LITERAL = new AllSomeType(ALL, "ALL", "ALL");
 
 	/**
 	 * The '<em><b>SOME</b></em>' literal object.
@@ -70,7 +70,7 @@ public final class AllSomeType extends AbstractEnumerator {
 	 * @generated
 	 * @ordered
 	 */
-	public static final AllSomeType SOME_LITERAL = new AllSomeType(SOME, "SOME");
+	public static final AllSomeType SOME_LITERAL = new AllSomeType(SOME, "SOME", "SOME");
 
 	/**
 	 * An array of all the '<em><b>All Some Type</b></em>' enumerators.
@@ -93,15 +93,15 @@ public final class AllSomeType extends AbstractEnumerator {
 	public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
 	/**
-	 * Returns the '<em><b>All Some Type</b></em>' literal with the specified name.
+	 * Returns the '<em><b>All Some Type</b></em>' literal with the specified literal value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static AllSomeType get(String name) {
+	public static AllSomeType get(String literal) {
 		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
 			AllSomeType result = VALUES_ARRAY[i];
-			if (result.toString().equals(name)) {
+			if (result.toString().equals(literal)) {
 				return result;
 			}
 		}
@@ -109,7 +109,23 @@ public final class AllSomeType extends AbstractEnumerator {
 	}
 
 	/**
-	 * Returns the '<em><b>All Some Type</b></em>' literal with the specified value.
+	 * Returns the '<em><b>All Some Type</b></em>' literal with the specified name.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public static AllSomeType getByName(String name) {
+		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
+			AllSomeType result = VALUES_ARRAY[i];
+			if (result.getName().equals(name)) {
+				return result;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the '<em><b>All Some Type</b></em>' literal with the specified integer value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -128,8 +144,8 @@ public final class AllSomeType extends AbstractEnumerator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private AllSomeType(int value, String name) {
-		super(value, name);
+	private AllSomeType(int value, String name, String literal) {
+		super(value, name, literal);
 	}
 
 } //AllSomeType

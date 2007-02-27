@@ -9,14 +9,13 @@ package net.opengis.wfs.impl;
 import java.util.Collection;
 
 import net.opengis.wfs.InsertedFeatureType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
@@ -24,8 +23,6 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 
 import org.opengis.filter.identity.FeatureId;
-
-import org.eclipse.emf.ecore.util.EDataTypeEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -87,7 +84,7 @@ public class InsertedFeatureTypeImpl extends EObjectImpl implements InsertedFeat
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getInsertedFeatureType();
+		return WfsPackage.Literals.INSERTED_FEATURE_TYPE;
 	}
 
 	/**
@@ -97,7 +94,7 @@ public class InsertedFeatureTypeImpl extends EObjectImpl implements InsertedFeat
 	 */
 	public EList getFeatureId() {
 		if (featureId == null) {
-			featureId = new EDataTypeUniqueEList(FeatureId.class, this, WFSPackage.INSERTED_FEATURE_TYPE__FEATURE_ID);
+			featureId = new EDataTypeUniqueEList(FeatureId.class, this, WfsPackage.INSERTED_FEATURE_TYPE__FEATURE_ID);
 		}
 		return featureId;
 	}
@@ -120,7 +117,7 @@ public class InsertedFeatureTypeImpl extends EObjectImpl implements InsertedFeat
 		String oldHandle = handle;
 		handle = newHandle;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.INSERTED_FEATURE_TYPE__HANDLE, oldHandle, handle));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.INSERTED_FEATURE_TYPE__HANDLE, oldHandle, handle));
 	}
 
 	/**
@@ -128,14 +125,14 @@ public class InsertedFeatureTypeImpl extends EObjectImpl implements InsertedFeat
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.INSERTED_FEATURE_TYPE__FEATURE_ID:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.INSERTED_FEATURE_TYPE__FEATURE_ID:
 				return getFeatureId();
-			case WFSPackage.INSERTED_FEATURE_TYPE__HANDLE:
+			case WfsPackage.INSERTED_FEATURE_TYPE__HANDLE:
 				return getHandle();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -143,17 +140,17 @@ public class InsertedFeatureTypeImpl extends EObjectImpl implements InsertedFeat
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.INSERTED_FEATURE_TYPE__FEATURE_ID:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.INSERTED_FEATURE_TYPE__FEATURE_ID:
 				getFeatureId().clear();
 				getFeatureId().addAll((Collection)newValue);
 				return;
-			case WFSPackage.INSERTED_FEATURE_TYPE__HANDLE:
+			case WfsPackage.INSERTED_FEATURE_TYPE__HANDLE:
 				setHandle((String)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -161,16 +158,16 @@ public class InsertedFeatureTypeImpl extends EObjectImpl implements InsertedFeat
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.INSERTED_FEATURE_TYPE__FEATURE_ID:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.INSERTED_FEATURE_TYPE__FEATURE_ID:
 				getFeatureId().clear();
 				return;
-			case WFSPackage.INSERTED_FEATURE_TYPE__HANDLE:
+			case WfsPackage.INSERTED_FEATURE_TYPE__HANDLE:
 				setHandle(HANDLE_EDEFAULT);
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -178,14 +175,14 @@ public class InsertedFeatureTypeImpl extends EObjectImpl implements InsertedFeat
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.INSERTED_FEATURE_TYPE__FEATURE_ID:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.INSERTED_FEATURE_TYPE__FEATURE_ID:
 				return featureId != null && !featureId.isEmpty();
-			case WFSPackage.INSERTED_FEATURE_TYPE__HANDLE:
+			case WfsPackage.INSERTED_FEATURE_TYPE__HANDLE:
 				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

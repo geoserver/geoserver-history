@@ -43,11 +43,11 @@ import org.opengis.filter.sort.SortBy;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getQueryType()
+ * @see net.opengis.wfs.WfsPackage#getQueryType()
  * @model extendedMetaData="name='QueryType' kind='elementOnly'"
  * @generated
  */
-public interface QueryType extends EObject{
+public interface QueryType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Group</b></em>' attribute list.
 	 * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
@@ -58,7 +58,7 @@ public interface QueryType extends EObject{
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Group</em>' attribute list.
-	 * @see net.opengis.wfs.WFSPackage#getQueryType_Group()
+	 * @see net.opengis.wfs.WfsPackage#getQueryType_Group()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry" many="true"
 	 *        extendedMetaData="kind='group' name='group:0'"
 	 * @generated
@@ -108,8 +108,8 @@ public interface QueryType extends EObject{
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Xlink Property Name</em>' containment reference list.
-	 * @see net.opengis.wfs.WFSPackage#getQueryType_XlinkPropertyName()
-	 * @model type="net.opengis.wfs.XlinkPropertyNameType" containment="true" resolveProxies="false" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getQueryType_XlinkPropertyName()
+	 * @model type="net.opengis.wfs.XlinkPropertyNameType" containment="true" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='XlinkPropertyName' namespace='##targetNamespace' group='#group:0'"
 	 * @generated
 	 */
@@ -197,7 +197,7 @@ public interface QueryType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Feature Version</em>' attribute.
 	 * @see #setFeatureVersion(String)
-	 * @see net.opengis.wfs.WFSPackage#getQueryType_FeatureVersion()
+	 * @see net.opengis.wfs.WfsPackage#getQueryType_FeatureVersion()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='attribute' name='featureVersion'"
 	 * @generated
@@ -231,7 +231,7 @@ public interface QueryType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Handle</em>' attribute.
 	 * @see #setHandle(String)
-	 * @see net.opengis.wfs.WFSPackage#getQueryType_Handle()
+	 * @see net.opengis.wfs.WfsPackage#getQueryType_Handle()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='attribute' name='handle'"
 	 * @generated
@@ -298,7 +298,7 @@ public interface QueryType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Type Name</em>' attribute.
 	 * @see #setTypeName(List)
-	 * @see net.opengis.wfs.WFSPackage#getQueryType_TypeName()
+	 * @see net.opengis.wfs.WfsPackage#getQueryType_TypeName()
 	 * @model unique="false" dataType="net.opengis.wfs.TypeNameListType" required="true" many="false"
 	 *        extendedMetaData="kind='attribute' name='typeName'"
 	 * @generated

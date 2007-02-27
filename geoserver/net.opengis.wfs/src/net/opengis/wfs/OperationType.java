@@ -17,7 +17,7 @@ import org.eclipse.emf.common.util.AbstractEnumerator;
  * A representation of the literals of the enumeration '<em><b>Operation Type</b></em>',
  * and utility methods for working with them.
  * <!-- end-user-doc -->
- * @see net.opengis.wfs.WFSPackage#getOperationType()
+ * @see net.opengis.wfs.WfsPackage#getOperationType()
  * @model
  * @generated
  */
@@ -120,7 +120,7 @@ public final class OperationType extends AbstractEnumerator {
 	 * @generated
 	 * @ordered
 	 */
-	public static final OperationType INSERT_LITERAL = new OperationType(INSERT, "Insert");
+	public static final OperationType INSERT_LITERAL = new OperationType(INSERT, "Insert", "Insert");
 
 	/**
 	 * The '<em><b>Update</b></em>' literal object.
@@ -130,7 +130,7 @@ public final class OperationType extends AbstractEnumerator {
 	 * @generated
 	 * @ordered
 	 */
-	public static final OperationType UPDATE_LITERAL = new OperationType(UPDATE, "Update");
+	public static final OperationType UPDATE_LITERAL = new OperationType(UPDATE, "Update", "Update");
 
 	/**
 	 * The '<em><b>Delete</b></em>' literal object.
@@ -140,7 +140,7 @@ public final class OperationType extends AbstractEnumerator {
 	 * @generated
 	 * @ordered
 	 */
-	public static final OperationType DELETE_LITERAL = new OperationType(DELETE, "Delete");
+	public static final OperationType DELETE_LITERAL = new OperationType(DELETE, "Delete", "Delete");
 
 	/**
 	 * The '<em><b>Query</b></em>' literal object.
@@ -150,7 +150,7 @@ public final class OperationType extends AbstractEnumerator {
 	 * @generated
 	 * @ordered
 	 */
-	public static final OperationType QUERY_LITERAL = new OperationType(QUERY, "Query");
+	public static final OperationType QUERY_LITERAL = new OperationType(QUERY, "Query", "Query");
 
 	/**
 	 * The '<em><b>Lock</b></em>' literal object.
@@ -160,7 +160,7 @@ public final class OperationType extends AbstractEnumerator {
 	 * @generated
 	 * @ordered
 	 */
-	public static final OperationType LOCK_LITERAL = new OperationType(LOCK, "Lock");
+	public static final OperationType LOCK_LITERAL = new OperationType(LOCK, "Lock", "Lock");
 
 	/**
 	 * The '<em><b>Get Gml Object</b></em>' literal object.
@@ -170,7 +170,7 @@ public final class OperationType extends AbstractEnumerator {
 	 * @generated
 	 * @ordered
 	 */
-	public static final OperationType GET_GML_OBJECT_LITERAL = new OperationType(GET_GML_OBJECT, "GetGmlObject");
+	public static final OperationType GET_GML_OBJECT_LITERAL = new OperationType(GET_GML_OBJECT, "GetGmlObject", "GetGmlObject");
 
 	/**
 	 * An array of all the '<em><b>Operation Type</b></em>' enumerators.
@@ -197,15 +197,15 @@ public final class OperationType extends AbstractEnumerator {
 	public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
 	/**
-	 * Returns the '<em><b>Operation Type</b></em>' literal with the specified name.
+	 * Returns the '<em><b>Operation Type</b></em>' literal with the specified literal value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static OperationType get(String name) {
+	public static OperationType get(String literal) {
 		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
 			OperationType result = VALUES_ARRAY[i];
-			if (result.toString().equals(name)) {
+			if (result.toString().equals(literal)) {
 				return result;
 			}
 		}
@@ -213,7 +213,23 @@ public final class OperationType extends AbstractEnumerator {
 	}
 
 	/**
-	 * Returns the '<em><b>Operation Type</b></em>' literal with the specified value.
+	 * Returns the '<em><b>Operation Type</b></em>' literal with the specified name.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public static OperationType getByName(String name) {
+		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
+			OperationType result = VALUES_ARRAY[i];
+			if (result.getName().equals(name)) {
+				return result;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the '<em><b>Operation Type</b></em>' literal with the specified integer value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -236,8 +252,8 @@ public final class OperationType extends AbstractEnumerator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private OperationType(int value, String name) {
-		super(value, name);
+	private OperationType(int value, String name, String literal) {
+		super(value, name, literal);
 	}
 
 } //OperationType

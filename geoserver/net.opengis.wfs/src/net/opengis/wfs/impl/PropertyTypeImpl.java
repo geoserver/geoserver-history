@@ -9,15 +9,11 @@ package net.opengis.wfs.impl;
 import javax.xml.namespace.QName;
 
 import net.opengis.wfs.PropertyType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
@@ -92,7 +88,7 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getPropertyType();
+		return WfsPackage.Literals.PROPERTY_TYPE;
 	}
 
 	/**
@@ -113,7 +109,7 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 		QName oldName = name;
 		name = newName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.PROPERTY_TYPE__NAME, oldName, name));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.PROPERTY_TYPE__NAME, oldName, name));
 	}
 
 	/**
@@ -134,7 +130,7 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 		Object oldValue = value;
 		value = newValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.PROPERTY_TYPE__VALUE, oldValue, value));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.PROPERTY_TYPE__VALUE, oldValue, value));
 	}
 
 	/**
@@ -142,14 +138,14 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.PROPERTY_TYPE__NAME:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.PROPERTY_TYPE__NAME:
 				return getName();
-			case WFSPackage.PROPERTY_TYPE__VALUE:
+			case WfsPackage.PROPERTY_TYPE__VALUE:
 				return getValue();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -157,16 +153,16 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.PROPERTY_TYPE__NAME:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.PROPERTY_TYPE__NAME:
 				setName((QName)newValue);
 				return;
-			case WFSPackage.PROPERTY_TYPE__VALUE:
+			case WfsPackage.PROPERTY_TYPE__VALUE:
 				setValue((Object)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -174,16 +170,16 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.PROPERTY_TYPE__NAME:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.PROPERTY_TYPE__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case WFSPackage.PROPERTY_TYPE__VALUE:
+			case WfsPackage.PROPERTY_TYPE__VALUE:
 				setValue(VALUE_EDEFAULT);
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -191,14 +187,14 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.PROPERTY_TYPE__NAME:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.PROPERTY_TYPE__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case WFSPackage.PROPERTY_TYPE__VALUE:
+			case WfsPackage.PROPERTY_TYPE__VALUE:
 				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

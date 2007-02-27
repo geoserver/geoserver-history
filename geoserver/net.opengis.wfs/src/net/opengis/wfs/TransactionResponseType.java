@@ -30,11 +30,11 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getTransactionResponseType()
+ * @see net.opengis.wfs.WfsPackage#getTransactionResponseType()
  * @model extendedMetaData="name='TransactionResponseType' kind='elementOnly'"
  * @generated
  */
-public interface TransactionResponseType extends EObject{
+public interface TransactionResponseType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Transaction Summary</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
@@ -47,8 +47,8 @@ public interface TransactionResponseType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Transaction Summary</em>' containment reference.
 	 * @see #setTransactionSummary(TransactionSummaryType)
-	 * @see net.opengis.wfs.WFSPackage#getTransactionResponseType_TransactionSummary()
-	 * @model containment="true" resolveProxies="false" required="true"
+	 * @see net.opengis.wfs.WfsPackage#getTransactionResponseType_TransactionSummary()
+	 * @model containment="true" required="true"
 	 *        extendedMetaData="kind='element' name='TransactionSummary' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -77,8 +77,8 @@ public interface TransactionResponseType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Transaction Results</em>' containment reference.
 	 * @see #setTransactionResults(TransactionResultsType)
-	 * @see net.opengis.wfs.WFSPackage#getTransactionResponseType_TransactionResults()
-	 * @model containment="true" resolveProxies="false"
+	 * @see net.opengis.wfs.WfsPackage#getTransactionResponseType_TransactionResults()
+	 * @model containment="true"
 	 *        extendedMetaData="kind='element' name='TransactionResults' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -108,8 +108,8 @@ public interface TransactionResponseType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Insert Results</em>' containment reference.
 	 * @see #setInsertResults(InsertResultsType)
-	 * @see net.opengis.wfs.WFSPackage#getTransactionResponseType_InsertResults()
-	 * @model containment="true" resolveProxies="false" required="true"
+	 * @see net.opengis.wfs.WfsPackage#getTransactionResponseType_InsertResults()
+	 * @model containment="true" required="true"
 	 *        extendedMetaData="kind='element' name='InsertResults' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -140,7 +140,7 @@ public interface TransactionResponseType extends EObject{
 	 * @see #isSetVersion()
 	 * @see #unsetVersion()
 	 * @see #setVersion(String)
-	 * @see net.opengis.wfs.WFSPackage#getTransactionResponseType_Version()
+	 * @see net.opengis.wfs.WfsPackage#getTransactionResponseType_Version()
 	 * @model default="1.1.0" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
 	 *        extendedMetaData="kind='attribute' name='version'"
 	 * @generated

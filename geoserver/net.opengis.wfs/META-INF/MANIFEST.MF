@@ -1,10 +1,14 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Web Feature Service Model
-Bundle-SymbolicName: net.opengis.wfs; singleton := true
+Bundle-Name: %pluginName
+Bundle-SymbolicName: net.opengis.wfs; singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Vendor: Opengis.net
+Bundle-ClassPath: .
+Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Require-Bundle: net.opengis.ows,
- org.eclipse.emf.ecore,
- org.eclipse.emf
+Export-Package: net.opengis.wfs,
+ net.opengis.wfs.impl
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.emf.ecore;visibility:=reexport,
+ net.opengis.ows;visibility:=reexport
+Eclipse-LazyStart: true

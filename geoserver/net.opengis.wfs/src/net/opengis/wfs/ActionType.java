@@ -22,11 +22,11 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getActionType()
+ * @see net.opengis.wfs.WfsPackage#getActionType()
  * @model extendedMetaData="name='ActionType' kind='elementOnly'"
  * @generated
  */
-public interface ActionType extends EObject{
+public interface ActionType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Message</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -38,7 +38,7 @@ public interface ActionType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Message</em>' attribute.
 	 * @see #setMessage(String)
-	 * @see net.opengis.wfs.WFSPackage#getActionType_Message()
+	 * @see net.opengis.wfs.WfsPackage#getActionType_Message()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='element' name='Message' namespace='##targetNamespace'"
 	 * @generated
@@ -66,7 +66,7 @@ public interface ActionType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Code</em>' attribute.
 	 * @see #setCode(String)
-	 * @see net.opengis.wfs.WFSPackage#getActionType_Code()
+	 * @see net.opengis.wfs.WfsPackage#getActionType_Code()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='attribute' name='code'"
 	 * @generated
@@ -104,7 +104,7 @@ public interface ActionType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Locator</em>' attribute.
 	 * @see #setLocator(String)
-	 * @see net.opengis.wfs.WFSPackage#getActionType_Locator()
+	 * @see net.opengis.wfs.WfsPackage#getActionType_Locator()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
 	 *        extendedMetaData="kind='attribute' name='locator'"
 	 * @generated

@@ -35,11 +35,11 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getGMLObjectTypeType()
+ * @see net.opengis.wfs.WfsPackage#getGMLObjectTypeType()
  * @model extendedMetaData="name='GMLObjectTypeType' kind='elementOnly'"
  * @generated
  */
-public interface GMLObjectTypeType extends EObject{
+public interface GMLObjectTypeType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -77,7 +77,7 @@ public interface GMLObjectTypeType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Title</em>' attribute.
 	 * @see #setTitle(String)
-	 * @see net.opengis.wfs.WFSPackage#getGMLObjectTypeType_Title()
+	 * @see net.opengis.wfs.WfsPackage#getGMLObjectTypeType_Title()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='element' name='Title' namespace='##targetNamespace'"
 	 * @generated
@@ -105,7 +105,7 @@ public interface GMLObjectTypeType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Abstract</em>' attribute.
 	 * @see #setAbstract(String)
-	 * @see net.opengis.wfs.WFSPackage#getGMLObjectTypeType_Abstract()
+	 * @see net.opengis.wfs.WfsPackage#getGMLObjectTypeType_Abstract()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='element' name='Abstract' namespace='##targetNamespace'"
 	 * @generated
@@ -124,7 +124,7 @@ public interface GMLObjectTypeType extends EObject{
 
 	/**
 	 * Returns the value of the '<em><b>Keywords</b></em>' containment reference list.
-	 * The list contents are of type {@link net.opengis.ows.v1_0_0.KeywordsType}.
+	 * The list contents are of type {@link net.opengis.ows.KeywordsType}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Keywords</em>' containment reference list isn't clear,
@@ -132,8 +132,8 @@ public interface GMLObjectTypeType extends EObject{
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Keywords</em>' containment reference list.
-	 * @see net.opengis.wfs.WFSPackage#getGMLObjectTypeType_Keywords()
-	 * @model type="net.opengis.ows.v1_0_0.KeywordsType" containment="true" resolveProxies="false"
+	 * @see net.opengis.wfs.WfsPackage#getGMLObjectTypeType_Keywords()
+	 * @model type="net.opengis.ows.KeywordsType" containment="true"
 	 *        extendedMetaData="kind='element' name='Keywords' namespace='http://www.opengis.net/ows'"
 	 * @generated
 	 */
@@ -149,8 +149,8 @@ public interface GMLObjectTypeType extends EObject{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Output Formats</em>' containment reference.
 	 * @see #setOutputFormats(OutputFormatListType)
-	 * @see net.opengis.wfs.WFSPackage#getGMLObjectTypeType_OutputFormats()
-	 * @model containment="true" resolveProxies="false"
+	 * @see net.opengis.wfs.WfsPackage#getGMLObjectTypeType_OutputFormats()
+	 * @model containment="true"
 	 *        extendedMetaData="kind='element' name='OutputFormats' namespace='##targetNamespace'"
 	 * @generated
 	 */

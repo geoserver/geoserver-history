@@ -24,11 +24,11 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getXlinkPropertyNameType()
+ * @see net.opengis.wfs.WfsPackage#getXlinkPropertyNameType()
  * @model extendedMetaData="name='XlinkPropertyName_._type' kind='simple'"
  * @generated
  */
-public interface XlinkPropertyNameType extends EObject{
+public interface XlinkPropertyNameType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Value</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -39,7 +39,7 @@ public interface XlinkPropertyNameType extends EObject{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Value</em>' attribute.
 	 * @see #setValue(String)
-	 * @see net.opengis.wfs.WFSPackage#getXlinkPropertyNameType_Value()
+	 * @see net.opengis.wfs.WfsPackage#getXlinkPropertyNameType_Value()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="name=':0' kind='simple'"
 	 * @generated
@@ -79,7 +79,7 @@ public interface XlinkPropertyNameType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Traverse Xlink Depth</em>' attribute.
 	 * @see #setTraverseXlinkDepth(String)
-	 * @see net.opengis.wfs.WFSPackage#getXlinkPropertyNameType_TraverseXlinkDepth()
+	 * @see net.opengis.wfs.WfsPackage#getXlinkPropertyNameType_TraverseXlinkDepth()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
 	 *        extendedMetaData="kind='attribute' name='traverseXlinkDepth'"
 	 * @generated
@@ -108,7 +108,7 @@ public interface XlinkPropertyNameType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Traverse Xlink Expiry</em>' attribute.
 	 * @see #setTraverseXlinkExpiry(BigInteger)
-	 * @see net.opengis.wfs.WFSPackage#getXlinkPropertyNameType_TraverseXlinkExpiry()
+	 * @see net.opengis.wfs.WfsPackage#getXlinkPropertyNameType_TraverseXlinkExpiry()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.PositiveInteger"
 	 *        extendedMetaData="kind='attribute' name='traverseXlinkExpiry'"
 	 * @generated

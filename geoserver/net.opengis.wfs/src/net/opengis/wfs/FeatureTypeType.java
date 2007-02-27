@@ -41,11 +41,11 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getFeatureTypeType()
+ * @see net.opengis.wfs.WfsPackage#getFeatureTypeType()
  * @model extendedMetaData="name='FeatureTypeType' kind='elementOnly'"
  * @generated
  */
-public interface FeatureTypeType extends EObject{
+public interface FeatureTypeType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -83,7 +83,7 @@ public interface FeatureTypeType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Title</em>' attribute.
 	 * @see #setTitle(String)
-	 * @see net.opengis.wfs.WFSPackage#getFeatureTypeType_Title()
+	 * @see net.opengis.wfs.WfsPackage#getFeatureTypeType_Title()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
 	 *        extendedMetaData="kind='element' name='Title' namespace='##targetNamespace'"
 	 * @generated
@@ -111,7 +111,7 @@ public interface FeatureTypeType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Abstract</em>' attribute.
 	 * @see #setAbstract(String)
-	 * @see net.opengis.wfs.WFSPackage#getFeatureTypeType_Abstract()
+	 * @see net.opengis.wfs.WfsPackage#getFeatureTypeType_Abstract()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='element' name='Abstract' namespace='##targetNamespace'"
 	 * @generated
@@ -130,7 +130,7 @@ public interface FeatureTypeType extends EObject{
 
 	/**
 	 * Returns the value of the '<em><b>Keywords</b></em>' containment reference list.
-	 * The list contents are of type {@link net.opengis.ows.v1_0_0.KeywordsType}.
+	 * The list contents are of type {@link net.opengis.ows.KeywordsType}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Keywords</em>' containment reference list isn't clear,
@@ -138,8 +138,8 @@ public interface FeatureTypeType extends EObject{
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Keywords</em>' containment reference list.
-	 * @see net.opengis.wfs.WFSPackage#getFeatureTypeType_Keywords()
-	 * @model type="net.opengis.ows.v1_0_0.KeywordsType" containment="true" resolveProxies="false"
+	 * @see net.opengis.wfs.WfsPackage#getFeatureTypeType_Keywords()
+	 * @model type="net.opengis.ows.KeywordsType" containment="true"
 	 *        extendedMetaData="kind='element' name='Keywords' namespace='http://www.opengis.net/ows'"
 	 * @generated
 	 */
@@ -162,7 +162,7 @@ public interface FeatureTypeType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Default SRS</em>' attribute.
 	 * @see #setDefaultSRS(String)
-	 * @see net.opengis.wfs.WFSPackage#getFeatureTypeType_DefaultSRS()
+	 * @see net.opengis.wfs.WfsPackage#getFeatureTypeType_DefaultSRS()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.AnyURI"
 	 *        extendedMetaData="kind='element' name='DefaultSRS' namespace='##targetNamespace'"
 	 * @generated
@@ -196,7 +196,7 @@ public interface FeatureTypeType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Other SRS</em>' attribute.
 	 * @see #setOtherSRS(String)
-	 * @see net.opengis.wfs.WFSPackage#getFeatureTypeType_OtherSRS()
+	 * @see net.opengis.wfs.WfsPackage#getFeatureTypeType_OtherSRS()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.AnyURI"
 	 *        extendedMetaData="kind='element' name='OtherSRS' namespace='##targetNamespace'"
 	 * @generated
@@ -223,8 +223,8 @@ public interface FeatureTypeType extends EObject{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>No SRS</em>' containment reference.
 	 * @see #setNoSRS(NoSRSType)
-	 * @see net.opengis.wfs.WFSPackage#getFeatureTypeType_NoSRS()
-	 * @model containment="true" resolveProxies="false"
+	 * @see net.opengis.wfs.WfsPackage#getFeatureTypeType_NoSRS()
+	 * @model containment="true"
 	 *        extendedMetaData="kind='element' name='NoSRS' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -250,8 +250,8 @@ public interface FeatureTypeType extends EObject{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Operations</em>' containment reference.
 	 * @see #setOperations(OperationsType)
-	 * @see net.opengis.wfs.WFSPackage#getFeatureTypeType_Operations()
-	 * @model containment="true" resolveProxies="false"
+	 * @see net.opengis.wfs.WfsPackage#getFeatureTypeType_Operations()
+	 * @model containment="true"
 	 *        extendedMetaData="kind='element' name='Operations' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -277,8 +277,8 @@ public interface FeatureTypeType extends EObject{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Output Formats</em>' containment reference.
 	 * @see #setOutputFormats(OutputFormatListType)
-	 * @see net.opengis.wfs.WFSPackage#getFeatureTypeType_OutputFormats()
-	 * @model containment="true" resolveProxies="false"
+	 * @see net.opengis.wfs.WfsPackage#getFeatureTypeType_OutputFormats()
+	 * @model containment="true"
 	 *        extendedMetaData="kind='element' name='OutputFormats' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -296,7 +296,7 @@ public interface FeatureTypeType extends EObject{
 
 	/**
 	 * Returns the value of the '<em><b>WGS84 Bounding Box</b></em>' containment reference list.
-	 * The list contents are of type {@link net.opengis.ows.v1_0_0.WGS84BoundingBoxType}.
+	 * The list contents are of type {@link net.opengis.ows.WGS84BoundingBoxType}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>WGS84 Bounding Box</em>' containment reference list isn't clear,
@@ -304,8 +304,8 @@ public interface FeatureTypeType extends EObject{
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>WGS84 Bounding Box</em>' containment reference list.
-	 * @see net.opengis.wfs.WFSPackage#getFeatureTypeType_WGS84BoundingBox()
-	 * @model type="net.opengis.ows.v1_0_0.WGS84BoundingBoxType" containment="true" resolveProxies="false" required="true"
+	 * @see net.opengis.wfs.WfsPackage#getFeatureTypeType_WGS84BoundingBox()
+	 * @model type="net.opengis.ows.WGS84BoundingBoxType" containment="true" required="true"
 	 *        extendedMetaData="kind='element' name='WGS84BoundingBox' namespace='http://www.opengis.net/ows'"
 	 * @generated
 	 */
@@ -321,8 +321,8 @@ public interface FeatureTypeType extends EObject{
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Metadata URL</em>' containment reference list.
-	 * @see net.opengis.wfs.WFSPackage#getFeatureTypeType_MetadataURL()
-	 * @model type="net.opengis.wfs.MetadataURLType" containment="true" resolveProxies="false"
+	 * @see net.opengis.wfs.WfsPackage#getFeatureTypeType_MetadataURL()
+	 * @model type="net.opengis.wfs.MetadataURLType" containment="true"
 	 *        extendedMetaData="kind='element' name='MetadataURL' namespace='##targetNamespace'"
 	 * @generated
 	 */

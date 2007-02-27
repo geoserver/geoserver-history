@@ -13,7 +13,7 @@ import java.util.Collection;
 import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -21,7 +21,6 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -128,7 +127,7 @@ public class LockFeatureTypeImpl extends BaseRequestTypeImpl implements LockFeat
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getLockFeatureType();
+		return WfsPackage.Literals.LOCK_FEATURE_TYPE;
 	}
 
 	/**
@@ -138,7 +137,7 @@ public class LockFeatureTypeImpl extends BaseRequestTypeImpl implements LockFeat
 	 */
 	public EList getLock() {
 		if (lock == null) {
-			lock = new EObjectContainmentEList(LockType.class, this, WFSPackage.LOCK_FEATURE_TYPE__LOCK);
+			lock = new EObjectContainmentEList(LockType.class, this, WfsPackage.LOCK_FEATURE_TYPE__LOCK);
 		}
 		return lock;
 	}
@@ -163,7 +162,7 @@ public class LockFeatureTypeImpl extends BaseRequestTypeImpl implements LockFeat
 		boolean oldExpiryESet = expiryESet;
 		expiryESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.LOCK_FEATURE_TYPE__EXPIRY, oldExpiry, expiry, !oldExpiryESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.LOCK_FEATURE_TYPE__EXPIRY, oldExpiry, expiry, !oldExpiryESet));
 	}
 
 	/**
@@ -177,7 +176,7 @@ public class LockFeatureTypeImpl extends BaseRequestTypeImpl implements LockFeat
 		expiry = EXPIRY_EDEFAULT;
 		expiryESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, WFSPackage.LOCK_FEATURE_TYPE__EXPIRY, oldExpiry, EXPIRY_EDEFAULT, oldExpiryESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, WfsPackage.LOCK_FEATURE_TYPE__EXPIRY, oldExpiry, EXPIRY_EDEFAULT, oldExpiryESet));
 	}
 
 	/**
@@ -209,7 +208,7 @@ public class LockFeatureTypeImpl extends BaseRequestTypeImpl implements LockFeat
 		boolean oldLockActionESet = lockActionESet;
 		lockActionESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.LOCK_FEATURE_TYPE__LOCK_ACTION, oldLockAction, lockAction, !oldLockActionESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.LOCK_FEATURE_TYPE__LOCK_ACTION, oldLockAction, lockAction, !oldLockActionESet));
 	}
 
 	/**
@@ -223,7 +222,7 @@ public class LockFeatureTypeImpl extends BaseRequestTypeImpl implements LockFeat
 		lockAction = LOCK_ACTION_EDEFAULT;
 		lockActionESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, WFSPackage.LOCK_FEATURE_TYPE__LOCK_ACTION, oldLockAction, LOCK_ACTION_EDEFAULT, oldLockActionESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, WfsPackage.LOCK_FEATURE_TYPE__LOCK_ACTION, oldLockAction, LOCK_ACTION_EDEFAULT, oldLockActionESet));
 	}
 
 	/**
@@ -240,16 +239,12 @@ public class LockFeatureTypeImpl extends BaseRequestTypeImpl implements LockFeat
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
-		if (featureID >= 0) {
-			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
-				case WFSPackage.LOCK_FEATURE_TYPE__LOCK:
-					return ((InternalEList)getLock()).basicRemove(otherEnd, msgs);
-				default:
-					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
-			}
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case WfsPackage.LOCK_FEATURE_TYPE__LOCK:
+				return ((InternalEList)getLock()).basicRemove(otherEnd, msgs);
 		}
-		return eBasicSetContainer(null, featureID, msgs);
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -257,22 +252,16 @@ public class LockFeatureTypeImpl extends BaseRequestTypeImpl implements LockFeat
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.LOCK_FEATURE_TYPE__HANDLE:
-				return getHandle();
-			case WFSPackage.LOCK_FEATURE_TYPE__SERVICE:
-				return getService();
-			case WFSPackage.LOCK_FEATURE_TYPE__VERSION:
-				return getVersion();
-			case WFSPackage.LOCK_FEATURE_TYPE__LOCK:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.LOCK_FEATURE_TYPE__LOCK:
 				return getLock();
-			case WFSPackage.LOCK_FEATURE_TYPE__EXPIRY:
+			case WfsPackage.LOCK_FEATURE_TYPE__EXPIRY:
 				return getExpiry();
-			case WFSPackage.LOCK_FEATURE_TYPE__LOCK_ACTION:
+			case WfsPackage.LOCK_FEATURE_TYPE__LOCK_ACTION:
 				return getLockAction();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -280,29 +269,20 @@ public class LockFeatureTypeImpl extends BaseRequestTypeImpl implements LockFeat
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.LOCK_FEATURE_TYPE__HANDLE:
-				setHandle((String)newValue);
-				return;
-			case WFSPackage.LOCK_FEATURE_TYPE__SERVICE:
-				setService((String)newValue);
-				return;
-			case WFSPackage.LOCK_FEATURE_TYPE__VERSION:
-				setVersion((String)newValue);
-				return;
-			case WFSPackage.LOCK_FEATURE_TYPE__LOCK:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.LOCK_FEATURE_TYPE__LOCK:
 				getLock().clear();
 				getLock().addAll((Collection)newValue);
 				return;
-			case WFSPackage.LOCK_FEATURE_TYPE__EXPIRY:
+			case WfsPackage.LOCK_FEATURE_TYPE__EXPIRY:
 				setExpiry((BigInteger)newValue);
 				return;
-			case WFSPackage.LOCK_FEATURE_TYPE__LOCK_ACTION:
+			case WfsPackage.LOCK_FEATURE_TYPE__LOCK_ACTION:
 				setLockAction((AllSomeType)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -310,28 +290,19 @@ public class LockFeatureTypeImpl extends BaseRequestTypeImpl implements LockFeat
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.LOCK_FEATURE_TYPE__HANDLE:
-				setHandle(HANDLE_EDEFAULT);
-				return;
-			case WFSPackage.LOCK_FEATURE_TYPE__SERVICE:
-				unsetService();
-				return;
-			case WFSPackage.LOCK_FEATURE_TYPE__VERSION:
-				unsetVersion();
-				return;
-			case WFSPackage.LOCK_FEATURE_TYPE__LOCK:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.LOCK_FEATURE_TYPE__LOCK:
 				getLock().clear();
 				return;
-			case WFSPackage.LOCK_FEATURE_TYPE__EXPIRY:
+			case WfsPackage.LOCK_FEATURE_TYPE__EXPIRY:
 				unsetExpiry();
 				return;
-			case WFSPackage.LOCK_FEATURE_TYPE__LOCK_ACTION:
+			case WfsPackage.LOCK_FEATURE_TYPE__LOCK_ACTION:
 				unsetLockAction();
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -339,22 +310,16 @@ public class LockFeatureTypeImpl extends BaseRequestTypeImpl implements LockFeat
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.LOCK_FEATURE_TYPE__HANDLE:
-				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
-			case WFSPackage.LOCK_FEATURE_TYPE__SERVICE:
-				return isSetService();
-			case WFSPackage.LOCK_FEATURE_TYPE__VERSION:
-				return isSetVersion();
-			case WFSPackage.LOCK_FEATURE_TYPE__LOCK:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.LOCK_FEATURE_TYPE__LOCK:
 				return lock != null && !lock.isEmpty();
-			case WFSPackage.LOCK_FEATURE_TYPE__EXPIRY:
+			case WfsPackage.LOCK_FEATURE_TYPE__EXPIRY:
 				return isSetExpiry();
-			case WFSPackage.LOCK_FEATURE_TYPE__LOCK_ACTION:
+			case WfsPackage.LOCK_FEATURE_TYPE__LOCK_ACTION:
 				return isSetLockAction();
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

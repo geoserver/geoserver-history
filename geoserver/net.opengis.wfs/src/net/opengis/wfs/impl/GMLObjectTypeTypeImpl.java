@@ -10,11 +10,11 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
-import net.opengis.ows.v1_0_0.KeywordsType;
+import net.opengis.ows.KeywordsType;
 
 import net.opengis.wfs.GMLObjectTypeType;
 import net.opengis.wfs.OutputFormatListType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -22,7 +22,6 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -144,7 +143,7 @@ public class GMLObjectTypeTypeImpl extends EObjectImpl implements GMLObjectTypeT
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getGMLObjectTypeType();
+		return WfsPackage.Literals.GML_OBJECT_TYPE_TYPE;
 	}
 
 	/**
@@ -165,7 +164,7 @@ public class GMLObjectTypeTypeImpl extends EObjectImpl implements GMLObjectTypeT
 		QName oldName = name;
 		name = newName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.GML_OBJECT_TYPE_TYPE__NAME, oldName, name));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.GML_OBJECT_TYPE_TYPE__NAME, oldName, name));
 	}
 
 	/**
@@ -186,7 +185,7 @@ public class GMLObjectTypeTypeImpl extends EObjectImpl implements GMLObjectTypeT
 		String oldTitle = title;
 		title = newTitle;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.GML_OBJECT_TYPE_TYPE__TITLE, oldTitle, title));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.GML_OBJECT_TYPE_TYPE__TITLE, oldTitle, title));
 	}
 
 	/**
@@ -207,7 +206,7 @@ public class GMLObjectTypeTypeImpl extends EObjectImpl implements GMLObjectTypeT
 		String oldAbstract = abstract_;
 		abstract_ = newAbstract;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.GML_OBJECT_TYPE_TYPE__ABSTRACT, oldAbstract, abstract_));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.GML_OBJECT_TYPE_TYPE__ABSTRACT, oldAbstract, abstract_));
 	}
 
 	/**
@@ -217,7 +216,7 @@ public class GMLObjectTypeTypeImpl extends EObjectImpl implements GMLObjectTypeT
 	 */
 	public EList getKeywords() {
 		if (keywords == null) {
-			keywords = new EObjectContainmentEList(KeywordsType.class, this, WFSPackage.GML_OBJECT_TYPE_TYPE__KEYWORDS);
+			keywords = new EObjectContainmentEList(KeywordsType.class, this, WfsPackage.GML_OBJECT_TYPE_TYPE__KEYWORDS);
 		}
 		return keywords;
 	}
@@ -240,7 +239,7 @@ public class GMLObjectTypeTypeImpl extends EObjectImpl implements GMLObjectTypeT
 		OutputFormatListType oldOutputFormats = outputFormats;
 		outputFormats = newOutputFormats;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WFSPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS, oldOutputFormats, newOutputFormats);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WfsPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS, oldOutputFormats, newOutputFormats);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -255,14 +254,14 @@ public class GMLObjectTypeTypeImpl extends EObjectImpl implements GMLObjectTypeT
 		if (newOutputFormats != outputFormats) {
 			NotificationChain msgs = null;
 			if (outputFormats != null)
-				msgs = ((InternalEObject)outputFormats).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WFSPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS, null, msgs);
+				msgs = ((InternalEObject)outputFormats).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WfsPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS, null, msgs);
 			if (newOutputFormats != null)
-				msgs = ((InternalEObject)newOutputFormats).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WFSPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS, null, msgs);
+				msgs = ((InternalEObject)newOutputFormats).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WfsPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS, null, msgs);
 			msgs = basicSetOutputFormats(newOutputFormats, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS, newOutputFormats, newOutputFormats));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS, newOutputFormats, newOutputFormats));
 	}
 
 	/**
@@ -270,18 +269,14 @@ public class GMLObjectTypeTypeImpl extends EObjectImpl implements GMLObjectTypeT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
-		if (featureID >= 0) {
-			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
-				case WFSPackage.GML_OBJECT_TYPE_TYPE__KEYWORDS:
-					return ((InternalEList)getKeywords()).basicRemove(otherEnd, msgs);
-				case WFSPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS:
-					return basicSetOutputFormats(null, msgs);
-				default:
-					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
-			}
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__KEYWORDS:
+				return ((InternalEList)getKeywords()).basicRemove(otherEnd, msgs);
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS:
+				return basicSetOutputFormats(null, msgs);
 		}
-		return eBasicSetContainer(null, featureID, msgs);
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -289,20 +284,20 @@ public class GMLObjectTypeTypeImpl extends EObjectImpl implements GMLObjectTypeT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__NAME:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__NAME:
 				return getName();
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__TITLE:
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__TITLE:
 				return getTitle();
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__ABSTRACT:
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__ABSTRACT:
 				return getAbstract();
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__KEYWORDS:
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__KEYWORDS:
 				return getKeywords();
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS:
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS:
 				return getOutputFormats();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -310,26 +305,26 @@ public class GMLObjectTypeTypeImpl extends EObjectImpl implements GMLObjectTypeT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__NAME:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__NAME:
 				setName((QName)newValue);
 				return;
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__TITLE:
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__TITLE:
 				setTitle((String)newValue);
 				return;
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__ABSTRACT:
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__ABSTRACT:
 				setAbstract((String)newValue);
 				return;
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__KEYWORDS:
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__KEYWORDS:
 				getKeywords().clear();
 				getKeywords().addAll((Collection)newValue);
 				return;
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS:
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS:
 				setOutputFormats((OutputFormatListType)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -337,25 +332,25 @@ public class GMLObjectTypeTypeImpl extends EObjectImpl implements GMLObjectTypeT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__NAME:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__TITLE:
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__TITLE:
 				setTitle(TITLE_EDEFAULT);
 				return;
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__ABSTRACT:
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__ABSTRACT:
 				setAbstract(ABSTRACT_EDEFAULT);
 				return;
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__KEYWORDS:
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__KEYWORDS:
 				getKeywords().clear();
 				return;
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS:
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS:
 				setOutputFormats((OutputFormatListType)null);
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -363,20 +358,20 @@ public class GMLObjectTypeTypeImpl extends EObjectImpl implements GMLObjectTypeT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__NAME:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__TITLE:
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__TITLE:
 				return TITLE_EDEFAULT == null ? title != null : !TITLE_EDEFAULT.equals(title);
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__ABSTRACT:
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__ABSTRACT:
 				return ABSTRACT_EDEFAULT == null ? abstract_ != null : !ABSTRACT_EDEFAULT.equals(abstract_);
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__KEYWORDS:
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__KEYWORDS:
 				return keywords != null && !keywords.isEmpty();
-			case WFSPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS:
+			case WfsPackage.GML_OBJECT_TYPE_TYPE__OUTPUT_FORMATS:
 				return outputFormats != null;
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

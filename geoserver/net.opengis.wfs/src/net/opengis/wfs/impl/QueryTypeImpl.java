@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 import net.opengis.wfs.QueryType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -20,7 +20,6 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -215,7 +214,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getQueryType();
+		return WfsPackage.Literals.QUERY_TYPE;
 	}
 
 	/**
@@ -225,7 +224,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 */
 	public FeatureMap getGroup() {
 		if (group == null) {
-			group = new BasicFeatureMap(this, WFSPackage.QUERY_TYPE__GROUP);
+			group = new BasicFeatureMap(this, WfsPackage.QUERY_TYPE__GROUP);
 		}
 		return group;
 	}
@@ -237,7 +236,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 */
 	public EList getPropertyName() {
 		if (propertyName == null) {
-			propertyName = new EDataTypeUniqueEList(String.class, this, WFSPackage.QUERY_TYPE__PROPERTY_NAME);
+			propertyName = new EDataTypeUniqueEList(String.class, this, WfsPackage.QUERY_TYPE__PROPERTY_NAME);
 		}
 		return propertyName;
 	}
@@ -248,7 +247,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * @generated
 	 */
 	public EList getXlinkPropertyName() {
-		return ((FeatureMap)getGroup()).list(WFSPackage.eINSTANCE.getQueryType_XlinkPropertyName());
+		return ((FeatureMap)getGroup()).list(WfsPackage.Literals.QUERY_TYPE__XLINK_PROPERTY_NAME);
 	}
 
 	/**
@@ -258,7 +257,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 */
 	public EList getFunction() {
 		if (function == null) {
-			function = new EDataTypeUniqueEList(Function.class, this, WFSPackage.QUERY_TYPE__FUNCTION);
+			function = new EDataTypeUniqueEList(Function.class, this, WfsPackage.QUERY_TYPE__FUNCTION);
 		}
 		return function;
 	}
@@ -281,7 +280,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 		Filter oldFilter = filter;
 		filter = newFilter;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.QUERY_TYPE__FILTER, oldFilter, filter));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.QUERY_TYPE__FILTER, oldFilter, filter));
 	}
 
 	/**
@@ -291,7 +290,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 */
 	public EList getSortBy() {
 		if (sortBy == null) {
-			sortBy = new EDataTypeUniqueEList(SortBy.class, this, WFSPackage.QUERY_TYPE__SORT_BY);
+			sortBy = new EDataTypeUniqueEList(SortBy.class, this, WfsPackage.QUERY_TYPE__SORT_BY);
 		}
 		return sortBy;
 	}
@@ -314,7 +313,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 		String oldFeatureVersion = featureVersion;
 		featureVersion = newFeatureVersion;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.QUERY_TYPE__FEATURE_VERSION, oldFeatureVersion, featureVersion));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.QUERY_TYPE__FEATURE_VERSION, oldFeatureVersion, featureVersion));
 	}
 
 	/**
@@ -335,7 +334,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 		String oldHandle = handle;
 		handle = newHandle;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.QUERY_TYPE__HANDLE, oldHandle, handle));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.QUERY_TYPE__HANDLE, oldHandle, handle));
 	}
 
 	/**
@@ -356,7 +355,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 		URI oldSrsName = srsName;
 		srsName = newSrsName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.QUERY_TYPE__SRS_NAME, oldSrsName, srsName));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.QUERY_TYPE__SRS_NAME, oldSrsName, srsName));
 	}
 
 	/**
@@ -377,7 +376,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 		List oldTypeName = typeName;
 		typeName = newTypeName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.QUERY_TYPE__TYPE_NAME, oldTypeName, typeName));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.QUERY_TYPE__TYPE_NAME, oldTypeName, typeName));
 	}
 
 	/**
@@ -385,18 +384,14 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
-		if (featureID >= 0) {
-			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
-				case WFSPackage.QUERY_TYPE__GROUP:
-					return ((InternalEList)getGroup()).basicRemove(otherEnd, msgs);
-				case WFSPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
-					return ((InternalEList)getXlinkPropertyName()).basicRemove(otherEnd, msgs);
-				default:
-					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
-			}
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case WfsPackage.QUERY_TYPE__GROUP:
+				return ((InternalEList)getGroup()).basicRemove(otherEnd, msgs);
+			case WfsPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
+				return ((InternalEList)getXlinkPropertyName()).basicRemove(otherEnd, msgs);
 		}
-		return eBasicSetContainer(null, featureID, msgs);
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -404,30 +399,31 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.QUERY_TYPE__GROUP:
-				return getGroup();
-			case WFSPackage.QUERY_TYPE__PROPERTY_NAME:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.QUERY_TYPE__GROUP:
+				if (coreType) return getGroup();
+				return ((FeatureMap.Internal)getGroup()).getWrapper();
+			case WfsPackage.QUERY_TYPE__PROPERTY_NAME:
 				return getPropertyName();
-			case WFSPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
+			case WfsPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
 				return getXlinkPropertyName();
-			case WFSPackage.QUERY_TYPE__FUNCTION:
+			case WfsPackage.QUERY_TYPE__FUNCTION:
 				return getFunction();
-			case WFSPackage.QUERY_TYPE__FILTER:
+			case WfsPackage.QUERY_TYPE__FILTER:
 				return getFilter();
-			case WFSPackage.QUERY_TYPE__SORT_BY:
+			case WfsPackage.QUERY_TYPE__SORT_BY:
 				return getSortBy();
-			case WFSPackage.QUERY_TYPE__FEATURE_VERSION:
+			case WfsPackage.QUERY_TYPE__FEATURE_VERSION:
 				return getFeatureVersion();
-			case WFSPackage.QUERY_TYPE__HANDLE:
+			case WfsPackage.QUERY_TYPE__HANDLE:
 				return getHandle();
-			case WFSPackage.QUERY_TYPE__SRS_NAME:
+			case WfsPackage.QUERY_TYPE__SRS_NAME:
 				return getSrsName();
-			case WFSPackage.QUERY_TYPE__TYPE_NAME:
+			case WfsPackage.QUERY_TYPE__TYPE_NAME:
 				return getTypeName();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -435,45 +431,44 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.QUERY_TYPE__GROUP:
-				getGroup().clear();
-				getGroup().addAll((Collection)newValue);
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.QUERY_TYPE__GROUP:
+				((FeatureMap.Internal)getGroup()).set(newValue);
 				return;
-			case WFSPackage.QUERY_TYPE__PROPERTY_NAME:
+			case WfsPackage.QUERY_TYPE__PROPERTY_NAME:
 				getPropertyName().clear();
 				getPropertyName().addAll((Collection)newValue);
 				return;
-			case WFSPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
+			case WfsPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
 				getXlinkPropertyName().clear();
 				getXlinkPropertyName().addAll((Collection)newValue);
 				return;
-			case WFSPackage.QUERY_TYPE__FUNCTION:
+			case WfsPackage.QUERY_TYPE__FUNCTION:
 				getFunction().clear();
 				getFunction().addAll((Collection)newValue);
 				return;
-			case WFSPackage.QUERY_TYPE__FILTER:
+			case WfsPackage.QUERY_TYPE__FILTER:
 				setFilter((Filter)newValue);
 				return;
-			case WFSPackage.QUERY_TYPE__SORT_BY:
+			case WfsPackage.QUERY_TYPE__SORT_BY:
 				getSortBy().clear();
 				getSortBy().addAll((Collection)newValue);
 				return;
-			case WFSPackage.QUERY_TYPE__FEATURE_VERSION:
+			case WfsPackage.QUERY_TYPE__FEATURE_VERSION:
 				setFeatureVersion((String)newValue);
 				return;
-			case WFSPackage.QUERY_TYPE__HANDLE:
+			case WfsPackage.QUERY_TYPE__HANDLE:
 				setHandle((String)newValue);
 				return;
-			case WFSPackage.QUERY_TYPE__SRS_NAME:
+			case WfsPackage.QUERY_TYPE__SRS_NAME:
 				setSrsName((URI)newValue);
 				return;
-			case WFSPackage.QUERY_TYPE__TYPE_NAME:
+			case WfsPackage.QUERY_TYPE__TYPE_NAME:
 				setTypeName((List)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -481,40 +476,40 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.QUERY_TYPE__GROUP:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.QUERY_TYPE__GROUP:
 				getGroup().clear();
 				return;
-			case WFSPackage.QUERY_TYPE__PROPERTY_NAME:
+			case WfsPackage.QUERY_TYPE__PROPERTY_NAME:
 				getPropertyName().clear();
 				return;
-			case WFSPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
+			case WfsPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
 				getXlinkPropertyName().clear();
 				return;
-			case WFSPackage.QUERY_TYPE__FUNCTION:
+			case WfsPackage.QUERY_TYPE__FUNCTION:
 				getFunction().clear();
 				return;
-			case WFSPackage.QUERY_TYPE__FILTER:
+			case WfsPackage.QUERY_TYPE__FILTER:
 				setFilter(FILTER_EDEFAULT);
 				return;
-			case WFSPackage.QUERY_TYPE__SORT_BY:
+			case WfsPackage.QUERY_TYPE__SORT_BY:
 				getSortBy().clear();
 				return;
-			case WFSPackage.QUERY_TYPE__FEATURE_VERSION:
+			case WfsPackage.QUERY_TYPE__FEATURE_VERSION:
 				setFeatureVersion(FEATURE_VERSION_EDEFAULT);
 				return;
-			case WFSPackage.QUERY_TYPE__HANDLE:
+			case WfsPackage.QUERY_TYPE__HANDLE:
 				setHandle(HANDLE_EDEFAULT);
 				return;
-			case WFSPackage.QUERY_TYPE__SRS_NAME:
+			case WfsPackage.QUERY_TYPE__SRS_NAME:
 				setSrsName(SRS_NAME_EDEFAULT);
 				return;
-			case WFSPackage.QUERY_TYPE__TYPE_NAME:
+			case WfsPackage.QUERY_TYPE__TYPE_NAME:
 				setTypeName(TYPE_NAME_EDEFAULT);
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -522,30 +517,30 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.QUERY_TYPE__GROUP:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.QUERY_TYPE__GROUP:
 				return group != null && !group.isEmpty();
-			case WFSPackage.QUERY_TYPE__PROPERTY_NAME:
+			case WfsPackage.QUERY_TYPE__PROPERTY_NAME:
 				return propertyName != null && !propertyName.isEmpty();
-			case WFSPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
+			case WfsPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
 				return !getXlinkPropertyName().isEmpty();
-			case WFSPackage.QUERY_TYPE__FUNCTION:
+			case WfsPackage.QUERY_TYPE__FUNCTION:
 				return function != null && !function.isEmpty();
-			case WFSPackage.QUERY_TYPE__FILTER:
+			case WfsPackage.QUERY_TYPE__FILTER:
 				return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
-			case WFSPackage.QUERY_TYPE__SORT_BY:
+			case WfsPackage.QUERY_TYPE__SORT_BY:
 				return sortBy != null && !sortBy.isEmpty();
-			case WFSPackage.QUERY_TYPE__FEATURE_VERSION:
+			case WfsPackage.QUERY_TYPE__FEATURE_VERSION:
 				return FEATURE_VERSION_EDEFAULT == null ? featureVersion != null : !FEATURE_VERSION_EDEFAULT.equals(featureVersion);
-			case WFSPackage.QUERY_TYPE__HANDLE:
+			case WfsPackage.QUERY_TYPE__HANDLE:
 				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
-			case WFSPackage.QUERY_TYPE__SRS_NAME:
+			case WfsPackage.QUERY_TYPE__SRS_NAME:
 				return SRS_NAME_EDEFAULT == null ? srsName != null : !SRS_NAME_EDEFAULT.equals(srsName);
-			case WFSPackage.QUERY_TYPE__TYPE_NAME:
+			case WfsPackage.QUERY_TYPE__TYPE_NAME:
 				return TYPE_NAME_EDEFAULT == null ? typeName != null : !TYPE_NAME_EDEFAULT.equals(typeName);
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**
