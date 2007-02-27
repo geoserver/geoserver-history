@@ -304,7 +304,7 @@ public class GetFeature {
      * </p>
      *
      * <p>
-     * The method name is changed to toDataStoreQuery since this is a one way
+     * The method name is changed to toDataQuery since this is a one way
      * conversion.
      * </p>
      *
@@ -378,6 +378,10 @@ public class GetFeature {
             List sortBy = query.getSortBy();
             dataQuery.setSortBy((SortBy[]) sortBy.toArray(new SortBy[sortBy.size()]));
         }
+        
+        //handle version, datastore may be able to use it
+        if(query.getFeatureVersion() != null)
+            dataQuery.setVersion(query.getFeatureVersion());
 
         return dataQuery;
     }
