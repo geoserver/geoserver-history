@@ -34,11 +34,11 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getInsertResultsType()
+ * @see net.opengis.wfs.WfsPackage#getInsertResultsType()
  * @model extendedMetaData="name='InsertResultsType' kind='elementOnly'"
  * @generated
  */
-public interface InsertResultsType extends EObject{
+public interface InsertResultsType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Feature</b></em>' containment reference list.
 	 * The list contents are of type {@link net.opengis.wfs.InsertedFeatureType}.
@@ -49,8 +49,8 @@ public interface InsertResultsType extends EObject{
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Feature</em>' containment reference list.
-	 * @see net.opengis.wfs.WFSPackage#getInsertResultsType_Feature()
-	 * @model type="net.opengis.wfs.InsertedFeatureType" containment="true" resolveProxies="false" required="true"
+	 * @see net.opengis.wfs.WfsPackage#getInsertResultsType_Feature()
+	 * @model type="net.opengis.wfs.InsertedFeatureType" containment="true" required="true"
 	 *        extendedMetaData="kind='element' name='Feature' namespace='##targetNamespace'"
 	 * @generated
 	 */

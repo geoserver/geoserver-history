@@ -29,11 +29,11 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getLockFeatureResponseType()
+ * @see net.opengis.wfs.WfsPackage#getLockFeatureResponseType()
  * @model extendedMetaData="name='LockFeatureResponseType' kind='elementOnly'"
  * @generated
  */
-public interface LockFeatureResponseType extends EObject{
+public interface LockFeatureResponseType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Lock Id</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -47,7 +47,7 @@ public interface LockFeatureResponseType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Lock Id</em>' attribute.
 	 * @see #setLockId(String)
-	 * @see net.opengis.wfs.WFSPackage#getLockFeatureResponseType_LockId()
+	 * @see net.opengis.wfs.WfsPackage#getLockFeatureResponseType_LockId()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
 	 *        extendedMetaData="kind='element' name='LockId' namespace='##targetNamespace'"
 	 * @generated
@@ -85,8 +85,8 @@ public interface LockFeatureResponseType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Features Locked</em>' containment reference.
 	 * @see #setFeaturesLocked(FeaturesLockedType)
-	 * @see net.opengis.wfs.WFSPackage#getLockFeatureResponseType_FeaturesLocked()
-	 * @model containment="true" resolveProxies="false"
+	 * @see net.opengis.wfs.WfsPackage#getLockFeatureResponseType_FeaturesLocked()
+	 * @model containment="true"
 	 *        extendedMetaData="kind='element' name='FeaturesLocked' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -116,8 +116,8 @@ public interface LockFeatureResponseType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Features Not Locked</em>' containment reference.
 	 * @see #setFeaturesNotLocked(FeaturesNotLockedType)
-	 * @see net.opengis.wfs.WFSPackage#getLockFeatureResponseType_FeaturesNotLocked()
-	 * @model containment="true" resolveProxies="false"
+	 * @see net.opengis.wfs.WfsPackage#getLockFeatureResponseType_FeaturesNotLocked()
+	 * @model containment="true"
 	 *        extendedMetaData="kind='element' name='FeaturesNotLocked' namespace='##targetNamespace'"
 	 * @generated
 	 */

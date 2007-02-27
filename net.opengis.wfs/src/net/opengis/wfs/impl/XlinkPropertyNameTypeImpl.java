@@ -8,13 +8,12 @@ package net.opengis.wfs.impl;
 
 import java.math.BigInteger;
 
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 import net.opengis.wfs.XlinkPropertyNameType;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
@@ -110,7 +109,7 @@ public class XlinkPropertyNameTypeImpl extends EObjectImpl implements XlinkPrope
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getXlinkPropertyNameType();
+		return WfsPackage.Literals.XLINK_PROPERTY_NAME_TYPE;
 	}
 
 	/**
@@ -131,7 +130,7 @@ public class XlinkPropertyNameTypeImpl extends EObjectImpl implements XlinkPrope
 		String oldValue = value;
 		value = newValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.XLINK_PROPERTY_NAME_TYPE__VALUE, oldValue, value));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.XLINK_PROPERTY_NAME_TYPE__VALUE, oldValue, value));
 	}
 
 	/**
@@ -152,7 +151,7 @@ public class XlinkPropertyNameTypeImpl extends EObjectImpl implements XlinkPrope
 		String oldTraverseXlinkDepth = traverseXlinkDepth;
 		traverseXlinkDepth = newTraverseXlinkDepth;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_DEPTH, oldTraverseXlinkDepth, traverseXlinkDepth));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_DEPTH, oldTraverseXlinkDepth, traverseXlinkDepth));
 	}
 
 	/**
@@ -173,7 +172,7 @@ public class XlinkPropertyNameTypeImpl extends EObjectImpl implements XlinkPrope
 		BigInteger oldTraverseXlinkExpiry = traverseXlinkExpiry;
 		traverseXlinkExpiry = newTraverseXlinkExpiry;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_EXPIRY, oldTraverseXlinkExpiry, traverseXlinkExpiry));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_EXPIRY, oldTraverseXlinkExpiry, traverseXlinkExpiry));
 	}
 
 	/**
@@ -181,16 +180,16 @@ public class XlinkPropertyNameTypeImpl extends EObjectImpl implements XlinkPrope
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.XLINK_PROPERTY_NAME_TYPE__VALUE:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.XLINK_PROPERTY_NAME_TYPE__VALUE:
 				return getValue();
-			case WFSPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_DEPTH:
+			case WfsPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_DEPTH:
 				return getTraverseXlinkDepth();
-			case WFSPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_EXPIRY:
+			case WfsPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_EXPIRY:
 				return getTraverseXlinkExpiry();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -198,19 +197,19 @@ public class XlinkPropertyNameTypeImpl extends EObjectImpl implements XlinkPrope
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.XLINK_PROPERTY_NAME_TYPE__VALUE:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.XLINK_PROPERTY_NAME_TYPE__VALUE:
 				setValue((String)newValue);
 				return;
-			case WFSPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_DEPTH:
+			case WfsPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_DEPTH:
 				setTraverseXlinkDepth((String)newValue);
 				return;
-			case WFSPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_EXPIRY:
+			case WfsPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_EXPIRY:
 				setTraverseXlinkExpiry((BigInteger)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -218,19 +217,19 @@ public class XlinkPropertyNameTypeImpl extends EObjectImpl implements XlinkPrope
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.XLINK_PROPERTY_NAME_TYPE__VALUE:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.XLINK_PROPERTY_NAME_TYPE__VALUE:
 				setValue(VALUE_EDEFAULT);
 				return;
-			case WFSPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_DEPTH:
+			case WfsPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_DEPTH:
 				setTraverseXlinkDepth(TRAVERSE_XLINK_DEPTH_EDEFAULT);
 				return;
-			case WFSPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_EXPIRY:
+			case WfsPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_EXPIRY:
 				setTraverseXlinkExpiry(TRAVERSE_XLINK_EXPIRY_EDEFAULT);
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -238,16 +237,16 @@ public class XlinkPropertyNameTypeImpl extends EObjectImpl implements XlinkPrope
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.XLINK_PROPERTY_NAME_TYPE__VALUE:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.XLINK_PROPERTY_NAME_TYPE__VALUE:
 				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
-			case WFSPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_DEPTH:
+			case WfsPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_DEPTH:
 				return TRAVERSE_XLINK_DEPTH_EDEFAULT == null ? traverseXlinkDepth != null : !TRAVERSE_XLINK_DEPTH_EDEFAULT.equals(traverseXlinkDepth);
-			case WFSPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_EXPIRY:
+			case WfsPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_EXPIRY:
 				return TRAVERSE_XLINK_EXPIRY_EDEFAULT == null ? traverseXlinkExpiry != null : !TRAVERSE_XLINK_EXPIRY_EDEFAULT.equals(traverseXlinkExpiry);
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

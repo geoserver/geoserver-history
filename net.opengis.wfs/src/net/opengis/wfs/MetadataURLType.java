@@ -35,11 +35,11 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getMetadataURLType()
+ * @see net.opengis.wfs.WfsPackage#getMetadataURLType()
  * @model extendedMetaData="name='MetadataURLType' kind='simple'"
  * @generated
  */
-public interface MetadataURLType extends EObject{
+public interface MetadataURLType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Value</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -50,7 +50,7 @@ public interface MetadataURLType extends EObject{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Value</em>' attribute.
 	 * @see #setValue(String)
-	 * @see net.opengis.wfs.WFSPackage#getMetadataURLType_Value()
+	 * @see net.opengis.wfs.WfsPackage#getMetadataURLType_Value()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="name=':0' kind='simple'"
 	 * @generated
@@ -77,7 +77,7 @@ public interface MetadataURLType extends EObject{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Format</em>' attribute.
 	 * @see #setFormat(String)
-	 * @see net.opengis.wfs.WFSPackage#getMetadataURLType_Format()
+	 * @see net.opengis.wfs.WfsPackage#getMetadataURLType_Format()
 	 * @model unique="false" dataType="net.opengis.wfs.FormatType" required="true"
 	 *        extendedMetaData="kind='attribute' name='format'"
 	 * @generated
@@ -104,7 +104,7 @@ public interface MetadataURLType extends EObject{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Type</em>' attribute.
 	 * @see #setType(String)
-	 * @see net.opengis.wfs.WFSPackage#getMetadataURLType_Type()
+	 * @see net.opengis.wfs.WfsPackage#getMetadataURLType_Type()
 	 * @model unique="false" dataType="net.opengis.wfs.TypeType" required="true"
 	 *        extendedMetaData="kind='attribute' name='type'"
 	 * @generated

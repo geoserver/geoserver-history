@@ -10,14 +10,13 @@ import java.util.Collection;
 
 import net.opengis.wfs.InsertResultsType;
 import net.opengis.wfs.InsertedFeatureType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.EObjectImpl;
@@ -64,7 +63,7 @@ public class InsertResultsTypeImpl extends EObjectImpl implements InsertResultsT
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getInsertResultsType();
+		return WfsPackage.Literals.INSERT_RESULTS_TYPE;
 	}
 
 	/**
@@ -74,7 +73,7 @@ public class InsertResultsTypeImpl extends EObjectImpl implements InsertResultsT
 	 */
 	public EList getFeature() {
 		if (feature == null) {
-			feature = new EObjectContainmentEList(InsertedFeatureType.class, this, WFSPackage.INSERT_RESULTS_TYPE__FEATURE);
+			feature = new EObjectContainmentEList(InsertedFeatureType.class, this, WfsPackage.INSERT_RESULTS_TYPE__FEATURE);
 		}
 		return feature;
 	}
@@ -84,16 +83,12 @@ public class InsertResultsTypeImpl extends EObjectImpl implements InsertResultsT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
-		if (featureID >= 0) {
-			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
-				case WFSPackage.INSERT_RESULTS_TYPE__FEATURE:
-					return ((InternalEList)getFeature()).basicRemove(otherEnd, msgs);
-				default:
-					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
-			}
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case WfsPackage.INSERT_RESULTS_TYPE__FEATURE:
+				return ((InternalEList)getFeature()).basicRemove(otherEnd, msgs);
 		}
-		return eBasicSetContainer(null, featureID, msgs);
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -101,12 +96,12 @@ public class InsertResultsTypeImpl extends EObjectImpl implements InsertResultsT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.INSERT_RESULTS_TYPE__FEATURE:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.INSERT_RESULTS_TYPE__FEATURE:
 				return getFeature();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -114,14 +109,14 @@ public class InsertResultsTypeImpl extends EObjectImpl implements InsertResultsT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.INSERT_RESULTS_TYPE__FEATURE:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.INSERT_RESULTS_TYPE__FEATURE:
 				getFeature().clear();
 				getFeature().addAll((Collection)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -129,13 +124,13 @@ public class InsertResultsTypeImpl extends EObjectImpl implements InsertResultsT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.INSERT_RESULTS_TYPE__FEATURE:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.INSERT_RESULTS_TYPE__FEATURE:
 				getFeature().clear();
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -143,12 +138,12 @@ public class InsertResultsTypeImpl extends EObjectImpl implements InsertResultsT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.INSERT_RESULTS_TYPE__FEATURE:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.INSERT_RESULTS_TYPE__FEATURE:
 				return feature != null && !feature.isEmpty();
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 } //InsertResultsTypeImpl

@@ -13,7 +13,7 @@ import java.util.Collection;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.ResultTypeType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -21,7 +21,6 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -191,7 +190,7 @@ public class GetFeatureTypeImpl extends BaseRequestTypeImpl implements GetFeatur
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getGetFeatureType();
+		return WfsPackage.Literals.GET_FEATURE_TYPE;
 	}
 
 	/**
@@ -201,7 +200,7 @@ public class GetFeatureTypeImpl extends BaseRequestTypeImpl implements GetFeatur
 	 */
 	public EList getQuery() {
 		if (query == null) {
-			query = new EObjectContainmentEList(QueryType.class, this, WFSPackage.GET_FEATURE_TYPE__QUERY);
+			query = new EObjectContainmentEList(QueryType.class, this, WfsPackage.GET_FEATURE_TYPE__QUERY);
 		}
 		return query;
 	}
@@ -224,7 +223,7 @@ public class GetFeatureTypeImpl extends BaseRequestTypeImpl implements GetFeatur
 		BigInteger oldMaxFeatures = maxFeatures;
 		maxFeatures = newMaxFeatures;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.GET_FEATURE_TYPE__MAX_FEATURES, oldMaxFeatures, maxFeatures));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.GET_FEATURE_TYPE__MAX_FEATURES, oldMaxFeatures, maxFeatures));
 	}
 
 	/**
@@ -247,7 +246,7 @@ public class GetFeatureTypeImpl extends BaseRequestTypeImpl implements GetFeatur
 		boolean oldOutputFormatESet = outputFormatESet;
 		outputFormatESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.GET_FEATURE_TYPE__OUTPUT_FORMAT, oldOutputFormat, outputFormat, !oldOutputFormatESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.GET_FEATURE_TYPE__OUTPUT_FORMAT, oldOutputFormat, outputFormat, !oldOutputFormatESet));
 	}
 
 	/**
@@ -261,7 +260,7 @@ public class GetFeatureTypeImpl extends BaseRequestTypeImpl implements GetFeatur
 		outputFormat = OUTPUT_FORMAT_EDEFAULT;
 		outputFormatESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, WFSPackage.GET_FEATURE_TYPE__OUTPUT_FORMAT, oldOutputFormat, OUTPUT_FORMAT_EDEFAULT, oldOutputFormatESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, WfsPackage.GET_FEATURE_TYPE__OUTPUT_FORMAT, oldOutputFormat, OUTPUT_FORMAT_EDEFAULT, oldOutputFormatESet));
 	}
 
 	/**
@@ -293,7 +292,7 @@ public class GetFeatureTypeImpl extends BaseRequestTypeImpl implements GetFeatur
 		boolean oldResultTypeESet = resultTypeESet;
 		resultTypeESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.GET_FEATURE_TYPE__RESULT_TYPE, oldResultType, resultType, !oldResultTypeESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.GET_FEATURE_TYPE__RESULT_TYPE, oldResultType, resultType, !oldResultTypeESet));
 	}
 
 	/**
@@ -307,7 +306,7 @@ public class GetFeatureTypeImpl extends BaseRequestTypeImpl implements GetFeatur
 		resultType = RESULT_TYPE_EDEFAULT;
 		resultTypeESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, WFSPackage.GET_FEATURE_TYPE__RESULT_TYPE, oldResultType, RESULT_TYPE_EDEFAULT, oldResultTypeESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, WfsPackage.GET_FEATURE_TYPE__RESULT_TYPE, oldResultType, RESULT_TYPE_EDEFAULT, oldResultTypeESet));
 	}
 
 	/**
@@ -337,7 +336,7 @@ public class GetFeatureTypeImpl extends BaseRequestTypeImpl implements GetFeatur
 		String oldTraverseXlinkDepth = traverseXlinkDepth;
 		traverseXlinkDepth = newTraverseXlinkDepth;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_DEPTH, oldTraverseXlinkDepth, traverseXlinkDepth));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_DEPTH, oldTraverseXlinkDepth, traverseXlinkDepth));
 	}
 
 	/**
@@ -358,7 +357,7 @@ public class GetFeatureTypeImpl extends BaseRequestTypeImpl implements GetFeatur
 		BigInteger oldTraverseXlinkExpiry = traverseXlinkExpiry;
 		traverseXlinkExpiry = newTraverseXlinkExpiry;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_EXPIRY, oldTraverseXlinkExpiry, traverseXlinkExpiry));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_EXPIRY, oldTraverseXlinkExpiry, traverseXlinkExpiry));
 	}
 
 	/**
@@ -366,16 +365,12 @@ public class GetFeatureTypeImpl extends BaseRequestTypeImpl implements GetFeatur
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
-		if (featureID >= 0) {
-			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
-				case WFSPackage.GET_FEATURE_TYPE__QUERY:
-					return ((InternalEList)getQuery()).basicRemove(otherEnd, msgs);
-				default:
-					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
-			}
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case WfsPackage.GET_FEATURE_TYPE__QUERY:
+				return ((InternalEList)getQuery()).basicRemove(otherEnd, msgs);
 		}
-		return eBasicSetContainer(null, featureID, msgs);
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -383,28 +378,22 @@ public class GetFeatureTypeImpl extends BaseRequestTypeImpl implements GetFeatur
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GET_FEATURE_TYPE__HANDLE:
-				return getHandle();
-			case WFSPackage.GET_FEATURE_TYPE__SERVICE:
-				return getService();
-			case WFSPackage.GET_FEATURE_TYPE__VERSION:
-				return getVersion();
-			case WFSPackage.GET_FEATURE_TYPE__QUERY:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.GET_FEATURE_TYPE__QUERY:
 				return getQuery();
-			case WFSPackage.GET_FEATURE_TYPE__MAX_FEATURES:
+			case WfsPackage.GET_FEATURE_TYPE__MAX_FEATURES:
 				return getMaxFeatures();
-			case WFSPackage.GET_FEATURE_TYPE__OUTPUT_FORMAT:
+			case WfsPackage.GET_FEATURE_TYPE__OUTPUT_FORMAT:
 				return getOutputFormat();
-			case WFSPackage.GET_FEATURE_TYPE__RESULT_TYPE:
+			case WfsPackage.GET_FEATURE_TYPE__RESULT_TYPE:
 				return getResultType();
-			case WFSPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_DEPTH:
+			case WfsPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_DEPTH:
 				return getTraverseXlinkDepth();
-			case WFSPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_EXPIRY:
+			case WfsPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_EXPIRY:
 				return getTraverseXlinkExpiry();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -412,38 +401,29 @@ public class GetFeatureTypeImpl extends BaseRequestTypeImpl implements GetFeatur
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GET_FEATURE_TYPE__HANDLE:
-				setHandle((String)newValue);
-				return;
-			case WFSPackage.GET_FEATURE_TYPE__SERVICE:
-				setService((String)newValue);
-				return;
-			case WFSPackage.GET_FEATURE_TYPE__VERSION:
-				setVersion((String)newValue);
-				return;
-			case WFSPackage.GET_FEATURE_TYPE__QUERY:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.GET_FEATURE_TYPE__QUERY:
 				getQuery().clear();
 				getQuery().addAll((Collection)newValue);
 				return;
-			case WFSPackage.GET_FEATURE_TYPE__MAX_FEATURES:
+			case WfsPackage.GET_FEATURE_TYPE__MAX_FEATURES:
 				setMaxFeatures((BigInteger)newValue);
 				return;
-			case WFSPackage.GET_FEATURE_TYPE__OUTPUT_FORMAT:
+			case WfsPackage.GET_FEATURE_TYPE__OUTPUT_FORMAT:
 				setOutputFormat((String)newValue);
 				return;
-			case WFSPackage.GET_FEATURE_TYPE__RESULT_TYPE:
+			case WfsPackage.GET_FEATURE_TYPE__RESULT_TYPE:
 				setResultType((ResultTypeType)newValue);
 				return;
-			case WFSPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_DEPTH:
+			case WfsPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_DEPTH:
 				setTraverseXlinkDepth((String)newValue);
 				return;
-			case WFSPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_EXPIRY:
+			case WfsPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_EXPIRY:
 				setTraverseXlinkExpiry((BigInteger)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -451,37 +431,28 @@ public class GetFeatureTypeImpl extends BaseRequestTypeImpl implements GetFeatur
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GET_FEATURE_TYPE__HANDLE:
-				setHandle(HANDLE_EDEFAULT);
-				return;
-			case WFSPackage.GET_FEATURE_TYPE__SERVICE:
-				unsetService();
-				return;
-			case WFSPackage.GET_FEATURE_TYPE__VERSION:
-				unsetVersion();
-				return;
-			case WFSPackage.GET_FEATURE_TYPE__QUERY:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.GET_FEATURE_TYPE__QUERY:
 				getQuery().clear();
 				return;
-			case WFSPackage.GET_FEATURE_TYPE__MAX_FEATURES:
+			case WfsPackage.GET_FEATURE_TYPE__MAX_FEATURES:
 				setMaxFeatures(MAX_FEATURES_EDEFAULT);
 				return;
-			case WFSPackage.GET_FEATURE_TYPE__OUTPUT_FORMAT:
+			case WfsPackage.GET_FEATURE_TYPE__OUTPUT_FORMAT:
 				unsetOutputFormat();
 				return;
-			case WFSPackage.GET_FEATURE_TYPE__RESULT_TYPE:
+			case WfsPackage.GET_FEATURE_TYPE__RESULT_TYPE:
 				unsetResultType();
 				return;
-			case WFSPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_DEPTH:
+			case WfsPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_DEPTH:
 				setTraverseXlinkDepth(TRAVERSE_XLINK_DEPTH_EDEFAULT);
 				return;
-			case WFSPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_EXPIRY:
+			case WfsPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_EXPIRY:
 				setTraverseXlinkExpiry(TRAVERSE_XLINK_EXPIRY_EDEFAULT);
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -489,28 +460,22 @@ public class GetFeatureTypeImpl extends BaseRequestTypeImpl implements GetFeatur
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GET_FEATURE_TYPE__HANDLE:
-				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
-			case WFSPackage.GET_FEATURE_TYPE__SERVICE:
-				return isSetService();
-			case WFSPackage.GET_FEATURE_TYPE__VERSION:
-				return isSetVersion();
-			case WFSPackage.GET_FEATURE_TYPE__QUERY:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.GET_FEATURE_TYPE__QUERY:
 				return query != null && !query.isEmpty();
-			case WFSPackage.GET_FEATURE_TYPE__MAX_FEATURES:
+			case WfsPackage.GET_FEATURE_TYPE__MAX_FEATURES:
 				return MAX_FEATURES_EDEFAULT == null ? maxFeatures != null : !MAX_FEATURES_EDEFAULT.equals(maxFeatures);
-			case WFSPackage.GET_FEATURE_TYPE__OUTPUT_FORMAT:
+			case WfsPackage.GET_FEATURE_TYPE__OUTPUT_FORMAT:
 				return isSetOutputFormat();
-			case WFSPackage.GET_FEATURE_TYPE__RESULT_TYPE:
+			case WfsPackage.GET_FEATURE_TYPE__RESULT_TYPE:
 				return isSetResultType();
-			case WFSPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_DEPTH:
+			case WfsPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_DEPTH:
 				return TRAVERSE_XLINK_DEPTH_EDEFAULT == null ? traverseXlinkDepth != null : !TRAVERSE_XLINK_DEPTH_EDEFAULT.equals(traverseXlinkDepth);
-			case WFSPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_EXPIRY:
+			case WfsPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_EXPIRY:
 				return TRAVERSE_XLINK_EXPIRY_EDEFAULT == null ? traverseXlinkExpiry != null : !TRAVERSE_XLINK_EXPIRY_EDEFAULT.equals(traverseXlinkExpiry);
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

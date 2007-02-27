@@ -4,7 +4,7 @@
  */
 package org.geoserver.ows.xml.v1_0;
 
-import net.opengis.ows.v1_0_0.OWSFactory;
+import net.opengis.ows.OwsFactory;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -55,9 +55,9 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class BoundingBoxTypeBinding extends AbstractComplexBinding {
-    OWSFactory owsfactory;
+    OwsFactory owsfactory;
 
-    public BoundingBoxTypeBinding(OWSFactory owsfactory) {
+    public BoundingBoxTypeBinding(OwsFactory owsfactory) {
         this.owsfactory = owsfactory;
     }
 

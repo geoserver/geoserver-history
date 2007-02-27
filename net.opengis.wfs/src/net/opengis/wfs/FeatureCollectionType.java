@@ -36,11 +36,11 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getFeatureCollectionType()
+ * @see net.opengis.wfs.WfsPackage#getFeatureCollectionType()
  * @model extendedMetaData="name='FeatureCollectionType' kind='empty'"
  * @generated
  */
-public interface FeatureCollectionType extends EObject{
+public interface FeatureCollectionType extends EObject {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <p>

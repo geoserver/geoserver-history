@@ -5,7 +5,7 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 import net.opengis.wfs.BaseRequestType;
-import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WfsFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.EMFUtils;
@@ -82,9 +82,9 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class BaseRequestTypeBinding extends AbstractComplexBinding {
-    WFSFactory wfsfactory;
+    WfsFactory wfsfactory;
 
-    public BaseRequestTypeBinding(WFSFactory wfsfactory) {
+    public BaseRequestTypeBinding(WfsFactory wfsfactory) {
         this.wfsfactory = wfsfactory;
     }
 

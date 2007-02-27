@@ -7,12 +7,11 @@
 package net.opengis.wfs.impl;
 
 import net.opengis.wfs.MetadataURLType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
@@ -108,7 +107,7 @@ public class MetadataURLTypeImpl extends EObjectImpl implements MetadataURLType 
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getMetadataURLType();
+		return WfsPackage.Literals.METADATA_URL_TYPE;
 	}
 
 	/**
@@ -129,7 +128,7 @@ public class MetadataURLTypeImpl extends EObjectImpl implements MetadataURLType 
 		String oldValue = value;
 		value = newValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.METADATA_URL_TYPE__VALUE, oldValue, value));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.METADATA_URL_TYPE__VALUE, oldValue, value));
 	}
 
 	/**
@@ -150,7 +149,7 @@ public class MetadataURLTypeImpl extends EObjectImpl implements MetadataURLType 
 		String oldFormat = format;
 		format = newFormat;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.METADATA_URL_TYPE__FORMAT, oldFormat, format));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.METADATA_URL_TYPE__FORMAT, oldFormat, format));
 	}
 
 	/**
@@ -171,7 +170,7 @@ public class MetadataURLTypeImpl extends EObjectImpl implements MetadataURLType 
 		String oldType = type;
 		type = newType;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.METADATA_URL_TYPE__TYPE, oldType, type));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.METADATA_URL_TYPE__TYPE, oldType, type));
 	}
 
 	/**
@@ -179,16 +178,16 @@ public class MetadataURLTypeImpl extends EObjectImpl implements MetadataURLType 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.METADATA_URL_TYPE__VALUE:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.METADATA_URL_TYPE__VALUE:
 				return getValue();
-			case WFSPackage.METADATA_URL_TYPE__FORMAT:
+			case WfsPackage.METADATA_URL_TYPE__FORMAT:
 				return getFormat();
-			case WFSPackage.METADATA_URL_TYPE__TYPE:
+			case WfsPackage.METADATA_URL_TYPE__TYPE:
 				return getType();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -196,19 +195,19 @@ public class MetadataURLTypeImpl extends EObjectImpl implements MetadataURLType 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.METADATA_URL_TYPE__VALUE:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.METADATA_URL_TYPE__VALUE:
 				setValue((String)newValue);
 				return;
-			case WFSPackage.METADATA_URL_TYPE__FORMAT:
+			case WfsPackage.METADATA_URL_TYPE__FORMAT:
 				setFormat((String)newValue);
 				return;
-			case WFSPackage.METADATA_URL_TYPE__TYPE:
+			case WfsPackage.METADATA_URL_TYPE__TYPE:
 				setType((String)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -216,19 +215,19 @@ public class MetadataURLTypeImpl extends EObjectImpl implements MetadataURLType 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.METADATA_URL_TYPE__VALUE:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.METADATA_URL_TYPE__VALUE:
 				setValue(VALUE_EDEFAULT);
 				return;
-			case WFSPackage.METADATA_URL_TYPE__FORMAT:
+			case WfsPackage.METADATA_URL_TYPE__FORMAT:
 				setFormat(FORMAT_EDEFAULT);
 				return;
-			case WFSPackage.METADATA_URL_TYPE__TYPE:
+			case WfsPackage.METADATA_URL_TYPE__TYPE:
 				setType(TYPE_EDEFAULT);
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -236,16 +235,16 @@ public class MetadataURLTypeImpl extends EObjectImpl implements MetadataURLType 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.METADATA_URL_TYPE__VALUE:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.METADATA_URL_TYPE__VALUE:
 				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
-			case WFSPackage.METADATA_URL_TYPE__FORMAT:
+			case WfsPackage.METADATA_URL_TYPE__FORMAT:
 				return FORMAT_EDEFAULT == null ? format != null : !FORMAT_EDEFAULT.equals(format);
-			case WFSPackage.METADATA_URL_TYPE__TYPE:
+			case WfsPackage.METADATA_URL_TYPE__TYPE:
 				return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

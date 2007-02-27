@@ -17,7 +17,7 @@ import org.eclipse.emf.common.util.AbstractEnumerator;
  * A representation of the literals of the enumeration '<em><b>Identifier Generation Option Type</b></em>',
  * and utility methods for working with them.
  * <!-- end-user-doc -->
- * @see net.opengis.wfs.WFSPackage#getIdentifierGenerationOptionType()
+ * @see net.opengis.wfs.WfsPackage#getIdentifierGenerationOptionType()
  * @model
  * @generated
  */
@@ -88,7 +88,7 @@ public final class IdentifierGenerationOptionType extends AbstractEnumerator {
 	 * @generated
 	 * @ordered
 	 */
-	public static final IdentifierGenerationOptionType USE_EXISTING_LITERAL = new IdentifierGenerationOptionType(USE_EXISTING, "UseExisting");
+	public static final IdentifierGenerationOptionType USE_EXISTING_LITERAL = new IdentifierGenerationOptionType(USE_EXISTING, "UseExisting", "UseExisting");
 
 	/**
 	 * The '<em><b>Replace Duplicate</b></em>' literal object.
@@ -98,7 +98,7 @@ public final class IdentifierGenerationOptionType extends AbstractEnumerator {
 	 * @generated
 	 * @ordered
 	 */
-	public static final IdentifierGenerationOptionType REPLACE_DUPLICATE_LITERAL = new IdentifierGenerationOptionType(REPLACE_DUPLICATE, "ReplaceDuplicate");
+	public static final IdentifierGenerationOptionType REPLACE_DUPLICATE_LITERAL = new IdentifierGenerationOptionType(REPLACE_DUPLICATE, "ReplaceDuplicate", "ReplaceDuplicate");
 
 	/**
 	 * The '<em><b>Generate New</b></em>' literal object.
@@ -108,7 +108,7 @@ public final class IdentifierGenerationOptionType extends AbstractEnumerator {
 	 * @generated
 	 * @ordered
 	 */
-	public static final IdentifierGenerationOptionType GENERATE_NEW_LITERAL = new IdentifierGenerationOptionType(GENERATE_NEW, "GenerateNew");
+	public static final IdentifierGenerationOptionType GENERATE_NEW_LITERAL = new IdentifierGenerationOptionType(GENERATE_NEW, "GenerateNew", "GenerateNew");
 
 	/**
 	 * An array of all the '<em><b>Identifier Generation Option Type</b></em>' enumerators.
@@ -132,15 +132,15 @@ public final class IdentifierGenerationOptionType extends AbstractEnumerator {
 	public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
 	/**
-	 * Returns the '<em><b>Identifier Generation Option Type</b></em>' literal with the specified name.
+	 * Returns the '<em><b>Identifier Generation Option Type</b></em>' literal with the specified literal value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static IdentifierGenerationOptionType get(String name) {
+	public static IdentifierGenerationOptionType get(String literal) {
 		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
 			IdentifierGenerationOptionType result = VALUES_ARRAY[i];
-			if (result.toString().equals(name)) {
+			if (result.toString().equals(literal)) {
 				return result;
 			}
 		}
@@ -148,7 +148,23 @@ public final class IdentifierGenerationOptionType extends AbstractEnumerator {
 	}
 
 	/**
-	 * Returns the '<em><b>Identifier Generation Option Type</b></em>' literal with the specified value.
+	 * Returns the '<em><b>Identifier Generation Option Type</b></em>' literal with the specified name.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public static IdentifierGenerationOptionType getByName(String name) {
+		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
+			IdentifierGenerationOptionType result = VALUES_ARRAY[i];
+			if (result.getName().equals(name)) {
+				return result;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the '<em><b>Identifier Generation Option Type</b></em>' literal with the specified integer value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -168,8 +184,8 @@ public final class IdentifierGenerationOptionType extends AbstractEnumerator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private IdentifierGenerationOptionType(int value, String name) {
-		super(value, name);
+	private IdentifierGenerationOptionType(int value, String name, String literal) {
+		super(value, name, literal);
 	}
 
 } //IdentifierGenerationOptionType

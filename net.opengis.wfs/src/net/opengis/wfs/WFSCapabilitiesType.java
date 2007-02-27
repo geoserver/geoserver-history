@@ -6,7 +6,7 @@
  */
 package net.opengis.wfs;
 
-import net.opengis.ows.v1_0_0.CapabilitiesBaseType;
+import net.opengis.ows.CapabilitiesBaseType;
 
 /**
  * <!-- begin-user-doc -->
@@ -40,11 +40,11 @@ import net.opengis.ows.v1_0_0.CapabilitiesBaseType;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getWFSCapabilitiesType()
+ * @see net.opengis.wfs.WfsPackage#getWFSCapabilitiesType()
  * @model extendedMetaData="name='WFS_CapabilitiesType' kind='elementOnly'"
  * @generated
  */
-public interface WFSCapabilitiesType extends CapabilitiesBaseType{
+public interface WFSCapabilitiesType extends CapabilitiesBaseType {
 	/**
 	 * Returns the value of the '<em><b>Feature Type List</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
@@ -55,8 +55,8 @@ public interface WFSCapabilitiesType extends CapabilitiesBaseType{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Feature Type List</em>' containment reference.
 	 * @see #setFeatureTypeList(FeatureTypeListType)
-	 * @see net.opengis.wfs.WFSPackage#getWFSCapabilitiesType_FeatureTypeList()
-	 * @model containment="true" resolveProxies="false"
+	 * @see net.opengis.wfs.WfsPackage#getWFSCapabilitiesType_FeatureTypeList()
+	 * @model containment="true"
 	 *        extendedMetaData="kind='element' name='FeatureTypeList' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -82,8 +82,8 @@ public interface WFSCapabilitiesType extends CapabilitiesBaseType{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Serves GML Object Type List</em>' containment reference.
 	 * @see #setServesGMLObjectTypeList(GMLObjectTypeListType)
-	 * @see net.opengis.wfs.WFSPackage#getWFSCapabilitiesType_ServesGMLObjectTypeList()
-	 * @model containment="true" resolveProxies="false"
+	 * @see net.opengis.wfs.WfsPackage#getWFSCapabilitiesType_ServesGMLObjectTypeList()
+	 * @model containment="true"
 	 *        extendedMetaData="kind='element' name='ServesGMLObjectTypeList' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -109,8 +109,8 @@ public interface WFSCapabilitiesType extends CapabilitiesBaseType{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Supports GML Object Type List</em>' containment reference.
 	 * @see #setSupportsGMLObjectTypeList(GMLObjectTypeListType)
-	 * @see net.opengis.wfs.WFSPackage#getWFSCapabilitiesType_SupportsGMLObjectTypeList()
-	 * @model containment="true" resolveProxies="false"
+	 * @see net.opengis.wfs.WfsPackage#getWFSCapabilitiesType_SupportsGMLObjectTypeList()
+	 * @model containment="true"
 	 *        extendedMetaData="kind='element' name='SupportsGMLObjectTypeList' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -136,7 +136,7 @@ public interface WFSCapabilitiesType extends CapabilitiesBaseType{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Filter Capabilities</em>' attribute.
 	 * @see #setFilterCapabilities(Object)
-	 * @see net.opengis.wfs.WFSPackage#getWFSCapabilitiesType_FilterCapabilities()
+	 * @see net.opengis.wfs.WfsPackage#getWFSCapabilitiesType_FilterCapabilities()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.AnySimpleType" required="true"
 	 *        extendedMetaData="kind='element' name='Filter_Capabilities' namespace='http://www.opengis.net/ogc'"
 	 * @generated

@@ -7,7 +7,8 @@ package org.geoserver.wfs.response;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.ResultTypeType;
-import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WfsFactory;
+
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.ResponseUtils;
@@ -68,7 +69,7 @@ public class HitsOutputFormat extends Response {
         FeatureCollectionType featureCollection = (FeatureCollectionType) value;
 
         //create a new feautre collcetion type with just the numbers
-        FeatureCollectionType hits = WFSFactory.eINSTANCE.createFeatureCollectionType();
+        FeatureCollectionType hits = WfsFactory.eINSTANCE.createFeatureCollectionType();
         hits.setNumberOfFeatures(featureCollection.getNumberOfFeatures());
         hits.setTimeStamp(featureCollection.getTimeStamp());
 

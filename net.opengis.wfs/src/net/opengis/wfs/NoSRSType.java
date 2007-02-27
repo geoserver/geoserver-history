@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.EObject;
  * <!-- end-user-doc -->
  *
  *
- * @see net.opengis.wfs.WFSPackage#getNoSRSType()
+ * @see net.opengis.wfs.WfsPackage#getNoSRSType()
  * @model extendedMetaData="name='NoSRS_._type' kind='empty'"
  * @generated
  */

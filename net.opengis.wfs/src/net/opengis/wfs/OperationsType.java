@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getOperationsType()
+ * @see net.opengis.wfs.WfsPackage#getOperationsType()
  * @model extendedMetaData="name='OperationsType' kind='elementOnly'"
  * @generated
  */
@@ -39,7 +39,7 @@ public interface OperationsType extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Operation</em>' attribute list.
 	 * @see net.opengis.wfs.OperationType
-	 * @see net.opengis.wfs.WFSPackage#getOperationsType_Operation()
+	 * @see net.opengis.wfs.WfsPackage#getOperationsType_Operation()
 	 * @model type="net.opengis.wfs.OperationType" default="Insert" unique="false" required="true"
 	 *        extendedMetaData="kind='element' name='Operation' namespace='##targetNamespace'"
 	 * @generated

@@ -49,11 +49,11 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getDocumentRoot()
+ * @see net.opengis.wfs.WfsPackage#getDocumentRoot()
  * @model extendedMetaData="name='' kind='mixed'"
  * @generated
  */
-public interface DocumentRoot extends EObject{
+public interface DocumentRoot extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Mixed</b></em>' attribute list.
 	 * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
@@ -64,7 +64,7 @@ public interface DocumentRoot extends EObject{
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Mixed</em>' attribute list.
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_Mixed()
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_Mixed()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry" many="true"
 	 *        extendedMetaData="kind='elementWildcard' name=':mixed'"
 	 * @generated
@@ -82,7 +82,7 @@ public interface DocumentRoot extends EObject{
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>XMLNS Prefix Map</em>' map.
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_XMLNSPrefixMap()
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_XMLNSPrefixMap()
 	 * @model mapType="org.eclipse.emf.ecore.EStringToStringMapEntry" keyType="java.lang.String" valueType="java.lang.String" transient="true"
 	 *        extendedMetaData="kind='attribute' name='xmlns:prefix'"
 	 * @generated
@@ -100,7 +100,7 @@ public interface DocumentRoot extends EObject{
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>XSI Schema Location</em>' map.
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_XSISchemaLocation()
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_XSISchemaLocation()
 	 * @model mapType="org.eclipse.emf.ecore.EStringToStringMapEntry" keyType="java.lang.String" valueType="java.lang.String" transient="true"
 	 *        extendedMetaData="kind='attribute' name='xsi:schemaLocation'"
 	 * @generated
@@ -119,8 +119,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Delete</em>' containment reference.
 	 * @see #setDelete(DeleteElementType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_Delete()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_Delete()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='Delete' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -148,8 +148,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Describe Feature Type</em>' containment reference.
 	 * @see #setDescribeFeatureType(DescribeFeatureTypeType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_DescribeFeatureType()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_DescribeFeatureType()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='DescribeFeatureType' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -176,8 +176,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Feature Collection</em>' containment reference.
 	 * @see #setFeatureCollection(FeatureCollectionType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_FeatureCollection()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_FeatureCollection()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='FeatureCollection' namespace='##targetNamespace' affiliation='http://www.opengis.net/gml#_FeatureCollection'"
 	 * @generated
 	 */
@@ -203,8 +203,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Feature Type List</em>' containment reference.
 	 * @see #setFeatureTypeList(FeatureTypeListType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_FeatureTypeList()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_FeatureTypeList()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='FeatureTypeList' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -230,8 +230,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Get Capabilities</em>' containment reference.
 	 * @see #setGetCapabilities(GetCapabilitiesType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_GetCapabilities()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_GetCapabilities()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='GetCapabilities' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -259,8 +259,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Get Feature</em>' containment reference.
 	 * @see #setGetFeature(GetFeatureType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_GetFeature()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_GetFeature()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='GetFeature' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -293,8 +293,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Get Feature With Lock</em>' containment reference.
 	 * @see #setGetFeatureWithLock(GetFeatureWithLockType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_GetFeatureWithLock()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_GetFeatureWithLock()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='GetFeatureWithLock' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -322,8 +322,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Get Gml Object</em>' containment reference.
 	 * @see #setGetGmlObject(GetGmlObjectType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_GetGmlObject()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_GetGmlObject()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='GetGmlObject' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -353,8 +353,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Insert</em>' containment reference.
 	 * @see #setInsert(InsertElementType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_Insert()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_Insert()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='Insert' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -382,8 +382,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Lock Feature</em>' containment reference.
 	 * @see #setLockFeature(LockFeatureType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_LockFeature()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_LockFeature()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='LockFeature' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -410,8 +410,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Lock Feature Response</em>' containment reference.
 	 * @see #setLockFeatureResponse(LockFeatureResponseType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_LockFeatureResponse()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_LockFeatureResponse()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='LockFeatureResponse' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -439,7 +439,7 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Lock Id</em>' attribute.
 	 * @see #setLockId(String)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_LockId()
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_LockId()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='LockId' namespace='##targetNamespace'"
 	 * @generated
@@ -469,8 +469,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Native</em>' containment reference.
 	 * @see #setNative(NativeType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_Native()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_Native()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='Native' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -498,8 +498,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Property</em>' containment reference.
 	 * @see #setProperty(PropertyType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_Property()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_Property()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='Property' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -543,7 +543,7 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Property Name</em>' attribute.
 	 * @see #setPropertyName(String)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_PropertyName()
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_PropertyName()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='PropertyName' namespace='##targetNamespace'"
 	 * @generated
@@ -575,8 +575,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Query</em>' containment reference.
 	 * @see #setQuery(QueryType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_Query()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_Query()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='Query' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -602,8 +602,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Serves GML Object Type List</em>' containment reference.
 	 * @see #setServesGMLObjectTypeList(GMLObjectTypeListType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_ServesGMLObjectTypeList()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_ServesGMLObjectTypeList()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='ServesGMLObjectTypeList' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -631,8 +631,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Supports GML Object Type List</em>' containment reference.
 	 * @see #setSupportsGMLObjectTypeList(GMLObjectTypeListType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_SupportsGMLObjectTypeList()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_SupportsGMLObjectTypeList()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='SupportsGMLObjectTypeList' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -661,8 +661,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Transaction</em>' containment reference.
 	 * @see #setTransaction(TransactionType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_Transaction()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_Transaction()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='Transaction' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -689,8 +689,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Transaction Response</em>' containment reference.
 	 * @see #setTransactionResponse(TransactionResponseType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_TransactionResponse()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_TransactionResponse()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='TransactionResponse' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -717,8 +717,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Update</em>' containment reference.
 	 * @see #setUpdate(UpdateElementType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_Update()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_Update()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='Update' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -744,8 +744,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Wfs Capabilities</em>' containment reference.
 	 * @see #setWfsCapabilities(WFSCapabilitiesType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_WfsCapabilities()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_WfsCapabilities()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='WFS_Capabilities' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -776,8 +776,8 @@ public interface DocumentRoot extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Xlink Property Name</em>' containment reference.
 	 * @see #setXlinkPropertyName(XlinkPropertyNameType)
-	 * @see net.opengis.wfs.WFSPackage#getDocumentRoot_XlinkPropertyName()
-	 * @model containment="true" resolveProxies="false" upper="-2" transient="true" volatile="true" derived="true"
+	 * @see net.opengis.wfs.WfsPackage#getDocumentRoot_XlinkPropertyName()
+	 * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='XlinkPropertyName' namespace='##targetNamespace'"
 	 * @generated
 	 */

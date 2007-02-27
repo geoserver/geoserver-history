@@ -7,12 +7,11 @@
 package net.opengis.wfs.impl;
 
 import net.opengis.wfs.BaseRequestType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
@@ -126,7 +125,7 @@ public abstract class BaseRequestTypeImpl extends EObjectImpl implements BaseReq
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getBaseRequestType();
+		return WfsPackage.Literals.BASE_REQUEST_TYPE;
 	}
 
 	/**
@@ -147,7 +146,7 @@ public abstract class BaseRequestTypeImpl extends EObjectImpl implements BaseReq
 		String oldHandle = handle;
 		handle = newHandle;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.BASE_REQUEST_TYPE__HANDLE, oldHandle, handle));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.BASE_REQUEST_TYPE__HANDLE, oldHandle, handle));
 	}
 
 	/**
@@ -170,7 +169,7 @@ public abstract class BaseRequestTypeImpl extends EObjectImpl implements BaseReq
 		boolean oldServiceESet = serviceESet;
 		serviceESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.BASE_REQUEST_TYPE__SERVICE, oldService, service, !oldServiceESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.BASE_REQUEST_TYPE__SERVICE, oldService, service, !oldServiceESet));
 	}
 
 	/**
@@ -184,7 +183,7 @@ public abstract class BaseRequestTypeImpl extends EObjectImpl implements BaseReq
 		service = SERVICE_EDEFAULT;
 		serviceESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, WFSPackage.BASE_REQUEST_TYPE__SERVICE, oldService, SERVICE_EDEFAULT, oldServiceESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, WfsPackage.BASE_REQUEST_TYPE__SERVICE, oldService, SERVICE_EDEFAULT, oldServiceESet));
 	}
 
 	/**
@@ -216,7 +215,7 @@ public abstract class BaseRequestTypeImpl extends EObjectImpl implements BaseReq
 		boolean oldVersionESet = versionESet;
 		versionESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.BASE_REQUEST_TYPE__VERSION, oldVersion, version, !oldVersionESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.BASE_REQUEST_TYPE__VERSION, oldVersion, version, !oldVersionESet));
 	}
 
 	/**
@@ -230,7 +229,7 @@ public abstract class BaseRequestTypeImpl extends EObjectImpl implements BaseReq
 		version = VERSION_EDEFAULT;
 		versionESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, WFSPackage.BASE_REQUEST_TYPE__VERSION, oldVersion, VERSION_EDEFAULT, oldVersionESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, WfsPackage.BASE_REQUEST_TYPE__VERSION, oldVersion, VERSION_EDEFAULT, oldVersionESet));
 	}
 
 	/**
@@ -247,16 +246,16 @@ public abstract class BaseRequestTypeImpl extends EObjectImpl implements BaseReq
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.BASE_REQUEST_TYPE__HANDLE:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.BASE_REQUEST_TYPE__HANDLE:
 				return getHandle();
-			case WFSPackage.BASE_REQUEST_TYPE__SERVICE:
+			case WfsPackage.BASE_REQUEST_TYPE__SERVICE:
 				return getService();
-			case WFSPackage.BASE_REQUEST_TYPE__VERSION:
+			case WfsPackage.BASE_REQUEST_TYPE__VERSION:
 				return getVersion();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -264,19 +263,19 @@ public abstract class BaseRequestTypeImpl extends EObjectImpl implements BaseReq
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.BASE_REQUEST_TYPE__HANDLE:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.BASE_REQUEST_TYPE__HANDLE:
 				setHandle((String)newValue);
 				return;
-			case WFSPackage.BASE_REQUEST_TYPE__SERVICE:
+			case WfsPackage.BASE_REQUEST_TYPE__SERVICE:
 				setService((String)newValue);
 				return;
-			case WFSPackage.BASE_REQUEST_TYPE__VERSION:
+			case WfsPackage.BASE_REQUEST_TYPE__VERSION:
 				setVersion((String)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -284,19 +283,19 @@ public abstract class BaseRequestTypeImpl extends EObjectImpl implements BaseReq
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.BASE_REQUEST_TYPE__HANDLE:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.BASE_REQUEST_TYPE__HANDLE:
 				setHandle(HANDLE_EDEFAULT);
 				return;
-			case WFSPackage.BASE_REQUEST_TYPE__SERVICE:
+			case WfsPackage.BASE_REQUEST_TYPE__SERVICE:
 				unsetService();
 				return;
-			case WFSPackage.BASE_REQUEST_TYPE__VERSION:
+			case WfsPackage.BASE_REQUEST_TYPE__VERSION:
 				unsetVersion();
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -304,16 +303,16 @@ public abstract class BaseRequestTypeImpl extends EObjectImpl implements BaseReq
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.BASE_REQUEST_TYPE__HANDLE:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.BASE_REQUEST_TYPE__HANDLE:
 				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
-			case WFSPackage.BASE_REQUEST_TYPE__SERVICE:
+			case WfsPackage.BASE_REQUEST_TYPE__SERVICE:
 				return isSetService();
-			case WFSPackage.BASE_REQUEST_TYPE__VERSION:
+			case WfsPackage.BASE_REQUEST_TYPE__VERSION:
 				return isSetVersion();
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

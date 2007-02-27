@@ -12,7 +12,7 @@ import net.opengis.wfs.LockFeatureResponseType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
 import net.opengis.wfs.QueryType;
-import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WfsFactory;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.crs.ReprojectFeatureResults;
@@ -134,7 +134,7 @@ public class GetFeature {
 
         int maxFeatures = request.getMaxFeatures().intValue();
 
-        FeatureCollectionType result = WFSFactory.eINSTANCE.createFeatureCollectionType();
+        FeatureCollectionType result = WfsFactory.eINSTANCE.createFeatureCollectionType();
         int count = 0; //should probably be long
 
         try {
@@ -265,7 +265,7 @@ public class GetFeature {
         if (request instanceof GetFeatureWithLockType) {
             GetFeatureWithLockType withLockRequest = (GetFeatureWithLockType) request;
 
-            LockFeatureType lockRequest = WFSFactory.eINSTANCE.createLockFeatureType();
+            LockFeatureType lockRequest = WfsFactory.eINSTANCE.createLockFeatureType();
             lockRequest.setExpiry(withLockRequest.getExpiry());
             lockRequest.setHandle(withLockRequest.getHandle());
             lockRequest.setLockAction(AllSomeType.ALL_LITERAL);
@@ -273,7 +273,7 @@ public class GetFeature {
             for (int i = 0; i < request.getQuery().size(); i++) {
                 QueryType query = (QueryType) request.getQuery().get(i);
 
-                LockType lock = WFSFactory.eINSTANCE.createLockType();
+                LockType lock = WfsFactory.eINSTANCE.createLockType();
                 lock.setFilter(query.getFilter());
                 lock.setHandle(query.getHandle());
 

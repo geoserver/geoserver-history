@@ -36,11 +36,11 @@ import org.opengis.filter.Filter;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getLockType()
+ * @see net.opengis.wfs.WfsPackage#getLockType()
  * @model extendedMetaData="name='LockType' kind='elementOnly'"
  * @generated
  */
-public interface LockType extends EObject{
+public interface LockType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Filter</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -84,7 +84,7 @@ public interface LockType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Handle</em>' attribute.
 	 * @see #setHandle(String)
-	 * @see net.opengis.wfs.WFSPackage#getLockType_Handle()
+	 * @see net.opengis.wfs.WfsPackage#getLockType_Handle()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='attribute' name='handle'"
 	 * @generated

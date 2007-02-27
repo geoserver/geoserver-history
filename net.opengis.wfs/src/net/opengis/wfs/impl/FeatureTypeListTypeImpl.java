@@ -11,7 +11,7 @@ import java.util.Collection;
 import net.opengis.wfs.FeatureTypeListType;
 import net.opengis.wfs.FeatureTypeType;
 import net.opengis.wfs.OperationsType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -19,7 +19,6 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -78,7 +77,7 @@ public class FeatureTypeListTypeImpl extends EObjectImpl implements FeatureTypeL
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getFeatureTypeListType();
+		return WfsPackage.Literals.FEATURE_TYPE_LIST_TYPE;
 	}
 
 	/**
@@ -99,7 +98,7 @@ public class FeatureTypeListTypeImpl extends EObjectImpl implements FeatureTypeL
 		OperationsType oldOperations = operations;
 		operations = newOperations;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WFSPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS, oldOperations, newOperations);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS, oldOperations, newOperations);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -114,14 +113,14 @@ public class FeatureTypeListTypeImpl extends EObjectImpl implements FeatureTypeL
 		if (newOperations != operations) {
 			NotificationChain msgs = null;
 			if (operations != null)
-				msgs = ((InternalEObject)operations).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WFSPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS, null, msgs);
+				msgs = ((InternalEObject)operations).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS, null, msgs);
 			if (newOperations != null)
-				msgs = ((InternalEObject)newOperations).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WFSPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS, null, msgs);
+				msgs = ((InternalEObject)newOperations).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS, null, msgs);
 			msgs = basicSetOperations(newOperations, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS, newOperations, newOperations));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS, newOperations, newOperations));
 	}
 
 	/**
@@ -131,7 +130,7 @@ public class FeatureTypeListTypeImpl extends EObjectImpl implements FeatureTypeL
 	 */
 	public EList getFeatureType() {
 		if (featureType == null) {
-			featureType = new EObjectContainmentEList(FeatureTypeType.class, this, WFSPackage.FEATURE_TYPE_LIST_TYPE__FEATURE_TYPE);
+			featureType = new EObjectContainmentEList(FeatureTypeType.class, this, WfsPackage.FEATURE_TYPE_LIST_TYPE__FEATURE_TYPE);
 		}
 		return featureType;
 	}
@@ -141,18 +140,14 @@ public class FeatureTypeListTypeImpl extends EObjectImpl implements FeatureTypeL
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
-		if (featureID >= 0) {
-			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
-				case WFSPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS:
-					return basicSetOperations(null, msgs);
-				case WFSPackage.FEATURE_TYPE_LIST_TYPE__FEATURE_TYPE:
-					return ((InternalEList)getFeatureType()).basicRemove(otherEnd, msgs);
-				default:
-					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
-			}
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS:
+				return basicSetOperations(null, msgs);
+			case WfsPackage.FEATURE_TYPE_LIST_TYPE__FEATURE_TYPE:
+				return ((InternalEList)getFeatureType()).basicRemove(otherEnd, msgs);
 		}
-		return eBasicSetContainer(null, featureID, msgs);
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -160,14 +155,14 @@ public class FeatureTypeListTypeImpl extends EObjectImpl implements FeatureTypeL
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS:
 				return getOperations();
-			case WFSPackage.FEATURE_TYPE_LIST_TYPE__FEATURE_TYPE:
+			case WfsPackage.FEATURE_TYPE_LIST_TYPE__FEATURE_TYPE:
 				return getFeatureType();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -175,17 +170,17 @@ public class FeatureTypeListTypeImpl extends EObjectImpl implements FeatureTypeL
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS:
 				setOperations((OperationsType)newValue);
 				return;
-			case WFSPackage.FEATURE_TYPE_LIST_TYPE__FEATURE_TYPE:
+			case WfsPackage.FEATURE_TYPE_LIST_TYPE__FEATURE_TYPE:
 				getFeatureType().clear();
 				getFeatureType().addAll((Collection)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -193,16 +188,16 @@ public class FeatureTypeListTypeImpl extends EObjectImpl implements FeatureTypeL
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS:
 				setOperations((OperationsType)null);
 				return;
-			case WFSPackage.FEATURE_TYPE_LIST_TYPE__FEATURE_TYPE:
+			case WfsPackage.FEATURE_TYPE_LIST_TYPE__FEATURE_TYPE:
 				getFeatureType().clear();
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -210,14 +205,14 @@ public class FeatureTypeListTypeImpl extends EObjectImpl implements FeatureTypeL
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS:
 				return operations != null;
-			case WFSPackage.FEATURE_TYPE_LIST_TYPE__FEATURE_TYPE:
+			case WfsPackage.FEATURE_TYPE_LIST_TYPE__FEATURE_TYPE:
 				return featureType != null && !featureType.isEmpty();
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 } //FeatureTypeListTypeImpl

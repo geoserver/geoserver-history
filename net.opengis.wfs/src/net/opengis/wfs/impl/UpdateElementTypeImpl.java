@@ -14,7 +14,7 @@ import javax.xml.namespace.QName;
 
 import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.UpdateElementType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -22,7 +22,6 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -186,7 +185,7 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getUpdateElementType();
+		return WfsPackage.Literals.UPDATE_ELEMENT_TYPE;
 	}
 
 	/**
@@ -196,7 +195,7 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 	 */
 	public EList getProperty() {
 		if (property == null) {
-			property = new EObjectContainmentEList(PropertyType.class, this, WFSPackage.UPDATE_ELEMENT_TYPE__PROPERTY);
+			property = new EObjectContainmentEList(PropertyType.class, this, WfsPackage.UPDATE_ELEMENT_TYPE__PROPERTY);
 		}
 		return property;
 	}
@@ -219,7 +218,7 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 		Filter oldFilter = filter;
 		filter = newFilter;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.UPDATE_ELEMENT_TYPE__FILTER, oldFilter, filter));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.UPDATE_ELEMENT_TYPE__FILTER, oldFilter, filter));
 	}
 
 	/**
@@ -240,7 +239,7 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 		String oldHandle = handle;
 		handle = newHandle;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.UPDATE_ELEMENT_TYPE__HANDLE, oldHandle, handle));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.UPDATE_ELEMENT_TYPE__HANDLE, oldHandle, handle));
 	}
 
 	/**
@@ -263,7 +262,7 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 		boolean oldInputFormatESet = inputFormatESet;
 		inputFormatESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.UPDATE_ELEMENT_TYPE__INPUT_FORMAT, oldInputFormat, inputFormat, !oldInputFormatESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.UPDATE_ELEMENT_TYPE__INPUT_FORMAT, oldInputFormat, inputFormat, !oldInputFormatESet));
 	}
 
 	/**
@@ -277,7 +276,7 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 		inputFormat = INPUT_FORMAT_EDEFAULT;
 		inputFormatESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, WFSPackage.UPDATE_ELEMENT_TYPE__INPUT_FORMAT, oldInputFormat, INPUT_FORMAT_EDEFAULT, oldInputFormatESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, WfsPackage.UPDATE_ELEMENT_TYPE__INPUT_FORMAT, oldInputFormat, INPUT_FORMAT_EDEFAULT, oldInputFormatESet));
 	}
 
 	/**
@@ -307,7 +306,7 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 		URI oldSrsName = srsName;
 		srsName = newSrsName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.UPDATE_ELEMENT_TYPE__SRS_NAME, oldSrsName, srsName));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.UPDATE_ELEMENT_TYPE__SRS_NAME, oldSrsName, srsName));
 	}
 
 	/**
@@ -328,7 +327,7 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 		QName oldTypeName = typeName;
 		typeName = newTypeName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.UPDATE_ELEMENT_TYPE__TYPE_NAME, oldTypeName, typeName));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.UPDATE_ELEMENT_TYPE__TYPE_NAME, oldTypeName, typeName));
 	}
 
 	/**
@@ -336,16 +335,12 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
-		if (featureID >= 0) {
-			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
-				case WFSPackage.UPDATE_ELEMENT_TYPE__PROPERTY:
-					return ((InternalEList)getProperty()).basicRemove(otherEnd, msgs);
-				default:
-					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
-			}
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case WfsPackage.UPDATE_ELEMENT_TYPE__PROPERTY:
+				return ((InternalEList)getProperty()).basicRemove(otherEnd, msgs);
 		}
-		return eBasicSetContainer(null, featureID, msgs);
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -353,22 +348,22 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.UPDATE_ELEMENT_TYPE__PROPERTY:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.UPDATE_ELEMENT_TYPE__PROPERTY:
 				return getProperty();
-			case WFSPackage.UPDATE_ELEMENT_TYPE__FILTER:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__FILTER:
 				return getFilter();
-			case WFSPackage.UPDATE_ELEMENT_TYPE__HANDLE:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__HANDLE:
 				return getHandle();
-			case WFSPackage.UPDATE_ELEMENT_TYPE__INPUT_FORMAT:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__INPUT_FORMAT:
 				return getInputFormat();
-			case WFSPackage.UPDATE_ELEMENT_TYPE__SRS_NAME:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__SRS_NAME:
 				return getSrsName();
-			case WFSPackage.UPDATE_ELEMENT_TYPE__TYPE_NAME:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__TYPE_NAME:
 				return getTypeName();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -376,29 +371,29 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.UPDATE_ELEMENT_TYPE__PROPERTY:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.UPDATE_ELEMENT_TYPE__PROPERTY:
 				getProperty().clear();
 				getProperty().addAll((Collection)newValue);
 				return;
-			case WFSPackage.UPDATE_ELEMENT_TYPE__FILTER:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__FILTER:
 				setFilter((Filter)newValue);
 				return;
-			case WFSPackage.UPDATE_ELEMENT_TYPE__HANDLE:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__HANDLE:
 				setHandle((String)newValue);
 				return;
-			case WFSPackage.UPDATE_ELEMENT_TYPE__INPUT_FORMAT:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__INPUT_FORMAT:
 				setInputFormat((String)newValue);
 				return;
-			case WFSPackage.UPDATE_ELEMENT_TYPE__SRS_NAME:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__SRS_NAME:
 				setSrsName((URI)newValue);
 				return;
-			case WFSPackage.UPDATE_ELEMENT_TYPE__TYPE_NAME:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__TYPE_NAME:
 				setTypeName((QName)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -406,28 +401,28 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.UPDATE_ELEMENT_TYPE__PROPERTY:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.UPDATE_ELEMENT_TYPE__PROPERTY:
 				getProperty().clear();
 				return;
-			case WFSPackage.UPDATE_ELEMENT_TYPE__FILTER:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__FILTER:
 				setFilter(FILTER_EDEFAULT);
 				return;
-			case WFSPackage.UPDATE_ELEMENT_TYPE__HANDLE:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__HANDLE:
 				setHandle(HANDLE_EDEFAULT);
 				return;
-			case WFSPackage.UPDATE_ELEMENT_TYPE__INPUT_FORMAT:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__INPUT_FORMAT:
 				unsetInputFormat();
 				return;
-			case WFSPackage.UPDATE_ELEMENT_TYPE__SRS_NAME:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__SRS_NAME:
 				setSrsName(SRS_NAME_EDEFAULT);
 				return;
-			case WFSPackage.UPDATE_ELEMENT_TYPE__TYPE_NAME:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__TYPE_NAME:
 				setTypeName(TYPE_NAME_EDEFAULT);
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -435,22 +430,22 @@ public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.UPDATE_ELEMENT_TYPE__PROPERTY:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.UPDATE_ELEMENT_TYPE__PROPERTY:
 				return property != null && !property.isEmpty();
-			case WFSPackage.UPDATE_ELEMENT_TYPE__FILTER:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__FILTER:
 				return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
-			case WFSPackage.UPDATE_ELEMENT_TYPE__HANDLE:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__HANDLE:
 				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
-			case WFSPackage.UPDATE_ELEMENT_TYPE__INPUT_FORMAT:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__INPUT_FORMAT:
 				return isSetInputFormat();
-			case WFSPackage.UPDATE_ELEMENT_TYPE__SRS_NAME:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__SRS_NAME:
 				return SRS_NAME_EDEFAULT == null ? srsName != null : !SRS_NAME_EDEFAULT.equals(srsName);
-			case WFSPackage.UPDATE_ELEMENT_TYPE__TYPE_NAME:
+			case WfsPackage.UPDATE_ELEMENT_TYPE__TYPE_NAME:
 				return TYPE_NAME_EDEFAULT == null ? typeName != null : !TYPE_NAME_EDEFAULT.equals(typeName);
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

@@ -6,19 +6,12 @@
  */
 package net.opengis.wfs.impl;
 
-import net.opengis.ows.v1_0_0.AcceptFormatsType;
-import net.opengis.ows.v1_0_0.AcceptVersionsType;
-import net.opengis.ows.v1_0_0.SectionsType;
-
 import net.opengis.wfs.GetCapabilitiesType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
@@ -35,7 +28,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *
  * @generated
  */
-public class GetCapabilitiesTypeImpl extends net.opengis.ows.v1_0_0.impl.GetCapabilitiesTypeImpl implements GetCapabilitiesType {
+public class GetCapabilitiesTypeImpl extends net.opengis.ows.impl.GetCapabilitiesTypeImpl implements GetCapabilitiesType {
 	/**
 	 * The default value of the '{@link #getService() <em>Service</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -80,7 +73,7 @@ public class GetCapabilitiesTypeImpl extends net.opengis.ows.v1_0_0.impl.GetCapa
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getGetCapabilitiesType();
+		return WfsPackage.Literals.GET_CAPABILITIES_TYPE;
 	}
 
 	/**
@@ -103,7 +96,7 @@ public class GetCapabilitiesTypeImpl extends net.opengis.ows.v1_0_0.impl.GetCapa
 		boolean oldServiceESet = serviceESet;
 		serviceESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.GET_CAPABILITIES_TYPE__SERVICE, oldService, service, !oldServiceESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.GET_CAPABILITIES_TYPE__SERVICE, oldService, service, !oldServiceESet));
 	}
 
 	/**
@@ -117,7 +110,7 @@ public class GetCapabilitiesTypeImpl extends net.opengis.ows.v1_0_0.impl.GetCapa
 		service = SERVICE_EDEFAULT;
 		serviceESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, WFSPackage.GET_CAPABILITIES_TYPE__SERVICE, oldService, SERVICE_EDEFAULT, oldServiceESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, WfsPackage.GET_CAPABILITIES_TYPE__SERVICE, oldService, SERVICE_EDEFAULT, oldServiceESet));
 	}
 
 	/**
@@ -134,41 +127,12 @@ public class GetCapabilitiesTypeImpl extends net.opengis.ows.v1_0_0.impl.GetCapa
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
-		if (featureID >= 0) {
-			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
-				case WFSPackage.GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS:
-					return basicSetAcceptVersions(null, msgs);
-				case WFSPackage.GET_CAPABILITIES_TYPE__SECTIONS:
-					return basicSetSections(null, msgs);
-				case WFSPackage.GET_CAPABILITIES_TYPE__ACCEPT_FORMATS:
-					return basicSetAcceptFormats(null, msgs);
-				default:
-					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
-			}
-		}
-		return eBasicSetContainer(null, featureID, msgs);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS:
-				return getAcceptVersions();
-			case WFSPackage.GET_CAPABILITIES_TYPE__SECTIONS:
-				return getSections();
-			case WFSPackage.GET_CAPABILITIES_TYPE__ACCEPT_FORMATS:
-				return getAcceptFormats();
-			case WFSPackage.GET_CAPABILITIES_TYPE__UPDATE_SEQUENCE:
-				return getUpdateSequence();
-			case WFSPackage.GET_CAPABILITIES_TYPE__SERVICE:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.GET_CAPABILITIES_TYPE__SERVICE:
 				return getService();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -176,25 +140,13 @@ public class GetCapabilitiesTypeImpl extends net.opengis.ows.v1_0_0.impl.GetCapa
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS:
-				setAcceptVersions((AcceptVersionsType)newValue);
-				return;
-			case WFSPackage.GET_CAPABILITIES_TYPE__SECTIONS:
-				setSections((SectionsType)newValue);
-				return;
-			case WFSPackage.GET_CAPABILITIES_TYPE__ACCEPT_FORMATS:
-				setAcceptFormats((AcceptFormatsType)newValue);
-				return;
-			case WFSPackage.GET_CAPABILITIES_TYPE__UPDATE_SEQUENCE:
-				setUpdateSequence((String)newValue);
-				return;
-			case WFSPackage.GET_CAPABILITIES_TYPE__SERVICE:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.GET_CAPABILITIES_TYPE__SERVICE:
 				setService((String)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -202,25 +154,13 @@ public class GetCapabilitiesTypeImpl extends net.opengis.ows.v1_0_0.impl.GetCapa
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS:
-				setAcceptVersions((AcceptVersionsType)null);
-				return;
-			case WFSPackage.GET_CAPABILITIES_TYPE__SECTIONS:
-				setSections((SectionsType)null);
-				return;
-			case WFSPackage.GET_CAPABILITIES_TYPE__ACCEPT_FORMATS:
-				setAcceptFormats((AcceptFormatsType)null);
-				return;
-			case WFSPackage.GET_CAPABILITIES_TYPE__UPDATE_SEQUENCE:
-				setUpdateSequence(UPDATE_SEQUENCE_EDEFAULT);
-				return;
-			case WFSPackage.GET_CAPABILITIES_TYPE__SERVICE:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.GET_CAPABILITIES_TYPE__SERVICE:
 				unsetService();
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -228,20 +168,12 @@ public class GetCapabilitiesTypeImpl extends net.opengis.ows.v1_0_0.impl.GetCapa
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS:
-				return acceptVersions != null;
-			case WFSPackage.GET_CAPABILITIES_TYPE__SECTIONS:
-				return sections != null;
-			case WFSPackage.GET_CAPABILITIES_TYPE__ACCEPT_FORMATS:
-				return acceptFormats != null;
-			case WFSPackage.GET_CAPABILITIES_TYPE__UPDATE_SEQUENCE:
-				return UPDATE_SEQUENCE_EDEFAULT == null ? updateSequence != null : !UPDATE_SEQUENCE_EDEFAULT.equals(updateSequence);
-			case WFSPackage.GET_CAPABILITIES_TYPE__SERVICE:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.GET_CAPABILITIES_TYPE__SERVICE:
 				return isSetService();
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

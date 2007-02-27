@@ -8,26 +8,14 @@ package net.opengis.wfs.impl;
 
 import java.math.BigInteger;
 
-import java.util.Collection;
-
 import net.opengis.wfs.GetFeatureWithLockType;
-import net.opengis.wfs.QueryType;
-import net.opengis.wfs.ResultTypeType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -87,7 +75,7 @@ public class GetFeatureWithLockTypeImpl extends GetFeatureTypeImpl implements Ge
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getGetFeatureWithLockType();
+		return WfsPackage.Literals.GET_FEATURE_WITH_LOCK_TYPE;
 	}
 
 	/**
@@ -110,7 +98,7 @@ public class GetFeatureWithLockTypeImpl extends GetFeatureTypeImpl implements Ge
 		boolean oldExpiryESet = expiryESet;
 		expiryESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__EXPIRY, oldExpiry, expiry, !oldExpiryESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.GET_FEATURE_WITH_LOCK_TYPE__EXPIRY, oldExpiry, expiry, !oldExpiryESet));
 	}
 
 	/**
@@ -124,7 +112,7 @@ public class GetFeatureWithLockTypeImpl extends GetFeatureTypeImpl implements Ge
 		expiry = EXPIRY_EDEFAULT;
 		expiryESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__EXPIRY, oldExpiry, EXPIRY_EDEFAULT, oldExpiryESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, WfsPackage.GET_FEATURE_WITH_LOCK_TYPE__EXPIRY, oldExpiry, EXPIRY_EDEFAULT, oldExpiryESet));
 	}
 
 	/**
@@ -141,47 +129,12 @@ public class GetFeatureWithLockTypeImpl extends GetFeatureTypeImpl implements Ge
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
-		if (featureID >= 0) {
-			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
-				case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__QUERY:
-					return ((InternalEList)getQuery()).basicRemove(otherEnd, msgs);
-				default:
-					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
-			}
-		}
-		return eBasicSetContainer(null, featureID, msgs);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__HANDLE:
-				return getHandle();
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__SERVICE:
-				return getService();
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__VERSION:
-				return getVersion();
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__QUERY:
-				return getQuery();
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__MAX_FEATURES:
-				return getMaxFeatures();
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__OUTPUT_FORMAT:
-				return getOutputFormat();
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__RESULT_TYPE:
-				return getResultType();
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_DEPTH:
-				return getTraverseXlinkDepth();
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_EXPIRY:
-				return getTraverseXlinkExpiry();
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__EXPIRY:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.GET_FEATURE_WITH_LOCK_TYPE__EXPIRY:
 				return getExpiry();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -189,41 +142,13 @@ public class GetFeatureWithLockTypeImpl extends GetFeatureTypeImpl implements Ge
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__HANDLE:
-				setHandle((String)newValue);
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__SERVICE:
-				setService((String)newValue);
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__VERSION:
-				setVersion((String)newValue);
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__QUERY:
-				getQuery().clear();
-				getQuery().addAll((Collection)newValue);
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__MAX_FEATURES:
-				setMaxFeatures((BigInteger)newValue);
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__OUTPUT_FORMAT:
-				setOutputFormat((String)newValue);
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__RESULT_TYPE:
-				setResultType((ResultTypeType)newValue);
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_DEPTH:
-				setTraverseXlinkDepth((String)newValue);
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_EXPIRY:
-				setTraverseXlinkExpiry((BigInteger)newValue);
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__EXPIRY:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.GET_FEATURE_WITH_LOCK_TYPE__EXPIRY:
 				setExpiry((BigInteger)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -231,40 +156,13 @@ public class GetFeatureWithLockTypeImpl extends GetFeatureTypeImpl implements Ge
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__HANDLE:
-				setHandle(HANDLE_EDEFAULT);
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__SERVICE:
-				unsetService();
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__VERSION:
-				unsetVersion();
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__QUERY:
-				getQuery().clear();
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__MAX_FEATURES:
-				setMaxFeatures(MAX_FEATURES_EDEFAULT);
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__OUTPUT_FORMAT:
-				unsetOutputFormat();
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__RESULT_TYPE:
-				unsetResultType();
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_DEPTH:
-				setTraverseXlinkDepth(TRAVERSE_XLINK_DEPTH_EDEFAULT);
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_EXPIRY:
-				setTraverseXlinkExpiry(TRAVERSE_XLINK_EXPIRY_EDEFAULT);
-				return;
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__EXPIRY:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.GET_FEATURE_WITH_LOCK_TYPE__EXPIRY:
 				unsetExpiry();
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -272,30 +170,12 @@ public class GetFeatureWithLockTypeImpl extends GetFeatureTypeImpl implements Ge
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__HANDLE:
-				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__SERVICE:
-				return isSetService();
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__VERSION:
-				return isSetVersion();
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__QUERY:
-				return query != null && !query.isEmpty();
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__MAX_FEATURES:
-				return MAX_FEATURES_EDEFAULT == null ? maxFeatures != null : !MAX_FEATURES_EDEFAULT.equals(maxFeatures);
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__OUTPUT_FORMAT:
-				return isSetOutputFormat();
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__RESULT_TYPE:
-				return isSetResultType();
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_DEPTH:
-				return TRAVERSE_XLINK_DEPTH_EDEFAULT == null ? traverseXlinkDepth != null : !TRAVERSE_XLINK_DEPTH_EDEFAULT.equals(traverseXlinkDepth);
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__TRAVERSE_XLINK_EXPIRY:
-				return TRAVERSE_XLINK_EXPIRY_EDEFAULT == null ? traverseXlinkExpiry != null : !TRAVERSE_XLINK_EXPIRY_EDEFAULT.equals(traverseXlinkExpiry);
-			case WFSPackage.GET_FEATURE_WITH_LOCK_TYPE__EXPIRY:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.GET_FEATURE_WITH_LOCK_TYPE__EXPIRY:
 				return isSetExpiry();
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

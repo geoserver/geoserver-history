@@ -10,7 +10,7 @@ import java.util.Collection;
 
 import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.TransactionType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -18,7 +18,6 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -121,7 +120,7 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl implements Transact
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getTransactionType();
+		return WfsPackage.Literals.TRANSACTION_TYPE;
 	}
 
 	/**
@@ -142,7 +141,7 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl implements Transact
 		String oldLockId = lockId;
 		lockId = newLockId;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.TRANSACTION_TYPE__LOCK_ID, oldLockId, lockId));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.TRANSACTION_TYPE__LOCK_ID, oldLockId, lockId));
 	}
 
 	/**
@@ -152,7 +151,7 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl implements Transact
 	 */
 	public FeatureMap getGroup() {
 		if (group == null) {
-			group = new BasicFeatureMap(this, WFSPackage.TRANSACTION_TYPE__GROUP);
+			group = new BasicFeatureMap(this, WfsPackage.TRANSACTION_TYPE__GROUP);
 		}
 		return group;
 	}
@@ -163,7 +162,7 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl implements Transact
 	 * @generated
 	 */
 	public EList getInsert() {
-		return ((FeatureMap)getGroup()).list(WFSPackage.eINSTANCE.getTransactionType_Insert());
+		return ((FeatureMap)getGroup()).list(WfsPackage.Literals.TRANSACTION_TYPE__INSERT);
 	}
 
 	/**
@@ -172,7 +171,7 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl implements Transact
 	 * @generated
 	 */
 	public EList getUpdate() {
-		return ((FeatureMap)getGroup()).list(WFSPackage.eINSTANCE.getTransactionType_Update());
+		return ((FeatureMap)getGroup()).list(WfsPackage.Literals.TRANSACTION_TYPE__UPDATE);
 	}
 
 	/**
@@ -181,7 +180,7 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl implements Transact
 	 * @generated
 	 */
 	public EList getDelete() {
-		return ((FeatureMap)getGroup()).list(WFSPackage.eINSTANCE.getTransactionType_Delete());
+		return ((FeatureMap)getGroup()).list(WfsPackage.Literals.TRANSACTION_TYPE__DELETE);
 	}
 
 	/**
@@ -190,7 +189,7 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl implements Transact
 	 * @generated
 	 */
 	public EList getNative() {
-		return ((FeatureMap)getGroup()).list(WFSPackage.eINSTANCE.getTransactionType_Native());
+		return ((FeatureMap)getGroup()).list(WfsPackage.Literals.TRANSACTION_TYPE__NATIVE);
 	}
 
 	/**
@@ -213,7 +212,7 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl implements Transact
 		boolean oldReleaseActionESet = releaseActionESet;
 		releaseActionESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.TRANSACTION_TYPE__RELEASE_ACTION, oldReleaseAction, releaseAction, !oldReleaseActionESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION, oldReleaseAction, releaseAction, !oldReleaseActionESet));
 	}
 
 	/**
@@ -227,7 +226,7 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl implements Transact
 		releaseAction = RELEASE_ACTION_EDEFAULT;
 		releaseActionESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, WFSPackage.TRANSACTION_TYPE__RELEASE_ACTION, oldReleaseAction, RELEASE_ACTION_EDEFAULT, oldReleaseActionESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION, oldReleaseAction, RELEASE_ACTION_EDEFAULT, oldReleaseActionESet));
 	}
 
 	/**
@@ -244,24 +243,20 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl implements Transact
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
-		if (featureID >= 0) {
-			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
-				case WFSPackage.TRANSACTION_TYPE__GROUP:
-					return ((InternalEList)getGroup()).basicRemove(otherEnd, msgs);
-				case WFSPackage.TRANSACTION_TYPE__INSERT:
-					return ((InternalEList)getInsert()).basicRemove(otherEnd, msgs);
-				case WFSPackage.TRANSACTION_TYPE__UPDATE:
-					return ((InternalEList)getUpdate()).basicRemove(otherEnd, msgs);
-				case WFSPackage.TRANSACTION_TYPE__DELETE:
-					return ((InternalEList)getDelete()).basicRemove(otherEnd, msgs);
-				case WFSPackage.TRANSACTION_TYPE__NATIVE:
-					return ((InternalEList)getNative()).basicRemove(otherEnd, msgs);
-				default:
-					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
-			}
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_TYPE__GROUP:
+				return ((InternalEList)getGroup()).basicRemove(otherEnd, msgs);
+			case WfsPackage.TRANSACTION_TYPE__INSERT:
+				return ((InternalEList)getInsert()).basicRemove(otherEnd, msgs);
+			case WfsPackage.TRANSACTION_TYPE__UPDATE:
+				return ((InternalEList)getUpdate()).basicRemove(otherEnd, msgs);
+			case WfsPackage.TRANSACTION_TYPE__DELETE:
+				return ((InternalEList)getDelete()).basicRemove(otherEnd, msgs);
+			case WfsPackage.TRANSACTION_TYPE__NATIVE:
+				return ((InternalEList)getNative()).basicRemove(otherEnd, msgs);
 		}
-		return eBasicSetContainer(null, featureID, msgs);
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -269,30 +264,25 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl implements Transact
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.TRANSACTION_TYPE__HANDLE:
-				return getHandle();
-			case WFSPackage.TRANSACTION_TYPE__SERVICE:
-				return getService();
-			case WFSPackage.TRANSACTION_TYPE__VERSION:
-				return getVersion();
-			case WFSPackage.TRANSACTION_TYPE__LOCK_ID:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_TYPE__LOCK_ID:
 				return getLockId();
-			case WFSPackage.TRANSACTION_TYPE__GROUP:
-				return getGroup();
-			case WFSPackage.TRANSACTION_TYPE__INSERT:
+			case WfsPackage.TRANSACTION_TYPE__GROUP:
+				if (coreType) return getGroup();
+				return ((FeatureMap.Internal)getGroup()).getWrapper();
+			case WfsPackage.TRANSACTION_TYPE__INSERT:
 				return getInsert();
-			case WFSPackage.TRANSACTION_TYPE__UPDATE:
+			case WfsPackage.TRANSACTION_TYPE__UPDATE:
 				return getUpdate();
-			case WFSPackage.TRANSACTION_TYPE__DELETE:
+			case WfsPackage.TRANSACTION_TYPE__DELETE:
 				return getDelete();
-			case WFSPackage.TRANSACTION_TYPE__NATIVE:
+			case WfsPackage.TRANSACTION_TYPE__NATIVE:
 				return getNative();
-			case WFSPackage.TRANSACTION_TYPE__RELEASE_ACTION:
+			case WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION:
 				return getReleaseAction();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -300,45 +290,35 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl implements Transact
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.TRANSACTION_TYPE__HANDLE:
-				setHandle((String)newValue);
-				return;
-			case WFSPackage.TRANSACTION_TYPE__SERVICE:
-				setService((String)newValue);
-				return;
-			case WFSPackage.TRANSACTION_TYPE__VERSION:
-				setVersion((String)newValue);
-				return;
-			case WFSPackage.TRANSACTION_TYPE__LOCK_ID:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_TYPE__LOCK_ID:
 				setLockId((String)newValue);
 				return;
-			case WFSPackage.TRANSACTION_TYPE__GROUP:
-				getGroup().clear();
-				getGroup().addAll((Collection)newValue);
+			case WfsPackage.TRANSACTION_TYPE__GROUP:
+				((FeatureMap.Internal)getGroup()).set(newValue);
 				return;
-			case WFSPackage.TRANSACTION_TYPE__INSERT:
+			case WfsPackage.TRANSACTION_TYPE__INSERT:
 				getInsert().clear();
 				getInsert().addAll((Collection)newValue);
 				return;
-			case WFSPackage.TRANSACTION_TYPE__UPDATE:
+			case WfsPackage.TRANSACTION_TYPE__UPDATE:
 				getUpdate().clear();
 				getUpdate().addAll((Collection)newValue);
 				return;
-			case WFSPackage.TRANSACTION_TYPE__DELETE:
+			case WfsPackage.TRANSACTION_TYPE__DELETE:
 				getDelete().clear();
 				getDelete().addAll((Collection)newValue);
 				return;
-			case WFSPackage.TRANSACTION_TYPE__NATIVE:
+			case WfsPackage.TRANSACTION_TYPE__NATIVE:
 				getNative().clear();
 				getNative().addAll((Collection)newValue);
 				return;
-			case WFSPackage.TRANSACTION_TYPE__RELEASE_ACTION:
+			case WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION:
 				setReleaseAction((AllSomeType)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -346,40 +326,31 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl implements Transact
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.TRANSACTION_TYPE__HANDLE:
-				setHandle(HANDLE_EDEFAULT);
-				return;
-			case WFSPackage.TRANSACTION_TYPE__SERVICE:
-				unsetService();
-				return;
-			case WFSPackage.TRANSACTION_TYPE__VERSION:
-				unsetVersion();
-				return;
-			case WFSPackage.TRANSACTION_TYPE__LOCK_ID:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_TYPE__LOCK_ID:
 				setLockId(LOCK_ID_EDEFAULT);
 				return;
-			case WFSPackage.TRANSACTION_TYPE__GROUP:
+			case WfsPackage.TRANSACTION_TYPE__GROUP:
 				getGroup().clear();
 				return;
-			case WFSPackage.TRANSACTION_TYPE__INSERT:
+			case WfsPackage.TRANSACTION_TYPE__INSERT:
 				getInsert().clear();
 				return;
-			case WFSPackage.TRANSACTION_TYPE__UPDATE:
+			case WfsPackage.TRANSACTION_TYPE__UPDATE:
 				getUpdate().clear();
 				return;
-			case WFSPackage.TRANSACTION_TYPE__DELETE:
+			case WfsPackage.TRANSACTION_TYPE__DELETE:
 				getDelete().clear();
 				return;
-			case WFSPackage.TRANSACTION_TYPE__NATIVE:
+			case WfsPackage.TRANSACTION_TYPE__NATIVE:
 				getNative().clear();
 				return;
-			case WFSPackage.TRANSACTION_TYPE__RELEASE_ACTION:
+			case WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION:
 				unsetReleaseAction();
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -387,30 +358,24 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl implements Transact
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.TRANSACTION_TYPE__HANDLE:
-				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
-			case WFSPackage.TRANSACTION_TYPE__SERVICE:
-				return isSetService();
-			case WFSPackage.TRANSACTION_TYPE__VERSION:
-				return isSetVersion();
-			case WFSPackage.TRANSACTION_TYPE__LOCK_ID:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_TYPE__LOCK_ID:
 				return LOCK_ID_EDEFAULT == null ? lockId != null : !LOCK_ID_EDEFAULT.equals(lockId);
-			case WFSPackage.TRANSACTION_TYPE__GROUP:
+			case WfsPackage.TRANSACTION_TYPE__GROUP:
 				return group != null && !group.isEmpty();
-			case WFSPackage.TRANSACTION_TYPE__INSERT:
+			case WfsPackage.TRANSACTION_TYPE__INSERT:
 				return !getInsert().isEmpty();
-			case WFSPackage.TRANSACTION_TYPE__UPDATE:
+			case WfsPackage.TRANSACTION_TYPE__UPDATE:
 				return !getUpdate().isEmpty();
-			case WFSPackage.TRANSACTION_TYPE__DELETE:
+			case WfsPackage.TRANSACTION_TYPE__DELETE:
 				return !getDelete().isEmpty();
-			case WFSPackage.TRANSACTION_TYPE__NATIVE:
+			case WfsPackage.TRANSACTION_TYPE__NATIVE:
 				return !getNative().isEmpty();
-			case WFSPackage.TRANSACTION_TYPE__RELEASE_ACTION:
+			case WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION:
 				return isSetReleaseAction();
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

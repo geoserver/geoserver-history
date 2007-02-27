@@ -7,7 +7,7 @@ package org.vfny.geoserver.wms.responses.featureInfo;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
-import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WfsFactory;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WebFeatureService;
 import org.geoserver.wfs.xml.GML2OutputFormat;
@@ -88,7 +88,7 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
         WFS wfs = wms.getWFS();
         Data catalog = fInfoReq.getServiceRef().getCatalog();
 
-        FeatureCollectionType features = WFSFactory.eINSTANCE.createFeatureCollectionType();
+        FeatureCollectionType features = WfsFactory.eINSTANCE.createFeatureCollectionType();
 
         for (Iterator i = results.iterator(); i.hasNext();) {
             features.getFeature().add(i.next());

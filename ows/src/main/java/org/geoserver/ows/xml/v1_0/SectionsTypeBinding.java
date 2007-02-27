@@ -4,8 +4,8 @@
  */
 package org.geoserver.ows.xml.v1_0;
 
-import net.opengis.ows.v1_0_0.OWSFactory;
-import net.opengis.ows.v1_0_0.SectionsType;
+import net.opengis.ows.OwsFactory;
+import net.opengis.ows.SectionsType;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -34,9 +34,9 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class SectionsTypeBinding extends AbstractComplexBinding {
-    OWSFactory owsfactory;
+    OwsFactory owsfactory;
 
-    public SectionsTypeBinding(OWSFactory owsfactory) {
+    public SectionsTypeBinding(OwsFactory owsfactory) {
         this.owsfactory = owsfactory;
     }
 

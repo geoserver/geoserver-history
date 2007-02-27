@@ -32,11 +32,11 @@ import org.opengis.filter.Filter;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getUpdateElementType()
+ * @see net.opengis.wfs.WfsPackage#getUpdateElementType()
  * @model extendedMetaData="name='UpdateElementType' kind='elementOnly'"
  * @generated
  */
-public interface UpdateElementType extends EObject{
+public interface UpdateElementType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Property</b></em>' containment reference list.
 	 * The list contents are of type {@link net.opengis.wfs.PropertyType}.
@@ -53,8 +53,8 @@ public interface UpdateElementType extends EObject{
 	 *                   for that property.
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Property</em>' containment reference list.
-	 * @see net.opengis.wfs.WFSPackage#getUpdateElementType_Property()
-	 * @model type="net.opengis.wfs.PropertyType" containment="true" resolveProxies="false" required="true"
+	 * @see net.opengis.wfs.WfsPackage#getUpdateElementType_Property()
+	 * @model type="net.opengis.wfs.PropertyType" containment="true" required="true"
 	 *        extendedMetaData="kind='element' name='Property' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -112,7 +112,7 @@ public interface UpdateElementType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Handle</em>' attribute.
 	 * @see #setHandle(String)
-	 * @see net.opengis.wfs.WFSPackage#getUpdateElementType_Handle()
+	 * @see net.opengis.wfs.WfsPackage#getUpdateElementType_Handle()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='attribute' name='handle'"
 	 * @generated
@@ -150,7 +150,7 @@ public interface UpdateElementType extends EObject{
 	 * @see #isSetInputFormat()
 	 * @see #unsetInputFormat()
 	 * @see #setInputFormat(String)
-	 * @see net.opengis.wfs.WFSPackage#getUpdateElementType_InputFormat()
+	 * @see net.opengis.wfs.WfsPackage#getUpdateElementType_InputFormat()
 	 * @model default="x-application/gml:3" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='attribute' name='inputFormat'"
 	 * @generated

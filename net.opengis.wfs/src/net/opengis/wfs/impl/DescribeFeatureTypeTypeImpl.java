@@ -11,20 +11,17 @@ import java.util.Collection;
 import javax.xml.namespace.QName;
 
 import net.opengis.wfs.DescribeFeatureTypeType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
-
-import org.eclipse.emf.ecore.util.EDataTypeEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -95,7 +92,7 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements 
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getDescribeFeatureTypeType();
+		return WfsPackage.Literals.DESCRIBE_FEATURE_TYPE_TYPE;
 	}
 
 	/**
@@ -105,7 +102,7 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements 
 	 */
 	public EList getTypeName() {
 		if (typeName == null) {
-			typeName = new EDataTypeUniqueEList(QName.class, this, WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME);
+			typeName = new EDataTypeUniqueEList(QName.class, this, WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME);
 		}
 		return typeName;
 	}
@@ -130,7 +127,7 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements 
 		boolean oldOutputFormatESet = outputFormatESet;
 		outputFormatESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT, oldOutputFormat, outputFormat, !oldOutputFormatESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT, oldOutputFormat, outputFormat, !oldOutputFormatESet));
 	}
 
 	/**
@@ -144,7 +141,7 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements 
 		outputFormat = OUTPUT_FORMAT_EDEFAULT;
 		outputFormatESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT, oldOutputFormat, OUTPUT_FORMAT_EDEFAULT, oldOutputFormatESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT, oldOutputFormat, OUTPUT_FORMAT_EDEFAULT, oldOutputFormatESet));
 	}
 
 	/**
@@ -161,20 +158,14 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__HANDLE:
-				return getHandle();
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__SERVICE:
-				return getService();
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__VERSION:
-				return getVersion();
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME:
 				return getTypeName();
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT:
+			case WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT:
 				return getOutputFormat();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -182,26 +173,17 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__HANDLE:
-				setHandle((String)newValue);
-				return;
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__SERVICE:
-				setService((String)newValue);
-				return;
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__VERSION:
-				setVersion((String)newValue);
-				return;
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME:
 				getTypeName().clear();
 				getTypeName().addAll((Collection)newValue);
 				return;
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT:
+			case WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT:
 				setOutputFormat((String)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -209,25 +191,16 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__HANDLE:
-				setHandle(HANDLE_EDEFAULT);
-				return;
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__SERVICE:
-				unsetService();
-				return;
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__VERSION:
-				unsetVersion();
-				return;
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME:
 				getTypeName().clear();
 				return;
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT:
+			case WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT:
 				unsetOutputFormat();
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -235,20 +208,14 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl implements 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__HANDLE:
-				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__SERVICE:
-				return isSetService();
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__VERSION:
-				return isSetVersion();
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME:
 				return typeName != null && !typeName.isEmpty();
-			case WFSPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT:
+			case WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT:
 				return isSetOutputFormat();
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

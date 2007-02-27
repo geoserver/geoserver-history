@@ -12,15 +12,13 @@ import java.util.Calendar;
 import java.util.Collection;
 
 import net.opengis.wfs.FeatureCollectionType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
@@ -131,7 +129,7 @@ public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCol
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getFeatureCollectionType();
+		return WfsPackage.Literals.FEATURE_COLLECTION_TYPE;
 	}
 
 	/**
@@ -152,7 +150,7 @@ public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCol
 		String oldLockId = lockId;
 		lockId = newLockId;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.FEATURE_COLLECTION_TYPE__LOCK_ID, oldLockId, lockId));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.FEATURE_COLLECTION_TYPE__LOCK_ID, oldLockId, lockId));
 	}
 
 	/**
@@ -173,7 +171,7 @@ public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCol
 		Calendar oldTimeStamp = timeStamp;
 		timeStamp = newTimeStamp;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP, oldTimeStamp, timeStamp));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP, oldTimeStamp, timeStamp));
 	}
 
 	/**
@@ -194,7 +192,7 @@ public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCol
 		BigInteger oldNumberOfFeatures = numberOfFeatures;
 		numberOfFeatures = newNumberOfFeatures;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES, oldNumberOfFeatures, numberOfFeatures));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES, oldNumberOfFeatures, numberOfFeatures));
 	}
 
 	/**
@@ -204,7 +202,7 @@ public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCol
 	 */
 	public EList getFeature() {
 		if (feature == null) {
-			feature = new EDataTypeUniqueEList(FeatureCollection.class, this, WFSPackage.FEATURE_COLLECTION_TYPE__FEATURE);
+			feature = new EDataTypeUniqueEList(FeatureCollection.class, this, WfsPackage.FEATURE_COLLECTION_TYPE__FEATURE);
 		}
 		return feature;
 	}
@@ -214,18 +212,18 @@ public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCol
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.FEATURE_COLLECTION_TYPE__LOCK_ID:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.FEATURE_COLLECTION_TYPE__LOCK_ID:
 				return getLockId();
-			case WFSPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP:
+			case WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP:
 				return getTimeStamp();
-			case WFSPackage.FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES:
+			case WfsPackage.FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES:
 				return getNumberOfFeatures();
-			case WFSPackage.FEATURE_COLLECTION_TYPE__FEATURE:
+			case WfsPackage.FEATURE_COLLECTION_TYPE__FEATURE:
 				return getFeature();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -233,23 +231,23 @@ public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCol
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.FEATURE_COLLECTION_TYPE__LOCK_ID:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.FEATURE_COLLECTION_TYPE__LOCK_ID:
 				setLockId((String)newValue);
 				return;
-			case WFSPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP:
+			case WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP:
 				setTimeStamp((Calendar)newValue);
 				return;
-			case WFSPackage.FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES:
+			case WfsPackage.FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES:
 				setNumberOfFeatures((BigInteger)newValue);
 				return;
-			case WFSPackage.FEATURE_COLLECTION_TYPE__FEATURE:
+			case WfsPackage.FEATURE_COLLECTION_TYPE__FEATURE:
 				getFeature().clear();
 				getFeature().addAll((Collection)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -257,22 +255,22 @@ public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCol
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.FEATURE_COLLECTION_TYPE__LOCK_ID:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.FEATURE_COLLECTION_TYPE__LOCK_ID:
 				setLockId(LOCK_ID_EDEFAULT);
 				return;
-			case WFSPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP:
+			case WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP:
 				setTimeStamp(TIME_STAMP_EDEFAULT);
 				return;
-			case WFSPackage.FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES:
+			case WfsPackage.FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES:
 				setNumberOfFeatures(NUMBER_OF_FEATURES_EDEFAULT);
 				return;
-			case WFSPackage.FEATURE_COLLECTION_TYPE__FEATURE:
+			case WfsPackage.FEATURE_COLLECTION_TYPE__FEATURE:
 				getFeature().clear();
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -280,18 +278,18 @@ public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCol
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.FEATURE_COLLECTION_TYPE__LOCK_ID:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.FEATURE_COLLECTION_TYPE__LOCK_ID:
 				return LOCK_ID_EDEFAULT == null ? lockId != null : !LOCK_ID_EDEFAULT.equals(lockId);
-			case WFSPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP:
+			case WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP:
 				return TIME_STAMP_EDEFAULT == null ? timeStamp != null : !TIME_STAMP_EDEFAULT.equals(timeStamp);
-			case WFSPackage.FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES:
+			case WfsPackage.FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES:
 				return NUMBER_OF_FEATURES_EDEFAULT == null ? numberOfFeatures != null : !NUMBER_OF_FEATURES_EDEFAULT.equals(numberOfFeatures);
-			case WFSPackage.FEATURE_COLLECTION_TYPE__FEATURE:
+			case WfsPackage.FEATURE_COLLECTION_TYPE__FEATURE:
 				return feature != null && !feature.isEmpty();
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

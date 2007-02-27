@@ -37,11 +37,11 @@ import org.eclipse.emf.common.util.EList;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getDescribeFeatureTypeType()
+ * @see net.opengis.wfs.WfsPackage#getDescribeFeatureTypeType()
  * @model extendedMetaData="name='DescribeFeatureTypeType' kind='elementOnly'"
  * @generated
  */
-public interface DescribeFeatureTypeType extends BaseRequestType{
+public interface DescribeFeatureTypeType extends BaseRequestType {
 	/**
 	 * Returns the value of the '<em><b>Type Name</b></em>' attribute list.
 	 * The list contents are of type {@link java.lang.Object}.
@@ -90,7 +90,7 @@ public interface DescribeFeatureTypeType extends BaseRequestType{
 	 * @see #isSetOutputFormat()
 	 * @see #unsetOutputFormat()
 	 * @see #setOutputFormat(String)
-	 * @see net.opengis.wfs.WFSPackage#getDescribeFeatureTypeType_OutputFormat()
+	 * @see net.opengis.wfs.WfsPackage#getDescribeFeatureTypeType_OutputFormat()
 	 * @model default="text/xml; subtype=gml/3.1.1" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='attribute' name='outputFormat'"
 	 * @generated

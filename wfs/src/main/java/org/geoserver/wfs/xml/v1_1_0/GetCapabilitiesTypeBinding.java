@@ -5,7 +5,7 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 import net.opengis.wfs.GetCapabilitiesType;
-import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WfsFactory;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -48,9 +48,9 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
-    WFSFactory wfsfactory;
+    WfsFactory wfsfactory;
 
-    public GetCapabilitiesTypeBinding(WFSFactory wfsfactory) {
+    public GetCapabilitiesTypeBinding(WfsFactory wfsfactory) {
         this.wfsfactory = wfsfactory;
     }
 
@@ -83,7 +83,7 @@ public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        net.opengis.ows.v1_0_0.GetCapabilitiesType owsGetCapabilities = (net.opengis.ows.v1_0_0.GetCapabilitiesType) value;
+        net.opengis.ows.GetCapabilitiesType owsGetCapabilities = (net.opengis.ows.GetCapabilitiesType) value;
         GetCapabilitiesType getCapabilities = wfsfactory.createGetCapabilitiesType();
 
         getCapabilities.setAcceptFormats(owsGetCapabilities.getAcceptFormats());

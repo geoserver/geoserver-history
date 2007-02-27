@@ -28,12 +28,12 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getBaseRequestType()
+ * @see net.opengis.wfs.WfsPackage#getBaseRequestType()
  * @model abstract="true"
  *        extendedMetaData="name='BaseRequestType' kind='empty'"
  * @generated
  */
-public interface BaseRequestType extends EObject{
+public interface BaseRequestType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Handle</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -51,7 +51,7 @@ public interface BaseRequestType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Handle</em>' attribute.
 	 * @see #setHandle(String)
-	 * @see net.opengis.wfs.WFSPackage#getBaseRequestType_Handle()
+	 * @see net.opengis.wfs.WfsPackage#getBaseRequestType_Handle()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='attribute' name='handle'"
 	 * @generated
@@ -93,8 +93,8 @@ public interface BaseRequestType extends EObject{
 	 * @see #isSetService()
 	 * @see #unsetService()
 	 * @see #setService(String)
-	 * @see net.opengis.wfs.WFSPackage#getBaseRequestType_Service()
-	 * @model default="WFS" unique="false" unsettable="true" dataType="net.opengis.ows.v1_0_0.ServiceType"
+	 * @see net.opengis.wfs.WfsPackage#getBaseRequestType_Service()
+	 * @model default="WFS" unique="false" unsettable="true" dataType="net.opengis.wfs.ServiceType"
 	 *        extendedMetaData="kind='attribute' name='service'"
 	 * @generated
 	 */
@@ -154,7 +154,7 @@ public interface BaseRequestType extends EObject{
 	 * @see #isSetVersion()
 	 * @see #unsetVersion()
 	 * @see #setVersion(String)
-	 * @see net.opengis.wfs.WFSPackage#getBaseRequestType_Version()
+	 * @see net.opengis.wfs.WfsPackage#getBaseRequestType_Version()
 	 * @model default="1.1.0" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='attribute' name='version'"
 	 * @generated

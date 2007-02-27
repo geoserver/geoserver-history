@@ -10,13 +10,12 @@ import net.opengis.wfs.InsertResultsType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionResultsType;
 import net.opengis.wfs.TransactionSummaryType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -113,7 +112,7 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getTransactionResponseType();
+		return WfsPackage.Literals.TRANSACTION_RESPONSE_TYPE;
 	}
 
 	/**
@@ -134,7 +133,7 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 		TransactionSummaryType oldTransactionSummary = transactionSummary;
 		transactionSummary = newTransactionSummary;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY, oldTransactionSummary, newTransactionSummary);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY, oldTransactionSummary, newTransactionSummary);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -149,14 +148,14 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 		if (newTransactionSummary != transactionSummary) {
 			NotificationChain msgs = null;
 			if (transactionSummary != null)
-				msgs = ((InternalEObject)transactionSummary).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY, null, msgs);
+				msgs = ((InternalEObject)transactionSummary).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY, null, msgs);
 			if (newTransactionSummary != null)
-				msgs = ((InternalEObject)newTransactionSummary).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY, null, msgs);
+				msgs = ((InternalEObject)newTransactionSummary).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY, null, msgs);
 			msgs = basicSetTransactionSummary(newTransactionSummary, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY, newTransactionSummary, newTransactionSummary));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY, newTransactionSummary, newTransactionSummary));
 	}
 
 	/**
@@ -177,7 +176,7 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 		TransactionResultsType oldTransactionResults = transactionResults;
 		transactionResults = newTransactionResults;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS, oldTransactionResults, newTransactionResults);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS, oldTransactionResults, newTransactionResults);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -192,14 +191,14 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 		if (newTransactionResults != transactionResults) {
 			NotificationChain msgs = null;
 			if (transactionResults != null)
-				msgs = ((InternalEObject)transactionResults).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS, null, msgs);
+				msgs = ((InternalEObject)transactionResults).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS, null, msgs);
 			if (newTransactionResults != null)
-				msgs = ((InternalEObject)newTransactionResults).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS, null, msgs);
+				msgs = ((InternalEObject)newTransactionResults).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS, null, msgs);
 			msgs = basicSetTransactionResults(newTransactionResults, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS, newTransactionResults, newTransactionResults));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS, newTransactionResults, newTransactionResults));
 	}
 
 	/**
@@ -220,7 +219,7 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 		InsertResultsType oldInsertResults = insertResults;
 		insertResults = newInsertResults;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WFSPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS, oldInsertResults, newInsertResults);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS, oldInsertResults, newInsertResults);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -235,14 +234,14 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 		if (newInsertResults != insertResults) {
 			NotificationChain msgs = null;
 			if (insertResults != null)
-				msgs = ((InternalEObject)insertResults).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WFSPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS, null, msgs);
+				msgs = ((InternalEObject)insertResults).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS, null, msgs);
 			if (newInsertResults != null)
-				msgs = ((InternalEObject)newInsertResults).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WFSPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS, null, msgs);
+				msgs = ((InternalEObject)newInsertResults).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS, null, msgs);
 			msgs = basicSetInsertResults(newInsertResults, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS, newInsertResults, newInsertResults));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS, newInsertResults, newInsertResults));
 	}
 
 	/**
@@ -265,7 +264,7 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 		boolean oldVersionESet = versionESet;
 		versionESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.TRANSACTION_RESPONSE_TYPE__VERSION, oldVersion, version, !oldVersionESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.TRANSACTION_RESPONSE_TYPE__VERSION, oldVersion, version, !oldVersionESet));
 	}
 
 	/**
@@ -279,7 +278,7 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 		version = VERSION_EDEFAULT;
 		versionESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, WFSPackage.TRANSACTION_RESPONSE_TYPE__VERSION, oldVersion, VERSION_EDEFAULT, oldVersionESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, WfsPackage.TRANSACTION_RESPONSE_TYPE__VERSION, oldVersion, VERSION_EDEFAULT, oldVersionESet));
 	}
 
 	/**
@@ -296,20 +295,16 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
-		if (featureID >= 0) {
-			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
-				case WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY:
-					return basicSetTransactionSummary(null, msgs);
-				case WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS:
-					return basicSetTransactionResults(null, msgs);
-				case WFSPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS:
-					return basicSetInsertResults(null, msgs);
-				default:
-					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
-			}
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY:
+				return basicSetTransactionSummary(null, msgs);
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS:
+				return basicSetTransactionResults(null, msgs);
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS:
+				return basicSetInsertResults(null, msgs);
 		}
-		return eBasicSetContainer(null, featureID, msgs);
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -317,18 +312,18 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY:
 				return getTransactionSummary();
-			case WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS:
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS:
 				return getTransactionResults();
-			case WFSPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS:
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS:
 				return getInsertResults();
-			case WFSPackage.TRANSACTION_RESPONSE_TYPE__VERSION:
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__VERSION:
 				return getVersion();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -336,22 +331,22 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY:
 				setTransactionSummary((TransactionSummaryType)newValue);
 				return;
-			case WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS:
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS:
 				setTransactionResults((TransactionResultsType)newValue);
 				return;
-			case WFSPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS:
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS:
 				setInsertResults((InsertResultsType)newValue);
 				return;
-			case WFSPackage.TRANSACTION_RESPONSE_TYPE__VERSION:
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__VERSION:
 				setVersion((String)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -359,22 +354,22 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY:
 				setTransactionSummary((TransactionSummaryType)null);
 				return;
-			case WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS:
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS:
 				setTransactionResults((TransactionResultsType)null);
 				return;
-			case WFSPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS:
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS:
 				setInsertResults((InsertResultsType)null);
 				return;
-			case WFSPackage.TRANSACTION_RESPONSE_TYPE__VERSION:
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__VERSION:
 				unsetVersion();
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -382,18 +377,18 @@ public class TransactionResponseTypeImpl extends EObjectImpl implements Transact
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY:
 				return transactionSummary != null;
-			case WFSPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS:
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS:
 				return transactionResults != null;
-			case WFSPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS:
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS:
 				return insertResults != null;
-			case WFSPackage.TRANSACTION_RESPONSE_TYPE__VERSION:
+			case WfsPackage.TRANSACTION_RESPONSE_TYPE__VERSION:
 				return isSetVersion();
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

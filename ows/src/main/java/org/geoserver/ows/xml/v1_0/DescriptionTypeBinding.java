@@ -4,7 +4,7 @@
  */
 package org.geoserver.ows.xml.v1_0;
 
-import net.opengis.ows.v1_0_0.OWSFactory;
+import net.opengis.ows.OwsFactory;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -36,9 +36,9 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class DescriptionTypeBinding extends AbstractComplexBinding {
-    OWSFactory owsfactory;
+    OwsFactory owsfactory;
 
-    public DescriptionTypeBinding(OWSFactory owsfactory) {
+    public DescriptionTypeBinding(OwsFactory owsfactory) {
         this.owsfactory = owsfactory;
     }
 

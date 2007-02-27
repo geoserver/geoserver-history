@@ -10,7 +10,7 @@ import java.util.Collection;
 
 import net.opengis.wfs.ActionType;
 import net.opengis.wfs.TransactionResultsType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -18,7 +18,6 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -34,24 +33,14 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link net.opengis.wfs.impl.TransactionResultsTypeImpl#getAction <em>Action</em>}</li>
  *   <li>{@link net.opengis.wfs.impl.TransactionResultsTypeImpl#getHandle <em>Handle</em>}</li>
+ *   <li>{@link net.opengis.wfs.impl.TransactionResultsTypeImpl#getAction <em>Action</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
 public class TransactionResultsTypeImpl extends EObjectImpl implements TransactionResultsType {
-	/**
-	 * The cached value of the '{@link #getAction() <em>Action</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getAction()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList action = null;
-
 	/**
 	 * The default value of the '{@link #getHandle() <em>Handle</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -73,6 +62,16 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 	protected String handle = HANDLE_EDEFAULT;
 
 	/**
+	 * The cached value of the '{@link #getAction() <em>Action</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getAction()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList action = null;
+
+	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -87,19 +86,7 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getTransactionResultsType();
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EList getAction() {
-		if (action == null) {
-			action = new EObjectContainmentEList(ActionType.class, this, WFSPackage.TRANSACTION_RESULTS_TYPE__ACTION);
-		}
-		return action;
+		return WfsPackage.Literals.TRANSACTION_RESULTS_TYPE;
 	}
 
 	/**
@@ -120,7 +107,7 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 		String oldHandle = handle;
 		handle = newHandle;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.TRANSACTION_RESULTS_TYPE__HANDLE, oldHandle, handle));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE, oldHandle, handle));
 	}
 
 	/**
@@ -128,16 +115,11 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, Class baseClass, NotificationChain msgs) {
-		if (featureID >= 0) {
-			switch (eDerivedStructuralFeatureID(featureID, baseClass)) {
-				case WFSPackage.TRANSACTION_RESULTS_TYPE__ACTION:
-					return ((InternalEList)getAction()).basicRemove(otherEnd, msgs);
-				default:
-					return eDynamicInverseRemove(otherEnd, featureID, baseClass, msgs);
-			}
+	public EList getAction() {
+		if (action == null) {
+			action = new EObjectContainmentEList(ActionType.class, this, WfsPackage.TRANSACTION_RESULTS_TYPE__ACTION);
 		}
-		return eBasicSetContainer(null, featureID, msgs);
+		return action;
 	}
 
 	/**
@@ -145,14 +127,27 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.TRANSACTION_RESULTS_TYPE__ACTION:
-				return getAction();
-			case WFSPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_RESULTS_TYPE__ACTION:
+				return ((InternalEList)getAction()).basicRemove(otherEnd, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
 				return getHandle();
+			case WfsPackage.TRANSACTION_RESULTS_TYPE__ACTION:
+				return getAction();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -160,17 +155,17 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.TRANSACTION_RESULTS_TYPE__ACTION:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
+				setHandle((String)newValue);
+				return;
+			case WfsPackage.TRANSACTION_RESULTS_TYPE__ACTION:
 				getAction().clear();
 				getAction().addAll((Collection)newValue);
 				return;
-			case WFSPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
-				setHandle((String)newValue);
-				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -178,16 +173,16 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.TRANSACTION_RESULTS_TYPE__ACTION:
-				getAction().clear();
-				return;
-			case WFSPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
 				setHandle(HANDLE_EDEFAULT);
 				return;
+			case WfsPackage.TRANSACTION_RESULTS_TYPE__ACTION:
+				getAction().clear();
+				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -195,14 +190,14 @@ public class TransactionResultsTypeImpl extends EObjectImpl implements Transacti
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.TRANSACTION_RESULTS_TYPE__ACTION:
-				return action != null && !action.isEmpty();
-			case WFSPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
 				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
+			case WfsPackage.TRANSACTION_RESULTS_TYPE__ACTION:
+				return action != null && !action.isEmpty();
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

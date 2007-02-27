@@ -28,11 +28,11 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getFeatureTypeListType()
+ * @see net.opengis.wfs.WfsPackage#getFeatureTypeListType()
  * @model extendedMetaData="name='FeatureTypeListType' kind='elementOnly'"
  * @generated
  */
-public interface FeatureTypeListType extends EObject{
+public interface FeatureTypeListType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Operations</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
@@ -43,8 +43,8 @@ public interface FeatureTypeListType extends EObject{
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Operations</em>' containment reference.
 	 * @see #setOperations(OperationsType)
-	 * @see net.opengis.wfs.WFSPackage#getFeatureTypeListType_Operations()
-	 * @model containment="true" resolveProxies="false"
+	 * @see net.opengis.wfs.WfsPackage#getFeatureTypeListType_Operations()
+	 * @model containment="true"
 	 *        extendedMetaData="kind='element' name='Operations' namespace='##targetNamespace'"
 	 * @generated
 	 */
@@ -70,8 +70,8 @@ public interface FeatureTypeListType extends EObject{
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Feature Type</em>' containment reference list.
-	 * @see net.opengis.wfs.WFSPackage#getFeatureTypeListType_FeatureType()
-	 * @model type="net.opengis.wfs.FeatureTypeType" containment="true" resolveProxies="false" required="true"
+	 * @see net.opengis.wfs.WfsPackage#getFeatureTypeListType_FeatureType()
+	 * @model type="net.opengis.wfs.FeatureTypeType" containment="true" required="true"
 	 *        extendedMetaData="kind='element' name='FeatureType' namespace='##targetNamespace'"
 	 * @generated
 	 */

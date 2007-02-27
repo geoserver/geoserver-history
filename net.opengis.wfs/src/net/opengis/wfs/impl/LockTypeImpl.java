@@ -9,12 +9,11 @@ package net.opengis.wfs.impl;
 import javax.xml.namespace.QName;
 
 import net.opengis.wfs.LockType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
@@ -112,7 +111,7 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getLockType();
+		return WfsPackage.Literals.LOCK_TYPE;
 	}
 
 	/**
@@ -133,7 +132,7 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 		Filter oldFilter = filter;
 		filter = newFilter;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.LOCK_TYPE__FILTER, oldFilter, filter));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.LOCK_TYPE__FILTER, oldFilter, filter));
 	}
 
 	/**
@@ -154,7 +153,7 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 		String oldHandle = handle;
 		handle = newHandle;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.LOCK_TYPE__HANDLE, oldHandle, handle));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.LOCK_TYPE__HANDLE, oldHandle, handle));
 	}
 
 	/**
@@ -175,7 +174,7 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 		QName oldTypeName = typeName;
 		typeName = newTypeName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.LOCK_TYPE__TYPE_NAME, oldTypeName, typeName));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.LOCK_TYPE__TYPE_NAME, oldTypeName, typeName));
 	}
 
 	/**
@@ -183,16 +182,16 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.LOCK_TYPE__FILTER:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.LOCK_TYPE__FILTER:
 				return getFilter();
-			case WFSPackage.LOCK_TYPE__HANDLE:
+			case WfsPackage.LOCK_TYPE__HANDLE:
 				return getHandle();
-			case WFSPackage.LOCK_TYPE__TYPE_NAME:
+			case WfsPackage.LOCK_TYPE__TYPE_NAME:
 				return getTypeName();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -200,19 +199,19 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.LOCK_TYPE__FILTER:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.LOCK_TYPE__FILTER:
 				setFilter((Filter)newValue);
 				return;
-			case WFSPackage.LOCK_TYPE__HANDLE:
+			case WfsPackage.LOCK_TYPE__HANDLE:
 				setHandle((String)newValue);
 				return;
-			case WFSPackage.LOCK_TYPE__TYPE_NAME:
+			case WfsPackage.LOCK_TYPE__TYPE_NAME:
 				setTypeName((QName)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -220,19 +219,19 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.LOCK_TYPE__FILTER:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.LOCK_TYPE__FILTER:
 				setFilter(FILTER_EDEFAULT);
 				return;
-			case WFSPackage.LOCK_TYPE__HANDLE:
+			case WfsPackage.LOCK_TYPE__HANDLE:
 				setHandle(HANDLE_EDEFAULT);
 				return;
-			case WFSPackage.LOCK_TYPE__TYPE_NAME:
+			case WfsPackage.LOCK_TYPE__TYPE_NAME:
 				setTypeName(TYPE_NAME_EDEFAULT);
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -240,16 +239,16 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.LOCK_TYPE__FILTER:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.LOCK_TYPE__FILTER:
 				return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
-			case WFSPackage.LOCK_TYPE__HANDLE:
+			case WfsPackage.LOCK_TYPE__HANDLE:
 				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
-			case WFSPackage.LOCK_TYPE__TYPE_NAME:
+			case WfsPackage.LOCK_TYPE__TYPE_NAME:
 				return TYPE_NAME_EDEFAULT == null ? typeName != null : !TYPE_NAME_EDEFAULT.equals(typeName);
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

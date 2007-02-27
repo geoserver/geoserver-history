@@ -21,11 +21,11 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getNativeType()
+ * @see net.opengis.wfs.WfsPackage#getNativeType()
  * @model extendedMetaData="name='NativeType' kind='empty'"
  * @generated
  */
-public interface NativeType extends EObject{
+public interface NativeType extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Safe To Ignore</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -45,7 +45,7 @@ public interface NativeType extends EObject{
 	 * @see #isSetSafeToIgnore()
 	 * @see #unsetSafeToIgnore()
 	 * @see #setSafeToIgnore(boolean)
-	 * @see net.opengis.wfs.WFSPackage#getNativeType_SafeToIgnore()
+	 * @see net.opengis.wfs.WfsPackage#getNativeType_SafeToIgnore()
 	 * @model unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.Boolean" required="true"
 	 *        extendedMetaData="kind='attribute' name='safeToIgnore'"
 	 * @generated
@@ -99,7 +99,7 @@ public interface NativeType extends EObject{
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Vendor Id</em>' attribute.
 	 * @see #setVendorId(String)
-	 * @see net.opengis.wfs.WFSPackage#getNativeType_VendorId()
+	 * @see net.opengis.wfs.WfsPackage#getNativeType_VendorId()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
 	 *        extendedMetaData="kind='attribute' name='vendorId'"
 	 * @generated

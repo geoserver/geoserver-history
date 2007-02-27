@@ -10,12 +10,11 @@ import java.util.Collection;
 
 import net.opengis.wfs.OperationType;
 import net.opengis.wfs.OperationsType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
@@ -60,7 +59,7 @@ public class OperationsTypeImpl extends EObjectImpl implements OperationsType {
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getOperationsType();
+		return WfsPackage.Literals.OPERATIONS_TYPE;
 	}
 
 	/**
@@ -70,7 +69,7 @@ public class OperationsTypeImpl extends EObjectImpl implements OperationsType {
 	 */
 	public EList getOperation() {
 		if (operation == null) {
-			operation = new EDataTypeEList(OperationType.class, this, WFSPackage.OPERATIONS_TYPE__OPERATION);
+			operation = new EDataTypeEList(OperationType.class, this, WfsPackage.OPERATIONS_TYPE__OPERATION);
 		}
 		return operation;
 	}
@@ -80,12 +79,12 @@ public class OperationsTypeImpl extends EObjectImpl implements OperationsType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.OPERATIONS_TYPE__OPERATION:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.OPERATIONS_TYPE__OPERATION:
 				return getOperation();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -93,14 +92,14 @@ public class OperationsTypeImpl extends EObjectImpl implements OperationsType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.OPERATIONS_TYPE__OPERATION:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.OPERATIONS_TYPE__OPERATION:
 				getOperation().clear();
 				getOperation().addAll((Collection)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -108,13 +107,13 @@ public class OperationsTypeImpl extends EObjectImpl implements OperationsType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.OPERATIONS_TYPE__OPERATION:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.OPERATIONS_TYPE__OPERATION:
 				getOperation().clear();
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -122,12 +121,12 @@ public class OperationsTypeImpl extends EObjectImpl implements OperationsType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.OPERATIONS_TYPE__OPERATION:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.OPERATIONS_TYPE__OPERATION:
 				return operation != null && !operation.isEmpty();
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**

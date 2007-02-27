@@ -33,11 +33,11 @@ import org.eclipse.emf.common.util.EList;
  * </ul>
  * </p>
  *
- * @see net.opengis.wfs.WFSPackage#getGetFeatureWithLockType()
+ * @see net.opengis.wfs.WfsPackage#getGetFeatureWithLockType()
  * @model extendedMetaData="name='GetFeatureWithLockType' kind='elementOnly'"
  * @generated
  */
-public interface GetFeatureWithLockType extends GetFeatureType{
+public interface GetFeatureWithLockType extends GetFeatureType {
 	
 	/**
 	 * Returns the value of the '<em><b>Expiry</b></em>' attribute.
@@ -58,7 +58,7 @@ public interface GetFeatureWithLockType extends GetFeatureType{
 	 * @see #isSetExpiry()
 	 * @see #unsetExpiry()
 	 * @see #setExpiry(BigInteger)
-	 * @see net.opengis.wfs.WFSPackage#getGetFeatureWithLockType_Expiry()
+	 * @see net.opengis.wfs.WfsPackage#getGetFeatureWithLockType_Expiry()
 	 * @model default="5" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.PositiveInteger"
 	 *        extendedMetaData="kind='attribute' name='expiry'"
 	 * @generated

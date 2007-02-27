@@ -12,21 +12,18 @@ import java.util.Collection;
 
 import net.opengis.wfs.IdentifierGenerationOptionType;
 import net.opengis.wfs.InsertElementType;
-import net.opengis.wfs.WFSPackage;
+import net.opengis.wfs.WfsPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
-
-import org.eclipse.emf.ecore.util.EDataTypeEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -169,7 +166,7 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 	 * @generated
 	 */
 	protected EClass eStaticClass() {
-		return WFSPackage.eINSTANCE.getInsertElementType();
+		return WfsPackage.Literals.INSERT_ELEMENT_TYPE;
 	}
 
 	/**
@@ -179,7 +176,7 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 	 */
 	public EList getFeature() {
 		if (feature == null) {
-			feature = new EDataTypeUniqueEList(Object.class, this, WFSPackage.INSERT_ELEMENT_TYPE__FEATURE);
+			feature = new EDataTypeUniqueEList(Object.class, this, WfsPackage.INSERT_ELEMENT_TYPE__FEATURE);
 		}
 		return feature;
 	}
@@ -202,7 +199,7 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 		String oldHandle = handle;
 		handle = newHandle;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.INSERT_ELEMENT_TYPE__HANDLE, oldHandle, handle));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.INSERT_ELEMENT_TYPE__HANDLE, oldHandle, handle));
 	}
 
 	/**
@@ -225,7 +222,7 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 		boolean oldIdgenESet = idgenESet;
 		idgenESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.INSERT_ELEMENT_TYPE__IDGEN, oldIdgen, idgen, !oldIdgenESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.INSERT_ELEMENT_TYPE__IDGEN, oldIdgen, idgen, !oldIdgenESet));
 	}
 
 	/**
@@ -239,7 +236,7 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 		idgen = IDGEN_EDEFAULT;
 		idgenESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, WFSPackage.INSERT_ELEMENT_TYPE__IDGEN, oldIdgen, IDGEN_EDEFAULT, oldIdgenESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, WfsPackage.INSERT_ELEMENT_TYPE__IDGEN, oldIdgen, IDGEN_EDEFAULT, oldIdgenESet));
 	}
 
 	/**
@@ -271,7 +268,7 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 		boolean oldInputFormatESet = inputFormatESet;
 		inputFormatESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.INSERT_ELEMENT_TYPE__INPUT_FORMAT, oldInputFormat, inputFormat, !oldInputFormatESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.INSERT_ELEMENT_TYPE__INPUT_FORMAT, oldInputFormat, inputFormat, !oldInputFormatESet));
 	}
 
 	/**
@@ -285,7 +282,7 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 		inputFormat = INPUT_FORMAT_EDEFAULT;
 		inputFormatESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, WFSPackage.INSERT_ELEMENT_TYPE__INPUT_FORMAT, oldInputFormat, INPUT_FORMAT_EDEFAULT, oldInputFormatESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, WfsPackage.INSERT_ELEMENT_TYPE__INPUT_FORMAT, oldInputFormat, INPUT_FORMAT_EDEFAULT, oldInputFormatESet));
 	}
 
 	/**
@@ -315,7 +312,7 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 		URI oldSrsName = srsName;
 		srsName = newSrsName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, WFSPackage.INSERT_ELEMENT_TYPE__SRS_NAME, oldSrsName, srsName));
+			eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.INSERT_ELEMENT_TYPE__SRS_NAME, oldSrsName, srsName));
 	}
 
 	/**
@@ -323,20 +320,20 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object eGet(EStructuralFeature eFeature, boolean resolve) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.INSERT_ELEMENT_TYPE__FEATURE:
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case WfsPackage.INSERT_ELEMENT_TYPE__FEATURE:
 				return getFeature();
-			case WFSPackage.INSERT_ELEMENT_TYPE__HANDLE:
+			case WfsPackage.INSERT_ELEMENT_TYPE__HANDLE:
 				return getHandle();
-			case WFSPackage.INSERT_ELEMENT_TYPE__IDGEN:
+			case WfsPackage.INSERT_ELEMENT_TYPE__IDGEN:
 				return getIdgen();
-			case WFSPackage.INSERT_ELEMENT_TYPE__INPUT_FORMAT:
+			case WfsPackage.INSERT_ELEMENT_TYPE__INPUT_FORMAT:
 				return getInputFormat();
-			case WFSPackage.INSERT_ELEMENT_TYPE__SRS_NAME:
+			case WfsPackage.INSERT_ELEMENT_TYPE__SRS_NAME:
 				return getSrsName();
 		}
-		return eDynamicGet(eFeature, resolve);
+		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
@@ -344,26 +341,26 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eSet(EStructuralFeature eFeature, Object newValue) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.INSERT_ELEMENT_TYPE__FEATURE:
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case WfsPackage.INSERT_ELEMENT_TYPE__FEATURE:
 				getFeature().clear();
 				getFeature().addAll((Collection)newValue);
 				return;
-			case WFSPackage.INSERT_ELEMENT_TYPE__HANDLE:
+			case WfsPackage.INSERT_ELEMENT_TYPE__HANDLE:
 				setHandle((String)newValue);
 				return;
-			case WFSPackage.INSERT_ELEMENT_TYPE__IDGEN:
+			case WfsPackage.INSERT_ELEMENT_TYPE__IDGEN:
 				setIdgen((IdentifierGenerationOptionType)newValue);
 				return;
-			case WFSPackage.INSERT_ELEMENT_TYPE__INPUT_FORMAT:
+			case WfsPackage.INSERT_ELEMENT_TYPE__INPUT_FORMAT:
 				setInputFormat((String)newValue);
 				return;
-			case WFSPackage.INSERT_ELEMENT_TYPE__SRS_NAME:
+			case WfsPackage.INSERT_ELEMENT_TYPE__SRS_NAME:
 				setSrsName((URI)newValue);
 				return;
 		}
-		eDynamicSet(eFeature, newValue);
+		super.eSet(featureID, newValue);
 	}
 
 	/**
@@ -371,25 +368,25 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void eUnset(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.INSERT_ELEMENT_TYPE__FEATURE:
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case WfsPackage.INSERT_ELEMENT_TYPE__FEATURE:
 				getFeature().clear();
 				return;
-			case WFSPackage.INSERT_ELEMENT_TYPE__HANDLE:
+			case WfsPackage.INSERT_ELEMENT_TYPE__HANDLE:
 				setHandle(HANDLE_EDEFAULT);
 				return;
-			case WFSPackage.INSERT_ELEMENT_TYPE__IDGEN:
+			case WfsPackage.INSERT_ELEMENT_TYPE__IDGEN:
 				unsetIdgen();
 				return;
-			case WFSPackage.INSERT_ELEMENT_TYPE__INPUT_FORMAT:
+			case WfsPackage.INSERT_ELEMENT_TYPE__INPUT_FORMAT:
 				unsetInputFormat();
 				return;
-			case WFSPackage.INSERT_ELEMENT_TYPE__SRS_NAME:
+			case WfsPackage.INSERT_ELEMENT_TYPE__SRS_NAME:
 				setSrsName(SRS_NAME_EDEFAULT);
 				return;
 		}
-		eDynamicUnset(eFeature);
+		super.eUnset(featureID);
 	}
 
 	/**
@@ -397,20 +394,20 @@ public class InsertElementTypeImpl extends EObjectImpl implements InsertElementT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean eIsSet(EStructuralFeature eFeature) {
-		switch (eDerivedStructuralFeatureID(eFeature)) {
-			case WFSPackage.INSERT_ELEMENT_TYPE__FEATURE:
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case WfsPackage.INSERT_ELEMENT_TYPE__FEATURE:
 				return feature != null && !feature.isEmpty();
-			case WFSPackage.INSERT_ELEMENT_TYPE__HANDLE:
+			case WfsPackage.INSERT_ELEMENT_TYPE__HANDLE:
 				return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
-			case WFSPackage.INSERT_ELEMENT_TYPE__IDGEN:
+			case WfsPackage.INSERT_ELEMENT_TYPE__IDGEN:
 				return isSetIdgen();
-			case WFSPackage.INSERT_ELEMENT_TYPE__INPUT_FORMAT:
+			case WfsPackage.INSERT_ELEMENT_TYPE__INPUT_FORMAT:
 				return isSetInputFormat();
-			case WFSPackage.INSERT_ELEMENT_TYPE__SRS_NAME:
+			case WfsPackage.INSERT_ELEMENT_TYPE__SRS_NAME:
 				return SRS_NAME_EDEFAULT == null ? srsName != null : !SRS_NAME_EDEFAULT.equals(srsName);
 		}
-		return eDynamicIsSet(eFeature);
+		return super.eIsSet(featureID);
 	}
 
 	/**
