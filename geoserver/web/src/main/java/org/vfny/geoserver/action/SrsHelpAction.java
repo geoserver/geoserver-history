@@ -80,7 +80,7 @@ public class SrsHelpAction extends Action {
 
             try { //get its definition
                 crs = CRS.decode("EPSG:"+ id);
-                def = crs.toWKT();
+                def = crs.toString();
                 defs.add(def);
                 ids_string.add(id.toString());
             } catch (Exception e) {
