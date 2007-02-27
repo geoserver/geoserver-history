@@ -9,6 +9,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
+import org.geoserver.feature.FeatureSourceUtils;
 import org.geoserver.util.ReaderUtils;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageInfo;
@@ -109,7 +110,9 @@ public class MapPreviewAction extends GeoServerAction {
         // 3) Go through each *FeatureType* and collect information && write out config files
         for (Iterator it = ftypes.iterator(); it.hasNext();) {
             FeatureTypeInfo layer = (FeatureTypeInfo) it.next();
-            Envelope bbox = layer.getBoundingBox();
+
+            //This will try and get the cached bounding box, if it exists
+            Envelope bbox = FeatureSourceUtils.getBoundingBoxEnvelope(layer.getFeatureSource());
 
             if ((bbox.getWidth() == 0) || (bbox.getHeight() == 0)) {
                 bbox.expandBy(0.1);
