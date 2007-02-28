@@ -72,8 +72,8 @@ function prepareFormData(){
     </tr>    
 	<tr>
 	  <td class="label">
-		<span class="help" title="<bean:message key="help.type.style"/>">
-          <bean:message key="label.style"/>:
+		<span class="help" title="<bean:message key="help.type.style.additional"/>">
+          <bean:message key="label.style.additional"/>:
         </span>
       </td>
       <td class="datum">
