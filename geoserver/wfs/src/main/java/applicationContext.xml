@@ -277,10 +277,12 @@
 	<bean id="gml2OutputFormat" 
 		class="org.geoserver.wfs.xml.GML2OutputFormat" singleton="false">
 		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="catalog"/>
 	</bean>
-	<bean id="gml3OutputFormat" class="org.geoserver.wfs.xml.GML3OutputFormat" 
-		parent="gml2OutputFormat">
+	<bean id="gml3OutputFormat" class="org.geoserver.wfs.xml.GML3OutputFormat"> 
+		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="catalog"/>
 		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
 	<bean id="hitsOutputFormat" class="org.geoserver.wfs.response.HitsOutputFormat">
