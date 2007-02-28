@@ -15,6 +15,7 @@ import org.geotools.feature.FeatureCollection;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.servlets.AbstractService;
@@ -86,6 +87,8 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
         GetFeatureInfoRequest fInfoReq = (GetFeatureInfoRequest) getRequest();
         WMS wms = (WMS) fInfoReq.getServiceRef().getServiceRef();
         WFS wfs = wms.getWFS();
+        GeoServer gs = wms.getGeoServer();
+        
         Data catalog = fInfoReq.getServiceRef().getCatalog();
 
         FeatureCollectionType features = WfsFactory.eINSTANCE.createFeatureCollectionType();
@@ -94,7 +97,7 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
             features.getFeature().add(i.next());
         }
 
-        GML2OutputFormat format = new GML2OutputFormat(wfs, catalog);
+        GML2OutputFormat format = new GML2OutputFormat(wfs, gs, catalog);
         format.write(features, out, null);
     }
 

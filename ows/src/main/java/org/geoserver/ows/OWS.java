@@ -303,24 +303,6 @@ public class OWS {
     }
 
     /**
-     * The default number of decimals allowed in the data.
-     *
-     * @return int the default number of decimals allowed in the data.
-     */
-    public int getNumDecimals() {
-        return numDecimals;
-    }
-
-    /**
-     * Sets the number of decimals to be used with data.
-     *
-     * @param numDecimals Number of decimals.
-     */
-    public void setNumDecimals(int numDecimals) {
-        this.numDecimals = numDecimals;
-    }
-
-    /**
      * Sets the base url from which to locate schemas from.
      *
      * @param schemaBaseURL
