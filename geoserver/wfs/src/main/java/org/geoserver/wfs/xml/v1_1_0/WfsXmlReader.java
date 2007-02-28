@@ -39,9 +39,12 @@ public class WfsXmlReader extends XmlRequestReader {
 
         Parser parser = new Parser(configuration);
 
-        //validate, make this configurable
-        parser.setValidating(true);
-
+        //only validate for cite
+        //TODO: should we make validation a seperate parameter
+        if ( wfs.getCiteConformanceHacks() ) {
+        	parser.setValidating(true);	
+        }
+        
         //set the input source with the correct encoding
         InputSource source = new InputSource(reader);
         source.setEncoding(wfs.getCharSet().name());
