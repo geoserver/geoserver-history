@@ -80,7 +80,7 @@ function prepareFormData(){
         <table>
         	<tr>
         		<td>
-        			<html:select property="panelStyleIds" style="width:130" multiple="multiple">
+        			<html:select property="panelStyleIds" multiple="multiple">
           				<html:options property="styles"/>
         			</html:select>
         		</td>
