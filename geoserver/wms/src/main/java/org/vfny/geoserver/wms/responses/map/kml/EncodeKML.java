@@ -70,12 +70,8 @@ public class EncodeKML {
     /** the KML closing element */
     private static final String KML_FOOTER = "</kml>\n";
 
-    /** Used for reprojection */
-    private final static CoordinateOperationFactory operationFactory;
-
     static {
         Hints hints = new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
-        operationFactory = FactoryFinder.getCoordinateOperationFactory(hints);
     }
 
     /**

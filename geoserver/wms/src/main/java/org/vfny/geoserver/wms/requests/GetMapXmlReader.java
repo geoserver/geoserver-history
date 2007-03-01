@@ -417,7 +417,7 @@ public class GetMapXmlReader extends XmlRequestReader {
             epsgCode = "EPSG:" + epsgCode;
 
             try {
-                CoordinateReferenceSystem mapcrs = CRS.decode(epsgCode, true);
+                CoordinateReferenceSystem mapcrs = CRS.decode(epsgCode);
                 getMapRequest.setCrs(mapcrs);
             } catch (Exception e) {
                 //couldnt make it - we send off a service exception with the correct info
