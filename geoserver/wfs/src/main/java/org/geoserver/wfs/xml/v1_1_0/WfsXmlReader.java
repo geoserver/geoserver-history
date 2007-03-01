@@ -41,10 +41,10 @@ public class WfsXmlReader extends XmlRequestReader {
 
         //only validate for cite
         //TODO: should we make validation a seperate parameter
-        if ( wfs.getCiteConformanceHacks() ) {
-        	parser.setValidating(true);	
+        if (wfs.getCiteConformanceHacks()) {
+            parser.setValidating(true);
         }
-        
+
         //set the input source with the correct encoding
         InputSource source = new InputSource(reader);
         source.setEncoding(wfs.getCharSet().name());

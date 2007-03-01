@@ -17,7 +17,6 @@ import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -73,10 +72,12 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
      * WFS configuration
      */
     private WFS wfs;
+
     /**
      * GeoServer configuration
      */
     private GeoServer geoServer;
+
     /**
      * The catalog
      */

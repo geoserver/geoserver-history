@@ -24,7 +24,6 @@ import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.Requests;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -265,17 +264,19 @@ public final class CoverageStoresEditorForm extends ActionForm {
 
         //do a check to make sure the format accepts the url and report back 
         // an error if it does not
-    	if ( factory instanceof AbstractGridFormat ) {
-    		AbstractGridFormat aFormat = (AbstractGridFormat) factory;
-    		
-    		if (!aFormat.accepts( GeoserverDataDirectory.findDataFile( url ) ) ) {
-    			String key = "error.coverage.invalidUrlForFormat";
-    			Object[] params = new Object[]{ url, type };
-    			
-    			errors.add("URL",new ActionMessage( key, params ));
-    			return errors;
-    		}
-    	}
+        if (factory instanceof AbstractGridFormat) {
+            AbstractGridFormat aFormat = (AbstractGridFormat) factory;
+
+            if (!aFormat.accepts(GeoserverDataDirectory.findDataFile(url))) {
+                String key = "error.coverage.invalidUrlForFormat";
+                Object[] params = new Object[] { url, type };
+
+                errors.add("URL", new ActionMessage(key, params));
+
+                return errors;
+            }
+        }
+
         dump("form", connectionParams);
 
         return errors;

@@ -79,17 +79,18 @@ public class SrsHelpAction extends Action {
             id = (Integer) codeIt.next();
 
             try { //get its definition
-                crs = CRS.decode("EPSG:"+ id);
+                crs = CRS.decode("EPSG:" + id);
                 def = crs.toString();
                 defs.add(def);
                 ids_string.add(id.toString());
             } catch (Exception e) {
-                if(LOGGER.isLoggable(Level.FINER))
+                if (LOGGER.isLoggable(Level.FINER)) {
                     LOGGER.log(Level.FINER, "Issues converting EPSG:" + id, e);
-                else
-                    LOGGER.log(Level.WARNING, "Issues converting EPSG:" + id + ". " 
-                        + e.getLocalizedMessage() + " Stack trace included at FINER logging level");
-                
+                } else {
+                    LOGGER.log(Level.WARNING,
+                        "Issues converting EPSG:" + id + ". " + e.getLocalizedMessage()
+                        + " Stack trace included at FINER logging level");
+                }
             }
         }
 

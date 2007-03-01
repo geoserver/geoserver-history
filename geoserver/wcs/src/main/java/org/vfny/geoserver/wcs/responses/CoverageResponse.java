@@ -310,7 +310,7 @@ public class CoverageResponse implements Response {
         }
 
         // - then create the Coordinate Reference System
-        final CoordinateReferenceSystem targetCRS = CRS.decode(responseCRS, true);
+        final CoordinateReferenceSystem targetCRS = CRS.decode(responseCRS);
 
         // This is the CRS of the requested Envelope
         final String requestCRS = request.getCRS();

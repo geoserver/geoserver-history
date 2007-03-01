@@ -88,7 +88,7 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
         WMS wms = (WMS) fInfoReq.getServiceRef().getServiceRef();
         WFS wfs = wms.getWFS();
         GeoServer gs = wms.getGeoServer();
-        
+
         Data catalog = fInfoReq.getServiceRef().getCatalog();
 
         FeatureCollectionType features = WfsFactory.eINSTANCE.createFeatureCollectionType();

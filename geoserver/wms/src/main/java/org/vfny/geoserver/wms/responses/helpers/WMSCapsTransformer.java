@@ -728,7 +728,7 @@ public class WMSCapsTransformer extends TransformerBase {
             // NOTE: this isnt well done because "comment()" isnt in the
             // ContentHandler interface...
             try {
-                CoordinateReferenceSystem crs = CRS.decode(EPSG + ftype.getSRS(), true);
+                CoordinateReferenceSystem crs = CRS.decode(EPSG + ftype.getSRS());
                 String desc = new StringBuffer("WKT definition of this CRS:\n").append(crs.toWKT())
                                                                                .toString();
                 comment(desc);

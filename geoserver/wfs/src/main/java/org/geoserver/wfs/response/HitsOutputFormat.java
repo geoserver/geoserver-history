@@ -8,7 +8,6 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.ResultTypeType;
 import net.opengis.wfs.WfsFactory;
-
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.ResponseUtils;
