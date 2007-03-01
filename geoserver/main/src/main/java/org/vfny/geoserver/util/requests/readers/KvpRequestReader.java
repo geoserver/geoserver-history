@@ -512,30 +512,11 @@ abstract public class KvpRequestReader {
      * @throws ServiceException
      */
     protected List readCQLFilter(String filter) throws ServiceException {
-        List filters = new ArrayList();
-        List unparsed;
-        ListIterator i;
-        LOGGER.finest("reading filter: " + filter);
-        unparsed = readFlat(filter, "[]");
-        i = unparsed.listIterator();
-
-        String next = null;
-
         try {
-            while (i.hasNext()) {
-                next = (String) i.next();
-
-                if (next.trim().equals("")) {
-                    filters.add(Filter.NONE);
-                } else {
-                    filters.add(FilterBuilder.parse(next));
-                }
-            }
+             return FilterBuilder.parseFilterList(null, filter);
         } catch (ParseException pe) {
-            throw new ServiceException("Could not parse CQL filter: " + next);
+             throw new ServiceException("Could not parse CQL filter list." + pe.getMessage(), pe);
         }
-
-        return filters;
     }
 
     /**
