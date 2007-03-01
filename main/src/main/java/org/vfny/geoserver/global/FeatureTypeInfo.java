@@ -1180,7 +1180,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         if (result == null) {
             //make and add to hash
             try {
-                result = CRS.decode("EPSG:" + epsg, true);
+                result = CRS.decode("EPSG:" + epsg);
                 SRSLookup.put(new Integer(epsg), result);
             } catch (NoSuchAuthorityCodeException e) {
                 String msg = "Error looking up SRS for EPSG: " + epsg + ":"

@@ -378,10 +378,11 @@ public class GetFeature {
             List sortBy = query.getSortBy();
             dataQuery.setSortBy((SortBy[]) sortBy.toArray(new SortBy[sortBy.size()]));
         }
-        
+
         //handle version, datastore may be able to use it
-        if(query.getFeatureVersion() != null)
+        if (query.getFeatureVersion() != null) {
             dataQuery.setVersion(query.getFeatureVersion());
+        }
 
         return dataQuery;
     }
