@@ -5,12 +5,12 @@
 
 	<parent>
 		<groupId>org.geoserver</groupId>
-		<artifactId>geoserver</artifactId>
+		<artifactId>community</artifactId>
 		<version>1.6-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.geoserver</groupId>
-  <artifactId>community</artifactId>
+  <artifactId>community-schemas</artifactId>
 	<packaging>pom</packaging>
   <name>Community Space</name>
 
@@ -23,8 +23,7 @@
 	</dependencies>
 
 	<modules>
-		<module>hello</module>
-		<module>preferences</module>
-		<module>community-schemas</module>
+		<module>wfs-c</module>
+		<module>web-c</module>
 	</modules>
 </project>
