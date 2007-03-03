@@ -258,7 +258,7 @@ public class MapPreviewAction extends GeoServerAction {
             //*Config.xml
             FileOutputStream config_fos = new FileOutputStream(config_file);
             PrintStream config_out = new PrintStream(config_fos);
-            createConfigXML(config_out, layerName, namespace);
+            createConfigXML(config_out, layerName, namespace, srsValue);
             config_out.close();
         }
 
@@ -353,7 +353,8 @@ public class MapPreviewAction extends GeoServerAction {
         out.println("</html>");
     }
 
-    private void createConfigXML(PrintStream out, String ft_name, String ft_namespace) {
+    private void createConfigXML(PrintStream out, String ft_name, String ft_namespace,
+        String srsValue) {
         out.println("<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>");
         out.println(
             "<MapbuilderConfig version=\"0.2.1\" id=\"referenceTemplate\" xmlns=\"http://mapbuilder.sourceforge.net/mapbuilder\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://mapbuilder.sourceforge.net/mapbuilder ../../mapbuilder/lib/schemas/config.xsd\">");
@@ -390,6 +391,14 @@ public class MapPreviewAction extends GeoServerAction {
         out.println("        </AoiBoxWZ>");
         out.println("        <CursorTrack id=\"cursorTrack\">");
         out.println("          <mouseHandler>mainMap</mouseHandler>");
+
+        if (!srsValue.equalsIgnoreCase("4326")) { // temporary so it doesn't die with custom crs
+            out.println("          <showLatLong>false</showLatLong>");
+
+            //out.println("          <showXY>true<showXY>");
+            // <showXY> is supposed to work but isn't, look into this.
+        }
+
         out.println("        </CursorTrack>");
         out.println("        <Legend id=\"legend\">");
         out.println("        </Legend>");
