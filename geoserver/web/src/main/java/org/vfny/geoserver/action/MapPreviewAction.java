@@ -11,6 +11,12 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 import org.geoserver.feature.FeatureSourceUtils;
 import org.geoserver.util.ReaderUtils;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
@@ -107,32 +113,68 @@ public class MapPreviewAction extends GeoServerAction {
             e.printStackTrace();
         }
 
+        // We need to create a 4326 CRS for comparison to layer's crs
+        CoordinateReferenceSystem latLonCrs = null;
+
+        try { // get the CRS object for lat/lon 4326
+            latLonCrs = CRS.decode("EPSG:" + 4326);
+        } catch (NoSuchAuthorityCodeException e) {
+            String msg = "Error looking up SRS for EPSG: " + 4326 + ":" + e.getLocalizedMessage();
+            LOGGER.warning(msg);
+        } catch (FactoryException e) {
+            String msg = "Error looking up SRS for EPSG: " + 4326 + ":" + e.getLocalizedMessage();
+            LOGGER.warning(msg);
+        }
+
         // 3) Go through each *FeatureType* and collect information && write out config files
         for (Iterator it = ftypes.iterator(); it.hasNext();) {
             FeatureTypeInfo layer = (FeatureTypeInfo) it.next();
 
-            //This will try and get the cached bounding box, if it exists
-            Envelope bbox = FeatureSourceUtils.getBoundingBoxEnvelope(layer.getFeatureSource());
-
-            if ((bbox.getWidth() == 0) || (bbox.getHeight() == 0)) {
-                bbox.expandBy(0.1);
+            if (!layer.isEnabled()) {
+                continue; // if it isn't enabled, move to the next layer
             }
 
-            if (layer.isEnabled()) {
-                // prepare strings for web output
-                ftList.add(layer.getNameSpace().getPrefix() + "_"
-                    + layer.getFeatureType().getTypeName()); // FeatureType name
-                ftnsList.add(layer.getNameSpace().getPrefix() + ":"
-                    + layer.getFeatureType().getTypeName());
-                dsList.add(layer.getDataStoreInfo().getId()); // DataStore info
-                                                              // bounding box of the FeatureType
+            CoordinateReferenceSystem layerCrs = layer.getDeclaredCRS();
 
-                bboxList.add(bbox.getMinX() + ", " + bbox.getMinY() + ", " + bbox.getMaxX() + ", "
-                    + bbox.getMaxY());
-                //save out the mapbuilder files
-                makeMapBuilderFiles(previewDir, layer.getFeatureType().getTypeName(),
-                    layer.getNameSpace().getPrefix(), bbox, layer.getSRS());
+            /* A quick and efficient way to grab the bounding box is to get it
+             * from the featuretype info where the lat/lon bbox is loaded
+             * from the DTO. We do this with layer.getLatLongBoundingBox().
+             * We need to reproject the bounding box from lat/lon to the layer crs
+             * for display in MapBuilder.
+             */
+            Envelope orig_bbox = layer.getLatLongBoundingBox();
+
+            if ((orig_bbox.getWidth() == 0) || (orig_bbox.getHeight() == 0)) {
+                orig_bbox.expandBy(0.1);
             }
+
+            ReferencedEnvelope bbox = new ReferencedEnvelope(orig_bbox, latLonCrs);
+
+            if (!CRS.equalsIgnoreMetadata(layerCrs, latLonCrs)) {
+                try { // reproject the bbox to the layer crs
+                    bbox = bbox.transform(layerCrs, true);
+                } catch (TransformException e) {
+                    e.printStackTrace();
+                } catch (FactoryException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // we now have a bounding box in the same CRS as the layer
+
+            // prepare strings for web output
+            ftList.add(layer.getNameSpace().getPrefix() + "_"
+                + layer.getFeatureType().getTypeName()); // FeatureType name
+            ftnsList.add(layer.getNameSpace().getPrefix() + ":"
+                + layer.getFeatureType().getTypeName());
+            dsList.add(layer.getDataStoreInfo().getId()); // DataStore info
+                                                          // bounding box of the FeatureType
+
+            bboxList.add(bbox.getMinX() + ", " + bbox.getMinY() + ", " + bbox.getMaxX() + ", "
+                + bbox.getMaxY());
+            //save out the mapbuilder files
+            makeMapBuilderFiles(previewDir, layer.getFeatureType().getTypeName(),
+                layer.getNameSpace().getPrefix(), bbox, layer.getSRS());
         }
 
         // 3.5) Go through each *Coverage* and collect its info
