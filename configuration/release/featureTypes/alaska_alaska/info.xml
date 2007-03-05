@@ -1,0 +1,19 @@
+<featureType datastore = "alaska" >
+<name>alaska</name>
+<!--
+native wich EPGS code for the FeatureTypeInfoDTO
+-->
+<SRS>26713</SRS>
+<title>alaska_Type</title>
+<abstract>Generated from alaska</abstract>
+<wmspath>/</wmspath>
+<numDecimals value = "8" />
+<keywords>alaska</keywords>
+<latLonBoundingBox dynamic = "false" miny = "3.4642163933657395" maxy = "21.516067886584427" maxx = "-95.47067835680123" minx = "-129.8368368820409"  />
+<!--
+the default style this FeatureTypeInfoDTO can be represented by.
+at least must contain the "default" attribute 
+-->
+<styles default = "polygon"  />
+<cacheinfo enabled = "false" maxage = ""  />
+</featureType>

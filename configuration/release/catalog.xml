@@ -29,6 +29,12 @@ parameters repository for all featuretypes it holds.
 <parameter value = "file:data/taz_shapes/tasmania_cities.shp" name = "url"  />
 </connectionParams>
 </datastore>
+<datastore namespace = "topp" enabled = "true" id = "alaska" >
+<connectionParams>
+<parameter value = "topp" name = "namespace"  />
+<parameter value = "file:data/shapefiles/alaska.shp" name = "url"  />
+</connectionParams>
+</datastore>
 <datastore namespace = "topp" enabled = "true" id = "tasmania_roads" >
 <connectionParams>
 <parameter value = "topp" name = "namespace"  />
