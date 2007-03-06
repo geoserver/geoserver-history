@@ -513,9 +513,9 @@ abstract public class KvpRequestReader {
      */
     protected List readCQLFilter(String filter) throws ServiceException {
         try {
-             return FilterBuilder.parseFilterList(null, filter);
+            return FilterBuilder.parseFilterList(null, filter);
         } catch (ParseException pe) {
-             throw new ServiceException("Could not parse CQL filter list." + pe.getMessage(), pe);
+            throw new ServiceException("Could not parse CQL filter list." + pe.getMessage(), pe);
         }
     }
 

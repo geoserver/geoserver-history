@@ -1,3 +1,26 @@
+GeoServer 1.5.0-RC2
+---------------------
+
+This is the second release candidate for the 1.5 sereies of GeoServer.
+Major features / improvements of this release include:
+
+- Bug fixes
+- Kml returns proper PNG files
+- Kml strips out illegal characters now
+- Improved error messages
+- UI improvements
+- Inline features are back
+- Links to old homepage updated
+- Performance optimization
+
+
+The issue log for this release is here:
+
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12974
+
+Based on GeoTools 2.3.1-SNAPSHOT
+
+
 GeoServer 1.5.0-RC1
 ---------------------
 
