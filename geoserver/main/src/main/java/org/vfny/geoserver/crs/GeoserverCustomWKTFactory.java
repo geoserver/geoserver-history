@@ -4,12 +4,13 @@
  */
 package org.vfny.geoserver.crs;
 
-import org.geotools.referencing.factory.epsg.FactoryUsingWKT;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
+
+import org.geotools.referencing.factory.epsg.FactoryUsingWKT;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 
 /**
@@ -17,7 +18,7 @@ import java.util.logging.Level;
  */
 public class GeoserverCustomWKTFactory extends FactoryUsingWKT {
     public static final String SYSTEM_DEFAULT_USER_PROJ_FILE = "user.projections.file";
-
+    
     /**
      * Returns the URL to the property file that contains CRS definitions. The
      * default implementation returns the URL to the {@value #FILENAME} file.
@@ -48,4 +49,5 @@ public class GeoserverCustomWKTFactory extends FactoryUsingWKT {
 
         return GeoserverCustomWKTFactory.class.getResource(cust_proj_file);
     }
+    
 }
