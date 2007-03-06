@@ -4,28 +4,32 @@
  */
 package org.vfny.geoserver.action;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
+import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.FactoryFinder;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.vfny.geoserver.crs.GeoserverCustomWKTFactory;
 
 
 /**
@@ -53,6 +57,16 @@ public class SrsHelpAction extends Action {
         ArrayList ids_string = new ArrayList();
 
         Set codes = CRS.getSupportedCodes("EPSG");
+        
+        CRSAuthorityFactory customFactory = FactoryFinder.getCRSAuthorityFactory("EPSG", new
+                Hints(Hints.CRS_AUTHORITY_FACTORY,
+                GeoserverCustomWKTFactory.class));
+        Set customCodes = new HashSet();
+        try {
+            customCodes = customFactory.getAuthorityCodes(CoordinateReferenceSystem.class);
+        } catch(FactoryException e) {
+            LOGGER.log(Level.WARNING, "Error occurred while trying to gather custom CRS codes", e);
+        }
 
         // make an array of each code (as an int)
         HashSet idSet = new HashSet();
@@ -77,19 +91,25 @@ public class SrsHelpAction extends Action {
         while (codeIt.hasNext()) //for each id (in sorted order)
          {
             id = (Integer) codeIt.next();
-
+            
             try { //get its definition
                 crs = CRS.decode("EPSG:" + id);
                 def = crs.toString();
                 defs.add(def);
                 ids_string.add(id.toString());
             } catch (Exception e) {
-                if (LOGGER.isLoggable(Level.FINER)) {
-                    LOGGER.log(Level.FINER, "Issues converting EPSG:" + id, e);
-                } else {
-                    LOGGER.log(Level.WARNING,
-                        "Issues converting EPSG:" + id + ". " + e.getLocalizedMessage()
-                        + " Stack trace included at FINER logging level");
+                if(customCodes.contains(id.toString())) {
+                    if(LOGGER.isLoggable(Level.FINE))
+                        LOGGER.log(Level.FINE,
+                                "Issues converting EPSG:" + id + ".", e);
+                    else
+                        LOGGER.log(Level.WARNING,
+                            "Issues converting EPSG:" + id + ". " + e.getLocalizedMessage()
+                            + " Stack trace included at FINE logging level");
+                    
+                        
+                } else if(LOGGER.isLoggable(Level.FINER)) {
+                        LOGGER.log(Level.FINER, "Issues converting EPSG:" + id, e);
                 }
             }
         }
