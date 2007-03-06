@@ -23,6 +23,7 @@ import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.image.ImageWorker;
 import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
@@ -500,8 +501,8 @@ public class EncodeKML {
             // /////////////////////////////////////////////////////////////////
             final ZipEntry e = new ZipEntry("layer_" + (i) + ".png");
             outZ.putNextEntry(e);
-
-            final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(outZ);
+            new ImageWorker(curImage).writePNG(outZ, "FILTERED", 0.75f, false, false);
+            //final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(outZ);
             /*final PlanarImage encodedImage = PlanarImage
                             .wrapRenderedImage(curImage);
             //final PlanarImage finalImage = encodedImage.getColorModel() instanceof DirectColorModel?ImageUtilities
@@ -524,8 +525,8 @@ public class EncodeKML {
 
             //imgWriter.setOutput(memOutStream);
             //imgWriter.write(null, new IIOImage(finalImage, null, null), null);
-            memOutStream.flush();
-            memOutStream.close();
+            //memOutStream.flush();
+            //memOutStream.close();
             //imgWriter.dispose();
             outZ.closeEntry();
         }
