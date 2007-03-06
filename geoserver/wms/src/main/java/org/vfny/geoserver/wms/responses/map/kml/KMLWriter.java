@@ -487,7 +487,12 @@ public class KMLWriter extends OutputStreamWriter {
 
                         Feature feature = reader.next();
                         StringBuffer featureLabel = new StringBuffer(""); // this gets filled in if there is a textsymbolizer
-                        startDocument(feature.getID(), layer.getTitle());
+                        String id = feature.getID();
+                        id = id.replaceAll("&", "");
+                        id = id.replaceAll(">", "");
+                        id = id.replaceAll("<", "");
+                        id = id.replaceAll("%", "");
+                        startDocument(id, layer.getTitle());
 
                         // start writing out the styles
                         write("<Style id=\"GeoServerStyle" + feature.getID() + "\">");
