@@ -96,11 +96,7 @@ parameters repository for all coverages it holds.
 <format namespace = "nurc" enabled = "true" id = "arcGridSample" >
 <description>A test ArcGrid Coverage</description>
 <type>ArcGrid</type>
-<url>file:coverages/arc_sample/a.asc</url>
-<parameters>
-<parameter value = "false" name = "GRASS"  />
-<parameter value = "false" name = "Compressed"  />
-</parameters>
+<url>file:coverages/arc_sample/precip30min.asc</url>
 </format>
 </formats>
 <!--
