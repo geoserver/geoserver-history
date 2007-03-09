@@ -257,12 +257,12 @@ public class WMSCapsTransformer extends TransformerBase {
         private void handleKeywordList(List keywords) {
             start("KeywordList");
 
-            if ( keywords != null ) {
-            	for (Iterator it = keywords.iterator(); it.hasNext();) {
+            if (keywords != null) {
+                for (Iterator it = keywords.iterator(); it.hasNext();) {
                     element("Keyword", String.valueOf(it.next()));
-                }	
+                }
             }
-            
+
             end("KeywordList");
         }
 
