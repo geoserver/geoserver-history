@@ -273,18 +273,20 @@ public class EncodeKML {
         MapLayer[] layers = mapContext.getLayers();
         int nLayers = layers.length;
 
-        FilterFactory fFac = new FilterFactoryImpl();
-
         final int imageWidth = this.mapContext.getMapWidth();
         final int imageHeight = this.mapContext.getMapHeight();
+
         //final CoordinateReferenceSystem requestedCrs = mapContext.getCoordinateReferenceSystem();
         //writer.setRequestedCRS(requestedCrs);
         //writer.setScreenSize(new Rectangle(imageWidth, imageHeight));
-        writer.startDocument("GeoServer", null);
+        if (nLayers > 1) { // if we have more than one layer, use the name "GeoServer" to group them
+            writer.startDocument("GeoServer", null);
+        }
 
         for (int i = 0; i < nLayers; i++) { // for every layer specified in the request
 
             MapLayer layer = layers[i];
+            writer.startDocument(layer.getTitle(), null);
 
             //FeatureReader featureReader = null;
             FeatureSource fSource = layer.getFeatureSource();
@@ -411,9 +413,13 @@ public class EncodeKML {
                     }
                 }*/
             }
+
+            writer.endDocument();
         }
 
-        writer.endDocument();
+        if (nLayers > 1) {
+            writer.endDocument();
+        }
     }
 
     /**
