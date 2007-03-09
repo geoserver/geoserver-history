@@ -267,7 +267,14 @@ public final class CoverageStoresEditorForm extends ActionForm {
         if (factory instanceof AbstractGridFormat) {
             AbstractGridFormat aFormat = (AbstractGridFormat) factory;
 
-            if (!aFormat.accepts(GeoserverDataDirectory.findDataFile(url))) {
+            File file = GeoserverDataDirectory.findDataFile(url);
+            errors = FormUtils.checkFileExistsAndCanRead(file, errors);
+
+            if (!errors.isEmpty()) {
+                return errors;
+            }
+
+            if (!aFormat.accepts(file)) {
                 String key = "error.coverage.invalidUrlForFormat";
                 Object[] params = new Object[] { url, type };
 

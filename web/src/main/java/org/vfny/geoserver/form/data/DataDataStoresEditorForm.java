@@ -12,6 +12,7 @@ import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFactorySpi.Param;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.DataStoreUtils;
 import org.vfny.geoserver.util.Requests;
@@ -205,7 +206,7 @@ public class DataDataStoresEditorForm extends ActionForm {
                     } catch (MalformedURLException e) {
                         //check for special case of file
                         try {
-                            if (new File(value).exists()) {
+                            if (GeoserverDataDirectory.findDataFile(value).exists()) {
                                 new URL("file://" + value);
                                 setParamValues(i, "file://" + value);
                             }
@@ -213,6 +214,12 @@ public class DataDataStoresEditorForm extends ActionForm {
                             //let this paramter die later
                         }
                     }
+
+                    //do a check to see if the shapefile url is valid, report 
+                    // an error if it does not 
+                    File file = GeoserverDataDirectory.findDataFile(value);
+
+                    return FormUtils.checkFileExistsAndCanRead(file, errors);
                 }
             }
 
