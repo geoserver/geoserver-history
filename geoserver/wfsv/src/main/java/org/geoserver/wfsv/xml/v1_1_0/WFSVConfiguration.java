@@ -10,7 +10,7 @@ import net.opengis.wfsv.WfsvFactory;
 
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
-import org.geoserver.wfs.xml.v1_0_0.WFSConfiguration;
+import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.xml.BindingConfiguration;
 import org.geotools.xml.Configuration;
 import org.picocontainer.MutablePicoContainer;
