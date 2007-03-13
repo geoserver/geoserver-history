@@ -139,6 +139,10 @@
   	<url-pattern>/ows/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
+    <servlet-name>dispatcher</servlet-name>
+    <url-pattern>/wfsv/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
     <servlet-name>hider</servlet-name>
     <url-pattern>/data/services.xml</url-pattern>
   </servlet-mapping>
