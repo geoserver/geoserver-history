@@ -136,15 +136,13 @@ public class GeoServerFeatureSource implements FeatureSource {
         }
 
         try {
-            String handle = query.getHandle();
-            int maxFeatures = query.getMaxFeatures();
-            String typeName = query.getTypeName();
             String[] propNames = extractAllowedAttributes(query);
             Filter filter = query.getFilter();
             filter = makeDefinitionFilter(filter);
 
-            DefaultQuery defQuery = new DefaultQuery(typeName, filter, maxFeatures, propNames,
-                    handle);
+            DefaultQuery defQuery = new DefaultQuery(query);
+            defQuery.setFilter(filter);
+            defQuery.setPropertyNames(propNames);
 
             //set sort by
             if (query.getSortBy() != null) {
