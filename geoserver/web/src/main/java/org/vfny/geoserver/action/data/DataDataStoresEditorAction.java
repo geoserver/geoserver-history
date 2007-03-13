@@ -12,9 +12,11 @@ import org.apache.struts.action.ActionMapping;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFactorySpi.Param;
+import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
+import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.form.data.DataDataStoresEditorForm;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.DataStoreUtils;
@@ -120,10 +122,11 @@ public class DataDataStoresEditorAction extends ConfigAction {
             return mapping.findForward("config.data.store.editor");
         }
 
+        FeatureType singleFeatureType = null;
+
         try {
             ServletContext sc = request.getSession().getServletContext();
-            Map niceParams = DataStoreUtils.getParams(connectionParams, sc);
-            DataStore victim = factory.createDataStore(niceParams);
+            DataStore victim = DataStoreUtils.acquireDataStore(paramTexts, sc);
 
             if (victim == null) {
                 // We *really* could not use these params!
@@ -137,6 +140,14 @@ public class DataDataStoresEditorAction extends ConfigAction {
             }
 
             String[] typeNames = victim.getTypeNames();
+
+            //If there's only one featureType in the datastore, then we
+            //want to be nice to users and pass them directly to the editor,
+            //so we need to get the featureType here.
+            if (typeNames.length == 1) {
+                singleFeatureType = victim.getSchema(typeNames[0]);
+            }
+
             dump("typeNames", typeNames);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
@@ -166,7 +177,23 @@ public class DataDataStoresEditorAction extends ConfigAction {
         getUserContainer(request).setDataStoreConfig(null);
         getApplicationState().notifyConfigChanged();
 
-        return mapping.findForward("config.data.store");
+        if (singleFeatureType == null) {
+            //If there are many featureTypes, then just forward to the normal
+            //spot.
+            return mapping.findForward("config.data.store");
+        } else {
+            //We only have one featureType, so we should forward to the editor
+            //of this featureType, since this is what users will be next in 95%
+            //of the cases.
+            FeatureTypeConfig ftConfig = new FeatureTypeConfig(dataStoreID, singleFeatureType, false);
+
+            request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE, ftConfig);
+            request.getSession().removeAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
+
+            user.setFeatureTypeConfig(ftConfig);
+
+            return mapping.findForward("config.data.type.editor");
+        }
     }
 
     /**
