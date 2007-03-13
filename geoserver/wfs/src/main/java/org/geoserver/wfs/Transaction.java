@@ -163,7 +163,7 @@ public class Transaction {
         }
 
         //the geotools transaction
-        transaction = new DefaultTransaction();
+        transaction = getDatastoreTransaction(request);
 
         //
         // We are going to preprocess our elements,
@@ -637,14 +637,10 @@ public class Transaction {
                                 CoordinateReferenceSystem target = schema.getDefaultGeometry()
                                                                          .getCoordinateSystem();
 
-                                if (target == null) {
-                                    //default to 4326
-                                    //TODO: maybe we should throw an exception, or just not reproject
-                                    // at all
-                                    target = CRS.decode("EPSG:4326");
+                                if (target != null) {
+                                    collection = new ReprojectingFeatureCollection(collection,
+                                            target);
                                 }
-
-                                collection = new ReprojectingFeatureCollection(collection, target);
 
                                 // Need to use the namespace here for the lookup, due to our weird
                                 // prefixed internal typenames.  see 
@@ -802,6 +798,15 @@ public class Transaction {
         // we will commit in the writeTo method
         // after user has got the response
         //response = build;
+    }
+
+    /**
+     * Creates a gt2 transaction used to execute the transaction call
+     * @return
+     */
+    protected DefaultTransaction getDatastoreTransaction(TransactionType request)
+        throws IOException {
+        return new DefaultTransaction();
     }
 
     /* (non-Javadoc)
