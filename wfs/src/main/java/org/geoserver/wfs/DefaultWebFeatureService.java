@@ -29,17 +29,17 @@ public class DefaultWebFeatureService implements WebFeatureService {
     /**
      * WFS service configuration.
      */
-    WFS wfs;
+    protected WFS wfs;
 
     /**
      * The catalog
      */
-    Data catalog;
+    protected Data catalog;
 
     /**
      * Filter factory
      */
-    FilterFactory filterFactory;
+    protected FilterFactory filterFactory;
 
     public DefaultWebFeatureService(WFS wfs, Data catalog) {
         this.wfs = wfs;
