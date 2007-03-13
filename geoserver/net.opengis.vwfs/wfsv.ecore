@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="wfsv"
+    nsURI="http://www.opengis.net/wfsv" nsPrefix="wfsv">
+  <eClassifiers xsi:type="ecore:EClass" name="DifferenceQueryType">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="DifferenceQueryType"/>
+      <details key="kind" value="elementOnly"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="filter" unique="false"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//AnySimpleType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;                The Filter element is used to define spatial and/or non-spatial&#xD;&#xA;                constraints on query.  Spatial constrains use GML3 to specify&#xD;&#xA;                the constraining geometry.  A full description of the Filter&#xD;&#xA;                element can be found in the Filter Encoding Implementation&#xD;&#xA;                Specification.&#xD;&#xA;             "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="Filter"/>
+        <details key="namespace" value="http://www.opengis.net/ogc"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fromFeatureVersion" unique="false"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String" defaultValueLiteral="FIRST"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;   &#x9;         Same as featureVersion in QueryType, but this indicates a starting feature version&#xD;&#xA;   &#x9;         for a difference and log operations.&#xD;&#xA;   &#x9;      "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="fromFeatureVersion"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="toFeatureVersion" unique="false"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String" defaultValueLiteral="LAST"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;             Same as featureVersion in QueryType, indicates the second version to be used for&#xD;&#xA;             performing a difference of log operation.&#xD;&#xA;          "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="toFeatureVersion"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeName" unique="false"
+        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//QName">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;              The typeName attribute is a single feature type name that indicates which type&#xD;&#xA;              of feature instances should be included in the reponse set.  &#xD;&#xA;              The names must be a valid type that belong to this query's feature content&#xD;&#xA;              as defined by the GML Application Schema.&#xD;&#xA;           "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="typeName"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DocumentRoot">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value=""/>
+      <details key="kind" value="mixed"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mixed" unique="false" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="elementWildcard"/>
+        <details key="name" value=":mixed"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="xMLNSPrefixMap" upperBound="-1"
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EStringToStringMapEntry"
+        transient="true" containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="xmlns:prefix"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="xSISchemaLocation" upperBound="-1"
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EStringToStringMapEntry"
+        transient="true" containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="xsi:schemaLocation"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="differenceQuery" upperBound="-2"
+        eType="#//DifferenceQueryType" volatile="true" transient="true" derived="true"
+        containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;            The DifferenceFilter element is used to gather differences in features&#xD;&#xA;            matched by a standard OGC filter at starting and ending featureVersion, and a filter used&#xD;&#xA;            to match &#xD;&#xA;         "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="DifferenceQuery"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="getDiff" upperBound="-2"
+        eType="#//GetDiffType" volatile="true" transient="true" derived="true" containment="true"
+        resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;            The GetDiff element is used to request that a Versioning Web Feature&#xD;&#xA;            Service returns a transaction command that can be used to alter features&#xD;&#xA;            at version m to turn them into version n&#xD;&#xA;         "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="GetDiff"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="getLog" upperBound="-2"
+        eType="#//GetLogType" volatile="true" transient="true" derived="true" containment="true"
+        resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;            The GetLog element is used to request that a Versioning Web Feature&#xD;&#xA;            Service return the change history for features of one or &#xD;&#xA;            more feature types.&#xD;&#xA;         "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="GetLog"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rollback" upperBound="-2"
+        eType="#//RollbackType" volatile="true" transient="true" derived="true" containment="true"
+        resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;            Rolls back the changes occurred on all matched features between&#xD;&#xA;            fromFeatureVersion and featureVersion&#xD;&#xA;         "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="Rollback"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="affiliation" value="http://www.opengis.net/wfs#Native"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="versionedDelete" upperBound="-2"
+        eType="#//VersionedDeleteElementType" volatile="true" transient="true" derived="true"
+        containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="VersionedDelete"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="affiliation" value="http://www.opengis.net/wfs#Delete"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="versionedUpdate" upperBound="-2"
+        eType="#//VersionedUpdateElementType" volatile="true" transient="true" derived="true"
+        containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="VersionedUpdate"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="affiliation" value="http://www.opengis.net/wfs#Update"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GetDiffType" eSuperTypes="wfs.ecore#//BaseRequestType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="&#xD;&#xA;            A GetDiff element contains one or more DifferenceQuery elements&#xD;&#xA;            that describe a difference query operation on one feature type.  In&#xD;&#xA;            response to a GetDiff request, a Versioning Web Feature Service&#xD;&#xA;            must be able to generate a Transaction command that can be used&#xD;&#xA;            to alter features at fromFeatureVersion and alter them into features&#xD;&#xA;            at toFeatureVersion&#xD;&#xA;         "/>
+    </eAnnotations>
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="GetDiffType"/>
+      <details key="kind" value="elementOnly"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="differenceQuery" lowerBound="1"
+        upperBound="-1" eType="#//DifferenceQueryType" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;            The DifferenceFilter element is used to gather differences in features&#xD;&#xA;            matched by a standard OGC filter at starting and ending featureVersion, and a filter used&#xD;&#xA;            to match &#xD;&#xA;         "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="DifferenceQuery"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="outputFormat" unique="false"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String" defaultValueLiteral="application/xml; subtype=wfsv-transaction/1.1.0"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;                     The outputFormat attribute is used to specify the output&#xD;&#xA;                     format that the Versioning Web Feature Service should generate in&#xD;&#xA;                     response to a GetDiff or GetFeatureWithLock element.&#xD;&#xA;                     The default value of 'application/xml; subtype=wfsv-transaction/1.1.0'&#xD;&#xA;                     indicates that the output is an XML document that&#xD;&#xA;                     conforms to the WFS 1.1.0 Transaction definition.&#xD;&#xA;                     For the purposes of experimentation, vendor extension,&#xD;&#xA;                     or even extensions that serve a specific community of&#xD;&#xA;                     interest, other acceptable output format values may be&#xD;&#xA;                     used to specify other formats as long as those values&#xD;&#xA;                     are advertised in the capabilities document.&#xD;&#xA;                  "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="outputFormat"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GetLogType" eSuperTypes="wfs.ecore#//BaseRequestType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="&#xD;&#xA;            A GetLog element contains one or more DifferenceQuery elements&#xD;&#xA;            that describe a diffence query operation on one feature type.  &#xD;&#xA;            In response to a GetLog request, a Web Feature Service&#xD;&#xA;            must be able to generate a list of logs entries for features matched&#xD;&#xA;            by the DifferenceQuery parameters. Each log entry is an instance&#xD;&#xA;            of the ChangeSet feature type.&#xD;&#xA;            In response to a GetFeature request, a Versioning Web Feature Service&#xD;&#xA;            must be able to generate a GML3 response that validates&#xD;&#xA;            using a schema generated by the DescribeFeatureType request against&#xD;&#xA;            the ChangeSets feature type.&#xD;&#xA;            A Web Feature Service may support other possibly non-XML&#xD;&#xA;            (and even binary) output formats as long as those formats&#xD;&#xA;            are advertised in the capabilities document.&#xD;&#xA;         "/>
+    </eAnnotations>
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="GetLogType"/>
+      <details key="kind" value="elementOnly"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="differenceQuery" lowerBound="1"
+        upperBound="-1" eType="#//DifferenceQueryType" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;            The DifferenceFilter element is used to gather differences in features&#xD;&#xA;            matched by a standard OGC filter at starting and ending featureVersion, and a filter used&#xD;&#xA;            to match &#xD;&#xA;         "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="DifferenceQuery"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxFeatures" unique="false"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//PositiveInteger">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;                     The maxFeatures attribute is used to specify the maximum&#xD;&#xA;                     number of features that a GetFeature operation should&#xD;&#xA;                     generate (regardless of the actual number of query hits).&#xD;&#xA;                  "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="maxFeatures"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="outputFormat" unique="false"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String" defaultValueLiteral="text/xml; subtype=gml/3.1.1"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;                     The outputFormat attribute is used to specify the output&#xD;&#xA;                     format that the Versioning Web Feature Service should generate in&#xD;&#xA;                     response to a GetLog element.&#xD;&#xA;                     The default value of 'text/xml; subtype=gml/3.1.1'&#xD;&#xA;                     indicates that the output is an XML document that&#xD;&#xA;                     conforms to the Geography Markup Language (GML)&#xD;&#xA;                     Implementation Specification V3.1.1.&#xD;&#xA;                     For the purposes of experimentation, vendor extension,&#xD;&#xA;                     or even extensions that serve a specific community of&#xD;&#xA;                     interest, other acceptable output format values may be&#xD;&#xA;                     used to specify other formats as long as those values&#xD;&#xA;                     are advertised in the capabilities document.&#xD;&#xA;                  "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="outputFormat"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="resultType" unique="false"
+        eType="ecore:EEnum wfs.ecore#//ResultTypeType" defaultValueLiteral="results"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;                     The resultType attribute is used to indicate&#xD;&#xA;                     what response a wfsv should return to user once&#xD;&#xA;                     a GetFeature request is processed.&#xD;&#xA;                     Possible values are:&#xD;&#xA;                        results - meaning that the full response set&#xD;&#xA;                                  (i.e. all the feature instances) &#xD;&#xA;                                  should be returned.&#xD;&#xA;                        hits    - meaning that an empty response set&#xD;&#xA;                                  should be returned (i.e. no feature&#xD;&#xA;                                  instances should be returned) but&#xD;&#xA;                                  the &quot;numberOfFeatures&quot; attribute&#xD;&#xA;                                  should be set to the number of feature&#xD;&#xA;                                  instances that would be returned.&#xD;&#xA;                  "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="resultType"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RollbackType" eSuperTypes="wfs.ecore#//NativeType">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="RollbackType"/>
+      <details key="kind" value="elementOnly"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="differenceQuery" lowerBound="1"
+        eType="#//DifferenceQueryType" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;                        The difference filter will be used to compute a diff to be applied&#xD;&#xA;                        in order to perform the rollback. A rollback is conceptually just&#xD;&#xA;                        a Transaction applied on the result of a back-diff between two&#xD;&#xA;                        revisions.&#xD;&#xA;                     "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="DifferenceQuery"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="handle" unique="false"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;                     The handle attribute allows a client application&#xD;&#xA;                     to assign a client-generated request identifier&#xD;&#xA;                     to an Insert action.  The handle is included to&#xD;&#xA;                     facilitate error reporting.  If a Rollback action&#xD;&#xA;                     in a Transaction request fails, then a Versioning WFS may&#xD;&#xA;                     include the handle in an exception report to localize&#xD;&#xA;                     the error.  If no handle is included of the offending&#xD;&#xA;                     Rollback element then a WFS may employee other means of&#xD;&#xA;                     localizing the error (e.g. line number).&#xD;&#xA;                  "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="handle"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VersionedDeleteElementType" eSuperTypes="wfs.ecore#//DeleteElementType">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="VersionedDeleteElementType"/>
+      <details key="kind" value="elementOnly"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="featureVersion" unique="false"
+        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;                     See VersionedUpdateElementType featureVersion attribute.&#xD;&#xA;                  "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="featureVersion"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VersionedUpdateElementType" eSuperTypes="wfs.ecore#//UpdateElementType">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="VersionedUpdateElementType"/>
+      <details key="kind" value="elementOnly"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="featureVersion" unique="false"
+        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;                     The syntax and semantics is the same as featureVersion in Query. If specified,&#xD;&#xA;                     update will check that every updated feature is still at the specified version before&#xD;&#xA;                     executing, and will fail if a change occurred on the server in the meantime.&#xD;&#xA;                  "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="featureVersion"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>
