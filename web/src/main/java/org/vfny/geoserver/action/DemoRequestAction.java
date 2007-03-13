@@ -78,7 +78,10 @@ public class DemoRequestAction extends GeoServerAction {
             demoForm.setBody("");
         }
 
-        String service = demo.startsWith("WCS_") ? "wcs" : (demo.startsWith("WMS_") ? "wms" : "wfs");
+        String service = (demo.indexOf("WCS_") > 0) ? "wcs"
+                                                    : ((demo.indexOf("WMS_") > 0) ? "wms"
+                                                                                  : ((demo.indexOf(
+                "WFSV_") > 0) ? "wfsv" : "wfs"));
 
         String url = Requests.getBaseUrl(request, getGeoServer()) + service;
 
