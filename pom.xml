@@ -222,6 +222,11 @@
     <version>${gt.version}</version>
    </dependency>
    <dependency>
+    <groupId>org.geotools</groupId>
+    <artifactId>gt2-postgis-versioned</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
     <groupId>org.wkb4j</groupId>
     <artifactId>wkb4j</artifactId>
     <version>1.0-RC1</version>
@@ -825,19 +830,15 @@
     </property>
    </activation>
    <modules>
-      <module>platform</module>
-      <module>data</module>
-      <module>main</module>
-      <module>wcs</module>
-      <module>wfs</module>
-      <module>wms</module>
-      <module>validation</module>
-      <module>web</module>
-      <module>maven</module>
-      <module>test</module>
-      <module>ows</module>
-      <module>net.opengis.ows</module>
     <module>community</module>
+   </modules>
+  </profile>
+  
+  <profile>
+    <id>wfsv</id>
+    <modules>
+      <module>net.opengis.wfsv</module>
+	  <module>wfsv</module>
    </modules>
   </profile>
 
