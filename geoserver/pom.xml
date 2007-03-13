@@ -837,7 +837,7 @@
   <profile>
     <id>wfsv</id>
     <modules>
-      <module>net.opengis.wfsv</module>
+      <module>net.opengis.vwfs</module>
 	  <module>wfsv</module>
    </modules>
   </profile>
