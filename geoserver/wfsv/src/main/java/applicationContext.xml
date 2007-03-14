@@ -94,9 +94,14 @@
   
   <!-- Encoders / Output formats -->
   <bean id="transactionOutputFormat" class="org.geoserver.wfsv.response.v1_1_0.DiffTransactionResponse">
-		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="wfsvXmlConfiguration-1.1"/>
-		<constructor-arg ref="filterFactory"/>
-	</bean>
+    <constructor-arg ref="wfs"/>
+    <constructor-arg ref="wfsvXmlConfiguration-1.1"/>
+    <constructor-arg ref="filterFactory"/>
+  </bean>
+  <bean id="getLogOutputFormat" class="org.geoserver.wfsv.response.v1_1_0.GetLogGML3OutputFormat">
+    <constructor-arg ref="wfs"/>
+    <constructor-arg ref="catalog"/>
+    <constructor-arg ref="xmlConfiguration-1.1"/>
+  </bean>
 
 </beans>
