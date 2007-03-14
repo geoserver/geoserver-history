@@ -7,6 +7,8 @@ import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.SimpleHash;
@@ -74,6 +76,7 @@ public class FeatureWrapper extends BeansWrapper {
 			
 			//first add the feature id
 			map.put( "fid", feature.getID() );
+			map.put( "typeName", feature.getFeatureType().getTypeName() );
 			
 			//next add variables for each attribute, variable name = name of attribute
 			SimpleSequence attributes = new SimpleSequence();
@@ -83,7 +86,8 @@ public class FeatureWrapper extends BeansWrapper {
 				Map attribute = new HashMap();
 				attribute.put( "value", feature.getAttribute( i ) );
 				attribute.put( "name", type.getName() );
-				attribute.put( "type", type.getType() );
+				attribute.put( "type", type.getType().getName() );
+				attribute.put( "isGeometry", Boolean.valueOf( Geometry.class.isAssignableFrom( type.getType() ) ) );
 				
 				map.put( type.getName(), attribute );
 				attributes.add( attribute );
