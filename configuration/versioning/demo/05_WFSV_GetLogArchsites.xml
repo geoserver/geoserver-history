@@ -10,6 +10,6 @@
   xsi:schemaLocation="http://www.opengis.net/wfs
                       http://localhost:8080/geoserver/schemas//wfs/1.1.0/wfs.xsd
                       http://www.opengis.net/wfsv
-                      http://localhost:8080/geoserver/schemas//wfs/1.1.0/wfsv.xsd">
+                      http://localhost:8080/geoserver/schemas/wfs/1.1.0/wfsv.xsd">
   <wfsv:DifferenceQuery typeName="topp:archsites" fromFeatureVersion="1" toFeatureVersion="13"/>
 </wfsv:GetLog>
