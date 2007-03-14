@@ -6,6 +6,9 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.WfsFactory;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -118,5 +121,17 @@ public class DeleteElementTypeBinding extends AbstractComplexBinding {
         deleteElement.setTypeName((QName) node.getAttributeValue(QName.class));
 
         return deleteElement;
+    }
+    
+    public Object getProperty(Object object, QName name) throws Exception {
+        final EObject emfObject = (EObject) object;
+        final String property = name.getLocalPart();
+        EStructuralFeature emfProperty = emfObject.eClass().getEStructuralFeature(property);
+        if(emfProperty == null)
+            return null;
+        if(emfObject.eIsSet(emfProperty))
+            return emfObject.eGet(emfProperty);
+        else
+            return null;
     }
 }
