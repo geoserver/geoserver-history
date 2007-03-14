@@ -4,19 +4,19 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import java.net.URI;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.IdentifierGenerationOptionType;
 import net.opengis.wfs.InsertElementType;
-import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.WfsFactory;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
+
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
-import java.net.URI;
-import javax.xml.namespace.QName;
 
 
 /**
@@ -115,7 +115,7 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class InsertElementTypeBinding extends AbstractComplexBinding {
+public class InsertElementTypeBinding extends AbstractComplexEMFBinding {
     WfsFactory wfsfactory;
 
     public InsertElementTypeBinding(WfsFactory wfsfactory) {
@@ -187,20 +187,4 @@ public class InsertElementTypeBinding extends AbstractComplexBinding {
         return insertElement;
     }
 
-    public Object getProperty(Object object, QName name)
-        throws Exception {
-        final EObject emfObject = (EObject) object;
-        final String property = name.getLocalPart();
-        EStructuralFeature emfProperty = emfObject.eClass().getEStructuralFeature(property);
-
-        if (emfProperty == null) {
-            return null;
-        }
-
-        if (emfObject.eIsSet(emfProperty)) {
-            return emfObject.eGet(emfProperty);
-        } else {
-            return null;
-        }
-    }
 }
