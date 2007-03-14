@@ -63,7 +63,6 @@
   <build>
     <plugins>
       <!-- ====    Code Formatting  ============================== -->
-<!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jalopy-maven-plugin</artifactId>
@@ -72,11 +71,10 @@
             <goals>
               <goal>format</goal>
             </goals>
-            <phase>install</phase>
+            <phase>process-resources</phase>
           </execution>
         </executions>
       </plugin>
--->
     </plugins>
   </build>
 
