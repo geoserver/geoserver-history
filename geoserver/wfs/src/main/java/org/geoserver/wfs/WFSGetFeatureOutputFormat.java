@@ -58,7 +58,7 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
      * Subclasses may implement
      * </p>
      */
-    public final boolean canHandle(Operation operation) {
+    public boolean canHandle(Operation operation) {
         //GetFeature operation?
         if ("GetFeature".equalsIgnoreCase(operation.getId())
                 || "GetFeatureWithLock".equalsIgnoreCase(operation.getId())) {
