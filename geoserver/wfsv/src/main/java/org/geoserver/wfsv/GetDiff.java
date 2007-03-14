@@ -2,6 +2,7 @@ package org.geoserver.wfsv;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
@@ -11,12 +12,14 @@ import javax.xml.namespace.QName;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.WfsFactory;
 import net.opengis.wfsv.DifferenceQueryType;
+import net.opengis.wfsv.GetDiffType;
 import net.opengis.wfsv.GetLogType;
 
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.VersioningFeatureSource;
+import org.geotools.data.postgis.FeatureDiffReader;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
@@ -30,12 +33,12 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 
 /**
- * Versioning Web Feature Service GetLog operation
+ * Versioning Web Feature Service GetDiff operation
  * 
  * @author Andrea Aime, TOPP
  * 
  */
-public class GetLog {
+public class GetDiff {
     /**
      * logger
      */
@@ -62,7 +65,7 @@ public class GetLog {
      * @param wfs
      * @param catalog
      */
-    public GetLog(WFS wfs, Data catalog) {
+    public GetDiff(WFS wfs, Data catalog) {
         this.wfs = wfs;
         this.catalog = catalog;
     }
@@ -90,7 +93,7 @@ public class GetLog {
         this.filterFactory = filterFactory;
     }
 
-    public FeatureCollectionType run(GetLogType request) {
+    public FeatureDiffReader[] run(GetDiffType request) {
         List queries = request.getDifferenceQuery();
 
         // basic checks
@@ -103,20 +106,11 @@ public class GetLog {
             throw new WFSException(msg);
         }
 
-        if (request.getMaxFeatures() == null) {
-            request.setMaxFeatures(BigInteger.valueOf(Integer.MAX_VALUE));
-        }
-
-        // handle maxFeatures
-        int maxFeatures = request.getMaxFeatures().intValue();
-        FeatureCollectionType result = WfsFactory.eINSTANCE
-                .createFeatureCollectionType();
-        int count = 0; // should probably be long
-
         // for each difference query check the feature type is versioned, and
         // gather bounds
+        List result = new ArrayList(queries.size());
         try {
-            for (int i = 0; (i < queries.size()) && (count <= maxFeatures); i++) {
+            for (int i = 0; (i < queries.size()); i++) {
                 DifferenceQueryType query = (DifferenceQueryType) queries
                         .get(i);
                 FeatureTypeInfo meta = featureTypeInfo((QName) query
@@ -127,9 +121,9 @@ public class GetLog {
                     throw new WFSException("Feature type" + query.getTypeName()
                             + " is not versioned");
                 }
-                
+
                 Filter filter = (Filter) query.getFilter();
-                //  make sure filters are sane
+                // make sure filters are sane
                 if (filter != null) {
                     final FeatureType featureType = source.getSchema();
                     ExpressionVisitor visitor = new AbstractExpressionVisitor() {
@@ -147,30 +141,25 @@ public class GetLog {
                         };
                     };
 
-                    filter.accept(
-                            new AbstractFilterVisitor(visitor), null);
+                    filter.accept(new AbstractFilterVisitor(visitor), null);
                 }
 
                 // extract collection
                 VersioningFeatureSource store = (VersioningFeatureSource) source;
-                FeatureCollection logs = store.getLog(query
+                FeatureDiffReader differences = store.getDifferences(query
                         .getFromFeatureVersion(), query.getToFeatureVersion(),
                         filter);
-                
+
                 // TODO: handle logs reprojection in another CRS
 
-                result.getFeature().add(logs);
-                count += logs.size();
+                result.add(differences);
             }
         } catch (IOException e) {
             throw new WFSException("Error occurred getting features", e,
                     request.getHandle());
         }
-        
-        result.setNumberOfFeatures(BigInteger.valueOf(count));
-        result.setTimeStamp(Calendar.getInstance());
 
-        return result;
+        return (FeatureDiffReader[]) result.toArray(new FeatureDiffReader[result.size()]);
 
     }
 

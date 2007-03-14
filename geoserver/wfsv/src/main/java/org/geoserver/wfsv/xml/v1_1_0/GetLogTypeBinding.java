@@ -6,14 +6,16 @@ package org.geoserver.wfsv.xml.v1_1_0;
 
 import java.math.BigInteger;
 
-import net.opengis.wfs.QueryType;
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.ResultTypeType;
 import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.GetLogType;
 import net.opengis.wfsv.WfsvFactory;
 
-import org.geotools.xml.*;
-import javax.xml.namespace.QName;
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
 
 
 /**
@@ -136,7 +138,7 @@ public class GetLogTypeBinding extends AbstractComplexBinding {
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
         GetLogType result = wfsvFactory.createGetLogType();
-        result.getDifferenceQuery().addAll(node.getChildValues(QueryType.class));
+        result.getDifferenceQuery().addAll(node.getChildValues(DifferenceQueryType.class));
         
         if (node.hasAttribute("resultType")) {
             result.setResultType((ResultTypeType) node.getAttributeValue("resultType"));

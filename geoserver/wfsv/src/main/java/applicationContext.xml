@@ -88,5 +88,15 @@
   <bean id="wfsvGetLogXmlReader-1.1.0" parent="wfsv-xmlReader-1.1.0">
     <constructor-arg value="GetLog"/>
   </bean>
+  <bean id="wfsvGetDiffXmlReader-1.1.0" parent="wfsv-xmlReader-1.1.0">
+    <constructor-arg value="GetDiff"/>
+  </bean>
+  
+  <!-- Encoders / Output formats -->
+  <bean id="transactionOutputFormat" class="org.geoserver.wfsv.response.v1_1_0.DiffTransactionResponse">
+		<constructor-arg ref="wfs"/>
+		<constructor-arg ref="wfsvXmlConfiguration-1.1"/>
+		<constructor-arg ref="filterFactory"/>
+	</bean>
 
 </beans>

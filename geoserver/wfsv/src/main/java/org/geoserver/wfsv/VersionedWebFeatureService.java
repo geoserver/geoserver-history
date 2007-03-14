@@ -5,9 +5,11 @@
 package org.geoserver.wfsv;
 
 import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfsv.GetDiffType;
 import net.opengis.wfsv.GetLogType;
 
 import org.geoserver.wfs.WebFeatureService;
+import org.geotools.data.postgis.FeatureDiffReader;
 
 
 /**
@@ -30,4 +32,11 @@ public interface VersionedWebFeatureService extends WebFeatureService {
      * @return
      */
     public FeatureCollectionType getLog(GetLogType request);
+    
+    /**
+     * Executes the WFSV GetDiff request
+     * @param request
+     * @return
+     */
+    public FeatureDiffReader[] getDiff(GetDiffType request);
 }
