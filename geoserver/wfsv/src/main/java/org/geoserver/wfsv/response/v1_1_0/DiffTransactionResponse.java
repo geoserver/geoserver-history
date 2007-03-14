@@ -7,6 +7,7 @@ package org.geoserver.wfsv.response.v1_1_0;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -16,7 +17,6 @@ import java.util.Map.Entry;
 import javax.xml.namespace.QName;
 
 import net.opengis.wfs.DeleteElementType;
-import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.TransactionType;
@@ -32,7 +32,7 @@ import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
-import org.geoserver.wfsv.xml.v1_1_0.WFSVConfiguration;
+import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.data.postgis.FeatureDiff;
 import org.geotools.data.postgis.FeatureDiffReader;
 import org.geotools.feature.FeatureType;
@@ -40,6 +40,8 @@ import org.geotools.xml.Encoder;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.identity.FeatureId;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.xml.sax.SAXException;
 
 /**
@@ -55,22 +57,25 @@ public class DiffTransactionResponse extends Response {
      */
     WFS wfs;
 
+    Data catalog;
+
     /**
      * Xml configuration
      */
-    WFSVConfiguration configuration;
+    WFSConfiguration configuration;
 
     /**
      * Filter factory used to build fid filters
      */
     FilterFactory filterFactory;
 
-    public DiffTransactionResponse(WFS wfs, WFSVConfiguration configuration,
-            FilterFactory filterFactory) {
+    public DiffTransactionResponse(WFS wfs, Data catalog, WFSConfiguration configuration,
+             FilterFactory filterFactory) {
         super(FeatureDiffReader[].class);
 
         this.wfs = wfs;
         this.configuration = configuration;
+        this.catalog = catalog;
         this.filterFactory = filterFactory;
     }
 
@@ -103,15 +108,15 @@ public class DiffTransactionResponse extends Response {
                 .createTransactionType();
         for (int i = 0; i < diffReaders.length; i++) {
             final FeatureDiffReader diffReader = diffReaders[i];
-            
+
             // create a single insert element, a single delete element, and as
             // many update elements as needed
             final FeatureType schema = diffReader.getSchema();
-            final QName typeName = new QName(schema.getNamespace().toString(),
-                    schema.getTypeName());
+            final QName typeName = new QName(schema.getNamespace()
+                    .getAuthority(), schema.getTypeName());
             final Set deletedIds = new HashSet();
             final InsertElementType insert = WfsFactory.eINSTANCE
-            .createInsertElementType();
+                    .createInsertElementType();
             while (diffReader.hasNext()) {
                 FeatureDiff diff = diffReader.next();
 
@@ -165,9 +170,58 @@ public class DiffTransactionResponse extends Response {
                 ResponseUtils.appendPath(wfs.getSchemaBaseURL(),
                         "wfs/1.1.0/wfs.xsd"));
 
+        // set up schema locations
+        // round up the info objects for each feature collection
+        HashMap /* <String,Set> */ns2metas = new HashMap();
+        for (int i = 0; i < diffReaders.length; i++) {
+            final FeatureDiffReader diffReader = diffReaders[i];
+            final FeatureType featureType = diffReader.getSchema();
+
+            // load the metadata for the feature type
+            String namespaceURI = featureType.getNamespace().toString();
+            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType
+                    .getTypeName(), namespaceURI);
+
+            // add it to the map
+            Set metas = (Set) ns2metas.get(namespaceURI);
+
+            if (metas == null) {
+                metas = new HashSet();
+                ns2metas.put(namespaceURI, metas);
+            }
+
+            metas.add(meta);
+        }
+
+        // declare application schema namespaces
+        for (Iterator i = ns2metas.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next();
+
+            String namespaceURI = (String) entry.getKey();
+            Set metas = (Set) entry.getValue();
+
+            StringBuffer typeNames = new StringBuffer();
+
+            for (Iterator m = metas.iterator(); m.hasNext();) {
+                FeatureTypeInfo meta = (FeatureTypeInfo) m.next();
+                typeNames.append(meta.getName());
+
+                if (m.hasNext()) {
+                    typeNames.append(",");
+                }
+            }
+
+            // set the schema location
+            encoder.setSchemaLocation(namespaceURI, ResponseUtils
+                    .appendQueryString(wfs.getOnlineResource().toString(),
+                            "service=WFS&version=1.1.0&request=DescribeFeatureType&typeName="
+                                    + typeNames.toString()));
+        }
+
         try {
-            encoder.encode(transaction, org.geoserver.wfs.xml.v1_1_0.WFS.TRANSACTION,
-                    output);
+            System.out.println(transaction);
+            encoder.encode(transaction,
+                    org.geoserver.wfs.xml.v1_1_0.WFS.TRANSACTION, output);
         } catch (SAXException e) {
             throw (IOException) new IOException("Encoding error ").initCause(e);
         }
