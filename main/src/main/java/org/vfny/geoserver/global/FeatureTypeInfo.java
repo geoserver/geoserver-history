@@ -4,21 +4,11 @@
  */
 package org.vfny.geoserver.global;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.Query;
 import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
@@ -41,9 +31,16 @@ import org.vfny.geoserver.global.dto.LegendURLDTO;
 import org.vfny.geoserver.util.DataStoreUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -476,22 +473,31 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             // support versioning only if it is in the classpath, use reflection to invoke
             // methods so that we don't get a compile time dependency
             try {
-                if(implementsInterface(realSource.getClass(), "org.geotools.data.VersioningFeatureSource")) {
-                    Class clazz = Class.forName("org.vfny.geoserver.global.GeoServerVersioningFeatureSource");
-                    Method m = clazz.getMethod("create", new Class[] {Class.forName("org.geotools.data.VersioningFeatureSource"),
-                            FeatureType.class, Filter.class, CoordinateReferenceSystem.class});
-                    return (FeatureSource) m.invoke(null, new Object[] {realSource, getFeatureType(realSource), getDefinitionQuery(), forcedCRS ? getSRS(SRS) : null});
+                if (implementsInterface(realSource.getClass(),
+                            "org.geotools.data.VersioningFeatureSource")) {
+                    Class clazz = Class.forName(
+                            "org.vfny.geoserver.global.GeoServerVersioningFeatureSource");
+                    Method m = clazz.getMethod("create",
+                            new Class[] {
+                                Class.forName("org.geotools.data.VersioningFeatureSource"),
+                                FeatureType.class, Filter.class, CoordinateReferenceSystem.class
+                            });
+
+                    return (FeatureSource) m.invoke(null,
+                        new Object[] {
+                            realSource, getFeatureType(realSource), getDefinitionQuery(),
+                            forcedCRS ? getSRS(SRS) : null
+                        });
                 }
-            } catch(Exception e) {
+            } catch (Exception e) {
                 throw new DataSourceException("Creation of a versioning wrapper failed", e);
             }
-                
-            
+
             return GeoServerFeatureLocking.create(realSource, getFeatureType(realSource),
                 getDefinitionQuery(), forcedCRS ? getSRS(SRS) : null);
         }
     }
-    
+
     /**
      * Checks if a interface is implemented by looking at implemented interfaces using reflection
      * @param realSource
@@ -499,20 +505,25 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * @return
      */
     private boolean implementsInterface(Class clazz, String interfaceName) {
-        if(clazz.getName().equals(interfaceName))
+        if (clazz.getName().equals(interfaceName)) {
             return true;
-        final Class[] ifaces = clazz.getInterfaces();
-        for (int i = 0; i < ifaces.length; i++) {
-            if(ifaces[i].getName().equals(interfaceName))
-                return true;
-            else
-                if(implementsInterface(ifaces[i], interfaceName))
-                    return true;
         }
-        if(clazz.getSuperclass() == null)
+
+        final Class[] ifaces = clazz.getInterfaces();
+
+        for (int i = 0; i < ifaces.length; i++) {
+            if (ifaces[i].getName().equals(interfaceName)) {
+                return true;
+            } else if (implementsInterface(ifaces[i], interfaceName)) {
+                return true;
+            }
+        }
+
+        if (clazz.getSuperclass() == null) {
             return false;
-        else
+        } else {
             return implementsInterface(clazz.getSuperclass(), interfaceName);
+        }
     }
 
     /*public static FeatureSource reTypeSource(FeatureSource source,
@@ -538,8 +549,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
        return GeoServerFeatureLocking.create(source, myType,
            ftc.getDefinitionQuery());
        }*/
-
-    
 
     /**
      * getBoundingBox purpose.
