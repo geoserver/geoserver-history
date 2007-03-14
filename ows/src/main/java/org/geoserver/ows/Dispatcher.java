@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
@@ -332,7 +331,7 @@ public class Dispatcher extends AbstractController {
         Method operation = OwsUtils.method(serviceBean.getClass(), req.request);
 
         if (operation == null) {
-            String msg = "No such operation";
+            String msg = "No such operation " + req;
             throw new ServiceException(msg, "OperationNotSupported", req.request);
         }
 
@@ -1150,5 +1149,9 @@ public class Dispatcher extends AbstractController {
          * Any errors that occur tryinng to determine the service
          */
         Throwable error;
+
+        public String toString() {
+            return service + " " + version + " " + request;
+        }
     }
 }
