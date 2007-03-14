@@ -4,13 +4,16 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.WfsFactory;
-import org.geotools.xml.AbstractComplexBinding;
+
+import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
-import java.util.Map;
-import javax.xml.namespace.QName;
 
 
 /**
@@ -46,7 +49,7 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class PropertyTypeBinding extends AbstractComplexBinding {
+public class PropertyTypeBinding extends AbstractComplexEMFBinding {
     WfsFactory wfsfactory;
 
     public PropertyTypeBinding(WfsFactory wfsfactory) {
