@@ -40,17 +40,17 @@
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
       <version>1.6-SNAPSHOT</version>
-      <!-- 
-        <exclusions>
+      <exclusions>
         <exclusion>
-        exluding validation since it carries
-        out gml datastore which conflicts with 
-        all datastores that have a "url" parameter
-        <groupId>org.geotools</groupId>
-        <artifactId>gt2-gml</artifactId>
+          <!-- 
+            exluding validation since it carries
+            out gml datastore which conflicts with 
+            all datastores that have a "url" parameter
+          -->
+          <groupId>org.geotools</groupId>
+          <artifactId>gt2-gml</artifactId>
         </exclusion>
-        </exclusions>
-      -->
+      </exclusions>
     </dependency>
     <!-- 
       <dependency>
@@ -269,6 +269,7 @@
     <plugins>
 
       <!-- ====    Code Formatting  ============================== -->
+<!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jalopy-maven-plugin</artifactId>
@@ -281,6 +282,7 @@
           </execution>
         </executions>
       </plugin>
+-->
 
       <plugin>
         <groupId>org.geoserver.maven</groupId>
