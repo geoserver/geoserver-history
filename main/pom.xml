@@ -70,6 +70,10 @@
 			<artifactId>commons-validator</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>oro</groupId>
 			<artifactId>oro</artifactId>
 		</dependency>
