@@ -4,8 +4,15 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
-import org.geotools.xml.*;
 import javax.xml.namespace.QName;
+
+import net.opengis.wfsv.DifferenceQueryType;
+import net.opengis.wfsv.GetDiffType;
+import net.opengis.wfsv.WfsvFactory;
+
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
 
 
 /**
@@ -37,7 +44,7 @@ import javax.xml.namespace.QName;
  *                      &lt;xsd:documentation&gt;
  *                       The outputFormat attribute is used to specify the output
  *                       format that the Versioning Web Feature Service should generate in
- *                       response to a GetDiff or GetFeatureWithLock element.
+ *                       response to a GetDiff element.
  *                       The default value of 'application/xml; subtype=wfsv-transaction/1.1.0'
  *                       indicates that the output is an XML document that
  *                       conforms to the WFS 1.1.0 Transaction definition.
@@ -60,6 +67,13 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class GetDiffTypeBinding extends AbstractComplexBinding {
+    
+    private WfsvFactory wfsvFactory;
+
+    public GetDiffTypeBinding(WfsvFactory wfsvFactory) {
+        this.wfsvFactory = wfsvFactory;
+    }
+    
     /**
      * @generated
      */
@@ -74,7 +88,7 @@ public class GetDiffTypeBinding extends AbstractComplexBinding {
      * @generated modifiable
      */
     public Class getType() {
-        return null;
+        return GetDiffType.class;
     }
 
     /**
@@ -85,7 +99,13 @@ public class GetDiffTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        //TODO: implement
-        return null;
+        GetDiffType result = wfsvFactory.createGetDiffType();
+        result.getDifferenceQuery().addAll(node.getChildValues(DifferenceQueryType.class));
+        
+        if (node.hasAttribute("outputFormat")) {
+            result.setOutputFormat((String) node.getAttributeValue("outputFormat"));
+        }
+
+        return result;
     }
 }
