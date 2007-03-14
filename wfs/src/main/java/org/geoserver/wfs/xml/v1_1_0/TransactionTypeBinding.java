@@ -8,6 +8,7 @@ import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.WfsFactory;
 import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import java.util.Iterator;
@@ -98,7 +99,7 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class TransactionTypeBinding extends AbstractComplexBinding {
+public class TransactionTypeBinding extends AbstractComplexEMFBinding {
     WfsFactory wfsfactory;
 
     public TransactionTypeBinding(WfsFactory wfsfactory) {
@@ -129,72 +130,72 @@ public class TransactionTypeBinding extends AbstractComplexBinding {
         return TransactionType.class;
     }
 
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     *
-     * @generated modifiable
-     */
-    public Object parse(ElementInstance instance, Node node, Object value)
-        throws Exception {
-        TransactionType transaction = wfsfactory.createTransactionType();
+//    /**
+//     * <!-- begin-user-doc -->
+//     * <!-- end-user-doc -->
+//     *
+//     * @generated modifiable
+//     */
+//    public Object parse(ElementInstance instance, Node node, Object value)
+//        throws Exception {
+//        TransactionType transaction = wfsfactory.createTransactionType();
+//
+//        //&lt;xsd:element minOccurs="0" ref="wfs:LockId"&gt;
+//        if (node.hasChild("LockId")) {
+//            transaction.setLockId((String) node.getChildValue("LockId"));
+//        }
+//
+//        //&lt;xsd:choice maxOccurs="unbounded" minOccurs="0"&gt;
+//        //  &lt;xsd:element ref="wfs:Insert"/&gt;
+//        //  &lt;xsd:element ref="wfs:Update"/&gt;
+//        //  &lt;xsd:element ref="wfs:Delete"/&gt;
+//        //  &lt;xsd:element ref="wfs:Native"/&gt;
+//        //&lt;/xsd:choice&gt;
+//        for (Iterator itr = node.getChildren().iterator(); itr.hasNext();) {
+//            Node child = (Node) itr.next();
+//            String name = child.getComponent().getName();
+//
+//            if ("Insert".equals(name)) {
+//                transaction.getInsert().add(child.getValue());
+//            } else if ("Update".equals(name)) {
+//                transaction.getUpdate().add(child.getValue());
+//            } else if ("Delete".equals(name)) {
+//                transaction.getDelete().add(child.getValue());
+//            } else if ("Native".equals(name)) {
+//                transaction.getNative().add(child.getValue());
+//            }
+//        }
+//
+//        //&lt;xsd:attribute name="releaseAction" type="wfs:AllSomeType" use="optional"&gt;
+//        if (node.hasAttribute(AllSomeType.class)) {
+//            transaction.setReleaseAction((AllSomeType) node.getAttributeValue(AllSomeType.class));
+//        }
+//
+//        return transaction;
+//    }
 
-        //&lt;xsd:element minOccurs="0" ref="wfs:LockId"&gt;
-        if (node.hasChild("LockId")) {
-            transaction.setLockId((String) node.getChildValue("LockId"));
-        }
-
-        //&lt;xsd:choice maxOccurs="unbounded" minOccurs="0"&gt;
-        //  &lt;xsd:element ref="wfs:Insert"/&gt;
-        //  &lt;xsd:element ref="wfs:Update"/&gt;
-        //  &lt;xsd:element ref="wfs:Delete"/&gt;
-        //  &lt;xsd:element ref="wfs:Native"/&gt;
-        //&lt;/xsd:choice&gt;
-        for (Iterator itr = node.getChildren().iterator(); itr.hasNext();) {
-            Node child = (Node) itr.next();
-            String name = child.getComponent().getName();
-
-            if ("Insert".equals(name)) {
-                transaction.getInsert().add(child.getValue());
-            } else if ("Update".equals(name)) {
-                transaction.getUpdate().add(child.getValue());
-            } else if ("Delete".equals(name)) {
-                transaction.getDelete().add(child.getValue());
-            } else if ("Native".equals(name)) {
-                transaction.getNative().add(child.getValue());
-            }
-        }
-
-        //&lt;xsd:attribute name="releaseAction" type="wfs:AllSomeType" use="optional"&gt;
-        if (node.hasAttribute(AllSomeType.class)) {
-            transaction.setReleaseAction((AllSomeType) node.getAttributeValue(AllSomeType.class));
-        }
-
-        return transaction;
-    }
-
-    /**
-     * Subclasses should override this method if need be, the default implementation
-     * returns <code>null</code>.
-     *
-     * @see ComplexBinding#getProperty(Object, QName)
-     */
-    public Object getProperty(Object object, QName name)
-        throws Exception {
-        final TransactionType transaction = (TransactionType) object;
-        final String property = name.getLocalPart();
-
-        //        return transaction.eGet(transaction.eClass().getEStructuralFeature(property));
-        if ("Insert".equals(property)) {
-            return transaction.getInsert();
-        } else if ("Update".equals(property)) {
-            return transaction.getUpdate();
-        } else if ("Delete".equals(property)) {
-            return transaction.getDelete();
-        } else if ("Native".equals(property)) {
-            return transaction.getNative();
-        }
-
-        return null;
-    }
+//    /**
+//     * Subclasses should override this method if need be, the default implementation
+//     * returns <code>null</code>.
+//     *
+//     * @see ComplexBinding#getProperty(Object, QName)
+//     */
+//    public Object getProperty(Object object, QName name)
+//        throws Exception {
+//        final TransactionType transaction = (TransactionType) object;
+//        final String property = name.getLocalPart();
+//
+//        //        return transaction.eGet(transaction.eClass().getEStructuralFeature(property));
+//        if ("Insert".equals(property)) {
+//            return transaction.getInsert();
+//        } else if ("Update".equals(property)) {
+//            return transaction.getUpdate();
+//        } else if ("Delete".equals(property)) {
+//            return transaction.getDelete();
+//        } else if ("Native".equals(property)) {
+//            return transaction.getNative();
+//        }
+//
+//        return null;
+//    }
 }

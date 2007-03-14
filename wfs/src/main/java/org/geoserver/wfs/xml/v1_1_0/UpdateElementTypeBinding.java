@@ -4,17 +4,18 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import java.net.URI;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.UpdateElementType;
 import net.opengis.wfs.WfsFactory;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.geotools.xml.AbstractComplexBinding;
+
+import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.filter.Filter;
-import java.net.URI;
-import javax.xml.namespace.QName;
 
 
 /**
@@ -111,7 +112,7 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class UpdateElementTypeBinding extends AbstractComplexBinding {
+public class UpdateElementTypeBinding extends AbstractComplexEMFBinding {
     WfsFactory wfsfactory;
 
     public UpdateElementTypeBinding(WfsFactory wfsfactory) {
@@ -173,20 +174,4 @@ public class UpdateElementTypeBinding extends AbstractComplexBinding {
         return updateElement;
     }
 
-    public Object getProperty(Object object, QName name)
-        throws Exception {
-        final EObject emfObject = (EObject) object;
-        final String property = name.getLocalPart();
-        EStructuralFeature emfProperty = emfObject.eClass().getEStructuralFeature(property);
-
-        if (emfProperty == null) {
-            return null;
-        }
-
-        if (emfObject.eIsSet(emfProperty)) {
-            return emfObject.eGet(emfProperty);
-        } else {
-            return null;
-        }
-    }
 }
