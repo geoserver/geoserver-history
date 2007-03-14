@@ -447,7 +447,20 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
      */
     public static void initLogging(Level level, boolean logToFile, String location)
         throws IOException {
-        Log4JFormatter.init("org.geotools", level);
+    	
+    	//calculate geotools logging level to be one higher then geoserver
+    	//JD: this is a temporary hack until we smarten up and use log4j
+    	Level gtLevel = level == Level.ALL ? Level.ALL :
+    		level == Level.OFF ? Level.OFF : 
+			level == Level.SEVERE ? Level.SEVERE : 
+			level == Level.WARNING ? Level.SEVERE :
+			level == Level.INFO ? Level.WARNING : 
+			level == Level.CONFIG ? Level.INFO : 
+			level == Level.FINE ? Level.CONFIG : 
+			level == Level.FINER ? Level.FINE : 
+			level == Level.FINEST ? Level.FINER : Level.FINEST;
+    	
+        Log4JFormatter.init("org.geotools", gtLevel );
         Log4JFormatter.init("org.vfny.geoserver", level);
 
         Logger logger = Logger.getLogger("org.vfny.geoserver");
