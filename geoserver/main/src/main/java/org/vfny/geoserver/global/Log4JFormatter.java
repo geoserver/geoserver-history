@@ -78,15 +78,6 @@ public class Log4JFormatter extends Formatter {
     private final int margin;
 
     /**
-     * The base logger name. This is used for shortening the logger
-     * name when formatting message. For example, if the base logger name is
-     * "org.geotools"  and a log record come from the "org.geotools.core"
-     * logger, it will be  formatted as "[LEVEL core]" (i.e. the
-     * "org.geotools" part is ommited).
-     */
-    private final String base;
-
-    /**
      * Buffer for formatting messages. We will reuse this buffer in
      * order to reduce memory allocations.
      */
@@ -100,16 +91,10 @@ public class Log4JFormatter extends Formatter {
     private final LineWriter writer;
 
     /**
-             * Construct a <code>Log4JFormatter</code>.
-             *
-             * @param base The base logger name. This is used for shortening the logger
-             *        name when formatting message. For example, if the base  logger
-             *        name is "org.geotools" and a log record come from  the
-             *        "org.geotools.core" logger, it will be formatted as  "[LEVEL
-             *        core]" (i.e. the "org.geotools" part is ommited).
-             */
-    public Log4JFormatter(final String base) {
-        this.base = base.trim();
+     * Construct a <code>Log4JFormatter</code>.
+     */
+    public Log4JFormatter() {
+        
         this.margin = getHeaderWidth();
         Log4JFormatter.startMillis = System.currentTimeMillis();
 
@@ -133,7 +118,7 @@ public class Log4JFormatter extends Formatter {
         final String recordLevel = record.getLevel().getLocalizedName();
 
         try {
-            buffer.setLength(1);
+            buffer.setLength(0);
 
             final Long millis = new Long(record.getMillis() - startMillis);
             writer.write(millis.toString());
@@ -251,7 +236,7 @@ public class Log4JFormatter extends Formatter {
 
                         if (formatter.getClass().equals(SimpleFormatter.class)) {
                             if (log4j == null) {
-                                log4j = new Log4JFormatter(base);
+                                log4j = new Log4JFormatter();
                             }
 
                             try {
@@ -279,7 +264,7 @@ public class Log4JFormatter extends Formatter {
         //Artie Konin suggested fix (see GEOS-366)
         if (0 == logger.getHandlers().length) // seems that getHandlers() cannot return null
          {
-            log4j = new Log4JFormatter(base);
+            log4j = new Log4JFormatter();
 
             Handler handler = new Stdout();
             handler.setFormatter(log4j);
