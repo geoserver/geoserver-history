@@ -172,18 +172,19 @@ public class TransactionTypeBinding extends AbstractComplexBinding {
 
         return transaction;
     }
-    
+
     /**
-     * Subclasses should override this method if need be, the default implementation 
+     * Subclasses should override this method if need be, the default implementation
      * returns <code>null</code>.
-     * 
+     *
      * @see ComplexBinding#getProperty(Object, QName)
      */
-    public Object getProperty(Object object, QName name) throws Exception {
+    public Object getProperty(Object object, QName name)
+        throws Exception {
         final TransactionType transaction = (TransactionType) object;
         final String property = name.getLocalPart();
-//        return transaction.eGet(transaction.eClass().getEStructuralFeature(property));
-        
+
+        //        return transaction.eGet(transaction.eClass().getEStructuralFeature(property));
         if ("Insert".equals(property)) {
             return transaction.getInsert();
         } else if ("Update".equals(property)) {
@@ -192,8 +193,8 @@ public class TransactionTypeBinding extends AbstractComplexBinding {
             return transaction.getDelete();
         } else if ("Native".equals(property)) {
             return transaction.getNative();
-        } 
-        
+        }
+
         return null;
     }
 }
