@@ -17,8 +17,10 @@ import net.opengis.wfs.WfsFactory;
 
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wfs.xml.GML3Profile;
+import org.geoserver.wfs.xml.PropertyTypePropertyExtractor;
 import org.geoserver.wfs.xml.TypeMappingProfile;
 import org.geoserver.wfs.xml.XSProfile;
+import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -61,7 +63,7 @@ import org.w3c.dom.Element;
  *
  * @generated
  */
-public class PropertyTypeBinding extends AbstractComplexEMFBinding {
+public class PropertyTypeBinding extends AbstractComplexBinding {
     WfsFactory wfsfactory;
 
     public PropertyTypeBinding(WfsFactory wfsfactory) {
@@ -115,26 +117,15 @@ public class PropertyTypeBinding extends AbstractComplexEMFBinding {
 
         return property;
     }
-    
-    public List getProperties(Object object) throws Exception {
-        List result = new ArrayList(2);
-        PropertyType pt = (PropertyType) object;
-        result.add(new Object[] {XS.QNAME, pt.getName()});
-        Object value = pt.getValue();
-        if(value != null)
-            result.add(new Object[] {guessValueType(value), value});
-        return result;
-    }
 
-    private QName guessValueType(Object value) {
-        Class clazz = value.getClass();
-        List profiles = Arrays.asList(new Object[] {new XSProfile(), new GML3Profile()} );
-        for (Iterator it = profiles.iterator(); it.hasNext();) {
-            TypeMappingProfile profile = (TypeMappingProfile) it.next();
-            Name name = profile.name(clazz);
-            if(name != null)
-                return new QName(name.getNamespaceURI(), name.getLocalPart());
-        }
-        return null;
+    /**
+     * This method does nothing, its functionality is implemented by 
+     * {@link PropertyTypePropertyExtractor}.
+     */
+    public Object getProperty(Object object, QName name) throws Exception {
+    	return null;
     }
+    
+
+    
 }
