@@ -94,7 +94,6 @@ public class Log4JFormatter extends Formatter {
      * Construct a <code>Log4JFormatter</code>.
      */
     public Log4JFormatter() {
-        
         this.margin = getHeaderWidth();
         Log4JFormatter.startMillis = System.currentTimeMillis();
 
@@ -140,7 +139,15 @@ public class Log4JFormatter extends Formatter {
              * message body.
              */
             writer.setLineSeparator(bodyLineSeparator);
-            writer.write(formatMessage(record));
+
+            String message = formatMessage(record);
+
+            if (message != null) {
+                writer.write(message);
+            } else {
+                writer.write("No message");
+            }
+
             writer.setLineSeparator(lineSeparator);
             writer.write('\n');
 
