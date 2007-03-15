@@ -64,8 +64,8 @@ public class DemoAction extends GeoServerAction {
             demoForm.setBody("");
         }
 
-        String url = Requests.getBaseUrl(request, getGeoServer())
-            + ((demo.indexOf("Coverage") > 0) ? "wcs" : "wfs");
+        String service = demo.substring(0, demo.indexOf('_')).toLowerCase();
+        String url = Requests.getBaseUrl(request, getGeoServer()) + service;
 
         File file = new File(dir, demo);
         BufferedReader reader = new BufferedReader(new FileReader(file));
