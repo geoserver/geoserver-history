@@ -1,4 +1,4 @@
-/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
@@ -8,7 +8,7 @@ import org.geoserver.platform.GeoServerResourceLoader;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */

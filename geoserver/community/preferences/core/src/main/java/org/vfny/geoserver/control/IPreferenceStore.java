@@ -1,4 +1,4 @@
-/* Copyright (c) 2001 - 2006 TOPP - http://topp.openplans.org.
+/* Copyright (c) 2001 - 2007 TOPP - http://topp.openplans.org.
  * All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible in the
  * license.txt file of the documents directory off the root directory.
