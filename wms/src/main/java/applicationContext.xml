@@ -155,6 +155,22 @@
       	<constructor-arg index="2" ref="wmsPutStyles" />
 	</bean>
 		
+	<!-- xml request readers -->
+    <bean id="wmsCapabilitiesXmlReader" 
+    	class="org.geoserver.ows.adapters.XmlRequestReaderAdapter">
+    	<constructor-arg index="0" value="http://www.opengis.net/ows"/> 
+ 	    <constructor-arg index="1" value="GetCapabilities"/> 
+    	<constructor-arg index="2" ref="wmsGetCapabilities"/>
+    	<constructor-arg index="3" value="org.vfny.geoserver.wms.requests.CapabilitiesXmlReader"/>
+    </bean>
+     <bean id="getMapXmlReader" 
+    	class="org.geoserver.ows.adapters.XmlRequestReaderAdapter">
+    	<constructor-arg index="0" value="http://www.opengis.net/ows"/> 
+ 	    <constructor-arg index="1" value="GetMap"/> 
+    	<constructor-arg index="2" ref="wmsGetMap"/>
+    	<constructor-arg index="3" value="org.vfny.geoserver.wms.requests.GetMapXmlReader"/>
+    </bean>
+   	
 	<!--  responses -->
 	<bean id="wmwGetCapabilitiesResponse"
 		class="org.geoserver.ows.adapters.ResponseAdapter">
