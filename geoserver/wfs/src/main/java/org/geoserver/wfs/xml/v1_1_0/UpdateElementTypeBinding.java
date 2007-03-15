@@ -173,5 +173,13 @@ public class UpdateElementTypeBinding extends AbstractComplexEMFBinding {
 
         return updateElement;
     }
+    
+    public Object getProperty(Object arg0, QName arg1) throws Exception {
+        Object result = super.getProperty(arg0, arg1);
+        System.out.println("Being asked for " + arg1);
+        System.out.println("Returning " + result);
+        return result;
+        
+    }
 
 }

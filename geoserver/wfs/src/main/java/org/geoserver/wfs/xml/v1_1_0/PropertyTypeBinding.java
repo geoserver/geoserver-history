@@ -4,6 +4,10 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -11,9 +15,17 @@ import javax.xml.namespace.QName;
 import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.WfsFactory;
 
+import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.wfs.xml.GML3Profile;
+import org.geoserver.wfs.xml.TypeMappingProfile;
+import org.geoserver.wfs.xml.XSProfile;
 import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import org.geotools.xs.bindings.XS;
+import org.opengis.feature.type.Name;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**
@@ -102,5 +114,27 @@ public class PropertyTypeBinding extends AbstractComplexEMFBinding {
         }
 
         return property;
+    }
+    
+    public List getProperties(Object object) throws Exception {
+        List result = new ArrayList(2);
+        PropertyType pt = (PropertyType) object;
+        result.add(new Object[] {XS.QNAME, pt.getName()});
+        Object value = pt.getValue();
+        if(value != null)
+            result.add(new Object[] {guessValueType(value), value});
+        return result;
+    }
+
+    private QName guessValueType(Object value) {
+        Class clazz = value.getClass();
+        List profiles = Arrays.asList(new Object[] {new XSProfile(), new GML3Profile()} );
+        for (Iterator it = profiles.iterator(); it.hasNext();) {
+            TypeMappingProfile profile = (TypeMappingProfile) it.next();
+            Name name = profile.name(clazz);
+            if(name != null)
+                return new QName(name.getNamespaceURI(), name.getLocalPart());
+        }
+        return null;
     }
 }
