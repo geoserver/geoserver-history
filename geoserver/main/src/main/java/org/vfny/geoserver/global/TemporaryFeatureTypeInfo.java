@@ -48,10 +48,7 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
     }
 
     public Filter getDefinitionQuery() {
-        /**
-             * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
-             */
-        return Filter.EXCLUDE;
+    	return Filter.INCLUDE;
     }
 
     Object toDTO() {
