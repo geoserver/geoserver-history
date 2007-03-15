@@ -78,11 +78,7 @@ public class DemoRequestAction extends GeoServerAction {
             demoForm.setBody("");
         }
 
-        String service = (demo.indexOf("WCS_") > 0) ? "wcs"
-                                                    : ((demo.indexOf("WMS_") > 0) ? "wms"
-                                                                                  : ((demo.indexOf(
-                "WFSV_") > 0) ? "wfsv" : "wfs"));
-
+        String service = demo.substring(0, demo.indexOf('_')).toLowerCase();
         String url = Requests.getBaseUrl(request, getGeoServer()) + service;
 
         File file = new File(dir, demo);
