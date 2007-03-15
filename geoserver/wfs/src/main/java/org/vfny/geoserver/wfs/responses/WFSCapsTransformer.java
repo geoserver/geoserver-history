@@ -181,17 +181,16 @@ public class WFSCapsTransformer extends TransformerBase {
         private void handleKeywords(List kwlist) {
             StringBuffer kwds = new StringBuffer();
 
-            if ( kwlist != null ) {
-            	for (Iterator it = kwlist.iterator(); it.hasNext();) {
+            if (kwlist != null) {
+                for (Iterator it = kwlist.iterator(); it.hasNext();) {
                     kwds.append(String.valueOf(it.next()));
 
                     if (it.hasNext()) {
                         kwds.append(", ");
                     }
                 }
-	
             }
-            
+
             element("Keywords", kwds.toString());
         }
 
