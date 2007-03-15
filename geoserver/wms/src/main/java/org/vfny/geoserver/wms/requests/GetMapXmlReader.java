@@ -5,12 +5,14 @@
 package org.vfny.geoserver.wms.requests;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultFeatureResults;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
 import org.geotools.data.ReTypeFeatureReader;
 import org.geotools.data.Transaction;
+import org.geotools.data.crs.ForceCoordinateSystemFeatureReader;
 import org.geotools.data.memory.MemoryDataStore;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
@@ -21,6 +23,7 @@ import org.geotools.feature.type.GeometricAttributeType;
 import org.geotools.filter.ExpressionDOMParser;
 import org.geotools.filter.Filter;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
@@ -336,28 +339,13 @@ public class GetMapXmlReader extends XmlRequestReader {
                         "No CRS set on inline features default geometry.  Assuming the requestor has their inlinefeatures in the boundingbox CRS.");
 
                     FeatureType currFt = ul.getInlineFeatureType();
-                    FeatureTypeBuilder build = FeatureTypeFactory.newInstance(currFt.getTypeName());
-                    build.setNamespace(currFt.getNamespace());
-
-                    int numAttrs = currFt.getAttributeCount();
-
-                    for (int j = 0; j < numAttrs; j++) {
-                        AttributeType currAtt = currFt.getAttributeType(j);
-
-                        if (currAtt instanceof GeometryAttributeType) {
-                            LOGGER.fine("fixed CRS on geometry attribute " + currAtt.getName());
-                            build.addType(new GeometricAttributeType(
-                                    (GeometricAttributeType) currAtt, getMapRequest.getCrs()));
-                        } else {
-                            build.addType(currAtt);
-                        }
-                    }
-
-                    Query q = new DefaultQuery(build.getName(), Filter.NONE);
+                    Query q = new DefaultQuery(currFt.getTypeName(), Filter.NONE);
                     FeatureReader ilReader = ul.getInlineFeatureDatastore()
                                                .getFeatureReader(q, Transaction.AUTO_COMMIT);
-                    MemoryDataStore reTypedDS = new MemoryDataStore(new ReTypeFeatureReader(
-                                ilReader, build.getFeatureType()));
+                    CoordinateReferenceSystem crs = (getMapRequest.getCrs() == null)
+                        ? DefaultGeographicCRS.WGS84 : getMapRequest.getCrs();
+                    MemoryDataStore reTypedDS = new MemoryDataStore(new ForceCoordinateSystemFeatureReader(
+                                ilReader, crs));
                     currLayer.setFeature(new TemporaryFeatureTypeInfo(reTypedDS));
                 }
             } else {
