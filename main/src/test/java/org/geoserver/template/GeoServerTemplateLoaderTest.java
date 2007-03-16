@@ -45,21 +45,21 @@ public class GeoServerTemplateLoaderTest extends TestCase {
 			expected.createNewFile();
 		
 			File actual = (File) templateLoader.findTemplateSource( "1.ftl" );
-			assertEquals( expected.getAbsolutePath(), actual.getAbsolutePath() );
+			assertEquals( expected.getCanonicalPath(), actual.getCanonicalPath() );
 			
 			//test a path relative to featureTypes
 			expected = new File( featureType1,  "2.ftl" );
 			expected.createNewFile();
 			
 			actual = (File) templateLoader.findTemplateSource( "ft1/2.ftl" );
-			assertEquals( expected.getAbsolutePath(), actual.getAbsolutePath() );
+			assertEquals( expected.getCanonicalPath(), actual.getCanonicalPath() );
 			
 			actual = (File) templateLoader.findTemplateSource( "2.ftl" );
 			assertNull( actual );
 			
 			templateLoader.setFeatureType( "ft1" );
 			actual = (File) templateLoader.findTemplateSource( "2.ftl" );
-			assertEquals( expected.getAbsolutePath(), actual.getAbsolutePath() );
+			assertEquals( expected.getCanonicalPath(), actual.getCanonicalPath() );
 			
 			//test loading relative to class
 			Object source = templateLoader.findTemplateSource( "FeatureSimple.ftl" );
@@ -69,7 +69,7 @@ public class GeoServerTemplateLoaderTest extends TestCase {
 			
 			expected = new File( templates, "FeatureSimple.ftl" );
 			actual = (File) templateLoader.findTemplateSource( "FeatureSimple.ftl" );
-			assertEquals( expected.getAbsolutePath(), actual.getAbsolutePath() );
+			assertEquals( expected.getCanonicalPath(), actual.getCanonicalPath() );
 			assertTrue ( expected.exists() );
 		}
 		finally {
