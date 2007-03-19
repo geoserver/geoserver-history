@@ -70,7 +70,8 @@ public class FeatureWrapperTest extends TestCase {
 		StringWriter out = new StringWriter();
         template.process(features.iterator().next(), out);
         
-        assertEquals( "one\n1\n1,1\nPOINT (1 1)", out.toString() );
+        //replace ',' with '.' for locales which use a comma for decimal point
+        assertEquals( "one\n1\n1.1\nPOINT (1 1)", out.toString().replace(',', '.') );
 	}
 	
 	public void testFeatureDynamic() throws Exception {
@@ -79,7 +80,8 @@ public class FeatureWrapperTest extends TestCase {
 		StringWriter out = new StringWriter();
         template.process(features.iterator().next(), out);
         
-        assertEquals( "string=one\nint=1\ndouble=1,1\ngeom=POINT (1 1)\n", out.toString() );
+        //replace ',' with '.' for locales which use a comma for decimal point
+        assertEquals( "string=one\nint=1\ndouble=1.1\ngeom=POINT (1 1)\n", out.toString().replace(',', '.') );
 	}
 	
 }
