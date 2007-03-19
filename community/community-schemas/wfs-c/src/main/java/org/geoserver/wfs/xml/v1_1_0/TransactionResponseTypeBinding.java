@@ -5,7 +5,7 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 import net.opengis.wfs.TransactionResponseType;
-import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WfsFactory;
 import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -76,9 +76,9 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class TransactionResponseTypeBinding extends AbstractComplexEMFBinding {
-    WFSFactory wfsfactory;
+    WfsFactory wfsfactory;
 
-    public TransactionResponseTypeBinding(WFSFactory wfsfactory) {
+    public TransactionResponseTypeBinding(WfsFactory wfsfactory) {
         this.wfsfactory = wfsfactory;
     }
 

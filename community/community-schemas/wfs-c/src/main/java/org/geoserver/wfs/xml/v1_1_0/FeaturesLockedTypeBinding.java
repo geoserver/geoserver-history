@@ -5,7 +5,7 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 import net.opengis.wfs.FeaturesLockedType;
-import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WfsFactory;
 import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -31,9 +31,9 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class FeaturesLockedTypeBinding extends AbstractComplexEMFBinding {
-    WFSFactory wfsfactory;
+    WfsFactory wfsfactory;
 
-    public FeaturesLockedTypeBinding(WFSFactory wfsfactory) {
+    public FeaturesLockedTypeBinding(WfsFactory wfsfactory) {
         this.wfsfactory = wfsfactory;
     }
 

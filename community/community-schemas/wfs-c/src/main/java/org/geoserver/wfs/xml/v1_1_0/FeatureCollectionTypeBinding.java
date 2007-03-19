@@ -5,7 +5,7 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 import net.opengis.wfs.FeatureCollectionType;
-import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WfsFactory;
 import org.geoserver.feature.CompositeFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml3.bindings.GML;
@@ -75,9 +75,9 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class FeatureCollectionTypeBinding extends AbstractComplexEMFBinding {
-    WFSFactory wfsfactory;
+    WfsFactory wfsfactory;
 
-    public FeatureCollectionTypeBinding(WFSFactory wfsfactory) {
+    public FeatureCollectionTypeBinding(WfsFactory wfsfactory) {
         this.wfsfactory = wfsfactory;
     }
 
