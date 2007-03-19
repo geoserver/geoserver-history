@@ -15,7 +15,7 @@ import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.UpdateElementType;
-import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WfsFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.geoserver.feature.ReprojectingFeatureCollection;
@@ -349,11 +349,11 @@ public class Transaction {
         }
 
         //result
-        TransactionResponseType result = WFSFactory.eINSTANCE.createTransactionResponseType();
-        result.setTransactionResults(WFSFactory.eINSTANCE.createTransactionResultsType());
+        TransactionResponseType result = WfsFactory.eINSTANCE.createTransactionResponseType();
+        result.setTransactionResults(WfsFactory.eINSTANCE.createTransactionResultsType());
         result.getTransactionResults().setHandle(request.getHandle());
-        result.setTransactionSummary(WFSFactory.eINSTANCE.createTransactionSummaryType());
-        result.setInsertResults(WFSFactory.eINSTANCE.createInsertResultsType());
+        result.setTransactionSummary(WfsFactory.eINSTANCE.createTransactionSummaryType());
+        result.setInsertResults(WfsFactory.eINSTANCE.createInsertResultsType());
 
         //operatinos counters
         long deleted = 0;
@@ -689,7 +689,7 @@ public class Transaction {
                             LinkedList fids = (LinkedList) schema2fids.get(schema.getTypeName());
                             String fid = (String) fids.removeFirst();
 
-                            insertedFeature = WFSFactory.eINSTANCE.createInsertedFeatureType();
+                            insertedFeature = WfsFactory.eINSTANCE.createInsertedFeatureType();
                             insertedFeature.setHandle(insert.getHandle());
                             insertedFeature.getFeatureId().add(filterFactory.featureId(fid));
 
@@ -708,7 +708,7 @@ public class Transaction {
             LOGGER.log(Level.SEVERE, "Transaction failed", e);
 
             //transaction failed, rollback
-            ActionType action = WFSFactory.eINSTANCE.createActionType();
+            ActionType action = WfsFactory.eINSTANCE.createActionType();
 
             if (e.getCode() != null) {
                 action.setCode(e.getCode());
@@ -778,7 +778,7 @@ public class Transaction {
         //            }
         //        	else {
         //        		transaction.commit();
-        //        		result.getTransactionResult().getStatus().setSUCCESS( WFSFactory.eINSTANCE.createEmptyType() );
+        //        		result.getTransactionResult().getStatus().setSUCCESS( WfsFactory.eINSTANCE.createEmptyType() );
         //        	}
         //        	
         //        }
@@ -791,7 +791,7 @@ public class Transaction {
         // occured, howwever insert results needs to have at least one "FeatureId" eliement, sp 
         // we create an FeatureId with an empty fid
         if (result.getInsertResults().getFeature().isEmpty()) {
-            InsertedFeatureType insertedFeature = WFSFactory.eINSTANCE.createInsertedFeatureType();
+            InsertedFeatureType insertedFeature = WfsFactory.eINSTANCE.createInsertedFeatureType();
             insertedFeature.getFeatureId().add(filterFactory.featureId("none"));
 
             result.getInsertResults().getFeature().add(insertedFeature);
