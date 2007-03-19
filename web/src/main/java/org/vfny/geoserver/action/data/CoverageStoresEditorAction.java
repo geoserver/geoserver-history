@@ -8,9 +8,12 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.form.data.CoverageStoresEditorForm;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.CoverageStoreInfo;
 import org.vfny.geoserver.global.UserContainer;
 import java.io.IOException;
 import java.util.Iterator;
@@ -31,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 public final class CoverageStoresEditorAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
         HttpServletRequest request, HttpServletResponse response)
-        throws IOException, ServletException {
+        throws ConfigurationException, IOException, ServletException {
         CoverageStoresEditorForm dataFormatsForm = (CoverageStoresEditorForm) form;
         String dataFormatID = dataFormatsForm.getDataFormatId();
         String namespace = dataFormatsForm.getNamespaceId();
@@ -44,10 +47,13 @@ public final class CoverageStoresEditorAction extends ConfigAction {
 
         config = (CoverageStoreConfig) dataConfig.getDataFormat(dataFormatID);
 
+        boolean newCoverageFlag = false;
+
         if (config == null) {
             // we are creating a new one.
             dataConfig.addDataFormat(getUserContainer(request).getDataFormatConfig());
             config = (CoverageStoreConfig) dataConfig.getDataFormat(dataFormatID);
+            newCoverageFlag = true;
         }
 
         // /////////////////////////////////////////////////////////////////
@@ -71,7 +77,23 @@ public final class CoverageStoresEditorAction extends ConfigAction {
         getUserContainer(request).setDataFormatConfig(null);
         getApplicationState().notifyConfigChanged();
 
-        return mapping.findForward("config.data.format");
+        CoverageStoreInfo cvStoreInfo = new CoverageStoreInfo(config.toDTO(), getData());
+
+        if (newCoverageFlag) {
+            //if we're making a new coverage store, then go ahead and create the new coverage and
+            //forward to the editor
+            CoverageConfig coverageConfig = DataCoveragesNewAction.newCoverageConfig(cvStoreInfo,
+                    dataFormatID, request);
+            user.setCoverageConfig(coverageConfig);
+
+            return mapping.findForward("config.data.coverage.editor");
+        } else {
+            // For now we're only not forwarding to the coverage editor if this is a coverage store edit 
+            //(instead of a new one.  In the future with nD coverage support we'll also want to check
+            //that the coverage store only has one potential coverage, since if not then we don't want
+            //to force people to edit the first one.
+            return mapping.findForward("config.data.format");
+        }
     }
 
     /** Used to debug connection parameters */
