@@ -16,6 +16,7 @@ import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.GeoServer;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -73,6 +74,11 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
     private WFS wfs;
 
     /**
+     * GeoServer configuration
+     */
+    private GeoServer geoServer;
+
+    /**
      * The catalog
      */
     private Data catalog;
@@ -81,10 +87,11 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
      * Creates the producer with a reference to the GetFeature operation
      * using it.
      */
-    public GML2OutputFormat(WFS wfs, Data catalog) {
+    public GML2OutputFormat(WFS wfs, GeoServer geoServer, Data catalog) {
         super("GML2");
 
         this.wfs = wfs;
+        this.geoServer = geoServer;
         this.catalog = catalog;
     }
 
@@ -138,7 +145,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
             "org.apache.xalan.processor.TransformerFactoryImpl");
 
         transformer.setIndentation(wfs.isVerbose() ? INDENT_SIZE : (NO_FORMATTING));
-        transformer.setNumDecimals(wfs.getNumDecimals());
+        transformer.setNumDecimals(geoServer.getNumDecimals());
         transformer.setFeatureBounding(wfs.isFeatureBounding());
         transformer.setEncoding(wfs.getCharSet());
 

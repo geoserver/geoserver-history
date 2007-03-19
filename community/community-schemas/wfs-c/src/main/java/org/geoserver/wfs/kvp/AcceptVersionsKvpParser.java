@@ -4,8 +4,8 @@
  */
 package org.geoserver.wfs.kvp;
 
-import net.opengis.ows.v1_0_0.AcceptVersionsType;
-import net.opengis.ows.v1_0_0.OWSFactory;
+import net.opengis.ows.AcceptVersionsType;
+import net.opengis.ows.OwsFactory;
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.KvpUtils;
 
@@ -23,7 +23,7 @@ public class AcceptVersionsKvpParser extends KvpParser {
     }
 
     public Object parse(String value) throws Exception {
-        AcceptVersionsType acceptVersions = OWSFactory.eINSTANCE
+        AcceptVersionsType acceptVersions = OwsFactory.eINSTANCE
             .createAcceptVersionsType();
         acceptVersions.getVersion().addAll(KvpUtils.readFlat(value, ","));
 
