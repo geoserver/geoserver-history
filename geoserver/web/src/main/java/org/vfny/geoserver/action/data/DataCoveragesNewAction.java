@@ -88,8 +88,19 @@ public class DataCoveragesNewAction extends ConfigAction {
                     catalog);
         }
 
-        GridCoverage gc = null;
+        CoverageConfig coverageConfig = newCoverageConfig(cvStoreInfo, formatID, request);
 
+        user.setCoverageConfig(coverageConfig);
+
+        return mapping.findForward("config.data.coverage.editor");
+    }
+
+    /**
+     * Static method so that the CoverageStore editor can do the same thing that the new one
+     * does.*/
+    public static CoverageConfig newCoverageConfig(CoverageStoreInfo cvStoreInfo, String formatID,
+        HttpServletRequest request) throws ConfigurationException {
+        //GridCoverage gc = null;
         final Format format = cvStoreInfo.getFormat();
         AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cvStoreInfo.getReader();
 
@@ -108,8 +119,6 @@ public class DataCoveragesNewAction extends ConfigAction {
         request.setAttribute(NEW_COVERAGE_KEY, "true");
         request.getSession().setAttribute(DataConfig.SELECTED_COVERAGE, coverageConfig);
 
-        user.setCoverageConfig(coverageConfig);
-
-        return mapping.findForward("config.data.coverage.editor");
+        return coverageConfig;
     }
 }
