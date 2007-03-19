@@ -5,15 +5,19 @@
 package org.geoserver.wfs.xml;
 
 import net.opengis.wfs.FeatureCollectionType;
+import org.eclipse.xsd.XSDComplexTypeDefinition;
+import org.eclipse.xsd.XSDSchema;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wfs.GetFeature;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
 import org.geotools.xml.Encoder;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.Name;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.xml.sax.SAXException;
@@ -48,19 +52,21 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         throws ServiceException, IOException {
         List featureCollections = results.getFeature();
 
-        //round up the info objects for each feature collection
-        HashMap /*<String,Set>*/ ns2metas = new HashMap();
+        // round up the info objects for each feature collection
+        HashMap /* <String,Set> */ ns2metas = new HashMap();
 
         for (Iterator fc = featureCollections.iterator(); fc.hasNext();) {
-            FeatureCollection features = (FeatureCollection) fc.next();
-            FeatureType featureType = features.getSchema();
+            GetFeature.GTHackFeatureCollection features = (GetFeature.GTHackFeatureCollection) fc
+                .next();
+            AttributeDescriptor descriptor = features.getISOFeatureType();
 
-            //load the metadata for the feature type
-            String namespaceURI = featureType.getNamespace().toString();
-            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getTypeName(),
-                    namespaceURI);
+            // load the metadata for the feature type
+            Name name = descriptor.getName();
+            String namespaceURI = name.getNamespaceURI();
+            String localPart = name.getLocalPart();
+            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(localPart, namespaceURI);
 
-            //add it to the map
+            // add it to the map
             Set metas = (Set) ns2metas.get(namespaceURI);
 
             if (metas == null) {
@@ -71,13 +77,15 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             metas.add(meta);
         }
 
-        Encoder encoder = new Encoder(configuration, configuration.schema());
+        XSDSchema schema = configuration.schema();
 
-        //declare wfs schema location
+        Encoder encoder = new Encoder(configuration, schema);
+
+        // declare wfs schema location
         encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
             ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "wfs/1.1.0/wfs.xsd"));
 
-        //declare application schema namespaces
+        // declare application schema namespaces
         for (Iterator i = ns2metas.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
 
@@ -95,7 +103,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
                 }
             }
 
-            //set the schema location
+            // set the schema location
             encoder.setSchemaLocation(namespaceURI,
                 ResponseUtils.appendQueryString(wfs.getOnlineResource().toString(),
                     "service=WFS&version=1.1.0&request=DescribeFeatureType&typeName="
