@@ -4,7 +4,7 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
-import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WfsFactory;
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.eclipse.xsd.util.XSDSchemaLocator;
 import org.geoserver.ows.xml.v1_0.OWSConfiguration;
@@ -18,6 +18,7 @@ import org.geoserver.wfs.xml.xs.DateBinding;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.v1_1.OGC;
 import org.geotools.filter.v1_1.OGCConfiguration;
+import org.geotools.gml2.FeaturePropertyExtractor;
 import org.geotools.gml2.FeatureTypeCache;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.gml3.bindings.GML;
@@ -56,7 +57,7 @@ public class WFSConfiguration extends Configuration {
     }
 
     public void addDependency(Configuration dependency) {
-        //override to make public
+        // override to make public
         super.addDependency(dependency);
     }
 
@@ -83,30 +84,42 @@ public class WFSConfiguration extends Configuration {
     public void configureContext(MutablePicoContainer context) {
         super.configureContext(context);
 
-        context.registerComponentInstance(WFSFactory.eINSTANCE);
+        context.registerComponentInstance(WfsFactory.eINSTANCE);
         context.registerComponentInstance(new WFSHandlerFactory(catalog, schemaBuilder));
         context.registerComponentInstance(catalog);
 
-        //seed the cache with entries from the catalog
+        context.registerComponentImplementation(ISOFeaturePropertyExtractor.class);
+
+        // seed the cache with entries from the catalog
         FeatureTypeCache featureTypeCache = (FeatureTypeCache) context
             .getComponentInstanceOfType(FeatureTypeCache.class);
 
-        try {
-            Collection featureTypes = catalog.getFeatureTypeInfos().values();
-
-            for (Iterator f = featureTypes.iterator(); f.hasNext();) {
-                FeatureTypeInfo meta = (FeatureTypeInfo) f.next();
-                FeatureType featureType = meta.getFeatureType();
-
-                featureTypeCache.put(featureType);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        // GR: ftypeCache is used to cache the types when parsing. I don't need
+        // it right now
+        // and am commenting this out so don't have to worry about
+        // FeatureTypeCache working
+        // with GT-FM and not with ISO-FM
+        // try {
+        // Collection featureTypes = catalog.getFeatureTypeInfos().values();
+        //
+        // for (Iterator f = featureTypes.iterator(); f.hasNext();) {
+        // FeatureTypeInfo meta = (FeatureTypeInfo) f.next();
+        //
+        // try {
+        // FeatureType featureType = meta.getFeatureType();
+        // featureTypeCache.put(featureType);
+        // } catch (RuntimeException e) {
+        // e.printStackTrace();
+        // }
+        //
+        // }
+        // } catch (IOException e) {
+        // throw new RuntimeException(e);
+        // }
     }
 
     protected void configureBindings(MutablePicoContainer container) {
-        //register our custom bindings
+        // register our custom bindings
         container.registerComponentImplementation(XS.DATE, DateBinding.class);
         container.registerComponentImplementation(OGC.Filter, FilterTypeBinding.class);
         container.registerComponentImplementation(OGC.PropertyNameType,
@@ -115,8 +128,25 @@ public class WFSConfiguration extends Configuration {
         container.registerComponentImplementation(GML.AbstractGeometryType,
             AbstractGeometryTypeBinding.class);
 
-        //remove bindings for MultiPolygon and MultiLineString
-        //TODO: make this cite configurable
+        // remove bindings for MultiPolygon and MultiLineString
+        // TODO: make this cite configurable
         Schemas.unregisterComponent(container, GML.MultiPolygonType);
+
+        // register the overriding bindings needed to
+        // encode from ISO Features
+        registerBindingOverrides(container);
+    }
+
+    private void registerBindingOverrides(MutablePicoContainer container) {
+        container.unregisterComponent(GML.AbstractFeatureType);
+        container.registerComponentImplementation(GML.AbstractFeatureType,
+            ISOAbstractFeatureTypeBinding.class);
+
+        container.unregisterComponent(GML.AbstractGeometryType);
+        container.registerComponentImplementation(GML.AbstractGeometryType,
+            ISOAbstractFeatureTypeBinding.class);
+
+        container.unregisterComponent(GML.PointType);
+        container.registerComponentImplementation(GML.PointType, ISOPointTypeBinding.class);
     }
 }
