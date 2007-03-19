@@ -4,6 +4,8 @@
  */
 package org.geoserver.wfs;
 
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
@@ -12,20 +14,34 @@ import net.opengis.wfs.LockFeatureResponseType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
 import net.opengis.wfs.QueryType;
-import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WfsFactory;
+import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.crs.ReprojectFeatureResults;
+import org.geotools.data.feature.FeatureAccess;
+import org.geotools.data.feature.FeatureSource2;
+import org.geotools.data.feature.adapter.FeatureCollectionAdapter;
+import org.geotools.data.feature.adapter.ISOFeatureTypeAdapter;
+import org.geotools.feature.CollectionListener;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
-import org.geotools.filter.expression.AbstractExpressionVisitor;
-import org.geotools.filter.visitor.AbstractFilterVisitor;
+import org.geotools.feature.FeatureIterator;
+import org.geotools.feature.FeatureList;
+import org.geotools.feature.IllegalAttributeException;
+import org.geotools.feature.Name;
+import org.geotools.feature.iso.simple.SimpleFeatureFactoryImpl;
+import org.geotools.feature.iso.type.AttributeDescriptorImpl;
+import org.geotools.feature.visitor.FeatureVisitor;
 import org.geotools.referencing.CRS;
+import org.geotools.util.ProgressListener;
 import org.geotools.xml.EMFUtils;
+import org.opengis.feature.simple.SimpleFeatureFactory;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.GeometryType;
+import org.opengis.feature.type.TypeName;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
-import org.opengis.filter.expression.ExpressionVisitor;
-import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.AttributeTypeInfo;
@@ -34,10 +50,10 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 
@@ -45,8 +61,8 @@ import javax.xml.namespace.QName;
 /**
  * Web Feature Service GetFeature operation.
  * <p>
- * This operation returns an array of {@link org.geotools.feature.FeatureCollection}
- * instances.
+ * This operation returns an array of
+ * {@link org.geotools.feature.FeatureCollection} instances.
  * </p>
  *
  * @author Rob Hranac, TOPP
@@ -55,6 +71,171 @@ import javax.xml.namespace.QName;
  * @version $Id$
  */
 public class GetFeature {
+    /**
+     * This is a temporary wraper for the ISO Features collections implementing
+     * geotools FeatureCollection so there's no need to modify or fork the WFS
+     * emf generated classes. In other words, this is a HACK and has to die once
+     * we get an homogeinized feature model.
+     *
+     * @author gabriel
+     */
+    public final class GTHackFeatureCollection implements FeatureCollection {
+        private AttributeDescriptor isoType;
+        private Collection isoFeatures;
+
+        public GTHackFeatureCollection(Collection isoFeatures, AttributeDescriptor isoType) {
+            this.isoFeatures = isoFeatures;
+            this.isoType = isoType;
+        }
+
+        public AttributeDescriptor getISOFeatureType() {
+            return isoType;
+        }
+
+        public void close(FeatureIterator arg0) {
+        }
+
+        public void close(Iterator arg0) {
+        }
+
+        public Iterator iterator() {
+            Iterator iterator = isoFeatures.iterator();
+
+            return iterator;
+        }
+
+        public int size() {
+            int size = isoFeatures.size();
+
+            return size;
+        }
+
+        public void accepts(FeatureVisitor arg0, ProgressListener arg1)
+            throws IOException {
+            throw new UnsupportedOperationException();
+        }
+
+        public void addListener(CollectionListener arg0)
+            throws NullPointerException {
+            throw new UnsupportedOperationException();
+        }
+
+        public FeatureIterator features() {
+            throw new UnsupportedOperationException();
+        }
+
+        public org.geotools.feature.FeatureType getFeatureType() {
+            throw new UnsupportedOperationException();
+        }
+
+        public org.geotools.feature.FeatureType getSchema() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void removeListener(CollectionListener arg0)
+            throws NullPointerException {
+            throw new UnsupportedOperationException();
+        }
+
+        public FeatureList sort(SortBy arg0) {
+            throw new UnsupportedOperationException();
+        }
+
+        public FeatureCollection subCollection(Filter arg0) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void purge() {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean add(Object arg0) {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean addAll(Collection arg0) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void clear() {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean contains(Object o) {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean containsAll(Collection arg0) {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean isEmpty() {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean remove(Object o) {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean removeAll(Collection arg0) {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean retainAll(Collection arg0) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Object[] toArray() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Object[] toArray(Object[] arg0) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Object getAttribute(String arg0) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Object getAttribute(int arg0) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Object[] getAttributes(Object[] arg0) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Envelope getBounds() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Geometry getDefaultGeometry() {
+            throw new UnsupportedOperationException();
+        }
+
+        public String getID() {
+            throw new UnsupportedOperationException();
+        }
+
+        public int getNumberOfAttributes() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setAttribute(int arg0, Object arg1)
+            throws IllegalAttributeException, ArrayIndexOutOfBoundsException {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setAttribute(String arg0, Object arg1)
+            throws IllegalAttributeException {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setDefaultGeometry(Geometry arg0) throws IllegalAttributeException {
+            throw new UnsupportedOperationException();
+        }
+    }
+
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
@@ -126,7 +307,7 @@ public class GetFeature {
         //
         // And allways remember to release locks if we are failing:
         // - if we fail to aquire all the locks we will need to fail and
-        //   itterate through the the FeatureSources to release the locks
+        // itterate through the the FeatureSources to release the locks
         //
         if (request.getMaxFeatures() == null) {
             request.setMaxFeatures(BigInteger.valueOf(Integer.MAX_VALUE));
@@ -134,8 +315,8 @@ public class GetFeature {
 
         int maxFeatures = request.getMaxFeatures().intValue();
 
-        FeatureCollectionType result = WFSFactory.eINSTANCE.createFeatureCollectionType();
-        int count = 0; //should probably be long
+        FeatureCollectionType result = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        int count = 0; // should probably be long
 
         try {
             for (int i = 0; (i < request.getQuery().size()) && (count <= maxFeatures); i++) {
@@ -146,21 +327,19 @@ public class GetFeature {
                 if (query.getTypeName().size() == 1) {
                     meta = featureTypeInfo((QName) query.getTypeName().get(0));
                 } else {
-                    //TODO: a join is taking place
+                    // TODO: a join is taking place
                 }
-
-                FeatureSource source = meta.getFeatureSource();
 
                 List atts = meta.getAttributes();
                 List attNames = meta.getAttributeNames();
 
-                //make sure property names are cool
+                // make sure property names are cool
                 List propNames = query.getPropertyName();
 
                 for (Iterator iter = propNames.iterator(); iter.hasNext();) {
                     String propName = (String) iter.next();
 
-                    //HACK: strip off namespace
+                    // HACK: strip off namespace
                     if (propName.indexOf(':') != -1) {
                         propName = propName.substring(propName.indexOf(':') + 1);
                     }
@@ -174,7 +353,8 @@ public class GetFeature {
                     }
                 }
 
-                //we must also include any properties that are mandatory ( even if not requested ),
+                // we must also include any properties that are mandatory ( even
+                // if not requested ),
                 // ie. those with minOccurs > 0
                 if (propNames.size() != 0) {
                     Iterator ii = atts.iterator();
@@ -185,13 +365,13 @@ public class GetFeature {
                         LOGGER.finer("checking to see if " + propNames + " contains" + ati);
 
                         if (((ati.getMinOccurs() > 0) && (ati.getMaxOccurs() != 0))) {
-                            //mandatory, add it
+                            // mandatory, add it
                             tmp.add(ati.getName());
 
                             continue;
                         }
 
-                        //check if it was requested
+                        // check if it was requested
                         for (Iterator p = propNames.iterator(); p.hasNext();) {
                             String propName = (String) p.next();
 
@@ -203,69 +383,67 @@ public class GetFeature {
                         }
                     }
 
-                    //replace property names
+                    // replace property names
                     query.getPropertyName().clear();
                     query.getPropertyName().addAll(tmp);
                 }
 
-                //make sure filters are sane
-                if (query.getFilter() != null) {
-                    final FeatureType featureType = source.getSchema();
-                    ExpressionVisitor visitor = new AbstractExpressionVisitor() {
-                            public Object visit(PropertyName name, Object data) {
-                                // case of multiple geometries being returned
-                                if (name.evaluate(featureType) == null) {
-                                    //we want to throw wfs exception, but cant
-                                    throw new WFSException("Illegal property name: "
-                                        + name.getPropertyName(), "InvalidParameterValue");
-                                }
+                DataStore dataStore = meta.getDataStoreInfo().getDataStore();
+                String typeName = meta.getTypeName();
 
-                                return name;
-                            }
-                            ;
-                        };
+                FeatureSource source;
+                FeatureType featureType;
+                Collection features;
 
-                    query.getFilter().accept(new AbstractFilterVisitor(visitor), null);
+                AttributeDescriptor descriptor;
+
+                if (dataStore instanceof FeatureAccess) {
+                    String uri = meta.getNameSpace().getURI();
+                    Name name = new Name(uri, typeName);
+                    source = (FeatureSource2) ((FeatureAccess) dataStore).access(name);
+
+                    descriptor = (AttributeDescriptor) ((FeatureSource2) source).describe();
+                    featureType = (FeatureType) descriptor.getType();
+                } else {
+                    source = dataStore.getFeatureSource(typeName);
+                    featureType = new ISOFeatureTypeAdapter(source.getSchema());
+
+                    TypeName tname = featureType.getName();
+                    Name name = new Name(tname.getNamespaceURI(), tname.getLocalPart());
+                    descriptor = new AttributeDescriptorImpl(featureType, name, 0,
+                            Integer.MAX_VALUE, true);
                 }
 
-                org.geotools.data.Query gtQuery = toDataQuery(query, maxFeatures - count, source);
+                int queryMaxFeatures = maxFeatures - count;
+                org.geotools.data.Query gtQuery = toDataQuery(query, queryMaxFeatures, featureType);
                 LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery);
 
-                FeatureCollection features = source.getFeatures(gtQuery);
-                count += features.size();
-
-                //JD: TODO reoptimize
-                //                if ( i == request.getQuery().size() - 1 ) { 
-                //                	//DJB: dont calculate feature count if you dont have to. The MaxFeatureReader will take care of the last iteration
-                //                	maxFeatures -= features.getCount();
-                //                }
-
-                // handle difference between declared and original CRS
-                if ((meta.getNativeCRS() != null)
-                        && !CRS.equalsIgnoreMetadata(meta.getNativeCRS(), meta.getDeclaredCRS())) {
-                    try {
-                        features = new ReprojectFeatureResults(features, meta.getDeclaredCRS());
-                    } catch (Exception e) {
-                        LOGGER.severe("Could not map original CRS to external CRS, "
-                            + "serving data in original CRS: " + e.getMessage());
-                        LOGGER.log(Level.FINE, "Detailed mapping error: ", e);
-                    }
+                if (source instanceof FeatureSource2) {
+                    features = ((FeatureSource2) source).content(gtQuery.getFilter());
+                } else {
+                    FeatureCollection gtFeatures = source.getFeatures(gtQuery);
+                    SimpleFeatureFactory featureFactory = new SimpleFeatureFactoryImpl();
+                    features = new FeatureCollectionAdapter((SimpleFeatureType) featureType,
+                            gtFeatures, featureFactory);
+                    ((FeatureCollectionAdapter) features).setMaxFeatures(queryMaxFeatures);
                 }
 
-                //GR: I don't know if the featuresults should be added here for later
-                //encoding if it was a lock request. may be after ensuring the lock
-                //succeed?
-                result.getFeature().add(features);
+                count += features.size();
+
+                FeatureCollection hackFeatureCollection = new GTHackFeatureCollection(features,
+                        descriptor);
+
+                result.getFeature().add(hackFeatureCollection);
             }
         } catch (IOException e) {
             throw new WFSException("Error occurred getting features", e, request.getHandle());
         }
 
-        //locking
+        // locking
         if (request instanceof GetFeatureWithLockType) {
             GetFeatureWithLockType withLockRequest = (GetFeatureWithLockType) request;
 
-            LockFeatureType lockRequest = WFSFactory.eINSTANCE.createLockFeatureType();
+            LockFeatureType lockRequest = WfsFactory.eINSTANCE.createLockFeatureType();
             lockRequest.setExpiry(withLockRequest.getExpiry());
             lockRequest.setHandle(withLockRequest.getHandle());
             lockRequest.setLockAction(AllSomeType.ALL_LITERAL);
@@ -273,11 +451,11 @@ public class GetFeature {
             for (int i = 0; i < request.getQuery().size(); i++) {
                 QueryType query = (QueryType) request.getQuery().get(i);
 
-                LockType lock = WFSFactory.eINSTANCE.createLockType();
+                LockType lock = WfsFactory.eINSTANCE.createLockType();
                 lock.setFilter(query.getFilter());
                 lock.setHandle(query.getHandle());
 
-                //TODO: joins?
+                // TODO: joins?
                 lock.setTypeName((QName) query.getTypeName().get(0));
                 lockRequest.getLock().add(lock);
             }
@@ -308,13 +486,14 @@ public class GetFeature {
      * conversion.
      * </p>
      *
-     * @param maxFeatures number of features, or 0 for DefaultQuery.DEFAULT_MAX
+     * @param maxFeatures
+     *            number of features, or 0 for DefaultQuery.DEFAULT_MAX
      *
      * @return A Query for use with the FeatureSource interface
      *
      */
-    public org.geotools.data.Query toDataQuery(QueryType query, int maxFeatures,
-        FeatureSource source) throws WFSException {
+    public org.geotools.data.Query toDataQuery(QueryType query, int maxFeatures, FeatureType schema)
+        throws WFSException {
         if (maxFeatures <= 0) {
             maxFeatures = DefaultQuery.DEFAULT_MAX;
         }
@@ -336,27 +515,30 @@ public class GetFeature {
             filter = Filter.INCLUDE;
         }
 
-        //only handle non-joins for now
+        // only handle non-joins for now
         QName typeName = (QName) query.getTypeName().get(0);
         DefaultQuery dataQuery = new DefaultQuery(typeName.getLocalPart(), filter, maxFeatures,
                 props, query.getHandle());
 
-        //figure out the crs the data is in
-        CoordinateReferenceSystem crs = (source.getSchema().getDefaultGeometry() != null)
-            ? source.getSchema().getDefaultGeometry().getCoordinateSystem() : null;
+        AttributeDescriptor defaultGeometry = schema.getDefaultGeometry();
+        GeometryType geomType = (GeometryType) ((defaultGeometry == null) ? null
+                                                                          : defaultGeometry.getType());
+
+        // figure out the crs the data is in
+        CoordinateReferenceSystem crs = (geomType == null) ? null : geomType.getCRS();
 
         if (crs == null) {
-            //set to be the server default
+            // set to be the server default
             try {
                 crs = CRS.decode("EPSG:4326");
                 dataQuery.setCoordinateSystem(crs);
             } catch (Exception e) {
-                //should never happen
+                // should never happen
                 throw new RuntimeException(e);
             }
         }
 
-        //handle reprojection
+        // handle reprojection
         if (query.getSrsName() != null) {
             CoordinateReferenceSystem target;
 
@@ -367,13 +549,13 @@ public class GetFeature {
                 throw new WFSException(msg, e);
             }
 
-            //if the crs are not equal, then reproject
+            // if the crs are not equal, then reproject
             if (!crs.equals(target)) {
                 dataQuery.setCoordinateSystemReproject(crs);
             }
         }
 
-        //handle sorting
+        // handle sorting
         if (query.getSortBy() != null) {
             List sortBy = query.getSortBy();
             dataQuery.setSortBy((SortBy[]) sortBy.toArray(new SortBy[sortBy.size()]));
