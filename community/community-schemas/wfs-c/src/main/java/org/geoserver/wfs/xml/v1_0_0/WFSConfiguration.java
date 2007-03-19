@@ -4,8 +4,8 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
-import net.opengis.ows.v1_0_0.OWSFactory;
-import net.opengis.wfs.WFSFactory;
+import net.opengis.ows.OwsFactory;
+import net.opengis.wfs.WfsFactory;
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
@@ -58,8 +58,8 @@ public class WFSConfiguration extends Configuration {
     public void configureContext(MutablePicoContainer context) {
         super.configureContext(context);
 
-        context.registerComponentInstance(OWSFactory.eINSTANCE);
-        context.registerComponentInstance(WFSFactory.eINSTANCE);
+        context.registerComponentInstance(OwsFactory.eINSTANCE);
+        context.registerComponentInstance(WfsFactory.eINSTANCE);
         context.registerComponentInstance(new WFSHandlerFactory(catalog, schemaBuilder));
         context.registerComponentInstance(catalog);
     }

@@ -5,7 +5,7 @@
 package org.geoserver.wfs.xml.v1_0_0;
 
 import net.opengis.wfs.QueryType;
-import net.opengis.wfs.WFSFactory;
+import net.opengis.wfs.WfsFactory;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -95,14 +95,14 @@ public class QueryTypeBinding extends AbstractComplexBinding {
     /**
      * Wfs Factory
      */
-    WFSFactory wfsfactory;
+    WfsFactory wfsfactory;
 
     /**
      * namespace mappings
      */
     NamespaceSupport namespaceSupport;
 
-    public QueryTypeBinding(WFSFactory wfsfactory, NamespaceSupport namespaceSupport) {
+    public QueryTypeBinding(WfsFactory wfsfactory, NamespaceSupport namespaceSupport) {
         this.wfsfactory = wfsfactory;
         this.namespaceSupport = namespaceSupport;
     }
