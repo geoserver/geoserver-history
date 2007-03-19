@@ -5,7 +5,7 @@
   -->
   <SRS>27700</SRS>
   <title>Boreholes</title>
-  <abstract>Boreholes geneerated from a property datastore</abstract>
+  <abstract>Boreholes generated from a property datastore</abstract>
   <numDecimals value="8" />
   <keywords>borehole</keywords>
   <!-- latLonBoundingBox dynamic="false" miny="-90.0" maxy="90.0" maxx="180.0" minx="-180.0" /-->

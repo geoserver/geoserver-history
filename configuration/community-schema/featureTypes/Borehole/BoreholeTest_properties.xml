@@ -35,7 +35,7 @@
         <Parameter>
           <name>directory</name>
           <!-- path can be relative to working dir -->
-          <value>/home/gabriel/svn/geoserver/trunk/geoserver/community/community-schemas/web-c/community-schema/featureTypes/Borehole</value>
+          <value>/home/gabriel/svn/geoserver/trunk/configuration/community-schema/featureTypes/Borehole</value>
         </Parameter>
       </parameters>
     </DataStore>
