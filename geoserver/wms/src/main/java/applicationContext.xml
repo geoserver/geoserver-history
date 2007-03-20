@@ -92,6 +92,10 @@
 	<bean id="kmlReflector" class="org.vfny.geoserver.wms.servlets.KMLReflector"
 		parent="wmsService">
 	</bean>	
+  
+        <bean id="wmsReflect" class="org.vfny.geoserver.wms.servlets.Reflect"
+                 parent="wmsService">
+        </bean> 
 
 	<!--  
 		Legend producer factories
