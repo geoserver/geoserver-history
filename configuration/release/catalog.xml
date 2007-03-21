@@ -60,6 +60,12 @@ parameters repository for all coverages it holds.
 <format namespace = "nurc" enabled = "true" id = "mosaic" >
 <type>ImageMosaic</type>
 <url>file:coverages/mosaic_sample/mosaic.shp</url>
+<parameters>
+<parameter value = "1" name = "InputImageROIThreshold"  />
+<parameter value = "false" name = "FinalAlpha"  />
+<parameter value = "1.0" name = "AlphaThreshold"  />
+<parameter value = "false" name = "InputImageROI"  />
+</parameters>
 </format>
 <format namespace = "nurc" enabled = "true" id = "img_sample2" >
 <type>WorldImage</type>
@@ -83,7 +89,10 @@ Defines namespaces to be used by the datastores.
 </namespaces>
 <styles>
 <!--
-Defines the style ids and file name to be used by the wms.
+Defines the style ids to be used by the wms.  The files must be
+contained in geoserver/misc/wms/styles.  We're working on finding
+a better place for them, but for now that's where you must put them
+if you want them on the server.
 -->
 <style filename = "giant_polygon.sld" id = "giant_polygon"  />
 <style filename = "capitals.sld" id = "capitals"  />
