@@ -5,16 +5,17 @@
 a datastore configuration element serves as a common data source connection
 parameters repository for all featuretypes it holds.
 -->
+<datastore namespace = "topp" enabled = "true" id = "shapefile_dir" >
+<connectionParams>
+<parameter value = "topp" name = "namespace"  />
+<parameter value = "shp" name = "suffix_list"  />
+<parameter value = "file:data/shapefiles" name = "data_directory url"  />
+</connectionParams>
+</datastore>
 <datastore namespace = "tiger" enabled = "true" id = "DS_giant_polygon" >
 <connectionParams>
 <parameter value = "tiger" name = "namespace"  />
 <parameter value = "file:data/nyc/giant_polygon.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "topp" enabled = "true" id = "states_shapefile" >
-<connectionParams>
-<parameter value = "topp" name = "namespace"  />
-<parameter value = "file:data/shapefiles/states.shp" name = "url"  />
 </connectionParams>
 </datastore>
 <datastore namespace = "tiger" enabled = "true" id = "DS_poi" >
@@ -23,46 +24,23 @@ parameters repository for all featuretypes it holds.
 <parameter value = "file:data/nyc/poi.shp" name = "url"  />
 </connectionParams>
 </datastore>
-<datastore namespace = "topp" enabled = "true" id = "tasmania_cities" >
-<connectionParams>
-<parameter value = "topp" name = "namespace"  />
-<parameter value = "file:data/taz_shapes/tasmania_cities.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "topp" enabled = "true" id = "alaska" >
-<connectionParams>
-<parameter value = "topp" name = "namespace"  />
-<parameter value = "file:data/shapefiles/alaska.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "topp" enabled = "true" id = "tasmania_roads" >
-<connectionParams>
-<parameter value = "topp" name = "namespace"  />
-<parameter value = "file:data/taz_shapes/tasmania_roads.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "topp" enabled = "true" id = "tasmania_state_boundaries" >
-<connectionParams>
-<parameter value = "topp" name = "namespace"  />
-<parameter value = "file:data/taz_shapes/tasmania_state_boundaries.shp" name = "url"  />
-</connectionParams>
-</datastore>
 <datastore namespace = "tiger" enabled = "true" id = "DS_poly_landmarks" >
 <connectionParams>
 <parameter value = "tiger" name = "namespace"  />
 <parameter value = "file:data/nyc/poly_landmarks.shp" name = "url"  />
 </connectionParams>
 </datastore>
+<datastore namespace = "topp" enabled = "true" id = "taz_shapes" >
+<connectionParams>
+<parameter value = "topp" name = "namespace"  />
+<parameter value = "shp" name = "suffix_list"  />
+<parameter value = "file:data/taz_shapes" name = "data_directory url"  />
+</connectionParams>
+</datastore>
 <datastore namespace = "tiger" enabled = "true" id = "DS_tiger_roads" >
 <connectionParams>
 <parameter value = "tiger" name = "namespace"  />
 <parameter value = "file:data/nyc/tiger_roads.shp" name = "url"  />
-</connectionParams>
-</datastore>
-<datastore namespace = "topp" enabled = "true" id = "tasmania_water_bodies" >
-<connectionParams>
-<parameter value = "topp" name = "namespace"  />
-<parameter value = "file:data/taz_shapes/tasmania_water_bodies.shp" name = "url"  />
 </connectionParams>
 </datastore>
 </datastores>
