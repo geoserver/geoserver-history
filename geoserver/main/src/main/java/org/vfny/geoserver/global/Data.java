@@ -12,7 +12,6 @@ import org.geotools.data.LockingManager;
 import org.geotools.data.Transaction;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
-import org.geotools.map.MapLayer;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
@@ -65,9 +64,7 @@ import java.util.logging.Level;
  */
 public class Data extends GlobalLayerSupertype /* implements Repository */ {
     public static final String WEB_CONTAINER_KEY = "DATA";
-    
     public static final Integer TYPE_VECTOR = new Integer(0);
-    
     public static final Integer TYPE_RASTER = new Integer(1);
 
     /** Default name of feature type information */
@@ -1849,20 +1846,24 @@ SCHEMA:
      */
     public Integer getLayerType(final String layerName) {
         Integer layerType = (Integer) layerNames.get(layerName);
-        if(layerType != null) 
+
+        if (layerType != null) {
             return layerType;
-        
+        }
+
         // vector layers are namespace prefixed, coverages are not
-        if(layerName.indexOf(":") == -1) {
+        if (layerName.indexOf(":") == -1) {
             final String prefixedName = defaultNameSpace.getPrefix() + ":" + layerName;
+
             return (Integer) layerNames.get(prefixedName);
         } else {
-            final String strippedName = layerName.substring(layerName.indexOf(":") + 1, 
+            final String strippedName = layerName.substring(layerName.indexOf(":") + 1,
                     layerName.length());
+
             return (Integer) layerNames.get(strippedName);
         }
     }
-    
+
     /**
      * Returns an unmodifiable set of known layer names (feature type and coverages)
      * @return

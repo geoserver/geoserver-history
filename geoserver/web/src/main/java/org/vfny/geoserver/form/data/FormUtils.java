@@ -15,15 +15,15 @@ import java.io.IOException;
  * Utility class for common operations used by forms.
  */
 public class FormUtils {
-	/**
-	 * Checks that the existance and ability to read <param>file</param>, 
-	 * reporting problems to <param>errors</params>.
-	 * 
-	 * @param file The file to check.
-	 * @param errors The errors to report to.
-	 * 
-	 * @return The errors reported.
-	 */
+    /**
+     * Checks that the existance and ability to read <param>file</param>,
+     * reporting problems to <param>errors</params>.
+     *
+     * @param file The file to check.
+     * @param errors The errors to report to.
+     *
+     * @return The errors reported.
+     */
     public static boolean checkFileExistsAndCanRead(File file, ActionErrors errors) {
         if (!file.exists()) {
             String actionKey = "error.file.NotExists";
@@ -33,23 +33,22 @@ public class FormUtils {
             return true;
         }
 
-        
         //check if we can read it.  For some reason file.canRead() doesn't work
         // ( only for a file, doesn;t make sense for directory )
-        if ( file.isFile() ) {
-        	try {
-        		FileInputStream in = new FileInputStream(file);    
+        if (file.isFile()) {
+            try {
+                FileInputStream in = new FileInputStream(file);
                 in.read();
                 in.close();
             } catch (IOException ioe) {
                 String actionKey = "error.file.CantRead";
                 Object[] params = new Object[] { file };
                 errors.add("URL", new ActionMessage(actionKey, params));
+
                 return true;
-            }	
-            
+            }
         }
-        
+
         return false;
     }
 }

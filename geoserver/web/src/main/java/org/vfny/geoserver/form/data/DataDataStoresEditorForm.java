@@ -214,6 +214,7 @@ public class DataDataStoresEditorForm extends ActionForm {
                     // an error if it does not 
                     File file = GeoserverDataDirectory.findDataFile(value);
                     FormUtils.checkFileExistsAndCanRead(file, errors);
+
                     return errors;
                 }
             }
