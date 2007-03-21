@@ -4,9 +4,34 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import java.awt.Color;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.geotools.data.DefaultQuery;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.Query;
+import org.geotools.data.Transaction;
+import org.geotools.data.crs.ForceCoordinateSystemFeatureReader;
+import org.geotools.data.memory.MemoryDataStore;
+import org.geotools.feature.FeatureType;
 import org.geotools.filter.ExpressionDOMParser;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
@@ -27,22 +52,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
-import java.awt.Color;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import javax.servlet.http.HttpServletRequest;
+
+import com.vividsolutions.jts.geom.Coordinate;
 
 
 /**
@@ -314,6 +325,25 @@ public class GetMapXmlReader extends XmlRequestReader {
                 UserLayer ul = ((UserLayer) sl);
                 currLayer.setFeature(new TemporaryFeatureTypeInfo(ul.getInlineFeatureDatastore(),
                         ul.getInlineFeatureType()));
+
+                //what if they didn't put an "srsName" on their geometry in their inlinefeature?
+                //I guess we should assume they mean their geometry to exist in the output SRS of the
+                //request they're making.
+                if (ul.getInlineFeatureType().getDefaultGeometry().getCoordinateSystem() == null) {
+                    LOGGER.warning(
+                        "No CRS set on inline features default geometry.  Assuming the requestor has their inlinefeatures in the boundingbox CRS.");
+
+                    FeatureType currFt = ul.getInlineFeatureType();
+                    Query q = new DefaultQuery(currFt.getTypeName());
+                    FeatureReader ilReader = ul.getInlineFeatureDatastore()
+                                               .getFeatureReader(q, Transaction.AUTO_COMMIT);
+                    CoordinateReferenceSystem crs = (getMapRequest.getCrs() == null)
+                        ? DefaultGeographicCRS.WGS84 : getMapRequest.getCrs();
+                    ForceCoordinateSystemFeatureReader reader = new ForceCoordinateSystemFeatureReader(
+                                                    ilReader, crs);
+                    MemoryDataStore reTypedDS = new MemoryDataStore(reader);
+                    currLayer.setFeature(new TemporaryFeatureTypeInfo(reTypedDS, reader.getFeatureType()));
+                }
             } else {
                 try {
                     currLayer.setFeature(GetMapKvpReader.findFeatureLayer(getMapRequest, layerName));
