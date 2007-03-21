@@ -213,16 +213,7 @@ public class DataDataStoresEditorForm extends ActionForm {
                     //do a check to see if the shapefile url is valid, report 
                     // an error if it does not 
                     File file = GeoserverDataDirectory.findDataFile(value);
-                    if ( !FormUtils.checkFileExistsAndCanRead(file, errors) ) {
-                    	try {
-                    		setParamValues( i,  file.toURL().toString() );
-						} 
-                    	catch (MalformedURLException e) {
-                    		 errors.add("paramValue[" + i + "]",
-                                     new ActionError("error.dataStoreEditor.param.parse", key, param.type, e));
-
-						}
-                    }
+                    FormUtils.checkFileExistsAndCanRead(file, errors);
                     return errors;
                 }
             }
