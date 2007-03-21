@@ -14,4 +14,5 @@ the default style this FeatureTypeInfoDTO can be represented by.
 at least must contain the "default" attribute 
 -->
 <styles default = "tiger_roads"  />
+<cacheinfo enabled = "false"  />
 </featureType>
