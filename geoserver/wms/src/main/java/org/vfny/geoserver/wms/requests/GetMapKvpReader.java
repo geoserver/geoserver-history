@@ -4,7 +4,28 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.awt.Color;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 import org.geotools.referencing.CRS;
@@ -31,27 +52,8 @@ import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.servlets.WMService;
 import org.xml.sax.InputSource;
-import java.awt.Color;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.Inflater;
-import java.util.zip.InflaterInputStream;
-import javax.servlet.http.HttpServletRequest;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -1291,11 +1293,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         for (Iterator it = layerNames.iterator(); it.hasNext();) {
             layerName = (String) it.next();
 
-            Integer layerType = (Integer) catalog.getLayerNames().get(layerName);
-            layerType = (layerType != null) ? layerType
-                                            : (Integer) catalog.getLayerNames()
-                                                               .get(layerName.substring(layerName
-                        .indexOf(":") + 1, layerName.length()));
+            Integer layerType = catalog.getLayerType(layerName);
 
             if (layerType == null) {
                 ////
@@ -1303,7 +1301,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 ////
                 String catalogLayerName = null;
 
-                for (Iterator c_keys = catalog.getLayerNames().keySet().iterator();
+                for (Iterator c_keys = catalog.getLayerNames().iterator();
                         c_keys.hasNext();) {
                     catalogLayerName = (String) c_keys.next();
 
@@ -1388,13 +1386,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         throws WmsException {
         Data catalog = request.getWMS().getData();
         FeatureTypeInfo ftype = null;
-        Integer layerType = (Integer) catalog.getLayerNames().get(layerName);
-        layerType = (layerType != null) ? layerType
-                                        : (Integer) catalog.getLayerNames()
-                                                           .get(layerName.substring(layerName
-                    .indexOf(":") + 1, layerName.length()));
+        Integer layerType = catalog.getLayerType(layerName);
 
-        if ((layerType == null) || (layerType.intValue() != MapLayerInfo.TYPE_VECTOR)) {
+        if (Data.TYPE_VECTOR != layerType) {
             throw new WmsException(new StringBuffer(layerName).append(
                     ": no such layer on this server").toString(), "LayerNotDefined");
         } else {
@@ -1408,13 +1402,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         throws WmsException {
         Data catalog = request.getWMS().getData();
         CoverageInfo cv = null;
-        Integer layerType = (Integer) catalog.getLayerNames().get(layerName);
-        layerType = (layerType != null) ? layerType
-                                        : (Integer) catalog.getLayerNames()
-                                                           .get(layerName.substring(layerName
-                    .indexOf(":") + 1, layerName.length()));
+        Integer layerType = catalog.getLayerType(layerName);
 
-        if ((layerType == null) || (layerType.intValue() != MapLayerInfo.TYPE_RASTER)) {
+        if (Data.TYPE_RASTER != layerType) {
             throw new WmsException(new StringBuffer(layerName).append(
                     ": no such layer on this server").toString(), "LayerNotDefined");
         } else {

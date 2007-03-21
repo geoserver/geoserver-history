@@ -12,6 +12,7 @@ import org.geotools.data.LockingManager;
 import org.geotools.data.Transaction;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
+import org.geotools.map.MapLayer;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
@@ -64,6 +65,10 @@ import java.util.logging.Level;
  */
 public class Data extends GlobalLayerSupertype /* implements Repository */ {
     public static final String WEB_CONTAINER_KEY = "DATA";
+    
+    public static final Integer TYPE_VECTOR = new Integer(0);
+    
+    public static final Integer TYPE_RASTER = new Integer(1);
 
     /** Default name of feature type information */
     private static final String INFO_FILE = "info.xml";
@@ -392,7 +397,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
 
             map.put(id, coverageInfo);
             // set layer name, type raster (1)
-            layerNames.put(id, new Integer(1));
+            layerNames.put(id, TYPE_RASTER);
 
             if (dto.getFormats().get(coverageDTO.getFormatId()) != null) {
                 if (LOGGER.isLoggable(Level.FINE)) {
@@ -736,7 +741,7 @@ SCHEMA:
 
                 map.put(key2, featureTypeInfo);
                 // set layer name, type vector (0)
-                layerNames.put(key2, new Integer(0));
+                layerNames.put(key2, TYPE_VECTOR);
 
                 // set catalog hierarchy
                 dataStoreInfo.addMember(featureTypeInfo);
@@ -1836,7 +1841,33 @@ SCHEMA:
         return baseDir;
     }
 
-    public Map getLayerNames() {
-        return layerNames;
+    /**
+     * Given a layer name will return its type, or null if the layer is not there
+     * @param layerName the layer name, either fully qualified (namespace:name) or
+     *        just the name if the layers happens to be in the default namespace
+     * @return the layer type (see {@link #TYPE_VECTOR} and {@link #TYPE_RASTER})
+     */
+    public Integer getLayerType(final String layerName) {
+        Integer layerType = (Integer) layerNames.get(layerName);
+        if(layerType != null) 
+            return layerType;
+        
+        // vector layers are namespace prefixed, coverages are not
+        if(layerName.indexOf(":") == -1) {
+            final String prefixedName = defaultNameSpace.getPrefix() + ":" + layerName;
+            return (Integer) layerNames.get(prefixedName);
+        } else {
+            final String strippedName = layerName.substring(layerName.indexOf(":") + 1, 
+                    layerName.length());
+            return (Integer) layerNames.get(strippedName);
+        }
+    }
+    
+    /**
+     * Returns an unmodifiable set of known layer names (feature type and coverages)
+     * @return
+     */
+    public Set getLayerNames() {
+        return Collections.unmodifiableSet(layerNames.keySet());
     }
 }
