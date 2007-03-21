@@ -23,8 +23,8 @@ import java.io.IOException;
  *         modification)
  */
 public final class MapLayerInfo extends GlobalLayerSupertype {
-    public static int TYPE_VECTOR = 0;
-    public static int TYPE_RASTER = 1;
+    public static int TYPE_VECTOR = Data.TYPE_VECTOR.intValue();
+    public static int TYPE_RASTER = Data.TYPE_RASTER.intValue();
 
     /**
      *
