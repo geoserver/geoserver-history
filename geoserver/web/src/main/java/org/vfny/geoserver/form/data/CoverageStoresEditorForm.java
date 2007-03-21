@@ -268,7 +268,7 @@ public final class CoverageStoresEditorForm extends ActionForm {
             AbstractGridFormat aFormat = (AbstractGridFormat) factory;
 
             File file = GeoserverDataDirectory.findDataFile(url);
-            errors = FormUtils.checkFileExistsAndCanRead(file, errors);
+            FormUtils.checkFileExistsAndCanRead(file, errors);
 
             if (!errors.isEmpty()) {
                 return errors;
