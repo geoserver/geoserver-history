@@ -1297,7 +1297,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 // Search for grouped layers (attention: heavy process)
                 ////
                 String catalogLayerName = null;
-                int counter = l_counter;	//track counter to see if found
+                int counter = l_counter; //track counter to see if found
+
                 for (Iterator c_keys = catalog.getLayerNames().iterator(); c_keys.hasNext();) {
                     catalogLayerName = (String) c_keys.next();
 
@@ -1332,13 +1333,13 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                         } catch (WmsException e_2) {
                         }
                     }
-                    
+
                     //JD: cite requires that when we find a layer that does
                     // exist we must die
-                    if ( counter == l_counter ) {
-                    	//counter not incremented -> layer not found
-                    	throw new WmsException(new StringBuffer(layerName).append(
-                        ": no such layer on this server").toString(), "LayerNotDefined");
+                    if (counter == l_counter) {
+                        //counter not incremented -> layer not found
+                        throw new WmsException(new StringBuffer(layerName).append(
+                                ": no such layer on this server").toString(), "LayerNotDefined");
                     }
                 }
             } else {
