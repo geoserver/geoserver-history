@@ -11,9 +11,9 @@
 	</parent>
 
 	<groupId>org.geoserver</groupId>
-  <artifactId>web</artifactId>
+	<artifactId>web</artifactId>
 	<packaging>jar</packaging>
-  <name>Web Application Module</name>
+	<name>Web Application Module</name>
 
 	<dependencies>
 		<!--dependency>
@@ -218,53 +218,53 @@
 		</dependency>
 	</dependencies>
 
- <pluginRepositories>
-    <pluginRepository>
-      <id>mortbay-repo</id>
-      <name>mortbay-repo</name>
-      <url>http://www.mortbay.org/maven2/snapshot</url>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>mortbay-repo</id>
+			<name>mortbay-repo</name>
+			<url>http://www.mortbay.org/maven2/snapshot</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
-    </pluginRepository>
-  </pluginRepositories>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<build>
 		<plugins>
 		
-      <!-- ====    Code Formatting  ============================== -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jalopy-maven-plugin</artifactId>
-        <configuration>
-          <srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
-          <testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>format</goal>
-            </goals>
-            <phase>install</phase>
-          </execution>
-        </executions>
-      </plugin>
+		<!-- ====    Code Formatting  ============================== -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jalopy-maven-plugin</artifactId>
+				<configuration>
+					<srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
+					<testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>format</goal>
+						</goals>
+						<phase>install</phase>
+					</execution>
+				</executions>
+			</plugin>
 
 			<plugin>
 				<groupId>org.geoserver.maven</groupId>
 				<artifactId>config</artifactId>
 				<executions>
-          <execution>
+					<execution>
 						<id>configPackage</id>
 						<configuration>
-              <configDirectory>${configDirectory}</configDirectory>
+							<configDirectory>${configDirectory}</configDirectory>
 							<configId>${configId}</configId>
 						</configuration>
-            <phase>package</phase>
-            <goals>
-              <goal>config</goal>
-            </goals>
-          </execution>
+						<phase>package</phase>
+						<goals>
+							<goal>config</goal>
+						</goals>
+					</execution>
 					
 					<execution>
 						<id>configClean</id>
@@ -273,28 +273,28 @@
 							<goal>clean</goal>
 						</goals>
 					</execution>
-        </executions>
+				</executions>
 			</plugin>
 
-			 <plugin>
-        <inherited>true</inherited>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <configuration>
+			<plugin>
+				<inherited>true</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
 					<warName>geoserver</warName>
 					<webappDirectory>
 						${project.build.directory}/geoserver
 					</webappDirectory>
 				</configuration>
 				<executions>
-          <execution>
-            <phase>install</phase>
-            <goals>
-              <goal>war</goal>
-            </goals>
-          </execution>
+					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>war</goal>
+						</goals>
+					</execution>
 				</executions>
-      </plugin>
+			</plugin>
 
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
@@ -323,16 +323,16 @@
 		<configId>minimal</configId>
 	</properties>
   
-  <profiles>
-    <profile>
-      <id>wfsv</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.geoserver</groupId>
-          <artifactId>wfsv</artifactId>
-          <version>${project.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
+	<profiles>
+		<profile>
+			<id>wfsv</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.geoserver</groupId>
+					<artifactId>wfsv</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 </project>
