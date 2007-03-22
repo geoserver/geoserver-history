@@ -4,17 +4,15 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
-import javax.xml.namespace.QName;
-
 import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.WfsFactory;
-
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.filter.Filter;
+import javax.xml.namespace.QName;
 
 
 /**
@@ -123,6 +121,4 @@ public class DeleteElementTypeBinding extends AbstractComplexEMFBinding {
 
         return deleteElement;
     }
-
-   
 }

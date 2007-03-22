@@ -4,17 +4,8 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-
 import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.WfsFactory;
-
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wfs.xml.GML3Profile;
 import org.geoserver.wfs.xml.PropertyTypePropertyExtractor;
@@ -28,6 +19,12 @@ import org.geotools.xs.bindings.XS;
 import org.opengis.feature.type.Name;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import javax.xml.namespace.QName;
 
 
 /**
@@ -119,13 +116,11 @@ public class PropertyTypeBinding extends AbstractComplexBinding {
     }
 
     /**
-     * This method does nothing, its functionality is implemented by 
+     * This method does nothing, its functionality is implemented by
      * {@link PropertyTypePropertyExtractor}.
      */
-    public Object getProperty(Object object, QName name) throws Exception {
-    	return null;
+    public Object getProperty(Object object, QName name)
+        throws Exception {
+        return null;
     }
-    
-
-    
 }

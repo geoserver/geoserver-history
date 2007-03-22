@@ -87,8 +87,8 @@ public class WFSConfiguration extends Configuration {
         context.registerComponentInstance(WfsFactory.eINSTANCE);
         context.registerComponentInstance(new WFSHandlerFactory(catalog, schemaBuilder));
         context.registerComponentInstance(catalog);
-        context.registerComponentImplementation( PropertyTypePropertyExtractor.class );
-        
+        context.registerComponentImplementation(PropertyTypePropertyExtractor.class);
+
         //seed the cache with entries from the catalog
         FeatureTypeCache featureTypeCache = (FeatureTypeCache) context
             .getComponentInstanceOfType(FeatureTypeCache.class);

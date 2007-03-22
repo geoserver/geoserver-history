@@ -4,20 +4,17 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
-import java.net.URI;
-
-import javax.xml.namespace.QName;
-
 import net.opengis.wfs.IdentifierGenerationOptionType;
 import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.WfsFactory;
-
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml3.bindings.GML;
 import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import java.net.URI;
+import javax.xml.namespace.QName;
 
 
 /**
@@ -187,13 +184,15 @@ public class InsertElementTypeBinding extends AbstractComplexEMFBinding {
 
         return insertElement;
     }
-    
-    public Object getProperty(Object object, QName name) throws Exception {
+
+    public Object getProperty(Object object, QName name)
+        throws Exception {
         InsertElementType insert = (InsertElementType) object;
-        if ( GML._Feature.equals(name) ) {
-                return insert.getFeature();
+
+        if (GML._Feature.equals(name)) {
+            return insert.getFeature();
         }
+
         return super.getProperty(object, name);
     }
-
 }

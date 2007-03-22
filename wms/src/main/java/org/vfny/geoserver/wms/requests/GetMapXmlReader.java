@@ -4,24 +4,7 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import java.awt.Color;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.vividsolutions.jts.geom.Coordinate;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
@@ -52,8 +35,22 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
-
-import com.vividsolutions.jts.geom.Coordinate;
+import java.awt.Color;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -339,10 +336,11 @@ public class GetMapXmlReader extends XmlRequestReader {
                                                .getFeatureReader(q, Transaction.AUTO_COMMIT);
                     CoordinateReferenceSystem crs = (getMapRequest.getCrs() == null)
                         ? DefaultGeographicCRS.WGS84 : getMapRequest.getCrs();
-                    ForceCoordinateSystemFeatureReader reader = new ForceCoordinateSystemFeatureReader(
-                                                    ilReader, crs);
+                    ForceCoordinateSystemFeatureReader reader = new ForceCoordinateSystemFeatureReader(ilReader,
+                            crs);
                     MemoryDataStore reTypedDS = new MemoryDataStore(reader);
-                    currLayer.setFeature(new TemporaryFeatureTypeInfo(reTypedDS, reader.getFeatureType()));
+                    currLayer.setFeature(new TemporaryFeatureTypeInfo(reTypedDS,
+                            reader.getFeatureType()));
                 }
             } else {
                 try {
