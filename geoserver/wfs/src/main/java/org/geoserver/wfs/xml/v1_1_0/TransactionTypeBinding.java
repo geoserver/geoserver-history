@@ -173,5 +173,4 @@ public class TransactionTypeBinding extends AbstractComplexEMFBinding {
 
         return transaction;
     }
-
 }

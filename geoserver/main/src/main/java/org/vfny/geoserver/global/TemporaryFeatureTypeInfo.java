@@ -48,7 +48,7 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
     }
 
     public Filter getDefinitionQuery() {
-    	return Filter.INCLUDE;
+        return Filter.INCLUDE;
     }
 
     Object toDTO() {

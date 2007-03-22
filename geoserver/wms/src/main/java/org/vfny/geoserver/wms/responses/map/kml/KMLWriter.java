@@ -10,11 +10,9 @@ import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-
 import org.geoserver.template.FeatureWrapper;
 import org.geoserver.template.GeoServerTemplateLoader;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
@@ -99,6 +97,7 @@ public class KMLWriter extends OutputStreamWriter {
      * The template configuration
      */
     private static Configuration templateConfig;
+
     /**
      * Resolves the FeatureTypeStyle info per feature into a Style2D object.
      */
@@ -141,7 +140,7 @@ public class KMLWriter extends OutputStreamWriter {
 
         //minimun fraction digits to 0 so they get not rendered if not needed
         formatter.setMinimumFractionDigits(0);
-        
+
         //initialize the template engine, this is static to maintain a cache 
         // over instantiations of kml writer
         templateConfig = new Configuration();
@@ -557,12 +556,12 @@ public class KMLWriter extends OutputStreamWriter {
                         write("<name><![CDATA[" + featureLabel + "]]></name>"); // CDATA needed for ampersands
 
                         final FeatureType schema = features.getSchema();
-                        
+
                         // if there are supposed to be detailed descriptions, write them out
                         write("<description><![CDATA[");
                         writeDescription(feature, schema);
                         write("]]></description>");
-                       
+
                         writeLookAt(findGeometry(feature), transformer);
                         write("<styleUrl>#GeoServerStyle" + feature.getID() + "</styleUrl>");
                         write("<MultiGeometry>");
@@ -803,32 +802,28 @@ public class KMLWriter extends OutputStreamWriter {
         }
     }
 
-    private void writeDescription(Feature feature, final FeatureType schema) 
-    	throws IOException {
-        
-    	if (mapContext.getRequest().getKMattr()) {
-        	//descriptions are "templatable" by users, so see if there is a 
-        	// template available for use
-        	GeoServerTemplateLoader templateLoader = 
-        		new GeoServerTemplateLoader( getClass() );
-        	templateLoader.setFeatureType( schema.getTypeName() );
-        	
-        	Template template = null;
-        	
-        	//Configuration is not thread safe
-        	synchronized ( templateConfig ) {
-        		templateConfig.setTemplateLoader( templateLoader );
-        		template = templateConfig.getTemplate( "kmlDescription.ftl" );
-			}
-        	
-        	try {
-				template.process( feature, this );
-			} 
-        	catch (TemplateException e) {
-        		String msg = "Error occured processing template.";
-        		throw (IOException) new IOException( msg ).initCause( e );
-			}
-        
+    private void writeDescription(Feature feature, final FeatureType schema)
+        throws IOException {
+        if (mapContext.getRequest().getKMattr()) {
+            //descriptions are "templatable" by users, so see if there is a 
+            // template available for use
+            GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(getClass());
+            templateLoader.setFeatureType(schema.getTypeName());
+
+            Template template = null;
+
+            //Configuration is not thread safe
+            synchronized (templateConfig) {
+                templateConfig.setTemplateLoader(templateLoader);
+                template = templateConfig.getTemplate("kmlDescription.ftl");
+            }
+
+            try {
+                template.process(feature, this);
+            } catch (TemplateException e) {
+                String msg = "Error occured processing template.";
+                throw (IOException) new IOException(msg).initCause(e);
+            }
         }
     }
 
