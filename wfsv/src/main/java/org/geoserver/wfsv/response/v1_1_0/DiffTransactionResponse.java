@@ -24,6 +24,7 @@ import net.opengis.wfs.UpdateElementType;
 import net.opengis.wfs.WfsFactory;
 import net.opengis.wfsv.GetDiffType;
 
+import org.apache.xml.serialize.OutputFormat;
 import org.eclipse.emf.common.util.EList;
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.OwsUtils;
@@ -96,7 +97,7 @@ public class DiffTransactionResponse extends Response {
 
         return request != null
                 && request.getOutputFormat().equals(
-                        "application/xml; subtype=wfsv-transaction/1.1.0");
+                        "text/xml; subtype=wfs-transaction/1.1.0");
     }
 
     public void write(Object value, OutputStream output, Operation operation)
@@ -152,16 +153,17 @@ public class DiffTransactionResponse extends Response {
                             + diff.getState());
                 }
 
-                // create insert and delete elements if needed
-                if (insert.getFeature().size() > 0)
-                    transaction.getInsert().add(insert);
-                if (deletedIds.size() > 0) {
-                    final DeleteElementType delete = WfsFactory.eINSTANCE
-                            .createDeleteElementType();
-                    delete.setFilter(filterFactory.id(deletedIds));
-                    delete.setTypeName(typeName);
-                    transaction.getDelete().add(delete);
-                }
+            }
+            
+            // create insert and delete elements if needed
+            if (insert.getFeature().size() > 0)
+                transaction.getInsert().add(insert);
+            if (deletedIds.size() > 0) {
+                final DeleteElementType delete = WfsFactory.eINSTANCE
+                        .createDeleteElementType();
+                delete.setFilter(filterFactory.id(deletedIds));
+                delete.setTypeName(typeName);
+                transaction.getDelete().add(delete);
             }
         }
 
@@ -169,6 +171,9 @@ public class DiffTransactionResponse extends Response {
         encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
                 ResponseUtils.appendPath(wfs.getSchemaBaseURL(),
                         "wfs/1.1.0/wfs.xsd"));
+        OutputFormat format = new OutputFormat();
+        format.setIndenting(true);
+        encoder.setOutputFormat(format);
 
         // set up schema locations
         // round up the info objects for each feature collection
