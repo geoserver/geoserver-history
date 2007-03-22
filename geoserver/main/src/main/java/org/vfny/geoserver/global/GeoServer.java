@@ -33,7 +33,7 @@ import javax.servlet.ServletContext;
  * @author dzwiers
  * @version $Id: GeoServer.java,v 1.23 2004/09/09 16:54:19 cholmesny Exp $
  */
-public class GeoServer extends GlobalLayerSupertype implements DisposableBean, InitializingBean {
+public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     /**
      * For finding the instance of this class to use from the web
      * container<p>ServletContext sc = ... GeoServer gs =
@@ -767,12 +767,5 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean, I
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    public void afterPropertiesSet() throws Exception {
-        //HACK: java.util.prefs are awful.  See
-        //http://www.allaboutbalance.com/disableprefs.  When the site comes
-        //back up we should implement their better way of fixing the problem.
-        System.setProperty("java.util.prefs.syncInterval", "5000000");
     }
 }

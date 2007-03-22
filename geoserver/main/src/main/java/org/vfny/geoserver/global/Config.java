@@ -44,6 +44,11 @@ public class Config implements ApplicationContextAware {
             System.setProperty("org.geotools.referencing.forceXY", "true");
         }
 
+        //HACK: java.util.prefs are awful.  See
+        //http://www.allaboutbalance.com/disableprefs.  When the site comes
+        //back up we should implement their better way of fixing the problem.
+        System.setProperty("java.util.prefs.syncInterval", "5000000");
+
         ServletContext sc = this.context.getServletContext();
 
         try {
