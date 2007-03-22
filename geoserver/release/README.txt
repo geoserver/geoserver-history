@@ -1,3 +1,24 @@
+GeoServer 1.5.0-RC3
+--------------------
+
+The third and final release candidate for the 1.5 series of GeoSerfver.
+The noteable features / bug fixes in this release include:
+
+- Rotation in world image files
+- Directory datastore improvements for easy management of shapefiles
+- UI error reporting with missing files, file permissions, etc...
+- PostGIS estimated_extent support for large datasets
+- Multi geometry with inline SLD features
+- WMS reflector for making wms requests easier
+- SLD parsing improvements 
+- Logging cleanup
+
+The complete issue log can be found here:
+
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=13176
+
+Based on GeoTools 2.3.1-SNAPSHOT ( tag = geoserver-1.5.0-RC3 )
+
 GeoServer 1.5.0-RC2
 ---------------------
 
