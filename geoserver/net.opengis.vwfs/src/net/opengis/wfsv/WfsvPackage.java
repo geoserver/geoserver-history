@@ -90,13 +90,22 @@ public interface WfsvPackage extends EPackage {
     int DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION = 1;
 
     /**
+     * The feature id for the '<em><b>Srs Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DIFFERENCE_QUERY_TYPE__SRS_NAME = 2;
+
+    /**
      * The feature id for the '<em><b>To Feature Version</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION = 2;
+    int DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION = 3;
 
     /**
      * The feature id for the '<em><b>Type Name</b></em>' attribute.
@@ -105,7 +114,7 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DIFFERENCE_QUERY_TYPE__TYPE_NAME = 3;
+    int DIFFERENCE_QUERY_TYPE__TYPE_NAME = 4;
 
     /**
      * The number of structural features of the '<em>Difference Query Type</em>' class.
@@ -114,7 +123,7 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DIFFERENCE_QUERY_TYPE_FEATURE_COUNT = 4;
+    int DIFFERENCE_QUERY_TYPE_FEATURE_COUNT = 5;
 
     /**
      * The meta object id for the '{@link net.opengis.wfsv.impl.DocumentRootImpl <em>Document Root</em>}' class.
@@ -327,22 +336,13 @@ public interface WfsvPackage extends EPackage {
     int GET_LOG_TYPE__DIFFERENCE_QUERY = WfsPackage.BASE_REQUEST_TYPE_FEATURE_COUNT + 0;
 
     /**
-     * The feature id for the '<em><b>Max Features</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int GET_LOG_TYPE__MAX_FEATURES = WfsPackage.BASE_REQUEST_TYPE_FEATURE_COUNT + 1;
-
-    /**
      * The feature id for the '<em><b>Output Format</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int GET_LOG_TYPE__OUTPUT_FORMAT = WfsPackage.BASE_REQUEST_TYPE_FEATURE_COUNT + 2;
+    int GET_LOG_TYPE__OUTPUT_FORMAT = WfsPackage.BASE_REQUEST_TYPE_FEATURE_COUNT + 1;
 
     /**
      * The feature id for the '<em><b>Result Type</b></em>' attribute.
@@ -351,7 +351,7 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int GET_LOG_TYPE__RESULT_TYPE = WfsPackage.BASE_REQUEST_TYPE_FEATURE_COUNT + 3;
+    int GET_LOG_TYPE__RESULT_TYPE = WfsPackage.BASE_REQUEST_TYPE_FEATURE_COUNT + 2;
 
     /**
      * The number of structural features of the '<em>Get Log Type</em>' class.
@@ -360,7 +360,7 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int GET_LOG_TYPE_FEATURE_COUNT = WfsPackage.BASE_REQUEST_TYPE_FEATURE_COUNT + 4;
+    int GET_LOG_TYPE_FEATURE_COUNT = WfsPackage.BASE_REQUEST_TYPE_FEATURE_COUNT + 3;
 
     /**
      * The meta object id for the '{@link net.opengis.wfsv.impl.RollbackTypeImpl <em>Rollback Type</em>}' class.
@@ -588,6 +588,17 @@ public interface WfsvPackage extends EPackage {
     EAttribute getDifferenceQueryType_FromFeatureVersion();
 
     /**
+     * Returns the meta object for the attribute '{@link net.opengis.wfsv.DifferenceQueryType#getSrsName <em>Srs Name</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Srs Name</em>'.
+     * @see net.opengis.wfsv.DifferenceQueryType#getSrsName()
+     * @see #getDifferenceQueryType()
+     * @generated
+     */
+    EAttribute getDifferenceQueryType_SrsName();
+
+    /**
      * Returns the meta object for the attribute '{@link net.opengis.wfsv.DifferenceQueryType#getToFeatureVersion <em>To Feature Version</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -772,17 +783,6 @@ public interface WfsvPackage extends EPackage {
     EReference getGetLogType_DifferenceQuery();
 
     /**
-     * Returns the meta object for the attribute '{@link net.opengis.wfsv.GetLogType#getMaxFeatures <em>Max Features</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Max Features</em>'.
-     * @see net.opengis.wfsv.GetLogType#getMaxFeatures()
-     * @see #getGetLogType()
-     * @generated
-     */
-    EAttribute getGetLogType_MaxFeatures();
-
-    /**
      * Returns the meta object for the attribute '{@link net.opengis.wfsv.GetLogType#getOutputFormat <em>Output Format</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -927,6 +927,14 @@ public interface WfsvPackage extends EPackage {
         EAttribute DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION = eINSTANCE.getDifferenceQueryType_FromFeatureVersion();
 
         /**
+         * The meta object literal for the '<em><b>Srs Name</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute DIFFERENCE_QUERY_TYPE__SRS_NAME = eINSTANCE.getDifferenceQueryType_SrsName();
+
+        /**
          * The meta object literal for the '<em><b>To Feature Version</b></em>' attribute feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -1069,14 +1077,6 @@ public interface WfsvPackage extends EPackage {
         EReference GET_LOG_TYPE__DIFFERENCE_QUERY = eINSTANCE.getGetLogType_DifferenceQuery();
 
         /**
-         * The meta object literal for the '<em><b>Max Features</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EAttribute GET_LOG_TYPE__MAX_FEATURES = eINSTANCE.getGetLogType_MaxFeatures();
-
-        /**
          * The meta object literal for the '<em><b>Output Format</b></em>' attribute feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -1146,7 +1146,7 @@ public interface WfsvPackage extends EPackage {
          */
         EClass VERSIONED_UPDATE_ELEMENT_TYPE = eINSTANCE.getVersionedUpdateElementType();
 
-            /**
+        /**
          * The meta object literal for the '<em><b>Feature Version</b></em>' attribute feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->

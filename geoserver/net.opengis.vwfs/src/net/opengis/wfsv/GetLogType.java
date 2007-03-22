@@ -42,7 +42,6 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link net.opengis.wfsv.GetLogType#getDifferenceQuery <em>Difference Query</em>}</li>
- *   <li>{@link net.opengis.wfsv.GetLogType#getMaxFeatures <em>Max Features</em>}</li>
  *   <li>{@link net.opengis.wfsv.GetLogType#getOutputFormat <em>Output Format</em>}</li>
  *   <li>{@link net.opengis.wfsv.GetLogType#getResultType <em>Result Type</em>}</li>
  * </ul>
@@ -72,36 +71,6 @@ public interface GetLogType extends BaseRequestType {
      * @generated
      */
     EList getDifferenceQuery();
-
-    /**
-     * Returns the value of the '<em><b>Max Features</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * <!-- begin-model-doc -->
-     * 
-     *                      The maxFeatures attribute is used to specify the maximum
-     *                      number of features that a GetFeature operation should
-     *                      generate (regardless of the actual number of query hits).
-     *                   
-     * <!-- end-model-doc -->
-     * @return the value of the '<em>Max Features</em>' attribute.
-     * @see #setMaxFeatures(BigInteger)
-     * @see net.opengis.wfsv.WfsvPackage#getGetLogType_MaxFeatures()
-     * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.PositiveInteger"
-     *        extendedMetaData="kind='attribute' name='maxFeatures'"
-     * @generated
-     */
-    BigInteger getMaxFeatures();
-
-    /**
-     * Sets the value of the '{@link net.opengis.wfsv.GetLogType#getMaxFeatures <em>Max Features</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @param value the new value of the '<em>Max Features</em>' attribute.
-     * @see #getMaxFeatures()
-     * @generated
-     */
-    void setMaxFeatures(BigInteger value);
 
     /**
      * Returns the value of the '<em><b>Output Format</b></em>' attribute.
