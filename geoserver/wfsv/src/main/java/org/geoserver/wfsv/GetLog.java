@@ -102,21 +102,14 @@ public class GetLog {
             String msg = "No feature types specified";
             throw new WFSException(msg);
         }
-
-        if (request.getMaxFeatures() == null) {
-            request.setMaxFeatures(BigInteger.valueOf(Integer.MAX_VALUE));
-        }
-
-        // handle maxFeatures
-        int maxFeatures = request.getMaxFeatures().intValue();
-        FeatureCollectionType result = WfsFactory.eINSTANCE
-                .createFeatureCollectionType();
-        int count = 0; // should probably be long
+        
+        FeatureCollectionType result = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        int count = 0;
 
         // for each difference query check the feature type is versioned, and
         // gather bounds
         try {
-            for (int i = 0; (i < queries.size()) && (count <= maxFeatures); i++) {
+            for (int i = 0; (i < queries.size()); i++) {
                 DifferenceQueryType query = (DifferenceQueryType) queries
                         .get(i);
                 FeatureTypeInfo meta = featureTypeInfo((QName) query

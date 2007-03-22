@@ -148,10 +148,6 @@ public class GetLogTypeBinding extends AbstractComplexBinding {
             result.setOutputFormat((String) node.getAttributeValue("outputFormat"));
         }
 
-        if (node.hasAttribute("maxFeatures")) {
-            result.setMaxFeatures((BigInteger) node.getAttributeValue("maxFeatures"));
-        }
-        
         return result;
     }
 }
