@@ -51,10 +51,13 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
         config = (DataStoreConfig) dataConfig.getDataStore(dataStoreID);
 
+        boolean isNewDataStore = false;
+
         if (config == null) {
             // we are creating a new one.
             dataConfig.addDataStore(getUserContainer(request).getDataStoreConfig());
             config = (DataStoreConfig) dataConfig.getDataStore(dataStoreID);
+            isNewDataStore = true;
         }
 
         // After extracting params into a map
@@ -177,14 +180,14 @@ public class DataDataStoresEditorAction extends ConfigAction {
         getUserContainer(request).setDataStoreConfig(null);
         getApplicationState().notifyConfigChanged();
 
-        if (singleFeatureType == null) {
+        if ((singleFeatureType == null) || !isNewDataStore) {
             //If there are many featureTypes, then just forward to the normal
             //spot.
             return mapping.findForward("config.data.store");
         } else {
-            //We only have one featureType, so we should forward to the editor
-            //of this featureType, since this is what users will be next in 95%
-            //of the cases.
+            //We only have one featureType, and this is the creation of a new datastore
+            //so we should forward to the editor of this featureType, since this is what 
+            //users will be next in the vast majority of the cases.
             FeatureTypeConfig ftConfig = new FeatureTypeConfig(dataStoreID, singleFeatureType, false);
 
             request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE, ftConfig);
