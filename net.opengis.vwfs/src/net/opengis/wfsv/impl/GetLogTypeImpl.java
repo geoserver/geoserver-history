@@ -41,7 +41,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * <ul>
  *   <li>{@link net.opengis.wfsv.impl.GetLogTypeImpl#getDifferenceQuery <em>Difference Query</em>}</li>
- *   <li>{@link net.opengis.wfsv.impl.GetLogTypeImpl#getMaxFeatures <em>Max Features</em>}</li>
  *   <li>{@link net.opengis.wfsv.impl.GetLogTypeImpl#getOutputFormat <em>Output Format</em>}</li>
  *   <li>{@link net.opengis.wfsv.impl.GetLogTypeImpl#getResultType <em>Result Type</em>}</li>
  * </ul>
@@ -59,26 +58,6 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
      * @ordered
      */
     protected EList differenceQuery = null;
-
-    /**
-     * The default value of the '{@link #getMaxFeatures() <em>Max Features</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getMaxFeatures()
-     * @generated
-     * @ordered
-     */
-    protected static final BigInteger MAX_FEATURES_EDEFAULT = null;
-
-    /**
-     * The cached value of the '{@link #getMaxFeatures() <em>Max Features</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getMaxFeatures()
-     * @generated
-     * @ordered
-     */
-    protected BigInteger maxFeatures = MAX_FEATURES_EDEFAULT;
 
     /**
      * The default value of the '{@link #getOutputFormat() <em>Output Format</em>}' attribute.
@@ -166,27 +145,6 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
             differenceQuery = new EObjectContainmentEList(DifferenceQueryType.class, this, WfsvPackage.GET_LOG_TYPE__DIFFERENCE_QUERY);
         }
         return differenceQuery;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public BigInteger getMaxFeatures() {
-        return maxFeatures;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void setMaxFeatures(BigInteger newMaxFeatures) {
-        BigInteger oldMaxFeatures = maxFeatures;
-        maxFeatures = newMaxFeatures;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, WfsvPackage.GET_LOG_TYPE__MAX_FEATURES, oldMaxFeatures, maxFeatures));
     }
 
     /**
@@ -303,8 +261,6 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
         switch (featureID) {
             case WfsvPackage.GET_LOG_TYPE__DIFFERENCE_QUERY:
                 return getDifferenceQuery();
-            case WfsvPackage.GET_LOG_TYPE__MAX_FEATURES:
-                return getMaxFeatures();
             case WfsvPackage.GET_LOG_TYPE__OUTPUT_FORMAT:
                 return getOutputFormat();
             case WfsvPackage.GET_LOG_TYPE__RESULT_TYPE:
@@ -323,9 +279,6 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
             case WfsvPackage.GET_LOG_TYPE__DIFFERENCE_QUERY:
                 getDifferenceQuery().clear();
                 getDifferenceQuery().addAll((Collection)newValue);
-                return;
-            case WfsvPackage.GET_LOG_TYPE__MAX_FEATURES:
-                setMaxFeatures((BigInteger)newValue);
                 return;
             case WfsvPackage.GET_LOG_TYPE__OUTPUT_FORMAT:
                 setOutputFormat((String)newValue);
@@ -347,9 +300,6 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
             case WfsvPackage.GET_LOG_TYPE__DIFFERENCE_QUERY:
                 getDifferenceQuery().clear();
                 return;
-            case WfsvPackage.GET_LOG_TYPE__MAX_FEATURES:
-                setMaxFeatures(MAX_FEATURES_EDEFAULT);
-                return;
             case WfsvPackage.GET_LOG_TYPE__OUTPUT_FORMAT:
                 unsetOutputFormat();
                 return;
@@ -369,8 +319,6 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
         switch (featureID) {
             case WfsvPackage.GET_LOG_TYPE__DIFFERENCE_QUERY:
                 return differenceQuery != null && !differenceQuery.isEmpty();
-            case WfsvPackage.GET_LOG_TYPE__MAX_FEATURES:
-                return MAX_FEATURES_EDEFAULT == null ? maxFeatures != null : !MAX_FEATURES_EDEFAULT.equals(maxFeatures);
             case WfsvPackage.GET_LOG_TYPE__OUTPUT_FORMAT:
                 return isSetOutputFormat();
             case WfsvPackage.GET_LOG_TYPE__RESULT_TYPE:
@@ -388,9 +336,7 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
         if (eIsProxy()) return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (maxFeatures: ");
-        result.append(maxFeatures);
-        result.append(", outputFormat: ");
+        result.append(" (outputFormat: ");
         if (outputFormatESet) result.append(outputFormat); else result.append("<unset>");
         result.append(", resultType: ");
         if (resultTypeESet) result.append(resultType); else result.append("<unset>");

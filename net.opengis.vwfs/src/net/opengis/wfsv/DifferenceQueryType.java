@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link net.opengis.wfsv.DifferenceQueryType#getFilter <em>Filter</em>}</li>
  *   <li>{@link net.opengis.wfsv.DifferenceQueryType#getFromFeatureVersion <em>From Feature Version</em>}</li>
+ *   <li>{@link net.opengis.wfsv.DifferenceQueryType#getSrsName <em>Srs Name</em>}</li>
  *   <li>{@link net.opengis.wfsv.DifferenceQueryType#getToFeatureVersion <em>To Feature Version</em>}</li>
  *   <li>{@link net.opengis.wfsv.DifferenceQueryType#getTypeName <em>Type Name</em>}</li>
  * </ul>
@@ -116,6 +117,41 @@ public interface DifferenceQueryType extends EObject {
      * @generated
      */
     boolean isSetFromFeatureVersion();
+
+    /**
+     * Returns the value of the '<em><b>Srs Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * <!-- begin-model-doc -->
+     * 
+     *               This attribute is used to specify a specific WFS-supported SRS
+     *               that should be used for returned feature geometries.  The value
+     *               may be the WFS StorageSRS value, DefaultRetrievalSRS value, or
+     *               one of AdditionalSRS values.  If no srsName value is supplied,
+     *               then the features will be returned using either the
+     *               DefaultRetrievalSRS, if specified, and StorageSRS otherwise.
+     *               For feature types with no spatial properties, this attribute
+     *               must not be specified or ignored if it is specified.
+     *            
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>Srs Name</em>' attribute.
+     * @see #setSrsName(String)
+     * @see net.opengis.wfsv.WfsvPackage#getDifferenceQueryType_SrsName()
+     * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.AnyURI"
+     *        extendedMetaData="kind='attribute' name='srsName'"
+     * @generated
+     */
+    String getSrsName();
+
+    /**
+     * Sets the value of the '{@link net.opengis.wfsv.DifferenceQueryType#getSrsName <em>Srs Name</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Srs Name</em>' attribute.
+     * @see #getSrsName()
+     * @generated
+     */
+    void setSrsName(String value);
 
     /**
      * Returns the value of the '<em><b>To Feature Version</b></em>' attribute.

@@ -9,6 +9,7 @@
     <genClasses ecoreClass="wfsv.ecore#//DifferenceQueryType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//DifferenceQueryType/filter"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//DifferenceQueryType/fromFeatureVersion"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//DifferenceQueryType/srsName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//DifferenceQueryType/toFeatureVersion"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//DifferenceQueryType/typeName"/>
     </genClasses>
@@ -29,7 +30,6 @@
     </genClasses>
     <genClasses ecoreClass="wfsv.ecore#//GetLogType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference wfsv.ecore#//GetLogType/differenceQuery"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//GetLogType/maxFeatures"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//GetLogType/outputFormat"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//GetLogType/resultType"/>
     </genClasses>

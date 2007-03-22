@@ -63,14 +63,14 @@ public interface GetDiffType extends BaseRequestType {
 
     /**
      * Returns the value of the '<em><b>Output Format</b></em>' attribute.
-     * The default value is <code>"application/xml; subtype=wfsv-transaction/1.1.0"</code>.
+     * The default value is <code>"text/xml; subtype=wfs-transaction/1.1.0"</code>.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * 
      *                      The outputFormat attribute is used to specify the output
      *                      format that the Versioning Web Feature Service should generate in
-     *                      response to a GetDiff or GetFeatureWithLock element.
+     *                      response to a GetDiff element.
      *                      The default value of 'application/xml; subtype=wfsv-transaction/1.1.0'
      *                      indicates that the output is an XML document that
      *                      conforms to the WFS 1.1.0 Transaction definition.
@@ -86,7 +86,7 @@ public interface GetDiffType extends BaseRequestType {
      * @see #unsetOutputFormat()
      * @see #setOutputFormat(String)
      * @see net.opengis.wfsv.WfsvPackage#getGetDiffType_OutputFormat()
-     * @model default="application/xml; subtype=wfsv-transaction/1.1.0" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
+     * @model default="text/xml; subtype=wfs-transaction/1.1.0" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
      *        extendedMetaData="kind='attribute' name='outputFormat'"
      * @generated
      */

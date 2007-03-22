@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <ul>
  *   <li>{@link net.opengis.wfsv.impl.DifferenceQueryTypeImpl#getFilter <em>Filter</em>}</li>
  *   <li>{@link net.opengis.wfsv.impl.DifferenceQueryTypeImpl#getFromFeatureVersion <em>From Feature Version</em>}</li>
+ *   <li>{@link net.opengis.wfsv.impl.DifferenceQueryTypeImpl#getSrsName <em>Srs Name</em>}</li>
  *   <li>{@link net.opengis.wfsv.impl.DifferenceQueryTypeImpl#getToFeatureVersion <em>To Feature Version</em>}</li>
  *   <li>{@link net.opengis.wfsv.impl.DifferenceQueryTypeImpl#getTypeName <em>Type Name</em>}</li>
  * </ul>
@@ -81,6 +82,26 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
      * @ordered
      */
     protected boolean fromFeatureVersionESet = false;
+
+    /**
+     * The default value of the '{@link #getSrsName() <em>Srs Name</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getSrsName()
+     * @generated
+     * @ordered
+     */
+    protected static final String SRS_NAME_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getSrsName() <em>Srs Name</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getSrsName()
+     * @generated
+     * @ordered
+     */
+    protected String srsName = SRS_NAME_EDEFAULT;
 
     /**
      * The default value of the '{@link #getToFeatureVersion() <em>To Feature Version</em>}' attribute.
@@ -221,6 +242,27 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
      * <!-- end-user-doc -->
      * @generated
      */
+    public String getSrsName() {
+        return srsName;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setSrsName(String newSrsName) {
+        String oldSrsName = srsName;
+        srsName = newSrsName;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, WfsvPackage.DIFFERENCE_QUERY_TYPE__SRS_NAME, oldSrsName, srsName));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public String getToFeatureVersion() {
         return toFeatureVersion;
     }
@@ -294,6 +336,8 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
                 return getFilter();
             case WfsvPackage.DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION:
                 return getFromFeatureVersion();
+            case WfsvPackage.DIFFERENCE_QUERY_TYPE__SRS_NAME:
+                return getSrsName();
             case WfsvPackage.DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION:
                 return getToFeatureVersion();
             case WfsvPackage.DIFFERENCE_QUERY_TYPE__TYPE_NAME:
@@ -314,6 +358,9 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
                 return;
             case WfsvPackage.DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION:
                 setFromFeatureVersion((String)newValue);
+                return;
+            case WfsvPackage.DIFFERENCE_QUERY_TYPE__SRS_NAME:
+                setSrsName((String)newValue);
                 return;
             case WfsvPackage.DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION:
                 setToFeatureVersion((String)newValue);
@@ -338,6 +385,9 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
             case WfsvPackage.DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION:
                 unsetFromFeatureVersion();
                 return;
+            case WfsvPackage.DIFFERENCE_QUERY_TYPE__SRS_NAME:
+                setSrsName(SRS_NAME_EDEFAULT);
+                return;
             case WfsvPackage.DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION:
                 unsetToFeatureVersion();
                 return;
@@ -359,6 +409,8 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
                 return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
             case WfsvPackage.DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION:
                 return isSetFromFeatureVersion();
+            case WfsvPackage.DIFFERENCE_QUERY_TYPE__SRS_NAME:
+                return SRS_NAME_EDEFAULT == null ? srsName != null : !SRS_NAME_EDEFAULT.equals(srsName);
             case WfsvPackage.DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION:
                 return isSetToFeatureVersion();
             case WfsvPackage.DIFFERENCE_QUERY_TYPE__TYPE_NAME:
@@ -380,6 +432,8 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
         result.append(filter);
         result.append(", fromFeatureVersion: ");
         if (fromFeatureVersionESet) result.append(fromFeatureVersion); else result.append("<unset>");
+        result.append(", srsName: ");
+        result.append(srsName);
         result.append(", toFeatureVersion: ");
         if (toFeatureVersionESet) result.append(toFeatureVersion); else result.append("<unset>");
         result.append(", typeName: ");

@@ -62,7 +62,7 @@ public class GetDiffTypeImpl extends BaseRequestTypeImpl implements GetDiffType 
      * @generated
      * @ordered
      */
-    protected static final String OUTPUT_FORMAT_EDEFAULT = "application/xml; subtype=wfsv-transaction/1.1.0";
+    protected static final String OUTPUT_FORMAT_EDEFAULT = "text/xml; subtype=wfs-transaction/1.1.0";
 
     /**
      * The cached value of the '{@link #getOutputFormat() <em>Output Format</em>}' attribute.

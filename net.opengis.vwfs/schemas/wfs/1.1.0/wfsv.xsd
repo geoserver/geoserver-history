@@ -190,12 +190,12 @@
             </xsd:sequence>
             <xsd:attribute name="outputFormat"
                            type="xsd:string" use="optional"
-                           default="application/xml; subtype=wfsv-transaction/1.1.0">
+                           default="text/xml; subtype=wfs-transaction/1.1.0">
                <xsd:annotation>
                   <xsd:documentation>
                      The outputFormat attribute is used to specify the output
                      format that the Versioning Web Feature Service should generate in
-                     response to a GetDiff or GetFeatureWithLock element.
+                     response to a GetDiff element.
                      The default value of 'application/xml; subtype=wfsv-transaction/1.1.0'
                      indicates that the output is an XML document that
                      conforms to the WFS 1.1.0 Transaction definition.
