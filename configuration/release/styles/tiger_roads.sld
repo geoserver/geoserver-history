@@ -6,8 +6,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <NamedLayer> <Name> area landmarks </Name>
     <UserStyle>
-        
-        
          <FeatureTypeStyle>
             <FeatureTypeName>Feature</FeatureTypeName>
 			<Rule>  
@@ -37,8 +35,10 @@
 					</Stroke>
 				</LineSymbolizer>
             </Rule>
-
-            <Rule>	<!-- thin line drawn second -->
+        </FeatureTypeStyle>
+        <FeatureTypeStyle>
+           <FeatureTypeName>Feature</FeatureTypeName>
+           <Rule>	<!-- thin line drawn second -->
 				<MaxScaleDenominator>32000</MaxScaleDenominator>
 	            <LineSymbolizer>
 	    		       <Stroke>
@@ -51,10 +51,7 @@
 	    			</Stroke>
 				</LineSymbolizer>
             </Rule> 
-            
-	     
-
-<!-- label -->     
+            <!-- label -->     
 			<Rule>
 				<MaxScaleDenominator>32000</MaxScaleDenominator>
 				<TextSymbolizer>
@@ -91,9 +88,8 @@
 					
 				</TextSymbolizer>
 			</Rule>
-            
-            
         </FeatureTypeStyle>
+        
     </UserStyle>
     </NamedLayer>
 </StyledLayerDescriptor>
