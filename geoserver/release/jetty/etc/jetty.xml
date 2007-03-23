@@ -131,7 +131,7 @@
       <Arg><SystemProperty name="jetty.home" default="."/>/webapps</Arg>
       <Arg><SystemProperty name="jetty.home" default="."/>/etc/webdefault.xml</Arg>
       <Arg type="boolean">True</Arg>  <!-- extract -->
-      <Arg type="boolean">False</Arg> <!-- parent priority class loading -->
+      <Arg type="boolean">True</Arg> <!-- parent priority class loading -->
     </Call>
 
     <!-- =========================================================== -->
