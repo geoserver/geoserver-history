@@ -11,7 +11,7 @@ Increasing statements logged.
 -->
 <loggingLevel>CONFIG</loggingLevel>
 <loggingToFile value = "false" />
-<JaiMemoryCapacity value = "209715200" />
+<JaiMemoryCapacity value = "0.5" />
 <JaiMemoryThreshold value = "0.75" />
 <JaiTileThreads value = "7" />
 <JaiTilePriority value = "5" />
