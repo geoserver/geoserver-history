@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.WebApplicationContext;
 import org.vfny.geoserver.global.xml.XMLConfigReader;
 import java.io.File;
+import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 
 
@@ -20,6 +21,7 @@ import javax.servlet.ServletContext;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  */
 public class Config implements ApplicationContextAware {
+    protected static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
     WebApplicationContext context;
     XMLConfigReader reader;
 
@@ -48,6 +50,17 @@ public class Config implements ApplicationContextAware {
         //http://www.allaboutbalance.com/disableprefs.  When the site comes
         //back up we should implement their better way of fixing the problem.
         System.setProperty("java.util.prefs.syncInterval", "5000000");
+
+        // HACK: under JDK 1.4.2 the native java image i/o stuff is failing
+        // in all containers besides Tomcat. If running under jdk 1.4.2 we disable
+        // the native codecs, unless the user forced the setting already
+        if (System.getProperty("java.version").startsWith("1.4")
+                && (System.getProperty("com.sun.media.imageio.disableCodecLib") == null)) {
+            LOGGER.warning("Disabling mediaLib acceleration since this is a java 1.4 VM.\n"
+                + "If you want to force its enabling, "
+                + "set -Dcom.sun.media.imageio.disableCodecLib=true in your virtual machine");
+            System.setProperty("com.sun.media.imageio.disableCodecLib", "true");
+        }
 
         ServletContext sc = this.context.getServletContext();
 
