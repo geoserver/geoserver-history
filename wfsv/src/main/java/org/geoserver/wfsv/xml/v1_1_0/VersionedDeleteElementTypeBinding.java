@@ -4,6 +4,9 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
+import net.opengis.wfsv.VersionedDeleteElementType;
+import net.opengis.wfsv.WfsvFactory;
+
 import org.geotools.xml.*;
 import javax.xml.namespace.QName;
 
@@ -35,6 +38,13 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class VersionedDeleteElementTypeBinding extends AbstractComplexBinding {
+    
+    private WfsvFactory wfsvFactory;
+
+    public VersionedDeleteElementTypeBinding(WfsvFactory wfsvFactory) {
+        this.wfsvFactory = wfsvFactory;
+    }
+    
     /**
      * @generated
      */
@@ -49,7 +59,7 @@ public class VersionedDeleteElementTypeBinding extends AbstractComplexBinding {
      * @generated modifiable
      */
     public Class getType() {
-        return null;
+        return VersionedDeleteElementType.class;
     }
 
     /**
@@ -60,7 +70,8 @@ public class VersionedDeleteElementTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        //TODO: implement
-        return null;
+        VersionedDeleteElementType delete = wfsvFactory.createVersionedDeleteElementType();
+        delete.setFeatureVersion((String) node.getAttributeValue("featureVersion"));
+        return delete;
     }
 }

@@ -91,6 +91,15 @@
   <bean id="wfsvGetDiffXmlReader-1.1.0" parent="wfsv-xmlReader-1.1.0">
     <constructor-arg value="GetDiff"/>
   </bean>
+  <bean id="wfsvRollbackXmlReader-1.1.0" parent="wfsv-xmlReader-1.1.0">
+    <constructor-arg value="Rollback"/>
+  </bean>
+  <bean id="wfsvVersionedUpdateXmlReader-1.1.0" parent="wfsv-xmlReader-1.1.0">
+    <constructor-arg value="VersionedUpdateElement"/>
+  </bean>
+  <bean id="wfsvDeleteElementXmlReader-1.1.0" parent="wfsv-xmlReader-1.1.0">
+    <constructor-arg value="VersionedDeleteElement"/>
+  </bean>
   
   <!-- Encoders / Output formats -->
   <bean id="transactionOutputFormat" class="org.geoserver.wfsv.response.v1_1_0.DiffTransactionResponse">
