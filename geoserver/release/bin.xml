@@ -89,13 +89,20 @@
 			<directory>release/target/dependency</directory>
 			<outputDirectory>geoserver/lib</outputDirectory>
 			<includes>
-				<include>*.jar</include>
+              <include>ant-*.jar</include>
+              <include>commons-el-*.jar</include>
+              <include>jasper-compiler-*.jar</include>
+              <include>jasper-compiler-jdt-*.jar</include>
+              <include>jasper-runtime-*.jar</include>
+              <include>jcl104-over-slf4j-*.jar</include>
+              <include>jetty-*.jar</include>
+              <include>jetty-util-*.jar</include>
+              <include>jsp-api-*.jar</include>
+              <include>servlet-api-*.jar</include>
+              <include>slf4j-simple-*.jar</include>
+              <include>xercesImpl-*.jar</include>
+              <include>xmlParserAPIs-*.jar</include>
 			</includes>
-			<excludes>
-				<exclude>gt2*.jar</exclude>
-				<exclude>mysql*.jar</exclude>
-				<exclude>ojdbc*.jar</exclude>
-			</excludes>
 		</fileSet>
 		<fileSet>
 			<!-- we gather the .sh files in a separate task below -->
