@@ -4,6 +4,9 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
+import net.opengis.wfsv.VersionedUpdateElementType;
+import net.opengis.wfsv.WfsvFactory;
+
 import org.geotools.xml.*;
 import javax.xml.namespace.QName;
 
@@ -37,6 +40,13 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class VersionedUpdateElementTypeBinding extends AbstractComplexBinding {
+    
+    private WfsvFactory wfsvFactory;
+
+    public VersionedUpdateElementTypeBinding(WfsvFactory wfsvFactory) {
+        this.wfsvFactory = wfsvFactory;
+    }
+    
     /**
      * @generated
      */
@@ -51,7 +61,7 @@ public class VersionedUpdateElementTypeBinding extends AbstractComplexBinding {
      * @generated modifiable
      */
     public Class getType() {
-        return null;
+        return VersionedUpdateElementType.class;
     }
 
     /**
@@ -62,7 +72,9 @@ public class VersionedUpdateElementTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        //TODO: implement
-        return null;
+        VersionedUpdateElementType update = wfsvFactory.createVersionedUpdateElementType();
+        
+        update.setFeatureVersion((String) node.getAttributeValue("featureVersion"));
+        return update;
     }
 }

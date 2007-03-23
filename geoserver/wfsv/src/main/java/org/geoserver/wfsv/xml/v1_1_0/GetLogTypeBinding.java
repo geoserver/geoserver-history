@@ -4,8 +4,6 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
-import java.math.BigInteger;
-
 import javax.xml.namespace.QName;
 
 import net.opengis.wfs.ResultTypeType;

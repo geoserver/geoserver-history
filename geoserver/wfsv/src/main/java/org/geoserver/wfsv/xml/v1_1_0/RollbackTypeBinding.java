@@ -4,8 +4,15 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
-import org.geotools.xml.*;
 import javax.xml.namespace.QName;
+
+import net.opengis.wfsv.DifferenceQueryType;
+import net.opengis.wfsv.RollbackType;
+import net.opengis.wfsv.WfsvFactory;
+
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
 
 
 /**
@@ -55,6 +62,13 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class RollbackTypeBinding extends AbstractComplexBinding {
+    
+    private WfsvFactory wfsvFactory;
+
+    public RollbackTypeBinding(WfsvFactory wfsvFactory) {
+        this.wfsvFactory = wfsvFactory;
+    }
+    
     /**
      * @generated
      */
@@ -69,7 +83,7 @@ public class RollbackTypeBinding extends AbstractComplexBinding {
      * @generated modifiable
      */
     public Class getType() {
-        return null;
+        return RollbackType.class;
     }
 
     /**
@@ -80,7 +94,9 @@ public class RollbackTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        //TODO: implement
-        return null;
+        RollbackType result = wfsvFactory.createRollbackType();
+        result.setDifferenceQuery((DifferenceQueryType) node.getChildValue(DifferenceQueryType.class));
+        
+        return result;
     }
 }
