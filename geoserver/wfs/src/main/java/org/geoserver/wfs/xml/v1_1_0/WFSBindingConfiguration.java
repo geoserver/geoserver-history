@@ -13,7 +13,7 @@ import org.picocontainer.MutablePicoContainer;
  *
  * @generated
  */
-public final class WFSBindingConfiguration implements BindingConfiguration {
+public class WFSBindingConfiguration implements BindingConfiguration {
     /**
      * @generated modifiable
      */
