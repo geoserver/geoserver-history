@@ -290,4 +290,13 @@
          </xsd:extension>
       </xsd:complexContent>
    </xsd:complexType>
+   <!-- 
+   <xsd:element name="Transaction" type="wfsv:VersioningTransactionType" substitutionGroup="wfs:Transaction"/>
+   <xsd:complexType name="VersioningTransactionType">
+   	  <xsd:complexContent>
+         <xsd:extension base="wfs:TransactionType">
+         </xsd:extension>
+      </xsd:complexContent>
+   </xsd:complexType>
+    -->
 </xsd:schema>

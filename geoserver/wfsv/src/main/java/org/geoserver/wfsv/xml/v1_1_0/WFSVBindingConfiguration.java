@@ -4,20 +4,21 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
-import org.geotools.xml.BindingConfiguration;
+import org.geoserver.wfs.xml.v1_1_0.WFSBindingConfiguration;
 import org.picocontainer.MutablePicoContainer;
 
 
 /**
  * Binding configuration for the http://www.opengis.net/wfsv schema.
  *
- * @generated
  */
-public final class WFSVBindingConfiguration implements BindingConfiguration {
+public final class WFSVBindingConfiguration extends WFSBindingConfiguration {
     /**
      * @generated modifiable
      */
     public void configure(MutablePicoContainer container) {
+        super.configure(container);
+        
         //Types
         container.registerComponentImplementation(WFSV.DifferenceQueryType,
             DifferenceQueryTypeBinding.class);
