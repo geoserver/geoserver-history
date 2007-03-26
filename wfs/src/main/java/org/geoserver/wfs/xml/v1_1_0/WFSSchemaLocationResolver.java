@@ -22,7 +22,7 @@ public class WFSSchemaLocationResolver implements XSDSchemaLocationResolver {
 
         if ("http://www.opengis.net/wfs".equals(namespaceURI) && (schemaLocationURI != null)) {
             if (schemaLocationURI.endsWith("wfs.xsd")) {
-                return getClass().getResource("wfs.xsd").toString();
+                return WFSSchemaLocationResolver.class.getResource("wfs.xsd").toString();
             }
         }
 
