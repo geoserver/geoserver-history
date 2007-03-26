@@ -4,24 +4,7 @@
  */
 package org.geoserver.wfs;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.xml.namespace.QName;
-
+import com.vividsolutions.jts.geom.Envelope;
 import net.opengis.wfs.ActionType;
 import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.DeleteElementType;
@@ -33,7 +16,6 @@ import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.UpdateElementType;
 import net.opengis.wfs.WfsFactory;
-
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.geoserver.feature.ReprojectingFeatureCollection;
@@ -58,14 +40,29 @@ import org.opengis.filter.Id;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.namespace.QName;
 
-import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Web Feature Service Transaction operation.
- * 
+ *
  * @author Justin Deoliveira, The Open Planning Project
- * 
+ *
  */
 public class Transaction {
     /**
@@ -95,7 +92,6 @@ public class Transaction {
 
     /** Geotools2 transaction used for this opperations */
     protected org.geotools.data.Transaction transaction;
-
     protected List transactionElementHandlers = new ArrayList();
 
     public Transaction(WFS wfs, Data catalog) {
@@ -114,7 +110,8 @@ public class Transaction {
         this.filterFactory = filterFactory;
     }
 
-    public TransactionResponseType transaction(TransactionType request) throws WFSException {
+    public TransactionResponseType transaction(TransactionType request)
+        throws WFSException {
         // make sure server is supporting transactions
         if ((wfs.getServiceLevel() & WFS.TRANSACTIONAL) == 0) {
             throw new WFSException("Transaction support is not enabled");
@@ -133,10 +130,10 @@ public class Transaction {
 
     /**
      * Execute Transaction request.
-     * 
+     *
      * <p>
      * The results of this opperation are stored for use by writeTo:
-     * 
+     *
      * <ul>
      * <li> transaction: used by abort & writeTo to commit/rollback </li>
      * <li> request: used for users getHandle information to report errors </li>
@@ -144,29 +141,30 @@ public class Transaction {
      * <li> failures: List of failures produced </li>
      * </ul>
      * </p>
-     * 
+     *
      * <p>
      * Because we are using geotools2 locking facilities our modification will
      * simply fail with IOException if we have not provided proper
      * authorization.
      * </p>
-     * 
+     *
      * <p>
      * The specification allows a WFS to implement PARTIAL sucess if it is
      * unable to rollback all the requested changes. This implementation is able
      * to offer full Rollback support and will not require the use of PARTIAL
      * success.
      * </p>
-     * 
+     *
      * @param transactionRequest
-     * 
+     *
      * @throws ServiceException
      *             DOCUMENT ME!
      * @throws WfsException
      * @throws WfsTransactionException
      *             DOCUMENT ME!
      */
-    protected TransactionResponseType execute(TransactionType request) throws Exception {
+    protected TransactionResponseType execute(TransactionType request)
+        throws Exception {
         // some defaults
         if (request.getReleaseAction() == null) {
             request.setReleaseAction(AllSomeType.ALL_LITERAL);
@@ -189,7 +187,6 @@ public class Transaction {
         // List of type names, maintain this list because of the insert hack
         // described below
         // List typeNames = new ArrayList();
-
         Map elementHandlers = gatherElementHandlers(request.getGroup());
 
         // Gather feature types required by transaction elements and validate
@@ -206,20 +203,22 @@ public class Transaction {
             Map featureTypeInfos = new HashMap();
 
             QName[] typeNames = handler.getTypeNames(element);
+
             for (int i = 0; i < typeNames.length; i++) {
                 final QName typeName = typeNames[i];
                 final String name = typeName.getLocalPart();
                 final String namespaceURI;
-                if (typeName.getNamespaceURI() != null)
-                    namespaceURI = typeName.getNamespaceURI();
-                else
-                    namespaceURI = catalog.getDefaultNameSpace().getURI();
 
-                LOGGER
-                        .fine("Locating FeatureSource uri:'" + namespaceURI + "' name:'" + name
-                                + "'");
+                if (typeName.getNamespaceURI() != null) {
+                    namespaceURI = typeName.getNamespaceURI();
+                } else {
+                    namespaceURI = catalog.getDefaultNameSpace().getURI();
+                }
+
+                LOGGER.fine("Locating FeatureSource uri:'" + namespaceURI + "' name:'" + name + "'");
 
                 final FeatureTypeInfo meta = catalog.getFeatureTypeInfo(name, namespaceURI);
+
                 if (meta == null) {
                     String msg = name + " is not available: ";
                     String handle = (String) EMFUtils.get(element, "handle");
@@ -242,7 +241,7 @@ public class Transaction {
                         meta.getNameSpace().getPrefix());
 
                 LOGGER.fine("located FeatureType w/ typeRef '" + typeRef + "' and elementName '"
-                        + elementName + "'");
+                    + elementName + "'");
 
                 if (stores.containsKey(elementName)) {
                     // typeName already loaded
@@ -265,12 +264,11 @@ public class Transaction {
                     }
                 } catch (IOException ioException) {
                     String msg = elementName + " is not available: "
-                            + ioException.getLocalizedMessage();
+                        + ioException.getLocalizedMessage();
                     String handle = (String) EMFUtils.get(element, "handle");
                     throw new WFSTransactionException(msg, ioException, handle);
                 }
             }
-
         }
 
         // provide authorization for transaction
@@ -286,7 +284,7 @@ public class Transaction {
 
             if (!lockExists(authorizationID)) {
                 String mesg = "Attempting to use a lockID that does not exist"
-                        + ", it has either expired or was entered wrong.";
+                    + ", it has either expired or was entered wrong.";
                 throw new WFSException(mesg, "InvalidParameterValue");
             }
 
@@ -296,7 +294,7 @@ public class Transaction {
                 // This is a real failure - not associated with a element
                 //
                 throw new WFSException("Authorization ID '" + authorizationID + "' not useable",
-                        ioException);
+                    ioException);
             }
         }
 
@@ -308,7 +306,7 @@ public class Transaction {
         result.getTransactionSummary().setTotalInserted(BigInteger.valueOf(0));
         result.getTransactionSummary().setTotalUpdated(BigInteger.valueOf(0));
         result.getTransactionSummary().setTotalDeleted(BigInteger.valueOf(0));
-        
+
         result.setInsertResults(WfsFactory.eINSTANCE.createInsertResultsType());
 
         // execute elements in order, recording results as we go
@@ -427,32 +425,37 @@ public class Transaction {
 
     /**
      * Looks up the element handlers to be used for each element
-     * 
+     *
      * @param group
      * @return
      */
-    private Map gatherElementHandlers(FeatureMap group) throws WFSTransactionException {
+    private Map gatherElementHandlers(FeatureMap group)
+        throws WFSTransactionException {
         Map map = new HashMap();
+
         for (Iterator it = group.iterator(); it.hasNext();) {
             FeatureMap.Entry entry = (FeatureMap.Entry) it.next();
             EObject element = (EObject) entry.getValue();
             map.put(element, findElementHandler(element.getClass()));
         }
+
         return map;
     }
 
     /**
      * Finds the best transaction element handler for the specified element type
      * (the one matching the most specialized superclass of type)
-     * 
+     *
      * @param type
      * @return
      */
     protected final TransactionElementHandler findElementHandler(Class type)
-            throws WFSTransactionException {
+        throws WFSTransactionException {
         List matches = new ArrayList();
+
         for (Iterator it = transactionElementHandlers.iterator(); it.hasNext();) {
             TransactionElementHandler handler = (TransactionElementHandler) it.next();
+
             if (handler.getElementClass().isAssignableFrom(type)) {
                 matches.add(handler);
             }
@@ -467,17 +470,17 @@ public class Transaction {
         if (matches.size() > 1) {
             // sort by class hierarchy
             Comparator comparator = new Comparator() {
-                public int compare(Object o1, Object o2) {
-                    TransactionElementHandler h1 = (TransactionElementHandler) o1;
-                    TransactionElementHandler h2 = (TransactionElementHandler) o2;
+                    public int compare(Object o1, Object o2) {
+                        TransactionElementHandler h1 = (TransactionElementHandler) o1;
+                        TransactionElementHandler h2 = (TransactionElementHandler) o2;
 
-                    if (h2.getElementClass().isAssignableFrom(h1.getElementClass())) {
-                        return -1;
+                        if (h2.getElementClass().isAssignableFrom(h1.getElementClass())) {
+                            return -1;
+                        }
+
+                        return 1;
                     }
-
-                    return 1;
-                }
-            };
+                };
 
             Collections.sort(matches, comparator);
         }
@@ -487,17 +490,17 @@ public class Transaction {
 
     /**
      * Creates a gt2 transaction used to execute the transaction call
-     * 
+     *
      * @return
      */
     protected DefaultTransaction getDatastoreTransaction(TransactionType request)
-            throws IOException {
+        throws IOException {
         return new DefaultTransaction();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.vfny.geoserver.responses.Response#abort()
      */
     public void abort(TransactionType request) {
@@ -537,11 +540,11 @@ public class Transaction {
 
     /**
      * Implement lockExists.
-     * 
+     *
      * @param lockID
-     * 
+     *
      * @return true if lockID exists
-     * 
+     *
      * @see org.geotools.data.Data#lockExists(java.lang.String)
      */
     private boolean lockExists(String lockId) throws Exception {
@@ -552,11 +555,11 @@ public class Transaction {
 
     /**
      * Refresh lock by authorization
-     * 
+     *
      * <p>
      * Should use your own transaction?
      * </p>
-     * 
+     *
      * @param lockID
      */
     private void lockRefresh(String lockId) throws Exception {
@@ -566,28 +569,28 @@ public class Transaction {
 
     /**
      * Handler for the insert element
-     * 
+     *
      * @author Andrea Aime - TOPP
-     * 
+     *
      */
     protected class InsertElementHandler implements TransactionElementHandler {
-
         public void checkValidity(EObject element, Map featureTypeInfos)
-                throws WFSTransactionException {
+            throws WFSTransactionException {
             if ((wfs.getServiceLevel() & WFS.SERVICE_INSERT) == 0) {
                 throw new WFSException("Transaction INSERT support is not enabled");
             }
         }
 
         public void execute(EObject element, TransactionType request, Map featureStores,
-                TransactionResponseType response) throws WFSTransactionException {
+            TransactionResponseType response) throws WFSTransactionException {
             LOGGER.finer("Transasction Insert:" + element);
+
             InsertElementType insert = (InsertElementType) element;
             long inserted = response.getTransactionSummary().getTotalInserted().longValue();
 
             try {
                 // group features by their schema
-                HashMap /* <FeatureType,FeatureCollection> */schema2features = new HashMap();
+                HashMap /* <FeatureType,FeatureCollection> */ schema2features = new HashMap();
 
                 for (Iterator f = insert.getFeature().iterator(); f.hasNext();) {
                     Feature feature = (Feature) f.next();
@@ -596,7 +599,7 @@ public class Transaction {
 
                     if (collection == null) {
                         collection = new DefaultFeatureCollection(null, schema) {
-                        };
+                                };
                         schema2features.put(schema, collection);
                     }
 
@@ -615,19 +618,19 @@ public class Transaction {
                     FeatureCollection collection = (FeatureCollection) c.next();
                     FeatureType schema = collection.getSchema();
 
-                    QName elementName = new QName(schema.getNamespace().toString(), schema
-                            .getTypeName());
+                    QName elementName = new QName(schema.getNamespace().toString(),
+                            schema.getTypeName());
                     FeatureStore store = (FeatureStore) featureStores.get(elementName);
 
                     if (store == null) {
                         throw new WFSException("Could not locate FeatureStore for '" + elementName
-                                + "'");
+                            + "'");
                     }
 
                     if (collection != null) {
                         // reprojection
                         CoordinateReferenceSystem target = schema.getDefaultGeometry()
-                                .getCoordinateSystem();
+                                                                 .getCoordinateSystem();
 
                         if (target != null) {
                             collection = new ReprojectingFeatureCollection(collection, target);
@@ -730,11 +733,11 @@ public class Transaction {
 
             return (QName[]) typeNames.toArray(new QName[typeNames.size()]);
         }
-
     }
 
     protected class UpdateElementHandler implements TransactionElementHandler {
-        public void checkValidity(EObject element, Map typeInfos) throws WFSTransactionException {
+        public void checkValidity(EObject element, Map typeInfos)
+            throws WFSTransactionException {
             // check inserts are enabled
             if ((wfs.getServiceLevel() & WFS.SERVICE_UPDATE) == 0) {
                 throw new WFSException("Transaction Update support is not enabled");
@@ -742,6 +745,7 @@ public class Transaction {
 
             // check that all required properties have a specified value
             UpdateElementType update = (UpdateElementType) element;
+
             try {
                 FeatureTypeInfo meta = (FeatureTypeInfo) typeInfos.values().iterator().next();
                 FeatureType featureType = meta.getFeatureType();
@@ -755,30 +759,32 @@ public class Transaction {
 
                         if ((attributeType != null) && (attributeType.getMinOccurs() > 0)) {
                             String msg = "Property '" + attributeType.getName()
-                                    + "' is mandatory but no value specified.";
+                                + "' is mandatory but no value specified.";
                             throw new WFSException(msg, "MissingParameterValue");
                         }
                     }
                 }
             } catch (IOException e) {
                 throw new WFSTransactionException("Could not locate feature type information for "
-                        + update.getTypeName(), e, update.getHandle());
+                    + update.getTypeName(), e, update.getHandle());
             }
         }
 
         public void execute(EObject element, TransactionType request, Map featureStores,
-                TransactionResponseType response) throws WFSTransactionException {
+            TransactionResponseType response) throws WFSTransactionException {
             UpdateElementType update = (UpdateElementType) element;
             QName elementName = update.getTypeName();
             String handle = update.getHandle();
             long updated = response.getTransactionSummary().getTotalUpdated().longValue();
 
             FeatureStore store = (FeatureStore) featureStores.get(elementName);
+
             if (store == null) {
                 throw new WFSException("Could not locate FeatureStore for '" + elementName + "'");
             }
 
             LOGGER.finer("Transaction Update:" + element);
+
             try {
                 Filter filter = (Filter) update.getFilter();
 
@@ -787,8 +793,7 @@ public class Transaction {
 
                 for (int j = 0; j < update.getProperty().size(); j++) {
                     PropertyType property = (PropertyType) update.getProperty().get(j);
-                    types[j] = store.getSchema()
-                            .getAttributeType(property.getName().getLocalPart());
+                    types[j] = store.getSchema().getAttributeType(property.getName().getLocalPart());
                     values[j] = property.getValue();
                 }
 
@@ -806,6 +811,7 @@ public class Transaction {
                     while (preprocess.hasNext()) {
                         Feature feature = (Feature) preprocess.next();
                         fids.add(feature.getID());
+
                         // envelope.expandToInclude(feature.getBounds());
                     }
                 } catch (NoSuchElementException e) {
@@ -844,6 +850,7 @@ public class Transaction {
                     Id modified = ff.id(featureIds);
 
                     FeatureCollection changed = store.getFeatures(modified);
+
                     // envelope.expandToInclude(changed.getBounds());
 
                     // featureValidation(typeInfo.getDataStore().getId(),store.getSchema(),
@@ -872,7 +879,6 @@ public class Transaction {
     }
 
     protected class DeleteElementHandler implements TransactionElementHandler {
-
         public Class getElementClass() {
             return DeleteElementType.class;
         }
@@ -882,28 +888,29 @@ public class Transaction {
         }
 
         public void checkValidity(EObject element, Map featureTypeInfos)
-                throws WFSTransactionException {
+            throws WFSTransactionException {
             if ((wfs.getServiceLevel() & WFS.SERVICE_DELETE) == 0) {
                 throw new WFSException("Transaction Delete support is not enabled");
             }
 
             // check that a filter was specified
             DeleteElementType delete = (DeleteElementType) element;
-            if (delete.getFilter() == null || Filter.INCLUDE.equals(delete.getFilter())) {
-                throw new WFSTransactionException("Must specify filter for delete",
-                        "MissingParameterValue");
-            }
 
+            if ((delete.getFilter() == null) || Filter.INCLUDE.equals(delete.getFilter())) {
+                throw new WFSTransactionException("Must specify filter for delete",
+                    "MissingParameterValue");
+            }
         }
 
         public void execute(EObject element, TransactionType request, Map featureStores,
-                TransactionResponseType response) throws WFSTransactionException {
+            TransactionResponseType response) throws WFSTransactionException {
             DeleteElementType delete = (DeleteElementType) element;
             QName elementName = delete.getTypeName();
             String handle = delete.getHandle();
             long deleted = response.getTransactionSummary().getTotalDeleted().longValue();
 
             FeatureStore store = (FeatureStore) featureStores.get(elementName);
+
             if (store == null) {
                 throw new WFSException("Could not locate FeatureStore for '" + elementName + "'");
             }
@@ -914,8 +921,8 @@ public class Transaction {
             try {
                 Filter filter = (Filter) delete.getFilter();
 
-                Envelope damaged = store.getBounds(new DefaultQuery(delete.getTypeName()
-                        .getLocalPart(), filter));
+                Envelope damaged = store.getBounds(new DefaultQuery(
+                            delete.getTypeName().getLocalPart(), filter));
 
                 if (damaged == null) {
                     damaged = store.getFeatures(filter).getBounds();
@@ -975,9 +982,8 @@ public class Transaction {
                     }
                 } else {
                     // We don't have to worry about locking right now
-
-                    FeatureWriter writer = store.getDataStore().getFeatureWriter(typeName, filter,
-                            transaction);
+                    FeatureWriter writer = store.getDataStore()
+                                                .getFeatureWriter(typeName, filter, transaction);
 
                     try {
                         while (writer.hasNext()) {
@@ -989,7 +995,6 @@ public class Transaction {
                         writer.close();
                     }
                 }
-
             } catch (IOException e) {
                 String msg = e.getMessage();
                 String eHandle = (String) EMFUtils.get(element, "handle");
@@ -1002,20 +1007,18 @@ public class Transaction {
     }
 
     protected class NativeElementHandler implements TransactionElementHandler {
-
         public void checkValidity(EObject element, Map featureTypeInfos)
-                throws WFSTransactionException {
+            throws WFSTransactionException {
             NativeType nativ = (NativeType) element;
 
             if (!nativ.isSafeToIgnore()) {
                 throw new WFSTransactionException("Native element:" + nativ.getVendorId()
-                        + " unsupported but marked as" + " unsafe to ignore",
-                        "InvalidParameterValue");
+                    + " unsupported but marked as" + " unsafe to ignore", "InvalidParameterValue");
             }
         }
 
         public void execute(EObject element, TransactionType request, Map featureSources,
-                TransactionResponseType response) throws WFSTransactionException {
+            TransactionResponseType response) throws WFSTransactionException {
             // nothing to do, we just ignore if possible
         }
 
@@ -1027,6 +1030,5 @@ public class Transaction {
             // we don't handle this
             return EMPTY_QNAMES;
         }
-
     }
 }
