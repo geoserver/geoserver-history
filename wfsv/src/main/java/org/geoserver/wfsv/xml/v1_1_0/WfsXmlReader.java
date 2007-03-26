@@ -12,15 +12,15 @@ import org.geotools.util.Version;
 import org.geotools.xml.Parser;
 import org.xml.sax.InputSource;
 
-public class WfsvXmlReader extends XmlRequestReader {
+public class WfsXmlReader extends XmlRequestReader {
 
     private WFS wfs;
 
     private WFSVConfiguration configuration;
 
-    public WfsvXmlReader(String element, WFS wfs,
+    public WfsXmlReader(String element, WFS wfs,
             WFSVConfiguration configuration) {
-        super(new QName(org.geoserver.wfsv.xml.v1_1_0.WFSV.NAMESPACE, element),
+        super(new QName(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE, element),
                 new Version("1.1.0"), "wfsv");
         this.wfs = wfs;
         this.configuration = configuration;

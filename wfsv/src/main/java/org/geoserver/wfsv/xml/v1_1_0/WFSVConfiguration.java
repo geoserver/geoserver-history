@@ -4,15 +4,12 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
-import net.opengis.ows.OwsFactory;
-import net.opengis.wfs.WfsFactory;
 import net.opengis.wfsv.WfsvFactory;
 
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.xml.BindingConfiguration;
-import org.geotools.xml.Configuration;
 import org.picocontainer.MutablePicoContainer;
 import org.vfny.geoserver.global.Data;
 
@@ -22,15 +19,14 @@ import org.vfny.geoserver.global.Data;
  *
  * @generated
  */
-public class WFSVConfiguration extends Configuration {
+public class WFSVConfiguration extends WFSConfiguration {
     /**
      * Creates a new configuration.
      *
      * @generated
      */
     public WFSVConfiguration(Data catalog, FeatureTypeSchemaBuilder schemaBuilder) {
-        super();
-        addDependency(new WFSConfiguration(catalog, schemaBuilder));
+        super(catalog, schemaBuilder);
     }
 
     /**
@@ -61,10 +57,10 @@ public class WFSVConfiguration extends Configuration {
         return new WFSVBindingConfiguration();
     }
     
-    protected void configureContext(MutablePicoContainer context) {
+    public void configureContext(MutablePicoContainer context) {
         super.configureContext(context);
-        context.registerComponentInstance(OwsFactory.eINSTANCE);
-        context.registerComponentInstance(WfsFactory.eINSTANCE);
+//        context.registerComponentInstance(OwsFactory.eINSTANCE);
+//        context.registerComponentInstance(WfsFactory.eINSTANCE);
         context.registerComponentInstance(WfsvFactory.eINSTANCE);
     }
 }

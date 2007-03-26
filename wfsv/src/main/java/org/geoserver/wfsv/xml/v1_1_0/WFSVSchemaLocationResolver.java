@@ -5,14 +5,13 @@
 package org.geoserver.wfsv.xml.v1_1_0;
 
 import org.eclipse.xsd.XSDSchema;
-import org.eclipse.xsd.util.XSDSchemaLocationResolver;
+import org.geoserver.wfs.xml.v1_1_0.WFSSchemaLocationResolver;
 
 
 /**
- *
- * @generated
+ * Schema location resolver, extending the WFS one
  */
-public class WFSVSchemaLocationResolver implements XSDSchemaLocationResolver {
+public class WFSVSchemaLocationResolver extends WFSSchemaLocationResolver {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -21,6 +20,10 @@ public class WFSVSchemaLocationResolver implements XSDSchemaLocationResolver {
      */
     public String resolveSchemaLocation(XSDSchema xsdSchema, String namespaceURI,
         String schemaLocationURI) {
+        String location = super.resolveSchemaLocation(xsdSchema, namespaceURI, schemaLocationURI);
+        if(location != null)
+            return location;
+        
         if (schemaLocationURI == null) {
             return null;
         }

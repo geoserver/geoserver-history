@@ -80,7 +80,7 @@
     <constructor-arg ref="gml3SchemaBuilder" />
   </bean>
   
-  <!-- 1.1 xml readers -->
+  <!-- 1.1 wfsv xml readers -->
   <bean id="wfsv-xmlReader-1.1.0" class="org.geoserver.wfsv.xml.v1_1_0.WfsvXmlReader" abstract="true">
     <constructor-arg ref="wfs"/>
     <constructor-arg ref="wfsvXmlConfiguration-1.1"/>
@@ -99,6 +99,14 @@
   </bean>
   <bean id="wfsvDeleteElementXmlReader-1.1.0" parent="wfsv-xmlReader-1.1.0">
     <constructor-arg value="VersionedDeleteElement"/>
+  </bean>
+  <!-- 1.1 wfs readers handling extended elements -->
+  <bean id="wfs-x-xmlReader-1.1.0" class="org.geoserver.wfsv.xml.v1_1_0.WfsXmlReader" abstract="true">
+    <constructor-arg ref="wfs"/>
+    <constructor-arg ref="wfsvXmlConfiguration-1.1"/>
+  </bean>
+  <bean id="wfs-x-TransactionXmlReader-1.1.0" parent="wfs-x-xmlReader-1.1.0">
+    <constructor-arg value="Transaction"/>
   </bean>
   
   <!-- Encoders / Output formats -->
