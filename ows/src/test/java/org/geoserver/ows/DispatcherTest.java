@@ -9,6 +9,9 @@ import com.mockobjects.servlet.MockHttpServletResponse;
 import com.mockobjects.servlet.MockServletInputStream;
 import com.mockobjects.servlet.MockServletOutputStream;
 import junit.framework.TestCase;
+
+import org.geoserver.platform.Service;
+import org.geotools.util.Version;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -126,7 +129,7 @@ public class DispatcherTest extends TestCase {
         Dispatcher.Request req = new Dispatcher.Request();
         req.input = input;
 
-        Object object = dispatcher.parseRequestXML(input, req);
+        Object object = dispatcher.parseRequestXML(input, req, "hello");
         assertEquals(new Message("Hello world!"), object);
     }
 

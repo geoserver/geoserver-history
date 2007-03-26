@@ -4,6 +4,8 @@
  */
 package org.geoserver.ows;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.geotools.util.Version;
 import java.io.Reader;
 import javax.xml.namespace.QName;
@@ -34,6 +36,11 @@ public abstract class XmlRequestReader {
      * Appliction specific version number.
      */
     final Version version;
+    
+    /**
+     * Service identifier
+     */
+    final String serviceId;
 
     /**
      * Creates the xml reader for the specified element.
@@ -41,7 +48,7 @@ public abstract class XmlRequestReader {
      * @param element The qualified name of the element the reader reads.
      */
     public XmlRequestReader(QName element) {
-        this(element, null);
+        this(element, null, null);
     }
 
     /**
@@ -62,27 +69,28 @@ public abstract class XmlRequestReader {
      * @param version The version of the element in which the reader supports,
      * may be <code>null</code>.
      */
-    public XmlRequestReader(QName element, Version version) {
+    public XmlRequestReader(QName element, Version version, String serviceId) {
         this.element = element;
         this.version = version;
+        this.serviceId = serviceId;
 
         if (element == null) {
             throw new NullPointerException("element");
         }
     }
 
-    /**
-     *
-     * Creates the xml reader for the specified element of a particular version.
-     *
-     * @param namespace The namespace of the element
-     * @param local The local name of the element
-     * @param version The version of the element in which the reader supports,
-     * may be <code>null</code>.
-     */
-    public XmlRequestReader(String namespace, String local, Version version) {
-        this(new QName(namespace, local), version);
-    }
+//    /**
+//     *
+//     * Creates the xml reader for the specified element of a particular version.
+//     *
+//     * @param namespace The namespace of the element
+//     * @param local The local name of the element
+//     * @param version The version of the element in which the reader supports,
+//     * may be <code>null</code>.
+//     */
+//    public XmlRequestReader(String namespace, String local, Version version) {
+//        this(new QName(namespace, local), version, null);
+//    }
 
     /**
      * @return The qualified name of the element that this reader reads.
@@ -117,28 +125,18 @@ public abstract class XmlRequestReader {
         }
 
         XmlRequestReader other = (XmlRequestReader) obj;
-
-        if (!element.equals(other.element)) {
-            return false;
-        }
-
-        if (version != null) {
-            return version.equals(other.version);
-        }
-
-        return other.version == null;
+        return new EqualsBuilder().append(element, other.element).append(version, other.version)
+            .append(serviceId, other.serviceId).isEquals();
     }
 
     /**
      * Implementation of hashcode.
      */
     public int hashCode() {
-        int result = element.hashCode();
+        return new HashCodeBuilder().append(element).append(version).append(serviceId).toHashCode();
+    }
 
-        if (version != null) {
-            result = (result * 17) + version.hashCode();
-        }
-
-        return result;
+    public String getServiceId() {
+        return serviceId;
     }
 }

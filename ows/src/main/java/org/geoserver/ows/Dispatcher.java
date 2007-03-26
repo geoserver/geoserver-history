@@ -361,7 +361,7 @@ public class Dispatcher extends AbstractController {
                     requestBean = parseRequestKVP(parameterType, req);
                 } else {
                     //use the xml reader mechanism
-                    requestBean = parseRequestXML(req.input, req);
+                    requestBean = parseRequestXML(req.input, req, serviceDescriptor.getId());
                 }
 
                 // another couple of thos of those lovley cite things, version+service has to specified for 
@@ -713,7 +713,7 @@ public class Dispatcher extends AbstractController {
         return xmlReaders;
     }
 
-    XmlRequestReader findXmlReader(String namespace, String element, String ver) {
+    XmlRequestReader findXmlReader(String namespace, String element, String serviceId, String ver) {
         Collection xmlReaders = loadXmlReaders();
 
         //first just match on namespace, element
@@ -741,7 +741,7 @@ public class Dispatcher extends AbstractController {
         if (matches.size() > 1) {
             List vmatches = new ArrayList(matches);
 
-            //match up the version
+            //match up the version and the service
             if (ver != null) {
                 Version version = new Version(ver);
 
@@ -749,7 +749,7 @@ public class Dispatcher extends AbstractController {
                 for (Iterator itr = vmatches.iterator(); itr.hasNext();) {
                     XmlRequestReader r = (XmlRequestReader) itr.next();
 
-                    if (version.equals(r.getVersion())) {
+                    if (version.equals(r.getVersion()) && serviceId.equals(r.getServiceId())) {
                         continue;
                     }
 
@@ -909,7 +909,7 @@ public class Dispatcher extends AbstractController {
         return null;
     }
 
-    Object parseRequestXML(BufferedReader input, Request request)
+    Object parseRequestXML(BufferedReader input, Request request, String serviceId)
         throws Exception {
         //check for an empty input stream
         //if (input.available() == 0) {
@@ -945,7 +945,7 @@ public class Dispatcher extends AbstractController {
         //reset input stream
         input.reset();
 
-        XmlRequestReader xmlReader = findXmlReader(namespace, element, version);
+        XmlRequestReader xmlReader = findXmlReader(namespace, element, serviceId, version);
 
         if (xmlReader instanceof HttpServletRequestAware) {
             ((HttpServletRequestAware) xmlReader).setHttpRequest(request.httpRequest);

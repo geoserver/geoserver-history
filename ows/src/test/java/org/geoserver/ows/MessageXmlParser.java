@@ -15,7 +15,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public class MessageXmlParser extends XmlRequestReader {
     public MessageXmlParser() {
-        super(new QName(null, "Hello"), new Version("1.0.0"));
+        super(new QName(null, "Hello"), new Version("1.0.0"), "hello");
     }
 
     public Object read(Reader reader) throws Exception {

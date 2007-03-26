@@ -18,7 +18,7 @@ public class WfsXmlReader extends XmlRequestReader {
     WFSConfiguration configuration;
 
     public WfsXmlReader(String element, WFSConfiguration configuration) {
-        super(new QName(WFS.NAMESPACE, element), new Version("1.0.0"));
+        super(new QName(WFS.NAMESPACE, element), new Version("1.0.0"), "wfs");
         this.configuration = configuration;
     }
 
