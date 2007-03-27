@@ -258,7 +258,7 @@ public class CoverageUtils {
                                 coords[iT] = Double.parseDouble(strCoords[iT].trim());
                             }
 
-                            value = (org.opengis.spatialschema.geometry.Envelope) new GeneralEnvelope(new double[] {
+                            value = (org.opengis.geometry.Envelope) new GeneralEnvelope(new double[] {
                                         coords[0], coords[1]
                                     }, new double[] { coords[2], coords[3] });
                         }
@@ -336,7 +336,7 @@ public class CoverageUtils {
                                 coords[iT] = Double.parseDouble(strCoords[iT].trim());
                             }
 
-                            value = (org.opengis.spatialschema.geometry.Envelope) new GeneralEnvelope(new double[] {
+                            value = (org.opengis.geometry.Envelope) new GeneralEnvelope(new double[] {
                                         coords[0], coords[1]
                                     }, new double[] { coords[2], coords[3] });
                         }
@@ -360,7 +360,7 @@ public class CoverageUtils {
                                 coords[iT] = Double.parseDouble(strCoords[iT].trim());
                             }
 
-                            value = (org.opengis.spatialschema.geometry.Envelope) new GeneralEnvelope(new double[] {
+                            value = (org.opengis.geometry.Envelope) new GeneralEnvelope(new double[] {
                                         coords[0], coords[1]
                                     }, new double[] { coords[2], coords[3] });
                         }
