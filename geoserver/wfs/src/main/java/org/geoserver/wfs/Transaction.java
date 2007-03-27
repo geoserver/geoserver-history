@@ -78,17 +78,17 @@ public class Transaction {
     /**
      * WFS configuration
      */
-    WFS wfs;
+    protected WFS wfs;
 
     /**
      * The catalog
      */
-    Data catalog;
+    protected Data catalog;
 
     /**
      * Filter factory
      */
-    FilterFactory filterFactory;
+    protected FilterFactory filterFactory;
 
     /** Geotools2 transaction used for this opperations */
     protected org.geotools.data.Transaction transaction;
@@ -735,6 +735,12 @@ public class Transaction {
         }
     }
 
+    /**
+     * Processes standard update elements
+     *
+     * @author Andrea Aime - TOPP
+     *
+     */
     protected class UpdateElementHandler implements TransactionElementHandler {
         public void checkValidity(EObject element, Map typeInfos)
             throws WFSTransactionException {
@@ -878,6 +884,12 @@ public class Transaction {
         }
     }
 
+    /**
+     * Processes standard Delete elements
+     *
+     * @author Andrea Aime - TOPP
+     *
+     */
     protected class DeleteElementHandler implements TransactionElementHandler {
         public Class getElementClass() {
             return DeleteElementType.class;
@@ -1006,7 +1018,13 @@ public class Transaction {
         }
     }
 
-    protected class NativeElementHandler implements TransactionElementHandler {
+    /**
+     * Processes native elements as unrecognized ones, and checks wheter they
+     * can be safely ignored on not.
+     *
+     * @author Andrea Aime - TOPP
+     */
+    public class NativeElementHandler implements TransactionElementHandler {
         public void checkValidity(EObject element, Map featureTypeInfos)
             throws WFSTransactionException {
             NativeType nativ = (NativeType) element;
