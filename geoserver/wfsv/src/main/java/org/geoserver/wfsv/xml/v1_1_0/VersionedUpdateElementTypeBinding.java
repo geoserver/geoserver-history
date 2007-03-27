@@ -4,10 +4,13 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
+import net.opengis.wfs.PropertyType;
+import net.opengis.wfs.UpdateElementType;
 import net.opengis.wfsv.VersionedUpdateElementType;
 import net.opengis.wfsv.WfsvFactory;
-
 import org.geotools.xml.*;
+import org.opengis.filter.Filter;
+import java.net.URI;
 import javax.xml.namespace.QName;
 
 
@@ -40,13 +43,12 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class VersionedUpdateElementTypeBinding extends AbstractComplexBinding {
-    
     private WfsvFactory wfsvFactory;
 
     public VersionedUpdateElementTypeBinding(WfsvFactory wfsvFactory) {
         this.wfsvFactory = wfsvFactory;
     }
-    
+
     /**
      * @generated
      */
@@ -73,8 +75,34 @@ public class VersionedUpdateElementTypeBinding extends AbstractComplexBinding {
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
         VersionedUpdateElementType update = wfsvFactory.createVersionedUpdateElementType();
-        
+
+        //&lt;xsd:element maxOccurs="unbounded" ref="wfs:Property"&gt;
+        update.getProperty().addAll(node.getChildValues(PropertyType.class));
+
+        //&lt;xsd:element maxOccurs="1" minOccurs="0" ref="ogc:Filter"&gt;
+        update.setFilter((Filter) node.getChildValue(Filter.class));
+
+        //&lt;xsd:attribute name="handle" type="xsd:string" use="optional"&gt;
+        if (node.hasAttribute("handle")) {
+            update.setHandle((String) node.getAttributeValue("handle"));
+        }
+
+        //&lt;xsd:attribute name="typeName" type="xsd:QName" use="required"&gt;
+        update.setTypeName((QName) node.getAttributeValue("typeName"));
+
+        //&lt;xsd:attribute default="x-application/gml:3" name="inputFormat"
+        //      type="xsd:string" use="optional"&gt;
+        if (node.hasAttribute("inputFormat")) {
+            update.setInputFormat((String) node.getAttributeValue("inputFormat"));
+        }
+
+        //&lt;xsd:attribute name="srsName" type="xsd:anyURI" use="optional"&gt;
+        if (node.hasAttribute("srsName")) {
+            update.setSrsName((URI) node.getAttributeValue("srsName"));
+        }
+
         update.setFeatureVersion((String) node.getAttributeValue("featureVersion"));
+
         return update;
     }
 }

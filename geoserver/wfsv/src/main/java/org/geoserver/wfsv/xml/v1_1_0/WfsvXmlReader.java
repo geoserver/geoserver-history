@@ -1,9 +1,8 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfsv.xml.v1_1_0;
-
-import java.io.Reader;
-import java.util.Iterator;
-
-import javax.xml.namespace.QName;
 
 import org.geoserver.ows.XmlRequestReader;
 import org.geoserver.wfs.WFS;
@@ -11,25 +10,25 @@ import org.geoserver.wfs.WFSException;
 import org.geotools.util.Version;
 import org.geotools.xml.Parser;
 import org.xml.sax.InputSource;
+import java.io.Reader;
+import java.util.Iterator;
+import javax.xml.namespace.QName;
+
 
 public class WfsvXmlReader extends XmlRequestReader {
-
     private WFS wfs;
-
     private WFSVConfiguration configuration;
 
-    public WfsvXmlReader(String element, WFS wfs,
-            WFSVConfiguration configuration) {
+    public WfsvXmlReader(String element, WFS wfs, WFSVConfiguration configuration) {
         super(new QName(org.geoserver.wfsv.xml.v1_1_0.WFSV.NAMESPACE, element),
-                new Version("1.1.0"), "wfsv");
+            new Version("1.1.0"), "wfsv");
         this.wfs = wfs;
         this.configuration = configuration;
     }
 
     public Object read(Reader reader) throws Exception {
         // TODO: make this configurable?
-        configuration.getProperties().add(
-                Parser.Properties.PARSE_UNKNOWN_ELEMENTS);
+        configuration.getProperties().add(Parser.Properties.PARSE_UNKNOWN_ELEMENTS);
 
         Parser parser = new Parser(configuration);
 
@@ -43,14 +42,11 @@ public class WfsvXmlReader extends XmlRequestReader {
         // TODO: HACK, disabling validation for transaction
         if (!"Transaction".equalsIgnoreCase(getElement().getLocalPart())) {
             if (!parser.getValidationErrors().isEmpty()) {
-                WFSException exception = new WFSException("Invalid request",
-                        "InvalidParameterValue");
+                WFSException exception = new WFSException("Invalid request", "InvalidParameterValue");
 
-                for (Iterator e = parser.getValidationErrors().iterator(); e
-                        .hasNext();) {
+                for (Iterator e = parser.getValidationErrors().iterator(); e.hasNext();) {
                     Exception error = (Exception) e.next();
-                    exception.getExceptionText().add(
-                            error.getLocalizedMessage());
+                    exception.getExceptionText().add(error.getLocalizedMessage());
                 }
 
                 throw exception;

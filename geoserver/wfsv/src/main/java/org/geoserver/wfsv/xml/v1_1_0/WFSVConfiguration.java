@@ -5,7 +5,6 @@
 package org.geoserver.wfsv.xml.v1_1_0;
 
 import net.opengis.wfsv.WfsvFactory;
-
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
@@ -42,25 +41,24 @@ public class WFSVConfiguration extends WFSConfiguration {
      * @generated
      */
     public String getSchemaFileURL() {
-        return getSchemaLocationResolver()
-                   .resolveSchemaLocation(null, getNamespaceURI(), "wfsv.xsd");
+        return getSchemaLocationResolver().resolveSchemaLocation(null, getNamespaceURI(), "wfsv.xsd");
     }
-    
+
     public XSDSchemaLocationResolver getSchemaLocationResolver() {
         return new WFSVSchemaLocationResolver();
     }
-    
+
     /**
      * @return new instanceof {@link WFSVBindingConfiguration}.
      */
     public BindingConfiguration getBindingConfiguration() {
         return new WFSVBindingConfiguration();
     }
-    
+
     public void configureContext(MutablePicoContainer context) {
         super.configureContext(context);
-//        context.registerComponentInstance(OwsFactory.eINSTANCE);
-//        context.registerComponentInstance(WfsFactory.eINSTANCE);
+        //        context.registerComponentInstance(OwsFactory.eINSTANCE);
+        //        context.registerComponentInstance(WfsFactory.eINSTANCE);
         context.registerComponentInstance(WfsvFactory.eINSTANCE);
     }
 }

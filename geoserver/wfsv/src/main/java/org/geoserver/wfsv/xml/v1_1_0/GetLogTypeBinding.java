@@ -4,16 +4,14 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
-import javax.xml.namespace.QName;
-
 import net.opengis.wfs.ResultTypeType;
 import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.GetLogType;
 import net.opengis.wfsv.WfsvFactory;
-
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import javax.xml.namespace.QName;
 
 
 /**
@@ -109,7 +107,7 @@ public class GetLogTypeBinding extends AbstractComplexBinding {
     public GetLogTypeBinding(WfsvFactory wfsvFactory) {
         this.wfsvFactory = wfsvFactory;
     }
-    
+
     /**
      * @generated
      */
@@ -137,11 +135,11 @@ public class GetLogTypeBinding extends AbstractComplexBinding {
         throws Exception {
         GetLogType result = wfsvFactory.createGetLogType();
         result.getDifferenceQuery().addAll(node.getChildValues(DifferenceQueryType.class));
-        
+
         if (node.hasAttribute("resultType")) {
             result.setResultType((ResultTypeType) node.getAttributeValue("resultType"));
         }
-        
+
         if (node.hasAttribute("outputFormat")) {
             result.setOutputFormat((String) node.getAttributeValue("outputFormat"));
         }
