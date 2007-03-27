@@ -9,7 +9,6 @@ import com.mockobjects.servlet.MockHttpServletResponse;
 import com.mockobjects.servlet.MockServletInputStream;
 import com.mockobjects.servlet.MockServletOutputStream;
 import junit.framework.TestCase;
-
 import org.geoserver.platform.Service;
 import org.geotools.util.Version;
 import org.springframework.context.support.FileSystemXmlApplicationContext;

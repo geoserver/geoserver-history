@@ -749,7 +749,7 @@ public class Dispatcher extends AbstractController {
                 for (Iterator itr = vmatches.iterator(); itr.hasNext();) {
                     XmlRequestReader r = (XmlRequestReader) itr.next();
 
-                    if (version.equals(r.getVersion()) && serviceId.equals(r.getServiceId())) {
+                    if (version.equals(r.getVersion())) {
                         continue;
                     }
 
@@ -763,7 +763,7 @@ public class Dispatcher extends AbstractController {
                 }
             }
 
-            //multiple readers found, sort by version
+            //multiple readers found, sort by version and by service match
             if (vmatches.size() > 1) {
                 //use highest version
                 Comparator comparator = new Comparator() {
@@ -786,7 +786,28 @@ public class Dispatcher extends AbstractController {
                                 return -1;
                             }
 
-                            return v1.compareTo(v2);
+                            int versionCompare = v1.compareTo(v2);
+
+                            if (versionCompare != 0) {
+                                return versionCompare;
+                            }
+
+                            String sid1 = r1.getServiceId();
+                            String sid2 = r2.getServiceId();
+
+                            if ((sid1 == null) && (sid2 == null)) {
+                                return 0;
+                            }
+
+                            if ((sid1 != null) && (sid2 == null)) {
+                                return 1;
+                            }
+
+                            if ((sid1 == null) && (sid2 != null)) {
+                                return -1;
+                            }
+
+                            return sid1.compareTo(sid2);
                         }
                     };
 
