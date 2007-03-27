@@ -9,7 +9,6 @@ import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 import net.opengis.wfsv.GetDiffType;
 import net.opengis.wfsv.GetLogType;
-
 import org.geoserver.wfs.DefaultWebFeatureService;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
@@ -27,21 +26,24 @@ public class DefaultVersioningWebFeatureService extends DefaultWebFeatureService
     public DefaultVersioningWebFeatureService(WFS wfs, Data catalog) {
         super(wfs, catalog);
     }
-    
-    public TransactionResponseType transaction(TransactionType request) throws WFSException {
+
+    public TransactionResponseType transaction(TransactionType request)
+        throws WFSException {
         VersioningTransaction transaction = new VersioningTransaction(wfs, catalog);
         transaction.setFilterFactory(filterFactory);
 
         return transaction.transaction(request);
     }
-    
+
     public FeatureCollectionType getLog(GetLogType request) {
         GetLog log = new GetLog(wfs, catalog);
+
         return log.run(request);
     }
-    
+
     public FeatureDiffReader[] getDiff(GetDiffType request) {
         GetDiff diff = new GetDiff(wfs, catalog);
+
         return diff.run(request);
     }
 }

@@ -1,18 +1,13 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfsv;
-
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.Calendar;
-import java.util.List;
-import java.util.logging.Logger;
-
-import javax.xml.namespace.QName;
 
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.WfsFactory;
 import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.GetLogType;
-
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
 import org.geotools.data.FeatureSource;
@@ -28,12 +23,19 @@ import org.opengis.filter.expression.ExpressionVisitor;
 import org.opengis.filter.expression.PropertyName;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.Calendar;
+import java.util.List;
+import java.util.logging.Logger;
+import javax.xml.namespace.QName;
+
 
 /**
  * Versioning Web Feature Service GetLog operation
- * 
+ *
  * @author Andrea Aime, TOPP
- * 
+ *
  */
 public class GetLog {
     /**
@@ -58,7 +60,7 @@ public class GetLog {
 
     /**
      * Creates the GetLog operation
-     * 
+     *
      * @param wfs
      * @param catalog
      */
@@ -83,7 +85,7 @@ public class GetLog {
 
     /**
      * Sets the filter factory to use to create filters.
-     * 
+     *
      * @param filterFactory
      */
     public void setFilterFactory(FilterFactory filterFactory) {
@@ -102,7 +104,7 @@ public class GetLog {
             String msg = "No feature types specified";
             throw new WFSException(msg);
         }
-        
+
         FeatureCollectionType result = WfsFactory.eINSTANCE.createFeatureCollectionType();
         int count = 0;
 
@@ -110,65 +112,57 @@ public class GetLog {
         // gather bounds
         try {
             for (int i = 0; (i < queries.size()); i++) {
-                DifferenceQueryType query = (DifferenceQueryType) queries
-                        .get(i);
-                FeatureTypeInfo meta = featureTypeInfo((QName) query
-                        .getTypeName());
+                DifferenceQueryType query = (DifferenceQueryType) queries.get(i);
+                FeatureTypeInfo meta = featureTypeInfo((QName) query.getTypeName());
                 FeatureSource source = meta.getFeatureSource();
 
                 if (!(source instanceof VersioningFeatureSource)) {
                     throw new WFSException("Feature type" + query.getTypeName()
-                            + " is not versioned");
+                        + " is not versioned");
                 }
-                
+
                 Filter filter = (Filter) query.getFilter();
+
                 //  make sure filters are sane
                 if (filter != null) {
                     final FeatureType featureType = source.getSchema();
                     ExpressionVisitor visitor = new AbstractExpressionVisitor() {
-                        public Object visit(PropertyName name, Object data) {
-                            // case of multiple geometries being returned
-                            if (name.evaluate(featureType) == null) {
-                                // we want to throw wfs exception, but cant
-                                throw new WFSException(
-                                        "Illegal property name: "
-                                                + name.getPropertyName(),
-                                        "InvalidParameterValue");
+                            public Object visit(PropertyName name, Object data) {
+                                // case of multiple geometries being returned
+                                if (name.evaluate(featureType) == null) {
+                                    // we want to throw wfs exception, but cant
+                                    throw new WFSException("Illegal property name: "
+                                        + name.getPropertyName(), "InvalidParameterValue");
+                                }
+
+                                return name;
                             }
-
-                            return name;
+                            ;
                         };
-                    };
 
-                    filter.accept(
-                            new AbstractFilterVisitor(visitor), null);
+                    filter.accept(new AbstractFilterVisitor(visitor), null);
                 }
 
                 // extract collection
                 VersioningFeatureSource store = (VersioningFeatureSource) source;
-                FeatureCollection logs = store.getLog(query
-                        .getFromFeatureVersion(), query.getToFeatureVersion(),
-                        filter);
-                
-                // TODO: handle logs reprojection in another CRS
+                FeatureCollection logs = store.getLog(query.getFromFeatureVersion(),
+                        query.getToFeatureVersion(), filter);
 
+                // TODO: handle logs reprojection in another CRS
                 result.getFeature().add(logs);
                 count += logs.size();
             }
         } catch (IOException e) {
-            throw new WFSException("Error occurred getting features", e,
-                    request.getHandle());
+            throw new WFSException("Error occurred getting features", e, request.getHandle());
         }
-        
+
         result.setNumberOfFeatures(BigInteger.valueOf(count));
         result.setTimeStamp(Calendar.getInstance());
 
         return result;
-
     }
 
-    FeatureTypeInfo featureTypeInfo(QName name) throws WFSException,
-            IOException {
+    FeatureTypeInfo featureTypeInfo(QName name) throws WFSException, IOException {
         FeatureTypeInfo meta = catalog.getFeatureTypeInfo(name.getLocalPart(),
                 name.getNamespaceURI());
 

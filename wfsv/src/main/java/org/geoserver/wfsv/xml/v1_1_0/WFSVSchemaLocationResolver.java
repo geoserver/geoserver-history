@@ -21,9 +21,11 @@ public class WFSVSchemaLocationResolver extends WFSSchemaLocationResolver {
     public String resolveSchemaLocation(XSDSchema xsdSchema, String namespaceURI,
         String schemaLocationURI) {
         String location = super.resolveSchemaLocation(xsdSchema, namespaceURI, schemaLocationURI);
-        if(location != null)
+
+        if (location != null) {
             return location;
-        
+        }
+
         if (schemaLocationURI == null) {
             return null;
         }

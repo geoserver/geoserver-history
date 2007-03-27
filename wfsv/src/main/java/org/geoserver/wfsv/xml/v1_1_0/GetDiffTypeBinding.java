@@ -4,15 +4,13 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
-import javax.xml.namespace.QName;
-
 import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.GetDiffType;
 import net.opengis.wfsv.WfsvFactory;
-
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import javax.xml.namespace.QName;
 
 
 /**
@@ -67,13 +65,12 @@ import org.geotools.xml.Node;
  * @generated
  */
 public class GetDiffTypeBinding extends AbstractComplexBinding {
-    
     private WfsvFactory wfsvFactory;
 
     public GetDiffTypeBinding(WfsvFactory wfsvFactory) {
         this.wfsvFactory = wfsvFactory;
     }
-    
+
     /**
      * @generated
      */
@@ -101,7 +98,7 @@ public class GetDiffTypeBinding extends AbstractComplexBinding {
         throws Exception {
         GetDiffType result = wfsvFactory.createGetDiffType();
         result.getDifferenceQuery().addAll(node.getChildValues(DifferenceQueryType.class));
-        
+
         if (node.hasAttribute("outputFormat")) {
             result.setOutputFormat((String) node.getAttributeValue("outputFormat"));
         }

@@ -1,9 +1,12 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfsv.response.v1_1_0;
 
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.ResultTypeType;
 import net.opengis.wfsv.GetLogType;
-
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.wfs.WFS;
@@ -11,17 +14,17 @@ import org.geoserver.wfs.xml.GML3OutputFormat;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.vfny.geoserver.global.Data;
 
+
 /**
  * Variation on the GML3 output format that allows for handling outputs
- * coming from 
+ * coming from
  *
  */
 public class GetLogGML3OutputFormat extends GML3OutputFormat {
-
     public GetLogGML3OutputFormat(WFS wfs, Data catalog, WFSConfiguration configuration) {
         super(wfs, catalog, configuration);
     }
-    
+
     /**
      * Ensures that the operation being executed is a GetFeature operation.
      * <p>
@@ -40,5 +43,4 @@ public class GetLogGML3OutputFormat extends GML3OutputFormat {
 
         return false;
     }
-
 }

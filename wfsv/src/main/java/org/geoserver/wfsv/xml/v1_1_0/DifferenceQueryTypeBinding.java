@@ -8,14 +8,14 @@ import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.WfsvFactory;
 import org.geotools.xml.*;
 import org.opengis.filter.Filter;
-
 import javax.xml.namespace.QName;
+
 
 /**
  * Binding object for the type http://www.opengis.net/wfsv:DifferenceQueryType.
- * 
+ *
  * <p>
- * 
+ *
  * <pre>
  *         <code>
  *   &lt;xsd:complexType name=&quot;DifferenceQueryType&quot;&gt;
@@ -60,12 +60,12 @@ import javax.xml.namespace.QName;
  *           &lt;/xsd:annotation&gt;
  *       &lt;/xsd:attribute&gt;
  *   &lt;/xsd:complexType&gt;
- * 
+ *
  * </code>
  *         </pre>
- * 
+ *
  * </p>
- * 
+ *
  * @generated
  */
 public class DifferenceQueryTypeBinding extends AbstractComplexBinding {
@@ -84,7 +84,7 @@ public class DifferenceQueryTypeBinding extends AbstractComplexBinding {
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated modifiable
      */
     public Class getType() {
@@ -93,21 +93,23 @@ public class DifferenceQueryTypeBinding extends AbstractComplexBinding {
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
+     *
      * @generated modifiable
      */
     public Object parse(ElementInstance instance, Node node, Object value)
-            throws Exception {
+        throws Exception {
         DifferenceQueryType result = wfsvFactory.createDifferenceQueryType();
         result.setTypeName(node.getAttributeValue("typeName"));
-        if (node.hasChild("filter"))
-            result.setFilter((Filter) node.getChildValue("filter"));
+
+        if (node.hasChild("filter")) {
+            result.setFilter((Filter) node.getChildValue(Filter.class));
+        }
+
         // if(node.hasAttribute("fromFeatureVersion"))
-        result.setFromFeatureVersion((String) node
-                .getAttributeValue("fromFeatureVersion"));
+        result.setFromFeatureVersion((String) node.getAttributeValue("fromFeatureVersion"));
         // if(node.hasAttribute("toFeatureVersion"))
-        result.setToFeatureVersion((String) node
-                .getAttributeValue("toFeatureVersion"));
+        result.setToFeatureVersion((String) node.getAttributeValue("toFeatureVersion"));
+
         return result;
     }
 }

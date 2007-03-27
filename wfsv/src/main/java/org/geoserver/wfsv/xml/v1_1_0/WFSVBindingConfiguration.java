@@ -18,7 +18,7 @@ public final class WFSVBindingConfiguration extends WFSBindingConfiguration {
      */
     public void configure(MutablePicoContainer container) {
         super.configure(container);
-        
+
         //Types
         container.registerComponentImplementation(WFSV.DifferenceQueryType,
             DifferenceQueryTypeBinding.class);
