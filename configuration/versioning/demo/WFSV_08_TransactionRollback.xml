@@ -8,12 +8,10 @@
   xmlns:gml="http://www.opengis.net/gml"
   xmlns:wfsv="http://www.opengis.net/wfsv"
   xmlns:wfs="http://www.opengis.net/wfs"
-  xsi:schemaLocation="http://www.opengis.net/wfs
-                      http://schemas.opengis.net/wfs/1.1.0/w.xsd
-                      http://www.opengis.net/wfsv
+  xsi:schemaLocation="http://www.opengis.net/wfsv
                       http://localhost:8080/geoserver/schemas/wfs/1.1.0/wfsv.xsd"
   handle="Rolling back previous changes">
-  <wfsv:Rollback>
-    <wfsv:DifferenceQuery typeName="topp:archsites" fromFeatureVersion="13" toFeatureVersion="1"/>
+  <wfsv:Rollback safeToIgnore="false" vendorId="TOPP">
+    <wfsv:DifferenceQuery typeName="topp:archsites" toFeatureVersion="1"/>
   </wfsv:Rollback>
 </wfs:Transaction>
