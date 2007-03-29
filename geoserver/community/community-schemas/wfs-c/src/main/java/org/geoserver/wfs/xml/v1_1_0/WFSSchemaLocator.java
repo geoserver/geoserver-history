@@ -54,16 +54,15 @@ public class WFSSchemaLocator extends SchemaLocator {
 
             FeatureTypeInfo meta = (FeatureTypeInfo) i.next();
 
-            //we get a geoserver feature source wrapper so it is not
-            //enough to check for featureSource instanceof FeatureSource2
+            // we get a geoserver feature source wrapper so it is not
+            // enough to check for featureSource instanceof FeatureSource2
             DataStore dataStore = meta.getDataStoreInfo().getDataStore();
 
             if (dataStore instanceof FeatureAccess) {
                 String name = meta.getTypeName();
                 FeatureSource2 source = (FeatureSource2) dataStore.getFeatureSource(name);
                 AttributeDescriptor descriptor = (AttributeDescriptor) source.describe();
-                XSDElementDeclaration elemDecl = (XSDElementDeclaration) descriptor.getUserData(
-                        "EMF_MODEL");
+                XSDElementDeclaration elemDecl = (XSDElementDeclaration) descriptor.getUserData(XSDElementDeclaration.class);
 
                 if (elemDecl != null) {
                     schema = elemDecl.getSchema();

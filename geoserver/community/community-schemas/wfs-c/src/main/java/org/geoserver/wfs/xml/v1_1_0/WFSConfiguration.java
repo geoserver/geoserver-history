@@ -18,7 +18,6 @@ import org.geoserver.wfs.xml.xs.DateBinding;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.v1_1.OGC;
 import org.geotools.filter.v1_1.OGCConfiguration;
-import org.geotools.gml2.FeaturePropertyExtractor;
 import org.geotools.gml2.FeatureTypeCache;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.gml3.bindings.GML;
@@ -32,6 +31,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import javax.xml.namespace.QName;
 
 
 public class WFSConfiguration extends Configuration {
@@ -94,28 +94,22 @@ public class WFSConfiguration extends Configuration {
         FeatureTypeCache featureTypeCache = (FeatureTypeCache) context
             .getComponentInstanceOfType(FeatureTypeCache.class);
 
-        // GR: ftypeCache is used to cache the types when parsing. I don't need
-        // it right now
-        // and am commenting this out so don't have to worry about
-        // FeatureTypeCache working
-        // with GT-FM and not with ISO-FM
-        // try {
-        // Collection featureTypes = catalog.getFeatureTypeInfos().values();
-        //
-        // for (Iterator f = featureTypes.iterator(); f.hasNext();) {
-        // FeatureTypeInfo meta = (FeatureTypeInfo) f.next();
-        //
-        // try {
-        // FeatureType featureType = meta.getFeatureType();
-        // featureTypeCache.put(featureType);
-        // } catch (RuntimeException e) {
-        // e.printStackTrace();
-        // }
-        //
-        // }
-        // } catch (IOException e) {
-        // throw new RuntimeException(e);
-        // }
+        try {
+            Collection featureTypes = catalog.getFeatureTypeInfos().values();
+
+            for (Iterator f = featureTypes.iterator(); f.hasNext();) {
+                FeatureTypeInfo meta = (FeatureTypeInfo) f.next();
+
+                try {
+                    FeatureType featureType = meta.getFeatureType();
+                    featureTypeCache.put(featureType);
+                } catch (RuntimeException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected void configureBindings(MutablePicoContainer container) {
@@ -138,15 +132,27 @@ public class WFSConfiguration extends Configuration {
     }
 
     private void registerBindingOverrides(MutablePicoContainer container) {
-        container.unregisterComponent(GML.AbstractFeatureType);
-        container.registerComponentImplementation(GML.AbstractFeatureType,
-            ISOAbstractFeatureTypeBinding.class);
+        registerOverride(container, GML.AbstractFeatureType, ISOAbstractFeatureTypeBinding.class);
 
-        container.unregisterComponent(GML.AbstractGeometryType);
-        container.registerComponentImplementation(GML.AbstractGeometryType,
-            ISOAbstractFeatureTypeBinding.class);
+        registerOverride(container, GML.AbstractGeometryType, ISOAbstractFeatureTypeBinding.class);
 
-        container.unregisterComponent(GML.PointType);
-        container.registerComponentImplementation(GML.PointType, ISOPointTypeBinding.class);
+        registerOverride(container, GML.PointType, ISOPointTypeBinding.class);
+
+        registerOverride(container, GML.MultiSurfaceType, ISOMultiSurfaceTypeBinding.class);
+
+        registerOverride(container, GML.CurvePropertyType, ISOCurvePropertyTypeBinding.class);
+    }
+
+    /**
+     * Deregisters the existing binding for the provided <code>name</code>
+     * from the <code>container</code> and registers a new binding for it.
+     *
+     * @param container
+     * @param name
+     * @param newBinding
+     */
+    private void registerOverride(MutablePicoContainer container, QName name, Class newBinding) {
+        container.unregisterComponent(name);
+        container.registerComponentImplementation(name, newBinding);
     }
 }
