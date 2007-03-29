@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import javax.xml.namespace.QName;
 
 
@@ -78,12 +79,21 @@ public class ISOFeaturePropertyExtractor implements PropertyExtractor {
 
             String localPart = attribute.getName();
             String uri = attribute.getTargetNamespace();
+
+            //REVISIT: this is to workaround old GT Feature style of having
+            //attribute names with no namespace, but the ISO Feature adapter
+            //sets the descriptor namespace to be the same than the feature type
+            if (null == uri) {
+                uri = feature.getType().getName().getNamespaceURI();
+            }
+
             Name attributeName = new Name(uri, localPart);
             PropertyDescriptor descriptor = Types.descriptor(attributeType, attributeName);
 
             // make sure the feature type has an element
             if (descriptor == null) {
-                continue;
+                throw new NoSuchElementException("Property descriptor " + attributeName
+                    + " not found in feature type " + attributeType.getName());
             }
 
             Object attributeValue = feature.get(attributeName);

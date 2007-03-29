@@ -19,14 +19,13 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-import org.eclipse.xsd.XSDElementDeclaration;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.gml3.bindings.GML;
-import org.geotools.xml.*;
-import org.opengis.feature.GeometryAttribute;
-import org.opengis.spatialschema.geometry.DirectPosition;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
+import org.opengis.feature.Attribute;
+import org.opengis.geometry.DirectPosition;
 import javax.xml.namespace.QName;
 
 
@@ -132,8 +131,8 @@ public class ISOPointTypeBinding extends AbstractComplexBinding {
         if (GML.pos.equals(name)) {
             Point point;
 
-            if (object instanceof GeometryAttribute) {
-                GeometryAttribute att = (GeometryAttribute) object;
+            if (object instanceof Attribute) {
+                Attribute att = (Attribute) object;
                 point = (Point) att.get();
             } else {
                 point = (Point) object;
