@@ -290,27 +290,14 @@ public class GetMapResponse implements Response {
                         // Setting coverage reading params.
                         //
                         // /////////////////////////////////////////////////////////
-                        final ParameterValueGroup params = reader.getFormat().getReadParameters();
-
+                        //final ParameterValueGroup params = reader.getFormat().getReadParameters();
                         try {
-                            layer = new DefaultMapLayer(CoverageUtilities.wrapGc(reader.read(
-                                            CoverageUtils.getParameters(params,
-                                                layers[i].getCoverage().getParameters()))), style);
+                            layer = new DefaultMapLayer(CoverageUtilities.wrapGcReader(reader),
+                                    style);
                             layer.setTitle(layers[i].getName());
                             layer.setQuery(Query.ALL);
                             map.addLayer(layer);
                         } catch (IllegalArgumentException e) {
-                            if (LOGGER.isLoggable(Level.SEVERE)) {
-                                LOGGER.log(Level.SEVERE,
-                                    new StringBuffer("Wrapping GC in feature source: ").append(
-                                        e.getLocalizedMessage()).toString(), e);
-                            }
-
-                            throw new WmsException(null,
-                                new StringBuffer(
-                                    "Internal error : unable to get reader for this coverage layer ").append(
-                                    layers[i].toString()).toString());
-                        } catch (IOException e) {
                             if (LOGGER.isLoggable(Level.SEVERE)) {
                                 LOGGER.log(Level.SEVERE,
                                     new StringBuffer("Wrapping GC in feature source: ").append(
