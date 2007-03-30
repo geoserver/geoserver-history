@@ -34,12 +34,12 @@ import javax.media.jai.PlanarImage;
  * @author Didier Richard
  * @version $Id
  */
-public final class PNGMapProducer extends DefaultRasterMapProducer {
+public class PNGMapProducer extends DefaultRasterMapProducer {
     /** Logger */
     private static final Logger LOGGER = Logger.getLogger(PNGMapProducer.class.getPackage().getName());
 
     /** PNG Native Acceleration Mode * */
-    private Boolean PNGNativeAcc;
+    protected Boolean PNGNativeAcc;
 
     public PNGMapProducer(String format, WMS wms) {
         super(format, wms);

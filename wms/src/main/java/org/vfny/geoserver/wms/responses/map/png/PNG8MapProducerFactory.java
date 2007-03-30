@@ -4,35 +4,35 @@
  */
 package org.vfny.geoserver.wms.responses.map.png;
 
-import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.wms.GetMapProducer;
+
 
 /**
- * DOCUMENT ME!
+ * A simple extension to the PNG map producer that generates a paletted image with fixed palette
  *
- * @author Didier Richard, IGN-F
- * @author Simone Giannecchini
+ * @author Andrea Aime
  * @version $Id$
  */
-public class PNGMapProducerFactory implements GetMapProducerFactorySpi {
+public final class PNG8MapProducerFactory extends PNGMapProducerFactory {
     /** the only MIME type this map producer supports */
     static final String MIME_TYPE = "image/png";
+    static final String FORMAT = "image/png8";
 
     /**
      * convenient singleton Set to expose the output format this producer
      * supports
      */
-    private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
+    private static final Set SUPPORTED_FORMATS = Collections.singleton(FORMAT);
 
     /**
      * Creates a new PNGMapProducerFactory object.
      */
-    public PNGMapProducerFactory() {
+    public PNG8MapProducerFactory() {
         super();
     }
 
@@ -42,7 +42,7 @@ public class PNGMapProducerFactory implements GetMapProducerFactorySpi {
      * @return DOCUMENT ME!
      */
     public String getName() {
-        return "Portable Network Graphics (PNG) map producer";
+        return "Portable Network Graphics (PNG) 8 bit map producer";
     }
 
     /**
@@ -52,31 +52,15 @@ public class PNGMapProducerFactory implements GetMapProducerFactorySpi {
      *         "image/png")
      */
     public Set getSupportedFormats() {
-        return SUPPORTED_FORMATS;
+        return PNG8MapProducerFactory.SUPPORTED_FORMATS;
     }
 
-    /**
-     * <b>FIXME</b> JAI dependency ?
-     *
-     * @return <code>true</code>
-     */
     public boolean isAvailable() {
         return true;
     }
 
-    /**
-     * Returns wether the map producers created by this factory can create maps
-     * in the passed output format.
-     *
-     * @param mapFormat
-     *            a MIME type string to check if this producer is able to
-     *            handle.
-     *
-     * @return <code>true</code> if <code>mapFormat == "image/gif"</code>,
-     *         <code>false</code> otherwise.
-     */
     public boolean canProduce(String mapFormat) {
-        return MIME_TYPE.equals(mapFormat);
+        return FORMAT.equals(mapFormat);
     }
 
     /**
@@ -97,7 +81,7 @@ public class PNGMapProducerFactory implements GetMapProducerFactorySpi {
                     " not supported by this map producer").toString());
         }
 
-        return new PNGMapProducer(MIME_TYPE, wms);
+        return new PNG8MapProducer(FORMAT, wms);
     }
 
     /*

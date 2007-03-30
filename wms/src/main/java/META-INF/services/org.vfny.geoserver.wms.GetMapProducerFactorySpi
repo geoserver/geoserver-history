@@ -2,6 +2,7 @@ org.vfny.geoserver.wms.responses.map.gif.GifMapProducerFactory
 org.vfny.geoserver.wms.responses.map.tiff.TiffMapProducerFactory
 org.vfny.geoserver.wms.responses.map.geotiff.GeoTiffMapProducerFactory
 org.vfny.geoserver.wms.responses.map.png.PNGMapProducerFactory
+org.vfny.geoserver.wms.responses.map.png.PNG8MapProducerFactory
 org.vfny.geoserver.wms.responses.map.pdf.PDFMapProducerFactory
 org.vfny.geoserver.wms.responses.map.kml.KMLMapProducerFactory
 org.vfny.geoserver.wms.responses.map.kml.KMZMapProducerFactory
