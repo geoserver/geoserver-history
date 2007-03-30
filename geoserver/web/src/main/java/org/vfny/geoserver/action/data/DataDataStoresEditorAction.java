@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -153,7 +154,8 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
             dump("typeNames", typeNames);
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
+            LOGGER.log(Level.WARNING,
+                "Unable to fetch a list of FeatureType names from datastore.", throwable);
 
             ActionErrors errors = new ActionErrors();
             errors.add(ActionErrors.GLOBAL_ERROR,
