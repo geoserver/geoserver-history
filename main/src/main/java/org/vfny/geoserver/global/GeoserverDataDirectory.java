@@ -180,9 +180,9 @@ public class GeoserverDataDirectory {
                     loader.setBaseDirectory(dataDir);
                     loader.addSearchLocation(new File(dataDir, "data"));
                     loader.addSearchLocation(new File(dataDir, "WEB-INF"));
-                    System.out.println("----------------------------------");
-                    System.out.println("- GEOSERVER_DATA_DIR: " + dataDir.getAbsolutePath());
-                    System.out.println("----------------------------------");
+
+                    LOGGER.severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
+                        + dataDir.getAbsolutePath() + "\n----------------------------------");
 
                     return;
                 }
@@ -202,9 +202,8 @@ public class GeoserverDataDirectory {
                 loader.setBaseDirectory(dataDir);
                 loader.addSearchLocation(new File(dataDir, "data"));
                 loader.addSearchLocation(new File(dataDir, "WEB-INF"));
-                System.out.println("----------------------------------");
-                System.out.println("- GEOSERVER_DATA_DIR: " + dataDir.getAbsolutePath());
-                System.out.println("----------------------------------");
+                LOGGER.severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
+                    + dataDir.getAbsolutePath() + "\n----------------------------------");
 
                 return;
             }
@@ -219,9 +218,8 @@ public class GeoserverDataDirectory {
             loader.setBaseDirectory(dataDir);
             loader.addSearchLocation(new File(dataDir, "data"));
             loader.addSearchLocation(new File(dataDir, "WEB-INF"));
-            System.out.println("----------------------------------");
-            System.out.println("- GEOSERVER_DATA_DIR: " + dataDir.getAbsolutePath());
-            System.out.println("----------------------------------");
+            LOGGER.severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
+                + dataDir.getAbsolutePath() + "\n----------------------------------");
             loader.addSearchLocation(new File(servContext.getRealPath("WEB-INF")));
             loader.addSearchLocation(new File(servContext.getRealPath("data")));
         }
