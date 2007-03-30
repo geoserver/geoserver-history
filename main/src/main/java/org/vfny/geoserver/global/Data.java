@@ -653,6 +653,21 @@ SCHEMA:
                 errors.put(featureTypeDTO, ioException);
 
                 continue;
+            } catch (NoSuchElementException nse) {
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.log(Level.SEVERE,
+                        new StringBuffer("FeatureTypeInfo ").append(key)
+                                                            .append(" ignored - as DataStore ")
+                                                            .append(dataStoreId)
+                                                            .append(" can't find FeatureType '"
+                            + typeName + "'.  Error was:\n").append(nse).toString());
+                }
+
+                if (LOGGER.isLoggable(Level.FINE)) {
+                    LOGGER.log(Level.FINE, typeName + " not found", nse);
+                }
+
+                continue;
             } catch (Throwable unExpected) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE,
@@ -662,8 +677,6 @@ SCHEMA:
                                                             .append(" is broken:").append(unExpected)
                                                             .toString());
                 }
-
-                unExpected.printStackTrace();
 
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.log(Level.FINE, new StringBuffer(key).append(" unavailable").toString(),
