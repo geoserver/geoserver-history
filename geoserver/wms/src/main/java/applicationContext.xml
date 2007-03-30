@@ -227,6 +227,9 @@
 	<bean id="PNGMapProducerFactory" 
 		class="org.vfny.geoserver.wms.responses.map.png.PNGMapProducerFactory">
 	</bean>
+	<bean id="PNG8MapProducerFactory" 
+		class="org.vfny.geoserver.wms.responses.map.png.PNG8MapProducerFactory">
+	</bean>
 	<bean id="GeoTiffMapProducerFactory" 
 		class="org.vfny.geoserver.wms.responses.map.geotiff.GeoTiffMapProducerFactory">
 	</bean>

@@ -242,14 +242,18 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
         hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // turn off/on interpolation rendering hint
-        if ((wms != null) && WMSConfig.INT_NEAREST.equals(wms.getAllowInterpolation())) {
-            hintsMap.put(JAI.KEY_INTERPOLATION, NN_INTERPOLATION);
-        } else if ((wms != null) && WMSConfig.INT_BIlINEAR.equals(wms.getAllowInterpolation())) {
-            hintsMap.put(JAI.KEY_INTERPOLATION, BIL_INTERPOLATION);
-        } else if ((wms != null) && WMSConfig.INT_BICUBIC.equals(wms.getAllowInterpolation())) {
-            hintsMap.put(JAI.KEY_INTERPOLATION, BIC_INTERPOLATION);
-        }
-
+//        if ((wms != null) && WMSConfig.INT_NEAREST.equals(wms.getAllowInterpolation())) {
+//            hintsMap.put(JAI.KEY_INTERPOLATION, NN_INTERPOLATION);
+//        } else if ((wms != null) && WMSConfig.INT_BIlINEAR.equals(wms.getAllowInterpolation())) {
+//            hintsMap.put(JAI.KEY_INTERPOLATION, BIL_INTERPOLATION);
+//        } else if ((wms != null) && WMSConfig.INT_BICUBIC.equals(wms.getAllowInterpolation())) {
+//            hintsMap.put(JAI.KEY_INTERPOLATION, BIC_INTERPOLATION);
+//        }
+        hintsMap.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        hintsMap.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
+        hintsMap.put(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+        
+                
         RenderingHints hints = new RenderingHints(hintsMap);
         renderer.setJava2DHints(hints);
 
