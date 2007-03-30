@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 
 
@@ -54,6 +56,7 @@ public class DataConfig {
     public static final String SELECTED_FEATURE_TYPE = "selectedFeatureType";
     public static final String SELECTED_ATTRIBUTE_TYPE = "selectedAttributeType";
     public static final String SELECTED_COVERAGE = "selectedCoverage";
+    private Logger LOGGER = Logger.getLogger(this.getClass().toString());
 
     /**
      * A set of dataFormatConfig by dataFormatId.
@@ -954,9 +957,9 @@ public class DataConfig {
 
                 set.addAll(typeNamesList);
             } catch (Throwable ignore) {
-                System.out.println("Could not use " + dataStoreConfig.getId()
+                LOGGER.warning("Could not use " + dataStoreConfig.getId()
                     + " datastore was unavailable!");
-                ignore.printStackTrace();
+                LOGGER.log(Level.WARNING, "", ignore);
 
                 continue;
             }
