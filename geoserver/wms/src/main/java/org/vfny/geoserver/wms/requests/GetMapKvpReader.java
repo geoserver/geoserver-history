@@ -1348,8 +1348,13 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             }
         }
 
-        kvpPairs.put("STYLES", rawStyles);
-
+        //JD: only set if non-null since if the layer is an actual layer 
+        // (ie. not something matching wms path) with no style specified we 
+        // dont want to create an empty "STYLES" entry
+        if ( rawStyles != null && !"".equals( rawStyles.trim() ) ) {
+            kvpPairs.put("STYLES", rawStyles);    
+        }
+    
         int layerCount = realLayerNames.size();
 
         if (layerCount == 0) {
