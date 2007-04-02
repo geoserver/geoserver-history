@@ -107,10 +107,6 @@
 		</dependency>
   </dependencies>
 
-	<properties>
-		<gt.version>2.4-SNAPSHOT</gt.version>
-	</properties>
-
 	<build>
 		<plugins>
 			
