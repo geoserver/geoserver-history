@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.geoserver</groupId>
-		<artifactId>geoserver</artifactId>
-		<version>1.5.0-RC3</version>
-	</parent>
+  <parent>
+    <groupId>org.geoserver</groupId>
+    <artifactId>geoserver</artifactId>
+    <version>1.5.0-RC3</version>
+  </parent>
 
-	<groupId>org.geoserver</groupId>
+  <groupId>org.geoserver</groupId>
   <artifactId>wfs</artifactId>
-	<packaging>jar</packaging>
+  <packaging>jar</packaging>
   <name>Web Feature Service Module</name>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.geoserver</groupId>
-			<artifactId>main</artifactId>
-			<version>1.5.0-RC3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.geoserver</groupId>
-			<artifactId>validation</artifactId>
-			<version>1.5.0-RC3</version>
-		</dependency>
-		
-	</dependencies>
-	
+  <dependencies>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>main</artifactId>
+      <version>1.5.0-RC3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>validation</artifactId>
+      <version>1.5.0-RC3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt2-shapefile</artifactId>
+    </dependency>
+  </dependencies>
+
   <!-- =========================================================== -->
   <!--     Build Configuration                                     -->
   <!-- =========================================================== -->
@@ -37,9 +41,13 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jalopy-maven-plugin</artifactId>
- 	<configuration>
-                <srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
-                <testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
+        <configuration>
+          <srcExcludesPattern>
+            ${jalopy.srcExcludesPattern}
+          </srcExcludesPattern>
+          <testExcludesPattern>
+            ${jalopy.srcExcludesPattern}
+          </testExcludesPattern>
         </configuration>
         <executions>
           <execution>
