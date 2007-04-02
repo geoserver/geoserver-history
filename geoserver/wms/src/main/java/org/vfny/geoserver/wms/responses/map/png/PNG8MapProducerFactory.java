@@ -4,12 +4,11 @@
  */
 package org.vfny.geoserver.wms.responses.map.png;
 
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.wms.GetMapProducer;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-
-import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.wms.GetMapProducer;
 
 
 /**
