@@ -8,7 +8,6 @@ import org.geotools.data.DataSourceException;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.Query;
-import org.geotools.data.postgis.PostgisFeatureLocking;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
@@ -81,22 +80,22 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore implements Fe
         }
     }
 
-    /**
-     * A custom hack for PostgisFeatureLocking?
-     *
-     * @param feature DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
-    public int lockFeature(Feature feature) throws IOException {
-        if (source instanceof PostgisFeatureLocking) {
-            return ((PostgisFeatureLocking) source).lockFeature(feature);
-        }
-
-        throw new IOException("FeatureTypeConfig does not support single FeatureLock");
-    }
+    //    /**
+    //     * A custom hack for PostgisFeatureLocking?
+    //     *
+    //     * @param feature DOCUMENT ME!
+    //     *
+    //     * @return DOCUMENT ME!
+    //     *
+    //     * @throws IOException DOCUMENT ME!
+    //     */
+    //    public int lockFeature(Feature feature) throws IOException {
+    //        if (source instanceof PostgisFeatureLocking) {
+    //            return ((PostgisFeatureLocking) source).lockFeature(feature);
+    //        }
+    //
+    //        throw new IOException("FeatureTypeConfig does not support single FeatureLock");
+    //    }
 
     /**
      * DOCUMENT ME!
