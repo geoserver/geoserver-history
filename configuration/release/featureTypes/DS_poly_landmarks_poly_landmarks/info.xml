@@ -14,5 +14,4 @@ the default style this FeatureTypeInfoDTO can be represented by.
 at least must contain the "default" attribute 
 -->
 <styles default = "poly_landmarks"  />
-<cacheinfo enabled = "false"  />
 </featureType>
