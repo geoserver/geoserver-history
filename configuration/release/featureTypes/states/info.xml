@@ -1,4 +1,4 @@
-<featureType datastore = "shapefile_dir" >
+<featureType datastore = "states_shapefile" >
 <name>states</name>
 <!--
 native wich EPGS code for the FeatureTypeInfoDTO
