@@ -55,7 +55,11 @@ public class GeoserverDataDirectory {
      * @return location of the geoserver data dir
      */
     static public File getGeoserverDataDirectory() {
-        return loader.getBaseDirectory();
+        if (loader != null) {
+            return loader.getBaseDirectory();
+        } else {
+            return null;
+        }
     }
 
     /**
