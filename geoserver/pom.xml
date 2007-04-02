@@ -824,7 +824,7 @@
 	</distributionManagement>
 
 	<modules>
-	    <module>maven</module>
+	  <module>maven</module>
 		<module>platform</module>
 		<module>data</module>
 		<module>main</module>
@@ -945,6 +945,17 @@
       		</plugin>
 				</plugins>
 			</build>
+		</profile>
+		<profile>
+		  <id>release</id>
+			<activation>
+				<property>
+					<name>release</name>
+				</property>
+			</activation>
+			<modules>
+			  <module>release</module>
+			</modules>
 		</profile>
 	</profiles>
 
