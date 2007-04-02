@@ -4,6 +4,9 @@
  */
 package org.vfny.geoserver.wms.responses.map.png;
 
+import org.geotools.image.ImageWorker;
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.wms.WmsException;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
@@ -14,15 +17,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
-
-import org.geotools.image.ImageWorker;
-import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.wms.WmsException;
 
 
 /**
@@ -34,7 +32,8 @@ import org.vfny.geoserver.wms.WmsException;
  */
 public final class PNG8MapProducer extends PNGMapProducer {
     /** Logger */
-    private static final Logger LOGGER = Logger.getLogger(PNG8MapProducer.class.getPackage().getName());
+    private static final Logger LOGGER = Logger.getLogger(PNG8MapProducer.class.getPackage()
+                                                                               .getName());
 
     public PNG8MapProducer(String format, WMS wms) {
         super(format, wms);
@@ -67,57 +66,62 @@ public final class PNG8MapProducer extends PNGMapProducer {
         // Reformatting this image for png
         //
         // /////////////////////////////////////////////////////////////////
-//        new ImageWorker(image).forceIndexColorModelForGIF(true).writePNG(outStream, "FILTERED", 0.25f, PNGNativeAcc.booleanValue(),
-//            true);
-        RenderedImage ri = new ImageWorker(image).forceIndexColorModelForGIF(false).getRenderedImage();
+        //        new ImageWorker(image).forceIndexColorModelForGIF(true).writePNG(outStream, "FILTERED", 0.25f, PNGNativeAcc.booleanValue(),
+        //            true);
+        RenderedImage ri = new ImageWorker(image).forceIndexColorModelForGIF(false)
+                                                 .getRenderedImage();
         ImageIO.write(ri, "png", outStream);
     }
-    
-    
-   
 
-//    private static IndexColorModel model = null;
+    private static IndexColorModel model = null;
+
     protected BufferedImage prepareImage(int width, int height) {
-//        try {
-//            if(model == null) {
-//                BufferedImage bi = ImageIO.read(new File("c:\\temp\\pngvspng8\\states24optimized.png"));
-//                model = (IndexColorModel) bi.getColorModel();
-//            }
-//        } catch(Exception e) {
-//            e.printStackTrace();
-//            return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-//        }
-//        return new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, model);
-        return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+        try {
+            if (model == null) {
+                BufferedImage bi = ImageIO.read(new File("c:\\temp\\pngvspng8\\states8gimp.png"));
+                model = (IndexColorModel) bi.getColorModel();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            //            return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+        }
+
+        return new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, model);
+
+        //        return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
     }
 
     public String getContentDisposition() {
         // can be null
         return null;
     }
-    
+
     public String getContentType() throws java.lang.IllegalStateException {
         return PNG8MapProducerFactory.MIME_TYPE;
     }
-    
+
     public static void main(String[] args) {
         final Iterator it = ImageIO.getImageWritersByFormatName("PNG");
         ImageWriter writer = null;
+
         if (!it.hasNext()) {
-                throw new IllegalStateException("No PNG ImageWriter found");
-        } else
-                writer = (ImageWriter) it.next();
+            throw new IllegalStateException("No PNG ImageWriter found");
+        } else {
+            writer = (ImageWriter) it.next();
+        }
 
         // /////////////////////////////////////////////////////////////////
         //
         // getting a stream
         //
         // /////////////////////////////////////////////////////////////////
-        if (LOGGER.isLoggable(Level.FINE))
-                LOGGER.fine("Setting write parameters for this writer");
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.fine("Setting write parameters for this writer");
+        }
+
         ImageWriteParam iwp = null;
         iwp = writer.getDefaultWriteParam();
         System.out.println(Arrays.asList(iwp.getCompressionTypes()));
     }
-    
 }
