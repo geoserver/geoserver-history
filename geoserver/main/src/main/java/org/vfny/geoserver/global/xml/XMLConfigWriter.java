@@ -1322,7 +1322,8 @@ public class XMLConfigWriter {
                     m.put("srsName", cv.getSrsName());
                 }
 
-                m.put("crs", cv.getCrs().toWKT().replaceAll("\"", "'"));
+                m.put("crs",
+                    cv.getCrs().toString().replaceAll("\"", "'").replaceAll("[\\r\\n ]+", " "));
 
                 if (!e.isNull()) {
                     cw.openTag("envelope", m);

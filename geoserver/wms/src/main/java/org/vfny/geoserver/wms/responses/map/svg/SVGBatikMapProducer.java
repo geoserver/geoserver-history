@@ -148,7 +148,7 @@ public class SVGBatikMapProducer implements GetMapProducer {
 
             //this method does output the DOCTYPE def
             //g.stream(new OutputStreamWriter(out,"UTF-8"));
-            serializer.serialize( root );
+            serializer.serialize(root);
         } catch (Exception e) {
             new IOException().initCause(e);
         } finally {
