@@ -591,8 +591,7 @@
           </includes>
           <forkMode>once</forkMode>
           <argLine>
-            -Xmx512M -enableassertions
-            -Djava.awt.headless=${java.awt.headless}
+            -Xmx512M -enableassertions -Djava.awt.headless=${java.awt.headless}
           </argLine>
           <printSummary>false</printSummary>
           <testFailureIgnore>
