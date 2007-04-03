@@ -619,6 +619,7 @@
             <descriptor>release/ext-vpf.xml</descriptor>
             <descriptor>release/ext-wfs.xml</descriptor>
             <descriptor>release/ext-arcsde.xml</descriptor>
+            <descriptor>release/ext-pyramid.xml</descriptor>
           </descriptors>
           <finalName>geoserver-1.5.0-RC3</finalName>
           <outputDirectory>
