@@ -1,4 +1,4 @@
-GEOSERVER 1.3.1+ DATA STORE EXTRAS README
+GEOSERVER 1.5+ DATA STORE EXTRAS README
 
 This package contains a DB2 DataStore implementation that is
 distributed as a separate plug-in.
@@ -22,11 +22,10 @@ $DB2PATH/java to your GeoServer library directory.
 3. Restart GeoServer.
 
 DB2 should now show up as an option in the web admin tool at
-Config -> Data -> Stores -> New. Fill out the appropriate params. For more
+Config -> Data -> DataStores -> New. Fill out the appropriate params. For more
 information see http://docs.codehaus.org/display/GEOSDOC/DB2+DataStore
 
 COMPATIBILITY
 
 This jar should work with any version of GeoServer based on GeoTools 2.2.x.
-Currently this is anything in 1.3.x above 1.3.1. GeoServer 1.4 should also
-be compatible.
+Currently this is anything in 1.5.x. 
