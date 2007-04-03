@@ -5,9 +5,17 @@
 package org.vfny.geoserver.wms.requests;
 
 import com.vividsolutions.jts.geom.Envelope;
+
+import org.geotools.data.DefaultQuery;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.Query;
+import org.geotools.data.Transaction;
+import org.geotools.data.crs.ForceCoordinateSystemFeatureReader;
+import org.geotools.data.memory.MemoryDataStore;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.Filter;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.FeatureTypeConstraint;
 import org.geotools.styling.NamedLayer;
 import org.geotools.styling.NamedStyle;
@@ -626,6 +634,40 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         return currStyle;
     }
+    
+    /**
+     * Method to initialize a user layer which contains inline features.
+     *
+     * @param request The request
+     * @param mapLayer The map layer.
+     * 
+     * @throws Exception
+     */
+    //JD: the reason this method is static is to share logic among the xml
+    // and kvp reader, ugh...
+    public static void initializeInlineFeatureLayer( GetMapRequest getMapRequest,
+            UserLayer ul, MapLayerInfo currLayer ) throws Exception {
+        //SPECIAL CASE - we make the temporary version
+        currLayer.setFeature(new TemporaryFeatureTypeInfo(ul.getInlineFeatureDatastore()));
+
+        //what if they didn't put an "srsName" on their geometry in their inlinefeature?
+        //I guess we should assume they mean their geometry to exist in the output SRS of the
+        //request they're making.
+        if (ul.getInlineFeatureType().getDefaultGeometry().getCoordinateSystem() == null) {
+            LOGGER.warning(
+                "No CRS set on inline features default geometry.  Assuming the requestor has their inlinefeatures in the boundingbox CRS.");
+
+            FeatureType currFt = ul.getInlineFeatureType();
+            Query q = new DefaultQuery(currFt.getTypeName(), Filter.NONE);
+            FeatureReader ilReader = ul.getInlineFeatureDatastore()
+                                       .getFeatureReader(q, Transaction.AUTO_COMMIT);
+            CoordinateReferenceSystem crs = (getMapRequest.getCrs() == null)
+                ? DefaultGeographicCRS.WGS84 : getMapRequest.getCrs();
+            MemoryDataStore reTypedDS = new MemoryDataStore(new ForceCoordinateSystemFeatureReader(
+                        ilReader, crs));
+            currLayer.setFeature(new TemporaryFeatureTypeInfo(reTypedDS));
+        }
+    }
 
     /**
      * Checks to make sure that the style passed in can process the FeatureType.
@@ -1041,8 +1083,12 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                         && ((((UserLayer) sl)).getInlineFeatureDatastore() != null)) {
                     // SPECIAL CASE - we make the temporary version
                     ul = ((UserLayer) sl);
-                    currLayer.setFeature(new TemporaryFeatureTypeInfo(
-                            ul.getInlineFeatureDatastore()));
+                    try {
+                        initializeInlineFeatureLayer( request, ul, currLayer);
+                    } 
+                    catch (Exception e) {
+                        throw new WmsException( e );
+                    }
                 } else {
                     try {
                         currLayer.setFeature(GetMapKvpReader.findFeatureLayer(request, layerName));

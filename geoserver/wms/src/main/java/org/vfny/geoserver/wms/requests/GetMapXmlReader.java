@@ -329,25 +329,7 @@ public class GetMapXmlReader extends XmlRequestReader {
                     && ((((UserLayer) sl)).getInlineFeatureDatastore() != null)) {
                 //SPECIAL CASE - we make the temporary version
                 UserLayer ul = ((UserLayer) sl);
-                currLayer.setFeature(new TemporaryFeatureTypeInfo(ul.getInlineFeatureDatastore()));
-
-                //what if they didn't put an "srsName" on their geometry in their inlinefeature?
-                //I guess we should assume they mean their geometry to exist in the output SRS of the
-                //request they're making.
-                if (ul.getInlineFeatureType().getDefaultGeometry().getCoordinateSystem() == null) {
-                    LOGGER.warning(
-                        "No CRS set on inline features default geometry.  Assuming the requestor has their inlinefeatures in the boundingbox CRS.");
-
-                    FeatureType currFt = ul.getInlineFeatureType();
-                    Query q = new DefaultQuery(currFt.getTypeName(), Filter.NONE);
-                    FeatureReader ilReader = ul.getInlineFeatureDatastore()
-                                               .getFeatureReader(q, Transaction.AUTO_COMMIT);
-                    CoordinateReferenceSystem crs = (getMapRequest.getCrs() == null)
-                        ? DefaultGeographicCRS.WGS84 : getMapRequest.getCrs();
-                    MemoryDataStore reTypedDS = new MemoryDataStore(new ForceCoordinateSystemFeatureReader(
-                                ilReader, crs));
-                    currLayer.setFeature(new TemporaryFeatureTypeInfo(reTypedDS));
-                }
+                GetMapKvpReader.initializeInlineFeatureLayer(getMapRequest, ul, currLayer);
             } else {
                 try {
                     currLayer.setFeature(GetMapKvpReader.findFeatureLayer(getMapRequest, layerName));
