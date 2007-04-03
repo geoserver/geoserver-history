@@ -7,7 +7,7 @@
   <groupId>org.geoserver</groupId>
   <artifactId>geoserver</artifactId>
   <packaging>pom</packaging>
-  <version>1.5.0-RC3</version>
+  <version>1.5.0-RC4</version>
   <name>GeoServer 1.5.x</name>
 
   <scm>
@@ -621,7 +621,7 @@
             <descriptor>release/ext-arcsde.xml</descriptor>
             <descriptor>release/ext-pyramid.xml</descriptor>
           </descriptors>
-          <finalName>geoserver-1.5.0-RC3</finalName>
+          <finalName>geoserver-1.5.0-RC4</finalName>
           <outputDirectory>
             ${project.build.directory}/release
           </outputDirectory>
@@ -825,7 +825,7 @@
   </modules>
 
   <properties>
-    <gs.version>1.5.0-RC3</gs.version>
+    <gs.version>1.5.0-RC4</gs.version>
     <gt.version>2.3.1-SNAPSHOT</gt.version>
     <!-- change this property in your settings.xml file to 
       exclude files from being formatted -->
