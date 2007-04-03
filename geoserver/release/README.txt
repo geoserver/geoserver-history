@@ -1,7 +1,23 @@
+GeoServer 1.5.0-RC4
+-------------------
+
+The fourth release candidate for the 1.5 series of GeoServer.
+The noteable bug fixes in this release include:
+
+- Inline features in a GET request
+- Styles parameter optional with KML reflector
+- SLD editor aware of context path
+
+The complete issue log can be found here:
+
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=13177
+
+Based on GeoTools 2.3.1-SNAPSHOT ( tag = geoserver-1.5.0-RC4 )
+
 GeoServer 1.5.0-RC3
 --------------------
 
-The third and final release candidate for the 1.5 series of GeoSerfver.
+The third and final release candidate for the 1.5 series of GeoServer.
 The noteable features / bug fixes in this release include:
 
 - Rotation in world image files
