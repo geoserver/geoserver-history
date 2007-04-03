@@ -1050,7 +1050,7 @@ function nothing()
 Hit the 'Apply Style' button above'.</i></font><be>
 
 <!-- finished button "back to FeatureType editor" -->
-<form action="/geoserver/config/data/typeEditor.do">
+<form action="<%=request.getContextPath()%>/config/data/typeEditor.do">
 	<input type="submit" value="Finished">
 </form>
 
