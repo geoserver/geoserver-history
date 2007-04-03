@@ -30,21 +30,19 @@ import java.util.List;
 
 public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
     private DataStore ds;
-    private FeatureType ft;
-
+    
     /**
      *
      * @param ds
      * @param ft
      */
-    public TemporaryFeatureTypeInfo(DataStore ds, FeatureType ft) {
+    public TemporaryFeatureTypeInfo(DataStore ds) {
         super();
         this.ds = ds;
-        this.ft = ft;
     }
 
     public FeatureSource getFeatureSource() throws IOException {
-        return ds.getFeatureSource(ft.getTypeName());
+        return ds.getFeatureSource(ds.getTypeNames()[0]);
     }
 
     public Filter getDefinitionQuery() {
