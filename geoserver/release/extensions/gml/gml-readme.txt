@@ -19,7 +19,7 @@ INSTALLATION
 2. Restart GeoServer.
 
 GML should now show up as an option in the web admin tool at 
-Config -> Data -> Stores -> New.  Fill out the appropriate params.  For more
+Config -> Data -> DataStores -> New.  Fill out the appropriate params.  For more
 information see http://docs.codehaus.org/display/GEOSDOC/GML+DataStore
 
 
