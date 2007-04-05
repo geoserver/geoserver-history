@@ -83,8 +83,7 @@ public class VersioningTransaction extends Transaction {
 
             // then, make sure we're hitting a versioning datastore
             RollbackType rollback = (RollbackType) element;
-            FeatureTypeInfo info = (FeatureTypeInfo) featureTypeInfos.get(rollback.getDifferenceQuery()
-                                                                                  .getTypeName());
+            FeatureTypeInfo info = (FeatureTypeInfo) featureTypeInfos.get(rollback.getTypeName());
 
             try {
                 if (!(info.getFeatureSource() instanceof VersioningFeatureSource)) {
@@ -97,7 +96,7 @@ public class VersioningTransaction extends Transaction {
                     + info.getTypeName(), e, rollback.getHandle());
             }
 
-            String fromVersion = rollback.getDifferenceQuery().getFromFeatureVersion();
+            String fromVersion = rollback.getFromFeatureVersion();
 
             // finally, we check we support this rollback
             if ((fromVersion != null) && !fromVersion.equals("LAST")) {
@@ -114,8 +113,7 @@ public class VersioningTransaction extends Transaction {
             TransactionResponseType response) throws WFSTransactionException {
             FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
             RollbackType rollback = (RollbackType) element;
-            DifferenceQueryType dq = rollback.getDifferenceQuery();
-            VersioningFeatureStore vstore = (VersioningFeatureStore) featureStores.get(dq
+            VersioningFeatureStore vstore = (VersioningFeatureStore) featureStores.get(rollback
                     .getTypeName());
             long inserted = response.getTransactionSummary().getTotalInserted().longValue();
             long updated = response.getTransactionSummary().getTotalUpdated().longValue();
@@ -131,10 +129,9 @@ public class VersioningTransaction extends Transaction {
                 // we would be unable to preserve the fids of the ones that were
                 // deleted and
                 // need to be re-inserted
-                Filter filter = (dq.getFilter() != null) ? (Filter) dq.getFilter() : Filter.INCLUDE;
-                String fromVersion = dq.getFromFeatureVersion();
-                String toVersion = dq.getToFeatureVersion();
-                reader = vstore.getDifferences(fromVersion, toVersion, filter);
+                Filter filter = (rollback.getFilter() != null) ? (Filter) rollback.getFilter() : Filter.INCLUDE;
+                String fromVersion = rollback.getFromFeatureVersion();
+                reader = vstore.getDifferences(fromVersion, null, filter);
 
                 while (reader.hasNext()) {
                     FeatureDiff fd = reader.next();
@@ -157,7 +154,9 @@ public class VersioningTransaction extends Transaction {
                 }
 
                 try {
-                    vstore.rollback(dq.getToFeatureVersion(), (Filter) dq.getFilter());
+                    String user = rollback.getUser();
+                    String[] users = user != null? new String[]{user}: null;
+                    vstore.rollback(rollback.getFromFeatureVersion(), (Filter) rollback.getFilter(), users);
                 } catch (IOException e) {
                     throw new WFSTransactionException("Could not perform the rollback", e,
                         rollback.getHandle());
@@ -188,7 +187,7 @@ public class VersioningTransaction extends Transaction {
         public QName[] getTypeNames(EObject element) throws WFSTransactionException {
             RollbackType rollback = (RollbackType) element;
 
-            return new QName[] { (QName) rollback.getDifferenceQuery().getTypeName() };
+            return new QName[] { (QName) rollback.getTypeName() };
         }
     }
 }
