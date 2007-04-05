@@ -22,7 +22,7 @@ public class KMLWriterTest extends TestCase {
         /*String result = KMLWriter.intToHex(0);
         assertTrue( result.equals("00"));
         // make sure that the zeros are prefixed
-        
+
         result = KMLWriter.intToHex(90);
         assertTrue( result.equals("5a"));*/
     }
@@ -37,21 +37,21 @@ public class KMLWriterTest extends TestCase {
                             "width=550&height=250&"+
                             "srs=EPSG:4326&"+
                             "Format=kml";
-    
+
     WebRequest request =
             new GetMethodWebRequest(getBaseUrl()+"/wms?"+requestParams);
-    
+
     WebResponse response = conversation.getResponse( request );
     assertNotNull(response);
-    
+
     DOMParser parser = new DOMParser();
     parser.parse(new InputSource(response.getInputStream()));
-    
+
     Element e = parser.getDocument().getDocumentElement();
     //System.out.println(e.getLocalName());
     assertEquals("kml", e.getLocalName());
     }
-    
+
     public void testRasterRequest() throws Exception{
             WebConversation conversation = new WebConversation();
             String requestParams =
@@ -63,10 +63,10 @@ public class KMLWriterTest extends TestCase {
                             "srs=EPSG:4326&"+
                             "Format=kmz"+
                             "KMSCORE=0"; // set tolerance to zero. Guaranteed raster result
-    
+
     WebRequest request =
             new GetMethodWebRequest(getBaseUrl()+"/wms?"+requestParams);
-    
+
     WebResponse response = conversation.getResponse( request );
     assertNotNull(response);
     //System.out.println(response.getContentType());

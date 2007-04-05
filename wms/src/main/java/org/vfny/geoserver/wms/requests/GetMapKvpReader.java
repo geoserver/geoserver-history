@@ -5,7 +5,6 @@
 package org.vfny.geoserver.wms.requests;
 
 import com.vividsolutions.jts.geom.Envelope;
-
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
@@ -670,13 +669,14 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @param request The request
      * @param mapLayer The map layer.
-     * 
+     *
      * @throws Exception
      */
+
     //JD: the reason this method is static is to share logic among the xml
     // and kvp reader, ugh...
-    public static void initializeInlineFeatureLayer( GetMapRequest getMapRequest,
-            UserLayer ul, MapLayerInfo currLayer ) throws Exception {
+    public static void initializeInlineFeatureLayer(GetMapRequest getMapRequest, UserLayer ul,
+        MapLayerInfo currLayer) throws Exception {
         //SPECIAL CASE - we make the temporary version
         currLayer.setFeature(new TemporaryFeatureTypeInfo(ul.getInlineFeatureDatastore()));
 
@@ -1077,10 +1077,11 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                         && ((((UserLayer) sl)).getInlineFeatureDatastore() != null)) {
                     // SPECIAL CASE - we make the temporary version
                     ul = ((UserLayer) sl);
+
                     try {
                         initializeInlineFeatureLayer(request, ul, currLayer);
                     } catch (Exception e) {
-                        throw new WmsException( e );
+                        throw new WmsException(e);
                     }
                 } else {
                     try {
@@ -1373,10 +1374,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         //JD: only set if non-null since if the layer is an actual layer 
         // (ie. not something matching wms path) with no style specified we 
         // dont want to create an empty "STYLES" entry
-        if ( rawStyles != null && !"".equals( rawStyles.trim() ) ) {
-            kvpPairs.put("STYLES", rawStyles);    
+        if ((rawStyles != null) && !"".equals(rawStyles.trim())) {
+            kvpPairs.put("STYLES", rawStyles);
         }
-    
+
         int layerCount = realLayerNames.size();
 
         if (layerCount == 0) {

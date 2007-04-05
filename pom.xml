@@ -237,6 +237,11 @@
     <version>${gt.version}</version>
    </dependency>
    <dependency>
+    <groupId>org.geotools</groupId>
+    <artifactId>gt2-metadata</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
     <groupId>org.wkb4j</groupId>
     <artifactId>wkb4j</artifactId>
     <version>1.0-RC1</version>
@@ -389,7 +394,7 @@
    <dependency>
     <groupId>log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>1.2.9</version>
+    <version>1.2.14</version>
    </dependency>
    <dependency>
     <groupId>batik</groupId>

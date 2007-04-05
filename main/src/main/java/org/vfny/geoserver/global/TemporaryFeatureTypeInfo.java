@@ -30,7 +30,7 @@ import java.util.List;
 
 public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
     private DataStore ds;
-    
+
     /**
      *
      * @param ds
