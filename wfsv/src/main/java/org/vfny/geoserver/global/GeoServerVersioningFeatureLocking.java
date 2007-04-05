@@ -29,9 +29,9 @@ public class GeoServerVersioningFeatureLocking extends GeoServerFeatureLocking
         super(locking, schema, definitionQuery, forcedCRS);
     }
 
-    public void rollback(String toVersion, Filter filter)
+    public void rollback(String toVersion, Filter filter, String[] users)
         throws IOException {
-        ((VersioningFeatureStore) source).rollback(toVersion, filter);
+        ((VersioningFeatureStore) source).rollback(toVersion, filter, users);
     }
 
     public FeatureDiffReader getDifferences(String fromVersion, String toVersion, Filter filter)

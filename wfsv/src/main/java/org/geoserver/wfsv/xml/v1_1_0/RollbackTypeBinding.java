@@ -4,13 +4,15 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
-import net.opengis.wfsv.DifferenceQueryType;
+import javax.xml.namespace.QName;
+
 import net.opengis.wfsv.RollbackType;
 import net.opengis.wfsv.WfsvFactory;
+
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
-import javax.xml.namespace.QName;
+import org.opengis.filter.Filter;
 
 
 /**
@@ -91,10 +93,17 @@ public class RollbackTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        RollbackType result = wfsvFactory.createRollbackType();
-        result.setDifferenceQuery((DifferenceQueryType) node.getChildValue(
-                DifferenceQueryType.class));
+        RollbackType rollback = wfsvFactory.createRollbackType();
+        
+        if (node.hasAttribute("handle")) {
+            rollback.setHandle((String) node.getAttributeValue("handle"));
+        }
+        rollback.setFilter((Filter) node.getChildValue(Filter.class));
+        rollback.setTypeName((QName) node.getAttributeValue("typeName"));
+        rollback.setFromFeatureVersion((String) node.getAttributeValue("fromFeatureVersion"));
+        rollback.setVendorId((String) node.getAttributeValue("vendorId"));
+        rollback.setSafeToIgnore(((Boolean) node.getAttributeValue("safeToIgnore")).booleanValue());
 
-        return result;
+        return rollback;
     }
 }
