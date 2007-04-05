@@ -70,11 +70,6 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-
-  <listener>
-    <listener-class>org.geoserver.logging.LoggingStartupContextListener</listener-class>
-  </listener>
-  
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
