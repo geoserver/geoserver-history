@@ -382,8 +382,17 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EReference getRollbackType_DifferenceQuery() {
-        return (EReference)rollbackTypeEClass.getEStructuralFeatures().get(0);
+    public EAttribute getRollbackType_Filter() {
+        return (EAttribute)rollbackTypeEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getRollbackType_FromFeatureVersion() {
+        return (EAttribute)rollbackTypeEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -392,7 +401,25 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
      * @generated
      */
     public EAttribute getRollbackType_Handle() {
-        return (EAttribute)rollbackTypeEClass.getEStructuralFeatures().get(1);
+        return (EAttribute)rollbackTypeEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getRollbackType_TypeName() {
+        return (EAttribute)rollbackTypeEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getRollbackType_User() {
+        return (EAttribute)rollbackTypeEClass.getEStructuralFeatures().get(4);
     }
 
     /**
@@ -487,8 +514,11 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
         createEAttribute(getLogTypeEClass, GET_LOG_TYPE__RESULT_TYPE);
 
         rollbackTypeEClass = createEClass(ROLLBACK_TYPE);
-        createEReference(rollbackTypeEClass, ROLLBACK_TYPE__DIFFERENCE_QUERY);
+        createEAttribute(rollbackTypeEClass, ROLLBACK_TYPE__FILTER);
+        createEAttribute(rollbackTypeEClass, ROLLBACK_TYPE__FROM_FEATURE_VERSION);
         createEAttribute(rollbackTypeEClass, ROLLBACK_TYPE__HANDLE);
+        createEAttribute(rollbackTypeEClass, ROLLBACK_TYPE__TYPE_NAME);
+        createEAttribute(rollbackTypeEClass, ROLLBACK_TYPE__USER);
 
         versionedDeleteElementTypeEClass = createEClass(VERSIONED_DELETE_ELEMENT_TYPE);
         createEAttribute(versionedDeleteElementTypeEClass, VERSIONED_DELETE_ELEMENT_TYPE__FEATURE_VERSION);
@@ -560,8 +590,11 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
         initEAttribute(getGetLogType_ResultType(), theWfsPackage.getResultTypeType(), "resultType", "results", 0, 1, GetLogType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(rollbackTypeEClass, RollbackType.class, "RollbackType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEReference(getRollbackType_DifferenceQuery(), this.getDifferenceQueryType(), null, "differenceQuery", null, 1, 1, RollbackType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getRollbackType_Filter(), theXMLTypePackage.getAnySimpleType(), "filter", null, 0, 1, RollbackType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getRollbackType_FromFeatureVersion(), theXMLTypePackage.getString(), "fromFeatureVersion", "FIRST", 0, 1, RollbackType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getRollbackType_Handle(), theXMLTypePackage.getString(), "handle", null, 0, 1, RollbackType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getRollbackType_TypeName(), theXMLTypePackage.getQName(), "typeName", null, 1, 1, RollbackType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getRollbackType_User(), theXMLTypePackage.getString(), "user", "", 0, 1, RollbackType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(versionedDeleteElementTypeEClass, VersionedDeleteElementType.class, "VersionedDeleteElementType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getVersionedDeleteElementType_FeatureVersion(), theXMLTypePackage.getString(), "featureVersion", null, 1, 1, VersionedDeleteElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -766,12 +799,19 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
              "kind", "elementOnly"
            });			
         addAnnotation
-          (getRollbackType_DifferenceQuery(), 
+          (getRollbackType_Filter(), 
            source, 
            new String[] {
              "kind", "element",
-             "name", "DifferenceQuery",
-             "namespace", "##targetNamespace"
+             "name", "Filter",
+             "namespace", "http://www.opengis.net/ogc"
+           });			
+        addAnnotation
+          (getRollbackType_FromFeatureVersion(), 
+           source, 
+           new String[] {
+             "kind", "attribute",
+             "name", "fromFeatureVersion"
            });			
         addAnnotation
           (getRollbackType_Handle(), 
@@ -779,6 +819,20 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
            new String[] {
              "kind", "attribute",
              "name", "handle"
+           });			
+        addAnnotation
+          (getRollbackType_TypeName(), 
+           source, 
+           new String[] {
+             "kind", "attribute",
+             "name", "typeName"
+           });			
+        addAnnotation
+          (getRollbackType_User(), 
+           source, 
+           new String[] {
+             "kind", "attribute",
+             "name", "user"
            });		
         addAnnotation
           (versionedDeleteElementTypeEClass, 

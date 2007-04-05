@@ -33,8 +33,8 @@ public interface VersionedDeleteElementType extends DeleteElementType {
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * 
-     *                      See VersionedUpdateElementType featureVersion attribute.
-     *                   
+     *               See VersionedUpdateElementType featureVersion attribute.
+     *             
      * <!-- end-model-doc -->
      * @return the value of the '<em>Feature Version</em>' attribute.
      * @see #setFeatureVersion(String)

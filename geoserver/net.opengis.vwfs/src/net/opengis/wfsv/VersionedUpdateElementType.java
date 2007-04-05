@@ -33,10 +33,10 @@ public interface VersionedUpdateElementType extends UpdateElementType {
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * 
-     *                      The syntax and semantics is the same as featureVersion in Query. If specified,
-     *                      update will check that every updated feature is still at the specified version before
-     *                      executing, and will fail if a change occurred on the server in the meantime.
-     *                   
+     *               The syntax and semantics is the same as featureVersion in Query. If specified, update
+     *               will check that every updated feature is still at the specified version before
+     *               executing, and will fail if a change occurred on the server in the meantime.
+     *             
      * <!-- end-model-doc -->
      * @return the value of the '<em>Feature Version</em>' attribute.
      * @see #setFeatureVersion(String)
