@@ -118,11 +118,16 @@ public class GeoserverDataDirectory {
 
             File f = new File(path);
 
-            if (f.exists()) {
-                return f;
-            } else {
-                return new File(baseDir, path);
+            try {
+                if (f.exists()) {
+                    return f;
+                }
+            } catch (SecurityException e) {
+                LOGGER.warning("Failed attempt to access " + f.getAbsolutePath()
+                    + "\nWill look in the data directory now");
             }
+
+            return new File(baseDir, path);
         } else {
             return new File(path);
         }
