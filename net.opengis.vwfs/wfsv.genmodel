@@ -34,8 +34,11 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//GetLogType/resultType"/>
     </genClasses>
     <genClasses ecoreClass="wfsv.ecore#//RollbackType">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference wfsv.ecore#//RollbackType/differenceQuery"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//RollbackType/filter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//RollbackType/fromFeatureVersion"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//RollbackType/handle"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//RollbackType/typeName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//RollbackType/user"/>
     </genClasses>
     <genClasses ecoreClass="wfsv.ecore#//VersionedDeleteElementType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//VersionedDeleteElementType/featureVersion"/>

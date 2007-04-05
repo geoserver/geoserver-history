@@ -19,13 +19,11 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <!-- begin-model-doc -->
  * 
- *             A GetDiff element contains one or more DifferenceQuery elements
- *             that describe a difference query operation on one feature type.  In
- *             response to a GetDiff request, a Versioning Web Feature Service
- *             must be able to generate a Transaction command that can be used
- *             to alter features at fromFeatureVersion and alter them into features
- *             at toFeatureVersion
- *          
+ *         A GetDiff element contains one or more DifferenceQuery elements that describe a difference
+ *         query operation on one feature type. In response to a GetDiff request, a Versioning Web
+ *         Feature Service must be able to generate a Transaction command that can be used to alter
+ *         features at fromFeatureVersion and alter them into features at toFeatureVersion
+ *       
  * <!-- end-model-doc -->
  *
  * <p>
@@ -48,10 +46,9 @@ public interface GetDiffType extends BaseRequestType {
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * 
-     *             The DifferenceFilter element is used to gather differences in features
-     *             matched by a standard OGC filter at starting and ending featureVersion, and a filter used
-     *             to match 
-     *          
+     *         The DifferenceFilter element is used to gather differences in features matched by a standard
+     *         OGC filter at starting and ending featureVersion, and a filter used to match
+     *       
      * <!-- end-model-doc -->
      * @return the value of the '<em>Difference Query</em>' containment reference list.
      * @see net.opengis.wfsv.WfsvPackage#getGetDiffType_DifferenceQuery()
@@ -68,18 +65,15 @@ public interface GetDiffType extends BaseRequestType {
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * 
-     *                      The outputFormat attribute is used to specify the output
-     *                      format that the Versioning Web Feature Service should generate in
-     *                      response to a GetDiff element.
-     *                      The default value of 'application/xml; subtype=wfsv-transaction/1.1.0'
-     *                      indicates that the output is an XML document that
-     *                      conforms to the WFS 1.1.0 Transaction definition.
-     *                      For the purposes of experimentation, vendor extension,
-     *                      or even extensions that serve a specific community of
-     *                      interest, other acceptable output format values may be
-     *                      used to specify other formats as long as those values
-     *                      are advertised in the capabilities document.
-     *                   
+     *               The outputFormat attribute is used to specify the output format that the Versioning
+     *               Web Feature Service should generate in response to a GetDiff element. The default
+     *               value of 'application/xml; subtype=wfsv-transaction/1.1.0' indicates that the output
+     *               is an XML document that conforms to the WFS 1.1.0 Transaction definition. For the
+     *               purposes of experimentation, vendor extension, or even extensions that serve a
+     *               specific community of interest, other acceptable output format values may be used to
+     *               specify other formats as long as those values are advertised in the capabilities
+     *               document.
+     *             
      * <!-- end-model-doc -->
      * @return the value of the '<em>Output Format</em>' attribute.
      * @see #isSetOutputFormat()

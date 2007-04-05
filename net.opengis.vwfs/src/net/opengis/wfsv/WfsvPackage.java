@@ -391,13 +391,22 @@ public interface WfsvPackage extends EPackage {
     int ROLLBACK_TYPE__VENDOR_ID = WfsPackage.NATIVE_TYPE__VENDOR_ID;
 
     /**
-     * The feature id for the '<em><b>Difference Query</b></em>' containment reference.
+     * The feature id for the '<em><b>Filter</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int ROLLBACK_TYPE__DIFFERENCE_QUERY = WfsPackage.NATIVE_TYPE_FEATURE_COUNT + 0;
+    int ROLLBACK_TYPE__FILTER = WfsPackage.NATIVE_TYPE_FEATURE_COUNT + 0;
+
+    /**
+     * The feature id for the '<em><b>From Feature Version</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ROLLBACK_TYPE__FROM_FEATURE_VERSION = WfsPackage.NATIVE_TYPE_FEATURE_COUNT + 1;
 
     /**
      * The feature id for the '<em><b>Handle</b></em>' attribute.
@@ -406,7 +415,25 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ROLLBACK_TYPE__HANDLE = WfsPackage.NATIVE_TYPE_FEATURE_COUNT + 1;
+    int ROLLBACK_TYPE__HANDLE = WfsPackage.NATIVE_TYPE_FEATURE_COUNT + 2;
+
+    /**
+     * The feature id for the '<em><b>Type Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ROLLBACK_TYPE__TYPE_NAME = WfsPackage.NATIVE_TYPE_FEATURE_COUNT + 3;
+
+    /**
+     * The feature id for the '<em><b>User</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ROLLBACK_TYPE__USER = WfsPackage.NATIVE_TYPE_FEATURE_COUNT + 4;
 
     /**
      * The number of structural features of the '<em>Rollback Type</em>' class.
@@ -415,7 +442,7 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ROLLBACK_TYPE_FEATURE_COUNT = WfsPackage.NATIVE_TYPE_FEATURE_COUNT + 2;
+    int ROLLBACK_TYPE_FEATURE_COUNT = WfsPackage.NATIVE_TYPE_FEATURE_COUNT + 5;
 
     /**
      * The meta object id for the '{@link net.opengis.wfsv.impl.VersionedDeleteElementTypeImpl <em>Versioned Delete Element Type</em>}' class.
@@ -815,15 +842,26 @@ public interface WfsvPackage extends EPackage {
     EClass getRollbackType();
 
     /**
-     * Returns the meta object for the containment reference '{@link net.opengis.wfsv.RollbackType#getDifferenceQuery <em>Difference Query</em>}'.
+     * Returns the meta object for the attribute '{@link net.opengis.wfsv.RollbackType#getFilter <em>Filter</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the containment reference '<em>Difference Query</em>'.
-     * @see net.opengis.wfsv.RollbackType#getDifferenceQuery()
+     * @return the meta object for the attribute '<em>Filter</em>'.
+     * @see net.opengis.wfsv.RollbackType#getFilter()
      * @see #getRollbackType()
      * @generated
      */
-    EReference getRollbackType_DifferenceQuery();
+    EAttribute getRollbackType_Filter();
+
+    /**
+     * Returns the meta object for the attribute '{@link net.opengis.wfsv.RollbackType#getFromFeatureVersion <em>From Feature Version</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>From Feature Version</em>'.
+     * @see net.opengis.wfsv.RollbackType#getFromFeatureVersion()
+     * @see #getRollbackType()
+     * @generated
+     */
+    EAttribute getRollbackType_FromFeatureVersion();
 
     /**
      * Returns the meta object for the attribute '{@link net.opengis.wfsv.RollbackType#getHandle <em>Handle</em>}'.
@@ -835,6 +873,28 @@ public interface WfsvPackage extends EPackage {
      * @generated
      */
     EAttribute getRollbackType_Handle();
+
+    /**
+     * Returns the meta object for the attribute '{@link net.opengis.wfsv.RollbackType#getTypeName <em>Type Name</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Type Name</em>'.
+     * @see net.opengis.wfsv.RollbackType#getTypeName()
+     * @see #getRollbackType()
+     * @generated
+     */
+    EAttribute getRollbackType_TypeName();
+
+    /**
+     * Returns the meta object for the attribute '{@link net.opengis.wfsv.RollbackType#getUser <em>User</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>User</em>'.
+     * @see net.opengis.wfsv.RollbackType#getUser()
+     * @see #getRollbackType()
+     * @generated
+     */
+    EAttribute getRollbackType_User();
 
     /**
      * Returns the meta object for class '{@link net.opengis.wfsv.VersionedDeleteElementType <em>Versioned Delete Element Type</em>}'.
@@ -1103,12 +1163,20 @@ public interface WfsvPackage extends EPackage {
         EClass ROLLBACK_TYPE = eINSTANCE.getRollbackType();
 
         /**
-         * The meta object literal for the '<em><b>Difference Query</b></em>' containment reference feature.
+         * The meta object literal for the '<em><b>Filter</b></em>' attribute feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference ROLLBACK_TYPE__DIFFERENCE_QUERY = eINSTANCE.getRollbackType_DifferenceQuery();
+        EAttribute ROLLBACK_TYPE__FILTER = eINSTANCE.getRollbackType_Filter();
+
+        /**
+         * The meta object literal for the '<em><b>From Feature Version</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ROLLBACK_TYPE__FROM_FEATURE_VERSION = eINSTANCE.getRollbackType_FromFeatureVersion();
 
         /**
          * The meta object literal for the '<em><b>Handle</b></em>' attribute feature.
@@ -1117,6 +1185,22 @@ public interface WfsvPackage extends EPackage {
          * @generated
          */
         EAttribute ROLLBACK_TYPE__HANDLE = eINSTANCE.getRollbackType_Handle();
+
+        /**
+         * The meta object literal for the '<em><b>Type Name</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ROLLBACK_TYPE__TYPE_NAME = eINSTANCE.getRollbackType_TypeName();
+
+        /**
+         * The meta object literal for the '<em><b>User</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ROLLBACK_TYPE__USER = eINSTANCE.getRollbackType_User();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfsv.impl.VersionedDeleteElementTypeImpl <em>Versioned Delete Element Type</em>}' class.

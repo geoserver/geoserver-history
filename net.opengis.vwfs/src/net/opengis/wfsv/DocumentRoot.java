@@ -96,10 +96,9 @@ public interface DocumentRoot extends EObject {
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * 
-     *             The DifferenceFilter element is used to gather differences in features
-     *             matched by a standard OGC filter at starting and ending featureVersion, and a filter used
-     *             to match 
-     *          
+     *         The DifferenceFilter element is used to gather differences in features matched by a standard
+     *         OGC filter at starting and ending featureVersion, and a filter used to match
+     *       
      * <!-- end-model-doc -->
      * @return the value of the '<em>Difference Query</em>' containment reference.
      * @see #setDifferenceQuery(DifferenceQueryType)
@@ -126,10 +125,10 @@ public interface DocumentRoot extends EObject {
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * 
-     *             The GetDiff element is used to request that a Versioning Web Feature
-     *             Service returns a transaction command that can be used to alter features
-     *             at version m to turn them into version n
-     *          
+     *         The GetDiff element is used to request that a Versioning Web Feature Service returns a
+     *         transaction command that can be used to alter features at version m to turn them into
+     *         version n
+     *       
      * <!-- end-model-doc -->
      * @return the value of the '<em>Get Diff</em>' containment reference.
      * @see #setGetDiff(GetDiffType)
@@ -156,10 +155,9 @@ public interface DocumentRoot extends EObject {
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * 
-     *             The GetLog element is used to request that a Versioning Web Feature
-     *             Service return the change history for features of one or 
-     *             more feature types.
-     *          
+     *         The GetLog element is used to request that a Versioning Web Feature Service return the
+     *         change history for features of one or more feature types.
+     *       
      * <!-- end-model-doc -->
      * @return the value of the '<em>Get Log</em>' containment reference.
      * @see #setGetLog(GetLogType)
@@ -186,9 +184,9 @@ public interface DocumentRoot extends EObject {
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * 
-     *             Rolls back the changes occurred on all matched features between
-     *             fromFeatureVersion and featureVersion
-     *          
+     *         Rolls back the changes occurred on all matched features between fromFeatureVersion and
+     *         featureVersion
+     *       
      * <!-- end-model-doc -->
      * @return the value of the '<em>Rollback</em>' containment reference.
      * @see #setRollback(RollbackType)
