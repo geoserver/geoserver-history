@@ -6,8 +6,8 @@ package org.vfny.geoserver.global;
 
 import com.sun.media.jai.util.SunTileCache;
 import org.geotools.data.jdbc.ConnectionPoolManager;
+import org.geotools.util.Logging;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import java.io.BufferedOutputStream;
@@ -90,6 +90,9 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
 
     /** where to log **/
     private String logLocation = null;
+
+    /** central log redirector controller **/
+    private static Logging[] GEOSERVER_LOGGING;
 
     public GeoServer() {
     }

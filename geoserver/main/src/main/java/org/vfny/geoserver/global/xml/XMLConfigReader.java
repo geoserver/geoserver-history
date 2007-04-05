@@ -488,12 +488,11 @@ public class XMLConfigReader {
             geoServer.setLogLocation(logLocation);
 
             //init this now so the rest of the config has correct log levels.
-            try {
+            /*try {
                 GeoServer.initLogging(loggingLevel, loggingToFile, logLocation);
             } catch (IOException e) {
                 throw new ConfigurationException(e);
-            }
-
+            }*/
             if (LOGGER.isLoggable(Level.CONFIG)) {
                 LOGGER.config(new StringBuffer("logging level is ").append(loggingLevel).toString());
             }

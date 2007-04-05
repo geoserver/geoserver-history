@@ -495,8 +495,16 @@ public class MultipleDefinitionsFactory extends FactorySet {
             final int length = resources.length;
 
             for (int i = 0; i < length; i++) {
-                input = resources[i].getURL().openStream(); /*getServletContext().getResource(path)*/
-                ;
+                try {
+                    input = resources[i].getURL().openStream(); /*getServletContext().getResource(path)*/
+                } catch (IOException e) {
+                    //error loading from this resource.  Probably it doesn't exist.
+                    if (log.isDebugEnabled()) {
+                        log.debug("", e);
+                    }
+
+                    return xmlDefinitions;
+                }
 
                 // Try to load using real path.
                 // This allow to load config file under websphere 3.5.x
