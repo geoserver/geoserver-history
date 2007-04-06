@@ -24,17 +24,28 @@ import java.util.Map;
  * {@link FeatureCollection}.
  * <p>
  * When a {@link FeatureCollection} is being processed by the template, it is
- * available via the <code>$features</code> variable.When a lone {@link Feature}
- * is being processed by the template it is available via the <code>$feature</code>
- * variable. Example of a template processing a feature collection which will print
+ * available via the <code>$features</code> variable, which can be broken down into single features and attributes following this hierarchy:
+ * <ul>
+ *   <li>features -> feature</li>
+ *     <ul>
+ *       <li>fid (String)</li>
+ *       <li>typeName (String)</li>
+ *       <li>attributes -> attribute</li>
+ *       <ul>
+ *         <li>value (Object)</li>
+ *         <li>name (String)</li>
+ *         <li>type (String)</li>
+ *         <li>isGeometry (Boolean)</li>
+ *       </ul>
+ *     </ul>
+ * </ul>
+ * Example of a template processing a feature collection which will print
  * out the features id of every feature in the collection.
- * <pre>
- *         <code>
+ * <pre><code>
  *  &lt;#list features as feature&gt;
  *  FeatureId: ${feature.fid}
  *  &lt;/#list&gt;
- *        </code>
- * </pre>
+ * </code></pre>
  * </p>
  * <p>
  * To use this wrapper,use the {@link Configuration#setObjectWrapper(freemarker.template.ObjectWrapper)}
