@@ -116,10 +116,12 @@
     <constructor-arg ref="xmlConfiguration-1.1"/>
     <constructor-arg ref="filterFactory"/>
   </bean>
-  <bean id="getLogOutputFormat" class="org.geoserver.wfsv.response.v1_1_0.GetLogGML3OutputFormat">
+  <bean id="getLogGml3OutputFormat" class="org.geoserver.wfsv.response.v1_1_0.GetLogGML3OutputFormat">
     <constructor-arg ref="wfs"/>
     <constructor-arg ref="catalog"/>
     <constructor-arg ref="xmlConfiguration-1.1"/>
+  </bean>
+  <bean id="getLogHtmlOutputFormat" class="org.geoserver.wfsv.response.v1_1_0.GetLogHtmlOutputFormat">
   </bean>
 
 </beans>
