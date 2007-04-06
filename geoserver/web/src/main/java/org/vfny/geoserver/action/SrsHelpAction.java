@@ -11,7 +11,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.ReferencingFactoryFinder;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -56,7 +56,7 @@ public class SrsHelpAction extends Action {
 
         Set codes = CRS.getSupportedCodes("EPSG");
 
-        CRSAuthorityFactory customFactory = FactoryFinder.getCRSAuthorityFactory("EPSG",
+        CRSAuthorityFactory customFactory = ReferencingFactoryFinder.getCRSAuthorityFactory("EPSG",
                 new Hints(Hints.CRS_AUTHORITY_FACTORY, GeoserverCustomWKTFactory.class));
         Set customCodes = new HashSet();
 

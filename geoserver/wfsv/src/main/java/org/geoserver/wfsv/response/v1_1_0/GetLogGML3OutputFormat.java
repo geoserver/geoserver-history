@@ -4,9 +4,9 @@
  */
 package org.geoserver.wfsv.response.v1_1_0;
 
-import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.ResultTypeType;
 import net.opengis.wfsv.GetLogType;
+
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.wfs.WFS;

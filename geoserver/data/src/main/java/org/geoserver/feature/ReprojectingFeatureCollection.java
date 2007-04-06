@@ -6,32 +6,25 @@ package org.geoserver.feature;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
-import org.geotools.data.FeatureReader;
 import org.geotools.factory.FactoryRegistryException;
 import org.geotools.factory.Hints;
 import org.geotools.feature.AttributeType;
-import org.geotools.feature.CollectionListener;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.FeatureList;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.FeatureTypes;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
-import org.geotools.feature.visitor.FeatureVisitor;
 import org.geotools.geometry.jts.GeometryCoordinateSequenceTransformer;
-import org.geotools.referencing.FactoryFinder;
-import org.geotools.util.ProgressListener;
+import org.geotools.referencing.ReferencingFactoryFinder;
 import org.opengis.filter.Filter;
-import org.opengis.filter.sort.SortBy;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform2D;
 import org.opengis.referencing.operation.OperationNotFoundException;
 import org.opengis.referencing.operation.TransformException;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -96,9 +89,9 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
                                                    .getCoordinateSystem();
 
         if (source != null) {
-            MathTransform2D tx = (MathTransform2D) FactoryFinder.getCoordinateOperationFactory(hints)
-                                                                .createOperation(source, target)
-                                                                .getMathTransform();
+            MathTransform2D tx = (MathTransform2D) ReferencingFactoryFinder.getCoordinateOperationFactory(hints)
+                                                                           .createOperation(source,
+                    target).getMathTransform();
 
             GeometryCoordinateSequenceTransformer transformer = new GeometryCoordinateSequenceTransformer();
             transformer.setMathTransform(tx);
@@ -249,9 +242,9 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
                             MathTransform2D tx;
 
                             try {
-                                tx = (MathTransform2D) FactoryFinder.getCoordinateOperationFactory(hints)
-                                                                    .createOperation(crs, target)
-                                                                    .getMathTransform();
+                                tx = (MathTransform2D) ReferencingFactoryFinder.getCoordinateOperationFactory(hints)
+                                                                               .createOperation(crs,
+                                        target).getMathTransform();
                             } catch (Exception e) {
                                 String msg = "Could not transform for crs: " + crs;
                                 throw (IOException) new IOException(msg).initCause(e);

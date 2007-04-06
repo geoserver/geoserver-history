@@ -6,7 +6,7 @@ package org.vfny.geoserver.wcs.responses;
 
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.ReferencingFactoryFinder;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
@@ -80,7 +80,7 @@ public class DescribeResponse implements Response {
      * @uml.property name="datumFactory"
      * @uml.associationEnd multiplicity="(1 1)"
      */
-    protected final DatumFactory datumFactory = FactoryFinder.getDatumFactory(null);
+    protected final DatumFactory datumFactory = ReferencingFactoryFinder.getDatumFactory(null);
 
     /**
      * Returns any extra headers that this service might want to set in the HTTP response object.
@@ -97,7 +97,7 @@ public class DescribeResponse implements Response {
     // protected final static CRSFactory crsFactory =
     // FactoryFinder.getCRSFactory(new
     // Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-    protected final static CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(
+    protected final static CRSFactory crsFactory = ReferencingFactoryFinder.getCRSFactory(new Hints(
                 Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
 
     /**
@@ -106,12 +106,13 @@ public class DescribeResponse implements Response {
      * @uml.property name="mtFactory"
      * @uml.associationEnd multiplicity="(1 1)"
      */
-    protected final MathTransformFactory mtFactory = FactoryFinder.getMathTransformFactory(null);
+    protected final MathTransformFactory mtFactory = ReferencingFactoryFinder
+        .getMathTransformFactory(null);
 
     /**
      * The default transformations factory.
      */
-    protected final static CoordinateOperationFactory opFactory = FactoryFinder
+    protected final static CoordinateOperationFactory opFactory = ReferencingFactoryFinder
         .getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
 
     public void execute(Request req) throws WcsException {

@@ -50,13 +50,13 @@ public class SLDValidator {
         /*try {
                      URL schemaFile = servContext.getResource("/schemas/sld/StyledLayerDescriptor.xsd");
                      LOGGER.info("Validating SLD with " + schemaFile.toString());
-
+        
             return validateSLD(xml, schemaFile.toString());
         } catch (Exception e) {
                 LOGGER.severe(e.getLocalizedMessage());
                 ArrayList al = new ArrayList();
             al.add(new SAXException(e));
-
+        
             return al;
         }*/
     }
@@ -179,13 +179,13 @@ public class SLDValidator {
     /*public List validateSLD(InputSource xml, ServletContext servContext) {
         File schemaFile = new File(servContext.getRealPath("/"),
         "/schemas/sld/StyledLayerDescriptor.xsd");
-
+    
         try {
             return validateSLD(xml, schemaFile.toURL().toString());
         } catch (Exception e) {
             ArrayList al = new ArrayList();
             al.add(new SAXException(e));
-
+    
             return al;
         }
     }*/

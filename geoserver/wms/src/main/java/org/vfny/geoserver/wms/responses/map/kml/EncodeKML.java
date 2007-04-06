@@ -19,7 +19,6 @@ import org.geotools.filter.Expression;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
-import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -27,11 +26,9 @@ import org.geotools.image.ImageWorker;
 import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.FactoryFinder;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.CoordinateOperationFactory;
 import org.vfny.geoserver.wms.WMSMapContext;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -49,7 +46,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.GraphicsJAI;
 
 
