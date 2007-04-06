@@ -371,15 +371,15 @@ public class Dispatcher extends AbstractController {
                 if (requestBean != null) {
                     //if we dont have a version thus far, check the request object
                     if (req.service == null) {
-                        req.service = lookupRequestBeanProperty(requestBean, "service");
+                        req.service = lookupRequestBeanProperty(requestBean, "service", false);
                     }
 
                     if (req.version == null) {
-                        req.version = lookupRequestBeanProperty(requestBean, "version");
+                        req.version = lookupRequestBeanProperty(requestBean, "version", false);
                     }
 
                     if (req.outputFormat == null) {
-                        req.outputFormat = lookupRequestBeanProperty(requestBean, "outputFormat");
+                        req.outputFormat = lookupRequestBeanProperty(requestBean, "outputFormat", true);
                     }
 
                     parameters[i] = requestBean;
@@ -429,13 +429,13 @@ public class Dispatcher extends AbstractController {
         return new Operation(req.request, serviceDescriptor, operation, parameters);
     }
 
-    String lookupRequestBeanProperty(Object requestBean, String property) {
+    String lookupRequestBeanProperty(Object requestBean, String property, boolean allowDefaultValues) {
         if (requestBean instanceof EObject && EMFUtils.has((EObject) requestBean, property)) {
             //special case hack for eObject, we should move 
             // this out into an extension ppint
             EObject eObject = (EObject) requestBean;
 
-            if (EMFUtils.isSet(eObject, property)) {
+            if (allowDefaultValues || EMFUtils.isSet(eObject, property)) {
                 return normalize((String) EMFUtils.get(eObject, property));
             }
         } else {
