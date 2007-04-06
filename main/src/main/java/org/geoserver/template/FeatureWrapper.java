@@ -113,40 +113,6 @@ public class FeatureWrapper extends BeansWrapper {
             return new SimpleHash(map);
         }
 
-        return null;
-    }
-
-    /**
-     * A java bean to be used to navigate an attribute instance of hte feature.
-     *
-     * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
-     *
-     */
-    static class FeatureAttribute {
-        AttributeType type;
-        String name;
-        Object value;
-
-        public FeatureAttribute(AttributeType type, Object value) {
-            this.type = type;
-            this.name = type.getName();
-            this.value = value;
-        }
-
-        public AttributeType getType() {
-            return type;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public Object getValue() {
-            return value;
-        }
-
-        public String toString() {
-            return (value != null) ? value.toString() : "null";
-        }
+        return super.wrap(object);
     }
 }
