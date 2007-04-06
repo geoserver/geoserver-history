@@ -164,11 +164,12 @@ public class GeoServerTemplateLoader implements TemplateLoader {
 
             // get teh resource for the raw source
             Reader reader = classTemplateLoader.getReader(wrapper.source, encoding);
+            File templateFile = null;
 
             //create the target filem, this file shojld already exist because
             // the template would have been loaded as a file if it did
             try {
-                File templateFile = new File(GeoserverDataDirectory.findConfigFile("templates"),
+                templateFile = new File(GeoserverDataDirectory.findConfigFile("templates"),
                         wrapper.path);
 
                 //TODO: we might wanto use an output stream writer to preserve 
@@ -186,8 +187,11 @@ public class GeoServerTemplateLoader implements TemplateLoader {
                 LOGGER.warning("Unable to copy template: '" + wrapper.path + "' to data directory.");
                 throw (IOException) new IOException().initCause(e);
             }
+            reader.close();
 
-            return classTemplateLoader.getReader(wrapper.source, encoding);
+            // the classpath resource caches the input stream, so we cannot open it
+            // twice. We have to fall back on the file reader instead
+            return fileTemplateLoader.getReader(findTemplateSource(wrapper.path), encoding);
         }
     }
 
