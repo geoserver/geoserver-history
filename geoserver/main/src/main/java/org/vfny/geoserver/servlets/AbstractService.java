@@ -775,6 +775,30 @@ public abstract class AbstractService extends HttpServlet implements Application
             }
 
             ((PartialBufferStrategy) theStrategy).setBufferSize(partialBufferSize);
+        } else if (theStrategy instanceof PartialBufferStrategy2) {
+            if (partialBufferSize == 0) {
+                String size = getServletContext().getInitParameter("PARTIAL_BUFFER_STRATEGY_SIZE");
+
+                if (size != null) {
+                    try {
+                        partialBufferSize = Integer.valueOf(size).intValue();
+
+                        if (partialBufferSize <= 0) {
+                            LOGGER.warning("Invalid partial buffer size, defaulting to "
+                                + PartialBufferedOutputStream.DEFAULT_BUFFER_SIZE + " (was "
+                                + partialBufferSize + ")");
+                            partialBufferSize = 0;
+                        }
+                    } catch (NumberFormatException nfe) {
+                        LOGGER.warning("Invalid partial buffer size, defaulting to "
+                            + PartialBufferedOutputStream.DEFAULT_BUFFER_SIZE + " (was "
+                            + partialBufferSize + ")");
+                        partialBufferSize = 0;
+                    }
+                }
+            }
+
+            ((PartialBufferStrategy2) theStrategy).setBufferSize(partialBufferSize);
         }
 
         return theStrategy;

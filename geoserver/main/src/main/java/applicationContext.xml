@@ -77,5 +77,8 @@
 		
 	<bean id="partialBufferServiceStrategy"
 		class="org.vfny.geoserver.servlets.PartialBufferStrategy"/>
+    
+    <bean id="partialBufferServiceStrategy2"
+        class="org.vfny.geoserver.servlets.PartialBufferStrategy2"/>
 		
 </beans>
