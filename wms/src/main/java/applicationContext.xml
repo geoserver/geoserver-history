@@ -201,6 +201,7 @@
 	<!-- http url mapping -->
 	<bean id="wmsURLMapping" 
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="alwaysUseFullPath" value="true"/>
 		<property name="mappings">
 			<props>
 				<prop key="/wms">dispatcher</prop>

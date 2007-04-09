@@ -132,6 +132,7 @@
 	<!-- http url mapping -->
 	<bean id="wfsURLMapping" 
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="alwaysUseFullPath" value="true"/>
 		<property name="interceptors">
 			<list>
 				<ref bean="citeComplianceHack"/>
