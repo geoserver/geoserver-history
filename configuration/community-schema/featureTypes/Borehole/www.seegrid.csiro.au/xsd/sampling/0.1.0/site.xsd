@@ -22,7 +22,7 @@ Copyright (c) 2005 CSIRO - see https://www.seegrid.csiro.au/twiki/bin/view/Xmml/
 	<!-- ====================================================================== -->
 	<!-- bring in other schemas -->
 	<import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
-	<import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="../../iso19139/gml3.1.1version/gmd/gmd.xsd"/>
+	<!--import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="../../iso19139/gml3.1.1version/gmd/gmd.xsd"/-->
 	<import namespace="http://www.opengis.net/om" schemaLocation="../../om/1.0.30/om.xsd"/>
 	<include schemaLocation="./surveyProcedure.xsd"/>
 	<include schemaLocation="./specimen.xsd"/>
@@ -42,9 +42,9 @@ Copyright (c) 2005 CSIRO - see https://www.seegrid.csiro.au/twiki/bin/view/Xmml/
                     <!-- 
                     HACK here!: as geotools AbstractFeatureType does not defines gml:name and gml:description,
                     we add them here
-                     -->
                     <element ref="gml:name" minOccurs="0" maxOccurs="unbounded"/>
                     <element ref="gml:description" minOccurs="0" maxOccurs="unbounded"/>
+                     -->
                      
 					<element name="member" type="sa:SamplingFeaturePropertyType" minOccurs="0" maxOccurs="unbounded">
 						<annotation>

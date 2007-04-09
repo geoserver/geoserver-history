@@ -24,8 +24,7 @@
 		</complexType>
 	</element>
 	<!-- ============== -->
-	<!--
-	Gabriel here: commented this element out because the parser dies with the recursive definition (stack overflow) 
+  <!-- 
 	<element name="Array">
 		<annotation>
 			<documentation>An array is an ordered list of records or of other arrays. 
@@ -40,6 +39,6 @@
 			</sequence>
 		</complexType>
 	</element>
-	 -->
+   -->
 	<!-- ============== -->
 </schema>

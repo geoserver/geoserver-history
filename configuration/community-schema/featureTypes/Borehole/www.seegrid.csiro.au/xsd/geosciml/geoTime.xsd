@@ -9,10 +9,12 @@ Copyright (c) 2005 CSIRO - see https://www.seegrid.csiro.au/twiki/bin/view/Xmml/
 	</annotation>
 	<!-- ======================== -->
 	<import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
-	<import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="http://www.seegrid.csiro.au/xml/iso19139/gml3.1.1version/gmd/gmd.xsd"/>
+	<!-- 
+    <import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="http://www.seegrid.csiro.au/xml/iso19139/gml3.1.1version/gmd/gmd.xsd"/>
+     -->
 	<import namespace="http://www.cgi-iugs.org/xml/GeoSciML/1" schemaLocation="./metadata.xsd"/>
 	<import namespace="http://www.opengis.net/om" schemaLocation="http://www.seegrid.csiro.au/xml/om/1.0.30/om.xsd"/>
-	<import namespace="http://www.seegrid.csiro.au/xml/sampling" schemaLocation="../sampling/0.1.0/sampling.xsd"/>
+	<import namespace="http://www.seegrid.csiro.au/xml/sampling" schemaLocation="http://www.seegrid.csiro.au/xml/sampling/0.1.0/sampling.xsd"/>
 	<include schemaLocation="./stratEnums.xsd"/>
 	<!-- ================================================================== -->
 	<!-- ================================================================== -->

@@ -10,7 +10,7 @@ Copyright © 2005 CSIRO - see https://www.seegrid.csiro.au/twiki/bin/view/Xmml/L
 	<!-- ====================================================================== -->
 	<!-- bring in other schemas -->
 	<import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
-	<import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="../../iso19139/gml3.1.1version/gmd/gmd.xsd"/>
+	<!-- import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="../../iso19139/gml3.1.1version/gmd/gmd.xsd"/-->
 	<include schemaLocation="../../enumerations/LUTmaintenance.xsd"/>
 	<!-- ====================================================================== -->
 	<!-- ================================================================== -->
@@ -26,11 +26,13 @@ Copyright © 2005 CSIRO - see https://www.seegrid.csiro.au/twiki/bin/view/Xmml/L
 	<!-- ====================================================================== -->
 	<!-- === Objects and properties associated with people, organisations, etc ======== -->
 	<!-- ====================================================================== -->
+  <!-- 
 	<element name="responsible" type="gmd:CI_ResponsibleParty_PropertyType">
 		<annotation>
 			<documentation>Party responsible for action, event, etc.</documentation>
 		</annotation>
 	</element>
+   -->
 	<!-- ====================================================================== -->
 	<!-- ====================================================================== -->
 	<!-- ===== Some generic elements and datatypes ====== -->
@@ -75,6 +77,7 @@ Copyright © 2005 CSIRO - see https://www.seegrid.csiro.au/twiki/bin/view/Xmml/L
 					<documentation>Container for commentary that may not be strictly part of a "description".</documentation>
 				</annotation>
 			</element>
+       <!-- 
 			<element name="reference" type="gmd:CI_Citation_PropertyType" minOccurs="0" maxOccurs="unbounded">
 				<annotation>
 					<documentation>Holds or points to a Citation.  
@@ -86,6 +89,7 @@ Copyright © 2005 CSIRO - see https://www.seegrid.csiro.au/twiki/bin/view/Xmml/L
       Note that the DOI/crossref service is free to users, but not to publishers.</documentation>
 				</annotation>
 			</element>
+       -->
 			<element name="geographicDescription" type="gml:CodeType" minOccurs="0" maxOccurs="unbounded">
 				<annotation><documentation>Description of geographic location or extent using an identifier</documentation></annotation>
 			</element>

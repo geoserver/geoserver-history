@@ -7,7 +7,6 @@
     <documentation>GeoSciML.xsd Wrapper schema for GeoSciML composed from the various sub-schemas</documentation>
   </annotation> -->
   <!--=======================-->
-  <include schemaLocation="mappedFeature.xsd" />
   <include schemaLocation="collection.xsd" />
   <include schemaLocation="geologicRelation.xsd" />
   <include schemaLocation="geologicUnit.xsd" />
@@ -20,12 +19,10 @@
     </annotation>
   </import>
   <!--=======================-->
-  <import namespace="http://www.opengis.net/xmml" schemaLocation="../XMML/1/xmml.xsd">
+  <import namespace="http://www.opengis.net/xmml" schemaLocation="../../../XMML/1/xmml.xsd">
     <annotation>
       <documentation>Make XMML borehole components available.</documentation>
     </annotation>
   </import>
   <!--=======================-->
-  
-  <element name="GeologicFeature" type="gsml:GeologicFeatureType"/>
 </schema>

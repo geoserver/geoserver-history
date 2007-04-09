@@ -17,7 +17,7 @@ covering 	dataset and object metadata</documentation>
 	</annotation>
 	<!--=======================-->
 	<import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
-	<import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="http://www.seegrid.csiro.au/xml/iso19139/gml3.1.1version/gmd/gmd.xsd"/>
+	<!--import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="http://www.seegrid.csiro.au/xml/iso19139/gml3.1.1version/gmd/gmd.xsd"/-->
 	<!--=======================-->
 	<include schemaLocation="CGI_Value.xsd"/>
 	<!--=======================-->

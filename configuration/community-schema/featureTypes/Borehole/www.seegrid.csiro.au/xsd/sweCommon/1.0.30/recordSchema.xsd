@@ -18,7 +18,7 @@ Copyright (c) 2005 Open Geospatial Consortium - see http://www.opengeospatial.or
 		</annotation>
 	</import>
 	<import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
-	<import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="../../iso19139/gml3.1.1version/gmd/gmd.xsd"/>
+	<!-- import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="../../iso19139/gml3.1.1version/gmd/gmd.xsd"/-->
 	<include schemaLocation="./phenomenon.xsd"/>
 	<!-- ====================================================================== -->
 	<!-- ====================================================================== -->
@@ -51,11 +51,13 @@ Copyright (c) 2005 Open Geospatial Consortium - see http://www.opengeospatial.or
 					<element name="property" type="swe:PhenomenonPropertyType"/>
 					<element name="representation" type="swe:RepresentationType"/>
 					<element name="procedure" type="gml:ReferenceType" minOccurs="0"/>
+                    <!-- 
 					<element name="quality" type="gmd:DQ_DataQuality_PropertyType" minOccurs="0" maxOccurs="unbounded">
 						<annotation>
 							<documentation>One or more quality elements record systematic measure of reliability</documentation>
 						</annotation>
 					</element>
+                     -->
 				</sequence>
 			</extension>
 		</complexContent>

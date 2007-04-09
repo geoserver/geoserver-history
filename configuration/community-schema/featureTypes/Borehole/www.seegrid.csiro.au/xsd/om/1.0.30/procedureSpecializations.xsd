@@ -10,7 +10,7 @@ Copyright (c) 2005 Open Geospatial Consortium - see http://www.opengeospatial.or
 	<!-- ====================================================================== -->
 	<!-- bring in other schemas -->
 	<import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
-	<import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="../../iso19139/gml3.1.1version/gmd/gmd.xsd"/>
+	<!--import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="../../iso19139/gml3.1.1version/gmd/gmd.xsd"/-->
 	<include schemaLocation="./procedure.xsd"/>
 	<!-- ====================================================================== -->
 	<!-- ====================================================================== -->

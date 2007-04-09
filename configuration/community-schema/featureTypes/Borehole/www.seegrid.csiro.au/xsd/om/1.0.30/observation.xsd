@@ -10,7 +10,7 @@ Copyright (c) 2005 Open Geospatial Consortium - see http://www.opengeospatial.or
 	<!-- ====================================================================== -->
 	<!-- bring in other schemas -->
 	<import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
-	<import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="../../iso19139/gml3.1.1version/gmd/gmd.xsd"/>
+	<!--import namespace="http://www.isotc211.org/2005/gmd" schemaLocation="../../iso19139/gml3.1.1version/gmd/gmd.xsd"/-->
 	<import namespace="http://www.opengis.net/swe" schemaLocation="../../sweCommon/1.0.30/swe.xsd"/>
 	<include schemaLocation="./procedureSpecializations.xsd"/>
 	<!-- ====================================================================== -->
@@ -64,11 +64,12 @@ Copyright (c) 2005 Open Geospatial Consortium - see http://www.opengeospatial.or
 							This property may be provided for client convenience, to allow comparison between and aggregation of observations of the same property made using different procedures.</documentation>
 						</annotation>
 					</element>
-					<element name="quality" type="gmd:DQ_DataQuality_PropertyType" minOccurs="0" maxOccurs="unbounded">
+          
+					<!--element name="quality" type="gmd:DQ_DataQuality_PropertyType" minOccurs="0" maxOccurs="unbounded">
 						<annotation>
 							<documentation>Allow multiple quality measures if required.</documentation>
 						</annotation>
-					</element>
+					</element-->
 					<element name="featureOfInterest" type="gml:FeaturePropertyType">
 						<annotation>
 							<documentation>the Feature regarding which the observations are being made, 
