@@ -94,6 +94,9 @@ public class WFSConfiguration extends Configuration {
         FeatureTypeCache featureTypeCache = (FeatureTypeCache) context
             .getComponentInstanceOfType(FeatureTypeCache.class);
 
+        /*
+         * GR:commented out this block of code as setting up the featuretype
+         * cache is only useful for gml parsing
         try {
             Collection featureTypes = catalog.getFeatureTypeInfos().values();
 
@@ -110,6 +113,7 @@ public class WFSConfiguration extends Configuration {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        */
     }
 
     protected void configureBindings(MutablePicoContainer container) {
