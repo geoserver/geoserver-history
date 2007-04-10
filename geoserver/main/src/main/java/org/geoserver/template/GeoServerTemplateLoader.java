@@ -154,44 +154,12 @@ public class GeoServerTemplateLoader implements TemplateLoader {
     public Reader getReader(Object source, String encoding)
         throws IOException {
         if (source instanceof File) {
-            //loaded from file
+            // loaded from file
             return fileTemplateLoader.getReader(source, encoding);
         } else {
-            //loaded from class, in this case we want to copy the template to 
-            // the data directory, this will allow users to modify "default"
-            // templates
+            // get teh resource for the raw source as use it right away
             ClassTemplateSource wrapper = (ClassTemplateSource) source;
-
-            // get teh resource for the raw source
-            Reader reader = classTemplateLoader.getReader(wrapper.source, encoding);
-            File templateFile = null;
-
-            //create the target filem, this file shojld already exist because
-            // the template would have been loaded as a file if it did
-            try {
-                templateFile = new File(GeoserverDataDirectory.findConfigFile("templates"),
-                        wrapper.path);
-
-                //TODO: we might wanto use an output stream writer to preserve 
-                // the file encoding
-                BufferedWriter writer = new BufferedWriter(new FileWriter(templateFile));
-                int c = -1;
-
-                while ((c = reader.read()) != -1) {
-                    writer.write(c);
-                }
-
-                writer.flush();
-                writer.close();
-            } catch (Exception e) {
-                LOGGER.warning("Unable to copy template: '" + wrapper.path + "' to data directory.");
-                throw (IOException) new IOException().initCause(e);
-            }
-            reader.close();
-
-            // the classpath resource caches the input stream, so we cannot open it
-            // twice. We have to fall back on the file reader instead
-            return fileTemplateLoader.getReader(findTemplateSource(wrapper.path), encoding);
+            return classTemplateLoader.getReader(wrapper.source, encoding);
         }
     }
 
