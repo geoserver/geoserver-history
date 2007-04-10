@@ -9,8 +9,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.ResultTypeType;
+import net.opengis.wfsv.GetLogType;
 
 import org.geoserver.ows.Response;
+import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.template.FeatureWrapper;
@@ -37,13 +40,25 @@ public class GetLogHtmlOutputFormat extends Response {
     }
 
     public GetLogHtmlOutputFormat() {
-        super(FeatureCollectionType.class);
+        super(FeatureCollectionType.class, "HTML");
     }
 
     public String getMimeType(Object value, Operation operation) throws ServiceException {
         return "text/html";
     }
+    
+    public boolean canHandle(Operation operation) {
+        if ("GetLog".equalsIgnoreCase(operation.getId())) {
+            //also check that the resultType is "results"
+            GetLogType request = (GetLogType) OwsUtils.parameter(operation.getParameters(),
+                    GetLogType.class);
 
+            return request.getResultType() == ResultTypeType.RESULTS_LITERAL;
+        }
+
+        return false;
+    }
+    
     public void write(Object value, OutputStream output, Operation operation) throws IOException, ServiceException {
         FeatureCollectionType fct = (FeatureCollectionType) value;
         FeatureCollection fc = (FeatureCollection) fct.getFeature().get(0);
