@@ -4,16 +4,8 @@
  */
 package org.geoserver.wfsv;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
-import javax.xml.namespace.QName;
-
 import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.GetDiffType;
-
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
 import org.geotools.data.FeatureSource;
@@ -29,6 +21,11 @@ import org.opengis.filter.expression.ExpressionVisitor;
 import org.opengis.filter.expression.PropertyName;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+import javax.xml.namespace.QName;
 
 
 /**
