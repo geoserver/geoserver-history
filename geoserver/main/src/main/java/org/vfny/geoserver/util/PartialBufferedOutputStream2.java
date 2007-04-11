@@ -62,7 +62,6 @@ public class PartialBufferedOutputStream2 extends OutputStream {
      * by the response
      */
     private OutputStream out_real;
-    
     private OutputStream currentStream;
 
     /**
@@ -78,7 +77,8 @@ public class PartialBufferedOutputStream2 extends OutputStream {
              * Constructor Defaults buffer size to 50KB
              * @param response
              */
-    public PartialBufferedOutputStream2(HttpServletResponse response) throws IOException {
+    public PartialBufferedOutputStream2(HttpServletResponse response)
+        throws IOException {
         this(response, DEFAULT_BUFFER_SIZE); // default to 50KB
     }
 
@@ -86,7 +86,8 @@ public class PartialBufferedOutputStream2 extends OutputStream {
              * @param response the response with its output stream to write to once the buffer is full
              * @param kilobytes size, in kilobytes, of the buffer
              */
-    public PartialBufferedOutputStream2(HttpServletResponse response, int kilobytes) throws IOException {
+    public PartialBufferedOutputStream2(HttpServletResponse response, int kilobytes)
+        throws IOException {
         if (kilobytes < 1) {
             throw new IllegalArgumentException("Buffer size not greater than 0: " + kilobytes);
         }
@@ -130,30 +131,31 @@ public class PartialBufferedOutputStream2 extends OutputStream {
         if (closed) {
             return;
         }
-        
+
         currentStream.write(b);
         checkBuffer();
     }
-    
+
     public void write(byte[] b) throws IOException {
         if (closed) {
             return;
         }
-        
+
         currentStream.write(b);
         checkBuffer();
     }
-    
+
     public void write(byte[] b, int off, int len) throws IOException {
-        if(closed)
+        if (closed) {
             return;
-        
+        }
+
         currentStream.write(b, off, len);
         checkBuffer();
     }
-    
+
     private void checkBuffer() throws IOException {
-        if( currentStream == out_buffer && out_buffer.size() >= BUFFER_SIZE) {
+        if ((currentStream == out_buffer) && (out_buffer.size() >= BUFFER_SIZE)) {
             flushBuffer();
         }
     }
@@ -178,6 +180,7 @@ public class PartialBufferedOutputStream2 extends OutputStream {
         if (currentStream == out_buffer) {
             flushBuffer();
         }
+
         currentStream.flush();
     }
 
