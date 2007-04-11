@@ -44,12 +44,11 @@ public class WFSLogger implements MethodInterceptor {
         Object result = invocation.proceed();
         log.append("\n\nResult:");
 
-        if (result instanceof EObject) {
-            log((EObject) result, 1, log);
-        } else {
-            log.append("\t" + result);
-        }
-
+        //        if (result instanceof EObject) {
+        //            log((EObject) result, 1, log);
+        //        } else {
+        //            log.append("\t" + result);
+        //        }
         logger.info(log.toString());
 
         return result;

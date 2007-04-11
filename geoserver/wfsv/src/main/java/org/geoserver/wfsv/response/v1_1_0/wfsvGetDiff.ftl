@@ -27,7 +27,7 @@ diff from version ${queryDiff.fromVersion}  to version ${queryDiff.toVersion} </
       <table border="1" cellspacing="0">
       <tr><td>Attribute</td><td>Value at ${queryDiff.fromVersion}</td><td>Value at ${queryDiff.toVersion}</td></tr>
       <#list difference.changedAttributes as attName>
-        <tr><td>${attName}</td><td>${difference.oldFeature.attributesMap[attName].value}</td><td>${difference.feature.attributesMap[attName].value}</td></tr>
+        <tr><td>${attName}</td><td>${difference.oldFeature.attributes[attName].value}</td><td>${difference.feature.attributes[attName].value}</td></tr>
       </#list>
       </table>
       </ul>

@@ -16,6 +16,7 @@ import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 
@@ -72,6 +73,10 @@ import java.util.Map;
  *
  */
 public class FeatureWrapper extends BeansWrapper {
+    public FeatureWrapper() {
+        setSimpleMapWrapper(true);
+    }
+
     public TemplateModel wrap(Object object) throws TemplateModelException {
         //check for feature collection
         if (object instanceof FeatureCollection) {
@@ -92,7 +97,7 @@ public class FeatureWrapper extends BeansWrapper {
 
             //next add variables for each attribute, variable name = name of attribute
             SimpleSequence attributes = new SimpleSequence();
-            Map attributeMap = new HashMap();
+            Map attributeMap = new LinkedHashMap();
 
             for (int i = 0; i < feature.getNumberOfAttributes(); i++) {
                 AttributeType type = feature.getFeatureType().getAttributeType(i);
@@ -109,11 +114,9 @@ public class FeatureWrapper extends BeansWrapper {
                 attributes.add(attribute);
             }
 
-            //create a variable valles "attributes" which his a list of all the 
-            // attributes
-            map.put("attributes", attributes);
-            map.put("attributesMap", attributeMap);
-
+            // create a variable "attributes" which his a list of all the 
+            // attributes, but at the same time, is a map keyed by name
+            map.put("attributes", new SequenceMapModel(attributeMap, this));
             return new SimpleHash(map);
         }
 
