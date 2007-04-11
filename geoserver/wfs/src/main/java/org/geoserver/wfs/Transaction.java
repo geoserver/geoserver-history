@@ -237,8 +237,14 @@ public class Transaction {
                 FeatureTypeInfo meta = (FeatureTypeInfo) m.next();
                 String typeRef = meta.getDataStoreInfo().getId() + ":" + meta.getTypeName();
 
-                QName elementName = new QName(meta.getNameSpace().getURI(), meta.getTypeName(),
+                String URI = meta.getNameSpace().getURI();
+                QName elementName = new QName(URI, meta.getTypeName(),
                         meta.getNameSpace().getPrefix());
+                QName elementNameDefault = null;
+
+                if (catalog.getDefaultNameSpace().getURI().equals(URI)) {
+                    elementNameDefault = new QName(meta.getTypeName());
+                }
 
                 LOGGER.fine("located FeatureType w/ typeRef '" + typeRef + "' and elementName '"
                     + elementName + "'");
@@ -255,6 +261,11 @@ public class Transaction {
                         FeatureStore store = (FeatureStore) source;
                         store.setTransaction(transaction);
                         stores.put(elementName, source);
+
+                        if (elementNameDefault != null) {
+                            stores.put(elementNameDefault, source);
+                        }
+
                         stores2.put(typeRef, source);
                     } else {
                         String msg = elementName + " is read-only";
