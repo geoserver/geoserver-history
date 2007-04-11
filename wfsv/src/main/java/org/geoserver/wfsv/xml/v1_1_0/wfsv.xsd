@@ -247,11 +247,11 @@
             </xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
-        <xsd:attribute name="fromFeatureVersion" type="xsd:string" default="FIRST">
+        <xsd:attribute name="toFeatureVersion" type="xsd:string" default="FIRST">
           <xsd:annotation>
             <xsd:documentation>
-              Same as featureVersion in QueryType, but this indicates a starting feature version for
-              a difference and log operations.
+              Same as featureVersion in QueryType. Rollback will restore the "toFeatureVersion" 
+              feature state, removing all changes occurred between "toFeatureVersion" and current
             </xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
