@@ -35,8 +35,8 @@
     </genClasses>
     <genClasses ecoreClass="wfsv.ecore#//RollbackType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//RollbackType/filter"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//RollbackType/fromFeatureVersion"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//RollbackType/handle"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//RollbackType/toFeatureVersion"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//RollbackType/typeName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute wfsv.ecore#//RollbackType/user"/>
     </genClasses>

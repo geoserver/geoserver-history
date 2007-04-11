@@ -29,8 +29,8 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * The following features are implemented:
  * <ul>
  *   <li>{@link net.opengis.wfsv.impl.RollbackTypeImpl#getFilter <em>Filter</em>}</li>
- *   <li>{@link net.opengis.wfsv.impl.RollbackTypeImpl#getFromFeatureVersion <em>From Feature Version</em>}</li>
  *   <li>{@link net.opengis.wfsv.impl.RollbackTypeImpl#getHandle <em>Handle</em>}</li>
+ *   <li>{@link net.opengis.wfsv.impl.RollbackTypeImpl#getToFeatureVersion <em>To Feature Version</em>}</li>
  *   <li>{@link net.opengis.wfsv.impl.RollbackTypeImpl#getTypeName <em>Type Name</em>}</li>
  *   <li>{@link net.opengis.wfsv.impl.RollbackTypeImpl#getUser <em>User</em>}</li>
  * </ul>
@@ -60,35 +60,6 @@ public class RollbackTypeImpl extends NativeTypeImpl implements RollbackType {
     protected Object filter = FILTER_EDEFAULT;
 
     /**
-     * The default value of the '{@link #getFromFeatureVersion() <em>From Feature Version</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getFromFeatureVersion()
-     * @generated
-     * @ordered
-     */
-    protected static final String FROM_FEATURE_VERSION_EDEFAULT = "FIRST";
-
-    /**
-     * The cached value of the '{@link #getFromFeatureVersion() <em>From Feature Version</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getFromFeatureVersion()
-     * @generated
-     * @ordered
-     */
-    protected String fromFeatureVersion = FROM_FEATURE_VERSION_EDEFAULT;
-
-    /**
-     * This is true if the From Feature Version attribute has been set.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    protected boolean fromFeatureVersionESet = false;
-
-    /**
      * The default value of the '{@link #getHandle() <em>Handle</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -107,6 +78,35 @@ public class RollbackTypeImpl extends NativeTypeImpl implements RollbackType {
      * @ordered
      */
     protected String handle = HANDLE_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #getToFeatureVersion() <em>To Feature Version</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getToFeatureVersion()
+     * @generated
+     * @ordered
+     */
+    protected static final String TO_FEATURE_VERSION_EDEFAULT = "FIRST";
+
+    /**
+     * The cached value of the '{@link #getToFeatureVersion() <em>To Feature Version</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getToFeatureVersion()
+     * @generated
+     * @ordered
+     */
+    protected String toFeatureVersion = TO_FEATURE_VERSION_EDEFAULT;
+
+    /**
+     * This is true if the To Feature Version attribute has been set.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    protected boolean toFeatureVersionESet = false;
 
     /**
      * The default value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
@@ -201,52 +201,6 @@ public class RollbackTypeImpl extends NativeTypeImpl implements RollbackType {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String getFromFeatureVersion() {
-        return fromFeatureVersion;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void setFromFeatureVersion(String newFromFeatureVersion) {
-        String oldFromFeatureVersion = fromFeatureVersion;
-        fromFeatureVersion = newFromFeatureVersion;
-        boolean oldFromFeatureVersionESet = fromFeatureVersionESet;
-        fromFeatureVersionESet = true;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, WfsvPackage.ROLLBACK_TYPE__FROM_FEATURE_VERSION, oldFromFeatureVersion, fromFeatureVersion, !oldFromFeatureVersionESet));
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void unsetFromFeatureVersion() {
-        String oldFromFeatureVersion = fromFeatureVersion;
-        boolean oldFromFeatureVersionESet = fromFeatureVersionESet;
-        fromFeatureVersion = FROM_FEATURE_VERSION_EDEFAULT;
-        fromFeatureVersionESet = false;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.UNSET, WfsvPackage.ROLLBACK_TYPE__FROM_FEATURE_VERSION, oldFromFeatureVersion, FROM_FEATURE_VERSION_EDEFAULT, oldFromFeatureVersionESet));
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public boolean isSetFromFeatureVersion() {
-        return fromFeatureVersionESet;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     public String getHandle() {
         return handle;
     }
@@ -261,6 +215,52 @@ public class RollbackTypeImpl extends NativeTypeImpl implements RollbackType {
         handle = newHandle;
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, WfsvPackage.ROLLBACK_TYPE__HANDLE, oldHandle, handle));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public String getToFeatureVersion() {
+        return toFeatureVersion;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setToFeatureVersion(String newToFeatureVersion) {
+        String oldToFeatureVersion = toFeatureVersion;
+        toFeatureVersion = newToFeatureVersion;
+        boolean oldToFeatureVersionESet = toFeatureVersionESet;
+        toFeatureVersionESet = true;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, WfsvPackage.ROLLBACK_TYPE__TO_FEATURE_VERSION, oldToFeatureVersion, toFeatureVersion, !oldToFeatureVersionESet));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void unsetToFeatureVersion() {
+        String oldToFeatureVersion = toFeatureVersion;
+        boolean oldToFeatureVersionESet = toFeatureVersionESet;
+        toFeatureVersion = TO_FEATURE_VERSION_EDEFAULT;
+        toFeatureVersionESet = false;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.UNSET, WfsvPackage.ROLLBACK_TYPE__TO_FEATURE_VERSION, oldToFeatureVersion, TO_FEATURE_VERSION_EDEFAULT, oldToFeatureVersionESet));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public boolean isSetToFeatureVersion() {
+        return toFeatureVersionESet;
     }
 
     /**
@@ -339,10 +339,10 @@ public class RollbackTypeImpl extends NativeTypeImpl implements RollbackType {
         switch (featureID) {
             case WfsvPackage.ROLLBACK_TYPE__FILTER:
                 return getFilter();
-            case WfsvPackage.ROLLBACK_TYPE__FROM_FEATURE_VERSION:
-                return getFromFeatureVersion();
             case WfsvPackage.ROLLBACK_TYPE__HANDLE:
                 return getHandle();
+            case WfsvPackage.ROLLBACK_TYPE__TO_FEATURE_VERSION:
+                return getToFeatureVersion();
             case WfsvPackage.ROLLBACK_TYPE__TYPE_NAME:
                 return getTypeName();
             case WfsvPackage.ROLLBACK_TYPE__USER:
@@ -361,11 +361,11 @@ public class RollbackTypeImpl extends NativeTypeImpl implements RollbackType {
             case WfsvPackage.ROLLBACK_TYPE__FILTER:
                 setFilter((Object)newValue);
                 return;
-            case WfsvPackage.ROLLBACK_TYPE__FROM_FEATURE_VERSION:
-                setFromFeatureVersion((String)newValue);
-                return;
             case WfsvPackage.ROLLBACK_TYPE__HANDLE:
                 setHandle((String)newValue);
+                return;
+            case WfsvPackage.ROLLBACK_TYPE__TO_FEATURE_VERSION:
+                setToFeatureVersion((String)newValue);
                 return;
             case WfsvPackage.ROLLBACK_TYPE__TYPE_NAME:
                 setTypeName((Object)newValue);
@@ -387,11 +387,11 @@ public class RollbackTypeImpl extends NativeTypeImpl implements RollbackType {
             case WfsvPackage.ROLLBACK_TYPE__FILTER:
                 setFilter(FILTER_EDEFAULT);
                 return;
-            case WfsvPackage.ROLLBACK_TYPE__FROM_FEATURE_VERSION:
-                unsetFromFeatureVersion();
-                return;
             case WfsvPackage.ROLLBACK_TYPE__HANDLE:
                 setHandle(HANDLE_EDEFAULT);
+                return;
+            case WfsvPackage.ROLLBACK_TYPE__TO_FEATURE_VERSION:
+                unsetToFeatureVersion();
                 return;
             case WfsvPackage.ROLLBACK_TYPE__TYPE_NAME:
                 setTypeName(TYPE_NAME_EDEFAULT);
@@ -412,10 +412,10 @@ public class RollbackTypeImpl extends NativeTypeImpl implements RollbackType {
         switch (featureID) {
             case WfsvPackage.ROLLBACK_TYPE__FILTER:
                 return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
-            case WfsvPackage.ROLLBACK_TYPE__FROM_FEATURE_VERSION:
-                return isSetFromFeatureVersion();
             case WfsvPackage.ROLLBACK_TYPE__HANDLE:
                 return HANDLE_EDEFAULT == null ? handle != null : !HANDLE_EDEFAULT.equals(handle);
+            case WfsvPackage.ROLLBACK_TYPE__TO_FEATURE_VERSION:
+                return isSetToFeatureVersion();
             case WfsvPackage.ROLLBACK_TYPE__TYPE_NAME:
                 return TYPE_NAME_EDEFAULT == null ? typeName != null : !TYPE_NAME_EDEFAULT.equals(typeName);
             case WfsvPackage.ROLLBACK_TYPE__USER:
@@ -435,10 +435,10 @@ public class RollbackTypeImpl extends NativeTypeImpl implements RollbackType {
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (filter: ");
         result.append(filter);
-        result.append(", fromFeatureVersion: ");
-        if (fromFeatureVersionESet) result.append(fromFeatureVersion); else result.append("<unset>");
         result.append(", handle: ");
         result.append(handle);
+        result.append(", toFeatureVersion: ");
+        if (toFeatureVersionESet) result.append(toFeatureVersion); else result.append("<unset>");
         result.append(", typeName: ");
         result.append(typeName);
         result.append(", user: ");

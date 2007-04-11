@@ -400,22 +400,22 @@ public interface WfsvPackage extends EPackage {
     int ROLLBACK_TYPE__FILTER = WfsPackage.NATIVE_TYPE_FEATURE_COUNT + 0;
 
     /**
-     * The feature id for the '<em><b>From Feature Version</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int ROLLBACK_TYPE__FROM_FEATURE_VERSION = WfsPackage.NATIVE_TYPE_FEATURE_COUNT + 1;
-
-    /**
      * The feature id for the '<em><b>Handle</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int ROLLBACK_TYPE__HANDLE = WfsPackage.NATIVE_TYPE_FEATURE_COUNT + 2;
+    int ROLLBACK_TYPE__HANDLE = WfsPackage.NATIVE_TYPE_FEATURE_COUNT + 1;
+
+    /**
+     * The feature id for the '<em><b>To Feature Version</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ROLLBACK_TYPE__TO_FEATURE_VERSION = WfsPackage.NATIVE_TYPE_FEATURE_COUNT + 2;
 
     /**
      * The feature id for the '<em><b>Type Name</b></em>' attribute.
@@ -853,17 +853,6 @@ public interface WfsvPackage extends EPackage {
     EAttribute getRollbackType_Filter();
 
     /**
-     * Returns the meta object for the attribute '{@link net.opengis.wfsv.RollbackType#getFromFeatureVersion <em>From Feature Version</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>From Feature Version</em>'.
-     * @see net.opengis.wfsv.RollbackType#getFromFeatureVersion()
-     * @see #getRollbackType()
-     * @generated
-     */
-    EAttribute getRollbackType_FromFeatureVersion();
-
-    /**
      * Returns the meta object for the attribute '{@link net.opengis.wfsv.RollbackType#getHandle <em>Handle</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -873,6 +862,17 @@ public interface WfsvPackage extends EPackage {
      * @generated
      */
     EAttribute getRollbackType_Handle();
+
+    /**
+     * Returns the meta object for the attribute '{@link net.opengis.wfsv.RollbackType#getToFeatureVersion <em>To Feature Version</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>To Feature Version</em>'.
+     * @see net.opengis.wfsv.RollbackType#getToFeatureVersion()
+     * @see #getRollbackType()
+     * @generated
+     */
+    EAttribute getRollbackType_ToFeatureVersion();
 
     /**
      * Returns the meta object for the attribute '{@link net.opengis.wfsv.RollbackType#getTypeName <em>Type Name</em>}'.
@@ -1171,20 +1171,20 @@ public interface WfsvPackage extends EPackage {
         EAttribute ROLLBACK_TYPE__FILTER = eINSTANCE.getRollbackType_Filter();
 
         /**
-         * The meta object literal for the '<em><b>From Feature Version</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EAttribute ROLLBACK_TYPE__FROM_FEATURE_VERSION = eINSTANCE.getRollbackType_FromFeatureVersion();
-
-        /**
          * The meta object literal for the '<em><b>Handle</b></em>' attribute feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
          * @generated
          */
         EAttribute ROLLBACK_TYPE__HANDLE = eINSTANCE.getRollbackType_Handle();
+
+        /**
+         * The meta object literal for the '<em><b>To Feature Version</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ROLLBACK_TYPE__TO_FEATURE_VERSION = eINSTANCE.getRollbackType_ToFeatureVersion();
 
         /**
          * The meta object literal for the '<em><b>Type Name</b></em>' attribute feature.
