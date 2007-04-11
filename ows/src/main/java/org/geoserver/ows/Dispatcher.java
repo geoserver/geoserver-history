@@ -379,7 +379,8 @@ public class Dispatcher extends AbstractController {
                     }
 
                     if (req.outputFormat == null) {
-                        req.outputFormat = lookupRequestBeanProperty(requestBean, "outputFormat", true);
+                        req.outputFormat = lookupRequestBeanProperty(requestBean, "outputFormat",
+                                true);
                     }
 
                     parameters[i] = requestBean;
