@@ -22,9 +22,7 @@ import java.util.HashMap;
  * @author Andrea Aime - TOPP
  */
 public class FeatureDiffWrapper extends FeatureWrapper {
-    public FeatureDiffWrapper() {
-        setSimpleMapWrapper(true);
-    }
+    
 
     public TemplateModel wrap(Object object) throws TemplateModelException {
         if (object instanceof FeatureDiffReader[]) {
