@@ -6,6 +6,7 @@ package org.geoserver.template;
 
 import com.vividsolutions.jts.geom.Geometry;
 import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.CollectionModel;
 import freemarker.template.Configuration;
 import freemarker.template.SimpleHash;
 import freemarker.template.SimpleSequence;
@@ -76,7 +77,7 @@ public class FeatureWrapper extends BeansWrapper {
         if (object instanceof FeatureCollection) {
             //create a model with just one variable called 'features'
             HashMap map = new HashMap();
-            map.put("features", new SimpleSequence((FeatureCollection) object, this));
+            map.put("features", new CollectionModel((FeatureCollection) object, this));
 
             return new SimpleHash(map);
         } else if (object instanceof Feature) {
@@ -91,6 +92,7 @@ public class FeatureWrapper extends BeansWrapper {
 
             //next add variables for each attribute, variable name = name of attribute
             SimpleSequence attributes = new SimpleSequence();
+            Map attributeMap = new HashMap();
 
             for (int i = 0; i < feature.getNumberOfAttributes(); i++) {
                 AttributeType type = feature.getFeatureType().getAttributeType(i);
@@ -103,12 +105,14 @@ public class FeatureWrapper extends BeansWrapper {
                     Boolean.valueOf(Geometry.class.isAssignableFrom(type.getType())));
 
                 map.put(type.getName(), attribute);
+                attributeMap.put(type.getName(), attribute);
                 attributes.add(attribute);
             }
 
             //create a variable valles "attributes" which his a list of all the 
             // attributes
             map.put("attributes", attributes);
+            map.put("attributesMap", attributeMap);
 
             return new SimpleHash(map);
         }
