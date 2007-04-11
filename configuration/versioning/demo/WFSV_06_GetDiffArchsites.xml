@@ -1,7 +1,10 @@
 <!--             
-  Let's gather a feature difference as a transaction
+  Let's gather a feature difference. Try this one with the output format specification first,
+  and then try removing it to fall back to the wfs Transaction version (that is, the transaction
+  you should apply to version 1 to go to the current version)
 -->
 <wfsv:GetDiff service="WFSV" version="1.1.0"
+  outputFormat="HTML"
   xmlns:topp="http://www.openplans.org/topp"
   xmlns:ogc="http://www.opengis.net/ogc"
   xmlns:wfs="http://www.opengis.net/wfs"
@@ -11,5 +14,5 @@
                       http://localhost:8080/geoserver/schemas//wfs/1.1.0/wfs.xsd
                       http://www.opengis.net/wfsv
                       http://localhost:8080/geoserver/schemas/wfs/1.1.0/wfsv.xsd">
-  <wfsv:DifferenceQuery typeName="topp:archsites" fromFeatureVersion="1" toFeatureVersion="13"/>
+  <wfsv:DifferenceQuery typeName="topp:archsites" fromFeatureVersion="1"/>
 </wfsv:GetDiff>

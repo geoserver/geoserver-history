@@ -11,7 +11,5 @@
   xsi:schemaLocation="http://www.opengis.net/wfsv
                       http://localhost:8080/geoserver/schemas/wfs/1.1.0/wfsv.xsd"
   handle="Rolling back previous changes">
-  <wfsv:Rollback safeToIgnore="false" vendorId="TOPP">
-    <wfsv:DifferenceQuery typeName="topp:archsites" toFeatureVersion="1"/>
-  </wfsv:Rollback>
+  <wfsv:Rollback safeToIgnore="false" vendorId="TOPP" typeName="archsites" toFeatureVersion="1"/>
 </wfs:Transaction>

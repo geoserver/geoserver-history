@@ -1,7 +1,9 @@
 <!--             
-  Let's modify that archsite we saw before
+  Let's modify that archsite we saw before. Try this one with the output format specification first,
+  and then try removing it to fall back to the GML3 version
 -->
 <wfsv:GetLog service="WFSV" version="1.1.0"
+  outputFormat="HTML"
   xmlns:topp="http://www.openplans.org/topp"
   xmlns:ogc="http://www.opengis.net/ogc"
   xmlns:wfs="http://www.opengis.net/wfs"

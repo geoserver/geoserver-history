@@ -1,8 +1,10 @@
 <!--             
   Let's gather a feature backwards difference this time, that is, the
-  transaction we should issue to go back to the state we had at revision 1
+  transaction we should issue to go back to the state we had at revision 1.
+  Try this out without the output format spec, too.
 -->
 <wfsv:GetDiff service="WFSV" version="1.1.0"
+  outputFormat="HTML"
   xmlns:topp="http://www.openplans.org/topp"
   xmlns:ogc="http://www.opengis.net/ogc"
   xmlns:wfs="http://www.opengis.net/wfs"
@@ -12,5 +14,5 @@
                       http://localhost:8080/geoserver/schemas//wfs/1.1.0/wfs.xsd
                       http://www.opengis.net/wfsv
                       http://localhost:8080/geoserver/schemas/wfs/1.1.0/wfsv.xsd">
-  <wfsv:DifferenceQuery typeName="topp:archsites" fromFeatureVersion="13" toFeatureVersion="1"/>
+  <wfsv:DifferenceQuery typeName="topp:archsites" toFeatureVersion="1"/>
 </wfsv:GetDiff>
