@@ -249,17 +249,6 @@
         <details key="namespace" value="http://www.opengis.net/ogc"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fromFeatureVersion" unique="false"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String" defaultValueLiteral="FIRST"
-        unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="&#xD;&#xA;              Same as featureVersion in QueryType, but this indicates a starting feature version for&#xD;&#xA;              a difference and log operations.&#xD;&#xA;            "/>
-      </eAnnotations>
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="attribute"/>
-        <details key="name" value="fromFeatureVersion"/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="handle" unique="false"
         eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -268,6 +257,17 @@
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
         <details key="name" value="handle"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="toFeatureVersion" unique="false"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String" defaultValueLiteral="FIRST"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;              Same as featureVersion in QueryType. Rollback will restore the &quot;toFeatureVersion&quot; &#xD;&#xA;              feature state, removing all changes occurred between &quot;toFeatureVersion&quot; and current&#xD;&#xA;            "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="toFeatureVersion"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeName" unique="false"

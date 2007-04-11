@@ -19,8 +19,8 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link net.opengis.wfsv.RollbackType#getFilter <em>Filter</em>}</li>
- *   <li>{@link net.opengis.wfsv.RollbackType#getFromFeatureVersion <em>From Feature Version</em>}</li>
  *   <li>{@link net.opengis.wfsv.RollbackType#getHandle <em>Handle</em>}</li>
+ *   <li>{@link net.opengis.wfsv.RollbackType#getToFeatureVersion <em>To Feature Version</em>}</li>
  *   <li>{@link net.opengis.wfsv.RollbackType#getTypeName <em>Type Name</em>}</li>
  *   <li>{@link net.opengis.wfsv.RollbackType#getUser <em>User</em>}</li>
  * </ul>
@@ -63,63 +63,6 @@ public interface RollbackType extends NativeType {
     void setFilter(Object value);
 
     /**
-     * Returns the value of the '<em><b>From Feature Version</b></em>' attribute.
-     * The default value is <code>"FIRST"</code>.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * <!-- begin-model-doc -->
-     * 
-     *               Same as featureVersion in QueryType, but this indicates a starting feature version for
-     *               a difference and log operations.
-     *             
-     * <!-- end-model-doc -->
-     * @return the value of the '<em>From Feature Version</em>' attribute.
-     * @see #isSetFromFeatureVersion()
-     * @see #unsetFromFeatureVersion()
-     * @see #setFromFeatureVersion(String)
-     * @see net.opengis.wfsv.WfsvPackage#getRollbackType_FromFeatureVersion()
-     * @model default="FIRST" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
-     *        extendedMetaData="kind='attribute' name='fromFeatureVersion'"
-     * @generated
-     */
-    String getFromFeatureVersion();
-
-    /**
-     * Sets the value of the '{@link net.opengis.wfsv.RollbackType#getFromFeatureVersion <em>From Feature Version</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @param value the new value of the '<em>From Feature Version</em>' attribute.
-     * @see #isSetFromFeatureVersion()
-     * @see #unsetFromFeatureVersion()
-     * @see #getFromFeatureVersion()
-     * @generated
-     */
-    void setFromFeatureVersion(String value);
-
-    /**
-     * Unsets the value of the '{@link net.opengis.wfsv.RollbackType#getFromFeatureVersion <em>From Feature Version</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #isSetFromFeatureVersion()
-     * @see #getFromFeatureVersion()
-     * @see #setFromFeatureVersion(String)
-     * @generated
-     */
-    void unsetFromFeatureVersion();
-
-    /**
-     * Returns whether the value of the '{@link net.opengis.wfsv.RollbackType#getFromFeatureVersion <em>From Feature Version</em>}' attribute is set.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return whether the value of the '<em>From Feature Version</em>' attribute is set.
-     * @see #unsetFromFeatureVersion()
-     * @see #getFromFeatureVersion()
-     * @see #setFromFeatureVersion(String)
-     * @generated
-     */
-    boolean isSetFromFeatureVersion();
-
-    /**
      * Returns the value of the '<em><b>Handle</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -151,6 +94,63 @@ public interface RollbackType extends NativeType {
      * @generated
      */
     void setHandle(String value);
+
+    /**
+     * Returns the value of the '<em><b>To Feature Version</b></em>' attribute.
+     * The default value is <code>"FIRST"</code>.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * <!-- begin-model-doc -->
+     * 
+     *               Same as featureVersion in QueryType. Rollback will restore the "toFeatureVersion" 
+     *               feature state, removing all changes occurred between "toFeatureVersion" and current
+     *             
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>To Feature Version</em>' attribute.
+     * @see #isSetToFeatureVersion()
+     * @see #unsetToFeatureVersion()
+     * @see #setToFeatureVersion(String)
+     * @see net.opengis.wfsv.WfsvPackage#getRollbackType_ToFeatureVersion()
+     * @model default="FIRST" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
+     *        extendedMetaData="kind='attribute' name='toFeatureVersion'"
+     * @generated
+     */
+    String getToFeatureVersion();
+
+    /**
+     * Sets the value of the '{@link net.opengis.wfsv.RollbackType#getToFeatureVersion <em>To Feature Version</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>To Feature Version</em>' attribute.
+     * @see #isSetToFeatureVersion()
+     * @see #unsetToFeatureVersion()
+     * @see #getToFeatureVersion()
+     * @generated
+     */
+    void setToFeatureVersion(String value);
+
+    /**
+     * Unsets the value of the '{@link net.opengis.wfsv.RollbackType#getToFeatureVersion <em>To Feature Version</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isSetToFeatureVersion()
+     * @see #getToFeatureVersion()
+     * @see #setToFeatureVersion(String)
+     * @generated
+     */
+    void unsetToFeatureVersion();
+
+    /**
+     * Returns whether the value of the '{@link net.opengis.wfsv.RollbackType#getToFeatureVersion <em>To Feature Version</em>}' attribute is set.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return whether the value of the '<em>To Feature Version</em>' attribute is set.
+     * @see #unsetToFeatureVersion()
+     * @see #getToFeatureVersion()
+     * @see #setToFeatureVersion(String)
+     * @generated
+     */
+    boolean isSetToFeatureVersion();
 
     /**
      * Returns the value of the '<em><b>Type Name</b></em>' attribute.

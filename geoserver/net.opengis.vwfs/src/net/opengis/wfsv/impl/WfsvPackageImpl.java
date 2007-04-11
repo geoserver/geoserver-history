@@ -391,7 +391,7 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getRollbackType_FromFeatureVersion() {
+    public EAttribute getRollbackType_Handle() {
         return (EAttribute)rollbackTypeEClass.getEStructuralFeatures().get(1);
     }
 
@@ -400,7 +400,7 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getRollbackType_Handle() {
+    public EAttribute getRollbackType_ToFeatureVersion() {
         return (EAttribute)rollbackTypeEClass.getEStructuralFeatures().get(2);
     }
 
@@ -515,8 +515,8 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
 
         rollbackTypeEClass = createEClass(ROLLBACK_TYPE);
         createEAttribute(rollbackTypeEClass, ROLLBACK_TYPE__FILTER);
-        createEAttribute(rollbackTypeEClass, ROLLBACK_TYPE__FROM_FEATURE_VERSION);
         createEAttribute(rollbackTypeEClass, ROLLBACK_TYPE__HANDLE);
+        createEAttribute(rollbackTypeEClass, ROLLBACK_TYPE__TO_FEATURE_VERSION);
         createEAttribute(rollbackTypeEClass, ROLLBACK_TYPE__TYPE_NAME);
         createEAttribute(rollbackTypeEClass, ROLLBACK_TYPE__USER);
 
@@ -591,8 +591,8 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
 
         initEClass(rollbackTypeEClass, RollbackType.class, "RollbackType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getRollbackType_Filter(), theXMLTypePackage.getAnySimpleType(), "filter", null, 0, 1, RollbackType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getRollbackType_FromFeatureVersion(), theXMLTypePackage.getString(), "fromFeatureVersion", "FIRST", 0, 1, RollbackType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getRollbackType_Handle(), theXMLTypePackage.getString(), "handle", null, 0, 1, RollbackType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getRollbackType_ToFeatureVersion(), theXMLTypePackage.getString(), "toFeatureVersion", "FIRST", 0, 1, RollbackType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getRollbackType_TypeName(), theXMLTypePackage.getQName(), "typeName", null, 1, 1, RollbackType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getRollbackType_User(), theXMLTypePackage.getString(), "user", "", 0, 1, RollbackType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -807,18 +807,18 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
              "namespace", "http://www.opengis.net/ogc"
            });			
         addAnnotation
-          (getRollbackType_FromFeatureVersion(), 
-           source, 
-           new String[] {
-             "kind", "attribute",
-             "name", "fromFeatureVersion"
-           });			
-        addAnnotation
           (getRollbackType_Handle(), 
            source, 
            new String[] {
              "kind", "attribute",
              "name", "handle"
+           });			
+        addAnnotation
+          (getRollbackType_ToFeatureVersion(), 
+           source, 
+           new String[] {
+             "kind", "attribute",
+             "name", "toFeatureVersion"
            });			
         addAnnotation
           (getRollbackType_TypeName(), 
