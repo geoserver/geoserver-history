@@ -23,6 +23,7 @@ import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.data.postgis.FeatureDiff;
 import org.geotools.data.postgis.FeatureDiffReader;
+import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 import org.geotools.xml.Encoder;
 import org.opengis.filter.Filter;
@@ -38,7 +39,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
@@ -50,7 +50,7 @@ import javax.xml.namespace.QName;
  * @author Andrea Aime, TOPP
  *
  */
-public class DiffTransactionResponse extends Response {
+public class GetDiffTransactionOutputFormat extends Response {
     /**
      * WFS configuration
      */
@@ -67,7 +67,7 @@ public class DiffTransactionResponse extends Response {
      */
     FilterFactory filterFactory;
 
-    public DiffTransactionResponse(WFS wfs, Data catalog, WFSConfiguration configuration,
+    public GetDiffTransactionOutputFormat(WFS wfs, Data catalog, WFSConfiguration configuration,
         FilterFactory filterFactory) {
         super(FeatureDiffReader[].class);
 
@@ -133,11 +133,13 @@ public class DiffTransactionResponse extends Response {
                     final UpdateElementType update = WfsFactory.eINSTANCE.createUpdateElementType();
                     final EList properties = update.getProperty();
 
-                    for (Iterator it = diff.getChanges().entrySet().iterator(); it.hasNext();) {
+                    Feature f = diff.getFeature();
+
+                    for (Iterator it = diff.getChangedAttributes().iterator(); it.hasNext();) {
                         final PropertyType property = WfsFactory.eINSTANCE.createPropertyType();
-                        Map.Entry entry = (Entry) it.next();
-                        property.setName(new QName((String) entry.getKey()));
-                        property.setValue(entry.getValue());
+                        String name = (String) it.next();
+                        property.setName(new QName(name));
+                        property.setValue(f.getAttribute(name));
                         properties.add(property);
                     }
 

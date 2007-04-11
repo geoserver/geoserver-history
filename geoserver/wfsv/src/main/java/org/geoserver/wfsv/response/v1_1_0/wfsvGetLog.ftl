@@ -4,11 +4,6 @@ add a title with the feature type name and the starting/ending
 version, but that would mean changing the return type of the GetLog call... sigh...
 -->
 <html>
-<head>
-    <style type="text/css">
-      <!-- @import url("/geoserver/style.css"); -->
-    </style>
-</head>
 <body>
 <table border='1' cellspacing="0" cellpadding="3">
 
@@ -21,13 +16,13 @@ version, but that would mean changing the return type of the GetLog call... sigh
 
 <#list features as feature>
 <tr>
-  <td>
+  <td align="right">
     ${feature.attributes[0].value}
   </td>
   <td>
     ${feature.attributes[1].value}
   </td>
-  <td>
+  <td align="right">
     ${feature.attributes[2].value}
   </td>
   <td>
