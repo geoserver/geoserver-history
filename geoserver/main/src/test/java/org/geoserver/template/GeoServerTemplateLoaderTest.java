@@ -67,11 +67,6 @@ public class GeoServerTemplateLoaderTest extends TestCase {
             assertNotNull(source);
             assertFalse(source instanceof File);
             templateLoader.getReader(source, "UTF-8");
-
-            expected = new File(templates, "FeatureSimple.ftl");
-            actual = (File) templateLoader.findTemplateSource("FeatureSimple.ftl");
-            assertEquals(expected.getCanonicalPath(), actual.getCanonicalPath());
-            assertTrue(expected.exists());
         } finally {
             delete(data);
         }
