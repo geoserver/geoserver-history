@@ -7,38 +7,35 @@ package org.geoserver.wfsv.response.v1_1_0;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import net.opengis.wfs.FeatureCollectionType;
-import net.opengis.wfs.ResultTypeType;
-import net.opengis.wfsv.GetLogType;
 import org.geoserver.ows.Response;
-import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.template.FeatureWrapper;
 import org.geoserver.template.GeoServerTemplateLoader;
-import org.geotools.feature.FeatureCollection;
+import org.geotools.data.postgis.FeatureDiffReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 
 /**
- * Html, templatized output format for the GetLog response
+ * WFS output format for a GetDiff operation whose output format is a WFS 1.1
+ * transaction
+ *
  * @author Andrea Aime, TOPP
  *
  */
-public class GetLogHtmlOutputFormat extends Response {
+public class GetDiffHtmlOutputFormat extends Response {
     private static Configuration templateConfig;
 
     static {
-        //initialize the template engine, this is static to maintain a cache 
+        // initialize the template engine, this is static to maintain a cache
         // over instantiations of kml writer
         templateConfig = new Configuration();
-        templateConfig.setObjectWrapper(new FeatureWrapper());
+        templateConfig.setObjectWrapper(new FeatureDiffWrapper());
     }
 
-    public GetLogHtmlOutputFormat() {
-        super(FeatureCollectionType.class, "HTML");
+    public GetDiffHtmlOutputFormat() {
+        super(FeatureDiffReader[].class, "HTML");
     }
 
     public String getMimeType(Object value, Operation operation)
@@ -47,35 +44,26 @@ public class GetLogHtmlOutputFormat extends Response {
     }
 
     public boolean canHandle(Operation operation) {
-        if ("GetLog".equalsIgnoreCase(operation.getId())) {
-            //also check that the resultType is "results"
-            GetLogType request = (GetLogType) OwsUtils.parameter(operation.getParameters(),
-                    GetLogType.class);
-
-            return request.getResultType() == ResultTypeType.RESULTS_LITERAL;
-        }
-
-        return false;
+        return "GetDiff".equalsIgnoreCase(operation.getId());
     }
 
     public void write(Object value, OutputStream output, Operation operation)
         throws IOException, ServiceException {
-        FeatureCollectionType fct = (FeatureCollectionType) value;
-        FeatureCollection fc = (FeatureCollection) fct.getFeature().get(0);
+        FeatureDiffReader[] diffReaders = (FeatureDiffReader[]) value;
 
         // setup template subsystem
         GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(getClass());
-        templateLoader.setFeatureType(fc.getSchema().getTypeName());
+        templateLoader.setFeatureType(diffReaders[0].getSchema().getTypeName());
 
         Template template = null;
 
         synchronized (templateConfig) {
             templateConfig.setTemplateLoader(templateLoader);
-            template = templateConfig.getTemplate("wfsvGetLog.ftl");
+            template = templateConfig.getTemplate("wfsvGetDiff.ftl");
         }
 
         try {
-            template.process(fc, new OutputStreamWriter(output));
+            template.process(diffReaders, new OutputStreamWriter(output));
         } catch (TemplateException e) {
             String msg = "Error occured processing template.";
             throw (IOException) new IOException(msg).initCause(e);
