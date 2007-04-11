@@ -96,17 +96,8 @@ public class VersioningTransaction extends Transaction {
                     + info.getTypeName(), e, rollback.getHandle());
             }
 
-            String fromVersion = rollback.getFromFeatureVersion();
-
-            // finally, we check we support this rollback
-            if ((fromVersion != null) && !fromVersion.equals("LAST")) {
-                throw new WFSTransactionException("We don't support rolling back "
-                    + "from a version other than the last one at the moment");
-            }
-
-            // TODO: we should check the user attribute, which is missing,
-            // because we don't
-            // support that one neither
+            // TODO: we should check the user attribute, but for the moment
+            // we don't have an authentication subsystem
         }
 
         public void execute(EObject element, TransactionType request, Map featureStores,
@@ -123,15 +114,14 @@ public class VersioningTransaction extends Transaction {
 
             try {
                 // we use the difference to compute the number of inserted,
-                // updated and deleted
-                // features, but we can't use these to actually perform the
-                // rollback, since
-                // we would be unable to preserve the fids of the ones that were
-                // deleted and
-                // need to be re-inserted
-                Filter filter = (rollback.getFilter() != null) ? (Filter) rollback.getFilter() : Filter.INCLUDE;
-                String fromVersion = rollback.getFromFeatureVersion();
-                reader = vstore.getDifferences(fromVersion, null, filter);
+                // updated and deleted features, but we can't use these to
+                // actually perform the rollback, since we would be unable to
+                // preserve the fids of the ones that were deleted and need to
+                // be re-inserted
+                Filter filter = (rollback.getFilter() != null) ? (Filter) rollback.getFilter()
+                                                               : Filter.INCLUDE;
+                String version = rollback.getToFeatureVersion();
+                reader = vstore.getDifferences(null, version, filter);
 
                 while (reader.hasNext()) {
                     FeatureDiff fd = reader.next();
@@ -155,8 +145,9 @@ public class VersioningTransaction extends Transaction {
 
                 try {
                     String user = rollback.getUser();
-                    String[] users = user != null? new String[]{user}: null;
-                    vstore.rollback(rollback.getFromFeatureVersion(), (Filter) rollback.getFilter(), users);
+                    String[] users = ((user != null) && !user.trim().equals(""))
+                        ? new String[] { user } : null;
+                    vstore.rollback(version, (Filter) rollback.getFilter(), users);
                 } catch (IOException e) {
                     throw new WFSTransactionException("Could not perform the rollback", e,
                         rollback.getHandle());
