@@ -110,7 +110,7 @@
   </bean>
   
   <!-- Encoders / Output formats -->
-  <bean id="transactionOutputFormat" class="org.geoserver.wfsv.response.v1_1_0.DiffTransactionResponse">
+  <bean id="transactionOutputFormat" class="org.geoserver.wfsv.response.v1_1_0.GetDiffTransactionOutputFormat">
     <constructor-arg ref="wfs"/>
     <constructor-arg ref="catalog"/>
     <constructor-arg ref="xmlConfiguration-1.1"/>
@@ -122,6 +122,8 @@
     <constructor-arg ref="xmlConfiguration-1.1"/>
   </bean>
   <bean id="getLogHtmlOutputFormat" class="org.geoserver.wfsv.response.v1_1_0.GetLogHtmlOutputFormat">
+  </bean>
+  <bean id="getDiffHtmlOutputFormat" class="org.geoserver.wfsv.response.v1_1_0.GetDiffHtmlOutputFormat">
   </bean>
 
 </beans>
