@@ -159,6 +159,7 @@ public class GeoServerTemplateLoader implements TemplateLoader {
         } else {
             // get teh resource for the raw source as use it right away
             ClassTemplateSource wrapper = (ClassTemplateSource) source;
+
             return classTemplateLoader.getReader(wrapper.source, encoding);
         }
     }
