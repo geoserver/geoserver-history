@@ -1,3 +1,23 @@
+GeoServer 1.5.0
+-------------------
+
+The first official release of the 1.5 series of GeoServer. This
+release is a major milestone for the GeoServer. This version of
+GeoServer brings some exciting new functionality like:
+
+- Coverage support and an implementation of Web Coverage Service
+- WMS raster support
+- WFS and WMS performance improvments
+- KML improvements
+
+And as always a heap of bug fixes and other . The entire issue log for this release can be found here:
+
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&&pid=10311&fixfor=12975&fixfor=13177&fixfor=13176&fixfor=12974&fixfor=13178&fixfor=12973&fixfor=12870&sorter/field=priority&sorter/order=DESC
+
+This release is based off of Geotools 2.3.1 ( tag = 2.3.1 )
+
+See 'RUNNING.txt' for instructions on how to run GeoServer.
+
 GeoServer 1.5.0-RC4
 -------------------
 
