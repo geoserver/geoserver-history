@@ -17,7 +17,7 @@ REM -------------
 REM OK, we're ready to try actually runnning it.
 REM -------------
 
-java -jar "%GEOSERVER_HOME%\start.jar" --stop
+java -DSTOP.PORT=8079 -DSTOP.KEY=geoserver -jar "%GEOSERVER_HOME%\start.jar" --stop
 
 goto end
 
@@ -40,7 +40,7 @@ goto end
 :doGeo1
 echo GEOSERVER_HOME environment variable not found.  Using current
 echo directory.  Please set GEOSERVER_HOME for future uses.
- java -jar start.jar --stop
+ java -DSTOP.PORT=8079 -DSTOP.KEY=geoserver -jar start.jar --stop
  goto end
 
 :noGeo2
@@ -53,7 +53,7 @@ goto end
   echo GEOSERVER_HOME environment variable not properly set.  Using parent
   echo directory of this script.  Please set GEOSERVER_HOME correctly for 
   echo future uses.
-  java -jar -DSTOP.PORT=8079 -DSTOP.KEY=geoserver start.jar --stop
+  java -DSTOP.PORT=8079 -DSTOP.KEY=geoserver -jar start.jar --stop
 goto end
 
 :end
