@@ -38,7 +38,7 @@ at least must contain the "default" attribute
 </CoverageDimension>
 <supportedCRSs>
 <requestCRSs>EPSG:4326</requestCRSs>
-<responseCRSs>EPSG:4326</responseCRSs>
+<responseCRSs>EPSG:4326,EPSG:32626</responseCRSs>
 </supportedCRSs>
 <supportedFormats nativeFormat = "ArcGrid" >
 <formats>ARCGRID,ARCGRID-GZIP,GEOTIFF,PNG,GIF,TIFF</formats>
