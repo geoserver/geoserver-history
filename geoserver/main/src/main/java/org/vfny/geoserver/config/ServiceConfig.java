@@ -7,27 +7,32 @@ package org.vfny.geoserver.config;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
- * ServiceConfig purpose.<p>ServiceConfig is intended to be extended to
- * provide some basic data storage facilities.  This class represents the
- * basic properties of a web service.</p>
- *  <p></p>
+ * ServiceConfig purpose.
+ *
+ * <p>
+ * ServiceConfig is intended to be extended to provide some basic data storage
+ * facilities.  This class represents the basic properties of a web service.
+ * </p>
+ *
+ * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ServiceConfig.java,v 1.16 2004/02/09 23:30:05 dmzwiers Exp $
+ * @version $Id$
  */
 public class ServiceConfig {
     /**
-     * Represents when the web service is enabled/disabled. True when
-     * enabled.
+     * Represents when the web service is enabled/disabled. True when enabled.
      */
     private boolean enabled = true;
 
     /**
-     * Online Reference URL for the web service. A location to look for
-     * when additional assistance is required.
+     * Online Reference URL for the web service. A location to look for when
+     * additional assistance is required.
      */
     private URL onlineResource;
 
@@ -41,42 +46,42 @@ public class ServiceConfig {
     private String _abstract;
 
     /** A list of keywords associated with the service. */
-    private String[] keywords;
+    private List keywords;
 
     /**
-     * The fees associated with the service. When there are not any
-     * fees, the value  "NONE" is used.
+     * The fees associated with the service. When there are not any fees, the
+     * value  "NONE" is used.
      */
     private String fees;
 
     /**
-     * The access constraints associated with the service. When there
-     * are not any,  the value "NONE" is used.
+     * The access constraints associated with the service. When there are not
+     * any,  the value "NONE" is used.
      */
     private String accessConstraints = "NONE";
 
     /**
-     * Name of the person who maintains the web service. Should ideally
-     * be contact  information such as webmaster&amp;geoserver.org .
+     * Name of the person who maintains the web service. Should ideally be
+     * contact  information such as webmaster&amp;geoserver.org .
      */
     private String maintainer;
     private MetaDataLink metadataLink;
 
     /**
-             * ServiceConfig constructor.
-             *
-             * <p>
-             * Creates an empty ServiceConfig representation with default values.
-             * </p>
-             *
-             * @see defaultSettings()
-             */
+     * ServiceConfig constructor.
+     *
+     * <p>
+     * Creates an empty ServiceConfig representation with default values.
+     * </p>
+     *
+     * @see defaultSettings()
+     */
     public ServiceConfig() {
         enabled = true;
         name = "";
         title = "";
         _abstract = "";
-        keywords = new String[0];
+        keywords = new ArrayList();
         fees = "";
         accessConstraints = "NONE";
         maintainer = "";
@@ -84,20 +89,20 @@ public class ServiceConfig {
     }
 
     /**
-             * ServiceConfig constructor.
-             *
-             * <p>
-             * This is equivalent to calling the load method. When a null value is
-             * passed in,  the default values are used. All non-primary datatypes are
-             * cloned with the  exception of Strings (which have a singleton hash
-             * table in memory representation).
-             * </p>
-             *
-             * @param dto The ServiceDTO object to copy into the new ServiceConfig
-             *        object.
-             *
-             * @throws NullPointerException if dto was null;
-             */
+     * ServiceConfig constructor.
+     *
+     * <p>
+     * This is equivalent to calling the load method. When a null value is
+     * passed in,  the default values are used. All non-primary datatypes are
+     * cloned with the  exception of Strings (which have a singleton hash
+     * table in memory representation).
+     * </p>
+     *
+     * @param dto The ServiceDTO object to copy into the new ServiceConfig
+     *        object.
+     *
+     * @throws NullPointerException if dto was null;
+     */
     public ServiceConfig(ServiceDTO dto) {
         if (dto == null) {
             throw new NullPointerException("Non null ServiceDTO required");
@@ -107,8 +112,11 @@ public class ServiceConfig {
     }
 
     /**
-     * Implement loadDTO.<p>Takes a ServiceDTO and loads it into this
-     * ServiceConfig Object</p>
+     * Implement loadDTO.
+     *
+     * <p>
+     * Takes a ServiceDTO and loads it into this ServiceConfig Object
+     * </p>
      *
      * @param dto an instance of ServiceDTO
      *
@@ -127,16 +135,7 @@ public class ServiceConfig {
         title = s.getTitle();
         _abstract = s.getAbstract();
 
-        try {
-            keywords = new String[s.getKeywords().length];
-
-            for (int i = 0; i < keywords.length; i++)
-                keywords[i] = s.getKeywords()[i];
-        } catch (Exception e) {
-            // should only happen for null
-            keywords = new String[0];
-        }
-
+        keywords = new ArrayList(s.getKeywords());
         fees = s.getFees();
         accessConstraints = s.getAccessConstraints();
         maintainer = s.getMaintainer();
@@ -145,8 +144,11 @@ public class ServiceConfig {
     }
 
     /**
-     * Implement toDTO.<p>Returns a copy of the data in a ServiceDTO
-     * object</p>
+     * Implement toDTO.
+     *
+     * <p>
+     * Returns a copy of the data in a ServiceDTO object
+     * </p>
      *
      * @return a copy of the data in a ServiceDTO object
      *
@@ -160,13 +162,7 @@ public class ServiceConfig {
         sDto.setAccessConstraints(accessConstraints);
         sDto.setEnabled(enabled);
         sDto.setFees(fees);
-
-        String[] s = new String[keywords.length];
-
-        for (int i = 0; i < keywords.length; i++)
-            s[i] = keywords[i];
-
-        sDto.setKeywords(s);
+        sDto.setKeywords(new ArrayList(keywords));
         sDto.setMaintainer(maintainer);
         sDto.setName(name);
         sDto.setOnlineResource(onlineResource);
@@ -271,7 +267,7 @@ public class ServiceConfig {
      *
      * @return
      */
-    public String[] getKeywords() {
+    public List getKeywords() {
         return keywords;
     }
 
@@ -325,7 +321,7 @@ public class ServiceConfig {
      *
      * @param list
      */
-    public void setKeywords(String[] list) {
+    public void setKeywords(List list) {
         keywords = list;
     }
 
@@ -339,18 +335,16 @@ public class ServiceConfig {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return Returns the metadataLink.
+     *
      */
     public MetaDataLink getMetadataLink() {
         return metadataLink;
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @param metadataLink The metadataLink to set.
+     *
      */
     public void setMetadataLink(MetaDataLink metadataLink) {
         this.metadataLink = metadataLink;

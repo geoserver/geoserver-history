@@ -4,10 +4,10 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import org.geotools.data.DataUtilities;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
+import org.geotools.resources.coverage.CoverageUtilities;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
 import org.geotools.styling.SLDParser;
@@ -43,13 +43,14 @@ import javax.xml.parsers.FactoryConfigurationError;
 /**
  * Key/Value pair set parsed for a GetLegendGraphic request. When calling
  * <code>getRequest</code> produces a {@linkPlain
- * org.vfny.geoserver.requests.wms.GetLegendGraphicRequest}<p>See
- * {@linkPlain org.vfny.geoserver.wms.requests.GetLegendGraphicRequest} for a
- * complete list of expected request parameters.</p>
+ * org.vfny.geoserver.requests.wms.GetLegendGraphicRequest}
+ * <p>
+ * See {@linkplain org.vfny.geoserver.wms.requests.GetLegendGraphicRequest} for
+ * a complete list of expected request parameters.
+ * </p>
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
- *
  * @see org.vfny.geoserver.wms.requests.GetLegendGraphicRequest
  */
 public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
@@ -58,16 +59,16 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
                                                                                          .getName());
 
     /**
-     * Factory to create styles from inline or remote SLD documents
-     * (aka, from SLD_BODY or SLD parameters).
+     * Factory to create styles from inline or remote SLD documents (aka, from
+     * SLD_BODY or SLD parameters).
      */
     private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
 
     /**
-             * Creates a new GetLegendGraphicKvpReader object.
-             * @param params map of key/value pairs with the parameters for a GetLegendGraphic request
-             * @param service service handle request
-             */
+     * Creates a new GetLegendGraphicKvpReader object.
+     * @param params map of key/value pairs with the parameters for a GetLegendGraphic request
+     * @param service service handle request
+     */
     public GetLegendGraphicKvpReader(Map params, WMService service) {
         super(params, service);
     }
@@ -75,12 +76,15 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
     /**
      * DOCUMENT ME!
      *
-     * @param httpRequest DOCUMENT ME!
+     * @param httpRequest
+     *            DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      *
-     * @throws ServiceException see <code>throws WmsException</code>
-     * @throws WmsException if some invalid parameter was passed.
+     * @throws ServiceException
+     *             see <code>throws WmsException</code>
+     * @throws WmsException
+     *             if some invalid parameter was passed.
      */
     public Request getRequest(HttpServletRequest httpRequest)
         throws ServiceException {
@@ -115,7 +119,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
                 CoverageInfo cvi = request.getWMS().getData().getCoverageInfo(layer);
                 mli.setCoverage(cvi);
 
-                FeatureCollection feature = DataUtilities.wrapGc(cvi.getCoverage(null, null));
+                FeatureCollection feature = CoverageUtilities.wrapGc(cvi.getCoverage(null, null));
                 request.setLayer(feature.getFeatureType());
             } catch (NoSuchElementException ne) {
                 throw new WmsException(ne,
@@ -159,10 +163,13 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
     /**
      * DOCUMENT ME!
      *
-     * @param req DOCUMENT ME!
-     * @param mli DOCUMENT ME!
+     * @param req
+     *            DOCUMENT ME!
+     * @param ft
+     *            DOCUMENT ME!
      *
-     * @throws WmsException DOCUMENT ME!
+     * @throws WmsException
+     *             DOCUMENT ME!
      *
      * @task TODO: validate EXCEPTIONS parameter
      */
@@ -202,18 +209,24 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
     }
 
     /**
-     * Parses the STYLE, SLD and SLD_BODY parameters, as well as RULE.<p>STYLE,
-     * SLD and SLD_BODY are mutually exclusive. STYLE refers to a named style
-     * known by the server and applicable to the requested layer (i.e., it is
-     * exposed as one of the layer's styles in the Capabilities document). SLD
-     * is a URL to an externally available SLD document, and SLD_BODY is a
-     * string containing the SLD document itself.</p>
-     *  <p>As I don't completelly understand which takes priority over
-     * which from the spec, I assume the precedence order as follow: SLD,
-     * SLD_BODY, STYLE, in decrecent order of precedence.</p>
+     * Parses the STYLE, SLD and SLD_BODY parameters, as well as RULE.
+     *
+     * <p>
+     * STYLE, SLD and SLD_BODY are mutually exclusive. STYLE refers to a named
+     * style known by the server and applicable to the requested layer (i.e., it
+     * is exposed as one of the layer's styles in the Capabilities document).
+     * SLD is a URL to an externally available SLD document, and SLD_BODY is a
+     * string containing the SLD document itself.
+     * </p>
+     *
+     * <p>
+     * As I don't completelly understand which takes priority over which from
+     * the spec, I assume the precedence order as follow: SLD, SLD_BODY, STYLE,
+     * in decrecent order of precedence.
+     * </p>
      *
      * @param req
-     * @param layer
+     * @param ftype
      *
      * @throws WmsException
      */
@@ -266,18 +279,17 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
     }
 
     /**
-     * Finds the Style named <code>styleName</code> in
-     * <code>styles</code>.
+     * Finds the Style named <code>styleName</code> in <code>styles</code>.
      *
-     * @param styleName name of style to search for in the list of styles. If
-     *        <code>null</code>, it is assumed the request is made in literal
-     *        mode and the user has requested the first style.
+     * @param styleName
+     *            name of style to search for in the list of styles. If
+     *            <code>null</code>, it is assumed the request is made in
+     *            literal mode and the user has requested the first style.
      * @param styles non null, non empty, list of styles
-     *
      * @return
-     *
-     * @throws NoSuchElementException if no style named <code>styleName</code>
-     *         is found in <code>styles</code>
+     * @throws NoSuchElementException
+     *             if no style named <code>styleName</code> is found in
+     *             <code>styles</code>
      */
     private Style findStyle(String styleName, Style[] styles)
         throws NoSuchElementException {
@@ -320,12 +332,14 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
     /**
      * Loads a remote SLD document and parses it to a Style object
      *
-     * @param sldUrl an URL to a SLD document
+     * @param sldUrl
+     *            an URL to a SLD document
      *
      * @return the document parsed to a Style object
      *
-     * @throws WmsException if <code>sldUrl</code> is not a valid URL, a stream
-     *         can't be opened or a parsing error occurs
+     * @throws WmsException
+     *             if <code>sldUrl</code> is not a valid URL, a stream can't
+     *             be opened or a parsing error occurs
      */
     private Style[] loadRemoteStyle(String sldUrl) throws WmsException {
         InputStream in;
@@ -346,11 +360,13 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
     /**
      * Parses a SLD Style from a xml string
      *
-     * @param sldBody the string containing the SLD document
+     * @param sldBody
+     *            the string containing the SLD document
      *
      * @return the SLD document string parsed to a Style object
      *
-     * @throws WmsException if a parsing error occurs.
+     * @throws WmsException
+     *             if a parsing error occurs.
      */
     private Style[] parseSldBody(String sldBody) throws WmsException {
         // return parseSld(new StringBufferInputStream(sldBody));
@@ -358,14 +374,16 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
     }
 
     /**
-     * Parses the content of the given input stream to an SLD Style,
-     * provided that a valid SLD document can be read from <code>xmlIn</code>.
+     * Parses the content of the given input stream to an SLD Style, provided
+     * that a valid SLD document can be read from <code>xmlIn</code>.
      *
-     * @param xmlIn where to read the SLD document from.
+     * @param xmlIn
+     *            where to read the SLD document from.
      *
      * @return the parsed Style
      *
-     * @throws WmsException if a parsing error occurs
+     * @throws WmsException
+     *             if a parsing error occurs
      */
     private Style[] parseSld(Reader xmlIn) throws WmsException {
         SLDParser parser = new SLDParser(styleFactory, xmlIn);

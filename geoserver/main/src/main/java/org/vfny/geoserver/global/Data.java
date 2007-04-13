@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.global;
 
-import org.geoserver.data.GeoServerCatalog;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
@@ -37,6 +36,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Level;
+import javax.xml.namespace.QName;
 
 
 /**
@@ -60,7 +60,7 @@ import java.util.logging.Level;
  *         modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
- * @version $Id: Data.java,v 1.45 2004/09/13 16:05:10 cholmesny Exp $
+ * @version $Id$
  */
 public class Data extends GlobalLayerSupertype /* implements Repository */ {
     public static final String WEB_CONTAINER_KEY = "DATA";
@@ -168,11 +168,6 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
      */
     private Map errors;
 
-    /**
-     * The catalog
-     */
-    private GeoServerCatalog catalog;
-
     public Data(DataDTO config, File dir, GeoServer g)
         throws ConfigurationException {
         baseDir = dir;
@@ -185,18 +180,12 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
         gs = g;
     }
 
-    public Data(Config config, GeoServer g, GeoServerCatalog catalog)
-        throws ConfigurationException {
+    public Data(Config config, GeoServer g) throws ConfigurationException {
         this(config.getXMLReader().getData(), config.dataDirectory(), g);
-        this.catalog = catalog;
     }
 
     GeoServer getGeoServer() {
         return gs;
-    }
-
-    GeoServerCatalog getCatalog() {
-        return catalog;
     }
 
     public void setDataDirectory(File dataDirectory) {
@@ -664,6 +653,21 @@ SCHEMA:
                 errors.put(featureTypeDTO, ioException);
 
                 continue;
+            } catch (NoSuchElementException nse) {
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.log(Level.SEVERE,
+                        new StringBuffer("FeatureTypeInfo ").append(key)
+                                                            .append(" ignored - as DataStore ")
+                                                            .append(dataStoreId)
+                                                            .append(" can't find FeatureType '"
+                            + typeName + "'.  Error was:\n").append(nse).toString());
+                }
+
+                if (LOGGER.isLoggable(Level.FINE)) {
+                    LOGGER.log(Level.FINE, typeName + " not found", nse);
+                }
+
+                continue;
             } catch (Throwable unExpected) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE,
@@ -673,8 +677,6 @@ SCHEMA:
                                                             .append(" is broken:").append(unExpected)
                                                             .toString());
                 }
-
-                unExpected.printStackTrace();
 
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.log(Level.FINE, new StringBuffer(key).append(" unavailable").toString(),
@@ -739,9 +741,6 @@ SCHEMA:
                 map.put(key2, featureTypeInfo);
                 // set layer name, type vector (0)
                 layerNames.put(key2, TYPE_VECTOR);
-
-                // set catalog hierarchy
-                dataStoreInfo.addMember(featureTypeInfo);
 
                 if (LOGGER.isLoggable(Level.FINEST)) {
                     LOGGER.finest(new StringBuffer("FeatureTypeInfo '").append(key2)
@@ -1084,6 +1083,30 @@ SCHEMA:
     }
 
     /**
+     * Returns the NamespaceINfo object corresponding to a particular
+     * namespace uri.
+     * <p>
+     * If a namespace info object could not be found with mathces <param>uri</param>
+     * then <code>null</code> is returned.
+     * </p>
+     *
+     * @param uri A namespace uri, non-null
+     *
+     * @return NameSpaceInfo resulting from the specified uri.
+     */
+    public synchronized NameSpaceInfo getNameSpaceFromURI(String uri) {
+        for (Iterator i = nameSpaces.values().iterator(); i.hasNext();) {
+            NameSpaceInfo nsInfo = (NameSpaceInfo) i.next();
+
+            if (nsInfo.getURI().equals(uri)) {
+                return nsInfo;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * getDefaultNameSpace purpose.
      *
      * <p>
@@ -1177,6 +1200,17 @@ SCHEMA:
         }
 
         throw new NoSuchElementException("Could not locate FeatureTypeConfig '" + name + "'");
+    }
+
+    /**
+     * Gets a FeatureTypeINfo from a qualified name.
+     * <p>
+     * This method calls through to {@link #getFeatureTypeInfo(String, String)}.
+     * </p>
+     * @param name The qualified name of the feature type.
+     */
+    public FeatureTypeInfo getFeatureTypeInfo(QName name) {
+        return getFeatureTypeInfo(name.getLocalPart(), name.getNamespaceURI());
     }
 
     /**

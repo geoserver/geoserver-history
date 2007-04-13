@@ -48,17 +48,17 @@ public class SLDValidator {
         return validateSLD(new InputSource(xml), servContext);
 
         /*try {
-           URL schemaFile = servContext.getResource("/schemas/sld/StyledLayerDescriptor.xsd");
-           LOGGER.info("Validating SLD with " + schemaFile.toString());
+                     URL schemaFile = servContext.getResource("/schemas/sld/StyledLayerDescriptor.xsd");
+                     LOGGER.info("Validating SLD with " + schemaFile.toString());
         
-           return validateSLD(xml, schemaFile.toString());
-           } catch (Exception e) {
-                   LOGGER.severe(e.getLocalizedMessage());
-                   ArrayList al = new ArrayList();
-               al.add(new SAXException(e));
+            return validateSLD(xml, schemaFile.toString());
+        } catch (Exception e) {
+                LOGGER.severe(e.getLocalizedMessage());
+                ArrayList al = new ArrayList();
+            al.add(new SAXException(e));
         
-               return al;
-           }*/
+            return al;
+        }*/
     }
 
     public static String getErrorMessage(InputStream xml, List errors) {
@@ -66,9 +66,9 @@ public class SLDValidator {
     }
 
     /**
-     * returns a better formated error message - suitable for framing.
-     * There's a more complex version in StylesEditorAction. This will kick
-     * out a VERY LARGE errorMessage.
+     * returns a better formated error message - suitable for framing. There's
+     * a more complex version in StylesEditorAction. This will kick out a VERY
+     * LARGE errorMessage.
      *
      * @param xml
      * @param errors
@@ -173,28 +173,28 @@ public class SLDValidator {
     }
 
     /*public List validateSLD(InputStream xml, String SchemaUrl) {
-       return validateSLD(new InputSource(xml), SchemaUrl);
-       }*/
+        return validateSLD(new InputSource(xml), SchemaUrl);
+    }*/
 
     /*public List validateSLD(InputSource xml, ServletContext servContext) {
-       File schemaFile = new File(servContext.getRealPath("/"),
-       "/schemas/sld/StyledLayerDescriptor.xsd");
+        File schemaFile = new File(servContext.getRealPath("/"),
+        "/schemas/sld/StyledLayerDescriptor.xsd");
     
-       try {
-           return validateSLD(xml, schemaFile.toURL().toString());
-       } catch (Exception e) {
-           ArrayList al = new ArrayList();
-           al.add(new SAXException(e));
+        try {
+            return validateSLD(xml, schemaFile.toURL().toString());
+        } catch (Exception e) {
+            ArrayList al = new ArrayList();
+            al.add(new SAXException(e));
     
-           return al;
-       }
-       }*/
+            return al;
+        }
+    }*/
 
     /**
      * validate a .sld against the schema
      *
      * @param xml input stream representing the .sld file
-     * @param servContext location of the schemas. Normally use
+     * @param SchemaUrl location of the schemas. Normally use
      *        ".../schemas/sld/StyleLayerDescriptor.xsd"
      *
      * @return list of SAXExceptions (0 if the file's okay)

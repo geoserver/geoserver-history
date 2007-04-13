@@ -13,14 +13,14 @@ import junit.framework.TestCase;
  * @author gabriel
  */
 public class GetMapResponseTest extends TestCase {
-    /** DOCUMENT ME! */
+    /** DOCUMENT ME!  */
     private GetMapResponse getMapResponse;
 
     /**
-             * Constructor for GetMapResponseTest.
-             *
-             * @param arg0
-             */
+     * Constructor for GetMapResponseTest.
+     *
+     * @param arg0
+     */
     public GetMapResponseTest(String arg0) {
         super(arg0);
     }

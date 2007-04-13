@@ -15,12 +15,14 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * DataNamespacesNewForm purpose.<p>Description of DataNamespacesNewForm
- * ...</p>
+ * DataNamespacesNewForm purpose.
+ * <p>
+ * Description of DataNamespacesNewForm ...
+ * </p>
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: DataNamespacesNewForm.java,v 1.4 2004/03/02 10:06:42 jive Exp $
+ * @version $Id$
  */
 public class DataNamespacesNewForm extends ActionForm {
     private String prefix;
@@ -34,18 +36,16 @@ public class DataNamespacesNewForm extends ActionForm {
     /**
      * Implementation of validate.
      *
+     * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
+     *
      * @param mapping
      * @param request
-     *
      * @return Any ActionErrors produced by validation
-     *
-     * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping,
-     *      javax.servlet.http.HttpServletRequest)
      */
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if ((getPrefix() == null) || "".equals(getPrefix())) {
+        if ((getPrefix() == null) || getPrefix().equals("")) {
             errors.add("prefix", new ActionError("error.prefix.required", getPrefix()));
         } else if (!Pattern.matches("^\\w*$", getPrefix())) {
             errors.add("dataStoreID", new ActionError("error.prefix.invalid", getPrefix()));

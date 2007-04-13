@@ -6,13 +6,16 @@ package org.vfny.geoserver.global.dto;
 
 
 /**
- * Data Transfer Object for communication with GeoServer's Web Feature
- * Service.<p>Data Transfer object are used to communicate between the
- * GeoServer application and its configuration and persistent layers. As such
- * the class is final - to allow for its future use as an on-the-wire message.</p>
+ * Data Transfer Object for communication with GeoServer's Web Feature Service.
+ *
+ * <p>
+ * Data Transfer object are used to communicate between the GeoServer
+ * application and its configuration and persistent layers. As such the class
+ * is final - to allow for its future use as an on-the-wire message.
+ * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WFSDTO.java,v 1.9 2004/09/09 16:51:58 cholmesny Exp $
+ * @version $Id$
  */
 public final class WFSDTO implements DataTransferObject {
     /** ServiceLevel bit used to indicate Basic support */
@@ -47,36 +50,39 @@ public final class WFSDTO implements DataTransferObject {
     private boolean featureBounding = true;
 
     /**
-     * ie. citeConformanceHacks value equals true<p>Currently there are
-     * certain legal things in the Geoserver WFS GetCapabilities response that
-     * the CITE tests throw error if it finds. An example of this is the
-     * supported GetFeature output formats.  CITE only allows GML2, GML2-ZIP,
-     * and SHAPE-ZIP. We support GML2, GML2-GZIP, GML2-ZIP, and SHAPE-ZIP, so
-     * CITE tests will complain that we're not allowed to support GML2-GZIP!
-     * By setting this option to "true" the GetCapabilities response will NOT
-     * show we support those extra dataformats. In the future we may find
-     * other "silly" things.</p>
+     * ie. citeConformanceHacks value equals true
+     *
+     * <p>
+     * Currently there are certain legal things in the Geoserver WFS
+     * GetCapabilities response that the CITE tests throw error if it finds.
+     * An example of this is the supported GetFeature output formats.  CITE
+     * only allows GML2, GML2-ZIP, and SHAPE-ZIP. We support GML2, GML2-GZIP,
+     * GML2-ZIP, and SHAPE-ZIP, so CITE tests will complain that we're not
+     * allowed to support GML2-GZIP! By setting this option to "true" the
+     * GetCapabilities response will NOT show we support those extra
+     * dataformats. In the future we may find other "silly" things.
+     * </p>
      */
     private boolean citeConformanceHacks = false; //default to normal operations
 
     /**
-             * WFS Data Transfer Object constructor.  does nothing
-             */
+     * WFS Data Transfer Object constructor.  does nothing
+     */
     public WFSDTO() {
     }
 
     /**
-             * WFS constructor.
-             *
-             * <p>
-             * Creates a copy of the WFS provided. If the WFS provided  is null then
-             * default values are used. All the data structures are cloned.
-             * </p>
-             *
-             * @param other The WFS to copy.
-             *
-             * @throws NullPointerException DOCUMENT ME!
-             */
+     * WFS constructor.
+     *
+     * <p>
+     * Creates a copy of the WFS provided. If the WFS provided  is null then
+     * default values are used. All the data structures are cloned.
+     * </p>
+     *
+     * @param other The WFS to copy.
+     *
+     * @throws NullPointerException DOCUMENT ME!
+     */
     public WFSDTO(WFSDTO other) {
         if (other == null) {
             throw new NullPointerException("Data Transfer Object required");
@@ -139,10 +145,13 @@ public final class WFSDTO implements DataTransferObject {
     }
 
     /**
-     * Provides access to the Service DTO object.<p>Note well that this
-     * is the internal ServiceDTO object used by the WFSDTO - any changes made
-     * to the result of this method will change the state of this WFSDTO
-     * object.</p>
+     * Provides access to the Service DTO object.
+     *
+     * <p>
+     * Note well that this is the internal ServiceDTO object used by the WFSDTO
+     * - any changes made to the result of this method will change the state
+     * of this WFSDTO object.
+     * </p>
      *
      * @return ServericeDTO used by this WFSDTO
      */
@@ -151,8 +160,11 @@ public final class WFSDTO implements DataTransferObject {
     }
 
     /**
-     * Set this WFS Data Tranfer Object to use the provided Service
-     * DTO.<p>A copy of the provided dto is made.</p>
+     * Set this WFS Data Tranfer Object to use the provided Service DTO.
+     *
+     * <p>
+     * A copy of the provided dto is made.
+     * </p>
      *
      * @param dto ServiceDTO used to configure this WFSDTO
      *
@@ -167,9 +179,8 @@ public final class WFSDTO implements DataTransferObject {
     }
 
     /**
-     * Whether the srs xml attribute should be in the EPSG:4326
-     * (non-xml) style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-     * style.
+     * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
      *
      * @return <tt>true</tt> if the srs is reported with the xml style
      */
@@ -178,9 +189,8 @@ public final class WFSDTO implements DataTransferObject {
     }
 
     /**
-     * Sets whether the srs xml attribute should be in the EPSG:4326
-     * (non-xml) style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-     * style.
+     * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
      *
      * @param doXmlStyle whether the srs style should be xml or not.
      */
@@ -236,8 +246,8 @@ public final class WFSDTO implements DataTransferObject {
     }
 
     /**
-     * Sets whether the gml returned by getFeature includes an
-     * auto-calculated bounds element on each feature or not.
+     * Sets whether the gml returned by getFeature includes an auto-calculated
+     * bounds element on each feature or not.
      *
      * @param featureBounding <tt>true</tt> if gml features should have
      *        boundedBy automatically generated.

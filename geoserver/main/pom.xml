@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver</artifactId>
-		<version>1.5.0</version>
+		<version>1.6-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.geoserver</groupId>
@@ -18,7 +18,12 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-			<version>1.5.0</version>
+      <version>1.6-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>ows</artifactId>
+      <version>1.6-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -57,30 +62,16 @@
 			<artifactId>commons-httpclient</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>commons-validator</groupId>
 			<artifactId>commons-validator</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>oro</groupId>
 			<artifactId>oro</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-epsg-hsql</artifactId>
-		</dependency>
-		<!--
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-epsg-wkt</artifactId>
-		</dependency>
-		-->
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-cql</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -89,7 +80,27 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
+			<artifactId>gt2-coverage</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
 			<artifactId>gt2-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-data</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-epsg-hsql</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-metadata</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.mockrunner</groupId>

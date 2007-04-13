@@ -20,17 +20,17 @@ import java.util.Map;
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
- * @version $Id: Capabilities.java,v 0.1 Feb 15, 2005 12:15:13 PM $
+ * @version $Id$
  */
 public class Capabilities extends WCService {
+    public Capabilities(WCS wcs) {
+        super("GetCapabilities", wcs);
+    }
+
     /**
      * Comment for <code>serialVersionUID</code>
      */
     private static final long serialVersionUID = 3258129176207636277L;
-
-    public Capabilities(WCS wcs) {
-        super("GetCapabilities", wcs);
-    }
 
     /**
     * DOCUMENT ME!

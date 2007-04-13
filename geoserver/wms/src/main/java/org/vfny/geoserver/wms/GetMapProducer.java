@@ -31,9 +31,9 @@ import java.io.OutputStream;
  */
 public interface GetMapProducer {
     /**
-     * Asks this map producer to create a map image for the passed
-     * {@linkPlain WMSMapContext}, which contains enough information for doing
-     * such a process.
+     * Asks this map producer to create a map image for the passed {@linkPlain
+     * WMSMapContext}, which contains enough information for doing such a
+     * process.
      *
      * @param map the map context that contains all the information required to
      *        create the map image.
@@ -43,8 +43,8 @@ public interface GetMapProducer {
     void produceMap(WMSMapContext map) throws WmsException;
 
     /**
-     * Writes the map created in produceMap to the destination stream,
-     * though it could be used to encode the map to the proper output format,
+     * Writes the map created in produceMap to the destination stream, though
+     * it could be used to encode the map to the proper output format,
      * provided that there are almost no risk that the encoding fails.
      *
      * @param out an open stream where to send the produced legend graphic to.
@@ -60,14 +60,19 @@ public interface GetMapProducer {
      * <code>writeTo(OutputStream)</code>
      *
      * @return the output format
+     *
+     * @throws java.lang.IllegalStateException if this method is called before
+     *         {@linkPlain #produceMap(WMSMapContext)},
      */
     String getContentType() throws java.lang.IllegalStateException;
 
     /**
      * The content disposition is the file name of the returned result.
-     * If there is no file name, null is returned. The returned string should
-     * be in the form: "inline; filename=name.ext" You need the "inline;"
-     * prefix and the filename can be whatever you want. An example would be:
+     * If there is no file name, null is returned.
+     * The returned string should be in the form:
+     * "inline; filename=name.ext"
+     * You need the "inline;" prefix and the filename can be whatever you want.
+     * An example would be:
      * "inline; filename=states.pdf"
      *
      * @return Header information for setting the file name
@@ -75,9 +80,9 @@ public interface GetMapProducer {
     String getContentDisposition();
 
     /**
-     * asks the legend graphic producer to stop processing since it
-     * will be no longer needed (for example, because the request was
-     * interrupted by the user)
+     * asks the legend graphic producer to stop processing since it will be no
+     * longer needed (for example, because the request was interrupted by the
+     * user)
      */
     void abort();
 }

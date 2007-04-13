@@ -11,6 +11,7 @@ import org.geotools.data.DataStore;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Repository;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
 import org.geotools.validation.Validator;
@@ -25,16 +26,15 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * DOCUMENT ME!
- *
  * @author rgould
- * @author bowens TODO To change the template for this generated type comment
- *         go to Window - Preferences - Java - Code Style - Code Templates
+ * @author bowens
+ *
+ * TODO To change the template for this generated type comment go to
+ * Window - Preferences - Java - Code Style - Code Templates
  */
 public class ValidationRunnable implements Runnable {
     /** Standard logging instance for class */
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
-    public final static String KEY = "validationTestDoItThread.key";
     private Map testSuites;
     private Map plugins;
     private DataConfig dataConfig;
@@ -44,6 +44,7 @@ public class ValidationRunnable implements Runnable {
     ValidationProcessor gv;
     public TestValidationResults results; // I get filled up with goodies
     Repository repository;
+    public final static String KEY = "validationTestDoItThread.key";
 
     //public ValidationRunnable(Map ts, Map plugins, DataConfig dataConfig, ServletContext context, HttpServletRequest request) throws Exception
     public ValidationRunnable(HttpServletRequest request) {
@@ -54,32 +55,32 @@ public class ValidationRunnable implements Runnable {
         this.request = request;
 
         /*
-           LOGGER.finer("testSuites.size() = " + testSuites.size());
-           LOGGER.finer("plugins.size() = " + plugins.size());
-           LOGGER.finer("" + (TestSuiteDTO) testSuites.values().toArray()[0]);
+                        LOGGER.finer("testSuites.size() = " + testSuites.size());
+                        LOGGER.finer("plugins.size() = " + plugins.size());
+                        LOGGER.finer("" + (TestSuiteDTO) testSuites.values().toArray()[0]);
         
-           //DataConfig dataConfig = (DataConfig) getDataConfig();
-           Map dataStoreConfigs = dataConfig.getDataStores();
-           DefaultRepository dataRepository = new DefaultRepository();
-           Iterator it = dataStoreConfigs.keySet().iterator();
+                        //DataConfig dataConfig = (DataConfig) getDataConfig();
+                        Map dataStoreConfigs = dataConfig.getDataStores();
+                        DefaultRepository dataRepository = new DefaultRepository();
+                        Iterator it = dataStoreConfigs.keySet().iterator();
         
-           // get all the data stores and build up our dataRepository
-           while (it.hasNext())
-           {
-                   String dsKey = it.next().toString();
-                   DataStoreConfig dsc = (DataStoreConfig) dataStoreConfigs.get(dsKey);
-                   DataStore ds = null;
-                   try {
-                           ds = dsc.findDataStore(context);
-                           dataRepository.register(dsKey, ds);
-                   }
-                   catch (Exception e) {
-                           e.printStackTrace();
-                   }
-           }
+                        // get all the data stores and build up our dataRepository
+                        while (it.hasNext())
+                        {
+                                String dsKey = it.next().toString();
+                                DataStoreConfig dsc = (DataStoreConfig) dataStoreConfigs.get(dsKey);
+                                DataStore ds = null;
+                                try {
+                                        ds = dsc.findDataStore(context);
+                                        dataRepository.register(dsKey, ds);
+                                }
+                                catch (Exception e) {
+                                        e.printStackTrace();
+                                }
+                        }
         
-           validator = new Validator(dataRepository, gv);
-         */
+                        validator = new Validator(dataRepository, gv);
+                        */
     }
 
     public void setup(TestValidationResults vr, Repository repo, Map plugins, Map testSuites)
@@ -114,19 +115,15 @@ public class ValidationRunnable implements Runnable {
             try {
                 LOGGER.finer(dataStoreId + ": feature validation, " + featureSource);
 
-                FeatureReader reader = featureSource.getFeatures().reader();
-
-                try {
-                    validator.featureValidation(dataStoreId, reader, results);
-                } finally {
-                    reader.close();
-                }
+                FeatureCollection features = featureSource.getFeatures();
+                validator.featureValidation(dataStoreId, features, results);
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
         }
 
         /** ------------------------------------------------------------------ */
+
         /** run INTEGRITY validations */
 
         // this is stupid

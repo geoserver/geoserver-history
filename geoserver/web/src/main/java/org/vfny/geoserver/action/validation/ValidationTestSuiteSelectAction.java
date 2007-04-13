@@ -24,13 +24,16 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * ValidationTestSuiteSelect purpose.<p>Used to look up a test suite
- * indicated by the ActionForm (ValidationTestSuiteSelectForm) passed to it,
- * save it into session and pass it to the test selector.</p>
+ * ValidationTestSuiteSelect purpose.
+ * <p>
+ * Used to look up a test suite indicated by the ActionForm
+ * (ValidationTestSuiteSelectForm) passed to it, save it into
+ * session and pass it to the test selector.
+ * </p>
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationTestSuiteSelectAction.java,v 1.4 2004/02/25 00:38:53 dmzwiers Exp $
+ * @version $Id$
  */
 public class ValidationTestSuiteSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,

@@ -65,7 +65,7 @@ public class DemoRequestAction extends GeoServerAction {
         throws IOException, ServletException {
         DemoRequestForm demoForm = (DemoRequestForm) form;
 
-        File[] dirs = demoForm.getDirs();
+        File dir = demoForm.getDir();
         String demo = demoForm.getDemo();
         String baseUrl = Requests.getBaseUrl(request, getGeoServer());
 
@@ -73,15 +73,15 @@ public class DemoRequestAction extends GeoServerAction {
             demo = "";
         }
 
-        if ("".equals(demo)) {
+        if (demo.equals("")) {
             demoForm.setUrl(baseUrl);
             demoForm.setBody("");
         }
 
-        String url = Requests.getBaseUrl(request, getGeoServer())
-            + ((demo.indexOf("Coverage") > 0) ? "wcs" : "wfs");
+        String service = demo.substring(0, demo.indexOf('_')).toLowerCase();
+        String url = Requests.getBaseUrl(request, getGeoServer()) + service;
 
-        File file = lookupFile(dirs, demo);
+        File file = new File(dir, demo);
         BufferedReader reader = new BufferedReader(new FileReader(file));
 
         StringBuffer buf = new StringBuffer();
@@ -102,18 +102,5 @@ public class DemoRequestAction extends GeoServerAction {
         // return back to the admin demo
         //
         return mapping.findForward("welcome.demoRequest");
-    }
-
-    private File lookupFile(File[] dirs, String demo) {
-        for (int i = 0; i < dirs.length; i++) {
-            File f = new File(dirs[i], demo);
-
-            if (f.exists()) {
-                return f;
-            }
-        }
-
-        throw new RuntimeException("This should not happen, the demo file " + demo
-            + " could not be found anywhere");
     }
 }

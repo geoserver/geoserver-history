@@ -15,12 +15,17 @@ import javax.servlet.ServletContext;
 
 
 /**
- * DataStoreInfo purpose.<p>Used to describe a datastore, typically one
- * specified in the catalog.xml config file.</p>
- *  <p></p>
+ * DataStoreInfo purpose.
+ *
+ * <p>
+ * Used to describe a datastore, typically one specified in the catalog.xml
+ * config file.
+ * </p>
+ *
+ * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataStoreConfig.java,v 1.11 2004/04/30 02:49:24 sploreg Exp $
+ * @version $Id$
  */
 public class DataStoreConfig {
     /** unique datasore identifier */
@@ -45,17 +50,17 @@ public class DataStoreConfig {
     private DataStoreFactorySpi factory;
 
     /**
-             * Create a new DataStoreConfig from a dataStoreId and factoryDescription
-             *
-             * <p>
-             * Creates a DataStoreInfo to represent an instance with default data.
-             * </p>
-             *
-             * @param dataStoreId Description of DataStore (see DataStoreUtils)
-             * @param factoryDescription DOCUMENT ME!
-             *
-             * @see defaultSettings()
-             */
+     * Create a new DataStoreConfig from a dataStoreId and factoryDescription
+     *
+     * <p>
+     * Creates a DataStoreInfo to represent an instance with default data.
+     * </p>
+     *
+     * @param dataStoreId Description of DataStore (see DataStoreUtils)
+     * @param factoryDescription DOCUMENT ME!
+     *
+     * @see defaultSettings()
+     */
     public DataStoreConfig(String dataStoreId, String factoryDescription) {
         this(dataStoreId, DataStoreUtils.aquireFactory(factoryDescription));
     }
@@ -72,15 +77,15 @@ public class DataStoreConfig {
     }
 
     /**
-             * DataStoreInfo constructor.
-             *
-             * <p>
-             * Creates a copy of the DataStoreInfoDTO provided. All the datastructures
-             * are cloned.
-             * </p>
-             *
-             * @param dto The datastore to copy.
-             */
+     * DataStoreInfo constructor.
+     *
+     * <p>
+     * Creates a copy of the DataStoreInfoDTO provided. All the datastructures
+     * are cloned.
+     * </p>
+     *
+     * @param dto The datastore to copy.
+     */
     public DataStoreConfig(DataStoreInfoDTO dto) {
         reset(dto);
     }
@@ -107,8 +112,11 @@ public class DataStoreConfig {
     }
 
     /**
-     * Implement loadDTO.<p>Populates the data fields with the
-     * DataStoreInfoDTO provided.</p>
+     * Implement loadDTO.
+     *
+     * <p>
+     * Populates the data fields with the DataStoreInfoDTO provided.
+     * </p>
      *
      * @param ds the DataStoreInfoDTO to use.
      *
@@ -134,8 +142,11 @@ public class DataStoreConfig {
     }
 
     /**
-     * Implement toDTO.<p>Create a DataStoreInfoDTO from the current
-     * config object.</p>
+     * Implement toDTO.
+     *
+     * <p>
+     * Create a DataStoreInfoDTO from the current config object.
+     * </p>
      *
      * @return The data represented as a DataStoreInfoDTO
      *
@@ -158,7 +169,11 @@ public class DataStoreConfig {
     }
 
     /**
-     * getAbstract purpose.<p>Description ...</p>
+     * getAbstract purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -167,7 +182,11 @@ public class DataStoreConfig {
     }
 
     /**
-     * getConnectionParams purpose.<p>Description ...</p>
+     * getConnectionParams purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -176,7 +195,11 @@ public class DataStoreConfig {
     }
 
     /**
-     * isEnabled purpose.<p>Description ...</p>
+     * isEnabled purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -185,7 +208,11 @@ public class DataStoreConfig {
     }
 
     /**
-     * This is the DataStore ID<p></p>
+     * This is the DataStore ID
+     *
+     * <p>
+     *
+     * </p>
      *
      * @return
      */
@@ -194,7 +221,11 @@ public class DataStoreConfig {
     }
 
     /**
-     * getNameSpace purpose.<p>Description ...</p>
+     * getNameSpace purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -203,7 +234,11 @@ public class DataStoreConfig {
     }
 
     /**
-     * getTitle purpose.<p>Description ...</p>
+     * getTitle purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -212,7 +247,11 @@ public class DataStoreConfig {
     }
 
     /**
-     * setAbstract purpose.<p>Description ...</p>
+     * setAbstract purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param string
      */
@@ -223,7 +262,11 @@ public class DataStoreConfig {
     }
 
     /**
-     * setConnectionParams purpose.<p>Description ...</p>
+     * setConnectionParams purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param map
      */
@@ -232,7 +275,11 @@ public class DataStoreConfig {
     }
 
     /**
-     * setEnabled purpose.<p>Description ...</p>
+     * setEnabled purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param b
      */
@@ -241,7 +288,11 @@ public class DataStoreConfig {
     }
 
     /**
-     * setNameSpace purpose.<p>Description ...</p>
+     * setNameSpace purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param support
      */
@@ -252,7 +303,11 @@ public class DataStoreConfig {
     }
 
     /**
-     * setTitle purpose.<p>Description ...</p>
+     * setTitle purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param string
      */
@@ -263,11 +318,9 @@ public class DataStoreConfig {
     }
 
     // Access to Dyanmic Content
+
     /**
-     * It would be nice if we did not throw this away - but life is too
-     * short
-     *
-     * @param sc DOCUMENT ME!
+     * It would be nice if we did not throw this away - but life is too short
      *
      * @return Real DataStore generated by this DataStoreConfig
      *

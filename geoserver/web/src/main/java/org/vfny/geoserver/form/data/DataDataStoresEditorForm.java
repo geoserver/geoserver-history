@@ -32,10 +32,13 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Represents the information required for editing a DataStore.<p>The
- * parameters required by a DataStore are dynamically generated from the
+ * Represents the information required for editing a DataStore.
+ *
+ * <p>
+ * The parameters required by a DataStore are dynamically generated from the
  * DataStoreFactorySPI. Most use of DataStoreFactorySPI has been hidden behind
- * the DataStoreUtil class.</p>
+ * the DataStoreUtil class.
+ * </p>
  *
  * @author Richard Gould, Refractions Research
  */
@@ -44,8 +47,8 @@ public class DataDataStoresEditorForm extends ActionForm {
     private ArrayList paramHelp;
 
     /**
-     * Used to identify the DataStore being edited. Maybe we should
-     * grab this from session?
+     * Used to identify the DataStore being edited. Maybe we should grab this
+     * from session?
      */
     private String dataStoreId;
 
@@ -61,6 +64,7 @@ public class DataDataStoresEditorForm extends ActionForm {
     // These are not stored in a single map so we can access them
     // easily from JSP page
     //
+
     /** String representation of connection parameter keys */
     private List paramKeys;
 
@@ -76,13 +80,14 @@ public class DataDataStoresEditorForm extends ActionForm {
     //
     // More hacky attempts to transfer information into the JSP smoothly
     //
+
     /** Available NamespaceIds */
     private SortedSet namespaces;
 
     /**
-     * Because of the way that STRUTS works, if the user does not check
-     * the enabled box, or unchecks it, setEnabled() is never called, thus we
-     * must monitor setEnabled() to see if it doesn't get called. This must be
+     * Because of the way that STRUTS works, if the user does not check the
+     * enabled box, or unchecks it, setEnabled() is never called, thus we must
+     * monitor setEnabled() to see if it doesn't get called. This must be
      * accessible, as ActionForms need to know about it -- there is no way we
      * can tell whether we are about to be passed to an ActionForm or not.
      * Probably a better way to do this, but I can't think of one. -rgould
@@ -114,7 +119,7 @@ public class DataDataStoresEditorForm extends ActionForm {
         enabled = dsConfig.isEnabled();
         namespaceId = dsConfig.getNameSpaceId();
 
-        if ("".equals(namespaceId)) {
+        if (namespaceId.equals("")) {
             namespaceId = config.getDefaultNameSpace().getPrefix();
         }
 
@@ -213,9 +218,8 @@ public class DataDataStoresEditorForm extends ActionForm {
                     //do a check to see if the shapefile url is valid, report 
                     // an error if it does not 
                     File file = GeoserverDataDirectory.findDataFile(value);
-                    FormUtils.checkFileExistsAndCanRead(file, errors);
 
-                    return errors;
+                    return FormUtils.checkFileExistsAndCanRead(file, errors);
                 }
             }
 
@@ -265,12 +269,7 @@ public class DataDataStoresEditorForm extends ActionForm {
         return errors;
     }
 
-    /**
-     * Used to debug connection parameters
-     *
-     * @param msg DOCUMENT ME!
-     * @param params DOCUMENT ME!
-     */
+    /** Used to debug connection parameters */
     public void dump(String msg, Map params) {
         if (msg != null) {
             System.out.print(msg + " ");
@@ -353,7 +352,11 @@ public class DataDataStoresEditorForm extends ActionForm {
     }
 
     /**
-     * getDataStoreId purpose.<p>Description ...</p>
+     * getDataStoreId purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -362,7 +365,11 @@ public class DataDataStoresEditorForm extends ActionForm {
     }
 
     /**
-     * getDescription purpose.<p>Description ...</p>
+     * getDescription purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -371,7 +378,11 @@ public class DataDataStoresEditorForm extends ActionForm {
     }
 
     /**
-     * isEnabled purpose.<p>Description ...</p>
+     * isEnabled purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -380,7 +391,11 @@ public class DataDataStoresEditorForm extends ActionForm {
     }
 
     /**
-     * getNamespaces purpose.<p>Description ...</p>
+     * getNamespaces purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -389,7 +404,11 @@ public class DataDataStoresEditorForm extends ActionForm {
     }
 
     /**
-     * getParamValues purpose.<p>Description ...</p>
+     * getParamValues purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -398,7 +417,11 @@ public class DataDataStoresEditorForm extends ActionForm {
     }
 
     /**
-     * setDescription purpose.<p>Description ...</p>
+     * setDescription purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param string
      */
@@ -407,7 +430,11 @@ public class DataDataStoresEditorForm extends ActionForm {
     }
 
     /**
-     * setEnabled purpose.<p>Description ...</p>
+     * setEnabled purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param b
      */
@@ -417,7 +444,11 @@ public class DataDataStoresEditorForm extends ActionForm {
     }
 
     /**
-     * setParamKeys purpose.<p>Description ...</p>
+     * setParamKeys purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param list
      */
@@ -426,7 +457,11 @@ public class DataDataStoresEditorForm extends ActionForm {
     }
 
     /**
-     * setParamValues purpose.<p>Description ...</p>
+     * setParamValues purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param list
      */
@@ -435,7 +470,11 @@ public class DataDataStoresEditorForm extends ActionForm {
     }
 
     /**
-     * getNamespaceId purpose.<p>Description ...</p>
+     * getNamespaceId purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -444,7 +483,11 @@ public class DataDataStoresEditorForm extends ActionForm {
     }
 
     /**
-     * setNamespaceId purpose.<p>Description ...</p>
+     * setNamespaceId purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param string
      */
@@ -491,8 +534,6 @@ public class DataDataStoresEditorForm extends ActionForm {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return list containing the name of the class of each paramter.
      */
     public List getParamTypes() {
@@ -500,32 +541,25 @@ public class DataDataStoresEditorForm extends ActionForm {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @param index paramter index.
      *
      * @return The string represention of the class of the paramter at the
-     *         specified index.
+     * specified index.
      */
     public String getParamType(int index) {
         return (String) paramTypes.get(index);
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return list containing java.lang.Boolean values representing which
-     *         paramters are required.
+     * paramters are required.
      */
     public List getParamRequired() {
         return paramRequired;
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @param index paramter index.
-     *
      * @return True if the paramter is required, otherwise false.
      */
     public String getParamRequired(int index) {

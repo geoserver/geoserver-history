@@ -7,8 +7,8 @@ package org.vfny.geoserver.wcs.responses;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
-import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
-import org.geotools.data.coverage.grid.AbstractGridFormat;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
@@ -109,9 +109,7 @@ public class CoverageResponse implements Response {
     }
 
     /**
-     * Returns any extra headers that this service might want to set in the HTTP
-     * response object.
-     *
+     * Returns any extra headers that this service might want to set in the HTTP response object.
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
@@ -127,7 +125,7 @@ public class CoverageResponse implements Response {
      * @return DOCUMENT ME!
      */
     public String getContentType(GeoServer gs) {
-        return /* delegate.getContentType(gs) */ "";
+        return /*delegate.getContentType(gs)*/ "";
     }
 
     public String getContentEncoding() {
@@ -208,6 +206,7 @@ public class CoverageResponse implements Response {
 
         final Data catalog = request.getWCS().getData();
         CoverageInfo meta = null;
+        GridCoverage coverage = null;
 
         try {
             meta = catalog.getCoverageInfo(request.getCoverage());
@@ -220,6 +219,7 @@ public class CoverageResponse implements Response {
                 throw newEx;
             }
 
+            final Format format = meta.getFormatInfo().getFormat();
             final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta
                 .createReader(hints);
 
@@ -285,13 +285,10 @@ public class CoverageResponse implements Response {
     /**
      * GetCroppedCoverage
      *
-     * @param request
-     *            CoverageRequest
-     * @param meta
-     *            CoverageInfo
+     * @param request CoverageRequest
+     * @param meta CoverageInfo
      * @param parameters
-     * @param coverage
-     *            GridCoverage
+     * @param coverage GridCoverage
      * @return GridCoverage2D
      * @throws WcsException
      * @throws IOException
@@ -300,7 +297,7 @@ public class CoverageResponse implements Response {
      * @throws TransformException
      */
     private static GridCoverage2D getFinalCoverage(CoverageRequest request, CoverageInfo meta,
-        AbstractGridCoverage2DReader coverageReader /* GridCoverage coverage */, Map parameters)
+        AbstractGridCoverage2DReader coverageReader /*GridCoverage coverage*/, Map parameters)
         throws WcsException, IOException, IndexOutOfBoundsException, FactoryException,
             TransformException {
         // This is the final Response CRS
@@ -332,7 +329,7 @@ public class CoverageResponse implements Response {
             .getOriginalEnvelope()).getCoordinateReferenceSystem();
         final MathTransform GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform = CRS
             .findMathTransform(cvCRS, sourceCRS, true);
-        final MathTransform GCCRSTodeviceCRSTransform = CRS.transform(cvCRS, targetCRS, true);
+        final MathTransform GCCRSTodeviceCRSTransform = CRS.findMathTransform(cvCRS, targetCRS, true);
         final MathTransform deviceCRSToGCCRSTransform = GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform
             .inverse();
 
@@ -375,10 +372,7 @@ public class CoverageResponse implements Response {
 
             destinationSize = new Rectangle(lowers[0], lowers[1], highers[0], highers[1]);
         } else {
-            /*
-             * destinationSize =
-             * coverageReader.getOriginalGridRange().toRectangle();
-             */
+            /*destinationSize = coverageReader.getOriginalGridRange().toRectangle();*/
             throw new WcsException("Neither Grid Size nor Grid Resolution have been specified.");
         }
 

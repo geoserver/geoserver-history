@@ -32,8 +32,11 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Save GeoServer state to XML.<p>This is a propert ConfigAction - you need
- * to be logged in for this to work.</p>
+ * Save GeoServer state to XML.
+ *
+ * <p>
+ * This is a propert ConfigAction - you need to be logged in for this to work.
+ * </p>
  */
 public class SaveXMLAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
@@ -72,8 +75,9 @@ public class SaveXMLAction extends ConfigAction {
         return mapping.findForward("config");
     }
 
-    private ActionForward saveValidation(ActionMapping mapping, ActionForm form, //UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
+    private ActionForward saveValidation(ActionMapping mapping, ActionForm form,
+        //UserContainer user,
+    HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         ServletContext sc = request.getSession().getServletContext();
 
@@ -169,10 +173,9 @@ public class SaveXMLAction extends ConfigAction {
                 boolean found = false;
                 i = testSuites.keySet().iterator();
 
-                while (!found && i.hasNext()) {
+                while (!found && i.hasNext())
                     found = (((TestSuiteDTO) testSuites.get(i.next())).getName().replaceAll(" ", "")
                         + ".xml").equals(testsFL[j].getName());
-                }
 
                 if (!found) {
                     testsFL[j].delete();

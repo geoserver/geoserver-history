@@ -4,43 +4,32 @@
  */
 package org.vfny.geoserver.global;
 
-import org.geotools.catalog.Catalog;
-import org.geotools.catalog.Resolve;
-import org.geotools.catalog.ResolveChangeEvent;
-import org.geotools.catalog.ResolveChangeListener;
-import org.geotools.catalog.Service;
-import org.geotools.catalog.ServiceInfo;
-import org.geotools.catalog.defaults.DefaultServiceInfo;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
-import org.geotools.util.ProgressListener;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 
 /**
- * This is the configuration iformation for one DataStore. This class can
- * also generate real datastores.<p>This class implements {@link
- * org.geotools.catalog.Service} interface as a link to a catalog.</p>
- *
+ * This is the configuration iformation for one DataStore. This class can also
+ * generate real datastores.
+ * <p>
+ * This class implements {@link org.geotools.catalog.Service} interface as a
+ * link to a catalog.
+ * </p>
  * @author Gabriel Rold?n
  * @author dzwiers
  * @author Justin Deoliveira
- * @version $Id: DataStoreInfo.java,v 1.14 2004/06/26 19:51:24 jive Exp $
+ * @version $Id$
  */
-public class DataStoreInfo extends GlobalLayerSupertype implements Service {
+public class DataStoreInfo extends GlobalLayerSupertype {
     /** DataStoreInfo we are representing */
     private DataStore dataStore = null;
 
@@ -56,35 +45,34 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     /** Storage for metadata */
     private Map meta;
 
-    /** Catalog */
-    private Catalog catalog;
-
     /**
-     * Directory associated with this DataStore.<p>This directory may
-     * be used for File based relative paths.</p>
+     * Directory associated with this DataStore.
+     *
+     * <p>
+     * This directory may be used for File based relative paths.
+     * </p>
      */
     File baseDir;
 
     /**
-     * URL associated with this DataStore.<p>This directory may be used
-     * for URL based relative paths.</p>
+     * URL associated with this DataStore.
+     *
+     * <p>
+     * This directory may be used for URL based relative paths.
+     * </p>
      */
     URL baseURL;
 
-    //catalog methods
-    List /*<FeatureTypeInfo>*/ members = new ArrayList();
-    ServiceInfo info;
-
     /**
-             * DataStoreInfo constructor.
-             *
-             * <p>
-             * Stores the specified data for later use.
-             * </p>
-             *
-             * @param config DataStoreInfoDTO the current configuration to use.
-             * @param data Data a ref to use later to look up related informtion
-             */
+     * DataStoreInfo constructor.
+     *
+     * <p>
+     * Stores the specified data for later use.
+     * </p>
+     *
+     * @param config DataStoreInfoDTO the current configuration to use.
+     * @param data Data a ref to use later to look up related informtion
+     */
     public DataStoreInfo(DataStoreInfoDTO config, Data data) {
         this.data = data;
         meta = new HashMap();
@@ -95,14 +83,16 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
         nameSpaceId = config.getNameSpaceId();
         title = config.getTitle();
         _abstract = config.getAbstract();
-
-        catalog = data.getCatalog();
     }
 
     /**
-     * toDTO purpose.<p>This method is package visible only, and
-     * returns a reference to the GeoServerDTO. This method is unsafe, and
-     * should only be used with extreme caution.</p>
+     * toDTO purpose.
+     *
+     * <p>
+     * This method is package visible only, and returns a reference to the
+     * GeoServerDTO. This method is unsafe, and should only be used with
+     * extreme caution.
+     * </p>
      *
      * @return DataStoreInfoDTO the generated object
      */
@@ -119,7 +109,11 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     }
 
     /**
-     * getId purpose.<p>Returns the dataStore's id.</p>
+     * getId purpose.
+     *
+     * <p>
+     * Returns the dataStore's id.
+     * </p>
      *
      * @return String the id.
      */
@@ -135,12 +129,13 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     }
 
     /**
-     * Get Connect params.<p>This is used to smooth any relative path
-     * kind of issues for any file URLS. This code should be expanded to deal
-     * with any other context sensitve isses dataStores tend to have.</p>
+     * Get Connect params.
      *
-     * @param m DOCUMENT ME!
-     * @param baseDir DOCUMENT ME!
+     * <p>
+     * This is used to smooth any relative path kind of issues for any file
+     * URLS. This code should be expanded to deal with any other context
+     * sensitve isses dataStores tend to have.
+     * </p>
      *
      * @return DOCUMENT ME!
      *
@@ -183,10 +178,13 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
      * DataStoreInfo capable of process <code>connectionParams</code>. In the
      * future we can see if it is better to cache or pool DataStores for
      * performance, but definitely we shouldn't maintain a single
-     * DataStoreInfo as instance variable for synchronizing reassons<p>JG:
-     * Umm we actually require a single DataStoreInfo for for locking &
+     * DataStoreInfo as instance variable for synchronizing reassons
+     *
+     * <p>
+     * JG: Umm we actually require a single DataStoreInfo for for locking &
      * transaction support to work. DataStoreInfo is expected to be thread
-     * aware (that is why it has Transaction Support).</p>
+     * aware (that is why it has Transaction Support).
+     * </p>
      *
      * @return DataStore
      *
@@ -226,7 +224,11 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     }
 
     /**
-     * getTitle purpose.<p>Returns the dataStore's title.</p>
+     * getTitle purpose.
+     *
+     * <p>
+     * Returns the dataStore's title.
+     * </p>
      *
      * @return String the title.
      */
@@ -235,7 +237,11 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     }
 
     /**
-     * getAbstract purpose.<p>Returns the dataStore's abstract.</p>
+     * getAbstract purpose.
+     *
+     * <p>
+     * Returns the dataStore's abstract.
+     * </p>
      *
      * @return String the abstract.
      */
@@ -244,8 +250,11 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     }
 
     /**
-     * isEnabled purpose.<p>Returns true when the data store is
-     * enabled.</p>
+     * isEnabled purpose.
+     *
+     * <p>
+     * Returns true when the data store is enabled.
+     * </p>
      *
      * @return true when the data store is enabled.
      */
@@ -254,8 +263,11 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
     }
 
     /**
-     * getNameSpace purpose.<p>Returns the namespace for this
-     * datastore.</p>
+     * getNameSpace purpose.
+     *
+     * <p>
+     * Returns the namespace for this datastore.
+     * </p>
      *
      * @return NameSpaceInfo the namespace for this datastore.
      */
@@ -327,104 +339,5 @@ public class DataStoreInfo extends GlobalLayerSupertype implements Service {
      */
     public Object getMetaData(String key) {
         return meta.get(key);
-    }
-
-    public void addMember(FeatureTypeInfo ftInfo) {
-        members.add(ftInfo);
-    }
-
-    public List members(ProgressListener monitor) throws IOException {
-        return members;
-    }
-
-    public boolean canResolve(Class adaptee) {
-        return DataStore.class.isAssignableFrom(adaptee) || List.class.isAssignableFrom(adaptee)
-        || ServiceInfo.class.isAssignableFrom(adaptee);
-    }
-
-    public Object resolve(Class adaptee, ProgressListener monitor)
-        throws IOException {
-        if (DataStore.class.isAssignableFrom(adaptee)) {
-            return getDataStore();
-        }
-
-        if (List.class.isAssignableFrom(adaptee)) {
-            return members(monitor);
-        }
-
-        if (ServiceInfo.class.isAssignableFrom(adaptee)) {
-            return getInfo(monitor);
-        }
-
-        return null;
-    }
-
-    public Map getConnectionParams() {
-        return getParams();
-    }
-
-    public ServiceInfo getInfo(ProgressListener monitor)
-        throws IOException {
-        if (info == null) {
-            synchronized (this) {
-                if (info == null) {
-                    info = new DefaultServiceInfo(getTitle(), null, getAbstract(), null, null,
-                            null, null, null);
-                }
-            }
-        }
-
-        return info;
-    }
-
-    public Resolve parent(ProgressListener monitor) throws IOException {
-        return catalog;
-    }
-
-    public Status getStatus() {
-        if (isEnabled()) {
-            return Status.CONNECTED;
-        }
-
-        return Status.NOTCONNECTED;
-    }
-
-    public Throwable getMessage() {
-        return null;
-    }
-
-    public URI getIdentifier() {
-        try {
-            URI uri = new URI(getNameSpace().getURI());
-            String path = uri.getPath();
-
-            if (path == null) {
-                path = getId();
-            } else {
-                if (!path.endsWith("/")) {
-                    path += "/";
-                }
-
-                path += getId();
-            }
-
-            return new URI(uri.getScheme(), uri.getHost(), path);
-        } catch (URISyntaxException e) {
-            return null;
-        }
-    }
-
-    public void addListener(ResolveChangeListener listener)
-        throws UnsupportedOperationException {
-        //events not supported
-        throw new UnsupportedOperationException();
-    }
-
-    public void removeListener(ResolveChangeListener listener) {
-        //events not supported
-    }
-
-    public void fire(ResolveChangeEvent event) {
-        //events not supported
     }
 }

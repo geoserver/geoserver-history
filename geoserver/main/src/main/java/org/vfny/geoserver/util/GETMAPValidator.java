@@ -29,13 +29,10 @@ public class GETMAPValidator {
     }
 
     /**
-     * validates against the "normal" location of the schema (ie.
-     * ".../capabilities/sld/StyleLayerDescriptor.xsd" uses the geoserver_home
-     * patch
-     *
+     *  validates against the "normal" location of the schema (ie. ".../capabilities/sld/StyleLayerDescriptor.xsd"
+     *  uses the geoserver_home patch
      * @param xml
      * @param servContext servlet context
-     *
      * @return
      */
     public List validateGETMAP(InputStream xml, ServletContext servContext) {
@@ -58,15 +55,14 @@ public class GETMAPValidator {
     }
 
     /**
-     * returns a better formated error message - suitable for framing.
-     * There's a more complex version in StylesEditorAction. This will kick
-     * out a VERY LARGE errorMessage.
-     *
-     * @param xml
-     * @param errors
-     *
-     * @return DOCUMENT ME!
-     */
+       *  returns a better formated error message - suitable for framing.
+       * There's a more complex version in StylesEditorAction.
+       *
+       * This will kick out a VERY LARGE errorMessage.
+       *
+       * @param xml
+       * @param errors
+       */
     public static String getErrorMessage(Reader xml, List errors) {
         return SLDValidator.getErrorMessage(xml, errors);
     }
@@ -90,12 +86,10 @@ public class GETMAPValidator {
     }
 
     /**
-     * validate a GETMAP against the schema
+     *  validate a GETMAP against the schema
      *
-     * @param xml input stream representing the GETMAP file
-     * @param SchemaUrl location of the schemas. Normally use
-     *        ".../capabilities/sld/StyleLayerDescriptor.xsd"
-     *
+     * @param xml  input stream representing the GETMAP file
+     * @param SchemaUrl location of the schemas. Normally use ".../capabilities/sld/StyleLayerDescriptor.xsd"
      * @return list of SAXExceptions (0 if the file's okay)
      */
     public List validateGETMAP(InputSource xml, String SchemaUrl) {

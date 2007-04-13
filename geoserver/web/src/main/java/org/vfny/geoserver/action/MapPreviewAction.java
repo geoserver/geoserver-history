@@ -161,20 +161,25 @@ public class MapPreviewAction extends GeoServerAction {
             }
 
             // we now have a bounding box in the same CRS as the layer
+            if ((bbox.getWidth() == 0) || (bbox.getHeight() == 0)) {
+                bbox.expandBy(0.1);
+            }
 
-            // prepare strings for web output
-            ftList.add(layer.getNameSpace().getPrefix() + "_"
-                + layer.getFeatureType().getTypeName()); // FeatureType name
-            ftnsList.add(layer.getNameSpace().getPrefix() + ":"
-                + layer.getFeatureType().getTypeName());
-            dsList.add(layer.getDataStoreInfo().getId()); // DataStore info
-                                                          // bounding box of the FeatureType
+            if (layer.isEnabled()) {
+                // prepare strings for web output
+                ftList.add(layer.getNameSpace().getPrefix() + "_"
+                    + layer.getFeatureType().getTypeName()); // FeatureType name
+                ftnsList.add(layer.getNameSpace().getPrefix() + ":"
+                    + layer.getFeatureType().getTypeName());
+                dsList.add(layer.getDataStoreInfo().getId()); // DataStore info
+                                                              // bounding box of the FeatureType
 
-            bboxList.add(bbox.getMinX() + ", " + bbox.getMinY() + ", " + bbox.getMaxX() + ", "
-                + bbox.getMaxY());
-            //save out the mapbuilder files
-            makeMapBuilderFiles(previewDir, layer.getFeatureType().getTypeName(),
-                layer.getNameSpace().getPrefix(), bbox, layer.getSRS());
+                bboxList.add(bbox.getMinX() + ", " + bbox.getMinY() + ", " + bbox.getMaxX() + ", "
+                    + bbox.getMaxY());
+                //save out the mapbuilder files
+                makeMapBuilderFiles(previewDir, layer.getFeatureType().getTypeName(),
+                    layer.getNameSpace().getPrefix(), bbox, layer.getSRS());
+            }
         }
 
         // 3.5) Go through each *Coverage* and collect its info

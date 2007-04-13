@@ -20,16 +20,16 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Rob Hranac, TOPP
  * @author Gabriel Rold?n, Axios Engineering
- * @version $Id: CapabilitiesKvpReader.java,v 1.7 2004/02/09 23:29:47 dmzwiers Exp $
+ * @version $Id$
  */
 public class CapabilitiesKvpReader extends KvpRequestReader {
     /**
-             * Constructor with raw request string.  Calls parent.
-             *
-             * @param kvPairs The raw string of a capabilities kvp request.
-             *
-             *
-             */
+     * Constructor with raw request string.  Calls parent.
+     *
+     * @param kvPairs The raw string of a capabilities kvp request.
+     *
+     *
+     */
     public CapabilitiesKvpReader(Map kvPairs, WMService service) {
         super(kvPairs, service);
     }
@@ -37,15 +37,13 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
     /**
      * Get Capabilities request.
      *
-     * @param request DOCUMENT ME!
-     *
      * @return Capabilities request.
      *
      * @throws ServiceException DOCUMENT ME!
      */
     public Request getRequest(HttpServletRequest request)
         throws ServiceException {
-        CapabilitiesRequest currentRequest = new CapabilitiesRequest("WMS", service);
+        CapabilitiesRequest currentRequest = new WMSCapabilitiesRequest(service);
         currentRequest.setHttpServletRequest(request);
 
         String reqVersion = WMS.getVersion();

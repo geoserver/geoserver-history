@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * DOCUMENT ME!
  *
- * @author Didier Richard, IGN-F
+ * @author Didier Richard, IGN-F *
  * @author Simone Giannechini
  * @version $Id$
  */
@@ -24,14 +24,14 @@ public final class GifMapProducerFactory implements GetMapProducerFactorySpi {
     static final String MIME_TYPE = "image/gif";
 
     /**
-     * convenient singleton Set to expose the output format this
-     * producer supports
+     * convenient singleton Set to expose the output format this producer
+     * supports
      */
     private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
 
     /**
-             * Creates a new GifMapProducerFactory object.
-             */
+     * Creates a new GifMapProducerFactory object.
+     */
     public GifMapProducerFactory() {
         super();
     }
@@ -56,7 +56,6 @@ public final class GifMapProducerFactory implements GetMapProducerFactorySpi {
     }
 
     /**
-     * DOCUMENT ME!
      *
      * @return <code>true</code>
      */
@@ -72,11 +71,12 @@ public final class GifMapProducerFactory implements GetMapProducerFactorySpi {
     }
 
     /**
-     * Returns wether the map producers created by this factory can
-     * create maps in the passed output format.
+     * Returns wether the map producers created by this factory can create maps
+     * in the passed output format.
      *
-     * @param mapFormat a MIME type string to check if this producer is able to
-     *        handle.
+     * @param mapFormat
+     *            a MIME type string to check if this producer is able to
+     *            handle.
      *
      * @return <code>true</code> if <code>mapFormat == "image/gif"</code>,
      *         <code>false</code> otherwise.
@@ -88,12 +88,13 @@ public final class GifMapProducerFactory implements GetMapProducerFactorySpi {
     /**
      * DOCUMENT ME!
      *
-     * @param mapFormat DOCUMENT ME!
-     * @param wms DOCUMENT ME!
+     * @param mapFormat
+     *            DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      *
-     * @throws IllegalArgumentException DOCUMENT ME!
+     * @throws IllegalArgumentException
+     *             DOCUMENT ME!
      */
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {

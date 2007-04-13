@@ -11,17 +11,24 @@ import org.springframework.web.context.WebApplicationContext;
 
 
 /**
- * Places a GeoServer module into the servlet context.<p>This class is only
- * around to maintain backwards compatability for hte struts ui stuff which
- * requires application modules to be placed into the servlet context.</p>
- *
+ * Places a GeoServer module into the servlet context.
+ * <p>
+ * This class is only around to maintain backwards compatability for hte
+ * struts ui stuff which requires application modules to be placed into the
+ * servlet context.
+ * </p>
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
+ *
  */
 public class GeoServerServletContextInitializer implements ApplicationContextAware {
-    /** The key to register the object under. */
+    /**
+     * The key to register the object under.
+     */
     String key;
 
-    /** The  object to register. */
+    /**
+     * The  object to register.
+     */
     Object object;
 
     public GeoServerServletContextInitializer(String key, Object object) {

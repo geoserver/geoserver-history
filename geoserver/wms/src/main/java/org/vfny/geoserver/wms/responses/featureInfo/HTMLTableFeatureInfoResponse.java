@@ -6,9 +6,10 @@ package org.vfny.geoserver.wms.responses.featureInfo;
 
 import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureResults;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 import java.io.OutputStream;
@@ -20,29 +21,31 @@ import java.util.HashMap;
 
 
 /**
- * Produces a FeatureInfo response in HTML.  Relies on abstractfeatureinfo
- * and the feature delegate to do most of the work, just implements an html
- * based writeTo method.<p>In the future James suggested that we allow some
- * sort of template system, so that one can control the formatting of the html
- * output, since now we just hard code some minimal header stuff. See
- * http://jira.codehaus.org/browse/GEOS-196</p>
+ * Produces a FeatureInfo response in HTML.  Relies on abstractfeatureinfo and
+ * the feature delegate to do most of the work, just implements an html based
+ * writeTo method.
+ *
+ * <p>
+ * In the future James suggested that we allow some sort of template system, so
+ * that one can control the formatting of the html output, since now we just
+ * hard code some minimal header stuff. See
+ * http://jira.codehaus.org/browse/GEOS-196
+ * </p>
  *
  * @author James Macgill, PSU
- * @version $Id: HTMLTableFeatureInfoResponse.java,v 1.1 2004/07/19 22:32:22 jmacgill Exp $
+ * @version $Id$
  */
 public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
     /**
-             *
-             */
+     *
+     */
     public HTMLTableFeatureInfoResponse() {
         format = "text/html";
         supportedFormats = Collections.singletonList(format);
     }
 
     /**
-     * Returns any extra headers that this service might want to set in
-     * the HTTP response object.
-     *
+     * Returns any extra headers that this service might want to set in the HTTP response object.
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
     public HashMap getResponseHeaders() {
@@ -53,6 +56,9 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
      * Writes the image to the client.
      *
      * @param out The output stream to write to.
+     *
+     * @throws org.vfny.geoserver.ServiceException For problems with geoserver
+     * @throws java.io.IOException For problems writing the output.
      */
     public void writeTo(OutputStream out)
         throws org.vfny.geoserver.ServiceException, java.io.IOException {
@@ -61,18 +67,18 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         PrintWriter writer = new PrintWriter(osw);
         writer.println("<html><body>");
 
-        FeatureReader reader = null;
+        FeatureIterator reader = null;
 
         try {
             final int size = results.size();
-            FeatureResults fr;
+            FeatureCollection fr;
             FeatureType schema;
             Feature f;
             AttributeType[] types;
             int attCount;
 
             for (int i = 0; i < size; i++) {
-                fr = (FeatureResults) results.get(i);
+                fr = (FeatureCollection) results.get(i);
                 schema = fr.getSchema();
 
                 writer.println("<table border='1'>");
@@ -94,7 +100,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
                 writer.println("</tr>");
 
                 //writer.println("Found " + fr.getCount() + " in " + schema.getTypeName());
-                reader = fr.reader();
+                reader = fr.features();
 
                 while (reader.hasNext()) {
                     f = reader.next();
@@ -120,7 +126,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
                 writer.println("<p>");
                 writer.println("</body></html>");
             }
-        } catch (IllegalAttributeException ife) {
+        } catch (Exception ife) {
             writer.println("Unable to generate information " + ife);
         } finally {
             if (reader != null) {

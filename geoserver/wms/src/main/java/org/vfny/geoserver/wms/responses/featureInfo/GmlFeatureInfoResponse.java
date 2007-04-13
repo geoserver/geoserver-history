@@ -4,21 +4,27 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
-import org.geotools.data.FeatureResults;
+import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.QueryType;
+import net.opengis.wfs.WfsFactory;
+import org.geoserver.wfs.WFS;
+import org.geoserver.wfs.WebFeatureService;
+import org.geoserver.wfs.xml.GML2OutputFormat;
+import org.geotools.feature.FeatureCollection;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.servlets.AbstractService;
-import org.vfny.geoserver.wfs.requests.FeatureRequest;
-import org.vfny.geoserver.wfs.responses.GML2FeatureResponseDelegate;
-import org.vfny.geoserver.wfs.responses.GetFeatureResults;
-import org.vfny.geoserver.wfs.servlets.WFService;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.servlets.WMService;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,12 +32,16 @@ import java.util.List;
 
 
 /**
- * A GetFeatureInfo response handler specialized in producing GML data for
- * a GetFeatureInfo request.<p>This class does not deals directly with GML
- * encoding. Instead, it works by taking the FeatureResults produced in
- * <code>execute()</code> and constructs a <code>GetFeaturesResult</code> wich
- * is passed to a <code>GML2FeatureResponseDelegate</code>, as if it where the
- * result of a GetFeature WFS request.</p>
+ * A GetFeatureInfo response handler specialized in producing GML data for a
+ * GetFeatureInfo request.
+ *
+ * <p>
+ * This class does not deals directly with GML encoding. Instead, it works by
+ * taking the FeatureResults produced in <code>execute()</code> and constructs
+ * a <code>GetFeaturesResult</code> wich is passed to a
+ * <code>GML2FeatureResponseDelegate</code>, as if it where the result of a
+ * GetFeature WFS request.
+ * </p>
  *
  * @author Gabriel Roldan, Axios Engineering
  */
@@ -43,15 +53,15 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
     private static final String FORMAT = "application/vnd.ogc.gml";
 
     /**
-             * Default constructor, sets up the supported output format string.
-             */
+     * Default constructor, sets up the supported output format string.
+     */
     public GmlFeatureInfoResponse() {
         super.supportedFormats = Collections.singletonList(FORMAT);
     }
 
     /**
-     * Returns any extra headers that this service might want to set in
-     * the HTTP response object.
+     * Returns any extra headers that this service might want to set in the HTTP
+     * response object.
      *
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
@@ -65,60 +75,34 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
      * <code>GetFeaturesResult</code> wich is passed to a
      * <code>GML2FeatureResponseDelegate</code>.
      *
-     * @param out DOCUMENT ME!
+     * @param out
+     *            DOCUMENT ME!
      *
-     * @throws ServiceException DOCUMENT ME!
-     * @throws IOException DOCUMENT ME!
+     * @throws ServiceException
+     *             DOCUMENT ME!
+     * @throws IOException
+     *             DOCUMENT ME!
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         GetFeatureInfoRequest fInfoReq = (GetFeatureInfoRequest) getRequest();
         WMS wms = (WMS) fInfoReq.getServiceRef().getServiceRef();
-        FeatureRequest freq = new FeatureRequest(new MockWFService(fInfoReq.getRequest(),
-                    wms.getWFS()));
-        freq.setHttpServletRequest(fInfoReq.getHttpServletRequest());
+        WFS wfs = wms.getWFS();
+        GeoServer gs = wms.getGeoServer();
 
-        freq.setRequest("GETFEATURE");
-        freq.setHandle("GetFeatureInfo");
-        freq.setMaxFeatures(fInfoReq.getFeatureCount());
+        Data catalog = fInfoReq.getServiceRef().getCatalog();
 
-        List queries = null;
-        freq.setQueries(queries);
+        FeatureCollectionType features = WfsFactory.eINSTANCE.createFeatureCollectionType();
 
-        GetFeatureResults getFeatureResults = new GetFeatureResults(freq);
-        FeatureTypeInfo finfo;
-        FeatureResults fresults;
-        int i = 0;
-
-        for (Iterator it = results.iterator(); it.hasNext(); i++) {
-            fresults = (FeatureResults) it.next();
-            finfo = (FeatureTypeInfo) metas.get(i);
-            getFeatureResults.addFeatures(finfo, fresults);
-
-            // TODO: Do we want to reproject the geometries here? Or leave them
-            // in their native projection?
+        for (Iterator i = results.iterator(); i.hasNext();) {
+            features.getFeature().add(i.next());
         }
 
-        GML2FeatureResponseDelegate encoder = new GML2FeatureResponseDelegate();
-        encoder.prepare("GML2", getFeatureResults);
-        encoder.encode(out);
+        GML2OutputFormat format = new GML2OutputFormat(wfs, gs, catalog);
+        format.write(features, out, null);
     }
 
     public String getContentDisposition() {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    /**
-     * Crude hack to make the FeatureRequest, expecting a WFService,
-     * work anyways. In fact FeatureRequest does not use anything specific
-     * from WFService and it's happy with whatever service has been provided
-     * to it... but that's a knowledge you can get only inspecting its code...
-     *
-     * @author aaime
-     */
-    private static class MockWFService extends WFService {
-        public MockWFService(String request, WFS wfs) {
-            super(request, wfs);
-        }
     }
 }

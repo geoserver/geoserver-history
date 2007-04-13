@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver</artifactId>
-		<version>1.5.0</version>
+		<version>1.6-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.geoserver</groupId>
@@ -18,13 +18,13 @@
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>platform</artifactId>
-			<version>1.5.0</version>
+			<version>1.6-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
 	<modules>
 		<module>hello</module>
-		<module>http</module>
 		<module>preferences</module>
+		<module>community-schemas</module>
 	</modules>
 </project>

@@ -4,7 +4,9 @@
  */
 package org.vfny.geoserver.global;
 
-import org.geoserver.GeoServerResourceLoader;
+import org.geoserver.platform.GeoServerResourceLoader;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /* Copyright (c) 2001 - 2007 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
@@ -53,7 +55,11 @@ public class GeoserverDataDirectory {
      * @return location of the geoserver data dir
      */
     static public File getGeoserverDataDirectory() {
-        return loader.getBaseDirectory();
+        if (loader != null) {
+            return loader.getBaseDirectory();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -148,7 +154,9 @@ public class GeoserverDataDirectory {
      * Initializes the data directory lookup service.
      * @param servContext
      */
-    public static void init(ServletContext servContext) {
+    public static void init(WebApplicationContext context) {
+        ServletContext servContext = context.getServletContext();
+
         // This was once in the GetGeoserverDataDirectory method, I've moved
         // here so that servlet
         // context is not needed as a parameter anymore.
@@ -160,6 +168,9 @@ public class GeoserverDataDirectory {
         // If this assumption can't be made, then we can't allow data_dir
         // _and_ webapp options with relative data/ links -ch
         if (loader == null) {
+            //get the loader from the context
+            loader = (GeoServerResourceLoader) context.getBean("resourceLoader");
+
             File dataDir = null;
 
             // see if there's a system property
@@ -170,12 +181,12 @@ public class GeoserverDataDirectory {
                     // its defined!!
                     isTrueDataDir = true;
                     dataDir = new File(prop);
-                    loader = new GeoServerResourceLoader(dataDir);
+                    loader.setBaseDirectory(dataDir);
                     loader.addSearchLocation(new File(dataDir, "data"));
                     loader.addSearchLocation(new File(dataDir, "WEB-INF"));
-                    System.out.println("----------------------------------");
-                    System.out.println("- GEOSERVER_DATA_DIR: " + dataDir.getAbsolutePath());
-                    System.out.println("----------------------------------");
+
+                    LOGGER.severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
+                        + dataDir.getAbsolutePath() + "\n----------------------------------");
 
                     return;
                 }
@@ -192,12 +203,11 @@ public class GeoserverDataDirectory {
                 // its defined!!
                 isTrueDataDir = true;
                 dataDir = new File(loc);
-                loader = new GeoServerResourceLoader(dataDir);
+                loader.setBaseDirectory(dataDir);
                 loader.addSearchLocation(new File(dataDir, "data"));
                 loader.addSearchLocation(new File(dataDir, "WEB-INF"));
-                System.out.println("----------------------------------");
-                System.out.println("- GEOSERVER_DATA_DIR: " + dataDir.getAbsolutePath());
-                System.out.println("----------------------------------");
+                LOGGER.severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
+                    + dataDir.getAbsolutePath() + "\n----------------------------------");
 
                 return;
             }
@@ -208,13 +218,12 @@ public class GeoserverDataDirectory {
             String rootDir = servContext.getRealPath("/data");
             dataDir = new File(rootDir);
 
-            // create loader, and add some locations to the serach path
-            loader = new GeoServerResourceLoader(dataDir);
+            //set the base directory of hte loader
+            loader.setBaseDirectory(dataDir);
             loader.addSearchLocation(new File(dataDir, "data"));
             loader.addSearchLocation(new File(dataDir, "WEB-INF"));
-            System.out.println("----------------------------------");
-            System.out.println("- GEOSERVER_DATA_DIR: " + dataDir.getAbsolutePath());
-            System.out.println("----------------------------------");
+            LOGGER.severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
+                + dataDir.getAbsolutePath() + "\n----------------------------------");
             loader.addSearchLocation(new File(servContext.getRealPath("WEB-INF")));
             loader.addSearchLocation(new File(servContext.getRealPath("data")));
         }

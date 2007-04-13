@@ -9,11 +9,15 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
+import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.ReferencingFactoryFinder;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.vfny.geoserver.crs.GeoserverCustomWKTFactory;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,30 +31,22 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * DOCUMENT ME!
  *
  * @author Simone Giannecchini, GeoSolutions
+ *
  */
 public class SrsHelpAction extends Action {
     private final static Logger LOGGER = Logger.getLogger(SrsHelpAction.class.toString());
 
     /**
-     * This is a simple action - it reads in the GT2 supported EPSG
-     * codes. DONE: once geosever support EPSG thats not in the properties
-     * file, this should be a bit more abstract and get a list of all EPSG
-     * defs from the GDSFactory (if possible).  Use toWKT() as its nicer to
-     * read. Form has two properies - ids  (list of String - the epsg #) defs
-     * (list of String - the epsg WKT definitions)
+     *  This is a simple action - it reads in the GT2 supported EPSG codes.
      *
-     * @param mapping DOCUMENT ME!
-     * @param form DOCUMENT ME!
-     * @param request DOCUMENT ME!
-     * @param response DOCUMENT ME!
+     * DONE: once geosever support EPSG thats not in the properties file, this should
+     *       be a bit more abstract and get a list of all EPSG defs from the
+     *       GDSFactory (if possible).  Use toWKT() as its nicer to read.
      *
-     * @return DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws ServletException DOCUMENT ME!
+     *   Form has two properies - ids  (list of String - the epsg #)
+     *                            defs (list of String - the epsg WKT definitions)
      */
     public ActionForward execute(ActionMapping mapping, ActionForm form,
         HttpServletRequest request, HttpServletResponse response)
@@ -59,6 +55,16 @@ public class SrsHelpAction extends Action {
         ArrayList ids_string = new ArrayList();
 
         Set codes = CRS.getSupportedCodes("EPSG");
+
+        CRSAuthorityFactory customFactory = ReferencingFactoryFinder.getCRSAuthorityFactory("EPSG",
+                new Hints(Hints.CRS_AUTHORITY_FACTORY, GeoserverCustomWKTFactory.class));
+        Set customCodes = new HashSet();
+
+        try {
+            customCodes = customFactory.getAuthorityCodes(CoordinateReferenceSystem.class);
+        } catch (FactoryException e) {
+            LOGGER.log(Level.WARNING, "Error occurred while trying to gather custom CRS codes", e);
+        }
 
         // make an array of each code (as an int)
         HashSet idSet = new HashSet();
@@ -90,14 +96,16 @@ public class SrsHelpAction extends Action {
                 defs.add(def);
                 ids_string.add(id.toString());
             } catch (Exception e) {
-                LOGGER.log(Level.FINE, e.getLocalizedMessage(), e);
-
-                if (LOGGER.isLoggable(Level.FINER)) {
+                if (customCodes.contains(id.toString())) {
+                    if (LOGGER.isLoggable(Level.FINE)) {
+                        LOGGER.log(Level.FINE, "Issues converting EPSG:" + id + ".", e);
+                    } else {
+                        LOGGER.log(Level.WARNING,
+                            "Issues converting EPSG:" + id + ". " + e.getLocalizedMessage()
+                            + " Stack trace included at FINE logging level");
+                    }
+                } else if (LOGGER.isLoggable(Level.FINER)) {
                     LOGGER.log(Level.FINER, "Issues converting EPSG:" + id, e);
-                } else {
-                    LOGGER.log(Level.WARNING,
-                        "Issues converting EPSG:" + id + ". " + e.getLocalizedMessage()
-                        + " Stack trace included at FINER logging level");
                 }
             }
         }

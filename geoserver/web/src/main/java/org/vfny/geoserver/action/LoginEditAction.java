@@ -22,7 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * <p>Allows for the changing of username and password</p>
+ * <p>
+ * Allows for the changing of username and password
+ * </p>
  *
  * @author rgould, Refractions Research, Inc.
  */
@@ -40,12 +42,12 @@ public class LoginEditAction extends ConfigAction {
         //I think this is showing the weakness of both edit and non using Login
         //Form, instead of a LoginEditForm.
         /*if (confirm == null || !confirm.equals(password)){
-           ActionErrors errors = new ActionErrors();
-           errors.add(ActionErrors.GLOBAL_ERROR,
-                      new ActionError("error.password.mismatch"));
-           saveErrors(request, errors);
-           return mapping.getInputForward();//findForward("config.loginEditSubmit");
-           }*/
+            ActionErrors errors = new ActionErrors();
+            errors.add(ActionErrors.GLOBAL_ERROR,
+                       new ActionError("error.password.mismatch"));
+            saveErrors(request, errors);
+            return mapping.getInputForward();//findForward("config.loginEditSubmit");
+            }*/
         global.setAdminUserName(username);
         global.setAdminPassword(password);
         getApplicationState().notifyConfigChanged();

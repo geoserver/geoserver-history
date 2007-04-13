@@ -7,13 +7,13 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver</artifactId>
-		<version>1.5.0</version>
+		<version>1.6-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.geoserver</groupId>
-  <artifactId>web</artifactId>
+	<artifactId>web</artifactId>
 	<packaging>jar</packaging>
-  <name>Web Application Module</name>
+	<name>Web Application Module</name>
 
 	<dependencies>
 		<!--dependency>
@@ -34,37 +34,37 @@
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>platform</artifactId>
-			<version>1.5.0</version>
+			<version>1.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>data</artifactId>
-			<version>1.5.0</version>
+			<version>1.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>main</artifactId>
-			<version>1.5.0</version>
+			<version>1.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>wcs</artifactId>
-			<version>1.5.0</version>
+			<version>1.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>wfs</artifactId>
-			<version>1.5.0</version>
+			<version>1.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>wms</artifactId>
-			<version>1.5.0</version>
+			<version>1.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>validation</artifactId>
-			<version>1.5.0</version>
+			<version>1.6-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -112,6 +112,10 @@
 			<artifactId>commons-logging</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>oro</groupId>
 			<artifactId>oro</artifactId>
 		</dependency>
@@ -141,11 +145,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt2-shapefile</artifactId>
+			<artifactId>gt2-coverage</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt2-indexed-shapefile</artifactId>
+			<artifactId>gt2-shapefile</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
@@ -214,53 +218,53 @@
 		</dependency>
 	</dependencies>
 
- <pluginRepositories>
-    <pluginRepository>
-      <id>mortbay-repo</id>
-      <name>mortbay-repo</name>
-      <url>http://www.mortbay.org/maven2/snapshot</url>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>mortbay-repo</id>
+			<name>mortbay-repo</name>
+			<url>http://www.mortbay.org/maven2/snapshot</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
-    </pluginRepository>
-  </pluginRepositories>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<build>
 		<plugins>
 		
-      <!-- ====    Code Formatting  ============================== -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jalopy-maven-plugin</artifactId>
-	<configuration>
-		<srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
-		<testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
-	</configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>format</goal>
-            </goals>
-            <phase>install</phase>
-          </execution>
-        </executions>
-      </plugin>
+		<!-- ====    Code Formatting  ============================== -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jalopy-maven-plugin</artifactId>
+				<configuration>
+					<srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
+					<testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>format</goal>
+						</goals>
+						<phase>install</phase>
+					</execution>
+				</executions>
+			</plugin>
 
 			<plugin>
 				<groupId>org.geoserver.maven</groupId>
 				<artifactId>config</artifactId>
 				<executions>
-          <execution>
+					<execution>
 						<id>configPackage</id>
 						<configuration>
-			        <configDirectory>${configDirectory}</configDirectory>
+							<configDirectory>${configDirectory}</configDirectory>
 							<configId>${configId}</configId>
 						</configuration>
-            <phase>package</phase>
-            <goals>
-              <goal>config</goal>
-            </goals>
-          </execution>
+						<phase>package</phase>
+						<goals>
+							<goal>config</goal>
+						</goals>
+					</execution>
 					
 					<execution>
 						<id>configClean</id>
@@ -269,28 +273,28 @@
 							<goal>clean</goal>
 						</goals>
 					</execution>
-        </executions>
+				</executions>
 			</plugin>
 
-			 <plugin>
-        <inherited>true</inherited>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <configuration>
+			<plugin>
+				<inherited>true</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
 					<warName>geoserver</warName>
 					<webappDirectory>
 						${project.build.directory}/geoserver
 					</webappDirectory>
 				</configuration>
 				<executions>
-          <execution>
-            <phase>install</phase>
-            <goals>
-              <goal>war</goal>
-            </goals>
-          </execution>
+					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>war</goal>
+						</goals>
+					</execution>
 				</executions>
-      </plugin>
+			</plugin>
 
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
@@ -299,12 +303,6 @@
 				<version>6.0.1</version>
 				<configuration>
 					<contextPath>geoserver</contextPath>
-					<!--connectors>
-						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-						  <port>9090</port>
-						  <maxIdleTime>60000</maxIdleTime>
-						</connector>
-					</connectors-->
 					<webApp>
 						${project.build.directory}/geoserver
 					</webApp>
@@ -322,7 +320,35 @@
 	</build>
 
 	<properties>
-		<configDirectory>${basedir}</configDirectory>
 		<configId>minimal</configId>
 	</properties>
+  
+	<profiles>
+		<profile>
+			<id>wfsv</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.geoserver</groupId>
+					<artifactId>wfsv</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>includeArcSDEJars</id>
+			<activation>
+				<property>
+					<name>haveSDEJars</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.geotools</groupId>
+					<artifactId>gt2-arcsde</artifactId>
+					<version>${gt.version}</version>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 </project>

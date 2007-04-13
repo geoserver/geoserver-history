@@ -8,16 +8,21 @@ import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 
 
 /**
- * NameSpaceConfig purpose.<p>Represents the portion of a namespace
- * required for the configuration of geoserver. Defines namespaces to be used
- * by the datastores.</p>
- *  <p></p>
+ * NameSpaceConfig purpose.
+ *
+ * <p>
+ * Represents the portion of a namespace required for the configuration of
+ * geoserver. Defines namespaces to be used by the datastores.
+ * </p>
+ *
+ * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceConfig.java,v 1.5 2004/01/31 00:27:27 jive Exp $
+ * @version $Id$
  */
 public class NameSpaceConfig {
     //public static final String PREFIX_DELIMITER = ":";
+
     /** The namespace prefix. */
     private String prefix;
 
@@ -28,14 +33,14 @@ public class NameSpaceConfig {
     private boolean _default;
 
     /**
-             * NameSpaceConfig constructor.
-             *
-             * <p>
-             * Creates a NameSpaceConfig to represent an instance with default data.
-             * </p>
-             *
-             * @see defaultSettings()
-             */
+     * NameSpaceConfig constructor.
+     *
+     * <p>
+     * Creates a NameSpaceConfig to represent an instance with default data.
+     * </p>
+     *
+     * @see defaultSettings()
+     */
     public NameSpaceConfig() {
         prefix = "";
         uri = "";
@@ -43,18 +48,18 @@ public class NameSpaceConfig {
     }
 
     /**
-             * NameSpaceConfig constructor.
-             *
-             * <p>
-             * Creates a copy of the NameSpaceConfig provided. If the NameSpaceConfig
-             * provided  is null then default values are used. All the data structures
-             * are cloned.
-             * </p>
-             *
-             * @param ns The namespace to copy.
-             *
-             * @throws NullPointerException DOCUMENT ME!
-             */
+     * NameSpaceConfig constructor.
+     *
+     * <p>
+     * Creates a copy of the NameSpaceConfig provided. If the NameSpaceConfig
+     * provided  is null then default values are used. All the data structures
+     * are cloned.
+     * </p>
+     *
+     * @param ns The namespace to copy.
+     *
+     * @throws NullPointerException DOCUMENT ME!
+     */
     public NameSpaceConfig(NameSpaceInfoDTO ns) {
         if (ns == null) {
             throw new NullPointerException("");
@@ -66,8 +71,11 @@ public class NameSpaceConfig {
     }
 
     /**
-     * Implement loadDTO.<p>Imports the data contained in the
-     * NameSpaceInfoDTO object provided.</p>
+     * Implement loadDTO.
+     *
+     * <p>
+     * Imports the data contained in the NameSpaceInfoDTO object provided.
+     * </p>
      *
      * @param dto An NameSpaceInfoDTO object
      *
@@ -87,8 +95,11 @@ public class NameSpaceConfig {
     }
 
     /**
-     * Implement toDTO.<p>Creates a DTO representation of this Object
-     * as a NameSpaceInfoDTO</p>
+     * Implement toDTO.
+     *
+     * <p>
+     * Creates a DTO representation of this Object as a NameSpaceInfoDTO
+     * </p>
      *
      * @return a NameSpaceInfoDTO which representts the data in this class.
      *
@@ -104,7 +115,11 @@ public class NameSpaceConfig {
     }
 
     /**
-     * isDefault purpose.<p>Description ...</p>
+     * isDefault purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -113,7 +128,11 @@ public class NameSpaceConfig {
     }
 
     /**
-     * getPrefix purpose.<p>Description ...</p>
+     * getPrefix purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -122,7 +141,11 @@ public class NameSpaceConfig {
     }
 
     /**
-     * getUri purpose.<p>Description ...</p>
+     * getUri purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -131,7 +154,11 @@ public class NameSpaceConfig {
     }
 
     /**
-     * setDdefault purpose.<p>Description ...</p>
+     * setDdefault purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param b
      */
@@ -140,7 +167,11 @@ public class NameSpaceConfig {
     }
 
     /**
-     * setPrefix purpose.<p>Description ...</p>
+     * setPrefix purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param string
      */
@@ -149,7 +180,11 @@ public class NameSpaceConfig {
     }
 
     /**
-     * setUri purpose.<p>Description ...</p>
+     * setUri purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param string
      */

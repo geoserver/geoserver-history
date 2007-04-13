@@ -24,11 +24,14 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * JSPCompiler purpose.<p>Description of JSPCompiler ...</p>
+ * JSPCompiler purpose.
+ * <p>
+ * Description of JSPCompiler ...
+ * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dgricci $ (last modification)
- * @version $Id: JSPCompiler.java,v 1.4 2004/06/09 20:56:37 dgricci Exp $
+ * @version $Id$
  */
 public class JSPCompiler extends HttpServlet {
     String[] pages;

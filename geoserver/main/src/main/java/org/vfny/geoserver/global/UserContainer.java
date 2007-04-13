@@ -48,7 +48,7 @@ import javax.servlet.http.HttpSessionBindingListener;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: UserContainer.java,v 1.10 2004/03/09 05:38:18 jive Exp $
+ * @version $Id$
  */
 public class UserContainer implements HttpSessionBindingListener {
     public final static String SESSION_KEY = "GEOSERVER.USER";

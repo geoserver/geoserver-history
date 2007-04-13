@@ -6,9 +6,10 @@ package org.vfny.geoserver.wms.responses.featureInfo;
 
 import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureResults;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 import java.io.OutputStream;
@@ -26,20 +27,21 @@ import java.util.HashMap;
  * class handle the rest.
  *
  * @author James Macgill, PSU
- * @version $Id: TextFeatureInfoResponse.java,v 1.3 2004/07/19 22:31:40 jmacgill Exp $
+ * @version $Id: TextFeatureInfoResponse.java,v 1.3 2004/07/19 22:31:40 jmacgill
+ *          Exp $
  */
 public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
     /**
-             *
-             */
+     *
+     */
     public TextFeatureInfoResponse() {
         format = "text/plain";
         supportedFormats = Collections.singletonList("text/plain");
     }
 
     /**
-     * Returns any extra headers that this service might want to set in
-     * the HTTP response object.
+     * Returns any extra headers that this service might want to set in the HTTP
+     * response object.
      *
      * @see org.vfny.geoserver.Response#getResponseHeaders()
      */
@@ -48,10 +50,15 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
     }
 
     /**
-     * Writes the feature information to the client in text/plain
-     * format.
+     * Writes the feature information to the client in text/plain format.
      *
-     * @param out The output stream to write to.
+     * @param out
+     *            The output stream to write to.
+     *
+     * @throws org.vfny.geoserver.ServiceException
+     *             DOCUMENT ME!
+     * @throws java.io.IOException
+     *             DOCUMENT ME!
      */
     public void writeTo(OutputStream out)
         throws org.vfny.geoserver.ServiceException, java.io.IOException {
@@ -70,11 +77,11 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
                                                           // if not specified
                                                           // in the request
 
-        FeatureReader reader = null;
+        FeatureIterator reader = null;
 
         try {
             final int size = results.size();
-            FeatureResults fr;
+            FeatureCollection fr;
             Feature f;
 
             FeatureType schema;
@@ -82,13 +89,13 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
 
             for (int i = 0; i < size; i++) // for each layer queried
              {
-                fr = (FeatureResults) results.get(i);
-                reader = fr.reader();
+                fr = (FeatureCollection) results.get(i);
+                reader = fr.features();
 
                 if (reader.hasNext() && (featuresPrinted < maxfeatures)) // if this layer has a hit and we're going to print it
                  {
-                    writer.println("Results for FeatureType '"
-                        + reader.getFeatureType().getTypeName() + "':");
+                    writer.println("Results for FeatureType '" + fr.getFeatureType().getTypeName()
+                        + "':");
                 }
 
                 while (reader.hasNext()) {
@@ -132,7 +139,7 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
                     }
                 }
             }
-        } catch (IllegalAttributeException ife) {
+        } catch (Exception ife) {
             writer.println("Unable to generate information " + ife);
         } finally {
             if (reader != null) {

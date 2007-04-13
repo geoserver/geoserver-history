@@ -6,41 +6,43 @@ package org.vfny.geoserver.global;
 
 
 /**
- * Thrown when there is an error in configuration.  Added a third
- * constructor for ease of exception type chaining.
+ * Thrown when there is an error in configuration.  Added a third constructor
+ * for ease of exception type chaining.
  *
  * @author Chris Holmes
  * @author dzwiers
- * @version $Id: ConfigurationException.java,v 1.3 2004/01/31 00:27:23 jive Exp $
+ * @version $Id$
  */
 public class ConfigurationException extends Exception {
-    /**  */
+    /**
+         *
+         */
     private static final long serialVersionUID = 6333673036778693749L;
 
     /**
-            * Constructs a new instance of ConfigurationException
-            *
-            * @param msg A message explaining the exception
-            */
+    * Constructs a new instance of ConfigurationException
+    *
+    * @param msg A message explaining the exception
+    */
     public ConfigurationException(String msg) {
         super(msg);
     }
 
     /**
-             * Constructs a new instance of ConfigurationException
-             *
-             * @param msg A message explaining the exception
-             * @param exp the throwable object which caused this exception
-             */
+     * Constructs a new instance of ConfigurationException
+     *
+     * @param msg A message explaining the exception
+     * @param exp the throwable object which caused this exception
+     */
     public ConfigurationException(String msg, Throwable exp) {
         super(msg, exp);
     }
 
     /**
-             * Constructs a new instance of ConfigurationException
-             *
-             * @param exp the throwable object which caused this exception
-             */
+     * Constructs a new instance of ConfigurationException
+     *
+     * @param exp the throwable object which caused this exception
+     */
     public ConfigurationException(Throwable exp) {
         super(exp);
     }

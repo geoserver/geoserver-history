@@ -8,6 +8,7 @@ import org.vfny.geoserver.Request;
 import org.vfny.geoserver.util.requests.CapabilitiesHandler;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wcs.WcsException;
+import org.vfny.geoserver.wcs.requests.WCSCapabilitiesRequest;
 import org.vfny.geoserver.wcs.servlets.WCService;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -25,7 +26,7 @@ import javax.xml.parsers.SAXParserFactory;
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
- * @version $Id: CapabilitiesXmlReader.java,v 0.1 Feb 15, 2005 12:35:09 PM $
+ * @version $Id$
  */
 public class CapabilitiesXmlReader extends XmlRequestReader {
     /**
@@ -51,7 +52,8 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers
-        CapabilitiesHandler currentRequest = new CapabilitiesHandler(getServiceRef());
+        CapabilitiesHandler currentRequest = new CapabilitiesHandler(new WCSCapabilitiesRequest(
+                    getServiceRef()));
 
         // read in XML file and parse to content handler
         try {

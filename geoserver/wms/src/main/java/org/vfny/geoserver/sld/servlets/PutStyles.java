@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.sld.servlets;
 
+import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
@@ -24,7 +25,6 @@ import org.vfny.geoserver.sld.requests.PutStylesKvpReader;
 import org.vfny.geoserver.sld.requests.PutStylesRequest;
 import org.vfny.geoserver.sld.responses.PutStylesResponse;
 import org.vfny.geoserver.util.SLDValidator;
-import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.WmsException;
@@ -60,8 +60,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class PutStyles extends AbstractService {
     private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.sld.servlets");
-    private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
     public final String success_mime_type = "application/vnd.ogc.success+xml";
+    private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
 
     public PutStyles(WMS wms) {
         super("WMS", "PutStyles", wms);
@@ -81,9 +81,9 @@ public class PutStyles extends AbstractService {
 
     protected XmlRequestReader getXmlRequestReader() {
         /**
-                        * @todo Implement this org.vfny.geoserver.servlets.AbstractService
-                        *       abstract method
-                        */
+        * @todo Implement this org.vfny.geoserver.servlets.AbstractService
+        *       abstract method
+        */
         throw new java.lang.UnsupportedOperationException(
             "Method getXmlRequestReader() not yet implemented.");
     }
@@ -91,9 +91,9 @@ public class PutStyles extends AbstractService {
     protected ExceptionHandler getExceptionHandler() {
         // TODO Auto-generated method stub
         /**
-                        * @todo Implement this org.vfny.geoserver.servlets.AbstractService
-                        *       abstract method
-                        */
+        * @todo Implement this org.vfny.geoserver.servlets.AbstractService
+        *       abstract method
+        */
         throw new java.lang.UnsupportedOperationException(
             "Method getXmlRequestReader() not yet implemented.");
     }
@@ -101,11 +101,7 @@ public class PutStyles extends AbstractService {
     /**
      * doGet:
      *
-     * @param request DOCUMENT ME!
-     * @param response DOCUMENT ME!
      *
-     * @throws ServletException DOCUMENT ME!
-     * @throws IOException DOCUMENT ME!
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
@@ -148,13 +144,7 @@ public class PutStyles extends AbstractService {
     /**
      * doPost:
      *
-     * @param request DOCUMENT ME!
-     * @param response DOCUMENT ME!
-     * @param requestXml DOCUMENT ME!
      *
-     * @throws ServletException DOCUMENT ME!
-     * @throws IOException DOCUMENT ME!
-     * @throws NullPointerException DOCUMENT ME!
      */
     public void doPost(HttpServletRequest request, HttpServletResponse response, Reader requestXml)
         throws ServletException, IOException {
@@ -233,14 +223,14 @@ public class PutStyles extends AbstractService {
     }
 
     /**
-     * Give a node and the name of a child of that node, return it.
-     * This doesnt do anything complex.
-     *
-     * @param parentNode
-     * @param wantedChildName
-     *
-     * @return
-     */
+    * Give a node and the name of a child of that node, return it. This doesnt
+    * do anything complex.
+    *
+    * @param parentNode
+    * @param wantedChildName
+    *
+    * @return
+    */
     public Node getNode(Node parentNode, String wantedChildName) {
         NodeList children = parentNode.getChildNodes();
 
@@ -269,7 +259,6 @@ public class PutStyles extends AbstractService {
      * Convenience method to get the value from the specified node.
      *
      * @param node
-     *
      * @return
      */
     public String getNodeValue(Node node) {
@@ -277,8 +266,8 @@ public class PutStyles extends AbstractService {
     }
 
     /**
-     * Give a node and the name of a child of that node, find its
-     * (string) value. This doesnt do anything complex.
+     * Give a node and the name of a child of that node, find its (string)
+     * value. This doesnt do anything complex.
      *
      * @param parentNode
      * @param wantedChildName
@@ -310,8 +299,7 @@ public class PutStyles extends AbstractService {
     }
 
     /**
-     * returns true if this node is named "name".  Ignores case and
-     * namespaces.
+     * returns true if this node is named "name".  Ignores case and namespaces.
      *
      * @param n
      * @param name
@@ -338,18 +326,16 @@ public class PutStyles extends AbstractService {
     }
 
     /**
-     * processSLD: Makes the SLD into a DOM object and validates it. It
-     * will then get the layer names and update for each layer.
+     * processSLD:
      *
-     * @param serviceRequest
-     * @param request the root node of the DOM document for parsing
+     * Makes the SLD into a DOM object and validates it.
+     * It will then get the layer names and update for each layer.
+     *
+     * @param sld
+     * @param rootNode the root node of the DOM document for parsing
      * @param response
-     * @param context DOCUMENT ME!
-     *
      * @throws IOException
-     * @throws IOException
-     * @throws . DOCUMENT ME!
-     * @throws IllegalArgumentException DOCUMENT ME!
+     * @throws WmsException
      */
     private void processSLD(PutStylesRequest serviceRequest, HttpServletRequest request,
         HttpServletResponse response, ServletContext context)

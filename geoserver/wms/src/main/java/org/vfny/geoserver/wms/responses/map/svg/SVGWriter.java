@@ -17,6 +17,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.FeatureReader;
 import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -37,16 +38,21 @@ import java.util.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Gabriel Rold?n
- * @version $Id: SVGWriter.java,v 1.5 2004/09/05 17:16:53 cholmesny Exp $
+ * @version $Id$
  */
 public class SVGWriter extends OutputStreamWriter {
     private static final Logger LOGGER = Logger.getLogger(SVGWriter.class.getPackage().getName());
 
     /**
-     * a number formatter setted up to write SVG legible numbers ('.'
-     * as decimal separator, no group separator
+     * a number formatter setted up to write SVG legible numbers ('.' as
+     * decimal separator, no group separator
      */
     private static DecimalFormat formatter;
+
+    /**
+     * map of geometry class to writer
+     */
+    private HashMap writers;
 
     static {
         Locale locale = new Locale("en", "US");
@@ -68,9 +74,6 @@ public class SVGWriter extends OutputStreamWriter {
         //minimun fraction digits to 0 so they get not rendered if not needed
         formatter.setMinimumFractionDigits(0);
     }
-
-    /** map of geometry class to writer */
-    private HashMap writers;
 
     /** DOCUMENT ME! */
     private double minY;
@@ -103,11 +106,11 @@ public class SVGWriter extends OutputStreamWriter {
     private WMSMapContext mapContext;
 
     /**
-             * Creates a new SVGWriter object.
-             *
-             * @param out DOCUMENT ME!
-             * @param config DOCUMENT ME!
-             */
+     * Creates a new SVGWriter object.
+     *
+     * @param out DOCUMENT ME!
+     * @param config DOCUMENT ME!
+     */
     public SVGWriter(OutputStream out, WMSMapContext mapContext) {
         super(out);
         this.mapContext = mapContext;
@@ -210,9 +213,9 @@ public class SVGWriter extends OutputStreamWriter {
     }
 
     /**
-     * if a reference space has been set, returns a translated Y
-     * coordinate wich is inverted based on the height of such a reference
-     * space, otherwise just returns <code>y</code>
+     * if a reference space has been set, returns a translated Y coordinate
+     * wich is inverted based on the height of such a reference space,
+     * otherwise just returns <code>y</code>
      *
      * @param y DOCUMENT ME!
      *
@@ -300,19 +303,18 @@ public class SVGWriter extends OutputStreamWriter {
         super.write('\n');
     }
 
-    public void writeFeatures(FeatureReader reader, String style)
+    public void writeFeatures(FeatureType featureType, FeatureIterator reader, String style)
         throws IOException, AbortedException {
         Feature ft;
 
         try {
-            FeatureType featureType = reader.getFeatureType();
             Class gtype = featureType.getDefaultGeometry().getType();
 
             boolean doCollect = false;
             /*
-               boolean doCollect = config.isCollectGeometries()
-                   && (gtype != Point.class) && (gtype != MultiPoint.class);
-             */
+            boolean doCollect = config.isCollectGeometries()
+                && (gtype != Point.class) && (gtype != MultiPoint.class);
+            */
             setGeometryType(gtype);
 
             setPointsAsCircles("#circle".equals(style));
@@ -345,7 +347,7 @@ public class SVGWriter extends OutputStreamWriter {
             LOGGER.fine("encoded " + featureType.getTypeName());
         } catch (NoSuchElementException ex) {
             throw new DataSourceException(ex.getMessage(), ex);
-        } catch (IllegalAttributeException ex) {
+        } catch (Exception ex) {
             throw new DataSourceException(ex.getMessage(), ex);
         }
     }
@@ -485,10 +487,10 @@ public class SVGWriter extends OutputStreamWriter {
         private SVGFeatureWriter featureWriter;
 
         /**
-                         * Creates a new CollectSVGHandler object.
-                         *
-                         * @param featureWriter DOCUMENT ME!
-                         */
+         * Creates a new CollectSVGHandler object.
+         *
+         * @param featureWriter DOCUMENT ME!
+         */
         public CollectSVGHandler(SVGFeatureWriter featureWriter) {
             this.featureWriter = featureWriter;
         }
@@ -514,10 +516,10 @@ public class SVGWriter extends OutputStreamWriter {
         private SVGFeatureWriterHandler handler;
 
         /**
-                         * Creates a new NormalSVGHandler object.
-                         *
-                         * @param handler DOCUMENT ME!
-                         */
+         * Creates a new NormalSVGHandler object.
+         *
+         * @param handler DOCUMENT ME!
+         */
         public FIDSVGHandler(SVGFeatureWriterHandler handler) {
             this.handler = handler;
         }
@@ -554,10 +556,10 @@ public class SVGWriter extends OutputStreamWriter {
         private SVGFeatureWriterHandler handler;
 
         /**
-                         * Creates a new NormalSVGHandler object.
-                         *
-                         * @param handler DOCUMENT ME!
-                         */
+         * Creates a new NormalSVGHandler object.
+         *
+         * @param handler DOCUMENT ME!
+         */
         public BoundsSVGHandler(SVGFeatureWriterHandler handler) {
             this.handler = handler;
         }
@@ -596,10 +598,10 @@ public class SVGWriter extends OutputStreamWriter {
         private SVGFeatureWriterHandler handler;
 
         /**
-                         * Creates a new NormalSVGHandler object.
-                         *
-                         * @param handler DOCUMENT ME!
-                         */
+         * Creates a new NormalSVGHandler object.
+         *
+         * @param handler DOCUMENT ME!
+         */
         public AttributesSVGHandler(SVGFeatureWriterHandler handler) {
             this.handler = handler;
         }
@@ -635,9 +637,9 @@ public class SVGWriter extends OutputStreamWriter {
         }
 
         /**
-         * Parses the passed string, and encodes the special
-         * characters (used in xml for special purposes) with the appropriate
-         * codes. e.g. '&lt;' is changed to '&amp;lt;'
+         * Parses the passed string, and encodes the special characters (used
+         * in xml for special purposes) with the appropriate codes. e.g.
+         * '&lt;' is changed to '&amp;lt;'
          *
          * @param inData The string to encode into xml.
          *
@@ -675,9 +677,9 @@ public class SVGWriter extends OutputStreamWriter {
         }
 
         /**
-         * returns the xml unicode escape sequence for the
-         * character <code>c</code>, such as <code>"&#x00d1;"</code> for the
-         * character <code>'?'</code>
+         * returns the xml unicode escape sequence for the character
+         * <code>c</code>, such as <code>"&#x00d1;"</code> for the character
+         * <code>'?'</code>
          *
          * @param c DOCUMENT ME!
          *
@@ -707,7 +709,6 @@ public class SVGWriter extends OutputStreamWriter {
     private abstract class SVGFeatureWriter {
         /**
          * DOCUMENT ME!
-         *
          * @param feature TODO
          *
          * @throws IOException DOCUMENT ME!
@@ -717,7 +718,6 @@ public class SVGWriter extends OutputStreamWriter {
 
         /**
          * DOCUMENT ME!
-         *
          * @param geom TODO
          *
          * @throws IOException DOCUMENT ME!
@@ -737,7 +737,6 @@ public class SVGWriter extends OutputStreamWriter {
 
         /**
          * DOCUMENT ME!
-         *
          * @param geom TODO
          *
          * @throws IOException DOCUMENT ME!
@@ -748,7 +747,6 @@ public class SVGWriter extends OutputStreamWriter {
 
         /**
          * DOCUMENT ME!
-         *
          * @param feature TODO
          *
          * @throws IOException DOCUMENT ME!
@@ -758,15 +756,18 @@ public class SVGWriter extends OutputStreamWriter {
         }
 
         /**
-         * Writes the content of the <b>d</b> attribute in a
-         * <i>path</i> SVG element<p>While iterating over the
-         * coordinate array passed as parameter, this method performs a kind
-         * of very basic path generalization, verifying that the distance
-         * between the current coordinate and the last encoded one is greater
-         * than the minimun distance expressed by the field
-         * <code>minCoordDistance</code> and established by the method {@link
-         * #setReferenceSpace(Envelope, float) setReferenceSpace(Envelope,
-         * blurFactor)}</p>
+         * Writes the content of the <b>d</b> attribute in a <i>path</i> SVG
+         * element
+         *
+         * <p>
+         * While iterating over the coordinate array passed as parameter, this
+         * method performs a kind of very basic path generalization, verifying
+         * that the distance between the current coordinate and the last
+         * encoded one is greater than the minimun distance expressed by the
+         * field <code>minCoordDistance</code> and established by the method
+         * {@link #setReferenceSpace(Envelope, float)
+         * setReferenceSpace(Envelope, blurFactor)}
+         * </p>
          *
          * @param coords
          *
@@ -823,15 +824,13 @@ public class SVGWriter extends OutputStreamWriter {
      */
     private class PointWriter extends SVGFeatureWriter {
         /**
-                         * Creates a new PointWriter object.
-                         */
+         * Creates a new PointWriter object.
+         */
         public PointWriter() {
         }
 
         /**
          * DOCUMENT ME!
-         *
-         * @param feature DOCUMENT ME!
          *
          * @throws IOException DOCUMENT ME!
          */
@@ -842,19 +841,15 @@ public class SVGWriter extends OutputStreamWriter {
         /**
          * DOCUMENT ME!
          *
-         * @param geom DOCUMENT ME!
-         *
          * @throws IOException DOCUMENT ME!
          */
 
         /**
-         * protected void writeAttributes(Feature ft) throws
-         * IOException { if (!pointsAsCircles) { write(" xlink:href=\"#"); if
-         * (attributeStyle != null) {
-         * write(String.valueOf(ft.getAttribute(attributeStyle))); } else {
-         * write("point"); } write("\""); } super.writeAttributes(ft); }
-         *
-         * @param geom DOCUMENT ME!
+         * protected void writeAttributes(Feature ft) throws IOException { if
+         * (!pointsAsCircles) { write(" xlink:href=\"#"); if (attributeStyle
+         * != null) { write(String.valueOf(ft.getAttribute(attributeStyle)));
+         * } else { write("point"); } write("\""); }
+         * super.writeAttributes(ft); }
          *
          * @throws IOException DOCUMENT ME!
          */
@@ -862,17 +857,15 @@ public class SVGWriter extends OutputStreamWriter {
         /**
          * DOCUMENT ME!
          *
-         * @param geom DOCUMENT ME!
-         *
          * @throws IOException DOCUMENT ME!
          */
         protected void startGeometry(Geometry geom) throws IOException {
         }
 
         /**
-         * overrides writeBounds for points to do nothing. You can
-         * get the position of the point with the x and y attributes of the
-         * "use" SVG element written to represent each point
+         * overrides writeBounds for points to do nothing. You can get the
+         * position of the point with the x and y attributes of the "use" SVG
+         * element written to represent each point
          *
          * @param env DOCUMENT ME!
          *
@@ -917,15 +910,13 @@ public class SVGWriter extends OutputStreamWriter {
      */
     private class MultiPointWriter extends PointWriter {
         /**
-                         * Creates a new MultiPointWriter object.
-                         */
+         * Creates a new MultiPointWriter object.
+         */
         public MultiPointWriter() {
         }
 
         /**
          * DOCUMENT ME!
-         *
-         * @param feature DOCUMENT ME!
          *
          * @throws IOException DOCUMENT ME!
          */
@@ -935,8 +926,6 @@ public class SVGWriter extends OutputStreamWriter {
 
         /**
          * DOCUMENT ME!
-         *
-         * @param geom DOCUMENT ME!
          *
          * @throws IOException DOCUMENT ME!
          */
@@ -965,8 +954,6 @@ public class SVGWriter extends OutputStreamWriter {
         /**
          * DOCUMENT ME!
          *
-         * @param feature DOCUMENT ME!
-         *
          * @throws IOException DOCUMENT ME!
          */
         protected void endElement(Feature feature) throws IOException {
@@ -975,11 +962,12 @@ public class SVGWriter extends OutputStreamWriter {
     }
 
     /**
-     * Writer to handle feature types which contain a Geometry
-     * attribute that is actually of the class Geometry. This can occur in
-     * heterogeneous data sets.
+     * Writer to handle feature types which contain a Geometry attribute that
+     * is actually of the class Geometry. This can occur in heterogeneous data
+     * sets.
      *
      * @author Justin Deoliveira, jdeolive@openplans.org
+     *
      */
     private class GeometryWriter extends SVGFeatureWriter {
         SVGFeatureWriter delegate;
@@ -1013,15 +1001,13 @@ public class SVGWriter extends OutputStreamWriter {
      */
     private class LineStringWriter extends SVGFeatureWriter {
         /**
-                         * Creates a new LineStringWriter object.
-                         */
+         * Creates a new LineStringWriter object.
+         */
         public LineStringWriter() {
         }
 
         /**
          * DOCUMENT ME!
-         *
-         * @param feature DOCUMENT ME!
          *
          * @throws IOException DOCUMENT ME!
          */
@@ -1031,8 +1017,6 @@ public class SVGWriter extends OutputStreamWriter {
 
         /**
          * DOCUMENT ME!
-         *
-         * @param geom DOCUMENT ME!
          *
          * @throws IOException DOCUMENT ME!
          */
@@ -1057,8 +1041,8 @@ public class SVGWriter extends OutputStreamWriter {
      */
     private class MultiLineStringWriter extends LineStringWriter {
         /**
-                         * Creates a new MultiLineStringWriter object.
-                         */
+         * Creates a new MultiLineStringWriter object.
+         */
         public MultiLineStringWriter() {
         }
 
@@ -1083,15 +1067,13 @@ public class SVGWriter extends OutputStreamWriter {
      */
     private class PolygonWriter extends SVGFeatureWriter {
         /**
-                         * Creates a new PolygonWriter object.
-                         */
+         * Creates a new PolygonWriter object.
+         */
         public PolygonWriter() {
         }
 
         /**
          * DOCUMENT ME!
-         *
-         * @param feature DOCUMENT ME!
          *
          * @throws IOException DOCUMENT ME!
          */
@@ -1101,8 +1083,6 @@ public class SVGWriter extends OutputStreamWriter {
 
         /**
          * DOCUMENT ME!
-         *
-         * @param geom DOCUMENT ME!
          *
          * @throws IOException DOCUMENT ME!
          */
@@ -1133,8 +1113,8 @@ public class SVGWriter extends OutputStreamWriter {
      */
     private class MultiPolygonWriter extends PolygonWriter {
         /**
-                         * Creates a new MultiPolygonWriter object.
-                         */
+         * Creates a new MultiPolygonWriter object.
+         */
         public MultiPolygonWriter() {
         }
 

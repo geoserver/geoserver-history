@@ -18,13 +18,16 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Used to accept information from user for a New DataStore Action.<p>This
- * form contains a convience property getDataStoreDescrptions() which is
- * simply to make writing the JSP easier.</p>
+ * Used to accept information from user for a New DataStore Action.
+ *
+ * <p>
+ * This form contains a convience property getDataStoreDescrptions() which is
+ * simply to make writing the JSP easier.
+ * </p>
  *
  * @author User, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: DataDataStoresNewForm.java,v 1.8 2004/03/15 08:16:11 jive Exp $
+ * @version $Id$
  */
 public class DataDataStoresNewForm extends ActionForm {
     private static final Pattern idPattern = Pattern.compile("^\\a$");
@@ -48,8 +51,11 @@ public class DataDataStoresNewForm extends ActionForm {
     }
 
     /**
-     * List of available DataStoreDescriptions.<p>Convience method for
-     * DataStureUtils.listDataStoresDescriptions().</p>
+     * List of available DataStoreDescriptions.
+     *
+     * <p>
+     * Convience method for DataStureUtils.listDataStoresDescriptions().
+     * </p>
      *
      * @return Sorted set of DataStore Descriptions.
      */
@@ -79,7 +85,7 @@ public class DataDataStoresNewForm extends ActionForm {
                 new ActionError("error.dataStoreFactory.invalid", getSelectedDescription()));
         }
 
-        if ((getDataStoreID() == null) || "".equals(getDataStoreID())) {
+        if ((getDataStoreID() == null) || getDataStoreID().equals("")) {
             errors.add("dataStoreID",
                 new ActionError("error.dataStoreId.required", getDataStoreID()));
         } else if (!Pattern.matches("^[a-zA-Z](\\w|\\.)*$", getDataStoreID())) {

@@ -5,15 +5,13 @@
 package org.vfny.geoserver.util.requests.readers;
 
 import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.filter.FidFilter;
-import org.geotools.filter.Filter;
-import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.FilterFilter;
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
-import org.geotools.text.filter.FilterBuilder;
-import org.geotools.text.filter.ParseException;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
+import org.opengis.filter.Id;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.servlets.AbstractService;
@@ -27,10 +25,12 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,23 +41,25 @@ import javax.xml.parsers.SAXParserFactory;
 
 
 /**
- * Base class for all KVP readers, with some generalized convenience
- * methods.<p>If you pass this utility a KVP request (everything after the
- * '?' in the  GET request URI), it will translate this into a list of
- * key-word value pairs.These pairs represent every element in the KVP GET
- * request, legal or otherwise.  This class may then be subclassed and  used
- * by request-specific classes.  Because there is no error checking for the
- * KVPs in this class, subclasses must  check for validity of their KVPs
- * before passing the their requests along, but - in return - this parent
- * class is quite flexible.  For example, native KVPs may be easily parsed in
- * its subclasses, since they are simply read and stored (without analysis) in
- * the constructer in this class. Note that all keys are translated to upper
- * case to avoid case  conflicts.</p>
+ * Base class for all KVP readers, with some generalized convenience methods.
+ *
+ * <p>
+ * If you pass this utility a KVP request (everything after the '?' in the  GET
+ * request URI), it will translate this into a list of key-word value
+ * pairs.These pairs represent every element in the KVP GET request, legal or
+ * otherwise.  This class may then be subclassed and  used by request-specific
+ * classes.  Because there is no error checking for the KVPs in this class,
+ * subclasses must  check for validity of their KVPs before passing the their
+ * requests along, but - in return - this parent class is quite flexible.  For
+ * example, native KVPs may be easily parsed in its subclasses, since they are
+ * simply read and stored (without analysis) in the constructer in this class.
+ * Note that all keys are translated to upper case to avoid case  conflicts.
+ * </p>
  *
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
  * @author Gabriel Roldan
- * @version $Id: KvpRequestReader.java,v 1.6 2004/02/09 23:29:47 dmzwiers Exp $
+ * @version $Id$
  */
 abstract public class KvpRequestReader {
     /** Class logger */
@@ -76,7 +78,7 @@ abstract public class KvpRequestReader {
     protected static final String INNER_DELIMETER = ",";
 
     /** Holds mappings between HTTP and ASCII encodings */
-    protected final static FilterFactory factory = FilterFactoryFinder.createFilterFactory();
+    protected final static FilterFactory factory = CommonFactoryFinder.getFilterFactory(null);
 
     /** KVP pair listing; stores all data from the KVP request */
     protected Map kvpPairs = new HashMap(10);
@@ -85,11 +87,11 @@ abstract public class KvpRequestReader {
     protected AbstractService service;
 
     /**
-             * Creates a reader from paramters and a service.
-             *
-             * @param kvpPairs The key-value pairs.
-             * @param service The service using the reader.
-             */
+     * Creates a reader from paramters and a service.
+     *
+     * @param kvpPairs The key-value pairs.
+     * @param service The service using the reader.
+     */
     public KvpRequestReader(Map kvpPairs, AbstractService service) {
         this.kvpPairs = kvpPairs;
         this.service = service;
@@ -119,27 +121,26 @@ abstract public class KvpRequestReader {
     }
 
     /**
-     * returns the propper Request subclass for the set of parameters
-     * it was setted up and the kind of request it is specialized for
-     *
-     * @param request DOCUMENT ME!
+     * returns the propper Request subclass for the set of parameters it was
+     * setted up and the kind of request it is specialized for
      *
      * @return DOCUMENT ME!
-     *
-     * @throws ServiceException DOCUMENT ME!
      */
     public abstract Request getRequest(HttpServletRequest request)
         throws ServiceException;
 
     /**
-     * Attempts to parse out the proper typeNames from the FeatureId
-     * filters. It simply uses the value before the '.' character.
+     * Attempts to parse out the proper typeNames from the FeatureId filters.
+     * It simply uses the value before the '.' character.
      *
-     * @param rawFidList the strings after the FEATUREID url component.  Should
-     *        be found using kvpPairs.get("FEATUREID") in this class or one of
-     *        its children
+     * @param rawFidList the strings after the FEATUREID url component.  Should be found
+     *            using kvpPairs.get("FEATUREID") in this class or one of its
+     *            children
      *
      * @return A list of typenames, made from the featureId filters.
+     *
+     * @throws WfsException
+     *             If the structure can not be read.
      */
     protected List getTypesFromFids(String rawFidList) {
         List typeList = new ArrayList(10);
@@ -171,13 +172,15 @@ abstract public class KvpRequestReader {
     }
 
     /**
-     * Reads a tokenized string and turns it into a list. In this
-     * method, the tokenizer is quite flexible. Note that if the list is
-     * unspecified (ie. is null) or is unconstrained (ie. is ''), then the
-     * method returns an empty list.
+     * Reads a tokenized string and turns it into a list. In this method, the
+     * tokenizer is quite flexible. Note that if the list is unspecified (ie. is
+     * null) or is unconstrained (ie. is ''), then the method returns an empty
+     * list.
      *
-     * @param rawList The tokenized string.
-     * @param delimiter The delimeter for the string tokens.
+     * @param rawList
+     *            The tokenized string.
+     * @param delimiter
+     *            The delimeter for the string tokens.
      *
      * @return A list of the tokenized string.
      */
@@ -195,10 +198,10 @@ abstract public class KvpRequestReader {
             // handles explicit, constrained element lists
         } else {
             /**
-                                     * GR: avoid using StringTokenizer because it does not returns empty
-                                     * trailing strings (i.e. if the string after the last match of the
-                                     * pattern is empty)
-                                     */
+             * GR: avoid using StringTokenizer because it does not returns empty
+             * trailing strings (i.e. if the string after the last match of the
+             * pattern is empty)
+             */
 
             // HACK: if there are more than one character in delimiter, I assume
             // they are the parenthesis, for wich I don't know how to create
@@ -241,15 +244,18 @@ abstract public class KvpRequestReader {
     }
 
     /**
-     * Reads a nested tokenized string and turns it into a list. This
-     * method is much more specific to the KVP get request syntax than the
-     * more general readFlat method. In this case, the outer tokenizer '()'
-     * and inner tokenizer ',' are both from the specification. Returns a list
-     * of lists.
+     * Reads a nested tokenized string and turns it into a list. This method is
+     * much more specific to the KVP get request syntax than the more general
+     * readFlat method. In this case, the outer tokenizer '()' and inner
+     * tokenizer ',' are both from the specification. Returns a list of lists.
      *
-     * @param rawList The tokenized string.
+     * @param rawList
+     *            The tokenized string.
      *
      * @return A list of lists, containing outer and inner elements.
+     *
+     * @throws WfsException
+     *             When the string structure cannot be read.
      */
     protected static List readNested(String rawList) {
         if (LOGGER.isLoggable(Level.FINEST)) {
@@ -309,7 +315,8 @@ abstract public class KvpRequestReader {
     /**
      * creates a Map of key/value pairs from a HTTP style query String
      *
-     * @param qString DOCUMENT ME!
+     * @param qString
+     *            DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
@@ -337,6 +344,8 @@ abstract public class KvpRequestReader {
             // delimeters, which may appear in XML (such as '=' for
             // attributes. unavoidable and illustrates the problems with
             // mixing nasty KVP Get syntax and pure XML syntax!
+            // JD-adding SLD_BODY, when wms moves to new architecture this 
+            // can be fixed
             if (kvpPair.toUpperCase().startsWith("FILTER")) {
                 String filterVal = kvpPair.substring(7);
 
@@ -347,6 +356,9 @@ abstract public class KvpRequestReader {
                 }
 
                 kvps.put("FILTER", filterVal);
+            } else if (kvpPair.toUpperCase().startsWith("SLD_BODY")) {
+                String sldBodyVal = kvpPair.substring(9);
+                kvps.put("SLD_BODY", sldBodyVal);
             } else {
                 // handles all other standard cases by looking for the correct
                 // delimeter and then sticking the KVPs into the hash table
@@ -363,6 +375,8 @@ abstract public class KvpRequestReader {
                         value = requestValues.nextToken();
                         LOGGER.finest("putting kvp pair: " + key + ": " + value);
                         kvps.put(key, value);
+                    } else {
+                        kvps.put(key, "");
                     }
                 }
             }
@@ -378,7 +392,8 @@ abstract public class KvpRequestReader {
     /**
      * Cleans an HTTP string and returns pure ASCII as a string.
      *
-     * @param raw The HTTP-encoded string.
+     * @param raw
+     *            The HTTP-encoded string.
      *
      * @return The string with the url escape characters replaced.
      */
@@ -410,8 +425,6 @@ abstract public class KvpRequestReader {
 
     /**
      * Returns the service handling request.
-     *
-     * @return DOCUMENT ME!
      */
     public AbstractService getServiceRef() {
         return service;
@@ -419,8 +432,6 @@ abstract public class KvpRequestReader {
 
     /**
      * sets the service handling request.
-     *
-     * @param service DOCUMENT ME!
      */
     public void setServiceRef(AbstractService service) {
         this.service = service;
@@ -430,14 +441,13 @@ abstract public class KvpRequestReader {
      * parses the BBOX parameter, wich must be a String of the form
      * <code>minx,miny,maxx,maxy</code> and returns a corresponding
      * <code>Envelope</code> object
-     *
      * @param bboxParam TODO
      *
      * @return the <code>Envelope</code> represented by the request BBOX
      *         parameter
      *
-     * @throws ServiceException if the value of the BBOX request parameter
-     *         can't be parsed as four<code>double</code>'s
+     * @throws WmsException if the value of the BBOX request parameter can't be
+     *         parsed as four <code>double</code>'s
      */
     protected Envelope parseBbox(String bboxParam) throws ServiceException {
         Envelope bbox = null;
@@ -474,11 +484,8 @@ abstract public class KvpRequestReader {
 
     /**
      * Parses an OGC filter
-     *
      * @param filter
-     *
      * @return
-     *
      * @throws ServiceException
      */
     protected List readOGCFilter(String filter) throws ServiceException {
@@ -493,7 +500,7 @@ abstract public class KvpRequestReader {
             String next = (String) i.next();
 
             if (next.trim().equals("")) {
-                filters.add(Filter.NONE);
+                filters.add(Filter.INCLUDE);
             } else {
                 filters.add(parseXMLFilter(new StringReader(next)));
             }
@@ -503,27 +510,8 @@ abstract public class KvpRequestReader {
     }
 
     /**
-     * Parses a CQL filter
-     *
-     * @param filter
-     *
-     * @return
-     *
-     * @throws ServiceException
-     */
-    protected List readCQLFilter(String filter) throws ServiceException {
-        try {
-            return FilterBuilder.parseFilterList(null, filter);
-        } catch (ParseException pe) {
-            throw new ServiceException("Could not parse CQL filter list." + pe.getMessage(), pe);
-        }
-    }
-
-    /**
      * Parses fid filters
-     *
      * @param fid
-     *
      * @return
      */
     protected List readFidFilters(String fid) {
@@ -538,12 +526,15 @@ abstract public class KvpRequestReader {
             List ids = (List) i.next();
             ListIterator innerIterator = ids.listIterator();
 
+            Set fids = new HashSet();
+
             while (innerIterator.hasNext()) {
-                FidFilter fidFilter = factory.createFidFilter();
-                fidFilter.addFid((String) innerIterator.next());
-                filters.add(fidFilter);
-                LOGGER.finest("added fid filter: " + fidFilter);
+                fids.add(factory.featureId((String) innerIterator.next()));
             }
+
+            Id fidFilter = factory.id(fids);
+            LOGGER.finest("added fid filter: " + fidFilter);
+            filters.add(fidFilter);
         }
 
         return filters;
@@ -556,7 +547,7 @@ abstract public class KvpRequestReader {
      *
      * @return The geotools filter constructed from rawRequest.
      *
-     * @throws ServiceException For any problems reading the request.
+     * @throws WfsException For any problems reading the request.
      */
     protected Filter parseXMLFilter(Reader rawRequest)
         throws ServiceException {

@@ -20,15 +20,18 @@ package org.vfny.geoserver.global.dto;
  * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: DataTransferObject.java,v 1.4 2004/01/31 00:27:26 jive Exp $
+ * @version $Id$
  *
  * @see java.util.Map
  * @see java.util.List
  */
 public interface DataTransferObject extends Cloneable {
     /**
-     * Implement clone as a Deep Copy.<p>Create a clone of this object
-     * and return it.</p>
+     * Implement clone as a Deep Copy.
+     *
+     * <p>
+     * Create a clone of this object and return it.
+     * </p>
      *
      * @return A new DataStructure which is a copy of this DataStructure.
      *
@@ -39,7 +42,7 @@ public interface DataTransferObject extends Cloneable {
     /**
      * Compares the equality of the two objects.
      *
-     * @param other The object to checked for equivalence.
+     * @param obj The object to checked for equivalence.
      *
      * @return <code>true</code> when the objects are the same.
      *

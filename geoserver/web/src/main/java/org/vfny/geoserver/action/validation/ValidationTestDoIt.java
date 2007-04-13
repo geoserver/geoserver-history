@@ -23,11 +23,14 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * ValidationTestDoIt purpose.<p>Description of ValidationTestDoIt ...</p>
+ * ValidationTestDoIt purpose.
+ * <p>
+ * Description of ValidationTestDoIt ...
+ * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: sploreg $ (last modification)
- * @version $Id: ValidationTestDoIt.java,v 1.11 2004/06/29 18:36:11 sploreg Exp $
+ * @version $Id$
  */
 public class ValidationTestDoIt extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,
@@ -35,7 +38,7 @@ public class ValidationTestDoIt extends ConfigAction {
         boolean stopThread = false;
         String parameter = mapping.getParameter();
 
-        if ((parameter != null) && "stop".equals(parameter)) {
+        if ((parameter != null) && parameter.equals("stop")) {
             stopThread = true;
         }
 

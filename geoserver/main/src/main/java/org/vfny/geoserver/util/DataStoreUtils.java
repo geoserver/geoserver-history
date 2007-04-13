@@ -28,7 +28,7 @@ import javax.servlet.ServletContext;
  *
  * @author Richard Gould, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
- * @version $Id: DataStoreUtils.java,v 1.12 2004/09/21 21:14:48 cholmesny Exp $
+ * @version $Id$
  */
 public abstract class DataStoreUtils {
     public static DataStore acquireDataStore(Map params, ServletContext sc)
@@ -234,8 +234,9 @@ public abstract class DataStoreUtils {
 
         // Convert Params into the kind of Map we actually need
         for (Iterator i = params.keySet().iterator(); i.hasNext();) {
-            final String key = (String) i.next();
-            final Object value = find(info, key).lookUp(params);
+            String key = (String) i.next();
+
+            Object value = find(info, key).lookUp(params);
 
             if (value != null) {
                 map.put(key, value);

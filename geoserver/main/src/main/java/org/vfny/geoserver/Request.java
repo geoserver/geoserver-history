@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Gabriel Roldan
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
- * @version $Id: Request.java,v 1.16 2004/09/08 17:36:35 cholmesny Exp $
+ * @version $Id$
  */
 abstract public class Request {
     /**

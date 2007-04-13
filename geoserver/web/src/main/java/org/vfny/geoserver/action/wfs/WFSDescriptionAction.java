@@ -12,6 +12,9 @@ import org.vfny.geoserver.config.WFSConfig;
 import org.vfny.geoserver.form.wfs.WFSDescriptionForm;
 import org.vfny.geoserver.global.UserContainer;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,8 +48,8 @@ public final class WFSDescriptionAction extends ConfigAction {
         config.setMaintainer(maintainer);
         config.setAbstract(_abstract);
 
-        String[] array = (keywords != null) ? keywords.split(System.getProperty("line.separator"))
-                                            : new String[0];
+        List array = (keywords != null)
+            ? Arrays.asList(keywords.split(System.getProperty("line.separator"))) : new ArrayList();
 
         config.setKeywords(array);
         getApplicationState().notifyConfigChanged();

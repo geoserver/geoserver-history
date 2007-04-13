@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver</artifactId>
-		<version>1.5.0</version>
+		<version>1.6-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.geoserver</groupId>
@@ -18,10 +18,10 @@
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>web</artifactId>
-			<version>1.5.0</version>
+			<version>1.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.geotools</groupId>
+			<groupId>org.geotools.demo</groupId>
 			<artifactId>gt2-demo-property</artifactId>
 		</dependency>
 		<dependency>
@@ -56,9 +56,9 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jalopy-maven-plugin</artifactId>
- 	<configuration>
-                <srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
-                <testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
+        <configuration>
+          <srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
+          <testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
         </configuration>
         <executions>
           <execution>

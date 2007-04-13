@@ -4,13 +4,13 @@
  */
 package org.geoserver.request;
 
+import org.geoserver.ows.util.EncodingInfo;
+import org.geoserver.ows.util.XmlCharsetDetector;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.servlets.AbstractService;
-import org.vfny.geoserver.util.requests.EncodingInfo;
-import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 import org.vfny.geoserver.util.requests.readers.DispatcherKvpReader;
 import org.vfny.geoserver.util.requests.readers.DispatcherXmlReader;
 import java.io.BufferedInputStream;
@@ -34,9 +34,13 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Root dispatcher which handles all incoming requests.<p></p>
+ * Root dispatcher which handles all incoming requests.
+ * <p>
+ *
+ * </p>
  *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
+ * @deprecated use {@link org.geoserver.ows.Dispatcher}.
  */
 public class Dispatcher extends AbstractController {
     GeoServer geoServer;
@@ -171,8 +175,8 @@ public class Dispatcher extends AbstractController {
         }
 
         /**
-                         * ALFA: this is a HACK to let GeoServer do a getCapabilities request by default.
-                         */
+         * ALFA: this is a HACK to let GeoServer do a getCapabilities request by default.
+         */
 
         /*request = (request == null ? "GetCapabilities" : request);*/
         if ((service == null) || (request == null)) {
@@ -288,14 +292,14 @@ public class Dispatcher extends AbstractController {
             throw new ServiceException(msg);
         }
 
-        if (kvpRequestContent) {
-            target.doGet(httpRequest, httpResponse);
-        } else {
+        if (!kvpRequestContent) {
             if (requestReader != null) {
                 target.doPost(httpRequest, httpResponse, requestReader);
             } else {
                 target.doPost(httpRequest, httpResponse);
             }
+        } else {
+            target.doGet(httpRequest, httpResponse);
         }
 
         disReader.close();

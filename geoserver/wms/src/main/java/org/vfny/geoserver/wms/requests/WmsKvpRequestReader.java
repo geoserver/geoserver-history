@@ -6,7 +6,6 @@ package org.vfny.geoserver.wms.requests;
 
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.wfs.servlets.WFService;
 import org.vfny.geoserver.wms.servlets.WMService;
 import java.util.Map;
 
@@ -19,31 +18,32 @@ import java.util.Map;
  * "WMTVER" parameter, wich is deprecated but it is recomended to recognize it
  *
  * @author Gabriel Rold?n
- * @version $Id: WmsKvpRequestReader.java,v 1.6 2004/02/09 23:29:47 dmzwiers Exp $
+ * @version $Id$
  */
 public abstract class WmsKvpRequestReader extends KvpRequestReader {
     /**
-             * DOCUMENT ME!
-             *
-             * @param params DOCUMENT ME!
-             */
+     * DOCUMENT ME!
+     *
+     * @param params DOCUMENT ME!
+     */
 
     //protected static final GeoServer config = GeoServer.getInstance();
+
     /**
-             * Creates a new kvp reader for a WMS request.
-             *
-             * @param kvpPairs The raw key value pairs.
-             * @param service The servlet handling the request.
-             */
+     * Creates a new kvp reader for a WMS request.
+     *
+     * @param kvpPairs The raw key value pairs.
+     * @param service The servlet handling the request.
+     */
     public WmsKvpRequestReader(Map kvpPairs, WMService service) {
         super(kvpPairs, service);
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
+    * DOCUMENT ME!
+    *
+    * @return DOCUMENT ME!
+    */
     protected String getRequestVersion() {
         String version = getValue("VERSION");
 

@@ -4,40 +4,46 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geoserver.feature.RetypingFeatureCollection;
 import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
-import org.geotools.filter.Filter;
+import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import java.io.IOException;
 import java.util.Set;
 
 
 /**
- * GeoServer wrapper for backend Geotools2 DataStore.<p>Support
- * FeatureSource decorator for FeatureTypeInfo that takes care of mapping the
- * FeatureTypeInfo's FeatureSource with the schema and definition query
- * configured for it.</p>
- *  <p>Because GeoServer requires that attributes always be returned in the
- * same order we need a way to smoothly inforce this. Could we use this class
- * to do so? It would need to support writing and locking though.</p>
+ * GeoServer wrapper for backend Geotools2 DataStore.
+ *
+ * <p>
+ * Support FeatureSource decorator for FeatureTypeInfo that takes care of
+ * mapping the FeatureTypeInfo's FeatureSource with the schema and definition
+ * query configured for it.
+ * </p>
+ *
+ * <p>
+ * Because GeoServer requires that attributes always be returned in the same
+ * order we need a way to smoothly inforce this. Could we use this class to do
+ * so? It would need to support writing and locking though.
+ * </p>
  *
  * @author Gabriel Rold?n
- * @version $Id: GeoServerFeatureStore.java,v 1.5 2004/02/09 23:29:41 dmzwiers Exp $
+ * @version $Id$
  */
 public class GeoServerFeatureStore extends GeoServerFeatureSource implements FeatureStore {
     /**
-             * Creates a new DEFQueryFeatureLocking object.
-             *
-             * @param store GeoTools2 FeatureSource
-             * @param schema FeatureType served by source
-             * @param definitionQuery Filter that constrains source
-             * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
-             */
+     * Creates a new DEFQueryFeatureLocking object.
+     *
+     * @param store GeoTools2 FeatureSource
+     * @param schema FeatureType served by source
+     * @param definitionQuery Filter that constrains source
+     * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
+     */
     GeoServerFeatureStore(FeatureStore store, FeatureType schema, Filter definitionQuery,
         CoordinateReferenceSystem forcedCRS) {
         super(store, schema, definitionQuery, forcedCRS);
@@ -54,28 +60,19 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Fea
 
     /**
      * see interface for details.
-     *
      * @param fc
-     *
      * @return
-     *
      * @throws IOException
      */
     public Set addFeatures(FeatureCollection fc) throws IOException {
-        return store().addFeatures(fc.reader());
-    }
+        FeatureStore store = store();
 
-    /**
-     * addFeatures purpose.<p>Description ...</p>
-     *
-     * @param reader Reader over Feature to be added
-     *
-     * @return Set of FIDs added
-     *
-     * @throws IOException If contents of reader could not be added
-     */
-    public Set addFeatures(FeatureReader reader) throws IOException {
-        return store().addFeatures(reader);
+        //check if the feature collection needs to be retyped
+        if (!store.getSchema().equals(fc.getSchema())) {
+            fc = new RetypingFeatureCollection(fc, store.getSchema());
+        }
+
+        return store().addFeatures(fc);
     }
 
     /**
@@ -134,6 +131,13 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Fea
      * @throws IOException DOCUMENT ME!
      */
     public void setFeatures(FeatureReader reader) throws IOException {
+        FeatureStore store = store();
+
+        //check if the feature reader needs to be retyped
+        if (!store.getSchema().equals(reader.getFeatureType())) {
+            reader = new RetypingFeatureCollection.RetypingFeatureReader(reader, store.getSchema());
+        }
+
         store().setFeatures(reader);
     }
 

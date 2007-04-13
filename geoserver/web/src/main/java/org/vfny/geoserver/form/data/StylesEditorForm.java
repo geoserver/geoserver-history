@@ -51,17 +51,20 @@ public class StylesEditorForm extends ActionForm {
     private String[] validationReport = null; // the SLD file with validation errors for it (saxexceptions)
 
     /**
-     * okay this is a bit weird because of how struts html:checkbox
-     * works. 1. if the "thing" is check, then the set method will be called
-     * (with "true") 2. if the "thing" is not checked, then nothing happens!
-     * So, struts says to always set the thing to "false" in the reset method.
-     * That way, if there's no event (ie. its unset), its state is false If
-     * there is an event, it'll be set to true. Unforunately, this doesnt work
-     * well when you want a default value (the above give you a default value
-     * of false). To set the default to "true", then we need two variables.
-     * The main one, which you set to the default value. A secondary one that
-     * tells you if the user actually checked it. In this way, the default
-     * value will be sent to the user, but they can uncheck it!
+     *  okay this is a bit weird because of how struts html:checkbox works.
+     *   1. if the "thing" is check, then the set method will be called (with "true")
+     *   2. if the "thing" is not checked, then nothing happens!
+     *
+     *  So, struts says to always set the thing to "false" in the reset method.
+     *    That way, if there's no event (ie. its unset), its state is false
+     *    If there is an event, it'll be set to true.
+     *
+     *  Unforunately, this doesnt work well when you want a default value (the above give you a default value of false).
+     *  To set the default to "true", then we need two variables.
+     *   The main one, which you set to the default value.
+     *   A secondary one that tells you if the user actually checked it.
+     *
+     *   In this way, the default value will be sent to the user, but they can uncheck it!
      */
     private boolean fullyValidate;
     private boolean fullyValidateChecked;
@@ -101,7 +104,7 @@ public class StylesEditorForm extends ActionForm {
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if ((styleID == null) || "".equals(styleID)) {
+        if ((styleID == null) || styleID.equals("")) {
             errors.add("styleID", new ActionError("error.styleID.required", styleID));
 
             return errors;
@@ -206,8 +209,9 @@ public class StylesEditorForm extends ActionForm {
     }
 
     /**
-     * Access fullyValidate property. true -> validate against the xsd
-     * schema
+     * Access fullyValidate property.
+     *
+     *  true -> validate against the xsd schema
      *
      * @return Returns the fullyValidate.
      */
@@ -244,13 +248,14 @@ public class StylesEditorForm extends ActionForm {
     }
 
     /**
-     * Does the magic with _default & defaultChecked.<p>Because of the
-     * way that STRUTS works, if the user does not check the default box, or
-     * unchecks it, setDefault() is never called, thus we must monitor
-     * setDefault() to see if it doesn't get called. This must be accessible,
-     * as ActionForms need to know about it -- there is no way we can tell
-     * whether we are about to be passed to an ActionForm or not.</p>
-     *
+     * Does the magic with _default & defaultChecked.
+     * <p>
+     * Because of the way that STRUTS works, if the user does not check the default box,
+     * or unchecks it, setDefault() is never called, thus we must monitor setDefault()
+     * to see if it doesn't get called. This must be accessible, as ActionForms need to
+     * know about it -- there is no way we can tell whether we are about to be passed to
+     * an ActionForm or not.
+     * </p>
      * @return true if default shoudl be selected
      */
     public boolean isDefaultValue() {
@@ -288,9 +293,8 @@ public class StylesEditorForm extends ActionForm {
             StringBuffer sb = new StringBuffer();
             String s;
 
-            while ((s = br.readLine()) != null) {
+            while ((s = br.readLine()) != null)
                 sb.append(s.replaceAll("\t", "  ")).append("\n");
-            }
 
             br.close();
 

@@ -29,7 +29,7 @@ import java.util.Map;
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
- * @version $Id: CoverageStoreInfoDTO.java,v 1.5 2004/02/02 08:56:45 jive Exp $
+ * @version $Id$
  */
 public final class CoverageStoreInfoDTO implements DataTransferObject {
     /**

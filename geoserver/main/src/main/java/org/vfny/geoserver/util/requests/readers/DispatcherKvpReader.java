@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Chris Holmes, TOPP
  * @author Gabriel Rold?n
- * @version $Id: DispatcherKvpReader.java,v 1.11 2004/08/02 17:38:04 cholmesny Exp $
+ * @version $Id$
  */
 public class DispatcherKvpReader {
     /** Class logger */
@@ -36,7 +36,7 @@ public class DispatcherKvpReader {
     /**
      * Constructor with raw request string.  Calls parent.
      *
-     * @param requestReader A reader of the request from the http client.
+     * @param reader A reader of the request from the http client.
      * @param req The actual request made.
      *
      * @throws ServiceException DOCUMENT ME!
@@ -125,8 +125,6 @@ public class DispatcherKvpReader {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return The service, WFS,WMS,WCS,etc...
      */
     public String getService() {
@@ -138,8 +136,6 @@ public class DispatcherKvpReader {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return The request, GetCapabilities,GetMap,etc...
      */
     public String getRequest() {

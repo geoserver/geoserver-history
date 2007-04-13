@@ -30,33 +30,34 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Subclass of Struts' TilesRequestProcessor that looks up Spring-managed
- * Struts 1.1 Actions defined in ContextLoaderPlugIn's WebApplicationContext.<p>Behaves
- * like {@link DelegatingRequestProcessor DelegatingRequestProcessor}, but
- * also provides the Tiles functionality of the original
- * TilesRequestProcessor. As there's just a single central class to customize
- * in Struts, we have to provide another subclass here, covering both the
- * Tiles and the Spring delegation aspect.</p>
- *  <p>The default implementation delegates to the DelegatingActionUtils
- * class as fas as possible, to reuse as much code as possible despite the
- * need to provide two RequestProcessor subclasses. If you need to subclass
- * yet another RequestProcessor, take this class as a template, delegating to
- * DelegatingActionUtils just like it.</p>
+ * Struts 1.1 Actions defined in ContextLoaderPlugIn's WebApplicationContext.
+ *
+ * <p>Behaves like
+ * {@link DelegatingRequestProcessor DelegatingRequestProcessor},
+ * but also provides the Tiles functionality of the original TilesRequestProcessor.
+ * As there's just a single central class to customize in Struts, we have to provide
+ * another subclass here, covering both the Tiles and the Spring delegation aspect.
+ *
+ * <p>The default implementation delegates to the DelegatingActionUtils
+ * class as fas as possible, to reuse as much code as possible despite
+ * the need to provide two RequestProcessor subclasses. If you need to
+ * subclass yet another RequestProcessor, take this class as a template,
+ * delegating to DelegatingActionUtils just like it.
  *
  * @author Juergen Hoeller
- *
+ * @since 1.0.2
  * @see DelegatingRequestProcessor
  * @see DelegatingActionProxy
  * @see DelegatingActionUtils
- * @since 1.0.2
  */
 public class MultipleDelegatingTilesRequestProcessor extends DelegatingTilesRequestProcessor {
     /**
-     * Overloaded method from Struts' RequestProcessor. Forward or
-     * redirect to the specified destination by the specified mechanism. This
-     * method catches the Struts' actionForward call. It checks if the
+     * Overloaded method from Struts' RequestProcessor.
+     * Forward or redirect to the specified destination by the specified
+     * mechanism.
+     * This method catches the Struts' actionForward call. It checks if the
      * actionForward is done on a Tiles definition name. If true, process the
      * definition and insert it. If false, call the original parent's method.
-     *
      * @param request The servlet request we are processing.
      * @param response The servlet response we are creating.
      * @param forward The ActionForward controlling where we go next.
@@ -95,22 +96,16 @@ public class MultipleDelegatingTilesRequestProcessor extends DelegatingTilesRequ
     }
 
     /**
-     * Process a Tile definition name. This method tries to process the
-     * parameter <code>definitionName</code> as a definition name. It returns
-     * <code>true</code> if a definition has been processed, or
-     * <code>false</code> otherwise. Parameter <code>contextRelative</code> is
-     * not used in this implementation.
+     * Process a Tile definition name.
+     * This method tries to process the parameter <code>definitionName</code> as a definition name.
+     * It returns <code>true</code> if a definition has been processed, or <code>false</code> otherwise.
+     * Parameter <code>contextRelative</code> is not used in this implementation.
      *
      * @param definitionName Definition name to insert.
      * @param contextRelative Is the definition marked contextRelative ?
      * @param request Current page request.
      * @param response Current page response.
-     *
-     * @return <code>true</code> if the method has processed uri as a
-     *         definition name, <code>false</code> otherwise.
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws ServletException DOCUMENT ME!
+     * @return <code>true</code> if the method has processed uri as a definition name, <code>false</code> otherwise.
      */
     protected boolean processTilesDefinition(String definitionName, boolean contextRelative,
         HttpServletRequest request, HttpServletResponse response)
@@ -228,11 +223,6 @@ public class MultipleDelegatingTilesRequestProcessor extends DelegatingTilesRequ
      * @param request The servlet request we are processing
      * @param response The servlet response we are creating
      * @param mapping The ActionMapping we are using
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws ServletException DOCUMENT ME!
      */
     protected boolean processForward(HttpServletRequest request, HttpServletResponse response,
         ActionMapping mapping) throws IOException, ServletException {
@@ -256,11 +246,6 @@ public class MultipleDelegatingTilesRequestProcessor extends DelegatingTilesRequ
      * @param request The servlet request we are processing
      * @param response The servlet response we are creating
      * @param mapping The ActionMapping we are using
-     *
-     * @return DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws ServletException DOCUMENT ME!
      */
     protected boolean processInclude(HttpServletRequest request, HttpServletResponse response,
         ActionMapping mapping) throws IOException, ServletException {
@@ -277,18 +262,15 @@ public class MultipleDelegatingTilesRequestProcessor extends DelegatingTilesRequ
     }
 
     /**
-     * <p>Do a module relative forward to specified URI using request
-     * dispatcher. URI is relative to the current module. The real URI is
-     * compute by prefixing the module name.</p>
-     *  <p>This method is used internally and is not part of the public
-     * API. It is advised to not use it in subclasses.</p>
+     * <p>Do a module relative forward to specified URI using request dispatcher.
+     * URI is relative to the current module. The real URI is compute by prefixing
+     * the module name.</p>
+     * <p>This method is used internally and is not part of the public API. It is
+     * advised to not use it in subclasses. </p>
      *
      * @param uri Module-relative URI to forward to
      * @param request Current page request
      * @param response Current page response
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws ServletException DOCUMENT ME!
      *
      * @since Struts 1.1
      */
@@ -307,18 +289,15 @@ public class MultipleDelegatingTilesRequestProcessor extends DelegatingTilesRequ
     }
 
     /**
-     * <p>Do a module relative include to specified URI using request
-     * dispatcher. URI is relative to the current module. The real URI is
-     * compute by prefixing the module name.</p>
-     *  <p>This method is used internally and is not part of the public
-     * API. It is advised to not use it in subclasses.</p>
+     * <p>Do a module relative include to specified URI using request dispatcher.
+     * URI is relative to the current module. The real URI is compute by prefixing
+     * the module name.</p>
+     * <p>This method is used internally and is not part of the public API. It is
+     * advised to not use it in subclasses.</p>
      *
      * @param uri Module-relative URI to include
      * @param request Current page request
      * @param response Current page response
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws ServletException DOCUMENT ME!
      *
      * @since Struts 1.1
      */
@@ -337,17 +316,12 @@ public class MultipleDelegatingTilesRequestProcessor extends DelegatingTilesRequ
     }
 
     /**
-     * <p>Do a forward to specified URI using a
-     * <code>RequestDispatcher</code>. This method is used by all internal
-     * method needing to do a forward.</p>
+     * <p>Do a forward to specified URI using a <code>RequestDispatcher</code>.
+     * This method is used by all internal method needing to do a forward.</p>
      *
      * @param uri Context-relative URI to forward to
      * @param request Current page request
      * @param response Current page response
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws ServletException DOCUMENT ME!
-     *
      * @since Struts 1.1
      */
     protected void doForward(String uri, HttpServletRequest request, HttpServletResponse response)
@@ -373,17 +347,12 @@ public class MultipleDelegatingTilesRequestProcessor extends DelegatingTilesRequ
     }
 
     /**
-     * <p>Do an include of specified URI using a
-     * <code>RequestDispatcher</code>. This method is used by all internal
-     * method needing to do an include.</p>
+     * <p>Do an include of specified URI using a <code>RequestDispatcher</code>.
+     * This method is used by all internal method needing to do an include.</p>
      *
      * @param uri Context-relative URI to include
      * @param request Current page request
      * @param response Current page response
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws ServletException DOCUMENT ME!
-     *
      * @since Struts 1.1
      */
     protected void doInclude(String uri, HttpServletRequest request, HttpServletResponse response)

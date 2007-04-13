@@ -53,7 +53,7 @@ goto end
   echo GEOSERVER_HOME environment variable not properly set.  Using parent
   echo directory of this script.  Please set GEOSERVER_HOME correctly for 
   echo future uses.
-  java -jar -DSTOP.PORT=8079 -DSTOP.KEY=geoserver start.jar --stop
+  java -jar start.jar --stop
 goto end
 
 :end

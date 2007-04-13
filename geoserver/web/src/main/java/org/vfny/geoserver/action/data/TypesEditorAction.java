@@ -16,7 +16,7 @@ import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
-import org.geotools.geometry.JTS;
+import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
@@ -50,20 +50,31 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * These Action handles all the buttons for the FeatureType Editor.<p>This
- * one is more complicated then usual since not all the actions require the
- * form bean to be validated! I am going to have to hack a little bit to make
- * that happen, I may end up making the form bean validation differ depending
- * on the selected action.</p>
- *  <p>Buttons that make this action go:
- *  <ul>
- *      <li>Submit: update the FeatureTypeConfig held by the user, punt
- *      it back into DataConfig and return to the FeatureTypeSelect screen.</li>
- *      <li>Up and Down (for each attribute): not quite sure how to
- *      make these work yet - I hope I dont have to give them different names.</li>
- *  </ul>
- *  As usual we will have to uninternationlize the action name provided to
- * us.</p>
+ * These Action handles all the buttons for the FeatureType Editor.
+ *
+ * <p>
+ * This one is more complicated then usual since not all the actions require
+ * the form bean to be validated! I am going to have to hack a little bit to
+ * make that happen, I may end up making the form bean validation differ
+ * depending on the selected action.
+ * </p>
+ *
+ * <p>
+ * Buttons that make this action go:
+ *
+ * <ul>
+ * <li>
+ * Submit: update the FeatureTypeConfig held by the user, punt it back into
+ * DataConfig and return to the FeatureTypeSelect screen.
+ * </li>
+ * <li>
+ * Up and Down (for each attribute): not quite sure how to make these work yet
+ * - I hope I dont have to give them different names.
+ * </li>
+ * </ul>
+ *
+ * As usual we will have to uninternationlize the action name provided to us.
+ * </p>
  *
  * @author Richard Gould
  * @author Jody Garnett
@@ -100,19 +111,19 @@ public class TypesEditorAction extends ConfigAction {
         final String NEWSLD = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.sldWizard.label"));
 
-        if (SUBMIT.equals(action)) {
+        if (action.equals(SUBMIT)) {
             return executeSubmit(mapping, typeForm, user, request);
         }
 
-        if (BBOX.equals(action)) {
+        if (action.equals(BBOX)) {
             return executeBBox(mapping, typeForm, user, request);
         }
 
-        if (LOOKUP_SRS.equals(action)) {
+        if (action.equals(LOOKUP_SRS)) {
             return executeLookupSRS(mapping, typeForm, user, request);
         }
 
-        if (NEWSLD.equals(action)) { // if the SLDWizard button was hit
+        if (action.equals(NEWSLD)) { // if the SLDWizard button was hit
 
             return mapping.findForward("SLDWizard");
         }
@@ -130,7 +141,7 @@ public class TypesEditorAction extends ConfigAction {
         } else if (action.startsWith("delete_")) {
             int index = Integer.parseInt(action.substring(7));
             attributes.remove(index);
-        } else if (ADD.equals(action)) {
+        } else if (action.equals(ADD)) {
             executeAdd(mapping, typeForm, user, request);
         }
 
@@ -169,8 +180,8 @@ public class TypesEditorAction extends ConfigAction {
     }
 
     /**
-     * Populate the bounding box fields from the source and pass
-     * control back to the UI
+     * Populate the bounding box fields from the source and pass control back
+     * to the UI
      *
      * @param mapping DOCUMENT ME!
      * @param typeForm DOCUMENT ME!
@@ -240,21 +251,19 @@ public class TypesEditorAction extends ConfigAction {
             // avoid confusion (since on screen we do have the declared one, the native is
             // not visible)
             Envelope declaredEnvelope = envelope;
-            System.out.println("Original envelope: " + envelope);
 
             if (!CRS.equalsIgnoreMetadata(original, crsDeclared)) {
-                MathTransform xform = CRS.transform(original, crsDeclared, true);
-                declaredEnvelope = JTS.transform(envelope, xform, 10); //convert data bbox to lat/long
+                MathTransform xform = CRS.findMathTransform(original, crsDeclared, true);
+                declaredEnvelope = JTS.transform(envelope, null, xform, 10); //convert data bbox to lat/long
             }
 
-            System.out.println("Declared envelope: " + declaredEnvelope);
             typeForm.setDataMinX(Double.toString(declaredEnvelope.getMinX()));
             typeForm.setDataMaxX(Double.toString(declaredEnvelope.getMaxX()));
             typeForm.setDataMinY(Double.toString(declaredEnvelope.getMinY()));
             typeForm.setDataMaxY(Double.toString(declaredEnvelope.getMaxY()));
 
-            MathTransform xform = CRS.transform(original, crsLatLong, true);
-            Envelope xformed_envelope = JTS.transform(envelope, xform, 10); //convert data bbox to lat/long
+            MathTransform xform = CRS.findMathTransform(original, crsLatLong, true);
+            Envelope xformed_envelope = JTS.transform(envelope, xform); //convert data bbox to lat/long
 
             typeForm.setMinX(Double.toString(xformed_envelope.getMinX()));
             typeForm.setMaxX(Double.toString(xformed_envelope.getMaxX()));
@@ -306,7 +315,6 @@ public class TypesEditorAction extends ConfigAction {
      *
      * @param form
      * @param config
-     * @param request DOCUMENT ME!
      */
     private void sync(TypesEditorForm form, FeatureTypeConfig config, HttpServletRequest request) {
         config.setName(form.getTypeName());
@@ -336,7 +344,7 @@ public class TypesEditorAction extends ConfigAction {
 
         String schemaBase = form.getSchemaBase();
 
-        if ((schemaBase == null) || "".equals(schemaBase) || "--".equals(schemaBase)) {
+        if ((schemaBase == null) || schemaBase.equals("") || schemaBase.equals("--")) {
             config.setSchemaBase(null);
             config.setSchemaName(null);
             config.setSchemaAttributes(null);
@@ -504,7 +512,7 @@ public class TypesEditorAction extends ConfigAction {
     private MetaDataLink getLink(TypesEditorForm typeForm, int index) {
         MetaDataLink link = typeForm.getMetadataLink(index);
 
-        if ((link.getContent() == null) || "".equals(link.getContent().trim())) {
+        if ((link.getContent() == null) || link.getContent().trim().equals("")) {
             return null;
         }
 

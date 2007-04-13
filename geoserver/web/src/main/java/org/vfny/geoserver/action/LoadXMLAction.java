@@ -7,12 +7,12 @@ package org.vfny.geoserver.action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.geoserver.wfs.WFS;
 import org.geotools.validation.xml.XMLReader;
 import org.vfny.geoserver.config.validation.ValidationConfig;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
-import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.WCSDTO;
@@ -149,8 +149,9 @@ public class LoadXMLAction extends ConfigAction {
         return mapping.findForward("config");
     }
 
-    private ActionForward loadValidation(ActionMapping mapping, ActionForm form, //UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
+    private ActionForward loadValidation(ActionMapping mapping, ActionForm form,
+        //UserContainer user,
+    HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         ServletContext sc = request.getSession().getServletContext();
 

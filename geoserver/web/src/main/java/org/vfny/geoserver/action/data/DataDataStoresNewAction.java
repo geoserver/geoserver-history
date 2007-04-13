@@ -18,12 +18,15 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Create a new DataStoreConfig based on user's input.<p>Will need to
- * update the current DataStoreId as stored in session context.</p>
+ * Create a new DataStoreConfig based on user's input.
+ *
+ * <p>
+ * Will need to update the current DataStoreId as stored in session context.
+ * </p>
  *
  * @author User, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataDataStoresNewAction.java,v 1.12 2004/02/25 21:51:11 dmzwiers Exp $
+ * @version $Id$
  */
 public class DataDataStoresNewAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,

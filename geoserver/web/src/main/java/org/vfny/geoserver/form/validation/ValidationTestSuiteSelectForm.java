@@ -17,12 +17,15 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * ValidationTestSuiteSelectForm purpose.<p>Used to store data coming in
- * from the web form, to be passed to the ValidationTestSuiteSelectAction.</p>
+ * ValidationTestSuiteSelectForm purpose.
+ * <p>
+ * Used to store data coming in from the web form, to be passed to
+ * the ValidationTestSuiteSelectAction.
+ * </p>
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationTestSuiteSelectForm.java,v 1.3 2004/03/09 02:12:25 dmzwiers Exp $
+ * @version $Id$
  */
 public class ValidationTestSuiteSelectForm extends ActionForm {
     private String selectedTestSuite;

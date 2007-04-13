@@ -4,9 +4,9 @@
  */
 package org.vfny.geoserver.servlets;
 
+import org.geoserver.ows.ServiceStrategy;
 import org.vfny.geoserver.util.PartialBufferedOutputStream;
 import org.vfny.geoserver.util.PartialBufferedOutputStream2;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
@@ -63,7 +63,7 @@ public class PartialBufferStrategy2 implements ServiceStrategy {
      *
      * @see org.vfny.geoserver.servlets.AbstractService.ServiceStrategy#flush()
      */
-    public void flush() throws IOException {
+    public void flush(HttpServletResponse response) throws IOException {
         if (out != null) {
             out.flush();
             out = null;

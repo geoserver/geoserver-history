@@ -205,7 +205,7 @@ error.keywords.required=ã‚­ãƒ¼ãƒ¯ãƒ¼ãƒ‰ã?Œå¿…è¦?ã?§ã?™ã€‚
 error.abstract.required=è¦?ç´„ã?Œå¿…è¦?ã?§ã?™ã€‚
 error.accessConstraints.required=ã‚¢ã‚¯ã‚»ã‚¹åˆ¶é™?ã?Œå¿…è¦?ã?§ã?™ã€‚
 
-error.geoserver.JAIMemCapacity=JAI Memory Capacity value must be between 0.0 and {0}
+error.geoserver.JAIMemCapacity=JAI Memory Capacity value must be between 0.0 and 1.0
 error.geoserver.JAIMemThreshold=JAI Memory Threshold value must be between 0.0 and 1.0
 error.geoserver.JAITileThreads=JAI Tile Scheduler Threads value must be between 0 and 100
 error.geoserver.JAITilePriority=JAI Tile Scheduler Thread Priority value must be between 1 and 10
@@ -385,7 +385,7 @@ message.dataOkay=ãƒ‡ãƒ¼ã‚¿ã?Œéšœå®³ã?ªã??èª­è¾¼ã?¾ã‚Œã?¾ã?—ã?Ÿã€‚
 # WELCOME
 welcome.label=Welcome
 welcome.title=Welcome GeoServer
-welcome.short=ã‚ˆã?†ã?“ã??ã€€GeoServer 1.5.0ã?¸ã€€ã€€GeoServerã?®ã?”åˆ©ç”¨ã?‚ã‚Šã?Œã?¨ã?†ã?”ã?–ã?„ã?¾ã?™!
+welcome.short=ã‚ˆã?†ã?“ã??ã€€GeoServer 1.6-alpha2ã?¸ã€€ã€€GeoServerã?®ã?”åˆ©ç”¨ã?‚ã‚Šã?Œã?¨ã?†ã?”ã?–ã?„ã?¾ã?™!
 welcome.words=(GeoServer) (GIS) (Geographic Information Systems) (WFS)
 
 welcome.contact.label=é€£çµ¡å…ˆ

@@ -16,12 +16,15 @@ import java.util.Map;
 
 
 /**
- * AttributeTypeInfo represents AttributeTypeMetaData for GeoServer.<p>Holds
- * information about AttributeType such as min/max occurs.</p>
+ * AttributeTypeInfo represents AttributeTypeMetaData for GeoServer.
+ *
+ * <p>
+ * Holds information about AttributeType such as min/max occurs.
+ * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: AttributeTypeInfo.java,v 1.12 2004/06/26 19:51:24 jive Exp $
+ * @version $Id$
  */
 public class AttributeTypeInfo {
     private String name;
@@ -93,12 +96,17 @@ public class AttributeTypeInfo {
     }
 
     /**
-     * Element type, a well-known gml or xs type or
-     * <code>TYPE_FRAGMENT</code>.<p>If getType is equals to
-     * <code>TYPE_FRAGMENT</code> please consult getFragment() to examine the
-     * actual user's definition.</p>
-     *  <p>Other than that getType should be one of the constants
-     * defined by GMLUtils.</p>
+     * Element type, a well-known gml or xs type or <code>TYPE_FRAGMENT</code>.
+     *
+     * <p>
+     * If getType is equals to <code>TYPE_FRAGMENT</code> please consult
+     * getFragment() to examine the actual user's definition.
+     * </p>
+     *
+     * <p>
+     * Other than that getType should be one of the constants defined by
+     * GMLUtils.
+     * </p>
      *
      * @return The element, or <code>TYPE_FRAGMENT</code>
      */
@@ -111,11 +119,17 @@ public class AttributeTypeInfo {
     }
 
     /**
-     * XML Fragment used to define stuff.<p>This property is only used
-     * with getType() is equals to "(xml fragment)".</p>
-     *  <p>baseGMLTypes can only be used in your XML fragment.</p>
+     * XML Fragment used to define stuff.
      *
-     * @return DOCUMENT ME!
+     * <p>
+     * This property is only used with getType() is equals to "(xml fragment)".
+     * </p>
+     *
+     * <p>
+     * baseGMLTypes can only be used in your XML fragment.
+     * </p>
+     *
+     * @param fragment The fragment to set.
      */
     public String getFragment() {
         if (isComplex) {

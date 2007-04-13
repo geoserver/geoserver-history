@@ -145,8 +145,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
     private ArrayList styles = new ArrayList();
 
     /**
-     * String representation of connection parameter values
-     */
+         * String representation of connection parameter values
+         */
     private Map parameters;
 
     public CoverageInfoDTO() {

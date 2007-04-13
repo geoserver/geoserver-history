@@ -46,7 +46,7 @@ import org.vfny.geoserver.global.dto.ContactDTO;
  * </p>
  *
  * @author David Zwiers, Refractions Research, Inc.
- * @version $Id: ContactConfig.java,v 1.8 2004/02/20 17:03:11 jive Exp $
+ * @version $Id$
  */
 public class ContactConfig {
     /** The name of the contact person */

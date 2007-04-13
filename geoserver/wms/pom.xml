@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver</artifactId>
-		<version>1.5.0</version>
+		<version>1.6-SNAPSHOT</version>
 	</parent>
 	
 	<groupId>org.geoserver</groupId>
@@ -24,17 +24,17 @@
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>main</artifactId>
-			<version>1.5.0</version>
+			<version>1.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>wfs</artifactId>
-			<version>1.5.0</version>
+			<version>1.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>wcs</artifactId>
-			<version>1.5.0</version>
+			<version>1.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
@@ -71,9 +71,9 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jalopy-maven-plugin</artifactId>
- 	<configuration>
-                <srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
-                <testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
+        <configuration>
+          <srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
+          <testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
         </configuration>
         <executions>
           <execution>

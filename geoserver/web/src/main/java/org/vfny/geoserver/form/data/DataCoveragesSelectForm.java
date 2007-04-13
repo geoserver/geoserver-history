@@ -8,9 +8,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.DataConfig;
-import java.util.Arrays;
 import java.util.Set;
-import java.util.TreeSet;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -70,16 +68,7 @@ public class DataCoveragesSelectForm extends ActionForm {
         ServletContext context = getServlet().getServletContext();
         DataConfig config = (DataConfig) context.getAttribute(DataConfig.CONFIG_KEY);
 
-        Object[] keys = config.getCoverages().keySet().toArray();
-        Arrays.sort(keys);
-
-        TreeSet sorted = new TreeSet();
-
-        for (int i = 0; i < keys.length; i++) {
-            sorted.add(keys[i]);
-        }
-
-        return sorted; //config.getCoverages().keySet();
+        return config.getCoverages().keySet();
     }
 
     /**

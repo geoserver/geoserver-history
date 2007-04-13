@@ -19,15 +19,19 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Free Locks held by each and every DataStore.<p>This represents an action
- * that interacts with the running GeoServer application (it is not really a
- * config action, it is just that I want the user to be logged in).</p>
- *  <p>This class is waiting on changes to the DataStore api before it will
- * actually be useful.</p>
- *
+ * Free Locks held by each and every DataStore.
+ * <p>
+ * This represents an action that interacts with the running GeoServer
+ * application (it is not really a config action, it is just that I want the
+ * user to be logged in).
+ * </p>
+ * <p>
+ * This class is waiting on changes to the DataStore api before it will
+ * actually be useful.
+ * </p>
  * @author Jody Garnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: FreeLocksAction.java,v 1.1 2004/03/15 08:16:10 jive Exp $
+ * @version $Id$
  */
 public class FreeLocksAction extends ConfigAction {
     /* (non-Javadoc)

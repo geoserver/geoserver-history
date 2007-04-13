@@ -12,49 +12,56 @@ import java.util.Set;
 
 
 /**
- * NameSpaceTranslator purpose.<p>Helps perform translation between element
- * names, definition names and their java types for a particular namespace and
- * namespace prefix.</p>
- *  <p>Each name space translator should contain a list of name space
- * elements for their particular prefix. This loading should not be completed
- * lazily to avoid performance lags at run time. When ever posible constants
- * should alos be used for performance purposes.</p>
- *  <p>USE: <code> NameSpaceTranslator nst =
- * NameSpaceTranslatorFactor.getInstance().getNameSpaceTranslator("xs"); Class
- * cls = nst.getElement("string").getJavaClass(); ... Object obj // contains
- * some data, what can it be represented as? String elementName =
- * ((NameSpaceElement)nst.getElements(obj).toArray()[0]).getTypeRefName();
- * </code></p>
- *
+ * NameSpaceTranslator purpose.
+ * <p>
+ * Helps perform translation between element names, definition names
+ * and their java types for a particular namespace and namespace prefix.
+ * </p>
+ * <p>
+ * Each name space translator should contain a list of name space
+ * elements for their particular prefix. This loading should not be
+ * completed lazily to avoid performance lags at run time. When ever
+ * posible constants should alos be used for performance purposes.
+ * </p>
+ * <p>
+ * USE:
+ * <code>
+ * NameSpaceTranslator nst = NameSpaceTranslatorFactor.getInstance().getNameSpaceTranslator("xs");
+ * Class cls = nst.getElement("string").getJavaClass();
+ * ...
+ * Object obj // contains some data, what can it be represented as?
+ * String elementName = ((NameSpaceElement)nst.getElements(obj).toArray()[0]).getTypeRefName();
+ * </code>
+ * </p>
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: NameSpaceTranslator.java,v 1.6 2004/04/15 19:28:46 dmzwiers Exp $
+ * @version $Id$
  */
 public abstract class NameSpaceTranslator {
-    /** the prefix for this translator instance */
+    /** the prefix for this translator instance*/
     private String prefix;
 
     /**
-             * NameSpaceTranslator constructor.
-             * <p>
-             * Creates an instance of this translator for the given prefix.
-             * </p>
-             * @param prefix The prefix for which this tranlator will tranlate.
-             * A null prefix will affect the NameSpaceElements returned by the
-             * access methods.
-             * @see NameSpaceElement(String)
-             */
+     * NameSpaceTranslator constructor.
+     * <p>
+     * Creates an instance of this translator for the given prefix.
+     * </p>
+     * @param prefix The prefix for which this tranlator will tranlate.
+     * A null prefix will affect the NameSpaceElements returned by the
+     * access methods.
+     * @see NameSpaceElement(String)
+     */
     public NameSpaceTranslator(String prefix) {
         this.prefix = prefix;
     }
 
     /**
-     * Retrive all elements that can be used with the provided type.<p>Looks
-     * for Elements who's Class objects, or the parents of the Class object
-     * are compatible with this class object.</p>
-     *
+     * Retrive all elements that can be used with the provided type.
+    * <p>
+    * Looks for Elements who's Class objects, or the parents of the
+     * Class object are compatible with this class object.
+     * </p>
      * @param type Class the class to attempt to find related elements for.
-     *
      * @return Set a set of associated NameSpaceElements
      */
     public Set getAssociatedTypes(Class type) {
@@ -82,13 +89,12 @@ public abstract class NameSpaceTranslator {
     }
 
     /**
-     * Looks for Elements who's name is the same or a super set of this
-     * name.<p>(ie. name.indexOf(type)!=-1)</p>
-     *
+     * Looks for Elements who's name is the same or a super set of this name.
+    * <p>
+     * (ie. name.indexOf(type)!=-1)
+     * </p>
      * @param type String the class to attempt to find related elements for.
-     *
      * @return Set a set of associated NameSpaceElements
-     *
      * @see String.indexOf(String)
      */
     public Set getAssociatedTypes(String type) {
@@ -122,12 +128,12 @@ public abstract class NameSpaceTranslator {
     }
 
     /**
-     * isValidDefinition purpose.<p>checks to see if the definition
-     * provided is found in the list of elements for this namespace.</p>
-     *
-     * @param definition The definition name to check for, may be either
-     *        definition or prefix:definition.
-     *
+     * isValidDefinition purpose.
+     * <p>
+     * checks to see if the definition provided is found in the list of
+     * elements for this namespace.
+     * </p>
+     * @param definition The definition name to check for, may be either definition or prefix:definition.
      * @return true when found, false otherwise.
      */
     public boolean isValidDefinition(String definition) {
@@ -162,12 +168,12 @@ public abstract class NameSpaceTranslator {
     }
 
     /**
-     * isValidTypeRef purpose.<p>checks to see if the reference
-     * provided is found in the list of elements for this namespace.</p>
-     *
-     * @param type The reference name to check for, may be either reference or
-     *        prefix:reference.
-     *
+     * isValidTypeRef purpose.
+     * <p>
+     * checks to see if the reference provided is found in the list of
+     * elements for this namespace.
+     * </p>
+     * @param definition The reference name to check for, may be either reference or prefix:reference.
      * @return true when found, false otherwise.
      */
     public boolean isValidTypeRef(String type) {
@@ -202,18 +208,20 @@ public abstract class NameSpaceTranslator {
     }
 
     /**
-     * getElements purpose.<p>returns the set of elements.</p>
-     *
+     * getElements purpose.
+     * <p>
+     * returns the set of elements.
+     * </p>
      * @return Set
      */
     public abstract Set getElements();
 
     /**
-     * getElements purpose.<p>Returns a set of all elements with the
-     * exact class specified.</p>
-     *
+     * getElements purpose.
+     * <p>
+     * Returns a set of all elements with the exact class specified.
+     * </p>
      * @param type Class the class of elements to get
-     *
      * @return Set
      */
     public Set getElements(Class type) {
@@ -240,7 +248,6 @@ public abstract class NameSpaceTranslator {
      * Gets an element definition by name.
      *
      * @param name The name of the element definition
-     *
      * @return NameSpaceElement
      */
     public NameSpaceElement getElement(String name) {
@@ -277,20 +284,16 @@ public abstract class NameSpaceTranslator {
     }
 
     /**
-     * Gets the default element for the class type passed in.  Note
-     * that this is a bit hacky, as it doesn't not depend on a real namespace
-     * map, but on careful assignment of the NamespaceElements, so that each
-     * class only has one that returns true for isDefault().  Sorry for the
-     * hackiness, I need to get a release out.
-     *
-     * @param type DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
+     * Gets the default element for the class type passed in.  Note that this
+     * is a bit hacky, as it doesn't not depend on a real namespace map, but
+     * on careful assignment of the NamespaceElements, so that each class only
+     * has one that returns true for isDefault().  Sorry for the hackiness,
+     * I need to get a release out.
      */
     public NameSpaceElement getDefaultElement(Class type) {
         Set posibilities = getElements(type);
-        System.out.println("getting default for type: " + type + " = " + posibilities);
 
+        //System.out.println("getting default for type: " + type + " = " + posibilities);
         if (posibilities.size() == 0) {
             return null;
         }
@@ -311,13 +314,11 @@ public abstract class NameSpaceTranslator {
     }
 
     /**
-     * Gets an element definition by name.
-     *
-     * @param type DOCUMENT ME!
-     * @param name The name of the element definition
-     *
-     * @return NameSpaceElement
-     */
+    * Gets an element definition by name.
+    *
+    * @param name The name of the element definition
+    * @return NameSpaceElement
+    */
     public NameSpaceElement getElement(Class type, String name) {
         if (type == null) {
             return null;
@@ -369,17 +370,19 @@ public abstract class NameSpaceTranslator {
     }
 
     /**
-     * getNameSpace purpose.<p>Returns the current namespace. Should be
-     * implemented as a constant.</p>
-     *
+     * getNameSpace purpose.
+     * <p>
+     * Returns the current namespace. Should be implemented as a constant.
+     * </p>
      * @return String
      */
     public abstract String getNameSpace();
 
     /**
-     * getPrefix purpose.<p>Returns the prefix that this namespace
-     * represents.</p>
-     *
+     * getPrefix purpose.
+     * <p>
+     * Returns the prefix that this namespace represents.
+     * </p>
      * @return String the prefix, null if it does not exist
      */
     public final String getPrefix() {

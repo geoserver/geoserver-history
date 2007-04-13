@@ -26,12 +26,15 @@ import java.util.Set;
 
 
 /**
- * TestConfig purpose.<p>Used to represent a copy of the config information
- * required for the UI.</p>
+ * TestConfig purpose.
+ *
+ * <p>
+ * Used to represent a copy of the config information required for the UI.
+ * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: TestConfig.java,v 1.4 2004/04/08 21:58:26 dmzwiers Exp $
+ * @version $Id$
  */
 public class TestConfig {
     public final static String CURRENTLY_SELECTED_KEY = "selectedTest";
@@ -43,8 +46,8 @@ public class TestConfig {
     private String description;
 
     /**
-     * The plug-in which contains the class definition and default
-     * runtime values
+     * The plug-in which contains the class definition and default runtime
+     * values
      */
     private PlugInConfig plugIn;
 
@@ -58,25 +61,25 @@ public class TestConfig {
     private Map args;
 
     /**
-             * TestConfig constructor.
-             *
-             * <p>
-             * Does nothing
-             * </p>
-             */
+     * TestConfig constructor.
+     *
+     * <p>
+     * Does nothing
+     * </p>
+     */
     public TestConfig() {
         args = new HashMap();
     }
 
     /**
-             * TestConfig constructor.
-             *
-             * <p>
-             * Creates a copy from the TestConfig specified.
-             * </p>
-             *
-             * @param t the data to copy
-             */
+     * TestConfig constructor.
+     *
+     * <p>
+     * Creates a copy from the TestConfig specified.
+     * </p>
+     *
+     * @param t the data to copy
+     */
     public TestConfig(TestConfig t) {
         name = t.getName();
         description = t.getDescription();
@@ -96,14 +99,14 @@ public class TestConfig {
     }
 
     /**
-             * TestConfig constructor.
-             *
-             * <p>
-             * Creates a copy from the TestDTO specified.
-             * </p>
-             *
-             * @param t the data to copy
-             */
+     * TestConfig constructor.
+     *
+     * <p>
+     * Creates a copy from the TestDTO specified.
+     * </p>
+     *
+     * @param t the data to copy
+     */
     public TestConfig(TestDTO t, Map plugInConfigs) {
         name = t.getName();
         description = t.getDescription();
@@ -215,13 +218,13 @@ public class TestConfig {
     }
 
     /**
-     * toDTO purpose.<p>Clones this config as a DTO.</p>
-     *
-     * @param plugIns Map of PlugInDTO objects
-     *
-     * @return TestDTO
-     *
+     * toDTO purpose.
+     * <p>
+     * Clones this config as a DTO.
+     * </p>
      * @see java.lang.Object#clone()
+     * @param plugIns Map of PlugInDTO objects
+     * @return TestDTO
      */
     public TestDTO toDTO(Map plugIns) {
         TestDTO dto = new TestDTO();
@@ -259,8 +262,6 @@ public class TestConfig {
      * Set args to args.
      *
      * @param args The args to set.
-     *
-     * @throws IllegalArgumentException DOCUMENT ME!
      */
     public void setArgs(Map args) {
         Iterator i = args.keySet().iterator();
@@ -276,10 +277,11 @@ public class TestConfig {
     }
 
     /**
-     * getArgStringValue purpose.<p>Returns a human friendly version</p>
-     *
+     * getArgStringValue purpose.
+     * <p>
+     * Returns a human friendly version
+     * </p>
      * @param name
-     *
      * @return
      */
     public String getArgStringValue(String name) {
@@ -293,10 +295,11 @@ public class TestConfig {
     }
 
     /**
-     * getArgValue purpose.<p>Returns an Object version</p>
-     *
+     * getArgValue purpose.
+     * <p>
+     * Returns an Object version
+     * </p>
      * @param name
-     *
      * @return
      */
     public Object getArgValue(String name) {
@@ -310,15 +313,13 @@ public class TestConfig {
     }
 
     /**
-     * setArgStringValue purpose.<p>Stores a human friendly version. If
-     * this is a new Argument, then the type is String.</p>
-     *
+     * setArgStringValue purpose.
+     * <p>
+     * Stores a human friendly version. If this is a new Argument, then the type is String.
+     * </p>
      * @param name
      * @param value
-     *
      * @return
-     *
-     * @throws IllegalArgumentException DOCUMENT ME!
      */
     public boolean setArgStringValue(String name, String value) {
         ArgumentConfig ac = (ArgumentConfig) args.get(name);
@@ -354,11 +355,12 @@ public class TestConfig {
     }
 
     /**
-     * setArgStringValue purpose.<p>Stores a human friendly version.</p>
-     *
+     * setArgStringValue purpose.
+     * <p>
+     * Stores a human friendly version.
+     * </p>
      * @param name
      * @param value
-     *
      * @return
      */
     public boolean addArgStringValue(String name, String value) {
@@ -411,14 +413,13 @@ public class TestConfig {
     }
 
     /**
-     * setArgStringValue purpose.<p>Stores a human friendly version</p>
-     *
+     * setArgStringValue purpose.
+     * <p>
+     * Stores a human friendly version
+     * </p>
      * @param name
      * @param value
-     *
      * @return
-     *
-     * @throws IllegalArgumentException DOCUMENT ME!
      */
     public boolean setArgValue(String name, Object value) {
         if ((value == null) || value.equals("")) {
@@ -445,9 +446,10 @@ public class TestConfig {
     }
 
     /**
-     * getPropertyDescriptors purpose.<p>Get the descriptors for this
-     * plugin's map of attributes</p>
-     *
+     * getPropertyDescriptors purpose.
+     * <p>
+     * Get the descriptors for this plugin's map of attributes
+     * </p>
      * @return
      */
     public PropertyDescriptor[] getPropertyDescriptors() {
@@ -492,14 +494,12 @@ public class TestConfig {
     }
 
     /**
-     * PropertyDescriptor purpose.<p>Get the descriptor for this
-     * plugin's attribute named</p>
-     *
+     * PropertyDescriptor purpose.
+     * <p>
+     * Get the descriptor for this plugin's attribute named
+     * </p>
      * @param name
-     *
      * @return
-     *
-     * @throws NullPointerException DOCUMENT ME!
      */
     public PropertyDescriptor getPropertyDescriptor(String name) {
         if (name == null) {

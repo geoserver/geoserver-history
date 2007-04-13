@@ -48,32 +48,46 @@ import javax.servlet.http.HttpSession;
 
 
 /**
- * Definitions factory. This implementation allows to have a set of
- * definition factories. There is a main factory and one factory for each file
- * associated to a Locale. To retrieve a definition, we first search for the
- * appropriate factory using the Locale found in session context. If no
- * factory is found, use the default one. Then we ask the factory for the
- * definition. A definition factory file is loaded using main filename
- * extended with locale code (ex : <code>templateDefinitions_fr.xml</code>).
- * If no file is found under this name, use default file.
+ * Definitions factory.
+ * This implementation allows to have a set of definition factories.
+ * There is a main factory and one factory for each file associated to a Locale.
+ *
+ * To retrieve a definition, we first search for the appropriate factory using
+ * the Locale found in session context. If no factory is found, use the
+ * default one. Then we ask the factory for the definition.
+ *
+ * A definition factory file is loaded using main filename extended with locale code
+ * (ex : <code>templateDefinitions_fr.xml</code>). If no file is found under this name, use default file.
  */
 public class MultipleDefinitionsFactory extends FactorySet {
-    /**  */
+    /**
+     *
+     */
     private static final long serialVersionUID = 5245695468031817480L;
 
-    /** Commons Logging instance. */
+    /**
+     * Commons Logging instance.
+     */
     protected static Log log = LogFactory.getLog(MultipleDefinitionsFactory.class);
 
-    /** Config file parameter name. */
+    /**
+     * Config file parameter name.
+     */
     public static final String DEFINITIONS_CONFIG_PARAMETER_NAME = "definitions-config";
 
-    /** Config file parameter name. */
+    /**
+     * Config file parameter name.
+     */
     public static final String PARSER_DETAILS_PARAMETER_NAME = "definitions-parser-details";
 
-    /** Config file parameter name. */
+    /**
+     * Config file parameter name.
+     */
     public static final String PARSER_VALIDATE_PARAMETER_NAME = "definitions-parser-validate";
 
-    /** Possible definition filenames. */
+    /**
+     * Possible definition filenames.
+     */
     public static final String[] DEFAULT_DEFINITION_FILENAMES = {
             "/WEB-INF/tileDefinitions.xml", "/WEB-INF/componentDefinitions.xml",
             "/WEB-INF/instanceDefinitions.xml"
@@ -85,72 +99,74 @@ public class MultipleDefinitionsFactory extends FactorySet {
      */
     private static final int MAX_BUNDLES_SEARCHED = 2;
 
-    /** Default filenames extension. */
+    /**
+     * Default filenames extension.
+     */
     public static final String FILENAME_EXTENSION = ".xml";
 
-    /** Default factory. */
+    /**
+     * Default factory.
+     */
     protected DefinitionsFactory defaultFactory = null;
 
     /**
-     * XML parser used. Attribute is transient to allow serialization.
-     * In this implementaiton, xmlParser is created each time we need it ;-(.
+     * XML parser used.
+     * Attribute is transient to allow serialization. In this implementaiton,
+     * xmlParser is created each time we need it ;-(.
      */
     protected transient XmlParser xmlParser;
 
     /**
-     * Do we want validating parser. Default is <code>false</code>. Can
-     * be set from servlet config file.
+     * Do we want validating parser. Default is <code>false</code>.
+     * Can be set from servlet config file.
      */
     protected boolean isValidatingParser = false;
 
     /**
-     * Parser detail level. Default is 0. Can be set from servlet
-     * config file.
+     * Parser detail level. Default is 0.
+     * Can be set from servlet config file.
      */
     protected int parserDetailLevel = 0;
 
-    /** Names of files containing instances descriptions. */
+    /**
+     * Names of files containing instances descriptions.
+     */
     private List filenames = null;
 
     /**
-     * Collection of already loaded definitions set, referenced by
-     * their suffix.
+     * Collection of already loaded definitions set, referenced by their suffix.
      */
     private Map loaded = null;
 
     /**
-             * Parameterless Constructor.
-             * Method {@link #initFactory} must be called prior to any use of created factory.
-             */
+     * Parameterless Constructor.
+     * Method {@link #initFactory} must be called prior to any use of created factory.
+     */
     public MultipleDefinitionsFactory() {
         super();
     }
 
     /**
-             * Constructor.
-             * Init the factory by reading appropriate configuration file.
-             * @param servletContext Servlet context.
-             * @param properties Map containing all properties.
-             * @throws FactoryNotFoundException Can't find factory configuration file.
-             */
+     * Constructor.
+     * Init the factory by reading appropriate configuration file.
+     * @param servletContext Servlet context.
+     * @param properties Map containing all properties.
+     * @throws FactoryNotFoundException Can't find factory configuration file.
+     */
     public MultipleDefinitionsFactory(ServletContext servletContext, Map properties)
         throws DefinitionsFactoryException {
         initFactory(servletContext, properties);
     }
 
     /**
-     * Initialization method. Init the factory by reading appropriate
-     * configuration file. This method is called exactly once immediately
-     * after factory creation in case of internal creation (by
-     * DefinitionUtil).
-     *
+     * Initialization method.
+     * Init the factory by reading appropriate configuration file.
+     * This method is called exactly once immediately after factory creation in
+     * case of internal creation (by DefinitionUtil).
      * @param servletContext Servlet Context passed to newly created factory.
-     * @param properties Map of name/property passed to newly created factory.
-     *        Map can contains more properties than requested.
-     *
-     * @throws DefinitionsFactoryException An error occur during
-     *         initialization.
-     * @throws FactoryNotFoundException DOCUMENT ME!
+     * @param properties Map of name/property passed to newly created factory. Map can contains
+     * more properties than requested.
+     * @throws DefinitionsFactoryException An error occur during initialization.
      */
     public void initFactory(ServletContext servletContext, Map properties)
         throws DefinitionsFactoryException {
@@ -209,18 +225,13 @@ public class MultipleDefinitionsFactory extends FactorySet {
     }
 
     /**
-     * Initialization method. Init the factory by reading appropriate
-     * configuration file. This method is called exactly once immediately
-     * after factory creation in case of internal creation (by
-     * DefinitionUtil).
-     *
+     * Initialization method.
+     * Init the factory by reading appropriate configuration file.
+     * This method is called exactly once immediately after factory creation in
+     * case of internal creation (by DefinitionUtil).
      * @param servletContext Servlet Context passed to newly created factory.
-     * @param proposedFilename File names, comma separated, to use as  base
-     *        file names.
-     *
-     * @throws DefinitionsFactoryException An error occur during
-     *         initialization.
-     * @throws FileNotFoundException DOCUMENT ME!
+     * @param proposedFilename File names, comma separated, to use as  base file names.
+     * @throws DefinitionsFactoryException An error occur during initialization.
      */
     protected void initFactory(ServletContext servletContext, String proposedFilename)
         throws DefinitionsFactoryException, FileNotFoundException {
@@ -242,7 +253,6 @@ public class MultipleDefinitionsFactory extends FactorySet {
 
     /**
      * Get default factory.
-     *
      * @return Default factory
      */
     protected DefinitionsFactory getDefaultFactory() {
@@ -250,15 +260,12 @@ public class MultipleDefinitionsFactory extends FactorySet {
     }
 
     /**
-     * Create default factory . Create InstancesMapper for specified
-     * Locale. If creation failes, use default mapper and log error message.
-     *
+     * Create default factory .
+     * Create InstancesMapper for specified Locale.
+     * If creation failes, use default mapper and log error message.
      * @param servletContext Current servlet context. Used to open file.
-     *
      * @return Created default definition factory.
-     *
-     * @throws DefinitionsFactoryException If an error occur while creating
-     *         factory.
+     * @throws DefinitionsFactoryException If an error occur while creating factory.
      * @throws FileNotFoundException if factory can't be loaded from filenames.
      */
     protected DefinitionsFactory createDefaultFactory(ServletContext servletContext)
@@ -286,11 +293,9 @@ public class MultipleDefinitionsFactory extends FactorySet {
 
     /**
      * Extract key that will be used to get the sub factory.
-     *
      * @param name Name of requested definition
      * @param request Current servlet request.
      * @param servletContext Current servlet context.
-     *
      * @return the key or <code>null</code> if not found.
      */
     protected Object getDefinitionsFactoryKey(String name, ServletRequest request,
@@ -312,17 +317,13 @@ public class MultipleDefinitionsFactory extends FactorySet {
     }
 
     /**
-     * Create a factory for specified key. If creation failes, return
-     * default factory and log an error message.
-     *
+     * Create a factory for specified key.
+     * If creation failes, return default factory and log an error message.
      * @param key The key.
      * @param request Servlet request.
      * @param servletContext Servlet context.
-     *
      * @return Definition factory for specified key.
-     *
-     * @throws DefinitionsFactoryException If an error occur while creating
-     *         factory.
+     * @throws DefinitionsFactoryException If an error occur while creating factory.
      */
     protected DefinitionsFactory createFactory(Object key, ServletRequest request,
         ServletContext servletContext) throws DefinitionsFactoryException {
@@ -390,14 +391,11 @@ public class MultipleDefinitionsFactory extends FactorySet {
     }
 
     /**
-     * Calculate the postixes along the search path from the base
-     * bundle to the bundle specified by baseName and locale. Method copied
-     * from java.util.ResourceBundle
-     *
+     * Calculate the postixes along the search path from the base bundle to the
+     * bundle specified by baseName and locale.
+     * Method copied from java.util.ResourceBundle
      * @param baseName the base bundle name
      * @param locale the locale
-     *
-     * @return DOCUMENT ME!
      */
     private static List calculatePostixes(String baseName, Locale locale) {
         final List result = new ArrayList(MAX_BUNDLES_SEARCHED);
@@ -444,24 +442,18 @@ public class MultipleDefinitionsFactory extends FactorySet {
     }
 
     /**
-     * Parse files associated to postix if they exist. For each name in
-     * filenames, append postfix before file extension, then try to load the
-     * corresponding file. If file doesn't exist, try next one. Each file
-     * description is added to the XmlDefinitionsSet description. The
-     * XmlDefinitionsSet description is created only if there is a definition
-     * file. Inheritance is not resolved in the returned XmlDefinitionsSet. If
-     * no description file can be opened and no definiion set is provided,
-     * return <code>null</code>.
-     *
-     * @param servletContext DOCUMENT ME!
+     * Parse files associated to postix if they exist.
+     * For each name in filenames, append postfix before file extension,
+     * then try to load the corresponding file.
+     * If file doesn't exist, try next one. Each file description is added to
+     * the XmlDefinitionsSet description.
+     * The XmlDefinitionsSet description is created only if there is a definition file.
+     * Inheritance is not resolved in the returned XmlDefinitionsSet.
+     * If no description file can be opened and no definiion set is provided, return <code>null</code>.
      * @param postfix Postfix to add to each description file.
-     * @param xmlDefinitions Definitions set to which definitions will be
-     *        added. If <code>null</code>, a definitions set is created on
-     *        request.
-     *
-     * @return XmlDefinitionsSet The definitions set created or passed as
-     *         parameter.
-     *
+     * @param xmlDefinitions Definitions set to which definitions will be added. If <code>null</code>, a definitions
+     * set is created on request.
+     * @return XmlDefinitionsSet The definitions set created or passed as parameter.
      * @throws DefinitionsFactoryException On errors parsing file.
      */
     private XmlDefinitionsSet parseXmlFiles(ServletContext servletContext, String postfix,
@@ -482,20 +474,15 @@ public class MultipleDefinitionsFactory extends FactorySet {
     }
 
     /**
-     * Parse specified xml file and add definition to specified
-     * definitions set. This method is used to load several description files
-     * in one instances list. If filename exists and definition set is
-     * <code>null</code>, create a new set. Otherwise, return passed
-     * definition set (can be <code>null</code>).
-     *
+     * Parse specified xml file and add definition to specified definitions set.
+     * This method is used to load several description files in one instances list.
+     * If filename exists and definition set is <code>null</code>, create a new set. Otherwise, return
+     * passed definition set (can be <code>null</code>).
      * @param servletContext Current servlet context. Used to open file.
      * @param filename Name of file to parse.
-     * @param xmlDefinitions Definitions set to which definitions will be
-     *        added. If null, a definitions set is created on request.
-     *
-     * @return XmlDefinitionsSet The definitions set created or passed as
-     *         parameter.
-     *
+     * @param xmlDefinitions Definitions set to which definitions will be added. If null, a definitions
+     * set is created on request.
+     * @return XmlDefinitionsSet The definitions set created or passed as parameter.
      * @throws DefinitionsFactoryException On errors parsing file.
      */
     private XmlDefinitionsSet parseXmlFile(ServletContext servletContext, String filename,
@@ -508,8 +495,16 @@ public class MultipleDefinitionsFactory extends FactorySet {
             final int length = resources.length;
 
             for (int i = 0; i < length; i++) {
-                input = resources[i].getURL().openStream(); /*getServletContext().getResource(path)*/
-                ;
+                try {
+                    input = resources[i].getURL().openStream(); /*getServletContext().getResource(path)*/
+                } catch (IOException e) {
+                    //error loading from this resource.  Probably it doesn't exist.
+                    if (log.isDebugEnabled()) {
+                        log.debug("", e);
+                    }
+
+                    return xmlDefinitions;
+                }
 
                 // Try to load using real path.
                 // This allow to load config file under websphere 3.5.x
@@ -564,13 +559,11 @@ public class MultipleDefinitionsFactory extends FactorySet {
     }
 
     /**
-     * Concat postfix to the name. Take care of existing filename
-     * extension. Transform the given name "name.ext" to have "name" +
-     * "postfix" + "ext". If there is no ext, return "name" + "postfix".
-     *
+     * Concat postfix to the name. Take care of existing filename extension.
+     * Transform the given name "name.ext" to have "name" + "postfix" + "ext".
+     * If there is no ext, return "name" + "postfix".
      * @param name Filename.
      * @param postfix Postfix to add.
-     *
      * @return Concatenated filename.
      */
     private String concatPostfix(String name, String postfix) {
@@ -595,7 +588,6 @@ public class MultipleDefinitionsFactory extends FactorySet {
 
     /**
      * Return String representation.
-     *
      * @return String representation.
      */
     public String toString() {

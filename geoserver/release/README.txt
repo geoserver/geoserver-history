@@ -1,121 +1,23 @@
-GeoServer 1.5.0
--------------------
-
-The first official release of the 1.5 series of GeoServer. This
-release is a major milestone for the GeoServer. This version of
-GeoServer brings some exciting new functionality like:
-
-- Coverage support and an implementation of Web Coverage Service
-- WMS raster support
-- WFS and WMS performance improvments
-- KML improvements
-
-And as always a heap of bug fixes and other . The entire issue log for this release can be found here:
-
-http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&&pid=10311&fixfor=12975&fixfor=13177&fixfor=13176&fixfor=12974&fixfor=13178&fixfor=12973&fixfor=12870&sorter/field=priority&sorter/order=DESC
-
-This release is based off of Geotools 2.3.1 ( tag = 2.3.1 )
-
-See 'RUNNING.txt' for instructions on how to run GeoServer.
-
-GeoServer 1.5.0-RC4
--------------------
-
-The fourth release candidate for the 1.5 series of GeoServer.
-The noteable bug fixes in this release include:
-
-- Inline features in a GET request
-- Styles parameter optional with KML reflector
-- SLD editor aware of context path
-
-The complete issue log can be found here:
-
-http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=13177
-
-Based on GeoTools 2.3.1-SNAPSHOT ( tag = geoserver-1.5.0-RC4 )
-
-GeoServer 1.5.0-RC3
---------------------
-
-The third and final release candidate for the 1.5 series of GeoServer.
-The noteable features / bug fixes in this release include:
-
-- Rotation in world image files
-- Directory datastore improvements for easy management of shapefiles
-- UI error reporting with missing files, file permissions, etc...
-- PostGIS estimated_extent support for large datasets
-- Multi geometry with inline SLD features
-- WMS reflector for making wms requests easier
-- SLD parsing improvements 
-- Logging cleanup
-
-The complete issue log can be found here:
-
-http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=13176
-
-Based on GeoTools 2.3.1-SNAPSHOT ( tag = geoserver-1.5.0-RC3 )
-
-GeoServer 1.5.0-RC2
+GeoServer 1.6-alpha2
 ---------------------
 
-This is the second release candidate for the 1.5 sereies of GeoServer.
-Major features / improvements of this release include:
+This is the first alpha release in the 1.6 series of GeoServer 
+which contains integrated WFS 1.1 support. Along with WFS 1.1 
+come some other interesting new features:
 
-- Bug fixes
-- Kml returns proper PNG files
-- Kml strips out illegal characters now
-- Improved error messages
-- UI improvements
-- Inline features are back
-- Links to old homepage updated
-- Performance optimization
+- Sorting in a GetFeature request
+- Reprojection in a GetFeature request
+- GML3 Simple Feature Profile 0 as an output format
+- Filter 1.1 support
+- A dynamic dispatch system for Open Web Services
+- Improved xml parsing and encoding 
 
+The issue log for this release can be found here:
 
-The issue log for this release is here:
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=13200
 
-http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12974
-
-Based on GeoTools 2.3.1-SNAPSHOT
-
-
-GeoServer 1.5.0-RC1
----------------------
-
-This is the first release candidate for the 1.5 sereies of GeoServer.
-Major features / improvements of this release include:
-
-- Many bug fixes
-- Reduced download size
-- Reorginization of some UI components
-- More hand testing and tutorials
-- Performance optimization
-
-
-The issue log for this release is here:
-http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=13178
-
-Based on GeoTools 2.3.1-SNAPSHOT
-
-
-GeoServer 1.5.0-beta2
----------------------
-
-This is the second beta release for the 1.5 sereies of GeoServer.
-Major features / improvements of this release include:
-
-- Many bug fixes
-- The ability to locate raster files outside of the data_dir
-
-
-The issue log for this release is here:
-http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12973
-
-Based on GeoTools 2.3.1-SNAPSHOT
-
-NOTES:
-1.In order to get more performances, you should have a complete JAI/ImageIO install (with native interfaces too) into your JRE.
-Moreover, we suggest to use the latest daily distributions of JAI 1.1.4 and ImageIO 1.2.
-2.Very few CITE Tests are still failing. This distribution passes most of the WMS,WFS and WCS CITE Tests.
+This release is based on Geotools 2.4-SNAPSHOT, tag = geoserver-1.6-alpha2,
+revision = 24440
 
 GeoServer 1.5.0-beta1
 ---------------------

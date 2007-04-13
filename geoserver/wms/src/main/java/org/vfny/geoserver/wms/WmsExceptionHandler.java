@@ -12,7 +12,7 @@ import org.vfny.geoserver.ServiceException;
  * ServiceConfig exception handler for WMS services
  *
  * @author Gabriel Rold?n
- * @version $Id: WmsExceptionHandler.java,v 1.5 2004/01/31 00:27:27 jive Exp $
+ * @version $Id$
  */
 public class WmsExceptionHandler implements ExceptionHandler {
     /** DOCUMENT ME! */

@@ -13,15 +13,20 @@ import java.util.Map;
 
 
 /**
- * Data Transfer Object for communication GeoServer Web Map Server
- * information.<p>Information required for GeoServer to set up a Web Map
- * Service.</p>
- *  <p>Data Transfer object are used to communicate between the GeoServer
+ * Data Transfer Object for communication GeoServer Web Map Server information.
+ *
+ * <p>
+ * Information required for GeoServer to set up a Web Map Service.
+ * </p>
+ *
+ * <p>
+ * Data Transfer object are used to communicate between the GeoServer
  * application and its configuration and persistent layers. As such the class
- * is final - to allow for its future use as an on-the-wire message.</p>
+ * is final - to allow for its future use as an on-the-wire message.
+ * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: WMSDTO.java,v 1.4 2004/01/31 00:27:26 jive Exp $
+ * @version $Id$
  */
 public final class WMSDTO implements DataTransferObject {
     /** For the writer! */
@@ -30,35 +35,35 @@ public final class WMSDTO implements DataTransferObject {
     /** The service parameters for this instance. */
     private ServiceDTO service;
 
-    /** The current svg renderer */
+    /** The current svg renderer **/
     private String svgRenderer;
 
-    /** The antialisaing hint for the svg renderer */
+    /** The antialisaing hint for the svg renderer **/
     private boolean svgAntiAlias;
+
+    /** The interpolation rendering hint **/
     private Map baseMapLayers;
     private Map baseMapStyles;
-
-    /** The interpolation rendering hint */
     private String allowInterpolation;
 
     /**
-             * WMS constructor.  does nothing
-             */
+     * WMS constructor.  does nothing
+     */
     public WMSDTO() {
     }
 
     /**
-             * WMS constructor.
-             *
-             * <p>
-             * Creates a copy of the WMS provided. If the WMS provided  is null then
-             * default values are used. All the data structures are cloned.
-             * </p>
-             *
-             * @param other The WMS to copy.
-             *
-             * @throws NullPointerException DOCUMENT ME!
-             */
+     * WMS constructor.
+     *
+     * <p>
+     * Creates a copy of the WMS provided. If the WMS provided  is null then
+     * default values are used. All the data structures are cloned.
+     * </p>
+     *
+     * @param other The WMS to copy.
+     *
+     * @throws NullPointerException DOCUMENT ME!
+     */
     public WMSDTO(WMSDTO other) {
         if (other == null) {
             throw new NullPointerException("Data Transfer Object required");
@@ -85,8 +90,12 @@ public final class WMSDTO implements DataTransferObject {
     }
 
     /**
-     * Implement equals.<p>recursively tests to determine if the object
-     * passed in is a copy of this object.</p>
+     * Implement equals.
+     *
+     * <p>
+     * recursively tests to determine if the object passed in is a copy of this
+     * object.
+     * </p>
      *
      * @param other The WMS object to test.
      *
@@ -156,7 +165,11 @@ public final class WMSDTO implements DataTransferObject {
     }
 
     /**
-     * getService purpose.<p>Description ...</p>
+     * getService purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -165,7 +178,11 @@ public final class WMSDTO implements DataTransferObject {
     }
 
     /**
-     * setService purpose.<p>Description ...</p>
+     * setService purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param service
      *
@@ -180,7 +197,11 @@ public final class WMSDTO implements DataTransferObject {
     }
 
     /**
-     * isGmlPrefixing purpose.<p>Description ...</p>
+     * isGmlPrefixing purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -189,7 +210,11 @@ public final class WMSDTO implements DataTransferObject {
     }
 
     /**
-     * setGmlPrefixing purpose.<p>Description ...</p>
+     * setGmlPrefixing purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param b
      */
@@ -198,10 +223,7 @@ public final class WMSDTO implements DataTransferObject {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return The constant identifying the current svg renderer.
-     *
      * @see org.vfny.geoserver.config.WMSConfig#SVG_SIMPLE
      * @see org.vfny.geoserver.config.WMSConfig#SVG_BATIK
      */
@@ -210,10 +232,7 @@ public final class WMSDTO implements DataTransferObject {
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @param svgRenderer constant identifying the current svg renderer.
-     *
+     * @param The constant identifying the current svg renderer.
      * @see org.vfny.geoserver.config.WMSConfig#SVG_SIMPLE
      * @see org.vfny.geoserver.config.WMSConfig#SVG_BATIK
      */
@@ -222,8 +241,6 @@ public final class WMSDTO implements DataTransferObject {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @param svgAntiAlias anti alias hint.
      */
     public void setSvgAntiAlias(boolean svgAntiAlias) {
@@ -231,8 +248,6 @@ public final class WMSDTO implements DataTransferObject {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return The value of the anti aliasing rendering hint.
      */
     public boolean getSvgAntiAlias() {
@@ -256,8 +271,6 @@ public final class WMSDTO implements DataTransferObject {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @param allowInterpolation interpolation hint.
      */
     public void setAllowInterpolation(String allowInterpolation) {
@@ -265,8 +278,6 @@ public final class WMSDTO implements DataTransferObject {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return The value of the interpolation rendering hint.
      */
     public String getAllowInterpolation() {

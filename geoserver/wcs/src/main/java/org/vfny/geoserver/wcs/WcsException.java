@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
  *         modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
  *         modification)
- * @version $Id: WcsException.java,v 0.1 Feb 15, 2005 11:11:26 AM $
+ * @version $Id$
  */
 public class WcsException extends ServiceException {
     /** Class logger */

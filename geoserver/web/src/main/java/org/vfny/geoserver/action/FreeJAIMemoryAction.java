@@ -22,10 +22,12 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Free JAI Memory by running the Tile Cahce flushing.<p>This represents an
- * action that interacts with the running GeoServer application (it is not
- * really a config action, it is just that I want the user to be logged in).</p>
- *
+ * Free JAI Memory by running the Tile Cahce flushing.
+ * <p>
+ * This represents an action that interacts with the running GeoServer
+ * application (it is not really a config action, it is just that I want the
+ * user to be logged in).
+ * </p>
  * @author $Author: Alessio Fabiani $ (last modification)
  */
 public class FreeJAIMemoryAction extends ConfigAction {

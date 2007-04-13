@@ -6,7 +6,7 @@ package org.vfny.geoserver.wcs.responses;
 
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.referencing.FactoryFinder;
+import org.geotools.referencing.ReferencingFactoryFinder;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
@@ -65,22 +65,6 @@ public class DescribeResponse implements Response {
     private static final String FOOTER = "\n</CoverageDescription>";
 
     /**
-     * The default coordinate reference system factory.
-     */
-
-    // protected final static CRSFactory crsFactory =
-    // FactoryFinder.getCRSFactory(new
-    // Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-    protected final static CRSFactory crsFactory = FactoryFinder.getCRSFactory(new Hints(
-                Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
-
-    /**
-     * The default transformations factory.
-     */
-    protected final static CoordinateOperationFactory opFactory = FactoryFinder
-        .getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
-
-    /**
      *
      * @uml.property name="request"
      * @uml.associationEnd multiplicity="(0 1)"
@@ -96,15 +80,7 @@ public class DescribeResponse implements Response {
      * @uml.property name="datumFactory"
      * @uml.associationEnd multiplicity="(1 1)"
      */
-    protected final DatumFactory datumFactory = FactoryFinder.getDatumFactory(null);
-
-    /**
-     * The default math transform factory.
-     *
-     * @uml.property name="mtFactory"
-     * @uml.associationEnd multiplicity="(1 1)"
-     */
-    protected final MathTransformFactory mtFactory = FactoryFinder.getMathTransformFactory(null);
+    protected final DatumFactory datumFactory = ReferencingFactoryFinder.getDatumFactory(null);
 
     /**
      * Returns any extra headers that this service might want to set in the HTTP response object.
@@ -113,6 +89,31 @@ public class DescribeResponse implements Response {
     public HashMap getResponseHeaders() {
         return null;
     }
+
+    /**
+     * The default coordinate reference system factory.
+     */
+
+    // protected final static CRSFactory crsFactory =
+    // FactoryFinder.getCRSFactory(new
+    // Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
+    protected final static CRSFactory crsFactory = ReferencingFactoryFinder.getCRSFactory(new Hints(
+                Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
+
+    /**
+     * The default math transform factory.
+     *
+     * @uml.property name="mtFactory"
+     * @uml.associationEnd multiplicity="(1 1)"
+     */
+    protected final MathTransformFactory mtFactory = ReferencingFactoryFinder
+        .getMathTransformFactory(null);
+
+    /**
+     * The default transformations factory.
+     */
+    protected final static CoordinateOperationFactory opFactory = ReferencingFactoryFinder
+        .getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
 
     public void execute(Request req) throws WcsException {
         WCSRequest request = (WCSRequest) req;
@@ -262,8 +263,7 @@ public class DescribeResponse implements Response {
 
         final GeneralEnvelope envelope = cv.getWGS84LonLatEnvelope();
 
-        tempResponse.append("\n  <lonLatEnvelope"
-            + " srsName=\"WGS84(DD)\"" /*" srsName=\"urn:ogc:def:crs:OGC:1.3:CRS84\""*/    ) /*WGS84(DD)*/
+        tempResponse.append("\n  <lonLatEnvelope" + " srsName=\"WGS84(DD)\"") /*urn:ogc:def:crs:OGC:1.3:CRS84*/
                     .append(">");
         tempResponse.append("\n   <gml:pos>").append(envelope.getLowerCorner().getOrdinate(0))
                     .append(" ").append(envelope.getLowerCorner().getOrdinate(1))

@@ -16,18 +16,27 @@ import javax.servlet.ServletException;
 
 
 /**
- * ConfigPlugIn purpose.<p>Used to set-up config's memory model.   REQUIRED
- * Pre-condition must be run after GeoServerPlugIn</p>
- *  <p></p>
+ * ConfigPlugIn purpose.
+ *
+ * <p>
+ * Used to set-up config's memory model.   REQUIRED  Pre-condition must be run
+ * after GeoServerPlugIn
+ * </p>
+ *
+ * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: ConfigPlugIn.java,v 1.8 2004/02/20 00:28:19 dmzwiers Exp $
+ * @version $Id$
  *
  * @see org.vfny.geoserver.global.GeoServerPlugIn
  */
 public class ConfigPlugIn implements PlugIn {
     /**
-     * Implement destroy.<p>Description ...</p>
+     * Implement destroy.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @see org.apache.struts.action.PlugIn#destroy()
      */
@@ -36,7 +45,11 @@ public class ConfigPlugIn implements PlugIn {
     }
 
     /**
-     * Implement init.<p>Description ...</p>
+     * Implement init.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param arg0
      * @param arg1

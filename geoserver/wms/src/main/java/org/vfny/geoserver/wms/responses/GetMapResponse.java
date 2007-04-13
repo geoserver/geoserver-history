@@ -5,19 +5,20 @@
 package org.vfny.geoserver.wms.responses;
 
 import com.vividsolutions.jts.geom.Envelope;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
-import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
 import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
-import org.geotools.filter.Filter;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.resources.coverage.CoverageUtilities;
 import org.geotools.styling.Style;
+import org.opengis.filter.Filter;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
@@ -48,39 +49,45 @@ import java.util.logging.Logger;
 
 
 /**
- * A GetMapResponse object is responsible of generating a map based on a
- * GetMap request. The way the map is generated is independent of this class,
- * wich will use a delegate object based on the output format requested
+ * A GetMapResponse object is responsible of generating a map based on a GetMap
+ * request. The way the map is generated is independent of this class, wich will
+ * use a delegate object based on the output format requested
  *
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id: GetMapResponse.java,v 1.11 2004/03/14 23:29:30 groldan Exp $
+ * @version $Id$
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger(GetMapResponse.class.getPackage().getName());
 
     /**
-     * The map producer that will be used for the production of a map
-     * in the requested format.
+     * The map producer that will be used for the production of a map in the
+     * requested format.
      */
     private GetMapProducer delegate;
 
-    /** The map context */
+    /**
+     * The map context
+     */
     private WMSMapContext map;
 
-    /** WMS module */
+    /**
+     * WMS module
+     */
     private WMS wms;
 
-    /** custom response headers */
+    /**
+     * custom response headers
+     */
     private HashMap responseHeaders;
     String headerContentDisposition;
     private ApplicationContext applicationContext;
 
     /**
-             * Creates a new GetMapResponse object.
-             *
-             * @param applicationContext
-             */
+     * Creates a new GetMapResponse object.
+     *
+     * @param applicationContext
+     */
     public GetMapResponse(WMS wms, ApplicationContext applicationContext) {
         this.wms = wms;
         this.applicationContext = applicationContext;
@@ -88,10 +95,8 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * Returns any extra headers that this service might want to set in
-     * the HTTP response object.
-     *
-     * @return DOCUMENT ME!
+     * Returns any extra headers that this service might want to set in the HTTP
+     * response object.
      */
     public HashMap getResponseHeaders() {
         return responseHeaders;
@@ -100,10 +105,13 @@ public class GetMapResponse implements Response {
     /**
      * DOCUMENT ME!
      *
-     * @param req DOCUMENT ME!
+     * @param req
+     *            DOCUMENT ME!
      *
-     * @throws ServiceException DOCUMENT ME!
-     * @throws WmsException DOCUMENT ME!
+     * @throws ServiceException
+     *             DOCUMENT ME!
+     * @throws WmsException
+     *             DOCUMENT ME!
      */
     public void execute(Request req) throws ServiceException {
         GetMapRequest request = (GetMapRequest) req;
@@ -225,7 +233,7 @@ public class GetMapResponse implements Response {
                     try {
                         source = layers[i].getFeature().getFeatureSource();
 
-                        // NOTE for the future. Here there was some code that
+                        // NOTE for the feature. Here there was some code that
                         // sounded like:
                         // * get the bounding box from feature source
                         // * eventually reproject it to the actual CRS used for
@@ -282,14 +290,25 @@ public class GetMapResponse implements Response {
                         // Setting coverage reading params.
                         //
                         // /////////////////////////////////////////////////////////
-                        final ParameterValueGroup params = reader.getFormat().getReadParameters();
+                        //final ParameterValueGroup params = reader.getFormat().getReadParameters();
+                        try {
+                            layer = new DefaultMapLayer(CoverageUtilities.wrapGcReader(reader),
+                                    style);
+                            layer.setTitle(layers[i].getName());
+                            layer.setQuery(Query.ALL);
+                            map.addLayer(layer);
+                        } catch (IllegalArgumentException e) {
+                            if (LOGGER.isLoggable(Level.SEVERE)) {
+                                LOGGER.log(Level.SEVERE,
+                                    new StringBuffer("Wrapping GC in feature source: ").append(
+                                        e.getLocalizedMessage()).toString(), e);
+                            }
 
-                        layer = new DefaultMapLayer(DataUtilities.wrapGcReader(reader,
-                                    CoverageUtils.getParameters(params,
-                                        layers[i].getCoverage().getParameters())), style);
-                        layer.setTitle(layers[i].getName());
-                        layer.setQuery(Query.ALL);
-                        map.addLayer(layer);
+                            throw new WmsException(null,
+                                new StringBuffer(
+                                    "Internal error : unable to get reader for this coverage layer ").append(
+                                    layers[i].toString()).toString());
+                        }
                     } else {
                         throw new WmsException(null,
                             new StringBuffer(
@@ -352,14 +371,16 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * asks the internal GetMapDelegate for the MIME type of the map
-     * that it will generate or is ready to, and returns it
+     * asks the internal GetMapDelegate for the MIME type of the map that it
+     * will generate or is ready to, and returns it
      *
-     * @param gs DOCUMENT ME!
+     * @param gs
+     *            DOCUMENT ME!
      *
      * @return the MIME type of the map generated or ready to generate
      *
-     * @throws IllegalStateException if a GetMapDelegate is not setted yet
+     * @throws IllegalStateException
+     *             if a GetMapDelegate is not setted yet
      */
     public String getContentType(GeoServer gs) throws IllegalStateException {
         if (this.delegate == null) {
@@ -383,10 +404,10 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * if a GetMapDelegate is set, calls it's abort method. Elsewere do
-     * nothing.
+     * if a GetMapDelegate is set, calls it's abort method. Elsewere do nothing.
      *
-     * @param gs DOCUMENT ME!
+     * @param gs
+     *            DOCUMENT ME!
      */
     public void abort(Service gs) {
         if (this.delegate != null) {
@@ -399,18 +420,22 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * delegates the writing and encoding of the results of the request
-     * to the <code>GetMapDelegate</code> wich is actually processing it, and
-     * has been obtained when <code>execute(Request)</code> was called
+     * delegates the writing and encoding of the results of the request to the
+     * <code>GetMapDelegate</code> wich is actually processing it, and has
+     * been obtained when <code>execute(Request)</code> was called
      *
-     * @param out the output to where the map must be written
+     * @param out
+     *            the output to where the map must be written
      *
-     * @throws ServiceException if the delegate throws a ServiceException
-     *         inside its <code>writeTo(OuptutStream)</code>, mostly due to
-     * @throws IOException if the delegate throws an IOException inside its
-     *         <code>writeTo(OuptutStream)</code>, mostly due to
-     * @throws IllegalStateException if this method is called before
-     *         <code>execute(Request)</code> has succeed
+     * @throws ServiceException
+     *             if the delegate throws a ServiceException inside its
+     *             <code>writeTo(OuptutStream)</code>, mostly due to
+     * @throws IOException
+     *             if the delegate throws an IOException inside its
+     *             <code>writeTo(OuptutStream)</code>, mostly due to
+     * @throws IllegalStateException
+     *             if this method is called before <code>execute(Request)</code>
+     *             has succeed
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         try { // mapcontext can leak memory -- we make sure we done (see
@@ -441,19 +466,20 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * Creates a GetMapDelegate specialized in generating the requested
-     * map format
+     * Creates a GetMapDelegate specialized in generating the requested map
+     * format
      *
-     * @param outputFormat a request parameter object wich holds the processed
-     *        request objects, such as layers, bbox, outpu format, etc.
-     * @param wms DOCUMENT ME!
+     * @param outputFormat
+     *            a request parameter object wich holds the processed request
+     *            objects, such as layers, bbox, outpu format, etc.
      *
-     * @return A specialization of <code>GetMapDelegate</code> wich can produce
-     *         the requested output map format
+     * @return A specialization of <code>GetMapDelegate</code> wich can
+     *         produce the requested output map format
      *
-     * @throws WmsException if no specialization is configured for the output
-     *         format specified in <code>request</code> or if it can't be
-     *         instantiated
+     * @throws WmsException
+     *             if no specialization is configured for the output format
+     *             specified in <code>request</code> or if it can't be
+     *             instantiated
      */
     private GetMapProducer getDelegate(String outputFormat, WMS wms)
         throws WmsException {
@@ -489,12 +515,12 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * Convenience method for processing the GetMapProducerFactorySpi
-     * extension point and returning the set of available image formats.
+     * Convenience method for processing the GetMapProducerFactorySpi extension
+     * point and returning the set of available image formats.
      *
-     * @param applicationContext The application context.
+     * @param applicationContext
+     *            The application context.
      *
-     * @return DOCUMENT ME!
      */
     public static Set loadImageFormats(ApplicationContext applicationContext) {
         Map beans = applicationContext.getBeansOfType(GetMapProducerFactorySpi.class);

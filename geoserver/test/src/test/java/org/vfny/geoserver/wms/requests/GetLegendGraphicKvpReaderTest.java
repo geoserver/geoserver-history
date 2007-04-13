@@ -49,23 +49,21 @@ public class GetLegendGraphicKvpReaderTest extends TestCase {
 
     /**
      * Remainder:
-     *  <ul>
-     *      <li>VERSION/Required
-     *      <li>REQUEST/Required
-     *      <li>LAYER/Required
-     *      <li>FORMAT/Required
-     *      <li>STYLE/Optional
-     *      <li>FEATURETYPE/Optional
-     *      <li>RULE/Optional
-     *      <li>SCALE/Optional
-     *      <li>SLD/Optional
-     *      <li>SLD_BODY/Optional
-     *      <li>WIDTH/Optional
-     *      <li>HEIGHT/Optional
-     *      <li>EXCEPTIONS/Optional
-     *  </ul>
-     *
-     * @throws Exception DOCUMENT ME!
+     * <ul>
+     * <li>VERSION/Required
+     * <li>REQUEST/Required
+     * <li>LAYER/Required
+     * <li>FORMAT/Required
+     * <li>STYLE/Optional
+     * <li>FEATURETYPE/Optional
+     * <li>RULE/Optional
+     * <li>SCALE/Optional
+     * <li>SLD/Optional
+     * <li>SLD_BODY/Optional
+     * <li>WIDTH/Optional
+     * <li>HEIGHT/Optional
+     * <li>EXCEPTIONS/Optional
+     * </ul>
      */
     protected void setUp() throws Exception {
         super.setUp();
@@ -135,13 +133,14 @@ public class GetLegendGraphicKvpReaderTest extends TestCase {
     //		parsedRequest = (GetLegendGraphicRequest) requestReader
     //				.getRequest(httpRequest);
     //	}
+
     /**
-     * This test ensures that when a SLD parameter has been passed that
-     * refers to a SLD document with multiple styles, the required one is
-     * choosed based on the LAYER parameter.<p>This is the case where a
-     * remote SLD document is used in "library" mode.</p>
-     *
-     * @throws ServiceException DOCUMENT ME!
+     * This test ensures that when a SLD parameter has been passed that refers
+     * to a SLD document with multiple styles, the required one is choosed based
+     * on the LAYER parameter.
+     * <p>
+     * This is the case where a remote SLD document is used in "library" mode.
+     * </p>
      */
     public void testRemoteSLDMultipleStyles() throws ServiceException {
         final URL remoteSldUrl = getClass().getResource("test-data/MultipleStyles.sld");

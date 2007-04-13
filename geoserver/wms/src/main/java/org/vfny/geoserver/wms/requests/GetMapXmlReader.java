@@ -5,23 +5,14 @@
 package org.vfny.geoserver.wms.requests;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultFeatureResults;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
-import org.geotools.data.ReTypeFeatureReader;
 import org.geotools.data.Transaction;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureReader;
 import org.geotools.data.memory.MemoryDataStore;
-import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureType;
-import org.geotools.feature.FeatureTypeBuilder;
-import org.geotools.feature.FeatureTypeFactory;
-import org.geotools.feature.GeometryAttributeType;
-import org.geotools.feature.type.GeometricAttributeType;
 import org.geotools.filter.ExpressionDOMParser;
-import org.geotools.filter.Filter;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.SLDParser;

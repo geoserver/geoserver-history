@@ -28,11 +28,11 @@ public class DescribeLayerTransformer extends TransformerBase {
     private String schemaBaseUrl;
 
     /**
-             * Creates a new DescribeLayerTransformer object.
-             *
-             * @param schemaBaseUrl the url string wich holds the validation
-             * schemas and DTD's on this server instance.
-             */
+     * Creates a new DescribeLayerTransformer object.
+     *
+     * @param schemaBaseUrl the url string wich holds the validation
+     * schemas and DTD's on this server instance.
+     */
     public DescribeLayerTransformer(String schemaBaseUrl) {
         super();
 
@@ -44,8 +44,8 @@ public class DescribeLayerTransformer extends TransformerBase {
     }
 
     /**
-     * Creates and returns a Translator specialized in producing a
-     * DescribeLayer response document.
+     * Creates and returns a Translator specialized in producing
+     * a DescribeLayer response document.
      *
      * @param handler the content handler to send sax events to.
      *
@@ -56,18 +56,18 @@ public class DescribeLayerTransformer extends TransformerBase {
     }
 
     /**
-     * Gets the <code>Transformer</code> created by the overriden
-     * method in the superclass and adds it the DOCTYPE token pointing to the
-     * DescribeLayer DTD on this server instance.<p>The DTD is set at
-     * the fixed location given by the <code>schemaBaseUrl</code> passed to
-     * the constructor <code>+
-     * "wms/1.1.1/WMS_DescribeLayerResponse.dtd</code>.</p>
+     * Gets the <code>Transformer</code> created by the overriden method in
+     * the superclass and adds it the DOCTYPE token pointing to the
+     * DescribeLayer DTD on this server instance.
      *
-     * @return a Transformer propoerly configured to produce DescribeLayer
-     *         responses.
+     * <p>
+     * The DTD is set at the fixed location given by the <code>schemaBaseUrl</code>
+     * passed to the constructor <code>+ "wms/1.1.1/WMS_DescribeLayerResponse.dtd</code>.
+     * </p>
      *
-     * @throws TransformerException if it is thrown by
-     *         <code>super.createTransformer()</code>
+     * @return a Transformer propoerly configured to produce DescribeLayer responses.
+     *
+     * @throws TransformerException if it is thrown by <code>super.createTransformer()</code>
      */
     public Transformer createTransformer() throws TransformerException {
         Transformer transformer = super.createTransformer();
@@ -85,10 +85,10 @@ public class DescribeLayerTransformer extends TransformerBase {
      */
     private static class DescribeLayerTranslator extends TranslatorSupport {
         /**
-                         * Creates a new DescribeLayerTranslator object.
-                         *
-                         * @param handler DOCUMENT ME!
-                         */
+         * Creates a new DescribeLayerTranslator object.
+         *
+         * @param handler DOCUMENT ME!
+         */
         public DescribeLayerTranslator(ContentHandler handler) {
             super(handler, null, null);
         }
@@ -118,9 +118,9 @@ public class DescribeLayerTransformer extends TransformerBase {
         }
 
         /**
-         * As currently GeoServer does not have support for nested
-         * layers, this method declares a <code>LayerDescription</code>
-         * element for each featuretype requested.
+         * As currently GeoServer does not have support for nested layers, this
+         * method declares a <code>LayerDescription</code> element for each
+         * featuretype requested.
          *
          * @param req
          */

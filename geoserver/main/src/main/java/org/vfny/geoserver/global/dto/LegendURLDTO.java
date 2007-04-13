@@ -5,14 +5,25 @@ package org.vfny.geoserver.global.dto;
 
 
 /**
- * Data Transfer Object for legend information.<p>Defines the legend icon
- * to be associated with a FeatureType.</p>
- *  <p><pre>Example:<code>LegendDTO legend = new LegendDTO();
- * legend.setOnlineResource("http://www.myserver.org/legends/legend1.png");
- * legend.setWidth(72);legend.setHeight(72);legend.setFormat("image/png");
- * </code> </pre></p>
+ * Data Transfer Object for legend information.
  *
- * @author Charles Kolbowicz, Institut de Recherche pour le Développement
+ * <p>
+ * Defines the legend icon to be associated with a FeatureType.
+ * </p>
+ *
+ * <p>
+ * <pre>
+ * Example:<code>
+ * LegendDTO legend = new LegendDTO();
+ * legend.setOnlineResource("http://www.myserver.org/legends/legend1.png");
+ * legend.setWidth(72);
+ * legend.setHeight(72);
+ * legend.setFormat("image/png");
+ * </code>
+ *  </pre>
+ * </p>
+ *
+ * @author Charles Kolbowicz, Institut de Recherche pour le Dï¿½veloppement
  *         (IRD), 2004
  * @version $Id$
  */
@@ -30,28 +41,28 @@ public final class LegendURLDTO implements DataTransferObject {
     private String onlineResource;
 
     /**
-             * LegendConfig constructor.
-             *
-             * <p>
-             * does nothing
-             * </p>
-             */
+     * LegendConfig constructor.
+     *
+     * <p>
+     * does nothing
+     * </p>
+     */
     public LegendURLDTO() {
     }
 
     /**
-             * LegendConfig constructor.
-             *
-             * <p>
-             * Creates a copy of the LegendConfig provided. If the LegendConfig
-             * provided is null then default values are used. All the data structures
-             * are cloned.
-             * </p>
-             *
-             * @param legend The legend to copy.
-             *
-             * @throws NullPointerException DOCUMENT ME!
-             */
+     * LegendConfig constructor.
+     *
+     * <p>
+     * Creates a copy of the LegendConfig provided. If the LegendConfig
+     * provided is null then default values are used. All the data structures
+     * are cloned.
+     * </p>
+     *
+     * @param legend The legend to copy.
+     *
+     * @throws NullPointerException DOCUMENT ME!
+     */
     public LegendURLDTO(LegendURLDTO legend) {
         if (legend == null) {
             throw new NullPointerException();
@@ -64,7 +75,11 @@ public final class LegendURLDTO implements DataTransferObject {
     }
 
     /**
-     * Implement clone.<p>creates a clone of this object</p>
+     * Implement clone.
+     *
+     * <p>
+     * creates a clone of this object
+     * </p>
      *
      * @return A copy of this LegendURLDTO
      *
@@ -75,8 +90,12 @@ public final class LegendURLDTO implements DataTransferObject {
     }
 
     /**
-     * Implement equals.<p>recursively tests to determine if the object
-     * passed in is a copy of this object.</p>
+     * Implement equals.
+     *
+     * <p>
+     * recursively tests to determine if the object passed in is a copy of this
+     * object.
+     * </p>
      *
      * @param obj The LegendURLDTO object to test.
      *

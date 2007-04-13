@@ -17,28 +17,32 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * LoginForm purpose.<p>Stores the username/password information for the
- * login page, to be used by the LoginAction</p>
+ * LoginForm purpose.
+ * <p>
+ * Stores the username/password information for the login page, to be used by the LoginAction
+ * </p>
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: LoginForm.java,v 1.2 2004/02/09 23:30:06 dmzwiers Exp $
+ * @version $Id$
  */
 public class LoginForm extends ActionForm {
-    /** Comment for <code>serialVersionUID</code> */
+    /**
+     * Comment for <code>serialVersionUID</code>
+     */
     private static final long serialVersionUID = 3258410616858358324L;
     private String username;
     private String password;
     private String confirm;
 
     /**
+     *
      * sets username and password to empty strings
+     *
+     * @see org.apache.struts.action.ActionForm#reset(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
      *
      * @param arg0
      * @param request
-     *
-     * @see org.apache.struts.action.ActionForm#reset(org.apache.struts.action.ActionMapping,
-     *      javax.servlet.http.HttpServletRequest)
      */
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
@@ -49,16 +53,15 @@ public class LoginForm extends ActionForm {
     }
 
     /**
-     * Verifies that username is not null or empty. Could potentially
-     * do the same for password later.
+     *
+     * Verifies that username is not null or empty.
+     * Could potentially do the same for password later.
+     *
+     * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
      *
      * @param mapping
      * @param request
-     *
      * @return
-     *
-     * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping,
-     *      javax.servlet.http.HttpServletRequest)
      */
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
@@ -72,11 +75,11 @@ public class LoginForm extends ActionForm {
         String usernameLabel = messages.getMessage(locale, "label.username");
         String passwordLabel = messages.getMessage(locale, "label.password");
 
-        if ((username == null) || "".equals(username)) {
+        if ((username == null) || username.equals("")) {
             errors.add("username", new ActionError("errors.required", usernameLabel));
         }
 
-        if ((password == null) || "".equals(password)) {
+        if ((password == null) || password.equals("")) {
             errors.add("password", new ActionError("errors.required", passwordLabel));
         }
 

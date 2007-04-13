@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.geoserver.maven</groupId>
 		<artifactId>plugins</artifactId>
-		<version>1.5.0</version>
+		<version>1.6-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.geoserver.maven</groupId>
@@ -32,7 +32,8 @@
 			</roles>
 		</developer>
 	</developers>
-
+	
+	
   <build>
   <plugins>
 
@@ -42,10 +43,10 @@
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>jalopy-maven-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
-	<configuration>
-		<srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
-		<testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
-	</configuration>
+        <configuration>
+          <srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
+          <testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
+        </configuration>
     <executions>
       <execution>
         <goals>
@@ -57,5 +58,6 @@
    </plugin>
   </plugins>
   </build>
+
 
 </project>

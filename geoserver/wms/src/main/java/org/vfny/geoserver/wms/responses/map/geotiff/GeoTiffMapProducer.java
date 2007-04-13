@@ -23,18 +23,20 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
 
 
 /**
- * Map producer for GeoTiff output format. It basically relies on the
- * GeoTiff module of geotools.
+ * Map producer for GeoTiff output format. It basically relies on the GeoTiff
+ * module of geotools.
+ *
  *
  * @author Simone Giannecchini
+ *
  */
 public class GeoTiffMapProducer extends DefaultRasterMapProducer {
     /** the only MIME type this map producer supports */
     static final String MIME_TYPE = "image/geotiff";
 
     /**
-     * convenient singleton Set to expose the output format this
-     * producer supports
+     * convenient singleton Set to expose the output format this producer
+     * supports
      */
     private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
 

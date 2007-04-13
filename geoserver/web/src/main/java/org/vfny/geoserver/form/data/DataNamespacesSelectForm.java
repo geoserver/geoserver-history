@@ -13,17 +13,16 @@ import org.vfny.geoserver.config.ConfigRequests;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.Requests;
-import java.util.Arrays;
 import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * DataNamespacesSelectForm<p></p>
- *
+ * DataNamespacesSelectForm
+ * <p>
  * @author rgould, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
- * @version $Id: DataNamespacesSelectForm.java,v 1.5 2004/04/03 00:24:28 emperorkefka Exp $
+ * @version $Id$
  */
 public class DataNamespacesSelectForm extends ActionForm {
     /** namespace the user selected (value is a prefix) */
@@ -111,15 +110,6 @@ public class DataNamespacesSelectForm extends ActionForm {
      * @return Returns the namespaces.
      */
     public TreeSet getNamespaces() {
-        Object[] keys = namespaces.toArray();
-        Arrays.sort(keys);
-
-        TreeSet sorted = new TreeSet();
-
-        for (int i = 0; i < keys.length; i++) {
-            sorted.add(keys[i]);
-        }
-
-        return sorted;
+        return namespaces;
     }
 }

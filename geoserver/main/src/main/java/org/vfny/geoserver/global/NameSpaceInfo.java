@@ -17,14 +17,21 @@ import java.util.Set;
 
 
 /**
- * NameSpaceInfo purpose.<p>A representation of a namespace for the
- * Geoserver application.</p>
- *  <p></p>
- *  <p>NameSpaceInfo ns = new NameSpaceInfo(dto);
- * System.out.println(ns.getPrefix() + ns.getUri());</p>
+ * NameSpaceInfo purpose.
+ *
+ * <p>
+ * A representation of a namespace for the Geoserver application.
+ * </p>
+ *
+ * <p></p>
+ *
+ * <p>
+ * NameSpaceInfo ns = new NameSpaceInfo(dto); System.out.println(ns.getPrefix()
+ * + ns.getUri());
+ * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: NameSpaceInfo.java,v 1.11 2004/06/26 19:51:24 jive Exp $
+ * @version $Id$
  */
 public class NameSpaceInfo extends GlobalLayerSupertype {
     private String prefix;
@@ -38,18 +45,18 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     private Map meta;
 
     /**
-             * NameSpaceConfig constructor.
-             *
-             * <p>
-             * Creates a NameSpaceConfig based on the data provided. All the data
-             * structures are cloned.
-             * </p>
-             *
-             * @param data DOCUMENT ME!
-             * @param ns The namespace to copy.
-             *
-             * @throws NullPointerException when the param is null
-             */
+     * NameSpaceConfig constructor.
+     *
+     * <p>
+     * Creates a NameSpaceConfig based on the data provided. All the data
+     * structures are cloned.
+     * </p>
+     *
+     * @param data DOCUMENT ME!
+     * @param ns The namespace to copy.
+     *
+     * @throws NullPointerException when the param is null
+     */
     public NameSpaceInfo(Data data, NameSpaceInfoDTO ns) {
         if (ns == null) {
             throw new NullPointerException("Non null NameSpaceInfoDTO required");
@@ -67,17 +74,17 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     }
 
     /**
-             * NameSpaceConfig constructor.
-             *
-             * <p>
-             * Creates a copy of the NameSpaceConfig provided. All the data structures
-             * are cloned.
-             * </p>
-             *
-             * @param ns The namespace to copy.
-             *
-             * @throws NullPointerException when the param is null
-             */
+     * NameSpaceConfig constructor.
+     *
+     * <p>
+     * Creates a copy of the NameSpaceConfig provided. All the data structures
+     * are cloned.
+     * </p>
+     *
+     * @param ns The namespace to copy.
+     *
+     * @throws NullPointerException when the param is null
+     */
     public NameSpaceInfo(NameSpaceInfo ns) {
         if (ns == null) {
             throw new NullPointerException();
@@ -89,9 +96,13 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * Implement toDTO.<p>Package method used by GeoServer. This method
-     * may return references, and does not clone, so extreme caution sould be
-     * used when traversing the results.</p>
+     * Implement toDTO.
+     *
+     * <p>
+     * Package method used by GeoServer. This method may return references, and
+     * does not clone, so extreme caution sould be used when traversing the
+     * results.
+     * </p>
      *
      * @return NameSpaceInfoDTO An instance of the data this class represents.
      *         Please see Caution Above.
@@ -109,7 +120,11 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * Implement clone.<p>creates a clone of this object</p>
+     * Implement clone.
+     *
+     * <p>
+     * creates a clone of this object
+     * </p>
      *
      * @return A copy of this NameSpaceConfig
      *
@@ -120,8 +135,12 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * Implement equals.<p>recursively tests to determine if the object
-     * passed in is a copy of this object.</p>
+     * Implement equals.
+     *
+     * <p>
+     * recursively tests to determine if the object passed in is a copy of this
+     * object.
+     * </p>
      *
      * @param obj The NameSpaceConfig object to test.
      *
@@ -137,7 +156,11 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * isDefault purpose.<p>Whether this is the default namespace.</p>
+     * isDefault purpose.
+     *
+     * <p>
+     * Whether this is the default namespace.
+     * </p>
      *
      * @return true when this is the default namespace.
      */
@@ -146,7 +169,11 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * getPrefix purpose.<p>returns the namespace's prefix.</p>
+     * getPrefix purpose.
+     *
+     * <p>
+     * returns the namespace's prefix.
+     * </p>
      *
      * @return String the namespace's prefix
      */
@@ -155,7 +182,11 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * getUri purpose.<p>returns the namespace's uri.</p>
+     * getUri purpose.
+     *
+     * <p>
+     * returns the namespace's uri.
+     * </p>
      *
      * @return String the namespace's uri.
      */
@@ -166,16 +197,20 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     /**
      * Implementation of getURI.
      *
-     * @return
-     *
      * @see org.geotools.data.NamespaceMetaData#getURI()
+     *
+     * @return
      */
     public String getURI() {
         return uri;
     }
 
     /**
-     * setDdefault purpose.<p>sets the default namespace.</p>
+     * setDdefault purpose.
+     *
+     * <p>
+     * sets the default namespace.
+     * </p>
      *
      * @param b this is the default namespace.
      */
@@ -184,7 +219,11 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * setPrefix purpose.<p>stores the namespace's prefix.</p>
+     * setPrefix purpose.
+     *
+     * <p>
+     * stores the namespace's prefix.
+     * </p>
      *
      * @param string the namespace's prefix.
      */
@@ -193,7 +232,11 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * setUri purpose.<p>Stores the namespace's uri.</p>
+     * setUri purpose.
+     *
+     * <p>
+     * Stores the namespace's uri.
+     * </p>
      *
      * @param string the namespace's uri.
      */
@@ -241,10 +284,13 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * This should be a list of available typeNames for the namespace.<p>Makes
-     * use of data to get the list of all FeatureTypes, returns the names that
-     * match this prefix. This is just the typeName and not the full
-     * prefix:typeName.</p>
+     * This should be a list of available typeNames for the namespace.
+     *
+     * <p>
+     * Makes use of data to get the list of all FeatureTypes, returns the names
+     * that match this prefix. This is just the typeName and not the full
+     * prefix:typeName.
+     * </p>
      *
      * @return
      *
@@ -265,8 +311,11 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * Search for FeatureTypeInfo based on prefix:typeName<p>Convience
-     * method for data.getFeatureTypeInfo( typeName, uri );</p>
+     * Search for FeatureTypeInfo based on prefix:typeName
+     *
+     * <p>
+     * Convience method for data.getFeatureTypeInfo( typeName, uri );
+     * </p>
      *
      * @param typeName
      *

@@ -8,7 +8,6 @@ import com.vividsolutions.jts.geom.Envelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.wfs.servlets.WFService;
 import org.vfny.geoserver.wms.servlets.WMService;
 import java.awt.Color;
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.List;
  *
  * @author Gabriel Roldan, Axios Engineering
  * @author Simone Giannecchini
- * @version $Id: GetMapRequest.java,v 1.8 2004/03/14 16:00:54 groldan Exp $
+ * @version $Id$
  */
 public class GetMapRequest extends WMSRequest {
     /** DOCUMENT ME! */

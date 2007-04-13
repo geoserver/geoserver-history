@@ -22,20 +22,22 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * WMS service wich returns request and response handlers to manage a
- * GetMap request
+ * WMS service wich returns request and response handlers to manage a GetMap
+ * request
  *
  * @author Gabriel Rold?n
- * @version $Id: GetMap.java,v 1.7 2004/03/30 11:12:40 cholmesny Exp $
+ * @version $Id$
  */
 public class GetMap extends WMService {
-    /** Part of HTTP content type header. */
+    /**
+     * Part of HTTP content type header.
+     */
     public static final String URLENCODED = "application/x-www-form-urlencoded";
 
     /**
-             * Creates a new GetMap object.
-             *
-             */
+     * Creates a new GetMap object.
+     *
+     */
     public GetMap(WMS wms) {
         super("GetMap", wms);
     }
@@ -99,6 +101,8 @@ public class GetMap extends WMService {
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
+     *
+     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
      */
     protected XmlRequestReader getXmlRequestReader() {
         return new GetMapXmlReader(this);
@@ -127,12 +131,12 @@ public class GetMap extends WMService {
     }
 
     /**
-     * A method that decides if a request is a multipart request.<p><a
-     * href="http://www.w3.org/TR/REC-html40/interact/forms.html#form-content-type">w3.org
-     * content type</a></p>
+     * A method that decides if a request is a multipart request.
+     * <p>
+     * <a href="http://www.w3.org/TR/REC-html40/interact/forms.html#form-content-type">w3.org content type</a>
+     * </p>
      *
      * @param req the servlet request
-     *
      * @return if this is multipart or not
      */
     public boolean isURLEncoded(HttpServletRequest req) {

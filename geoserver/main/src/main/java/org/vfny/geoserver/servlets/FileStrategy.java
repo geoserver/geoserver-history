@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.servlets;
 
+import org.geoserver.ows.ServiceStrategy;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -24,6 +25,10 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Revision: 1.23 $
  */
 public class FileStrategy implements ServiceStrategy {
+    public String getId() {
+        return "FILE";
+    }
+
     /** Buffer size used to copy safe to response.getOutputStream() */
     private static int BUFF_SIZE = 4096;
 
@@ -33,22 +38,18 @@ public class FileStrategy implements ServiceStrategy {
     /** Class logger */
     protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets");
 
-    /** Response being targeted */
-    private HttpServletResponse response;
-
     /** OutputStream provided to writeTo method */
     private OutputStream safe;
 
     /** Temporary file used by safe */
     private File temp;
 
-    public String getId() {
-        return "FILE";
-    }
-
     /**
-     * Provides a outputs stream on a temporary file.<p>I have changed
-     * this to use a BufferedWriter to agree with SpeedStrategy.</p>
+     * Provides a outputs stream on a temporary file.
+     *
+     * <p>
+     * I have changed this to use a BufferedWriter to agree with SpeedStrategy.
+     * </p>
      *
      * @param response Response being handled
      *
@@ -62,7 +63,6 @@ public class FileStrategy implements ServiceStrategy {
         // (In case we are running two GeoServers at once)
         // - Could we use response.getHandle() in the filename?
         // - ProcessID is traditional, I don't know how to find that in Java
-        this.response = response;
         sequence++;
 
         // lets check for file permissions first so we can throw a clear error
@@ -92,7 +92,7 @@ public class FileStrategy implements ServiceStrategy {
      * @throws IOException If temporay file or response is unavailable
      * @throws IllegalStateException if flush is called before getDestination
      */
-    public void flush() throws IOException {
+    public void flush(HttpServletResponse response) throws IOException {
         if ((temp == null) || (response == null) || (safe == null) || !temp.exists()) {
             LOGGER.fine("temp is " + temp + ", response is " + response + " safe is " + safe
                 + ", temp exists " + temp.exists());
@@ -150,7 +150,7 @@ public class FileStrategy implements ServiceStrategy {
     /**
      * Clean up after writeTo fails.
      *
-     * @see org.vfny.geoserver.servlets.ServiceStrategy#abort()
+     * @see org.geoserver.ows.ServiceStrategy#abort()
      */
     public void abort() {
         if (safe != null) {
@@ -167,7 +167,6 @@ public class FileStrategy implements ServiceStrategy {
         }
 
         temp = null;
-        response = null;
     }
 
     public Object clone() throws CloneNotSupportedException {

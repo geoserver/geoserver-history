@@ -30,7 +30,7 @@
          FILE
          - outputs to the local filesystem first, before sending it off to the user
       -->
-    <param-value>PARTIAL-BUFFER</param-value>
+    <param-value>PARTIAL-BUFFER2</param-value>
   </context-param>
   
   <context-param>
@@ -91,6 +91,11 @@
     <servlet-name>hider</servlet-name>
     <servlet-class>org.vfny.geoserver.servlets.FileHiderServlet</servlet-class>  
   </servlet>
+  
+  <servlet>
+  	<servlet-name>kmlreflector</servlet-name>
+  	<servlet-class>org.vfny.geoserver.wms.servlets.KMLReflector</servlet-class>
+  </servlet>
 	
    <!-- Struts config needs to load before all the other servlets. -->
    <servlet>
@@ -120,6 +125,10 @@
     <url-pattern>*.do</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
+  	<servlet-name>kmlreflector</servlet-name>
+	<url-pattern>/wms/kml_reflect</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
   	<servlet-name>dispatcher</servlet-name>
 	<url-pattern>/wms/*</url-pattern>
   </servlet-mapping>
@@ -134,6 +143,10 @@
   <servlet-mapping>
     <servlet-name>dispatcher</servlet-name>
   	<url-pattern>/ows/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>dispatcher</servlet-name>
+    <url-pattern>/wfsv/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>hider</servlet-name>

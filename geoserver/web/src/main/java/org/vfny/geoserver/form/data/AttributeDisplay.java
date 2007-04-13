@@ -11,7 +11,6 @@ import org.vfny.geoserver.config.AttributeTypeInfoConfig;
  * Present Attribute information to user input.
  */
 public class AttributeDisplay {
-    private static final String NAMESPACE_SEPARATOR = ":"; //$NON-NLS-1$
     private String name;
     private boolean nillable;
     private String minOccurs;
@@ -29,12 +28,10 @@ public class AttributeDisplay {
     }
 
     /*public AttributeDisplay( AttributeTypeInfoDTO dto ){
-       this( new AttributeTypeInfoConfig( dto ));
-       }   */
+        this( new AttributeTypeInfoConfig( dto ));
+    }   */
 
     /**
-     * DOCUMENT ME!
-     *
      * @return Returns the fragment.
      */
     public String getFragment() {
@@ -42,8 +39,6 @@ public class AttributeDisplay {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return Returns the maxOccurs.
      */
     public String getMaxOccurs() {
@@ -51,8 +46,6 @@ public class AttributeDisplay {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return Returns the minOccurs.
      */
     public String getMinOccurs() {
@@ -60,8 +53,6 @@ public class AttributeDisplay {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return Returns the name.
      */
     public String getName() {
@@ -69,8 +60,6 @@ public class AttributeDisplay {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return Returns the nillible.
      */
     public boolean isNillable() {
@@ -78,8 +67,6 @@ public class AttributeDisplay {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return Returns the selectedType.
      */
     public String getType() {
@@ -90,6 +77,6 @@ public class AttributeDisplay {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return name + NAMESPACE_SEPARATOR + type;
+        return name + ":" + type;
     }
 }

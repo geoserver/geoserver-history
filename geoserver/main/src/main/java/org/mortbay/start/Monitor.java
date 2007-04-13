@@ -1,6 +1,6 @@
 // ========================================================================
 // Copyright (c) 2003 Mort Bay Consulting (Australia) Pty. Ltd.
-// $Id: Monitor.java,v 1.1 2004/08/23 14:00:32 cholmesny Exp $
+// $Id$
 // ========================================================================
 package org.mortbay.start;
 
@@ -12,11 +12,11 @@ import java.net.Socket;
 
 
 /*-------------------------------------------*/
-/**
- * Monitor thread. This thread listens on the port specified by the
- * STOP.PORT system parameter (defaults to 8079) for request authenticated
- * with the key given by the STOP.KEY system parameter (defaults to "mortbay")
- * for admin requests. Commands "stop" and "status" are currently supported.
+/** Monitor thread.
+ * This thread listens on the port specified by the STOP.PORT system parameter
+ * (defaults to 8079) for request authenticated with the key given by the STOP.KEY
+ * system parameter (defaults to "mortbay") for admin requests. Commands "stop" and
+ * "status" are currently supported.
  */
 public class Monitor extends Thread {
     private int _port = Integer.getInteger("STOP.PORT", 8079).intValue();
@@ -114,9 +114,8 @@ public class Monitor extends Thread {
         }
     }
 
-    /**
-     * Start a Monitor. This static method starts a monitor that
-     * listens for admin requests.
+    /** Start a Monitor.
+     * This static method starts a monitor that listens for admin requests.
      */
     public static void monitor() {
         new Monitor();

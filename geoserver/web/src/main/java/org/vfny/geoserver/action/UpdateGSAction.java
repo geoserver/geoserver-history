@@ -32,8 +32,11 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Update GeoServer with the current configuration.<p>This is a real
- * ConfigAction - you need to be logged in to use it.</p>
+ * Update GeoServer with the current configuration.
+ *
+ * <p>
+ * This is a real ConfigAction - you need to be logged in to use it.
+ * </p>
  *
  * @author User To change the template for this generated type comment go to
  *         Window>Preferences>Java>Code Generation>Code and Comments
@@ -48,8 +51,9 @@ public class UpdateGSAction extends ConfigAction {
         return mapping.findForward("config");
     }
 
-    public ActionForward updateGeoserver(ActionMapping mapping, ActionForm form, // UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
+    public ActionForward updateGeoserver(ActionMapping mapping, ActionForm form,
+        // UserContainer user,
+    HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         GeoServer gs;
         ServletContext sc = request.getSession().getServletContext();
@@ -81,8 +85,9 @@ public class UpdateGSAction extends ConfigAction {
         return mapping.findForward("config");
     }
 
-    public ActionForward updateValidation(ActionMapping mapping, ActionForm form, // UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
+    public ActionForward updateValidation(ActionMapping mapping, ActionForm form,
+        // UserContainer user,
+    HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         GeoServer gs;
         ServletContext sc = request.getSession().getServletContext();

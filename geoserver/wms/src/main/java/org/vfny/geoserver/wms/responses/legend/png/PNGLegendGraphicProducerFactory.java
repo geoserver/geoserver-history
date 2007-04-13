@@ -16,18 +16,17 @@ import java.util.TreeSet;
  * available JAI library.
  *
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id: PNGLegendGraphicProducerFactory.java 4107 2006-01-18 22:20:30Z jdeolive $
+ * @version $Id$
  */
 public class PNGLegendGraphicProducerFactory implements GetLegendGraphicProducerSpi {
     /**
-             *
-             */
+     *
+     */
     public PNGLegendGraphicProducerFactory() {
         super();
     }
 
     /**
-     *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#getName()
      */
     public String getName() {
@@ -35,7 +34,6 @@ public class PNGLegendGraphicProducerFactory implements GetLegendGraphicProducer
     }
 
     /**
-     *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#getSupportedFormats()
      */
     public Set getSupportedFormats() {
@@ -46,7 +44,6 @@ public class PNGLegendGraphicProducerFactory implements GetLegendGraphicProducer
     }
 
     /**
-     *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#isAvailable()
      */
     public boolean isAvailable() {
@@ -54,7 +51,6 @@ public class PNGLegendGraphicProducerFactory implements GetLegendGraphicProducer
     }
 
     /**
-     *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#canProduce(java.lang.String)
      */
     public boolean canProduce(String mimeType) {
@@ -62,7 +58,6 @@ public class PNGLegendGraphicProducerFactory implements GetLegendGraphicProducer
     }
 
     /**
-     *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducerSpi#createLegendProducer(java.lang.String)
      */
     public GetLegendGraphicProducer createLegendProducer(String format)
@@ -75,9 +70,9 @@ public class PNGLegendGraphicProducerFactory implements GetLegendGraphicProducer
     }
 
     /* (non-Javadoc)
-     * @see org.geotools.factory.Factory#getImplementationHints()
-     * This just returns java.util.Collections.EMPTY_MAP
-     */
+         * @see org.geotools.factory.Factory#getImplementationHints()
+         * This just returns java.util.Collections.EMPTY_MAP
+         */
     public Map getImplementationHints() {
         return java.util.Collections.EMPTY_MAP;
     }

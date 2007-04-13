@@ -4,12 +4,12 @@
  */
 package org.vfny.geoserver.wcs.servlets;
 
+import org.geoserver.ows.util.EncodingInfo;
+import org.geoserver.ows.util.XmlCharsetDetector;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.servlets.Dispatcher;
-import org.vfny.geoserver.util.requests.EncodingInfo;
-import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 import org.vfny.geoserver.util.requests.readers.DispatcherKvpReader;
 import org.vfny.geoserver.util.requests.readers.DispatcherXmlReader;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
@@ -50,7 +50,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
- * @version $Id: WcsDispatcher.java,v 0.1 2005/02/15 10:55:15 $
+ * @version $Id$
  */
 public class WcsDispatcher extends Dispatcher {
     /**

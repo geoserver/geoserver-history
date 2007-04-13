@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: StylesNewForm.java,v 1.1 2004/02/28 07:45:00 jive Exp $
+ * @version $Id$
  */
 public class StylesNewForm extends ActionForm {
     /** StyleID entered by user */
@@ -31,18 +31,16 @@ public class StylesNewForm extends ActionForm {
     /**
      * Implementation of validate.
      *
+     * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
+     *
      * @param mapping
      * @param request
-     *
      * @return Any ActionErrors produced by validation
-     *
-     * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping,
-     *      javax.servlet.http.HttpServletRequest)
      */
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if ((styleID == null) || "".equals(styleID)) {
+        if ((styleID == null) || styleID.equals("")) {
             errors.add("styleID", new ActionError("error.styleID.required", styleID));
         } else if (!Pattern.matches("^[-\\w.:]*$", styleID)) {
             errors.add("styleID", new ActionError("error.styleID.invalid", styleID));

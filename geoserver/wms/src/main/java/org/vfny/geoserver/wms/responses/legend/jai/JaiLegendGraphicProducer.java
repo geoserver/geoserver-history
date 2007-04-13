@@ -22,19 +22,19 @@ class JaiLegendGraphicProducer extends DefaultRasterLegendProducer {
     private String outputFormat;
 
     /**
-             * Creates a new JAI based legend producer for creating
-             * <code>outputFormat</code> type images.
-             *
-             * @param outputFormat DOCUMENT ME!
-             */
+     * Creates a new JAI based legend producer for creating
+     * <code>outputFormat</code> type images.
+     *
+     * @param outputFormat DOCUMENT ME!
+     */
     JaiLegendGraphicProducer(String outputFormat) {
         super();
         this.outputFormat = outputFormat;
     }
 
     /**
-     * Encodes the image created by the superclss to the format
-     * specified at the constructor and sends it to <code>out</code>.
+     * Encodes the image created by the superclss to the format specified at
+     * the constructor and sends it to <code>out</code>.
      *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#writeTo(java.io.OutputStream)
      */
@@ -43,8 +43,7 @@ class JaiLegendGraphicProducer extends DefaultRasterLegendProducer {
     }
 
     /**
-     * Returns the MIME type in which the legend graphic will be
-     * encoded.
+     * Returns the MIME type in which the legend graphic will be encoded.
      *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#getContentType()
      */

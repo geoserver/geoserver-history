@@ -29,19 +29,32 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * DataFeatureTypesNewAction purpose.<p>Description of
- * DataFeatureTypesNewAction ...</p>
- *  <p>Capabilities:</p>
- *  <ul>
- *      <li>Feature: description</li>
- *  </ul>
- *  <p>Example Use:</p>
-<pre><code>DataFeatureTypesNewAction x = new DataFeatureTypesNewAction(...);
+ * DataFeatureTypesNewAction purpose.
+ *
+ * <p>
+ * Description of DataFeatureTypesNewAction ...
+ * </p>
+ *
+ * <p>
+ * Capabilities:
+ * </p>
+ *
+ * <ul>
+ * <li>
+ * Feature: description
+ * </li>
+ * </ul>
+ *
+ * <p>
+ * Example Use:
+ * </p>
+ * <pre><code>
+ * DataFeatureTypesNewAction x = new DataFeatureTypesNewAction(...);
  * </code></pre>
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
- * @version $Id: DataFeatureTypesNewAction.java,v 1.15 2004/09/17 16:34:47 cholmesny Exp $
+ * @version $Id$
  */
 public class DataFeatureTypesNewAction extends ConfigAction {
     public final static String NEW_FEATURE_TYPE_KEY = "newFeatureType";

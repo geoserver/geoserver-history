@@ -12,7 +12,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.ConfigRequests;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
@@ -59,13 +58,9 @@ public final class CoverageStoresSelectForm extends ActionForm {
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);
 
-        // Pass data from config layer to screen
+        // Pass data from congif layer to screen
         // REVIST: Bad Design JSP should lookup data itself!
         dataFormatIds = ConfigRequests.getDataConfig(request).listDataFormatIds();
-
-        Object[] sortable = dataFormatIds.toArray();
-        Arrays.sort(sortable);
-        dataFormatIds = Arrays.asList(sortable);
 
         // Usual reset stuff
         selectedDataFormatId = null; // nothing selected yet
@@ -109,10 +104,7 @@ public final class CoverageStoresSelectForm extends ActionForm {
      * @return DOCUMENT ME!
      */
     public List getDataFormatIds() {
-        Object[] sortable = dataFormatIds.toArray();
-        Arrays.sort(sortable);
-
-        return Arrays.asList(sortable);
+        return dataFormatIds;
     }
 
     /**

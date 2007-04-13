@@ -15,21 +15,30 @@ import javax.servlet.http.HttpSession;
 
 
 /**
- * Utility methods for locatating Config classes in the Servlet context.<p>Called
- * by ActionForms to lookup things in the WebContainer for the JSP page.
- * Similar to the Requests utility classes.</p>
- *  <p>These methods need to be kept in lockstep with the ConfigAction
- * convience methods.</p>
+ * Utility methods for locatating Config classes in the Servlet context.
+ *
+ * <p>
+ * Called by ActionForms to lookup things in the WebContainer for the JSP page.
+ * Similar to the Requests utility classes.
+ * </p>
+ *
+ * <p>
+ * These methods need to be kept in lockstep with the ConfigAction convience
+ * methods.
+ * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ConfigRequests.java,v 1.4 2004/01/31 00:27:27 jive Exp $
+ * @version $Id$
  */
 public class ConfigRequests {
     /**
-     * Access Web Map Server Configuration Model from the WebContainer.<p>Note
-     * that this represents the Configuration and not the state of the Web
-     * Feature Server.</p>
+     * Access Web Map Server Configuration Model from the WebContainer.
+     *
+     * <p>
+     * Note that this represents the Configuration and not the state of the Web
+     * Feature Server.
+     * </p>
      *
      * @param request DOCUMENT ME!
      *
@@ -43,10 +52,14 @@ public class ConfigRequests {
     //
     //        return (WMSConfig) context.getAttribute(WMSConfig.CONFIG_KEY);
     //    }
+
     /**
-     * Access Web Feature Server Configuration Model from the
-     * WebContainer.<p>Note that this represents the Configuration and
-     * not the state of the Web Feature Server.</p>
+     * Access Web Feature Server Configuration Model from the WebContainer.
+     *
+     * <p>
+     * Note that this represents the Configuration and not the state of the Web
+     * Feature Server.
+     * </p>
      *
      * @param request DOCUMENT ME!
      *
@@ -60,6 +73,7 @@ public class ConfigRequests {
     //
     //        return (WFSConfig) context.getAttribute(WFSConfig.CONFIG_KEY);
     //    }
+
     /**
      * Access Web Map Server Configuration Model from the WebContainer.
      *

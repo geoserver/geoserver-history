@@ -8,8 +8,8 @@ import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureType;
-import org.geotools.filter.Filter;
 import org.geotools.styling.Style;
+import org.opengis.filter.Filter;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.w3c.dom.Element;
 
@@ -32,11 +32,11 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
     private DataStore ds;
 
     /**
-             *
-             * @param ds
-             * @param ft
-             */
-    public TemporaryFeatureTypeInfo(DataStore ds /*, FeatureType ft*/) {
+     *
+     * @param ds
+     * @param ft
+     */
+    public TemporaryFeatureTypeInfo(DataStore ds) {
         super();
         this.ds = ds;
     }
@@ -46,10 +46,7 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
     }
 
     public Filter getDefinitionQuery() {
-        /**
-                             * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
-                             */
-        return Filter.NONE;
+        return Filter.INCLUDE;
     }
 
     Object toDTO() {
@@ -70,8 +67,8 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
 
     public boolean isEnabled() {
         /**
-                             * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
-                             */
+             * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
+             */
         return true;
     }
 
@@ -97,14 +94,9 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
 
     public String getSRS() {
         /**
-                             * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
-                             */
-        try {
-            return ds.getSchema(ds.getTypeNames()[0]).getDefaultGeometry().getCoordinateSystem()
-            + "";
-        } catch (IOException ioe) {
-            return "";
-        }
+             * TODO throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
+             */
+        return "4326";
     }
 
     private synchronized FeatureTypeInfoDTO getGeneratedDTO()
@@ -159,7 +151,7 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
 
     private FeatureType getFeatureType(FeatureSource fs)
         throws IOException {
-        return ds.getSchema(ds.getTypeNames()[0]);
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public DataStoreInfo getDataStoreMetaData() {

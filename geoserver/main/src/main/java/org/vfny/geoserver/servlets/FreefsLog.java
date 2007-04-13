@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: FreefsLog.java,v 1.22 2004/03/14 15:57:32 groldan Exp $
+ * @version $Id$
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */
@@ -60,8 +60,7 @@ public class FreefsLog extends HttpServlet {
     }
 
     /**
-     * Closes down the zserver if it is running, and frees up
-     * resources.
+     * Closes down the zserver if it is running, and frees up resources.
      *
      * @task REVISIT: what we should consider is having geotools provide a
      *       nicer way to clean up datastores's resources, something like a

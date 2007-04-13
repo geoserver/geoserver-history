@@ -17,11 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Routes requests made at the top-level URI to appropriate interface
- * servlet. Note that the logic of this method could be generously described
- * as 'loose.' It is not checking for request validity in any way (this is
- * done by the reqeust- specific servlets).  Rather, it is attempting to make
- * a reasonable guess as to what servlet to call, given that the client is
+ * Routes requests made at the top-level URI to appropriate interface servlet.
+ * Note that the logic of this method could be generously described as
+ * 'loose.' It is not checking for request validity in any way (this is done
+ * by the reqeust- specific servlets).  Rather, it is attempting to make a
+ * reasonable guess as to what servlet to call, given that the client is
  * routing to the top level URI as opposed to the request-specific URI, as
  * specified in the GetCapabilities response. Thus, this is a convenience
  * method, which allows for some slight client laziness and helps explain to
@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Rob Hranac, Vision for New York
  * @author Chris Holmes, TOPP
- * @version $Id: Dispatcher.java,v 1.13 2004/07/15 21:13:12 jmacgill Exp $
+ * @version $Id$
  *
  * @task TODO: rework to work too for WMS servlets, and to get the servlets
  *       from ServletContext instead of having them hardcoded
@@ -97,8 +97,8 @@ public class Dispatcher extends HttpServlet {
     }
 
     /**
-     * Handles all Get requests.  This method implements the main
-     * matching logic for the class.
+     * Handles all Get requests.  This method implements the main matching
+     * logic for the class.
      *
      * @param request The servlet request object.
      * @param response The servlet response object.

@@ -35,9 +35,11 @@ import java.util.logging.Logger;
 
 
 /**
- * <p>The properties files with CITE data are copied to the users' temp
- * directory only the first time <code>getCiteDataStore()</code> is called,
- * for each test run (i.e., they're not copied in <code>setUp()</code>).</p>
+ * <p>
+ * The properties files with CITE data are copied to the users' temp directory
+ * only the first time <code>getCiteDataStore()</code> is called, for each
+ * test run (i.e., they're not copied in <code>setUp()</code>).
+ * </p>
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
@@ -93,8 +95,8 @@ public abstract class AbstractCiteDataTest extends TestCase {
     private static final boolean INTERACTIVE = true;
 
     /**
-     * Convenient array with all the CITE type names for dealing with
-     * copying and deleting files
+     * Convenient array with all the CITE type names for dealing with copying
+     * and deleting files
      */
     public static String[] CITE_TYPE_NAMES = {
             BASIC_POLYGONS_TYPE, BRIDGES_TYPE, BUILDINGS_TYPE, DIVIDED_ROUTES_TYPE, FORESTS_TYPE,
@@ -103,8 +105,8 @@ public abstract class AbstractCiteDataTest extends TestCase {
         };
 
     /**
-     * Since the PropertyDataStore does not provides CRS support, we
-     * force feature types to be in WGS84
+     * Since the PropertyDataStore does not provides CRS support, we force
+     * feature types to be in WGS84
      */
     static CoordinateReferenceSystem FORCED_WGS84 = DefaultGeographicCRS.WGS84;
 
@@ -115,8 +117,8 @@ public abstract class AbstractCiteDataTest extends TestCase {
     private PropertyDataStore propsDS;
 
     /**
-             * Creates a new CiteTestData object.
-             */
+     * Creates a new CiteTestData object.
+     */
     public AbstractCiteDataTest() {
         super("Cite Data based test case, using the propery datastore");
     }
@@ -243,8 +245,8 @@ public abstract class AbstractCiteDataTest extends TestCase {
     }
 
     /**
-     * Asserts that the image is not blank, in the sense that there
-     * must be pixels different from the passed background color.
+     * Asserts that the image is not blank, in the sense that there must be
+     * pixels different from the passed background color.
      *
      * @param testName the name of the test to throw meaningfull messages if
      *        something goes wrong
@@ -269,8 +271,8 @@ public abstract class AbstractCiteDataTest extends TestCase {
     }
 
     /**
-     * Throws an assertion error if some of the CITE types are not
-     * contained in the passed DataStore.
+     * Throws an assertion error if some of the CITE types are not contained in
+     * the passed DataStore.
      *
      * @param ds DOCUMENT ME!
      *
@@ -311,8 +313,8 @@ public abstract class AbstractCiteDataTest extends TestCase {
     }
 
     /**
-     * Since it's called from inside tearDown, first checks that
-     * tempDir were created and if so, deletes the temporary files.
+     * Since it's called from inside tearDown, first checks that  tempDir were
+     * created and if so, deletes the temporary files.
      *
      * @throws IOException DOCUMENT ME!
      */
@@ -397,10 +399,10 @@ public abstract class AbstractCiteDataTest extends TestCase {
      */
     static class ForceWGS84PropertyDataStore extends PropertyDataStore {
         /**
-                         * Creates a new ForceWGS84PropertyDataStore object.
-                         *
-                         * @param dir DOCUMENT ME!
-                         */
+         * Creates a new ForceWGS84PropertyDataStore object.
+         *
+         * @param dir DOCUMENT ME!
+         */
         public ForceWGS84PropertyDataStore(File dir) {
             super(dir);
         }
@@ -426,8 +428,8 @@ public abstract class AbstractCiteDataTest extends TestCase {
         }
 
         /**
-                         * DOCUMENT ME!
-                         */
+         * DOCUMENT ME!
+         */
 
         /*
            public FeatureReader getFeatureReader(Query query,

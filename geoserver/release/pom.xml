@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver</artifactId>
-		<version>1.5.0</version>
+		<version>1.6-SNAPSHOT</version>
 	</parent>
 	
 	<groupId>org.geoserver</groupId>
@@ -103,11 +103,6 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt2-wfs</artifactId>
-			<version>${gt.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-imagepyramid</artifactId>
 			<version>${gt.version}</version>
 		</dependency>
   </dependencies>

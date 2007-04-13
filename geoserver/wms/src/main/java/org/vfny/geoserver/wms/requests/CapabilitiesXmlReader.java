@@ -24,26 +24,24 @@ import javax.xml.parsers.SAXParserFactory;
  * reads a WMS GetCapabilities request from an XML stream
  *
  * @author Gabriel Rold?n
- * @version $Id: CapabilitiesXmlReader.java,v 1.8 2004/02/13 19:30:39 dmzwiers Exp $
+ * @version $Id$
  *
  * @task TODO: see if it must be refactored to read WMS GetCapabilities too
  */
 public class CapabilitiesXmlReader extends XmlRequestReader {
     /**
-             * Creates the new reader.
-             *
-             * @param service The WMS service hanlding the request.
-             */
+     * Creates the new reader.
+     *
+     * @param service The WMS service hanlding the request.
+     */
     public CapabilitiesXmlReader(WMService service) {
         super(service);
     }
 
     /**
-     * Reads the Capabilities XML request into a CapabilitiesRequest
-     * object.
+     * Reads the Capabilities XML request into a CapabilitiesRequest object.
      *
      * @param reader The plain POST text from the client.
-     * @param req DOCUMENT ME!
      *
      * @return The read CapabilitiesRequest object.
      *
@@ -54,7 +52,8 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers
-        CapabilitiesHandler currentRequest = new CapabilitiesHandler(getServiceRef());
+        CapabilitiesHandler currentRequest = new CapabilitiesHandler(new WMSCapabilitiesRequest(
+                    getServiceRef()));
 
         // read in XML file and parse to content handler
         try {

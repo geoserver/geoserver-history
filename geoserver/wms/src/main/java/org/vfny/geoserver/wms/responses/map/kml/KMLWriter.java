@@ -10,8 +10,13 @@ import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import org.geoserver.template.FeatureWrapper;
+import org.geoserver.template.GeoServerTemplateLoader;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.DataSourceException;
-import org.geotools.data.coverage.grid.AbstractGridCoverage2DReader;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
@@ -20,7 +25,6 @@ import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.Expression;
-import org.geotools.filter.Filter;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.gml.producer.GeometryTransformer;
 import org.geotools.map.MapLayer;
@@ -42,16 +46,16 @@ import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
+import org.opengis.filter.Filter;
+import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-import org.opengis.spatialschema.geometry.MismatchedDimensionException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import java.awt.Color;
 import java.awt.Paint;
-import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -89,8 +93,32 @@ public class KMLWriter extends OutputStreamWriter {
      */
     private static DecimalFormat formatter;
 
+    /**
+     * The template configuration
+     */
+    private static Configuration templateConfig;
+
+    /**
+     * Resolves the FeatureTypeStyle info per feature into a Style2D object.
+     */
+    private SLDStyleFactory styleFactory = new SLDStyleFactory();
+
+    //TODO: calcuate a real value based on image size to bbox ratio, as image size has no meanining for KML yet this is a fudge.
+    private double scaleDenominator = 1;
+
     /** Tolerance used to compare doubles for equality */
     private static final double TOLERANCE = 1e-6;
+
+    /**
+     * The CRS of the data we are querying. It is a bit of a hack because sometimes when we grab the
+     * CRS from the feature itself, we get null. This variable is paired with setSourceCrs() so EncodeKML
+     * can can use the feature type's schema to set the CRS.*/
+    private CoordinateReferenceSystem sourceCrs;
+
+    /**
+     * Handles the outputing of geometries as GML
+     **/
+    private GeometryTransformer transformer;
 
     static {
         Locale locale = new Locale("en", "US");
@@ -112,26 +140,12 @@ public class KMLWriter extends OutputStreamWriter {
 
         //minimun fraction digits to 0 so they get not rendered if not needed
         formatter.setMinimumFractionDigits(0);
+
+        //initialize the template engine, this is static to maintain a cache 
+        // over instantiations of kml writer
+        templateConfig = new Configuration();
+        templateConfig.setObjectWrapper(new FeatureWrapper());
     }
-
-    /**
-     * Resolves the FeatureTypeStyle info per feature into a Style2D object.
-     */
-    private SLDStyleFactory styleFactory = new SLDStyleFactory();
-
-    //TODO: calcuate a real value based on image size to bbox ratio, as image size has no meanining for KML yet this is a fudge.
-    private double scaleDenominator = 1;
-
-    /**
-     * The CRS of the data we are querying. It is a bit of a hack because sometimes when we grab the
-     * CRS from the feature itself, we get null. This variable is paired with setSourceCrs() so EncodeKML
-     * can can use the feature type's schema to set the CRS.*/
-    private CoordinateReferenceSystem sourceCrs;
-
-    /**
-     * Handles the outputing of geometries as GML
-     **/
-    private GeometryTransformer transformer;
 
     /** Holds the map layer set, styling info and area of interest bounds */
     private WMSMapContext mapContext;
@@ -542,11 +556,12 @@ public class KMLWriter extends OutputStreamWriter {
                         write("<name><![CDATA[" + featureLabel + "]]></name>"); // CDATA needed for ampersands
 
                         final FeatureType schema = features.getSchema();
-                        final StringBuffer description = new StringBuffer();
+
                         // if there are supposed to be detailed descriptions, write them out
-                        makeDescription(feature, schema, description);
-                        write("<description><![CDATA[" + description.toString()
-                            + "]]></description>");
+                        write("<description><![CDATA[");
+                        writeDescription(feature, schema);
+                        write("]]></description>");
+
                         writeLookAt(findGeometry(feature), transformer);
                         write("<styleUrl>#GeoServerStyle" + feature.getID() + "</styleUrl>");
                         write("<MultiGeometry>");
@@ -787,42 +802,28 @@ public class KMLWriter extends OutputStreamWriter {
         }
     }
 
-    private void makeDescription(Feature feature, final FeatureType schema,
-        final StringBuffer description) {
+    private void writeDescription(Feature feature, final FeatureType schema)
+        throws IOException {
         if (mapContext.getRequest().getKMattr()) {
-            description.append("<table border='1'>");
-            description.append("<tr><th colspan=").append(schema.getAttributeCount())
-                       .append(" scope='col'>").append(schema.getTypeName()).append(" </th></tr>");
-            description.append("<tr>");
+            //descriptions are "templatable" by users, so see if there is a 
+            // template available for use
+            GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(getClass());
+            templateLoader.setFeatureType(schema.getTypeName());
 
-            final int attrCount = schema.getAttributeCount();
+            Template template = null;
 
-            for (int j = 0; j < attrCount; j++) {
-                description.append("<td>").append(schema.getAttributeType(j).getName())
-                           .append("</td>");
+            //Configuration is not thread safe
+            synchronized (templateConfig) {
+                templateConfig.setTemplateLoader(templateLoader);
+                template = templateConfig.getTemplate("kmlDescription.ftl");
             }
 
-            description.append("</tr>");
-
-            AttributeType[] types = schema.getAttributeTypes();
-            description.append("<tr>");
-
-            final int typesLength = types.length;
-
-            for (int j = 0; j < typesLength; j++) {
-                if (Geometry.class.isAssignableFrom(types[j].getType())) {
-                    description.append("<td>");
-                    description.append("[GEOMETRY]");
-                    description.append("</td>");
-                } else {
-                    description.append("<td>");
-                    description.append(feature.getAttribute(types[j].getName()));
-                    description.append("</td>");
-                }
+            try {
+                template.process(feature, this);
+            } catch (TemplateException e) {
+                String msg = "Error occured processing template.";
+                throw (IOException) new IOException(msg).initCause(e);
             }
-
-            description.append("</tr>");
-            description.append("</table>");
         }
     }
 
@@ -1381,7 +1382,7 @@ public class KMLWriter extends OutputStreamWriter {
         //CoordinateReferenceSystem sourceCRS = f.getFeatureType().getDefaultGeometry().getCoordinateSystem();
         if (!CRS.equalsIgnoreMetadata(sourceCrs, this.mapContext.getCoordinateReferenceSystem())) {
             try {
-                MathTransform transform = CRS.transform(sourceCrs,
+                MathTransform transform = CRS.findMathTransform(sourceCrs,
                         this.mapContext.getCoordinateReferenceSystem(), true);
                 geom = JTS.transform(geom, transform);
             } catch (MismatchedDimensionException e) {

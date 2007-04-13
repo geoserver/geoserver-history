@@ -11,8 +11,8 @@ import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureReader;
 import org.geotools.data.memory.MemoryDataStore;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureType;
-import org.geotools.filter.Filter;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.FeatureTypeConstraint;
@@ -22,10 +22,10 @@ import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleAttributeExtractor;
 import org.geotools.styling.StyleFactory;
-import org.geotools.styling.StyleFactoryFinder;
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
+import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
@@ -68,24 +68,36 @@ import javax.servlet.http.HttpServletRequest;
  * Mandatory parameters:
  *
  * <ul>
- * <li> LAYERS layer names, as exposed by the capabilities document, to compose
- * a map with, in the order they may appear, being the first layer the one at
- * the bottom of the layer stack and the last one the one at the top. </li>
- * <li> STYLES list of named styles known by this server and applicable to the
+ * <li>
+ * LAYERS layer names, as exposed by the capabilities document, to compose a
+ * map with, in the order they may appear, being the first layer the one at
+ * the bottom of the layer stack and the last one the one at the top.
+ * </li>
+ * <li>
+ * STYLES list of named styles known by this server and applicable to the
  * requested layers. It can be empty or contain exactly as many style names as
  * layers was requested, in which case empty strings could be used to denote
  * that the default layer style should be used. (exaple:
  * <code>LAYERS=buildings,roads,railroads&STYLES=,centerline,</code>. This
  * example says create a map with roads layer using its default style, roads
- * with "centerline" style, and railroads with its default style. </li>
- * <li> BBOX Area of interest for which to contruct the map image, in the
- * Coordinate Reference System given by the SRS parameter. </li>
- * <li> FORMAT MIME type of the resulting map, must be one of the advertised in
- * the capabilities document. </li>
- * <li> WIDTH desired map witdth in output units (pixels). UNITS support should
- * be added to the spec, and UNITS and DPI parameters added. </li>
- * <li> HEIGHT desired map height in output units (pixels). UNITS support should
- * be added to the spec, and UNITS and DPI parameters added. </li>
+ * with "centerline" style, and railroads with its default style.
+ * </li>
+ * <li>
+ * BBOX Area of interest for which to contruct the map image, in the Coordinate
+ * Reference System given by the SRS parameter.
+ * </li>
+ * <li>
+ * FORMAT MIME type of the resulting map, must be one of the advertised in the
+ * capabilities document.
+ * </li>
+ * <li>
+ * WIDTH desired map witdth in output units (pixels). UNITS support should be
+ * added to the spec, and UNITS and DPI parameters added.
+ * </li>
+ * <li>
+ * HEIGHT desired map height in output units (pixels). UNITS support should be
+ * added to the spec, and UNITS and DPI parameters added.
+ * </li>
  * </ul>
  * </p>
  *
@@ -93,22 +105,34 @@ import javax.servlet.http.HttpServletRequest;
  * Optional parameters:
  *
  * <ul>
- * <li> SRS </li>
- * <li> TRANSPARENT boolean indicatin wether to create a map with transparent
+ * <li>
+ * SRS
+ * </li>
+ * <li>
+ * TRANSPARENT boolean indicatin wether to create a map with transparent
  * background or not (if transparency is supported by the requested output
- * format). </li>
- * <li> EXCEPTIONS MIME type of the exception report. </li>
- * <li> BGCOLOR map background color, in <code>0xRRGGBB</code> format. </li>
- * <li> SLD client supplies a URL for a remote SLD document through this
- * parameter. This parameter takes precedence over STYLES. If present, replaces
- * the LAYERS and STYLES parameters, since they're defined in the remote
- * document itself. The document send by this way will be used in "literal" or
- * "library" mode, see explanation bellow. </li>
- * <li> SLD_BODY client spplies the SLD document itself through this parameter,
- * properly encoded for an HTTP query string. This parameter takes precendence
- * over STYLES and SLD. If present, replaces the LAYERS and STYLES parameters,
- * since they're defined in the inline document itself. The document send by
- * this way will be used in "literal" or "library" mode, see explanation bellow.
+ * format).
+ * </li>
+ * <li>
+ * EXCEPTIONS MIME type of the exception report.
+ * </li>
+ * <li>
+ * BGCOLOR map background color, in <code>0xRRGGBB</code> format.
+ * </li>
+ * <li>
+ * SLD client supplies a URL for a remote SLD document through this parameter.
+ * This parameter takes precedence over STYLES. If present, replaces the
+ * LAYERS and STYLES parameters, since they're defined in the remote document
+ * itself. The document send by this way will be used in "literal" or
+ * "library" mode, see explanation bellow.
+ * </li>
+ * <li>
+ * SLD_BODY client spplies the SLD document itself through this parameter,
+ * properly encoded  for an HTTP query string. This parameter takes
+ * precendence over STYLES and SLD. If present, replaces the LAYERS and STYLES
+ * parameters, since they're defined in the inline document itself. The
+ * document send by this way will be used in "literal" or "library" mode, see
+ * explanation bellow.
  * </li>
  * </ul>
  * </p>
@@ -116,22 +140,22 @@ import javax.servlet.http.HttpServletRequest;
  * <p>
  * As defined by the Styled Layer Descriptor specification, version 1.0.0, the
  * SLD document supplied by the SLD or SLD_BODY parameter can be used in
- * "literal" or "library" mode, depending on whether the <strong>LAYERS=</strong>
- * parameter is present.
+ * "literal" or "library" mode, depending on whether the
+ * <strong>LAYERS=</strong> parameter is present.
  * </p>
  *
  * <p>
  * Here is the explanation from the spec, section 6.4, page 10: "the SLD can
  * also be used in one of two different modes depending on whether the LAYERS
  * parameter is present in the request. If it is not present, then all layers
- * identified in the SLD document are rendered with all defined styles, which is
- * equivalent to the XML-POST method of usage. If the LAYERS parameter is
+ * identified in the SLD document are rendered with all defined styles, which
+ * is equivalent to the XML-POST method of usage. If the LAYERS parameter is
  * present, then only the layers identified by that parameter are rendered and
  * the SLD is used as a style library . "
  * </p>
  *
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id: GetMapKvpReader.java,v 1.12 2004/09/16 22:20:54 cholmesny Exp $
+ * @version $Id$
  *
  * @task TODO: parse and respect SRS parameter (needs reprojection support)
  */
@@ -140,12 +164,12 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers.wms");
 
     /** Used to parse SLD documents from SLD and SLD_BODY parameters */
-    private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
+    private static final StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
 
     /**
      * Indicates wether STYLES parameter must be parsed. Defaults to
-     * <code>true</code>, but can be set to false, for example, when parsing
-     * a GetFeatureInfo request, which shares most of the getmap parameter but
+     * <code>true</code>, but can be set to false, for example, when parsing a
+     * GetFeatureInfo request, which shares most of the getmap parameter but
      * not STYLES.
      *
      * @task TODO: refactor this so it dont stay _so_ ugly
@@ -154,11 +178,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
     /**
      * Creates a new GetMapKvpReader object.
-     *
-     * @param kvpPairs
-     *            Key Values pairs of the request
-     * @param service
-     *            The service handling the request
+     * @param kvpPairs Key Values pairs of the request
+     * @param service The service handling the request
      */
     public GetMapKvpReader(Map kvpPairs, WMService service) {
         super(kvpPairs, service);
@@ -186,15 +207,13 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * Produces a <code>GetMapRequest</code> instance by parsing the GetMap
      * mandatory, optional and custom parameters.
      *
-     * @param httpRequest
-     *            the servlet request who's application object holds the server
-     *            configuration
+     * @param httpRequest the servlet request who's application object holds
+     *        the server configuration
      *
      * @return a <code>GetMapRequest</code> completely setted up upon the
      *         parameters passed to this reader
      *
-     * @throws ServiceException
-     *             DOCUMENT ME!
+     * @throws ServiceException DOCUMENT ME!
      */
     public Request getRequest(HttpServletRequest httpRequest)
         throws ServiceException {
@@ -214,18 +233,24 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * Parses the optional parameters:
      *
      * <ul>
-     * <li> SRS </li>
-     * <li> TRANSPARENT </li>
-     * <li> EXCEPTIONS </li>
-     * <li> BGCOLOR </li>
+     * <li>
+     * SRS
+     * </li>
+     * <li>
+     * TRANSPARENT
+     * </li>
+     * <li>
+     * EXCEPTIONS
+     * </li>
+     * <li>
+     * BGCOLOR
+     * </li>
      * </ul>
      *
      *
-     * @param request
-     *            DOCUMENT ME!
+     * @param request DOCUMENT ME!
      *
-     * @throws WmsException
-     *             DOCUMENT ME!
+     * @throws WmsException DOCUMENT ME!
      *
      * @task TODO: implement parsing of transparent, exceptions and bgcolor
      */
@@ -238,8 +263,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 CoordinateReferenceSystem mapcrs = CRS.decode(epsgCode);
                 request.setCrs(mapcrs);
             } catch (Exception e) {
-                // couldnt make it - we send off a service exception with the
-                // correct info
+                //couldnt make it - we send off a service exception with the correct info
                 throw new WmsException(e.getLocalizedMessage(), "InvalidSRS");
             }
         }
@@ -331,22 +355,31 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * Mandatory parameters:
      *
      * <ul>
-     * <li> LAYERS </li>
-     * <li> STYLES ommited if SLD or SLD_BODY parameters are supplied </li>
-     * <li> BBOX </li>
-     * <li> FORMAT </li>
-     * <li> WIDTH </li>
-     * <li> HEIGHT </li>
+     * <li>
+     * LAYERS
+     * </li>
+     * <li>
+     * STYLES ommited if SLD or SLD_BODY parameters are supplied
+     * </li>
+     * <li>
+     * BBOX
+     * </li>
+     * <li>
+     * FORMAT
+     * </li>
+     * <li>
+     * WIDTH
+     * </li>
+     * <li>
+     * HEIGHT
+     * </li>
      * </ul>
      * </p>
      *
-     * @param request
-     *            DOCUMENT ME!
-     * @parseStylesLayers true = normal operation, false = dont parse the styles
-     *                    and layers (used by the SLD GET/POST)
+     * @param request DOCUMENT ME!
+     * @parseStylesLayers true = normal operation, false = dont parse the styles and layers (used by the SLD GET/POST)
      *
-     * @throws WmsException
-     *             DOCUMENT ME!
+     * @throws WmsException DOCUMENT ME!
      */
     public void parseMandatoryParameters(GetMapRequest request, boolean parseStylesLayers)
         throws WmsException {
@@ -370,9 +403,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         Envelope bbox = parseBbox(getValue("BBOX"));
         request.setBbox(bbox);
 
-        // let styles and layers parsing for the end to give more trivial
-        // parameters
-        // a chance to fail before incurring in retrieving the SLD or SLD_BODY
+        //let styles and layers parsing for the end to give more trivial parameters 
+        //a chance to fail before incurring in retrieving the SLD or SLD_BODY
         if (parseStylesLayers) {
             parseLayersAndStyles(request);
         }
@@ -392,30 +424,29 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * name or one of the following special attributes:
      *
      * <ul>
-     * <li> <b>#FID</b>: a map producer capable of handling attributes (such as
-     * SVGMapResponse), will write the feature id of each feature </li>
-     * <li> <b>#BOUNDS</b>: a map producer capable of handling attributes (such
-     * as SVGMapResponse), will write the bounding box of each feature </li>
+     * <li>
+     * <b>#FID</b>: a map producer capable of handling attributes (such as
+     * SVGMapResponse), will write the feature id of each feature
+     * </li>
+     * <li>
+     * <b>#BOUNDS</b>: a map producer capable of handling attributes (such as
+     * SVGMapResponse), will write the bounding box of each feature
+     * </li>
      * </ul>
      *
      *
-     * @param layers
-     *            info about the requested map layers
+     * @param layers info about the requested map layers
      *
      * @return an empty list if no attributes was requested, or a
      *         <code>List&lt;List&lt;String&gt;&gt;</code> with an entry for
      *         each requested layer, where each of them consists of a List of
      *         the attribute names requested
      *
-     * @throws WmsException
-     *             if:
-     *             <ul>
-     *             <li>the number of attribute sets requested is not equal to
-     *             the number of layers requested.</li>
-     *             <li>an illegal attribute name was requested</li>
-     *             <li>an IOException occurs while fetching a FeatureType
-     *             schema to ask it for propper attribute names</li>
-     *             </ul>
+     * @throws WmsException if: <ul><li>the number of attribute sets requested
+     *         is not equal to the number of layers requested.</li> <li>an
+     *         illegal attribute name was requested</li> <li>an IOException
+     *         occurs while fetching a FeatureType schema to ask it for
+     *         propper attribute names</li> </ul>
      */
     private List parseAttributes(FeatureTypeInfo[] layers)
         throws WmsException {
@@ -429,7 +460,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             return Collections.EMPTY_LIST;
         }
 
-        // raw list of attributes for each feature type requested
+        //raw list of attributes for each feature type requested
         List byFeatureTypes = readFlat(rawAtts, "|");
         int nLayers = layers.length;
 
@@ -439,8 +470,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 getClass().getName() + "::parseAttributes()");
         }
 
-        // fill byFeatureTypes with the split of its raw attributes requested
-        // separated by commas, and check for the validity of each att name
+        //fill byFeatureTypes with the split of its raw attributes requested
+        //separated by commas, and check for the validity of each att name
         FeatureType schema;
         List atts;
         String attName;
@@ -451,11 +482,11 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             atts = readFlat(rawAtts, ",");
             byFeatureTypes.set(i, atts);
 
-            // FeatureType schema = layers[i].getSchema();
+            //FeatureType schema = layers[i].getSchema();
             try {
                 schema = layers[i].getFeatureType();
 
-                // verify that propper attributes has been requested
+                //verify that propper attributes has been requested
                 for (Iterator attIt = atts.iterator(); attIt.hasNext();) {
                     attName = (String) attIt.next();
 
@@ -503,28 +534,27 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
     /**
      * Parses the list of style names requested for each requested layer and
-     * looks up the actual Style objects, which are returned in an ordered list.
+     * looks up the actual Style objects, which are returned in an ordered
+     * list.
      *
      * <p>
      * A client _may_ request teh default Style using a null value (as in
-     * "STYLES="). If several layers are requested with a mixture of named and
-     * default styles, the STYLES parameter includes null values between commas
-     * (as in "STYLES=style1,,style2,,"). If all layers are to be shown using
-     * the default style, either the form "STYLES=" or "STYLES=,,," is valid.
+     * "STYLES="). If  several layers are requested with a mixture of named
+     * and default styles,  the STYLES parameter includes null values between
+     * commas (as in  "STYLES=style1,,style2,,").  If all layers are to be
+     * shown using the default style, either the  form "STYLES=" or
+     * "STYLES=,,," is valid.
      * </p>
      *
-     * @param request
-     *            DOCUMENT ME!
-     * @param layers
-     *            the requested feature types
+     * @param request DOCUMENT ME!
+     * @param layers the requested feature types
      *
      * @return a full <code>List</code> of the style names requested for the
      *         requiered layers with no null style names.
      *
-     * @throws WmsException
-     *             if some of the requested styles does not exist or its number
-     *             if greater than zero and distinct of the number of requested
-     *             layers
+     * @throws WmsException if some of the requested styles does not exist or
+     *         its number if greater than zero and distinct of the number of
+     *         requested layers
      */
     protected List parseStylesParam(GetMapRequest request, MapLayerInfo[] layers)
         throws WmsException {
@@ -658,7 +688,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 "No CRS set on inline features default geometry.  Assuming the requestor has their inlinefeatures in the boundingbox CRS.");
 
             FeatureType currFt = ul.getInlineFeatureType();
-            Query q = new DefaultQuery(currFt.getTypeName(), Filter.NONE);
+            Query q = new DefaultQuery(currFt.getTypeName(), Filter.INCLUDE);
             FeatureReader ilReader = ul.getInlineFeatureDatastore()
                                        .getFeatureReader(q, Transaction.AUTO_COMMIT);
             CoordinateReferenceSystem crs = (getMapRequest.getCrs() == null)
@@ -670,15 +700,13 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     }
 
     /**
-     * Checks to make sure that the style passed in can process the FeatureType.
+     * Checks to make sure that the style passed in can process the
+     * FeatureType.
      *
-     * @param style
-     *            The style to check
-     * @param fType
-     *            The source requested.
+     * @param style The style to check
+     * @param fType The source requested.
      *
-     * @throws WmsException
-     *             DOCUMENT ME!
+     * @throws WmsException DOCUMENT ME!
      */
     private void checkStyle(Style style, FeatureType fType)
         throws WmsException {
@@ -703,11 +731,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     /**
      * DOCUMENT ME!
      *
-     * @param request
-     *            DOCUMENT ME!
+     * @param request DOCUMENT ME!
      *
-     * @throws WmsException
-     *             DOCUMENT ME!
+     * @throws WmsException DOCUMENT ME!
      */
     protected void parseLayersAndStyles(GetMapRequest request)
         throws WmsException {
@@ -745,14 +771,12 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
     /**
      * Takes the SLD_BODY parameter value and parses it to a geotools'
-     * <code>StyledLayerDescriptor</code>, then takes the layers and styles
-     * to use in the map composition from there.
+     * <code>StyledLayerDescriptor</code>, then takes the layers and styles to
+     * use in the map composition from there.
      *
-     * @param request
-     *            DOCUMENT ME!
+     * @param request DOCUMENT ME!
      *
-     * @throws WmsException
-     *             DOCUMENT ME!
+     * @throws WmsException DOCUMENT ME!
      */
     protected void parseSldBodyParam(GetMapRequest request)
         throws WmsException {
@@ -763,15 +787,15 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         }
 
         if (getValue("VALIDATESCHEMA") != null) {
-            // Get a reader from the given string
+            //Get a reader from the given string
             Reader reader = getReaderFromString(sldBody);
 
-            // -InputStream in = new StringBufferInputStream(sldBody);
+            //-InputStream in = new StringBufferInputStream(sldBody);
             // user requested to validate the schema.
             SLDValidator validator = new SLDValidator();
             List errors = null;
 
-            // Create a sax input source from the reader
+            //Create a sax input source from the reader
             InputSource in = new InputSource(reader);
             errors = validator.validateSLD(in,
                     request.getHttpServletRequest().getSession().getServletContext());
@@ -781,25 +805,23 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 throw new WmsException(SLDValidator.getErrorMessage(reader, errors));
             }
 
-            // - errors = validator.validateSLD(in,
-            // request.getHttpServletRequest().getSession().getServletContext());
-            // - try{
-            // - in.close();
-            // - }
-            // - catch(Exception e)
-            // - {
-            // - // do nothing
-            // - }
-            // - if (errors.size() != 0)
-            // - {
-            // - in = new StringBufferInputStream(sldBody);
-            // - throw new
-            // WmsException(SLDValidator.getErrorMessage(in,errors));
-            // - }
+            //-    		errors = validator.validateSLD(in, request.getHttpServletRequest().getSession().getServletContext());
+            //-    		try{
+            //-    			in.close();
+            //-    		}
+            //-    		catch(Exception e)
+            //-			{
+            //-    			// do nothing
+            //-			}
+            //-    		if (errors.size() != 0)
+            //-    		{
+            //-    			in = new StringBufferInputStream(sldBody);
+            //-    			throw new WmsException(SLDValidator.getErrorMessage(in,errors));
+            //-    		}
         }
 
-        // - InputStream in = new StringBufferInputStream(sldBody);
-        // - SLDParser parser = new SLDParser(styleFactory, in);
+        //-        InputStream in = new StringBufferInputStream(sldBody);
+        //-        SLDParser parser = new SLDParser(styleFactory, in);
         Reader reader = getReaderFromString(sldBody);
         SLDParser parser = new SLDParser(styleFactory, reader);
         StyledLayerDescriptor sld = parser.parseSLD();
@@ -807,14 +829,13 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     }
 
     /**
-     * Create a reader of the given String. This reader will be used in the
-     * InputSource for the sld parser. The advantage with a reader over a input
-     * stream is that we don't have to consider encoding. The xml declaration
-     * with encoding is ignored using a Reader in parser. The encoding of the
-     * string has been appropiate handled by the servlet when streaming in.
+     * Create a reader of the given String.
+     * This reader will be used in the InputSource for the sld parser.
+     * The advantage with a reader over a input stream is that we don't have to consider encoding.
+     * The xml declaration with encoding is ignored using a Reader in parser.
+     * The encoding of the string has been appropiate handled by the servlet when streaming in.
      *
-     * @param sldBody
-     *            the sldbody to create a reader of.
+     * @param sldBody the sldbody to create a reader of.
      * @return The created reader
      * @see Reader
      */
@@ -823,17 +844,21 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     }
 
     /**
-     * Gets a sequence of url encoded filters and parses them into Filter
-     * objects that will be set into the request object
-     *
-     * @param request
-     * @throws WmsException
-     */
+         * Gets a sequence of url encoded filters and parses them into Filter
+         * objects that will be set into the request object
+         *
+         * @param request
+         * @throws WmsException
+         */
     protected void parseFilterParam(GetMapRequest request)
         throws WmsException {
         String rawFilter = getValue("FILTER");
-        String rawCqlFilter = getValue("CQL_FILTER");
         String rawIdFilter = getValue("FEATUREID");
+
+        if ((rawFilter != null) && (rawIdFilter != null)) {
+            throw new WmsException("GetMap KVP request contained "
+                + "conflicting filters.  Filter: " + rawFilter + ", fid: " + rawFilter);
+        }
 
         // in case of a mixed request, get with sld in post body, layers
         // are not parsed, so we can't parse filters neither...
@@ -857,44 +882,20 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             } catch (ServiceException e) {
                 throw new WmsException(e);
             }
-        }
-
-        if ((rawIdFilter != null) && !rawIdFilter.equals("")) {
-            if (filters != null) {
-                throw new WmsException("GetMap KVP request contained "
-                    + "conflicting filters.  Filter: " + rawFilter + ", fid: " + rawFilter);
-            }
-
+        } else if ((rawIdFilter != null) && !rawIdFilter.equals("")) {
             filters = readFidFilters(rawFilter);
-        }
-
-        if ((rawCqlFilter != null) && !rawCqlFilter.equals("")) {
-            if (filters != null) {
-                throw new WmsException("GetMap KVP request contained "
-                    + "conflicting filters.  Filter: " + rawFilter + ", fid: " + rawFilter
-                    + ", cql: " + rawCqlFilter);
-            }
-
-            try {
-                filters = readCQLFilter(rawCqlFilter);
-            } catch (ServiceException e) {
-                throw new WmsException(e);
-            }
-        }
-
-        if (filters == null) {
+        } else {
             return;
         }
 
         if (numLayers != filters.size()) {
-            // as in wfs getFeatures, perform lenient parsing, if just one
-            // filter, it gets
+            // as in wfs getFeatures, perform lenient parsing, if just one filter, it gets
             // applied to all layers
             if (filters.size() == 1) {
                 Filter f = (Filter) filters.get(0);
                 filters = new ArrayList(numLayers);
 
-                for (int i = 0; i < filters.size(); i++) {
+                for (int i = 0; i < numLayers; i++) {
                     filters.add(f);
                 }
             } else {
@@ -912,11 +913,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     /**
      * DOCUMENT ME!
      *
-     * @param request
-     *            DOCUMENT ME!
+     * @param request DOCUMENT ME!
      *
-     * @throws WmsException
-     *             DOCUMENT ME!
+     * @throws WmsException DOCUMENT ME!
      */
     protected void parseSldParam(GetMapRequest request)
         throws WmsException {
@@ -949,8 +948,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             List errors = null;
 
             try {
-                // JD: GEOS-420, Wrap the sldUrl in getINputStream method in
-                // order
+                //JD: GEOS-420, Wrap the sldUrl in getINputStream method in order
                 // to do compression
                 InputStream in = getInputStream(sldUrl);
                 errors = validator.validateSLD(in,
@@ -975,7 +973,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         SLDParser parser;
 
         try {
-            // JD: GEOS-420, Wrap the sldUrl in getINputStream method in order
+            //JD: GEOS-420, Wrap the sldUrl in getINputStream method in order
             // to do compression
             parser = new SLDParser(styleFactory, getInputStream(sldUrl));
         } catch (IOException e) {
@@ -998,12 +996,12 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * composition and sets them to the <code>request</code>
      *
      * <p>
-     * If <code>sld</code> is used in "library" mode, that is, the LAYERS
-     * param is also present, saying what layers must be taken in count, then
-     * only the layers from the LAYERS parameter are used and <code>sld</code>
-     * is used as a style library, which means that for each layer requested
-     * through LAYERS=..., if a style if found in it for that layer it is used,
-     * and if not, the layers default is used.
+     * If <code>sld</code> is used in "library" mode, that is, the LAYERS param
+     * is also present, saying what layers must be taken in count, then only
+     * the layers from the LAYERS parameter are used and <code>sld</code> is
+     * used as a style library, which means that for each layer requested
+     * through LAYERS=..., if a style if found in it for that layer it is
+     * used, and if not, the layers default is used.
      * </p>
      *
      * <p>
@@ -1011,16 +1009,12 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * found in <code>sld</code> are setted to <code>request</code>.
      * </p>
      *
-     * @param request
-     *            the GetMap request to which to set the layers and styles
-     * @param sld
-     *            a SLD document to take layers and styles from, following the
-     *            "literal" or "library" rule.
+     * @param request the GetMap request to which to set the layers and styles
+     * @param sld a SLD document to take layers and styles from, following the
+     *        "literal" or "library" rule.
      *
-     * @throws WmsException
-     *             if anything goes wrong
-     * @throws RuntimeException
-     *             DOCUMENT ME!
+     * @throws WmsException if anything goes wrong
+     * @throws RuntimeException DOCUMENT ME!
      */
     private void parseStyledLayerDescriptor(final GetMapRequest request,
         final StyledLayerDescriptor sld) throws WmsException {
@@ -1127,16 +1121,18 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     }
 
     /**
-     * the correct thing to do its grab the style from styledLayers[i] inside
-     * the styledLayers[i] will either be : a) nothing - in which case grab the
-     * layer's default style b) a set of: i) NameStyle -- grab it from the
-     * pre-loaded styles ii)UserStyle -- grab it from the sld the user uploaded
-     *
-     * NOTE: we're going to get a set of layer->style pairs for (b). these are
-     * added to layers,styles
-     *
-     * NOTE: we also handle some featuretypeconstraints
-     *
+     * the correct thing to do its grab the style from styledLayers[i]
+    * inside the styledLayers[i] will either be :
+    *  a) nothing - in which case grab the layer's default style
+    *  b) a set of:
+    * i) NameStyle -- grab it from the pre-loaded styles
+    *  ii)UserStyle -- grab it from the sld the user uploaded
+    *
+    *  NOTE: we're going to get a set of layer->style pairs for (b).
+    *        these are added to layers,styles
+    *
+    *   NOTE: we also handle some featuretypeconstraints
+    *
      * @param request
      * @param currLayer
      * @param layer
@@ -1220,39 +1216,29 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     }
 
     /**
-     * Finds the style for <code>layer</code> in <code>styledLayers</code>
-     * or the layer's default style if <code>styledLayers</code> has no a
-     * UserLayer or a NamedLayer with the same name than <code>layer</code>
-     * <p>
-     * This method is used to parse the style of a layer for SLD and SLD_BODY
-     * parameters, both in library and literal mode. Thus, once the declared
-     * style for the given layer is found, it is checked for validity of
-     * appliance for that layer (i.e., whether the featuretype contains the
-     * attributes needed for executing the style filters).
-     * </p>
-     *
-     * @param request
-     *            used to find out an internally configured style when
-     *            referenced by name by a NamedLayer
-     *
-     * @param layer
-     *            one of the internal FeatureType that was requested through the
-     *            LAYERS parameter or through and SLD document when the request
-     *            is in literal mode.
-     * @param styledLayers
-     *            a set of StyledLayers from where to find the SLD layer with
-     *            the same name as <code>layer</code> and extract the style to
-     *            apply.
-     *
-     * @return the Style applicable to <code>layer</code> extracted from
-     *         <code>styledLayers</code>.
-     *
-     * @throws RuntimeException
-     *             if one of the StyledLayers is neither a UserLayer nor a
-     *             NamedLayer. This shuoldn't happen, since the only allowed
-     *             subinterfaces of StyledLayer are NamedLayer and UserLayer.
-     * @throws WmsException
-     */
+    * Finds the style for <code>layer</code> in <code>styledLayers</code> or
+    * the layer's default style if <code>styledLayers</code> has no a
+    * UserLayer or a NamedLayer with the same name than <code>layer</code>
+    * <p>
+    * This method is used to parse the style of a layer for SLD and SLD_BODY parameters,
+    * both in library and literal mode. Thus, once the declared style for the given layer
+    * is found, it is checked for validity of appliance for that layer (i.e., whether the
+    * featuretype contains the attributes needed for executing the style filters).
+    * </p>
+    *
+    * @param request used to find out an internally configured style when referenced by name by a NamedLayer
+    *
+    * @param layer one of the internal FeatureType that was requested through the LAYERS parameter
+    * or through and SLD document when the request is in literal mode.
+    * @param styledLayers a set of StyledLayers from where to find the SLD layer with the same
+    * name as <code>layer</code> and extract the style to apply.
+    *
+    * @return the Style applicable to <code>layer</code> extracted from <code>styledLayers</code>.
+    *
+    * @throws RuntimeException if one of the StyledLayers is neither a UserLayer nor a NamedLayer. This
+    * shuoldn't happen, since the only allowed subinterfaces of StyledLayer are NamedLayer and UserLayer.
+    * @throws WmsException
+    */
     private Style findStyleOf(GetMapRequest request, FeatureTypeInfo layer,
         StyledLayer[] styledLayers) throws WmsException {
         Style style = null;
@@ -1343,7 +1329,6 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 // Search for grouped layers (attention: heavy process)
                 ////
                 String catalogLayerName = null;
-                int counter = l_counter; //track counter to see if found
 
                 for (Iterator c_keys = catalog.getLayerNames().iterator(); c_keys.hasNext();) {
                     catalogLayerName = (String) c_keys.next();
@@ -1379,14 +1364,6 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                         } catch (WmsException e_2) {
                         }
                     }
-
-                    //JD: cite requires that when we find a layer that does
-                    // exist we must die
-                    if (counter == l_counter) {
-                        //counter not incremented -> layer not found
-                        throw new WmsException(new StringBuffer(layerName).append(
-                                ": no such layer on this server").toString(), "LayerNotDefined");
-                    }
                 }
             } else {
                 realLayerNames.add(layerName);
@@ -1410,7 +1387,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         layers = new MapLayerInfo[layerCount];
 
         for (int i = 0; i < layerCount; i++) {
-            layerName = (String) realLayerNames.get(i);
+            layerName = (String) layerNames.get(i);
             layers[i] = new MapLayerInfo();
 
             try {
@@ -1435,8 +1412,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      *
      * @return
      *
-     * @throws WmsException
-     *             DOCUMENT ME!
+     * @throws WmsException DOCUMENT ME!
      */
     public static FeatureTypeInfo findFeatureLayer(GetMapRequest request, String layerName)
         throws WmsException {
@@ -1471,57 +1447,54 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
     }
 
     /**
-     * This method gets the correct input stream for a URL. If the URL is a
-     * http/https connection, the Accept-Encoding: gzip, deflate is added. It
-     * the paramter is added, the response is checked to see if the response is
-     * encoded in gzip, deflate or plain bytes. The correct input stream wrapper
-     * is then selected and returned.
+     * This method gets the correct input stream for a URL.
+     * If the URL is a http/https connection, the Accept-Encoding: gzip, deflate is added.
+     * It the paramter is added, the response is checked to see if the response
+     * is encoded in gzip, deflate or plain bytes. The correct input stream wrapper is then
+     * selected and returned.
      *
      * This method was added as part of GEOS-420
      *
-     * @param sldUrl
-     *            The url to the sld file
+     * @param sldUrl The url to the sld file
      * @return The InputStream used to validate and parse the SLD xml.
      * @throws IOException
      */
     private InputStream getInputStream(URL sldUrl) throws IOException {
-        // Open the connection
+        //Open the connection
         URLConnection conn = sldUrl.openConnection();
 
-        // If it is the http or https scheme, then ask for gzip if the server
-        // supports it.
+        //If it is the http or https scheme, then ask for gzip if the server supports it.
         if (conn instanceof HttpURLConnection) {
-            // Send the requested encoding to the remote server.
+            //Send the requested encoding to the remote server.
             conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
         }
 
-        // Conect to get the response headers
+        //Conect to get the response headers
         conn.connect();
 
-        // Return the correct inputstream
-        // If the connection is a url, connection, check the response encoding.
+        //Return the correct inputstream
+        //If the connection is a url, connection, check the response encoding.
         if (conn instanceof HttpURLConnection) {
-            // Get the content encoding of the server response
+            //Get the content encoding of the server response
             String encoding = conn.getContentEncoding();
 
-            // If null, set it to a emtpy string
+            //If null, set it to a emtpy string
             if (encoding == null) {
                 encoding = "";
             }
 
             if (encoding.equalsIgnoreCase("gzip")) {
-                // For gzip input stream, use a GZIPInputStream
+                //For gzip input stream, use a GZIPInputStream
                 return new GZIPInputStream(conn.getInputStream());
             } else if (encoding.equalsIgnoreCase("deflate")) {
-                // If it is encoded as deflate, then select the inflater
-                // inputstream.
+                //If it is encoded as deflate, then select the inflater inputstream.
                 return new InflaterInputStream(conn.getInputStream(), new Inflater(true));
             } else {
-                // Else read the raw bytes
+                //Else read the raw bytes
                 return conn.getInputStream();
             }
         } else {
-            // Else read the raw bytes.
+            //Else read the raw bytes.
             return conn.getInputStream();
         }
     }
@@ -1539,8 +1512,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         try {
             currentLayers = getValue("LAYERS");
         } catch (NullPointerException e) {
-            // No layers defined. This is either wrong or they are listing the
-            // layers
+            // No layers defined. This is either wrong or they are listing the layers 
             // in an SLD document specified with the SLD= parameter
             LOGGER.fine("No layers defined. This is either wrong or they are listing the layers"
                 + " in an SLD document specified with the SLD= parameter");
@@ -1566,10 +1538,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                         (String) layers.get(baseLayers[i]));
                 currentLayers = newLayers;
 
-                if ((styles != null) && !styles.equals("")) { // if the user
-                                                              // specified
-                                                              // styles, lets
-                                                              // use them
+                if ((styles != null) && !styles.equals("")) { // if the user specified styles, lets use them
 
                     String newStyles = currentStyles.replaceFirst(baseStyles[i],
                             (String) styles.get(baseStyles[i]));

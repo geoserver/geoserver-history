@@ -13,19 +13,29 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * ValidationTestSuiteNewForm purpose.<p>Description of
- * ValidationTestSuiteNewForm ...</p>
- *  <p>Capabilities:</p>
- *  <ul>
- *      <li>Feature: description</li>
- *  </ul>
- *  <p>Example Use:</p>
-<pre><code>ValidationTestSuiteNewForm x = new ValidationTestSuiteNewForm(...);
+ * ValidationTestSuiteNewForm purpose.
+ * <p>
+ * Description of ValidationTestSuiteNewForm ...
+ * </p>
+ *
+ * <p>
+ * Capabilities:
+ * </p>
+ * <ul>
+ * <li>
+ * Feature: description
+ * </li>
+ * </ul>
+ * <p>
+ * Example Use:
+ * </p>
+ * <pre><code>
+ * ValidationTestSuiteNewForm x = new ValidationTestSuiteNewForm(...);
  * </code></pre>
  *
  * @author User, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: ValidationTestSuiteNewForm.java,v 1.1 2004/01/31 00:27:28 jive Exp $
+ * @version $Id$
  */
 public class ValidationTestSuiteNewForm extends ActionForm {
     private String newName;

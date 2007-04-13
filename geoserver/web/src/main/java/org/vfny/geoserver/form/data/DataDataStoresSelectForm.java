@@ -12,8 +12,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.ConfigRequests;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author rgould, Refractions Research, Inc.
  * @author $Author: emperorkefka $ (last modification)
  * @author bowens, TOPP
- * @version $Id: DataDataStoresSelectForm.java,v 1.9 2004/03/16 19:57:40 emperorkefka Exp $
+ * @version $Id$
  */
 public class DataDataStoresSelectForm extends ActionForm {
     /** Action that spawned us must be "edit" or "delete" */
@@ -95,16 +93,16 @@ public class DataDataStoresSelectForm extends ActionForm {
      * @return DOCUMENT ME!
      */
     public List getDataStoreIds() {
-        ArrayList ret = new ArrayList(dataStoreIds);
-        Object[] sortable = ret.toArray();
-        Arrays.sort(sortable);
-
-        return Arrays.asList(sortable);
+        return dataStoreIds;
     }
 
     /**
-     * DataStoreID selected by User.<p>If the user has not selected
-     * anything (is this possible?) we will return <code>null</code>.</p>
+     * DataStoreID selected by User.
+     *
+     * <p>
+     * If the user has not selected anything (is this possible?) we will return
+     * <code>null</code>.
+     * </p>
      *
      * @return Selected DataStoreID or <code>null</code> if nothing is selected
      */
@@ -113,8 +111,12 @@ public class DataDataStoresSelectForm extends ActionForm {
     }
 
     /**
-     * The button the user hit to submit this form.<p>We are doubling
-     * up and having the Same action process both Edit and Delete.</p>
+     * The button the user hit to submit this form.
+     *
+     * <p>
+     * We are doubling up and having the Same action process both Edit and
+     * Delete.
+     * </p>
      *
      * @return Either <code>edit</code> or <code>delete</code>
      */

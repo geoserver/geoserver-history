@@ -20,9 +20,6 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.Requests;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeSet;
 import javax.servlet.ServletContext;
@@ -30,9 +27,10 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Holds the current selection, and set of styles.<p>Current style
- * selection is held in the UserContainer.</p>
- *
+ * Holds the current selection, and set of styles.
+ * <p>
+ * Current style selection is held in the UserContainer.
+ * </p>
  * @author jgarnett, Refractions Research
  */
 public class StylesSelectForm extends ActionForm {
@@ -76,7 +74,7 @@ public class StylesSelectForm extends ActionForm {
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if ((selectedStyle == null) || "".equals(selectedStyle)) {
+        if ((selectedStyle == null) || selectedStyle.equals("")) {
             errors.add("selectedStyle", new ActionError("error.style.required", selectedStyle));
         }
 
@@ -129,15 +127,6 @@ public class StylesSelectForm extends ActionForm {
      * @return Returns the styles.
      */
     public TreeSet getStyles() {
-        Object[] keys = styles.toArray();
-        Arrays.sort(keys);
-
-        TreeSet sorted = new TreeSet();
-
-        for (int i = 0; i < keys.length; i++) {
-            sorted.add(keys[i]);
-        }
-
-        return sorted;
+        return styles;
     }
 }

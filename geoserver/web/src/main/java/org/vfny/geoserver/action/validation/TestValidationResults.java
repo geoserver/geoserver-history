@@ -16,12 +16,14 @@ import java.util.logging.Logger;
 
 
 /**
- * TestValidationResults purpose.<p>Description of TestValidationResults
- * ...</p>
+ * TestValidationResults purpose.
+ * <p>
+ * Description of TestValidationResults ...
+ * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: TestValidationResults.java,v 1.6 2004/04/21 08:16:22 jive Exp $
+ * @version $Id$
  */
 public class TestValidationResults implements ValidationResults {
     public static final String CURRENTLY_SELECTED_KEY = "TestValidationResults";
@@ -29,8 +31,6 @@ public class TestValidationResults implements ValidationResults {
 
     //HACK for JODY cause he messed up and then whined alot.
     boolean run = false;
-    Map errors = new HashMap();
-    Map warning = new HashMap();
 
     public void setValidation(Validation v) {
         this.v = v;
@@ -48,6 +48,8 @@ public class TestValidationResults implements ValidationResults {
         return buf.toString();
     }
 
+    Map errors = new HashMap();
+
     public Map getErrors() {
         return errors;
     }
@@ -56,12 +58,14 @@ public class TestValidationResults implements ValidationResults {
         String message = toMessage(s);
         Logger logger = Logger.getLogger("org.vfny.geoserver");
 
-        if (Level.FINEST.equals(logger.getLevel())) {
+        if (logger.getLevel().equals(Level.FINEST)) {
             logger.warning(message);
         }
 
         errors.put(f, message);
     }
+
+    Map warning = new HashMap();
 
     public Map getWarnings() {
         return warning;
@@ -71,7 +75,7 @@ public class TestValidationResults implements ValidationResults {
         String message = toMessage(s);
         Logger logger = Logger.getLogger("org.vfny.geoserver");
 
-        if (Level.FINEST.equals(logger.getLevel())) {
+        if (logger.getLevel().equals(Level.FINEST)) {
             logger.warning(message);
         }
 

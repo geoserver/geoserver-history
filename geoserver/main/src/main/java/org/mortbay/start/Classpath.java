@@ -1,6 +1,6 @@
 // ========================================================================
 // Copyright (c) 2002 Mort Bay Consulting (Australia) Pty. Ltd.
-// $Id: Classpath.java,v 1.1 2004/08/23 14:00:32 cholmesny Exp $
+// $Id$
 // ========================================================================
 package org.mortbay.start;
 
@@ -15,8 +15,7 @@ import java.util.Vector;
 
 /**
  * Class to handle CLASSPATH construction
- *
- * @author Jan Hlavatý
+ * @author Jan Hlavatï¿½
  */
 public class Classpath {
     Vector _elements = new Vector();

@@ -18,16 +18,16 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * WMS service wich returns request and response handlers to manage a
- * GetMap request
+ * WMS service wich returns request and response handlers to manage a GetMap
+ * request
  *
  * @author Gabriel Rold?n
- * @version $Id: GetFeatureInfo.java,v 1.1 2004/07/15 21:13:13 jmacgill Exp $
+ * @version $Id$
  */
 public class GetFeatureInfo extends WMService {
     /**
-             * Creates a new GetMap object.
-             */
+     * Creates a new GetMap object.
+     */
     public GetFeatureInfo(WMS wms) {
         super("GetFeatureInfo", wms);
     }
@@ -51,13 +51,13 @@ public class GetFeatureInfo extends WMService {
      *
      * @return DOCUMENT ME!
      *
-     * @throws . DOCUMENT ME!
+     * @throws java.lang.UnsupportedOperationException DOCUMENT ME!
      */
     protected XmlRequestReader getXmlRequestReader() {
         /**
-                         * @todo Implement this org.vfny.geoserver.servlets.AbstractService
-                         *       abstract method
-                         */
+         * @todo Implement this org.vfny.geoserver.servlets.AbstractService
+         *       abstract method
+         */
         throw new java.lang.UnsupportedOperationException(
             "Method getXmlRequestReader() not yet implemented.");
     }

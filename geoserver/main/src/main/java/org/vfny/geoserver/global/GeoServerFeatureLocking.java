@@ -10,32 +10,38 @@ import org.geotools.data.FeatureLocking;
 import org.geotools.data.Query;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
-import org.geotools.filter.Filter;
+import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import java.io.IOException;
 
 
 /**
- * GeoServer wrapper for backend Geotools2 DataStore.<p>Support
- * FeatureSource decorator for FeatureTypeInfo that takes care of mapping the
- * FeatureTypeInfo's FeatureSource with the schema and definition query
- * configured for it.</p>
- *  <p>Because GeoServer requires that attributes always be returned in the
- * same order we need a way to smoothly inforce this. Could we use this class
- * to do so? It would need to support writing and locking though.</p>
+ * GeoServer wrapper for backend Geotools2 DataStore.
  *
- * @author Gabriel Roldán
- * @version $Id: GeoServerFeatureLocking.java,v 1.5 2004/02/09 23:29:42 dmzwiers Exp $
+ * <p>
+ * Support FeatureSource decorator for FeatureTypeInfo that takes care of
+ * mapping the FeatureTypeInfo's FeatureSource with the schema and definition
+ * query configured for it.
+ * </p>
+ *
+ * <p>
+ * Because GeoServer requires that attributes always be returned in the same
+ * order we need a way to smoothly inforce this. Could we use this class to do
+ * so? It would need to support writing and locking though.
+ * </p>
+ *
+ * @author Gabriel Roldï¿½n
+ * @version $Id$
  */
 public class GeoServerFeatureLocking extends GeoServerFeatureStore implements FeatureLocking {
     /**
-             * Creates a new DEFQueryFeatureLocking object.
-             *
-             * @param locking GeoTools2 FeatureSource
-             * @param schema DOCUMENT ME!
-             * @param definitionQuery DOCUMENT ME!
-             * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
-             */
+     * Creates a new DEFQueryFeatureLocking object.
+     *
+     * @param locking GeoTools2 FeatureSource
+     * @param schema DOCUMENT ME!
+     * @param definitionQuery DOCUMENT ME!
+     * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
+     */
     GeoServerFeatureLocking(FeatureLocking locking, FeatureType schema, Filter definitionQuery,
         CoordinateReferenceSystem forcedCRS) {
         super(locking, schema, definitionQuery, forcedCRS);
@@ -46,7 +52,9 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore implements Fe
     }
 
     /**
-     * <p>Description ...</p>
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param lock
      *

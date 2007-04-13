@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  * Handles a GetMap request that spects a map in SVG format.
  *
  * @author Gabriel Rold?n
- * @version $Id: SVGMapProducer.java 4804 2006-08-03 11:10:49Z afabiani $
+ * @version $Id$
  */
 public class SVGMapProducer implements GetMapProducer {
     /** DOCUMENT ME! */
@@ -38,6 +38,8 @@ public class SVGMapProducer implements GetMapProducer {
 
     /**
      * DOCUMENT ME!
+     *
+     * @param gs DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
@@ -70,6 +72,7 @@ public class SVGMapProducer implements GetMapProducer {
      * DOCUMENT ME!
      *
      * @param map DOCUMENT ME!
+     * @param format DOCUMENT ME!
      *
      * @throws WmsException DOCUMENT ME!
      */

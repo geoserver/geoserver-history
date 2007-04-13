@@ -22,19 +22,29 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * ValidationTestEditorAction purpose.<p>Description of
- * ValidationTestEditorAction ...</p>
- *  <p>Capabilities:</p>
- *  <ul>
- *      <li>Feature: description</li>
- *  </ul>
- *  <p>Example Use:</p>
-<pre><code>ValidationTestEditorAction x = new ValidationTestEditorAction(...);
+ * ValidationTestEditorAction purpose.
+ * <p>
+ * Description of ValidationTestEditorAction ...
+ * </p>
+ *
+ * <p>
+ * Capabilities:
+ * </p>
+ * <ul>
+ * <li>
+ * Feature: description
+ * </li>
+ * </ul>
+ * <p>
+ * Example Use:
+ * </p>
+ * <pre><code>
+ * ValidationTestEditorAction x = new ValidationTestEditorAction(...);
  * </code></pre>
  *
  * @author User, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: ValidationTestEditorAction.java,v 1.5 2004/04/08 21:58:25 dmzwiers Exp $
+ * @version $Id$
  */
 public class ValidationTestEditorAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,
@@ -66,7 +76,7 @@ public class ValidationTestEditorAction extends ConfigAction {
 
             String val = (String) attributeValues.get(i);
 
-            if ((val != null) && (!val.equals(""))) {
+            if ((val != null) && (val != "")) {
                 testConfig.setArgStringValue((String) attributeKeys.get(i), val);
             }
         }

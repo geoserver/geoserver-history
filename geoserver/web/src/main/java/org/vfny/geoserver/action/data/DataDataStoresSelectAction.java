@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author User, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataDataStoresSelectAction.java,v 1.12 2004/02/25 21:51:11 dmzwiers Exp $
+ * @version $Id$
  */
 public class DataDataStoresSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,

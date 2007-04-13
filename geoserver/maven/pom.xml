@@ -6,14 +6,14 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver</artifactId>
-		<version>1.5.0</version>
+		<version>1.6-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.geoserver.maven</groupId>
   <artifactId>plugins</artifactId>
 	<packaging>pom</packaging>
   <name>GeoServer Maven Plugins</name>
-	<version>1.5.0</version>
+	<version>1.6-SNAPSHOT</version>
 
  	<dependencies>
     <dependency>
@@ -51,9 +51,8 @@
   </pluginRepositories>
 
 	<modules>
-	    <module>build-configs</module>
+		<module>build-configs</module>
 		<module>config</module>
-		<module>merger</module>
 	</modules>
 
 </project>

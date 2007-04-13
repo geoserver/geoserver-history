@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author jgarnett, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: DemoForm.java,v 1.3 2004/04/16 07:25:20 jive Exp $
+ * @version $Id$
  */
 public class DemoForm extends ActionForm {
     /**

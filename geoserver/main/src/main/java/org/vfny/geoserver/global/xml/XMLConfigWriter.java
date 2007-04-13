@@ -11,6 +11,7 @@ import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageDimension;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.ContactDTO;
@@ -43,24 +44,29 @@ import javax.xml.transform.TransformerException;
 
 
 /**
- * XMLConfigWriter purpose.<p>This class is intended to store a
- * configuration to be written and complete the output to XML.</p>
- *  <p></p>
+ * XMLConfigWriter purpose.
+ *
+ * <p>
+ * This class is intended to store a configuration to be written and complete
+ * the output to XML.
+ * </p>
+ *
+ * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: XMLConfigWriter.java,v 1.32 2004/09/20 20:43:37 cholmesny Exp $
+ * @version $Id$
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 
     /**
-             * XMLConfigWriter constructor.
-             *
-             * <p>
-             * Should never be called.
-             * </p>
-             */
+     * XMLConfigWriter constructor.
+     *
+     * <p>
+     * Should never be called.
+     * </p>
+     */
     private XMLConfigWriter() {
     }
 
@@ -75,11 +81,11 @@ public class XMLConfigWriter {
 
         WriterUtils.initFile(root, true);
 
-        // boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
+        //        boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
 
-        // We're just checking if it's actually a data_dir, not trying to
-        // to do backwards compatibility. So if an old data_dir is made in
-        // the old way, on save it'll come to the new way.
+        //We're just checking if it's actually a data_dir, not trying to
+        //to do backwards compatibility.  So if an old data_dir is made in
+        //the old way, on save it'll come to the new way.
         File fileDir = root; // ? root : new File(root, "WEB-INF/");
         File configDir = WriterUtils.initFile(fileDir, true);
 
@@ -95,12 +101,12 @@ public class XMLConfigWriter {
 
         File dataDir;
 
-        // if (!inDataDir) {
-        // dataDir = WriterUtils.initFile(new File(root, "data/"), true);
-        // } else {
+        //        if (!inDataDir) {
+        //            dataDir = WriterUtils.initFile(new File(root, "data/"), true);
+        //        } else {
         dataDir = root;
 
-        // }
+        //        }
         File featureTypeDir = WriterUtils.initFile(new File(dataDir, "featureTypes/"), true);
         storeFeatures(featureTypeDir, data);
 
@@ -121,14 +127,12 @@ public class XMLConfigWriter {
 
         WriterUtils.initFile(root, true);
 
-        // boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
+        //        boolean inDataDir = GeoserverDataDirectory.isTrueDataDir();
 
-        // We're just checking if it's actually a data_dir, not trying to
-        // to do backwards compatibility. So if an old data_dir is made in
-        // the old way, on save it'll come to the new way.
-        File fileDir = root; // inDataDir ? root : new File(root,
-                             // "WEB-INF/");
-
+        //We're just checking if it's actually a data_dir, not trying to
+        //to do backwards compatibility.  So if an old data_dir is made in
+        //the old way, on save it'll come to the new way.
+        File fileDir = root; //inDataDir ? root : new File(root, "WEB-INF/");
         File configDir = WriterUtils.initFile(fileDir, true);
         File configFile = WriterUtils.initWriteFile(new File(configDir, "services.xml"), false);
 
@@ -148,11 +152,13 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeServices purpose.<p>Writes the services.xml file from the
-     * model in memory.</p>
+     * storeServices purpose.
+     *
+     * <p>
+     * Writes the services.xml file from the model in memory.
+     * </p>
      *
      * @param cw The Configuration Writer
-     * @param wcs DOCUMENT ME!
      * @param wms DOCUMENT ME!
      * @param wfs DOCUMENT ME!
      * @param geoServer DOCUMENT ME!
@@ -196,14 +202,13 @@ public class XMLConfigWriter {
             cw.valueTag("JaiJPEGNative", "" + g.getJaiJPEGNative());
             cw.valueTag("JaiPNGNative", "" + g.getJaiPNGNative());
 
-            /*
-             * if(g.getBaseUrl()!=null && g.getBaseUrl()!=""){ cw.comment("The
-             * base URL where this servlet will run. If running locally\n"+
-             * "then http://localhost:8080 (or whatever port you're running
-             * on)\n"+ "should work. If you are serving to the world then this
-             * must be\n"+ "the location where the geoserver servlets appear");
-             * cw.textTag("URL",g.getBaseUrl()); }
-             */
+            /*if(g.getBaseUrl()!=null && g.getBaseUrl()!=""){
+               cw.comment("The base URL where this servlet will run.  If running locally\n"+
+               "then http://localhost:8080 (or whatever port you're running on)\n"+
+               "should work.  If you are serving to the world then this must be\n"+
+               "the location where the geoserver servlets appear");
+               cw.textTag("URL",g.getBaseUrl());
+               }*/
             cw.comment("Sets the max number of Features returned by GetFeature");
             cw.valueTag("maxFeatures", "" + g.getMaxFeatures());
             cw.comment("Whether newlines and indents should be returned in \n"
@@ -285,8 +290,12 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeContact purpose.<p>Writes a contact into the WriterUtils
-     * provided from the ContactConfig provided.</p>
+     * storeContact purpose.
+     *
+     * <p>
+     * Writes a contact into the WriterUtils provided from the ContactConfig
+     * provided.
+     * </p>
      *
      * @param c The ContactConfig to write.
      * @param cw The Configuration Writer
@@ -323,8 +332,12 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeService purpose.<p>Writes a service into the WriterUtils
-     * provided from the WFS or WMS object provided.</p>
+     * storeService purpose.
+     *
+     * <p>
+     * Writes a service into the WriterUtils provided from the WFS or WMS
+     * object provided.
+     * </p>
      *
      * @param obj either a WFS or WMS object.
      * @param cw The Configuration Writer
@@ -357,7 +370,7 @@ public class XMLConfigWriter {
             s = w.getService();
             t = "WCS";
 
-            // citeConformanceHacks = w.getCiteConformanceHacks();
+            //citeConformanceHacks = w.getCiteConformanceHacks();
         } else if (obj instanceof WFSDTO) {
             WFSDTO w = (WFSDTO) obj;
             s = w.getService();
@@ -408,11 +421,11 @@ public class XMLConfigWriter {
             cw.textTag("metadataLink", mlAttr, ml.getContent());
         }
 
-        if (s.getKeywords().length != 0) {
+        if (!s.getKeywords().isEmpty()) {
             cw.openTag("keywords");
 
-            for (int i = 0; i < s.getKeywords().length; i++) {
-                cw.textTag("keyword", (s.getKeywords())[i].toString());
+            for (int i = 0; i < s.getKeywords().size(); i++) {
+                cw.textTag("keyword", s.getKeywords().get(i).toString());
             }
 
             cw.closeTag("keywords");
@@ -434,16 +447,15 @@ public class XMLConfigWriter {
             cw.valueTag("featureBounding", fBounds + "");
         }
 
-        // if (srsXmlStyle) {
+        //if (srsXmlStyle) {
         cw.valueTag("srsXmlStyle", srsXmlStyle + "");
 
-        // }
+        //}
         if (serviceLevel != 0) {
             cw.valueTag("serviceLevel", serviceLevel + "");
         }
 
-        if (obj instanceof WFSDTO) // DJB: this method (storeService) doesnt
-                                   // separate WFS and WMS very well!
+        if (obj instanceof WFSDTO) //DJB: this method (storeService) doesnt separate WFS and WMS very well!
          {
             cw.textTag("citeConformanceHacks", citeConformanceHacks + "");
         }
@@ -494,8 +506,12 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeCatalog purpose.<p>Writes a catalog into the WriterUtils
-     * provided from Data provided in memory.</p>
+     * storeCatalog purpose.
+     *
+     * <p>
+     * Writes a catalog into the WriterUtils provided from Data provided in
+     * memory.
+     * </p>
      *
      * @param cw The Configuration Writer
      * @param data DOCUMENT ME!
@@ -511,10 +527,8 @@ public class XMLConfigWriter {
         cw.writeln("<?config.xml version=\"1.0\" encoding=\"UTF-8\"?>");
         cw.openTag("catalog");
 
-        // DJB: this used to not put in a datastores tag if there were none
-        // defined.
-        // this caused the loader to blow up. I changed it so it puts an empty
-        // <datastore> here!
+        //DJB: this used to not put in a datastores tag if there were none defined.
+        //     this caused the loader to blow up.  I changed it so it puts an empty <datastore> here!
         cw.openTag("datastores");
         cw.comment("a datastore configuration element serves as a common data source connection\n"
             + "parameters repository for all featuretypes it holds.");
@@ -532,8 +546,7 @@ public class XMLConfigWriter {
 
         cw.closeTag("datastores");
 
-        // DJB: since datastore screws up if the tag is missing, I'm fixing it
-        // here too
+        //DJB: since datastore screws up if the tag is missing, I'm fixing it here too
         cw.openTag("formats");
         cw.comment("a format configuration element serves as a common data source\n"
             + "parameters repository for all coverages it holds.");
@@ -566,8 +579,7 @@ public class XMLConfigWriter {
 
         cw.closeTag("namespaces");
 
-        // DJB: since datastore screws up if the tag is missing, I'm fixing it
-        // here too
+        //DJB: since datastore screws up if the tag is missing, I'm fixing it here too
         cw.openTag("styles");
         cw.comment("Defines the style ids and file name to be used by the wms.");
 
@@ -588,8 +600,11 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeDataStore purpose.<p>Writes a DataStoreInfo into the
-     * WriterUtils provided.</p>
+     * storeDataStore purpose.
+     *
+     * <p>
+     * Writes a DataStoreInfo into the WriterUtils provided.
+     * </p>
      *
      * @param cw The Configuration Writer
      * @param ds The Datastore.
@@ -644,14 +659,17 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeFormat purpose.<p>Writes a CoverageStoreInfo into the
-     * WriterUtils provided.</p>
-     *
-     * @param cw The Configuration Writer
-     * @param df The Format.
-     *
-     * @throws ConfigurationException When an IO exception occurs.
-     */
+         * storeFormat purpose.
+         *
+         * <p>
+         * Writes a CoverageStoreInfo into the WriterUtils provided.
+         * </p>
+         *
+         * @param cw The Configuration Writer
+         * @param ds The Format.
+         *
+         * @throws ConfigurationException When an IO exception occurs.
+         */
     protected static void storeFormat(WriterHelper cw, CoverageStoreInfoDTO df)
         throws ConfigurationException {
         if (LOGGER.isLoggable(Level.FINE)) {
@@ -692,8 +710,11 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeNameSpace purpose.<p>Writes a NameSpaceInfoDTO into the
-     * WriterUtils provided.</p>
+     * storeNameSpace purpose.
+     *
+     * <p>
+     * Writes a NameSpaceInfoDTO into the WriterUtils provided.
+     * </p>
      *
      * @param cw The Configuration Writer
      * @param ns The NameSpaceInfo.
@@ -726,8 +747,11 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeStyle purpose.<p>Writes a StyleDTO into the WriterUtils
-     * provided.</p>
+     * storeStyle purpose.
+     *
+     * <p>
+     * Writes a StyleDTO into the WriterUtils provided.
+     * </p>
      *
      * @param cw The Configuration Writer
      * @param s The StyleDTO.
@@ -764,8 +788,11 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeStyle purpose.<p>Sets up writing FeatureTypes into their
-     * Directories.</p>
+     * storeStyle purpose.
+     *
+     * <p>
+     * Sets up writing FeatureTypes into their Directories.
+     * </p>
      *
      * @param dir The FeatureTypes directory
      * @param data DOCUMENT ME!
@@ -790,8 +817,7 @@ public class XMLConfigWriter {
             if (ft != null) {
                 String ftDirName = ft.getDirName();
 
-                try { // encode the file name (this is to catch colons in FT
-                      // names)
+                try { // encode the file name (this is to catch colons in FT names)
                     ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
 
                     if (LOGGER.isLoggable(Level.FINER)) {
@@ -819,22 +845,22 @@ public class XMLConfigWriter {
         }
 
         // delete old ones that are not overwritten
-        // I'm changing this action, as it is directly leading to users not
-        // being able to create their own shapefiles in the web admin tool.
-        // since their shit always gets deleted. The behaviour has now changed
-        // to just getting rid of the geoserver config files, info.xml and
-        // schema.xml and leaving any others. We should revisit this, I
-        // do think getting rid of stale featureTypes is a good thing. For 1.3
-        // I want to look into directly uploading shapefiles, and perhaps they
-        // would then go in a 'shapefile' directory, next to featureTypes or
-        // or something, so that the featureTypes directory only contains
-        // the info, and schema and those sorts of files. But I do kind of like
-        // being able to access the shapefiles directly from the web app, and
-        // indeed have had thoughts of expanding that, so that users could
-        // always download the full shape for a layer, generated automatically
-        // if it's from another datastore. Though I suppose that is not
-        // mutually exclusive, just a little wasting of space, for shapefiles
-        // would be held twice.
+        //I'm changing this action, as it is directly leading to users not 
+        //being able to create their own shapefiles in the web admin tool.
+        //since their shit always gets deleted.  The behaviour has now changed
+        //to just getting rid of the geoserver config files, info.xml and 
+        //schema.xml and leaving any others.  We should revisit this, I 
+        //do think getting rid of stale featureTypes is a good thing.  For 1.3
+        //I want to look into directly uploading shapefiles, and perhaps they
+        //would then go in a 'shapefile' directory, next to featureTypes or
+        //or something, so that the featureTypes directory only contains
+        //the info, and schema and those sorts of files.  But I do kind of like
+        //being able to access the shapefiles directly from the web app, and
+        //indeed have had thoughts of expanding that, so that users could 
+        //always download the full shape for a layer, generated automatically
+        //if it's from another datastore.  Though I suppose that is not 
+        //mutually exclusive, just a little wasting of space, for shapefiles
+        //would be held twice.
         File[] fa = dir.listFiles();
 
         for (int j = 0; j < fa.length; j++) {
@@ -847,8 +873,7 @@ public class XMLConfigWriter {
                 FeatureTypeInfoDTO ft = (FeatureTypeInfoDTO) i.next();
                 String ftDirName = ft.getDirName();
 
-                try { // encode the file name (this is to catch colons in FT
-                      // names)
+                try { // encode the file name (this is to catch colons in FT names)
                     ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
 
                     if (LOGGER.isLoggable(Level.FINER)) {
@@ -864,18 +889,17 @@ public class XMLConfigWriter {
             }
 
             if (fti == null) {
-                // delete it
+                //delete it
                 File[] files = fa[j].listFiles();
 
                 if (files != null) {
                     for (int x = 0; x < files.length; x++) {
-                        // hold on to the data, but be sure to get rid of the
-                        // geoserver config shit, as these were deleted.
+                        //hold on to the data, but be sure to get rid of the
+                        //geoserver config shit, as these were deleted.
                         if (files[x].getName().equals("info.xml")
                                 || files[x].getName().equals("schema.xml")) {
-                            // sorry for the hardcodes, I don't remember
-                            // if/where
-                            // we have these file names.
+                            //sorry for the hardcodes, I don't remember if/where
+                            //we have these file names.
                             files[x].delete();
                         }
                     }
@@ -889,7 +913,11 @@ public class XMLConfigWriter {
     }
 
     /**
-     * storeStyle purpose.<p>Writes a FeatureTypes into it's Directory.</p>
+     * storeStyle purpose.
+     *
+     * <p>
+     * Writes a FeatureTypes into it's Directory.
+     * </p>
      *
      * @param ft DOCUMENT ME!
      * @param dir The particular FeatureTypeInfo directory
@@ -1031,11 +1059,11 @@ public class XMLConfigWriter {
                  */
 
                 /*
-                 * StringWriter sw = new StringWriter();
-                 * org.geotools.filter.XMLEncoder xe = new
-                 * org.geotools.filter.XMLEncoder(sw);
-                 * xe.encode(ft.getDefinitionQuery());
-                 * cw.writeln(sw.toString()); cw.closeTag("definitionQuery");
+                   StringWriter sw = new StringWriter();
+                   org.geotools.filter.XMLEncoder xe = new org.geotools.filter.XMLEncoder(sw);
+                   xe.encode(ft.getDefinitionQuery());
+                   cw.writeln(sw.toString());
+                   cw.closeTag("definitionQuery");
                  */
                 FilterTransformer ftransformer = new FilterTransformer();
                 ftransformer.setOmitXMLDeclaration(true);
@@ -1057,7 +1085,7 @@ public class XMLConfigWriter {
     protected static void storeFeatureSchema(FeatureTypeInfoDTO fs, File dir)
         throws ConfigurationException {
         if ((fs.getSchemaBase() == null) || (fs.getSchemaBase() == "")) {
-            // LOGGER.info( "No schema base" );
+            //LOGGER.info( "No schema base" );
             if (LOGGER.isLoggable(Level.FINER)) {
                 LOGGER.finer(new StringBuffer(fs.getKey()).append(" has not schemaBase").toString());
             }
@@ -1067,8 +1095,7 @@ public class XMLConfigWriter {
 
         if ((fs.getSchemaName() == null) || (fs.getSchemaName() == "")) {
             // Should assume Null?
-            // LOGGER.info( "No schema name" ); // Do we even have a field for
-            // this?
+            //LOGGER.info( "No schema name" ); // Do we even have a field for this?
             if (LOGGER.isLoggable(Level.FINER)) {
                 LOGGER.finer(new StringBuffer(fs.getKey()).append(" has not schemaName").toString());
             }
@@ -1205,18 +1232,16 @@ public class XMLConfigWriter {
                 }
 
                 if (cvi == null) {
-                    // delete it
+                    //delete it
                     File[] t = fa[j].listFiles();
 
                     if (t != null) {
                         for (int x = 0; x < t.length; x++) {
-                            // hold on to the data, but be sure to get rid of
-                            // the
-                            // geoserver config shit, as these were deleted.
+                            //hold on to the data, but be sure to get rid of the
+                            //geoserver config shit, as these were deleted.
                             if (t[x].getName().equals("info.xml")) {
-                                // sorry for the hardcodes, I don't remember
-                                // if/where
-                                // we have these file names.
+                                //sorry for the hardcodes, I don't remember if/where
+                                //we have these file names.
                                 t[x].delete();
                             }
                         }
@@ -1322,8 +1347,7 @@ public class XMLConfigWriter {
                     m.put("srsName", cv.getSrsName());
                 }
 
-                m.put("crs",
-                    cv.getCrs().toString().replaceAll("\"", "'").replaceAll("[\\r\\n ]+", " "));
+                m.put("crs", cv.getCrs().toWKT().replaceAll("\"", "'"));
 
                 if (!e.isNull()) {
                     cw.openTag("envelope", m);
@@ -1542,38 +1566,47 @@ public class XMLConfigWriter {
     }
 
     /**
-     * WriterUtils purpose.<p>This is a static class which is used by
-     * XMLConfigWriter for File IO validation tests.</p>
-     *  <p></p>
+     * WriterUtils purpose.
+     *
+     * <p>
+     * This is a static class which is used by XMLConfigWriter for File IO
+     * validation tests.
+     * </p>
+     *
+     * <p></p>
      *
      * @author dzwiers, Refractions Research, Inc.
-     * @version $Id: XMLConfigWriter.java,v 1.32 2004/09/20 20:43:37 cholmesny Exp $
+     * @version $Id$
      */
     public static class WriterUtils {
         /** Used internally to create log information to detect errors. */
         private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 
         /**
-                         * WriterUtils constructor.
-                         *
-                         * <p>
-                         * Static class, should never be used.
-                         * </p>
-                         */
+         * WriterUtils constructor.
+         *
+         * <p>
+         * Static class, should never be used.
+         * </p>
+         */
         private WriterUtils() {
         }
 
         /**
-         * initFile purpose.<p>Checks to ensure the handle exists.
-         * If the handle is a directory and not created, it is created</p>
+         * initFile purpose.
+         *
+         * <p>
+         * Checks to ensure the handle exists. If the handle is a directory and not
+         * created, it is created
+         * </p>
          *
          * @param f the File handle
          * @param isDir true when the handle is intended to be a directory.
          *
          * @return The file passed in.
          *
-         * @throws ConfigurationException When an IO error occurs or the handle
-         *         is invalid.
+         * @throws ConfigurationException When an IO error occurs or the handle is
+         *         invalid.
          */
         public static File initFile(File f, boolean isDir)
             throws ConfigurationException {
@@ -1622,17 +1655,20 @@ public class XMLConfigWriter {
         }
 
         /**
-         * initFile purpose.<p>Checks to ensure the handle exists
-         * and can be writen to. If the handle is a directory and not created,
-         * it is created</p>
+         * initFile purpose.
+         *
+         * <p>
+         * Checks to ensure the handle exists and can be writen to. If the handle
+         * is a directory and not created, it is created
+         * </p>
          *
          * @param f the File handle
          * @param isDir true when the handle is intended to be a directory.
          *
          * @return The file passed in.
          *
-         * @throws ConfigurationException When an IO error occurs or the handle
-         *         is invalid.
+         * @throws ConfigurationException When an IO error occurs or the handle is
+         *         invalid.
          */
         public static File initWriteFile(File f, boolean isDir)
             throws ConfigurationException {

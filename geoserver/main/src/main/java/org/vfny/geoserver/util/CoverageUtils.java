@@ -5,7 +5,7 @@
 package org.vfny.geoserver.util;
 
 import org.geotools.coverage.grid.GeneralGridGeometry;
-import org.geotools.data.coverage.grid.AbstractGridFormat;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.parameter.DefaultParameterDescriptor;
@@ -51,16 +51,18 @@ public class CoverageUtils {
         final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
 
         if ((params != null) && (params.values().size() > 0)) {
-            final List list = params.values();
-            final Iterator it = list.iterator();
+            List list = params.values();
+            Iterator it = list.iterator();
+            ParameterDescriptor descr = null;
+            ParameterValue val = null;
 
             while (it.hasNext()) {
-                final ParameterValue val = (ParameterValue) it.next();
+                val = (ParameterValue) it.next();
 
                 if (val != null) {
-                    final ParameterDescriptor descr = (ParameterDescriptor) val.getDescriptor();
+                    descr = (ParameterDescriptor) val.getDescriptor();
 
-                    final String _key = descr.getName().toString();
+                    String _key = descr.getName().toString();
 
                     if ("namespace".equals(_key)) {
                         // skip namespace as it is *magic* and
@@ -79,7 +81,8 @@ public class CoverageUtils {
                         continue;
                     }
 
-                    final Object value = val.getValue();
+                    Object value = val.getValue();
+
                     parameters.add(new DefaultParameterDescriptor(_key, value.getClass(), null,
                             value).createValue());
                 }
@@ -105,14 +108,16 @@ public class CoverageUtils {
         if ((params != null) && (params.values().size() > 0)) {
             List list = params.values();
             Iterator it = list.iterator();
+            ParameterDescriptor descr = null;
+            ParameterValue val = null;
 
             while (it.hasNext()) {
-                final ParameterValue val = (ParameterValue) it.next();
+                val = (ParameterValue) it.next();
 
                 if (val != null) {
-                    final ParameterDescriptor descr = (ParameterDescriptor) val.getDescriptor();
+                    descr = (ParameterDescriptor) val.getDescriptor();
 
-                    final String _key = descr.getName().toString();
+                    String _key = descr.getName().toString();
 
                     if ("namespace".equals(_key)) {
                         // skip namespace as it is *magic* and
@@ -136,7 +141,7 @@ public class CoverageUtils {
                     // format specific params
                     //
                     // /////////////////////////////////////////////////////////
-                    final Object value = CoverageUtils.getCvParamValue(_key, val, values);
+                    Object value = CoverageUtils.getCvParamValue(_key, val, values);
 
                     if ((value == null)
                             && (_key.equalsIgnoreCase("InputTransparentColor")
@@ -165,12 +170,15 @@ public class CoverageUtils {
         if ((params != null) && (params.values().size() > 0)) {
             List list = params.values();
             Iterator it = list.iterator();
+            ParameterDescriptor descr = null;
+            ParameterValue val = null;
 
             while (it.hasNext()) {
-                final ParameterValue val = (ParameterValue) it.next();
+                val = (ParameterValue) it.next();
 
                 if (val != null) {
-                    final ParameterDescriptor descr = (ParameterDescriptor) val.getDescriptor();
+                    descr = (ParameterDescriptor) val.getDescriptor();
+
                     String _key = descr.getName().toString();
 
                     if ("namespace".equals(_key)) {
@@ -250,11 +258,28 @@ public class CoverageUtils {
                                 coords[iT] = Double.parseDouble(strCoords[iT].trim());
                             }
 
-                            value = (org.opengis.spatialschema.geometry.Envelope) new GeneralEnvelope(new double[] {
+                            value = (org.opengis.geometry.Envelope) new GeneralEnvelope(new double[] {
                                         coords[0], coords[1]
                                     }, new double[] { coords[2], coords[3] });
                         }
                     }
+                }
+            } else if (key.equalsIgnoreCase("values_palette")) {
+                if ((getParamValue(paramValues, index) != null)
+                        && (((String) getParamValue(paramValues, index)).length() > 0)) {
+                    String tmp = (String) getParamValue(paramValues, index);
+                    String[] strColors = tmp.split(";");
+                    Vector colors = new Vector();
+
+                    for (int col = 0; col < strColors.length; col++) {
+                        if (Color.decode(strColors[col]) != null) {
+                            colors.add(Color.decode(strColors[col]));
+                        }
+                    }
+
+                    value = colors.toArray(new Color[colors.size()]);
+                } else {
+                    value = "#000000;#3C3C3C;#FFFFFF";
                 }
             } else {
                 Class[] clArray = { getParamValue(paramValues, index).getClass() };
@@ -264,10 +289,6 @@ public class CoverageUtils {
 
             // Intentionally generic exception catched
         } catch (Exception e) {
-            if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE, e.getLocalizedMessage(), e);
-            }
-
             value = null;
 
             // errors.add("paramValue[" + i + "]",
@@ -315,7 +336,7 @@ public class CoverageUtils {
                                 coords[iT] = Double.parseDouble(strCoords[iT].trim());
                             }
 
-                            value = (org.opengis.spatialschema.geometry.Envelope) new GeneralEnvelope(new double[] {
+                            value = (org.opengis.geometry.Envelope) new GeneralEnvelope(new double[] {
                                         coords[0], coords[1]
                                     }, new double[] { coords[2], coords[3] });
                         }
@@ -339,7 +360,7 @@ public class CoverageUtils {
                                 coords[iT] = Double.parseDouble(strCoords[iT].trim());
                             }
 
-                            value = (org.opengis.spatialschema.geometry.Envelope) new GeneralEnvelope(new double[] {
+                            value = (org.opengis.geometry.Envelope) new GeneralEnvelope(new double[] {
                                         coords[0], coords[1]
                                     }, new double[] { coords[2], coords[3] });
                         }
@@ -363,13 +384,26 @@ public class CoverageUtils {
                 value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
             }
         } catch (Exception e) {
-            if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.log(Level.FINE, e.getLocalizedMessage(), e);
-            }
-
             value = param.getValue();
         }
 
         return value;
+    }
+
+    public static MathTransform getMathTransform(CoordinateReferenceSystem sourceCRS,
+        CoordinateReferenceSystem destCRS) {
+        try {
+            CoordinateOperation op = operationFactory.createOperation(sourceCRS, destCRS);
+
+            if (op != null) {
+                return op.getMathTransform();
+            }
+        } catch (OperationNotFoundException e) {
+            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        } catch (FactoryException e) {
+            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        }
+
+        return null;
     }
 }

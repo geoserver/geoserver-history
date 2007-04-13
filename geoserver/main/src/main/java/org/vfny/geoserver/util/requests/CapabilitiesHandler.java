@@ -18,34 +18,38 @@ import javax.servlet.http.HttpServletRequest;
  * incoming XML stream.
  *
  * @author Rob Hranac, TOPP
- * @version $Id: CapabilitiesHandler.java,v 1.9 2004/02/13 19:30:39 dmzwiers Exp $
+ * @version $Id$
  */
 public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
-    /** Service */
-    private AbstractService service;
-
     /** Internal Capabilities request for construction. */
     private CapabilitiesRequest request = null;
 
     /**
-             * Creates a new CapabilitiesHandler
-             * @param service this is the AbstractService Handling the Request
-             */
+     * Creates a new CapabilitiesHandler
+     * @param service this is the AbstractService Handling the Request
+     * @deprecated use {@link #CapabilitiesHandler(CapabilitiesRequest)}.
+     */
     public CapabilitiesHandler(AbstractService service) {
-        this.service = service;
-        request = new CapabilitiesRequest("WFS", service);
+        this(new CapabilitiesRequest("WFS", service));
     }
 
     /**
-     * Returns the GetCapabilities request.
-     *
-     * @param req DOCUMENT ME!
-     *
-     * @return GetCapabilities request.
+     * Creates a new CapabilitiesHandler
+     * @param service this is the AbstractService Handling the Request
+     * @param req
      */
+    public CapabilitiesHandler(CapabilitiesRequest request) {
+        this.request = request;
+    }
+
+    /**
+    * Returns the GetCapabilities request.
+    *
+    * @return GetCapabilities request.
+    */
     public CapabilitiesRequest getRequest(HttpServletRequest req) {
         request.setHttpServletRequest(req);
 
@@ -57,8 +61,8 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
      * ***********************************************************************/
 
     /**
-     * Notes the start of the element and sets version and service
-     * tags, as required.
+     * Notes the start of the element and sets version and service tags, as
+     * required.
      *
      * @param namespaceURI URI for namespace appended to element.
      * @param localName Local name of element.

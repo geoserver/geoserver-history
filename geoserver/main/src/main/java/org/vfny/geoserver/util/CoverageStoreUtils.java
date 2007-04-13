@@ -4,8 +4,8 @@
  */
 package org.vfny.geoserver.util;
 
-import org.geotools.data.coverage.grid.GridFormatFactorySpi;
-import org.geotools.data.coverage.grid.GridFormatFinder;
+import org.geotools.coverage.grid.io.GridFormatFactorySpi;
+import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -18,7 +18,6 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-import org.vfny.geoserver.global.CoverageStoreInfo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,18 +50,36 @@ public final class CoverageStoreUtils {
 
     public static Format acquireFormat(String type, ServletContext sc)
         throws IOException {
-        final Format[] formats = GridFormatFinder.getFormatArray();
+        Format[] formats = GridFormatFinder.getFormatArray();
+        Format format = null;
+        final int length = formats.length;
 
-        for (int i = 0; i < formats.length; i++) {
-            final Format format = formats[i];
-
+        for (int i = 0; i < length; i++) {
             if (formats[i].getName().equals(type)) {
-                return format;
+                format = formats[i];
+
+                break;
             }
         }
 
-        throw new IOException("Cannot handle format: " + type);
+        if (format == null) {
+            throw new IOException("Cannot handle format: " + type);
+        } else {
+            return format;
+        }
     }
+
+    //	public static Map getParams(Map m, ServletContext sc) {
+    //		String baseDir = sc.getRealPath("/");
+    //		return Collections.synchronizedMap(getParams(m, baseDir));
+    //	}
+    //
+    //	/**
+    //	 * Get Connect params.
+    //	 */
+    //	public static Map getParams(Map m, String baseDir) {
+    //		return Collections.synchronizedMap(CoverageStoreInfo.getParams(m, baseDir));
+    //	}
 
     /**
      * Utility method for finding Params
@@ -91,10 +108,12 @@ public final class CoverageStoreUtils {
     public static ParameterValue find(ParameterValueGroup params, String key) {
         List list = params.values();
         Iterator it = list.iterator();
+        ParameterDescriptor descr;
+        ParameterValue val;
 
         while (it.hasNext()) {
-            final ParameterValue val = (ParameterValue) it.next();
-            final ParameterDescriptor descr = (ParameterDescriptor) val.getDescriptor();
+            val = (ParameterValue) it.next();
+            descr = (ParameterDescriptor) val.getDescriptor();
 
             if (key.equalsIgnoreCase(descr.getName().toString())) {
                 return val;
@@ -115,9 +134,11 @@ public final class CoverageStoreUtils {
      */
     public static Format aquireFactoryByType(String type) {
         final Format[] formats = GridFormatFinder.getFormatArray();
+        Format format = null;
+        final int length = formats.length;
 
-        for (int i = 0; i < formats.length; i++) {
-            final Format format = formats[i];
+        for (int i = 0; i < length; i++) {
+            format = formats[i];
 
             if (format.getName().equals(type)) {
                 return format;
@@ -136,10 +157,12 @@ public final class CoverageStoreUtils {
      * @return
      */
     public static Format aquireFactory(String description) {
-        final Format[] formats = GridFormatFinder.getFormatArray();
+        Format[] formats = GridFormatFinder.getFormatArray();
+        Format format = null;
+        final int length = formats.length;
 
-        for (int i = 0; i < formats.length; i++) {
-            final Format format = formats[i];
+        for (int i = 0; i < length; i++) {
+            format = formats[i];
 
             if (format.getDescription().equals(description)) {
                 return format;
@@ -159,14 +182,13 @@ public final class CoverageStoreUtils {
      * @return Descriptions for user to choose from
      */
     public static List listDataFormatsDescriptions() {
-        final List list = new ArrayList(155);
-        final Format[] formats = GridFormatFinder.getFormatArray();
+        List list = new ArrayList();
+        Format[] formats = GridFormatFinder.getFormatArray();
+        final int length = formats.length;
 
-        for (int i = 0; i < formats.length; i++) {
-            final String desc = formats[i].getDescription();
-
-            if (!list.contains(desc)) {
-                list.add(desc);
+        for (int i = 0; i < length; i++) {
+            if (!list.contains(formats[i].getDescription())) {
+                list.add(formats[i].getDescription());
             }
         }
 
@@ -174,14 +196,13 @@ public final class CoverageStoreUtils {
     }
 
     public static List listDataFormats() {
-        final List list = new ArrayList(15);
-        final Format[] formats = GridFormatFinder.getFormatArray();
+        List list = new ArrayList();
+        Format[] formats = GridFormatFinder.getFormatArray();
+        final int length = formats.length;
 
-        for (int i = 0; i < formats.length; i++) {
-            final Format format = formats[i];
-
-            if (!list.contains(format)) {
-                list.add(format);
+        for (int i = 0; i < length; i++) {
+            if (!list.contains(formats[i])) {
+                list.add(formats[i]);
             }
         }
 
@@ -197,20 +218,28 @@ public final class CoverageStoreUtils {
         ParameterValueGroup params = factory.getReadParameters();
 
         if (params != null) {
-            final List list = params.values();
-            final Iterator it = list.iterator();
+            List list = params.values();
+            Iterator it = list.iterator();
+            ParameterDescriptor descr = null;
+            ParameterValue val = null;
+            String key;
+            Object value;
 
             while (it.hasNext()) {
-                final ParameterValue val = (ParameterValue) it.next();
-                final ParameterDescriptor descr = (ParameterDescriptor) val.getDescriptor();
+                val = (ParameterValue) it.next();
+                descr = (ParameterDescriptor) val.getDescriptor();
 
-                final String key = descr.getName().toString();
-                Object value = null;
+                key = descr.getName().toString();
+                value = null;
 
                 if (val.getValue() != null) {
                     // Required params may have nice sample values
                     //
-                    value = val.getValue().toString();
+                    if ("values_palette".equalsIgnoreCase(key)) {
+                        value = val.getValue();
+                    } else {
+                        value = val.getValue().toString();
+                    }
                 }
 
                 if (value == null) {
@@ -241,12 +270,15 @@ public final class CoverageStoreUtils {
     public static Map toParams(GridFormatFactorySpi factory, Map params)
         throws IOException {
         final Map map = new HashMap(params.size());
+
         final ParameterValueGroup info = factory.createFormat().getReadParameters();
+        String key;
+        Object value;
 
         // Convert Params into the kind of Map we actually need
         for (Iterator i = params.keySet().iterator(); i.hasNext();) {
-            final String key = (String) i.next();
-            final Object value = find(info, key).getValue();
+            key = (String) i.next();
+            value = find(info, key).getValue();
 
             if (value != null) {
                 map.put(key, value);
@@ -289,7 +321,7 @@ public final class CoverageStoreUtils {
         final GeneralEnvelope targetEnvelope;
 
         if (!mathTransform.isIdentity()) {
-            targetEnvelope = CRSUtilities.transform(mathTransform, envelope);
+            targetEnvelope = CRS.transform(mathTransform, envelope);
         } else {
             targetEnvelope = new GeneralEnvelope(envelope);
         }
@@ -298,4 +330,49 @@ public final class CoverageStoreUtils {
 
         return targetEnvelope;
     }
+
+    //	/**
+    //	 * Get a generic envelope and retrieve a lon,lat envelope.
+    //	 * 
+    //	 * @param sourceCRS
+    //	 * @param envelope
+    //	 * @return
+    //	 * @throws IndexOutOfBoundsException
+    //	 * @throws MismatchedDimensionException
+    //	 * @throws NoSuchAuthorityCodeException
+    //	 */
+    //	public static GeneralEnvelope adjustEnvelopeLongitudeFirst(
+    //			final CoordinateReferenceSystem sourceCRS, GeneralEnvelope envelope)
+    //			throws IndexOutOfBoundsException, MismatchedDimensionException,
+    //			NoSuchAuthorityCodeException {
+    //
+    //		// /////////////////////////////////////////////////////////////////////
+    //		//
+    //		// Is Lon first?
+    //		//
+    //		// /////////////////////////////////////////////////////////////////////
+    //		final CoordinateReferenceSystem crs2D;
+    //		try {
+    //			crs2D = CRSUtilities.getCRS2D(sourceCRS);
+    //		} catch (TransformException e) {
+    //			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+    //			return null;
+    //		}
+    //		final CoordinateSystem sourceCS = crs2D.getCoordinateSystem();
+    //		final boolean lonFirst = !GridGeometry2D.swapXY(sourceCS);
+    //
+    //		// /////////////////////////////////////////////////////////////////////
+    //		//
+    //		// Creating a new envelope lon,lat
+    //		//
+    //		// /////////////////////////////////////////////////////////////////////
+    //		final GeneralEnvelope lonLatEnvelope = lonFirst ? new GeneralEnvelope(
+    //				envelope) : new GeneralEnvelope(new double[] {
+    //				envelope.getLowerCorner().getOrdinate(1),
+    //				envelope.getLowerCorner().getOrdinate(0) }, new double[] {
+    //				envelope.getUpperCorner().getOrdinate(1),
+    //				envelope.getUpperCorner().getOrdinate(0) });
+    //		lonLatEnvelope.setCoordinateReferenceSystem(crs2D);
+    //		return lonLatEnvelope;
+    //	}
 }

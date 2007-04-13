@@ -21,9 +21,14 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 
 /**
- * ReaderUtils purpose.<p>This class is intended to be used as a library of
- * XML relevant operation for the XMLConfigReader class.</p>
- *  <p></p>
+ * ReaderUtils purpose.
+ *
+ * <p>
+ * This class is intended to be used as a library of XML relevant operation for
+ * the XMLConfigReader class.
+ * </p>
+ *
+ * <p></p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id$
@@ -35,12 +40,12 @@ public class ReaderUtils {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 
     /**
-             * ReaderUtils constructor.
-             *
-             * <p>
-             * Static class, this should never be called.
-             * </p>
-             */
+     * ReaderUtils constructor.
+     *
+     * <p>
+     * Static class, this should never be called.
+     * </p>
+     */
     private ReaderUtils() {
     }
 
@@ -76,8 +81,11 @@ public class ReaderUtils {
     }
 
     /**
-     * Checks to ensure the file is valid.<p>Returns the file passed in
-     * to allow this to wrap file creations.</p>
+     * Checks to ensure the file is valid.
+     *
+     * <p>
+     * Returns the file passed in to allow this to wrap file creations.
+     * </p>
      *
      * @param file A file Handle to test.
      * @param isDir true when the File passed in is expected to be a directory,
@@ -85,8 +93,8 @@ public class ReaderUtils {
      *
      * @return the File handle passed in
      *
-     * @throws Exception When the file does not exist or is not the type
-     *         specified.
+     * @throws Exception When the file does not exist or is not
+     *         the type specified.
      */
     public static File checkFile(File file, boolean isDir)
         throws Exception {
@@ -110,8 +118,12 @@ public class ReaderUtils {
     }
 
     /**
-     * getChildElements purpose.<p>Used to help with XML manipulations.
-     * Returns all child elements of the specified name.</p>
+     * getChildElements purpose.
+     *
+     * <p>
+     * Used to help with XML manipulations. Returns *all* child elements of
+     * the specified name.
+     * </p>
      *
      * @param root The root element to look for children in.
      * @param name The name of the child element to look for.
@@ -130,9 +142,13 @@ public class ReaderUtils {
     }
 
     /**
-     * getChildElements purpose.<p>Used to help with XML manipulations.
-     * Returns all child elements of the specified name.  An exception occurs
-     * when the node is required and not found.</p>
+     * getChildElements purpose.
+     *
+     * <p>
+     * Used to help with XML manipulations. Returns *all* child elements of
+     * the specified name.  An exception occurs when the node is required and
+     * not found.
+     * </p>
      *
      * @param root The root element to look for children in.
      * @param name The name of the child element to look for.
@@ -141,7 +157,8 @@ public class ReaderUtils {
      *
      * @return The child element found, null if not found.
      *
-     * @throws Exception When a child element is required and not found.
+     * @throws Exception When a child element is required and not
+     *         found.
      */
     public static Element[] getChildElements(Element root, String name, boolean mandatory)
         throws Exception {
@@ -167,9 +184,13 @@ public class ReaderUtils {
     }
 
     /**
-     * getChildElement purpose.<p>Used to help with XML manipulations.
-     * Returns the first child element of the specified name.  An exception
-     * occurs when the node is required and not found.</p>
+     * getChildElement purpose.
+     *
+     * <p>
+     * Used to help with XML manipulations. Returns the first child element of
+     * the specified name.  An exception occurs when the node is required and
+     * not found.
+     * </p>
      *
      * @param root The root element to look for children in.
      * @param name The name of the child element to look for.
@@ -178,7 +199,8 @@ public class ReaderUtils {
      *
      * @return The child element found, null if not found.
      *
-     * @throws Exception When a child element is required and not found.
+     * @throws Exception When a child element is required and not
+     *         found.
      */
     public static Element getChildElement(Element root, String name, boolean mandatory)
         throws Exception {
@@ -203,8 +225,12 @@ public class ReaderUtils {
     }
 
     /**
-     * getChildElement purpose.<p>Used to help with XML manipulations.
-     * Returns the first child element of the specified name.</p>
+     * getChildElement purpose.
+     *
+     * <p>
+     * Used to help with XML manipulations. Returns the first child element of
+     * the specified name.
+     * </p>
      *
      * @param root The root element to look for children in.
      * @param name The name of the child element to look for.
@@ -223,20 +249,26 @@ public class ReaderUtils {
     }
 
     /**
-     * getIntAttribute purpose.<p>Used to help with XML manipulations.
-     * Returns the first child integer attribute of the specified name.  An
-     * exception occurs when the node is required and not found.</p>
+     * getIntAttribute purpose.
+     *
+     * <p>
+     * Used to help with XML manipulations. Returns the first child integer
+     * attribute of the specified name.  An exception occurs when the node is
+     * required and not found.
+     * </p>
      *
      * @param elem The root element to look for children in.
      * @param attName The name of the attribute to look for.
      * @param mandatory true when an exception should be thrown if the
      *        attribute element does not exist.
      * @param defaultValue a default value to return incase the attribute was
-     *        not found. mutually exclusive with the Exception thrown.
+     *        not found. mutually exclusive with the Exception
+     *        thrown.
      *
      * @return The int value if the attribute was found, the default otherwise.
      *
-     * @throws Exception When a attribute element is required and not found.
+     * @throws Exception When a attribute element is required and
+     *         not found.
      */
     public static int getIntAttribute(Element elem, String attName, boolean mandatory,
         int defaultValue) throws Exception {
@@ -259,9 +291,13 @@ public class ReaderUtils {
     }
 
     /**
-     * getIntAttribute purpose.<p>Used to help with XML manipulations.
-     * Returns the first child integer attribute of the specified name.  An
-     * exception occurs when the node is required and not found.</p>
+     * getIntAttribute purpose.
+     *
+     * <p>
+     * Used to help with XML manipulations. Returns the first child integer
+     * attribute of the specified name.  An exception occurs when the node is
+     * required and not found.
+     * </p>
      *
      * @param elem The root element to look for children in.
      * @param attName The name of the attribute to look for.
@@ -270,7 +306,8 @@ public class ReaderUtils {
      *
      * @return The value if the attribute was found, the null otherwise.
      *
-     * @throws Exception When a child attribute is required and not found.
+     * @throws Exception When a child attribute is required and
+     *         not found.
      * @throws NullPointerException DOCUMENT ME!
      */
     public static String getAttribute(Element elem, String attName, boolean mandatory)
@@ -305,10 +342,13 @@ public class ReaderUtils {
     }
 
     /**
-     * getBooleanAttribute purpose.<p>Used to help with XML
-     * manipulations. Returns the first child integer attribute of the
-     * specified name.  An exception occurs when the node is required and not
-     * found.</p>
+     * getBooleanAttribute purpose.
+     *
+     * <p>
+     * Used to help with XML manipulations. Returns the first child integer
+     * attribute of the specified name.  An exception occurs when the node is
+     * required and not found.
+     * </p>
      *
      * @param elem The root element to look for children in.
      * @param attName The name of the attribute to look for.
@@ -319,7 +359,8 @@ public class ReaderUtils {
      *
      * @return The value if the attribute was found, the false otherwise.
      *
-     * @throws Exception When a child attribute is required and not found.
+     * @throws Exception When a child attribute is required and
+     *         not found.
      */
     public static boolean getBooleanAttribute(Element elem, String attName, boolean mandatory,
         boolean defaultValue) throws Exception {
@@ -333,8 +374,12 @@ public class ReaderUtils {
     }
 
     /**
-     * getChildText purpose.<p>Used to help with XML manipulations.
-     * Returns the first child text value of the specified element name.</p>
+     * getChildText purpose.
+     *
+     * <p>
+     * Used to help with XML manipulations. Returns the first child text value
+     * of the specified element name.
+     * </p>
      *
      * @param root The root element to look for children in.
      * @param childName The name of the attribute to look for.
@@ -350,9 +395,13 @@ public class ReaderUtils {
     }
 
     /**
-     * getChildText purpose.<p>Used to help with XML manipulations.
-     * Returns the first child text value of the specified element name.  An
-     * exception occurs when the node is required and not found.</p>
+     * getChildText purpose.
+     *
+     * <p>
+     * Used to help with XML manipulations. Returns the first child text value
+     * of the specified element name.  An exception occurs when the node is
+     * required and not found.
+     * </p>
      *
      * @param root The root element to look for children in.
      * @param childName The name of the attribute to look for.
@@ -361,7 +410,8 @@ public class ReaderUtils {
      *
      * @return The value if the child was found, the null otherwise.
      *
-     * @throws Exception When a child attribute is required and not found.
+     * @throws Exception When a child attribute is required and
+     *         not found.
      */
     public static String getChildText(Element root, String childName, boolean mandatory)
         throws Exception {
@@ -381,8 +431,12 @@ public class ReaderUtils {
     }
 
     /**
-     * getChildText purpose.<p>Used to help with XML manipulations.
-     * Returns the text value of the specified element name.</p>
+     * getChildText purpose.
+     *
+     * <p>
+     * Used to help with XML manipulations. Returns the text value of the
+     * specified element name.
+     * </p>
      *
      * @param elem The root element to look for children in.
      *
@@ -397,9 +451,13 @@ public class ReaderUtils {
     }
 
     /**
-     * getChildText purpose.<p>Used to help with XML manipulations.
-     * Returns the text value of the specified element name.  An exception
-     * occurs when the node is required and not found.</p>
+     * getChildText purpose.
+     *
+     * <p>
+     * Used to help with XML manipulations. Returns the text value of the
+     * specified element name.  An exception occurs when the node is required
+     * and not found.
+     * </p>
      *
      * @param elem The root element to look for children in.
      * @param mandatory true when an exception should be thrown if the text
@@ -449,14 +507,18 @@ public class ReaderUtils {
     }
 
     /**
-     * getKeyWords purpose.<p>Used to help with XML manipulations.
-     * Returns a list of keywords that were found.</p>
+     * getKeyWords purpose.
+     *
+     * <p>
+     * Used to help with XML manipulations. Returns a list of keywords that
+     * were found.
+     * </p>
      *
      * @param keywordsElem The root element to look for children in.
      *
      * @return The list of keywords that were found.
      */
-    public static String[] getKeyWords(Element keywordsElem) {
+    public static List getKeyWords(Element keywordsElem) {
         NodeList klist = keywordsElem.getElementsByTagName("keyword");
         int kCount = klist.getLength();
         List keywords = new ArrayList(kCount);
@@ -475,20 +537,24 @@ public class ReaderUtils {
         Object[] s = (Object[]) keywords.toArray();
 
         if (s == null) {
-            return new String[0];
+            return new ArrayList();
         }
 
-        String[] ss = new String[s.length];
+        ArrayList ss = new ArrayList(s.length);
 
-        for (int i = 0; i < ss.length; i++)
-            ss[i] = s[i].toString();
+        for (int i = 0; i < s.length; i++)
+            ss.add(s[i]);
 
         return ss;
     }
 
     /**
-     * getFirstChildElement purpose.<p>Used to help with XML
-     * manipulations. Returns the element which represents the first child.</p>
+     * getFirstChildElement purpose.
+     *
+     * <p>
+     * Used to help with XML manipulations. Returns the element which
+     * represents the first child.
+     * </p>
      *
      * @param root The root element to look for children in.
      *
@@ -509,10 +575,13 @@ public class ReaderUtils {
     }
 
     /**
-     * getDoubleAttribute purpose.<p>Used to help with XML
-     * manipulations. Returns the first child integer attribute of the
-     * specified name.  An exception occurs when the node is required and not
-     * found.</p>
+     * getDoubleAttribute purpose.
+     *
+     * <p>
+     * Used to help with XML manipulations. Returns the first child integer
+     * attribute of the specified name.  An exception occurs when the node is
+     * required and not found.
+     * </p>
      *
      * @param elem The root element to look for children in.
      * @param attName The name of the attribute to look for.
@@ -521,8 +590,8 @@ public class ReaderUtils {
      *
      * @return The double value if the attribute was found, the NaN otherwise.
      *
-     * @throws Exception When a attribute element is required and not found.
-     * @throws ConfigurationException DOCUMENT ME!
+     * @throws Exception When a attribute element is required and
+     *         not found.
      */
     public static double getDoubleAttribute(Element elem, String attName, boolean mandatory)
         throws Exception {

@@ -13,14 +13,18 @@ import java.util.logging.Logger;
 
 
 /**
- * Uses SAX to extact a GetFeature query from and incoming GetFeature
- * request XML stream.<p>Note that this Handler extension ignores Filters
- * completely and must be chained as a parent to the PredicateFilter method in
- * order to recognize them.  If it is not chained, it will still generate
- * valid queries, but with no filtering whatsoever.</p>
+ * Uses SAX to extact a GetFeature query from and incoming GetFeature request
+ * XML stream.
+ *
+ * <p>
+ * Note that this Handler extension ignores Filters completely and must be
+ * chained as a parent to the PredicateFilter method in order to recognize
+ * them.  If it is not chained, it will still generate valid queries, but with
+ * no filtering whatsoever.
+ * </p>
  *
  * @author Chris Holmes, TOPP
- * @version $Id: DispatcherHandler.java,v 1.5 2004/07/15 21:13:12 jmacgill Exp $
+ * @version $Id$
  */
 public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */
@@ -42,8 +46,6 @@ public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
     private boolean gotType = false;
 
     /**
-     * DOCUMENT ME!
-     *
      * @return the service type.
      */
     public String getService() {
@@ -51,8 +53,6 @@ public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return The request type.
      */
     public String getRequest() {
@@ -63,32 +63,24 @@ public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
     /**
      * Gets the request type.  See Dispatcher for the available types.
      *
-     * @param namespaceURI DOCUMENT ME!
-     * @param localName DOCUMENT ME!
-     * @param rawName DOCUMENT ME!
-     * @param atts DOCUMENT ME!
+     * @return an int of the request type.
      *
-     * @throws SAXException DOCUMENT ME!
      */
 
     //    public int getRequestType() {
     //        return requestType;
     //    }
+
     /**
-     * Gets the service type, for now either WMS or WFS types of
-     * Dispatcher.
+     * Gets the service type, for now either WMS or WFS types of Dispatcher.
      *
-     * @param namespaceURI DOCUMENT ME!
-     * @param localName DOCUMENT ME!
-     * @param rawName DOCUMENT ME!
-     * @param atts DOCUMENT ME!
-     *
-     * @throws SAXException DOCUMENT ME!
+     * @return an int of the service type.
      */
 
     //    public int getServiceType() {
     //        return serviceType;
     //    }
+
     /**
      * Notes the start of the element and checks for request type.
      *

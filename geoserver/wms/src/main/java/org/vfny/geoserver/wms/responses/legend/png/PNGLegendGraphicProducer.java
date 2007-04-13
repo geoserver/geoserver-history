@@ -25,23 +25,24 @@ import javax.media.jai.PlanarImage;
  * Producer of legend graphics in all the formats available through JAI.
  *
  * @author Gabriel Roldan, Axios Engineering
- * @version $Id: PNGLegendGraphicProducer.java 4776 2006-07-24 14:43:05Z afabiani $
+ * @version $Id: PNGLegendGraphicProducer.java 4776 2006-07-24 14:43:05Z
+ *          afabiani $
  */
 class PNGLegendGraphicProducer extends DefaultRasterLegendProducer {
     /**
-             * Creates a new JAI based legend producer for creating
-             * <code>outputFormat</code> type images.
-             *
-             * @param outputFormat
-             *            DOCUMENT ME!
-             */
+     * Creates a new JAI based legend producer for creating
+     * <code>outputFormat</code> type images.
+     *
+     * @param outputFormat
+     *            DOCUMENT ME!
+     */
     PNGLegendGraphicProducer() {
         super();
     }
 
     /**
-     * Encodes the image created by the superclss to the format
-     * specified at the constructor and sends it to <code>out</code>.
+     * Encodes the image created by the superclss to the format specified at the
+     * constructor and sends it to <code>out</code>.
      *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#writeTo(java.io.OutputStream)
      */
@@ -94,8 +95,7 @@ class PNGLegendGraphicProducer extends DefaultRasterLegendProducer {
     }
 
     /**
-     * Returns the MIME type in which the legend graphic will be
-     * encoded.
+     * Returns the MIME type in which the legend graphic will be encoded.
      *
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#getContentType()
      */

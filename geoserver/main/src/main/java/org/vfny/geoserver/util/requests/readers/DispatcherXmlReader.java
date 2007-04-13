@@ -25,13 +25,16 @@ import javax.servlet.http.HttpServletRequest;
  * get the request will not work.  A new  BufferedReader should be constructed
  * from the reader of HttpServletRequest, and its mark should be set and then
  * reset after this reader is done with it.  Nothing else seems to work, for
- * some reason.<p>In an ideal, refactored world we would implement our
- * handlers better, and the xml reader could dynamically figure out which
- * handler to pass it to. But we have no time for that now, so we'll just live
- * with this.</p>
+ * some reason.
+ *
+ * <p>
+ * In an ideal, refactored world we would implement our handlers better, and
+ * the xml reader could dynamically figure out which handler to pass it to.
+ * But we have no time for that now, so we'll just live with this.
+ * </p>
  *
  * @author Chris Holmes
- * @version $Id: DispatcherXmlReader.java,v 1.1 2004/03/30 04:37:32 cholmesny Exp $
+ * @version $Id$
  *
  * @task REVISIT: This might be better implemented to extend XmlRequestReader,
  *       and to actually construct the requests with the DispatcherHandler.
@@ -82,8 +85,6 @@ public class DispatcherXmlReader {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return The service, WFS,WMS,WCS,etc...
      */
     public String getService() {
@@ -91,8 +92,6 @@ public class DispatcherXmlReader {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return The request, GetCapabilities,GetMap,etc...
      */
     public String getRequest() {

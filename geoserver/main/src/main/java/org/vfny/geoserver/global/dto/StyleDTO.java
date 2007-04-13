@@ -13,16 +13,22 @@ import java.io.File;
 
 
 /**
- * Data Transfer Object for style information.<p>Defines the style ids to
- * be used by the wms.  The files  must be contained in
- * geoserver/misc/wms/styles.  We're  working on finding a better place for
+ * Data Transfer Object for style information.
+ *
+ * <p>
+ * Defines the style ids to be used by the wms.  The files  must be contained
+ * in geoserver/misc/wms/styles.  We're  working on finding a better place for
  * them, but for now  that's where you must put them if you want them on the
- * server.</p>
- *  <p>StyleDTO styleDto = new StyleDTO(); styleDto.setDefault(false);
- * styleDto.setId("My Style"); styleDto.setFilename(new File(myStyle.sld));</p>
+ * server.
+ * </p>
+ *
+ * <p>
+ * StyleDTO styleDto = new StyleDTO(); styleDto.setDefault(false);
+ * styleDto.setId("My Style"); styleDto.setFilename(new File(myStyle.sld));
+ * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: StyleDTO.java,v 1.5 2004/05/22 05:07:59 cholmesny Exp $
+ * @version $Id$
  */
 public final class StyleDTO implements DataTransferObject {
     /** The syle id. */
@@ -35,28 +41,28 @@ public final class StyleDTO implements DataTransferObject {
     private boolean _default;
 
     /**
-             * StyleConfig constructor.
-             *
-             * <p>
-             * does nothing
-             * </p>
-             */
+     * StyleConfig constructor.
+     *
+     * <p>
+     * does nothing
+     * </p>
+     */
     public StyleDTO() {
     }
 
     /**
-             * StyleConfig constructor.
-             *
-             * <p>
-             * Creates a copy of the StyleConfig provided. If the StyleConfig provided
-             * is null then default values are used. All the data structures are
-             * cloned.
-             * </p>
-             *
-             * @param style The style to copy.
-             *
-             * @throws NullPointerException DOCUMENT ME!
-             */
+     * StyleConfig constructor.
+     *
+     * <p>
+     * Creates a copy of the StyleConfig provided. If the StyleConfig provided
+     * is null then default values are used. All the data structures are
+     * cloned.
+     * </p>
+     *
+     * @param style The style to copy.
+     *
+     * @throws NullPointerException DOCUMENT ME!
+     */
     public StyleDTO(StyleDTO style) {
         if (style == null) {
             throw new NullPointerException();
@@ -68,7 +74,11 @@ public final class StyleDTO implements DataTransferObject {
     }
 
     /**
-     * Implement clone.<p>creates a clone of this object</p>
+     * Implement clone.
+     *
+     * <p>
+     * creates a clone of this object
+     * </p>
      *
      * @return A copy of this StyleConfig
      *
@@ -79,8 +89,12 @@ public final class StyleDTO implements DataTransferObject {
     }
 
     /**
-     * Implement equals.<p>recursively tests to determine if the object
-     * passed in is a copy of this object.</p>
+     * Implement equals.
+     *
+     * <p>
+     * recursively tests to determine if the object passed in is a copy of this
+     * object.
+     * </p>
      *
      * @param obj The StyleConfig object to test.
      *
@@ -128,7 +142,11 @@ public final class StyleDTO implements DataTransferObject {
     }
 
     /**
-     * isDefault purpose.<p>Description ...</p>
+     * isDefault purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -137,7 +155,11 @@ public final class StyleDTO implements DataTransferObject {
     }
 
     /**
-     * getFilename purpose.<p>Description ...</p>
+     * getFilename purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -146,7 +168,11 @@ public final class StyleDTO implements DataTransferObject {
     }
 
     /**
-     * getId purpose.<p>Description ...</p>
+     * getId purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -155,7 +181,11 @@ public final class StyleDTO implements DataTransferObject {
     }
 
     /**
-     * setDefault purpose.<p>Description ...</p>
+     * setDefault purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param b
      */
@@ -164,7 +194,11 @@ public final class StyleDTO implements DataTransferObject {
     }
 
     /**
-     * setFilename purpose.<p>Description ...</p>
+     * setFilename purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param file
      */
@@ -173,7 +207,11 @@ public final class StyleDTO implements DataTransferObject {
     }
 
     /**
-     * setId purpose.<p>Description ...</p>
+     * setId purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param string
      */

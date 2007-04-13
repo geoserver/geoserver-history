@@ -19,17 +19,13 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Admin Index Action.<p>DOCUMENT ME.</p>
- *
+ * Admin Index Action.
+ * <p>
+ * DOCUMENT ME.
+ * </p>
  * @author $Author: Alessio Fabiani $ (last modification)
  */
 public class AdminIndexAction extends ConfigAction {
-    private static final String JAI_TILE_PRIORITY = "JAI_TILE_PRIORITY"; //$NON-NLS-1$
-    private static final String JAI_TILE_THREADS = "JAI_TILE_THREADS"; //$NON-NLS-1$
-    private static final String JAI_MEM_THRESHOLD = "JAI_MEM_THRESHOLD"; //$NON-NLS-1$
-    private static final String JAI_MEM_USED = "JAI_MEM_USED"; //$NON-NLS-1$
-    private static final String JAI_MEM_CAPACITY = "JAI_MEM_CAPACITY"; //$NON-NLS-1$
-
     /* (non-Javadoc)
      * @see org.vfny.geoserver.action.ConfigAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, org.vfny.geoserver.global.UserContainer, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -47,11 +43,11 @@ public class AdminIndexAction extends ConfigAction {
         final int numThreads = jaiDef.getTileScheduler().getParallelism();
         final int priiority = jaiDef.getTileScheduler().getPriority();
 
-        request.setAttribute(JAI_MEM_CAPACITY, new Long(memCapacity));
-        request.setAttribute(JAI_MEM_USED, new Long(memUsed));
-        request.setAttribute(JAI_MEM_THRESHOLD, new Float(memThreshold));
-        request.setAttribute(JAI_TILE_THREADS, new Integer(numThreads));
-        request.setAttribute(JAI_TILE_PRIORITY, new Integer(priiority));
+        request.setAttribute("JAI_MEM_CAPACITY", new Long(memCapacity));
+        request.setAttribute("JAI_MEM_USED", new Long(memUsed));
+        request.setAttribute("JAI_MEM_THRESHOLD", new Float(memThreshold));
+        request.setAttribute("JAI_TILE_THREADS", new Integer(numThreads));
+        request.setAttribute("JAI_TILE_PRIORITY", new Integer(priiority));
 
         // return back to the admin screen
         //

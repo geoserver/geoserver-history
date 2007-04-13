@@ -19,6 +19,7 @@ import javax.servlet.ServletContext;
  * The application configuratoin facade.
  *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
+ *
  */
 public class Config implements ApplicationContextAware {
     protected static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
@@ -65,7 +66,7 @@ public class Config implements ApplicationContextAware {
         ServletContext sc = this.context.getServletContext();
 
         try {
-            GeoserverDataDirectory.init(sc);
+            GeoserverDataDirectory.init(this.context);
             reader = new XMLConfigReader(dataDirectory(), sc);
         } catch (ConfigurationException e) {
             String msg = "Error creating xml config reader";

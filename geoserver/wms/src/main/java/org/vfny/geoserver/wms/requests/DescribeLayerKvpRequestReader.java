@@ -21,38 +21,39 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Parses a DescribeLayer request, wich consists only of a list of layer
- * names, given by the <code>"LAYER"</code> parameter.
+ * Parses a DescribeLayer request, wich consists only of a list of
+ * layer names, given by the <code>"LAYER"</code> parameter.
+ *
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
  */
 public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
-    /** package's logger */
+    /** package's logger  */
     private static final Logger LOGGER = Logger.getLogger(DescribeLayerKvpRequestReader.class.getPackage()
                                                                                              .getName());
 
     /**
-             * Constructs a new DescribeLayer request parser.
-             * @param params
-             * @param service The service that handles the request
-             */
+     * Constructs a new DescribeLayer request parser.
+     * @param params
+     * @param service The service that handles the request
+     */
     public DescribeLayerKvpRequestReader(Map params, WMService service) {
         super(params, service);
     }
 
     /**
-     * Does the request parsing and constructs a
-     * <code>DescribeLayerRequest</code>, wich holds the requiered layers as
-     * <code>FeatureTypeInfo</code> references.
+     * Does the request parsing and constructs a <code>DescribeLayerRequest</code>,
+     * wich holds the requiered layers as <code>FeatureTypeInfo</code> references.
      *
      * @param request the original request.
      *
      * @return the parsed and validated <code>DescribeLayerRequest</code>
      *
      * @throws ServiceException see "throws WmsException"...
-     * @throws WmsException if no layers has been requested, or one of the
-     *         requested layers does not exists on this server instance.
+     * @throws WmsException if no layers has been requested, or
+     * one of the requested layers does not exists on this
+     * server instance.
      */
     public Request getRequest(HttpServletRequest request)
         throws ServiceException {
@@ -120,8 +121,6 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
                     throw new WmsException(cex, layerName + ": no such layer on this server",
                         "LayerNotDefined");
                 }
-
-                req.addLayer(layer);
 
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.fine(new StringBuffer(layerName).append(" found").toString());

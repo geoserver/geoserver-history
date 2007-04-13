@@ -64,13 +64,16 @@ public interface GetLegendGraphicProducer {
      * <code>writeTo(OutputStream)</code>
      *
      * @return the output format
+     *
+     * @throws java.lang.IllegalStateException if this method is called before
+     *         {@linkplain #produceLegendGraphic(GetLegendGraphicRequest)}.
      */
     String getContentType() throws java.lang.IllegalStateException;
 
     /**
-     * asks the legend graphic producer to stop processing since it
-     * will be no longer needed (for example, because the request was
-     * interrupted by the user)
+     * asks the legend graphic producer to stop processing since it will be no
+     * longer needed (for example, because the request was interrupted by the
+     * user)
      */
     void abort();
 }

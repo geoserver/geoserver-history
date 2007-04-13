@@ -33,10 +33,10 @@ import javax.media.jai.InterpolationNearest;
 
 
 /**
- * DOCUMENT ME!
  *
  * @author Simone Giannecchini, GeoSolutions
  * @author Alessio Fabiani, GeoSolutions
+ *
  */
 public class WCSUtils {
     private final static Hints LENIENT_HINT = new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
@@ -76,19 +76,19 @@ public class WCSUtils {
     }
 
     /**
-     * <strong>Reprojecting</strong><br> The new grid geometry can have
-     * a different coordinate reference system than the underlying grid
-     * geometry. For example, a grid coverage can be reprojected from a
-     * geodetic coordinate reference system to Universal Transverse Mercator
-     * CRS.
+     * <strong>Reprojecting</strong><br>
+     * The new grid geometry can have a different coordinate reference system
+     * than the underlying grid geometry. For example, a grid coverage can be
+     * reprojected from a geodetic coordinate reference system to Universal
+     * Transverse Mercator CRS.
      *
-     * @param coverage GridCoverage2D
-     * @param sourceCRS CoordinateReferenceSystem
-     * @param targetCRS CoordinateReferenceSystem
-     * @param interpolation DOCUMENT ME!
-     *
+     * @param coverage
+     *            GridCoverage2D
+     * @param sourceCRS
+     *            CoordinateReferenceSystem
+     * @param targetCRS
+     *            CoordinateReferenceSystem
      * @return GridCoverage2D
-     *
      * @throws WcsException
      */
     public static GridCoverage2D reproject(GridCoverage2D coverage,
@@ -118,19 +118,19 @@ public class WCSUtils {
     }
 
     /**
-     * <strong>Interpolating</strong><br> Specifies the interpolation
-     * type to be used to interpolate values for points which fall between
-     * grid cells. The default value is nearest neighbor. The new
-     * interpolation type operates on all sample dimensions. Possible values
-     * for type are: {@code "NearestNeighbor"}, {@code "Bilinear"} and {@code
-     * "Bicubic"} (the {@code "Optimal"} interpolation type is currently not
-     * supported).
+     * <strong>Interpolating</strong><br>
+     * Specifies the interpolation type to be used to interpolate values for
+     * points which fall between grid cells. The default value is nearest
+     * neighbor. The new interpolation type operates on all sample dimensions.
+     * Possible values for type are: {@code "NearestNeighbor"},
+     * {@code "Bilinear"} and {@code "Bicubic"} (the {@code "Optimal"}
+     * interpolation type is currently not supported).
      *
-     * @param coverage GridCoverage2D
-     * @param interpolation Interpolation
-     *
+     * @param coverage
+     *            GridCoverage2D
+     * @param interpolation
+     *            Interpolation
      * @return GridCoverage2D
-     *
      * @throws WcsException
      */
     public static GridCoverage2D interpolate(GridCoverage2D coverage,
@@ -154,16 +154,20 @@ public class WCSUtils {
     }
 
     /**
-     * <strong>Scaling</strong><br> Let user to scale down to the EXACT
-     * needed resolution. This step does not prevent from having loaded an
-     * overview of the original image based on the requested scale.
+     * <strong>Scaling</strong><br>
+     * Let user to scale down to the EXACT needed resolution. This step does not
+     * prevent from having loaded an overview of the original image based on the
+     * requested scale.
      *
-     * @param coverage GridCoverage2D
-     * @param newGridRange GridRange
-     * @param sourceCoverage GridCoverage
-     * @param sourceCRS CoordinateReferenceSystem
+     * @param coverage
+     *            GridCoverage2D
+     * @param newGridRange
+     *            GridRange
+     * @param sourceCoverage
+     *            GridCoverage
+     * @param sourceCRS
+     *            CoordinateReferenceSystem
      * @param destinationEnvelopeInSourceCRS
-     *
      * @return GridCoverage2D
      */
     public static GridCoverage2D scale(final GridCoverage2D coverage, final GridRange newGridRange,
@@ -208,7 +212,6 @@ public class WCSUtils {
      * @param interpolation
      * @param be
      * @param gc
-     *
      * @return
      */
     public static GridCoverage2D scale(final double scaleX, final double scaleY, float xTrans,
@@ -232,7 +235,6 @@ public class WCSUtils {
      * @param gc
      * @param crs
      * @param interpolation
-     *
      * @return
      */
     public static GridCoverage2D resample(final GridCoverage2D gc, CoordinateReferenceSystem crs,
@@ -246,15 +248,14 @@ public class WCSUtils {
     }
 
     /**
-     * Subsampling the provided {@link GridCoverage2D} with the
-     * provided parameters.
+     * Subsampling the provided {@link GridCoverage2D} with the provided
+     * parameters.
      *
      * @param gc
      * @param scaleXInt
      * @param scaleYInt
      * @param interpolation
      * @param be
-     *
      * @return
      */
     public static GridCoverage2D filteredSubsample(final GridCoverage2D gc, int scaleXInt,
@@ -286,17 +287,19 @@ public class WCSUtils {
     }
 
     /**
-     * <strong>Cropping</strong><br> The crop operation is responsible
-     * for selecting geographic subareas of the source coverage.
+     * <strong>Cropping</strong><br>
+     * The crop operation is responsible for selecting geographic subareas of
+     * the source coverage.
      *
-     * @param coverage Coverage
-     * @param sourceEnvelope GeneralEnvelope
-     * @param sourceCRS CoordinateReferenceSystem
-     * @param destinationEnvelopeInSourceCRS GeneralEnvelope
-     * @param conserveEnvelope DOCUMENT ME!
-     *
+     * @param coverage
+     *            Coverage
+     * @param sourceEnvelope
+     *            GeneralEnvelope
+     * @param sourceCRS
+     *            CoordinateReferenceSystem
+     * @param destinationEnvelopeInSourceCRS
+     *            GeneralEnvelope
      * @return GridCoverage2D
-     *
      * @throws WcsException
      */
     public static GridCoverage2D crop(final Coverage coverage,
@@ -347,24 +350,23 @@ public class WCSUtils {
 
     /**
      * <strong>Band Selecting</strong><br>
-     * Chooses <var>N</var>{@linkPlain
-     * org.geotools.coverage.GridSampleDimension sample dimensions} from a
-     * grid coverage and copies their sample data to the destination grid
-     * coverage in the order specified. The {@code "SampleDimensions"}
-     * parameter specifies the source {@link
-     * org.geotools.coverage.GridSampleDimension} indices, and its size
-     * ({@code SampleDimensions.length}) determines the number of sample
-     * dimensions of the destination grid coverage. The destination coverage
-     * may have any number of sample dimensions, and a particular sample
-     * dimension of the source coverage may be repeated in the destination
-     * coverage by specifying it multiple times in the {@code
-     * "SampleDimensions"} parameter.
+     * Chooses <var>N</var>
+     * {@linkplain org.geotools.coverage.GridSampleDimension sample dimensions}
+     * from a grid coverage and copies their sample data to the destination grid
+     * coverage in the order specified. The {@code "SampleDimensions"} parameter
+     * specifies the source {@link org.geotools.coverage.GridSampleDimension}
+     * indices, and its size ({@code SampleDimensions.length}) determines the
+     * number of sample dimensions of the destination grid coverage. The
+     * destination coverage may have any number of sample dimensions, and a
+     * particular sample dimension of the source coverage may be repeated in the
+     * destination coverage by specifying it multiple times in the
+     * {@code "SampleDimensions"} parameter.
      *
-     * @param params Set
-     * @param coverage GridCoverage
-     *
+     * @param params
+     *            Set
+     * @param coverage
+     *            GridCoverage
      * @return Coverage
-     *
      * @throws WcsException
      */
     public static Coverage bandSelect(final Map params, final GridCoverage coverage)

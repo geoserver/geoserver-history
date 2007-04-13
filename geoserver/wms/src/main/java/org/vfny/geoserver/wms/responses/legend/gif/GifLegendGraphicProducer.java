@@ -27,8 +27,8 @@ public class GifLegendGraphicProducer extends DefaultRasterLegendProducer {
     static final String MIME_TYPE = "image/gif";
 
     /**
-             * Creates a new producer of legends in gif format.
-             */
+     * Creates a new producer of legends in gif format.
+     */
     public GifLegendGraphicProducer() {
         super();
     }
@@ -49,8 +49,8 @@ public class GifLegendGraphicProducer extends DefaultRasterLegendProducer {
     }
 
     /**
-     * Returns the "image/gif" mime type since that is the only output
-     * format this producer specializes on.
+     * Returns the "image/gif" mime type since that is the only output format
+     * this producer specializes on.
      *
      * @return <code>"image/gif"</code>
      *

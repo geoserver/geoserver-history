@@ -185,7 +185,7 @@ public class WFSContentForm extends ActionForm {
             errors.add("serviceLevel", new ActionError("error.serviceLevel.invalid"));
         }
 
-        if ((onlineResource == null) || "".equals(onlineResource)) {
+        if ((onlineResource == null) || onlineResource.equals("")) {
             errors.add("onlineResource", new ActionError("error.wfs.onlineResource.required"));
         } else {
             try {
@@ -254,9 +254,8 @@ public class WFSContentForm extends ActionForm {
     }
 
     /**
-     * Whether the srs xml attribute should be in the EPSG:4326
-     * (non-xml) style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-     * style.
+     * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
      *
      * @return <tt>true</tt> if the srs is reported with the xml style
      */
@@ -265,9 +264,8 @@ public class WFSContentForm extends ActionForm {
     }
 
     /**
-     * Sets whether the srs xml attribute should be in the EPSG:4326
-     * (non-xml) style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326
-     * style.
+     * Sets whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
      *
      * @param doXmlStyle whether the srs style should be xml or not.
      */
@@ -296,8 +294,8 @@ public class WFSContentForm extends ActionForm {
     }
 
     /**
-     * get the current value of the citeConformanceHacksChecked (ie.
-     * was it in the http form?)
+     * get the current value of the citeConformanceHacksChecked (ie. was it in
+     * the http form?)
      *
      * @return
      */
@@ -325,8 +323,8 @@ public class WFSContentForm extends ActionForm {
     }
 
     /**
-     * get the current value of the featureBoundingChecked (ie. was it
-     * in the http form?)
+     * get the current value of the featureBoundingChecked (ie. was it in the
+     * http form?)
      *
      * @return
      */

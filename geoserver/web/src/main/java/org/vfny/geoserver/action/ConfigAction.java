@@ -47,11 +47,11 @@ import javax.servlet.http.HttpServletResponse;
  * <b>class</b> MyConfigAction <b>extends</b> ConfigAction {
  *   Redirect execute( HttpServletRequest request, ){
  *     <b>if</b>( !isLoggedIn( request )){
- *       return new Redirect(“Login Page”);
+ *       return new Redirect(ï¿½Login Pageï¿½);
  *     }
  *     UserContainer user = getUserContainer( request );
- *     …
- *     <b>return new</b> Redirect(“my.jsp”);
+ *     ï¿½
+ *     <b>return new</b> Redirect(ï¿½my.jspï¿½);
  *   }
  * }
  * </code></pre>
@@ -62,8 +62,8 @@ import javax.servlet.http.HttpServletResponse;
  * <pre><code>
  * <b>class</b> MyConfigAction <b>extends</b> ConfigAction {
  *   Redirect execute( UserContainer user, HttpServletRequest request ){
- *     …
- *     <b>return new</b> Redirect(“my.jsp”);
+ *     ï¿½
+ *     <b>return new</b> Redirect(ï¿½my.jspï¿½);
  *   }
  * }
  * </code></pre>
@@ -76,7 +76,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author jive
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
- * @version $Id: ConfigAction.java,v 1.11 2004/03/02 02:36:00 jive Exp $
+ * @version $Id$
  */
 public class ConfigAction extends GeoServerAction {
     /**

@@ -22,12 +22,16 @@ import java.util.prefs.Preferences;
 
 
 /**
- * <code>Log4JFormatter</code> looks like:<blockquote><pre>
+ * <code>Log4JFormatter</code> looks like:
+ * <blockquote>
+ * <pre>
  * [core FINE] A log message logged with level FINE from the "org.geotools.core"
- * logger.</pre></blockquote>A formatter writting log message on a single
- * line. This formatter is used by GeoServer instead of {@link
- * SimpleFormatter}. The main difference is that this formatter use only one
- * line per message instead of two. For example, a message formatted by
+ * logger.</pre>
+ * </blockquote>
+ * A formatter writting log message on a single line. This formatter is used by
+ * GeoServer instead of {@link SimpleFormatter}. The main difference is that
+ * this formatter use only one line per message instead of two. For example, a
+ * message formatted by
  *
  * @author Martin Desruisseaux
  * @author Rob Hranac
@@ -35,51 +39,57 @@ import java.util.prefs.Preferences;
  */
 public class Log4JFormatter extends Formatter {
     /**
-     * The string to write at the begining of all log headers (e.g.
-     * "[FINE core]")
+     * The string to write at the begining of all log headers (e.g. "[FINE
+     * core]")
      */
     private static final String PREFIX = "[";
 
     /**
-     * The string to write at the end of every log header (e.g. "[FINE
-     * core]"). It should includes the spaces between the header and the
-     * message body.
+     * The string to write at the end of every log header (e.g. "[FINE core]").
+     * It should includes the spaces between the header and the message body.
      */
     private static final String SUFFIX = "] ";
 
     /**
-     * The string to write at the end of every log header (e.g. "[FINE
-     * core]"). It should includes the spaces between the header and the
-     * message body.
+     * The string to write at the end of every log header (e.g. "[FINE core]").
+     * It should includes the spaces between the header and the message body.
      */
     private static long startMillis;
 
     /**
-     * The line separator. This is the value of the "line.separator"
-     * property at the time the <code>Log4JFormatter</code> was created.
+     * The line separator. This is the value of the "line.separator" property
+     * at the time the <code>Log4JFormatter</code> was created.
      */
     private final String lineSeparator = System.getProperty("line.separator", "\n");
 
     /**
-     * The line separator for the message body. This line always begin
-     * with {@link #lineSeparator}, followed by some amount of spaces in order
-     * to align the message.
+     * The line separator for the message body. This line always begin with
+     * {@link #lineSeparator}, followed by some amount of spaces in order to
+     * align the message.
      */
     private String bodyLineSeparator = lineSeparator;
 
     /**
-     * The minimum amount of spaces to use for writting level and
-     * module name before the message.  For example if this value is 12, then
-     * a message from  module "org.geotools.core" with level FINE would be
-     * formatted as "<code>[core&nbsp;&nbsp;FINE]</code><cite>the
-     * message</cite>" (i.e. the whole <code>[&nbsp;]</code> part is 12
-     * characters wide).
+     * The minimum amount of spaces to use for writting level and module name
+     * before the message.  For example if this value is 12, then a message
+     * from  module "org.geotools.core" with level FINE would be formatted as
+     * "<code>[core&nbsp;&nbsp;FINE]</code><cite>the message</cite>" (i.e. the
+     * whole <code>[&nbsp;]</code> part is 12 characters wide).
      */
     private final int margin;
 
     /**
-     * Buffer for formatting messages. We will reuse this buffer in
-     * order to reduce memory allocations.
+     * The base logger name. This is used for shortening the logger name when
+     * formatting message. For example, if the base logger name is
+     * "org.geotools"  and a log record come from the "org.geotools.core"
+     * logger, it will be  formatted as "[LEVEL core]" (i.e. the
+     * "org.geotools" part is ommited).
+     */
+    private final String base;
+
+    /**
+     * Buffer for formatting messages. We will reuse this buffer in order to
+     * reduce memory allocations.
      */
     private final StringBuffer buffer;
 
@@ -92,8 +102,15 @@ public class Log4JFormatter extends Formatter {
 
     /**
      * Construct a <code>Log4JFormatter</code>.
+     *
+     * @param base The base logger name. This is used for shortening the logger
+     *        name when formatting message. For example, if the base  logger
+     *        name is "org.geotools" and a log record come from  the
+     *        "org.geotools.core" logger, it will be formatted as  "[LEVEL
+     *        core]" (i.e. the "org.geotools" part is ommited).
      */
-    public Log4JFormatter() {
+    public Log4JFormatter(final String base) {
+        this.base = base.trim();
         this.margin = getHeaderWidth();
         Log4JFormatter.startMillis = System.currentTimeMillis();
 
@@ -117,7 +134,7 @@ public class Log4JFormatter extends Formatter {
         final String recordLevel = record.getLevel().getLocalizedName();
 
         try {
-            buffer.setLength(0);
+            buffer.setLength(1);
 
             final Long millis = new Long(record.getMillis() - startMillis);
             writer.write(millis.toString());
@@ -140,14 +157,11 @@ public class Log4JFormatter extends Formatter {
              */
             writer.setLineSeparator(bodyLineSeparator);
 
-            String message = formatMessage(record);
-
-            if (message != null) {
-                writer.write(message);
-            } else {
-                writer.write("No message");
+            if (record.getMessage() == null) {
+                record.setMessage("null");
             }
 
+            writer.write(formatMessage(record));
             writer.setLineSeparator(lineSeparator);
             writer.write('\n');
 
@@ -170,9 +184,7 @@ public class Log4JFormatter extends Formatter {
 
     /**
      * Returns the full stack trace of the given exception
-     *
-     * @param t
-     *
+     * @param record
      * @return
      */
     private String getStackTrace(Throwable t) {
@@ -185,8 +197,8 @@ public class Log4JFormatter extends Formatter {
     }
 
     /**
-     * Setup a <code>Log4JFormatter</code> for the specified logger and
-     * its children.  This method search for all instances of {@link
+     * Setup a <code>Log4JFormatter</code> for the specified logger and its
+     * children.  This method search for all instances of {@link
      * ConsoleHandler}  using the {@link SimpleFormatter}. If such instances
      * are found, they are  replaced by a single instance of
      * <code>Log4JFormatter</code> writting  to the {@linkPlain System#out
@@ -243,7 +255,7 @@ public class Log4JFormatter extends Formatter {
 
                         if (formatter.getClass().equals(SimpleFormatter.class)) {
                             if (log4j == null) {
-                                log4j = new Log4JFormatter();
+                                log4j = new Log4JFormatter(base);
                             }
 
                             try {
@@ -271,7 +283,7 @@ public class Log4JFormatter extends Formatter {
         //Artie Konin suggested fix (see GEOS-366)
         if (0 == logger.getHandlers().length) // seems that getHandlers() cannot return null
          {
-            log4j = new Log4JFormatter();
+            log4j = new Log4JFormatter(base);
 
             Handler handler = new Stdout();
             handler.setFormatter(log4j);
@@ -293,9 +305,9 @@ public class Log4JFormatter extends Formatter {
     }
 
     /**
-     * Returns the header width. This is the default value to use for
-     * {@link #margin}, if no value has been explicitely set. This value can
-     * be  set in user's preferences.
+     * Returns the header width. This is the default value to use for  {@link
+     * #margin}, if no value has been explicitely set. This value can be  set
+     * in user's preferences.
      *
      * @return The header width.
      */
@@ -304,8 +316,8 @@ public class Log4JFormatter extends Formatter {
     }
 
     /**
-     * Set the header width. This is the default value to use for
-     * {@link #margin} for next {@link Log4JFormatter} to be created.
+     * Set the header width. This is the default value to use for {@link
+     * #margin} for next {@link Log4JFormatter} to be created.
      *
      * @param margin the size of the margin to set.
      */
@@ -314,9 +326,9 @@ public class Log4JFormatter extends Formatter {
     }
 
     /**
-     * A {@link ConsoleHandler} sending output to {@link System#out}
-     * instead of {@link System#err}  This handler will use a {@link
-     * Log4JFormatter} writting log message on a single line.
+     * A {@link ConsoleHandler} sending output to {@link System#out} instead of
+     * {@link System#err}  This handler will use a {@link Log4JFormatter}
+     * writting log message on a single line.
      *
      * @task TODO: This class should subclass {@link ConsoleHandler}.
      *       Unfortunatly, this is currently not possible because  {@link
@@ -330,13 +342,13 @@ public class Log4JFormatter extends Formatter {
         }
 
         /**
-                         * Construct a handler.
-                         *
-                         * @param handler The handler to copy properties from.
-                         * @param formatter The formatter to use.
-                         *
-                         * @throws UnsupportedEncodingException if the encoding is not valid.
-                         */
+         * Construct a handler.
+         *
+         * @param handler The handler to copy properties from.
+         * @param formatter The formatter to use.
+         *
+         * @throws UnsupportedEncodingException if the encoding is not valid.
+         */
         public Stdout(final Handler handler, final Formatter formatter)
             throws UnsupportedEncodingException {
             super(System.out, formatter);
@@ -357,9 +369,9 @@ public class Log4JFormatter extends Formatter {
         }
 
         /**
-         * Override {@link StreamHandler#close} to do a flush but
-         * not to close the output stream. That is, we do <b>not</b> close
-         * {@link System#out}.
+         * Override {@link StreamHandler#close} to do a flush but not to close
+         * the output stream. That is, we do <b>not</b> close {@link
+         * System#out}.
          */
         public void close() {
             flush();

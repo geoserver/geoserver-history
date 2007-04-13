@@ -12,35 +12,32 @@ import java.util.Map;
 
 
 /**
- * NameSpaceTranslatorFactory purpose.<p>Follows the factory pattern.
- * Creates and stores a list of name space translators.</p>
- *
+ * NameSpaceTranslatorFactory purpose.
+ * <p>
+ * Follows the factory pattern. Creates and stores a list of name space translators.
+ * </p>
+ * @see NameSpaceTranslator
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: NameSpaceTranslatorFactory.java,v 1.3 2004/02/09 18:00:02 dmzwiers Exp $
- *
- * @see NameSpaceTranslator
+ * @version $Id$
  */
 public class NameSpaceTranslatorFactory {
-    /** the only instance */
-    private final static NameSpaceTranslatorFactory instance = new NameSpaceTranslatorFactory();
-
-    /**
-     * map of namespace names as Strings -> Class representations of
-     * NameSpaceTranslators
-     */
+    /** map of namespace names as Strings -> Class representations of NameSpaceTranslators */
     private Map namespaceTranslators;
 
     /** map of prefixs as String -> Instances of NameSpaceTranslators */
     private Map namespaceTranslatorInstances;
 
+    /** the only instance */
+    private final static NameSpaceTranslatorFactory instance = new NameSpaceTranslatorFactory();
+
     /**
-             * NameSpaceTranslatorFactory constructor.
-             * <p>
-             * Loads some default prefixes into memory when the class is first loaded.
-             * </p>
-             *
-             */
+     * NameSpaceTranslatorFactory constructor.
+     * <p>
+     * Loads some default prefixes into memory when the class is first loaded.
+     * </p>
+     *
+     */
     private NameSpaceTranslatorFactory() {
         namespaceTranslators = new HashMap();
         namespaceTranslatorInstances = new HashMap();
@@ -55,9 +52,10 @@ public class NameSpaceTranslatorFactory {
     }
 
     /**
-     * getInstance purpose.<p>Completes the singleton pattern of this
-     * factory class.</p>
-     *
+     * getInstance purpose.
+     * <p>
+     * Completes the singleton pattern of this factory class.
+     * </p>
      * @return NameSpaceTranslatorFactory The instance.
      */
     public static NameSpaceTranslatorFactory getInstance() {
@@ -65,16 +63,17 @@ public class NameSpaceTranslatorFactory {
     }
 
     /**
-     * addNameSpaceTranslator purpose.<p>Adds a new translator for the
-     * namespace specified if a NameSpaceTranslator was registered for that
-     * namespace.</p>
-     *  <p>Some the magic for creating instances using the classloader
-     * occurs here (ie. the translators are not loaded lazily)</p>
-     *
+     * addNameSpaceTranslator purpose.
+     * <p>
+     * Adds a new translator for the namespace specified if a
+     * NameSpaceTranslator was registered for that namespace.
+     * </p>
+     * <p>
+     * Some the magic for creating instances using the classloader occurs here
+     * (ie. the translators are not loaded lazily)
+     * </p>
      * @param prefix The desired namespace prefix
      * @param namespace The desired namespace.
-     *
-     * @throws NullPointerException DOCUMENT ME!
      */
     public void addNameSpaceTranslator(String prefix, String namespace) {
         if ((prefix == null) || (namespace == null)) {
@@ -99,10 +98,11 @@ public class NameSpaceTranslatorFactory {
     }
 
     /**
-     * getNameSpaceTranslator purpose.<p>Description ...</p>
-     *
+     * getNameSpaceTranslator purpose.
+     * <p>
+     * Description ...
+     * </p>
      * @param prefix the prefix of the translator to get.
-     *
      * @return the translator, or null if it was not found
      */
     public NameSpaceTranslator getNameSpaceTranslator(String prefix) {
@@ -110,10 +110,10 @@ public class NameSpaceTranslatorFactory {
     }
 
     /**
-     * registerNameSpaceTranslator purpose.<p>Registers a namespace and
-     * it's translator with the factory. good for adding additional namespaces
-     * :)</p>
-     *
+     * registerNameSpaceTranslator purpose.
+     * <p>
+     * Registers a namespace and it's translator with the factory. good for adding additional namespaces :)
+     * </p>
      * @param namespace The namespace.
      * @param nameSpaceTranslator The translator class for this namespace.
      */

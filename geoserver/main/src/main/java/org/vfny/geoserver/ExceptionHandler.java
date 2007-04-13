@@ -8,7 +8,7 @@ package org.vfny.geoserver;
 /**
  * DOCUMENT ME!
  *
- * @author Gabriel Roldán
+ * @author Gabriel Roldï¿½n
  * @version $revision$
  */
 public interface ExceptionHandler {

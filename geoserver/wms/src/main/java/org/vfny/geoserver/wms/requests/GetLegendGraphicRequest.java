@@ -11,9 +11,13 @@ import org.vfny.geoserver.wms.servlets.WMService;
 
 
 /**
- * Holds the parsed parameters for a GetLegendGraphic WMS request.<p>The
- * GET parameters of the GetLegendGraphic operation are defined as follows
- * (from SLD 1.0 spec, ch.12):<br><pre><table>
+ * Holds the parsed parameters for a GetLegendGraphic WMS request.
+ *
+ * <p>
+ * The GET parameters of the GetLegendGraphic operation are defined as follows
+ * (from SLD 1.0 spec, ch.12):<br>
+ * <pre>
+ * <table>
  *  <tr><td><b>Parameter</b></td><td><b>Required</b></td><td><b>Description</b></td></tr>
  *  <tr><td>VERSION </td><td>Required </td><td>Version as required by OGC interfaces.</td></tr>
  *  <tr><td>REQUEST </td><td>Required </td><td>Value must be  GetLegendRequest . </td></tr>
@@ -28,14 +32,19 @@ import org.vfny.geoserver.wms.servlets.WMService;
  *  <tr><td>WIDTH </td><td>Optional </td><td>This gives a hint for the width of the returned graphic in pixels. Vector-graphics can use this value as a hint for the level of detail to include. </td></tr>
  *  <tr><td>HEIGHT </td><td>Optional </td><td>This gives a hint for the height of the returned graphic in pixels. </td></tr>
  *  <tr><td>EXCEPTIONS </td><td>Optional </td><td>This gives the MIME type of the format in which to return exceptions. Allowed values are the same as for the EXCEPTIONS= parameter of the WMS GetMap request.</td></tr>
- *  </table> </pre></p>
- *  <p>The GetLegendGraphic operation itself is optional for an SLD-enabled
- * WMS. It provides a general mechanism for acquiring legend symbols, beyond
- * the LegendURL reference of WMS Capabilities. Servers supporting the
+ *  </table>
+ *  </pre>
+ * </p>
+ *
+ * <p>
+ * The GetLegendGraphic operation itself is optional for an SLD-enabled WMS. It
+ * provides a general mechanism for acquiring legend symbols, beyond the
+ * LegendURL reference of WMS Capabilities. Servers supporting the
  * GetLegendGraphic call might code LegendURL references as GetLegendGraphic
  * for interface consistency. Vendorspecific parameters may be added to
  * GetLegendGraphic requests and all of the usual OGC-interface options and
- * rules apply. No XML-POST method for GetLegendGraphic is presently defined.</p>
+ * rules apply. No XML-POST method for GetLegendGraphic is presently defined.
+ * </p>
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
@@ -45,22 +54,22 @@ public class GetLegendGraphicRequest extends WMSRequest {
     public static final String SLD_VERSION = "1.0.0";
 
     /**
-     * default legend graphic width, in pixels, to apply if no WIDTH
-     * parameter was passed
+     * default legend graphic width, in pixels, to apply if no WIDTH parameter
+     * was passed
      */
     public static final int DEFAULT_WIDTH = 20;
 
     /**
-     * default legend graphic height, in pixels, to apply if no WIDTH
-     * parameter was passed
+     * default legend graphic height, in pixels, to apply if no WIDTH parameter
+     * was passed
      */
     public static final int DEFAULT_HEIGHT = 20;
 
     /**
-     * The default image format in which to produce a legend graphic.
-     * Not really used when performing user requests, since FORMAT is a
-     * mandatory parameter, but by now serves as a default for expressing
-     * LegendURL layer attribute in GetCapabilities.
+     * The default image format in which to produce a legend graphic. Not
+     * really used when performing user requests, since FORMAT is a mandatory
+     * parameter, but by now serves as a default for expressing LegendURL
+     * layer attribute in GetCapabilities.
      */
     public static final String DEFAULT_FORMAT = "image/png";
 
@@ -68,19 +77,18 @@ public class GetLegendGraphicRequest extends WMSRequest {
     private FeatureType layer;
 
     /**
-     * The Style object for styling the legend graphic, or layer's
-     * default if not provided. This style can be aquired by evaluating the
-     * STYLE parameter, which provides one of the  layer's named styles, the
-     * SLD parameter, which provides a URL for an external SLD document, or
-     * the SLD_BODY parameter, which provides the SLD body in the request
-     * body.
+     * The Style object for styling the legend graphic, or layer's default if
+     * not provided. This style can be aquired by evaluating the STYLE
+     * parameter, which provides one of the  layer's named styles, the SLD
+     * parameter, which provides a URL for an external SLD document, or the
+     * SLD_BODY parameter, which provides the SLD body in the request body.
      */
     private Style style;
 
     /**
-     * should hold FEATURETYPE parameter value, though not used by now,
-     * since GeoServer WMS still does not supports nested layers and layers
-     * has only a single feature type. This should change in the future.
+     * should hold FEATURETYPE parameter value, though not used by now, since
+     * GeoServer WMS still does not supports nested layers and layers has only
+     * a single feature type. This should change in the future.
      */
     private String featureType;
 
@@ -88,14 +96,14 @@ public class GetLegendGraphicRequest extends WMSRequest {
     private Rule rule;
 
     /**
-     * holds the standarized scale denominator passed as the SCALE
-     * parameter value, or <code>-1.0</code> if not provided
+     * holds the standarized scale denominator passed as the SCALE parameter
+     * value, or <code>-1.0</code> if not provided
      */
     private double scale = -1d;
 
     /**
-     * the mime type of the file format in which to return the legend
-     * graphic, as requested by the FORMAT request parameter value.
+     * the mime type of the file format in which to return the legend graphic,
+     * as requested by the FORMAT request parameter value.
      */
     private String format;
 
@@ -115,9 +123,9 @@ public class GetLegendGraphicRequest extends WMSRequest {
     private String exceptionsFormat = GetMapRequest.SE_XML;
 
     /**
-             * Creates a new GetLegendGraphicRequest object.
-             * @param service The service that will handle the request
-             */
+     * Creates a new GetLegendGraphicRequest object.
+     * @param service The service that will handle the request
+     */
     public GetLegendGraphicRequest(WMService service) {
         super("GetLegendGraphic", service);
     }

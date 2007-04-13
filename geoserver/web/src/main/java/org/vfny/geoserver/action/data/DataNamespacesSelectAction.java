@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
- * @version $Id: DataNamespacesSelectAction.java,v 1.8 2004/03/01 19:47:45 dmzwiers Exp $
+ * @version $Id$
  */
 public class DataNamespacesSelectAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
@@ -119,12 +119,11 @@ public class DataNamespacesSelectAction extends ConfigAction {
     }
 
     /**
-     * return true if the namespace is being used by a datastore. You
-     * dont want to delete a namespace thats actually being used.
+     *  return true if the namespace is being used by a datastore.
+     *  You dont want to delete a namespace thats actually being used.
      *
      * @param dataConfig
      * @param nsSelected
-     *
      * @return
      */
     private boolean dataStoresUseNamespace(DataConfig dataConfig, String nsSelected) {

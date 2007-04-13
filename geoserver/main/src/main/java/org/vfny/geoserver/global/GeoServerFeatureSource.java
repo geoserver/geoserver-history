@@ -14,14 +14,13 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.AbstractFilter;
-import org.geotools.filter.Filter;
-import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
-import org.geotools.filter.LogicFilter;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -30,16 +29,22 @@ import java.util.logging.Logger;
 
 
 /**
- * GeoServer wrapper for backend Geotools2 DataStore.<p>Support
- * FeatureSource decorator for FeatureTypeInfo that takes care of mapping the
- * FeatureTypeInfo's FeatureSource with the schema and definition query
- * configured for it.</p>
- *  <p>Because GeoServer requires that attributes always be returned in the
- * same order we need a way to smoothly inforce this. Could we use this class
- * to do so?</p>
+ * GeoServer wrapper for backend Geotools2 DataStore.
+ *
+ * <p>
+ * Support FeatureSource decorator for FeatureTypeInfo that takes care of
+ * mapping the FeatureTypeInfo's FeatureSource with the schema and definition
+ * query configured for it.
+ * </p>
+ *
+ * <p>
+ * Because GeoServer requires that attributes always be returned in the same
+ * order we need a way to smoothly inforce this. Could we use this class to do
+ * so?
+ * </p>
  *
  * @author Gabriel Rold�n
- * @version $Id: GeoServerFeatureSource.java,v 1.8 2004/02/13 18:45:50 dmzwiers Exp $
+ * @version $Id$
  */
 public class GeoServerFeatureSource implements FeatureSource {
     /** Shared package logger */
@@ -49,29 +54,29 @@ public class GeoServerFeatureSource implements FeatureSource {
     protected FeatureSource source;
 
     /**
-     * GeoTools2 Schema information<p>Is this the same as
-     * source.getSchema() or is it used supply the order that GeoServer
-     * requires attributes to be returned in?</p>
+     * GeoTools2 Schema information
+     *
+     * <p>
+     * Is this the same as source.getSchema() or is it used supply the order
+     * that GeoServer requires attributes to be returned in?
+     * </p>
      */
     private FeatureType schema;
 
     /** Used to constrain the Feature made available to GeoServer. */
-    private Filter definitionQuery = Filter.NONE;
+    private Filter definitionQuery = Filter.INCLUDE;
 
-    /**
-     * Geometries will be forced to this CRS (or null, if no forcing is
-     * needed)
-     */
+    /** Geometries will be forced to this CRS (or null, if no forcing is needed) */
     private CoordinateReferenceSystem forcedCRS;
 
     /**
-             * Creates a new GeoServerFeatureSource object.
-             *
-             * @param source GeoTools2 FeatureSource
-             * @param schema FeatureType returned by this FeatureSource
-             * @param definitionQuery Filter used to limit results
-             * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
-             */
+     * Creates a new GeoServerFeatureSource object.
+     *
+     * @param source GeoTools2 FeatureSource
+     * @param schema FeatureType returned by this FeatureSource
+     * @param definitionQuery Filter used to limit results
+     * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
+     */
     GeoServerFeatureSource(FeatureSource source, FeatureType schema, Filter definitionQuery,
         CoordinateReferenceSystem forcedCRS) {
         this.source = source;
@@ -80,21 +85,23 @@ public class GeoServerFeatureSource implements FeatureSource {
         this.forcedCRS = forcedCRS;
 
         if (this.definitionQuery == null) {
-            this.definitionQuery = Filter.NONE;
+            this.definitionQuery = Filter.INCLUDE;
         }
     }
 
     /**
-     * Factory that make the correct decorator for the provided
-     * featureSource.<p>This factory method is public and will be used
-     * to create all required subclasses. By comparison the constructors for
-     * this class have package visibiliy.</p>
+     * Factory that make the correct decorator for the provided featureSource.
+     *
+     * <p>
+     * This factory method is public and will be used to create all required
+     * subclasses. By comparison the constructors for this class have package
+     * visibiliy.
+     * </p>
      *
      * @param featureSource
      * @param schema DOCUMENT ME!
      * @param definitionQuery DOCUMENT ME!
-     * @param forcedCRS Geometries will be forced to this CRS (or null, if no
-     *        forcing is needed)
+     * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
      *
      * @return
      */
@@ -129,14 +136,20 @@ public class GeoServerFeatureSource implements FeatureSource {
         }
 
         try {
-            String handle = query.getHandle();
-            int maxFeatures = query.getMaxFeatures();
-            String typeName = query.getTypeName();
             String[] propNames = extractAllowedAttributes(query);
             Filter filter = query.getFilter();
             filter = makeDefinitionFilter(filter);
 
-            return new DefaultQuery(typeName, filter, maxFeatures, propNames, handle);
+            DefaultQuery defQuery = new DefaultQuery(query);
+            defQuery.setFilter(filter);
+            defQuery.setPropertyNames(propNames);
+
+            //set sort by
+            if (query.getSortBy() != null) {
+                defQuery.setSortBy(query.getSortBy());
+            }
+
+            return defQuery;
         } catch (Exception ex) {
             throw new DataSourceException(
                 "Could not restrict the query to the definition criteria: " + ex.getMessage(), ex);
@@ -144,12 +157,18 @@ public class GeoServerFeatureSource implements FeatureSource {
     }
 
     /**
-     * List of allowed attributes.<p>Creates a list of
-     * FeatureTypeInfo's attribute names based on the attributes requested by
-     * <code>query</code> and making sure they not contain any non exposed
-     * attribute.</p>
-     *  <p>Exposed attributes are those configured in the "attributes"
-     * element of the FeatureTypeInfo's configuration</p>
+     * List of allowed attributes.
+     *
+     * <p>
+     * Creates a list of FeatureTypeInfo's attribute names based on the
+     * attributes requested by <code>query</code> and making sure they not
+     * contain any non exposed attribute.
+     * </p>
+     *
+     * <p>
+     * Exposed attributes are those configured in the "attributes" element of
+     * the FeatureTypeInfo's configuration
+     * </p>
      *
      * @param query User's origional query
      *
@@ -185,9 +204,9 @@ public class GeoServerFeatureSource implements FeatureSource {
     }
 
     /**
-     * If a definition query has been configured for the
-     * FeatureTypeInfo, makes and return a new Filter that contains both the
-     * query's filter and the layer's definition one, by logic AND'ing them.
+     * If a definition query has been configured for the FeatureTypeInfo, makes
+     * and return a new Filter that contains both the query's filter and the
+     * layer's definition one, by logic AND'ing them.
      *
      * @param filter Origional user supplied Filter
      *
@@ -201,11 +220,9 @@ public class GeoServerFeatureSource implements FeatureSource {
         Filter newFilter = filter;
 
         try {
-            if (definitionQuery != Filter.NONE) {
-                FilterFactory ff = FilterFactoryFinder.createFilterFactory();
-                newFilter = ff.createLogicFilter(AbstractFilter.LOGIC_AND);
-                ((LogicFilter) newFilter).addFilter(definitionQuery);
-                ((LogicFilter) newFilter).addFilter(filter);
+            if (definitionQuery != Filter.INCLUDE) {
+                FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
+                newFilter = ff.and(definitionQuery, filter);
             }
         } catch (Exception ex) {
             throw new DataSourceException("Can't create the definition filter", ex);
@@ -215,7 +232,11 @@ public class GeoServerFeatureSource implements FeatureSource {
     }
 
     /**
-     * Implement getDataStore.<p>Description ...</p>
+     * Implement getDataStore.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      *
@@ -226,7 +247,11 @@ public class GeoServerFeatureSource implements FeatureSource {
     }
 
     /**
-     * Implement addFeatureListener.<p>Description ...</p>
+     * Implement addFeatureListener.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param listener
      *
@@ -237,7 +262,11 @@ public class GeoServerFeatureSource implements FeatureSource {
     }
 
     /**
-     * Implement removeFeatureListener.<p>Description ...</p>
+     * Implement removeFeatureListener.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param listener
      *
@@ -248,14 +277,17 @@ public class GeoServerFeatureSource implements FeatureSource {
     }
 
     /**
-     * Implement getFeatures.<p>Description ...</p>
+     * Implement getFeatures.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param query
      *
      * @return
      *
      * @throws IOException
-     * @throws DataSourceException DOCUMENT ME!
      *
      * @see org.geotools.data.FeatureSource#getFeatures(org.geotools.data.Query)
      */
@@ -304,7 +336,11 @@ public class GeoServerFeatureSource implements FeatureSource {
     }
 
     /**
-     * Implement getSchema.<p>Description ...</p>
+     * Implement getSchema.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      *
@@ -315,8 +351,11 @@ public class GeoServerFeatureSource implements FeatureSource {
     }
 
     /**
-     * Retrieves the total extent of this FeatureSource.<p>Please note
-     * this extent will reflect the provided definitionQuery.</p>
+     * Retrieves the total extent of this FeatureSource.
+     *
+     * <p>
+     * Please note this extent will reflect the provided definitionQuery.
+     * </p>
      *
      * @return Extent of this FeatureSource, or <code>null</code> if no
      *         optimizations exist.
@@ -325,7 +364,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      */
     public Envelope getBounds() throws IOException {
         // since CRS is at most forced, we don't need to change this code
-        if (definitionQuery == Filter.NONE) {
+        if (definitionQuery == Filter.INCLUDE) {
             return source.getBounds();
         } else {
             Query query = new DefaultQuery(getSchema().getTypeName(), definitionQuery);
@@ -335,12 +374,18 @@ public class GeoServerFeatureSource implements FeatureSource {
     }
 
     /**
-     * Retrive the extent of the Query.<p>This method provides access
-     * to an optimized getBounds opperation. If no optimized opperation is
-     * available <code>null</code> will be returned.</p>
-     *  <p>You may still make use of getFeatures( Query ).getCount()
-     * which will return the correct answer (even if it has to itterate
-     * through all the results to do so.</p>
+     * Retrive the extent of the Query.
+     *
+     * <p>
+     * This method provides access to an optimized getBounds opperation. If no
+     * optimized opperation is available <code>null</code> will be returned.
+     * </p>
+     *
+     * <p>
+     * You may still make use of getFeatures( Query ).getCount() which will
+     * return the correct answer (even if it has to itterate through all the
+     * results to do so.
+     * </p>
      *
      * @param query User's query
      *
@@ -361,12 +406,18 @@ public class GeoServerFeatureSource implements FeatureSource {
     }
 
     /**
-     * Adjust query and forward to source.<p>This method provides
-     * access to an optimized getCount opperation. If no optimized opperation
-     * is available <code>-1</code> will be returned.</p>
-     *  <p>You may still make use of getFeatures( Query ).getCount()
-     * which will return the correct answer (even if it has to itterate
-     * through all the results to do so).</p>
+     * Adjust query and forward to source.
+     *
+     * <p>
+     * This method provides access to an optimized getCount opperation. If no
+     * optimized opperation is available <code>-1</code> will be returned.
+     * </p>
+     *
+     * <p>
+     * You may still make use of getFeatures( Query ).getCount() which will
+     * return the correct answer (even if it has to itterate through all the
+     * results to do so).
+     * </p>
      *
      * @param query User's query.
      *

@@ -94,7 +94,7 @@ This is a description of your Web Coverage Server.
         <keyword>WMS</keyword>
         <keyword>GEOSERVER</keyword>
       </keywords>
-      <metadataLink about="http://geoserver.org" type="undef" metadataType="other">
+      <metadataLink about="http://geoserver.sourceforge.net/html/index.php" type="undef" metadataType="other">
 	NONE
       </metadataLink>
       <onlineResource>http://geoserver.org</onlineResource>
@@ -152,5 +152,4 @@ This is a description of your Web Map Server.
 <svgAntiAlias>true</svgAntiAlias>
 </service>
 </services>
-
 </serverConfiguration>

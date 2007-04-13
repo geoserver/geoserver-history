@@ -26,20 +26,29 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * GeoServerConfigurationSubmit purpose.<p>Description of
- * GeoServerConfigurationSubmit ...</p>
- *  <p>Capabilities:</p>
- *  <ul>
- *      <li>Feature: description</li>
- *  </ul>
- *  <p>Example Use:</p>
-<pre><code>
+ * GeoServerConfigurationSubmit purpose.
+ * <p>
+ * Description of GeoServerConfigurationSubmit ...
+ * </p>
+ *
+ * <p>
+ * Capabilities:
+ * </p>
+ * <ul>
+ * <li>
+ * Feature: description
+ * </li>
+ * </ul>
+ * <p>
+ * Example Use:
+ * </p>
+ * <pre><code>
  * GeoServerConfigurationSubmit x = new GeoServerConfigurationSubmit(...);
  * </code></pre>
  *
  * @author User, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
- * @version $Id: GeoServerConfigurationSubmit.java,v 1.8 2004/09/09 17:07:44 cholmesny Exp $
+ * @version $Id$
  */
 public class GeoServerConfigurationSubmit extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,

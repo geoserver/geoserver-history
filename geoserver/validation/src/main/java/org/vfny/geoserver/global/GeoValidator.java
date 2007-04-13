@@ -28,52 +28,36 @@ import java.util.logging.Logger;
 
 
 /**
- * GeoValidator purpose.<p>Description of GeoValidator ...</p>
+ * GeoValidator purpose.
+ * <p>
+ * Description of GeoValidator ...
+ * </p>
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: jive $ (last modification)
- * @version $Id: GeoValidator.java,v 1.4 2004/04/21 07:42:35 jive Exp $
+ * @version $Id$
  */
 public class GeoValidator extends ValidationProcessor {
     public static final String WEB_CONTAINER_KEY = "GeoValidator";
-    private Map testSuites;
-    private Map plugIns;
-    private Map errors;
 
     /**
-             * GeoValidator constructor.
-             * <p>
-             * super();
-             * </p>
-             *
-             */
+     * GeoValidator constructor.
+     * <p>
+     * super();
+     * </p>
+     *
+     */
     public GeoValidator() {
         super();
     }
 
     /**
-             * Creates a new geo validator.
-             *
-             * @param config The configuration module.
-             */
+     * Creates a new geo validator.
+     *
+     * @param config The configuration module.
+     */
     public GeoValidator(Config config) {
         loadPlugins(config.dataDirectory());
-    }
-
-    /**
-             * ValidationProcessor constructor.
-             *
-             * <p>
-             * Builds a ValidationProcessor with the DTO provided.
-             * </p>
-             *
-             * @see load(Map,Map)
-             * @param testSuites Map a map of names -> TestSuiteDTO objects
-             * @param plugIns Map a map of names -> PlugInDTO objects
-             */
-    public GeoValidator(Map testSuites, Map plugIns) {
-        super();
-        load(testSuites, plugIns);
     }
 
     /**
@@ -111,10 +95,31 @@ public class GeoValidator extends ValidationProcessor {
     }
 
     /**
-     * Map of errors encountered during loading process<p>Map of true
-     * (loaded), false (never used), or exception (error) keyed by PlugIn and
-     * Test DataTransferObjects.</p>
+     * ValidationProcessor constructor.
      *
+     * <p>
+     * Builds a ValidationProcessor with the DTO provided.
+     * </p>
+     *
+     * @see load(Map,Map)
+     * @param testSuites Map a map of names -> TestSuiteDTO objects
+     * @param plugIns Map a map of names -> PlugInDTO objects
+     */
+    public GeoValidator(Map testSuites, Map plugIns) {
+        super();
+        load(testSuites, plugIns);
+    }
+
+    private Map testSuites;
+    private Map plugIns;
+    private Map errors;
+
+    /**
+     * Map of errors encountered during loading process
+     * <p>
+     * Map of true (loaded), false (never used), or exception (error) keyed
+     * by PlugIn and Test DataTransferObjects.
+     * </p>
      * @return Map of status by PlugInDTO and TestDTO
      */
     public Map getErrors() {
@@ -122,8 +127,10 @@ public class GeoValidator extends ValidationProcessor {
     }
 
     /**
-     * load purpose.<p>loads this instance data into this instance.</p>
-     *
+     * load purpose.
+     * <p>
+     * loads this instance data into this instance.
+     * </p>
      * @param testSuites
      * @param plugIns
      */

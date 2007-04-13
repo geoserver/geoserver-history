@@ -43,8 +43,8 @@ public final class WMSDescriptionForm extends ActionForm {
 
         String out = "";
 
-        for (int i = 0; i < config.getKeywords().length; i++) {
-            out = out + config.getKeywords()[i] + System.getProperty("line.separator");
+        for (int i = 0; i < config.getKeywords().size(); i++) {
+            out = out + config.getKeywords().get(i) + System.getProperty("line.separator");
         }
 
         this.keywords = out;

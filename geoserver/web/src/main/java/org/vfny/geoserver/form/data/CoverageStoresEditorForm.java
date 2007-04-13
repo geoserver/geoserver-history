@@ -13,7 +13,7 @@ import org.apache.struts.config.ControllerConfig;
 import org.apache.struts.upload.CommonsMultipartRequestHandler;
 import org.apache.struts.upload.FormFile;
 import org.apache.struts.upload.MultipartRequestHandler;
-import org.geotools.data.coverage.grid.AbstractGridFormat;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.opengis.coverage.grid.Format;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
@@ -267,11 +267,19 @@ public final class CoverageStoresEditorForm extends ActionForm {
         if (factory instanceof AbstractGridFormat) {
             AbstractGridFormat aFormat = (AbstractGridFormat) factory;
 
-            File file = GeoserverDataDirectory.findDataFile(url);
-            FormUtils.checkFileExistsAndCanRead(file, errors);
+            File file;
 
-            if (!errors.isEmpty()) {
-                return errors;
+            // HACK!  ArcSDE rasters take a string (which is stuffed into the given file)
+            if (-1 == factory.getClass().toString()
+                                 .indexOf("org.geotools.arcsde.gce.ArcSDERasterFormat")) {
+                file = GeoserverDataDirectory.findDataFile(url);
+                FormUtils.checkFileExistsAndCanRead(file, errors);
+
+                if (!errors.isEmpty()) {
+                    return errors;
+                }
+            } else {
+                file = new File(url);
             }
 
             if (!aFormat.accepts(file)) {

@@ -6,8 +6,8 @@ package org.vfny.geoserver.global;
 
 import com.sun.media.jai.util.SunTileCache;
 import org.geotools.data.jdbc.ConnectionPoolManager;
+import org.geotools.util.Logging;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import java.io.BufferedOutputStream;
@@ -31,13 +31,16 @@ import javax.servlet.ServletContext;
  *
  * @author Gabriel Rold?n
  * @author dzwiers
- * @version $Id: GeoServer.java,v 1.23 2004/09/09 16:54:19 cholmesny Exp $
+ * @version $Id$
  */
 public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     /**
-     * For finding the instance of this class to use from the web
-     * container<p>ServletContext sc = ... GeoServer gs =
-     * (GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);</p>
+     * For finding the instance of this class to use from the web container
+     *
+     * <p>
+     * ServletContext sc = ... GeoServer gs =
+     * (GeoServer)sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
+     * </p>
      */
     public static final String WEB_CONTAINER_KEY = "GeoServer";
     private String title;
@@ -79,30 +82,37 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     /** Default Logging level */
     private Level loggingLevel = Logger.getLogger("org.vfny.geoserver").getLevel();
 
-    /** to log or not to log */
+    /** to log or not to log **/
     private boolean logToFile = false;
 
-    /** to log to file or not to log to file */
+    /** to log to file or not to log to file **/
     private boolean loggingToFile = false;
 
-    /** where to log */
+    /** where to log **/
     private String logLocation = null;
+
+    /** central log redirector controller **/
+    private static Logging[] GEOSERVER_LOGGING;
 
     public GeoServer() {
     }
 
     /**
-             * Creates a GeoServer instance and loads its configuration.
-             *
-             * @throws ConfigurationException
-             */
+     * Creates a GeoServer instance and loads its configuration.
+     *
+     * @throws ConfigurationException
+     */
     public GeoServer(Config config) throws ConfigurationException {
         LOGGER.fine("Creating GeoServer");
         load(config.getXMLReader().getGeoServer());
     }
 
     /**
-     * getAddress purpose.<p>Returns the contact Address.</p>
+     * getAddress purpose.
+     *
+     * <p>
+     * Returns the contact Address.
+     * </p>
      *
      * @return String the contact Address.
      */
@@ -111,7 +121,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getAddressCity purpose.<p>Returns the contact City.</p>
+     * getAddressCity purpose.
+     *
+     * <p>
+     * Returns the contact City.
+     * </p>
      *
      * @return String the contact City.
      */
@@ -120,7 +134,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getAddressCountry purpose.<p>Returns the contact Country.</p>
+     * getAddressCountry purpose.
+     *
+     * <p>
+     * Returns the contact Country.
+     * </p>
      *
      * @return String the contact Country.
      */
@@ -129,7 +147,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getAddressPostalCode purpose.<p>Returns the contact PostalCode.</p>
+     * getAddressPostalCode purpose.
+     *
+     * <p>
+     * Returns the contact PostalCode.
+     * </p>
      *
      * @return String the contact PostalCode.
      */
@@ -138,7 +160,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getAddressState purpose.<p>Returns the contact State.</p>
+     * getAddressState purpose.
+     *
+     * <p>
+     * Returns the contact State.
+     * </p>
      *
      * @return String the contact State.
      */
@@ -147,7 +173,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getAddressType purpose.<p>Returns the contact Address Type.</p>
+     * getAddressType purpose.
+     *
+     * <p>
+     * Returns the contact Address Type.
+     * </p>
      *
      * @return String the contact Address Type.
      */
@@ -156,8 +186,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getCharSet purpose.<p>Returns the default charset for this
-     * server instance.</p>
+     * getCharSet purpose.
+     *
+     * <p>
+     * Returns the default charset for this server instance.
+     * </p>
      *
      * @return Charset the default charset for this server instance.
      */
@@ -170,7 +203,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getContactEmail purpose.<p>Returns the contact Email.</p>
+     * getContactEmail purpose.
+     *
+     * <p>
+     * Returns the contact Email.
+     * </p>
      *
      * @return String the contact Email.
      */
@@ -179,7 +216,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getContactFacsimile purpose.<p>Returns the contact Facsimile.</p>
+     * getContactFacsimile purpose.
+     *
+     * <p>
+     * Returns the contact Facsimile.
+     * </p>
      *
      * @return String the contact Facsimile.
      */
@@ -188,8 +229,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getContactOrganization purpose.<p>Returns the contact
-     * Organization.</p>
+     * getContactOrganization purpose.
+     *
+     * <p>
+     * Returns the contact Organization.
+     * </p>
      *
      * @return String the contact Organization.
      */
@@ -198,7 +242,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getContactPerson purpose.<p>Returns the contact Person.</p>
+     * getContactPerson purpose.
+     *
+     * <p>
+     * Returns the contact Person.
+     * </p>
      *
      * @return String the contact Person.
      */
@@ -207,7 +255,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getContactPosition purpose.<p>Returns the contact Position.</p>
+     * getContactPosition purpose.
+     *
+     * <p>
+     * Returns the contact Position.
+     * </p>
      *
      * @return String the contact Position.
      */
@@ -216,7 +268,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getContactVoice purpose.<p>Returns the contact Phone.</p>
+     * getContactVoice purpose.
+     *
+     * <p>
+     * Returns the contact Phone.
+     * </p>
      *
      * @return String the contact Phone.
      */
@@ -225,7 +281,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getOnlineResource purpose.<p>Returns the online Resource.</p>
+     * getOnlineResource purpose.
+     *
+     * <p>
+     * Returns the online Resource.
+     * </p>
      *
      * @return String the online Resource.
      */
@@ -234,17 +294,24 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getLoggingLevel purpose.<p>Returns the Logging Level.</p>
-     *
-     * @return String the Logging Level.
-     */
+    * getLoggingLevel purpose.
+    *
+    * <p>
+    * Returns the Logging Level.
+    * </p>
+    *
+    * @return String the Logging Level.
+    */
     public Level getLoggingLevel() {
         return loggingLevel;
     }
 
     /**
-     * getMaxFeatures purpose.<p>Returns the max number of features
-     * supported.</p>
+     * getMaxFeatures purpose.
+     *
+     * <p>
+     * Returns the max number of features supported.
+     * </p>
      *
      * @return String the max number of features supported.
      */
@@ -253,7 +320,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getMimeType purpose.<p>Returns the server default mimetype.</p>
+     * getMimeType purpose.
+     *
+     * <p>
+     * Returns the server default mimetype.
+     * </p>
      *
      * @return String the server default mimetype.
      */
@@ -262,8 +333,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getNumDecimals purpose.<p>The default number of decimals allowed
-     * in the data.</p>
+     * getNumDecimals purpose.
+     *
+     * <p>
+     * The default number of decimals allowed in the data.
+     * </p>
      *
      * @return int the default number of decimals allowed in the data.
      */
@@ -272,13 +346,17 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * getSchemaBaseUrl purpose.<p>The Schema Base URL for this
-     * instance.  This should generally be a local reference, as GeoServer by
-     * default puts up the schemas that it needs and references them.  It
-     * could be used to specify an alternate site for the schemas, however,
-     * for example if a user didn't want their servlet container hit every
-     * time someone did a validation, they could instead store it on another
-     * machine.  I don't really know if this is useful to anyone...</p>
+     * getSchemaBaseUrl purpose.
+     *
+     * <p>
+     * The Schema Base URL for this instance.  This should generally be a local
+     * reference, as GeoServer by default puts up the schemas that it needs
+     * and references them.  It could be used to specify an alternate site for
+     * the schemas, however, for example if a user didn't want their servlet
+     * container hit every time someone did a validation, they could instead
+     * store it on another machine.  I don't really know if this is useful to
+     * anyone...
+     * </p>
      *
      * @return String the Schema Base URL for this instance.
      *
@@ -296,9 +374,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * Used when Geoserver is running behind a reverse-proxy so that
-     * url in getCapabilities documents are fine
-     *
+     * Used when Geoserver is running behind a reverse-proxy so that url
+     * in getCapabilities documents are fine
      * @return
      */
     public String getProxyBaseUrl() {
@@ -315,11 +392,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * <p>Loads the GeoServerDTO into the current instance as a
-     * GeoServer object</p>
+     * <p>
+     * Loads the GeoServerDTO into the current instance as a GeoServer object
+     * </p>
      *
      * @param dto
-     *
      * @throws ConfigurationException
      */
     public void load(GeoServerDTO dto) throws ConfigurationException {
@@ -343,12 +420,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             logLocation = dto.getLogLocation();
 
             //TODO: logging needs to be revisited and done a better way
-            try {
-                initLogging(loggingLevel, loggingToFile, logLocation);
-            } catch (IOException e) {
-                throw new ConfigurationException(e);
-            }
-
+            //            try {
+            //                initLogging(loggingLevel, loggingToFile, logLocation);
+            //            } catch (IOException e) {
+            //                throw new ConfigurationException(e);
+            //            }
             memoryCapacity = dto.getJaiMemoryCapacity();
             memoryThreshold = dto.getJaiMemoryThreshold();
             tileThreads = dto.getJaiTileThreads();
@@ -375,13 +451,16 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * load purpose.<p>Loads the GeoServerDTO into the current instance
-     * as a GeoServer object. As GeoServer moves to Spring, we want to move
-     * away from storing state in the servlet context, so this method is
-     * deprecated.</p>
+     *
+     * load purpose.
+     *
+     * <p>
+     * Loads the GeoServerDTO into the current instance as a GeoServer object.
+     * As GeoServer moves to Spring, we want to move away from storing state
+     * in the servlet context, so this method is deprecated.
+     * </p>
      *
      * @param dto GeoServerDTO
-     * @param context DOCUMENT ME!
      *
      * @throws ConfigurationException If an error occurs
      *
@@ -393,15 +472,15 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * Convenience method for determining the actual location on the
-     * local file system of the log file based an arbirtrary path. Relative
-     * paths are appended to the geoserver data directory.
+     * Convenience method for determining the actual location on the local file
+     * system of the log file based an arbirtrary path. Relative paths are
+     * appended to the geoserver data directory.
      *
-     * @param logLocation The log file path, this can be an absolute or
-     *        relative path.
+     * @param location The log file path, this can be an absolute or relative
+     * path.
+     * @param context The servlet context
      *
      * @return The file containing the absolute path to the log file.
-     *
      * @throws IOException
      */
     public static File getLogLocation(String logLocation)
@@ -439,30 +518,10 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     /**
      * Initializes logging based on configuration paramters.
      *
-     * @param level DOCUMENT ME!
-     * @param logToFile DOCUMENT ME!
-     * @param location DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
      */
     public static void initLogging(Level level, boolean logToFile, String location)
         throws IOException {
-        //calculate geotools logging level to be one higher then geoserver
-        //JD: this is a temporary hack until we smarten up and use log4j
-        Level gtLevel = (level == Level.ALL) ? Level.ALL
-                                             : ((level == Level.OFF) ? Level.OFF
-                                                                     : ((level == Level.SEVERE)
-            ? Level.SEVERE
-            : ((level == Level.WARNING) ? Level.SEVERE
-                                        : ((level == Level.INFO) ? Level.WARNING
-                                                                 : ((level == Level.CONFIG)
-            ? Level.INFO
-            : ((level == Level.FINE) ? Level.CONFIG
-                                     : ((level == Level.FINER) ? Level.FINE
-                                                               : ((level == Level.FINEST)
-            ? Level.FINER : Level.FINEST))))))));
-
-        Log4JFormatter.init("org.geotools", gtLevel);
+        Log4JFormatter.init("org.geotools", level);
         Log4JFormatter.init("org.vfny.geoserver", level);
 
         Logger logger = Logger.getLogger("org.vfny.geoserver");
@@ -525,9 +584,13 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * toDTO purpose.<p>This method is package visible only, and
-     * returns a reference to the GeoServerDTO. This method is unsafe, and
-     * should only be used with extreme caution.</p>
+     * toDTO purpose.
+     *
+     * <p>
+     * This method is package visible only, and returns a reference to the
+     * GeoServerDTO. This method is unsafe, and should only be used with
+     * extreme caution.
+     * </p>
      *
      * @return DTO the generated object
      */
@@ -594,7 +657,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
 
     /**
      * Property representing the contact party (person, position or
-     * organization).<p>This is a derived property.</p>
+     * organization).
+     *
+     * <p>
+     * This is a derived property.
+     * </p>
      *
      * @return Contact party (person, position or organization), null if
      *         unknown
@@ -638,7 +705,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
 
     /**
      * Should we display stackTraces or not? (And give them a nice
-     * little message instead?)
+    * little message instead?)
      *
      * @return Returns the showStackTraces.
      */
@@ -648,7 +715,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
 
     /**
      * If set to true, response exceptions will throw their stack trace
-     * back to the end user.
+    * back to the end user.
      *
      * @param showStackTraces The showStackTraces to set.
      */
@@ -657,30 +724,25 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * Returns the location of where the server ouputs logs. Note that
-     * this may not reference an actual physical location on disk. Call {@link
-     * GeoServer#getLogLocation(String, ServletContext)} to map this string to
-     * a file on disk.
+     * Returns the location of where the server ouputs logs. Note that this may
+     * not reference an actual physical location on disk.
+     * Call {@link GeoServer#getLogLocation(String, ServletContext)} to map this
+     * string to a file on disk.
      *
-     * @return DOCUMENT ME!
      */
     public String getLogLocation() {
         return logLocation;
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @param logLocation The string representation of the path on disk in
-     *        which the server logs to.
+     * @param logLocation The string representation of the path on disk in which
+     * the server logs to.
      */
     public void setLogLocation(String logLocation) {
         this.logLocation = logLocation;
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return True if the server is logging to file, otherwise false.
      */
     public boolean getLoggingToFile() {
@@ -689,8 +751,6 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
 
     /**
      * Toggles server logging to file.
-     *
-     * @param loggingToFile DOCUMENT ME!
      */
     public void setLoggingToFile(boolean loggingToFile) {
         this.loggingToFile = loggingToFile;
@@ -725,8 +785,6 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @return Returns the imageIOCache.
      */
     public Boolean getImageIOCache() {

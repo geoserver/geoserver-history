@@ -30,7 +30,7 @@ import java.util.Date;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @author $Author: cholmesny $ (last modification)
- * @version $Id: ThreadedBatchTester.java,v 1.7 2004/06/03 19:44:14 cholmesny Exp $
+ * @version $Id$
  */
 public class ThreadedBatchTester extends Thread {
     private static int runs = 100;

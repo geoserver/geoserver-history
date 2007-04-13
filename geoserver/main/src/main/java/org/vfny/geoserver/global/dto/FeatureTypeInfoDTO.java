@@ -5,7 +5,7 @@
 package org.vfny.geoserver.global.dto;
 
 import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.filter.Filter;
+import org.opengis.filter.Filter;
 import org.vfny.geoserver.config.DataConfig;
 import java.io.File;
 import java.util.ArrayList;
@@ -14,18 +14,28 @@ import java.util.List;
 
 
 /**
- * Data Transfer Object used for GeoServer FeatureTypeInfo information.<p>FeatureTypeInfo
- * is used because FeatureType is already used to represent schema information
- * in GeoTools2.</p>
- *  <p>Data Transfer object are used to communicate between the GeoServer
+ * Data Transfer Object used for GeoServer FeatureTypeInfo information.
+ *
+ * <p>
+ * FeatureTypeInfo is used because FeatureType is already used to represent
+ * schema information in GeoTools2.
+ * </p>
+ *
+ * <p>
+ * Data Transfer object are used to communicate between the GeoServer
  * application and its configuration and persistent layers. As such the class
- * is final - to allow for its future use as an on-the-wire message.</p>
-<pre>Example:<code>FeatureTypeInfoDTO ftiDto = new FeatureTypeInfoDTO();
- * ftiDto.setName("My Feature Type");ftiDto.setTitle("The Best Feature Type");
- * ftiDto.setSRS(23769);ftiDto.setDataStoreId("myDataStore");</code></pre>
+ * is final - to allow for its future use as an on-the-wire message.
+ * </p>
+ * <pre>Example:<code>
+ * FeatureTypeInfoDTO ftiDto = new FeatureTypeInfoDTO();
+ * ftiDto.setName("My Feature Type");
+ * ftiDto.setTitle("The Best Feature Type");
+ * ftiDto.setSRS(23769);
+ * ftiDto.setDataStoreId("myDataStore");
+ * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
- * @version $Id: FeatureTypeInfoDTO.java,v 1.13 2004/04/16 06:28:57 jive Exp $
+ * @version $Id$
  */
 public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The Id of the datastore which should be used to get this featuretype. */
@@ -44,20 +54,27 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     private String schemaName;
 
     /**
-     * The schemaBase name.<p>Example NullType, or PointPropertyType.</p>
+     * The schemaBase name.
+     *
+     * <p>
+     * Example NullType, or PointPropertyType.
+     * </p>
      */
     private String schemaBase;
 
     /**
-     * The featuretype name.<p>Often related to the title - like
-     * bc_roads_Type</p>
+     * The featuretype name.
+     *
+     * <p>
+     * Often related to the title - like bc_roads_Type
+     * </p>
      */
     private String name;
     private String wmsPath;
 
     /**
-     * The featuretype directory name. This is used to write to, and is
-     * stored because it may be longer than the name, as this often includes
+     * The featuretype directory name. This is used to write to, and is  stored
+     * because it may be longer than the name, as this often includes
      * information about the source of the featuretype.
      */
     private String dirName;
@@ -78,10 +95,9 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     private int numDecimals;
 
     /**
-     * the list of exposed attributes. If the list is empty or not
-     * present at all, all the FeatureTypeInfo's attributes are exposed, if is
-     * present, only those oattributes in this list will be exposed by the
-     * services
+     * the list of exposed attributes. If the list is empty or not present at
+     * all, all the FeatureTypeInfo's attributes are exposed, if is present,
+     * only those oattributes in this list will be exposed by the services
      */
     private Filter definitionQuery = null;
 
@@ -92,49 +108,50 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     private ArrayList styles = new ArrayList();
 
     // Modif C. Kolbowicz - 06/10/2004 
+
     /** The legend icon description. */
     private LegendURLDTO legendURL;
 
     //-- Modif C. Kolbowicz - 06/10/2004 
-    /** Holds the location of the file that contains schema information. */
+
+    /** Holds the location of the file that contains schema information.*/
     private File schemaFile;
 
     /**
-     * This value is added the headers of generated maps, marking them
-     * as being both "cache-able" and designating the time for which they are
-     * to remain valid. The specific header added is "Cache-Control: max-age="
+     * FeatureTypeInfo constructor.
+     *
+     * <p>
+     * does nothing
+     * </p>
      */
-    private String cacheMaxAge;
-
-    /**
-     * Should we be adding the CacheControl: max-age header to outgoing
-     * maps which include this layer?
-     */
-    private boolean cachingEnabled;
-
-    /**
-             * FeatureTypeInfo constructor.
-             *
-             * <p>
-             * does nothing
-             * </p>
-             */
     public FeatureTypeInfoDTO() {
     }
 
     /**
-             * FeatureTypeInfo constructor.
-             *
-             * <p>
-             * Creates a copy of the FeatureTypeInfo provided. If the FeatureTypeInfo
-             * provided  is null then default values are used. All the data structures
-             * are cloned.
-             * </p>
-             *
-             * @param dto The featuretype to copy.
-             *
-             * @throws NullPointerException DOCUMENT ME!
-             */
+     * This value is added the headers of generated maps, marking them as being both
+     * "cache-able" and designating the time for which they are to remain valid.
+     *  The specific header added is "Cache-Control: max-age="
+     */
+    private String cacheMaxAge;
+
+    /**
+     * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
+     */
+    private boolean cachingEnabled;
+
+    /**
+     * FeatureTypeInfo constructor.
+     *
+     * <p>
+     * Creates a copy of the FeatureTypeInfo provided. If the FeatureTypeInfo
+     * provided  is null then default values are used. All the data structures
+     * are cloned.
+     * </p>
+     *
+     * @param dto The featuretype to copy.
+     *
+     * @throws NullPointerException DOCUMENT ME!
+     */
     public FeatureTypeInfoDTO(FeatureTypeInfoDTO dto) {
         if (dto == null) {
             throw new NullPointerException("Non null FeatureTypeInfoDTO required");
@@ -190,8 +207,12 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * Implement equals.<p>recursively tests to determine if the object
-     * passed in is a copy of this object.</p>
+     * Implement equals.
+     *
+     * <p>
+     * recursively tests to determine if the object passed in is a copy of this
+     * object.
+     * </p>
      *
      * @param obj The FeatureTypeInfo object to test.
      *
@@ -346,8 +367,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * Convience method for dataStoreId.typeName.<p>This key may be
-     * used to store this FeatureType in a Map for later.</p>
+     * Convience method for dataStoreId.typeName.
+     *
+     * <p>
+     * This key may be used to store this FeatureType in a Map for later.
+     * </p>
      *
      * @return dataStoreId.typeName
      */
@@ -356,8 +380,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * The extent of this FeatureType.<p>Extent is measured against the
-     * tranditional LatLong coordinate system.</p>
+     * The extent of this FeatureType.
+     *
+     * <p>
+     * Extent is measured against the tranditional LatLong coordinate system.
+     * </p>
      *
      * @return Envelope of FeatureType
      */
@@ -375,8 +402,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * Spatial Reference System for FeatureType.<p>Makes use of the
-     * standard EPSG codes?</p>
+     * Spatial Reference System for FeatureType.
+     *
+     * <p>
+     * Makes use of the standard EPSG codes?
+     * </p>
      *
      * @return WPSG Spatial Reference System for FeatureType
      */
@@ -394,7 +424,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setAbstract purpose.<p>Description ...</p>
+     * setAbstract purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param string
      */
@@ -403,7 +437,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setDataStore purpose.<p>Description ...</p>
+     * setDataStore purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param store
      */
@@ -412,7 +450,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setKeywords purpose.<p>Description ...</p>
+     * setKeywords purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param list
      */
@@ -430,7 +472,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setKeywords purpose.<p>Description ...</p>
+     * setKeywords purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param key
      *
@@ -445,7 +491,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setKeywords purpose.<p>Description ...</p>
+     * setKeywords purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param key
      *
@@ -456,7 +506,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setLatLongBBox purpose.<p>Description ...</p>
+     * setLatLongBBox purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param envelope
      */
@@ -465,7 +519,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setName purpose.<p>Description ...</p>
+     * setName purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param string
      */
@@ -474,7 +532,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setSRS purpose.<p>Description ...</p>
+     * setSRS purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param i
      */
@@ -483,7 +545,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setTitle purpose.<p>Description ...</p>
+     * setTitle purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param string
      */
@@ -492,7 +558,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * getNumDecimals purpose.<p>Description ...</p>
+     * getNumDecimals purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -501,7 +571,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setNumDecimals purpose.<p>Description ...</p>
+     * setNumDecimals purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param i
      */
@@ -510,7 +584,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * getDefinitionQuery purpose.<p>Description ...</p>
+     * getDefinitionQuery purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -519,7 +597,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setDefinitionQuery purpose.<p>Description ...</p>
+     * setDefinitionQuery purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param filter
      */
@@ -528,7 +610,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * getDefaultStyle purpose.<p>Description ...</p>
+     * getDefaultStyle purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -549,7 +635,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setDefaultStyle purpose.<p>Description ...</p>
+     * setDefaultStyle purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param string
      */
@@ -558,8 +648,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * getSchema purpose.<p>Returns An ordered list of
-     * AttributeTypeInfoDTOs</p>
+     * getSchema purpose.
+     *
+     * <p>
+     * Returns An ordered list of AttributeTypeInfoDTOs
+     * </p>
      *
      * @return An ordered list of AttributeTypeInfoDTOs
      */
@@ -568,7 +661,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setSchema purpose.<p>Stores a list of AttributeTypeInfoDTOs.</p>
+     * setSchema purpose.
+     *
+     * <p>
+     * Stores a list of AttributeTypeInfoDTOs.
+     * </p>
      *
      * @param schemaElements An ordered list of AttributeTypeInfoDTOs
      */
@@ -577,7 +674,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * getDirName purpose.<p>Returns the featuretype directory name.</p>
+     * getDirName purpose.
+     *
+     * <p>
+     * Returns the featuretype directory name.
+     * </p>
      *
      * @return the featuretype directory name
      */
@@ -586,7 +687,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setDirName purpose.<p>Description ...</p>
+     * setDirName purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param string
      */
@@ -595,7 +700,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * getSchemaName purpose.<p>Description ...</p>
+     * getSchemaName purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @return
      */
@@ -604,7 +713,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setSchemaName purpose.<p>Description ...</p>
+     * setSchemaName purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param string
      */
@@ -613,7 +726,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * getSchemaBase purpose.<p>Usually generated as: getName + "_Type"</p>
+     * getSchemaBase purpose.
+     *
+     * <p>
+     * Usually generated as: getName + "_Type"
+     * </p>
      *
      * @return
      */
@@ -622,7 +739,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * setSchemaBase purpose.<p>Description ...</p>
+     * setSchemaBase purpose.
+     *
+     * <p>
+     * Description ...
+     * </p>
      *
      * @param string
      */
@@ -631,6 +752,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     // Modif C. Kolbowicz - 06/10/2004
+
     /**
      * Gets a reference to an optional legend icon.
      *
@@ -642,6 +764,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     //-- Modif C. Kolbowicz - 06/10/2004
     // Modif C. Kolbowicz - 06/10/2004
+
     /**
      * Returns a reference to an optional legend icon.
      *
@@ -652,25 +775,20 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
-     * Gets the schema.xml file associated with this FeatureType.  This
-     * is set during the reading of configuration, it is not persisted as an
-     * element of the FeatureTypeInfoDTO, since it is just whether the
-     * schema.xml file was persisted, and its location.  If there is no
-     * schema.xml file then this method will return a File object with the
-     * location where the schema file would be located, but the file will
-     * return false for exists().
-     *
-     * @return DOCUMENT ME!
+     * Gets the schema.xml file associated with this FeatureType.  This is set
+     * during the reading of configuration, it is not persisted as an element
+     * of the FeatureTypeInfoDTO, since it is just whether the schema.xml file
+     * was persisted, and its location.  If there is no schema.xml file then
+     * this method will return a File object with the location where the schema
+     * file would be located, but the file will return false for exists().
      */
     public File getSchemaFile() {
         return this.schemaFile;
     }
 
     /**
-     * Sets the schema file.  Note that a non-exisiting file can be set
-     * here, to indicate that no schema.xml file is present.
-     *
-     * @param schemaFile DOCUMENT ME!
+     * Sets the schema file.  Note that a non-exisiting file can be set here,
+     * to indicate that no schema.xml file is present.
      */
     public void setSchemaFile(File schemaFile) {
         this.schemaFile = schemaFile;
