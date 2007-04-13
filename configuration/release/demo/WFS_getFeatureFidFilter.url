@@ -1,1 +1,1 @@
-wfs?request=GetFeature&typeName=topp:states&outputFormat=GML2&FILTER=%3CFilter%3E%3CFeatureId%20fid=%22%22/%3E%3C/Filter%3E
+wfs?request=GetFeature&typeName=topp:states&outputFormat=GML2&FILTER=%3CFilter%3E%3CFeatureId%20fid=%22states.3%22/%3E%3C/Filter%3E
