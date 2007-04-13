@@ -58,7 +58,11 @@
 		class="org.vfny.geoserver.wms.servlets.Capabilities"
 		parent="wmsService">
 	</bean>
-
+	<bean id="wmsGetCapabilitiesLegacy" 
+		class="org.vfny.geoserver.wms.servlets.CapabilitiesLegacy"
+		parent="wmsService">
+	</bean>
+	
 	<bean id="wmsDescribeFeatureType"
 		class="org.vfny.geoserver.wms.servlets.DescribeLayer"
 		parent="wmsService">
