@@ -43,10 +43,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -930,7 +932,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         URL sldUrl;
 
         try {
-            sldUrl = new URL(urlValue);
+            sldUrl = new URL(fixURL(urlValue));
         } catch (MalformedURLException e) {
             String msg = new StringBuffer("Creating remote SLD url: ").append(e.getMessage())
                                                                       .toString();
@@ -940,7 +942,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             }
 
             throw new WmsException(e, msg, "parseSldParam");
-        }
+        } 
 
         if (getValue("VALIDATESCHEMA") != null) {
             // user requested to validate the schema.
@@ -989,6 +991,31 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         StyledLayerDescriptor sld = parser.parseSLD();
         parseStyledLayerDescriptor(request, sld);
+    }
+    
+    /**
+     * URLEncoder.encode does not respect the RFC 2396, so we rolled our own little
+     * encoder. It's not complete, but should work in most cases
+     * @param url
+     * @return
+     */
+    static String fixURL(String url) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < url.length(); i++) {
+            char c = url.charAt(i);
+            // From RFC, "Only alphanumerics [0-9a-zA-Z], the special 
+            // characters "$-_.+!*'(),", and reserved characters used 
+            // for their reserved purposes may be used unencoded within a URL
+            // Here we keep all the good ones, and remove the few uneeded in their
+            // ascii range. We also keep / and : to make sure basic URL elements
+            // don't get encoded
+            if(c > ' ' && c < '{' && "\"\\<>%^[]`+$,".indexOf(c) == -1)
+                sb.append(c);
+            else
+                sb.append("%").append(Integer.toHexString(c));
+                
+        }
+        return sb.toString();
     }
 
     /**
