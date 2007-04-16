@@ -106,6 +106,10 @@
 			<artifactId>httpunit</artifactId>
 			<scope>test</scope>
 		</dependency>
+            <dependency>
+              <groupId>freemarker</groupId>
+              <artifactId>freemarker</artifactId>
+            </dependency>
 	</dependencies>
 	
   <!-- =========================================================== -->
