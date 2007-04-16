@@ -1135,8 +1135,8 @@ public class KMLWriter extends OutputStreamWriter {
                 } else {
                     styleString.append("#ffaaaaaa"); //should not occure in normal parsing
                 }
-            } else { // no fill specified
-                styleString.append("#ffaaaaaa");
+            } else { // no fill specified, make transparent
+                styleString.append("#00aaaaaa");
             }
 
             // if there is an outline, specify that we have one, then style it
