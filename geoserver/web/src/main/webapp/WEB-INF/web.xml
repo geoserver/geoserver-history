@@ -30,7 +30,7 @@
          FILE
          - outputs to the local filesystem first, before sending it off to the user
       -->
-    <param-value>PARTIAL-BUFFER</param-value>
+    <param-value>PARTIAL-BUFFER2</param-value>
   </context-param>
   
   <context-param>
