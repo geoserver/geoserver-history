@@ -7,7 +7,7 @@
   <groupId>org.geoserver</groupId>
   <artifactId>geoserver</artifactId>
   <packaging>pom</packaging>
-  <version>1.5.0</version>
+  <version>1.5.1-SNAPSHOT</version>
   <name>GeoServer 1.5.x</name>
 
   <scm>
@@ -621,7 +621,7 @@
             <descriptor>release/ext-arcsde.xml</descriptor>
             <descriptor>release/ext-pyramid.xml</descriptor>
           </descriptors>
-          <finalName>geoserver-1.5.0</finalName>
+          <finalName>geoserver-1.5.1-SNAPSHOT</finalName>
           <outputDirectory>
             ${project.build.directory}/release
           </outputDirectory>
@@ -825,8 +825,8 @@
   </modules>
 
   <properties>
-    <gs.version>1.5.0</gs.version>
-    <gt.version>2.3.1</gt.version>
+    <gs.version>1.5.1-SNAPSHOT</gs.version>
+    <gt.version>2.3.2-SNAPSHOT</gt.version>
     <!-- change this property in your settings.xml file to 
       exclude files from being formatted -->
     <jalopy.srcExcludesPattern>disabled</jalopy.srcExcludesPattern>
