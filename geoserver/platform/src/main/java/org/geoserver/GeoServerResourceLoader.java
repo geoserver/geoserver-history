@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
 
 /**
@@ -27,6 +28,8 @@ import java.util.TreeSet;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  */
 public class GeoServerResourceLoader extends DefaultResourceLoader {
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+
     /** "path" for resource lookups */
     Set searchLocations;
 
@@ -96,8 +99,12 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
                 File base = (File) f.next();
                 file = new File(base, location);
 
-                if (file.exists()) {
-                    return file;
+                try {
+                    if (file.exists()) {
+                        return file;
+                    }
+                } catch (SecurityException e) {
+                    LOGGER.warning("Failed attemp to check existance of " + file.getAbsolutePath());
                 }
             }
         }
