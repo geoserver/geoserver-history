@@ -5,7 +5,6 @@
 package org.geoserver.template;
 
 import junit.framework.TestCase;
-
 import org.geoserver.GeoServerResourceLoader;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.vfny.geoserver.global.GeoserverDataDirectory;

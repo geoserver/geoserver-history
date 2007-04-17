@@ -26,11 +26,12 @@ public class Capabilities extends WMService {
     public Capabilities(WMS wms) {
         super("GetCapabilities", wms);
     }
+
     /**
-     * Protected constructor which allows subclass to "alias" request id. 
+     * Protected constructor which allows subclass to "alias" request id.
      */
-    protected Capabilities( String request, WMS wms ) {
-        super( request, wms );
+    protected Capabilities(String request, WMS wms) {
+        super(request, wms);
     }
 
     /**

@@ -4,17 +4,15 @@
  */
 package org.geoserver.template;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.logging.Logger;
-
-import org.vfny.geoserver.global.GeoserverDataDirectory;
-
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.logging.Logger;
 
 
 /**

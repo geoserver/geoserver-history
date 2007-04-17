@@ -943,7 +943,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             }
 
             throw new WmsException(e, msg, "parseSldParam");
-        } 
+        }
 
         if (getValue("VALIDATESCHEMA") != null) {
             // user requested to validate the schema.
@@ -994,7 +994,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         StyledLayerDescriptor sld = parser.parseSLD();
         parseStyledLayerDescriptor(request, sld);
     }
-    
+
     /**
      * URLEncoder.encode does not respect the RFC 2396, so we rolled our own little
      * encoder. It's not complete, but should work in most cases
@@ -1003,20 +1003,23 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      */
     static String fixURL(String url) {
         StringBuffer sb = new StringBuffer();
+
         for (int i = 0; i < url.length(); i++) {
             char c = url.charAt(i);
+
             // From RFC, "Only alphanumerics [0-9a-zA-Z], the special 
             // characters "$-_.+!*'(),", and reserved characters used 
             // for their reserved purposes may be used unencoded within a URL
             // Here we keep all the good ones, and remove the few uneeded in their
             // ascii range. We also keep / and : to make sure basic URL elements
             // don't get encoded
-            if(c > ' ' && c < '{' && "\"\\<>%^[]`+$,".indexOf(c) == -1)
+            if ((c > ' ') && (c < '{') && ("\"\\<>%^[]`+$,".indexOf(c) == -1)) {
                 sb.append(c);
-            else
+            } else {
                 sb.append("%").append(Integer.toHexString(c));
-                
+            }
         }
+
         return sb.toString();
     }
 
