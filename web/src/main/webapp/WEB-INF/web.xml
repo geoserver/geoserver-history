@@ -160,7 +160,11 @@
    <servlet-name>TestWfsPost</servlet-name>
    <url-pattern>/TestWfsPost/*</url-pattern>
   </servlet-mapping>
-    
+  <servlet-mapping>
+   <servlet-name>dispatcher</servlet-name>
+   <url-pattern>/styles/*</url-pattern>
+  </servlet-mapping>
+      
   <mime-mapping>
    <extension>xsl</extension>
    <mime-type>text/xml</mime-type>
