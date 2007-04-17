@@ -78,7 +78,7 @@
 
   <!-- logging initializer, should be first thing to execute -->
   <listener>
-    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    <listener-class>org.geoserver.logging.LoggingStartupContextListener</listener-class>
   </listener>
   
   <!--  spring context loader -->
