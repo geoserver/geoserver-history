@@ -1517,7 +1517,7 @@ public class XMLConfigReader {
      * @see XMLConfigReader#loadCoverage(File)
      */
     protected Map loadCoverages(File coverageRoot) throws ConfigurationException {
-        if (LOGGER.isLoggable(Level.FINEST)) {
+        if (LOGGER.isLoggable(Level.FINEST) && (coverageRoot != null)) {
             LOGGER.finest(new StringBuffer("examining: ").append(coverageRoot.getAbsolutePath())
                                                          .toString());
             LOGGER.finest(new StringBuffer("is dir: ").append(coverageRoot.isDirectory()).toString());
