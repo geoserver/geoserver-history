@@ -20,22 +20,21 @@
  	
  	<!--  dispatcher -->
 	<bean id="dispatcher" class="org.geoserver.ows.Dispatcher"/>
-	
-	<!--  schema / dtd publisher -->
-	<bean id="schemaPublisher" class="org.geoserver.ows.SchemaPublisher">
+
+	<!-- file publisher -->
+	<bean id="filePublisher" class="org.geoserver.ows.FilePublisher">
 		<constructor-arg ref="resourceLoader"/>
 	</bean>
 	
 	
    <bean id="dispatcherMapping" 
     class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-
+	 <property name="alwaysUseFullPath" value="true"/>
 	 <property name="mappings">
       <props>
         <prop key="/ows">dispatcher</prop>
         <prop key="/ows/*">dispatcher</prop>
-        <prop key="/schemas/**/*.xsd">schemaPublisher</prop>
-        <prop key="/schemas/**/*.dtd">schemaPublisher</prop>
+        <prop key="/styles/*">filePublisher</prop>
       </props>
     </property>
 
