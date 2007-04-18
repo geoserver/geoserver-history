@@ -29,6 +29,7 @@ import org.geotools.styling.UserLayer;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.config.PaletteManager;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -39,16 +40,15 @@ import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.servlets.WMService;
 import org.xml.sax.InputSource;
 import java.awt.Color;
+import java.awt.image.IndexColorModel;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -280,6 +280,24 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         }
 
         request.setBuffer(buffer);
+
+        // palette
+        String paletteValue = getValue("PALETTE");
+
+        if (paletteValue != null) {
+            try {
+                IndexColorModel model = PaletteManager.getPalette(paletteValue);
+
+                if (model == null) {
+                    throw new WmsException("Palette " + paletteValue + " could not be found "
+                        + "in $GEOSERVER_DATA_DIR/palettes directory");
+                }
+
+                request.setPalette(model);
+            } catch (Exception e) {
+                throw new WmsException(e, "Palette " + paletteValue + " could not be loaded", null);
+            }
+        }
 
         /** KML/KMZ score value */
         String KMScore = getValue("KMSCORE");

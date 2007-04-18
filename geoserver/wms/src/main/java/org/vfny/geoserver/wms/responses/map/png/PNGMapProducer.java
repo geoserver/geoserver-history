@@ -70,12 +70,8 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
         // Reformatting this image for png
         //
         // /////////////////////////////////////////////////////////////////
-        new ImageWorker(image).writePNG(outStream, "FILTERED", 0.75f, PNGNativeAcc.booleanValue(),
+        new ImageWorker(image).writePNG(outStream, "FILTERED", 0.5f, PNGNativeAcc.booleanValue(),
             false);
-    }
-
-    protected BufferedImage prepareImage(int width, int height) {
-        return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
     }
 
     public String getContentDisposition() {

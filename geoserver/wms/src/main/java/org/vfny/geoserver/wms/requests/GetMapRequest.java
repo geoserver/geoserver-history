@@ -11,6 +11,7 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wfs.servlets.WFService;
 import org.vfny.geoserver.wms.servlets.WMService;
 import java.awt.Color;
+import java.awt.image.IndexColorModel;
 import java.util.List;
 
 
@@ -141,6 +142,10 @@ public class GetMapRequest extends WMSRequest {
         return this.optionalParams.buffer;
     }
 
+    public IndexColorModel getPalette() {
+        return this.optionalParams.palette;
+    }
+
     /**
      * DOCUMENT ME!
      *
@@ -258,6 +263,10 @@ public class GetMapRequest extends WMSRequest {
         this.optionalParams.buffer = buffer;
     }
 
+    public void setPalette(IndexColorModel palette) {
+        this.optionalParams.palette = palette;
+    }
+
     /**
      * DOCUMENT ME!
      *
@@ -349,6 +358,9 @@ public class GetMapRequest extends WMSRequest {
 
         /** the rendering buffer, in pixels **/
         int buffer;
+
+        /** The palette used for rendering, if any */
+        IndexColorModel palette;
 
         /** score value for KML/KMZ */
         int KMScore = 40;

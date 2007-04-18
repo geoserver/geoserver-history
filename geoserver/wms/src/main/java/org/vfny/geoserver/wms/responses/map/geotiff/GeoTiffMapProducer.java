@@ -62,10 +62,6 @@ public class GeoTiffMapProducer extends DefaultRasterMapProducer {
         imageOutStream.close();
     }
 
-    protected BufferedImage prepareImage(int width, int height) {
-        return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-    }
-
     public String getContentDisposition() {
         // can be null
         return null;
