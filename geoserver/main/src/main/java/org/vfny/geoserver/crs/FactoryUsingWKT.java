@@ -141,20 +141,27 @@ public class FactoryUsingWKT extends DeferredAuthorityFactory implements CRSAuth
     protected URL getDefinitionsURL() {
         String cust_proj_file = System.getProperty(SYSTEM_DEFAULT_USER_PROJ_FILE);
 
-        if (cust_proj_file == null) {
-            cust_proj_file = new File(GeoserverDataDirectory.getGeoserverDataDirectory(),
-                    "user_projections/epsg.properties").getAbsolutePath();
-        }
-
-        // Attempt to load user-defined projections
-        File proj_file = new File(cust_proj_file);
-
-        if (proj_file.exists()) {
-            try {
-                return proj_file.toURL();
-            } catch (MalformedURLException e) {
-                LOGGER.log(Level.SEVERE, "Had troubles converting file name to URL", e);
+        try {
+            if (cust_proj_file == null) {
+                cust_proj_file = new File(GeoserverDataDirectory.getGeoserverDataDirectory(),
+                        "user_projections/epsg.properties").getAbsolutePath();
             }
+
+            // Attempt to load user-defined projections
+            File proj_file = new File(cust_proj_file);
+
+            if (proj_file.exists()) {
+                try {
+                    return proj_file.toURL();
+                } catch (MalformedURLException e) {
+                    LOGGER.log(Level.SEVERE, "Had troubles converting file name to URL", e);
+                }
+            }
+        } catch (Exception e) {
+            // the data directory may not be properly configured, fall back
+            LOGGER.log(Level.SEVERE,
+                "An exception occurred while gathering "
+                + "the user projection files, falling back on the standard in-classpath one", e);
         }
 
         // Use the built-in property defintions
