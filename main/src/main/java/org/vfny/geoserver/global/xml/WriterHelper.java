@@ -7,6 +7,7 @@ package org.vfny.geoserver.global.xml;
 import org.vfny.geoserver.global.ConfigurationException;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -30,6 +31,8 @@ public class WriterHelper {
 
     /** The output writer. */
     protected Writer writer;
+    protected int indent;
+    protected StringBuffer indentBuffer = new StringBuffer();
 
     /**
      * WriterUtils constructor.
@@ -55,26 +58,6 @@ public class WriterHelper {
     }
 
     /**
-     * write purpose.
-     *
-     * <p>
-     * Writes the String specified to the stored output writer.
-     * </p>
-     *
-     * @param s The String to write.
-     *
-     * @throws ConfigurationException When an IO exception occurs.
-     */
-    public void write(String s) throws ConfigurationException {
-        try {
-            writer.write(s);
-            writer.flush();
-        } catch (IOException e) {
-            throw new ConfigurationException("Write" + writer, e);
-        }
-    }
-
-    /**
      * writeln purpose.
      *
      * <p>
@@ -87,10 +70,22 @@ public class WriterHelper {
      */
     public void writeln(String s) throws ConfigurationException {
         try {
-            writer.write(s + "\n");
+            writer.write(indentBuffer.subSequence(0, indent) + s + "\n");
             writer.flush();
         } catch (IOException e) {
             throw new ConfigurationException("Writeln" + writer, e);
+        }
+    }
+
+    private void increaseIndent() {
+        indent += 2;
+        indentBuffer.append("  ");
+    }
+
+    private void decreaseIndent() {
+        if (indent > 0) {
+            indent -= 2;
+            indentBuffer.setLength(indentBuffer.length() - 2);
         }
     }
 
@@ -107,7 +102,7 @@ public class WriterHelper {
      * @throws ConfigurationException When an IO exception occurs.
      */
     public void openTag(String tagName) throws ConfigurationException {
-        writeln("<" + tagName + ">");
+        openTag(tagName, Collections.EMPTY_MAP);
     }
 
     /**
@@ -125,7 +120,8 @@ public class WriterHelper {
      */
     public void openTag(String tagName, Map attributes)
         throws ConfigurationException {
-        write("<" + tagName + " ");
+        StringBuffer sb = new StringBuffer();
+        sb.append("<" + tagName + " ");
 
         Iterator i = attributes.keySet().iterator();
 
@@ -133,11 +129,13 @@ public class WriterHelper {
             String s = (String) i.next();
 
             if (attributes.get(s) != null) {
-                write(s + " = " + "\"" + (attributes.get(s)).toString() + "\" ");
+                sb.append(s + " = " + "\"" + (attributes.get(s)).toString() + "\" ");
             }
         }
 
-        writeln(">");
+        sb.append(">");
+        writeln(sb.toString());
+        increaseIndent();
     }
 
     /**
@@ -153,24 +151,8 @@ public class WriterHelper {
      * @throws ConfigurationException When an IO exception occurs.
      */
     public void closeTag(String tagName) throws ConfigurationException {
+        decreaseIndent();
         writeln("</" + tagName + ">");
-    }
-
-    /**
-     * textTag purpose.
-     *
-     * <p>
-     * Writes a text xml tag with the name and text specified to the stored
-     * output writer.
-     * </p>
-     *
-     * @param tagName The tag name to write.
-     * @param data The text data to write.
-     *
-     * @throws ConfigurationException When an IO exception occurs.
-     */
-    public void textTag(String tagName, String data) throws ConfigurationException {
-        writeln("<" + tagName + ">" + data + "</" + tagName + ">");
     }
 
     /**
@@ -206,7 +188,8 @@ public class WriterHelper {
      */
     public void attrTag(String tagName, Map attributes)
         throws ConfigurationException {
-        write("<" + tagName + " ");
+        StringBuffer sb = new StringBuffer();
+        sb.append("<" + tagName + " ");
 
         Iterator i = attributes.keySet().iterator();
 
@@ -214,11 +197,29 @@ public class WriterHelper {
             String s = (String) i.next();
 
             if (attributes.get(s) != null) {
-                write(s + " = " + "\"" + (attributes.get(s)).toString() + "\" ");
+                sb.append(s + " = " + "\"" + (attributes.get(s)).toString() + "\" ");
             }
         }
 
-        write(" />\n");
+        sb.append("/>");
+        writeln(sb.toString());
+    }
+
+    /**
+     * textTag purpose.
+     *
+     * <p>
+     * Writes a text xml tag with the name and text specified to the stored
+     * output writer.
+     * </p>
+     *
+     * @param tagName The tag name to write.
+     * @param data The text data to write.
+     *
+     * @throws ConfigurationException When an IO exception occurs.
+     */
+    public void textTag(String tagName, String data) throws ConfigurationException {
+        textTag(tagName, Collections.EMPTY_MAP, data);
     }
 
     /**
@@ -237,7 +238,8 @@ public class WriterHelper {
      */
     public void textTag(String tagName, Map attributes, String data)
         throws ConfigurationException {
-        write("<" + tagName + " ");
+        StringBuffer sb = new StringBuffer();
+        sb.append("<" + tagName + ((attributes.size() > 0) ? " " : ""));
 
         Iterator i = attributes.keySet().iterator();
 
@@ -245,11 +247,12 @@ public class WriterHelper {
             String s = (String) i.next();
 
             if (attributes.get(s) != null) {
-                write(s + " = " + "\"" + (attributes.get(s)).toString() + "\" ");
+                sb.append(s + " = " + "\"" + (attributes.get(s)).toString() + "\" ");
             }
         }
 
-        write(">" + data + "</" + tagName + ">");
+        sb.append(">" + data + "</" + tagName + ">");
+        writeln(sb.toString());
     }
 
     /**
@@ -266,7 +269,13 @@ public class WriterHelper {
      */
     public void comment(String comment) throws ConfigurationException {
         writeln("<!--");
+        increaseIndent();
+
+        String ib = indentBuffer.substring(0, indent);
+        comment = comment.trim();
+        comment = comment.replaceAll("\n", "\n" + ib);
         writeln(comment);
+        decreaseIndent();
         writeln("-->");
     }
 }
