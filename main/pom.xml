@@ -111,7 +111,7 @@
 		<dependency>
 			<groupId>com.mockrunner</groupId>
 			<artifactId>mockrunner</artifactId>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>mockobjects</groupId>
