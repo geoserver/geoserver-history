@@ -38,6 +38,20 @@
 			<groupId>org.geotools</groupId>
 			<artifactId>gt2-xml-filter</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.geoserver</groupId>
+			<artifactId>data</artifactId>
+			<version>1.6-SNAPSHOT</version>
+                        <classifier>tests</classifier>
+                        <scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.geoserver</groupId>
+			<artifactId>main</artifactId>
+			<version>1.6-SNAPSHOT</version>
+                        <classifier>tests</classifier>
+                        <scope>test</scope>
+		</dependency>
 
 
 	</dependencies>
