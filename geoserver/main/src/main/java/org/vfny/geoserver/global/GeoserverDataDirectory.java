@@ -124,7 +124,9 @@ public class GeoserverDataDirectory {
 
             File f = new File(path);
 
-            if (f.exists()) {
+            // if it's an absolute path, use it as such, 
+            // otherwise try to map it inside the data dir
+            if (f.isAbsolute() || f.exists()) {
                 return f;
             } else {
                 return new File(baseDir, path);
