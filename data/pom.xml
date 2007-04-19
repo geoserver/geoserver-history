@@ -30,10 +30,18 @@
 	  <groupId>org.geotools</groupId>
 	  <artifactId>gt2-main</artifactId>
 	</dependency>
+    <dependency>
+	  <groupId>org.geotools.demo</groupId>
+	  <artifactId>gt2-demo-property</artifactId>
+	</dependency>
 	<dependency>
 	  <groupId>junit</groupId>
 	  <artifactId>junit</artifactId>
 	</dependency>
+	<dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis-xerces</artifactId>
+    </dependency>
   </dependencies>
   
   <!-- =========================================================== -->
