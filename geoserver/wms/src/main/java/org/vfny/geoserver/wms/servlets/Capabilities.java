@@ -28,6 +28,13 @@ public class Capabilities extends WMService {
     }
 
     /**
+     * Protected constructor which allows subclass to "alias" request id.
+     */
+    protected Capabilities(String request, WMS wms) {
+        super(request, wms);
+    }
+
+    /**
      * DOCUMENT ME!
      *
      * @param params DOCUMENT ME!
