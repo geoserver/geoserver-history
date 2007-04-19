@@ -18,10 +18,7 @@
  		<constructor-arg ref="applicationState"/>
  	</bean>
  	
- 	<!--  dispatcher -->
-	<bean id="dispatcher" class="org.geoserver.ows.Dispatcher"/>
-
-	<!-- file publisher -->
+ 	<!-- file publisher -->
 	<bean id="filePublisher" class="org.geoserver.ows.FilePublisher">
 		<constructor-arg ref="resourceLoader"/>
 	</bean>
