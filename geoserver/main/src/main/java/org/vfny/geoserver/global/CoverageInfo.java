@@ -345,8 +345,11 @@ public final class CoverageInfo extends GlobalLayerSupertype {
      */
     public String getPrefix() {
         CoverageStoreInfo info = getFormatInfo();
-        if(info != null) 
+
+        if (info != null) {
             return info.getNameSpace().getPrefix();
+        }
+
         return null;
     }
 
