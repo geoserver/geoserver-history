@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
 
 /**
@@ -42,9 +43,9 @@ import java.util.TreeSet;
  *
  */
 public class GeoServerResourceLoader extends DefaultResourceLoader {
-    /**
-     * "path" for resource lookups
-     */
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+
+    /** "path" for resource lookups */
     Set searchLocations;
 
     /**
@@ -138,8 +139,12 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
                 File base = (File) f.next();
                 file = new File(base, location);
 
-                if (file.exists()) {
-                    return file;
+                try {
+                    if (file.exists()) {
+                        return file;
+                    }
+                } catch (SecurityException e) {
+                    LOGGER.warning("Failed attemp to check existance of " + file.getAbsolutePath());
                 }
             }
         }
