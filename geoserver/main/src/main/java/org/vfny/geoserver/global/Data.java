@@ -396,7 +396,8 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
             // set layer name, type raster (1)
             layerNames.put(id, TYPE_RASTER);
 
-            if (dto.getFormats().get(coverageDTO.getFormatId()) != null) {
+            if ((dto.getFormats() != null)
+                    && (dto.getFormats().get(coverageDTO.getFormatId()) != null)) {
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.fine(new StringBuffer("Register Coverage '").append(id).append("'")
                                                                        .toString());

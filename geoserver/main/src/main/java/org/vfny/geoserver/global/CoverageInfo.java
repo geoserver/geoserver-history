@@ -344,7 +344,10 @@ public final class CoverageInfo extends GlobalLayerSupertype {
      * @return String the namespace prefix.
      */
     public String getPrefix() {
-        return getFormatInfo().getNameSpace().getPrefix();
+        CoverageStoreInfo info = getFormatInfo();
+        if(info != null) 
+            return info.getNameSpace().getPrefix();
+        return null;
     }
 
     /**
