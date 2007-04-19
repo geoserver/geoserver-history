@@ -4,26 +4,15 @@
  */
 package org.vfny.geoserver.wms.responses.map.gif;
 
-import com.sun.media.imageioimpl.plugins.gif.GIFImageWriter;
-import com.sun.media.imageioimpl.plugins.gif.GIFImageWriterSpi;
 import org.geotools.image.ImageWorker;
-import org.geotools.resources.image.ImageUtilities;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
-import java.awt.image.PackedColorModel;
 import java.io.IOException;
 import java.io.OutputStream;
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.MemoryCacheImageOutputStream;
-import javax.media.jai.PlanarImage;
 
 
 /**
@@ -96,31 +85,6 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
         }
 
         new ImageWorker(image).forceIndexColorModelForGIF(true).writeGIF(outStream, "LZW", 0.75f);
-    }
-
-    protected BufferedImage prepareImage(int width, int height) {
-        // final int size = width * height;
-        // final byte pixels[] = new byte[size];
-        // Arrays.fill(pixels, (byte) 255);
-        //
-        // // Create a data buffer using the byte buffer of pixel data.
-        // // The pixel data is not copied; the data buffer uses the byte buffer
-        // // array.
-        // final DataBuffer dbuf = new DataBufferByte(pixels, width * height,
-        // 0);
-        //
-        // // Prepare a sample model suitable for the default palette
-        // final SampleModel sampleModel = DEFAULT_PALETTE
-        // .createCompatibleSampleModel(width, height);
-        //
-        // // Create a raster using the sample model and data buffer
-        // final WritableRaster raster =
-        // Raster.createWritableRaster(sampleModel,
-        // dbuf, null);
-        //
-        // // Combine the color model and raster into a buffered image
-        // return new BufferedImage(DEFAULT_PALETTE, raster, false, null);
-        return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
     }
 
     public String getContentDisposition() {

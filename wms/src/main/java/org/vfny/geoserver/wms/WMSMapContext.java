@@ -9,6 +9,7 @@ import org.geotools.map.MapLayer;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import java.awt.Color;
+import java.awt.image.IndexColorModel;
 
 
 /**
@@ -53,6 +54,7 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
     /** the rendering buffer used to avoid issues with tiled rendering and big strokes
      *  that may cross tile boundaries */
     private int buffer;
+    private IndexColorModel palette;
     private GetMapRequest request; // hold onto it so we can grab info from it (request URL etc...)
 
     /**
@@ -162,5 +164,13 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
 
     public void setBuffer(int buffer) {
         this.buffer = buffer;
+    }
+
+    public IndexColorModel getPalette() {
+        return palette;
+    }
+
+    public void setPalette(IndexColorModel palette) {
+        this.palette = palette;
     }
 }

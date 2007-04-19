@@ -20,6 +20,9 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.IndexColorModel;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -210,8 +213,32 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
                                                        .append(" image").toString());
         }
 
-        BufferedImage curImage = prepareImage(width, height);
+        BufferedImage curImage = prepareImage(width, height, map.getPalette());
         final Graphics2D graphic = curImage.createGraphics();
+
+        Map hintsMap = new HashMap();
+
+        if (curImage.getColorModel() instanceof IndexColorModel) {
+            hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+            //            This can be added, but it increases the image size significantly for png's... hum...
+            //            we should really expose these settings to the users
+            //            hintsMap.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            hintsMap.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
+        } else {
+            hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        }
+
+        // turn off/on interpolation rendering hint
+        if ((wms != null) && WMSConfig.INT_NEAREST.equals(wms.getAllowInterpolation())) {
+            hintsMap.put(JAI.KEY_INTERPOLATION, NN_INTERPOLATION);
+        } else if ((wms != null) && WMSConfig.INT_BIlINEAR.equals(wms.getAllowInterpolation())) {
+            hintsMap.put(JAI.KEY_INTERPOLATION, BIL_INTERPOLATION);
+        } else if ((wms != null) && WMSConfig.INT_BICUBIC.equals(wms.getAllowInterpolation())) {
+            hintsMap.put(JAI.KEY_INTERPOLATION, BIC_INTERPOLATION);
+        }
+
+        // make sure the hints are set before we start rendering the map
+        graphic.setRenderingHints(hintsMap);
 
         if (!map.isTransparent()) {
             graphic.setColor(map.getBgColor());
@@ -234,23 +261,9 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
         }
 
         Rectangle paintArea = new Rectangle(width, height);
-
+        RenderingHints hints = new RenderingHints(hintsMap);
         renderer = new StreamingRenderer();
         renderer.setContext(map);
-
-        Map hintsMap = new HashMap();
-        hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        // turn off/on interpolation rendering hint
-        if ((wms != null) && WMSConfig.INT_NEAREST.equals(wms.getAllowInterpolation())) {
-            hintsMap.put(JAI.KEY_INTERPOLATION, NN_INTERPOLATION);
-        } else if ((wms != null) && WMSConfig.INT_BIlINEAR.equals(wms.getAllowInterpolation())) {
-            hintsMap.put(JAI.KEY_INTERPOLATION, BIL_INTERPOLATION);
-        } else if ((wms != null) && WMSConfig.INT_BICUBIC.equals(wms.getAllowInterpolation())) {
-            hintsMap.put(JAI.KEY_INTERPOLATION, BIC_INTERPOLATION);
-        }
-
-        RenderingHints hints = new RenderingHints(hintsMap);
         renderer.setJava2DHints(hints);
 
         // we already do everything that the optimized data loading does...
@@ -315,5 +328,23 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
         return this.mapContext;
     }
 
-    protected abstract BufferedImage prepareImage(int width, int height);
+    /**
+     * Sets up a {@link BufferedImage#TYPE_4BYTE_ABGR} if the palette is not provided, or a
+     * indexed image otherwise. Subclasses may override this method should they need a special
+     * kind of image
+     * @param width
+     * @param height
+     * @param palette
+     * @return
+     */
+    protected BufferedImage prepareImage(int width, int height, IndexColorModel palette) {
+        if (palette != null) {
+            WritableRaster raster = Raster.createInterleavedRaster(palette.getTransferType(),
+                    width, height, 1, null);
+
+            return new BufferedImage(palette, raster, false, null);
+        }
+
+        return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+    }
 }
