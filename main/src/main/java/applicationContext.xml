@@ -108,4 +108,6 @@
 	    </property>
     </bean>
 		
+		<!--  dispatcher -->
+	<bean id="dispatcher" class="org.geoserver.ows.Dispatcher"/>
 </beans>
