@@ -1,48 +1,50 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.data;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * Writes the GeoServer catalog.xml file.
  * <p>
  * Usage:
- * 
+ *
  * <pre>
- * 	<code>
- *  		
- *  		Map dataStores = ...
- *  		Map nameSpaces = ...
- *  
- *  		CatalogWriter writer = new CatalogWriter();
- *  		writer.dataStores( dataStores );
- *  		writer.nameSpaces( nameSpaces );
- *  		
- *  		File catalog = new File( &quot;.../catalog.xml&quot; );
- *  		writer.write( catalog );
- *  
- *  	
+ *         <code>
+ *
+ *                  Map dataStores = ...
+ *                  Map nameSpaces = ...
+ *
+ *                  CatalogWriter writer = new CatalogWriter();
+ *                  writer.dataStores( dataStores );
+ *                  writer.nameSpaces( nameSpaces );
+ *
+ *                  File catalog = new File( &quot;.../catalog.xml&quot; );
+ *                  writer.write( catalog );
+ *
+ *
  * </code>
  * </pre>
- * 
+ *
  * </p>
- * 
+ *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- * 
+ *
  */
 public class CatalogWriter {
-
     /**
      * The xml document
      */
@@ -56,7 +58,7 @@ public class CatalogWriter {
     public CatalogWriter() {
         try {
             DocumentBuilderFactory builderFactory = DocumentBuilderFactory
-                    .newInstance();
+                .newInstance();
             builderFactory.setNamespaceAware(false);
             builderFactory.setValidating(false);
 
@@ -70,13 +72,13 @@ public class CatalogWriter {
 
     /**
      * Writes "datastore" elements to the catalog.xml file.
-     * 
+     *
      * @param dataStores map of id to connection parameter map
      * @param namespaces map of id to namespace prefix map
-     *  
-     * 
+     *
+     *
      */
-    public void dataStores(Map/* <String,Map> */dataStores, Map/*<String,String>*/ namespaces ) {
+    public void dataStores(Map /* <String,Map> */ dataStores, Map /*<String,String>*/ namespaces) {
         Element dataStoresElement = document.createElement("datastores");
         catalog.appendChild(dataStoresElement);
 
@@ -92,11 +94,10 @@ public class CatalogWriter {
             dataStoreElement.setAttribute("id", id);
 
             //set the namespace
-            dataStoreElement.setAttribute( "namespace", (String) namespaces.get( id ) );
-            
+            dataStoreElement.setAttribute("namespace", (String) namespaces.get(id));
+
             // encode hte ocnnection paramters
-            Element connectionParamtersElement = document
-                    .createElement("connectionParams");
+            Element connectionParamtersElement = document.createElement("connectionParams");
             dataStoreElement.appendChild(connectionParamtersElement);
 
             for (Iterator p = params.entrySet().iterator(); p.hasNext();) {
@@ -105,8 +106,9 @@ public class CatalogWriter {
                 Object value = param.getValue();
 
                 // skip null values
-                if (value == null)
+                if (value == null) {
                     continue;
+                }
 
                 Element parameterElement = document.createElement("parameter");
                 connectionParamtersElement.appendChild(parameterElement);
@@ -115,16 +117,15 @@ public class CatalogWriter {
                 parameterElement.setAttribute("value", value.toString());
             }
         }
-
     }
 
     /**
      * Writes "namespace" elements to the catalog.xml file.
-     * 
+     *
      * @param namespaces
      *            map of <prefix,uri>, default uri is located under the empty
      *            string key.
-     * 
+     *
      */
     public void namespaces(Map namespaces) {
         Element namespacesElement = document.createElement("namespaces");
@@ -136,8 +137,9 @@ public class CatalogWriter {
             String uri = (String) namespace.getValue();
 
             // dont write out default prefix
-            if ("".equals(prefix))
+            if ("".equals(prefix)) {
                 continue;
+            }
 
             Element namespaceElement = document.createElement("namespace");
             namespacesElement.appendChild(namespaceElement);
@@ -154,10 +156,10 @@ public class CatalogWriter {
 
     /**
      * Writes "style" elements to the catalog.xml file.
-     * 
+     *
      * @param styles
      *            map of <id,filename>
-     * 
+     *
      */
     public void styles(Map styles) {
         Element stylesElement = document.createElement("styles");
@@ -181,10 +183,10 @@ public class CatalogWriter {
      * <p>
      * This method *must* be called after any other methods.
      * </p>
-     * 
+     *
      * @param file
      *            The catalog.xml file.
-     * 
+     *
      * @throws IOException
      *             In event of a writing error.
      */
@@ -199,6 +201,5 @@ public class CatalogWriter {
             String msg = "Could not write catalog to " + file;
             throw (IOException) new IOException(msg).initCause(e);
         }
-
     }
 }

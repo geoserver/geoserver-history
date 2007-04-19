@@ -1,5 +1,11 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.data.test;
 
+import org.geoserver.data.CatalogWriter;
+import org.geotools.data.property.PropertyDataStoreFactory;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -9,45 +15,37 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
-
 import javax.xml.namespace.QName;
 
-import org.geoserver.data.CatalogWriter;
-import org.geotools.data.property.PropertyDataStoreFactory;
 
 /**
  * Class used to build a mock GeoServer data directory.
  * <p>
  * Data is based off the wms and wfs "cite" datasets.
  * </p>
- * 
+ *
  * @author Justin Deoliveira, The Open Planning Project
- * 
+ *
  */
 public class MockData {
-
     // //// WMS 1.1.1
     /**
      * WMS 1.1.1 cite namespace + uri
      */
     public static String CITE_PREFIX = "cite";
-
     public static String CITE_URI = "http://www.opengis.net/cite";
 
     /** featuretype name for WMS 1.1.1 CITE BasicPolygons features */
-    public static QName BASIC_POLYGONS = new QName(CITE_URI, "BasicPolygons",
-            CITE_PREFIX);
+    public static QName BASIC_POLYGONS = new QName(CITE_URI, "BasicPolygons", CITE_PREFIX);
 
     /** featuretype name for WMS 1.1.1 CITE Bridges features */
     public static QName BRIDGES = new QName(CITE_URI, "Bridges", CITE_PREFIX);
 
     /** featuretype name for WMS 1.1.1 CITE Buildings features */
-    public static QName BUILDINGS = new QName(CITE_URI, "Buildings",
-            CITE_PREFIX);
+    public static QName BUILDINGS = new QName(CITE_URI, "Buildings", CITE_PREFIX);
 
     /** featuretype name for WMS 1.1.1 CITE Divided Routes features */
-    public static QName DIVIDED_ROUTES = new QName(CITE_URI, "DividedRoutes",
-            CITE_PREFIX);
+    public static QName DIVIDED_ROUTES = new QName(CITE_URI, "DividedRoutes", CITE_PREFIX);
 
     /** featuretype name for WMS 1.1.1 CITE Forests features */
     public static QName FORESTS = new QName(CITE_URI, "Forests", CITE_PREFIX);
@@ -56,19 +54,16 @@ public class MockData {
     public static QName LAKES = new QName(CITE_URI, "Lakes", CITE_PREFIX);
 
     /** featuretype name for WMS 1.1.1 CITE Map Neatliine features */
-    public static QName MAP_NEATLINE = new QName(CITE_URI, "MapNeatline",
-            CITE_PREFIX);
+    public static QName MAP_NEATLINE = new QName(CITE_URI, "MapNeatline", CITE_PREFIX);
 
     /** featuretype name for WMS 1.1.1 CITE Named Places features */
-    public static QName NAMED_PLACES = new QName(CITE_URI, "NamedPlaces",
-            CITE_PREFIX);
+    public static QName NAMED_PLACES = new QName(CITE_URI, "NamedPlaces", CITE_PREFIX);
 
     /** featuretype name for WMS 1.1.1 CITE Ponds features */
     public static QName PONDS = new QName(CITE_URI, "Ponds", CITE_PREFIX);
 
     /** featuretype name for WMS 1.1.1 CITE Road Segments features */
-    public static QName ROAD_SEGMENTS = new QName(CITE_URI, "RoadSegments",
-            CITE_PREFIX);
+    public static QName ROAD_SEGMENTS = new QName(CITE_URI, "RoadSegments", CITE_PREFIX);
 
     /** featuretype name for WMS 1.1.1 CITE Streams features */
     public static QName STREAMS = new QName(CITE_URI, "Streams", CITE_PREFIX);
@@ -78,7 +73,6 @@ public class MockData {
      * WFS 1.0 cdf namespace + uri
      */
     public static String CDF_PREFIX = "cdf";
-
     public static String CDF_URI = "http://www.opengis.net/cite/data";
 
     /** featuretype name for WFS 1.0 CITE Deletes features */
@@ -109,7 +103,6 @@ public class MockData {
      * cgf namespace + uri
      */
     public static String CGF_PREFIX = "cgf";
-
     public static String CGF_URI = "http://www.opengis.net/cite/geometry";
 
     /** featuretype name for WFS 1.0 CITE Lines features */
@@ -135,14 +128,9 @@ public class MockData {
      * sf namespace + uri
      */
     public static String SF_PREFIX = "sf";
-
     public static String SF_URI = "http://cite.opengeospatial.org/gmlsf";
-
-    public static QName PRIMITIVEGEOFEATURE = new QName(SF_URI,
-            "PrimitiveGeoFeature", SF_PREFIX);
-
-    public static QName AGGREGATEGEOFEATURE = new QName(SF_URI,
-            "AggregateGeoFeature", SF_PREFIX);
+    public static QName PRIMITIVEGEOFEATURE = new QName(SF_URI, "PrimitiveGeoFeature", SF_PREFIX);
+    public static QName AGGREGATEGEOFEATURE = new QName(SF_URI, "AggregateGeoFeature", SF_PREFIX);
 
     // public static QName ENTIT\u00C9G\u00C9N\u00C9RIQUE = new QName( SF_URI,
     // "Entit\u00E9G\u00E9n\u00E9rique", SF_PREFIX );
@@ -152,35 +140,35 @@ public class MockData {
      */
     public static QName[] TYPENAMES = new QName[] {
             // WMS 1.1.1
-            BASIC_POLYGONS, BRIDGES, BUILDINGS, DIVIDED_ROUTES, FORESTS, LAKES,
-            MAP_NEATLINE, NAMED_PLACES, PONDS, ROAD_SEGMENTS, STREAMS,
-            // WFS 1.0
-            DELETES, FIFTEEN, INSERTS, LOCKS, NULLS, OTHER, SEVEN, UPDATES,
-            LINES, MLINES, MPOINTS, MPOLYGONS, POINTS, POLYGONS,
-            // WFS 1.1
+            BASIC_POLYGONS, BRIDGES, BUILDINGS, DIVIDED_ROUTES, FORESTS, LAKES, MAP_NEATLINE,
+            NAMED_PLACES, PONDS, ROAD_SEGMENTS, STREAMS, // WFS 1.0
+            DELETES, FIFTEEN, INSERTS, LOCKS, NULLS, OTHER, SEVEN, UPDATES, LINES, MLINES, MPOINTS,
+            MPOLYGONS, POINTS, POLYGONS, // WFS 1.1
             PRIMITIVEGEOFEATURE, AGGREGATEGEOFEATURE, /* ENTIT\u00C9G\u00C9N\u00C9RIQUE */
-    };
+        };
 
     /**
      * List of wms type names.
      */
-    public static QName[] WMS_TYPENAMES = new QName[] { BASIC_POLYGONS,
-            BRIDGES, BUILDINGS, DIVIDED_ROUTES, FORESTS, LAKES, MAP_NEATLINE,
-            NAMED_PLACES, PONDS, ROAD_SEGMENTS, STREAMS };
+    public static QName[] WMS_TYPENAMES = new QName[] {
+            BASIC_POLYGONS, BRIDGES, BUILDINGS, DIVIDED_ROUTES, FORESTS, LAKES, MAP_NEATLINE,
+            NAMED_PLACES, PONDS, ROAD_SEGMENTS, STREAMS
+        };
 
     /**
      * List of wfs 1.0 type names.
      */
-    public static QName[] WFS10_TYPENAMES = new QName[] { DELETES, FIFTEEN,
-            INSERTS, LOCKS, NULLS, OTHER, SEVEN, UPDATES, LINES, MLINES,
-            MPOINTS, MPOLYGONS, POINTS, POLYGONS };
+    public static QName[] WFS10_TYPENAMES = new QName[] {
+            DELETES, FIFTEEN, INSERTS, LOCKS, NULLS, OTHER, SEVEN, UPDATES, LINES, MLINES, MPOINTS,
+            MPOLYGONS, POINTS, POLYGONS
+        };
 
     /**
      * List of wfs 1.1 type names.
      */
-    public static QName[] WFS11_TYPENAMES = new QName[] { PRIMITIVEGEOFEATURE,
-            AGGREGATEGEOFEATURE, /* ENTIT\u00C9G\u00C9N\u00C9RIQUE */
-    };
+    public static QName[] WFS11_TYPENAMES = new QName[] {
+            PRIMITIVEGEOFEATURE, AGGREGATEGEOFEATURE, /* ENTIT\u00C9G\u00C9N\u00C9RIQUE */
+        };
 
     /** the base of the data directory */
     File data;
@@ -193,14 +181,14 @@ public class MockData {
 
     /** the 'plugIns' directory under 'data */
     File plugIns;
-    
+
     /** the 'validation' directory under 'data */
     File validation;
-    
+
     /**
      * @param base
      *            Base of the GeoServer data directory.
-     * 
+     *
      * @throws IOException
      */
     public MockData() throws IOException {
@@ -217,23 +205,24 @@ public class MockData {
     /**
      * Copies some content to a file under the base of the data directory.
      * <p>
-     * The <code>location</code> is considred to be a path relative to the 
+     * The <code>location</code> is considred to be a path relative to the
      * data directory root.
      * </p>
      * <p>
-     * Note that the resulting file will be deleted when {@link #tearDown()} 
+     * Note that the resulting file will be deleted when {@link #tearDown()}
      * is called.
      * </p>
      * @param input The content to copy.
      * @param location A relative path
      */
-    public void copyTo( InputStream input, String location ) throws IOException {
-        copy( input, new File( getDataDirectoryRoot(), location ) );
+    public void copyTo(InputStream input, String location)
+        throws IOException {
+        copy(input, new File(getDataDirectoryRoot(), location));
     }
-    
+
     /**
      * Sets up the data directory, creating all the necessary files.
-     * 
+     *
      * @throws IOException
      */
     public void setUp() throws IOException {
@@ -248,21 +237,21 @@ public class MockData {
         styles = new File(data, "styles");
         styles.mkdir();
         //copy over the minimal style
-        copy( MockData.class.getResourceAsStream("Default.sld"), new File( styles, "Default.sld") );
-        
+        copy(MockData.class.getResourceAsStream("Default.sld"), new File(styles, "Default.sld"));
+
         //plugins
-        plugIns = new File(data, "plugIns" );
+        plugIns = new File(data, "plugIns");
         plugIns.mkdir();
-        
+
         //validation
         validation = new File(data, "validation");
         validation.mkdir();
-        
+
         //set up the types
-        for ( int i = 0; i < TYPENAMES.length; i++ ) {
-            setup( TYPENAMES[ i ] );
+        for (int i = 0; i < TYPENAMES.length; i++) {
+            setup(TYPENAMES[i]);
         }
-        
+
         // create the catalog.xml
         CatalogWriter writer = new CatalogWriter();
 
@@ -270,36 +259,32 @@ public class MockData {
         HashMap dataStores = new HashMap();
 
         HashMap params = new HashMap();
-        params.put(PropertyDataStoreFactory.DIRECTORY.key, new File(data,
-                CITE_PREFIX));
+        params.put(PropertyDataStoreFactory.DIRECTORY.key, new File(data, CITE_PREFIX));
         params.put(PropertyDataStoreFactory.NAMESPACE.key, CITE_URI);
         dataStores.put(CITE_PREFIX, params);
 
         params = new HashMap();
-        params.put(PropertyDataStoreFactory.DIRECTORY.key, new File(data,
-                CDF_PREFIX));
+        params.put(PropertyDataStoreFactory.DIRECTORY.key, new File(data, CDF_PREFIX));
         params.put(PropertyDataStoreFactory.NAMESPACE.key, CDF_URI);
         dataStores.put(CDF_PREFIX, params);
 
         params = new HashMap();
-        params.put(PropertyDataStoreFactory.DIRECTORY.key, new File(data,
-                CGF_PREFIX));
+        params.put(PropertyDataStoreFactory.DIRECTORY.key, new File(data, CGF_PREFIX));
         params.put(PropertyDataStoreFactory.NAMESPACE.key, CGF_URI);
         dataStores.put(CGF_PREFIX, params);
 
         params = new HashMap();
-        params.put(PropertyDataStoreFactory.DIRECTORY.key, new File(data,
-                SF_PREFIX));
+        params.put(PropertyDataStoreFactory.DIRECTORY.key, new File(data, SF_PREFIX));
         params.put(PropertyDataStoreFactory.NAMESPACE.key, SF_URI);
         dataStores.put(SF_PREFIX, params);
 
         HashMap dataStoreNamepaces = new HashMap();
-        dataStoreNamepaces.put(CITE_PREFIX, CITE_PREFIX );
-        dataStoreNamepaces.put(CDF_PREFIX, CDF_PREFIX );
-        dataStoreNamepaces.put(CGF_PREFIX, CGF_PREFIX );
-        dataStoreNamepaces.put(SF_PREFIX, SF_PREFIX );
-        
-        writer.dataStores(dataStores,dataStoreNamepaces);
+        dataStoreNamepaces.put(CITE_PREFIX, CITE_PREFIX);
+        dataStoreNamepaces.put(CDF_PREFIX, CDF_PREFIX);
+        dataStoreNamepaces.put(CGF_PREFIX, CGF_PREFIX);
+        dataStoreNamepaces.put(SF_PREFIX, SF_PREFIX);
+
+        writer.dataStores(dataStores, dataStoreNamepaces);
 
         // setup the namespaces
         HashMap namespaces = new HashMap();
@@ -317,8 +302,9 @@ public class MockData {
             QName type = WMS_TYPENAMES[i];
             styles.put(type.getLocalPart(), type.getLocalPart() + ".sld");
         }
-        styles.put( "Default", "Default.sld" );
-        
+
+        styles.put("Default", "Default.sld");
+
         writer.styles(styles);
 
         writer.write(new File(data, "catalog.xml"));
@@ -331,15 +317,13 @@ public class MockData {
     }
 
     void properties(QName name) throws IOException {
-
         // copy over the properties file
-        InputStream from = MockData.class.getResourceAsStream(
-                name.getLocalPart() + ".properties");
+        InputStream from = MockData.class.getResourceAsStream(name.getLocalPart() + ".properties");
         File directory = new File(data, name.getPrefix());
         directory.mkdir();
+
         File to = new File(directory, name.getLocalPart() + ".properties");
         copy(from, to);
-
     }
 
     void copy(InputStream from, File to) throws IOException {
@@ -347,6 +331,7 @@ public class MockData {
         OutputStream out = new BufferedOutputStream(new FileOutputStream(to));
 
         int b = 0;
+
         while ((b = in.read()) != -1)
             out.write(b);
 
@@ -356,7 +341,6 @@ public class MockData {
     }
 
     void info(QName name) throws IOException {
-
         String type = name.getLocalPart();
         String prefix = name.getPrefix();
 
@@ -374,14 +358,15 @@ public class MockData {
         writer.write("<abstract>abstract about " + type + "</abstract>");
         writer.write("<numDecimals value=\"8\"/>");
         writer.write("<keywords>" + type + "</keywords>");
-        writer.write("<latLonBoundingBox dynamic=\"false\" minx=\"-180\" miny=\"-90\" maxx=\"180\" maxy=\"90\"/>");
-        
-        if ( MockData.class.getResource( type + ".sld" ) != null ) {
-            writer.write("<styles default=\"" + type + "\"/>");    
-        }
-        else {
+        writer.write(
+            "<latLonBoundingBox dynamic=\"false\" minx=\"-180\" miny=\"-90\" maxx=\"180\" maxy=\"90\"/>");
+
+        if (MockData.class.getResource(type + ".sld") != null) {
+            writer.write("<styles default=\"" + type + "\"/>");
+        } else {
             writer.write("<styles default=\"Default\"/>");
         }
+
         writer.write("</featureType>");
 
         writer.flush();
@@ -389,15 +374,14 @@ public class MockData {
     }
 
     void style(QName name) throws IOException {
-
         String type = name.getLocalPart();
 
         //if there is not  astyle named "type".sld, use minimal
         InputStream from = null;
+
         if (MockData.class.getResource(type + ".sld") != null) {
             from = MockData.class.getResourceAsStream(type + ".sld");
-        }
-        else {
+        } else {
             from = MockData.class.getResourceAsStream("Default.sld");
         }
 
@@ -407,7 +391,7 @@ public class MockData {
 
     /**
      * Kills the data directory, deleting all the files.
-     * 
+     *
      * @throws IOException
      */
     public void tearDown() throws IOException {
@@ -424,13 +408,13 @@ public class MockData {
 
     void delete(File dir) throws IOException {
         File[] files = dir.listFiles();
+
         for (int i = 0; i < files.length; i++) {
             if (files[i].isDirectory()) {
                 delete(files[i]);
             } else {
                 files[i].delete();
             }
-
         }
 
         dir.delete();

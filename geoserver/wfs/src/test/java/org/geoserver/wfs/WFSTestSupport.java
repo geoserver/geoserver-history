@@ -1,6 +1,11 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs;
 
 import org.geoserver.test.GeoServerTestSupport;
+
 
 /**
  * Base support class for wfs tests.
@@ -12,11 +17,10 @@ import org.geoserver.test.GeoServerTestSupport;
  *
  */
 public class WFSTestSupport extends GeoServerTestSupport {
-
     /**
      * @return The global wfs instance from the application context.
      */
     protected WFS getWFS() {
-        return (WFS) applicationContext.getBean( "wfs" );
+        return (WFS) applicationContext.getBean("wfs");
     }
 }
