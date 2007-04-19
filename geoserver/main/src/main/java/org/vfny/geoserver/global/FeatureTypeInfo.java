@@ -653,8 +653,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         GeometryAttributeType dg = realSource.getSchema().getDefaultGeometry();
 
         if (dg == null) {
-            throw new IOException("Feature type: " + getName()
-                + " does not have a default geometry");
+            // deal with geometryless features
+            return null;
         }
 
         return dg.getCoordinateSystem();

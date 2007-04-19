@@ -135,6 +135,10 @@ public class MapPreviewAction extends GeoServerAction {
             }
 
             CoordinateReferenceSystem layerCrs = layer.getDeclaredCRS();
+            
+            // skip geometryless layers
+            if(layerCrs == null)
+                continue;
 
             /* A quick and efficient way to grab the bounding box is to get it
              * from the featuretype info where the lat/lon bbox is loaded
