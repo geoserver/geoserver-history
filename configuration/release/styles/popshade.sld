@@ -28,24 +28,9 @@
         <PolygonSymbolizer>
            <Fill>
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->
-              <CssParameter name="fill">#FF0000</CssParameter>
-			  <CssParameter name="fill-opacity">0.7</CssParameter>
+              <CssParameter name="fill">#FF4D4D</CssParameter>
            </Fill>     
         </PolygonSymbolizer>
-		<TextSymbolizer>
-		    <Label>
-				<ogc:PropertyName>STATE_ABBR</ogc:PropertyName>
-		    </Label>
-
-		    <Font>
-				<CssParameter name="font-family">Times New Roman</CssParameter>
-				<CssParameter name="font-style">Normal</CssParameter>
-				<CssParameter name="font-size">14</CssParameter>
-		    </Font>
-			<Fill>
-				<CssParameter name="fill">#000000</CssParameter>
-		    </Fill>
-		</TextSymbolizer>
       </Rule>
       <Rule>
         <!-- like a linesymbolizer but with a fill too -->
@@ -58,24 +43,9 @@
         <PolygonSymbolizer>
            <Fill>
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->
-              <CssParameter name="fill">#00FF00</CssParameter>
-			  <CssParameter name="fill-opacity">0.7</CssParameter>
+              <CssParameter name="fill">#4DFF4D</CssParameter>
            </Fill>     
         </PolygonSymbolizer>
-		<TextSymbolizer>
-		    <Label>
-				<ogc:PropertyName>STATE_ABBR</ogc:PropertyName>
-		    </Label>
-
-		    <Font>
-				<CssParameter name="font-family">Times New Roman</CssParameter>
-				<CssParameter name="font-style">Normal</CssParameter>
-				<CssParameter name="font-size">14</CssParameter>
-		    </Font>
-			<Fill>
-				<CssParameter name="fill">#000000</CssParameter>
-		    </Fill>
-		</TextSymbolizer>
       </Rule>
       <Rule>
         <!-- like a linesymbolizer but with a fill too -->
@@ -88,11 +58,15 @@
         <PolygonSymbolizer>
            <Fill>
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->
-              <CssParameter name="fill">#0000FF</CssParameter>
-			  <CssParameter name="fill-opacity">0.7</CssParameter>
+              <CssParameter name="fill">#4D4DFF</CssParameter>
            </Fill>     
         </PolygonSymbolizer>
-		<TextSymbolizer>
+      </Rule>
+      <Rule>
+        <LineSymbolizer>
+           <Stroke/>    
+        </LineSymbolizer>
+        <TextSymbolizer>
 		    <Label>
 				<ogc:PropertyName>STATE_ABBR</ogc:PropertyName>
 		    </Label>
@@ -106,11 +80,6 @@
 				<CssParameter name="fill">#000000</CssParameter>
 		    </Fill>
 		</TextSymbolizer>
-      </Rule>
-      <Rule>
-        <LineSymbolizer>
-           <Stroke/>    
-        </LineSymbolizer>
       </Rule>
     </FeatureTypeStyle>
 </UserStyle>
