@@ -33,8 +33,7 @@
       <groupId>struts</groupId>
       <artifactId>struts</artifactId>
     </dependency>
-		<dependency>
-			<groupId>xml-apis</groupId>
+		<dependency> <groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
 		</dependency>
 		<dependency>
@@ -101,6 +100,13 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt2-metadata</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geoserver</groupId>
+			<artifactId>data</artifactId>
+                        <version>1.6-SNAPSHOT</version>
+                        <classifier>tests</classifier>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.mockrunner</groupId>
