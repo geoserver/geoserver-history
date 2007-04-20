@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
 
+import javax.xml.transform.TransformerException;
+
 
 /**
  * Handles a GetMap request that spects a map in KML format.
@@ -23,14 +25,9 @@ class KMLMapProducer implements GetMapProducer {
     /** standard logger */
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.kml");
 
-    /**
-     * encoder instance which does all the hard work
-     *
-     * @uml.property name="kmlEncoder"
-     * @uml.associationEnd multiplicity="(0 1)"
-     */
-    private EncodeKML kmlEncoder;
-
+    /** kml transformer which turns the map contedxt into kml */
+    private KMLTransformer transformer;
+    
     /** used to get the content disposition file name */
     private WMSMapContext mapContext;
 
@@ -40,7 +37,9 @@ class KMLMapProducer implements GetMapProducer {
      * @param gs The orriginating Service
      */
     public void abort(Service gs) {
-        this.kmlEncoder.abort();
+        if ( transformer != null ) {
+            //transformer.abort();
+        }
     }
 
     /**
@@ -58,9 +57,9 @@ class KMLMapProducer implements GetMapProducer {
     public void abort() {
         LOGGER.fine("aborting KML map response");
 
-        if (this.kmlEncoder != null) {
+        if (transformer != null) {
             LOGGER.info("aborting KML encoder");
-            this.kmlEncoder.abort();
+            //transformer.abort();
         }
     }
 
@@ -73,8 +72,8 @@ class KMLMapProducer implements GetMapProducer {
      * @throws WmsException thrown if anything goes wrong during the production.
      */
     public void produceMap(WMSMapContext map) throws WmsException {
-        this.mapContext = map;
-        this.kmlEncoder = new EncodeKML(map);
+        mapContext = map;
+        transformer = new KMLTransformer();
     }
 
     /**
@@ -90,7 +89,12 @@ class KMLMapProducer implements GetMapProducer {
      * @TODO replace stream copy with nio code.
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
-        kmlEncoder.encodeKML(out);
+        try {
+            transformer.transform( mapContext, out );
+        } 
+        catch (TransformerException e) {
+            throw (IOException) new IOException().initCause( e );
+        }
     }
 
     public String getContentDisposition() {
