@@ -50,7 +50,7 @@ import javax.media.jai.GraphicsJAI;
 
 
 /**
- *
+ * @deprecated use {@link KMLTransformer}.
  */
 public class EncodeKML {
     /** Standard Logger */
