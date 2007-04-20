@@ -84,6 +84,8 @@ import javax.xml.transform.TransformerException;
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $
  * @author Brent Owens
+ * 
+ * @deprecated use {@link KMLTransformer}.
  */
 public class KMLWriter extends OutputStreamWriter {
     private static final Logger LOGGER = Logger.getLogger(KMLWriter.class.getPackage().getName());
