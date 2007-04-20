@@ -230,4 +230,15 @@ public class GeoserverDataDirectory {
             loader.addSearchLocation(new File(servContext.getRealPath("data")));
         }
     }
+    
+    /**
+     * Signals the data directory to throw away all global state.
+     * <p>
+     * This code should *not* be called by any non-test GeoServer code.
+     * </p>
+     */
+    public static void destroy() {
+        loader = null;
+        isTrueDataDir = false;
+    }
 }
