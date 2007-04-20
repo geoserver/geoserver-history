@@ -99,7 +99,7 @@ public class KMZMapProducerFactory implements GetMapProducerFactorySpi {
      */
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
-        return new KMZMapProducer();
+        return new KMZMapProducer(wms);
     }
 
     /* (non-Javadoc)
