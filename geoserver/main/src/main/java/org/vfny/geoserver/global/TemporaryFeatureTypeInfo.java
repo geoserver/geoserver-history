@@ -49,7 +49,7 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
         return Filter.INCLUDE;
     }
 
-    Object toDTO() {
+    public Object toDTO() {
         throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 

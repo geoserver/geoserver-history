@@ -288,7 +288,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      *
      * @return FeatureTypeInfoDTO the generated object
      */
-    Object toDTO() {
+    public Object toDTO() {
         FeatureTypeInfoDTO dto = new FeatureTypeInfoDTO();
         dto.setAbstract(_abstract);
         dto.setDataStoreId(dataStoreId);
