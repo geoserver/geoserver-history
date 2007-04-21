@@ -1,7 +1,7 @@
 <table border='1'>
 
 <tr>
-  <th colspan=${attributes?size} scope='col'>${typeName}</th>
+  <th colspan='${attributes?size}' scope='col'>${typeName}</th>
 </tr>
 
 <tr>
