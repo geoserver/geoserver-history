@@ -50,7 +50,7 @@ public class WMSTestSupport extends GeoServerTestSupport {
      *  
      * @return A new map layer.
      */
-    protected MapLayer createFeatureMapLayer( QName layerName ) throws IOException {
+    protected MapLayer createMapLayer( QName layerName ) throws IOException {
         //TODO: support coverages
         FeatureTypeInfo info = getCatalog().getFeatureTypeInfo( layerName );
         Style style = info.getDefaultStyle();
@@ -58,6 +58,14 @@ public class WMSTestSupport extends GeoServerTestSupport {
         return new DefaultMapLayer( info.getFeatureSource(), style );
     }
  
+    /**
+     * Calls through to {@link #createGetMapRequest(QName[])}. 
+     * 
+     */
+    protected GetMapRequest createGetMapRequest( QName layerName ) {
+        return createGetMapRequest( new QName[]{ layerName } );
+    }
+    
     /**
      * Convenience method for subclasses to create a new GetMapRequest object.
      * <p>
@@ -76,6 +84,7 @@ public class WMSTestSupport extends GeoServerTestSupport {
      */
     protected GetMapRequest createGetMapRequest( QName[] layerNames ) {
         GetMapRequest request = new GetMapRequest( new GetMap( getWMS() ) ) ;
+        request.setHttpServletRequest( createRequest("wms") );
         
         MapLayerInfo[] layers = new MapLayerInfo[ layerNames.length ];
         List styles = new ArrayList();
@@ -95,6 +104,7 @@ public class WMSTestSupport extends GeoServerTestSupport {
         request.setStyles( styles );
         request.setBbox( new Envelope( -180,-90,180,90 ) );
         request.setCrs( DefaultGeographicCRS.WGS84 );
+        
         
         return request;
     }
