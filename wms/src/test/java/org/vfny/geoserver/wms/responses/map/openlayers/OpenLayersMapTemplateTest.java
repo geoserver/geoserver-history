@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wms.responses.map.ajax;
+package org.vfny.geoserver.wms.responses.map.openlayers;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
