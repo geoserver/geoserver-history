@@ -69,7 +69,6 @@ public class KMLTransformerTest extends WMSTestSupport {
         int nfeatures = featureSource.getFeatures().size();
         
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        transformer.transform( featureSource.getFeatures(), System.out );
         transformer.transform( featureSource.getFeatures(), output );
         
         DocumentBuilder docBuilder = 
