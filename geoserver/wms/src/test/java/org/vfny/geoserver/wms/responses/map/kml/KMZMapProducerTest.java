@@ -22,8 +22,8 @@ public class KMZMapProducerTest extends WMSTestSupport {
  
         //create a map context
         WMSMapContext mapContext = new WMSMapContext();
-        mapContext.addLayer( createFeatureMapLayer( MockData.BASIC_POLYGONS ) );
-        mapContext.addLayer( createFeatureMapLayer( MockData.BUILDINGS ) );
+        mapContext.addLayer( createMapLayer( MockData.BASIC_POLYGONS ) );
+        mapContext.addLayer( createMapLayer( MockData.BUILDINGS ) );
         mapContext.setMapHeight( 256 );
         mapContext.setMapWidth( 256 );
         
