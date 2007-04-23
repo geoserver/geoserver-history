@@ -268,17 +268,23 @@ public class Dispatcher extends AbstractController {
         boolean kvpRequestContent = false;
 
         if (disReader != null) {
-            try {
-                DispatcherXmlReader requestTypeAnalyzer = new DispatcherXmlReader();
-                requestTypeAnalyzer.read(disReader, httpRequest);
+            DispatcherXmlReader requestTypeAnalyzer = new DispatcherXmlReader();
+            requestTypeAnalyzer.read(disReader, httpRequest);
 
+            if (requestTypeAnalyzer.getService() == null) {
+                throw new ServiceException(
+                    "Couldn't determine what service this XML request was directed to.  You must include a properly set 'service=' attribute on your root element");
+            }
+
+            try {
                 target = find(requestTypeAnalyzer.getService(), requestTypeAnalyzer.getRequest());
             } catch (ServiceException e) {
-                DispatcherKvpReader requestTypeAnalyzer = new DispatcherKvpReader();
-                requestTypeAnalyzer.read(requestReader, httpRequest);
+                DispatcherKvpReader kvprequestTypeAnalyzer = new DispatcherKvpReader();
+                kvprequestTypeAnalyzer.read(requestReader, httpRequest);
 
-                target = find(requestTypeAnalyzer.getService(), requestTypeAnalyzer.getRequest());
-                target.setKvpString(requestTypeAnalyzer.getQueryString());
+                target = find(kvprequestTypeAnalyzer.getService(),
+                        kvprequestTypeAnalyzer.getRequest());
+                target.setKvpString(kvprequestTypeAnalyzer.getQueryString());
                 kvpRequestContent = true;
             }
         }
