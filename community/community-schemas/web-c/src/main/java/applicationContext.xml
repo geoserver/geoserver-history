@@ -24,10 +24,15 @@
 	<bean id="dispatcher" class="org.geoserver.ows.Dispatcher"/>
 	
 	<!--  schema / dtd publisher -->
+  <!--
 	<bean id="schemaPublisher" class="org.geoserver.ows.SchemaPublisher">
 		<constructor-arg ref="resourceLoader"/>
 	</bean>
-	
+-->	
+  <!-- file publisher -->
+  <bean id="filePublisher" class="org.geoserver.ows.FilePublisher">
+    <constructor-arg ref="resourceLoader"/>
+  </bean>
 	
    <bean id="dispatcherMapping" 
     class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -36,8 +41,13 @@
       <props>
         <prop key="/ows">dispatcher</prop>
         <prop key="/ows/*">dispatcher</prop>
+        <prop key="/styles/*">filePublisher</prop>
+        <prop key="/schemas/**/*.xsd">filePublisher</prop>
+        <prop key="/schemas/**/*.dtd">filePublisher</prop>
+        <!-- 
         <prop key="/schemas/**/*.xsd">schemaPublisher</prop>
         <prop key="/schemas/**/*.dtd">schemaPublisher</prop>
+         -->
       </props>
     </property>
 
