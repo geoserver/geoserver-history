@@ -13,11 +13,16 @@ import org.geotools.xml.Node;
 import org.opengis.feature.Attribute;
 import org.opengis.feature.ComplexAttribute;
 import org.opengis.feature.Feature;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.Name;
 import org.opengis.geometry.BoundingBox;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import javax.xml.namespace.QName;
 
 
@@ -94,7 +99,8 @@ public class ISOAbstractFeatureTypeBinding extends AbstractComplexBinding {
         throws Exception {
         Attribute attribute = (Attribute) object;
 
-        Name name = attribute.getDescriptor().getName();
+        AttributeDescriptor descriptor = attribute.getDescriptor();
+        Name name = descriptor.getName();
         String namespace = name.getNamespaceURI();
         String typeName = name.getLocalPart();
 
@@ -104,6 +110,25 @@ public class ISOAbstractFeatureTypeBinding extends AbstractComplexBinding {
 
         if (id != null) {
             encoding.setAttributeNS(GML.NAMESPACE, "id", id);
+        }
+
+        Map definedAttributes = (Map) descriptor.getUserData(Attributes.class);
+
+        if (definedAttributes != null) {
+            Map.Entry entry;
+
+            for (Iterator it = definedAttributes.entrySet().iterator(); it.hasNext();) {
+                entry = (Entry) it.next();
+
+                Name key = (Name) entry.getKey();
+                Object attValue = entry.getValue();
+
+                String namespaceURI = key.getNamespaceURI();
+                String qualifiedName = key.getLocalPart();
+                String strAttValue = String.valueOf(attValue);
+
+                encoding.setAttributeNS(namespaceURI, qualifiedName, strAttValue);
+            }
         }
 
         return encoding;
