@@ -90,15 +90,14 @@ public class ConfigAction extends GeoServerAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
         HttpServletRequest request, HttpServletResponse response)
         throws Exception {
-        if (!isLoggedIn(request)) {
-            ActionErrors errors = new ActionErrors();
-            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.login.required"));
-            request.setAttribute(Globals.ERROR_KEY, errors);
-            request.setAttribute("forward", mapping.getForward());
-
-            return mapping.findForward("login");
-        }
-
+        //        if (!isLoggedIn(request)) {
+        //            ActionErrors errors = new ActionErrors();
+        //            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.login.required"));
+        //            request.setAttribute(Globals.ERROR_KEY, errors);
+        //            request.setAttribute("forward", mapping.getForward());
+        //
+        //            return mapping.findForward("login");
+        //        }
         return execute(mapping, form, getUserContainer(request), request, response);
     }
 

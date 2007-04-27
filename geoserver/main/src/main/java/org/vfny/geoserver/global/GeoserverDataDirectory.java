@@ -230,7 +230,7 @@ public class GeoserverDataDirectory {
             loader.addSearchLocation(new File(servContext.getRealPath("data")));
         }
     }
-    
+
     /**
      * Signals the data directory to throw away all global state.
      * <p>

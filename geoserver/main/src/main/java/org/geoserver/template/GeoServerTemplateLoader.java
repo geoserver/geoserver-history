@@ -50,7 +50,7 @@ import java.util.logging.Logger;
  */
 public class GeoServerTemplateLoader implements TemplateLoader {
     /** logger */
-    static Logger LOGGER = Logger.getLogger("org.geoserver");
+    static Logger LOGGER = Logger.getLogger("org.geoserver.template");
 
     /**
      * Delegate file based template loader

@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.util;
 
+import org.acegisecurity.context.SecurityContextHolder;
+import org.acegisecurity.userdetails.UserDetails;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
 import javax.servlet.http.HttpServletRequest;
@@ -223,8 +225,22 @@ public final class Requests {
         synchronized (session) {
             UserContainer user = (UserContainer) session.getAttribute(UserContainer.SESSION_KEY);
 
+            // acegi variation, login is performed by the acegi subsystem, we do get
+            // the information we need from it
+            if (user == null) {
+                UserDetails ud = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                                                                    .getPrincipal();
+                user = new UserContainer();
+                user.setUsername(ud.getUsername());
+                request.getSession().setAttribute(UserContainer.SESSION_KEY, user);
+            }
+
             return user;
         }
+    }
+
+    public static boolean loggedIn(HttpServletRequest request) {
+        return !getUserContainer(request).getUsername().equals("anonymous");
     }
 
     /**

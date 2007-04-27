@@ -15,6 +15,7 @@
   <name>Main Module</name>
 
 	<dependencies>
+  
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>

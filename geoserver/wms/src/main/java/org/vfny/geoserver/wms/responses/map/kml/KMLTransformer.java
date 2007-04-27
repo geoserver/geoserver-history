@@ -1,8 +1,10 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
@@ -28,161 +30,145 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
+import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 
-import com.vividsolutions.jts.geom.Envelope;
 
 public class KMLTransformer extends TransformerBase {
-
     /**
      * Factory used to create filter objects
      */
-    FilterFactory filterFactory = 
-        (FilterFactory) CommonFactoryFinder.getFilterFactory( null );
+    FilterFactory filterFactory = (FilterFactory) CommonFactoryFinder.getFilterFactory(null);
+
     /**
      * Flag controlling wether kmz was requested.
      */
     boolean kmz = false;
-    
+
     public KMLTransformer() {
         setNamespaceDeclarationEnabled(false);
     }
-    
+
     public Translator createTranslator(ContentHandler handler) {
-        return new KMLTranslator( handler );   
+        return new KMLTranslator(handler);
     }
-    
+
     public void setFilterFactory(FilterFactory filterFactory) {
         this.filterFactory = filterFactory;
     }
-    
+
     public void setKmz(boolean kmz) {
         this.kmz = kmz;
     }
-    
+
     class KMLTranslator extends TranslatorSupport {
-        
-        public KMLTranslator( ContentHandler handler ) {
-            super( handler, null, null );
+        public KMLTranslator(ContentHandler handler) {
+            super(handler, null, null);
         }
 
         public void encode(Object o) throws IllegalArgumentException {
-          
-            start( "kml" );
-            
+            start("kml");
+
             WMSMapContext mapContext = (WMSMapContext) o;
             MapLayer[] layers = mapContext.getLayers();
-            
+
             //if we have more than one layer, use the name "GeoServer" to group them
-            if ( layers.length > 1) {
-                start( "Document" );
-                element( "name", "GeoServer" );
+            if (layers.length > 1) {
+                start("Document");
+                element("name", "GeoServer");
             }
 
             //for every layer specified in the request
-            for (int i = 0; i < layers.length; i++) { 
-
+            for (int i = 0; i < layers.length; i++) {
                 //layer and info
                 MapLayer layer = layers[i];
                 MapLayerInfo layerInfo = mapContext.getRequest().getLayers()[i];
-                
+
                 //figure out which type of layer this is, raster or vector
-                if ( layerInfo.getType() == MapLayerInfo.TYPE_VECTOR ) {
+                if (layerInfo.getType() == MapLayerInfo.TYPE_VECTOR) {
                     //vector 
-                    encodeVectorLayer( mapContext, layer );
-                }
-                else {
+                    encodeVectorLayer(mapContext, layer);
+                } else {
                     //raster
-                    encodeRasterLayer( mapContext, layer );
+                    encodeRasterLayer(mapContext, layer);
                 }
-                
             }
-            
+
             //if we have more than one layer, use the name "GeoServer" to group them
-            if ( layers.length > 1) {
-                end( "Document" );
+            if (layers.length > 1) {
+                end("Document");
             }
-            
-            end( "kml" );
-            
+
+            end("kml");
         }
-        
+
         /**
          * Encodes a vector layer as kml.
          */
-        protected void encodeVectorLayer( WMSMapContext mapContext, MapLayer layer ) {
-            
+        protected void encodeVectorLayer(WMSMapContext mapContext, MapLayer layer) {
             //get the data
             FeatureSource featureSource = layer.getFeatureSource();
-            FeatureCollection features = null; 
-            
+            FeatureCollection features = null;
+
             try {
-               features = loadFeatureCollection( featureSource, layer, mapContext );
-            } 
-            catch (Exception e) {
-                throw new RuntimeException( e );
+                features = loadFeatureCollection(featureSource, layer, mapContext);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-              
+
             //was kmz requested?
-            if ( kmz ) {
+            if (kmz) {
                 //calculate kmscore to determine if we shoud write as vectors
                 // or pre-render
-                int kmscore = mapContext.getRequest().getKMScore(); 
-                boolean useVector = useVectorOutput(kmscore, features.size()); 
-                
-                if ( useVector ) {
+                int kmscore = mapContext.getRequest().getKMScore();
+                boolean useVector = useVectorOutput(kmscore, features.size());
+
+                if (useVector) {
                     //encode
-                    KMLVectorTransformer tx = 
-                        new KMLVectorTransformer( mapContext, layer );
-                    tx.createTranslator( contentHandler ).encode( features );
-                }
-                else {
-                    KMLRasterTransformer tx = 
-                        new KMLRasterTransformer( mapContext );
-                    
+                    KMLVectorTransformer tx = new KMLVectorTransformer(mapContext, layer);
+                    tx.createTranslator(contentHandler).encode(features);
+                } else {
+                    KMLRasterTransformer tx = new KMLRasterTransformer(mapContext);
+
                     //set inline to true to have the transformer reference images
                     // inline in the zip file
-                    tx.setInline( true );
-                    
-                    tx.createTranslator( contentHandler ).encode( layer );
+                    tx.setInline(true);
+
+                    tx.createTranslator(contentHandler).encode(layer);
                 }
-            }
-            else {
+            } else {
                 //kmz not selected, just do straight vector
-                KMLVectorTransformer tx = 
-                    new KMLVectorTransformer( mapContext, layer );
-                tx.createTranslator( contentHandler ).encode( features );
+                KMLVectorTransformer tx = new KMLVectorTransformer(mapContext, layer);
+                tx.createTranslator(contentHandler).encode(features);
             }
-            
         }
-        
+
         /**
          * Encodes a raster layer as kml.
          */
-        protected void encodeRasterLayer( WMSMapContext mapContext, MapLayer layer ) {
-            KMLRasterTransformer tx = new KMLRasterTransformer( mapContext );
-            tx.setInline( kmz );
-            
-            tx.createTranslator( contentHandler ).encode( layer );
+        protected void encodeRasterLayer(WMSMapContext mapContext, MapLayer layer) {
+            KMLRasterTransformer tx = new KMLRasterTransformer(mapContext);
+            tx.setInline(kmz);
+
+            tx.createTranslator(contentHandler).encode(layer);
         }
-        
-        double computeScaleDenominator( MapLayer layer, WMSMapContext mapContext ) {
-            
+
+        double computeScaleDenominator(MapLayer layer, WMSMapContext mapContext) {
             Rectangle paintArea = new Rectangle(mapContext.getMapWidth(), mapContext.getMapHeight());
             AffineTransform worldToScreen = RendererUtilities.worldToScreenTransform(mapContext
                     .getAreaOfInterest(), paintArea);
+
             try {
                 //90 = OGC standard DPI (see SLD spec page 37)
                 return RendererUtilities.calculateScale(mapContext.getAreaOfInterest(),
-                        mapContext.getCoordinateReferenceSystem(), paintArea.width,
-                        paintArea.height, 90); 
+                    mapContext.getCoordinateReferenceSystem(), paintArea.width, paintArea.height, 90);
             } catch (Exception e) {
                 //probably either (1) no CRS (2) error xforming, revert to
                 // old method - the best we can do (DJB)
-                return 1 / worldToScreen.getScaleX(); 
+                return 1 / worldToScreen.getScaleX();
             }
-
         }
-        
+
         /**
          * Determines whether to return a vector (KML) result of the data or to
          * return an image instead.
@@ -226,21 +212,21 @@ public class KMLTransformer extends TransformerBase {
                 return true; // return vector
             }
         }
-        
-        FeatureCollection loadFeatureCollection( FeatureSource featureSource, MapLayer layer, WMSMapContext mapContext ) 
-            throws Exception {
+
+        FeatureCollection loadFeatureCollection(FeatureSource featureSource, MapLayer layer,
+            WMSMapContext mapContext) throws Exception {
             FeatureType schema = featureSource.getSchema();
-            
+
             Envelope envelope = mapContext.getAreaOfInterest();
             ReferencedEnvelope aoi = new ReferencedEnvelope(envelope,
                     mapContext.getCoordinateReferenceSystem());
-            CoordinateReferenceSystem sourceCrs = 
-                   schema.getDefaultGeometry().getCoordinateSystem();
-            if (sourceCrs != null && !CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(), sourceCrs ) ) {
+            CoordinateReferenceSystem sourceCrs = schema.getDefaultGeometry().getCoordinateSystem();
+
+            if ((sourceCrs != null)
+                    && !CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(), sourceCrs)) {
                 aoi = aoi.transform(sourceCrs, true);
             }
 
-            
             BBoxExpression rightBBox = filterFactory.createBBoxExpression(aoi);
             Filter filter = createBBoxFilter(schema, rightBBox);
 
@@ -248,7 +234,7 @@ public class KMLTransformer extends TransformerBase {
             // box needed
             DefaultQuery q = new DefaultQuery(schema.getTypeName());
             q.setFilter(filter);
-           
+
             // now, if a definition query has been established for this layer, be
             // sure to respect it by combining it with the bounding box one.
             Query definitionQuery = layer.getQuery();
@@ -266,45 +252,44 @@ public class KMLTransformer extends TransformerBase {
 
             return featureSource.getFeatures(q);
         }
-        
-       /** Creates the bounding box filters (one for each geometric attribute) needed to query a
-        * <code>MapLayer</code>'s feature source to return just the features for the target
-        * rendering extent
-        *
-        * @param schema the layer's feature source schema
-        * @param bbox the expression holding the target rendering bounding box
-        * @return an or'ed list of bbox filters, one for each geometric attribute in
-        *         <code>attributes</code>. If there are just one geometric attribute, just returns
-        *         its corresponding <code>GeometryFilter</code>.
-        * @throws IllegalFilterException if something goes wrong creating the filter
-        */
+
+        /** Creates the bounding box filters (one for each geometric attribute) needed to query a
+         * <code>MapLayer</code>'s feature source to return just the features for the target
+         * rendering extent
+         *
+         * @param schema the layer's feature source schema
+         * @param bbox the expression holding the target rendering bounding box
+         * @return an or'ed list of bbox filters, one for each geometric attribute in
+         *         <code>attributes</code>. If there are just one geometric attribute, just returns
+         *         its corresponding <code>GeometryFilter</code>.
+         * @throws IllegalFilterException if something goes wrong creating the filter
+         */
         Filter createBBoxFilter(FeatureType schema, BBoxExpression bbox)
-           throws IllegalFilterException {
-           Filter filter = null;
+            throws IllegalFilterException {
+            Filter filter = null;
 
-           for (int j = 0; j < schema.getAttributeCount(); j++ ) {
-               
-               AttributeType attType = schema.getAttributeType(j);
-               if (attType instanceof GeometryAttributeType) {
-                   
-                   GeometryFilter gfilter = filterFactory.createGeometryFilter(Filter.GEOMETRY_BBOX);
+            for (int j = 0; j < schema.getAttributeCount(); j++) {
+                AttributeType attType = schema.getAttributeType(j);
 
-                   // TODO: how do I get the full xpath of an attribute should
-                   // feature composition be used?
-                   Expression left = filterFactory.createAttributeExpression(schema, attType.getName());
-                   gfilter.addLeftGeometry(left);
-                   gfilter.addRightGeometry(bbox);
+                if (attType instanceof GeometryAttributeType) {
+                    GeometryFilter gfilter = filterFactory.createGeometryFilter(Filter.GEOMETRY_BBOX);
 
-                   if (filter == null) {
-                       filter = gfilter;
-                   } else {
-                       filter = filter.or(gfilter);
-                   }
-               }
-           }
+                    // TODO: how do I get the full xpath of an attribute should
+                    // feature composition be used?
+                    Expression left = filterFactory.createAttributeExpression(schema,
+                            attType.getName());
+                    gfilter.addLeftGeometry(left);
+                    gfilter.addRightGeometry(bbox);
 
-           return filter;
-       }
+                    if (filter == null) {
+                        filter = gfilter;
+                    } else {
+                        filter = filter.or(gfilter);
+                    }
+                }
+            }
+
+            return filter;
+        }
     }
-
 }

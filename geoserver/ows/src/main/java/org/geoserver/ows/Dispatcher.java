@@ -4,7 +4,9 @@
  */
 package org.geoserver.ows;
 
+import org.acegisecurity.AcegiSecurityException;
 import org.eclipse.emf.ecore.EObject;
+import org.geoserver.ows.security.OperationInterceptor;
 import org.geoserver.ows.util.EncodingInfo;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
@@ -106,6 +108,9 @@ public class Dispatcher extends AbstractController {
 
     /** flag to control wether the dispatcher is cite compliant */
     boolean citeCompliant = false;
+    
+    /** The security interceptor to be used for authorization checks **/
+    OperationInterceptor securityInterceptor = null;
 
     /**
      * Sets the flag to control wether the dispatcher is cite compliante.
@@ -203,6 +208,9 @@ public class Dispatcher extends AbstractController {
             if (result != null) {
                 response(result, request, operation);
             }
+        } catch(AcegiSecurityException e) {
+            // make Acegi exceptions flow so that exception transformer filter can handle them
+            throw e;
         } catch (Throwable t) {
             exception(t, service, request);
         }
@@ -462,7 +470,10 @@ public class Dispatcher extends AbstractController {
         Object result = null;
 
         try {
-            result = operation.invoke(serviceBean, parameters);
+            if(securityInterceptor != null)
+                result = securityInterceptor.invoke(opDescriptor, operation, serviceBean, parameters);
+            else
+                result = operation.invoke(serviceBean, parameters);
         } catch (InvocationTargetException e) {
             if (e.getTargetException() != null) {
                 throw e.getTargetException();
@@ -1175,5 +1186,13 @@ public class Dispatcher extends AbstractController {
         public String toString() {
             return service + " " + version + " " + request;
         }
+    }
+
+    public OperationInterceptor getSecurityInterceptor() {
+        return securityInterceptor;
+    }
+
+    public void setSecurityInterceptor(OperationInterceptor interceptor) {
+        this.securityInterceptor = interceptor;
     }
 }
