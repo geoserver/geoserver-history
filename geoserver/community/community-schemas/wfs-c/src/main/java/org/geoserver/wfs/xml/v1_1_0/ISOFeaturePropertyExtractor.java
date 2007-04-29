@@ -5,6 +5,7 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 import org.eclipse.xsd.XSDElementDeclaration;
+import org.eclipse.xsd.XSDFactory;
 import org.eclipse.xsd.XSDParticle;
 import org.eclipse.xsd.XSDTypeDefinition;
 import org.geotools.feature.Name;
@@ -13,6 +14,7 @@ import org.geotools.gml3.bindings.GML;
 import org.geotools.xml.PropertyExtractor;
 import org.geotools.xml.SchemaIndex;
 import org.geotools.xml.Schemas;
+import org.geotools.xml.impl.GetPropertyExecutor;
 import org.opengis.feature.ComplexAttribute;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.ComplexType;
@@ -72,10 +74,10 @@ public class ISOFeaturePropertyExtractor implements PropertyExtractor {
                 attribute = attribute.getResolvedElementDeclaration();
             }
 
-            // ignore gml attributes
-            if (GML.NAMESPACE.equals(attribute.getTargetNamespace())) {
-                continue;
-            }
+//            // ignore gml attributes
+//            if (GML.NAMESPACE.equals(attribute.getTargetNamespace())) {
+//                continue;
+//            }
 
             String localPart = attribute.getName();
             String uri = attribute.getTargetNamespace();
@@ -97,7 +99,30 @@ public class ISOFeaturePropertyExtractor implements PropertyExtractor {
             }
 
             Object attributeValue = feature.get(attributeName);
-
+            if ( attributeValue == null || ( attributeValue instanceof Collection ) && 
+                    ((Collection)attributeValue).isEmpty() ) {
+                
+                //check the case that we are asking for a property that is 
+                // abstract, in that case ask for elements in teh same 
+                // substitution group
+                if ( attribute.isAbstract() ) {
+                    List sub = attribute.getSubstitutionGroup();
+                    for ( Iterator s = sub.iterator(); s.hasNext(); ) {
+                        XSDElementDeclaration e = 
+                            (XSDElementDeclaration) s.next();
+                        
+                        attributeName = new Name( e.getTargetNamespace(), e.getName() );
+                        attributeValue = feature.get(attributeName);
+                        
+                        if ( attributeValue != null ) {
+                            //found it, break out
+                            break;
+                        }
+                    }
+                
+                }
+                
+            }
             if (attributeValue instanceof Collection) {
                 for (Iterator it = ((Collection) attributeValue).iterator(); it.hasNext();) {
                     Object value = it.next();
