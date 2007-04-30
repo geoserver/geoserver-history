@@ -169,7 +169,7 @@ public class HTMLEncoder {
                    case 'Ó':
                    case 'Ú':
                        buf.append(c + "&acute;");
-                
+
                        break;*/
                 case 160:
                 case 161:
