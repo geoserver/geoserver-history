@@ -199,9 +199,9 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
 
         if (curImage.getColorModel() instanceof IndexColorModel) {
             hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-//            This can be added, but it increases the image size significantly for png's... hum...
-//            we should really expose these settings to the users
-//            hintsMap.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            //            This can be added, but it increases the image size significantly for png's... hum...
+            //            we should really expose these settings to the users
+            //            hintsMap.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             hintsMap.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
         } else {
             hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
