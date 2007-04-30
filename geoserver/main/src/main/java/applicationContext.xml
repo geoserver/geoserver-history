@@ -116,7 +116,7 @@
         if in need for playing with a non secure version of Geoserver
        -->
       <property name="securityInterceptor">
-        <ref local="operationSecurityInterceptor"/>
+        <ref bean="operationSecurityInterceptor"/>
       </property>
     </bean>
     
