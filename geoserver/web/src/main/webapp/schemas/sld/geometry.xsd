@@ -254,8 +254,8 @@
     </annotation>
     <complexContent>
       <extension base="gml:AbstractGeometryCollectionBaseType">
-        <sequence>
-          <element ref="gml:geometryMember" maxOccurs="unbounded"/>
+        <sequence maxOccurs="unbounded">
+          <element ref="gml:geometryMember"/>
         </sequence>
       </extension>
     </complexContent>
@@ -269,8 +269,8 @@
     </annotation>
     <complexContent>
       <restriction base="gml:GeometryCollectionType">
-        <sequence>
-          <element ref="gml:pointMember" maxOccurs="unbounded"/>
+        <sequence maxOccurs="unbounded">
+          <element ref="gml:pointMember"/>
         </sequence>
         <attribute name="gid" type="ID" use="optional"/>
         <attribute name="srsName" type="anyURI" use="required"/>
@@ -286,8 +286,8 @@
     </annotation>
     <complexContent>
       <restriction base="gml:GeometryCollectionType">
-        <sequence>
-          <element ref="gml:lineStringMember" maxOccurs="unbounded"/>
+        <sequence maxOccurs="unbounded">
+          <element ref="gml:lineStringMember" />
         </sequence>
         <attribute name="gid" type="ID" use="optional"/>
         <attribute name="srsName" type="anyURI" use="required"/>
@@ -303,8 +303,8 @@
     </annotation>
     <complexContent>
       <restriction base="gml:GeometryCollectionType">
-        <sequence>
-          <element ref="gml:polygonMember" maxOccurs="unbounded"/>
+        <sequence maxOccurs="unbounded">
+          <element ref="gml:polygonMember"/>
         </sequence>
         <attribute name="gid" type="ID" use="optional"/>
         <attribute name="srsName" type="anyURI" use="required"/>
