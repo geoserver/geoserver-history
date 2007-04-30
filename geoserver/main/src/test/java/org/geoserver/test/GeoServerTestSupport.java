@@ -68,8 +68,10 @@ public class GeoServerTestSupport extends TestCase {
         servletContext.setInitParameter("GEOSERVER_DATA_DIR",
             dataDirectory.getDataDirectoryRoot().getAbsolutePath());
 
-        applicationContext = new GeoServerTestApplicationContext("classpath*:/applicationContext.xml",
-                servletContext);
+        applicationContext = new GeoServerTestApplicationContext(new String[] {
+                    "classpath*:/applicationContext.xml",
+                    "classpath*:/applicationSecurityContext.xml"
+                }, servletContext);
 
         applicationContext.refresh();
     }

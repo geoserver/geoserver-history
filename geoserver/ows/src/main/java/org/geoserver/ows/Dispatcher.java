@@ -108,7 +108,7 @@ public class Dispatcher extends AbstractController {
 
     /** flag to control wether the dispatcher is cite compliant */
     boolean citeCompliant = false;
-    
+
     /** The security interceptor to be used for authorization checks **/
     OperationInterceptor securityInterceptor = null;
 
@@ -208,7 +208,7 @@ public class Dispatcher extends AbstractController {
             if (result != null) {
                 response(result, request, operation);
             }
-        } catch(AcegiSecurityException e) {
+        } catch (AcegiSecurityException e) {
             // make Acegi exceptions flow so that exception transformer filter can handle them
             throw e;
         } catch (Throwable t) {
@@ -470,10 +470,11 @@ public class Dispatcher extends AbstractController {
         Object result = null;
 
         try {
-            if(securityInterceptor != null)
+            if (securityInterceptor != null) {
                 result = securityInterceptor.invoke(opDescriptor, operation, serviceBean, parameters);
-            else
+            } else {
                 result = operation.invoke(serviceBean, parameters);
+            }
         } catch (InvocationTargetException e) {
             if (e.getTargetException() != null) {
                 throw e.getTargetException();

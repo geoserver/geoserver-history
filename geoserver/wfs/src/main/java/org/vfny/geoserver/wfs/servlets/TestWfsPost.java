@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wfs.servlets;
 
+import org.apache.commons.codec.binary.Base64;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -18,8 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.codec.binary.Base64;
 
 
 /**
@@ -197,8 +196,8 @@ public class TestWfsPost extends HttpServlet {
                 //           Pass it along the way to the target URL
                 //DJB: applied patch in GEOS-335
                 String authHeader = request.getHeader("Authorization");
-                
-                if(request.getParameter("username") != null) {
+
+                if (request.getParameter("username") != null) {
                     String username = request.getParameter("username");
                     String password = request.getParameter("password");
                     String up = username + ":" + password;

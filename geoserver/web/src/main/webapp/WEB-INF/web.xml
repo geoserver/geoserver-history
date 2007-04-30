@@ -47,7 +47,7 @@
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
-			classpath*:/applicationContext.xml;classpath*:/applicationSecurityContext.xml
+			classpath*:/applicationContext.xml classpath*:/applicationSecurityContext.xml
 		</param-value>
 	</context-param>
 
