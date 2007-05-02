@@ -136,6 +136,7 @@ public class WFSConfiguration extends Configuration {
     }
 
     private void registerBindingOverrides(MutablePicoContainer container) {
+        registerOverride(container, XS.ANYTYPE, ISOElementTypeBinding.class);
         registerOverride(container, GML.AbstractFeatureType, ISOAbstractFeatureTypeBinding.class);
 
         registerOverride(container, GML.AbstractGeometryType, ISOAbstractFeatureTypeBinding.class);

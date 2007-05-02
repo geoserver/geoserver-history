@@ -62,11 +62,11 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class ISOAbstractFeatureTypeBinding extends AbstractComplexBinding {
+public class ISOElementTypeBinding extends AbstractComplexBinding {
     FeatureTypeCache ftCache;
     BindingWalkerFactory bwFactory;
 
-    public ISOAbstractFeatureTypeBinding(FeatureTypeCache ftCache, BindingWalkerFactory bwFactory) {
+    public ISOElementTypeBinding(FeatureTypeCache ftCache, BindingWalkerFactory bwFactory) {
         this.ftCache = ftCache;
         this.bwFactory = bwFactory;
     }
@@ -75,7 +75,7 @@ public class ISOAbstractFeatureTypeBinding extends AbstractComplexBinding {
      * @generated
      */
     public QName getTarget() {
-        return GML.AbstractFeatureType;
+        return XS.ANYTYPE;
     }
 
     /**

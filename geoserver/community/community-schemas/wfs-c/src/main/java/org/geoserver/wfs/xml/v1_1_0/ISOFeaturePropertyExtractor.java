@@ -46,7 +46,9 @@ public class ISOFeaturePropertyExtractor implements PropertyExtractor {
         final ComplexType attributeType = (ComplexType) feature.getType();
 
         // find the type in the schema
-        if (feature.getDescriptor() != null) {
+        if (null != attributeType.getUserData(XSDTypeDefinition.class)) {
+            typeDefinition = (XSDTypeDefinition) attributeType.getUserData(XSDTypeDefinition.class);
+        } else if (feature.getDescriptor() != null) {
             AttributeDescriptor descriptor = feature.getDescriptor();
             org.opengis.feature.type.Name name = descriptor.getName();
             QName qname = new QName(name.getNamespaceURI(), name.getLocalPart());
@@ -63,7 +65,8 @@ public class ISOFeaturePropertyExtractor implements PropertyExtractor {
             typeDefinition = schemaIndex.getTypeDefinition(qname);
         }
 
-        List particles = Schemas.getChildElementParticles(typeDefinition, true);
+        final boolean includeParents = true;
+        List particles = Schemas.getChildElementParticles(typeDefinition, includeParents);
         List properties = new ArrayList(2 * particles.size());
 
         for (Iterator p = particles.iterator(); p.hasNext();) {
@@ -74,11 +77,10 @@ public class ISOFeaturePropertyExtractor implements PropertyExtractor {
                 attribute = attribute.getResolvedElementDeclaration();
             }
 
-//            // ignore gml attributes
-//            if (GML.NAMESPACE.equals(attribute.getTargetNamespace())) {
-//                continue;
-//            }
-
+            // ignore gml attributes as they're alread returned by BindingPropertyExtractor
+            //if (GML.NAMESPACE.equals(attribute.getTargetNamespace())) {
+            //    continue;
+            //}
             String localPart = attribute.getName();
             String uri = attribute.getTargetNamespace();
 
@@ -99,37 +101,52 @@ public class ISOFeaturePropertyExtractor implements PropertyExtractor {
             }
 
             Object attributeValue = feature.get(attributeName);
-            if ( attributeValue == null || ( attributeValue instanceof Collection ) && 
-                    ((Collection)attributeValue).isEmpty() ) {
-                
+
+            if ((attributeValue == null)
+                    || ((attributeValue instanceof Collection)
+                    && ((Collection) attributeValue).isEmpty())) {
                 //check the case that we are asking for a property that is 
                 // abstract, in that case ask for elements in teh same 
                 // substitution group
-                if ( attribute.isAbstract() ) {
+                if (attribute.isAbstract()) {
                     List sub = attribute.getSubstitutionGroup();
-                    for ( Iterator s = sub.iterator(); s.hasNext(); ) {
-                        XSDElementDeclaration e = 
-                            (XSDElementDeclaration) s.next();
-                        
-                        attributeName = new Name( e.getTargetNamespace(), e.getName() );
+
+                    for (Iterator s = sub.iterator(); s.hasNext();) {
+                        XSDElementDeclaration e = (XSDElementDeclaration) s.next();
+
+                        attributeName = new Name(e.getTargetNamespace(), e.getName());
                         attributeValue = feature.get(attributeName);
-                        
-                        if ( attributeValue != null ) {
+
+                        if (attributeValue != null) {
                             //found it, break out
                             break;
                         }
                     }
-                
                 }
-                
             }
+
             if (attributeValue instanceof Collection) {
-                for (Iterator it = ((Collection) attributeValue).iterator(); it.hasNext();) {
-                    Object value = it.next();
-                    properties.add(new Object[] { particle, value });
+                Collection col = (Collection) attributeValue;
+                int size = col.size();
+
+                if (size == 0) {
+                    attributeValue = null;
+                } else if (size == 1) {
+                    attributeValue = col.iterator().next();
                 }
-            } else {
-                properties.add(new Object[] { particle, attributeValue });
+            }
+
+            //            if (attributeValue instanceof Collection) {
+            //                for (Iterator it = ((Collection) attributeValue).iterator(); it.hasNext();) {
+            //                    Object value = it.next();
+            //                    properties.add(new Object[] { particle, value });
+            //                }
+            //            } else {
+            properties.add(new Object[] { particle, attributeValue });
+
+            //            }
+            if (localPart.equals("IntervalLog")) {
+                System.out.println("break here");
             }
         }
 
