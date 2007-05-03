@@ -17,11 +17,9 @@ import org.geotools.feature.DefaultFeatureType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.w3c.dom.Document;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -41,22 +39,19 @@ public class KMLDescriptionTemplateTest extends TestCase {
                 "string:String,int:Integer,double:Double,geom:Point");
 
         DefaultFeature f = new DefaultFeature((DefaultFeatureType) featureType,
-            new Object[] {
-                "three", new Integer(3), new Double(3.3), gf.createPoint(new Coordinate(3, 3))
-            }, "fid.3") {
-        };
+                new Object[] {
+                    "three", new Integer(3), new Double(3.3), gf.createPoint(new Coordinate(3, 3))
+                }, "fid.3") {
+            };
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         template.process(f, new OutputStreamWriter(output));
-    
-        DocumentBuilder docBuilder = 
-            DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document document = 
-            docBuilder.parse( new ByteArrayInputStream( output.toByteArray() ) );
-       
-        assertNotNull( document );
-        
-       
-        assertEquals( "table", document.getDocumentElement().getNodeName() );
+
+        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
+
+        assertNotNull(document);
+
+        assertEquals("table", document.getDocumentElement().getNodeName());
     }
 }
