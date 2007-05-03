@@ -26,6 +26,8 @@ import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.feature.Attribute;
 import org.opengis.geometry.DirectPosition;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import javax.xml.namespace.QName;
 
 
@@ -67,7 +69,6 @@ import javax.xml.namespace.QName;
  *           &lt;/extension&gt;
  *       &lt;/complexContent&gt;
  *   &lt;/complexType&gt;
- *
  * </code>
  *         </pre>
  *
@@ -148,5 +149,10 @@ public class ISOPointTypeBinding extends AbstractComplexBinding {
         }
 
         return null;
+    }
+
+    public Element encode(Object object, Document document, Element value)
+        throws Exception {
+        return value;
     }
 }

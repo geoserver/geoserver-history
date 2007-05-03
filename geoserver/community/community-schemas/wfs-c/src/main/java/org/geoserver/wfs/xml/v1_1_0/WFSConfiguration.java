@@ -15,7 +15,6 @@ import org.geoserver.wfs.xml.filter.v1_1.PropertyNameTypeBinding;
 import org.geoserver.wfs.xml.gml3.AbstractGeometryTypeBinding;
 import org.geoserver.wfs.xml.gml3.CircleTypeBinding;
 import org.geoserver.wfs.xml.xs.DateBinding;
-import org.geotools.feature.FeatureType;
 import org.geotools.filter.v1_1.OGC;
 import org.geotools.filter.v1_1.OGCConfiguration;
 import org.geotools.gml2.FeatureTypeCache;
@@ -27,10 +26,6 @@ import org.geotools.xml.Schemas;
 import org.geotools.xs.bindings.XS;
 import org.picocontainer.MutablePicoContainer;
 import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
 import javax.xml.namespace.QName;
 
 
@@ -130,6 +125,8 @@ public class WFSConfiguration extends Configuration {
         // TODO: make this cite configurable
         Schemas.unregisterComponent(container, GML.MultiPolygonType);
 
+        Schemas.unregisterComponent(container, XS.STRING);
+
         // register the overriding bindings needed to
         // encode from ISO Features
         registerBindingOverrides(container);
@@ -137,11 +134,15 @@ public class WFSConfiguration extends Configuration {
 
     private void registerBindingOverrides(MutablePicoContainer container) {
         registerOverride(container, XS.ANYTYPE, ISOElementTypeBinding.class);
+
+        registerOverride(container, XS.ANYSIMPLETYPE, ISOAnySimpleTypeBinding.class);
+
         registerOverride(container, GML.AbstractFeatureType, ISOAbstractFeatureTypeBinding.class);
 
         registerOverride(container, GML.AbstractGeometryType, ISOAbstractFeatureTypeBinding.class);
 
         registerOverride(container, GML.PointType, ISOPointTypeBinding.class);
+        registerOverride(container, GML.PointPropertyType, ISOPointPropertyTypeBinding.class);
 
         registerOverride(container, GML.MultiSurfaceType, ISOMultiSurfaceTypeBinding.class);
 
@@ -157,7 +158,7 @@ public class WFSConfiguration extends Configuration {
      * @param newBinding
      */
     private void registerOverride(MutablePicoContainer container, QName name, Class newBinding) {
-        container.unregisterComponent(name);
+        Schemas.unregisterComponent(container, name);
         container.registerComponentImplementation(name, newBinding);
     }
 }

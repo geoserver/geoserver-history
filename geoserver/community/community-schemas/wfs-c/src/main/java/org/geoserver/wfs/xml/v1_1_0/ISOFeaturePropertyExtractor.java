@@ -136,18 +136,7 @@ public class ISOFeaturePropertyExtractor implements PropertyExtractor {
                 }
             }
 
-            //            if (attributeValue instanceof Collection) {
-            //                for (Iterator it = ((Collection) attributeValue).iterator(); it.hasNext();) {
-            //                    Object value = it.next();
-            //                    properties.add(new Object[] { particle, value });
-            //                }
-            //            } else {
             properties.add(new Object[] { particle, attributeValue });
-
-            //            }
-            if (localPart.equals("IntervalLog")) {
-                System.out.println("break here");
-            }
         }
 
         return properties;
