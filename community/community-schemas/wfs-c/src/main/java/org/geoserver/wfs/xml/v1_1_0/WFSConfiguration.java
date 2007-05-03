@@ -134,6 +134,7 @@ public class WFSConfiguration extends Configuration {
 
     private void registerBindingOverrides(MutablePicoContainer container) {
         registerOverride(container, XS.ANYTYPE, ISOElementTypeBinding.class);
+        registerOverride(container, XS.DATETIME, ISOXSDateTimeBinding.class);
 
         registerOverride(container, XS.ANYSIMPLETYPE, ISOAnySimpleTypeBinding.class);
 
