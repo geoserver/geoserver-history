@@ -110,10 +110,6 @@ public class ISOAbstractFeatureTypeBinding extends AbstractComplexBinding {
         String namespace = name.getNamespaceURI();
         String localName = name.getLocalPart();
 
-        if ("beginPos".equals(localName)) {
-            System.out.println("break here");
-        }
-
         Element encoding = document.createElementNS(namespace, localName);
 
         String id = attribute.getID();

@@ -4,25 +4,20 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
-import org.geotools.gml2.FeatureTypeCache;
 import org.geotools.gml3.bindings.GML;
 import org.geotools.util.Converters;
 import org.geotools.xml.AbstractComplexBinding;
-import org.geotools.xml.BindingWalkerFactory;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.geotools.xs.bindings.XS;
 import org.opengis.feature.Attribute;
-import org.opengis.feature.ComplexAttribute;
-import org.opengis.feature.Feature;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.Name;
-import org.opengis.geometry.BoundingBox;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.xml.namespace.QName;
@@ -30,47 +25,16 @@ import javax.xml.namespace.QName;
 
 /**
  * Binding object for the type http://www.opengis.net/gml:AbstractFeatureType.
- *
- * <p>
- *
- * <pre>
- *         <code>
- *    &lt;complexType abstract=&quot;true&quot; name=&quot;AbstractFeatureType&quot;&gt;
- *        &lt;annotation&gt;
- *            &lt;documentation&gt;An abstract feature provides a set of common properties, including id, metaDataProperty, name and description inherited from AbstractGMLType, plus boundedBy.    A concrete feature type must derive from this type and specify additional  properties in an application schema. A feature must possess an identifying attribute ('id' - 'fid' has been deprecated).&lt;/documentation&gt;
- *        &lt;/annotation&gt;
- *        &lt;complexContent&gt;
- *            &lt;extension base=&quot;gml:AbstractGMLType&quot;&gt;
- *                &lt;sequence&gt;
- *                    &lt;element minOccurs=&quot;0&quot; ref=&quot;gml:boundedBy&quot;/&gt;
- *                    &lt;element minOccurs=&quot;0&quot; ref=&quot;gml:location&quot;&gt;
- *                        &lt;annotation&gt;
- *                            &lt;appinfo&gt;deprecated&lt;/appinfo&gt;
- *                            &lt;documentation&gt;deprecated in GML version 3.1&lt;/documentation&gt;
- *                        &lt;/annotation&gt;
- *                    &lt;/element&gt;
- *                    &lt;!-- additional properties must be specified in an application schema --&gt;
- *                &lt;/sequence&gt;
- *            &lt;/extension&gt;
- *        &lt;/complexContent&gt;
- *    &lt;/complexType&gt;
- *
- * </code>
- *         </pre>
- *
- * </p>
- *
- * @generated
  */
-public class ISOElementTypeBinding extends AbstractComplexBinding {
-    public ISOElementTypeBinding() {
+public class ISOAnySimpleTypeBinding extends AbstractComplexBinding {
+    public ISOAnySimpleTypeBinding() {
     }
 
     /**
      * @generated
      */
     public QName getTarget() {
-        return XS.ANYSIMPLETYPE;
+        return XS.ANYTYPE;
     }
 
     /**
@@ -105,10 +69,6 @@ public class ISOElementTypeBinding extends AbstractComplexBinding {
         String namespace = name.getNamespaceURI();
         String localName = name.getLocalPart();
 
-        if ("beginPos".equals(localName)) {
-            System.out.println("break here");
-        }
-
         Element encoding = document.createElementNS(namespace, localName);
 
         String id = attribute.getID();
@@ -133,6 +93,31 @@ public class ISOElementTypeBinding extends AbstractComplexBinding {
                 String strAttValue = (String) Converters.convert(attValue, String.class);
 
                 encoding.setAttributeNS(namespaceURI, qualifiedName, strAttValue);
+            }
+        }
+
+        String attValue = (String) Converters.convert(attribute.get(), String.class);
+
+        if (attValue != null) {
+            // figure out if the node has any text
+            Text text = null;
+
+            for (int i = 0; i < encoding.getChildNodes().getLength(); i++) {
+                org.w3c.dom.Node node = encoding.getChildNodes().item(i);
+
+                if (node instanceof Text) {
+                    text = (Text) node;
+
+                    break;
+                }
+            }
+
+            // set the text of the node
+            if (text == null) {
+                text = document.createTextNode(attValue);
+                encoding.appendChild(text);
+            } else {
+                text.setData(attValue);
             }
         }
 
