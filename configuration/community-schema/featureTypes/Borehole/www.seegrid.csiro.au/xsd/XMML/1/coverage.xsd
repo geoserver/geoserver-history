@@ -37,7 +37,9 @@ Copyright (c) 2005 CSIRO - see https://www.seegrid.csiro.au/twiki/bin/view/Xmml/
 				<sequence>
 					<!--					<element name="domainExtent" type="gml:BoundingShapeType"/> -->
 					<element name="rangeDescription" type="swe:SWE_RecordSchemaPropertyType" minOccurs="0"/>
-					<element name="range" type="xmml:RangePropertyType">
+                    <!-- GR: added maxOccurs="unbounded" as the mapping requires it to be multiple valued
+                    but the schema is preventing it without setting maxoccurs -->
+					<element name="range" type="xmml:RangePropertyType" maxOccurs="unbounded">
 						<annotation>
 							<documentation>Contains a representation of the values in the coverage</documentation>
 						</annotation>
@@ -107,7 +109,7 @@ Copyright (c) 2005 CSIRO - see https://www.seegrid.csiro.au/twiki/bin/view/Xmml/
 			<documentation>A list, representing the values in a scalar-valued range.</documentation>
 		</annotation>
 		<sequence maxOccurs="unbounded">
-			<choice>
+			<choice maxOccurs="unbounded">
 				<element name="categoryList" type="swe:TypedCategoryListType">
 					<annotation>
 						<documentation>A list of text values describing a single property, being the set of values in one component of the range.  

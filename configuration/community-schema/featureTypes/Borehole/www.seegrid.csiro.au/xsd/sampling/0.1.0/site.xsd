@@ -39,13 +39,6 @@ Copyright (c) 2005 CSIRO - see https://www.seegrid.csiro.au/twiki/bin/view/Xmml/
 		<complexContent>
 			<extension base="gml:AbstractFeatureType">
 				<sequence>
-                    <!-- 
-                    HACK here!: as geotools AbstractFeatureType does not defines gml:name and gml:description,
-                    we add them here
-                    <element ref="gml:name" minOccurs="0" maxOccurs="unbounded"/>
-                    <element ref="gml:description" minOccurs="0" maxOccurs="unbounded"/>
-                     -->
-                     
 					<element name="member" type="sa:SamplingFeaturePropertyType" minOccurs="0" maxOccurs="unbounded">
 						<annotation>
 							<documentation>A site is often associated with a set of member sites: e.g. stations on a traverse, intervals in a borehole or section, boreholes within an area of interest.</documentation>
