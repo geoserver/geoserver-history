@@ -16,27 +16,27 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.Point;
 import org.geotools.gml3.bindings.GML;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.feature.Attribute;
-import java.util.List;
+import java.util.ArrayList;
 import javax.xml.namespace.QName;
 
 
 /**
- * Binding object for the type http://www.opengis.net/gml:MultiSurfaceType.
+ * Binding object for the type http://www.opengis.net/gml:MultiPointType.
  *
  * <p>
  *
  * <pre>
  *         <code>
- *  &lt;complexType name=&quot;MultiSurfaceType&quot;&gt;
+ *  &lt;complexType name=&quot;MultiPointType&quot;&gt;
  *      &lt;annotation&gt;
- *          &lt;documentation&gt;A MultiSurface is defined by one or more Surfaces, referenced through surfaceMember elements.&lt;/documentation&gt;
+ *          &lt;documentation&gt;A MultiPoint is defined by one or more Points, referenced through pointMember elements.&lt;/documentation&gt;
  *      &lt;/annotation&gt;
  *      &lt;complexContent&gt;
  *          &lt;extension base=&quot;gml:AbstractGeometricAggregateType&quot;&gt;
@@ -45,8 +45,8 @@ import javax.xml.namespace.QName;
  *                      &lt;documentation&gt;The members of the geometric aggregate can be specified either using the &quot;standard&quot; property or the array property style. It is also valid to use both the &quot;standard&quot; and the array property style in the same collection.
  *  NOTE: Array properties cannot reference remote geometry elements.&lt;/documentation&gt;
  *                  &lt;/annotation&gt;
- *                  &lt;element maxOccurs=&quot;unbounded&quot; minOccurs=&quot;0&quot; ref=&quot;gml:surfaceMember&quot;/&gt;
- *                  &lt;element minOccurs=&quot;0&quot; ref=&quot;gml:surfaceMembers&quot;/&gt;
+ *                  &lt;element maxOccurs=&quot;unbounded&quot; minOccurs=&quot;0&quot; ref=&quot;gml:pointMember&quot;/&gt;
+ *                  &lt;element minOccurs=&quot;0&quot; ref=&quot;gml:pointMembers&quot;/&gt;
  *              &lt;/sequence&gt;
  *          &lt;/extension&gt;
  *      &lt;/complexContent&gt;
@@ -58,18 +58,18 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class ISOMultiSurfaceTypeBinding extends AbstractComplexBinding {
-    GeometryFactory gf;
+public class ISOMultiPointTypeBinding extends AbstractComplexBinding {
+    GeometryFactory gFactory;
 
-    public ISOMultiSurfaceTypeBinding(GeometryFactory gf) {
-        this.gf = gf;
+    public ISOMultiPointTypeBinding(GeometryFactory gFactory) {
+        this.gFactory = gFactory;
     }
 
     /**
      * @generated
      */
     public QName getTarget() {
-        return GML.MultiSurfaceType;
+        return GML.MultiPointType;
     }
 
     /**
@@ -78,7 +78,11 @@ public class ISOMultiSurfaceTypeBinding extends AbstractComplexBinding {
      * @generated modifiable
      */
     public Class getType() {
-        return MultiPolygon.class;
+        return MultiPoint.class;
+    }
+
+    public int getExecutionMode() {
+        return BEFORE;
     }
 
     /**
@@ -88,24 +92,33 @@ public class ISOMultiSurfaceTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        // &lt;element maxOccurs="unbounded" minOccurs="0"
-        // ref="gml:surfaceMember"/&gt;
-        List surfaces = node.getChildValues(Polygon.class);
+        ArrayList points = new ArrayList();
 
-        return gf.createMultiPolygon((Polygon[]) surfaces.toArray(new Polygon[surfaces.size()]));
+        if (node.hasChild(Point.class)) {
+            points.addAll(node.getChildValues(Point.class));
+        }
+
+        if (node.hasChild(Point[].class)) {
+            Point[] p = (Point[]) node.getChildValue(Point[].class);
+
+            for (int i = 0; i < p.length; i++)
+                points.add(p[i]);
+        }
+
+        return gFactory.createMultiPoint((Point[]) points.toArray(new Point[points.size()]));
     }
 
     public Object getProperty(Object object, QName name)
         throws Exception {
-        if (GML.surfaceMember.equals(name)) {
+        if (GML.pointMember.equals(name)) {
             Attribute att = (Attribute) object;
-            MultiPolygon multiSurface = (MultiPolygon) att.get();
+            MultiPoint multiPoint = (MultiPoint) att.get();
 
-            if (multiSurface != null) {
-                Polygon[] members = new Polygon[multiSurface.getNumGeometries()];
+            if (multiPoint != null) {
+                Point[] members = new Point[multiPoint.getNumGeometries()];
 
                 for (int i = 0; i < members.length; i++) {
-                    members[i] = (Polygon) multiSurface.getGeometryN(i);
+                    members[i] = (Point) multiPoint.getGeometryN(i);
                 }
 
                 return members;

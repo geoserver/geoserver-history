@@ -21,6 +21,7 @@ import org.opengis.feature.type.ComplexType;
 import org.opengis.feature.type.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -96,6 +97,12 @@ public class ISOFeaturePropertyExtractor implements PropertyExtractor {
 
             // make sure the feature type has an element
             if (descriptor == null) {
+                if (GML.NAMESPACE.equals(attributeName.getNamespaceURI())) {
+                    //Do not throw an exception since the geotools (non ISO)
+                    //feature types does have the default gml properties defined
+                    continue;
+                }
+
                 throw new NoSuchElementException("Property descriptor " + attributeName
                     + " not found in feature type " + attributeType.getName());
             }

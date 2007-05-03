@@ -142,6 +142,7 @@ public class WFSConfiguration extends Configuration {
         registerOverride(container, GML.AbstractGeometryType, ISOAbstractFeatureTypeBinding.class);
 
         registerOverride(container, GML.PointType, ISOPointTypeBinding.class);
+        registerOverride(container, GML.MultiPointType, ISOMultiPointTypeBinding.class);
         registerOverride(container, GML.PointPropertyType, ISOPointPropertyTypeBinding.class);
 
         registerOverride(container, GML.MultiSurfaceType, ISOMultiSurfaceTypeBinding.class);
