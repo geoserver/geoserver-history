@@ -12,6 +12,14 @@
       resolve <type> elements. 
     -->
     <Namespace>
+      <prefix>gml</prefix>
+      <uri>http://www.opengis.net/gml</uri>
+    </Namespace>
+    <Namespace>
+      <prefix>xlink</prefix>
+      <uri>http://www.w3.org/1999/xlink</uri>
+    </Namespace>
+    <Namespace>
       <prefix>xmml</prefix>
       <uri>http://www.opengis.net/xmml</uri>
     </Namespace>
@@ -89,7 +97,7 @@
             <OCQL>strConcat( strConcat(QS, strConcat("/", RT)), strConcat(strConcat("/", NUMB), strConcat("/", BSUFF)) )</OCQL>
           </sourceExpression>
           <ClientProperty>
-            <name>codeSpace</name>
+            <name>gml:codeSpace</name>
             <value>"http://ns.bgs.ac.uk/bgs.sobi.pk"</value>
           </ClientProperty>
         </AttributeMapping>
@@ -99,7 +107,7 @@
             <OCQL>BGS_ID</OCQL>
           </sourceExpression>
           <ClientProperty>
-            <name>codeSpace</name>
+            <name>gml:codeSpace</name>
             <value>"http://ns.bgs.ac.uk/bgs.ubi.pk"</value>
           </ClientProperty>
         </AttributeMapping>
@@ -109,7 +117,7 @@
             <OCQL>NAME</OCQL>
           </sourceExpression>
           <ClientProperty>
-            <name>codeSpace</name>
+            <name>gml:codeSpace</name>
             <value>"http://ns.bgs.ac.uk/bgs.sobi.bore_name"</value>
           </ClientProperty>
         </AttributeMapping>
@@ -119,7 +127,7 @@
             <OCQL>ORIGINAL_N</OCQL>
           </sourceExpression>
           <ClientProperty>
-            <name>codeSpace</name>
+            <name>gml:codeSpace</name>
             <value>"http://ns.bgs.ac.uk/bgs.sobi.original_number"</value>
           </ClientProperty>
         </AttributeMapping>
@@ -171,7 +179,7 @@
             <OCQL>LENGTHC</OCQL>
           </sourceExpression>
           <ClientProperty>
-            <name>uom</name>
+            <name>swe:uom</name>
             <value>"#m"</value>
           </ClientProperty>
         </AttributeMapping>
@@ -198,7 +206,7 @@
             <OCQL>"(Missing from SDE table)"</OCQL>
           </sourceExpression>
           <ClientProperty>
-            <name>codeSpace</name>
+            <name>gml:codeSpace</name>
             <value>"http://ns.bgs.ac.uk/bgs.dic_incl"</value>
           </ClientProperty>
         </AttributeMapping>
@@ -216,7 +224,7 @@
             <OCQL>strConcat("bh.", strConcat(BGS_ID, ".log"))</OCQL>
           </idExpression>
           <ClientProperty>
-            <name>dimension</name>
+            <name>xmml:dimension</name>
             <value>"1"</value>
           </ClientProperty>
         </AttributeMapping>
@@ -240,11 +248,11 @@
             <OCQL>LITHOSTRAT</OCQL>
           </sourceExpression>
           <ClientProperty>
-            <name>codeSpace</name>
+            <name>swe:codeSpace</name>
             <value>"http://ns.bgs.ac.uk/bgs.lex_lithostrat_unit_v3"</value>
           </ClientProperty>
           <ClientProperty>
-            <name>property</name>
+            <name>swe:property</name>
             <value>"http://ns.bgs.ac.uk/thesaurus/lithostratigraphy"</value>
           </ClientProperty>
         </AttributeMapping>
@@ -255,11 +263,11 @@
             <OCQL>LITHOLOGY_</OCQL>
           </sourceExpression>
           <ClientProperty>
-            <name>codeSpace</name>
+            <name>swe:codeSpace</name>
             <value>"http://ns.bgs.ac.uk/bgs.dic_rock_name"</value>
           </ClientProperty>
           <ClientProperty>
-            <name>property</name>
+            <name>swe:property</name>
             <value>"http://ns.bgs.ac.uk/thesaurus/lithology"</value>
           </ClientProperty>
         </AttributeMapping>
@@ -270,11 +278,11 @@
             <OCQL>BASE_BED_C</OCQL>
           </sourceExpression>
           <ClientProperty>
-            <name>codeSpace</name>
+            <name>swe:codeSpace</name>
             <value>"http://ns.bgs.ac.uk/bgs.dic_base_bed"</value>
           </ClientProperty>
           <ClientProperty>
-            <name>property</name>
+            <name>swe:property</name>
             <value>"http://ns.bgs.ac.uk/thesaurus/base_bed"</value>
           </ClientProperty>
         </AttributeMapping>
