@@ -106,6 +106,7 @@ public class WMSTestSupport extends GeoServerTestSupport {
         request.setStyles(styles);
         request.setBbox(new Envelope(-180, -90, 180, 90));
         request.setCrs(DefaultGeographicCRS.WGS84);
+        request.setSRS("EPSG:4326");
 
         return request;
     }

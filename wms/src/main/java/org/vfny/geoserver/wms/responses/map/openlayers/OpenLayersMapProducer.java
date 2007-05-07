@@ -7,7 +7,6 @@ package org.vfny.geoserver.wms.responses.map.openlayers;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.WMS;
@@ -87,6 +86,7 @@ public class OpenLayersMapProducer implements GetMapProducer {
     private double getMaxResolution(ReferencedEnvelope areaOfInterest) {
         double w = areaOfInterest.getWidth();
         double h = areaOfInterest.getHeight();
-        return (w > h ? w : h) / 256;
+
+        return ((w > h) ? w : h) / 256;
     }
 }
