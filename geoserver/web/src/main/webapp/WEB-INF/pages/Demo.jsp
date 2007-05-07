@@ -52,7 +52,7 @@
 		<tr>
 			<td width=70/>
 			<td width=600 class="label" valign="top">
-			<center><u><b><font size=+2><a href="../../../wfs-t_demo/index.html" target="newwindow"><bean:message key="welcome.demo.wfst.title"/></a></font></b></u><br>
+			<center><u><b><font size=+2><a href="../../../wfst_demo/wfs-t.html" target="newwindow"><bean:message key="welcome.demo.wfst.title"/></a></font></b></u><br>
 			<p>
 			<bean:message key="welcome.demo.wfst.short"/>
 			</p>
