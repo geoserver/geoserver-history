@@ -97,14 +97,14 @@
 	</table>
 <!------------------------------------------------------------------------>
 
-<h1> <bean:message key="mapPreview.title"/> </h1>
+<h1 align="center"> <bean:message key="mapPreview.title"/> </h1>
 
 <!------------------------------------------------------------------------>
 <!-- DISPLAY THE LIST OF FEATURE TYPES AND THEIR INFORMATION             ->
 <!------------------------------------------------------------------------>
 
 
-<table border=1 cellpadding=4>
+<table border=1 cellpadding=4 align="center">
 
   <tr><th><B><U>Layer</U> (NameSpace:FeatureType)</B></th><th><B><U>DataStore</U></B><!--bean:message key="mapPreview.tableTitle"/--></th><th><B><U>Preview Map</U></B></th></tr>
   
@@ -133,7 +133,6 @@
 			<!-- add link to FTNameList.html -->
 			<center><b>
 			<a href="http://localhost:8080/geoserver/wms?bbox=<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>&styles=&Format=openlayers&request=GetMap&layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>&width=<bean:write property='<%= "WidthList[" + idx + "]" %>' name="mapPreviewForm"/>&height=<bean:write property='<%= "HeightList[" + idx + "]" %>' name="mapPreviewForm"/>&srs=<bean:write property='<%= "SRSList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank">Preview</a>
-			<a href="../../preview/<bean:write property='<%= "FTNameList[" + idx + "]" %>' name="mapPreviewForm"/>.html" target="_blank">MapBuilder</a>
 			</b></center>
 		 </td>
 	</tr>
