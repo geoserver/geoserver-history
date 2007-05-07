@@ -385,7 +385,7 @@ message.dataOkay=ãƒ‡ãƒ¼ã‚¿ã?Œéšœå®³ã?ªã??èª­è¾¼ã?¾ã‚Œã?¾ã?—ã?Ÿã€‚
 # WELCOME
 welcome.label=Welcome
 welcome.title=Welcome GeoServer
-welcome.short=ã‚ˆã?†ã?“ã??ã€€GeoServer 1.6.0-beta1ã?¸ã€€ã€€GeoServerã?®ã?”åˆ©ç”¨ã?‚ã‚Šã?Œã?¨ã?†ã?”ã?–ã?„ã?¾ã?™!
+welcome.short=ã‚ˆã?†ã?“ã??ã€€GeoServer 1.5.1ã?¸ã€€ã€€GeoServerã?®ã?”åˆ©ç”¨ã?‚ã‚Šã?Œã?¨ã?†ã?”ã?–ã?„ã?¾ã?™!
 welcome.words=(GeoServer) (GIS) (Geographic Information Systems) (WFS)
 
 welcome.contact.label=é€£çµ¡å…ˆ
@@ -411,7 +411,7 @@ welcome.demo.documentation.label=ãƒ¡ã‚¤ãƒ³ãƒ»ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆãƒšãƒ¼ã‚¸
 welcome.demo.documentation.short=ã?“ã‚Œã?ŒGeoserverã?®ãƒ¡ã‚¤ãƒ³ãƒ»ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆãƒšãƒ¼ã‚¸ã?§ã?™ã€‚ã??ã‚Œã?¯ ã€?ã?‚ã‚‰ã‚†ã‚‹ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆã‚„ã‚¦ã‚©ãƒ¼ã‚¯ã‚¹ãƒ«ãƒ¼ã€?ãƒ?ãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«ã€?ã?¾ã?Ÿã?¯ä»–ã?®ãƒ¦ãƒ¼ã‚¶ã?®ã?Ÿã‚?ã?«ã?ªã‚‹ã?¨æ€?ã‚?ã‚Œã‚‹æƒ…å ±ç­‰ã‚’åŠ ã?ˆã‚‹ã?“ã?¨ã?Œè‡ªç”±ã?ªWIKIã?§ã?™ã€‚
 welcome.demo.wfst.title=WFS-T demo
 welcome.demo.wfst.label=Example WFS-T (transactional) page
-welcome.demo.wfst.short=This page, powered by MapBuilder, is an example of WFS-T (transactional) requests that you can use. It allows you to insert points and lines into the various layers of the map.
+welcome.demo.wfst.short=This page, powered by OpenLayers, is an example of WFS-T (transactional) requests that you can use. It allows you to insert points and lines into the various layers of the map.
 
 welcome.demoRequest.label=ãƒ‡ãƒ¢ãƒ»ãƒªã‚¯ã‚¨ã‚¹ãƒˆ
 welcome.demoRequest.title=ãƒ‡ãƒ¢ãƒ»ãƒªã‚¯ã‚¨ã‚¹ãƒˆ

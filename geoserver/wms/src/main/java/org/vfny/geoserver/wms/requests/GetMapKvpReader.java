@@ -239,6 +239,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             try {
                 CoordinateReferenceSystem mapcrs = CRS.decode(epsgCode);
                 request.setCrs(mapcrs);
+                request.setSRS(epsgCode);
             } catch (Exception e) {
                 // couldnt make it - we send off a service exception with the
                 // correct info

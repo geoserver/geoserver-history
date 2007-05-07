@@ -219,6 +219,16 @@
         <version>${gt.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt2-wfs</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt2-wms</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.wkb4j</groupId>
         <artifactId>wkb4j</artifactId>
         <version>1.0-RC1</version>
@@ -466,6 +476,11 @@
         <groupId>freemarker</groupId>
         <artifactId>freemarker</artifactId>
         <version>2.3.8</version>
+     </dependency>
+     <dependency>
+        <groupId>org.apache.jmeter</groupId>
+        <artifactId>jmeter</artifactId>
+        <version>2.2.</version>
      </dependency>
     </dependencies>
   </dependencyManagement>
@@ -829,6 +844,7 @@
     <module>web</module>
     <!--module>release</module-->
     <module>test</module>
+    <module>stress</module>
   </modules>
 
   <properties>

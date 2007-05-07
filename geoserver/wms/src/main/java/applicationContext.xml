@@ -149,5 +149,9 @@
 	<bean id="JPEGMapProducerFactory"
 		class="org.vfny.geoserver.wms.responses.map.jpeg.JPEGMapProducerFactory">
 	</bean>
+	
+	<bean id="OpenLayersMapProducerFactory"
+		class="org.vfny.geoserver.wms.responses.map.openlayers.OpenLayersMapProducerFactory">
+	</bean>
 		
 </beans>

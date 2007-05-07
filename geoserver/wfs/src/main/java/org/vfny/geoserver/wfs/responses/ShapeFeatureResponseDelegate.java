@@ -11,6 +11,7 @@ import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -284,10 +285,11 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
      */
     private void readInWriteOutBytes(OutputStream output, InputStream in)
         throws IOException {
-        int c;
+        byte[] buffer = new byte[2048];
+        int byteRead;
 
-        while (-1 != (c = in.read())) {
-            output.write(c);
+        while ((byteRead = in.read(buffer)) > 0) {
+            output.write(buffer, 0, byteRead);
         }
     }
 

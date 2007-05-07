@@ -75,6 +75,10 @@ public class GetMapRequest extends WMSRequest {
         return this.optionalParams.crs;
     }
 
+    public String getSRS() {
+        return this.optionalParams.srs;
+    }
+
     /**
      * DOCUMENT ME!
      *
@@ -194,6 +198,15 @@ public class GetMapRequest extends WMSRequest {
      */
     public void setCrs(CoordinateReferenceSystem crs) {
         this.optionalParams.crs = crs;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param crs DOCUMENT ME!
+     */
+    public void setSRS(String srs) {
+        this.optionalParams.srs = srs;
     }
 
     /**
@@ -346,6 +359,9 @@ public class GetMapRequest extends WMSRequest {
 
         /** from SRS (1.1) or CRS (1.2) param */
         CoordinateReferenceSystem crs;
+
+        /** EPSG code for the SRS */
+        String srs;
 
         /** vendor extensions, allows to filter each layer with a user defined filter */
         List filters;
