@@ -17,6 +17,7 @@ import org.w3c.dom.Document;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
+import java.util.HashMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -38,7 +39,11 @@ public class OpenLayersMapTemplateTest extends WMSTestSupport {
         mapContext.setMapHeight(256);
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        template.process(mapContext, new OutputStreamWriter(output));
+        HashMap map = new HashMap();
+        map.put("context", mapContext);
+        map.put("request", mapContext.getRequest());
+        map.put("maxResolution", new Double(0.0005)); // just a random number
+        template.process(map, new OutputStreamWriter(output));
 
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));

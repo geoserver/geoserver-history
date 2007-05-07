@@ -184,11 +184,12 @@ public class MapPreviewAction extends GeoServerAction {
 
                 bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
                     + bbox.getMaxY());
-                srsList.add("EPSG:" +layer.getSRS());
+                srsList.add("EPSG:" + layer.getSRS());
+
                 int[] imageBox = getMapWidthHeight(bbox);
                 widthList.add(String.valueOf(imageBox[0]));
                 heightList.add(String.valueOf(imageBox[1]));
-                
+
                 //save out the mapbuilder files
                 makeMapBuilderFiles(previewDir, layer.getFeatureType().getTypeName(),
                     layer.getNameSpace().getPrefix(), bbox, layer.getSRS());
@@ -217,6 +218,7 @@ public class MapPreviewAction extends GeoServerAction {
                 bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
                     + bbox.getMaxY());
                 srsList.add(layer.getSrsName());
+
                 int[] imageBox = getMapWidthHeight(bbox);
                 widthList.add(String.valueOf(imageBox[0]));
                 heightList.add(String.valueOf(imageBox[1]));
@@ -241,7 +243,7 @@ public class MapPreviewAction extends GeoServerAction {
 
         return mapping.findForward("success");
     }
-    
+
     private int[] getMapWidthHeight(Envelope bbox) {
         int width;
         int height;
@@ -254,12 +256,19 @@ public class MapPreviewAction extends GeoServerAction {
             width = (int) Math.round(500 / ratio);
             height = 500;
         }
+
         // make sure we reach some minimal dimensions (300 pixels is more or less 
         // the height of the zoom bar)
-        if(width < 300) width = 300;
-        if(height < 300) height = 300;
+        if (width < 300) {
+            width = 300;
+        }
+
+        if (height < 300) {
+            height = 300;
+        }
+
         // add 50 pixels horizontally to account for the zoom bar
-        return new int[] {width + 50, height};
+        return new int[] { width + 50, height };
     }
 
     /**

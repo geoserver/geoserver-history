@@ -73,7 +73,7 @@ public class GetMapRequest extends WMSRequest {
     public CoordinateReferenceSystem getCrs() {
         return this.optionalParams.crs;
     }
-    
+
     public String getSRS() {
         return this.optionalParams.srs;
     }
@@ -198,7 +198,7 @@ public class GetMapRequest extends WMSRequest {
     public void setCrs(CoordinateReferenceSystem crs) {
         this.optionalParams.crs = crs;
     }
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -358,7 +358,7 @@ public class GetMapRequest extends WMSRequest {
 
         /** from SRS (1.1) or CRS (1.2) param */
         CoordinateReferenceSystem crs;
-        
+
         /** EPSG code for the SRS */
         String srs;
 

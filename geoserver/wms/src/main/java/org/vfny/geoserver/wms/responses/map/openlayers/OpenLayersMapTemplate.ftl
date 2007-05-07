@@ -43,8 +43,8 @@
   <body onload="init()">
      <table>
        <tr>
-         <td width=40 valign="center"><div id="nav"></div></td>
-         <td colspan=3><div id="map"></div></td>
+         <td width="40" valign="center"><div id="nav"></div></td>
+         <td colspan="3"><div id="map"></div></td>
        </tr>
        <tr>
          <td/>
@@ -52,5 +52,6 @@
          <td/>
          <td align="right"><div id="position"></div></td>
        </tr>
+     </table>
   </body>
 </html>

@@ -242,7 +242,6 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
         //JD: changd legend behaviour, see GEOS-812
         //this.legendGraphic = scaleImage(mergeLegends(legendsStack), request);
         this.legendGraphic = mergeLegends(legendsStack, applicableRules);
-        
     }
 
     /**
@@ -280,7 +279,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
     *
     * @throws IllegalArgumentException if the list is empty
     */
-    private static BufferedImage mergeLegends(List imageStack, Rule[] rules ) {
+    private static BufferedImage mergeLegends(List imageStack, Rule[] rules) {
         if (imageStack.size() == 0) {
             throw new IllegalArgumentException("No legend graphics passed");
         }
@@ -290,7 +289,6 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
         if (imageStack.size() == 1) {
             finalLegend = (BufferedImage) imageStack.get(0);
         } else {
-            
             final int imgCount = imageStack.size();
             final String[] labels = new String[imgCount];
 
@@ -327,7 +325,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
 
             //buffer the width a bit
             totalWidth += 2;
-            
+
             //create the final image
             finalLegend = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_ARGB);
 
@@ -367,10 +365,10 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
 
                 h += rowHeight;
             }
-            
+
             //draw a border around the legend
-            finalGraphics.setColor( Color.BLACK );
-            finalGraphics.drawRect(0, 0, totalWidth-1, totalHeight-1 );
+            finalGraphics.setColor(Color.BLACK);
+            finalGraphics.drawRect(0, 0, totalWidth - 1, totalHeight - 1);
         }
 
         return finalLegend;
