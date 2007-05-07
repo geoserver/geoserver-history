@@ -163,7 +163,7 @@ public class TypesEditorAction extends ConfigAction {
 
         try {
             CoordinateReferenceSystem crs = fs.getSchema().getDefaultGeometry().getCoordinateSystem();
-            String s = CRS.lookupIdentifier(crs, Collections.singleton("EPSG"), true);
+            String s = CRS.lookupIdentifier(crs, true);
 
             if (s == null) {
                 typeForm.setSRS("UNKNOWN");

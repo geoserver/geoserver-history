@@ -73,7 +73,10 @@ public class MapPreviewAction extends GeoServerAction {
         ArrayList dsList = new ArrayList();
         ArrayList ftList = new ArrayList();
         ArrayList bboxList = new ArrayList();
+        ArrayList srsList = new ArrayList();
         ArrayList ftnsList = new ArrayList();
+        ArrayList widthList = new ArrayList();
+        ArrayList heightList = new ArrayList();
 
         // 1) get the capabilities info so we can find out our feature types
         WMS wms = getWMS(request);
@@ -135,10 +138,11 @@ public class MapPreviewAction extends GeoServerAction {
             }
 
             CoordinateReferenceSystem layerCrs = layer.getDeclaredCRS();
-            
+
             // skip geometryless layers
-            if(layerCrs == null)
+            if (layerCrs == null) {
                 continue;
+            }
 
             /* A quick and efficient way to grab the bounding box is to get it
              * from the featuretype info where the lat/lon bbox is loaded
@@ -178,8 +182,13 @@ public class MapPreviewAction extends GeoServerAction {
                 dsList.add(layer.getDataStoreInfo().getId()); // DataStore info
                                                               // bounding box of the FeatureType
 
-                bboxList.add(bbox.getMinX() + ", " + bbox.getMinY() + ", " + bbox.getMaxX() + ", "
+                bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
                     + bbox.getMaxY());
+                srsList.add("EPSG:" +layer.getSRS());
+                int[] imageBox = getMapWidthHeight(bbox);
+                widthList.add(String.valueOf(imageBox[0]));
+                heightList.add(String.valueOf(imageBox[1]));
+                
                 //save out the mapbuilder files
                 makeMapBuilderFiles(previewDir, layer.getFeatureType().getTypeName(),
                     layer.getNameSpace().getPrefix(), bbox, layer.getSRS());
@@ -205,8 +214,12 @@ public class MapPreviewAction extends GeoServerAction {
                 dsList.add(layer.getFormatInfo().getId()); // DataStore info
                                                            // bounding box of the Coverage
 
-                bboxList.add(bbox.getMinX() + ", " + bbox.getMinY() + ", " + bbox.getMaxX() + ", "
+                bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
                     + bbox.getMaxY());
+                srsList.add(layer.getSrsName());
+                int[] imageBox = getMapWidthHeight(bbox);
+                widthList.add(String.valueOf(imageBox[0]));
+                heightList.add(String.valueOf(imageBox[1]));
 
                 //save out the mapbuilder files
                 String srsValue = layer.getSrsName().split(":")[1]; // it will look like: "EPSG:4326", so we remove the 'EPSG:"
@@ -221,9 +234,32 @@ public class MapPreviewAction extends GeoServerAction {
         myForm.set("DSNameList", dsList.toArray(new String[dsList.size()]));
         myForm.set("FTNameList", ftList.toArray(new String[ftList.size()]));
         myForm.set("BBoxList", bboxList.toArray(new String[bboxList.size()]));
+        myForm.set("SRSList", srsList.toArray(new String[srsList.size()]));
+        myForm.set("WidthList", widthList.toArray(new String[widthList.size()]));
+        myForm.set("HeightList", heightList.toArray(new String[heightList.size()]));
         myForm.set("FTNamespaceList", ftnsList.toArray(new String[ftnsList.size()]));
 
         return mapping.findForward("success");
+    }
+    
+    private int[] getMapWidthHeight(Envelope bbox) {
+        int width;
+        int height;
+        double ratio = bbox.getHeight() / bbox.getWidth();
+
+        if (ratio < 1) {
+            width = 500;
+            height = (int) Math.round(500 * ratio);
+        } else {
+            width = (int) Math.round(500 / ratio);
+            height = 500;
+        }
+        // make sure we reach some minimal dimensions (300 pixels is more or less 
+        // the height of the zoom bar)
+        if(width < 300) width = 300;
+        if(height < 300) height = 300;
+        // add 50 pixels horizontally to account for the zoom bar
+        return new int[] {width + 50, height};
     }
 
     /**
