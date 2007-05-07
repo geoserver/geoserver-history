@@ -429,7 +429,7 @@ public final class CoveragesEditorAction extends ConfigAction {
             final GeneralEnvelope gEnvelope = reader.getOriginalEnvelope();
             final GeneralEnvelope targetEnvelope = gEnvelope;
             GeneralEnvelope envelope = targetEnvelope;
-            String s = CRS.lookupIdentifier(sourceCRS, Collections.singleton("EPSG"), true);
+            String s = CRS.lookupIdentifier(sourceCRS, true);
 
             if (s == null) {
                 coverageForm.setSrsName("UNKNOWN");

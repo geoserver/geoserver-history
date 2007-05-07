@@ -380,6 +380,7 @@ public class GetMapXmlReader extends XmlRequestReader {
             try {
                 CoordinateReferenceSystem mapcrs = CRS.decode(epsgCode);
                 getMapRequest.setCrs(mapcrs);
+                getMapRequest.setSRS(epsgCode);
             } catch (Exception e) {
                 //couldnt make it - we send off a service exception with the correct info
                 throw new WmsException(e.getLocalizedMessage(), "InvalidSRS");
