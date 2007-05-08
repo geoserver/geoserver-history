@@ -24,7 +24,6 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.IllegalAttributeException;
-import org.geotools.filter.Expression;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.gml.producer.GeometryTransformer;
 import org.geotools.map.MapLayer;
@@ -47,6 +46,7 @@ import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
 import org.opengis.filter.Filter;
+import org.opengis.filter.expression.Expression;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -840,7 +840,7 @@ public class KMLWriter extends OutputStreamWriter {
             if (symbolizers[m] instanceof TextSymbolizer) {
                 TextSymbolizer ts = (TextSymbolizer) symbolizers[m];
                 Expression ex = ts.getLabel();
-                featureLabel.append((String) ex.getValue(feature)); // attach the lable title
+                featureLabel.append((String) ex.evaluate(feature, String.class)); // attach the lable title
 
                 Style2D style = styleFactory.createStyle(feature, symbolizers[m], scaleRange);
                 writeStyle(style, feature.getID(), symbolizers[m]);
@@ -1049,7 +1049,7 @@ public class KMLWriter extends OutputStreamWriter {
                 if (symbolizers[m] instanceof TextSymbolizer) {
                     TextSymbolizer ts = (TextSymbolizer) symbolizers[m];
                     Expression ex = ts.getLabel();
-                    String value = (String) ex.getValue(feature);
+                    String value = (String) ex.evaluate(feature,String.class);
                     title.append(value);
 
                     Style2D style = styleFactory.createStyle(feature, symbolizers[m], scaleRange);
@@ -1523,66 +1523,33 @@ public class KMLWriter extends OutputStreamWriter {
             return alpha;
         }
 
-        Object obj = exp.getValue(null);
+        Float number = (Float) exp.evaluate(null, Float.class);
 
-        if (obj == null) {
+        if (number == null) {
             return alpha;
         }
-
-        Number num = null;
-
-        if (obj instanceof Number) {
-            num = (Number) obj;
-        }
-
-        if (num == null) {
-            return alpha;
-        }
-
-        return num.floatValue();
+        return number.floatValue();
     }
 
     private float getOpacity(final Expression exp) {
         float alpha = 1.0f;
 
-        Object obj = exp.getValue(null);
+        Float number = (Float) exp.evaluate(null, Float.class);
 
-        if (obj == null) {
+        if (number == null) {
             return alpha;
         }
-
-        Number num = null;
-
-        if (obj instanceof Number) {
-            num = (Number) obj;
-        }
-
-        if (num == null) {
-            return alpha;
-        }
-
-        return num.floatValue();
+        return number.floatValue();
     }
 
     private int getWidth(final Expression exp) {
-        int alpha = 1;
+        int defaultWidth = 1;
 
-        Object obj = exp.getValue(null);
+        Integer number = (Integer) exp.evaluate(null, Integer.class);
 
-        if (obj == null) {
-            return alpha;
+        if (number == null) {
+            return defaultWidth;
         }
-
-        Number num = null;
-
-        if (obj instanceof Number) {
-            num = (Number) obj;
-        }
-
-        if (num == null) {
-            return alpha;
-        }
-
-        return num.intValue();
+        return number.intValue();
     }
 }
