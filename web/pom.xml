@@ -302,6 +302,13 @@
 				<!-- tried version 6.0.1, it's a lot slower, like it's not using jdt anymore to compile pages... -->
 				<version>6.0.1</version>
 				<configuration>
+         <contextPath>geoserver</contextPath>
+         <connectors>
+             <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                 <port>80</port>
+                 <maxIdleTime>10000</maxIdleTime>
+             </connector>
+         </connectors>
 					<contextPath>geoserver</contextPath>
 					<webApp>
 						${project.build.directory}/geoserver
