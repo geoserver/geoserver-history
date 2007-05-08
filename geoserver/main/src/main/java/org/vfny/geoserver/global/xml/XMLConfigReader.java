@@ -2340,7 +2340,7 @@ public class XMLConfigReader {
             NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance()
                                                                 .getNameSpaceTranslator("gml");
             NameSpaceElement nse = gml.getElement(ReaderUtils.getAttribute(elem, "base", true));
-            featureTypeInfoDTO.setSchemaBase(nse.getTypeDefName());
+            featureTypeInfoDTO.setSchemaBase(nse.getQualifiedTypeDefName());
             elem = ReaderUtils.getChildElement(elem, "xs:sequence");
 
             NodeList nl = elem.getElementsByTagName("xs:element");
