@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<WidgetText xmlns="http://mapbuilder.sourceforge.net/mapbuilder" 
+    version="0.2.1" id="mbDefaultText" xml:lang="en">
+  <!--
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://mapbuilder.sourceforge.net/mapbuilder ..//mapbuilder/lib/schemas/config.xsd"
+    
+    Description: This file contains all text used in widgets for multilingual 
+                  support.  The text values are set as XSL params before the 
+                  widget is painted.
+    Licence:     LGPL as per: http://www.gnu.org/copyleft/lesser.html 
+
+    $Id$
+  -->
+  <widgets>
+    <Widget>
+      <abstract>Abstract</abstract>
+      <moreInfo>Read more about this map</moreInfo>
+      <searchFormTitle>Area of interest coordinates</searchFormTitle>
+      <north>North:</north>
+      <south>South:</south>
+      <east>East:</east>
+      <west>West:</west>
+    </Widget>
+    <ZoomIn>
+      <tooltip>click and drag to zoom in</tooltip>
+    </ZoomIn>
+    <ZoomOut>
+      <tooltip>click to zoom out</tooltip>
+    </ZoomOut>
+    <DragPan>
+      <tooltip>click and drag to pan</tooltip>
+    </DragPan>
+    <SetAoi>
+      <tooltip>click and drag to set the area of interest</tooltip>
+    </SetAoi>
+    <Reset>
+      <tooltip>reset the map to full extent</tooltip>
+    </Reset>
+    <Back>
+      <tooltip>get the previous extent</tooltip>
+    </Back>
+    <Forward>
+      <tooltip>get the next extent</tooltip>
+    </Forward>
+    <GetFeatureInfo>
+      <tooltip>click on feature for more info</tooltip>
+    </GetFeatureInfo>
+    <EditPoint>
+      <tooltip>click on map to create a point feature</tooltip>
+    </EditPoint>
+    <EditLine>
+      <tooltip>click on map to add a point to a line</tooltip>
+    </EditLine>
+    <InsertFeature>
+      <tooltip>Save the current Feature(s) to the server</tooltip>
+    </InsertFeature>
+    <DeleteFeature>
+      <tooltip>Delete the current Feature(s) on the server</tooltip>
+    </DeleteFeature>
+    <WfsGetFeature>
+      <tooltip>Click on feature to query it</tooltip>
+    </WfsGetFeature>
+    <Save>
+      <tooltip>click to save this map</tooltip>
+    </Save>
+    <AoiForm>
+      <title>Area of interest coordinates</title>
+      <north>North:</north>
+      <south>South:</south>
+      <east>East:</east>
+      <west>West:</west>
+    </AoiForm>
+    <CollectionList>
+      <title>Select a map to load:</title>
+    </CollectionList>
+    <Legend>
+      <title>Map Layers</title>
+    </Legend>
+    <ModelStatus>
+      <title>Status for:</title>
+    </ModelStatus>
+    <ModelUrlInput>
+      <title>URL:</title>
+      <load>load</load>
+    </ModelUrlInput>
+    <CursorTrack>
+      <longitude>lon:</longitude>
+      <latitude>lat:</latitude>
+      <xcoord>x:</xcoord>
+      <ycoord>y:</ycoord>
+    </CursorTrack>
+    <SelectProcess>
+    </SelectProcess>
+    <ProcessArgumentsForm>
+    </ProcessArgumentsForm>
+    <ShowProcessResult>
+      <tabLabel>4. Access results</tabLabel>
+    </ShowProcessResult>
+    <WebServiceForm>
+      <ntsTitle>NTS Lookup web service</ntsTitle>
+      <mapsheet>NTS index:</mapsheet>
+    </WebServiceForm>
+    <Timestamp>
+      <title>Timestamp:</title>
+    </Timestamp>
+    <TabbedContent>
+      <urlInput>1. Select a service</urlInput>
+      <selectProcess>2. Select a process</selectProcess>
+      <argsInput>3. Set arguments</argsInput>
+      <results>4. Access results</results>
+    </TabbedContent>
+  </widgets>
+</WidgetText>
+
