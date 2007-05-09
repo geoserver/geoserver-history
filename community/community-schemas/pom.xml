@@ -24,6 +24,6 @@
 
 	<modules>
 		<module>wfs-c</module>
-		<module>web</module>
+		<module>web-c</module>
 	</modules>
 </project>
