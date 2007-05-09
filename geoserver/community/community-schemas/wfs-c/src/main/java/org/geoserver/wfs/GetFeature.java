@@ -419,7 +419,8 @@ public class GetFeature {
                 LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery);
 
                 if (source instanceof FeatureSource2) {
-                    features = ((FeatureSource2) source).content(gtQuery.getFilter());
+                    Filter filter = gtQuery.getFilter();
+                    features = ((FeatureSource2) source).content(filter, queryMaxFeatures);
                 } else {
                     FeatureCollection gtFeatures = source.getFeatures(gtQuery);
                     SimpleFeatureFactory featureFactory = new SimpleFeatureFactoryImpl();
