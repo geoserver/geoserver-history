@@ -559,6 +559,15 @@ public class Dispatcher extends AbstractController {
             //set the mime type
             req.httpResponse.setContentType(response.getMimeType(result, opDescriptor));
 
+            //set any extra headers, other than the mime-type
+            if (response.getHeaders(result, opDescriptor) != null) {
+                String[][] headers = response.getHeaders(result, opDescriptor);
+
+                for (int i = 0; i < headers.length; i++) {
+                    req.httpResponse.addHeader(headers[i][0], headers[i][1]);
+                }
+            }
+
             //TODO: initialize any header params (gzip,deflate,etc...)
             OutputStream output = outputStrategy.getDestination(req.httpResponse);
             response.write(result, output, opDescriptor);
