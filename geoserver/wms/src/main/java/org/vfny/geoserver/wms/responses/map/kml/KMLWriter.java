@@ -310,18 +310,18 @@ public class KMLWriter extends OutputStreamWriter {
                     final int order, final boolean kmz, final boolean vectorResult)
     throws IOException, AbortedException {
         Style style = layer.getStyle();
-    
+
         try {
             FeatureType featureType = features.getSchema();
-    
+
             setUpWriterHandler(featureType);
             FeatureTypeStyle[] fts = style.getFeatureTypeStyles();
             if (!kmz)
                     processStylers(features, fts, layer, order);
             else
                     processStylersKMZ(features, fts, layer, order, vectorResult);
-    
-    
+
+
                    LOGGER.fine(new StringBuffer("encoded ").append(featureType.getTypeName()).toString());
         } catch (NoSuchElementException ex) {
             throw new DataSourceException(ex.getMessage(), ex);
@@ -1049,7 +1049,7 @@ public class KMLWriter extends OutputStreamWriter {
                 if (symbolizers[m] instanceof TextSymbolizer) {
                     TextSymbolizer ts = (TextSymbolizer) symbolizers[m];
                     Expression ex = ts.getLabel();
-                    String value = (String) ex.evaluate(feature,String.class);
+                    String value = (String) ex.evaluate(feature, String.class);
                     title.append(value);
 
                     Style2D style = styleFactory.createStyle(feature, symbolizers[m], scaleRange);
@@ -1528,6 +1528,7 @@ public class KMLWriter extends OutputStreamWriter {
         if (number == null) {
             return alpha;
         }
+
         return number.floatValue();
     }
 
@@ -1539,6 +1540,7 @@ public class KMLWriter extends OutputStreamWriter {
         if (number == null) {
             return alpha;
         }
+
         return number.floatValue();
     }
 
@@ -1550,6 +1552,7 @@ public class KMLWriter extends OutputStreamWriter {
         if (number == null) {
             return defaultWidth;
         }
+
         return number.intValue();
     }
 }

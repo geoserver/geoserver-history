@@ -137,7 +137,7 @@ public class MapPreviewAction extends GeoServerAction {
              * from the featuretype info where the lat/lon bbox is loaded
              * from the DTO. We do this with layer.getLatLongBoundingBox().
              * We need to reproject the bounding box from lat/lon to the layer crs
-             * for display 
+             * for display
              */
             Envelope orig_bbox = layer.getLatLongBoundingBox();
 
