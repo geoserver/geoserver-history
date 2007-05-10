@@ -8,6 +8,7 @@ import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 
 
 /**
@@ -110,6 +111,23 @@ public abstract class Response {
      */
     public abstract String getMimeType(Object value, Operation operation)
         throws ServiceException;
+
+    /**
+     * Returns a 2xn array of Strings, each of which is an HTTP header pair
+     * to be set on the HTTP Response.  Can return null if there are
+     * no headers to be set on the response.
+     *
+     * @param value The value to serialize
+     * @param operation The operation being performed.
+     *
+     * @return 2xn string array containing string-pairs of HTTP headers/values
+     *
+     */
+    public String[][] getHeaders(Object value, Operation operation)
+        throws ServiceException {
+        //default implementation returns null = no headers to set
+        return null;
+    }
 
     /**
      * Serializes <code>value</code> to <code>output</code>.

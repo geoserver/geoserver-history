@@ -290,6 +290,5 @@
 		<constructor-arg ref="wfs"/>
 		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
-		
-
+	<bean id="shapezipOutputFormat" class="org.geoserver.wfs.response.ShapeZipOutputFormat" />
 </beans>

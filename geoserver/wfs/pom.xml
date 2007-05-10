@@ -39,6 +39,10 @@
 			<artifactId>gt2-xml-filter</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt2-shapefile</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>data</artifactId>
 			<version>1.6-SNAPSHOT</version>
