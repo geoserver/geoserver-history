@@ -118,7 +118,7 @@
 	<tr >
 	     <td>
 				<b>
-				<a href="http://localhost:8080/geoserver/wms?bbox=<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>&styles=&Format=openlayers&request=GetMap&layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>&width=<bean:write property='<%= "WidthList[" + idx + "]" %>' name="mapPreviewForm"/>&height=<bean:write property='<%= "HeightList[" + idx + "]" %>' name="mapPreviewForm"/>&srs=<bean:write property='<%= "SRSList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank"><bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/></a>
+				<a href="http://localhost:8080/geoserver/wms?bbox=<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>&styles=&Format=application/openlayers&request=GetMap&layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>&width=<bean:write property='<%= "WidthList[" + idx + "]" %>' name="mapPreviewForm"/>&height=<bean:write property='<%= "HeightList[" + idx + "]" %>' name="mapPreviewForm"/>&srs=<bean:write property='<%= "SRSList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank"><bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/></a>
 				</b>
 	     </td>
 	     <td class="greyedOut2">
@@ -132,7 +132,7 @@
 		 <td>
 			<!-- add link to FTNameList.html -->
 			<center><b>
-			<a href="http://localhost:8080/geoserver/wms?bbox=<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>&styles=&Format=openlayers&request=GetMap&layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>&width=<bean:write property='<%= "WidthList[" + idx + "]" %>' name="mapPreviewForm"/>&height=<bean:write property='<%= "HeightList[" + idx + "]" %>' name="mapPreviewForm"/>&srs=<bean:write property='<%= "SRSList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank">Preview</a>
+			<a href="http://localhost:8080/geoserver/wms?bbox=<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>&styles=&Format=application/openlayers&request=GetMap&layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>&width=<bean:write property='<%= "WidthList[" + idx + "]" %>' name="mapPreviewForm"/>&height=<bean:write property='<%= "HeightList[" + idx + "]" %>' name="mapPreviewForm"/>&srs=<bean:write property='<%= "SRSList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank">Preview</a>
 			</b></center>
 		 </td>
 	</tr>
