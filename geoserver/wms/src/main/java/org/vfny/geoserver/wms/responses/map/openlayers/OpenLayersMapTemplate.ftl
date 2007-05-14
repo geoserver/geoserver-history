@@ -12,7 +12,7 @@
       }
      </style>
      
-     <script src="${request.baseUrl}/openlayers/OpenLayers.js"></script>
+     <script src="${openLayersLocation}"></script>
      <script defer="defer" type="text/javascript">
        function init(){
           var map = new OpenLayers.Map($('map'), {controls:[]} );

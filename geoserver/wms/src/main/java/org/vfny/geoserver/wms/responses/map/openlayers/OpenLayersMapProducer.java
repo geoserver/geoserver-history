@@ -16,6 +16,7 @@ import org.vfny.geoserver.wms.WmsException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.URL;
 import java.util.HashMap;
 
 
@@ -74,6 +75,8 @@ public class OpenLayersMapProducer implements GetMapProducer {
             map.put("context", mapContext);
             map.put("request", mapContext.getRequest());
             map.put("maxResolution", new Double(getMaxResolution(mapContext.getAreaOfInterest())));
+            map.put("openLayersLocation",
+                buildUrl(mapContext.getRequest().getBaseUrl(), "openlayers/OpenLayers.js"));
             template.process(map, new OutputStreamWriter(out));
         } catch (TemplateException e) {
             throw new WmsException(e);
@@ -81,6 +84,14 @@ public class OpenLayersMapProducer implements GetMapProducer {
 
         mapContext = null;
         template = null;
+    }
+
+    private String buildUrl(String baseUrl, String extension) {
+        if (baseUrl.endsWith("/")) {
+            return baseUrl + extension;
+        } else {
+            return baseUrl + "/" + extension;
+        }
     }
 
     private double getMaxResolution(ReferencedEnvelope areaOfInterest) {
