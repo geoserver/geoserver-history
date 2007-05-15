@@ -680,7 +680,7 @@ public class TypesEditorForm extends ActionForm {
             }
 
             CoordinateReferenceSystem crsTheirData = CRS.decode(newSrs);
-            SRSWKT = crsTheirData.toWKT();
+            SRSWKT = crsTheirData.toString();
         } catch (FactoryException e) // couldnt decode their code
          {
             // DJB:
