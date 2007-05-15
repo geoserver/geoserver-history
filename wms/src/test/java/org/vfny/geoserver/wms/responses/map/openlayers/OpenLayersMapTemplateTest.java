@@ -43,6 +43,7 @@ public class OpenLayersMapTemplateTest extends WMSTestSupport {
         map.put("context", mapContext);
         map.put("request", mapContext.getRequest());
         map.put("maxResolution", new Double(0.0005)); // just a random number
+        map.put("openLayersLocation", "./openLayers.js"); // just a random number
         template.process(map, new OutputStreamWriter(output));
 
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
