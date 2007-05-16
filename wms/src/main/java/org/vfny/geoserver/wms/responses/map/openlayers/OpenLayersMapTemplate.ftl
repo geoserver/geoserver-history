@@ -24,7 +24,7 @@
           //var ${layerName} = new OpenLayers.Layer.WMS.Untiled(
           var ${layerName} = new OpenLayers.Layer.WMS(
             "${layer.name}", "${request.baseUrl}/wms",
-            {layers: '${layer.name}', styles: '${request.styles[layer_index].name}', format: 'image/png', tiled: 'true', tilesOrigin : "${request.bbox.minX?c},${request.bbox.minY?c}", palette: 'safe'},
+            {layers: '${layer.name}', styles: '${request.styles[layer_index].name}', format: 'image/png', tiled: 'true', tilesOrigin : "${request.bbox.minX?c},${request.bbox.minY?c}"},
             {maxExtent: bounds, maxResolution: ${maxResolution?c}, projection: "${request.SRS}"} 
           );
           map.addLayer( ${layerName} );
