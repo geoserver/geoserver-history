@@ -59,12 +59,7 @@ public class GetMapReflectKvpReader extends GetMapKvpReader {
 
     static {
         WMS_DEFAULTS.put("FORMAT", "image/png");
-        WMS_DEFAULTS.put("WIDTH", "256");
-        WMS_DEFAULTS.put("HEIGHT", "256");
-        WMS_DEFAULTS.put("SRS", "EPSG:4326");
-        WMS_DEFAULTS.put("TRANSPARENT", "true");
         WMS_DEFAULTS.put("STYLES", "");
-        WMS_DEFAULTS.put("BBOX", "-180,-90,180,90");
         WMS_DEFAULTS.put("KMSCORE", "30");
     }
 
@@ -113,6 +108,13 @@ public class GetMapReflectKvpReader extends GetMapKvpReader {
             if (!kvpPairs.containsKey(key)) {
                 kvpPairs.put(key, WMS_DEFAULTS.get(key));
             }
+        }
+
+        if (kvpPairs.containsKey("SRS") && kvpPairs.containsKey("BBOX")
+                && kvpPairs.containsKey("WIDTH") && kvpPairs.containsKey("HEIGHT")) {
+        }
+
+        if (!kvpPairs.containsKey("BBOX")) {
         }
     }
 }
