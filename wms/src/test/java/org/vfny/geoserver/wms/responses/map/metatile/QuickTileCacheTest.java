@@ -6,7 +6,6 @@ package org.vfny.geoserver.wms.responses.map.metatile;
 
 import com.vividsolutions.jts.geom.Envelope;
 import junit.framework.TestCase;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
@@ -43,15 +42,6 @@ public class QuickTileCacheTest extends TestCase {
         assertEquals(new Point(-6, 3), cache.getMetaTileCoordinates(tm44));
     }
 
-    //    public void testNormalizedOrigin() {
-    //        Envelope env = new Envelope(10, 70, 10, 70);
-    //        Point2D o = cache.getNormalizedOrigin(env);
-    //        assertEquals(new Point2D.Double(10, 10), o);
-    //        
-    //        env = new Envelope(-10, 50, -10, 50);
-    //        o = cache.getNormalizedOrigin(env);
-    //        assertEquals(new Point2D.Double(50, 50), o);
-    //    }
     public void testTileCoordinatesNaturalOrigin() {
         Point2D origin = new Point2D.Double(0, 0);
         Envelope env = new Envelope(30, 60, 30, 60);
