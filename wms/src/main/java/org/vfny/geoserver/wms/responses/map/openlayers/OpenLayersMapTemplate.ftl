@@ -16,16 +16,16 @@
      <script defer="defer" type="text/javascript">
        function init(){
           var map = new OpenLayers.Map($('map'), {controls:[]} );
-          OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
+          OpenLayers.IMAGE_RELOAD_ATTEMPTS = 5;
           
           var bounds = new OpenLayers.Bounds(${request.bbox.minX?c},${request.bbox.minY?c},${request.bbox.maxX?c},${request.bbox.maxY?c})
 <#list request.layers as layer>
   <#assign layerName = "layer" + layer_index>
-          var ${layerName} = new OpenLayers.Layer.WMS.Untiled(
-          //var ${layerName} = new OpenLayers.Layer.WMS(
+          //var ${layerName} = new OpenLayers.Layer.WMS.Untiled(
+          var ${layerName} = new OpenLayers.Layer.WMS(
             "${layer.name}", "${request.baseUrl}/wms",
-            {layers: '${layer.name}', styles: '${request.styles[layer_index].name}', format: 'image/png'},
-            {maxExtent: bounds, maxResolution: ${maxResolution?c}, projection: "${request.SRS}" } 
+            {layers: '${layer.name}', styles: '${request.styles[layer_index].name}', format: 'image/png', tiled: 'true', tilesOrigin : "${request.bbox.minX?c},${request.bbox.minY?c}", palette: 'safe'},
+            {maxExtent: bounds, maxResolution: ${maxResolution?c}, projection: "${request.SRS}"} 
           );
           map.addLayer( ${layerName} );
 </#list>
@@ -35,7 +35,7 @@
           map.addControl(new OpenLayers.Control.MouseDefaults());
           map.addControl(new OpenLayers.Control.Scale($('scale')));
           map.addControl(new OpenLayers.Control.MousePosition({element: $('position')}));
-          map.addControl(new OpenLayers.Control.OverviewMap());
+          //map.addControl(new OpenLayers.Control.OverviewMap());
           map.zoomToExtent(bounds);
        }
      </script>

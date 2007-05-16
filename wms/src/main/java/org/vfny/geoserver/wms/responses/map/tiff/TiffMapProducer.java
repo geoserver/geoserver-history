@@ -56,20 +56,18 @@ public final class TiffMapProducer extends DefaultRasterMapProducer {
     /**
      * Transforms the rendered image into the appropriate format, streaming to
      * the output stream.
-     *
-     * @param format
-     *            The name of the format
      * @param image
      *            The image to be formatted.
      * @param outStream
      *            The stream to write to.
+     *
      * @throws WmsException
      *             not really.
      * @throws IOException
      *             if the image writing fails.
      */
-    protected void formatImageOutputStream(String format, BufferedImage image,
-        OutputStream outStream) throws WmsException, IOException {
+    public void formatImageOutputStream(BufferedImage image, OutputStream outStream)
+        throws WmsException, IOException {
         //getting a writer
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Getting a writer for tiff");

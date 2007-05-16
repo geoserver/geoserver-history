@@ -9,16 +9,14 @@ import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.wms.GetMapProducer;
+import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.Raster;
@@ -63,7 +61,7 @@ import javax.media.jai.JAI;
  * @author Simone Giannecchini, GeoSolutions
  * @version $Id$
  */
-public abstract class DefaultRasterMapProducer implements GetMapProducer {
+public abstract class DefaultRasterMapProducer implements RasterMapProducer {
     private final static Interpolation NN_INTERPOLATION = new InterpolationNearest();
     private final static Interpolation BIL_INTERPOLATION = new InterpolationBilinear();
     private final static Interpolation BIC_INTERPOLATION = new InterpolationBicubic2(0);
@@ -149,7 +147,7 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
      */
     public void writeTo(OutputStream out)
         throws org.vfny.geoserver.ServiceException, java.io.IOException {
-        formatImageOutputStream(this.format, this.image, out);
+        formatImageOutputStream(this.image, out);
     }
 
     /**
@@ -290,24 +288,6 @@ public abstract class DefaultRasterMapProducer implements GetMapProducer {
             this.image = curImage;
         }
     }
-
-    /**
-     * This is the method subclases must implement to transform the rendered
-     * image into the appropriate format, streaming to the output stream.
-     *
-     * @param format
-     *            The name of the format
-     * @param image
-     *            The image to be formatted.
-     * @param outStream
-     *            The stream to write to.
-     *
-     * @throws WmsException
-     * @throws IOException
-     *             DOCUMENT ME!
-     */
-    protected abstract void formatImageOutputStream(String format, BufferedImage image,
-        OutputStream outStream) throws WmsException, IOException;
 
     /**
      * This is a package protected method with the sole purpose of facilitate

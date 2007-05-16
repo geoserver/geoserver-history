@@ -10,6 +10,7 @@ import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.servlets.WMService;
 import java.awt.Color;
+import java.awt.geom.Point2D;
 import java.awt.image.IndexColorModel;
 import java.util.List;
 
@@ -139,6 +140,22 @@ public class GetMapRequest extends WMSRequest {
      */
     public boolean isTransparent() {
         return this.optionalParams.transparent;
+    }
+
+    /**
+     * <a href="http://wiki.osgeo.org/index.php/WMS_Tiling_Client_Recommendation">WMS-C specification</a> tiling hint
+     * @return
+     */
+    public boolean isTiled() {
+        return this.optionalParams.tiled;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Point2D getTilesOrigin() {
+        return this.optionalParams.tilesOrigin;
     }
 
     public int getBuffer() {
@@ -279,6 +296,14 @@ public class GetMapRequest extends WMSRequest {
         this.optionalParams.palette = palette;
     }
 
+    public void setTiled(boolean tiled) {
+        this.optionalParams.tiled = tiled;
+    }
+
+    public void setTilesOrigin(Point2D origin) {
+        this.optionalParams.tilesOrigin = origin;
+    }
+
     /**
      * DOCUMENT ME!
      *
@@ -370,6 +395,19 @@ public class GetMapRequest extends WMSRequest {
 
         /** DOCUMENT ME!  */
         boolean transparent = false;
+
+        /**
+         * Tiling hint, according to the
+         * <a href="http://wiki.osgeo.org/index.php/WMS_Tiling_Client_Recommendation">WMS-C specification</a>
+         */
+        boolean tiled;
+
+        /**
+         * Temporary hack since finding a good tiling origin would require us to compute
+         * the bbox on the fly
+         * TODO: remove this once we cache the real bbox of vector layers
+         */
+        public Point2D tilesOrigin;
 
         /** the rendering buffer, in pixels **/
         int buffer;

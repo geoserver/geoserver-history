@@ -6,7 +6,6 @@ package org.vfny.geoserver.wms.responses;
 
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
-import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
@@ -19,7 +18,6 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.resources.coverage.CoverageUtilities;
 import org.geotools.styling.Style;
 import org.opengis.filter.Filter;
-import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.context.ApplicationContext;
@@ -30,12 +28,13 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
+import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
@@ -119,6 +118,12 @@ public class GetMapResponse implements Response {
         final String outputFormat = request.getFormat();
 
         this.delegate = getDelegate(outputFormat, wms);
+
+        // enable on the fly meta tiling if request looks like a tiled one
+        if (MetatileMapProducer.isRequestTiled(request, delegate)) {
+            LOGGER.finer("Tiled request detected, activating on the fly meta tiler");
+            this.delegate = new MetatileMapProducer(request, (RasterMapProducer) delegate);
+        }
 
         final MapLayerInfo[] layers = request.getLayers();
         final Style[] styles = (Style[]) request.getStyles().toArray(new Style[] {  });
