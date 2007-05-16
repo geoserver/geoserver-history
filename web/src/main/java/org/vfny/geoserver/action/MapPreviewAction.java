@@ -230,11 +230,11 @@ public class MapPreviewAction extends GeoServerAction {
         double ratio = bbox.getHeight() / bbox.getWidth();
 
         if (ratio < 1) {
-            width = 500;
-            height = (int) Math.round(500 * ratio);
+            width = 750;
+            height = (int) Math.round(750 * ratio);
         } else {
-            width = (int) Math.round(500 / ratio);
-            height = 500;
+            width = (int) Math.round(550 / ratio);
+            height = 550;
         }
 
         // make sure we reach some minimal dimensions (300 pixels is more or less 
