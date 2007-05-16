@@ -49,25 +49,18 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
     /**
      * Transforms the rendered image into the appropriate format, streaming to
      * the output stream.
-     *
-     * @param format
-     *            The name of the format
      * @param image
      *            The image to be formatted.
      * @param outStream
      *            The stream to write to.
+     *
      * @throws WmsException
      *             not really.
      * @throws IOException
      *             if encoding to <code>outStream</code> fails.
      */
-    public void formatImageOutputStream(String format, BufferedImage image, OutputStream outStream)
+    public void formatImageOutputStream(BufferedImage image, OutputStream outStream)
         throws WmsException, IOException {
-        if (!format.equalsIgnoreCase(PNGMapProducerFactory.MIME_TYPE)) {
-            throw new IllegalArgumentException("The provided format " + format
-                + " is not the same as expected: " + PNGMapProducerFactory.MIME_TYPE);
-        }
-
         // /////////////////////////////////////////////////////////////////
         //
         // Reformatting this image for png

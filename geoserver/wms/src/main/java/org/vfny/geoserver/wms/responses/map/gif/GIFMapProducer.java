@@ -63,27 +63,18 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
     /**
      * Transforms the rendered image into the appropriate format, streaming to
      * the output stream.
-     *
-     * @param format
-     *            The name of the format
      * @param image
      *            The image to be formatted.
      * @param outStream
      *            The stream to write to.cd
+     *
      * @throws WmsException
      *             not really.
      * @throws IOException
      *             if encoding to <code>outStream</code> fails.
      */
-    protected void formatImageOutputStream(String format, BufferedImage image,
-        OutputStream outStream) throws WmsException, IOException {
-        if (!format.equalsIgnoreCase(GifMapProducerFactory.MIME_TYPE)) {
-            throw new IllegalArgumentException(new StringBuffer("The provided format ").append(
-                    format).append(" is not the same as expected: ")
-                                                                                       .append(GifMapProducerFactory.MIME_TYPE)
-                                                                                       .toString());
-        }
-
+    public void formatImageOutputStream(BufferedImage image, OutputStream outStream)
+        throws WmsException, IOException {
         new ImageWorker(image).forceIndexColorModelForGIF(true).writeGIF(outStream, "LZW", 0.75f);
     }
 

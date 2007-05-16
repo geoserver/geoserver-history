@@ -47,8 +47,8 @@ public class GeoTiffMapProducer extends DefaultRasterMapProducer {
         super(mime, wms);
     }
 
-    protected void formatImageOutputStream(String format, BufferedImage image,
-        OutputStream outStream) throws WmsException, IOException {
+    public void formatImageOutputStream(BufferedImage image, OutputStream outStream)
+        throws WmsException, IOException {
         // getting the context
         final WMSMapContext context = this.getMapContext();
 
