@@ -251,16 +251,14 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
     private static class DummyRasterMapProducer extends DefaultRasterMapProducer {
         /**
          * DOCUMENT ME!
-         *
-         * @param format not used.
          * @param image not used.
          * @param outStream not used.
          *
          * @throws WmsException never.
          * @throws IOException never.
          */
-        protected void formatImageOutputStream(String format, BufferedImage image,
-            OutputStream outStream) throws WmsException, IOException {
+        public void formatImageOutputStream(BufferedImage image, OutputStream outStream)
+            throws WmsException, IOException {
             /*
              * Intentionally left blank, since this class is used just to ensure the
              * abstract raster producer correctly generates a BufferedImage.
