@@ -536,8 +536,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         GeometryAttributeType dg = realSource.getSchema().getDefaultGeometry();
 
         if (dg == null) {
-            throw new IOException("Feature type: " + getName()
-                + " does not have a default geometry");
+            return null;
         }
 
         return dg.getCoordinateSystem();
