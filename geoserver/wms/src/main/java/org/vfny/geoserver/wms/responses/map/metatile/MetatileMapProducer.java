@@ -18,6 +18,8 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
@@ -103,6 +105,56 @@ public class MetatileMapProducer implements GetMapProducer {
         }
     }
 
+    //    /**
+    //     * Splits the tile into a set of tiles, numbered from lower right and going up so
+    //     * that first row is 0,1,2,...,metaTileFactor, and so on.
+    //     * In the case of a 3x3 meta-tile, the layout is as follows:
+    //     * <pre>
+    //     *   6 7 8
+    //     *   3 4 5
+    //     *   0 1 2
+    //     * </pre>
+    //     * @param key
+    //     * @param metaTile
+    //     * @param map
+    //     * @return
+    //     */
+    //    private BufferedImage[] split(MetaTileKey key, BufferedImage metaTile, WMSMapContext map) {
+    //        int metaFactor = key.getMetaFactor();
+    //        BufferedImage[] tiles = new BufferedImage[key.getMetaFactor() * key.getMetaFactor()];
+    //        int tileSize = key.getTileSize();
+    //
+    //        for (int i = 0; i < metaFactor; i++) {
+    //            for (int j = 0; j < metaFactor; j++) {
+    //                // TODO: create child writable rasters instead of cloning the images using
+    //                // graphics2d. Should be quite a bit faster and save some memory. Or else,
+    //                // store meta-tiles in the cache directly, and extract children tiles
+    //                // on demand (even simpler)
+    //                BufferedImage tile;
+    //
+    //                // keep the palette if necessary
+    //                if (metaTile.getType() == BufferedImage.TYPE_BYTE_INDEXED) {
+    //                    tile = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_BYTE_INDEXED,
+    //                            (IndexColorModel) metaTile.getColorModel());
+    //                } else if (metaTile.getType() == BufferedImage.TYPE_CUSTOM) {
+    //                    throw new RuntimeException("We don't support custom buffered image tiling");
+    //                } else {
+    //                    tile = new BufferedImage(tileSize, tileSize, metaTile.getType());
+    //                }
+    //
+    //                Graphics2D g2d = (Graphics2D) tile.getGraphics();
+    //                AffineTransform at = AffineTransform.getTranslateInstance(-j * tileSize,
+    //                        (-tileSize * (metaFactor - 1)) + (i * tileSize));
+    //                setupBackground(g2d, map);
+    //                g2d.drawRenderedImage(metaTile, at);
+    //                g2d.dispose();
+    //                tiles[(i * key.getMetaFactor()) + j] = tile;
+    //            }
+    //        }
+    //
+    //        return tiles;
+    //    }
+
     /**
      * Splits the tile into a set of tiles, numbered from lower right and going up so
      * that first row is 0,1,2,...,metaTileFactor, and so on.
@@ -122,6 +174,8 @@ public class MetatileMapProducer implements GetMapProducer {
         BufferedImage[] tiles = new BufferedImage[key.getMetaFactor() * key.getMetaFactor()];
         int tileSize = key.getTileSize();
 
+        WritableRaster raster = metaTile.getRaster();
+
         for (int i = 0; i < metaFactor; i++) {
             for (int j = 0; j < metaFactor; j++) {
                 // TODO: create child writable rasters instead of cloning the images using
@@ -130,22 +184,29 @@ public class MetatileMapProducer implements GetMapProducer {
                 // on demand (even simpler)
                 BufferedImage tile;
 
-                // keep the palette if necessary
-                if (metaTile.getType() == BufferedImage.TYPE_BYTE_INDEXED) {
-                    tile = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_BYTE_INDEXED,
-                            (IndexColorModel) metaTile.getColorModel());
-                } else if (metaTile.getType() == BufferedImage.TYPE_CUSTOM) {
-                    throw new RuntimeException("We don't support custom buffered image tiling");
-                } else {
-                    tile = new BufferedImage(tileSize, tileSize, metaTile.getType());
-                }
+                int x = j * tileSize;
+                int y = (tileSize * (metaFactor - 1)) - (i * tileSize);
+                WritableRaster child = raster.createWritableChild(x, y, tileSize, tileSize, 0, 0,
+                        null);
+                tile = new BufferedImage(metaTile.getColorModel(), child,
+                        metaTile.isAlphaPremultiplied(), null);
 
-                Graphics2D g2d = (Graphics2D) tile.getGraphics();
-                AffineTransform at = AffineTransform.getTranslateInstance(-j * tileSize,
-                        (-tileSize * (metaFactor - 1)) + (i * tileSize));
-                setupBackground(g2d, map);
-                g2d.drawRenderedImage(metaTile, at);
-                g2d.dispose();
+                //                // keep the palette if necessary
+                //                if (metaTile.getType() == BufferedImage.TYPE_BYTE_INDEXED) {
+                //                    tile = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_BYTE_INDEXED,
+                //                            (IndexColorModel) metaTile.getColorModel());
+                //                } else if (metaTile.getType() == BufferedImage.TYPE_CUSTOM) {
+                //                    throw new RuntimeException("We don't support custom buffered image tiling");
+                //                } else {
+                //                    tile = new BufferedImage(tileSize, tileSize, metaTile.getType());
+                //                }
+                //
+                //                Graphics2D g2d = (Graphics2D) tile.getGraphics();
+                //                AffineTransform at = AffineTransform.getTranslateInstance(,
+                //                        ();
+                //                setupBackground(g2d, map);
+                //                g2d.drawRenderedImage(metaTile, at);
+                //                g2d.dispose();
                 tiles[(i * key.getMetaFactor()) + j] = tile;
             }
         }
