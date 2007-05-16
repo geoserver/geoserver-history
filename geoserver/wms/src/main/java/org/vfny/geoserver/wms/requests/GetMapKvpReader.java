@@ -40,6 +40,7 @@ import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.servlets.WMService;
 import org.xml.sax.InputSource;
 import java.awt.Color;
+import java.awt.geom.Point2D;
 import java.awt.image.IndexColorModel;
 import java.io.IOException;
 import java.io.InputStream;
@@ -233,6 +234,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      */
     public void parseOptionalParameters(GetMapRequest request)
         throws WmsException {
+        // SRS
         String epsgCode = getValue("SRS");
 
         if (epsgCode != null) {
@@ -247,12 +249,14 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             }
         }
 
+        // transparency
         String transparentValue = getValue("TRANSPARENT");
         boolean transparent = (transparentValue == null) ? false
                                                          : Boolean.valueOf(transparentValue)
                                                                   .booleanValue();
         request.setTransparent(transparent);
 
+        // background
         String bgcolor = getValue("BGCOLOR");
 
         if (bgcolor != null) {
@@ -300,6 +304,17 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             }
         }
 
+        // tiling hint
+        String tiledValue = getValue("TILED");
+        request.setTiled("TRUE".equalsIgnoreCase(tiledValue));
+
+        // tiling origin
+        String origin = getValue("TILESORIGIN");
+
+        if (origin != null) {
+            request.setTilesOrigin(parseTilesOrigin(origin));
+        }
+
         /** KML/KMZ score value */
         String KMScore = getValue("KMSCORE");
 
@@ -342,6 +357,24 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             } else {
                 request.setKMattr(true); // default to true
             }
+        }
+    }
+
+    private Point2D parseTilesOrigin(String origin) throws WmsException {
+        Object[] coordValues = readFlat(origin, INNER_DELIMETER).toArray();
+
+        if (coordValues.length != 2) {
+            throw new WmsException(origin + " is not a valid coordinate", getClass().getName());
+        }
+
+        try {
+            double minx = Double.parseDouble(coordValues[0].toString());
+            double miny = Double.parseDouble(coordValues[1].toString());
+
+            return new Point2D.Double(minx, miny);
+        } catch (NumberFormatException ex) {
+            throw new WmsException(ex, "Illegal value for TILESORIGIN parameter: " + origin,
+                getClass().getName() + "::parseTilesOrigin()");
         }
     }
 

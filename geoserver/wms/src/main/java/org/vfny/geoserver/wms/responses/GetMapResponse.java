@@ -32,9 +32,11 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
+import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
@@ -111,6 +113,12 @@ public class GetMapResponse implements Response {
         final String outputFormat = request.getFormat();
 
         this.delegate = getDelegate(outputFormat, wms);
+
+        // enable on the fly meta tiling if request looks like a tiled one
+        if (MetatileMapProducer.isRequestTiled(request, delegate)) {
+            LOGGER.finer("Tiled request detected, activating on the fly meta tiler");
+            this.delegate = new MetatileMapProducer(request, (RasterMapProducer) delegate);
+        }
 
         final MapLayerInfo[] layers = request.getLayers();
         final Style[] styles = (Style[]) request.getStyles().toArray(new Style[] {  });

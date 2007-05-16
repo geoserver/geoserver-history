@@ -64,8 +64,8 @@ public final class TiffMapProducer extends DefaultRasterMapProducer {
      * @throws WmsException not really.
      * @throws IOException if the image writing fails.
      */
-    protected void formatImageOutputStream(String format, BufferedImage image,
-        OutputStream outStream) throws WmsException, IOException {
+    public void formatImageOutputStream(BufferedImage image, OutputStream outStream)
+        throws WmsException, IOException {
         //getting a writer
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Getting a writer for tiff");

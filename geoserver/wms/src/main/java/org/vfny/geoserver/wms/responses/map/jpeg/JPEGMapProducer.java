@@ -46,15 +46,8 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
         this.JPEGNativeAcc = wms.getGeoServer().getJPEGNativeAcceleration();
     }
 
-    protected void formatImageOutputStream(String format, BufferedImage image,
-        OutputStream outStream) throws IOException {
-        if (!format.equalsIgnoreCase(JPEGMapProducerFactory.MIME_TYPE)) {
-            throw new IllegalArgumentException(new StringBuffer("The provided format ").append(
-                    format).append(" is not the same as expected: ")
-                                                                                       .append(JPEGMapProducerFactory.MIME_TYPE)
-                                                                                       .toString());
-        }
-
+    public void formatImageOutputStream(BufferedImage image, OutputStream outStream)
+        throws IOException {
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("About to write a JPEG image.");
         }
