@@ -15,7 +15,7 @@ import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.util.PartialBufferedOutputStream;
+import org.vfny.geoserver.util.PartialBufferedOutputStream2;
 import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
@@ -751,7 +751,7 @@ public abstract class AbstractService extends HttpServlet implements Application
         }
 
         // TODO: this hack should be removed once modules have their own config
-        if (theStrategy instanceof PartialBufferStrategy) {
+        if (theStrategy instanceof PartialBufferStrategy2) {
             if (partialBufferSize == 0) {
                 String size = getServletContext().getInitParameter("PARTIAL_BUFFER_STRATEGY_SIZE");
 
@@ -761,37 +761,13 @@ public abstract class AbstractService extends HttpServlet implements Application
 
                         if (partialBufferSize <= 0) {
                             LOGGER.warning("Invalid partial buffer size, defaulting to "
-                                + PartialBufferedOutputStream.DEFAULT_BUFFER_SIZE + " (was "
+                                + PartialBufferedOutputStream2.DEFAULT_BUFFER_SIZE + " (was "
                                 + partialBufferSize + ")");
                             partialBufferSize = 0;
                         }
                     } catch (NumberFormatException nfe) {
                         LOGGER.warning("Invalid partial buffer size, defaulting to "
-                            + PartialBufferedOutputStream.DEFAULT_BUFFER_SIZE + " (was "
-                            + partialBufferSize + ")");
-                        partialBufferSize = 0;
-                    }
-                }
-            }
-
-            ((PartialBufferStrategy) theStrategy).setBufferSize(partialBufferSize);
-        } else if (theStrategy instanceof PartialBufferStrategy2) {
-            if (partialBufferSize == 0) {
-                String size = getServletContext().getInitParameter("PARTIAL_BUFFER_STRATEGY_SIZE");
-
-                if (size != null) {
-                    try {
-                        partialBufferSize = Integer.valueOf(size).intValue();
-
-                        if (partialBufferSize <= 0) {
-                            LOGGER.warning("Invalid partial buffer size, defaulting to "
-                                + PartialBufferedOutputStream.DEFAULT_BUFFER_SIZE + " (was "
-                                + partialBufferSize + ")");
-                            partialBufferSize = 0;
-                        }
-                    } catch (NumberFormatException nfe) {
-                        LOGGER.warning("Invalid partial buffer size, defaulting to "
-                            + PartialBufferedOutputStream.DEFAULT_BUFFER_SIZE + " (was "
+                            + PartialBufferedOutputStream2.DEFAULT_BUFFER_SIZE + " (was "
                             + partialBufferSize + ")");
                         partialBufferSize = 0;
                     }
