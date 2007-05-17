@@ -56,34 +56,35 @@
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.name">srs</stringProp>
-                <stringProp name="Argument.value">epsg:4326</stringProp>
+                <stringProp name="Argument.value">${crs}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.name">format</stringProp>
-                <stringProp name="Argument.value">image/png</stringProp>
+                <stringProp name="Argument.value">${format}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.name">layers</stringProp>
-                <stringProp name="Argument.value">nurc:~gtiff172030523_192_106_197_2_0</stringProp>
+                <stringProp name="Argument.value">${layers}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.name">styles</stringProp>
-                <stringProp name="Argument.value">raster</stringProp>
+                <stringProp name="Argument.value">${styles}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
           </elementProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
         </ConfigTestElement>
+<#list bboxes as bbox>
         <hashTree/>
         <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="HTTP Request" enabled="true">
           <stringProp name="HTTPSampler.domain"></stringProp>
@@ -96,26 +97,27 @@
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.name">bbox</stringProp>
-                <stringProp name="Argument.value">-68.7960467872588,37.7613137356769,-58.6506290907908,42.1742707652839</stringProp>
+                <stringProp name="Argument.value">${bbox.bbox}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.name">height</stringProp>
-                <stringProp name="Argument.value">218</stringProp>
+                <stringProp name="Argument.value">${bbox.height}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.name">width</stringProp>
-                <stringProp name="Argument.value">500</stringProp>
+                <stringProp name="Argument.value">${bbox.width}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
           </elementProp>
         </HTTPSampler>
+</#list>
         <hashTree/>
         <Summariser guiclass="SummariserGui" testclass="Summariser" testname="Generate Summary Results" enabled="true"/>
         <hashTree/>
