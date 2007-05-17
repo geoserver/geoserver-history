@@ -16,7 +16,6 @@ import org.vfny.geoserver.wms.WmsException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.URL;
 import java.util.HashMap;
 
 
@@ -75,8 +74,7 @@ public class OpenLayersMapProducer implements GetMapProducer {
             map.put("context", mapContext);
             map.put("request", mapContext.getRequest());
             map.put("maxResolution", new Double(getMaxResolution(mapContext.getAreaOfInterest())));
-            map.put("openLayersLocation",
-                buildUrl(mapContext.getRequest().getBaseUrl(), "openlayers/OpenLayers.js"));
+            map.put("baseUrl", canonicUrl(mapContext.getRequest().getBaseUrl()));
             template.process(map, new OutputStreamWriter(out));
         } catch (TemplateException e) {
             throw new WmsException(e);
@@ -86,11 +84,17 @@ public class OpenLayersMapProducer implements GetMapProducer {
         template = null;
     }
 
-    private String buildUrl(String baseUrl, String extension) {
+    /**
+     * Makes sure the url does not end with "/", otherwise we would have URL lik
+     * "http://localhost:8080/geoserver//wms?LAYERS=..." and Jetty 6.1 won't digest them...
+     * @param baseUrl
+     * @return
+     */
+    private String canonicUrl(String baseUrl) {
         if (baseUrl.endsWith("/")) {
-            return baseUrl + extension;
+            return baseUrl.substring(0, baseUrl.length() - 1);
         } else {
-            return baseUrl + "/" + extension;
+            return baseUrl;
         }
     }
 

@@ -12,7 +12,7 @@
       }
      </style>
      
-     <script src="${openLayersLocation}"></script>
+     <script src="${baseUrl}/openlayers/OpenLayers.js"></script>
      <script defer="defer" type="text/javascript">
        function init(){
           var map = new OpenLayers.Map($('map'), {controls:[]} );
@@ -23,7 +23,7 @@
   <#assign layerName = "layer" + layer_index>
           //var ${layerName} = new OpenLayers.Layer.WMS.Untiled(
           var ${layerName} = new OpenLayers.Layer.WMS(
-            "${layer.name}", "${request.baseUrl}/wms",
+            "${layer.name}", "${baseUrl}/wms",
             {layers: '${layer.name}', styles: '${request.styles[layer_index].name}', format: 'image/png', tiled: 'true', tilesOrigin : "${request.bbox.minX?c},${request.bbox.minY?c}"},
             {maxExtent: bounds, maxResolution: ${maxResolution?c}, projection: "${request.SRS}"} 
           );
@@ -35,7 +35,7 @@
           map.addControl(new OpenLayers.Control.MouseDefaults());
           map.addControl(new OpenLayers.Control.Scale($('scale')));
           map.addControl(new OpenLayers.Control.MousePosition({element: $('position')}));
-          //map.addControl(new OpenLayers.Control.OverviewMap());
+          map.addControl(new OpenLayers.Control.OverviewMap());
           map.zoomToExtent(bounds);
        }
      </script>
