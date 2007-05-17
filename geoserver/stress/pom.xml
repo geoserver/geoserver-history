@@ -17,11 +17,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.jmeter</groupId>
-			<artifactId>jmeter</artifactId>
-		</dependency>
-	 
-		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>web</artifactId>
 			<version>${project.version}</version>

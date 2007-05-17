@@ -13,7 +13,7 @@
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
-        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${numThreads}</stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
         <longProp name="ThreadGroup.start_time">1175121299000</longProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
@@ -52,18 +52,6 @@
                 <stringProp name="Argument.value">1.1.1</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.protocol"></stringProp>
-        </ConfigTestElement>
-        <hashTree/>
-        <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="HTTP Request" enabled="true">
-          <stringProp name="HTTPSampler.domain"></stringProp>
-          <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
-          <stringProp name="HTTPSampler.path"></stringProp>
-          <stringProp name="HTTPSampler.method">GET</stringProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-            <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -92,6 +80,18 @@
                 <stringProp name="Argument.value">raster</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+        </ConfigTestElement>
+        <hashTree/>
+        <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="HTTP Request" enabled="true">
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
+          <stringProp name="HTTPSampler.path"></stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -115,19 +115,11 @@
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
-          <stringProp name="HTTPSampler.mimetype"></stringProp>
-          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.port"></stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <stringProp name="HTTPSampler.monitor">false</stringProp>
-          <stringProp name="HTTPSampler.protocol"></stringProp>
         </HTTPSampler>
         <hashTree/>
         <Summariser guiclass="SummariserGui" testclass="Summariser" testname="Generate Summary Results" enabled="true"/>
         <hashTree/>
-        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
           <objProp>
             <value class="SampleSaveConfiguration">
               <time>true</time>

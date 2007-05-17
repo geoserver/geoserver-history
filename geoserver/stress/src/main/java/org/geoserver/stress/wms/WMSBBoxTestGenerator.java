@@ -19,7 +19,6 @@ public class WMSBBoxTestGenerator {
                         "http://localhost:8080/geoserver/wms?service=WMS&request=GetCapabilities");
         WebMapServer server = new WebMapServer(url);
         Layer l = getLayer(server, "topp:states");
-        System.out.println(l);
         
         Configuration cfg = new Configuration();
         cfg.setClassForTemplateLoading(WMSBBoxTestGenerator.class, "");
@@ -28,6 +27,7 @@ public class WMSBBoxTestGenerator {
         map.put("host", url.getHost());
         map.put("port", String.valueOf(url.getPort()));
         map.put("geoserver", "geoserver"); // TODO: extract from URL
+        map.put("numThreads", "${__property(num_threads)}"); // gather from system property num_threads
         Template template = cfg.getTemplate("wms.ftl");
         FileWriter writer = new FileWriter("plans/StatesWMSGetMap.jmx");
         template.process(map, writer);
