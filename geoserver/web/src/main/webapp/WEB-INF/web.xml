@@ -8,16 +8,10 @@
     <param-name>serviceStrategy</param-name>
     <!-- Meaning of the different values :
     	 
-    	 PARTIAL-BUFFER
-    	 - Partially buffers the first xKb to disk. Once that has buffered, the the 
-    	   result is streamed to the user. This will allow for most errors to be caught
-    	   early.
-         
          PARTIAL-BUFFER2
          - Partially buffers the first xKb to disk. Once that has buffered, the the 
            result is streamed to the user. This will allow for most errors to be caught
-           early. Compared to PARTIAL-BUFFER this has performance improvements that make
-           streaming up to twice as fast compared to PARTIAL-BUFFER
+           early. 
     	   
          BUFFER
          - stores the entire response in memory first, before sending it off to

@@ -5,7 +5,6 @@
 package org.vfny.geoserver.servlets;
 
 import org.geoserver.ows.ServiceStrategy;
-import org.vfny.geoserver.util.PartialBufferedOutputStream;
 import org.vfny.geoserver.util.PartialBufferedOutputStream2;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -27,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 public class PartialBufferStrategy2 implements ServiceStrategy {
     /** Class logger */
     protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets");
+    public static final int DEFAULT_BUFFER_SIZE = 50;
     private PartialBufferedOutputStream2 out = null;
     private int bufferSize;
 
@@ -43,7 +43,7 @@ public class PartialBufferStrategy2 implements ServiceStrategy {
             return bufferSize;
         }
 
-        return PartialBufferedOutputStream.DEFAULT_BUFFER_SIZE;
+        return DEFAULT_BUFFER_SIZE;
     }
 
     /*
