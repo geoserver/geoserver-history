@@ -116,16 +116,11 @@ public class MapPreviewAction extends GeoServerAction {
         for (Iterator it = ftypes.iterator(); it.hasNext();) {
             FeatureTypeInfo layer = (FeatureTypeInfo) it.next();
 
-            if (!layer.isEnabled()) {
+            if (!layer.isEnabled() || layer.isGeometryless()) {
                 continue; // if it isn't enabled, move to the next layer
             }
 
             CoordinateReferenceSystem layerCrs = layer.getDeclaredCRS();
-
-            // skip geometryless layers
-            if (layerCrs == null) {
-                continue;
-            }
 
             /* A quick and efficient way to grab the bounding box is to get it
              * from the featuretype info where the lat/lon bbox is loaded

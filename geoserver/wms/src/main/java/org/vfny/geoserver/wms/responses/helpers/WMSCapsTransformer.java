@@ -666,8 +666,14 @@ public class WMSCapsTransformer extends TransformerBase {
             for (Iterator it = data.iterator(); it.hasNext();) {
                 fLayer = (FeatureTypeInfo) it.next();
 
-                if (fLayer.isEnabled()) {
-                    handleFeatureType(fLayer);
+                try {
+                    if (fLayer.isEnabled() && !fLayer.isGeometryless()) {
+                        handleFeatureType(fLayer);
+                    }
+                } catch (Exception e) {
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+                    }
                 }
             }
 
