@@ -643,6 +643,21 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
 
     public CoordinateReferenceSystem getNativeCRS() throws IOException {
+        GeometryAttributeType dg = getDefaultGeometry();
+
+        if (dg == null) {
+            return null;
+        }
+
+        return dg.getCoordinateSystem();
+    }
+
+    /**
+     * Returns the default geometry for this feature type
+     * @return
+     * @throws IOException if the layer is not properly configured
+     */
+    GeometryAttributeType getDefaultGeometry() throws IOException {
         if (getDataStoreInfo().getDataStore() == null) {
             throw new IOException("featureType: " + getName()
                 + " does not have a properly configured " + "datastore");
@@ -650,14 +665,17 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
         DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
         FeatureSource realSource = dataStore.getFeatureSource(typeName);
-        GeometryAttributeType dg = realSource.getSchema().getDefaultGeometry();
 
-        if (dg == null) {
-            // deal with geometryless features
-            return null;
-        }
+        return realSource.getSchema().getDefaultGeometry();
+    }
 
-        return dg.getCoordinateSystem();
+    /**
+     * If true, the layer does not have a default geometry
+     * @return
+     * @throws IOException
+     */
+    public boolean isGeometryless() throws IOException {
+        return getDefaultGeometry() == null;
     }
 
     /**
