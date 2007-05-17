@@ -11,7 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.WebApplicationContext;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.util.PartialBufferedOutputStream;
+import org.vfny.geoserver.util.PartialBufferedOutputStream2;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
@@ -42,7 +42,7 @@ public class ServiceStrategyFactory implements OutputStrategyFactory, Applicatio
     /**
      * The default buffer size when the partial buffer strategy is used
      */
-    int partialBufferSize = PartialBufferedOutputStream.DEFAULT_BUFFER_SIZE;
+    int partialBufferSize = PartialBufferedOutputStream2.DEFAULT_BUFFER_SIZE;
 
     public ServiceStrategyFactory(GeoServer geoServer) {
         this.geoServer = geoServer;
@@ -110,7 +110,7 @@ public class ServiceStrategyFactory implements OutputStrategyFactory, Applicatio
         }
 
         // TODO: this hack should be removed once modules have their own config
-        if (theStrategy instanceof PartialBufferStrategy) {
+        if (theStrategy instanceof PartialBufferStrategy2) {
             if (partialBufferSize == 0) {
                 String size = getServletContext().getInitParameter("PARTIAL_BUFFER_STRATEGY_SIZE");
 
@@ -120,20 +120,20 @@ public class ServiceStrategyFactory implements OutputStrategyFactory, Applicatio
 
                         if (partialBufferSize <= 0) {
                             LOGGER.warning("Invalid partial buffer size, defaulting to "
-                                + PartialBufferedOutputStream.DEFAULT_BUFFER_SIZE + " (was "
+                                + PartialBufferedOutputStream2.DEFAULT_BUFFER_SIZE + " (was "
                                 + partialBufferSize + ")");
                             partialBufferSize = 0;
                         }
                     } catch (NumberFormatException nfe) {
                         LOGGER.warning("Invalid partial buffer size, defaulting to "
-                            + PartialBufferedOutputStream.DEFAULT_BUFFER_SIZE + " (was "
+                            + PartialBufferedOutputStream2.DEFAULT_BUFFER_SIZE + " (was "
                             + partialBufferSize + ")");
                         partialBufferSize = 0;
                     }
                 }
             }
 
-            ((PartialBufferStrategy) theStrategy).setBufferSize(partialBufferSize);
+            ((PartialBufferStrategy2) theStrategy).setBufferSize(partialBufferSize);
         }
 
         return theStrategy;
