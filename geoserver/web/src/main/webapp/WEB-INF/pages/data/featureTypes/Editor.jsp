@@ -508,6 +508,7 @@ function prepareFormData(){
 	  </td>
     </tr>
   </table>
+<html:hidden property="autoGenerateExtent" value="false"/>
 </html:form>
 
 <% } catch (Throwable hate ){

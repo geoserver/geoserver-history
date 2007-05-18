@@ -165,6 +165,9 @@ public class TypesEditorForm extends ActionForm {
     /** Sorted Set of available styles */
     private SortedSet styles;
 
+    /** A hidden field to enable autogeneration of extents (for SRS and BoundingBox values) **/
+    private String autoGenerateExtent;
+
     /** Stores the name of the new attribute they wish to create */
     private String newAttribute;
 
@@ -447,6 +450,11 @@ public class TypesEditorForm extends ActionForm {
         final String LOOKUP_SRS = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.lookupSRS.label"));
 
+        // If autoGenerateExtent flag is not set, don't break.
+        if (autoGenerateExtent == null) {
+            autoGenerateExtent = "false";
+        }
+
         // Pass Attribute Management Actions through without
         // much validation.
         if (action.startsWith("Up") || action.startsWith("Down") || action.startsWith("Remove")
@@ -462,17 +470,19 @@ public class TypesEditorForm extends ActionForm {
         }
 
         // check name exists in current DataStore?
-        if ("".equals(minX) || "".equals(minY) || "".equals(maxX) || "".equals(maxY)) {
-            errors.add("latlongBoundingBox", new ActionError("error.latLonBoundingBox.required"));
-        } else {
-            try {
-                Double.parseDouble(minX);
-                Double.parseDouble(minY);
-                Double.parseDouble(maxX);
-                Double.parseDouble(maxY);
-            } catch (NumberFormatException badNumber) {
-                errors.add("latlongBoundingBox",
-                    new ActionError("error.latLonBoundingBox.invalid", badNumber));
+        if (!autoGenerateExtent.equals("true")) {
+            if (("".equals(minX) || "".equals(minY) || "".equals(maxX) || "".equals(maxY))) {
+                errors.add("latlongBoundingBox", new ActionError("error.latLonBoundingBox.required"));
+            } else {
+                try {
+                    Double.parseDouble(minX);
+                    Double.parseDouble(minY);
+                    Double.parseDouble(maxX);
+                    Double.parseDouble(maxY);
+                } catch (NumberFormatException badNumber) {
+                    errors.add("latlongBoundingBox",
+                        new ActionError("error.latLonBoundingBox.invalid", badNumber));
+                }
             }
         }
 
@@ -837,6 +847,26 @@ public class TypesEditorForm extends ActionForm {
      */
     public void setNewAttribute(String newAttribute) {
         this.newAttribute = newAttribute;
+    }
+
+    /**
+     * Access the autoGenerateExtent attribute.
+     *
+     */
+    public String getAutoGenerateExtent() {
+        if (this.autoGenerateExtent == null) {
+            this.autoGenerateExtent = "false";
+        }
+
+        return this.autoGenerateExtent;
+    }
+
+    /**
+     * Set autoGenerateExtent to autoGenerateExtent.
+     * @param autoGenerateExtent The autoGenerateExtent to set.
+     */
+    public void setAutoGenerateExtent(String autoGenerateExtent) {
+        this.autoGenerateExtent = autoGenerateExtent;
     }
 
     /**
