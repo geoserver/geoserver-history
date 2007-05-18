@@ -1,36 +1,37 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.geoserver</groupId>
-		<artifactId>geoserver</artifactId>
-		<version>1.5.1-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>org.geoserver</groupId>
+    <artifactId>geoserver</artifactId>
+    <version>1.5.1-SNAPSHOT</version>
+  </parent>
 
-	<groupId>org.geoserver</groupId>
+  <groupId>org.geoserver</groupId>
   <artifactId>stress</artifactId>
-	<packaging>jar</packaging>
+  <packaging>jar</packaging>
   <name>Stress testing Module</name>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.geoserver</groupId>
-			<artifactId>web</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+  <dependencies>
 
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-wfs</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt2-wms</artifactId>
-		</dependency>
-		
+    <dependency>
+      <groupId>freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt2-wfs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt2-wms</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt2-epsg-hsql</artifactId>
+    </dependency>
 
-	</dependencies>
+
+  </dependencies>
 </project>
