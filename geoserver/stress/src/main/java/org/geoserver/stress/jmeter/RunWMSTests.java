@@ -14,5 +14,6 @@ public class RunWMSTests {
         JMeterRunner runner = new JMeterRunner();
         runner.runTest("StatesWMSGetMap", loops);
         runner.runTest("StatesWMSGetMapSafePalette", loops);
+        runner.runTest("StatesWMSGetMapSafePaletteGif", loops);
     }
 }
