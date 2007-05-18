@@ -1,6 +1,6 @@
 <jmeterTestPlan version="1.2" properties="1.8">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="${testname}" enabled="true">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="StatesWMSGetMap" enabled="true">
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <stringProp name="TestPlan.comments"></stringProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
@@ -16,7 +16,7 @@
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
-        <stringProp name="ThreadGroup.num_threads">${numThreads}</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${__P(threadcount,1)}</stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
         <longProp name="ThreadGroup.start_time">1175121299000</longProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
@@ -32,7 +32,7 @@
           The loop will execute loops number of times the subsequent requests
         -->
         <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
-          <stringProp name="LoopController.loops">${loopCount}</stringProp>
+          <stringProp name="LoopController.loops">30</stringProp>
           <boolProp name="LoopController.continue_forever">true</boolProp>
         </LoopController>
         <hashTree>
@@ -43,7 +43,7 @@
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
             <stringProp name="delimiter">;</stringProp>
             <boolProp name="recycle">true</boolProp>
-            <stringProp name="filename">${csvFileName}</stringProp>
+            <stringProp name="filename">./StatesWMSGetMap.csv</stringProp>
             <stringProp name="variableNames">bbox,width,height</stringProp>
           </CSVDataSet>
           <hashTree/>
@@ -53,9 +53,9 @@
             the requests from the varying one.
           -->
           <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
-            <stringProp name="HTTPSampler.domain">${host}</stringProp>
-            <stringProp name="HTTPSampler.path">${path}/wms</stringProp>
-            <stringProp name="HTTPSampler.port">${port}</stringProp>
+            <stringProp name="HTTPSampler.domain">${__P(host,localhost)}</stringProp>
+            <stringProp name="HTTPSampler.path">${__P(path,/geoserver)}/wms</stringProp>
+            <stringProp name="HTTPSampler.port">${__P(port,8080)}</stringProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
@@ -83,28 +83,35 @@
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">srs</stringProp>
-                  <stringProp name="Argument.value">${crs}</stringProp>
+                  <stringProp name="Argument.value">EPSG:4326</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">format</stringProp>
-                  <stringProp name="Argument.value">${format}</stringProp>
+                  <stringProp name="Argument.value">image/png</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">layers</stringProp>
-                  <stringProp name="Argument.value">${layers}</stringProp>
+                  <stringProp name="Argument.value">topp:states</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">styles</stringProp>
-                  <stringProp name="Argument.value">${styles}</stringProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.name">palette</stringProp>
+                  <stringProp name="Argument.value">safe</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
@@ -126,21 +133,21 @@
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">bbox</stringProp>
-                  <stringProp name="Argument.value">${'$'}{bbox}</stringProp>
+                  <stringProp name="Argument.value">${bbox}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">height</stringProp>
-                  <stringProp name="Argument.value">${'$'}{height}</stringProp>
+                  <stringProp name="Argument.value">${height}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.name">width</stringProp>
-                  <stringProp name="Argument.value">${'$'}{width}</stringProp>
+                  <stringProp name="Argument.value">${width}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
