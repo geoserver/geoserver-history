@@ -111,7 +111,17 @@ public class TypesEditorAction extends ConfigAction {
         final String NEWSLD = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.sldWizard.label"));
 
-        if (action.equals(SUBMIT)) {
+        if (typeForm.getAutoGenerateExtent().equals("true")) {
+            if ((typeForm.getSRS() == null) || typeForm.getSRS().trim().equals("0")) {
+                executeLookupSRS(mapping, typeForm, user, request);
+            }
+
+            executeBBox(mapping, typeForm, user, request);
+
+            return executeSubmit(mapping, typeForm, user, request);
+        }
+
+        if (SUBMIT.equals(action)) {
             return executeSubmit(mapping, typeForm, user, request);
         }
 
