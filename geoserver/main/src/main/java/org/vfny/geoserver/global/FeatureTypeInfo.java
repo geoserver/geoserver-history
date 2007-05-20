@@ -6,6 +6,7 @@ package org.vfny.geoserver.global;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
+import org.geoserver.feature.FeatureSourceUtils;
 import org.geotools.catalog.GeoResource;
 import org.geotools.catalog.GeoResourceInfo;
 import org.geotools.catalog.Resolve;
@@ -77,6 +78,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
      * reprojection may be required to derive this value.</p>
      */
     private Envelope latLongBBox;
+
+    /**
+     * Bounding box in this FeatureType's native (or user declared) CRS.<p>Note
+     * reprojection may be required to derive this value.</p>
+     */
+    private Envelope nativeBBox;
 
     /**
      * SRS number used to locate Coordidate Reference Systems<p>This
@@ -446,27 +453,41 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
        }*/
 
     /**
-     * getBoundingBox purpose.<p>The feature source bounds.</p>
+     * Returns the FeatureType's envelope in its native CRS (or user
+     * declared CRS, if any).
+     * <p>
+     * Note the Envelope is cached in order to avoid a potential
+     * performance penalty every time this value is requires (for example,
+     * at every GetCapabilities request)
+     * </p>
      *
-     * @return Envelope the feature source bounds.
+     * @return Envelope of the feature source bounds.
      *
      * @throws IOException when an error occurs
      */
     public Envelope getBoundingBox() throws IOException {
+        if (nativeBBox == null) {
+            CoordinateReferenceSystem crs = forcedCRS ? getDeclaredCRS() : getNativeCRS();
+            nativeBBox = getBoundingBox(crs);
+        }
+
+        return nativeBBox;
+    }
+
+    private Envelope getBoundingBox(CoordinateReferenceSystem targetCrs)
+        throws IOException {
         // compute original bounding box
         DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
         FeatureSource realSource = dataStore.getFeatureSource(typeName);
-        Envelope bbox = DataStoreUtils.getBoundingBoxEnvelope(realSource);
+        Envelope bbox = FeatureSourceUtils.getBoundingBoxEnvelope(realSource);
 
         // check if the original CRS is not the declared one
         GeometryAttributeType defaultGeometry = realSource.getSchema().getDefaultGeometry();
-        CoordinateReferenceSystem declaredCRS = getSRS(SRS);
         CoordinateReferenceSystem originalCRS = defaultGeometry.getCoordinateSystem();
 
         try {
-            if (!forcedCRS && (defaultGeometry != null)
-                    && !CRS.equalsIgnoreMetadata(originalCRS, declaredCRS)) {
-                MathTransform xform = CRS.transform(originalCRS, declaredCRS, true);
+            if (CRS.equalsIgnoreMetadata(originalCRS, targetCrs)) {
+                MathTransform xform = CRS.transform(originalCRS, targetCrs, true);
                 bbox = JTS.transform(bbox, xform, 10);
             }
         } catch (Exception e) {
@@ -474,7 +495,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
                 "Could not turn the original envelope in one into the declared CRS for type "
                 + typeName);
             LOGGER.severe("Original CRS is " + originalCRS);
-            LOGGER.severe("Declared CRS is " + declaredCRS);
+            LOGGER.severe("Declared CRS is " + targetCrs);
         }
 
         return bbox;
@@ -500,7 +521,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
      */
     public Envelope getLatLongBoundingBox() throws IOException {
         if (latLongBBox == null) {
-            return getBoundingBox();
+            latLongBBox = getBoundingBox(getSRS(3426));
         }
 
         return latLongBBox;
