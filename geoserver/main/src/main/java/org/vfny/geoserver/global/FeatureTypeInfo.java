@@ -521,7 +521,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
      */
     public Envelope getLatLongBoundingBox() throws IOException {
         if (latLongBBox == null) {
-            latLongBBox = getBoundingBox(getSRS(3426));
+            latLongBBox = getBoundingBox(getSRS(4326));
         }
 
         return latLongBBox;
