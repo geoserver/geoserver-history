@@ -376,8 +376,9 @@ public class FeatureResponse implements Response {
                             t.addAuthorization(featureLock.getAuthorization());
                             source.getDataStore().getLockingManager()
                                   .refresh(featureLock.getAuthorization(), t);
-                        } finally {
                             t.commit();
+                        } finally {
+                            t.close();
                         }
                     }
                 }

@@ -16,6 +16,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.Transaction;
+import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
@@ -151,6 +152,34 @@ public class TransactionResponse implements Response {
         transaction = new DefaultTransaction();
         LOGGER.fine("request is " + request);
 
+        try {
+            _execute(transactionRequest);
+        } catch (ServiceException e) {
+            closeTransaction();
+
+            throw e;
+        } catch (Exception e) {
+            // in some rare situations, we can exit _execute with a non service exception, 
+            // in this case we wrap it in a service exception
+            closeTransaction();
+            throw new WfsException("Unexpected exception processing transaction", e);
+        }
+    }
+
+    private void closeTransaction() {
+        // no matter what goes wrong, we have to close the transaction, or we
+        // risk loosing connections
+        try {
+            transaction.close();
+            transaction = null;
+        } catch (IOException io) {
+            // nothing we can do here
+            LOGGER.log(Level.SEVERE, "Failed trying to close a transaction:" + io);
+        }
+    }
+
+    private void _execute(TransactionRequest transactionRequest)
+        throws WfsTransactionException, ServiceException, WfsException, FactoryConfigurationError {
         Data catalog = transactionRequest.getWFS().getData();
 
         WfsTransResponse build = new WfsTransResponse(WfsTransResponse.SUCCESS,
@@ -799,7 +828,7 @@ public class TransactionResponse implements Response {
             transaction.rollback();
             throw ioException;
         } finally {
-            transaction.close();
+            closeTransaction();
             transaction = null;
         }
 
@@ -834,18 +863,6 @@ public class TransactionResponse implements Response {
      * @see org.vfny.geoserver.responses.Response#abort()
      */
     public void abort(Service gs) {
-        if (transaction == null) {
-            return; // no transaction to rollback
-        }
-
-        try {
-            transaction.rollback();
-            transaction.close();
-        } catch (IOException ioException) {
-            // nothing we can do here
-            LOGGER.log(Level.SEVERE, "Failed trying to rollback a transaction:" + ioException);
-        }
-
         if (request != null) {
             // 
             // TODO: Do we need release/refresh during an abort?               
@@ -859,9 +876,21 @@ public class TransactionResponse implements Response {
                 }
             }
         }
-
         request = null;
         response = null;
+        
+        if (transaction == null) {
+            return; // no transaction to rollback
+        }
+
+        try {
+            transaction.rollback();
+        } catch (IOException ioException) {
+            // nothing we can do here
+            LOGGER.log(Level.SEVERE, "Failed trying to rollback a transaction:" + ioException);
+        } finally {
+            closeTransaction();
+        }
     }
 
     public String getContentDisposition() {
