@@ -95,7 +95,7 @@ public class PartialBufferedOutputStream2 extends OutputStream {
         BUFFER_SIZE = KILOBYTE * kilobytes;
         this.response = response;
         out_buffer = new ByteArrayOutputStream(BUFFER_SIZE);
-        out_real = new BufferedOutputStream(response.getOutputStream());
+        out_real = response.getOutputStream();
         currentStream = out_buffer;
     }
 
@@ -132,8 +132,8 @@ public class PartialBufferedOutputStream2 extends OutputStream {
             return;
         }
 
+        checkBuffer(1);
         currentStream.write(b);
-        checkBuffer();
     }
 
     public void write(byte[] b) throws IOException {
@@ -141,8 +141,8 @@ public class PartialBufferedOutputStream2 extends OutputStream {
             return;
         }
 
+        checkBuffer(b.length);
         currentStream.write(b);
-        checkBuffer();
     }
 
     public void write(byte[] b, int off, int len) throws IOException {
@@ -150,12 +150,12 @@ public class PartialBufferedOutputStream2 extends OutputStream {
             return;
         }
 
+        checkBuffer(len);
         currentStream.write(b, off, len);
-        checkBuffer();
     }
 
-    private void checkBuffer() throws IOException {
-        if ((currentStream == out_buffer) && (out_buffer.size() >= BUFFER_SIZE)) {
+    private void checkBuffer(int extraBytes) throws IOException {
+        if ((currentStream == out_buffer) && ((out_buffer.size() + extraBytes) >= BUFFER_SIZE)) {
             flushBuffer();
         }
     }
