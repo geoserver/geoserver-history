@@ -876,9 +876,10 @@ public class TransactionResponse implements Response {
                 }
             }
         }
+
         request = null;
         response = null;
-        
+
         if (transaction == null) {
             return; // no transaction to rollback
         }
