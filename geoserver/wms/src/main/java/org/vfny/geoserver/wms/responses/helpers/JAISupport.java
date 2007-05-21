@@ -65,13 +65,9 @@ public final class JAISupport {
      */
     public static Set getSupportedFormats() {
         if (supportedFormats == null) {
-            //LiteRenderer renderer = null;
             String[] mimeTypes = null;
 
-            LiteRenderer2 testRenderer = null;
-
             try {
-                testRenderer = new LiteRenderer2();
                 mimeTypes = ImageIO.getWriterMIMETypes();
             } catch (NoClassDefFoundError ncdfe) {
                 supportedFormats = Collections.EMPTY_SET;
@@ -81,8 +77,8 @@ public final class JAISupport {
                 //delete, or we get really nasty messages on getCaps for wms.
             }
 
-            if ((testRenderer == null) || (mimeTypes == null)) {
-                LOGGER.info("renderer was null, so jai not found");
+            if (mimeTypes == null) {
+                LOGGER.info("Jai not found? Should be always there");
                 supportedFormats = Collections.EMPTY_SET;
             } else {
                 supportedFormats = new HashSet();
