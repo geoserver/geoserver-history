@@ -241,7 +241,8 @@ public class KMLReflector extends WMService {
                     + "/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kmz+XML"
                     + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + "&layers="
                     + layers[i].getName() + style // optional
-                    + "&KMScore=" + KMSCORE + "&KMAttr=" + KMATTR + "]]></href>\n");
+                    + "&KMScore=" + serviceRequest.getKMScore() 
+                    + "&KMAttr=" + String.valueOf( serviceRequest.getKMattr() ) + "]]></href>\n");
                 sb.append("<viewRefreshMode>onStop</viewRefreshMode>\n");
                 sb.append("<viewRefreshTime>3</viewRefreshTime>\n");
                 sb.append("</Url>\n");
