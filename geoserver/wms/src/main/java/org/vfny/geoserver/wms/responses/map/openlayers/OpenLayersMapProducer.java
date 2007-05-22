@@ -7,7 +7,6 @@ package org.vfny.geoserver.wms.responses.map.openlayers;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-
 import org.apache.commons.collections.map.SingletonMap;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.vfny.geoserver.ServiceException;
@@ -25,12 +24,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 
 
 public class OpenLayersMapProducer implements GetMapProducer {
-    
     /**
      * Set of parameters that we can ignore, since they are not part of the OpenLayers WMS request
      */
@@ -45,7 +42,7 @@ public class OpenLayersMapProducer implements GetMapProducer {
         ignoredParameters.add("VERSION");
         ignoredParameters.add("FORMAT");
     }
-    
+
     /**
      * static freemaker configuration
      */
@@ -102,11 +99,13 @@ public class OpenLayersMapProducer implements GetMapProducer {
             map.put("maxResolution", new Double(getMaxResolution(mapContext.getAreaOfInterest())));
             map.put("baseUrl", canonicUrl(mapContext.getRequest().getBaseUrl()));
             map.put("parameters", getLayerParameter(mapContext.getRequest().getHttpServletRequest()));
-            if(mapContext.getLayerCount() == 1) {
+
+            if (mapContext.getLayerCount() == 1) {
                 map.put("layerName", mapContext.getLayer(0).getTitle());
             } else {
                 map.put("layerName", "Geoserver layers");
             }
+
             template.process(map, new OutputStreamWriter(out));
         } catch (TemplateException e) {
             throw new WmsException(e);
@@ -141,6 +140,7 @@ public class OpenLayersMapProducer implements GetMapProducer {
             map.put("value", request.getParameter(paramName));
             result.add(map);
         }
+
         return result;
     }
 

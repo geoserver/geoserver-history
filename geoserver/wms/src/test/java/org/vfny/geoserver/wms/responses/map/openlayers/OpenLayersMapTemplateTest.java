@@ -17,6 +17,7 @@ import org.w3c.dom.Document;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -44,6 +45,8 @@ public class OpenLayersMapTemplateTest extends WMSTestSupport {
         map.put("request", mapContext.getRequest());
         map.put("maxResolution", new Double(0.0005)); // just a random number
         map.put("baseUrl", "http://localhost:8080/geoserver/wms");
+        map.put("parameters", new ArrayList());
+        map.put("layerName", "layer");
         template.process(map, new OutputStreamWriter(output));
 
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
