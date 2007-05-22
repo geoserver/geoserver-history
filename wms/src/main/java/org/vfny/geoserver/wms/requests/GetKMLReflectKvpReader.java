@@ -61,6 +61,12 @@ public class GetKMLReflectKvpReader extends GetMapKvpReader {
             String format = getValue("FORMAT");
             request.setFormat(format);
         }
+        
+        // Super Overlay parameter
+        if (keyExists("SUPEROVERLAY")) {
+            String value = getValue( "SUPEROVERLAY" );
+            request.setSuperOverlay( "TRUE".equalsIgnoreCase(value) );
+        }
     }
 
     /**
