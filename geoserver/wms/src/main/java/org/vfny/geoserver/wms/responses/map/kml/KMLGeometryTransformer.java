@@ -20,17 +20,18 @@ import org.xml.sax.ContentHandler;
  */
 public class KMLGeometryTransformer extends GeometryTransformer {
     public Translator createTranslator(ContentHandler handler) {
-        return new KMLGeometryTranslator(handler);
+        return new KMLGeometryTranslator(handler,numDecimals,useDummyZ);
     }
 
     /**
      * Subclass which sets prefix and nsuri to null.
      */
     static class KMLGeometryTranslator extends GeometryTranslator {
-        public KMLGeometryTranslator(ContentHandler handler) {
+        public KMLGeometryTranslator(ContentHandler handler, int numDecimals, boolean useDummyZ ) {
             //super(handler, "kml", "http://earth.google.com/kml/2.0" );
-            super(handler, null, null);
+            super(handler, null, null, numDecimals, useDummyZ );
             coordWriter.setNamespaceAware(false);
+            
         }
     }
 }
