@@ -382,6 +382,12 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 request.setKMattr(true); // default to true
             }
         }
+        
+        /** KML super overlay */
+        String superOverlay = getValue( "SUPEROVERLAY" );
+        if ( superOverlay != null ) {
+            request.setSuperOverlay( "TRUE".equalsIgnoreCase(superOverlay) );
+        }
     }
 
     private Point2D parseTilesOrigin(String origin) {

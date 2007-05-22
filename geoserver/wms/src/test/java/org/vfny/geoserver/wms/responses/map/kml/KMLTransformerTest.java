@@ -121,6 +121,20 @@ public class KMLTransformerTest extends WMSTestSupport {
         assertTrue(href.getFirstChild().getNodeValue().startsWith("http://localhost"));
     }
 
+    public void testSuperOverlayTransformer() throws Exception {
+        KMLSuperOverlayTransformer transformer = new KMLSuperOverlayTransformer( mapContext );
+        transformer.setIndentation(2);
+        
+        mapContext.setAreaOfInterest( new Envelope( -180,180,-90,90)  );
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        transformer.transform(mapLayer, output);
+        
+        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
+
+        assertEquals("Document", document.getDocumentElement().getNodeName());
+    }
+    
     public void testTransformer() throws Exception {
         KMLTransformer transformer = new KMLTransformer();
 
@@ -132,4 +146,6 @@ public class KMLTransformerTest extends WMSTestSupport {
 
         assertEquals("kml", document.getDocumentElement().getNodeName());
     }
+    
+   
 }

@@ -84,13 +84,21 @@ public class KMLTransformer extends TransformerBase {
                 MapLayer layer = layers[i];
                 MapLayerInfo layerInfo = mapContext.getRequest().getLayers()[i];
 
-                //figure out which type of layer this is, raster or vector
-                if (layerInfo.getType() == MapLayerInfo.TYPE_VECTOR) {
-                    //vector 
-                    encodeVectorLayer(mapContext, layer);
-                } else {
-                    //raster
-                    encodeRasterLayer(mapContext, layer);
+                //was a super overlay requested?
+                if ( mapContext.getRequest().getSuperOverlay() ) {
+                    //encode as super overlay
+                    encodeSuperOverlayLayer(mapContext, layer);    
+                }
+                else {
+                    //figure out which type of layer this is, raster or vector
+                    if (layerInfo.getType() == MapLayerInfo.TYPE_VECTOR) {
+                        //vector 
+                        encodeVectorLayer(mapContext, layer);
+                    } 
+                    else {
+                        //encode as normal ground overlay
+                        encodeRasterLayer(mapContext, layer);    
+                    }        
                 }
             }
 
@@ -153,6 +161,14 @@ public class KMLTransformer extends TransformerBase {
             tx.createTranslator(contentHandler).encode(layer);
         }
 
+        /**
+         * Encodes a layer as a super overlay.
+         */
+        protected void encodeSuperOverlayLayer( WMSMapContext mapContext, MapLayer layer ) {
+            KMLSuperOverlayTransformer tx = new KMLSuperOverlayTransformer( mapContext );
+            tx.createTranslator( contentHandler ).encode( layer );
+        }
+        
         double computeScaleDenominator(MapLayer layer, WMSMapContext mapContext) {
             Rectangle paintArea = new Rectangle(mapContext.getMapWidth(), mapContext.getMapHeight());
             AffineTransform worldToScreen = RendererUtilities.worldToScreenTransform(mapContext

@@ -190,6 +190,13 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
+     * @return super overlay flag, <code>true</code> if super overlay requested.
+     */
+    public boolean getSuperOverlay() {
+        return this.optionalParams.superOverlay;
+    }
+    
+    /**
      * DOCUMENT ME!
      *
      * @param bbox DOCUMENT ME!
@@ -328,6 +335,13 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
+     * Sets the super overlay parameter on the request.
+     */
+    public void setSuperOverlay( boolean superOverlay ) {
+        this.optionalParams.superOverlay = superOverlay;
+    }
+    
+    /**
      * decodes a color of the form <code>#FFFFFF</code> into a
      * <code>java.awt.Color</code> object
      *
@@ -420,5 +434,8 @@ public class GetMapRequest extends WMSRequest {
 
         /** KML full/none attribution on returned placemark <description>. */
         boolean KMattr = true;
+        
+        /** KML super overlay vs normal ground overlay */
+        boolean superOverlay = false;
     }
 }
