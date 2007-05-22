@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import java.util.Map;
+
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.map.MapLayer;
 import org.geotools.xml.transform.TransformerBase;
@@ -125,26 +127,8 @@ public class KMLRasterTransformer extends TransformerBase {
                 element("href", "layer_" + mapLayerOrder + ".png");
             } else {
                 //reference the image as a remote wms call
-                GetMapRequest request = mapContext.getRequest();
-                String baseUrl = Requests.getBaseUrl(request.getHttpServletRequest(),
-                        request.getGeoServer());
-
-                StringBuffer href = new StringBuffer(baseUrl).append("wms?");
-
-                Envelope box = request.getBbox();
-                href.append("bbox=").append(box.getMinX()).append(",").append(box.getMinY())
-                    .append(",").append(box.getMaxX()).append(",").append(box.getMaxY());
-
-                href.append("&layers=").append(mapLayer.getTitle());
-                href.append("&styles=").append(mapLayer.getStyle().getName());
-                href.append("&format=image/png");
-                href.append("&height=").append(mapContext.getMapHeight()).append("&width=")
-                    .append(mapContext.getMapWidth());
-                href.append("&srs=EPSG:4326");
-                href.append("&transparent=true&");
-                ;
-
-                element("href", href.toString());
+                Map getMap = KMLUtils.createGetMapRequest(mapContext, mapLayer);
+                element("href", KMLUtils.encode( mapContext, getMap ) );
             }
         }
     }
