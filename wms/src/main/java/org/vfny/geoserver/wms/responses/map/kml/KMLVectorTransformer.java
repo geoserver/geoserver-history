@@ -10,6 +10,8 @@ import com.vividsolutions.jts.geom.GeometryCollection;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.template.FeatureWrapper;
 import org.geoserver.template.GeoServerTemplateLoader;
 import org.geotools.feature.Feature;
@@ -26,6 +28,7 @@ import org.geotools.renderer.style.PolygonStyle2D;
 import org.geotools.renderer.style.SLDStyleFactory;
 import org.geotools.renderer.style.Style2D;
 import org.geotools.renderer.style.TextStyle2D;
+import org.geotools.styling.ExternalGraphic;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.LineSymbolizer;
 import org.geotools.styling.Mark;
@@ -56,6 +59,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 import java.awt.Color;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -290,7 +294,7 @@ public class KMLVectorTransformer extends TransformerBase {
                 }
                 
                 if (symbolizer instanceof PointSymbolizer) {
-                    encodePointStyle((MarkStyle2D) style, (PointSymbolizer) symbolizer);
+                    encodePointStyle( style, (PointSymbolizer) symbolizer);
                 }
             }
         }
@@ -416,29 +420,67 @@ public class KMLVectorTransformer extends TransformerBase {
         /**
          * Encodes a KML IconStyle from a point style and symbolizer.
          */
-        protected void encodePointStyle(MarkStyle2D style, PointSymbolizer symbolizer) {
+        protected void encodePointStyle(Style2D style, PointSymbolizer symbolizer) {
             start("IconStyle");
 
-            Mark mark = SLD.mark(symbolizer);
+            if ( style instanceof MarkStyle2D ) {
+                Mark mark = SLD.mark(symbolizer);    
+                if (mark != null) {
+                    double opacity = SLD.opacity(mark.getFill());
 
-            if (mark != null) {
-                double opacity = SLD.opacity(mark.getFill());
+                    if (Double.isNaN(opacity)) {
+                        //default to full opacity
+                        opacity = 1.0;
+                    }
 
-                if (Double.isNaN(opacity)) {
-                    //default to full opacity
-                    opacity = 1.0;
+                    encodeColor( SLD.color( mark.getFill() ), opacity );
+                } else {
+                    //default
+                    encodeColor( "ffaaaaaa" );
                 }
-
-                encodeColor( (Color) style.getFill(), opacity );
-            } else {
+            }
+            else {
                 //default
                 encodeColor( "ffaaaaaa" );
             }
-
+            
             element("colorMode", "normal");
 
+            // placemark icon
+            
+            String iconHref = null;
+            
+            //if the point symbolizer uses an external graphic use it
+            if ( symbolizer.getGraphic() != null && 
+                    symbolizer.getGraphic().getExternalGraphics() != null &&  
+                    symbolizer.getGraphic().getExternalGraphics().length > 0 ) {
+                
+                ExternalGraphic graphic = 
+                    symbolizer.getGraphic().getExternalGraphics()[0];
+                try {
+                    if ( "file".equals(  graphic.getLocation().getProtocol() ) ) {
+                        //it is a local file, reference locally from "styles" directory
+                        File file = new File( graphic.getLocation().getFile() );
+                        iconHref = RequestUtils.baseURL( mapContext.getRequest().getHttpServletRequest() ) 
+                            + "styles/" + file.getName();
+                    }    
+                    else {
+                        //TODO: should we check for http:// and use it directly?
+                    }
+                }
+                catch( Exception e ) {
+                    LOGGER.log( Level.WARNING, "Error processing external graphic:" + graphic , e );
+                }
+                
+            }
+            
+            if ( iconHref == null ) {
+                iconHref = "root://icons/palette-4.png";
+            }
+            
             start("Icon");
-            element("href", "root://icons/palette-4.png");
+            
+            element("href", iconHref );    
             element("x", "32");
             element("y", "128");
             element("w", "32");
