@@ -24,7 +24,8 @@ import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.type.GeometricAttributeType;
 import org.geotools.filter.Filter;
-import org.geotools.geometry.JTS;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
 import org.geotools.util.ProgressListener;
@@ -32,7 +33,6 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
@@ -486,9 +486,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         CoordinateReferenceSystem originalCRS = defaultGeometry.getCoordinateSystem();
 
         try {
-            if (CRS.equalsIgnoreMetadata(originalCRS, targetCrs)) {
-                MathTransform xform = CRS.transform(originalCRS, targetCrs, true);
-                bbox = JTS.transform(bbox, xform, 10);
+            if (!CRS.equalsIgnoreMetadata(originalCRS, targetCrs)) {
+                MathTransform xform = CRS.findMathTransform(originalCRS, targetCrs, true);
+                bbox = JTS.transform(bbox, null, xform, 10);
             }
         } catch (Exception e) {
             LOGGER.severe(
@@ -498,7 +498,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
             LOGGER.severe("Declared CRS is " + targetCrs);
         }
 
-        return bbox;
+        return new ReferencedEnvelope(bbox, targetCrs);
     }
 
     /**
