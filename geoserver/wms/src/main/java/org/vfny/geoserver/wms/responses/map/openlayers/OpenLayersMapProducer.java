@@ -7,6 +7,8 @@ package org.vfny.geoserver.wms.responses.map.openlayers;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+
+import org.apache.commons.collections.map.SingletonMap;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.WMS;
@@ -16,10 +18,34 @@ import org.vfny.geoserver.wms.WmsException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 public class OpenLayersMapProducer implements GetMapProducer {
+    
+    /**
+     * Set of parameters that we can ignore, since they are not part of the OpenLayers WMS request
+     */
+    private static final Set ignoredParameters;
+
+    static {
+        ignoredParameters = new HashSet();
+        ignoredParameters.add("REQUEST");
+        ignoredParameters.add("TILED");
+        ignoredParameters.add("BBOX");
+        ignoredParameters.add("SERVICE");
+        ignoredParameters.add("VERSION");
+        ignoredParameters.add("FORMAT");
+    }
+    
     /**
      * static freemaker configuration
      */
@@ -75,6 +101,12 @@ public class OpenLayersMapProducer implements GetMapProducer {
             map.put("request", mapContext.getRequest());
             map.put("maxResolution", new Double(getMaxResolution(mapContext.getAreaOfInterest())));
             map.put("baseUrl", canonicUrl(mapContext.getRequest().getBaseUrl()));
+            map.put("parameters", getLayerParameter(mapContext.getRequest().getHttpServletRequest()));
+            if(mapContext.getLayerCount() == 1) {
+                map.put("layerName", mapContext.getLayer(0).getTitle());
+            } else {
+                map.put("layerName", "Geoserver layers");
+            }
             template.process(map, new OutputStreamWriter(out));
         } catch (TemplateException e) {
             throw new WmsException(e);
@@ -82,6 +114,34 @@ public class OpenLayersMapProducer implements GetMapProducer {
 
         mapContext = null;
         template = null;
+    }
+
+    /**
+     * Returns a list of maps with the name and value of each parameter that we have to
+     * forward to OpenLayers. Forwarded parameters are all the provided ones, besides a short
+     * set contained in {@link #ignoredParameters}.
+     * @param request
+     * @return
+     */
+    private List getLayerParameter(HttpServletRequest request) {
+        List result = new ArrayList();
+        Enumeration en = request.getParameterNames();
+
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+
+            if (ignoredParameters.contains(paramName.toUpperCase())) {
+                continue;
+            }
+
+            // this won't work for multi-valued parameters, but we have none so far (they
+            // are common just in HTML forms...)
+            Map map = new HashMap();
+            map.put("name", paramName);
+            map.put("value", request.getParameter(paramName));
+            result.add(map);
+        }
+        return result;
     }
 
     /**
