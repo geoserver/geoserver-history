@@ -222,10 +222,10 @@ public class KMLReflector extends WMService {
                 sb.append("<Link>\n");
                 sb.append("<href><![CDATA[" + serviceRequest.getBaseUrl()
                     + "/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kml+XML"
-                    + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + 
-                    "&layers=" + (String) requestParams.get("LAYERS") + style + 
-                    "&bbox=" + (String) requestParams.get( "BBOX" ) + 
-                    "&superoverlay=true]]></href>\n");
+                    + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + "&layers=" 
+                    + layers[i].getName() + style  
+                    + "&bbox=" + (String) requestParams.get( "BBOX" )
+                    + "&superoverlay=true]]></href>\n");
                 sb.append("<viewRefreshMode>onRegion</viewRefreshMode>\n");
                 
                 sb.append("</Link>\n");
