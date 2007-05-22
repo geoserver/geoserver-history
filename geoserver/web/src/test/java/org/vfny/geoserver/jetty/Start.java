@@ -8,6 +8,7 @@ import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.bio.SocketConnector;
 import org.mortbay.jetty.webapp.WebAppContext;
+import org.mortbay.thread.BoundedThreadPool;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,8 +31,15 @@ public class Start {
         try {
             jettyServer = new Server();
 
+            // don't even think of serving more than XX requests in parallel... we
+            // have a limit in our processing and memory capacities
+            BoundedThreadPool tp = new BoundedThreadPool();
+            tp.setMaxThreads(50);
+
             SocketConnector conn = new SocketConnector();
             conn.setPort(8080);
+            conn.setThreadPool(tp);
+            conn.setAcceptQueueSize(100);
             jettyServer.setConnectors(new Connector[] { conn });
 
             WebAppContext wah = new WebAppContext();

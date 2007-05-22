@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
