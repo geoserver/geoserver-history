@@ -185,6 +185,9 @@ public class MockData {
     /** the 'validation' directory under 'data */
     File validation;
 
+    /** the 'templates' director under 'data' */
+    File templates;
+    
     /**
      * @param base
      *            Base of the GeoServer data directory.
@@ -247,6 +250,10 @@ public class MockData {
         validation = new File(data, "validation");
         validation.mkdir();
 
+        //templates
+        templates = new File( data, "templates" );
+        templates.mkdir();
+        
         //set up the types
         for (int i = 0; i < TYPENAMES.length; i++) {
             setup(TYPENAMES[i]);
@@ -395,6 +402,7 @@ public class MockData {
      * @throws IOException
      */
     public void tearDown() throws IOException {
+        delete(templates);
         delete(validation);
         delete(plugIns);
         delete(styles);
