@@ -166,9 +166,11 @@ public class MapPreviewAction extends GeoServerAction {
                 dsList.add(layer.getDataStoreInfo().getId()); // DataStore info
                                                               // bounding box of the FeatureType
 
-                bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
-                    + bbox.getMaxY());
-                srsList.add("EPSG:" + layer.getSRS());
+            // expand bbox by 5% to allow large symbolizers to fit the map
+            bbox.expandBy(bbox.getWidth() / 20, bbox.getHeight() / 20);
+            bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
+                + bbox.getMaxY());
+            srsList.add("EPSG:" + layer.getSRS());
 
                 int[] imageBox = getMapWidthHeight(bbox);
                 widthList.add(String.valueOf(imageBox[0]));
