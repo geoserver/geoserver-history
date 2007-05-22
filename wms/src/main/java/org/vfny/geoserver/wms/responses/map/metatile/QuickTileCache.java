@@ -140,7 +140,7 @@ public class QuickTileCache {
         while (en.hasMoreElements()) {
             String paramName = (String) en.nextElement();
 
-            if (ignoredParameters.contains(paramName)) {
+            if (ignoredParameters.contains(paramName.toUpperCase())) {
                 continue;
             }
 

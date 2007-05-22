@@ -19,16 +19,18 @@
           OpenLayers.IMAGE_RELOAD_ATTEMPTS = 5;
           
           var bounds = new OpenLayers.Bounds(${request.bbox.minX?c},${request.bbox.minY?c},${request.bbox.maxX?c},${request.bbox.maxY?c})
-<#list request.layers as layer>
-  <#assign layerName = "layer" + layer_index>
-          //var ${layerName} = new OpenLayers.Layer.WMS.Untiled(
-          var ${layerName} = new OpenLayers.Layer.WMS(
-            "${layer.name}", "${baseUrl}/wms",
-            {layers: '${layer.name}', styles: '${request.styles[layer_index].name}', format: 'image/png', tiled: 'true', tilesOrigin : "${request.bbox.minX?c},${request.bbox.minY?c}"},
+          //var wmsLayer = new OpenLayers.Layer.WMS.Untiled(
+          var wmsLayer = new OpenLayers.Layer.WMS(
+            "${layerName}", "${baseUrl}/wms",
+            {
+<#list parameters as param>            
+              ${param.name}: '${param.value}',
+</#list>
+              format: 'image/png', tiled: 'true', tilesOrigin : "${request.bbox.minX?c},${request.bbox.minY?c}"
+            },
             {maxExtent: bounds, maxResolution: ${maxResolution?c}, projection: "${request.SRS}"} 
           );
-          map.addLayer( ${layerName} );
-</#list>
+          map.addLayer(wmsLayer);
 
 		  map.addControl(new OpenLayers.Control.PanZoomBar({div:$('nav')}));
           map.addControl(new OpenLayers.Control.LayerSwitcher());
