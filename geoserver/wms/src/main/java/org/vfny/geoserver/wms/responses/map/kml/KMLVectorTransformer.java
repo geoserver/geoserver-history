@@ -46,8 +46,11 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.map.kml.KMLGeometryTransformer.KMLGeometryTranslator;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -59,7 +62,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 /**
  * Transforms a feature collection to a kml "Document" consisting of nested
@@ -184,6 +186,9 @@ public class KMLVectorTransformer extends TransformerBase {
                 encode(features, featureTypeStyles[i]);
             }
 
+            //encode the legend
+            //encodeLegendScreenOverlay();
+            
             end("Document");
         }
 
@@ -282,7 +287,7 @@ public class KMLVectorTransformer extends TransformerBase {
                 if (symbolizer instanceof LineSymbolizer) {
                     encodeLineStyle((LineStyle2D) style, (LineSymbolizer) symbolizer);
                 }
-
+                
                 if (symbolizer instanceof PointSymbolizer) {
                     encodePointStyle((MarkStyle2D) style, (PointSymbolizer) symbolizer);
                 }
@@ -375,9 +380,9 @@ public class KMLVectorTransformer extends TransformerBase {
             if (!mapContext.getRequest().getKMattr()) {
                 element("color", "#00ffffff");
             }
-
+            
             end("IconStyle");
-
+            
             start("LineStyle");
 
             //stroke
@@ -594,6 +599,41 @@ public class KMLVectorTransformer extends TransformerBase {
             }
         }
 
+        /**
+         * Encodes a KML ScreenOverlay wihch depicts the legend of a map.
+         */
+        protected void encodeLegendScreenOverlay() {
+            start( "ScreenOverlay" );
+            element( "name", "Legend" );
+            element( "overlayXY", null, attributes( new String[] { "x","0","y","0","xunits","pixels","yunits","pixels"} ) );
+            element( "screenXY", null, attributes( new String[] { "x","10","y","20","xunits","pixels","yunits","pixels"} ) );
+         
+            start( "Icon" );
+            encodeLegendHref();
+            end( "Icon" );
+            
+            end( "ScreenOverlay" );
+        }
+        
+        protected void encodeLegendHref() {
+            //reference the image as a remote wms call
+            GetMapRequest request = mapContext.getRequest();
+            String baseUrl = Requests.getBaseUrl( 
+                request.getHttpServletRequest(), request.getGeoServer()
+            );
+            
+            StringBuffer href = new StringBuffer( baseUrl ).append( "wms?" );
+            href.append( "service=wms" ).append( "&version=1.1.1" )
+                .append( "&request=getlegendgraphic" );
+        
+            href.append("&layer=").append( mapLayer.getTitle() );
+            href.append("&format=image/png");
+            href.append("&height=").append( 20 )
+                .append("&width=").append( 20 );
+            
+            element( "href", href.toString() );    
+        }
+        
         /**
          * Filters a set of rules by the current scale.
          *
