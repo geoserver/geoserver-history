@@ -348,6 +348,7 @@ public class XMLConfigWriter {
         String svgRenderer = null;
         Map baseMapLayers = null;
         Map baseMapStyles = null;
+        Map baseMapEnvelopes = null;
         boolean svgAntiAlias = false;
         String allowInterpolation = null;
         boolean citeConformanceHacks = false;
@@ -376,6 +377,7 @@ public class XMLConfigWriter {
             allowInterpolation = w.getAllowInterpolation();
             baseMapLayers = w.getBaseMapLayers();
             baseMapStyles = w.getBaseMapStyles();
+            baseMapEnvelopes = w.getBaseMapEnvelopes();
         } else {
             throw new ConfigurationException("Invalid object: not WMS or WFS or WCS");
         }
@@ -456,7 +458,7 @@ public class XMLConfigWriter {
             cw.textTag("svgRenderer", svgRenderer);
         }
 
-        if ((baseMapLayers != null) && (baseMapStyles != null)) {
+        if ((baseMapLayers != null) && (baseMapStyles != null) && (baseMapEnvelopes != null)) {
             cw.openTag("BaseMapGroups");
 
             // for each title/layer combo, write it out
@@ -468,6 +470,22 @@ public class XMLConfigWriter {
                 cw.openTag("BaseMapGroup", titleMap);
                 cw.textTag("baseMapLayers", baseMapLayers.get(titles[i]).toString());
                 cw.textTag("baseMapStyles", baseMapStyles.get(titles[i]).toString());
+
+                GeneralEnvelope e = (GeneralEnvelope) baseMapEnvelopes.get(titles[i]);
+                Map m = new HashMap();
+
+                m.put("srsName",
+                    e.getCoordinateReferenceSystem().getIdentifiers().toArray()[0].toString());
+
+                if (!e.isNull()) {
+                    cw.openTag("baseMapEnvelope", m);
+                    cw.textTag("pos",
+                        e.getLowerCorner().getOrdinate(0) + " " + e.getLowerCorner().getOrdinate(1));
+                    cw.textTag("pos",
+                        e.getUpperCorner().getOrdinate(0) + " " + e.getUpperCorner().getOrdinate(1));
+                    cw.closeTag("baseMapEnvelope");
+                }
+
                 cw.closeTag("BaseMapGroup");
             }
 

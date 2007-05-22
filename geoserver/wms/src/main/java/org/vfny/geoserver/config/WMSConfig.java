@@ -42,6 +42,7 @@ public class WMSConfig extends ServiceConfig {
     /** rendering interpolation */
     private Map baseMapLayers;
     private Map baseMapStyles;
+    private Map baseMapEnvelopes;
     private String allowInterpolation;
 
     /**
@@ -60,6 +61,7 @@ public class WMSConfig extends ServiceConfig {
         allowInterpolation = INT_NEAREST;
         baseMapLayers = new HashMap();
         baseMapStyles = new HashMap();
+        baseMapEnvelopes = new HashMap();
     }
 
     /**
@@ -79,6 +81,7 @@ public class WMSConfig extends ServiceConfig {
         allowInterpolation = w.getAllowInterpolation();
         baseMapLayers = w.getBaseMapLayers();
         baseMapStyles = w.getBaseMapStyles();
+        baseMapEnvelopes = w.getBaseMapEnvelopes();
     }
 
     /**
@@ -111,6 +114,7 @@ public class WMSConfig extends ServiceConfig {
         allowInterpolation = dto.getAllowInterpolation();
         baseMapLayers = dto.getBaseMapLayers();
         baseMapStyles = dto.getBaseMapStyles();
+        baseMapEnvelopes = dto.getBaseMapEnvelopes();
     }
 
     /**
@@ -129,6 +133,7 @@ public class WMSConfig extends ServiceConfig {
         wmsDto.setAllowInterpolation(allowInterpolation);
         wmsDto.setBaseMapLayers(baseMapLayers);
         wmsDto.setBaseMapStyles(baseMapStyles);
+        wmsDto.setBaseMapEnvelopes(baseMapEnvelopes);
 
         return wmsDto;
     }
@@ -219,5 +224,13 @@ public class WMSConfig extends ServiceConfig {
 
     public void setBaseMapStyles(Map styles) {
         baseMapStyles = styles;
+    }
+
+    public Map getBaseMapEnvelopes() {
+        return baseMapEnvelopes;
+    }
+
+    public void setBaseMapEnvelopes(Map envelopes) {
+        baseMapEnvelopes = envelopes;
     }
 }
