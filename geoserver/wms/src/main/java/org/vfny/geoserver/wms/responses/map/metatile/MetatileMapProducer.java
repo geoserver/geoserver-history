@@ -191,22 +191,6 @@ public class MetatileMapProducer implements GetMapProducer {
                 tile = new BufferedImage(metaTile.getColorModel(), child,
                         metaTile.isAlphaPremultiplied(), null);
 
-                //                // keep the palette if necessary
-                //                if (metaTile.getType() == BufferedImage.TYPE_BYTE_INDEXED) {
-                //                    tile = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_BYTE_INDEXED,
-                //                            (IndexColorModel) metaTile.getColorModel());
-                //                } else if (metaTile.getType() == BufferedImage.TYPE_CUSTOM) {
-                //                    throw new RuntimeException("We don't support custom buffered image tiling");
-                //                } else {
-                //                    tile = new BufferedImage(tileSize, tileSize, metaTile.getType());
-                //                }
-                //
-                //                Graphics2D g2d = (Graphics2D) tile.getGraphics();
-                //                AffineTransform at = AffineTransform.getTranslateInstance(,
-                //                        ();
-                //                setupBackground(g2d, map);
-                //                g2d.drawRenderedImage(metaTile, at);
-                //                g2d.dispose();
                 tiles[(i * key.getMetaFactor()) + j] = tile;
             }
         }
