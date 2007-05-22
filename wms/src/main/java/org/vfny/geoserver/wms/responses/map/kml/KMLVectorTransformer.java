@@ -161,6 +161,7 @@ public class KMLVectorTransformer extends TransformerBase {
             super(contentHandler, null, null);
 
             KMLGeometryTransformer geometryTransformer = new KMLGeometryTransformer();
+            //geometryTransformer.setUseDummyZ( true );
             geometryTransformer.setOmitXMLDeclaration(true);
             geometryTransformer.setNamespaceDeclarationEnabled(true);
 
@@ -303,7 +304,7 @@ public class KMLVectorTransformer extends TransformerBase {
 
             //make transparent if they didn't ask for attributes
             if (!mapContext.getRequest().getKMattr()) {
-                element("color", "#00ffffff");
+                encodeColor( "00ffffff" );
             }
 
             //start Icon
@@ -330,10 +331,10 @@ public class KMLVectorTransformer extends TransformerBase {
                     opacity = 1.0;
                 }
 
-                element("color", colorToHex((Color) style.getFill(), opacity));
+                encodeColor( (Color) style.getFill(), opacity );
             } else {
                 //make it transparent
-                element("color", "#00aaaaaa");
+                encodeColor( "00aaaaaa" );
             }
 
             //outline
@@ -357,8 +358,8 @@ public class KMLVectorTransformer extends TransformerBase {
                     opacity = 1.0;
                 }
 
-                element("color", colorToHex((Color) style.getContour(), opacity));
-
+                encodeColor( colorToHex((Color) style.getContour(), opacity) );
+                
                 //width
                 int width = SLD.width(symbolizer.getStroke());
 
@@ -378,7 +379,7 @@ public class KMLVectorTransformer extends TransformerBase {
 
             //make transparent if they didn't ask for attributes
             if (!mapContext.getRequest().getKMattr()) {
-                element("color", "#00ffffff");
+                encodeColor( "00ffffff" );
             }
             
             end("IconStyle");
@@ -395,8 +396,8 @@ public class KMLVectorTransformer extends TransformerBase {
                     opacity = 1.0;
                 }
 
-                element("color", colorToHex((Color) style.getContour(), opacity));
-
+                encodeColor( (Color) style.getContour(), opacity);
+                
                 //width
                 int width = SLD.width(symbolizer.getStroke());
 
@@ -405,7 +406,7 @@ public class KMLVectorTransformer extends TransformerBase {
                 }
             } else {
                 //default
-                element("color", "#ffaaaaaa");
+                encodeColor( "ffaaaaaa" );
                 element("width", "1");
             }
 
@@ -428,10 +429,10 @@ public class KMLVectorTransformer extends TransformerBase {
                     opacity = 1.0;
                 }
 
-                element("color", colorToHex((Color) style.getFill(), opacity));
+                encodeColor( (Color) style.getFill(), opacity );
             } else {
                 //default
-                element("color", "#ffaaaaaa");
+                encodeColor( "ffaaaaaa" );
             }
 
             element("colorMode", "normal");
@@ -462,10 +463,10 @@ public class KMLVectorTransformer extends TransformerBase {
                     opacity = 1.0;
                 }
 
-                element("color", colorToHex((Color) style.getFill(), opacity));
+                encodeColor( (Color) style.getFill(), opacity);
             } else {
                 //default
-                element("color", "#ffaaaaaa");
+                encodeColor("ffaaaaaa");
             }
 
             end("LabelStyle");
@@ -546,9 +547,12 @@ public class KMLVectorTransformer extends TransformerBase {
                 description = writer.toString();
             }
 
-            start("description");
-            cdata(description);
-            end("description");
+            if ( description != null ) {
+                start("description");
+                cdata(description);   
+                end("description");
+            }
+            
         }
 
         /**
@@ -574,7 +578,13 @@ public class KMLVectorTransformer extends TransformerBase {
 
             //the centroid
             start("Point");
-            element("coordinates", centroid.x + "," + centroid.y + "," + centroid.z);
+            if ( !Double.isNaN( centroid.z ) ) {
+                element("coordinates", centroid.x + "," + centroid.y + "," + centroid.z);    
+            }
+            else {
+                element("coordinates", centroid.x + "," + centroid.y );   
+            }
+            
             end("Point");
 
             //the actual geometry
@@ -632,6 +642,26 @@ public class KMLVectorTransformer extends TransformerBase {
                 .append("&width=").append( 20 );
             
             element( "href", href.toString() );    
+        }
+        
+        /**
+         * Encodes a color element from its color + opacity representation.
+         * 
+         * @param color The color to encode.
+         * @param opacity The opacity ( alpha ) of the color.
+         */
+        void encodeColor( Color color, double opacity ) {
+            encodeColor( colorToHex(color, opacity) );
+        }
+        
+        /**
+         * Encodes a color element from its hex representation.
+         * 
+         * @param hex The hex value ( with alpha ) of the color.
+         * 
+         */
+        void encodeColor( String hex ) {
+            element( "color", hex );
         }
         
         /**
@@ -749,9 +779,9 @@ public class KMLVectorTransformer extends TransformerBase {
          * @return A String of the form "#AABBGGRR".
          */
         String colorToHex(Color c, double opacity) {
-            return new StringBuffer("#").append(intToHex(new Float(255 * opacity).intValue()))
-                                        .append(intToHex(c.getBlue())).append(intToHex(c.getGreen()))
-                                        .append(intToHex(c.getRed())).toString();
+            return new StringBuffer().append(intToHex(new Float(255 * opacity).intValue()))
+                .append(intToHex(c.getBlue())).append(intToHex(c.getGreen()))
+                .append(intToHex(c.getRed())).toString();
         }
 
         /**
