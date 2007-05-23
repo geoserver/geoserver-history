@@ -9,15 +9,18 @@
     <td class="label"><bean:message key="label.styleID"/>:</td>
     <td class="datum"><html:text property="styleID" size="60"/></td>
   </tr>
-  <tr>
-    <td class="label"><bean:message key="label.filename"/></td>
-    <td class="datum"><html:file size="60" property="sldFile"/></td>
-  </tr>
    <!--- add the "fully validate" option-->
   <tr>
     <td class="label">&nbsp;</td>
     <td><html:checkbox property="fullyValidate">Fully Validate against the SLD schema</html:checkbox></td>
-    
+  </tr>
+  <tr>
+    <td class="label"><bean:message key="label.sldContents"/>:</td>
+    <td class="code"><html:textarea property="sldContents" cols="80" rows="20"/></td>
+  </tr>
+  <tr>
+    <td class="label"><bean:message key="label.filename"/></td>
+    <td class="datum"><html:file size="60" property="sldFile"/><html:submit property="action"><bean:message key="label.upload"/></html:submit></td>
   </tr>
   <tr>
     <td class="label">&nbsp;</td>
@@ -26,15 +29,10 @@
       <html:reset><bean:message key="label.reset"/></html:reset>
     </td>
   </tr>
-    <tr>
+  
+  <tr>
     <td class="label">&nbsp;</td>
     <td class="datum">&nbsp;</td>
-  </tr>
-  <tr>
-    <td class="label"><bean:message key="label.sldContents"/>:</td>
-    <td class="datum">
-      <pre><bean:write property="sldContents" name="dataStylesEditorForm"  /></pre>
-    </td>
   </tr>
  
 </table>
