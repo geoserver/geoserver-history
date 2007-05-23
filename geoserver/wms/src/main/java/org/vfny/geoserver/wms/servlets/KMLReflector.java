@@ -16,6 +16,9 @@ import org.vfny.geoserver.wms.requests.GetKMLReflectKvpReader;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
 import org.vfny.geoserver.wms.responses.map.kml.KMLMapProducerFactory;
+
+import com.vividsolutions.jts.geom.Envelope;
+
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
@@ -189,23 +192,57 @@ public class KMLReflector extends WMService {
                 style = "&styles=" + styles[i].getName(); // use them, else we use the default style
             }
 
-            sb.append("<NetworkLink>\n");
-            sb.append("<name>" + layers[i].getName() + "</name>\n");
-            sb.append("<open>1</open>\n");
-            sb.append("<visibility>1</visibility>\n");
-            sb.append("<Url>\n");
-            sb.append("<href><![CDATA[" + serviceRequest.getBaseUrl()
-                + "/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kmz+XML"
-                + "&width=" + serviceRequest.getWidth() + "&height=" + serviceRequest.getHeight()
-                + "&srs=" + SRS + "&layers=" + layers[i].getName() + style // optional
-                + "&KMScore=" + serviceRequest.getKMScore() + "&KMAttr="
-                + serviceRequest.getKMattr() + "]]></href>\n");
-            sb.append("<viewRefreshMode>onStop</viewRefreshMode>\n");
-            sb.append("<viewRefreshTime>3</viewRefreshTime>\n");
-            sb.append("</Url>\n");
-            sb.append("</NetworkLink>\n");
+            if ( serviceRequest.getSuperOverlay() ) {
+                Envelope bbox = serviceRequest.getBbox();
+                
+                sb.append("<NetworkLink>\n");
+                sb.append("<name>" + layers[0].getName() + "</name>\n");
+                sb.append("<Region>");
+                sb.append( "<LatLonAltBox>");
+                sb.append( "<north>" + bbox.getMaxY() + "</north>" );
+                sb.append( "<south>" + bbox.getMinY() + "</south>" );
+                sb.append( "<east>" + bbox.getMaxX() + "</east>" );
+                sb.append( "<west>" + bbox.getMinX() + "</west>" );
+                sb.append( "</LatLonAltBox>");
+                sb.append( "<Lod>");
+                sb.append( "<minLodPixels>256</minLodPixels>");
+                sb.append( "<maxLodPixels>-1</maxLodPixels>");
+                sb.append( "</Lod>");
+                sb.append("</Region>");
+                
+                sb.append("<Link>\n");
+                sb.append("<href><![CDATA[" + serviceRequest.getBaseUrl()
+                    + "/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kml+XML"
+                    + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + "&layers=" 
+                    + layers[i].getName() + style  
+                    + "&bbox=" + (String) requestParams.get( "BBOX" )
+                    + "&legend=" + String.valueOf( serviceRequest.getLegend() )
+                    + "&superoverlay=true]]></href>\n");
+                sb.append("<viewRefreshMode>onRegion</viewRefreshMode>\n");
+                
+                sb.append("</Link>\n");
+                sb.append("</NetworkLink>\n");
+            }
+            else {
+	            sb.append("<NetworkLink>\n");
+	            sb.append("<name>" + layers[i].getName() + "</name>\n");
+	            sb.append("<open>1</open>\n");
+	            sb.append("<visibility>1</visibility>\n");
+	            sb.append("<Url>\n");
+	            sb.append("<href><![CDATA[" + serviceRequest.getBaseUrl()
+	                + "/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kmz+XML"
+	                + "&width=" + serviceRequest.getWidth() + "&height=" + serviceRequest.getHeight()
+	                + "&srs=" + SRS + "&layers=" + layers[i].getName() + style // optional
+	                + "&KMScore=" + serviceRequest.getKMScore() + "&KMAttr="
+	                + serviceRequest.getKMattr() 
+	                + "&legend=" + String.valueOf( serviceRequest.getLegend() )
+	                + "]]></href>\n");
+	            sb.append("<viewRefreshMode>onStop</viewRefreshMode>\n");
+	            sb.append("<viewRefreshTime>3</viewRefreshTime>\n");
+	            sb.append("</Url>\n");
+	            sb.append("</NetworkLink>\n");
 
-            //}
+            }
         }
 
         sb.append("</Folder>\n");

@@ -191,6 +191,20 @@ public class GetMapRequest extends WMSRequest {
     }
     
     /**
+     * @return super overlay flag, <code>true</code> if super overlay requested.
+     */
+    public boolean getSuperOverlay() {
+        return this.optionalParams.superOverlay;
+    }
+    
+    /**
+     * @return kml legend flag, <code>true</code> if legend is enabled.
+     */
+    public boolean getLegend() {
+        return this.optionalParams.legend;
+    }
+    
+    /**
      * @return The time request parameter.
      */
     public Integer getTime() {
@@ -343,6 +357,20 @@ public class GetMapRequest extends WMSRequest {
     }
     
     /**
+     * Sets the super overlay parameter on the request.
+     */
+    public void setSuperOverlay( boolean superOverlay ) {
+        this.optionalParams.superOverlay = superOverlay;
+    }
+    
+    /**
+     * Sets the kml legend parameter of the request.
+     */
+    public void setLegend( boolean legend ) {
+        this.optionalParams.legend = legend;
+    }
+    
+    /**
      * Sets the time request parameter.
      */
     public void setTime(Integer time) {
@@ -449,6 +477,12 @@ public class GetMapRequest extends WMSRequest {
 
         /** KML full/none attribution on returned placemark <description>. */
         boolean KMattr = true;
+        
+        /** KML super overlay vs normal ground overlay */
+        boolean superOverlay = false;
+        
+        /** KML legend */
+        boolean legend = false;
         
         /** time elevation parameter */
         Integer time, elevation;

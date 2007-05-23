@@ -359,6 +359,19 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             }
         }
         
+        /** KML super overlay */
+        String superOverlay = getValue( "SUPEROVERLAY" );
+        if ( superOverlay != null ) {
+            request.setSuperOverlay( "TRUE".equalsIgnoreCase(superOverlay) );
+        }
+        
+        /** KML legend */
+        String legend = getValue( "LEGEND" );
+        if ( legend != null ) {
+            request.setLegend( "TRUE".equalsIgnoreCase( legend ) || 
+                "ON".equalsIgnoreCase( legend ) );
+        }
+        
         /** TIME: a time stamp for multidim coverages <description> */
         String time = getValue("TIME");
         if (time != null) {
