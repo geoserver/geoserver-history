@@ -67,7 +67,7 @@ public class KMLReflector extends WMService {
     final String VERSION = "1.0.0";
     final String SRS = "EPSG:4326";
     final String DEFAULT_BBOX = "-180,-90,180,90";
-
+    
     public KMLReflector() {
         super("kml_reflect", null);
     }
@@ -225,6 +225,7 @@ public class KMLReflector extends WMService {
                     + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + "&layers=" 
                     + layers[i].getName() + style  
                     + "&bbox=" + (String) requestParams.get( "BBOX" )
+                    + "&legend=" + String.valueOf( serviceRequest.getLegend() )
                     + "&superoverlay=true]]></href>\n");
                 sb.append("<viewRefreshMode>onRegion</viewRefreshMode>\n");
                 
@@ -242,7 +243,9 @@ public class KMLReflector extends WMService {
                     + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + "&layers="
                     + layers[i].getName() + style // optional
                     + "&KMScore=" + serviceRequest.getKMScore() 
-                    + "&KMAttr=" + String.valueOf( serviceRequest.getKMattr() ) + "]]></href>\n");
+                    + "&KMAttr=" + String.valueOf( serviceRequest.getKMattr() )
+                    + "&legend=" + String.valueOf( serviceRequest.getLegend() )
+                    + "]]></href>\n");
                 sb.append("<viewRefreshMode>onStop</viewRefreshMode>\n");
                 sb.append("<viewRefreshTime>3</viewRefreshTime>\n");
                 sb.append("</Url>\n");
