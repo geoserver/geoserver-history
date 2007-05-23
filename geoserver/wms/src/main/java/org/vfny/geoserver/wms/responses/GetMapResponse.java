@@ -18,6 +18,8 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.resources.coverage.CoverageUtilities;
 import org.geotools.styling.Style;
 import org.opengis.filter.Filter;
+import org.opengis.parameter.ParameterDescriptor;
+import org.opengis.parameter.ParameterValue;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.context.ApplicationContext;
@@ -296,7 +298,36 @@ public class GetMapResponse implements Response {
                         // Setting coverage reading params.
                         //
                         // /////////////////////////////////////////////////////////
-                        //final ParameterValueGroup params = reader.getFormat().getReadParameters();
+                        
+                        //
+                        //A workaround for subsetting coverages configured from a netcdf file
+                        //based on time and elevation parameters
+                        //Added by Alex Petkov
+                        //
+                        //JD: this is pretty out of place, but a lot of stuff 
+                        // in this class ( kml ) seems to be out of place, we 
+                        // need a better way for people to plug into request
+                        // parsing
+                        if (reader.getFormat().getName().equalsIgnoreCase("netcdf")){
+
+                                ParameterValue time = reader.getFormat().getReadParameters().parameter("TIME");
+                                ParameterValue elevation = reader.getFormat().getReadParameters().parameter("ELEVATION");
+
+                                if (request.getTime() != null){
+                                        time.setValue(request.getTime().intValue());
+                                }else{
+                                        ParameterDescriptor timeDescriptor = (ParameterDescriptor) time.getDescriptor();
+                                        time.setValue(timeDescriptor.getDefaultValue());                                
+                                }
+                                
+                                if (request.getElevation() != null){
+                                        elevation.setValue(request.getElevation().intValue());
+                                }else{
+                                        ParameterDescriptor elevDescriptor = (ParameterDescriptor) elevation.getDescriptor();
+                                        elevation.setValue(elevDescriptor.getDefaultValue());
+                                }
+                        }
+
                         try {
                             layer = new DefaultMapLayer(CoverageUtilities.wrapGcReader(reader),
                                     style);

@@ -202,6 +202,21 @@ public class GetMapRequest extends WMSRequest {
     public boolean getLegend() {
         return this.optionalParams.legend;
     }
+    
+    /**
+     * @return The time request parameter.
+     */
+    public Integer getTime() {
+        return this.optionalParams.time;
+    }
+    
+    /**
+     * @return The elevation request parameter.
+     */
+    public Integer getElevation() {
+        return this.optionalParams.elevation;
+    }
+
     /**
      * DOCUMENT ME!
      *
@@ -355,6 +370,20 @@ public class GetMapRequest extends WMSRequest {
     }
     
     /**
+     * Sets the time request parameter.
+     */
+    public void setTime(Integer time) {
+        this.optionalParams.time = time;
+    }
+    
+    /**
+     * Sets the elevation request parameter.
+     */
+    public void setElevation(Integer elevation) {
+        this.optionalParams.elevation = elevation;
+    }
+
+    /**
      * decodes a color of the form <code>#FFFFFF</code> into a
      * <code>java.awt.Color</code> object
      *
@@ -453,5 +482,8 @@ public class GetMapRequest extends WMSRequest {
         
         /** KML legend */
         boolean legend = false;
+        
+        /** time elevation parameter */
+        Integer time, elevation;
     }
 }
