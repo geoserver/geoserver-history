@@ -606,16 +606,17 @@ public abstract class AbstractService extends HttpServlet implements Application
             strategyOuput.flush();
             strategy.flush(response);
         } catch (java.net.SocketException sockEx) { // user cancel
+            LOGGER.info("Stream abruptly closed by client, response aborted");
             serviceResponse.abort(s);
             strategy.abort();
 
             return;
         } catch (IOException ioException) { // strategyOutput error
             response.setHeader("Content-Disposition", ""); // reset it so we get a proper XML error returned
-            LOGGER.log(Level.SEVERE, "Error writing out " + ioException.getMessage(), ioException);
+            LOGGER.info("Stream abruptly closed by client, response aborted");
+            LOGGER.log(Level.FINE, "Error writing out " + ioException.getMessage(), ioException);
             serviceResponse.abort(s);
             strategy.abort();
-            sendError(request, response, ioException);
 
             return;
         } catch (ServiceException writeToFailure) { // writeTo Failure
@@ -862,6 +863,10 @@ public abstract class AbstractService extends HttpServlet implements Application
             response.setContentType(mimeType);
             response.getWriter().write(content.toString());
         } catch (IOException ex) { //stream closed by client, do nothing
+            LOGGER.info("Stream abruptly closed by client, response aborted");
+            LOGGER.fine(ex.getMessage());
+        } catch (IllegalStateException ex) { //stream closed by client, do nothing
+            LOGGER.info("Stream abruptly closed by client, response aborted");
             LOGGER.fine(ex.getMessage());
         }
     }
