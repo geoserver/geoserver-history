@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.requests;
 
 import com.vividsolutions.jts.geom.Envelope;
+import org.geotools.styling.Style;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
@@ -13,6 +14,7 @@ import org.vfny.geoserver.wms.servlets.WMService;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.awt.image.IndexColorModel;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -489,5 +491,42 @@ public class GetMapRequest extends WMSRequest {
 
         /** time elevation parameter */
         Integer elevation;
+    }
+
+    /**
+     * Standard override of toString()
+     *
+     * @return a String representation of this request.
+     */
+    public String toString() {
+        StringBuffer returnString = new StringBuffer("\nGetMap Request");
+        returnString.append("\n version: " + version);
+        returnString.append("\n output format: " + mandatoryParams.format);
+        returnString.append("\n width height: " + mandatoryParams.height + ","
+            + mandatoryParams.width);
+        returnString.append("\n bbox: " + mandatoryParams.bbox);
+        returnString.append("\n layers: ");
+
+        for (int i = 0; i < mandatoryParams.layers.length; i++) {
+            returnString.append(mandatoryParams.layers[i].getName());
+
+            if (i < (mandatoryParams.layers.length - 1)) {
+                returnString.append(",");
+            }
+        }
+
+        returnString.append("\n styles: ");
+
+        for (Iterator it = mandatoryParams.styles.iterator(); it.hasNext();) {
+            Style s = (Style) it.next();
+            returnString.append(s.getName());
+
+            if (it.hasNext()) {
+                returnString.append(",");
+            }
+        }
+
+        //returnString.append("\n inside: " + filter.toString());
+        return returnString.toString();
     }
 }
