@@ -4,16 +4,6 @@
  */
 package org.vfny.geoserver.action.wms;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -39,6 +29,14 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.UserContainer;
+import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -62,7 +60,7 @@ public final class WMSContentAction extends ConfigAction {
         final String REMOVE_LAYERGROUP = "Remove";
 
         String action = contentForm.getAction();
-        
+
         boolean enabled = contentForm.isEnabled();
 
         if (contentForm.isEnabledChecked() == false) {
@@ -118,7 +116,6 @@ public final class WMSContentAction extends ConfigAction {
             envelopeMap.put(baseMapTitle, envelope);
 
             if (selectedLayerIndex == bmi) {
-
                 Data catalog = (Data) getServlet().getServletContext()
                                           .getAttribute(Data.WEB_CONTAINER_KEY);
                 GeneralEnvelope selectedEnvelope = null;
@@ -288,24 +285,25 @@ public final class WMSContentAction extends ConfigAction {
         contentForm.getMaxCPs().remove(new Integer(removedLayerIndex));
 
         int bmi = 0;
+
         for (Iterator it = contentForm.getBaseMapTitles().iterator(); it.hasNext();) {
-			String baseMapTitle = (String) it.next();
+            String baseMapTitle = (String) it.next();
 
-			String baseMapLayers = (String) contentForm.getBaseMapLayers().get(bmi);
-			String baseMapStyles = (String) contentForm.getBaseMapStyles().get(bmi);
-			GeneralEnvelope envelope = (GeneralEnvelope) contentForm.getBaseMapEnvelopes().get(bmi);
+            String baseMapLayers = (String) contentForm.getBaseMapLayers().get(bmi);
+            String baseMapStyles = (String) contentForm.getBaseMapStyles().get(bmi);
+            GeneralEnvelope envelope = (GeneralEnvelope) contentForm.getBaseMapEnvelopes().get(bmi);
 
-			/*
-			 * System.out.println("******************* contentAction: title=" +
-			 * baseMapTitle + ", layers=" + baseMapLayers + ", styles=" +
-			 * baseMapStyles);
-			 */
-			layerMap.put(baseMapTitle, baseMapLayers);
-			styleMap.put(baseMapTitle, baseMapStyles);
-			envelopeMap.put(baseMapTitle, envelope);
+            /*
+             * System.out.println("******************* contentAction: title=" +
+             * baseMapTitle + ", layers=" + baseMapLayers + ", styles=" +
+             * baseMapStyles);
+             */
+            layerMap.put(baseMapTitle, baseMapLayers);
+            styleMap.put(baseMapTitle, baseMapStyles);
+            envelopeMap.put(baseMapTitle, envelope);
 
-			bmi++;
-		}
+            bmi++;
+        }
 
         config.setBaseMapLayers(layerMap);
         config.setBaseMapStyles(styleMap);
@@ -393,41 +391,45 @@ public final class WMSContentAction extends ConfigAction {
             String baseMapLayers = (String) contentForm.getBaseMapLayers().get(bmi);
             String baseMapStyles = (String) contentForm.getBaseMapStyles().get(bmi);
             GeneralEnvelope envelope = (GeneralEnvelope) contentForm.getBaseMapEnvelopes().get(bmi);
+
             /*System.out.println("******************* contentAction: title=" + baseMapTitle + ", layers="
             + baseMapLayers + ", styles=" + baseMapStyles);*/
-            Data catalog = (Data) getServlet().getServletContext().getAttribute(Data.WEB_CONTAINER_KEY);
-            
-			GeneralEnvelope selectedEnvelope = null;
-			String[] layerNames = baseMapLayers.split(",");
-			String[] styles     = baseMapStyles.split(",");
-			
-			for (int i = 0; i < layerNames.length; i++) {
-				String layerName = layerNames[i].trim();
+            Data catalog = (Data) getServlet().getServletContext()
+                                      .getAttribute(Data.WEB_CONTAINER_KEY);
 
-				Integer layerType = (Integer) catalog.getLayerType(layerName);
-				
-				if (layerType == null) {
-					ActionErrors errors = new ActionErrors();
-					errors.add(ActionErrors.GLOBAL_ERROR,
-		                    new ActionError("errors.invalid", new ActionMessage("Layer " + layerName)));
-					saveErrors(request, errors);
-					return mapping.findForward("config.wms.content");
-				}
-			}
+            GeneralEnvelope selectedEnvelope = null;
+            String[] layerNames = baseMapLayers.split(",");
+            String[] styles = baseMapStyles.split(",");
 
-			for (int i = 0; i < styles.length; i++) {
-				String styleName = styles[i].trim();
+            for (int i = 0; i < layerNames.length; i++) {
+                String layerName = layerNames[i].trim();
 
-				Style style = catalog.getStyle(styleName);
-				
-				if (style == null) {
-					ActionErrors errors = new ActionErrors();
-					errors.add(ActionErrors.GLOBAL_ERROR,
-		                    new ActionError("error.styleId.notFound", new ActionMessage(styleName)));
-					saveErrors(request, errors);
-					return mapping.findForward("config.wms.content");
-				}
-			}
+                Integer layerType = (Integer) catalog.getLayerType(layerName);
+
+                if (layerType == null) {
+                    ActionErrors errors = new ActionErrors();
+                    errors.add(ActionErrors.GLOBAL_ERROR,
+                        new ActionError("errors.invalid", new ActionMessage("Layer " + layerName)));
+                    saveErrors(request, errors);
+
+                    return mapping.findForward("config.wms.content");
+                }
+            }
+
+            for (int i = 0; i < styles.length; i++) {
+                String styleName = styles[i].trim();
+
+                Style style = catalog.getStyle(styleName);
+
+                if (style == null) {
+                    ActionErrors errors = new ActionErrors();
+                    errors.add(ActionErrors.GLOBAL_ERROR,
+                        new ActionError("error.styleId.notFound", new ActionMessage(styleName)));
+                    saveErrors(request, errors);
+
+                    return mapping.findForward("config.wms.content");
+                }
+            }
 
             layerMap.put(baseMapTitle, baseMapLayers);
             styleMap.put(baseMapTitle, baseMapStyles);
