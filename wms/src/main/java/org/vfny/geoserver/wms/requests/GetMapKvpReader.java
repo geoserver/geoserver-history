@@ -388,6 +388,13 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         if ( superOverlay != null ) {
             request.setSuperOverlay( "TRUE".equalsIgnoreCase(superOverlay) );
         }
+        
+        /** KML legend */
+        String legend = getValue( "LEGEND" );
+        if ( legend != null ) {
+            request.setLegend( "TRUE".equalsIgnoreCase( legend ) || 
+                "ON".equalsIgnoreCase( legend ) );
+        }
     }
 
     private Point2D parseTilesOrigin(String origin) {

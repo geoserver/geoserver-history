@@ -197,6 +197,12 @@ public class GetMapRequest extends WMSRequest {
     }
     
     /**
+     * @return kml legend flag, <code>true</code> if legend is enabled.
+     */
+    public boolean getLegend() {
+        return this.optionalParams.legend;
+    }
+    /**
      * DOCUMENT ME!
      *
      * @param bbox DOCUMENT ME!
@@ -342,6 +348,13 @@ public class GetMapRequest extends WMSRequest {
     }
     
     /**
+     * Sets the kml legend parameter of the request.
+     */
+    public void setLegend( boolean legend ) {
+        this.optionalParams.legend = legend;
+    }
+    
+    /**
      * decodes a color of the form <code>#FFFFFF</code> into a
      * <code>java.awt.Color</code> object
      *
@@ -437,5 +450,8 @@ public class GetMapRequest extends WMSRequest {
         
         /** KML super overlay vs normal ground overlay */
         boolean superOverlay = false;
+        
+        /** KML legend */
+        boolean legend = false;
     }
 }
