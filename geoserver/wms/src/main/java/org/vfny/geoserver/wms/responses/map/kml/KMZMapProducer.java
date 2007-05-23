@@ -4,15 +4,22 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import org.geotools.map.MapLayer;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.responses.map.png.PNGMapProducer;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import javax.xml.transform.TransformerException;
 
 
 /**
@@ -36,18 +43,32 @@ class KMZMapProducer implements GetMapProducer {
      * @uml.property name="kmlEncoder"
      * @uml.associationEnd multiplicity="(0 1)"
      */
-    private EncodeKML kmlEncoder;
+    //private EncodeKML kmlEncoder;
+    /**
+     * delegating producer for rendering.
+     */
+    PNGMapProducer mapProducer;
+
+    /**
+     * transformer for creating kml
+     */
+    KMLTransformer transformer;
+
 
     /** used to get the content disposition file name */
     private WMSMapContext mapContext;
 
+    public KMZMapProducer(WMS wms) {
+        mapProducer = new PNGMapProducer("image/png", wms);
+    }
+    
     /**
      * Request that encoding be halted if possible.
      *
      * @param gs The orriginating Service
      */
     public void abort(Service gs) {
-        this.kmlEncoder.abort();
+    	//this.kmlEncoder.abort();
     }
 
     /**
@@ -65,10 +86,14 @@ class KMZMapProducer implements GetMapProducer {
     public void abort() {
         LOGGER.fine("aborting KMZ map response");
 
-        if (this.kmlEncoder != null) {
-            LOGGER.info("aborting KMZ encoder");
-            this.kmlEncoder.abort();
-        }
+//        if (this.kmlEncoder != null) {
+//            LOGGER.info("aborting KMZ encoder");
+//            this.kmlEncoder.abort();
+//        }
+        
+        mapContext = null;
+        mapProducer = null;
+        transformer = null;
     }
 
     /**
@@ -84,7 +109,9 @@ class KMZMapProducer implements GetMapProducer {
      */
     public void produceMap(WMSMapContext map) throws WmsException {
         this.mapContext = map;
-        kmlEncoder = new EncodeKML(map);
+        //kmlEncoder = new EncodeKML(map);
+        transformer = new KMLTransformer();
+        transformer.setKmz(true);
     }
 
     /**
@@ -103,10 +130,54 @@ class KMZMapProducer implements GetMapProducer {
      *
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
-        final ZipOutputStream outZ = new ZipOutputStream(out);
-        kmlEncoder.encodeKMZ(outZ);
-        outZ.finish();
-        outZ.flush();
+//        final ZipOutputStream outZ = new ZipOutputStream(out);
+//        kmlEncoder.encodeKMZ(outZ);
+//        outZ.finish();
+//        outZ.flush();
+    	   //wrap the output stream in a zipped one
+        ZipOutputStream zip = new ZipOutputStream(out);
+
+        //first create an entry for the kml
+        ZipEntry entry = new ZipEntry("wms.kml");
+        zip.putNextEntry(entry);
+
+        try {
+            transformer.transform(mapContext, zip);
+            zip.closeEntry();
+        } catch (TransformerException e) {
+            throw (IOException) new IOException().initCause(e);
+        }
+
+        //write the images
+        for (int i = 0; i < mapContext.getLayerCount(); i++) {
+            MapLayer mapLayer = mapContext.getLayer(i);
+
+            //create a context for this single layer
+            WMSMapContext mapContext = new WMSMapContext();
+            mapContext.addLayer(mapLayer);
+            mapContext.setRequest(this.mapContext.getRequest());
+            mapContext.setMapHeight(this.mapContext.getMapHeight());
+            mapContext.setMapWidth(this.mapContext.getMapWidth());
+            mapContext.setAreaOfInterest(this.mapContext.getAreaOfInterest());
+            mapContext.setBgColor(this.mapContext.getBgColor());
+            mapContext.setBuffer(this.mapContext.getBuffer());
+            mapContext.setContactInformation(this.mapContext.getContactInformation());
+            mapContext.setKeywords(this.mapContext.getKeywords());
+            mapContext.setAbstract(this.mapContext.getAbstract());
+            mapContext.setTransparent(true);
+
+            //render the map
+            mapProducer.produceMap(mapContext);
+
+            //write it to the zip stream
+            entry = new ZipEntry("layer_" + i + ".png");
+            zip.putNextEntry(entry);
+            mapProducer.writeTo(zip);
+            zip.closeEntry();
+        }
+
+        zip.finish();
+        zip.flush();
     }
 
     public String getContentDisposition() {
