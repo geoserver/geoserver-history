@@ -293,34 +293,37 @@ public class GetMapResponse implements Response {
                         // Setting coverage reading params.
                         //
                         // /////////////////////////////////////////////////////////
-                    	
-                    	//
+
+                        //
                         //A workaround for subsetting coverages configured from a netcdf file
                         //based on time and elevation parameters
                         //Added by Alex Petkov
                         //
-                    	//JD: this is pretty out of place, but a lot of stuff 
-                    	// in this class ( kml ) seems to be out of place, we 
-                    	// need a better way for people to plug into request
-                    	// parsing
-                        if (reader.getFormat().getName().equalsIgnoreCase("netcdf")){
+                        //JD: this is pretty out of place, but a lot of stuff 
+                        // in this class ( kml ) seems to be out of place, we 
+                        // need a better way for people to plug into request
+                        // parsing
+                        if (reader.getFormat().getName().equalsIgnoreCase("netcdf")) {
+                            ParameterValue time = reader.getFormat().getReadParameters()
+                                                        .parameter("TIME");
+                            ParameterValue elevation = reader.getFormat().getReadParameters()
+                                                             .parameter("ELEVATION");
 
-                                ParameterValue time = reader.getFormat().getReadParameters().parameter("TIME");
-                                ParameterValue elevation = reader.getFormat().getReadParameters().parameter("ELEVATION");
+                            if (request.getTime() != null) {
+                                time.setValue(request.getTime().intValue());
+                            } else {
+                                ParameterDescriptor timeDescriptor = (ParameterDescriptor) time
+                                    .getDescriptor();
+                                time.setValue(timeDescriptor.getDefaultValue());
+                            }
 
-                                if (request.getTime() != null){
-                                        time.setValue(request.getTime().intValue());
-                                }else{
-                                        ParameterDescriptor timeDescriptor = (ParameterDescriptor) time.getDescriptor();
-                                        time.setValue(timeDescriptor.getDefaultValue());                                
-                                }
-                                
-                                if (request.getElevation() != null){
-                                        elevation.setValue(request.getElevation().intValue());
-                                }else{
-                                        ParameterDescriptor elevDescriptor = (ParameterDescriptor) elevation.getDescriptor();
-                                        elevation.setValue(elevDescriptor.getDefaultValue());
-                                }
+                            if (request.getElevation() != null) {
+                                elevation.setValue(request.getElevation().intValue());
+                            } else {
+                                ParameterDescriptor elevDescriptor = (ParameterDescriptor) elevation
+                                    .getDescriptor();
+                                elevation.setValue(elevDescriptor.getDefaultValue());
+                            }
                         }
 
                         final ParameterValueGroup params = reader.getFormat().getReadParameters();

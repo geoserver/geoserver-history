@@ -54,7 +54,8 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
         // Reformatting this image for png
         //
         // /////////////////////////////////////////////////////////////////
-        new ImageWorker(image).writePNG(outStream, "FILTERED", 0.5f, PNGNativeAcc.booleanValue(), image.getColorModel() instanceof IndexColorModel);
+        new ImageWorker(image).writePNG(outStream, "FILTERED", 0.5f, PNGNativeAcc.booleanValue(),
+            image.getColorModel() instanceof IndexColorModel);
     }
 
     public String getContentDisposition() {

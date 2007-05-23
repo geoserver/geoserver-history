@@ -4,8 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import java.util.Map;
-
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.map.MapLayer;
 import org.geotools.xml.transform.TransformerBase;
@@ -14,6 +12,7 @@ import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.ContentHandler;
+import java.util.Map;
 
 
 /**
@@ -128,7 +127,7 @@ public class KMLRasterTransformer extends TransformerBase {
             } else {
                 //reference the image as a remote wms call
                 Map getMap = KMLUtils.createGetMapRequest(mapContext, mapLayer);
-                element("href", KMLUtils.encode( mapContext, getMap ) );
+                element("href", KMLUtils.encode(mapContext, getMap));
             }
         }
     }

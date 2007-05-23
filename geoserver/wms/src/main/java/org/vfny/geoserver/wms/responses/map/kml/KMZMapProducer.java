@@ -12,13 +12,11 @@ import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.map.png.PNGMapProducer;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import javax.xml.transform.TransformerException;
 
 
@@ -43,6 +41,7 @@ class KMZMapProducer implements GetMapProducer {
      * @uml.property name="kmlEncoder"
      * @uml.associationEnd multiplicity="(0 1)"
      */
+
     //private EncodeKML kmlEncoder;
     /**
      * delegating producer for rendering.
@@ -54,21 +53,20 @@ class KMZMapProducer implements GetMapProducer {
      */
     KMLTransformer transformer;
 
-
     /** used to get the content disposition file name */
     private WMSMapContext mapContext;
 
     public KMZMapProducer(WMS wms) {
         mapProducer = new PNGMapProducer("image/png", wms);
     }
-    
+
     /**
      * Request that encoding be halted if possible.
      *
      * @param gs The orriginating Service
      */
     public void abort(Service gs) {
-    	//this.kmlEncoder.abort();
+        //this.kmlEncoder.abort();
     }
 
     /**
@@ -86,11 +84,10 @@ class KMZMapProducer implements GetMapProducer {
     public void abort() {
         LOGGER.fine("aborting KMZ map response");
 
-//        if (this.kmlEncoder != null) {
-//            LOGGER.info("aborting KMZ encoder");
-//            this.kmlEncoder.abort();
-//        }
-        
+        //        if (this.kmlEncoder != null) {
+        //            LOGGER.info("aborting KMZ encoder");
+        //            this.kmlEncoder.abort();
+        //        }
         mapContext = null;
         mapProducer = null;
         transformer = null;
@@ -130,11 +127,11 @@ class KMZMapProducer implements GetMapProducer {
      *
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
-//        final ZipOutputStream outZ = new ZipOutputStream(out);
-//        kmlEncoder.encodeKMZ(outZ);
-//        outZ.finish();
-//        outZ.flush();
-    	   //wrap the output stream in a zipped one
+        //        final ZipOutputStream outZ = new ZipOutputStream(out);
+        //        kmlEncoder.encodeKMZ(outZ);
+        //        outZ.finish();
+        //        outZ.flush();
+        //wrap the output stream in a zipped one
         ZipOutputStream zip = new ZipOutputStream(out);
 
         //first create an entry for the kml

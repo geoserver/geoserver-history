@@ -12,7 +12,6 @@ import org.vfny.geoserver.wms.WmsException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
-
 import javax.xml.transform.TransformerException;
 
 
@@ -31,10 +30,11 @@ class KMLMapProducer implements GetMapProducer {
      * @uml.property name="kmlEncoder"
      * @uml.associationEnd multiplicity="(0 1)"
      */
+
     //private EncodeKML kmlEncoder;
     /** kml transformer which turns the map contedxt into kml */
     private KMLTransformer transformer;
-    
+
     /** used to get the content disposition file name */
     private WMSMapContext mapContext;
 
@@ -65,10 +65,10 @@ class KMLMapProducer implements GetMapProducer {
     public void abort() {
         LOGGER.fine("aborting KML map response");
 
-//        if (this.kmlEncoder != null) {
-//            LOGGER.info("aborting KML encoder");
-//            this.kmlEncoder.abort();
-//        }
+        //        if (this.kmlEncoder != null) {
+        //            LOGGER.info("aborting KML encoder");
+        //            this.kmlEncoder.abort();
+        //        }
         if (transformer != null) {
             LOGGER.info("aborting KML encoder");
 
@@ -104,11 +104,11 @@ class KMLMapProducer implements GetMapProducer {
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         //kmlEncoder.encodeKML(out);
-    	 try {
-             transformer.transform(mapContext, out);
-         } catch (TransformerException e) {
-             throw (IOException) new IOException().initCause(e);
-         }
+        try {
+            transformer.transform(mapContext, out);
+        } catch (TransformerException e) {
+            throw (IOException) new IOException().initCause(e);
+        }
     }
 
     public String getContentDisposition() {
