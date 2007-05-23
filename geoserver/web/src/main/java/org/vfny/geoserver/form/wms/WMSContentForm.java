@@ -45,6 +45,8 @@ public class WMSContentForm extends ActionForm {
     private HashMap maxCPs = new HashMap();
     private CoordinateReferenceSystem targetCRS = null;
 
+    private int selectedLayer;
+    
     /*
      * Because of the way that STRUTS works, if the user does not check the enabled box,
      * or unchecks it, setEnabled() is never called, thus we must monitor setEnabled()
@@ -415,4 +417,18 @@ public class WMSContentForm extends ActionForm {
     public HashMap getMinCPs() {
         return minCPs;
     }
+
+	/**
+	 * @return the selectedLayer
+	 */
+	public int getSelectedLayer() {
+		return selectedLayer;
+	}
+
+	/**
+	 * @param selectedLayer the selectedLayer to set
+	 */
+	public void setSelectedLayer(int selectedLayer) {
+		this.selectedLayer = selectedLayer;
+	}
 }

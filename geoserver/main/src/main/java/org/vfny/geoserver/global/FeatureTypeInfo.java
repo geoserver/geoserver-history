@@ -488,7 +488,13 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         try {
             if (!CRS.equalsIgnoreMetadata(originalCRS, targetCrs)) {
                 MathTransform xform = CRS.findMathTransform(originalCRS, targetCrs, true);
-                bbox = JTS.transform(bbox, null, xform, 10);
+
+                // bbox = JTS.transform(bbox, null, xform, 10);
+                if (bbox instanceof ReferencedEnvelope) {
+                    bbox = ((ReferencedEnvelope) bbox).transform(targetCrs, true, 10);
+                } else {
+                    bbox = new ReferencedEnvelope(JTS.transform(bbox, null, xform, 10), targetCrs);
+                }
             }
         } catch (Exception e) {
             LOGGER.severe(

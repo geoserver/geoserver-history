@@ -2,9 +2,25 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
+<script language="JavaScript">
+<!--
+	function setAction(actionType) {
+		document.wmsContentForm.action.value = actionType;
+		document.wmsContentForm.submit();
+	}
+	
+	function beforeSubmit(layerID) {
+		document.wmsContentForm.selectedLayer.value = layerID;
+	}
+-->
+</script>
+
 <table border=0 width=100%>
 	
-	<html:form action="/config/wms/contentSubmit" focus="serviceType">
+	<html:form action="/config/wms/contentSubmit">
+	
+	<html:hidden property="action"/>
+	<html:hidden property="selectedLayer"/>
 	
 	<tr><td align="right">
 		<span class="help" title="<bean:message key="help.enabled"/>">
@@ -43,9 +59,7 @@
 			</span>
 		</td><td colspan=2>
 			<html:text property='<%= "baseMapTitle[" + bmi + "]"%>' size="15"/>
-			<html:submit property="action" onclick="MsgBox('Ciao!')">
-				Remove (<%=bmi + 1%>)
-			</html:submit>
+			<input type="button" onclick="beforeSubmit('<%=bmi%>'); setAction('Remove');" value="Remove"/>
 		</td></tr>
 		<tr><td align="right">
 			<span class="help" title="<bean:message key="help.baseMapLayers"/>">
@@ -99,9 +113,8 @@
 	        </span>
 		  </td>
 		  <td class="datum">
-	        <html:submit property="action">
-	          <bean:message key="config.data.calculateBoundingBox.label"/> <bean:write name="wmsContentForm" property='<%= "baseMapTitle[" + bmi + "]"%>'/>
-	        </html:submit><br/>
+	        <input type="button" onclick="beforeSubmit('<%=bmi%>'); setAction('<bean:message key="config.data.calculateBoundingBox.label"/>');" value="<bean:message key="config.data.calculateBoundingBox.label"/>" />
+	        <br/>
 	        <table border=0>
 	          <tr>
 	            <td style="white-space: nowrap;">
@@ -149,17 +162,11 @@
 	</td></tr>
 	
 	<tr><td align="right">&nbsp;</td><td>
-		<html:submit property="action">
-			<bean:message key="label.submit"/>
-		</html:submit>
-		
-		<html:reset>
-			<bean:message key="label.reset"/>
-		</html:reset>
+		<input type="button" onclick="setAction('<bean:message key="label.submit"/>');" value="<bean:message key="label.submit"/>"/>
 
-		<html:submit property="action">
-			Add New Layer-Group
-		</html:submit>
+		<input type="button" onclick="setAction('<bean:message key="label.reset"/>');" value="<bean:message key="label.reset"/>"/>
+
+		<input type="button" onclick="setAction('Add New Layer-Group');" value="Add New Layer-Group"/>
 	</td></tr>
 	</html:form>
 </table>
