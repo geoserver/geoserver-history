@@ -9,6 +9,8 @@ import org.geotools.map.MapLayer;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.xml.sax.Attributes;
+import org.xml.sax.helpers.AttributesImpl;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -30,6 +32,30 @@ public class KMLUtils {
      */
     public static Map createGetMapRequest( WMSMapContext mapContext, MapLayer mapLayer ) {
         return createGetMapRequest(mapContext, mapLayer, mapContext.getAreaOfInterest() );
+    }
+    
+    /**
+     * Creates the parameters for a GetLegendGraphic request from a map context
+     * + map layer.
+     * 
+     * @param mapContext The map context.
+     * @param mapLayer The map layer.
+     * 
+     * @return A map containing all the key value pairs for a GetLegendGraphic request.
+     */
+    public static Map createGetLegendGraphicRequest( WMSMapContext mapContext, MapLayer mapLayer ) {
+        HashMap map = new HashMap();
+        
+        map.put( "service", "wms" );
+        map.put( "request", "GetLegendGraphic" );
+        map.put( "version", "1.1.1" );
+        map.put( "format", "image/png" );
+        map.put( "layer", mapLayer.getTitle() );
+        map.put( "style", mapLayer.getStyle().getName() );
+        map.put( "height", "20" );
+        map.put( "width", "20" );
+        
+        return map;
     }
     
     /**
@@ -96,5 +122,24 @@ public class KMLUtils {
         
         href.setLength( href.length() - 1 );
         return href.toString();
+    }
+    
+    /**
+     * Creates sax attributes from an array of key value pairs.
+     *
+     * @param nameValuePairs Alternating key value pair array.
+     *
+     */
+    public static Attributes attributes(String[] nameValuePairs) {
+        AttributesImpl attributes = new AttributesImpl();
+
+        for (int i = 0; i < nameValuePairs.length; i += 2) {
+            String name = nameValuePairs[i];
+            String value = nameValuePairs[i + 1];
+
+            attributes.addAttribute("", name, name, "", value);
+        }
+
+        return attributes;
     }
 }
