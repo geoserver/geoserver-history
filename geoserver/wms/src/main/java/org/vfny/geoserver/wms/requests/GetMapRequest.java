@@ -189,6 +189,20 @@ public class GetMapRequest extends WMSRequest {
     public boolean getKMattr() {
         return this.optionalParams.KMattr;
     }
+    
+    /**
+     * @return The time request parameter.
+     */
+    public Integer getTime() {
+    	return this.optionalParams.time;
+    }
+    
+    /**
+     * @return The elevation request parameter.
+     */
+    public Integer getElevation() {
+    	return this.optionalParams.elevation;
+    }
 
     /**
      * DOCUMENT ME!
@@ -327,6 +341,20 @@ public class GetMapRequest extends WMSRequest {
     public void setKMattr(boolean on) {
         this.optionalParams.KMattr = on;
     }
+    
+    /**
+     * Sets the time request parameter.
+     */
+    public void setTime(Integer time) {
+    	this.optionalParams.time = time;
+    }
+    
+    /**
+     * Sets the elevation request parameter.
+     */
+    public void setElevation(Integer elevation) {
+    	this.optionalParams.elevation = elevation;
+    }
 
     /**
      * decodes a color of the form <code>#FFFFFF</code> into a
@@ -421,5 +449,8 @@ public class GetMapRequest extends WMSRequest {
 
         /** KML full/none attribution on returned placemark <description>. */
         boolean KMattr = true;
+        
+        /** time elevation parameter */
+        Integer time, elevation;
     }
 }

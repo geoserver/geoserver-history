@@ -358,6 +358,25 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 request.setKMattr(true); // default to true
             }
         }
+        
+        /** TIME: a time stamp for multidim coverages <description> */
+        String time = getValue("TIME");
+        if (time != null) {
+        	request.setTime(Integer.valueOf(time));
+        	if (LOGGER.isLoggable(Level.INFO)) {
+        		LOGGER.info("Set TIME: " + time);
+        	}
+        }
+        
+        /** ELEVATION: elevation (or depth) valu for multidim coverages <description> */
+        String elev = getValue("ELEVATION");
+        if (elev != null) {
+        	request.setElevation(Integer.valueOf(elev));
+        	if (LOGGER.isLoggable(Level.INFO)) {
+        		LOGGER.info("Set ELEVATION: " + elev);
+        	}
+        }
+
     }
 
     private Point2D parseTilesOrigin(String origin) throws WmsException {
