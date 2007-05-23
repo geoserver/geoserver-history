@@ -13,11 +13,9 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.template.FeatureWrapper;
 import org.geoserver.template.GeoServerTemplateLoader;
@@ -74,6 +72,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 /**
  * Transforms a feature collection to a kml "Document" consisting of nested
@@ -201,7 +200,6 @@ public class KMLVectorTransformer extends TransformerBase {
 
             //encode the legend
             //encodeLegendScreenOverlay();
-            
             end("Document");
         }
 
@@ -257,7 +255,8 @@ public class KMLVectorTransformer extends TransformerBase {
          */
         protected void encodeStyle(Feature feature, FeatureTypeStyle style, StringBuffer label) {
             //start the style
-            start("Style", KMLUtils.attributes(new String[] { "id", "GeoServerStyle" + feature.getID() }));
+            start("Style",
+                KMLUtils.attributes(new String[] { "id", "GeoServerStyle" + feature.getID() }));
 
             Rule[] rules = filterRules(style, feature);
 
@@ -279,47 +278,43 @@ public class KMLVectorTransformer extends TransformerBase {
 
             //make transparent if they didn't ask for attributes
             if (!mapContext.getRequest().getKMattr()) {
-                encodeColor( "00ffffff" );
+                encodeColor("00ffffff");
             }
 
             //start Icon
             start("Icon");
-            
-            if ( feature.getDefaultGeometry() != null && 
-                feature.getDefaultGeometry() instanceof Point || 
-                feature.getDefaultGeometry() instanceof MultiPoint  ) {
-               
+
+            if (((feature.getDefaultGeometry() != null)
+                    && feature.getDefaultGeometry() instanceof Point)
+                    || feature.getDefaultGeometry() instanceof MultiPoint) {
                 //do nothing, this is handled by encodePointStyle
-            }
-            else if ( feature.getDefaultGeometry() != null && 
-                 (   feature.getDefaultGeometry() instanceof LineString || 
-                     feature.getDefaultGeometry() instanceof MultiLineString ) ) {
+            } else if ((feature.getDefaultGeometry() != null)
+                    && (feature.getDefaultGeometry() instanceof LineString
+                    || feature.getDefaultGeometry() instanceof MultiLineString)) {
                 //line
                 element("href", "root://icons/palette-3.png");
                 element("x", "224");
                 element("y", "32");
                 element("w", "32");
                 element("h", "32");
-            }
-            else if ( feature.getDefaultGeometry() != null && 
-                    feature.getDefaultGeometry() instanceof Polygon || 
-                    feature.getDefaultGeometry() instanceof MultiPolygon   ) {
+            } else if (((feature.getDefaultGeometry() != null)
+                    && feature.getDefaultGeometry() instanceof Polygon)
+                    || feature.getDefaultGeometry() instanceof MultiPolygon) {
                 //polygon
                 element("href", "root://icons/palette-3.png");
                 element("x", "224");
                 element("y", "32");
                 element("w", "32");
                 element("h", "32");
-            }
-            else {
+            } else {
                 //default
             }
-            
+
             end("Icon");
 
             //end IconStyle
             end("IconStyle");
-           
+
             for (int i = 0; i < symbolizers.length; i++) {
                 Symbolizer symbolizer = symbolizers[i];
                 LOGGER.finer(new StringBuffer("Applying symbolizer ").append(symbolizer).toString());
@@ -347,9 +342,9 @@ public class KMLVectorTransformer extends TransformerBase {
                 if (symbolizer instanceof LineSymbolizer) {
                     encodeLineStyle((LineStyle2D) style, (LineSymbolizer) symbolizer);
                 }
-                
+
                 if (symbolizer instanceof PointSymbolizer) {
-                    encodePointStyle( style, (PointSymbolizer) symbolizer);
+                    encodePointStyle(style, (PointSymbolizer) symbolizer);
                 }
             }
         }
@@ -371,10 +366,10 @@ public class KMLVectorTransformer extends TransformerBase {
                     opacity = 1.0;
                 }
 
-                encodeColor( (Color) style.getFill(), opacity );
+                encodeColor((Color) style.getFill(), opacity);
             } else {
                 //make it transparent
-                encodeColor( "00aaaaaa" );
+                encodeColor("00aaaaaa");
             }
 
             //outline
@@ -398,8 +393,8 @@ public class KMLVectorTransformer extends TransformerBase {
                     opacity = 1.0;
                 }
 
-                encodeColor( colorToHex((Color) style.getContour(), opacity) );
-                
+                encodeColor(colorToHex((Color) style.getContour(), opacity));
+
                 //width
                 int width = SLD.width(symbolizer.getStroke());
 
@@ -427,8 +422,8 @@ public class KMLVectorTransformer extends TransformerBase {
                     opacity = 1.0;
                 }
 
-                encodeColor( (Color) style.getContour(), opacity);
-                
+                encodeColor((Color) style.getContour(), opacity);
+
                 //width
                 int width = SLD.width(symbolizer.getStroke());
 
@@ -437,7 +432,7 @@ public class KMLVectorTransformer extends TransformerBase {
                 }
             } else {
                 //default
-                encodeColor( "ffaaaaaa" );
+                encodeColor("ffaaaaaa");
                 element("width", "1");
             }
 
@@ -450,8 +445,9 @@ public class KMLVectorTransformer extends TransformerBase {
         protected void encodePointStyle(Style2D style, PointSymbolizer symbolizer) {
             start("IconStyle");
 
-            if ( style instanceof MarkStyle2D ) {
-                Mark mark = SLD.mark(symbolizer);    
+            if (style instanceof MarkStyle2D) {
+                Mark mark = SLD.mark(symbolizer);
+
                 if (mark != null) {
                     double opacity = SLD.opacity(mark.getFill());
 
@@ -460,54 +456,49 @@ public class KMLVectorTransformer extends TransformerBase {
                         opacity = 1.0;
                     }
 
-                    encodeColor( SLD.color( mark.getFill() ), opacity );
+                    encodeColor(SLD.color(mark.getFill()), opacity);
                 } else {
                     //default
-                    encodeColor( "ffaaaaaa" );
+                    encodeColor("ffaaaaaa");
                 }
-            }
-            else {
+            } else {
                 //default
-                encodeColor( "ffaaaaaa" );
+                encodeColor("ffaaaaaa");
             }
-            
+
             element("colorMode", "normal");
 
             // placemark icon
-            
             String iconHref = null;
-            
+
             //if the point symbolizer uses an external graphic use it
-            if ( symbolizer.getGraphic() != null && 
-                    symbolizer.getGraphic().getExternalGraphics() != null &&  
-                    symbolizer.getGraphic().getExternalGraphics().length > 0 ) {
-                
-                ExternalGraphic graphic = 
-                    symbolizer.getGraphic().getExternalGraphics()[0];
+            if ((symbolizer.getGraphic() != null)
+                    && (symbolizer.getGraphic().getExternalGraphics() != null)
+                    && (symbolizer.getGraphic().getExternalGraphics().length > 0)) {
+                ExternalGraphic graphic = symbolizer.getGraphic().getExternalGraphics()[0];
+
                 try {
-                    if ( "file".equals(  graphic.getLocation().getProtocol() ) ) {
+                    if ("file".equals(graphic.getLocation().getProtocol())) {
                         //it is a local file, reference locally from "styles" directory
-                        File file = new File( graphic.getLocation().getFile() );
-                        iconHref = RequestUtils.baseURL( mapContext.getRequest().getHttpServletRequest() ) 
+                        File file = new File(graphic.getLocation().getFile());
+                        iconHref = RequestUtils.baseURL(mapContext.getRequest()
+                                                                  .getHttpServletRequest())
                             + "styles/" + file.getName();
-                    }    
-                    else {
+                    } else {
                         //TODO: should we check for http:// and use it directly?
                     }
+                } catch (Exception e) {
+                    LOGGER.log(Level.WARNING, "Error processing external graphic:" + graphic, e);
                 }
-                catch( Exception e ) {
-                    LOGGER.log( Level.WARNING, "Error processing external graphic:" + graphic , e );
-                }
-                
             }
-            
-            if ( iconHref == null ) {
+
+            if (iconHref == null) {
                 iconHref = "root://icons/palette-4.png";
             }
-            
+
             start("Icon");
-            
-            element("href", iconHref );    
+
+            element("href", iconHref);
             element("x", "32");
             element("y", "128");
             element("w", "32");
@@ -532,7 +523,7 @@ public class KMLVectorTransformer extends TransformerBase {
                     opacity = 1.0;
                 }
 
-                encodeColor( (Color) style.getFill(), opacity);
+                encodeColor((Color) style.getFill(), opacity);
             } else {
                 //default
                 encodeColor("ffaaaaaa");
@@ -616,12 +607,11 @@ public class KMLVectorTransformer extends TransformerBase {
                 description = writer.toString();
             }
 
-            if ( description != null ) {
+            if (description != null) {
                 start("description");
-                cdata(description);   
+                cdata(description);
                 end("description");
             }
-            
         }
 
         /**
@@ -647,13 +637,13 @@ public class KMLVectorTransformer extends TransformerBase {
 
             //the centroid
             start("Point");
-            if ( !Double.isNaN( centroid.z ) ) {
-                element("coordinates", centroid.x + "," + centroid.y + "," + centroid.z);    
+
+            if (!Double.isNaN(centroid.z)) {
+                element("coordinates", centroid.x + "," + centroid.y + "," + centroid.z);
+            } else {
+                element("coordinates", centroid.x + "," + centroid.y);
             }
-            else {
-                element("coordinates", centroid.x + "," + centroid.y );   
-            }
-            
+
             end("Point");
 
             //the actual geometry
@@ -680,24 +670,24 @@ public class KMLVectorTransformer extends TransformerBase {
 
         /**
          * Encodes a color element from its color + opacity representation.
-         * 
+         *
          * @param color The color to encode.
          * @param opacity The opacity ( alpha ) of the color.
          */
-        void encodeColor( Color color, double opacity ) {
-            encodeColor( colorToHex(color, opacity) );
+        void encodeColor(Color color, double opacity) {
+            encodeColor(colorToHex(color, opacity));
         }
-        
+
         /**
          * Encodes a color element from its hex representation.
-         * 
+         *
          * @param hex The hex value ( with alpha ) of the color.
-         * 
+         *
          */
-        void encodeColor( String hex ) {
-            element( "color", hex );
+        void encodeColor(String hex) {
+            element("color", hex);
         }
-        
+
         /**
          * Filters a set of rules by the current scale.
          *
@@ -814,8 +804,8 @@ public class KMLVectorTransformer extends TransformerBase {
          */
         String colorToHex(Color c, double opacity) {
             return new StringBuffer().append(intToHex(new Float(255 * opacity).intValue()))
-                .append(intToHex(c.getBlue())).append(intToHex(c.getGreen()))
-                .append(intToHex(c.getRed())).toString();
+                                     .append(intToHex(c.getBlue())).append(intToHex(c.getGreen()))
+                                     .append(intToHex(c.getRed())).toString();
         }
 
         /**
@@ -921,7 +911,5 @@ public class KMLVectorTransformer extends TransformerBase {
 
             return (Rule[]) filtered.toArray(new Rule[filtered.size()]);
         }
-
-       
     }
 }

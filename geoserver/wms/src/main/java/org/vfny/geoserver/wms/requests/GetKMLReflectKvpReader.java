@@ -61,7 +61,6 @@ public class GetKMLReflectKvpReader extends GetMapKvpReader {
             String format = getValue("FORMAT");
             request.setFormat(format);
         }
-        
     }
 
     /**
