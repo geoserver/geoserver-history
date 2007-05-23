@@ -8,12 +8,24 @@
     <constructor-arg ref="geoServer"/>
   </bean>
 
+  <!-- publisher for files -->
+  <bean id="filePublisher" class="org.geoserver.request.FilePublisher"/>
+  
   <!-- url mappings -->
   <bean id="urlMapping"
     class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	<property name="alwaysUseFullPath" value="true"/>
     <property name="mappings">
       <props>
-        <prop key="*">requestDispatcher</prop>
+        <prop key="/wfs">requestDispatcher</prop>
+        <prop key="/wfs/*">requestDispatcher</prop>
+        <prop key="/wms">requestDispatcher</prop>
+        <prop key="/wms/*">requestDispatcher</prop>
+        <prop key="/wcs">requestDispatcher</prop>
+        <prop key="/wcs/*">requestDispatcher</prop>
+        <prop key="/ows">requestDispatcher</prop>
+        <prop key="/ows/*">requestDispatcher</prop>
+        <prop key="/styles/*">filePublisher</prop>
       </props>
     </property>
   </bean>
