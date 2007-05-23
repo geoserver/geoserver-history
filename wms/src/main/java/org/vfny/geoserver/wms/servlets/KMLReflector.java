@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.styling.Style;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -18,9 +19,6 @@ import org.vfny.geoserver.wms.requests.GetKMLReflectKvpReader;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
 import org.vfny.geoserver.wms.responses.map.kml.KMLMapProducerFactory;
-
-import com.vividsolutions.jts.geom.Envelope;
-
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
@@ -67,7 +65,7 @@ public class KMLReflector extends WMService {
     final String VERSION = "1.0.0";
     final String SRS = "EPSG:4326";
     final String DEFAULT_BBOX = "-180,-90,180,90";
-    
+
     public KMLReflector() {
         super("kml_reflect", null);
     }
@@ -189,7 +187,7 @@ public class KMLReflector extends WMService {
         StringBuffer sb = new StringBuffer();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         sb.append("<kml xmlns=\"http://earth.google.com/kml/2.0\">\n");
-        
+
         sb.append("<Folder>\n");
 
         // make a network link for every layer
@@ -201,38 +199,36 @@ public class KMLReflector extends WMService {
                 style = "&styles=" + styles[i].getName(); // use them, else we use the default style
             }
 
-            if ( serviceRequest.getSuperOverlay() ) {
+            if (serviceRequest.getSuperOverlay()) {
                 Envelope bbox = serviceRequest.getBbox();
-                
+
                 sb.append("<NetworkLink>\n");
                 sb.append("<name>" + layers[0].getName() + "</name>\n");
                 sb.append("<Region>");
-                sb.append( "<LatLonAltBox>");
-                sb.append( "<north>" + bbox.getMaxY() + "</north>" );
-                sb.append( "<south>" + bbox.getMinY() + "</south>" );
-                sb.append( "<east>" + bbox.getMaxX() + "</east>" );
-                sb.append( "<west>" + bbox.getMinX() + "</west>" );
-                sb.append( "</LatLonAltBox>");
-                sb.append( "<Lod>");
-                sb.append( "<minLodPixels>256</minLodPixels>");
-                sb.append( "<maxLodPixels>-1</maxLodPixels>");
-                sb.append( "</Lod>");
+                sb.append("<LatLonAltBox>");
+                sb.append("<north>" + bbox.getMaxY() + "</north>");
+                sb.append("<south>" + bbox.getMinY() + "</south>");
+                sb.append("<east>" + bbox.getMaxX() + "</east>");
+                sb.append("<west>" + bbox.getMinX() + "</west>");
+                sb.append("</LatLonAltBox>");
+                sb.append("<Lod>");
+                sb.append("<minLodPixels>256</minLodPixels>");
+                sb.append("<maxLodPixels>-1</maxLodPixels>");
+                sb.append("</Lod>");
                 sb.append("</Region>");
-                
+
                 sb.append("<Link>\n");
                 sb.append("<href><![CDATA[" + serviceRequest.getBaseUrl()
                     + "/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kml+XML"
-                    + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + "&layers=" 
-                    + layers[i].getName() + style  
-                    + "&bbox=" + (String) requestParams.get( "BBOX" )
-                    + "&legend=" + String.valueOf( serviceRequest.getLegend() )
+                    + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + "&layers="
+                    + layers[i].getName() + style + "&bbox=" + (String) requestParams.get("BBOX")
+                    + "&legend=" + String.valueOf(serviceRequest.getLegend())
                     + "&superoverlay=true]]></href>\n");
                 sb.append("<viewRefreshMode>onRegion</viewRefreshMode>\n");
-                
+
                 sb.append("</Link>\n");
                 sb.append("</NetworkLink>\n");
-            }
-            else {
+            } else {
                 sb.append("<NetworkLink>\n");
                 sb.append("<name>" + layers[i].getName() + "</name>\n");
                 sb.append("<open>1</open>\n");
@@ -242,20 +238,18 @@ public class KMLReflector extends WMService {
                     + "/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kmz+XML"
                     + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + "&layers="
                     + layers[i].getName() + style // optional
-                    + "&KMScore=" + serviceRequest.getKMScore() 
-                    + "&KMAttr=" + String.valueOf( serviceRequest.getKMattr() )
-                    + "&legend=" + String.valueOf( serviceRequest.getLegend() )
-                    + "]]></href>\n");
+                    + "&KMScore=" + serviceRequest.getKMScore() + "&KMAttr="
+                    + String.valueOf(serviceRequest.getKMattr()) + "&legend="
+                    + String.valueOf(serviceRequest.getLegend()) + "]]></href>\n");
                 sb.append("<viewRefreshMode>onStop</viewRefreshMode>\n");
                 sb.append("<viewRefreshTime>3</viewRefreshTime>\n");
                 sb.append("</Url>\n");
                 sb.append("</NetworkLink>\n");
             }
-            
         }
 
         sb.append("</Folder>\n");
-        
+
         sb.append("</kml>\n");
 
         byte[] kml_b = sb.toString().getBytes();

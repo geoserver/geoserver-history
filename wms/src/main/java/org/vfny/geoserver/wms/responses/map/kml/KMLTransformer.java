@@ -76,8 +76,9 @@ public class KMLTransformer extends TransformerBase {
 
             //if we have more than one layer ( or a legend was requested ),
             //use the name "GeoServer" to group them
-            boolean group = layers.length > 1 || request.getLegend();
-            if ( group ) {
+            boolean group = (layers.length > 1) || request.getLegend();
+
+            if (group) {
                 start("Document");
                 element("name", "GeoServer");
             }
@@ -89,34 +90,31 @@ public class KMLTransformer extends TransformerBase {
                 MapLayerInfo layerInfo = mapContext.getRequest().getLayers()[i];
 
                 //was a super overlay requested?
-                if ( mapContext.getRequest().getSuperOverlay() ) {
+                if (mapContext.getRequest().getSuperOverlay()) {
                     //encode as super overlay
-                    encodeSuperOverlayLayer(mapContext, layer);    
-                }
-                else {
+                    encodeSuperOverlayLayer(mapContext, layer);
+                } else {
                     //figure out which type of layer this is, raster or vector
                     if (layerInfo.getType() == MapLayerInfo.TYPE_VECTOR) {
                         //vector 
                         encodeVectorLayer(mapContext, layer);
-                    } 
-                    else {
+                    } else {
                         //encode as normal ground overlay
-                        encodeRasterLayer(mapContext, layer);    
-                    }        
+                        encodeRasterLayer(mapContext, layer);
+                    }
                 }
             }
 
             //legend suppoer
-            if ( request.getLegend() ) {
+            if (request.getLegend()) {
                 //for every layer specified in the request
                 for (int i = 0; i < layers.length; i++) {
                     //layer and info
                     MapLayer layer = layers[i];
-                    encodeLegend(mapContext,layer);
-                    
+                    encodeLegend(mapContext, layer);
                 }
             }
-            
+
             if (group) {
                 end("Document");
             }
@@ -178,19 +176,19 @@ public class KMLTransformer extends TransformerBase {
         /**
          * Encodes a layer as a super overlay.
          */
-        protected void encodeSuperOverlayLayer( WMSMapContext mapContext, MapLayer layer ) {
-            KMLSuperOverlayTransformer tx = new KMLSuperOverlayTransformer( mapContext );
-            tx.createTranslator( contentHandler ).encode( layer );
+        protected void encodeSuperOverlayLayer(WMSMapContext mapContext, MapLayer layer) {
+            KMLSuperOverlayTransformer tx = new KMLSuperOverlayTransformer(mapContext);
+            tx.createTranslator(contentHandler).encode(layer);
         }
-        
+
         /**
          * Encodes the legend for a maper layer as a scree overlay.
          */
-        protected void encodeLegend( WMSMapContext mapContext, MapLayer layer  ) {
-            KMLLegendTransformer tx = new KMLLegendTransformer( mapContext );
-            tx.createTranslator( contentHandler ).encode( layer );
+        protected void encodeLegend(WMSMapContext mapContext, MapLayer layer) {
+            KMLLegendTransformer tx = new KMLLegendTransformer(mapContext);
+            tx.createTranslator(contentHandler).encode(layer);
         }
-        
+
         double computeScaleDenominator(MapLayer layer, WMSMapContext mapContext) {
             Rectangle paintArea = new Rectangle(mapContext.getMapWidth(), mapContext.getMapHeight());
             AffineTransform worldToScreen = RendererUtilities.worldToScreenTransform(mapContext
