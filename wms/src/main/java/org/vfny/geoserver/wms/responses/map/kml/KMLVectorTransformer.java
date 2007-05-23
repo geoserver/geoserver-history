@@ -7,6 +7,13 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -64,6 +71,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -249,7 +257,7 @@ public class KMLVectorTransformer extends TransformerBase {
          */
         protected void encodeStyle(Feature feature, FeatureTypeStyle style, StringBuffer label) {
             //start the style
-            start("Style", attributes(new String[] { "id", "GeoServerStyle" + feature.getID() }));
+            start("Style", KMLUtils.attributes(new String[] { "id", "GeoServerStyle" + feature.getID() }));
 
             Rule[] rules = filterRules(style, feature);
 
@@ -265,6 +273,53 @@ public class KMLVectorTransformer extends TransformerBase {
          * Encodes the provided set of symbolizers as KML styles.
          */
         protected void encodeStyle(Feature feature, Symbolizer[] symbolizers, StringBuffer label) {
+            //encode the style for the icon
+            //start IconStyle
+            start("IconStyle");
+
+            //make transparent if they didn't ask for attributes
+            if (!mapContext.getRequest().getKMattr()) {
+                encodeColor( "00ffffff" );
+            }
+
+            //start Icon
+            start("Icon");
+            
+            if ( feature.getDefaultGeometry() != null && 
+                feature.getDefaultGeometry() instanceof Point || 
+                feature.getDefaultGeometry() instanceof MultiPoint  ) {
+               
+                //do nothing, this is handled by encodePointStyle
+            }
+            else if ( feature.getDefaultGeometry() != null && 
+                 (   feature.getDefaultGeometry() instanceof LineString || 
+                     feature.getDefaultGeometry() instanceof MultiLineString ) ) {
+                //line
+                element("href", "root://icons/palette-3.png");
+                element("x", "224");
+                element("y", "32");
+                element("w", "32");
+                element("h", "32");
+            }
+            else if ( feature.getDefaultGeometry() != null && 
+                    feature.getDefaultGeometry() instanceof Polygon || 
+                    feature.getDefaultGeometry() instanceof MultiPolygon   ) {
+                //polygon
+                element("href", "root://icons/palette-3.png");
+                element("x", "224");
+                element("y", "32");
+                element("w", "32");
+                element("h", "32");
+            }
+            else {
+                //default
+            }
+            
+            end("Icon");
+
+            //end IconStyle
+            end("IconStyle");
+           
             for (int i = 0; i < symbolizers.length; i++) {
                 Symbolizer symbolizer = symbolizers[i];
                 LOGGER.finer(new StringBuffer("Applying symbolizer ").append(symbolizer).toString());
@@ -303,25 +358,6 @@ public class KMLVectorTransformer extends TransformerBase {
          * Encodes a KML IconStyle + PolyStyle from a polygon style and symbolizer.
          */
         protected void encodePolygonStyle(PolygonStyle2D style, PolygonSymbolizer symbolizer) {
-            //start IconStyle
-            start("IconStyle");
-
-            //make transparent if they didn't ask for attributes
-            if (!mapContext.getRequest().getKMattr()) {
-                encodeColor( "00ffffff" );
-            }
-
-            //start Icon
-            start("Icon");
-            element("href", "root://icons/palette-3.png");
-            element("x", "224");
-            element("w", "32");
-            element("h", "32");
-            end("Icon");
-
-            //end IconStyle
-            end("IconStyle");
-
             //star the polygon style
             start("PolyStyle");
 
@@ -379,15 +415,6 @@ public class KMLVectorTransformer extends TransformerBase {
          * Encodes a KML IconStyle + LineStyle from a polygon style and symbolizer.
          */
         protected void encodeLineStyle(LineStyle2D style, LineSymbolizer symbolizer) {
-            start("IconStyle");
-
-            //make transparent if they didn't ask for attributes
-            if (!mapContext.getRequest().getKMattr()) {
-                encodeColor( "00ffffff" );
-            }
-            
-            end("IconStyle");
-            
             start("LineStyle");
 
             //stroke
@@ -652,41 +679,6 @@ public class KMLVectorTransformer extends TransformerBase {
         }
 
         /**
-         * Encodes a KML ScreenOverlay wihch depicts the legend of a map.
-         */
-        protected void encodeLegendScreenOverlay() {
-            start( "ScreenOverlay" );
-            element( "name", "Legend" );
-            element( "overlayXY", null, attributes( new String[] { "x","0","y","0","xunits","pixels","yunits","pixels"} ) );
-            element( "screenXY", null, attributes( new String[] { "x","10","y","20","xunits","pixels","yunits","pixels"} ) );
-         
-            start( "Icon" );
-            encodeLegendHref();
-            end( "Icon" );
-            
-            end( "ScreenOverlay" );
-        }
-        
-        protected void encodeLegendHref() {
-            //reference the image as a remote wms call
-            GetMapRequest request = mapContext.getRequest();
-            String baseUrl = Requests.getBaseUrl( 
-                request.getHttpServletRequest(), request.getGeoServer()
-            );
-            
-            StringBuffer href = new StringBuffer( baseUrl ).append( "wms?" );
-            href.append( "service=wms" ).append( "&version=1.1.1" )
-                .append( "&request=getlegendgraphic" );
-        
-            href.append("&layer=").append( mapLayer.getTitle() );
-            href.append("&format=image/png");
-            href.append("&height=").append( 20 )
-                .append("&width=").append( 20 );
-            
-            element( "href", href.toString() );    
-        }
-        
-        /**
          * Encodes a color element from its color + opacity representation.
          * 
          * @param color The color to encode.
@@ -930,23 +922,6 @@ public class KMLVectorTransformer extends TransformerBase {
             return (Rule[]) filtered.toArray(new Rule[filtered.size()]);
         }
 
-        /**
-         * Creates sax attributes from an array of key value pairs.
-         *
-         * @param nameValuePairs Alternating key value pair array.
-         *
-         */
-        Attributes attributes(String[] nameValuePairs) {
-            AttributesImpl attributes = new AttributesImpl();
-
-            for (int i = 0; i < nameValuePairs.length; i += 2) {
-                String name = nameValuePairs[i];
-                String value = nameValuePairs[i + 1];
-
-                attributes.addAttribute("", name, name, "", value);
-            }
-
-            return attributes;
-        }
+       
     }
 }
