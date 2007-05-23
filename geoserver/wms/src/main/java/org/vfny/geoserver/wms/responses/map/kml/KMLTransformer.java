@@ -29,6 +29,7 @@ import org.geotools.xml.transform.Translator;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.ContentHandler;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
@@ -70,10 +71,13 @@ public class KMLTransformer extends TransformerBase {
             start("kml");
 
             WMSMapContext mapContext = (WMSMapContext) o;
+            GetMapRequest request = mapContext.getRequest();
             MapLayer[] layers = mapContext.getLayers();
 
-            //if we have more than one layer, use the name "GeoServer" to group them
-            if (layers.length > 1) {
+            //if we have more than one layer ( or a legend was requested ),
+            //use the name "GeoServer" to group them
+            boolean group = layers.length > 1 || request.getLegend();
+            if ( group ) {
                 start("Document");
                 element("name", "GeoServer");
             }
@@ -102,8 +106,18 @@ public class KMLTransformer extends TransformerBase {
                 }
             }
 
-            //if we have more than one layer, use the name "GeoServer" to group them
-            if (layers.length > 1) {
+            //legend suppoer
+            if ( request.getLegend() ) {
+                //for every layer specified in the request
+                for (int i = 0; i < layers.length; i++) {
+                    //layer and info
+                    MapLayer layer = layers[i];
+                    encodeLegend(mapContext,layer);
+                    
+                }
+            }
+            
+            if (group) {
                 end("Document");
             }
 
@@ -166,6 +180,14 @@ public class KMLTransformer extends TransformerBase {
          */
         protected void encodeSuperOverlayLayer( WMSMapContext mapContext, MapLayer layer ) {
             KMLSuperOverlayTransformer tx = new KMLSuperOverlayTransformer( mapContext );
+            tx.createTranslator( contentHandler ).encode( layer );
+        }
+        
+        /**
+         * Encodes the legend for a maper layer as a scree overlay.
+         */
+        protected void encodeLegend( WMSMapContext mapContext, MapLayer layer  ) {
+            KMLLegendTransformer tx = new KMLLegendTransformer( mapContext );
             tx.createTranslator( contentHandler ).encode( layer );
         }
         
