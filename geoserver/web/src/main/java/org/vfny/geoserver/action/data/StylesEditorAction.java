@@ -67,6 +67,7 @@ public class StylesEditorAction extends ConfigAction {
         StylesEditorForm stylesForm = (StylesEditorForm) form;
         FormFile file = stylesForm.getSldFile();
         final String styleID = stylesForm.getStyleID();
+        final String originalStyleID = stylesForm.getOriginalStyleId();
         StyleConfig style = user.getStyle();
         boolean doFullValidation = stylesForm.getFullyValidate();
         String action = stylesForm.getAction();
@@ -121,7 +122,7 @@ public class StylesEditorAction extends ConfigAction {
 
             // send content of FormFile to /styles :
             // there nothing to keep the styles in memory for XMLConfigWriter.store()
-            StyleConfig styleForID = config.getStyle(styleID);
+            StyleConfig styleForID = config.getStyle(originalStyleID);
             File newSldFile = null;
 
             if (styleForID != null) {
@@ -195,6 +196,7 @@ public class StylesEditorAction extends ConfigAction {
             }
 
             // Do configuration parameters here
+            config.removeStyle(originalStyleID);
             config.addStyle(style.getId(), style);
             getApplicationState().notifyConfigChanged();
 

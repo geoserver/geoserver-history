@@ -70,6 +70,7 @@ public class StylesEditorForm extends ActionForm {
      */
     private boolean fullyValidate;
     private boolean fullyValidateChecked;
+    private String originalStyleId;
 
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         validationReport = null;
@@ -85,11 +86,13 @@ public class StylesEditorForm extends ActionForm {
         if (style == null) {
             // Should not happen (unless they bookmark)
             styleID = "";
+            originalStyleId = "";
             _default = config.getStyles().isEmpty();
             filename = "";
             sldFile = null;
         } else {
             styleID = style.getId();
+            originalStyleId = style.getId();
             _default = style.isDefault();
 
             if (style.getFilename() != null) {
@@ -329,5 +332,9 @@ public class StylesEditorForm extends ActionForm {
 
     public void setAction(String action) {
         this.action = action;
+    }
+
+    public String getOriginalStyleId() {
+        return originalStyleId;
     }
 }
