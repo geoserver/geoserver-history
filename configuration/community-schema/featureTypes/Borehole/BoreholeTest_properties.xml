@@ -42,8 +42,8 @@
       <parameters>
         <Parameter>
           <name>directory</name>
-          <!-- path can be relative to working dir -->
-          <value>/home/gabriel/svn/geoserver/trunk/configuration/community-schema/featureTypes/Borehole</value>
+          <!-- path can be relative to this one if starts with file: -->
+          <value>file:./</value>
         </Parameter>
       </parameters>
     </DataStore>
