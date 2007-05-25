@@ -42,7 +42,7 @@
       <parameters>
         <Parameter>
           <name>directory</name>
-          <!-- path can be relative to this one if starts with file: -->
+          <!-- path can be relative to this file if starts with "file: -->
           <value>file:./</value>
         </Parameter>
       </parameters>
@@ -57,7 +57,7 @@
         Imports and includes at the schemas will be followed as long
         as they're relative paths.
       -->
-      <schemaUri>www.seegrid.csiro.au/xsd/XMML/1/borehole.xsd</schemaUri>
+      <schemaUri>../../commonSchemas/XMML/1/borehole.xsd</schemaUri>
     </FeatureType>
   </targetTypes>
   <typeMappings>
@@ -86,13 +86,13 @@
       </groupBy>
       <attributeMappings>
         <AttributeMapping>
-          <targetAttribute>Borehole</targetAttribute>
+          <targetAttribute>xmml:Borehole</targetAttribute>
           <idExpression>
             <OCQL>strConcat("bh.", BGS_ID)</OCQL>
           </idExpression>
         </AttributeMapping>
         <AttributeMapping>
-          <targetAttribute>Borehole/name[1]</targetAttribute>
+          <targetAttribute>Borehole/gml:name[1]</targetAttribute>
           <sourceExpression>
             <OCQL>strConcat( strConcat(QS, strConcat("/", RT)), strConcat(strConcat("/", NUMB), strConcat("/", BSUFF)) )</OCQL>
           </sourceExpression>
@@ -102,7 +102,7 @@
           </ClientProperty>
         </AttributeMapping>
         <AttributeMapping>
-          <targetAttribute>Borehole/name[2]</targetAttribute>
+          <targetAttribute>Borehole/gml:name[2]</targetAttribute>
           <sourceExpression>
             <OCQL>BGS_ID</OCQL>
           </sourceExpression>
@@ -112,7 +112,7 @@
           </ClientProperty>
         </AttributeMapping>
         <AttributeMapping>
-          <targetAttribute>Borehole/name[3]</targetAttribute>
+          <targetAttribute>Borehole/gml:name[3]</targetAttribute>
           <sourceExpression>
             <OCQL>NAME</OCQL>
           </sourceExpression>
@@ -122,7 +122,7 @@
           </ClientProperty>
         </AttributeMapping>
         <AttributeMapping>
-          <targetAttribute>Borehole/name[4]</targetAttribute>
+          <targetAttribute>Borehole/gml:name[4]</targetAttribute>
           <sourceExpression>
             <OCQL>ORIGINAL_N</OCQL>
           </sourceExpression>
@@ -139,14 +139,14 @@
           </AttributeMapping>
         -->
         <AttributeMapping>
-          <targetAttribute>Borehole/surveyDetails/SurveyProcedure</targetAttribute>
+          <targetAttribute>Borehole/sa:surveyDetails/sa:SurveyProcedure</targetAttribute>
           <idExpression>
             <OCQL>strConcat("bh.", strConcat(BGS_ID, ".sp"))</OCQL>
           </idExpression>
         </AttributeMapping>
 
         <AttributeMapping>
-          <targetAttribute>Borehole/surveyDetails/SurveyProcedure/description</targetAttribute>
+          <targetAttribute>Borehole/sa:surveyDetails/sa:SurveyProcedure/gml:description</targetAttribute>
           <sourceExpression>
             <OCQL>
               "Horizontal precision: (Field missing from SDE table) Vertical precision: (Field missing from SDE table)
@@ -156,7 +156,7 @@
         </AttributeMapping>
 
         <AttributeMapping>
-          <targetAttribute>Borehole/begin</targetAttribute>
+          <targetAttribute>Borehole/sa:begin</targetAttribute>
           <sourceExpression>
             <OCQL>SHAPE</OCQL>
           </sourceExpression>
@@ -166,7 +166,7 @@
           REVISIT: complains saying that PointPropertyType is not nillable, which is wrong
         -->
         <AttributeMapping>
-          <targetAttribute>Borehole/end</targetAttribute>
+          <targetAttribute>Borehole/sa:end</targetAttribute>
           <ClientProperty>
             <name>xlink:href</name>
             <value>"urn:x-ogc:def:nil:OGC:unknown"</value>
@@ -174,7 +174,7 @@
         </AttributeMapping>
 
         <AttributeMapping>
-          <targetAttribute>Borehole/length</targetAttribute>
+          <targetAttribute>Borehole/sa:length</targetAttribute>
           <sourceExpression>
             <OCQL>LENGTHC</OCQL>
           </sourceExpression>
@@ -185,7 +185,7 @@
         </AttributeMapping>
 
         <AttributeMapping>
-          <targetAttribute>Borehole/shape/LineByVector</targetAttribute>
+          <targetAttribute>Borehole/sa:shape/geo:LineByVector</targetAttribute>
           <idExpression>
             <OCQL>strConcat("bh.", strConcat(BGS_ID, ".shape"))</OCQL>
           </idExpression>
@@ -193,7 +193,7 @@
         </AttributeMapping>
 
         <AttributeMapping>
-          <targetAttribute>Borehole/shape/LineByVector/origin</targetAttribute>
+          <targetAttribute>Borehole/sa:shape/geo:LineByVector/geo:origin</targetAttribute>
           <ClientProperty>
             <name>xlink:href</name>
             <value>strConcat("#bh.", strConcat(BGS_ID, ".start"))</value>
@@ -201,7 +201,7 @@
         </AttributeMapping>
 
         <AttributeMapping>
-          <targetAttribute>Borehole/shape/LineByVector/directionDescription</targetAttribute>
+          <targetAttribute>Borehole/sa:shape/geo:LineByVector/geo:directionDescription</targetAttribute>
           <sourceExpression>
             <OCQL>"(Missing from SDE table)"</OCQL>
           </sourceExpression>
@@ -212,14 +212,14 @@
         </AttributeMapping>
 
         <AttributeMapping>
-          <targetAttribute>Borehole/drillMethod</targetAttribute>
+          <targetAttribute>Borehole/xmml:drillMethod</targetAttribute>
           <sourceExpression>
             <OCQL>"(Missing from SDE table)"</OCQL>
           </sourceExpression>
         </AttributeMapping>
 
         <AttributeMapping>
-          <targetAttribute>Borehole/log/IntervalLog</targetAttribute>
+          <targetAttribute>Borehole/xmml:log/xmml:IntervalLog</targetAttribute>
           <idExpression>
             <OCQL>strConcat("bh.", strConcat(BGS_ID, ".log"))</OCQL>
           </idExpression>
@@ -238,12 +238,12 @@
         -->
 
         <AttributeMapping>
-          <targetAttribute>log/IntervalLog/range</targetAttribute>
+          <targetAttribute>xmml:log/xmml:IntervalLog/xmml:range</targetAttribute>
           <isMultiple>true</isMultiple>
         </AttributeMapping>
 
         <AttributeMapping>
-          <targetAttribute>log/IntervalLog/range/ListOfBands/categoryList[1]</targetAttribute>
+          <targetAttribute>xmml:log/xmml:IntervalLog/xmml:range/xmml:ListOfBands/xmml:categoryList[1]</targetAttribute>
           <sourceExpression>
             <OCQL>LITHOSTRAT</OCQL>
           </sourceExpression>
@@ -258,7 +258,7 @@
         </AttributeMapping>
 
         <AttributeMapping>
-          <targetAttribute>log/IntervalLog/range/ListOfBands/categoryList[2]</targetAttribute>
+          <targetAttribute>xmml:log/xmml:IntervalLog/xmml:range/xmml:ListOfBands/xmml:categoryList[2]</targetAttribute>
           <sourceExpression>
             <OCQL>LITHOLOGY_</OCQL>
           </sourceExpression>
@@ -273,7 +273,7 @@
         </AttributeMapping>
 
         <AttributeMapping>
-          <targetAttribute>log/IntervalLog/range/ListOfBands/categoryList[3]</targetAttribute>
+          <targetAttribute>xmml:log/xmml:IntervalLog/xmml:range/xmml:ListOfBands/xmml:categoryList[3]</targetAttribute>
           <sourceExpression>
             <OCQL>BASE_BED_C</OCQL>
           </sourceExpression>
@@ -288,7 +288,7 @@
         </AttributeMapping>
 
         <AttributeMapping>
-          <targetAttribute>log/IntervalLog/intervalSetDomain/MultiGInterval</targetAttribute>
+          <targetAttribute>xmml:log/xmml:IntervalLog/xmml:intervalSetDomain/geo:MultiGInterval</targetAttribute>
           <idExpression>
             <OCQL>strConcat("bh.", strConcat(BGS_ID, ".logdomain"))</OCQL>
           </idExpression>
@@ -299,26 +299,26 @@
         </AttributeMapping>
 
         <AttributeMapping>
-          <targetAttribute>log/IntervalLog/intervalSetDomain/MultiGInterval/member</targetAttribute>
+          <targetAttribute>xmml:log/xmml:IntervalLog/xmml:intervalSetDomain/geo:MultiGInterval/geo:member</targetAttribute>
           <isMultiple>true</isMultiple>
         </AttributeMapping>
 
         <AttributeMapping>
-          <targetAttribute>log/IntervalLog/intervalSetDomain/MultiGInterval/member/GInterval</targetAttribute>
+          <targetAttribute>xmml:log/xmml:IntervalLog/xmml:intervalSetDomain/geo:MultiGInterval/geo:member/geo:GInterval</targetAttribute>
           <idExpression>
             <OCQL>strConcat("bh.", strConcat(BGS_ID, ".loginterval.1"))</OCQL>
           </idExpression>
         </AttributeMapping>
 
         <AttributeMapping>
-          <targetAttribute>log/IntervalLog/intervalSetDomain/MultiGInterval/member/GInterval/beginPos</targetAttribute>
+          <targetAttribute>xmml:log/xmml:IntervalLog/xmml:intervalSetDomain/geo:MultiGInterval/geo:member/geo:GInterval/geo:beginPos</targetAttribute>
           <sourceExpression>
             <OCQL>DRILLED_DE</OCQL>
           </sourceExpression>
         </AttributeMapping>
 
         <AttributeMapping>
-          <targetAttribute>log/IntervalLog/intervalSetDomain/MultiGInterval/member/GInterval/endPos</targetAttribute>
+          <targetAttribute>xmml:log/xmml:IntervalLog/xmml:intervalSetDomain/geo:MultiGInterval/geo:member/geo:GInterval/geo:endPos</targetAttribute>
           <sourceExpression>
             <OCQL>DRILLED__1</OCQL>
           </sourceExpression>

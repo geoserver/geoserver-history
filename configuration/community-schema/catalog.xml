@@ -12,6 +12,13 @@
       </connectionParams>
     </datastore>
 
+    <datastore namespace="aw" enabled="true" id="timeseries">
+      <connectionParams>
+        <parameter value="complex" name="dbtype" />
+        <parameter value="file:featureTypes/SiteSinglePhenomTimeSeries/TimeSeriesTest_properties.xml" name="url" />
+      </connectionParams>
+    </datastore>
+
     <datastore namespace="tiger" enabled="true" id="DS_giant_polygon">
       <connectionParams>
         <parameter value="tiger" name="namespace" />
@@ -109,6 +116,7 @@
   -->
   <namespaces>
     <namespace uri="http://www.openplans.org/topp" prefix="topp" default="true" />
+    <namespace uri="http://brs.gov.au/awdip/0.2" prefix="aw"/>
     <namespace uri="http://www.opengis.net/xmml" prefix="xmml" />
     <namespace uri="http://geoserver.sf.net" prefix="sde" />
     <namespace uri="http://www.nurc.nato.int" prefix="nurc" />
