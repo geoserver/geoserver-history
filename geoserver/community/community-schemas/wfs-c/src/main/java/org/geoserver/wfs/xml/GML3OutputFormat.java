@@ -15,6 +15,7 @@ import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.xml.Encoder;
+import org.geotools.xml.Schemas;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
@@ -78,7 +79,6 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         }
 
         XSDSchema schema = configuration.schema();
-
         Encoder encoder = new Encoder(configuration, schema);
 
         // declare wfs schema location

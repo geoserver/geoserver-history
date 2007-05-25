@@ -137,6 +137,7 @@ public class WFSConfiguration extends Configuration {
         registerOverride(container, XS.DATETIME, ISOXSDateTimeBinding.class);
 
         registerOverride(container, XS.ANYSIMPLETYPE, ISOAnySimpleTypeBinding.class);
+        registerOverride(container, XS.COMPLEXTYPE, ISOXSComplexTypeBinding.class);
 
         registerOverride(container, GML.AbstractFeatureType, ISOAbstractFeatureTypeBinding.class);
 

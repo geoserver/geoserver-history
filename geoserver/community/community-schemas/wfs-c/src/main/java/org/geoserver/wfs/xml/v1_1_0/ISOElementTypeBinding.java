@@ -70,7 +70,7 @@ public class ISOElementTypeBinding extends AbstractComplexBinding {
      * @generated
      */
     public QName getTarget() {
-        return XS.ANYSIMPLETYPE;
+        return XS.ANYTYPE;
     }
 
     /**
@@ -104,10 +104,6 @@ public class ISOElementTypeBinding extends AbstractComplexBinding {
         Name name = descriptor.getName();
         String namespace = name.getNamespaceURI();
         String localName = name.getLocalPart();
-
-        if ("beginPos".equals(localName)) {
-            System.out.println("break here");
-        }
 
         Element encoding = document.createElementNS(namespace, localName);
 
