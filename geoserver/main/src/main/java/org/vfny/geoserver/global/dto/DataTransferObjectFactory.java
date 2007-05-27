@@ -164,6 +164,7 @@ public class DataTransferObjectFactory {
         dto.setDirName(dataStoreId + "_" + schema.getTypeName());
         dto.setKeywords(Collections.EMPTY_LIST);
         dto.setLatLongBBox(new Envelope());
+        dto.setNativeBBox(new Envelope());
         dto.setName(schema.getTypeName());
         dto.setNumDecimals(8);
         dto.setSchemaAttributes(generateAttributes(schema));

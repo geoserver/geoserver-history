@@ -1005,6 +1005,25 @@ public class XMLConfigWriter {
                 cw.attrTag("latLonBoundingBox", m);
             }
 
+            if (ft.getNativeBBox() != null) {
+                m = new HashMap();
+
+                Envelope e = ft.getNativeBBox();
+
+                // from creation, isn't stored otherwise
+                if (!e.isNull()) {
+                    m.put("dynamic", "false");
+                    m.put("minx", e.getMinX() + "");
+                    m.put("miny", e.getMinY() + "");
+                    m.put("maxx", e.getMaxX() + "");
+                    m.put("maxy", e.getMaxY() + "");
+                } else {
+                    m.put("dynamic", "true");
+                }
+
+                cw.attrTag("nativeBBox", m);
+            }
+
             if ((ft.getDefaultStyle() != null) && (ft.getDefaultStyle() != "")) {
                 cw.comment("the default style this FeatureTypeInfoDTO can be represented by.\n"
                     + "at least must contain the \"default\" attribute ");

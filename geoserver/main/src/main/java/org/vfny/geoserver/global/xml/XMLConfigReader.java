@@ -1491,9 +1491,13 @@ public class XMLConfigReader {
                 ft.setLegendURL(legend);
             }
 
+            Envelope latLonBBox = loadBBox(ReaderUtils.getChildElement(fTypeRoot,
+                        "latLonBoundingBox"));
             // -- Modif C. Kolbowicz - 06/10/2004
-            ft.setLatLongBBox(loadLatLongBBox(ReaderUtils.getChildElement(fTypeRoot,
-                        "latLonBoundingBox")));
+            ft.setLatLongBBox(latLonBBox);
+
+            Envelope nativeBBox = loadBBox(ReaderUtils.getChildElement(fTypeRoot, "nativeBBox"));
+            ft.setNativeBBox(nativeBBox);
 
             Element numDecimalsElem = ReaderUtils.getChildElement(fTypeRoot, "numDecimals", false);
 
@@ -2095,8 +2099,7 @@ public class XMLConfigReader {
      *
      * @throws ConfigurationException When an error occurs.
      */
-    protected Envelope loadLatLongBBox(Element bboxElem)
-        throws ConfigurationException {
+    protected Envelope loadBBox(Element bboxElem) throws ConfigurationException {
         if (bboxElem == null) {
             return new Envelope();
         }

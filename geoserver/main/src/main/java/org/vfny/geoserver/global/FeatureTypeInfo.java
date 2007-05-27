@@ -226,6 +226,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         keywords = dto.getKeywords();
         metadataLinks = dto.getMetadataLinks();
         latLongBBox = dto.getLatLongBBox();
+        nativeBBox = dto.getNativeBBox();
         typeName = dto.getName();
         wmsPath = dto.getWmsPath();
         numDecimals = dto.getNumDecimals();
@@ -274,6 +275,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         dto.setKeywords(keywords);
         dto.setMetadataLinks(metadataLinks);
         dto.setLatLongBBox(latLongBBox);
+        dto.setNativeBBox(nativeBBox);
         dto.setName(typeName);
         dto.setWmsPath(wmsPath);
         dto.setNumDecimals(numDecimals);

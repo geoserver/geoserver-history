@@ -31,8 +31,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     /** The Id of the datastore which should be used to get this featuretype. */
     private String dataStoreId;
 
-    /** A bounding box for this featuretype */
+    /** A bounding box in EPSG:4326 for this featuretype */
     private Envelope latLongBBox;
+
+    /** A bounding box in native's CRS for this featuretype */
+    private Envelope nativeBBox;
 
     /** native wich EPGS code for the FeatureTypeInfo */
     private int SRS;
@@ -142,6 +145,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
         dataStoreId = dto.getDataStoreId();
         latLongBBox = CloneLibrary.clone(dto.getLatLongBBox());
+        nativeBBox = CloneLibrary.clone(dto.getNativeBBox());
         SRS = dto.getSRS();
         schema = dto.getSchemaAttributes();
         name = dto.getName();
@@ -211,6 +215,12 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         if (latLongBBox != null) {
             r = r && latLongBBox.equals(f.getLatLongBBox());
         } else if (f.getLatLongBBox() != null) {
+            return false;
+        }
+
+        if (nativeBBox != null) {
+            r = r && nativeBBox.equals(f.getNativeBBox());
+        } else if (f.getNativeBBox() != null) {
             return false;
         }
 
@@ -366,6 +376,16 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
     /**
+     * The extent of this FeatureType.<p>Extent is measured against the
+     * FeatureType's native coordinate system.</p>
+     *
+     * @return Envelope of FeatureType
+     */
+    public Envelope getNativeBBox() {
+        return nativeBBox;
+    }
+
+    /**
      * Name of featureType, must match typeName provided by DataStore.
      *
      * @return typeName of FeatureType
@@ -462,6 +482,16 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      */
     public void setLatLongBBox(Envelope envelope) {
         latLongBBox = envelope;
+    }
+
+    /**
+     * Sets the feature type's envelope in its
+     * native CRS for cached storage.
+     *
+     * @param envelope
+     */
+    public void setNativeBBox(Envelope envelope) {
+        nativeBBox = envelope;
     }
 
     /**
