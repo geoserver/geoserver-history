@@ -61,6 +61,10 @@ public class GetMapReflectKvpReader extends GetMapKvpReader {
         WMS_DEFAULTS.put("FORMAT", "image/png");
         WMS_DEFAULTS.put("STYLES", "");
         WMS_DEFAULTS.put("KMSCORE", "30");
+        WMS_DEFAULTS.put("HEIGHT", "256");
+        WMS_DEFAULTS.put("WIDTH", "256");
+        WMS_DEFAULTS.put("BBOX", "-180,-90,180,90");
+        WMS_DEFAULTS.put("SRS", "EPSG:4326" );
     }
 
     /**
