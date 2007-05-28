@@ -9,6 +9,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
+import org.apache.struts.util.MessageResources;
+import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
@@ -28,6 +30,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -79,6 +83,9 @@ public class MapPreviewAction extends GeoServerAction {
 
         List ctypes = new ArrayList(catalog.getCoverageInfos().values());
         Collections.sort(ctypes, new CoverageInfoNameComparator());
+
+        List bmtypes = new ArrayList(wms.getBaseMapLayers().keySet());
+        Collections.sort(bmtypes);
 
         // 2) delete any existing generated files in the generation directory
         ServletContext sc = request.getSession().getServletContext();
@@ -194,6 +201,25 @@ public class MapPreviewAction extends GeoServerAction {
                 widthList.add(String.valueOf(imageBox[0]));
                 heightList.add(String.valueOf(imageBox[1]));
             }
+        }
+        
+        // 3.6) Go thru base map layers
+        Locale locale = (Locale) request.getLocale();
+        MessageResources messages = getResources(request);
+        String baseMap = messages.getMessage(locale, "label.baseMap");
+        for (Iterator it = bmtypes.iterator(); it.hasNext();) {
+            String baseMapTitle = (String) it.next();
+            ftList.add(baseMapTitle);
+            ftnsList.add(baseMapTitle);
+            dsList.add(baseMap);
+            GeneralEnvelope bmBbox = ((GeneralEnvelope) wms.getBaseMapEnvelopes().get(baseMapTitle));
+            Envelope bbox = new Envelope(bmBbox.getMinimum(0), bmBbox.getMaximum(0), bmBbox.getMinimum(1), bmBbox.getMaximum(1));
+            bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
+                    + bbox.getMaxY());
+            srsList.add(CRS.lookupIdentifier(bmBbox.getCoordinateReferenceSystem(), null, false) );
+            int[] imageBox = getMapWidthHeight(bbox);
+            widthList.add(String.valueOf(imageBox[0]));
+            heightList.add(String.valueOf(imageBox[1]));
         }
 
         // 4) send off gathered information to the .jsp

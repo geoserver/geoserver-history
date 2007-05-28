@@ -98,11 +98,13 @@ public abstract class GetFeatureInfoDelegate implements Response {
 
         List filterList = request.getGetMapRequest().getFilters();
         Filter[] filters;
-        if(filterList != null)
+
+        if (filterList != null) {
             filters = (Filter[]) filterList.toArray(new Filter[filterList.size()]);
-        else
+        } else {
             filters = new Filter[layers.length];
-            
+        }
+
         Query[] queries = buildQueries(layers, filters);
         int x = request.getXPixel();
         int y = request.getYPixel();
@@ -124,7 +126,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *
      * @param requestedLayers Array of config information of the FeatureTypes
      *        to be processed.
-     * @param queries Matching array of layer definition filters 
+     * @param queries Matching array of layer definition filters
      * @param x the X coordinate in pixels where the identification must be
      *        done relative to the image dimensions
      * @param y the Y coordinate in pixels where the identification must be
@@ -132,8 +134,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *
      * @throws WmsException For any problems executing.
      */
-    protected abstract void execute(FeatureTypeInfo[] requestedLayers, Filter[] filters, int x, int y)
-        throws WmsException;
+    protected abstract void execute(FeatureTypeInfo[] requestedLayers, Filter[] filters, int x,
+        int y) throws WmsException;
 
     /**
      * Creates the array of queries to be executed for the request.<p>Each
@@ -189,8 +191,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *
      * @throws IllegalFilterException For problems making the filter.
      */
-    private Filter buildFilter(Envelope requestExtent, Filter layerFilter, FilterFactory ffactory, FeatureType schema)
-        throws IllegalFilterException {
+    private Filter buildFilter(Envelope requestExtent, Filter layerFilter, FilterFactory ffactory,
+        FeatureType schema) throws IllegalFilterException {
         GeometryFilter bboxFilter;
         bboxFilter = ffactory.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
 
@@ -199,11 +201,12 @@ public abstract class GetFeatureInfoDelegate implements Response {
                 schema.getDefaultGeometry().getName());
         bboxFilter.addLeftGeometry(geomAttExpr);
         bboxFilter.addRightGeometry(bboxExpr);
-        
-        if(layerFilter != null)
+
+        if (layerFilter != null) {
             return bboxFilter.and(layerFilter);
-        else
+        } else {
             return bboxFilter;
+        }
     }
 
     /**

@@ -126,10 +126,6 @@ public final class WMSContentAction extends ConfigAction {
 
                     Integer layerType = (Integer) catalog.getLayerType(layerName);
 
-                    /*layerType = (layerType != null) ? layerType
-                                                    : (Integer) catalog.getLayerNames()
-                                                                       .get(layerName.substring(layerName
-                                .indexOf(":") + 1, layerName.length()));*/
                     if (layerType != null) {
                         if (layerType.intValue() == MapLayerInfo.TYPE_VECTOR) {
                             FeatureTypeInfo ftype = catalog.getFeatureTypeInfo(layerName);
@@ -141,7 +137,8 @@ public final class WMSContentAction extends ConfigAction {
                                 ReferencedEnvelope ftEnvelope = null;
 
                                 try {
-                                    if (ftype.getBoundingBox() instanceof ReferencedEnvelope) {
+                                    if (ftype.getBoundingBox() instanceof ReferencedEnvelope
+                                            && !ftype.getBoundingBox().isNull()) {
                                         ftEnvelope = (ReferencedEnvelope) ftype.getBoundingBox();
                                     } else {
                                         // TODO Add Action Errors
@@ -399,7 +396,7 @@ public final class WMSContentAction extends ConfigAction {
 
             GeneralEnvelope selectedEnvelope = null;
             String[] layerNames = baseMapLayers.split(",");
-            String[] styles = baseMapStyles.split(",");
+            String[] styles = baseMapStyles.split("\\s*,\\s*");
 
             for (int i = 0; i < layerNames.length; i++) {
                 String layerName = layerNames[i].trim();
@@ -421,7 +418,7 @@ public final class WMSContentAction extends ConfigAction {
 
                 Style style = catalog.getStyle(styleName);
 
-                if (style == null) {
+                if ((style == null) && !"".equals(styleName)) {
                     ActionErrors errors = new ActionErrors();
                     errors.add(ActionErrors.GLOBAL_ERROR,
                         new ActionError("error.styleId.notFound", new ActionMessage(styleName)));

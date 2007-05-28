@@ -233,6 +233,7 @@ public class TypesEditorForm extends ActionForm {
         }
 
         Envelope nativeBounds = type.getNativeBBox();
+
         if ((nativeBounds == null) || nativeBounds.isNull()) {
             dataMinX = "";
             dataMinY = "";

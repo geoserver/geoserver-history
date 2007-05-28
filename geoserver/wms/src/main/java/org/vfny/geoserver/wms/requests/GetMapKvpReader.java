@@ -1652,10 +1652,11 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
      * @param styles
      */
     public void filterBaseMap(Map layers, Map styles) {
-        String currentLayers = null;
+        List currentLayers = null;
 
         try {
-            currentLayers = getValue("LAYERS");
+            // read flat can return non modifiable lists
+            currentLayers = new ArrayList(readFlat(getValue("LAYERS"), ","));
         } catch (NullPointerException e) {
             // No layers defined. This is either wrong or they are listing the
             // layers
@@ -1666,41 +1667,64 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
             return; // just continue ignoring the basemap option
         }
 
-        String currentStyles = getValue("STYLES");
-        String[] baseLayers = (String[]) layers.keySet().toArray(new String[0]);
-        String[] baseStyles = (String[]) styles.keySet().toArray(new String[0]);
+        List currentStyles = null;
 
+        try {
+            currentStyles = new ArrayList(readFlat(getValue("STYLES"), ","));
+        } catch (NullPointerException e) {
+            currentStyles = new ArrayList();
+        }
+
+        while (currentStyles.size() < currentLayers.size())
+            currentStyles.add("");
+
+        String[] baseLayers = (String[]) layers.keySet().toArray(new String[0]);
         boolean replacedOne = false;
 
         for (int i = 0; i < baseLayers.length; i++) {
-            int index = currentLayers.indexOf(baseLayers[i]);
+            String blTitle = baseLayers[i];
+            int index = currentLayers.indexOf(blTitle);
 
             if (index > -1) {
                 replacedOne = true;
                 LOGGER.info("Using BASEMAP layer: " + baseLayers[i]);
 
                 // remove the 'basemap layer' from the currentLayers list
-                String newLayers = currentLayers.replaceFirst(baseLayers[i],
-                        (String) layers.get(baseLayers[i]));
-                currentLayers = newLayers;
+                currentLayers.remove(index);
 
-                if ((styles != null) && !styles.equals("")) { // if the user
-                                                              // specified
-                                                              // styles, lets
-                                                              // use them
+                List blLayers = new ArrayList(readFlat((String) layers.get(blTitle), ","));
+                currentLayers.addAll(index, blLayers);
 
-                    String newStyles = currentStyles.replaceFirst(baseStyles[i],
-                            (String) styles.get(baseStyles[i]));
-                    currentStyles = newStyles;
-                }
+                List blStyles = new ArrayList(readFlat((String) styles.get(blTitle), ","));
+
+                while (blStyles.size() < blLayers.size())
+                    blStyles.add("");
+
+                currentStyles.remove(index);
+                currentStyles.addAll(index, blStyles);
             }
         }
 
         if (replacedOne) {
             kvpPairs.remove("LAYERS");
-            kvpPairs.put("LAYERS", currentLayers);
+            kvpPairs.put("LAYERS", toStringList(currentLayers, ","));
             kvpPairs.remove("STYLES");
-            kvpPairs.put("STYLES", currentStyles);
+            kvpPairs.put("STYLES", toStringList(currentStyles, ","));
         }
+    }
+
+    private String toStringList(List currentLayers, String separator) {
+        StringBuffer sb = new StringBuffer();
+
+        for (Iterator it = currentLayers.iterator(); it.hasNext();) {
+            String item = (String) it.next();
+            sb.append(item);
+
+            if (it.hasNext()) {
+                sb.append(separator);
+            }
+        }
+
+        return sb.toString();
     }
 }

@@ -229,14 +229,17 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
                 try {
                     getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
-                    ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac.createLiteralExpression(pixelRect));
+                    ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac
+                        .createLiteralExpression(pixelRect));
                 } catch (IllegalFilterException e) {
                     e.printStackTrace();
                     throw new WmsException(null, "Internal error : " + e.getMessage());
                 }
+
                 // include the eventual layer definition filter
-                if(filters[i] != null)
+                if (filters[i] != null) {
                     getFInfoFilter = getFInfoFilter.and(filters[i]);
+                }
 
                 Query q = new DefaultQuery(finfo.getTypeName(), null, getFInfoFilter,
                         request.getFeatureCount(), Query.ALL_NAMES, null);
