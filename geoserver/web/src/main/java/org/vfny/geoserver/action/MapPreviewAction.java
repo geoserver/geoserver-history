@@ -84,9 +84,12 @@ public class MapPreviewAction extends GeoServerAction {
         List ctypes = new ArrayList(catalog.getCoverageInfos().values());
         Collections.sort(ctypes, new CoverageInfoNameComparator());
 
-        List bmtypes = new ArrayList(wms.getBaseMapLayers().keySet());
-        Collections.sort(bmtypes);
-
+        List bmtypes = Collections.EMPTY_LIST;
+        if ( wms.getBaseMapLayers() != null ) {
+        	bmtypes = new ArrayList( wms.getBaseMapLayers().keySet() );
+        	Collections.sort(bmtypes);
+        }
+        
         // 2) delete any existing generated files in the generation directory
         ServletContext sc = request.getSession().getServletContext();
 
