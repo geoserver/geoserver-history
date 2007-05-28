@@ -118,11 +118,20 @@ public abstract class GetFeatureInfoDelegate implements Response {
         //use the layer of the QUERY_LAYERS parameter, not the LAYERS one
         FeatureTypeInfo[] layers = request.getQueryLayers();
 
-        Query[] queries = buildQueries(layers);
+        List filterList = request.getGetMapRequest().getFilters();
+        Filter[] filters;
+
+        if (filterList != null) {
+            filters = (Filter[]) filterList.toArray(new Filter[filterList.size()]);
+        } else {
+            filters = new Filter[layers.length];
+        }
+
+        Query[] queries = buildQueries(layers, filters);
         int x = request.getXPixel();
         int y = request.getYPixel();
 
-        execute(layers, queries, x, y);
+        execute(layers, filters, x, y);
     }
 
     /**
@@ -139,10 +148,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *
      * @param requestedLayers Array of config information of the FeatureTypes
      *        to be processed.
-     * @param queries Matching array of queries from the queries of the
-     *        requested layers, already setted up with the bbox filter from
-     *        the BBOX parameter of the GetMap request and to retrieve the
-     *        specified attributes in the ATTRIBUTES request parameter.
+     * @param queries Matching array of layer definition filters
      * @param x the X coordinate in pixels where the identification must be
      *        done relative to the image dimensions
      * @param y the Y coordinate in pixels where the identification must be
@@ -150,8 +156,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *
      * @throws WmsException For any problems executing.
      */
-    protected abstract void execute(FeatureTypeInfo[] requestedLayers, Query[] queries, int x, int y)
-        throws WmsException;
+    protected abstract void execute(FeatureTypeInfo[] requestedLayers, Filter[] filters, int x,
+        int y) throws WmsException;
 
     /**
      * Creates the array of queries to be executed for the request.
@@ -167,7 +173,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *
      * @throws WmsException If the custom filter can't be constructed.
      */
-    private Query[] buildQueries(FeatureTypeInfo[] layers)
+    private Query[] buildQueries(FeatureTypeInfo[] layers, Filter[] filters)
         throws WmsException {
         int nLayers = layers.length;
         Query[] queries = new Query[nLayers];
@@ -182,7 +188,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
             for (int i = 0; i < nLayers; i++) {
                 FeatureType schema = layers[i].getFeatureType();
 
-                finalLayerFilter = buildFilter(requestExtent, ffactory, schema);
+                finalLayerFilter = buildFilter(requestExtent, filters[i], ffactory, schema);
 
                 String[] props = guessProperties(layers[i], finalLayerFilter);
                 layerQuery = new DefaultQuery(schema.getTypeName(), finalLayerFilter, props);
@@ -210,8 +216,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *
      * @throws IllegalFilterException For problems making the filter.
      */
-    private Filter buildFilter(Envelope requestExtent, FilterFactory ffactory, FeatureType schema)
-        throws IllegalFilterException {
+    private Filter buildFilter(Envelope requestExtent, Filter layerFilter, FilterFactory ffactory,
+        FeatureType schema) throws IllegalFilterException {
         GeometryFilter bboxFilter;
         bboxFilter = ffactory.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
 
@@ -221,7 +227,11 @@ public abstract class GetFeatureInfoDelegate implements Response {
         bboxFilter.addLeftGeometry(geomAttExpr);
         bboxFilter.addRightGeometry(bboxExpr);
 
-        return bboxFilter;
+        if (layerFilter != null) {
+            return bboxFilter.and(layerFilter);
+        } else {
+            return bboxFilter;
+        }
     }
 
     /**

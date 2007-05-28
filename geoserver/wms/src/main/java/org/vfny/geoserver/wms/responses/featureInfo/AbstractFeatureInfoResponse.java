@@ -13,6 +13,7 @@ import org.geotools.data.DefaultQuery;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.AbstractFilter;
+import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.GeometryFilter;
@@ -166,7 +167,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
      *
      * @throws WmsException For any problems.
      */
-    protected void execute(FeatureTypeInfo[] requestedLayers, Query[] queries, int x, int y)
+    protected void execute(FeatureTypeInfo[] requestedLayers, Filter[] filters, int x, int y)
         throws WmsException {
         GetFeatureInfoRequest request = getRequest();
         this.format = request.getInfoFormat();
@@ -205,7 +206,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
         FilterFactory filterFac = FilterFactoryFinder.createFilterFactory();
 
-        GeometryFilter getFInfoFilter = null;
+        Filter getFInfoFilter = null;
 
         int layerCount = requestedLayers.length;
         results = new ArrayList(layerCount);
@@ -234,10 +235,16 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
                 try {
                     getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
-                    getFInfoFilter.addLeftGeometry(filterFac.createLiteralExpression(pixelRect));
+                    ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac
+                        .createLiteralExpression(pixelRect));
                 } catch (IllegalFilterException e) {
                     e.printStackTrace();
                     throw new WmsException(null, "Internal error : " + e.getMessage());
+                }
+
+                // include the eventual layer definition filter
+                if (filters[i] != null) {
+                    getFInfoFilter = getFInfoFilter.and(filters[i]);
                 }
 
                 Query q = new DefaultQuery(finfo.getTypeName(), null, getFInfoFilter,
