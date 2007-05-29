@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wfs.xml.v1_1_0;
+package org.geoserver.wfs.xml.v1_1_0.overrides;
 
 import org.geotools.gml2.FeatureTypeCache;
 import org.geotools.gml3.bindings.GML;
@@ -62,15 +62,20 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class ISOElementTypeBinding extends AbstractComplexBinding {
-    public ISOElementTypeBinding() {
+public class ISOAbstractFeatureTypeBinding extends AbstractComplexBinding {
+    FeatureTypeCache ftCache;
+    BindingWalkerFactory bwFactory;
+
+    public ISOAbstractFeatureTypeBinding(FeatureTypeCache ftCache, BindingWalkerFactory bwFactory) {
+        this.ftCache = ftCache;
+        this.bwFactory = bwFactory;
     }
 
     /**
      * @generated
      */
     public QName getTarget() {
-        return XS.ANYTYPE;
+        return GML.AbstractFeatureType;
     }
 
     /**

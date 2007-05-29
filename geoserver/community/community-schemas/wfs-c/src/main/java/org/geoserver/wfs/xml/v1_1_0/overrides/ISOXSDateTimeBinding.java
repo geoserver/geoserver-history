@@ -13,7 +13,7 @@
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  *    Lesser General Public License for more details.
  */
-package org.geoserver.wfs.xml.v1_1_0;
+package org.geoserver.wfs.xml.v1_1_0.overrides;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
 import org.geotools.xml.InstanceComponent;

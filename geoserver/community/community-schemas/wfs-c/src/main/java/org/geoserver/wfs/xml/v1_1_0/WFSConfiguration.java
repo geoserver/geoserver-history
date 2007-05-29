@@ -4,7 +4,10 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.WfsFactory;
+
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.eclipse.xsd.util.XSDSchemaLocator;
 import org.geoserver.ows.xml.v1_0.OWSConfiguration;
@@ -14,6 +17,18 @@ import org.geoserver.wfs.xml.filter.v1_1.FilterTypeBinding;
 import org.geoserver.wfs.xml.filter.v1_1.PropertyNameTypeBinding;
 import org.geoserver.wfs.xml.gml3.AbstractGeometryTypeBinding;
 import org.geoserver.wfs.xml.gml3.CircleTypeBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOAbstractFeatureTypeBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOAnySimpleTypeBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOCurvePropertyTypeBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOElementTypeBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOFeaturePropertyExtractor;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOMultiPointTypeBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOMultiSurfaceTypeBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOPointPropertyTypeBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOPointTypeBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOXSComplexTypeBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOXSDateBinding;
+import org.geoserver.wfs.xml.v1_1_0.overrides.ISOXSDateTimeBinding;
 import org.geoserver.wfs.xml.xs.DateBinding;
 import org.geotools.filter.v1_1.OGC;
 import org.geotools.filter.v1_1.OGCConfiguration;
@@ -26,7 +41,6 @@ import org.geotools.xml.Schemas;
 import org.geotools.xs.bindings.XS;
 import org.picocontainer.MutablePicoContainer;
 import org.vfny.geoserver.global.Data;
-import javax.xml.namespace.QName;
 
 
 public class WFSConfiguration extends Configuration {
@@ -134,6 +148,7 @@ public class WFSConfiguration extends Configuration {
 
     private void registerBindingOverrides(MutablePicoContainer container) {
         registerOverride(container, XS.ANYTYPE, ISOElementTypeBinding.class);
+        registerOverride(container, XS.DATE, ISOXSDateBinding.class);
         registerOverride(container, XS.DATETIME, ISOXSDateTimeBinding.class);
 
         registerOverride(container, XS.ANYSIMPLETYPE, ISOAnySimpleTypeBinding.class);
