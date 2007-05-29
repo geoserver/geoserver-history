@@ -342,6 +342,7 @@ public class TypesEditorAction extends ConfigAction {
         config.setSRS(Integer.parseInt(form.getSRS()));
         config.setTitle(form.getTitle());
         config.setLatLongBBox(getBoundingBox(form));
+        config.setNativeBBox(getNativeBBox(form));
         config.setKeywords(keyWords(form));
         config.setMetadataLinks(metadataLinks(form));
         config.setWmsPath(form.getWmsPath());
@@ -480,6 +481,19 @@ public class TypesEditorAction extends ConfigAction {
         return new Envelope(Double.parseDouble(typeForm.getMinX()),
             Double.parseDouble(typeForm.getMaxX()), Double.parseDouble(typeForm.getMinY()),
             Double.parseDouble(typeForm.getMaxY()));
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param typeForm
+     *
+     * @return Bounding box in lat long
+     */
+    private Envelope getNativeBBox(TypesEditorForm typeForm) {
+        return new Envelope(Double.parseDouble(typeForm.getDataMinX()),
+            Double.parseDouble(typeForm.getDataMaxX()), Double.parseDouble(typeForm.getDataMinY()),
+            Double.parseDouble(typeForm.getDataMaxY()));
     }
 
     /**
