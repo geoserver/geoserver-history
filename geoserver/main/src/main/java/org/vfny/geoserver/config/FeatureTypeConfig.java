@@ -42,8 +42,11 @@ public class FeatureTypeConfig {
     /** The Id of the datastore which should be used to get this featuretype. */
     private String dataStoreId;
 
-    /** A bounding box for this featuretype */
+    /** An EPSG:4326 bounding box for this featuretype */
     private Envelope latLongBBox;
+
+    /** A native CRS bounding box for this featuretype */
+    private Envelope nativeBBox;
 
     /** native wich EPGS code for the FeatureTypeInfo */
     private int SRS;
@@ -190,6 +193,7 @@ public class FeatureTypeConfig {
 
         this.dataStoreId = dataStoreId;
         latLongBBox = new Envelope();
+        nativeBBox = new Envelope();
         SRS = lookupSRS(schema.getDefaultGeometry());
 
         if (generate) {
@@ -280,6 +284,7 @@ public class FeatureTypeConfig {
 
         dataStoreId = dto.getDataStoreId();
         latLongBBox = new Envelope(dto.getLatLongBBox());
+        nativeBBox = new Envelope(dto.getNativeBBox());
         SRS = dto.getSRS();
 
         if (dto.getSchemaAttributes() == null) {
@@ -338,6 +343,7 @@ public class FeatureTypeConfig {
         FeatureTypeInfoDTO f = new FeatureTypeInfoDTO();
         f.setDataStoreId(dataStoreId);
         f.setLatLongBBox(new Envelope(latLongBBox));
+        f.setNativeBBox(new Envelope(nativeBBox));
         f.setSRS(SRS);
 
         if (schemaAttributes == null) {
@@ -577,6 +583,24 @@ public class FeatureTypeConfig {
      */
     public void setLatLongBBox(Envelope latLongBBox) {
         this.latLongBBox = latLongBBox;
+    }
+
+    /**
+     * Access nativeBBox property.
+     *
+     * @return Returns the nativeBBox.
+     */
+    public Envelope getNativeBBox() {
+        return nativeBBox;
+    }
+
+    /**
+     * Set nativeBBox to nativeBBox.
+     *
+     * @param nativeBBox The nativeBBox to set.
+     */
+    public void setNativeBBox(Envelope nativeBBox) {
+        this.nativeBBox = nativeBBox;
     }
 
     /**

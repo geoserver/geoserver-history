@@ -173,6 +173,11 @@ function prepareFormData(){
       <!----- This will add the bounding box of the data (in its CRS) to the page --->
       <!----- Its only added if its actually been calculated (i.e. they presed the generate bbox button) --->
 
+<html:hidden property="dataMinX"/>
+<html:hidden property="dataMinY"/>
+<html:hidden property="dataMaxX"/>
+<html:hidden property="dataMaxY"/>
+
 <logic:notEmpty name="typesEditorForm"  property="dataMinX">
         <table border=0 width=90%>
           <tr>

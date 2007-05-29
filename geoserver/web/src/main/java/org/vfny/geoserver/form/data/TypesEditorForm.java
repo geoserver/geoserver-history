@@ -205,11 +205,6 @@ public class TypesEditorForm extends ActionForm {
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);
 
-        dataMinX = "";
-        dataMinY = "";
-        dataMaxX = "";
-        dataMaxY = "";
-
         action = "";
 
         ServletContext context = getServlet().getServletContext();
@@ -247,6 +242,20 @@ public class TypesEditorForm extends ActionForm {
             minY = Double.toString(bounds.getMinY());
             maxX = Double.toString(bounds.getMaxX());
             maxY = Double.toString(bounds.getMaxY());
+        }
+
+        Envelope nativeBounds = type.getNativeBBox();
+
+        if ((nativeBounds == null) || nativeBounds.isNull()) {
+            dataMinX = "";
+            dataMinY = "";
+            dataMaxX = "";
+            dataMaxY = "";
+        } else {
+            dataMinX = Double.toString(nativeBounds.getMinX());
+            dataMinY = Double.toString(nativeBounds.getMinY());
+            dataMaxX = Double.toString(nativeBounds.getMaxX());
+            dataMaxY = Double.toString(nativeBounds.getMaxY());
         }
 
         typeName = type.getName();
