@@ -29,7 +29,7 @@ public class DefaultVersioningWebFeatureService extends DefaultWebFeatureService
 
     public TransactionResponseType transaction(TransactionType request)
         throws WFSException {
-        VersioningTransaction transaction = new VersioningTransaction(wfs, catalog);
+        VersioningTransaction transaction = new VersioningTransaction(wfs, catalog, context);
         transaction.setFilterFactory(filterFactory);
 
         return transaction.transaction(request);

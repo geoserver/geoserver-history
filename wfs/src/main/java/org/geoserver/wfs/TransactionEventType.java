@@ -18,28 +18,28 @@ public class TransactionEventType extends SimpleEnumerationType {
      * Notification of inserted features, after insertion occurred
      * (collection contains newly inserted features)
      */
-    public TransactionEventType POST_INSERT = new TransactionEventType("PostInsert",
+    public static final TransactionEventType POST_INSERT = new TransactionEventType("PostInsert",
             "Features just inserted");
 
     /**
      * Notification of updated features, before update occurs
      * (collection contains original values)
      */
-    public TransactionEventType PRE_UPDATE = new TransactionEventType("PreUpdate",
+    public static final TransactionEventType PRE_UPDATE = new TransactionEventType("PreUpdate",
             "Feature values before update");
 
     /**
      * Notification of updated features, after update occurs
      * (collection contains updated features)
      */
-    public TransactionEventType POST_UPDATE = new TransactionEventType("PostUpdate",
+    public static final TransactionEventType POST_UPDATE = new TransactionEventType("PostUpdate",
             "Feature values after update");
 
     /**
-     * Notificaiton of deleted features, before deletion occurs
+     * Notification of deleted features, before deletion occurs
      * (collection contains features that will be deleted)
      */
-    public TransactionEventType POST_DELETE = new TransactionEventType("PostDelete",
+    public static final TransactionEventType PRE_DELETE = new TransactionEventType("PostDelete",
             "Features just deleted");
 
     protected TransactionEventType(String name, String description) {

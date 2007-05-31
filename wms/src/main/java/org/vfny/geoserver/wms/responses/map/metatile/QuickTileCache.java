@@ -37,6 +37,12 @@ public class QuickTileCache {
         ignoredParameters.add("VERSION");
         ignoredParameters.add("EXCEPTIONS");
     }
+    
+    /**
+     * The time to live for the tiles in cache, in milliseconds. When this time expires,
+     * the tiles in the cache will be considered stale
+     */
+    public static final long TIME_TO_LIVE = 5000;
 
     /**
      * Canonicalizer used to return the same object when two threads ask for the
@@ -250,13 +256,32 @@ public class QuickTileCache {
      * @return
      */
     public BufferedImage getTile(MetaTileKey key, GetMapRequest request) {
-        BufferedImage[] tiles = (BufferedImage[]) tileCache.get(key);
+        CacheElement ce = (CacheElement) tileCache.get(key);
 
-        if (tiles == null) {
+        if (ce == null) {
+            return null;
+        }
+        if(ce.isExpired()) {
+            tileCache.remove(key);
             return null;
         }
 
-        return getTile(key, request, tiles);
+        return getTile(key, request, ce.tiles);
+    }
+
+    /**
+     * 
+     * @param key
+     * @param request
+     * @param tiles
+     * @return
+     */
+    public BufferedImage getTile(MetaTileKey key, GetMapRequest request, BufferedImage[] tiles) {
+        Point tileCoord = getTileCoordinates(request.getBbox(), key.mapKey.origin);
+        Point metaCoord = key.metaTileCoords;
+
+        return tiles[tileCoord.x - metaCoord.x
+        + ((tileCoord.y - metaCoord.y) * key.getMetaFactor())];
     }
 
     /**
@@ -266,13 +291,23 @@ public class QuickTileCache {
      * @param tiles
      * @return
      */
-    public BufferedImage getTile(MetaTileKey key, GetMapRequest request, BufferedImage[] tiles) {
-        tileCache.put(key, tiles);
+    public void storeTiles(MetaTileKey key, BufferedImage[] tiles) {
+        tileCache.put(key, new CacheElement(tiles));
+    }
+    
+    class CacheElement {
 
-        Point tileCoord = getTileCoordinates(request.getBbox(), key.mapKey.origin);
-        Point metaCoord = key.metaTileCoords;
-
-        return tiles[tileCoord.x - metaCoord.x
-        + ((tileCoord.y - metaCoord.y) * key.getMetaFactor())];
+        BufferedImage tiles[];
+        long timeCached;
+        
+        public CacheElement(BufferedImage[] tiles) {
+            this.tiles = tiles;
+            this.timeCached = System.currentTimeMillis();
+        }
+        
+        public boolean isExpired() {
+            return System.currentTimeMillis() - timeCached > TIME_TO_LIVE;
+        }
+        
     }
 }
