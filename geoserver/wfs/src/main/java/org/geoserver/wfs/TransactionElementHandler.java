@@ -11,14 +11,13 @@ import org.geotools.data.FeatureStore;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
-
 /**
  * Transaction elements are an open ended set, both thanks to the Native element
  * type, and to the XSD sustitution group concept (xsd inheritance). Element
  * handlers know how to process a certain element in a wfs transaction request.
- *
+ * 
  * @author Andrea Aime - TOPP
- *
+ * 
  */
 public interface TransactionElementHandler {
     /**
@@ -34,7 +33,7 @@ public interface TransactionElementHandler {
 
     /**
      * Checks the element content is valid, throws an exception otherwise
-     *
+     * 
      * @param element
      *            the transaction element we're checking
      * @param featureTypeInfos
@@ -42,12 +41,11 @@ public interface TransactionElementHandler {
      *            the keys contain all the feature type names reported by
      *            {@link #getTypeNames(EObject)}
      */
-    void checkValidity(EObject element, Map featureTypeInfos)
-        throws WFSTransactionException;
+    void checkValidity(EObject element, Map featureTypeInfos) throws WFSTransactionException;
 
     /**
      * Executes the element against the provided feature sources
-     *
+     * 
      * @param element
      *            the tranaction element to be executed
      * @param request
@@ -64,5 +62,5 @@ public interface TransactionElementHandler {
      *            each change performed against the data stores
      */
     void execute(EObject element, TransactionType request, Map featureStores,
-        TransactionResponseType response) throws WFSTransactionException;
+            TransactionResponseType response, TransactionListener listener) throws WFSTransactionException;
 }

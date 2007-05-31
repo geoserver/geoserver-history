@@ -100,6 +100,7 @@ public class MetatileMapProducer implements GetMapProducer {
 
                 BufferedImage metaTile = delegate.getImage();
                 BufferedImage[] tiles = split(key, metaTile, map);
+                tileCache.storeTiles(key, tiles);
                 tile = tileCache.getTile(key, request, tiles);
             }
         }
