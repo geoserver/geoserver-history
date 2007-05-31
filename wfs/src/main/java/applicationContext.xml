@@ -61,23 +61,6 @@
 	  	</list>
 	  </property>
 	</bean>
-  
-    <!-- Transaction element handlers -->
-    <bean id="wfsInsertElementHandler" class="org.geoserver.wfs.InsertElementHandler">
-      <constructor-arg ref="wfs"/>
-      <constructor-arg ref="filterFactory"/>
-    </bean>
-    
-    <bean id="wfsUpdateElementHandler" class="org.geoserver.wfs.UpdateElementHandler">
-      <constructor-arg ref="wfs"/>
-    </bean>
-    
-    <bean id="wfsDeleteElementHandler" class="org.geoserver.wfs.DeleteElementHandler">
-      <constructor-arg ref="wfs"/>
-    </bean>
-    
-    <bean id="wfsNativeElementHandler" class="org.geoserver.wfs.NativeElementHandler">
-    </bean>
 		
 	<!-- service descriptors -->
 	<bean id="wfsService-1.0.0" class="org.geoserver.platform.Service">
