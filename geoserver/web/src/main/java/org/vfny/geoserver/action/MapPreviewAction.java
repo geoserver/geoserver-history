@@ -79,9 +79,19 @@ public class MapPreviewAction extends GeoServerAction {
 
         Data catalog = wms.getData();
         List ftypes = new ArrayList(catalog.getFeatureTypeInfos().values());
+        for (Iterator it = ftypes.iterator(); it.hasNext();) {
+            FeatureTypeInfo ft = (FeatureTypeInfo) it.next();
+            if(!ft.isEnabled())
+                it.remove();
+        }
         Collections.sort(ftypes, new FeatureTypeInfoNameComparator());
 
         List ctypes = new ArrayList(catalog.getCoverageInfos().values());
+        for (Iterator it = ctypes.iterator(); it.hasNext();) {
+            CoverageInfo ci = (CoverageInfo) it.next();
+            if(!ci.isEnabled())
+                it.remove();
+        }
         Collections.sort(ctypes, new CoverageInfoNameComparator());
 
         List bmtypes = Collections.EMPTY_LIST;
