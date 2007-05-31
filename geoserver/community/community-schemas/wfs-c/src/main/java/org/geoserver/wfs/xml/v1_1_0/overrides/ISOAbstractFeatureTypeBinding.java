@@ -5,26 +5,11 @@
 package org.geoserver.wfs.xml.v1_1_0.overrides;
 
 import org.geotools.gml2.FeatureTypeCache;
-import org.geotools.gml3.bindings.GML;
-import org.geotools.util.Converters;
-import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.gml3.bindings.AbstractFeatureTypeBinding;
 import org.geotools.xml.BindingWalkerFactory;
-import org.geotools.xml.ElementInstance;
-import org.geotools.xml.Node;
-import org.geotools.xs.bindings.XS;
 import org.opengis.feature.Attribute;
-import org.opengis.feature.ComplexAttribute;
-import org.opengis.feature.Feature;
-import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.feature.type.Name;
-import org.opengis.geometry.BoundingBox;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import javax.xml.namespace.QName;
 
 
@@ -54,7 +39,6 @@ import javax.xml.namespace.QName;
  *            &lt;/extension&gt;
  *        &lt;/complexContent&gt;
  *    &lt;/complexType&gt;
- *
  * </code>
  *         </pre>
  *
@@ -62,24 +46,12 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class ISOAbstractFeatureTypeBinding extends AbstractComplexBinding {
-    FeatureTypeCache ftCache;
-    BindingWalkerFactory bwFactory;
-
+public class ISOAbstractFeatureTypeBinding extends AbstractFeatureTypeBinding {
     public ISOAbstractFeatureTypeBinding(FeatureTypeCache ftCache, BindingWalkerFactory bwFactory) {
-        this.ftCache = ftCache;
-        this.bwFactory = bwFactory;
+        super(ftCache, bwFactory);
     }
 
     /**
-     * @generated
-     */
-    public QName getTarget() {
-        return GML.AbstractFeatureType;
-    }
-
-    /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
      *
      * @generated modifiable
      */
@@ -87,56 +59,20 @@ public class ISOAbstractFeatureTypeBinding extends AbstractComplexBinding {
         return Attribute.class;
     }
 
-    public int getExecutionMode() {
-        return OVERRIDE;
-    }
-
-    /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
-     *
-     * @generated modifiable
-     */
-    public Object parse(ElementInstance instance, Node node, Object value)
-        throws Exception {
-        throw new UnsupportedOperationException();
-    }
-
     public Element encode(Object object, Document document, Element value)
         throws Exception {
         Attribute attribute = (Attribute) object;
-
-        AttributeDescriptor descriptor = attribute.getDescriptor();
-        Name name = descriptor.getName();
-        String namespace = name.getNamespaceURI();
-        String localName = name.getLocalPart();
-
-        Element encoding = document.createElementNS(namespace, localName);
-
-        String id = attribute.getID();
-
-        if (id != null) {
-            encoding.setAttributeNS(GML.NAMESPACE, "id", id);
-        }
-
-        Map definedAttributes = (Map) descriptor.getUserData(Attributes.class);
-
-        if (definedAttributes != null) {
-            Map.Entry entry;
-
-            for (Iterator it = definedAttributes.entrySet().iterator(); it.hasNext();) {
-                entry = (Entry) it.next();
-
-                Name key = (Name) entry.getKey();
-                Object attValue = entry.getValue();
-
-                String namespaceURI = key.getNamespaceURI();
-                String qualifiedName = key.getLocalPart();
-                String strAttValue = (String) Converters.convert(attValue, String.class);
-
-                encoding.setAttributeNS(namespaceURI, qualifiedName, strAttValue);
-            }
-        }
+        Element encoding = EncodingUtils.encodeAttribute(attribute, document);
 
         return encoding;
+    }
+
+    /**
+     * Override as a no-op as property extraction is already handled by
+     * {@link ISOFeaturePropertyExtractor}
+     */
+    public Object getProperty(Object object, QName name)
+        throws Exception {
+        return null;
     }
 }

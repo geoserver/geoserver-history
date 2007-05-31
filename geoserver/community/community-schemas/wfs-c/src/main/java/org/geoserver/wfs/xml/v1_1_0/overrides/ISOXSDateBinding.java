@@ -22,6 +22,7 @@ import org.geotools.xs.bindings.XS;
 import org.opengis.feature.Attribute;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
 
@@ -108,9 +109,10 @@ public class ISOXSDateBinding implements SimpleBinding {
     public String encode(Object object, String value) throws Exception {
         Attribute att = (Attribute) object;
 
-        Date date = (Date) object;
+        Date date = (Date) att.get();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
+        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         String printDateTime = null;
 
