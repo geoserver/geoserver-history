@@ -15,9 +15,6 @@ import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 import org.geotools.xml.transform.TransformerBase;
 import org.opengis.filter.FilterFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 
@@ -28,7 +25,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class DefaultWebFeatureService implements WebFeatureService, ApplicationContextAware {
+public class DefaultWebFeatureService implements WebFeatureService {
     /**
      * WFS service configuration.
      */
@@ -43,12 +40,6 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
      * Filter factory
      */
     protected FilterFactory filterFactory;
-    
-    /**
-     * The spring application context, used to look up transaction listeners, plugins and
-     * element handlers
-     */
-    protected ApplicationContext context;
 
     public DefaultWebFeatureService(WFS wfs, Data catalog) {
         this.wfs = wfs;
@@ -150,7 +141,7 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
      */
     public TransactionResponseType transaction(TransactionType request)
         throws WFSException {
-        Transaction transaction = new Transaction(wfs, catalog, context);
+        Transaction transaction = new Transaction(wfs, catalog);
         transaction.setFilterFactory(filterFactory);
 
         return transaction.transaction(request);
@@ -163,9 +154,5 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
 
     public void releaseAllLocks() throws WFSException {
         new LockFeature(wfs, catalog).releaseAll();
-    }
-
-    public void setApplicationContext(ApplicationContext context) throws BeansException {
-        this.context = context;
     }
 }
