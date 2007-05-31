@@ -255,7 +255,7 @@ public class QuickTileCache {
      * @param request
      * @return
      */
-    public BufferedImage getTile(MetaTileKey key, GetMapRequest request) {
+    public synchronized BufferedImage getTile(MetaTileKey key, GetMapRequest request) {
         CacheElement ce = (CacheElement) tileCache.get(key);
 
         if (ce == null) {
@@ -291,7 +291,7 @@ public class QuickTileCache {
      * @param tiles
      * @return
      */
-    public void storeTiles(MetaTileKey key, BufferedImage[] tiles) {
+    public synchronized void storeTiles(MetaTileKey key, BufferedImage[] tiles) {
         tileCache.put(key, new CacheElement(tiles));
     }
     
