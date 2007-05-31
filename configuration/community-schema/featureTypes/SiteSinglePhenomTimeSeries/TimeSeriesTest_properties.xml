@@ -22,7 +22,7 @@
     </Namespace>
     <Namespace>
       <prefix>sa</prefix>
-      <uri>http://www.seegrid.csiro.au/xml/sampling/0.0</uri>
+      <uri>http://www.seegrid.csiro.au/xml/sampling</uri>
     </Namespace>
     <Namespace>
       <prefix>geo</prefix>
@@ -31,6 +31,10 @@
     <Namespace>
       <prefix>swe</prefix>
       <uri>http://www.opengis.net/swe/0.0</uri>
+    </Namespace>
+    <Namespace>
+      <prefix>cv</prefix>
+      <uri>http://www.opengis.net/cv/0.0</uri>
     </Namespace>
     <Namespace>
       <prefix>om</prefix>
@@ -99,30 +103,79 @@
           </sourceExpression>
           <ClientProperty>
             <name>gml:codeSpace</name>
-            <value>'http://my.org/identifiers/public'</value>
+            <value>'http://escawri.org.au/identifiers/public/samplingstations'</value>
           </ClientProperty>
         </AttributeMapping>
 
-  <!--      <AttributeMapping>
+        <!--      <AttributeMapping>
           <targetAttribute>relatedObservation/WaterObservation/observedProperty</targetAttribute>
           <targetAttributeNode>aw:PhenomenonPropertyType</targetAttributeNode>
-        </AttributeMapping>
-
-        <AttributeMapping>
+          </AttributeMapping>
+          
+          <AttributeMapping>
           <targetAttribute>relatedObservation/WaterObservation/observedProperty/Phenomenom</targetAttribute>
           <targetAttributeNode>aw:PhenomenonType</targetAttributeNode>
-
-        </AttributeMapping>-->
+          
+          </AttributeMapping>-->
 
 
         <AttributeMapping>
-          <targetAttribute>aw:relatedObservation/aw:PhenomenonTimeSeries/om:observedProperty/swe:Phenomenon/gml:name</targetAttribute>
+          <targetAttribute>
+            aw:relatedObservation/aw:PhenomenonTimeSeries/om:observedProperty/swe:Phenomenon/gml:name
+          </targetAttribute>
           <sourceExpression>
             <OCQL>determinand_code</OCQL>
           </sourceExpression>
-
-
         </AttributeMapping>
+        <AttributeMapping>
+          <targetAttribute>aw:relatedObservation/aw:PhenomenonTimeSeries/om:result</targetAttribute>
+          <targetAttributeNode>cv:CompactDiscreteTimeCoveragePropertyType</targetAttributeNode>
+        </AttributeMapping>
+        <!--            <AttributeMapping>
+          <targetAttribute>relatedObservation/WaterObservation/result/CompactDiscreteTimeCoverage[1]</targetAttribute>
+          <targetAttributeNode>om:CompactDiscreteTimeCoverageType</targetAttributeNode>
+          
+          </AttributeMapping>-->
+        <AttributeMapping>
+          <targetAttribute>
+            aw:relatedObservation/aw:PhenomenonTimeSeries/om:result/cv:CompactDiscreteTimeCoverage/cv:element
+          </targetAttribute>
+          <targetAttributeNode>cv:CompactTimeValuePairPropertyType</targetAttributeNode>
+          <isMultiple>true</isMultiple>
+        </AttributeMapping>
+
+        <!--        <AttributeMapping>
+          <targetAttribute>aw:relatedObservation/aw:PhenomenonTimeSeries/om:result/cv:CompactDiscreteTimeCoverage/cv:element/cv:CompactTimeValuePair</targetAttribute>
+          <targetAttributeNode>cv:CompactTimeValuePairType</targetAttributeNode>
+          </AttributeMapping>-->
+
+
+        <AttributeMapping>
+          <targetAttribute>
+            aw:relatedObservation/aw:PhenomenonTimeSeries/om:result/cv:CompactDiscreteTimeCoverage/cv:element/cv:CompactTimeValuePair/cv:geometry
+          </targetAttribute>
+          <sourceExpression>
+            <OCQL>sample_time_position</OCQL>
+          </sourceExpression>
+        </AttributeMapping>
+
+        <AttributeMapping>
+          <targetAttribute>
+            aw:relatedObservation/aw:PhenomenonTimeSeries/om:result/cv:CompactDiscreteTimeCoverage/cv:element/cv:CompactTimeValuePair/cv:value
+          </targetAttribute>
+          <sourceExpression>
+            <OCQL>result</OCQL>
+          </sourceExpression>
+          <ClientProperty>
+            <name>xsi:type</name>
+            <value>"gml:MeasureType"</value>
+          </ClientProperty>
+          <ClientProperty>
+            <name>uom</name>
+            <value>units</value>
+          </ClientProperty>
+        </AttributeMapping>
+
       </attributeMappings>
     </FeatureTypeMapping>
   </typeMappings>

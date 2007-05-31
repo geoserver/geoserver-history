@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:aw="http://brs.gov.au/awdip/0.2"
   xmlns:cv="http://www.opengis.net/cv/0.0" xmlns:gml="http://www.opengis.net/gml" xmlns:om="http://www.opengis.net/om"
-  xmlns:sa="http://www.opengis.net/sampling/0.0"
+  xmlns:sa="http://www.opengis.net/sampling"
   xmlns:swe="http://www.opengis.net/swe/0.0"
    elementFormDefault="qualified"
   targetNamespace="http://brs.gov.au/awdip/0.2" version="1.0">
   
   <import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd" />
-  <import namespace="http://www.opengis.net/sampling/0.0" schemaLocation="../../commonSchemas/sampling/1.0.30/sampling.xsd" />
+  <import namespace="http://www.opengis.net/sampling" schemaLocation="../../commonSchemas/sampling/1.0.30/sampling.xsd" />
   <import namespace="http://www.opengis.net/om" schemaLocation="../../commonSchemas/om/1.0.30/om.xsd" />
   <import namespace="http://www.opengis.net/cv/0.0" schemaLocation="../../commonSchemas/cv/0.0.0/cv.xsd" />
   <!--XML Schema document created by ShapeChange-->

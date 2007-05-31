@@ -8,15 +8,11 @@
   xsi:schemaLocation="http://www.opengis.net/wfs
                       http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
   <wfs:Query typeName="xmml:Borehole">
-    <wfs:PropertyName>gml:name</wfs:PropertyName> 
-    <wfs:PropertyName>sa:begin</wfs:PropertyName> 
-    <wfs:PropertyName>sa:length</wfs:PropertyName> 
     <ogc:Filter>
-      <ogc:PropertyIsBetween>
-        <ogc:PropertyName>sa:length</ogc:PropertyName>
-        <ogc:LowerBoundary><ogc:Literal>0</ogc:Literal></ogc:LowerBoundary>
-        <ogc:UpperBoundary><ogc:Literal>100</ogc:Literal></ogc:UpperBoundary>
-      </ogc:PropertyIsBetween>
+      <ogc:PropertyIsEqualTo>
+        <ogc:PropertyName>xmml:log/xmml:IntervalLog/xmml:range/xmml:ListOfBands/xmml:categoryList</ogc:PropertyName>
+        <ogc:Literal>ROCK</ogc:Literal>
+      </ogc:PropertyIsEqualTo>
     </ogc:Filter>
   </wfs:Query>
 </wfs:GetFeature> 

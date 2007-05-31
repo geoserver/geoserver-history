@@ -6,5 +6,8 @@
   xsi:schemaLocation="http://www.opengis.net/wfs
                       http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
   <wfs:Query typeName="xmml:Borehole">
+    <ogc:Filter>
+       <ogc:FeatureId fid="bh.176901"/>
+    </ogc:Filter>
   </wfs:Query>
 </wfs:GetFeature>
