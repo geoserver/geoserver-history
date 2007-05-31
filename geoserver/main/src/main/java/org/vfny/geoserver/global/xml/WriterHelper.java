@@ -245,7 +245,7 @@ public class WriterHelper {
             }
         }
 
-        sb.append(">" + data + "</" + tagName + ">");
+        sb.append(">" + (data != null ? data : "") + "</" + tagName + ">");
         writeln(sb.toString());
     }
 

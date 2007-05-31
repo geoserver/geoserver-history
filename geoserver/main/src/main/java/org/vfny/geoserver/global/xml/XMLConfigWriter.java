@@ -468,8 +468,8 @@ public class XMLConfigWriter {
                 HashMap titleMap = new HashMap();
                 titleMap.put("baseMapTitle", titles[i]);
                 cw.openTag("BaseMapGroup", titleMap);
-                cw.textTag("baseMapLayers", baseMapLayers.get(titles[i]).toString());
-                cw.textTag("baseMapStyles", baseMapStyles.get(titles[i]).toString());
+                cw.textTag("baseMapLayers", (String) baseMapLayers.get(titles[i]));
+                cw.textTag("baseMapStyles", (String) baseMapStyles.get(titles[i]));
 
                 GeneralEnvelope e = (GeneralEnvelope) baseMapEnvelopes.get(titles[i]);
                 Map m = new HashMap();
