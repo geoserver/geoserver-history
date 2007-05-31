@@ -200,31 +200,6 @@ public class MetatileMapProducer implements GetMapProducer {
     }
 
     /**
-     * Prepares the background of splitted tiles... we should find a better way to do this,
-     * theoretically we could just grab the data array in the big tile and replicate it along
-     * with the color model...
-     * @param graphic
-     * @param map
-     */
-    private void setupBackground(Graphics2D graphic, WMSMapContext map) {
-        if (!map.isTransparent()) {
-            graphic.setColor(map.getBgColor());
-            graphic.fillRect(0, 0, map.getMapWidth(), map.getMapHeight());
-        } else {
-            int type = AlphaComposite.SRC;
-            graphic.setComposite(AlphaComposite.getInstance(type));
-
-            Color c = new Color(map.getBgColor().getRed(), map.getBgColor().getGreen(),
-                    map.getBgColor().getBlue(), 0);
-            graphic.setBackground(map.getBgColor());
-            graphic.setColor(c);
-            graphic.fillRect(0, 0, map.getMapWidth(), map.getMapHeight());
-            type = AlphaComposite.SRC_OVER;
-            graphic.setComposite(AlphaComposite.getInstance(type));
-        }
-    }
-
-    /**
      * Have the delegate encode the tile
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
