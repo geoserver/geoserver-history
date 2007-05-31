@@ -1,4 +1,4 @@
-/* Copyright (c) 2001, 2003 TOPP - www.openplans.org. All rights reserved.
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
@@ -6,11 +6,8 @@ package org.geoserver.wfs.xml.v1_1_0.overrides;
 
 import org.geotools.gml3.bindings.GML;
 import org.geotools.util.Converters;
-import org.geotools.xml.AbstractComplexBinding;
-import org.geotools.xml.ElementInstance;
-import org.geotools.xml.Node;
-import org.geotools.xs.bindings.XS;
 import org.opengis.feature.Attribute;
+import org.opengis.feature.ComplexAttribute;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.Name;
 import org.w3c.dom.Document;
@@ -20,50 +17,10 @@ import org.xml.sax.Attributes;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.xml.namespace.QName;
 
 
-/**
- * Binding object for the type http://www.opengis.net/gml:AbstractFeatureType.
- */
-public class ISOAnySimpleTypeBinding extends AbstractComplexBinding {
-    public ISOAnySimpleTypeBinding() {
-    }
-
-    /**
-     * @generated
-     */
-    public QName getTarget() {
-        return XS.ANYTYPE;
-    }
-
-    /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
-     *
-     * @generated modifiable
-     */
-    public Class getType() {
-        return Attribute.class;
-    }
-
-    public int getExecutionMode() {
-        return OVERRIDE;
-    }
-
-    /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
-     *
-     * @generated modifiable
-     */
-    public Object parse(ElementInstance instance, Node node, Object value)
-        throws Exception {
-        throw new UnsupportedOperationException();
-    }
-
-    public Element encode(Object object, Document document, Element value)
-        throws Exception {
-        Attribute attribute = (Attribute) object;
-
+public class EncodingUtils {
+    public static Element encodeAttribute(Attribute attribute, Document document) {
         AttributeDescriptor descriptor = attribute.getDescriptor();
         Name name = descriptor.getName();
         String namespace = name.getNamespaceURI();
@@ -96,15 +53,16 @@ public class ISOAnySimpleTypeBinding extends AbstractComplexBinding {
             }
         }
 
-        Object attContent = attribute.get();
-        String attValue = (String) Converters.convert(attContent, String.class);
+        // it might be it is not a complex type and thus its content has to be
+        // encoded here, as ElementEncoderExecutor will not catch it
+        if (!(attribute instanceof ComplexAttribute)) {
+            Object attValue = attribute.get();
 
-        if (attValue != null) {
             // figure out if the node has any text
             Text text = null;
 
             for (int i = 0; i < encoding.getChildNodes().getLength(); i++) {
-                org.w3c.dom.Node node = encoding.getChildNodes().item(i);
+                org.w3c.dom.Node node = (org.w3c.dom.Node) encoding.getChildNodes().item(i);
 
                 if (node instanceof Text) {
                     text = (Text) node;
@@ -113,12 +71,21 @@ public class ISOAnySimpleTypeBinding extends AbstractComplexBinding {
                 }
             }
 
-            // set the text of the node
-            if (text == null) {
-                text = document.createTextNode(attValue);
-                encoding.appendChild(text);
-            } else {
-                text.setData(attValue);
+            try {
+                String encodedValue = (String) Converters.convert(attValue, String.class);
+
+                if (encodedValue != null) {
+                    // set the text of the node
+                    if (text == null) {
+                        text = document.createTextNode(encodedValue);
+                        encoding.appendChild(text);
+                    } else {
+                        text.setData(encodedValue);
+                    }
+                }
+            } catch (Throwable t) {
+                String msg = "Encode failed for " + name + ". Cause: " + t.getLocalizedMessage();
+                throw new RuntimeException(msg, t);
             }
         }
 

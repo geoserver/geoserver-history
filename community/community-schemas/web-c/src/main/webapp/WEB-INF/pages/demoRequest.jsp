@@ -28,7 +28,7 @@
       <tr>
         <td class="label">body:</td>
         <td class="datum">
-          <textarea rows="10" cols="90" name="body"><bean:write name="demoRequestForm" property="body"/></textarea>
+          <textarea rows="22" cols="90" name="body" style="font-size: 12px;font-family: monospace"><bean:write name="demoRequestForm" property="body"/></textarea>
         </td>
       </tr>    
       <tr>

@@ -16,9 +16,11 @@
 package org.geoserver.wfs.xml.v1_1_0.overrides;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
+import org.geoserver.wfs.xml.xs.DateBinding;
 import org.geotools.xml.InstanceComponent;
 import org.geotools.xml.SimpleBinding;
 import org.geotools.xs.bindings.XS;
+import org.geotools.xs.bindings.XSDateTimeBinding;
 import org.opengis.feature.Attribute;
 import java.util.Calendar;
 import javax.xml.bind.DatatypeConverter;
@@ -28,57 +30,11 @@ import javax.xml.namespace.QName;
 /**
  * Binding object for the type http://www.w3.org/2001/XMLSchema:dateTime.
  *
- * <p>
- *        <pre>
- *         <code>
- *  &lt;xs:simpleType name="dateTime" id="dateTime"&gt;
- *      &lt;xs:annotation&gt;
- *          &lt;xs:appinfo&gt;
- *              &lt;hfp:hasFacet name="pattern"/&gt;
- *              &lt;hfp:hasFacet name="enumeration"/&gt;
- *              &lt;hfp:hasFacet name="whiteSpace"/&gt;
- *              &lt;hfp:hasFacet name="maxInclusive"/&gt;
- *              &lt;hfp:hasFacet name="maxExclusive"/&gt;
- *              &lt;hfp:hasFacet name="minInclusive"/&gt;
- *              &lt;hfp:hasFacet name="minExclusive"/&gt;
- *              &lt;hfp:hasProperty name="ordered" value="partial"/&gt;
- *              &lt;hfp:hasProperty name="bounded" value="false"/&gt;
- *              &lt;hfp:hasProperty name="cardinality" value="countably infinite"/&gt;
- *              &lt;hfp:hasProperty name="numeric" value="false"/&gt;
- *          &lt;/xs:appinfo&gt;
- *          &lt;xs:documentation source="http://www.w3.org/TR/xmlschema-2/#dateTime"/&gt;
- *      &lt;/xs:annotation&gt;
- *      &lt;xs:restriction base="xs:anySimpleType"&gt;
- *          &lt;xs:whiteSpace value="collapse" fixed="true" id="dateTime.whiteSpace"/&gt;
- *      &lt;/xs:restriction&gt;
- *  &lt;/xs:simpleType&gt;
- *
- *          </code>
- *         </pre>
- * </p>
- *
  * @generated
  */
-public class ISOXSDateTimeBinding implements SimpleBinding {
+public class ISOXSDateTimeBinding extends XSDateTimeBinding {
     static {
         DatatypeConverter.setDatatypeConverter(DatatypeConverterImpl.theInstance);
-    }
-
-    /**
-    * @generated
-    */
-    public QName getTarget() {
-        return XS.DATETIME;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     *
-     * @generated modifiable
-     */
-    public int getExecutionMode() {
-        return OVERRIDE;
     }
 
     /**
@@ -90,18 +46,6 @@ public class ISOXSDateTimeBinding implements SimpleBinding {
      */
     public Class getType() {
         return Attribute.class;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * This binding returns objects of type {@link Calendar}.
-     * <!-- end-user-doc -->
-     *
-     * @generated modifiable
-     */
-    public Object parse(InstanceComponent instance, Object value)
-        throws Exception {
-        return DatatypeConverter.parseDateTime((String) value);
     }
 
     /**
