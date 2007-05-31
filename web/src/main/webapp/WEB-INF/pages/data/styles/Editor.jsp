@@ -4,7 +4,7 @@
 
 <html:form action="/config/data/styleEditorSubmit" enctype="multipart/form-data">
 
-<table class="info">
+<table class="info" width="100%">
   <tr>
     <td class="label"><bean:message key="label.styleID"/>:</td>
     <td class="datum"><html:text property="styleID" size="60"/></td>
@@ -16,7 +16,7 @@
   </tr>
   <tr>
     <td class="label"><bean:message key="label.sldContents"/>:</td>
-    <td class="code"><html:textarea property="sldContents" cols="80" rows="20"/></td>
+    <td class="code"><html:textarea property="sldContents" style="width:95%" rows="20"/></td>
   </tr>
   <tr>
     <td class="label"><bean:message key="label.filename"/></td>
