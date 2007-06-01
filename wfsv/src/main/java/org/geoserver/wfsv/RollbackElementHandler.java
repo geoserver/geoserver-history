@@ -2,7 +2,9 @@ package org.geoserver.wfsv;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -14,6 +16,9 @@ import net.opengis.wfsv.RollbackType;
 
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.wfs.TransactionElementHandler;
+import org.geoserver.wfs.TransactionEvent;
+import org.geoserver.wfs.TransactionEventType;
+import org.geoserver.wfs.TransactionListener;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSTransactionException;
@@ -21,7 +26,6 @@ import org.geotools.data.VersioningFeatureSource;
 import org.geotools.data.VersioningFeatureStore;
 import org.geotools.data.postgis.FeatureDiff;
 import org.geotools.data.postgis.FeatureDiffReader;
-import org.geotools.factory.CommonFactoryFinder;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -79,8 +83,8 @@ public class RollbackElementHandler implements TransactionElementHandler {
     }
 
     public void execute(EObject element, TransactionType request, Map featureStores,
-            TransactionResponseType response) throws WFSTransactionException {
-        FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
+            TransactionResponseType response, TransactionListener listener)
+            throws WFSTransactionException {
         RollbackType rollback = (RollbackType) element;
         VersioningFeatureStore vstore = (VersioningFeatureStore) featureStores.get(rollback
                 .getTypeName());
@@ -101,6 +105,9 @@ public class RollbackElementHandler implements TransactionElementHandler {
             String version = rollback.getToFeatureVersion();
             reader = vstore.getDifferences(null, version, filter);
 
+            Set insertedIds = new HashSet();
+            Set updatedIds = new HashSet();
+            Set deletedIds = new HashSet();
             while (reader.hasNext()) {
                 FeatureDiff fd = reader.next();
 
@@ -112,15 +119,31 @@ public class RollbackElementHandler implements TransactionElementHandler {
                     insertedFeature.setHandle(rollback.getHandle());
                     insertedFeature.getFeatureId().add(filterFactory.featureId(fd.getID()));
                     response.getInsertResults().getFeature().add(insertedFeature);
+                    // accumulate fids for transaction event handling
+                    insertedIds.add(filterFactory.featureId(fd.getID()));
                 } else if (fd.getState() == FeatureDiff.UPDATED) {
                     updated++;
-                    System.out.println("Updated : " + fd.getID());
-                    System.out.println("Updated : " + fd.getState());
+                    // accumulate fids for transaction event handling
+                    updatedIds.add(filterFactory.featureId(fd.getID()));
                 } else if (fd.getState() == FeatureDiff.DELETED) {
                     deleted++;
+                    // accumulate fids for transaction event handling
+                    deletedIds.add(filterFactory.featureId(fd.getID()));
                 }
             }
 
+            // build filters
+            Filter insertedFilter = filterFactory.id(insertedIds);
+            Filter updatedFilter = filterFactory.id(updatedIds);
+            Filter deletedFilter = filterFactory.id(deletedIds);
+
+            // notify pre-update and pre-delete
+            listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_UPDATE, vstore
+                    .getFeatures(updatedFilter)));
+            listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_DELETE, vstore
+                    .getFeatures(deletedFilter)));
+
+            // now do the actual rollback
             try {
                 String user = rollback.getUser();
                 String[] users = ((user != null) && !user.trim().equals("")) ? new String[] { user }
@@ -130,6 +153,12 @@ public class RollbackElementHandler implements TransactionElementHandler {
                 throw new WFSTransactionException("Could not perform the rollback", e, rollback
                         .getHandle());
             }
+
+            // notify post update and post insert
+            listener.dataStoreChange(new TransactionEvent(TransactionEventType.POST_INSERT, vstore
+                    .getFeatures(insertedFilter)));
+            listener.dataStoreChange(new TransactionEvent(TransactionEventType.POST_UPDATE, vstore
+                    .getFeatures(updatedFilter)));
 
             // update summary information
             response.getTransactionSummary().setTotalInserted(BigInteger.valueOf(inserted));

@@ -64,5 +64,6 @@ public interface TransactionElementHandler {
      *            each change performed against the data stores
      */
     void execute(EObject element, TransactionType request, Map featureStores,
-        TransactionResponseType response) throws WFSTransactionException;
+        TransactionResponseType response, TransactionListener listener)
+        throws WFSTransactionException;
 }
