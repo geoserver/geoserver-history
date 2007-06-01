@@ -251,7 +251,7 @@ public class WriterHelper {
             }
         }
 
-        sb.append(">" + (data != null ? data : "") + "</" + tagName + ">");
+        sb.append(">" + ((data != null) ? data : "") + "</" + tagName + ">");
         writeln(sb.toString());
     }
 
