@@ -28,6 +28,8 @@
     <meta name="keywords"
           content="(GeoServer) (GIS) (Geographic Information Systems) <bean:message key="<%= keyWords %>"/>"/>
     <meta name="author" content="Dave Blasby, Chris Holmes, Brent Owens, Justin Deoliveira, Jody Garnett, Richard Gould, David Zwiers"/>
+    
+    <tiles:insert attribute="javascript"/>
   	
   	<script language="JavaScript">
 		<!--
@@ -76,9 +78,9 @@
   </logic:notPresent>
 </logic:notEqual>
     
-<table class="page">
+<table class="page" height="100%">
   <tbody>
-	<tr class="header">
+	<tr class="header" height="1%">
         <td class="gutter">
           <span class="project">
             <a href="<bean:message key="link.geoserver"/>">
