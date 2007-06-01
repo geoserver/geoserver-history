@@ -4,7 +4,7 @@
 		// initialisation
 		editAreaLoader.init({
 			id: "editor"	// id of the textarea to transform		
-			,start_highlight: true	// if start with highlight
+			,start_highlight: false	// if start with highlight
 			,font_size: "8"
 			,allow_toggle: true
 			,syntax: "xml"	
