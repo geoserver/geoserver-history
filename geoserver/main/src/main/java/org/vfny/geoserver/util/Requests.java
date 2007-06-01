@@ -4,7 +4,9 @@
  */
 package org.vfny.geoserver.util;
 
+import org.acegisecurity.Authentication;
 import org.acegisecurity.context.SecurityContextHolder;
+import org.acegisecurity.providers.anonymous.AnonymousAuthenticationToken;
 import org.acegisecurity.userdetails.UserDetails;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
@@ -255,13 +257,9 @@ public final class Requests {
      * @return
      */
     public static boolean isLoggedIn(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-
-        synchronized (session) {
-            UserContainer user = (UserContainer) session.getAttribute(UserContainer.SESSION_KEY);
-
-            return user != null;
-        }
+        // check the user is not the anonymous one
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null && !(authentication instanceof AnonymousAuthenticationToken);
     }
 
     /**

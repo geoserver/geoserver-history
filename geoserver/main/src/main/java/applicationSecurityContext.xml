@@ -117,14 +117,14 @@
   </bean>
 
   <!-- 
-    This filter does the actual main authentication workflow. 
+    This filter does the actual main authentication workflow and handles form based authentication too.
     It asks the authentication manager wheter access is granted to the resource the user is trying to access,
     redirects to a failure page if it fails, and to another filter if the authentication informations are 
     just being provided. This is useful only for form based authentication, the OWS services do use another
     authentication processing filter.
   -->
   <bean id="authenticationProcessingFilter"
-    class="org.acegisecurity.ui.webapp.AuthenticationProcessingFilter">
+    class="org.geoserver.security.GeoserverAuthenticationProcessingFilter">
     <property name="authenticationManager" ref="authenticationManager" />
     <property name="authenticationFailureUrl"
       value="/admin/login.do?login_error=1" />
@@ -157,7 +157,7 @@
   -->
   <bean id="anonymousProcessingFilter"
     class="org.acegisecurity.providers.anonymous.AnonymousProcessingFilter">
-    <property name="key" value="changeThis" />
+    <property name="key" value="geoserver" />
     <property name="userAttribute" value="anonymousUser,ROLE_ANONYMOUS" />
   </bean>
 
@@ -250,11 +250,11 @@
         <ref local="daoAuthenticationProvider" />
         <bean
           class="org.acegisecurity.providers.anonymous.AnonymousAuthenticationProvider">
-          <property name="key" value="changeThis" />
+          <property name="key" value="geoserver" />
         </bean>
         <bean
           class="org.acegisecurity.providers.rememberme.RememberMeAuthenticationProvider">
-          <property name="key" value="changeThis" />
+          <property name="key" value="geoserver" />
         </bean>
       </list>
     </property>
