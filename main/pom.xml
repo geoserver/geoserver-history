@@ -65,7 +65,7 @@
 			<artifactId>commons-validator</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>freemarker</groupId>
+			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 		</dependency>
 		<dependency>
