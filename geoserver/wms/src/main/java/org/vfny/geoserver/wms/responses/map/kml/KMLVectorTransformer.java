@@ -4,21 +4,15 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
+import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.template.FeatureWrapper;
-import org.geoserver.template.GeoServerTemplateLoader;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -54,25 +48,21 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.vfny.geoserver.wms.responses.featureInfo.FeatureDescriptionTemplate;
 import org.vfny.geoserver.wms.responses.map.kml.KMLGeometryTransformer.KMLGeometryTranslator;
-import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.helpers.AttributesImpl;
-import java.awt.Color;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * Transforms a feature collection to a kml "Document" consisting of nested
@@ -88,18 +78,6 @@ public class KMLVectorTransformer extends TransformerBase {
      * logger
      */
     static Logger LOGGER = Logger.getLogger("org.geoserver.kml");
-
-    /**
-     * The template configuration used for placemark descriptions
-     */
-    static Configuration templateConfig;
-
-    static {
-        //initialize the template engine, this is static to maintain a cache 
-        // over instantiations of kml writer
-        templateConfig = new Configuration();
-        templateConfig.setObjectWrapper(new FeatureWrapper());
-    }
 
     /**
      * Tolerance used to compare doubles for equality
@@ -581,30 +559,8 @@ public class KMLVectorTransformer extends TransformerBase {
             String description = null;
 
             if (mapContext.getRequest().getKMattr()) {
-                //descriptions are "templatable" by users, so see if there is a 
-                // template available for use
-                FeatureType schema = feature.getFeatureType();
-                GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(getClass());
-                templateLoader.setFeatureType(schema.getTypeName());
-
-                Template template = null;
-
-                //Configuration is not thread safe
-                synchronized (templateConfig) {
-                    templateConfig.setTemplateLoader(templateLoader);
-                    template = templateConfig.getTemplate("kmlPlacemarkDescription.ftl");
-                }
-
-                StringWriter writer = new StringWriter();
-
-                try {
-                    template.process(feature, writer);
-                } catch (TemplateException e) {
-                    String msg = "Error occured processing template.";
-                    throw (IOException) new IOException(msg).initCause(e);
-                }
-
-                description = writer.toString();
+               FeatureDescriptionTemplate template = new FeatureDescriptionTemplate();
+               description = template.execute( feature );
             }
 
             if (description != null) {
