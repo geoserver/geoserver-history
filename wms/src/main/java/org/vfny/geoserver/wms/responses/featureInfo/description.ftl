@@ -11,7 +11,7 @@
 </tr>
 
 <tr>
-<#list f.attributes as a>
+<#list attributes as a>
   <td>
   <#if a.isGeometry >
 [GEOMETRY]
