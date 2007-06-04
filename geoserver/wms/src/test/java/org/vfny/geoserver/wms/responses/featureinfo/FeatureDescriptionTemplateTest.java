@@ -63,34 +63,34 @@ public class FeatureDescriptionTemplateTest extends TestCase {
         assertEquals("table", document.getDocumentElement().getNodeName());
     }
     
-    public void testFeatureCollection() throws Exception {
-        Configuration cfg = new Configuration();
-        cfg.setObjectWrapper(new FeatureWrapper());
-        cfg.setClassForTemplateLoading(FeatureDescriptionTemplate.class, "");
-
-        Template template = cfg.getTemplate("description.ftl");
-        assertNotNull(template);
-
-        //create some data
-        GeometryFactory gf = new GeometryFactory();
-        FeatureType featureType = DataUtilities.createType("testType",
-                "string:String,int:Integer,double:Double,geom:Point");
-
-        DefaultFeature f = new DefaultFeature((DefaultFeatureType) featureType,
-            new Object[] {
-                "three", new Integer(3), new Double(3.3), gf.createPoint(new Coordinate(3, 3))
-            }, "fid.3") {
-        };
-        DefaultFeature f4 = new DefaultFeature((DefaultFeatureType) featureType,
-            new Object[] {
-                "four", new Integer(4), new Double(4.4), gf.createPoint(new Coordinate(4, 4))
-            }, "fid.4") {
-        };
-        FeatureCollection features = new DefaultFeatureCollection(null,null) {};
-        features.add( f );
-        features.add( f4 );
-        
-        template.process(features, new OutputStreamWriter( System.out ));
-
-    }
+//    public void testFeatureCollection() throws Exception {
+//        Configuration cfg = new Configuration();
+//        cfg.setObjectWrapper(new FeatureWrapper());
+//        cfg.setClassForTemplateLoading(FeatureDescriptionTemplate.class, "");
+//
+//        Template template = cfg.getTemplate("description.ftl");
+//        assertNotNull(template);
+//
+//        //create some data
+//        GeometryFactory gf = new GeometryFactory();
+//        FeatureType featureType = DataUtilities.createType("testType",
+//                "string:String,int:Integer,double:Double,geom:Point");
+//
+//        DefaultFeature f = new DefaultFeature((DefaultFeatureType) featureType,
+//            new Object[] {
+//                "three", new Integer(3), new Double(3.3), gf.createPoint(new Coordinate(3, 3))
+//            }, "fid.3") {
+//        };
+//        DefaultFeature f4 = new DefaultFeature((DefaultFeatureType) featureType,
+//            new Object[] {
+//                "four", new Integer(4), new Double(4.4), gf.createPoint(new Coordinate(4, 4))
+//            }, "fid.4") {
+//        };
+//        FeatureCollection features = new DefaultFeatureCollection(null,null) {};
+//        features.add( f );
+//        features.add( f4 );
+//        
+//        template.process(features, new OutputStreamWriter( System.out ));
+//
+//    }
 }
