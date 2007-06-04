@@ -65,8 +65,8 @@ public class Transaction {
     /** Geotools2 transaction used for this opperations */
     protected org.geotools.data.Transaction transaction;
     protected List transactionElementHandlers = new ArrayList();
-    protected List transactionListeners;
-    protected List transactionPlugins;
+    protected List transactionListeners = new ArrayList();
+    protected List transactionPlugins = new ArrayList();
 
     public Transaction(WFS wfs, Data catalog, ApplicationContext context) {
         this.wfs = wfs;
