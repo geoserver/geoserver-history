@@ -36,7 +36,7 @@ public class XSProfile extends TypeMappingProfile {
         profile.add(name(XS.DECIMAL)); //BigDecimal.class
         profile.add(name(XS.ANYURI)); //URI.class
 
-        profile.add(name(XS.ANYTYPE)); //Map.class
+        //profile.add(name(XS.ANYTYPE)); //Map.class
     }
 
     static Name name(QName qName) {
