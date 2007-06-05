@@ -4,13 +4,13 @@
  */
 package org.vfny.geoserver.wms.responses.map.openlayers;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
 
 
 public class OpenLayersMapProducerFactory implements GetMapProducerFactorySpi {
