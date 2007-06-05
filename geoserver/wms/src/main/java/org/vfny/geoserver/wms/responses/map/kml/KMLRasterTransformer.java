@@ -126,8 +126,7 @@ public class KMLRasterTransformer extends TransformerBase {
                 element("href", "layer_" + mapLayerOrder + ".png");
             } else {
                 //reference the image as a remote wms call
-                Map getMap = KMLUtils.createGetMapRequest(mapContext, mapLayer);
-                element("href", KMLUtils.encode(mapContext, getMap));
+                element("href", KMLUtils.getMapUrl(mapContext, mapLayer,false));
             }
         }
     }
