@@ -4,6 +4,9 @@
  */
 package org.vfny.geoserver.util;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
 import javax.servlet.http.HttpServletRequest;
@@ -188,6 +191,49 @@ public final class Requests {
         return url;
     }
 
+    /**
+     * Returns the full url to the tile cache used by GeoServer ( if any ). 
+     * <p>
+     * If the tile cache set in the configuration ({@link GeoServer#getTileCache()})
+     * is set to an asbsolute url, it is simply returned. Otherwise the value
+     * is appended to the scheme and host of the supplied <tt>request</tt>.
+     * </p>
+     * @param request The request.
+     * @param geoServer The geoserver configuration.
+     * 
+     * @return The url to the tile cache, or <code>null</code> if no tile 
+     * cache set.
+     */
+    public static String getTileCacheBaseUrl(HttpServletRequest request, GeoServer geoServer ) {
+        //first check if tile cache set
+        String tileCacheBaseUrl = geoServer.getTileCache();
+        if ( tileCacheBaseUrl != null ) {
+            //two possibilities, local path, or full remote path
+            try {
+                new URL( tileCacheBaseUrl );
+                
+                //full url, return it
+                return tileCacheBaseUrl;
+            }
+            catch( MalformedURLException e1 ) {
+                //try relative to the same host as request
+                try {
+                    String url = concatUrl( request.getScheme() + "://" 
+                            + request.getServerName(), tileCacheBaseUrl ) ;
+                    new URL( url );
+                    
+                    //cool return it
+                    return url;
+                }
+                catch( MalformedURLException e2 ) {
+                    //out of guesses
+                }
+            }
+        }
+        
+        return null;
+    }
+    
     public static String concatUrl(String url, String contextPath) {
         if (url.endsWith("/")) {
             url = url.substring(0, url.length() - 1);
