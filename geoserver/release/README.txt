@@ -1,3 +1,22 @@
+GeoServer 1.5.1
+---------------
+
+The next minor release of GeoServer 1.5.x. The focus for this release has been
+to bring some interesting new features into the fold:
+
+- Chinese translation
+- Portuguese translation
+- OpenLayers map preview
+- KML legend support
+- KML superoverlay / region support
+- WMS layer grouping
+
+And as always numerous bug fixes. The entire issue log can be found here:
+
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&&fixfor=13320&pid=10311&sorter/field=issuekey&sorter/order=DESC
+
+This release is based off of geotools 2.3.2.
+
 GeoServer 1.5.1-RC1
 -------------------
 
