@@ -218,7 +218,18 @@
 	  </td>
 	 </tr> 
 
-  </tbody>
+	<tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.global.tileCache"/>">
+			<bean:message key="label.tileCache"/>:
+		</span>
+      </td>
+	  <td class="datum">
+	  	<html:text property="tileCache" size="60"/>
+	  </td>
+	 </tr> 
+	
+	</tbody>
 </table>
 
 <h3><bean:message key="label.contactInformation"/></h3>

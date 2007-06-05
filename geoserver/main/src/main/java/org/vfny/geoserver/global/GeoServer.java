@@ -10,6 +10,8 @@ import org.geotools.util.Logging;
 import org.springframework.beans.factory.DisposableBean;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.util.Requests;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -71,6 +73,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     private double memoryThreshold;
     private int tileThreads;
     private int tilePriority;
+    private String tileCache;
     private Boolean recycling;
     private Boolean imageIOCache;
     private Boolean JPEGnativeAcc;
@@ -429,6 +432,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             memoryThreshold = dto.getJaiMemoryThreshold();
             tileThreads = dto.getJaiTileThreads();
             tilePriority = dto.getJaiTilePriority();
+            tileCache = dto.getTileCache();
             recycling = dto.getJaiRecycling();
             imageIOCache = dto.getImageIOCache();
             JPEGnativeAcc = dto.getJaiJPEGNative();
@@ -612,6 +616,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         dto.setJaiMemoryThreshold(memoryThreshold);
         dto.setJaiTileThreads(tileThreads);
         dto.setJaiTilePriority(tilePriority);
+        dto.setTileCache(tileCache);
         dto.setJaiRecycling(recycling);
         dto.setImageIOCache(imageIOCache);
         dto.setJaiJPEGNative(JPEGnativeAcc);
@@ -799,6 +804,33 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         return tileThreads;
     }
 
+    /**
+     * Used when GeoServer is running beheind tile caching server. 
+     * <p>
+     * This value should be used when writing out a url which is a getmap
+     * request to reference the tile caching server and not GeoServer itself.
+     * </p>
+     *<p>
+     * This value can be:
+     * <ol>
+     *  <li>A fully qualified host name + path (URL)
+     *  <li>A partial path which is interpreted as relative to the host running
+     *  GeoServer
+     *  <li><code>null</code>
+     * </ol>
+     * </p>
+     * <p>
+     * 
+     * </p>
+     * @see Requests#getTileCacheBaseUrl(javax.servlet.http.HttpServletRequest, GeoServer)
+     */
+    public String getTileCache() {
+        return tileCache;
+    }
+    public void setTileCache(String tileCache) {
+        this.tileCache = tileCache;
+    }
+    
     public void destroy() throws Exception {
         ConnectionPoolManager.getInstance().closeAll();
 
