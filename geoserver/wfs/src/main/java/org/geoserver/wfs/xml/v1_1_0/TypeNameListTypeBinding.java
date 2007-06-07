@@ -79,19 +79,9 @@ public class TypeNameListTypeBinding extends AbstractSimpleBinding {
         throws Exception {
         //TODO: implement list support in parser so that passed in value is a list
         //&lt;xsd:pattern value="((\w:)?\w(=\w)?){1,}"&gt;
-        String[] tokens = ((String) value).split(",");
-        List qNames = new ArrayList();
-
-        for (int i = 0; i < tokens.length; i++) {
-            //skip aliases for now
-            int index = tokens[i].indexOf("=");
-
-            if (index != -1) {
-                tokens[i] = tokens[i].substring(0, i);
-            }
-
-            qNames.add((QName) new XSQNameBinding(namespaceContext).parse(instance, tokens[i]));
-        }
+        
+        //GR: List support in parser implemented, casting to List directly
+        List qNames = (List) value;
 
         return qNames;
     }
