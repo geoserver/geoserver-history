@@ -195,7 +195,7 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /** tile cache location, full url or relative path */
     private String tileCache;
-    
+
     /**
      * GlobalConfig constructor.
      *
@@ -246,7 +246,7 @@ public final class GeoServerDTO implements DataTransferObject {
         jaiPNGNative = g.getJaiPNGNative();
 
         tileCache = g.getTileCache();
-        
+
         if (g.getContact() != null) {
             contact = (ContactDTO) (g.getContact().clone());
         } else {
@@ -320,11 +320,10 @@ public final class GeoServerDTO implements DataTransferObject {
 
         if (tileCache != null) {
             r = r && tileCache.equals(g.getTileCache());
-        }
-        else if (g.getTileCache() != null) {
+        } else if (g.getTileCache() != null) {
             return false;
         }
-        
+
         r = r && (jaiMemoryCapacity == g.getJaiMemoryCapacity());
         r = r && (jaiMemoryThreshold == g.getJaiMemoryThreshold());
         r = r && (jaiTileThreads == g.getJaiTileThreads());
@@ -750,7 +749,7 @@ public final class GeoServerDTO implements DataTransferObject {
     public void setJaiTileThreads(int jaiTileThreads) {
         this.jaiTileThreads = jaiTileThreads;
     }
-    
+
     /**
      * tile cache parameter
      * @see GeoServer#getTileCache()
@@ -758,6 +757,7 @@ public final class GeoServerDTO implements DataTransferObject {
     public String getTileCache() {
         return tileCache;
     }
+
     public void setTileCache(String tileCache) {
         this.tileCache = tileCache;
     }

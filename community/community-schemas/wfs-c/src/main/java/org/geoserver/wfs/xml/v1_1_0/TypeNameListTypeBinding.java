@@ -79,9 +79,9 @@ public class TypeNameListTypeBinding extends AbstractSimpleBinding {
         throws Exception {
         //TODO: implement list support in parser so that passed in value is a list
         //&lt;xsd:pattern value="((\w:)?\w(=\w)?){1,}"&gt;
-        
+
         //GR: List support in parser implemented, casting to List directly
-        List qNames = (List)value;
+        List qNames = (List) value;
 
         return qNames;
     }

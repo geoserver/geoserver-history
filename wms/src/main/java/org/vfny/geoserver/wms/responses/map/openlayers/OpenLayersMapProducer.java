@@ -4,6 +4,15 @@
  */
 package org.vfny.geoserver.wms.responses.map.openlayers;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.wms.GetMapProducer;
+import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.WmsException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -14,19 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
-
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.WmsException;
-
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 
 
 public class OpenLayersMapProducer implements GetMapProducer {

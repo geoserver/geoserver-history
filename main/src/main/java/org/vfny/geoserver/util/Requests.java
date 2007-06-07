@@ -4,11 +4,10 @@
  */
 package org.vfny.geoserver.util;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
+import java.net.MalformedURLException;
+import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -50,7 +49,7 @@ public final class Requests {
      * @param request HttpServletRequest used to aquire servlet context
      *
      * @return GeoServer instance for the current Web Application
-    
+
     /*
      * This is the parameter used to get the proxy from the
      * web.xml file.  This is a bit hacky, it should be moved to
@@ -192,7 +191,7 @@ public final class Requests {
     }
 
     /**
-     * Returns the full url to the tile cache used by GeoServer ( if any ). 
+     * Returns the full url to the tile cache used by GeoServer ( if any ).
      * <p>
      * If the tile cache set in the configuration ({@link GeoServer#getTileCache()})
      * is set to an asbsolute url, it is simply returned. Otherwise the value
@@ -200,40 +199,39 @@ public final class Requests {
      * </p>
      * @param request The request.
      * @param geoServer The geoserver configuration.
-     * 
-     * @return The url to the tile cache, or <code>null</code> if no tile 
+     *
+     * @return The url to the tile cache, or <code>null</code> if no tile
      * cache set.
      */
-    public static String getTileCacheBaseUrl(HttpServletRequest request, GeoServer geoServer ) {
+    public static String getTileCacheBaseUrl(HttpServletRequest request, GeoServer geoServer) {
         //first check if tile cache set
         String tileCacheBaseUrl = geoServer.getTileCache();
-        if ( tileCacheBaseUrl != null ) {
+
+        if (tileCacheBaseUrl != null) {
             //two possibilities, local path, or full remote path
             try {
-                new URL( tileCacheBaseUrl );
-                
+                new URL(tileCacheBaseUrl);
+
                 //full url, return it
                 return tileCacheBaseUrl;
-            }
-            catch( MalformedURLException e1 ) {
+            } catch (MalformedURLException e1) {
                 //try relative to the same host as request
                 try {
-                    String url = concatUrl( request.getScheme() + "://" 
-                            + request.getServerName(), tileCacheBaseUrl ) ;
-                    new URL( url );
-                    
+                    String url = concatUrl(request.getScheme() + "://" + request.getServerName(),
+                            tileCacheBaseUrl);
+                    new URL(url);
+
                     //cool return it
                     return url;
-                }
-                catch( MalformedURLException e2 ) {
+                } catch (MalformedURLException e2) {
                     //out of guesses
                 }
             }
         }
-        
+
         return null;
     }
-    
+
     public static String concatUrl(String url, String contextPath) {
         if (url.endsWith("/")) {
             url = url.substring(0, url.length() - 1);

@@ -100,10 +100,10 @@ public class PropertyTypeBinding extends AbstractComplexBinding {
 
         //&lt;xsd:element minOccurs="0" name="Value"&gt;
         if (node.hasChild("Value")) {
-            
             Object object = node.getChildValue("Value");
+
             //check for a map
-            if ( object instanceof Map ) {
+            if (object instanceof Map) {
                 Map map = (Map) object;
 
                 //this means a complex element parsed by xs:AnyType binding
@@ -117,11 +117,9 @@ public class PropertyTypeBinding extends AbstractComplexBinding {
                         property.setValue(map.values().iterator().next());
                     }
                 }
+            } else {
+                property.setValue(object);
             }
-            else {
-                property.setValue( object );
-            }
-            
         }
 
         return property;

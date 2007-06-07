@@ -4,14 +4,15 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import java.awt.Color;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 import org.geoserver.ows.util.RequestUtils;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
@@ -53,16 +54,14 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureDescriptionTemplate;
 import org.vfny.geoserver.wms.responses.map.kml.KMLGeometryTransformer.KMLGeometryTranslator;
 import org.xml.sax.ContentHandler;
+import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * Transforms a feature collection to a kml "Document" consisting of nested
@@ -559,8 +558,8 @@ public class KMLVectorTransformer extends TransformerBase {
             String description = null;
 
             if (mapContext.getRequest().getKMattr()) {
-               FeatureDescriptionTemplate template = new FeatureDescriptionTemplate();
-               description = template.execute( feature );
+                FeatureDescriptionTemplate template = new FeatureDescriptionTemplate();
+                description = template.execute(feature);
             }
 
             if (description != null) {
