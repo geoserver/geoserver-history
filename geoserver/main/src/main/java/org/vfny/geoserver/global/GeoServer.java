@@ -5,9 +5,9 @@
 package org.vfny.geoserver.global;
 
 import com.sun.media.jai.util.SunTileCache;
+import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.jdbc.ConnectionPoolManager;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import java.io.BufferedOutputStream;
@@ -741,6 +741,17 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         return tileThreads;
     }
 
+    /**
+     * Implements {@link DisposableBean#destroy()} to release resources being held
+     * by the server at server shutdown, such as JDBC connection pools and ArcSDE
+     * connection pools.
+     * <p>
+     * Note this process would greately benefit if {@link DataStoreFactorySpi} API
+     * had some sort of resource releasing method, so we could just traverse
+     * the available datastore factories asking them to release any resource
+     * needed.
+     * </p>
+     */
     public void destroy() throws Exception {
         ConnectionPoolManager.getInstance().closeAll();
 
@@ -748,7 +759,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
            HACK: we must get a standard API way for releasing resources...
          */
         try {
-            Class sdepfClass = Class.forName("org.geotools.data.arcsde.ConnectionPoolFactory");
+            Class sdepfClass = Class.forName("org.geotools.arcsde.pool.ArcSDEConnectionPoolFactory");
 
             LOGGER.fine("SDE datasource found, releasing resources");
 
