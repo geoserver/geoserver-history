@@ -11,7 +11,6 @@ import org.springframework.beans.factory.DisposableBean;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.util.Requests;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -805,7 +804,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
-     * Used when GeoServer is running beheind tile caching server. 
+     * Used when GeoServer is running beheind tile caching server.
      * <p>
      * This value should be used when writing out a url which is a getmap
      * request to reference the tile caching server and not GeoServer itself.
@@ -820,17 +819,29 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * </ol>
      * </p>
      * <p>
-     * 
+     *
      * </p>
      * @see Requests#getTileCacheBaseUrl(javax.servlet.http.HttpServletRequest, GeoServer)
      */
     public String getTileCache() {
         return tileCache;
     }
+
     public void setTileCache(String tileCache) {
         this.tileCache = tileCache;
     }
-    
+
+    /**
+     * Implements {@link DisposableBean#destroy()} to release resources being held
+     * by the server at server shutdown, such as JDBC connection pools and ArcSDE
+     * connection pools.
+     * <p>
+     * Note this process would greately benefit if {@link DataStoreFactorySpi} API
+     * had some sort of resource releasing method, so we could just traverse
+     * the available datastore factories asking them to release any resource
+     * needed.
+     * </p>
+     */
     public void destroy() throws Exception {
         ConnectionPoolManager.getInstance().closeAll();
 
@@ -838,7 +849,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
            HACK: we must get a standard API way for releasing resources...
          */
         try {
-            Class sdepfClass = Class.forName("org.geotools.data.arcsde.ConnectionPoolFactory");
+            Class sdepfClass = Class.forName("org.geotools.arcsde.pool.ArcSDEConnectionPoolFactory");
 
             LOGGER.fine("SDE datasource found, releasing resources");
 
