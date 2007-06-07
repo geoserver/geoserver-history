@@ -47,11 +47,11 @@ import javax.servlet.http.HttpServletResponse;
  * <b>class</b> MyConfigAction <b>extends</b> ConfigAction {
  *   Redirect execute( HttpServletRequest request, ){
  *     <b>if</b>( !isLoggedIn( request )){
- *       return new Redirect(“Login Page”);
+ *       return new Redirect(ï¿½Login Pageï¿½);
  *     }
  *     UserContainer user = getUserContainer( request );
- *     …
- *     <b>return new</b> Redirect(“my.jsp”);
+ *     ï¿½
+ *     <b>return new</b> Redirect(ï¿½my.jspï¿½);
  *   }
  * }
  * </code></pre>
@@ -62,8 +62,8 @@ import javax.servlet.http.HttpServletResponse;
  * <pre><code>
  * <b>class</b> MyConfigAction <b>extends</b> ConfigAction {
  *   Redirect execute( UserContainer user, HttpServletRequest request ){
- *     …
- *     <b>return new</b> Redirect(“my.jsp”);
+ *     ï¿½
+ *     <b>return new</b> Redirect(ï¿½my.jspï¿½);
  *   }
  * }
  * </code></pre>

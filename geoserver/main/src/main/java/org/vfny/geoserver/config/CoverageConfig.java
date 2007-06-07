@@ -498,10 +498,10 @@ public class CoverageConfig {
      */
     private void parseUom(StringBuffer label2, Unit uom) {
         String uomString = uom.toString();
-        uomString = uomString.replaceAll("²", "^2");
-        uomString = uomString.replaceAll("³", "^3");
-        uomString = uomString.replaceAll("Å", "A");
-        uomString = uomString.replaceAll("°", "");
+        uomString = uomString.replaceAll("ï¿½", "^2");
+        uomString = uomString.replaceAll("ï¿½", "^3");
+        uomString = uomString.replaceAll("ï¿½", "A");
+        uomString = uomString.replaceAll("ï¿½", "");
         label2.append(uomString);
     }
 

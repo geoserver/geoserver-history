@@ -64,7 +64,7 @@ public class GetMapReflectKvpReader extends GetMapKvpReader {
         WMS_DEFAULTS.put("HEIGHT", "256");
         WMS_DEFAULTS.put("WIDTH", "256");
         WMS_DEFAULTS.put("BBOX", "-180,-90,180,90");
-        WMS_DEFAULTS.put("SRS", "EPSG:4326" );
+        WMS_DEFAULTS.put("SRS", "EPSG:4326");
     }
 
     /**

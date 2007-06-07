@@ -37,7 +37,7 @@ public class QuickTileCache {
         ignoredParameters.add("VERSION");
         ignoredParameters.add("EXCEPTIONS");
     }
-    
+
     /**
      * The time to live for the tiles in cache, in milliseconds. When this time expires,
      * the tiles in the cache will be considered stale
@@ -261,8 +261,10 @@ public class QuickTileCache {
         if (ce == null) {
             return null;
         }
-        if(ce.isExpired()) {
+
+        if (ce.isExpired()) {
             tileCache.remove(key);
+
             return null;
         }
 
@@ -270,7 +272,7 @@ public class QuickTileCache {
     }
 
     /**
-     * 
+     *
      * @param key
      * @param request
      * @param tiles
@@ -294,20 +296,18 @@ public class QuickTileCache {
     public synchronized void storeTiles(MetaTileKey key, BufferedImage[] tiles) {
         tileCache.put(key, new CacheElement(tiles));
     }
-    
-    class CacheElement {
 
-        BufferedImage tiles[];
+    class CacheElement {
+        BufferedImage[] tiles;
         long timeCached;
-        
+
         public CacheElement(BufferedImage[] tiles) {
             this.tiles = tiles;
             this.timeCached = System.currentTimeMillis();
         }
-        
+
         public boolean isExpired() {
-            return System.currentTimeMillis() - timeCached > TIME_TO_LIVE;
+            return (System.currentTimeMillis() - timeCached) > TIME_TO_LIVE;
         }
-        
     }
 }
