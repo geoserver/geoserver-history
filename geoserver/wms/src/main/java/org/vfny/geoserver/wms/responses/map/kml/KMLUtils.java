@@ -4,18 +4,16 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.map.MapLayer;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**
@@ -25,7 +23,6 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  */
 public class KMLUtils {
-    
     /**
      * Encodes the url of a GetMap request from a map context + map layer.
      *
@@ -37,8 +34,8 @@ public class KMLUtils {
      *
      * @return The full url for a getMap request.
      */
-    public static String getMapUrl(WMSMapContext mapContext, MapLayer mapLayer, Envelope bbox, String[] kvp, boolean tile ) {
-    
+    public static String getMapUrl(WMSMapContext mapContext, MapLayer mapLayer, Envelope bbox,
+        String[] kvp, boolean tile) {
         //parameters
         HashMap map = new HashMap();
 
@@ -55,30 +52,31 @@ public class KMLUtils {
 
         map.put("srs", "EPSG:4326");
         map.put("transparent", "true");
-        
+
         //overrides / additions
-        for ( int i = 0; kvp != null &&  i < kvp.length; i += 2 ) {
-            map.put( kvp[i], kvp[i+1] );
+        for (int i = 0; (kvp != null) && (i < kvp.length); i += 2) {
+            map.put(kvp[i], kvp[i + 1]);
         }
-        
+
         //base url
         String baseUrl = null;
-        
+
         //tile?
-        if ( tile ) {
-            baseUrl = Requests.getTileCacheBaseUrl( 
-                mapContext.getRequest().getHttpServletRequest(), mapContext.getRequest().getGeoServer() );
+        if (tile) {
+            baseUrl = Requests.getTileCacheBaseUrl(mapContext.getRequest().getHttpServletRequest(),
+                    mapContext.getRequest().getGeoServer());
         }
-        if ( baseUrl == null ) {
+
+        if (baseUrl == null) {
             //fall back to normal wms request
-            baseUrl = Requests.getBaseUrl( mapContext.getRequest().getHttpServletRequest(), mapContext.getRequest().getGeoServer() );
+            baseUrl = Requests.getBaseUrl(mapContext.getRequest().getHttpServletRequest(),
+                    mapContext.getRequest().getGeoServer());
             baseUrl += "wms?";
         }
-        
-         return KMLUtils.encode(mapContext, map, baseUrl );
 
+        return KMLUtils.encode(mapContext, map, baseUrl);
     }
-    
+
     /**
      * Encodes the url of a GetMap request from a map context + map layer.
      *
@@ -90,7 +88,7 @@ public class KMLUtils {
      * @return The full url for a getMap request.
      */
     public static String getMapUrl(WMSMapContext mapContext, MapLayer mapLayer, boolean tile) {
-        return getMapUrl(mapContext, mapLayer, mapContext.getAreaOfInterest(),null,tile);
+        return getMapUrl(mapContext, mapLayer, mapContext.getAreaOfInterest(), null, tile);
     }
 
     /**
@@ -98,12 +96,12 @@ public class KMLUtils {
      *
      * @param mapContext The map context.
      * @param mapLayer The map layer.
-     * @param kvp Additional or overidding kvp parameters, may be <code>null</code> 
+     * @param kvp Additional or overidding kvp parameters, may be <code>null</code>
      *
      * @return A map containing all the key value pairs for a GetLegendGraphic request.
      */
-    public static String getLegendGraphicUrl(WMSMapContext mapContext, MapLayer mapLayer, String[] kvp) {
-        
+    public static String getLegendGraphicUrl(WMSMapContext mapContext, MapLayer mapLayer,
+        String[] kvp) {
         //parameters
         HashMap map = new HashMap();
 
@@ -117,14 +115,15 @@ public class KMLUtils {
         map.put("width", "20");
 
         //overrides / additions
-        for ( int i = 0; kvp != null &&  i < kvp.length; i += 2 ) {
-            map.put( kvp[i], kvp[i+1] );
+        for (int i = 0; (kvp != null) && (i < kvp.length); i += 2) {
+            map.put(kvp[i], kvp[i + 1]);
         }
-        
-        String baseUrl = Requests.getBaseUrl( mapContext.getRequest().getHttpServletRequest(), mapContext.getRequest().getGeoServer() );
+
+        String baseUrl = Requests.getBaseUrl(mapContext.getRequest().getHttpServletRequest(),
+                mapContext.getRequest().getGeoServer());
         baseUrl += "wms?";
-        
-        return encode( mapContext, map, baseUrl );
+
+        return encode(mapContext, map, baseUrl);
     }
 
     /**
@@ -145,8 +144,7 @@ public class KMLUtils {
      *
      * @return The full request url.
      */
-    static String encode(WMSMapContext mapContext, Map kvp, String baseUrl ) {
-        
+    static String encode(WMSMapContext mapContext, Map kvp, String baseUrl) {
         StringBuffer href = new StringBuffer(baseUrl);
 
         for (Iterator e = kvp.entrySet().iterator(); e.hasNext();) {
@@ -158,7 +156,7 @@ public class KMLUtils {
 
         return href.toString();
     }
-    
+
     /**
      * Creates sax attributes from an array of key value pairs.
      *

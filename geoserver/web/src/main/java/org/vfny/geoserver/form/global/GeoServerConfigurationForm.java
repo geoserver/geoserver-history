@@ -112,7 +112,7 @@ public class GeoServerConfigurationForm extends ActionForm {
 
     /** tile cache location, full url or relative path */
     private String tileCache;
-    
+
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
 
@@ -156,7 +156,7 @@ public class GeoServerConfigurationForm extends ActionForm {
         jaiPNGNativeChecked = false;
 
         tileCache = globalConfig.getTileCache();
-        
+
         ContactConfig contactConfig = globalConfig.getContact();
         contactPerson = contactConfig.getContactPerson();
         contactOrganization = contactConfig.getContactOrganization();
@@ -799,7 +799,7 @@ public class GeoServerConfigurationForm extends ActionForm {
     public void setJaiTileThreads(int jaiTileThreads) {
         this.jaiTileThreads = jaiTileThreads;
     }
-    
+
     /**
      * tile cache parameter
      * @see GeoServer#getTileCache()
@@ -807,6 +807,7 @@ public class GeoServerConfigurationForm extends ActionForm {
     public String getTileCache() {
         return tileCache;
     }
+
     public void setTileCache(String tileCache) {
         this.tileCache = tileCache;
     }

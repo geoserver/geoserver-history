@@ -237,13 +237,14 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
                     ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac
                         .createLiteralExpression(pixelRect));
-                    if ( finfo.getFeatureType().getDefaultGeometry() != null ) {
-                        ((GeometryFilter) getFInfoFilter).addRightGeometry(filterFac.createAttributeExpression(finfo.getFeatureType().getDefaultGeometry().getName()));    
+
+                    if (finfo.getFeatureType().getDefaultGeometry() != null) {
+                        ((GeometryFilter) getFInfoFilter).addRightGeometry(filterFac
+                            .createAttributeExpression(finfo.getFeatureType().getDefaultGeometry()
+                                                            .getName()));
+                    } else {
+                        LOGGER.warning("GetFeatureInfo for feature type with no default geometry.");
                     }
-                    else {
-                        LOGGER.warning("GetFeatureInfo for feature type with no default geometry." ); 
-                    }
-                    
                 } catch (IllegalFilterException e) {
                     e.printStackTrace();
                     throw new WmsException(null, "Internal error : " + e.getMessage());

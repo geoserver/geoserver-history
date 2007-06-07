@@ -154,10 +154,11 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         }
 
         String tileCache = form.getTileCache();
-        if ( tileCache == null || "".equals(tileCache.trim())) {
+
+        if ((tileCache == null) || "".equals(tileCache.trim())) {
             tileCache = null;
         }
-        
+
         GlobalConfig globalConfig = getGlobalConfig();
         globalConfig.setMaxFeatures(maxFeatures);
         globalConfig.setVerbose(verbose);
@@ -180,7 +181,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         globalConfig.setJaiJPEGNative(jaiJPEGNative);
         globalConfig.setJaiPNGNative(jaiPNGNative);
         globalConfig.setTileCache(tileCache);
-        
+
         ContactConfig contactConfig = globalConfig.getContact();
         contactConfig.setContactPerson(form.getContactPerson());
         contactConfig.setContactOrganization(form.getContactOrganization());
