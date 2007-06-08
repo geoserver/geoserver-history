@@ -172,6 +172,11 @@
     <version>${gt.version}</version>
    </dependency>
    <dependency>
+    <groupId>org.geotools</groupId>
+    <artifactId>gt2-shapefile-renderer</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
     <groupId>org.geotools.demo</groupId>
     <artifactId>gt2-demo-property</artifactId>
     <version>${gt.version}</version>

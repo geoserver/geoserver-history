@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.lite.StreamingRenderer;
+import org.geotools.renderer.shape.ShapefileRenderer;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.RasterMapProducer;
@@ -260,7 +261,7 @@ public abstract class DefaultRasterMapProducer implements RasterMapProducer {
 
         Rectangle paintArea = new Rectangle(width, height);
         RenderingHints hints = new RenderingHints(hintsMap);
-        renderer = new StreamingRenderer();
+        renderer = new ShapefileRenderer();
         renderer.setContext(map);
         renderer.setJava2DHints(hints);
 
