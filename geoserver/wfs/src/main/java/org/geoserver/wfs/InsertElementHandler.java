@@ -144,19 +144,9 @@ public class InsertElementHandler implements TransactionElementHandler {
                         schema2fids.put(schema.getTypeName(), fids);
                     }
 
+                    listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_INSERT,
+                            collection));
                     fids.addAll(store.addFeatures(collection));
-
-                    //  tell the world we're just inserted data
-                    Set ogcFids = new HashSet();
-
-                    for (Iterator it = fids.iterator(); it.hasNext();) {
-                        String fid = (String) it.next();
-                        ogcFids.add(filterFactory.featureId(fid));
-                    }
-
-                    Filter fidFilter = filterFactory.id(ogcFids);
-                    listener.dataStoreChange(new TransactionEvent(
-                            TransactionEventType.POST_INSERT, store.getFeatures(fidFilter)));
                 }
             }
 
