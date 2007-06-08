@@ -26,7 +26,7 @@ public class LogoutAction extends GeoServerAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
         HttpServletRequest request, HttpServletResponse response) {
         // remove UserContainer from Session
-        logOut(request);
+        //        logOut(request);
 
         //if we don't invalidate their session, we can save other variables, such as locale
 
