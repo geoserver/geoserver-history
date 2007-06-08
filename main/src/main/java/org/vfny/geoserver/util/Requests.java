@@ -49,7 +49,7 @@ public final class Requests {
      * @param request HttpServletRequest used to aquire servlet context
      *
      * @return GeoServer instance for the current Web Application
-
+    
     /*
      * This is the parameter used to get the proxy from the
      * web.xml file.  This is a bit hacky, it should be moved to
