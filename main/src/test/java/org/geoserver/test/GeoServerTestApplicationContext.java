@@ -25,7 +25,12 @@ public class GeoServerTestApplicationContext extends ClassPathXmlApplicationCont
 
     public GeoServerTestApplicationContext(String configLocation, ServletContext servletContext)
         throws BeansException {
-        super(new String[] { configLocation }, false);
+        this(new String[] { configLocation }, servletContext);
+    }
+
+    public GeoServerTestApplicationContext(String[] configLocation, ServletContext servletContext)
+        throws BeansException {
+        super(configLocation, false);
         this.servletContext = servletContext;
     }
 

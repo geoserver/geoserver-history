@@ -4,26 +4,23 @@
  */
 package org.geoserver.test;
 
-import com.mockrunner.mock.web.MockHttpServletRequest;
-import com.mockrunner.mock.web.MockHttpSession;
-import com.mockrunner.mock.web.MockServletContext;
-import com.mockrunner.mock.web.MockServletContext;
-import com.mockrunner.mock.web.MockServletInputStream;
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+import javax.xml.namespace.QName;
+
 import junit.framework.TestCase;
+
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geotools.data.FeatureSource;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
-import java.io.IOException;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
-import javax.xml.namespace.QName;
-import javax.xml.namespace.QName;
+
+import com.mockrunner.mock.web.MockHttpServletRequest;
+import com.mockrunner.mock.web.MockHttpSession;
+import com.mockrunner.mock.web.MockServletContext;
 
 
 /**
@@ -68,8 +65,10 @@ public class GeoServerTestSupport extends TestCase {
         servletContext.setInitParameter("GEOSERVER_DATA_DIR",
             dataDirectory.getDataDirectoryRoot().getAbsolutePath());
 
-        applicationContext = new GeoServerTestApplicationContext("classpath*:/applicationContext.xml",
-                servletContext);
+        applicationContext = new GeoServerTestApplicationContext(new String[] {
+                    "classpath*:/applicationContext.xml",
+                    "classpath*:/applicationSecurityContext.xml"
+                }, servletContext);
 
         applicationContext.refresh();
     }

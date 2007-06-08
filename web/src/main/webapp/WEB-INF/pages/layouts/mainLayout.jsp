@@ -3,6 +3,7 @@
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
+<%@ taglib prefix='c' uri='http://java.sun.com/jstl/core' %>
 
 <tiles:importAttribute scope="request"/>
 
@@ -71,13 +72,6 @@
   </head>
   <body>
   
-<!-- Security Check (for non application layers -->
-<logic:notEqual name="layer" value="application">  
-  <logic:notPresent name="GEOSERVER.USER">
-    <logic:redirect forward="login" />
-  </logic:notPresent>
-</logic:notEqual>
-    
 <table class="page" height="100%">
   <tbody>
 	<tr class="header" height="1%">
@@ -138,16 +132,13 @@
               </td>
               <td class="loginStatus">
                 <span class="loginStatus">                  
-<logic:present name="GEOSERVER.USER">
-                    <html:link forward="logout">
-				      <bean:message key="label.logout"/>
-			        </html:link>
-</logic:present>                  
-<logic:notPresent name="GEOSERVER.USER">
+<%if(Requests.isLoggedIn(request)) {%>
+                    <a href="<%=request.getContextPath()%>/j_acegi_logout"><bean:message key="label.logout"/></a>
+<%} else {%>                  
                     <html:link forward="login">
                       <bean:message key="label.login"/>
                     </html:link>
-</logic:notPresent>                  
+<%}%>                  
                 </span>
               </td>
             </tr>

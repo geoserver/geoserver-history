@@ -105,6 +105,17 @@
 	    </property>
     </bean>
 		
-		<!--  dispatcher -->
-	<bean id="dispatcher" class="org.geoserver.ows.Dispatcher"/>
+		
+    <!--  dispatcher -->
+	<bean id="dispatcher" class="org.geoserver.ows.Dispatcher">
+      <!-- 
+        See the applicationSecurityContext document. You can safely remove this
+        if in need for playing with a non secure version of Geoserver
+       -->
+      <property name="securityInterceptor">
+        <ref bean="operationSecurityInterceptor"/>
+      </property>
+    </bean>
+    
+    
 </beans>
