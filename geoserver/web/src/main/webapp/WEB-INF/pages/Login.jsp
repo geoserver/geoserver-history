@@ -6,16 +6,6 @@
 	import="org.acegisecurity.ui.webapp.AuthenticationProcessingFilter"%>
 <%@ page import="org.acegisecurity.AuthenticationException"%>
 
-
-<c:if test="${not empty param.login_error}">
-	<font color="red"> Your login attempt was not successful, try
-	again.<BR>
-	<BR>
-	Reason: <%=((AuthenticationException) session
-                                    .getAttribute(AbstractProcessingFilter.ACEGI_SECURITY_LAST_EXCEPTION_KEY))
-                                    .getMessage()%> </font>
-</c:if>
-
 <form action="<c:url value='/j_acegi_security_check'/>" method="POST">
 <table class="info">
 	<tbody>
@@ -26,12 +16,18 @@
 		</tr>
 		<tr>
 			<td class="label"><bean:message key="label.password" />:</td>
-			<td><input type='password' name='password' size='60'/></td>
+			<td><input type='password' name='password' size='60' /></td>
 		</tr>
 		<tr>
 			<td></td>
-			<td><input type="checkbox" name="_acegi_security_remember_me"/>
+			<td><input type="checkbox" name="_acegi_security_remember_me" />
 			<bean:message key="label.rememberLogin" /></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><c:if test="${not empty param.login_error}">
+				<font color="red"><bean:message key="error.login.invalidCombo" /></font>
+			</c:if></td>
 		</tr>
 
 		<tr>
