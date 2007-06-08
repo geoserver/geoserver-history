@@ -4,13 +4,7 @@
  */
 package org.geoserver.security;
 
-import org.acegisecurity.ConfigAttributeDefinition;
-import org.acegisecurity.ConfigAttributeEditor;
-import org.acegisecurity.intercept.ObjectDefinitionSource;
-import org.geoserver.platform.Operation;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,24 +13,31 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.acegisecurity.ConfigAttributeDefinition;
+import org.acegisecurity.ConfigAttributeEditor;
+import org.acegisecurity.intercept.ObjectDefinitionSource;
+import org.geoserver.platform.Operation;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * Returns security attributes (roles) for an OWS {@link Operation} based on the
  * contents of a property file
- *
+ * 
  * @author Andrea Aime - TOPP
- *
+ * 
  */
 public class OperationDefinitionSource implements ObjectDefinitionSource {
     /** logger */
     static Logger LOGGER = Logger.getLogger("org.geoserver.security");
+
     Map definitions;
 
-    public ConfigAttributeDefinition getAttributes(Object object)
-        throws IllegalArgumentException {
+    PropertyFileWatcher operationDefinitionFile;
+
+    public ConfigAttributeDefinition getAttributes(Object object) throws IllegalArgumentException {
         if (!(object instanceof Operation)) {
             throw new IllegalArgumentException(
-                "Only Operation objects are supported by the OperationDefinitionSource");
+                    "Only Operation objects are supported by the OperationDefinitionSource");
         }
 
         // check if we have config attributes in the map
@@ -70,43 +71,44 @@ public class OperationDefinitionSource implements ObjectDefinitionSource {
     }
 
     void checkDefinitions() {
-        if (definitions == null) {
+        if (definitions == null || operationDefinitionFile != null
+                && operationDefinitionFile.isStale()) {
             try {
                 definitions = new HashMap();
 
-                File dd = GeoserverDataDirectory.getGeoserverDataDirectory();
-                File securityDir = GeoserverDataDirectory.findConfigDir(dd, "security");
-                File securityDefinitions = new File(securityDir, "service.properties");
+                if (operationDefinitionFile != null) {
+                    File dd = GeoserverDataDirectory.getGeoserverDataDirectory();
+                    File securityDir = GeoserverDataDirectory.findConfigDir(dd, "security");
+                    File securityDefinitions = new File(securityDir, "service.properties");
+                    operationDefinitionFile = new PropertyFileWatcher(securityDefinitions);
+                }
+
                 ConfigAttributeEditor editor = new ConfigAttributeEditor();
+                Properties p = operationDefinitionFile.getProperties();
+                for (Iterator it = p.keySet().iterator(); it.hasNext();) {
+                    try {
+                        String key = (String) it.next();
+                        OperationKey okey = new OperationKey(key);
+                        editor.setAsText(p.getProperty(key));
 
-                if (securityDefinitions.exists()) {
-                    Properties p = new Properties();
-                    p.load(new FileInputStream(securityDefinitions));
-
-                    for (Iterator it = p.keySet().iterator(); it.hasNext();) {
-                        try {
-                            String key = (String) it.next();
-                            OperationKey okey = new OperationKey(key);
-                            editor.setAsText(p.getProperty(key));
-
-                            ConfigAttributeDefinition cad = (ConfigAttributeDefinition) editor
+                        ConfigAttributeDefinition cad = (ConfigAttributeDefinition) editor
                                 .getValue();
-                            definitions.put(okey, cad);
-                        } catch (IllegalArgumentException e) {
-                            LOGGER.log(Level.SEVERE,
+                        definitions.put(okey, cad);
+                    } catch (IllegalArgumentException e) {
+                        LOGGER.log(Level.SEVERE,
                                 "Skipping invalid operation security configuration element", e);
-                        }
                     }
                 }
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "An error occurred loading service security definitions ",
-                    e);
+                        e);
             }
         }
     }
 
     private class OperationKey {
         String service;
+
         String operation;
 
         public OperationKey(String service, String operation) {
@@ -120,7 +122,7 @@ public class OperationDefinitionSource implements ObjectDefinitionSource {
 
                 if (elements.length > 2) {
                     throw new IllegalArgumentException(
-                        "A valid operation key is made of 'service.method', or just 'service'. ");
+                            "A valid operation key is made of 'service.method', or just 'service'. ");
                 }
 
                 service = elements[0].trim();

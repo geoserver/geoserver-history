@@ -4,7 +4,10 @@
  */
 package org.geoserver.security;
 
-import org.acegisecurity.ConfigAttributeEditor;
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.acegisecurity.userdetails.UserDetails;
 import org.acegisecurity.userdetails.UserDetailsService;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
@@ -13,59 +16,53 @@ import org.acegisecurity.userdetails.memory.UserMapEditor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-
+/**
+ * A simple DAO reading the property files
+ * 
+ * @author Andrea Aime - TOPP
+ * 
+ */
 public class GeoserverUserDao implements UserDetailsService {
     /** logger */
     static Logger LOGGER = Logger.getLogger("org.geoserver.security");
+
     private UserMap userMap;
 
-    public UserDetails loadUserByUsername(String username)
-        throws UsernameNotFoundException, DataAccessException {
+    private PropertyFileWatcher userDefinitionsFile;
+
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException,
+            DataAccessException {
         checkUserMap();
 
         return userMap.getUser(username);
     }
 
+    /**
+     * Either loads the default property file on the first access, or reloads it
+     * if it has been modified since last access.
+     * 
+     * @throws DataAccessResourceFailureException
+     */
     private void checkUserMap() throws DataAccessResourceFailureException {
-        if (userMap == null) {
+        if (userMap == null || userDefinitionsFile != null
+                && userDefinitionsFile.isStale()) {
             try {
-                File dd = GeoserverDataDirectory.getGeoserverDataDirectory();
-                File securityDir = GeoserverDataDirectory.findConfigDir(dd, "security");
-                File userDefinitions = new File(securityDir, "users.properties");
-
-                if (userDefinitions.exists()) {
-                    userMap = new UserMap();
-
-                    Properties p = new Properties();
-                    p.load(new FileInputStream(userDefinitions));
-                    UserMapEditor.addUsersFromProperties(userMap, p);
-                } else {
-                    throw new DataAccessResourceFailureException("Could not find the "
-                        + userDefinitions + " user configuration file!");
+                if(userDefinitionsFile == null) {
+                    File dd = GeoserverDataDirectory.getGeoserverDataDirectory();
+                    File securityDir = GeoserverDataDirectory.findConfigDir(dd, "security");
+                    File propFile = new File(securityDir, "users.properties");
+                    if(!propFile.exists())
+                        throw new DataAccessResourceFailureException("Could not find the "
+                                + userDefinitionsFile + " user configuration file!");
+                    userDefinitionsFile = new PropertyFileWatcher(propFile);  
                 }
+
+                userMap = new UserMap();
+                UserMapEditor.addUsersFromProperties(userMap, userDefinitionsFile.getProperties());
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "An error occurred loading user definitions", e);
             }
         }
-    }
-
-    /**
-     * Modifies the internal <code>UserMap</code> to reflect the
-     * <code>Properties</code> instance passed. This helps externalise user
-     * information to another file etc.
-     *
-     * @param props
-     *            the account information in a <code>Properties</code> object
-     *            format
-     */
-    public void setUserProperties(Properties props) {
-        UserMap userMap = new UserMap();
-        this.userMap = UserMapEditor.addUsersFromProperties(userMap, props);
     }
 }
