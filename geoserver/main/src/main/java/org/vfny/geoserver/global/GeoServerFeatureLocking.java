@@ -24,7 +24,7 @@ import java.io.IOException;
  * same order we need a way to smoothly inforce this. Could we use this class
  * to do so? It would need to support writing and locking though.</p>
  *
- * @author Gabriel Roldï¿½n
+ * @author Gabriel Roldán
  * @version $Id: GeoServerFeatureLocking.java,v 1.5 2004/02/09 23:29:42 dmzwiers Exp $
  */
 public class GeoServerFeatureLocking extends GeoServerFeatureStore implements FeatureLocking {

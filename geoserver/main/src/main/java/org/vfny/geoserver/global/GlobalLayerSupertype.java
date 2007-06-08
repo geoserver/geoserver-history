@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * have a super class contain all the common functionality of the sub-classes
  * which does not pertain to particular manipulations within the classes.
  *
- * @author Gabriel Roldï¿½n
+ * @author Gabriel Roldán
  * @author dzwiers
  * @version $Id: GlobalLayerSupertype.java,v 1.3 2004/01/31 00:27:23 jive Exp $
  */

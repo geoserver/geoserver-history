@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
  * appropriate internal DescribeRequest object.
  *
  * @author Rob Hranac, TOPP
- * @author Gabriel Roldï¿½n
+ * @author Gabriel Roldán
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id: DescribeKvpReader.java,v 1.6 2004/02/09 23:29:40 dmzwiers Exp $

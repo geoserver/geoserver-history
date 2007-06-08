@@ -24,8 +24,8 @@ package org.vfny.geoserver.action;
  *  </ul>
  *  <p>Example Use:</p>
 <pre><code>
- * HTMLEncoder.encode("Kï¿½nig"); //will return "K&ouml;nig" (For JavaDocs: "K&amp;ouml;nig")
- * HTMLEncoder.decode("K&ouml;nig"); //will return "Kï¿½nig"</code></pre>
+ * HTMLEncoder.encode("König"); //will return "K&ouml;nig" (For JavaDocs: "K&amp;ouml;nig")
+ * HTMLEncoder.decode("K&ouml;nig"); //will return "König"</code></pre>
  *
  * @author rgould, Refractions Research, Inc.
  * @author $Author: dmzwiers $ (last modification)
@@ -158,18 +158,18 @@ public class HTMLEncoder {
 
                 // This shows up lower in the other numbered cases.
 
-                /*case 'ï¿½':
-                   case 'ï¿½':
-                   case 'ï¿½':
-                   case 'ï¿½':
-                   case 'ï¿½':
-                   case 'ï¿½':
-                   case 'ï¿½':
-                   case 'ï¿½':
-                   case 'ï¿½':
-                   case 'ï¿½':
+                /*case 'á':
+                   case 'é':
+                   case 'í':
+                   case 'ó':
+                   case 'ú':
+                   case 'Á':
+                   case 'É':
+                   case 'Í':
+                   case 'Ó':
+                   case 'Ú':
                        buf.append(c + "&acute;");
-
+                
                        break;*/
                 case 160:
                 case 161:

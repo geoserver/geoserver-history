@@ -12,7 +12,7 @@ package org.vfny.geoserver.global.dto;
  * legend.setWidth(72);legend.setHeight(72);legend.setFormat("image/png");
  * </code> </pre></p>
  *
- * @author Charles Kolbowicz, Institut de Recherche pour le Dï¿½veloppement
+ * @author Charles Kolbowicz, Institut de Recherche pour le Développement
  *         (IRD), 2004
  * @version $Id$
  */
