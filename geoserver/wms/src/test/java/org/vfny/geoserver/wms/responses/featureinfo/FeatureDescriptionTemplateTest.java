@@ -18,7 +18,7 @@ import org.geotools.feature.DefaultFeatureType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.FeatureType;
-import org.vfny.geoserver.wms.responses.featureInfo.FeatureDescriptionTemplate;
+import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 import org.w3c.dom.Document;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,7 +31,7 @@ public class FeatureDescriptionTemplateTest extends TestCase {
     public void testTemplate() throws Exception {
         Configuration cfg = new Configuration();
         cfg.setObjectWrapper(new FeatureWrapper());
-        cfg.setClassForTemplateLoading(FeatureDescriptionTemplate.class, "");
+        cfg.setClassForTemplateLoading(FeatureTemplate.class, "");
 
         Template template = cfg.getTemplate("description.ftl");
         assertNotNull(template);
