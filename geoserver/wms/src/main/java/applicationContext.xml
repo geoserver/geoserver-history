@@ -261,5 +261,9 @@
 	<bean id="OpenLayersMapProducerFactory"
 		class="org.vfny.geoserver.wms.responses.map.openlayers.OpenLayersMapProducerFactory">
 	</bean>
-		
+
+	<bean id="GeoRSSMapProducerFactory"
+		class="org.vfny.geoserver.wms.responses.map.georss.GeoRSSMapProducerFactory">
+	</bean>
+			
 </beans>
