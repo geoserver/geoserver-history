@@ -113,6 +113,10 @@ public class GlobalConfig {
     private boolean imageIOCache;
     private boolean jaiJPEGNative;
     private boolean jaiPNGNative;
+    
+    /** tile cache location, full url or relative path */
+    private String tileCache;
+
 
     /**
              * GlobalConfig constructor.
@@ -184,6 +188,8 @@ public class GlobalConfig {
         jaiJPEGNative = g.getJaiJPEGNative().booleanValue();
         jaiPNGNative = g.getJaiPNGNative().booleanValue();
 
+        tileCache = g.getTileCache();
+        
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
         } else {
@@ -228,6 +234,8 @@ public class GlobalConfig {
         jaiJPEGNative = g.getJaiJPEGNative().booleanValue();
         jaiPNGNative = g.getJaiPNGNative().booleanValue();
 
+        tileCache = g.getTileCache();
+        
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
         } else {
@@ -266,7 +274,7 @@ public class GlobalConfig {
         g.setJaiJPEGNative(Boolean.valueOf(jaiJPEGNative));
         g.setJaiPNGNative(Boolean.valueOf(jaiPNGNative));
         g.setProxyBaseUrl(proxyBaseUrl);
-
+        g.setTileCache(tileCache);
         return g;
     }
 
@@ -581,4 +589,16 @@ public class GlobalConfig {
     public void setJaiTileThreads(int jaiTileThreads) {
         this.jaiTileThreads = jaiTileThreads;
     }
+    
+    /**
+     * tile cache parameter
+     * @see GeoServer#getTileCache()
+     */
+     public String getTileCache() {
+    	 return tileCache;
+     }
+     public void setTileCache(String tileCache) {
+    	 this.tileCache = tileCache;
+     }
+
 }

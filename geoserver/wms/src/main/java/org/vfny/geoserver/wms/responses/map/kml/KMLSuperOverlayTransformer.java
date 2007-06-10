@@ -10,6 +10,8 @@ import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 import java.util.Map;
@@ -159,27 +161,38 @@ public class KMLSuperOverlayTransformer extends TransformerBase {
                 encodeNetworkLink(e1, "1", mapLayer);
             }
 
-            //encode the ground overlay
-            start("GroundOverlay");
-            element("drawOrder", "" + i);
-
-            start("Icon");
-
-            Map getMap = KMLUtils.createGetMapRequest(mapContext, mapLayer, top);
-            getMap.put("width", "256");
-            getMap.put("height", "256");
-            getMap.put("superoverlay", "true");
-            element("href", KMLUtils.encode(mapContext, getMap));
-            LOGGER.fine(KMLUtils.encode(mapContext, getMap));
-            end("Icon");
-
-            encodeLatLonBox(top);
-            end("GroundOverlay");
-
+            //encode the ground overlay(s)
+            if ( top == world ) {
+                //special case for top since it does not line up as a propery
+                // tile -> split it in two
+                encodeGroundOverlay(mapLayer,i,new Envelope(-180,0,-90,90));
+                encodeGroundOverlay(mapLayer,i,new Envelope(0,180,-90,90));
+            }
+            else {
+                //encode straight up
+                encodeGroundOverlay(mapLayer,i,top);
+            }
+            
             //end document
             end("Document");
         }
 
+        void encodeGroundOverlay(MapLayer mapLayer,int drawOrder,Envelope box ) {
+
+            start("GroundOverlay");
+            element("drawOrder", "" + drawOrder);
+
+            start("Icon");
+
+            String href = KMLUtils.getMapUrl(mapContext, mapLayer, box, new String[]{"width", "256","height", "256"}, true);
+            element("href", href);
+            LOGGER.fine( href );
+            end("Icon");
+
+            encodeLatLonBox(box);
+            end("GroundOverlay");    
+        }
+        
         void encodeRegion(Envelope box, int minLodPixels, int maxLodPixels) {
             //top level region
             start("Region");
@@ -204,15 +217,13 @@ public class KMLSuperOverlayTransformer extends TransformerBase {
 
             start("Link");
 
-            Map getMap = KMLUtils.createGetMapRequest(mapContext, mapLayer, box);
-            getMap.put("format", KMLMapProducerFactory.MIME_TYPE);
-            getMap.put("width", "256");
-            getMap.put("height", "256");
-            getMap.put("superoverlay", "true");
-            element("href", KMLUtils.encode(mapContext, getMap));
+            String getMap = KMLUtils.getMapUrl(mapContext, mapLayer, box,
+                  new String[]{"format", KMLMapProducerFactory.MIME_TYPE,"width", "256","height", "256","superoverlay", "true"}, false );
+            
+            element("href", getMap);
+            LOGGER.fine("Network link " + name + ":" + getMap );
+            
             element("viewRefreshMode", "onRegion");
-
-            LOGGER.fine("Network link " + name + ":" + KMLUtils.encode(mapContext, getMap));
 
             end("Link");
 

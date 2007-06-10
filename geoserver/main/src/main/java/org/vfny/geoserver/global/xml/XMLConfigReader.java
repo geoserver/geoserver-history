@@ -652,6 +652,15 @@ public class XMLConfigReader {
                 geoServer.setVerboseExceptions(ReaderUtils.getBooleanAttribute(elem, "value",
                         false, true));
             }
+            
+            String tileCache = ReaderUtils.getChildText(globalElem,"tileCache",false);
+            if ( tileCache != null ) {
+            	geoServer.setTileCache(tileCache);
+            }
+            else {
+            	geoServer.setTileCache(null);
+            }
+
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }

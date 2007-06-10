@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.ContactConfig;
 import org.vfny.geoserver.config.GlobalConfig;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.dto.GeoServerDTO.Defaults;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
@@ -98,6 +99,9 @@ public class GeoServerConfigurationForm extends ActionForm {
     private boolean jaiJPEGNativeChecked;
     private boolean jaiPNGNative;
     private boolean jaiPNGNativeChecked;
+    
+    /** tile cache location, full url or relative path */
+    private String tileCache;
 
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
@@ -140,6 +144,8 @@ public class GeoServerConfigurationForm extends ActionForm {
         jaiJPEGNativeChecked = false;
         jaiPNGNative = globalConfig.isJaiPNGNative();
         jaiPNGNativeChecked = false;
+
+        tileCache = globalConfig.getTileCache();
 
         ContactConfig contactConfig = globalConfig.getContact();
         contactPerson = contactConfig.getContactPerson();
@@ -786,5 +792,16 @@ public class GeoServerConfigurationForm extends ActionForm {
 
     public void setJaiTileThreads(int jaiTileThreads) {
         this.jaiTileThreads = jaiTileThreads;
+    }
+   
+    /**
+     * tile cache parameter
+     * @see GeoServer#getTileCache()
+     */
+    public String getTileCache() {
+        return tileCache;
+    }
+    public void setTileCache(String tileCache) {
+        this.tileCache = tileCache;
     }
 }

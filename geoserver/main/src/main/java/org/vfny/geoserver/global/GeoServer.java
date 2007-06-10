@@ -68,6 +68,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     private double memoryThreshold;
     private int tileThreads;
     private int tilePriority;
+    private String tileCache;
     private Boolean recycling;
     private Boolean imageIOCache;
     private Boolean JPEGnativeAcc;
@@ -369,6 +370,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             adminUserName = dto.getAdminUserName();
             adminPassword = dto.getAdminPassword();
             verboseExceptions = dto.isVerboseExceptions();
+            
+            tileCache = dto.getTileCache();
         } else {
             throw new ConfigurationException("load(GeoServerDTO) expected a non-null value");
         }
@@ -553,7 +556,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         dto.setImageIOCache(imageIOCache);
         dto.setJaiJPEGNative(JPEGnativeAcc);
         dto.setJaiPNGNative(PNGnativeAcc);
-
+        dto.setTileCache(tileCache);
+        
         ContactDTO cdto = new ContactDTO();
         dto.setContact(cdto);
 
@@ -741,6 +745,33 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         return tileThreads;
     }
 
+    /**
+     * Used when GeoServer is running beheind tile caching server. 
+     * <p>
+     * This value should be used when writing out a url which is a getmap
+     * request to reference the tile caching server and not GeoServer itself.
+     * </p>
+     *<p>
+     * This value can be:
+    * <ol>
+    *  <li>A fully qualified host name + path (URL)
+    *  <li>A partial path which is interpreted as relative to the host running
+    *  GeoServer
+    *  <li><code>null</code>
+    * </ol>
+    * </p>
+    * <p>
+    * 
+    * </p>
+    * @see Requests#getTileCacheBaseUrl(javax.servlet.http.HttpServletRequest, GeoServer)
+    */
+    public String getTileCache() {
+    	return tileCache;
+    }
+    public void setTileCache(String tileCache) {
+    	this.tileCache = tileCache;
+    }
+    
     /**
      * Implements {@link DisposableBean#destroy()} to release resources being held
      * by the server at server shutdown, such as JDBC connection pools and ArcSDE

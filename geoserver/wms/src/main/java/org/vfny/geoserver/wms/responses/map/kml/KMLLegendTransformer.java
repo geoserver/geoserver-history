@@ -56,8 +56,7 @@ public class KMLLegendTransformer extends TransformerBase {
             start("Icon");
 
             //reference the image as a remote wms call
-            Map getLegendGraphic = KMLUtils.createGetLegendGraphicRequest(mapContext, mapLayer);
-            element("href", KMLUtils.encode(mapContext, getLegendGraphic));
+            element("href", KMLUtils.getLegendGraphicUrl(mapContext, mapLayer,null));
 
             end("Icon");
 
