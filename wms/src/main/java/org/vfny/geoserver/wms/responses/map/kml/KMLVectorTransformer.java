@@ -51,7 +51,7 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.responses.featureInfo.FeatureDescriptionTemplate;
+import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 import org.vfny.geoserver.wms.responses.map.kml.KMLGeometryTransformer.KMLGeometryTranslator;
 import org.xml.sax.ContentHandler;
 import java.awt.Color;
@@ -558,8 +558,8 @@ public class KMLVectorTransformer extends TransformerBase {
             String description = null;
 
             if (mapContext.getRequest().getKMattr()) {
-                FeatureDescriptionTemplate template = new FeatureDescriptionTemplate();
-                description = template.execute(feature);
+               FeatureTemplate template = new FeatureTemplate();
+               description = template.description( feature );
             }
 
             if (description != null) {
