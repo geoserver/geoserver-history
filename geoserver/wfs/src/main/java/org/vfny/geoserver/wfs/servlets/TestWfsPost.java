@@ -198,7 +198,8 @@ public class TestWfsPost extends HttpServlet {
                 String authHeader = request.getHeader("Authorization");
 
                 String username = request.getParameter("username");
-                if (username != null && !username.trim().equals("")) {
+
+                if ((username != null) && !username.trim().equals("")) {
                     String password = request.getParameter("password");
                     String up = username + ":" + password;
                     byte[] encoded = Base64.encodeBase64(up.getBytes());
