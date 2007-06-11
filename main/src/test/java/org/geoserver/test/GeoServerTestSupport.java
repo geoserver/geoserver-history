@@ -4,23 +4,19 @@
  */
 package org.geoserver.test;
 
-import java.io.IOException;
-import java.util.StringTokenizer;
-
-import javax.xml.namespace.QName;
-
+import com.mockrunner.mock.web.MockHttpServletRequest;
+import com.mockrunner.mock.web.MockHttpSession;
+import com.mockrunner.mock.web.MockServletContext;
 import junit.framework.TestCase;
-
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geotools.data.FeatureSource;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
-
-import com.mockrunner.mock.web.MockHttpServletRequest;
-import com.mockrunner.mock.web.MockHttpSession;
-import com.mockrunner.mock.web.MockServletContext;
+import java.io.IOException;
+import java.util.StringTokenizer;
+import javax.xml.namespace.QName;
 
 
 /**
