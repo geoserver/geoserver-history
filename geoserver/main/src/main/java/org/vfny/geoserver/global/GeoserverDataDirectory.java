@@ -100,6 +100,29 @@ public class GeoserverDataDirectory {
     }
 
     /**
+     * Same as {@link #findConfigDir(File, String), but it will create the configuration directory
+     * if missing (as a top level directory inside the Geoserver data directory)
+     * @param dirName
+     * @return
+     * @throws ConfigurationException
+     */
+    public static File findCreateConfigDir(String dirName)
+        throws ConfigurationException {
+        File configDir = findConfigDir(getGeoserverDataDirectory(), dirName);
+
+        if ((configDir == null) || !configDir.exists()) {
+            configDir = new File(getGeoserverDataDirectory(), dirName);
+            configDir.mkdir();
+
+            if (configDir.exists()) {
+                return configDir;
+            }
+        }
+
+        return configDir;
+    }
+
+    /**
      * Given a url, tries to interpret it as a file into the data directory, or as an absolute
      * location, and returns the actual absolute location of the File
      * @param path

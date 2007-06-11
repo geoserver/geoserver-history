@@ -303,7 +303,9 @@ public final class Requests {
     public static boolean isLoggedIn(HttpServletRequest request) {
         // check the user is not the anonymous one
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication != null && !(authentication instanceof AnonymousAuthenticationToken);
+
+        return (authentication != null)
+        && !(authentication instanceof AnonymousAuthenticationToken);
     }
 
     /**
