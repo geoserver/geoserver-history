@@ -177,6 +177,7 @@
 	
 	<bean id="bboxKvpParser" class="org.geoserver.wfs.kvp.BBoxKvpParser"/>
 	<bean id="filterKvpParser" class="org.geoserver.wfs.kvp.FilterKvpReader"/>
+    <bean id="cqlKvpParser" class="org.geoserver.wfs.kvp.CQLFilterKvpReader"/>
 	<bean id="propertyNameKvpParser" class="org.geoserver.ows.NestedKvpParser">
 		<constructor-arg index="0" value="propertyName"/>
 		<constructor-arg index="1" value="java.lang.String"/>

@@ -47,23 +47,8 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
     public Object read(Object request, Map kvp) throws Exception {
         request = super.read(request, kvp);
 
-        //make sure not both featureid and filter specified
-        if (kvp.containsKey("featureId") && kvp.containsKey("filter")) {
-            String msg = "featureid and filter both specified but are mutually exclusive";
-            throw new WFSException(msg);
-        }
-
-        //make sure not both featureid and bbox specified
-        if (kvp.containsKey("featureId") && kvp.containsKey("bbox")) {
-            String msg = "featureid and bbox both specified but are mutually exclusive";
-            throw new WFSException(msg);
-        }
-
-        //make sure not both filter and bbox specified
-        if (kvp.containsKey("filter") && kvp.containsKey("bbox")) {
-            String msg = "bbox and filter both specified but are mutually exclusive";
-            throw new WFSException(msg);
-        }
+        // make sure the filter is specified in just one way
+        ensureMutuallyExclusive(kvp, new String[] { "featureId", "filter", "bbox", "cql_filter" });
 
         //get feature has some additional parsing requirements
         EObject eObject = (EObject) request;
@@ -126,6 +111,8 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
         //filter
         if (kvp.containsKey("filter")) {
             querySet(eObject, "filter", (List) kvp.get("filter"));
+        } else if (kvp.containsKey("cql_filter")) {
+            querySet(eObject, "filter", (List) kvp.get("cql_filter"));
         } else if (kvp.containsKey("featureId")) {
             //set filter from featureId
             List featureIdList = (List) kvp.get("featureId");
@@ -183,6 +170,25 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
         }
 
         return request;
+    }
+
+    /**
+     * Given a set of keys, this method will ensure that no two keys are specified at the same time
+     * @param kvp
+     * @param keys
+     */
+    private void ensureMutuallyExclusive(Map kvp, String[] keys) {
+        for (int i = 0; i < keys.length; i++) {
+            if (kvp.containsKey(keys[i])) {
+                for (int j = i + 1; j < keys.length; j++) {
+                    if (kvp.containsKey(keys[j])) {
+                        String msg = keys[i] + " and " + keys[j]
+                            + " both specified but are mutually exclusive";
+                        throw new WFSException(msg);
+                    }
+                }
+            }
+        }
     }
 
     BBOX bboxFilter(QName typeName, Envelope bbox) throws Exception {
