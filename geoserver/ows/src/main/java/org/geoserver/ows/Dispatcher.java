@@ -1199,7 +1199,7 @@ public class Dispatcher extends AbstractController {
     }
 
     /**
-     * Allows setting up a security interceptor that will allow security checks around 
+     * Allows setting up a security interceptor that will allow security checks around
      * service invocations
      * @return
      */
