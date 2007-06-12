@@ -270,7 +270,8 @@ public abstract class DefaultRasterMapProducer implements RasterMapProducer {
         Map rendererParams = new HashMap();
         rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
         rendererParams.put("renderingBuffer", new Integer(map.getBuffer()));
-        rendererParams.put(ShapefileRenderer.SCALE_COMPUTATION_METHOD_KEY, ShapefileRenderer.SCALE_OGC);
+        rendererParams.put(ShapefileRenderer.SCALE_COMPUTATION_METHOD_KEY,
+            ShapefileRenderer.SCALE_OGC);
         renderer.setRendererHints(rendererParams);
 
         final ReferencedEnvelope dataArea = map.getAreaOfInterest();
