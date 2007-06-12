@@ -57,19 +57,13 @@ public class KvpRequestReaderAdapter extends org.geoserver.ows.KvpRequestReader
     public Object createRequest() throws Exception {
         //simulate the old kvp processin
         Map kvp = new HashMap();
-        String qString = request.getQueryString();
+        String paramName;
+        String paramValue;
 
-        if ((qString != null) && !qString.trim().equals("")) {
-            kvp = KvpRequestReader.parseKvpSet(qString);
-        } else {
-            String paramName;
-            String paramValue;
-
-            for (Enumeration pnames = request.getParameterNames(); pnames.hasMoreElements();) {
-                paramName = (String) pnames.nextElement();
-                paramValue = request.getParameter(paramName);
-                kvp.put(paramName.toUpperCase(), paramValue);
-            }
+        for (Enumeration pnames = request.getParameterNames(); pnames.hasMoreElements();) {
+            paramName = (String) pnames.nextElement();
+            paramValue = request.getParameter(paramName);
+            kvp.put(paramName.toUpperCase(), paramValue);
         }
 
         //look for a constructor, may have to walk up teh class hierachy
