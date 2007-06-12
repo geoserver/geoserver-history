@@ -132,7 +132,9 @@ public class GetFeature {
             request.setMaxFeatures(BigInteger.valueOf(Integer.MAX_VALUE));
         }
 
-        int maxFeatures = request.getMaxFeatures().intValue();
+        // take into consideration the wfs max features
+        int maxFeatures = Math.min(request.getMaxFeatures().intValue(), 
+                wfs.getGeoServer().getMaxFeatures());
 
         FeatureCollectionType result = WfsFactory.eINSTANCE.createFeatureCollectionType();
         int count = 0; //should probably be long
