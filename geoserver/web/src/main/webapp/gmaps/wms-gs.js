@@ -7,6 +7,8 @@
  *	Kyle Mulka http://blog.kylemulka.com/?p=287  V1 WMS code modifications
  *      http://search.cpan.org/src/RRWO/GPS-Lowrance-0.31/lib/Geo/Coordinates/MercatorMeters.pm
  *
+ * Modified by Andrea Aime to add meta-tiling support, as well as for merging a style patch
+ * provided by Luca Morandini
  * Modified by Chris Holmes, TOPP to work by default with GeoServer.
  * Modified by Eduin Yesid Carrillo Vega to work with any map name. 
  *
@@ -60,6 +62,10 @@ var FORMAT_DEFAULT="image/png";
 
 //Google Maps Zoom level at which we switch from Mercator to Lat/Long.  
 var MERC_ZOOM_DEFAULT = 5;
+
+// Enable/disable meta tiling
+var META_TILING = true;
+
 function dd2MercMetersLng(p_lng) { 
 	return MAGIC_NUMBER*(p_lng*DEG2RAD); 
 }
@@ -107,8 +113,13 @@ lBbox=dd2MercMetersLng(lUL.x)+","+dd2MercMetersLat(lUL.y)+","+dd2MercMetersLng(l
 	lURL+="&SERVICE=WMS";
 	lURL+="&VERSION=1.1.1";
 	lURL+="&LAYERS="+this.myLayers;
-	lURL+="&STYLES="+this.myStyles; 
-lURL+="&FORMAT="+this.myFormat;
+	if ( this.myStyles != null ) {
+        lURL+="&STYLES="+this.myStyles;
+    }
+    if ( this.mySLD != null ) {
+        lURL+="&SLD="+this.mySLD;
+    } 
+	lURL+="&FORMAT="+this.myFormat;
 	lURL+="&BGCOLOR=0xFFFFFF";
 	lURL+="&TRANSPARENT=TRUE";
 	lURL+="&SRS="+lSRS;
@@ -116,8 +127,10 @@ lURL+="&FORMAT="+this.myFormat;
 	lURL+="&WIDTH=256";
 	lURL+="&HEIGHT=256";
 	lURL+="&reaspect=false";
-	lURL+="&tiled=true";
-	lURL+="&tilesOrigin=" + lLL.x + "," + lLL.y;
+	if(META_TILING == true) {
+  	  lURL+="&tiled=true";
+	  lURL+="&tilesOrigin=" + lLL.x + "," + lLL.y;
+	}
 //document.write(lURL + "<br/>")        
 //alert(" url is " + lURL);
 	return lURL;
