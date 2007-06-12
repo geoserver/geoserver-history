@@ -60,11 +60,7 @@ public class MetatileMapProducer implements GetMapProducer {
                 && delegate instanceof RasterMapProducer)) {
             return false;
         }
-
-        double resx = request.getBbox().getWidth() / request.getWidth();
-        double resy = request.getBbox().getHeight() / request.getHeight();
-
-        return Math.abs(resx - resy) < EPS;
+        return true;
     }
 
     public MetatileMapProducer(GetMapRequest request, RasterMapProducer delegate) {
