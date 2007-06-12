@@ -6,7 +6,11 @@ package org.vfny.geoserver.util.requests.readers;
 
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.filter.FidFilter;
 import org.geotools.filter.FilterFilter;
+import org.geotools.filter.parser.ParseException;
+import org.geotools.filter.text.cql2.CQL;
+import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
 import org.opengis.filter.Filter;
@@ -30,7 +34,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -510,6 +513,20 @@ abstract public class KvpRequestReader {
     }
 
     /**
+     * Parses a CQL filter
+     * @param filter
+     * @return
+     * @throws ServiceException
+     */
+    protected List readCQLFilter(String filter) throws ServiceException {
+        try {
+            return CQL.toFilterList(filter);
+        } catch (CQLException pe) {
+            throw new ServiceException("Could not parse CQL filter list." + pe.getMessage(), pe);
+        }
+    }
+
+    /**
      * Parses fid filters
      * @param fid
      * @return
@@ -526,15 +543,14 @@ abstract public class KvpRequestReader {
             List ids = (List) i.next();
             ListIterator innerIterator = ids.listIterator();
 
-            Set fids = new HashSet();
-
             while (innerIterator.hasNext()) {
-                fids.add(factory.featureId((String) innerIterator.next()));
-            }
+                HashSet set = new HashSet();
+                set.add(factory.featureId((String) innerIterator.next()));
 
-            Id fidFilter = factory.id(fids);
-            LOGGER.finest("added fid filter: " + fidFilter);
-            filters.add(fidFilter);
+                Id fidFilter = factory.id(set);
+                filters.add(fidFilter);
+                LOGGER.finest("added fid filter: " + fidFilter);
+            }
         }
 
         return filters;
