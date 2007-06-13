@@ -14,13 +14,20 @@
      
      <script src="${baseUrl}/openlayers/OpenLayers.js"></script>
      <script defer="defer" type="text/javascript">
+       var map;
+       var untiled;
+       var tiled;
+       function setHTML(response) { 
+        OpenLayers.Util.getElement('nodelist').innerHTML = response.responseText;
+       };
+       
        function init(){
-          var map = new OpenLayers.Map($('map'), {controls:[]} );
+          map = new OpenLayers.Map('map', {controls:[]} );
           OpenLayers.IMAGE_RELOAD_ATTEMPTS = 5;
           
+          // setup tiled layer
           var bounds = new OpenLayers.Bounds(${request.bbox.minX?c},${request.bbox.minY?c},${request.bbox.maxX?c},${request.bbox.maxY?c})
-          //var wmsLayer = new OpenLayers.Layer.WMS.Untiled(
-          var wmsLayer = new OpenLayers.Layer.WMS(
+          tiled = new OpenLayers.Layer.WMS(
             "${layerName}", "${baseUrl}/wms",
             {
 <#list parameters as param>            
@@ -30,8 +37,22 @@
             },
             {maxExtent: bounds, maxResolution: ${maxResolution?c}, projection: "${request.SRS}"} 
           );
-          map.addLayer(wmsLayer);
+          map.addLayer(tiled);
+          
+          // setup untiled layer
+          untiled = new OpenLayers.Layer.WMS.Untiled(
+            "${layerName}", "${baseUrl}/wms",
+            {
+<#list parameters as param>            
+              ${param.name}: '${param.value}',
+</#list>
+              format: 'image/png', tiled: 'true', tilesOrigin : "${request.bbox.minX?c},${request.bbox.minY?c}"
+            },
+            {maxExtent: bounds, maxResolution: ${maxResolution?c}, projection: "${request.SRS}"} 
+          );
+          untiled.setVisibility(false, false);
 
+          // setup controls and initial zooms
 		  map.addControl(new OpenLayers.Control.PanZoomBar({div:$('nav')}));
           map.addControl(new OpenLayers.Control.LayerSwitcher());
           map.addControl(new OpenLayers.Control.MouseDefaults());
@@ -39,21 +60,54 @@
           map.addControl(new OpenLayers.Control.MousePosition({element: $('position')}));
           map.addControl(new OpenLayers.Control.OverviewMap());
           map.zoomToExtent(bounds);
-       }
-     </script>
+          
+          // support GetFeatureInfo
+          map.events.register('click', map, function (e) {
+            OpenLayers.Util.getElement('nodelist').innerHTML = "Loading... please wait...";
+            var url =  map.layers[0].getFullRequestString({
+                            REQUEST: "GetFeatureInfo",
+                            EXCEPTIONS: "application/vnd.ogc.se_xml",
+                            BBOX: map.getExtent().toBBOX(),
+                            X: e.xy.x,
+                            Y: e.xy.y,
+                            INFO_FORMAT: 'text/html',
+                            QUERY_LAYERS: map.layers[0].params.LAYERS,
+<#assign skipped=["request","bbox","service","version","format","width","height"]>
+<#list parameters as param>            
+  <#if !(skipped?seq_contains(param.name?lower_case))>
+                            ${param.name}: '${param.value}',
+  </#if>
+</#list>
+                            WIDTH: map.size.w,
+                            HEIGHT: map.size.h},
+                            "${baseUrl}/wms"
+                            );
+            OpenLayers.loadURL(url, '', this, setHTML, setHTML);
+            Event.stop(e);
+      });
+      }
+      </script>
   </head>
+  
   <body onload="init()">
      <table>
        <tr>
-         <td width="40" valign="center"><div id="nav"></div></td>
+         <td width="40" valign="center" rowspan="3"><div id="nav"></div></td>
+         <td colspan="3" align="right">
+           <!-- Switch layers when links are pressed -->
+           <a id="untiledLink" href="#" onclick="map.removeLayer(tiled);map.addLayer(untiled)">Untiled</a>
+           <a id="tiledLink" href="#" onclick="map.removeLayer(untiled);map.addLayer(tiled);">Tiled</a>
+         </td>
+       </tr>
+       <tr>
          <td colspan="3"><div id="map"></div></td>
        </tr>
        <tr>
-         <td/>
          <td><div id="scale"></div></td>
          <td/>
          <td align="right"><div id="position"></div></td>
        </tr>
      </table>
+     <div id="nodelist">Click on the map to get feature infos</div>
   </body>
 </html>
