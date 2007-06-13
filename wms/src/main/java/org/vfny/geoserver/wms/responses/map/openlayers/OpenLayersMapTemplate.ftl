@@ -107,9 +107,7 @@
          <td/>
          <td align="right"><div id="position"></div></td>
        </tr>
-       <tr>
-         <td/>
-         <td colspan="3"><div id="nodelist">Click on the map to get feature infos</div></td>
      </table>
+     <div id="nodelist">Click on the map to get feature infos</div>
   </body>
 </html>
