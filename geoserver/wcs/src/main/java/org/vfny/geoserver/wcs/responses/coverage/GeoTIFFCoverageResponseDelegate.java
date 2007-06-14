@@ -81,9 +81,6 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
 
         final GeoTiffFormat format = new GeoTiffFormat();
         final GeoTiffWriteParams wp = new GeoTiffWriteParams();
-        wp.setCompressionMode(GeoTiffWriteParams.MODE_EXPLICIT);
-        wp.setCompressionType("LZW");
-        wp.setCompressionQuality(0.75F);
         wp.setTilingMode(GeoToolsWriteParams.MODE_EXPLICIT);
         wp.setTiling(256, 256);
 
