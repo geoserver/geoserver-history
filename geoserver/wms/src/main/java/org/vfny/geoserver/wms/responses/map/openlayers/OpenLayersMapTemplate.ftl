@@ -46,10 +46,11 @@
 <#list parameters as param>            
               ${param.name}: '${param.value}',
 </#list>
-              format: 'image/png', tiled: 'true', tilesOrigin : "${request.bbox.minX?c},${request.bbox.minY?c}"
+              format: 'image/png'
             },
             {maxExtent: bounds, maxResolution: ${maxResolution?c}, projection: "${request.SRS}"} 
           );
+          untiled.ratio=1;
           untiled.setVisibility(false, false);
 
           // setup controls and initial zooms
