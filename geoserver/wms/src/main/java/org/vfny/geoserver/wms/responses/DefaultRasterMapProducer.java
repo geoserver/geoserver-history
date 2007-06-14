@@ -107,7 +107,7 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
     *
     */
     public DefaultRasterMapProducer(String outputFormat, String mime, WMS wms) {
-        super(outputFormat, outputFormat);
+        super(outputFormat, mime);
         this.wms = wms;
     }
 
