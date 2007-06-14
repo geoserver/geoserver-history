@@ -26,6 +26,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
@@ -258,9 +260,12 @@ public abstract class AbstractCiteDataTest extends TestCase {
     protected void assertNotBlank(String testName, RenderedImage image, Color bgColor) {
         int pixelsDiffer = 0;
 
+        // extract the raster and color model just once (the raster is a copy!)
+        Raster data = image.getData();
+        ColorModel colorModel = image.getColorModel();
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                int rgb = image.getColorModel().getRGB(image.getData().getDataElements(x, y, null));
+                int rgb = colorModel.getRGB(data.getDataElements(x, y, null));
                 if (rgb != bgColor.getRGB()) {
                     ++pixelsDiffer;
                 }
