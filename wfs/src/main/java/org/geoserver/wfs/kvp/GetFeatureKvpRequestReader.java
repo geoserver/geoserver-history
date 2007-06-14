@@ -17,6 +17,7 @@ import org.opengis.filter.spatial.BBOX;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -168,6 +169,10 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
         if (kvp.containsKey("sortBy")) {
             querySet(eObject, "sortBy", (List) kvp.get("sortBy"));
         }
+        
+        //featureversion
+        if(kvp.containsKey("featureVersion"))
+            querySet(eObject, "featureVersion", Collections.singletonList((String) kvp.get("featureVersion")));
 
         return request;
     }
