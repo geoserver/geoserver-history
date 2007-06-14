@@ -194,6 +194,7 @@ public class GetMapResponse implements Response {
 
             // track the external caching strategy for any map layers
             boolean cachingPossible = request.getHttpServletRequest().getMethod().equals("GET");
+            String featureVersion = request.getFeatureVersion();
             int maxAge = Integer.MAX_VALUE;
 
             FeatureSource source;
@@ -201,7 +202,7 @@ public class GetMapResponse implements Response {
             Style style;
             Filter definitionFilter;
             Filter optionalFilter;
-            Query definitionQuery;
+            DefaultQuery definitionQuery;
             int nma;
             final int length = layers.length;
 
@@ -274,14 +275,23 @@ public class GetMapResponse implements Response {
                     if (definitionFilter != null) {
                         definitionQuery = new DefaultQuery(source.getSchema().getTypeName(),
                                 definitionFilter);
+                        definitionQuery.setVersion(featureVersion);
 
                         layer.setQuery(definitionQuery);
                     } else if (optionalFilter != null) {
                         definitionQuery = new DefaultQuery(source.getSchema().getTypeName(),
                                 optionalFilter);
+                        definitionQuery.setVersion(featureVersion);
+
+                        layer.setQuery(definitionQuery);
+                    } else if(featureVersion != null) {
+                        definitionQuery = new DefaultQuery(source.getSchema().getTypeName());
+                        definitionQuery.setVersion(featureVersion);
 
                         layer.setQuery(definitionQuery);
                     }
+                    
+                    
 
                     map.addLayer(layer);
                 } else if (layers[i].getType() == MapLayerInfo.TYPE_RASTER) {

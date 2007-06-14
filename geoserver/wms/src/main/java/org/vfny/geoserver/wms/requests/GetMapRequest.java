@@ -218,6 +218,14 @@ public class GetMapRequest extends WMSRequest {
     public Integer getElevation() {
         return this.optionalParams.elevation;
     }
+    
+    /**
+     * Returs the feature version optional parameter
+     * @return
+     */
+    public String getFeatureVersion() {
+        return this.optionalParams.featureVersion;
+    }
 
     /**
      * DOCUMENT ME!
@@ -384,6 +392,14 @@ public class GetMapRequest extends WMSRequest {
     public void setElevation(Integer elevation) {
         this.optionalParams.elevation = elevation;
     }
+    
+    /**
+     * Sets the feature version optional param
+     * @param featureVersion
+     */
+    public void setFeatureVersion(String featureVersion) {
+        this.optionalParams.featureVersion = featureVersion;
+    }
 
     /**
      * decodes a color of the form <code>#FFFFFF</code> into a
@@ -490,6 +506,9 @@ public class GetMapRequest extends WMSRequest {
 
         /** time elevation parameter */
         Integer elevation;
+        
+        /** feature version (for versioned requests) */
+        String featureVersion;
     }
 
     /**
@@ -528,4 +547,6 @@ public class GetMapRequest extends WMSRequest {
         //returnString.append("\n inside: " + filter.toString());
         return returnString.toString();
     }
+
+    
 }
