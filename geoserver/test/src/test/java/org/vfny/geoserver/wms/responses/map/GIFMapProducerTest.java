@@ -8,6 +8,7 @@ import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducerTest;
 import org.vfny.geoserver.wms.responses.map.gif.GIFMapProducer;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -24,24 +25,27 @@ import javax.imageio.ImageIO;
  */
 public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
     /**
-             *
-             */
+     *
+     */
     public GIFMapProducerTest() {
         super();
     }
 
     protected DefaultRasterMapProducer getProducerInstance() {
-        return new GIFMapProducer("image/gif", null); //DJB: set content enconding correctly
+        return new GIFMapProducer("image/gif", null); // DJB: set content
+                                                      // enconding correctly
     }
 
     /**
      * DOCUMENT ME!
      *
-     * @param testName DOCUMENT ME!
-     * @param producer DOCUMENT ME!
+     * @param testName
+     *            DOCUMENT ME!
+     * @param producer
+     *            DOCUMENT ME!
      */
     protected void assertNotBlank(String testName, DefaultRasterMapProducer producer) {
-        BufferedImage image = producer.getImage();
+        RenderedImage image = producer.getImage();
 
         BufferedImage product = null;
         File tmpGif = null;
@@ -50,7 +54,7 @@ public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
             tmpGif = File.createTempFile(testName, ".gif");
             tmpGif.deleteOnExit();
 
-            //tmpGif.deleteOnExit();
+            // tmpGif.deleteOnExit();
             OutputStream out = new FileOutputStream(tmpGif);
             producer.writeTo(out);
             out.flush();

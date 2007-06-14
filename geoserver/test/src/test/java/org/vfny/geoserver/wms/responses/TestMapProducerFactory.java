@@ -5,7 +5,6 @@
 package org.vfny.geoserver.wms.responses;
 
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
@@ -19,8 +18,8 @@ import java.util.Set;
 
 
 /**
- * A GetMapProducerFactorySpi just for testing GetMapResponse without
- * depending on a real one.
+ * A GetMapProducerFactorySpi just for testing GetMapResponse without depending
+ * on a real one.
  *
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
@@ -30,8 +29,8 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
     public static final String TESTING_MIME_TYPE = "image/unit+testing";
 
     /**
-     * whether an instance returns it is available or not. Set from
-     * inside GetMapResponseTest.
+     * whether an instance returns it is available or not. Set from inside
+     * GetMapResponseTest.
      */
     public static boolean available = true;
 
@@ -65,7 +64,8 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
     /**
      * DOCUMENT ME!
      *
-     * @param mapFormat DOCUMENT ME!
+     * @param mapFormat
+     *            DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
@@ -76,12 +76,15 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
     /**
      * DOCUMENT ME!
      *
-     * @param mapFormat DOCUMENT ME!
-     * @param wms DOCUMENT ME!
+     * @param mapFormat
+     *            DOCUMENT ME!
+     * @param wms
+     *            DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      *
-     * @throws IllegalArgumentException DOCUMENT ME!
+     * @throws IllegalArgumentException
+     *             DOCUMENT ME!
      */
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
@@ -92,9 +95,11 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
         return new TestingMapProducer();
     }
 
-    /* (non-Javadoc)
-     * @see org.geotools.factory.Factory#getImplementationHints()
-     * This just returns java.util.Collections.EMPTY_MAP
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.geotools.factory.Factory#getImplementationHints() This just
+     *      returns java.util.Collections.EMPTY_MAP
      */
     public Map getImplementationHints() {
         return java.util.Collections.EMPTY_MAP;
@@ -110,20 +115,25 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
         /**
          * DOCUMENT ME!
          *
-         * @param map DOCUMENT ME!
+         * @param map
+         *            DOCUMENT ME!
          *
-         * @throws WmsException DOCUMENT ME!
+         * @throws WmsException
+         *             DOCUMENT ME!
          */
-        public void produceMap(WMSMapContext map) throws WmsException {
+        public void produceMap() throws WmsException {
         }
 
         /**
          * DOCUMENT ME!
          *
-         * @param out DOCUMENT ME!
+         * @param out
+         *            DOCUMENT ME!
          *
-         * @throws ServiceException DOCUMENT ME!
-         * @throws IOException DOCUMENT ME!
+         * @throws ServiceException
+         *             DOCUMENT ME!
+         * @throws IOException
+         *             DOCUMENT ME!
          */
         public void writeTo(OutputStream out) throws ServiceException, IOException {
         }
@@ -133,7 +143,8 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
          *
          * @return DOCUMENT ME!
          *
-         * @throws IllegalStateException DOCUMENT ME!
+         * @throws IllegalStateException
+         *             DOCUMENT ME!
          */
         public String getContentType() throws IllegalStateException {
             return TestMapProducerFactory.TESTING_MIME_TYPE;
@@ -148,6 +159,28 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
         public String getContentDisposition() {
             // can be null
             return null;
+        }
+
+        public WMSMapContext getMapContext() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public void setMapContext(WMSMapContext mapContext) {
+            // TODO Auto-generated method stub
+        }
+
+        public String getOutputFormat() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public void setOutputFormat(String format) {
+            // TODO Auto-generated method stub
+        }
+
+        public void setContentType(String mime) {
+            // TODO Auto-generated method stub
         }
     }
 }
