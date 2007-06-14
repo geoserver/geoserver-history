@@ -12,7 +12,7 @@ import org.geotools.util.WeakHashSet;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import java.awt.Point;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,10 +37,10 @@ public class QuickTileCache {
         ignoredParameters.add("VERSION");
         ignoredParameters.add("EXCEPTIONS");
     }
-    
+
     /**
-     * The time to live for the tiles in cache, in milliseconds. When this time expires,
-     * the tiles in the cache will be considered stale
+     * The time to live for the tiles in cache, in milliseconds. When this time
+     * expires, the tiles in the cache will be considered stale
      */
     public static final long TIME_TO_LIVE = 5000;
 
@@ -251,18 +251,21 @@ public class QuickTileCache {
 
     /**
      * Gathers a tile from the cache, if available
+     *
      * @param key
      * @param request
      * @return
      */
-    public synchronized BufferedImage getTile(MetaTileKey key, GetMapRequest request) {
+    public synchronized RenderedImage getTile(MetaTileKey key, GetMapRequest request) {
         CacheElement ce = (CacheElement) tileCache.get(key);
 
         if (ce == null) {
             return null;
         }
-        if(ce.isExpired()) {
+
+        if (ce.isExpired()) {
             tileCache.remove(key);
+
             return null;
         }
 
@@ -270,13 +273,13 @@ public class QuickTileCache {
     }
 
     /**
-     * 
+     *
      * @param key
      * @param request
      * @param tiles
      * @return
      */
-    public BufferedImage getTile(MetaTileKey key, GetMapRequest request, BufferedImage[] tiles) {
+    public RenderedImage getTile(MetaTileKey key, GetMapRequest request, RenderedImage[] tiles) {
         Point tileCoord = getTileCoordinates(request.getBbox(), key.mapKey.origin);
         Point metaCoord = key.metaTileCoords;
 
@@ -285,29 +288,29 @@ public class QuickTileCache {
     }
 
     /**
-     * Puts the specified tile array in the cache, and returns the tile the request was looking for
+     * Puts the specified tile array in the cache, and returns the tile the
+     * request was looking for
+     *
      * @param key
      * @param request
      * @param tiles
      * @return
      */
-    public synchronized void storeTiles(MetaTileKey key, BufferedImage[] tiles) {
+    public synchronized void storeTiles(MetaTileKey key, RenderedImage[] tiles) {
         tileCache.put(key, new CacheElement(tiles));
     }
-    
-    class CacheElement {
 
-        BufferedImage tiles[];
+    class CacheElement {
+        RenderedImage[] tiles;
         long timeCached;
-        
-        public CacheElement(BufferedImage[] tiles) {
+
+        public CacheElement(RenderedImage[] tiles) {
             this.tiles = tiles;
             this.timeCached = System.currentTimeMillis();
         }
-        
+
         public boolean isExpired() {
-            return System.currentTimeMillis() - timeCached > TIME_TO_LIVE;
+            return (System.currentTimeMillis() - timeCached) > TIME_TO_LIVE;
         }
-        
     }
 }

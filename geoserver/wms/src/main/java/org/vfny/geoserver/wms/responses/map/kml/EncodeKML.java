@@ -9,7 +9,6 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
-import org.geotools.factory.Hints;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
@@ -19,7 +18,6 @@ import org.geotools.filter.Expression;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
-import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -27,11 +25,9 @@ import org.geotools.image.ImageWorker;
 import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.FactoryFinder;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.CoordinateOperationFactory;
 import org.vfny.geoserver.wms.WMSMapContext;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -49,20 +45,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.GraphicsJAI;
 
 
 /**
- *
+ * @author Simone Giannecchini - GeoSolutions
  */
 public class EncodeKML {
     /** Standard Logger */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses.wms.map.kml");
-
-    /** Filter factory for creating bounding box filters */
-    //private FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
 
     /** the XML and KML header */
     private static final String KML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\t"
@@ -70,10 +62,6 @@ public class EncodeKML {
 
     /** the KML closing element */
     private static final String KML_FOOTER = "</kml>\n";
-
-    static {
-        Hints hints = new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
-    }
 
     /**
      * Map context document - layers, styles aoi etc.
@@ -92,7 +80,7 @@ public class EncodeKML {
     private KMLWriter writer;
 
     /** Filter factory for creating bounding box filters */
-    private FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
+    private final static FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
 
     /** Flag to be monotored by writer loops */
     private boolean abortProcess;
@@ -100,31 +88,35 @@ public class EncodeKML {
     /**
      * Creates a new EncodeKML object.
      *
-     * @param mapContext A full description of the map to be encoded.
+     * @param mapContext
+     *            A full description of the map to be encoded.
      */
     public EncodeKML(WMSMapContext mapContext) {
         this.mapContext = mapContext;
     }
 
     /**
-     * Sets the abort flag.  Active encoding may be halted, but this is not garanteed.
+     * Sets the abort flag. Active encoding may be halted, but this is not
+     * garanteed.
      */
     public void abort() {
         abortProcess = true;
     }
 
     /**
-     * Perform the actual encoding.  May return early if abort it called.
+     * Perform the actual encoding. May return early if abort it called.
      *
-     * @param out Ouput stream to send the data to.
+     * @param out
+     *            Ouput stream to send the data to.
      *
-     * @throws IOException Thrown if anything goes wrong whilst writing
+     * @throws IOException
+     *             Thrown if anything goes wrong whilst writing
      */
     public void encodeKML(final OutputStream out) throws IOException {
         this.writer = new KMLWriter(out, mapContext);
-        //once KML supports bbox queries against WMS this can be used to 
-        //decimate the geometries based on zoom level.
-        //writer.setMinCoordDistance(env.getWidth() / 1000);
+        // once KML supports bbox queries against WMS this can be used to
+        // decimate the geometries based on zoom level.
+        // writer.setMinCoordDistance(env.getWidth() / 1000);
         abortProcess = false;
 
         long t = System.currentTimeMillis();
@@ -132,7 +124,10 @@ public class EncodeKML {
         try {
             writeHeader();
 
-            ArrayList layerRenderList = new ArrayList(); // not used in straight KML generation
+            ArrayList layerRenderList = new ArrayList(); // not used in
+                                                         // straight KML
+                                                         // generation
+
             writeLayers(false, layerRenderList);
             writeFooter();
 
@@ -153,10 +148,11 @@ public class EncodeKML {
     }
 
     /**
-     * This method is used to encode kml + images and put all the stuff into a KMZ
-     * file.
+     * This method is used to encode kml + images and put all the stuff into a
+     * KMZ file.
      *
-     * @param out the response is a Zipped output stream
+     * @param out
+     *            the response is a Zipped output stream
      * @throws IOException
      */
     public void encodeKMZ(final ZipOutputStream out) throws IOException {
@@ -167,7 +163,8 @@ public class EncodeKML {
         long t = System.currentTimeMillis();
 
         try {
-            // first we produce the KML file containing the code and the PlaceMarks
+            // first we produce the KML file containing the code and the
+            // PlaceMarks
             final ZipEntry e = new ZipEntry("wms.kml");
             out.putNextEntry(e);
             writeHeader();
@@ -198,22 +195,25 @@ public class EncodeKML {
 
     /**
      * Determines whether to return a vector (KML) result of the data or to
-     * return an image instead.
-     * If the kmscore is 100, then the output should always be vector. If
-     * the kmscore is 0, it should always be raster. In between, the number of
-     * features is weighed against the kmscore value.
+     * return an image instead. If the kmscore is 100, then the output should
+     * always be vector. If the kmscore is 0, it should always be raster. In
+     * between, the number of features is weighed against the kmscore value.
      * kmscore determines whether to return the features as vectors, or as one
      * raster image. It is the point, determined by the user, where X number of
-     * features is "too many" and the result should be returned as an image instead.
+     * features is "too many" and the result should be returned as an image
+     * instead.
      *
      * kmscore is logarithmic. The higher the value, the more features it takes
      * to make the algorithm return an image. The lower the kmscore, the fewer
-     * features it takes to force an image to be returned.
-     * (in use, the formula is exponential: as you increase the KMScore value,
-     * the number of features required increases exponentially).
+     * features it takes to force an image to be returned. (in use, the formula
+     * is exponential: as you increase the KMScore value, the number of features
+     * required increases exponentially).
      *
-     * @param kmscore the score, between 0 and 100, use to determine what output to use
-     * @param numFeatures how many features are being rendered
+     * @param kmscore
+     *            the score, between 0 and 100, use to determine what output to
+     *            use
+     * @param numFeatures
+     *            how many features are being rendered
      * @return true: use just kml vectors, false: use raster result
      */
     private boolean useVectorOutput(int kmscore, int numFeatures) {
@@ -225,11 +225,14 @@ public class EncodeKML {
             return false; // raster KMZ
         }
 
-        // For numbers in between, determine exponentionally based on kmscore value:
+        // For numbers in between, determine exponentionally based on kmscore
+        // value:
         // 10^(kmscore/15)
         // This results in exponential growth.
-        // The lowest bound is 1 feature and the highest bound is 3.98 million features
-        // The most useful kmscore values are between 20 and 70 (21 and 46000 features respectively)
+        // The lowest bound is 1 feature and the highest bound is 3.98 million
+        // features
+        // The most useful kmscore values are between 20 and 70 (21 and 46000
+        // features respectively)
         // A good default kmscore value is around 40 (464 features)
         double magic = Math.pow(10, kmscore / 15);
 
@@ -241,10 +244,10 @@ public class EncodeKML {
     }
 
     /**
-    * writes out standard KML header
-    *
-    * @throws IOException
-    */
+     * writes out standard KML header
+     *
+     * @throws IOException
+     */
     private void writeHeader() throws IOException {
         writer.write(KML_HEADER);
     }
@@ -252,7 +255,8 @@ public class EncodeKML {
     /**
      * writes out standard KML footer
      *
-     * @throws IOException DOCUMENT ME!
+     * @throws IOException
+     *             DOCUMENT ME!
      */
     private void writeFooter() throws IOException {
         writer.write(KML_FOOTER);
@@ -276,24 +280,29 @@ public class EncodeKML {
         final int imageWidth = this.mapContext.getMapWidth();
         final int imageHeight = this.mapContext.getMapHeight();
 
-        //final CoordinateReferenceSystem requestedCrs = mapContext.getCoordinateReferenceSystem();
-        //writer.setRequestedCRS(requestedCrs);
-        //writer.setScreenSize(new Rectangle(imageWidth, imageHeight));
-        if (nLayers > 1) { // if we have more than one layer, use the name "GeoServer" to group them
+        // final CoordinateReferenceSystem requestedCrs =
+        // mapContext.getCoordinateReferenceSystem();
+        // writer.setRequestedCRS(requestedCrs);
+        // writer.setScreenSize(new Rectangle(imageWidth, imageHeight));
+        if (nLayers > 1) { // if we have more than one layer, use the name
+                           // "GeoServer" to group them
             writer.startDocument("GeoServer", null);
         }
 
-        for (int i = 0; i < nLayers; i++) { // for every layer specified in the request
+        for (int i = 0; i < nLayers; i++) { // for every layer specified in the
+                                            // request
 
             MapLayer layer = layers[i];
             writer.startDocument(layer.getTitle(), null);
 
-            //FeatureReader featureReader = null;
+            // FeatureReader featureReader = null;
             FeatureSource fSource = layer.getFeatureSource();
             FeatureType schema = fSource.getSchema();
 
-            //GeometryAttributeType geometryAttribute = schema.getDefaultGeometry();
-            //CoordinateReferenceSystem sourceCrs = geometryAttribute.getCoordinateSystem();
+            // GeometryAttributeType geometryAttribute =
+            // schema.getDefaultGeometry();
+            // CoordinateReferenceSystem sourceCrs =
+            // geometryAttribute.getCoordinateSystem();
             Rectangle paintArea = new Rectangle(imageWidth, imageHeight);
             AffineTransform worldToScreen = RendererUtilities.worldToScreenTransform(mapContext
                     .getAreaOfInterest(), paintArea);
@@ -302,10 +311,15 @@ public class EncodeKML {
             try {
                 scaleDenominator = RendererUtilities.calculateScale(mapContext.getAreaOfInterest(),
                         mapContext.getCoordinateReferenceSystem(), paintArea.width,
-                        paintArea.height, 90); // 90 = OGC standard DPI (see SLD spec page 37)
-            } catch (Exception e) // probably either (1) no CRS (2) error xforming
+                        paintArea.height, 90); // 90 = OGC standard DPI (see
+                                               // SLD spec page 37)
+            } catch (Exception e) // probably either (1) no CRS (2) error
+                                  // xforming
              {
-                scaleDenominator = 1 / worldToScreen.getScaleX(); //DJB old method - the best we can do
+                scaleDenominator = 1 / worldToScreen.getScaleX(); // DJB old
+                                                                  // method -
+                                                                  // the best
+                                                                  // we can do
             }
 
             writer.setRequestedScale(scaleDenominator);
@@ -328,7 +342,9 @@ public class EncodeKML {
             try {
                 CoordinateReferenceSystem sourceCrs = schema.getDefaultGeometry()
                                                             .getCoordinateSystem();
-                writer.setSourceCrs(sourceCrs); // it seems to work better getting it from the schema, here
+                writer.setSourceCrs(sourceCrs); // it seems to work better
+                                                // getting it from the schema,
+                                                // here
 
                 Envelope envelope = mapContext.getAreaOfInterest();
                 ReferencedEnvelope aoi = new ReferencedEnvelope(envelope,
@@ -336,7 +352,7 @@ public class EncodeKML {
 
                 Filter filter = null;
 
-                //ReferencedEnvelope aoi = mapContext.getAreaOfInterest();
+                // ReferencedEnvelope aoi = mapContext.getAreaOfInterest();
                 if (!CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(),
                             schema.getDefaultGeometry().getCoordinateSystem())) {
                     aoi = aoi.transform(schema.getDefaultGeometry().getCoordinateSystem(), true);
@@ -345,13 +361,15 @@ public class EncodeKML {
                 BBoxExpression rightBBox = filterFactory.createBBoxExpression(aoi);
                 filter = createBBoxFilters(schema, attributes, rightBBox);
 
-                // now build the query using only the attributes and the bounding
+                // now build the query using only the attributes and the
+                // bounding
                 // box needed
                 DefaultQuery q = new DefaultQuery(schema.getTypeName());
                 q.setFilter(filter);
                 q.setPropertyNames(attributes);
 
-                // now, if a definition query has been established for this layer, be
+                // now, if a definition query has been established for this
+                // layer, be
                 // sure to respect it by combining it with the bounding box one.
                 Query definitionQuery = layer.getQuery();
 
@@ -368,12 +386,19 @@ public class EncodeKML {
 
                 FeatureCollection fc = fSource.getFeatures(q);
 
-                int kmscore = mapContext.getRequest().getKMScore(); //KMZ score value
-                boolean useVector = useVectorOutput(kmscore, fc.size()); // kmscore = render vector/raster
+                int kmscore = mapContext.getRequest().getKMScore(); // KMZ score
+                                                                    // value
+
+                boolean useVector = useVectorOutput(kmscore, fc.size()); // kmscore
+                                                                         // =
+                                                                         // render
+                                                                         // vector/raster
 
                 if (useVector || !kmz) {
                     LOGGER.info("Layer (" + layer.getTitle() + ") rendered with KML vector output.");
-                    layerRenderList.add(new Integer(i)); // save layer number so it won't be rendered
+                    layerRenderList.add(new Integer(i)); // save layer number
+                                                         // so it won't be
+                                                         // rendered
 
                     if (!isRaster) {
                         writer.writeFeaturesAsVectors(fc, layer); // vector
@@ -383,9 +408,12 @@ public class EncodeKML {
                 } else {
                     // user requested KMZ and kmscore says render raster
                     LOGGER.info("Layer (" + layer.getTitle() + ") rendered with KMZ raster output.");
-                    // layer order is only needed for raster results. In the <GroundOverlay> tag 
-                    // you need to point to a raster image, this image has the layer number as
-                    // part of the name. The kml will then reference the image via the layer number
+                    // layer order is only needed for raster results. In the
+                    // <GroundOverlay> tag
+                    // you need to point to a raster image, this image has the
+                    // layer number as
+                    // part of the name. The kml will then reference the image
+                    // via the layer number
                     writer.writeFeaturesAsRaster(fc, layer, i); // raster
                 }
 
@@ -405,13 +433,11 @@ public class EncodeKML {
                 ioe.setStackTrace(t.getStackTrace());
                 throw ioe;
             } finally {
-                /*if (featureReader != null) {
-                    try{
-                        featureReader.close();
-                    }catch(IOException ioe){
-                        //featureReader was probably closed already.
-                    }
-                }*/
+                /*
+                 * if (featureReader != null) { try{ featureReader.close();
+                 * }catch(IOException ioe){ //featureReader was probably closed
+                 * already. } }
+                 */
             }
 
             writer.endDocument();
@@ -423,7 +449,8 @@ public class EncodeKML {
     }
 
     /**
-     * This method produces and stores PNG images of all map layers using the StreamingRenderer and JAI Encoder.
+     * This method produces and stores PNG images of all map layers using the
+     * StreamingRenderer and JAI Encoder.
      *
      * @param outZ
      * @throws IOException
@@ -438,7 +465,8 @@ public class EncodeKML {
             if (layerRenderList.size() > 0) {
                 int num = ((Integer) layerRenderList.get(0)).intValue();
 
-                if (num == i) { // if this layer is a layer that doesn't need to be rendered, move to next layer
+                if (num == i) { // if this layer is a layer that doesn't need to
+                                // be rendered, move to next layer
                     layerRenderList.remove(0);
 
                     continue;
@@ -471,7 +499,9 @@ public class EncodeKML {
                     this.mapContext.getBgColor().getGreen(),
                     this.mapContext.getBgColor().getBlue(), 0);
 
-            //LOGGER.info("****** bg color: "+c.getRed()+","+c.getGreen()+","+c.getBlue()+","+c.getAlpha()+", trans: "+c.getTransparency());
+            // LOGGER.info("****** bg color:
+            // "+c.getRed()+","+c.getGreen()+","+c.getBlue()+","+c.getAlpha()+",
+            // trans: "+c.getTransparency());
             graphic.setBackground(this.mapContext.getBgColor());
             graphic.setColor(c);
             graphic.fillRect(0, 0, width, height);
@@ -508,48 +538,54 @@ public class EncodeKML {
             final ZipEntry e = new ZipEntry("layer_" + (i) + ".png");
             outZ.putNextEntry(e);
             new ImageWorker(curImage).writePNG(outZ, "FILTERED", 0.75f, false, false);
-            //final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(outZ);
-            /*final PlanarImage encodedImage = PlanarImage
-                            .wrapRenderedImage(curImage);
-            //final PlanarImage finalImage = encodedImage.getColorModel() instanceof DirectColorModel?ImageUtilities
-            //                .reformatColorModel2ComponentColorModel(encodedImage):encodedImage;
-            final PlanarImage finalImage = encodedImage;
-            final Iterator it = ImageIO.getImageWritersByMIMEType("image/png");
-            ImageWriter imgWriter = null;
-            if (!it.hasNext()) {
-                    LOGGER.warning("No PNG ImageWriter found");
-                    throw new IllegalStateException("No PNG ImageWriter found");
-            } else
-                    imgWriter = (ImageWriter) it.next();
-            */
+            // final MemoryCacheImageOutputStream memOutStream = new
+            // MemoryCacheImageOutputStream(outZ);
+            /*
+             * final PlanarImage encodedImage = PlanarImage
+             * .wrapRenderedImage(curImage); //final PlanarImage finalImage =
+             * encodedImage.getColorModel() instanceof
+             * DirectColorModel?ImageUtilities
+             * .reformatColorModel2ComponentColorModel(encodedImage):encodedImage;
+             * final PlanarImage finalImage = encodedImage; final Iterator it =
+             * ImageIO.getImageWritersByMIMEType("image/png"); ImageWriter
+             * imgWriter = null; if (!it.hasNext()) { LOGGER.warning("No PNG
+             * ImageWriter found"); throw new IllegalStateException("No PNG
+             * ImageWriter found"); } else imgWriter = (ImageWriter) it.next();
+             */
 
-            //---------------------- bo- new
-            //			PngEncoderB png = new PngEncoderB(curImage, PngEncoder.ENCODE_ALPHA, 0, 1);
-            //			byte[] pngbytes = png.pngEncode();
-            //			memOutStream.write(pngbytes);
-            //----------------------
-
-            //imgWriter.setOutput(memOutStream);
-            //imgWriter.write(null, new IIOImage(finalImage, null, null), null);
-            //memOutStream.flush();
-            //memOutStream.close();
-            //imgWriter.dispose();
+            // ---------------------- bo- new
+            // PngEncoderB png = new PngEncoderB(curImage,
+            // PngEncoder.ENCODE_ALPHA, 0, 1);
+            // byte[] pngbytes = png.pngEncode();
+            // memOutStream.write(pngbytes);
+            // ----------------------
+            // imgWriter.setOutput(memOutStream);
+            // imgWriter.write(null, new IIOImage(finalImage, null, null),
+            // null);
+            // memOutStream.flush();
+            // memOutStream.close();
+            // imgWriter.dispose();
             outZ.closeEntry();
         }
     }
 
     /**
-     * Creates the bounding box filters (one for each geometric attribute) needed to query a
-     * <code>MapLayer</code>'s feature source to return just the features for the target
-     * rendering extent
+     * Creates the bounding box filters (one for each geometric attribute)
+     * needed to query a <code>MapLayer</code>'s feature source to return
+     * just the features for the target rendering extent
      *
-     * @param schema the layer's feature source schema
-     * @param attributes set of needed attributes
-     * @param bbox the expression holding the target rendering bounding box
-     * @return an or'ed list of bbox filters, one for each geometric attribute in
-     *         <code>attributes</code>. If there are just one geometric attribute, just returns
-     *         its corresponding <code>GeometryFilter</code>.
-     * @throws IllegalFilterException if something goes wrong creating the filter
+     * @param schema
+     *            the layer's feature source schema
+     * @param attributes
+     *            set of needed attributes
+     * @param bbox
+     *            the expression holding the target rendering bounding box
+     * @return an or'ed list of bbox filters, one for each geometric attribute
+     *         in <code>attributes</code>. If there are just one geometric
+     *         attribute, just returns its corresponding
+     *         <code>GeometryFilter</code>.
+     * @throws IllegalFilterException
+     *             if something goes wrong creating the filter
      */
     private Filter createBBoxFilters(FeatureType schema, String[] attributes, BBoxExpression bbox)
         throws IllegalFilterException {
@@ -560,7 +596,7 @@ public class EncodeKML {
         for (int j = 0; j < length; j++) {
             AttributeType attType = schema.getAttributeType(attributes[j]);
 
-            //DJB: added this for better error messages!
+            // DJB: added this for better error messages!
             if (attType == null) {
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.fine(new StringBuffer("Could not find '").append(attributes[j])

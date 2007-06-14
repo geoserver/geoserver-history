@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.wms;
 
-import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -14,7 +14,7 @@ import java.io.OutputStream;
  * inside th map production chain at a finer grained level
  *
  * @author Andrea Aime
- *
+ * @author Simone Giannecchini, GeoSolutions
  */
 public interface RasterMapProducer extends GetMapProducer {
     /**
@@ -23,7 +23,7 @@ public interface RasterMapProducer extends GetMapProducer {
      *
      * @return
      */
-    public BufferedImage getImage();
+    public RenderedImage getImage();
 
     /**
      * Transforms a rendered image into the appropriate format, streaming to the
@@ -37,6 +37,6 @@ public interface RasterMapProducer extends GetMapProducer {
      * @throws WmsException
      * @throws IOException
      */
-    public void formatImageOutputStream(BufferedImage image, OutputStream outStream)
+    public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
         throws WmsException, IOException;
 }

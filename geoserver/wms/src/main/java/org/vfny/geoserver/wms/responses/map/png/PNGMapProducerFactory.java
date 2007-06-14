@@ -8,6 +8,7 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,14 +25,20 @@ public final class PNGMapProducerFactory implements GetMapProducerFactorySpi {
     static final String MIME_TYPE = "image/png";
 
     /**
-     * convenient singleton Set to expose the output format this
-     * producer supports
+     * convenient singleton Set to expose the output format this producer
+     * supports
      */
-    private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
+    private static final Set SUPPORTED_FORMATS;
+
+    static {
+        SUPPORTED_FORMATS = new HashSet(2);
+        SUPPORTED_FORMATS.add(MIME_TYPE);
+        SUPPORTED_FORMATS.add(MIME_TYPE + "8");
+    }
 
     /**
-             * Creates a new PNGMapProducerFactory object.
-             */
+     * Creates a new PNGMapProducerFactory object.
+     */
     public PNGMapProducerFactory() {
         super();
     }
@@ -65,28 +72,32 @@ public final class PNGMapProducerFactory implements GetMapProducerFactorySpi {
     }
 
     /**
-     * Returns wether the map producers created by this factory can
-     * create maps in the passed output format.
+     * Returns wether the map producers created by this factory can create maps
+     * in the passed output format.
      *
-     * @param mapFormat a MIME type string to check if this producer is able to
-     *        handle.
+     * @param mapFormat
+     *            a MIME type string to check if this producer is able to
+     *            handle.
      *
      * @return <code>true</code> if <code>mapFormat == "image/gif"</code>,
      *         <code>false</code> otherwise.
      */
     public boolean canProduce(String mapFormat) {
-        return MIME_TYPE.equals(mapFormat);
+        return SUPPORTED_FORMATS.contains(mapFormat);
     }
 
     /**
      * DOCUMENT ME!
      *
-     * @param mapFormat DOCUMENT ME!
-     * @param wms DOCUMENT ME!
+     * @param mapFormat
+     *            DOCUMENT ME!
+     * @param wms
+     *            DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      *
-     * @throws IllegalArgumentException DOCUMENT ME!
+     * @throws IllegalArgumentException
+     *             DOCUMENT ME!
      */
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
@@ -95,7 +106,7 @@ public final class PNGMapProducerFactory implements GetMapProducerFactorySpi {
                     " not supported by this map producer").toString());
         }
 
-        return new PNGMapProducer(MIME_TYPE, wms);
+        return new PNGMapProducer(mapFormat, MIME_TYPE, wms);
     }
 
     /*

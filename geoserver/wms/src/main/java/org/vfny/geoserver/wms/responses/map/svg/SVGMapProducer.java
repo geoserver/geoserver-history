@@ -9,6 +9,7 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
  * @author Gabriel Rold?n
  * @version $Id: SVGMapProducer.java 4804 2006-08-03 11:10:49Z afabiani $
  */
-public class SVGMapProducer implements GetMapProducer {
+public class SVGMapProducer extends AbstractGetMapProducer implements GetMapProducer {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
 
@@ -73,8 +74,12 @@ public class SVGMapProducer implements GetMapProducer {
      *
      * @throws WmsException DOCUMENT ME!
      */
-    public void produceMap(WMSMapContext map) throws WmsException {
-        this.svgEncoder = new EncodeSVG(map);
+    public void produceMap() throws WmsException {
+        if (mapContext == null) {
+            throw new WmsException("The map context is not set");
+        }
+
+        this.svgEncoder = new EncodeSVG(mapContext);
     }
 
     /**

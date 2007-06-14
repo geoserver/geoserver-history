@@ -8,6 +8,7 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
 /**
  * Factory for producing Tiff images.
  *
- * @author Simone Giannecchini
+ * @author Simone Giannecchini, GeoSolutions
  * @version $Id$
  *
  * @since .1.4.x
@@ -26,18 +27,24 @@ public final class TiffMapProducerFactory implements GetMapProducerFactorySpi {
     static final String MIME_TYPE = "image/tiff";
 
     /**
-     * Convenient singleton Set to expose the output format this
-     * producer supports
+     * Convenient singleton Set to expose the output format this producer
+     * supports
      */
-    private static final Set SUPPORTED_FORMATS = Collections.singleton(MIME_TYPE);
+    private static final Set SUPPORTED_FORMATS;
+
+    static {
+        SUPPORTED_FORMATS = new HashSet(2);
+        SUPPORTED_FORMATS.add(MIME_TYPE);
+        SUPPORTED_FORMATS.add("image/tiff8");
+    }
 
     /** Logger */
-    private static final Logger LOGGER = Logger.getLogger(TiffMapProducerFactory.class.getPackage()
-                                                                                      .getName());
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.wms.responses.map.tiff");
 
     /**
-             * Default constructor.
-             */
+     * Default constructor.
+     */
     public TiffMapProducerFactory() {
     }
 
@@ -55,22 +62,32 @@ public final class TiffMapProducerFactory implements GetMapProducerFactorySpi {
     }
 
     public boolean isAvailable() {
-        return true;
+        try {
+            Class.forName("com.sun.media.imageio.plugins.tiff.TIFFImageWriteParam");
+
+            return true;
+        } catch (Exception e) {
+        }
+
+        return false;
     }
 
     public boolean canProduce(String mapFormat) {
-        return MIME_TYPE.equals(mapFormat);
+        return SUPPORTED_FORMATS.contains(mapFormat);
     }
 
     /**
      * DOCUMENT ME!
      *
-     * @param mapFormat DOCUMENT ME!
-     * @param wms DOCUMENT ME!
+     * @param mapFormat
+     *            DOCUMENT ME!
+     * @param wms
+     *            DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      *
-     * @throws IllegalArgumentException DOCUMENT ME!
+     * @throws IllegalArgumentException
+     *             DOCUMENT ME!
      */
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
@@ -78,7 +95,7 @@ public final class TiffMapProducerFactory implements GetMapProducerFactorySpi {
             throw new IllegalArgumentException("Can't produce " + mapFormat + " format");
         }
 
-        return new TiffMapProducer(mapFormat, wms);
+        return new TiffMapProducer(mapFormat, MIME_TYPE, wms);
     }
 
     /*

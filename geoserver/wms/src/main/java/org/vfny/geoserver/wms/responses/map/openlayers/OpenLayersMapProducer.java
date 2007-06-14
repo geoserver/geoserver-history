@@ -7,13 +7,12 @@ package org.vfny.geoserver.wms.responses.map.openlayers;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.apache.commons.collections.map.SingletonMap;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -27,9 +26,10 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 
-public class OpenLayersMapProducer implements GetMapProducer {
+public class OpenLayersMapProducer extends AbstractGetMapProducer implements GetMapProducer {
     /**
-     * Set of parameters that we can ignore, since they are not part of the OpenLayers WMS request
+     * Set of parameters that we can ignore, since they are not part of the
+     * OpenLayers WMS request
      */
     private static final Set ignoredParameters;
 
@@ -63,11 +63,6 @@ public class OpenLayersMapProducer implements GetMapProducer {
      */
     Template template;
 
-    /**
-     * The current map context
-     */
-    WMSMapContext mapContext;
-
     public OpenLayersMapProducer(WMS wms) {
         this.wms = wms;
     }
@@ -85,13 +80,9 @@ public class OpenLayersMapProducer implements GetMapProducer {
         return "text/html";
     }
 
-    public void produceMap(WMSMapContext map) throws WmsException {
-        mapContext = map;
-    }
-
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         try {
-            //create the template
+            // create the template
             Template template = cfg.getTemplate("OpenLayersMapTemplate.ftl");
             HashMap map = new HashMap();
             map.put("context", mapContext);
@@ -116,9 +107,10 @@ public class OpenLayersMapProducer implements GetMapProducer {
     }
 
     /**
-     * Returns a list of maps with the name and value of each parameter that we have to
-     * forward to OpenLayers. Forwarded parameters are all the provided ones, besides a short
-     * set contained in {@link #ignoredParameters}.
+     * Returns a list of maps with the name and value of each parameter that we
+     * have to forward to OpenLayers. Forwarded parameters are all the provided
+     * ones, besides a short set contained in {@link #ignoredParameters}.
+     *
      * @param request
      * @return
      */
@@ -133,7 +125,8 @@ public class OpenLayersMapProducer implements GetMapProducer {
                 continue;
             }
 
-            // this won't work for multi-valued parameters, but we have none so far (they
+            // this won't work for multi-valued parameters, but we have none so
+            // far (they
             // are common just in HTML forms...)
             Map map = new HashMap();
             map.put("name", paramName);
@@ -146,7 +139,9 @@ public class OpenLayersMapProducer implements GetMapProducer {
 
     /**
      * Makes sure the url does not end with "/", otherwise we would have URL lik
-     * "http://localhost:8080/geoserver//wms?LAYERS=..." and Jetty 6.1 won't digest them...
+     * "http://localhost:8080/geoserver//wms?LAYERS=..." and Jetty 6.1 won't
+     * digest them...
+     *
      * @param baseUrl
      * @return
      */
@@ -163,5 +158,8 @@ public class OpenLayersMapProducer implements GetMapProducer {
         double h = areaOfInterest.getHeight();
 
         return ((w > h) ? w : h) / 256;
+    }
+
+    public void produceMap() throws WmsException {
     }
 }

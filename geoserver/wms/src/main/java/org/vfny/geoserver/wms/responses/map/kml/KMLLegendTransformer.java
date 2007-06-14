@@ -4,19 +4,17 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.helpers.AttributesImpl;
-import java.util.Map;
 
 
 /**
  * Encodes the legend for a map layer as a kml ScreenOverlay.
  *
+ * @author Simone Giannecchini - GeoSolutions
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
@@ -55,8 +53,8 @@ public class KMLLegendTransformer extends TransformerBase {
 
             start("Icon");
 
-            //reference the image as a remote wms call
-            element("href", KMLUtils.getLegendGraphicUrl(mapContext, mapLayer,null));
+            // reference the image as a remote wms call
+            element("href", KMLUtils.getLegendGraphicUrl(mapContext, mapLayer, null));
 
             end("Icon");
 

@@ -952,142 +952,6 @@ public class KMLWriter extends OutputStreamWriter {
     }
 
     /**
-     * Applies each of a set of symbolizers in turn to a given feature.
-     * <p>
-     * This is an internal method and should only be called by processStylers.
-     * </p>
-     *
-     * The KML color tag:
-     * The order of expression is alpha, blue, green, red (ABGR).
-     * The range of values for any one color is 0 to 255 (00 to ff).
-     * For opacity, 00 is fully transparent and ff is fully opaque.
-     *
-     * @param feature The feature to be rendered
-     * @param symbolizers An array of symbolizers which actually perform the rendering.
-     * @param scaleRange The scale range we are working on... provided in order to make the style
-     *        factory happy
-     */
-    private boolean processSymbolizers(final FeatureCollection features, final Feature feature,
-        final Symbolizer[] symbolizers, Range scaleRange, final MapLayer layer, final int order,
-        final int layerCounter, StringBuffer title, boolean vectorResult)
-        throws IOException, TransformerException {
-        boolean res = false;
-
-        //String title=null;
-        final int length = symbolizers.length;
-
-        // for each Symbolizer (text, polygon, line etc...)
-        for (int m = 0; m < length; m++) {
-            LOGGER.finer(new StringBuffer("applying symbolizer ").append(symbolizers[m]).toString());
-
-            if (symbolizers[m] instanceof RasterSymbolizer) {
-                //LOGGER.info("Removed by bao for testing");
-                /*final GridCoverage gc = (GridCoverage) feature.getAttribute("grid");
-                                final HttpServletRequest request = this.mapContext.getRequest().getHttpServletRequest();
-                                final String baseURL = org.vfny.geoserver.util.Requests.getBaseUrl(request);
-                    com.vividsolutions.jts.geom.Envelope envelope = this.mapContext.getRequest().getBbox();
-                    */
-
-                /**
-                     * EXAMPLE OUTPUT:
-                             <GroundOverlay>
-                                          <name>Google Earth - New Image Overlay</name>
-                                          <Icon>
-                                            <href>http://localhost:8081/geoserver/wms?bbox=-130,24,-66,50&amp;styles=raster&amp;Format=image/tiff&amp;request=GetMap&amp;layers=nurc:Img_Sample&amp;width=550&amp;height=250&amp;srs=EPSG:4326&amp;</href>
-                                            <viewRefreshMode>never</viewRefreshMode>
-                                            <viewBoundScale>0.75</viewBoundScale>
-                                          </Icon>
-                                          <LatLonBox>
-                                            <north>50.0</north>
-                                            <south>24.0</south>
-                                            <east>-66.0</east>
-                                            <west>-130.0</west>
-                                          </LatLonBox>
-                                        </GroundOverlay>
-                     */
-
-                /*
-                write(new StringBuffer("<GroundOverlay>").
-                        append("<name>").append(((GridCoverage2D)gc).getName()).append("</name>").
-                        append("<drawOrder>").append(order).append("</drawOrder>").
-                                        append("<Icon>").toString());
-                                final double[] BBOX = new double[] {
-                                                envelope.getMinX(),
-                                                envelope.getMinY(),
-                                                envelope.getMaxX(),
-                                                envelope.getMaxY()
-                                                };
-                                if (layerCounter<0) {
-                                        final StringBuffer getMapRequest = new StringBuffer(baseURL).append("wms?bbox=").append(BBOX[0]).append(",").
-                                        append(BBOX[1]).append(",").append(BBOX[2]).append(",").append(BBOX[3]).append("&amp;styles=").
-                                        append(layer.getStyle().getName()).append("&amp;Format=image/png&amp;request=GetMap&amp;layers=").
-                                        append(layer.getTitle()).append("&amp;width="+this.mapContext.getMapWidth()+"&amp;height="+this.mapContext.getMapHeight()+"&amp;srs=EPSG:4326&amp;");
-                                        write("<href>"+getMapRequest.toString()+"</href>");
-                                } else {
-                                        write("<href>layer_"+order+".png</href>");
-                                }
-                                write(new StringBuffer("<viewRefreshMode>never</viewRefreshMode>").
-                                        append("<viewBoundScale>0.75</viewBoundScale>").
-                                        append("</Icon>").
-                                        append("<LatLonBox>").
-                                        append("<north>").append(BBOX[3]).append("</north>").
-                                        append("<south>").append(BBOX[1]).append("</south>").
-                                        append("<east>").append(BBOX[2]).append("</east>").
-                                        append("<west>").append(BBOX[0]).append("</west>").
-                                        append("</LatLonBox>").
-                                        append("</GroundOverlay>").toString());
-                //Geometry g = findGeometry(feature, symbolizers[m]);
-                //writeRasterStyle(getMapRequest.toString(), feature.getID());
-                                */
-                res = true;
-            } else if (vectorResult) {
-                //TODO: come back and sort out crs transformation
-                //CoordinateReferenceSystem crs = findGeometryCS(feature, symbolizers[m]);              
-                if (symbolizers[m] instanceof TextSymbolizer) {
-                    TextSymbolizer ts = (TextSymbolizer) symbolizers[m];
-                    Expression ex = ts.getLabel();
-                    String value = (String) ex.getValue(feature);
-                    title.append(value);
-
-                    Style2D style = styleFactory.createStyle(feature, symbolizers[m], scaleRange);
-                    writeStyle(style, feature.getID(), symbolizers[m]);
-                } else {
-                    Style2D style = styleFactory.createStyle(feature, symbolizers[m], scaleRange);
-                    writeStyle(style, feature.getID(), symbolizers[m]);
-                }
-            } else if (!vectorResult) {
-                com.vividsolutions.jts.geom.Envelope envelope = this.mapContext.getRequest()
-                                                                               .getBbox();
-                write(new StringBuffer("<GroundOverlay>").append("<name>").append(feature.getID())
-                                                         .append("</name>").append("<drawOrder>")
-                                                         .append(order).append("</drawOrder>")
-                                                         .append("<Icon>").toString());
-
-                final double[] BBOX = new double[] {
-                        envelope.getMinX(), envelope.getMinY(), envelope.getMaxX(),
-                        envelope.getMaxY()
-                    };
-                write(new StringBuffer("<href>layer_").append(order).append(".png</href>")
-                                                      .append("<viewRefreshMode>never</viewRefreshMode>")
-                                                      .append("<viewBoundScale>0.75</viewBoundScale>")
-                                                      .append("</Icon>").append("<LatLonBox>")
-                                                      .append("<north>").append(BBOX[3])
-                                                      .append("</north>").append("<south>")
-                                                      .append(BBOX[1]).append("</south>")
-                                                      .append("<east>").append(BBOX[2])
-                                                      .append("</east>").append("<west>")
-                                                      .append(BBOX[0]).append("</west>")
-                                                      .append("</LatLonBox>")
-                                                      .append("</GroundOverlay>").toString());
-            } else {
-                LOGGER.info("KMZ processSymbolizerz unknown case. Please report error.");
-            }
-        }
-
-        return res;
-    }
-
-    /**
      * Adds the <style> tag to the KML document.
      * @param style
      * @param id
@@ -1309,26 +1173,6 @@ public class KMLWriter extends OutputStreamWriter {
         }
     }
 
-    /**
-     * @param href
-     * @param id
-     * @throws IOException
-     */
-    private void writeRasterStyle(final String href, final String id)
-        throws IOException {
-        final StringBuffer styleString = new StringBuffer();
-        styleString.append("<Style id=\"GeoServerStyle").append(id).append("\">");
-        styleString.append("<IconStyle><Icon><href>").append(href)
-                   .append("</href><viewRefreshMode>never</viewRefreshMode>")
-                   .append("<viewBoundScale>0.75</viewBoundScale><w>")
-                   .append(this.mapContext.getMapWidth()).append("</w><h>")
-                   .append(this.mapContext.getMapHeight()).append("</h></Icon></IconStyle>");
-        styleString.append("<PolyStyle><fill>0</fill><outline>0</outline></PolyStyle>");
-        styleString.append("</Style>");
-
-        write(styleString.toString());
-    }
-
     private boolean isWithinScale(Rule r) {
         double min = r.getMinScaleDenominator();
         double max = r.getMaxScaleDenominator();
@@ -1338,35 +1182,6 @@ public class KMLWriter extends OutputStreamWriter {
         } else {
             return false;
         }
-    }
-
-    /**
-     * Finds the geometric attribute requested by the symbolizer
-     *
-     * @param f The feature
-     * @param s The symbolizer
-     * @return The geometry requested in the symbolizer, or the default geometry if none is
-     *         specified
-     */
-    private com.vividsolutions.jts.geom.Geometry findGeometry(Feature f, Symbolizer s) {
-        String geomName = getGeometryPropertyName(s);
-
-        // get the geometry
-        Geometry geom;
-
-        if (geomName == null) {
-            geom = f.getDefaultGeometry();
-        } else {
-            geom = (com.vividsolutions.jts.geom.Geometry) f.getAttribute(geomName);
-        }
-
-        // if the symbolizer is a point symbolizer generate a suitable location to place the
-        // point in order to avoid recomputing that location at each rendering step
-        if (s instanceof PointSymbolizer) {
-            geom = getCentroid(geom); // djb: major simpificatioN
-        }
-
-        return geom;
     }
 
     /**
@@ -1415,27 +1230,6 @@ public class KMLWriter extends OutputStreamWriter {
             return g.getFactory().createMultiPoint(pts);
         } else {
             return g.getCentroid();
-        }
-    }
-
-    /**
-     * Finds the geometric attribute coordinate reference system
-     *
-     * @param f The feature
-     * @param s The symbolizer
-     * @return The geometry requested in the symbolizer, or the default geometry if none is
-     *         specified
-     */
-    private org.opengis.referencing.crs.CoordinateReferenceSystem findGeometryCS(Feature f,
-        Symbolizer s) {
-        String geomName = getGeometryPropertyName(s);
-
-        if (geomName != null) {
-            return ((GeometryAttributeType) f.getFeatureType().getAttributeType(geomName))
-            .getCoordinateSystem();
-        } else {
-            return ((GeometryAttributeType) f.getFeatureType().getDefaultGeometry())
-            .getCoordinateSystem();
         }
     }
 
@@ -1490,53 +1284,6 @@ public class KMLWriter extends OutputStreamWriter {
      */
     private String colorToHex(Color c) {
         return intToHex(c.getBlue()) + intToHex(c.getGreen()) + intToHex(c.getRed());
-    }
-
-    /**
-     * Borrowed from StreamingRenderer
-     *
-     * @param sym
-     * @return
-     */
-    private float getOpacity(final Symbolizer sym) {
-        float alpha = 1.0f;
-        Expression exp = null;
-
-        if (sym instanceof PolygonSymbolizer) {
-            exp = ((PolygonSymbolizer) sym).getFill().getOpacity();
-        } else if (sym instanceof LineSymbolizer) {
-            exp = ((LineSymbolizer) sym).getStroke().getOpacity();
-        } else if (sym instanceof PointSymbolizer) {
-            exp = ((PointSymbolizer) sym).getGraphic().getOpacity();
-        } else if (sym instanceof TextSymbolizer) {
-            exp = ((TextSymbolizer) sym).getFill().getOpacity();
-        } else {
-            LOGGER.info("Symbolizer not matched; was of class: " + sym);
-        }
-
-        if (exp == null) {
-            LOGGER.info("Could not determine proper symbolizer opacity.");
-
-            return alpha;
-        }
-
-        Object obj = exp.getValue(null);
-
-        if (obj == null) {
-            return alpha;
-        }
-
-        Number num = null;
-
-        if (obj instanceof Number) {
-            num = (Number) obj;
-        }
-
-        if (num == null) {
-            return alpha;
-        }
-
-        return num.floatValue();
     }
 
     private float getOpacity(final Expression exp) {

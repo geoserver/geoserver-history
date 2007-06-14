@@ -14,8 +14,11 @@ import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.Iterator;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageTypeSpecifier;
 
 
 /**
@@ -98,19 +101,23 @@ public class PaletteManager {
         for (int i = 0; i < paletteFiles.length; i++) {
             File file = paletteFiles[i];
 
-            // TODO: using JAI we could probably access the palette, located in
-            // the header, without needing to load the whole image
-            BufferedImage bi = ImageIO.read(file);
-            ColorModel model = bi.getColorModel();
+            final Iterator it = ImageIO.getImageReaders(file);
 
-            if (model instanceof IndexColorModel) {
-                paletteCache.put(name, new PaletteCacheEntry(file, (IndexColorModel) model));
+            if (it.hasNext()) {
+                final ImageReader reader = (ImageReader) it.next();
+                final ColorModel cm = ((ImageTypeSpecifier) reader.getImageTypes(0).next())
+                    .getColorModel();
 
-                return (IndexColorModel) model;
-            } else {
-                LOG.warning("Skipping palette file " + file.getName()
-                    + " since color model is not indexed (no 256 colors palette)");
+                if (cm instanceof IndexColorModel) {
+                    final IndexColorModel icm = (IndexColorModel) cm;
+                    paletteCache.put(name, new PaletteCacheEntry(file, icm));
+
+                    return icm;
+                }
             }
+
+            LOG.warning("Skipping palette file " + file.getName()
+                + " since color model is not indexed (no 256 colors palette)");
         }
 
         return null;

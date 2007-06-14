@@ -13,12 +13,12 @@ import org.geotools.map.MapContext;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import java.awt.Dimension;
@@ -37,13 +37,12 @@ import javax.xml.parsers.ParserConfigurationException;
 
 
 /**
- * Renders svg using the Batik SVG Toolkit. An SVG context is created for a
- * map and then passed of to {@link
- * org.geotools.renderer.lite.StreamingRenderer}.
+ * Renders svg using the Batik SVG Toolkit. An SVG context is created for a map
+ * and then passed of to {@link org.geotools.renderer.lite.StreamingRenderer}.
  *
  * @author Justin Deoliveira, The Open Planning Project
  */
-public class SVGBatikMapProducer implements GetMapProducer {
+public class SVGBatikMapProducer extends AbstractGetMapProducer implements GetMapProducer {
     StreamingRenderer renderer;
     WMS wms;
 
@@ -71,15 +70,16 @@ public class SVGBatikMapProducer implements GetMapProducer {
         return null;
     }
 
-    public void produceMap(WMSMapContext map) throws WmsException {
+    public void produceMap() throws WmsException {
         renderer = new StreamingRenderer();
 
-        // optimized data loading was not here, but yet it seems sensible to have it...
+        // optimized data loading was not here, but yet it seems sensible to
+        // have it...
         Map rendererParams = new HashMap();
         rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
-        rendererParams.put("renderingBuffer", new Integer(map.getBuffer()));
+        rendererParams.put("renderingBuffer", new Integer(mapContext.getBuffer()));
         renderer.setRendererHints(rendererParams);
-        renderer.setContext(map);
+        renderer.setContext(mapContext);
     }
 
     public void writeTo(OutputStream out) throws ServiceException, IOException {
@@ -93,7 +93,7 @@ public class SVGBatikMapProducer implements GetMapProducer {
                 width = wmsMap.getMapWidth();
                 height = wmsMap.getMapHeight();
             } else {
-                //guess a width and height based on the envelope
+                // guess a width and height based on the envelope
                 Envelope area = map.getAreaOfInterest();
 
                 if ((area.getHeight() > 0) && (area.getWidth() > 0)) {
@@ -116,7 +116,7 @@ public class SVGBatikMapProducer implements GetMapProducer {
 
             g.setSVGCanvasSize(new Dimension((int) width, (int) height));
 
-            //turn off/on anti aliasing
+            // turn off/on anti aliasing
             if (wms.isSvgAntiAlias()) {
                 g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                     RenderingHints.VALUE_ANTIALIAS_ON);
@@ -129,13 +129,13 @@ public class SVGBatikMapProducer implements GetMapProducer {
 
             Envelope e = renderer.getContext().getAreaOfInterest();
 
-            //AffineTransform at = renderer.worldToScreenTransform(e,r);
+            // AffineTransform at = renderer.worldToScreenTransform(e,r);
             AffineTransform at = RendererUtilities.worldToScreenTransform(e, r);
 
             renderer.paint(g, r, at);
 
-            //This method of output does not output the DOCTYPE definiition
-            //TODO: make a config option that toggles wether doctype is 
+            // This method of output does not output the DOCTYPE definiition
+            // TODO: make a config option that toggles wether doctype is
             // written out.
             OutputFormat format = new OutputFormat();
             XMLSerializer serializer = new XMLSerializer(new OutputStreamWriter(out, "UTF-8"),
@@ -146,13 +146,13 @@ public class SVGBatikMapProducer implements GetMapProducer {
             Element root = g.getDOMTreeManager().getRoot();
             root.setAttribute("xmlns", "http://www.w3.org/2000/svg");
 
-            //this method does output the DOCTYPE def
-            //g.stream(new OutputStreamWriter(out,"UTF-8"));
+            // this method does output the DOCTYPE def
+            // g.stream(new OutputStreamWriter(out,"UTF-8"));
             serializer.serialize(root);
         } catch (Exception e) {
             new IOException().initCause(e);
         } finally {
-            //free up memory
+            // free up memory
             renderer = null;
         }
     }

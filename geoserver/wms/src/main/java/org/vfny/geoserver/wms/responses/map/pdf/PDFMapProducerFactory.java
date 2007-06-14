@@ -110,7 +110,7 @@ public class PDFMapProducerFactory implements GetMapProducerFactorySpi {
             throw new IllegalArgumentException(mapFormat + " not supported by this map producer");
         }
 
-        return new PDFMapProducer();
+        return new PDFMapProducer(mapFormat, MIME_TYPE);
     }
 
     /* (non-Javadoc)
