@@ -20,10 +20,13 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Panel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -197,7 +200,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
      * @param frameName DOCUMENT ME!
      * @param image DOCUMENT ME!
      */
-    protected void showImage(String frameName, final BufferedImage image) {
+    protected void showImage(String frameName, final RenderedImage image) {
         showImage(frameName, SHOW_TIMEOUT, image);
     }
 
@@ -208,7 +211,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
      * @param timeOut
      * @param image
      */
-    protected void showImage(String frameName, long timeOut, final BufferedImage image) {
+    protected void showImage(String frameName, long timeOut, final RenderedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
 
@@ -223,7 +226,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
 
             Panel p = new Panel(null) { //no layout manager so it respects setSize
                     public void paint(Graphics g) {
-                        g.drawImage(image, 0, 0, this);
+                        ((Graphics2D) g).drawRenderedImage(image, new AffineTransform());
                     }
                 };
 
@@ -252,12 +255,13 @@ public abstract class AbstractCiteDataTest extends TestCase {
      * @param bgColor the background color for which differing pixels are
      *        looked for
      */
-    protected void assertNotBlank(String testName, BufferedImage image, Color bgColor) {
+    protected void assertNotBlank(String testName, RenderedImage image, Color bgColor) {
         int pixelsDiffer = 0;
 
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
-                if (image.getRGB(x, y) != bgColor.getRGB()) {
+                int rgb = image.getColorModel().getRGB(image.getData().getDataElements(x, y, null));
+                if (rgb != bgColor.getRGB()) {
                     ++pixelsDiffer;
                 }
             }
