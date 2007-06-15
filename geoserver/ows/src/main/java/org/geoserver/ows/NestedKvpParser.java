@@ -31,11 +31,12 @@ import java.util.List;
  * </p>
  * <p>
  * By default, the {@link #parse(String)} method returns a list of lists. Each
- * of which contains instances of {@link #getBinding()}. The {@link #parse(List)}
+ * of which contains instances of {@link #getBinding()}. The {@link #parseTokenSet(List)}
  * method may be overidden to return a differnt type of object.
  * </p>
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
+ * TODO: add a method to convert return value as to not force returning a list
  */
 public class NestedKvpParser extends KvpParser {
     /**
@@ -64,10 +65,10 @@ public class NestedKvpParser extends KvpParser {
                 parsed.add(parseToken(token));
             }
 
-            tokenSets.set(i, parse(parsed));
+            tokenSets.set(i, parseTokenSet(parsed));
         }
 
-        return tokenSets;
+        return parse( tokenSets );
     }
 
     /**
@@ -86,16 +87,31 @@ public class NestedKvpParser extends KvpParser {
     }
 
     /**
-     * Parses the parsed tokens in a set into a final represetnation.
+     * Parses the set of tokens into a final represetnation.
      * <p>
      * Subclasses may choose to override this method. The default implementation
-     * just return the array passed in.
+     * just return the list passed in.
      * </p>
      * @param values The parsed tokens, each value is an instance of {@link #getBinding()}.
      *
      * @return The final object.
      */
-    protected Object parse(List values) throws Exception {
+    protected Object parseTokenSet(List tokenSet) throws Exception {
+        return tokenSet;
+    }
+
+    /**
+     * Parses the set of token sets into a final representation.
+     * <p>
+     * Subclasses may choose to override this method. The default implementation
+     * just return the list passed in.
+     * </p>
+     * @param values The parsed token sets, each value is an instance of the
+     * class returned from {@link #parseTokenSet(List)}.
+     * 
+     * @return The final object.
+     */
+    protected Object parse( List values ) throws Exception {
         return values;
     }
 }
