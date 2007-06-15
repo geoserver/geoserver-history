@@ -3,7 +3,7 @@ package org.vfny.geoserver.wms.responses.map.georss;
 import java.io.IOException;
 import java.util.logging.Level;
 
-import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.wms.util.WMSRequests;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
@@ -13,12 +13,15 @@ import org.geotools.xml.transform.Translator;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
-import org.vfny.geoserver.wms.responses.map.kml.KMLUtils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
-import com.vividsolutions.jts.geom.Point;
-
+/**
+ * Encodes an RSS feed tagged with geo information.
+ * 
+ * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
+ *
+ */
 public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
 
     public Translator createTranslator(ContentHandler handler) {
@@ -52,8 +55,7 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
             
             start( "link" );
             
-            //TODO: factory out utility methods from KML utils
-            cdata(KMLUtils.getMapUrl(map,null,false));
+            cdata(WMSRequests.getGetMapUrl(map,null,null,null));
             end( "link" );
             
             //element( "description", "description" );
