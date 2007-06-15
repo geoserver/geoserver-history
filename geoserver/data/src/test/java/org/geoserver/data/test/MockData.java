@@ -131,6 +131,10 @@ public class MockData {
     public static String SF_URI = "http://cite.opengeospatial.org/gmlsf";
     public static QName PRIMITIVEGEOFEATURE = new QName(SF_URI, "PrimitiveGeoFeature", SF_PREFIX);
     public static QName AGGREGATEGEOFEATURE = new QName(SF_URI, "AggregateGeoFeature", SF_PREFIX);
+    
+    // DEFAULT
+    public static String DEFAULT_PREFIX = "gs";
+    public static String DEFAULT_URI = "http://geoserver.org";
 
     // public static QName ENTIT\u00C9G\u00C9N\u00C9RIQUE = new QName( SF_URI,
     // "Entit\u00E9G\u00E9n\u00E9rique", SF_PREFIX );
@@ -299,6 +303,8 @@ public class MockData {
         namespaces.put(CDF_PREFIX, CDF_URI);
         namespaces.put(CGF_PREFIX, CGF_URI);
         namespaces.put(SF_PREFIX, SF_URI);
+        namespaces.put(DEFAULT_PREFIX, DEFAULT_URI);
+        namespaces.put("", DEFAULT_URI);
 
         writer.namespaces(namespaces);
 
