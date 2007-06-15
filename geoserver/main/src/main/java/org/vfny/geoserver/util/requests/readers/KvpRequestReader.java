@@ -490,6 +490,8 @@ abstract public class KvpRequestReader {
      * @param filter
      * @return
      * @throws ServiceException
+     * 
+     * 
      */
     protected List readOGCFilter(String filter) throws ServiceException {
         List filters = new ArrayList();
@@ -517,6 +519,8 @@ abstract public class KvpRequestReader {
      * @param filter
      * @return
      * @throws ServiceException
+     * 
+     * @deprecated use {@link CQLFilterKvpParser}
      */
     protected List readCQLFilter(String filter) throws ServiceException {
         try {
@@ -564,6 +568,8 @@ abstract public class KvpRequestReader {
      * @return The geotools filter constructed from rawRequest.
      *
      * @throws WfsException For any problems reading the request.
+     * 
+     * @deprecated use {@link FilterKvpParser}
      */
     protected Filter parseXMLFilter(Reader rawRequest)
         throws ServiceException {
