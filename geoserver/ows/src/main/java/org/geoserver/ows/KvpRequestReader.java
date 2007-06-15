@@ -8,6 +8,7 @@ import org.geoserver.ows.util.OwsUtils;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
@@ -54,6 +55,10 @@ import java.util.Map;
  *
  */
 public class KvpRequestReader {
+    /**
+     * logging instance
+     */
+    protected static Logger LOGGER = Logger.getLogger("org.geoserver.ows");
     /**
      * The class of the request bean
      */
