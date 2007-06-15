@@ -16,8 +16,8 @@ import java.util.List;
  * @author Andrea Aime - TOPP
  *
  */
-public class CQLFilterKvpReader extends KvpParser {
-    public CQLFilterKvpReader() {
+public class CQLFilterKvpParser extends KvpParser {
+    public CQLFilterKvpParser() {
         super("cql_filter", List.class);
     }
 
