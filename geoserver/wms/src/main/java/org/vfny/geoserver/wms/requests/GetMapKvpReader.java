@@ -161,6 +161,7 @@ import javax.servlet.http.HttpServletRequest;
  * @version $Id$
  *
  * @task TODO: parse and respect SRS parameter (needs reprojection support)
+ * @deprecated
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
     /** DOCUMENT ME! */
