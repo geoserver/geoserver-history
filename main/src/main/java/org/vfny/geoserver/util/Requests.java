@@ -10,8 +10,17 @@ import org.acegisecurity.providers.anonymous.AnonymousAuthenticationToken;
 import org.acegisecurity.userdetails.UserDetails;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -36,24 +45,6 @@ import javax.servlet.http.HttpSession;
  * @author Jody Garnett
  */
 public final class Requests {
-    //JD: remove these methods that are commented out
-    /**
-     * Aquire GeoServer from Web Container.
-     *
-     * <p>
-     * In GeoServer is create by a STRUTS plug-in and is available through the
-     * Web container.
-     * </p>
-     *
-     * <p>
-     * Test cases may seed the request object with a Mock WebContainer and a
-     * Mock GeoServer.
-     * </p>
-     *
-     * @param request HttpServletRequest used to aquire servlet context
-     *
-     * @return GeoServer instance for the current Web Application
-    
     /*
      * This is the parameter used to get the proxy from the
      * web.xml file.  This is a bit hacky, it should be moved to
@@ -63,60 +54,6 @@ public final class Requests {
      ( See GEOS-598 for more information
      */
     public static final String PROXY_PARAM = "PROXY_BASE_URL";
-
-    /**
-     * Aquire WFS from Web Container.
-     *
-     * <p>
-     * In WFS is create by a STRUTS plug-in and is available through the
-     * Web container.
-     * </p>
-     *
-     * <p>
-     * Test cases may seed the request object with a Mock WebContainer and a
-     * Mock GeoServer.
-     * </p>
-     *
-     * @param request HttpServletRequest used to aquire servlet context
-     *
-     * @return WFS instance for the current Web Application
-     */
-
-    //JD: delete this
-    //    public static WFS getWFS(HttpServletRequest request) {
-    //    	ServletRequest req = request;
-    //    	HttpSession session = request.getSession();
-    //    	ServletContext context = session.getServletContext();
-    //
-    //    	return (WFS) context.getAttribute(WFS.WEB_CONTAINER_KEY);
-    //    }
-
-    /**
-     * Aquire WMS from Web Container.
-     *
-     * <p>
-     * In WMS is create by a STRUTS plug-in and is available through the
-     * Web container.
-     * </p>
-     *
-     * <p>
-     * Test cases may seed the request object with a Mock WebContainer and a
-     * Mock GeoServer.
-     * </p>
-     *
-     * @param request HttpServletRequest used to aquire servlet context
-     *
-     * @return WMS instance for the current Web Application
-     */
-
-    //	JD: delete this
-    //    public static WMS getWMS(HttpServletRequest request) {
-    //    	ServletRequest req = request;
-    //    	HttpSession session = request.getSession();
-    //    	ServletContext context = session.getServletContext();
-    //
-    //    	return (WMS) context.getAttribute(WMS.WEB_CONTAINER_KEY);
-    //    }
 
     /**
      * Get base url used - it is not any more assumed to be
@@ -324,21 +261,55 @@ public final class Requests {
     }
 
     /**
-     * Access GeoServer Application State from the WebContainer.
+     * This method gets the correct input stream for a URL.
+     * If the URL is a http/https connection, the Accept-Encoding: gzip, deflate is added.
+     * It the paramter is added, the response is checked to see if the response
+     * is encoded in gzip, deflate or plain bytes. The correct input stream wrapper is then
+     * selected and returned.
      *
-     * @param request DOCUMENT ME!
+     * This method was added as part of GEOS-420
      *
-     * @return Configuration model for Catalog information.
+     * @param url The url to the sld file
+     * @return The InputStream used to validate and parse the SLD xml.
+     * @throws IOException
      */
+    public static InputStream getInputStream(URL url) throws IOException {
+        //Open the connection
+        URLConnection conn = url.openConnection();
 
-    //JD: kill this
-    //    public static ApplicationState getApplicationState(
-    //        HttpServletRequest request) {
-    //
-    //        ServletRequest req = request;
-    //        HttpSession session = request.getSession();
-    //        ServletContext context = session.getServletContext();
-    //
-    //        return (ApplicationState) context.getAttribute(ApplicationState.WEB_CONTAINER_KEY);
-    //    }
+        //If it is the http or https scheme, then ask for gzip if the server supports it.
+        if (conn instanceof HttpURLConnection) {
+            //Send the requested encoding to the remote server.
+            conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
+        }
+
+        //Conect to get the response headers
+        conn.connect();
+
+        //Return the correct inputstream
+        //If the connection is a url, connection, check the response encoding.
+        if (conn instanceof HttpURLConnection) {
+            //Get the content encoding of the server response
+            String encoding = conn.getContentEncoding();
+
+            //If null, set it to a emtpy string
+            if (encoding == null) {
+                encoding = "";
+            }
+
+            if (encoding.equalsIgnoreCase("gzip")) {
+                //For gzip input stream, use a GZIPInputStream
+                return new GZIPInputStream(conn.getInputStream());
+            } else if (encoding.equalsIgnoreCase("deflate")) {
+                //If it is encoded as deflate, then select the inflater inputstream.
+                return new InflaterInputStream(conn.getInputStream(), new Inflater(true));
+            } else {
+                //Else read the raw bytes
+                return conn.getInputStream();
+            }
+        } else {
+            //Else read the raw bytes.
+            return conn.getInputStream();
+        }
+    }
 }
