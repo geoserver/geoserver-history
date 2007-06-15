@@ -11,7 +11,8 @@ import javax.servlet.http.HttpServletRequest;
  * Utility class performing operations related to http requests.
  *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
+ * 
+ * TODO: this class needs to be merged with org.vfny.geoserver.Requests.
  */
 public class RequestUtils {
     /**
