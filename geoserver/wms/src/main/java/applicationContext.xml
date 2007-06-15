@@ -115,6 +115,58 @@
 		<property name="DTDLocation" value="wms/1.1.1/WMS_exception_1_1_1.dtd"/>
 	</bean>
  	
+ 	<!-- kvp parsers -->
+ 	<bean id="widthKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
+		<constructor-arg value="width"/>
+ 	</bean>
+ 	<bean id="heightKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
+		<constructor-arg value="height"/>
+ 	</bean>
+ 	<bean id="layersKvpParser" class="org.geoserver.wms.kvp.LayersKvpParser">
+		<constructor-arg ref="catalog"/>
+ 	</bean>
+ 	<bean id="stylesKvpParser" class="org.geoserver.wms.kvp.StylesKvpParser">
+		<constructor-arg ref="catalog"/>
+ 	</bean>
+ 	<bean id="formatOptionsKvpParser" class="org.geoserver.ows.kvp.FormatOptionsKvpParser"/>
+ 	<bean id="bgColorKvpParser" class="org.geoserver.wms.kvp.ColorKvpParser">
+		<constructor-arg value="bgcolor"/>
+ 	</bean> 	
+ 	<bean id="transparentKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
+ 		<constructor-arg value="transparent"/>
+ 	</bean>
+ 	<bean id="tiledKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
+ 		<constructor-arg value="tiled"/>
+ 	</bean> 	
+ 	<bean id="tilesOriginKvpParser" class="org.geoserver.wms.kvp.TilesOriginKvpParser"/>
+ 	<bean id="bufferKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
+ 		<constructor-arg value="buffer"/>
+ 	</bean>
+ 	<bean id="paletteKvpParser" class="org.geoserver.wms.kvp.PaletteKvpParser"/>
+ 	<bean id="timeKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
+		<constructor-arg value="time"/>
+ 	</bean>
+ 	<bean id="elevationKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
+		<constructor-arg value="elevation"/>
+ 	</bean>
+ 	<bean id="sldKvpParsaer" class="org.geoserver.wms.kvp.SLDKvpParser"/>
+ 	<bean id="validateSldKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
+ 		<constructor-arg value="validateschema"/>
+ 	</bean>
+ 	
+ 	<!-- kml kvp parsers -->
+ 	<bean id="superOverlayKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
+		<constructor-arg value="superoverlay"/>
+ 	</bean>
+ 	<bean id="legendKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
+		<constructor-arg value="legend"/>
+ 	</bean>
+ 	<bean id="kmatrrKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
+		<constructor-arg value="kmattr"/>
+ 	</bean>
+ 	 	<bean id="kmscoreKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
+		<constructor-arg value="kmscore"/>
+ 	</bean>
  	<!-- kvp request readers -->
  	<bean id="wmsGetCapabilitiesKvpReader" 
  		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
@@ -130,11 +182,15 @@
       	<constructor-arg index="2" ref="wmsDescribeLayer" />
 	</bean>
 	
-	<bean id="getMapKvpReader"
+	<!-- bean id="getMapKvpReader"
 		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.GetMapRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.GetMapKvpReader" />
       	<constructor-arg index="2" ref="wmsGetMap" />
+	</bean-->
+	<bean id="getMapKvpReader"
+		class="org.geoserver.wms.kvp.GetMapKvpRequestReader">
+		<constructor-arg ref="wmsGetMap"/>
 	</bean>
 	<bean id="getFeatureInfoKvpReader"
 			class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
