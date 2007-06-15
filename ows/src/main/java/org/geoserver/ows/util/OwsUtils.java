@@ -38,7 +38,13 @@ public class OwsUtils {
                 }
             }
         }
-
+        
+        //could not be found, try again with a more lax match
+        String lax = lax( property );
+        if ( !lax.equals( property ) ) {
+            return setter( clazz, lax, type );    
+        }
+        
         return null;
     }
 
@@ -70,6 +76,12 @@ public class OwsUtils {
             }
         }
 
+        //could not be found, try again with a more lax match
+        String lax = lax( property );
+        if ( !lax.equals( property ) ) {
+            return getter( clazz, lax, type );    
+        }
+        
         return null;
     }
 
@@ -139,4 +151,15 @@ public class OwsUtils {
 
         return null;
     }
+    
+    /**
+     * Does some checks on the property name to turn it into a java bean property.
+     * <p>
+     * Checks include collapsing any "_" characters.
+     * </p>
+     */
+    static String lax( String property ) {
+        return property.replaceAll("_", "");  
+    }
+   
 }
