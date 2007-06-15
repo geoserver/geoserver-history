@@ -55,4 +55,10 @@ public interface WebMapService {
      * GetLegendGraphic operation.
      */
     GetLegendGraphicResponse getLegendGraphic(GetLegendGraphicRequest request);
+
+    /**
+     * GetMap reflector
+     */
+    GetMapResponse reflect( GetMapRequest request );
+    GetMapResponse getMapReflect( GetMapRequest request );
 }
