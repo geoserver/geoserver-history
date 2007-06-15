@@ -4,6 +4,8 @@
  */
 package org.geoserver.ows;
 
+import java.util.logging.Logger;
+
 
 /**
  * Parses a key-value pair into a key-object pair.
@@ -38,6 +40,11 @@ package org.geoserver.ows;
  *
  */
 public abstract class KvpParser {
+    /**
+     * logger
+     */
+    protected static Logger LOGGER = Logger.getLogger("org.geoserver.ows" );
+    
     /**
      * The key.
      */
