@@ -858,6 +858,7 @@
     <!-- change this property in your settings.xml file to 
       exclude files from being formatted -->
     <jalopy.srcExcludesPattern>disabled</jalopy.srcExcludesPattern>
+    <jalopy.phase>disabled</jalopy.phase>
   </properties>
 
   <profiles>
