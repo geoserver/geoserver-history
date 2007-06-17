@@ -52,7 +52,7 @@
         <goals>
           <goal>format</goal>
         </goals>
-        <phase>install</phase>
+        <phase>${jalopy.phase}</phase>
       </execution>
     </executions>
    </plugin>
