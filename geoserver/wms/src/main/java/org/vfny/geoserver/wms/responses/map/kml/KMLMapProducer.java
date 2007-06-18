@@ -74,6 +74,9 @@ class KMLMapProducer implements GetMapProducer {
     public void produceMap(WMSMapContext map) throws WmsException {
         mapContext = map;
         transformer = new KMLTransformer();
+        
+        //TODO: use GeoServer.isVerbose() to determine if we should indent?
+        transformer.setIndentation(3);
     }
 
     /**

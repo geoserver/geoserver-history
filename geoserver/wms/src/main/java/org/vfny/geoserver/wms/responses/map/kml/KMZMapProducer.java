@@ -83,6 +83,9 @@ class KMZMapProducer implements GetMapProducer {
         this.mapContext = map;
         transformer = new KMLTransformer();
         transformer.setKmz(true);
+        
+        //TODO: use GeoServer.isVerbose() to determine if we should indent?
+        transformer.setIndentation(3);
     }
 
     public void writeTo(OutputStream out) throws ServiceException, IOException {
