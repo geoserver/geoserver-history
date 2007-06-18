@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:sa="http://www.seegrid.csiro.au/xml/sampling" targetNamespace="http://www.seegrid.csiro.au/xml/sampling" elementFormDefault="qualified" attributeFormDefault="unqualified" version="pre-release">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:sa="http://www.opengis.net/sampling" targetNamespace="http://www.opengis.net/sampling" elementFormDefault="qualified" attributeFormDefault="unqualified" version="pre-release">
 	<annotation>
 		<documentation>sampling.xsd
 

@@ -2,7 +2,7 @@
   xmlns:aw="http://brs.gov.au/awdip/0.2"
   xmlns:om="http://www.opengis.net/om"
   xmlns:cv="http://www.opengis.net/cv/0.0"
-  xmlns:sa="http://www.seegrid.csiro.au/xml/sampling"
+  xmlns:sa="http://www.opengis.net/sampling"
   xmlns:wfs="http://www.opengis.net/wfs"
   xmlns:ogc="http://www.opengis.net/ogc"
   xmlns:gml="http://www.opengis.net/gml"

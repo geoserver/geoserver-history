@@ -2,8 +2,8 @@
 <schema xmlns:gml="http://www.opengis.net/gml" xmlns:geox="http://www.opengis.net/geomExt" 
 			xmlns:cv="http://www.opengis.net/cv/0.0" 
         xmlns:swe="http://www.opengis.net/swe/0.0" xmlns:om="http://www.opengis.net/om/0.0"
-        xmlns="http://www.w3.org/2001/XMLSchema" xmlns:sa="http://www.opengis.net/sampling/0.0"
-        targetNamespace="http://www.opengis.net/sampling/0.0" elementFormDefault="qualified"
+        xmlns="http://www.w3.org/2001/XMLSchema" xmlns:sa="http://www.opengis.net/sampling"
+        targetNamespace="http://www.opengis.net/sampling" elementFormDefault="qualified"
         attributeFormDefault="unqualified" version="0.0.0">
 	<annotation>
 		<documentation>extensiveSite.xsd

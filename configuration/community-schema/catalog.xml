@@ -128,7 +128,7 @@
      -->
     <namespace uri="http://brs.gov.au/awdip/0.2" prefix="aw"/>
     <namespace uri="http://www.opengis.net/xmml" prefix="xmml" />
-    <namespace uri="http://www.seegrid.csiro.au/xml/sampling" prefix="sa"/>
+    <namespace uri="http://www.opengis.net/sampling" prefix="sa"/>
     <namespace uri="http://www.seegrid.csiro.au/xml/geometry" prefix="geo"/>
     <namespace uri="http://www.opengis.net/swe" prefix="swe"/>
     <namespace uri="http://www.opengis.net/cv/0.0" prefix="cv"/>

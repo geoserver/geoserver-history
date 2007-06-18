@@ -3,7 +3,7 @@
 xmlns:xlink="http://www.w3.org/1999/xlink" 
 xmlns:gml="http://www.opengis.net/gml" 
 xmlns:geo="http://www.seegrid.csiro.au/xml/geometry" 
-xmlns:sa="http://www.seegrid.csiro.au/xml/sampling" 
+xmlns:sa="http://www.opengis.net/sampling" 
 xmlns:xmml="http://www.opengis.net/xmml" 
 targetNamespace="http://www.opengis.net/xmml" elementFormDefault="qualified" attributeFormDefault="unqualified" version="pre-release">
 	<annotation>
@@ -19,7 +19,7 @@ Copyright © 2005 CSIRO - see https://www.seegrid.csiro.au/twiki/bin/view/Xmml/L
 	<!-- ====================================================================== -->
 	<!-- bring in other schemas -->
 	<import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
-	<import namespace="http://www.seegrid.csiro.au/xml/sampling" schemaLocation="../../sampling/0.1.0/sampling.xsd"/>
+	<import namespace="http://www.opengis.net/sampling" schemaLocation="../../sampling/0.1.0/sampling.xsd"/>
 	<include schemaLocation="./coverage.xsd"/>
 	<!-- ====================================================================== -->
 	<element name="Borehole" type="xmml:BoreholeType" substitutionGroup="sa:Profile">

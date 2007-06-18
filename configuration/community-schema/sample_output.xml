@@ -2,7 +2,7 @@
 <wfs:FeatureCollection numberOfFeatures="10" timeStamp="2007-05-03T11:50:30.750+02:00"
   xsi:schemaLocation="http://www.opengis.net/xmml http://localhost:8080/geoserver/wfs?service=WFS&amp;version=1.1.0&amp;request=DescribeFeatureType&amp;typeName=xmml:Borehole http://www.opengis.net/wfs http://localhost:8080/geoserver/schemas/wfs/1.1.0/wfs.xsd"
   xmlns:xmml="http://www.opengis.net/xmml" xmlns:ogc="http://www.opengis.net/ogc" xmlns:tiger="http://www.census.gov"
-  xmlns:sa="http://www.seegrid.csiro.au/xml/sampling" xmlns:wfs="http://www.opengis.net/wfs"
+  xmlns:sa="http://www.opengis.net/sampling" xmlns:wfs="http://www.opengis.net/wfs"
   xmlns:topp="http://www.openplans.org/topp" xmlns:geo="http://www.seegrid.csiro.au/xml/geometry"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ows="http://www.opengis.net/ows"
   xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink">
