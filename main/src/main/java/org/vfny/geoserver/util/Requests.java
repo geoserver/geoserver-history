@@ -17,6 +17,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
@@ -311,5 +316,42 @@ public final class Requests {
             //Else read the raw bytes.
             return conn.getInputStream();
         }
+    }
+    
+    /**
+     * Parses an 'option-holding' parameters in the following form
+     * FORMAT_OPTIONS=multiKey:val1,val2,val3;singleKey:val
+     * 
+     * Useful for parsing out the FORMAT_OPTIONS and LEGEND_OPTIONS parameters
+     */
+    public static Map parseOptionParameter(String rawOptionString) throws IllegalArgumentException {
+        HashMap map = new HashMap();
+        if (rawOptionString == null) {
+            return map;
+        }
+        
+        StringTokenizer semiColonSplitter = new StringTokenizer(rawOptionString, ";");
+        while (semiColonSplitter.hasMoreElements()) {
+            String curKVP = semiColonSplitter.nextToken();
+            
+            final int cloc = curKVP.indexOf(":");
+            if (cloc <= 0) {
+                throw new IllegalArgumentException("Key-value-pair: '" + curKVP + "' isn't properly formed.  It must be of the form 'Key:Value1,Value2...'");
+            }
+            String key = curKVP.substring(0, cloc);
+            String values = curKVP.substring(cloc + 1, curKVP.length());
+            if (values.indexOf(",") != -1) {
+                List valueList = new ArrayList();
+                StringTokenizer commaSplitter = new StringTokenizer(values, ",");
+                while (commaSplitter.hasMoreElements())
+                    valueList.add(commaSplitter.nextToken());
+                
+                map.put(key, valueList);
+            } else {
+                map.put(key, values);
+            }
+        }
+        
+        return map;
     }
 }

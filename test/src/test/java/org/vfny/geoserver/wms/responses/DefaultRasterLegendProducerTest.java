@@ -23,6 +23,7 @@ import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 
@@ -102,6 +103,7 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
         req.setLayer(getCiteDataStore().getSchema(ROAD_SEGMENTS_TYPE));
         req.setStyle(multipleRulesStyle);
         req.setRule(rule);
+        req.setLegendOptions(new HashMap());
 
         final int HEIGHT_HINT = 30;
         req.setHeight(HEIGHT_HINT);

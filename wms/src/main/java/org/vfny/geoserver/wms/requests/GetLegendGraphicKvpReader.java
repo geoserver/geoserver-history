@@ -22,9 +22,11 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 import org.vfny.geoserver.wms.servlets.WMService;
+import java.awt.Font;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,8 +34,10 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
@@ -176,6 +180,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
     private void parseOptionalParameters(GetLegendGraphicRequest req, MapLayerInfo mli)
         throws WmsException {
         parseStyleAndRule(req, mli);
+        
 
         // not used by now, since we don't support nested layers yet
         String featureType = getValue("FEATURETYPE");
@@ -206,6 +211,9 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
         if (exceptions != null) {
             req.setExceptionsFormat(exceptions);
         }
+        
+        //the LEGEND_OPTIONS parameter gets parsed here.
+        req.setLegendOptions(Requests.parseOptionParameter(getValue("LEGEND_OPTIONS")));
     }
 
     /**
