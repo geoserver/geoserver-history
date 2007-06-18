@@ -140,7 +140,6 @@ public final class CustomPaletteBuilder {
                 try {
                     wr.setSample(x, y, 0, findColorIndex(root, aColor));
                 } catch (Exception e) {
-                    System.out.println(x + " " + y + " color " + aColor.toString());
                 }
             }
         }
@@ -207,16 +206,14 @@ public final class CustomPaletteBuilder {
             int childIndex = getBranchIndex(aColor, aNode.level);
 
             if (aNode.children[childIndex] == null) {
-                for (int i = 1; i < maxLevel; i++) {
-                    if (((childIndex + i) < maxLevel) && (aNode.children[childIndex + i] != null)) {
+                for (int i = 1; i < 8; i++) {
+                    if (((childIndex + i) < 8) && (aNode.children[childIndex + i] != null)) {
                         childIndex += i;
-
                         break;
                     }
 
                     if (((childIndex - i) >= 0L) && (aNode.children[childIndex - i] != null)) {
                         childIndex -= i;
-
                         break;
                     }
                 }
