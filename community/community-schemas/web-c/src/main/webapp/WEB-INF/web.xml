@@ -8,16 +8,10 @@
     <param-name>serviceStrategy</param-name>
     <!-- Meaning of the different values :
     	 
-    	 PARTIAL-BUFFER
-    	 - Partially buffers the first xKb to disk. Once that has buffered, the the 
-    	   result is streamed to the user. This will allow for most errors to be caught
-    	   early.
-         
          PARTIAL-BUFFER2
          - Partially buffers the first xKb to disk. Once that has buffered, the the 
            result is streamed to the user. This will allow for most errors to be caught
-           early. Compared to PARTIAL-BUFFER this has performance improvements that make
-           streaming up to twice as fast compared to PARTIAL-BUFFER
+           early. 
     	   
          BUFFER
          - stores the entire response in memory first, before sending it off to
@@ -44,7 +38,7 @@
 	<!-- pick up all spring application contexts -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath*:/applicationContext.xml</param-value>
+		<param-value>classpath*:/applicationContext.xml classpath*:/applicationSecurityContext.xml</param-value>
 	</context-param>
 	
 	<!-- 
@@ -62,7 +56,16 @@
 	  </context-param> 
    -->
    
-  <filter>
+   <filter>
+     <filter-name>Acegi Filter Chain Proxy</filter-name>
+     <filter-class>org.acegisecurity.util.FilterToBeanProxy</filter-class>
+     <init-param>
+       <param-name>targetClass</param-name>
+       <param-value>org.acegisecurity.util.FilterChainProxy</param-value>
+     </init-param>
+   </filter>
+
+   <filter>
     <filter-name>Set Character Encoding</filter-name>
     <filter-class>org.vfny.geoserver.filters.SetCharacterEncodingFilter</filter-class>
     <init-param>
@@ -73,6 +76,11 @@
 
   <filter-mapping>
     <filter-name>Set Character Encoding</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <filter-mapping>
+    <filter-name>Acegi Filter Chain Proxy</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
