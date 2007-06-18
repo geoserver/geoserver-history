@@ -478,7 +478,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
             //width, and then adjust the legend size accordingly
             Rectangle2D bounds = new Rectangle2D.Double(0, 0, 0, 0);
             ArrayList lineHeight = new ArrayList();
-            final String realLabel = label.replace("\\n", "\n");
+            final String realLabel = label.replaceAll("\\\\n", "\n");
             StringTokenizer st = new StringTokenizer(realLabel, "\n\r\f");
 
             while (st.hasMoreElements()) {
