@@ -639,23 +639,31 @@ public class KMLVectorTransformer extends TransformerBase {
          * Encodes a KML Placemark geometry from a geometry + centroid.
          */
         protected void encodePlacemarkGeometry(Geometry geometry, Coordinate centroid) {
-            start("MultiGeometry");
-
-            //the centroid
-            start("Point");
-
-            if (!Double.isNaN(centroid.z)) {
-                element("coordinates", centroid.x + "," + centroid.y + "," + centroid.z);
-            } else {
-                element("coordinates", centroid.x + "," + centroid.y);
+    		//if point, just encode a single point, otherwise encode the geometry
+            // + centroid
+            if ( geometry instanceof Point ) {
+                encodeGeometry( geometry );
             }
+            else {
+            	start("MultiGeometry");
 
-            end("Point");
+                //the centroid
+                start("Point");
 
-            //the actual geometry
-            encodeGeometry(geometry);
+                if (!Double.isNaN(centroid.z)) {
+                    element("coordinates", centroid.x + "," + centroid.y + "," + centroid.z);
+                } else {
+                    element("coordinates", centroid.x + "," + centroid.y);
+                }
 
-            end("MultiGeometry");
+                end("Point");
+
+                //the actual geometry
+                encodeGeometry(geometry);
+
+                end("MultiGeometry");
+            }
+        	
         }
 
         /**
