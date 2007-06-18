@@ -31,6 +31,7 @@ Defines namespaces to be used by the datastores.
 -->
 <namespaces>
 <namespace uri = "http://cite.opengeospatial.org/gmlsf" prefix = "sf" default = "true"  />
+<namespace uri = "http://www.geo-solutions.it" prefix = "it.geosolutions"  />
 </namespaces>
 <styles>
 <!--

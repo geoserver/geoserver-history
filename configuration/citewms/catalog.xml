@@ -81,6 +81,7 @@ Defines namespaces to be used by the datastores.
 <namespace uri = "http://geoserver.sf.net" prefix = "sde"  />
 <namespace uri = "http://www.refractions.net/lakes" prefix = "lake"  />
 <namespace uri = "http://www.opengeospatial.net/cite" prefix = "cite"  />
+<namespace uri = "http://www.geo-solutions.it" prefix = "it.geosolutions"  />
 </namespaces>
 <styles>
 <!--
