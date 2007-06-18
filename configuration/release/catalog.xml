@@ -99,6 +99,7 @@ Defines namespaces to be used by the datastores.
 <namespaces>
 <namespace uri = "http://www.openplans.org/topp" prefix = "topp" default = "true"  />
 <namespace uri = "http://geoserver.sf.net" prefix = "sde"  />
+<namespace uri = "http://www.geo-solutions.it" prefix = "it.geosolutions"  />
 <namespace uri = "http://www.nurc.nato.int" prefix = "nurc"  />
 <namespace uri = "http://www.census.gov" prefix = "tiger"  />
 <namespace uri = "http://www.opengeospatial.net/cite" prefix = "cite"  />

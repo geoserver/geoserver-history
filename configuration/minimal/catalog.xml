@@ -9,6 +9,7 @@
 
 <namespaces>
 	<namespace uri="http://www.openplans.org/topp" prefix="topp" default="true"/>
+	<namespace uri = "http://www.geo-solutions.it" prefix = "it.geosolutions"  />
 </namespaces>
 
 <styles>
