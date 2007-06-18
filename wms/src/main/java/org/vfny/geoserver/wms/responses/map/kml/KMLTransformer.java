@@ -34,6 +34,8 @@ import org.xml.sax.ContentHandler;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
+import javax.xml.transform.Transformer;
+
 
 public class KMLTransformer extends TransformerBase {
     /**
@@ -170,6 +172,8 @@ public class KMLTransformer extends TransformerBase {
             KMLRasterTransformer tx = new KMLRasterTransformer(mapContext);
             tx.setInline(kmz);
 
+            initTransformer(tx);
+            
             tx.createTranslator(contentHandler).encode(layer);
         }
 
@@ -178,6 +182,7 @@ public class KMLTransformer extends TransformerBase {
          */
         protected void encodeSuperOverlayLayer(WMSMapContext mapContext, MapLayer layer) {
             KMLSuperOverlayTransformer tx = new KMLSuperOverlayTransformer(mapContext);
+            initTransformer(tx);
             tx.createTranslator(contentHandler).encode(layer);
         }
 
@@ -186,7 +191,12 @@ public class KMLTransformer extends TransformerBase {
          */
         protected void encodeLegend(WMSMapContext mapContext, MapLayer layer) {
             KMLLegendTransformer tx = new KMLLegendTransformer(mapContext);
+            initTransformer(tx);
             tx.createTranslator(contentHandler).encode(layer);
+        }
+        
+        protected void initTransformer(TransformerBase delegate) {
+            delegate.setIndentation( getIndentation() );
         }
 
         double computeScaleDenominator(MapLayer layer, WMSMapContext mapContext) {
