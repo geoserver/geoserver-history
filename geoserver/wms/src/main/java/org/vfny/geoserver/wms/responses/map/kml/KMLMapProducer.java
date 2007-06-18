@@ -82,6 +82,9 @@ class KMLMapProducer extends AbstractGetMapProducer implements GetMapProducer {
      */
     public void produceMap() throws WmsException {
         transformer = new KMLTransformer();
+        
+        //TODO: use GeoServer.isVerbose() to determine if we should indent?
+        transformer.setIndentation(3);
     }
 
     /**

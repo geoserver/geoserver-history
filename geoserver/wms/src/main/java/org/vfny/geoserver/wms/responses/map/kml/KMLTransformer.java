@@ -169,7 +169,7 @@ public class KMLTransformer extends TransformerBase {
         protected void encodeRasterLayer(WMSMapContext mapContext, MapLayer layer) {
             KMLRasterTransformer tx = new KMLRasterTransformer(mapContext);
             tx.setInline(kmz);
-
+            initTransformer(tx);
             tx.createTranslator(contentHandler).encode(layer);
         }
 
@@ -178,6 +178,7 @@ public class KMLTransformer extends TransformerBase {
          */
         protected void encodeSuperOverlayLayer(WMSMapContext mapContext, MapLayer layer) {
             KMLSuperOverlayTransformer tx = new KMLSuperOverlayTransformer(mapContext);
+            initTransformer(tx);
             tx.createTranslator(contentHandler).encode(layer);
         }
 
@@ -186,9 +187,14 @@ public class KMLTransformer extends TransformerBase {
          */
         protected void encodeLegend(WMSMapContext mapContext, MapLayer layer) {
             KMLLegendTransformer tx = new KMLLegendTransformer(mapContext);
+            initTransformer(tx);
             tx.createTranslator(contentHandler).encode(layer);
         }
 
+        protected void initTransformer(TransformerBase delegate) {
+            delegate.setIndentation( getIndentation() );
+        }
+        
         double computeScaleDenominator(MapLayer layer, WMSMapContext mapContext) {
             Rectangle paintArea = new Rectangle(mapContext.getMapWidth(), mapContext.getMapHeight());
             AffineTransform worldToScreen = RendererUtilities.worldToScreenTransform(mapContext

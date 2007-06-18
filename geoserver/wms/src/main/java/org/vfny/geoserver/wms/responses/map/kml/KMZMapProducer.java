@@ -101,6 +101,9 @@ class KMZMapProducer extends AbstractGetMapProducer implements GetMapProducer {
     public void produceMap() throws WmsException {
         transformer = new KMLTransformer();
         transformer.setKmz(true);
+        
+        //TODO: use GeoServer.isVerbose() to determine if we should indent?
+        transformer.setIndentation(3);
     }
 
     /**
@@ -157,6 +160,7 @@ class KMZMapProducer extends AbstractGetMapProducer implements GetMapProducer {
             mapContext.setTransparent(true);
 
             // render the map
+            mapProducer.setMapContext(mapContext);
             mapProducer.produceMap();
 
             // write it to the zip stream
