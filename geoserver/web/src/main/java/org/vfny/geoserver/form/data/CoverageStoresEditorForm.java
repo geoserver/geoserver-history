@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -267,11 +268,19 @@ public final class CoverageStoresEditorForm extends ActionForm {
         if (factory instanceof AbstractGridFormat) {
             AbstractGridFormat aFormat = (AbstractGridFormat) factory;
 
-            File file = GeoserverDataDirectory.findDataFile(url);
-            FormUtils.checkFileExistsAndCanRead(file, errors);
+            File file;
 
-            if (!errors.isEmpty()) {
-                return errors;
+            // HACK!  ArcSDE rasters take a string (which is stuffed into the given file)
+            if (-1 == factory.getClass().toString()
+                                 .indexOf("org.geotools.arcsde.gce.ArcSDERasterFormat")) {
+                file = GeoserverDataDirectory.findDataFile(url);
+                FormUtils.checkFileExistsAndCanRead(file, errors);
+
+                if (!errors.isEmpty()) {
+                    return errors;
+                }
+            } else {
+                file = new File(url);
             }
 
             if (!aFormat.accepts(file)) {
