@@ -81,9 +81,10 @@ public class GetFeature {
      */
     public final class GTHackFeatureCollection implements FeatureCollection {
         private AttributeDescriptor isoType;
-        private Collection isoFeatures;
+        private org.opengis.feature.FeatureCollection isoFeatures;
 
-        public GTHackFeatureCollection(Collection isoFeatures, AttributeDescriptor isoType) {
+        public GTHackFeatureCollection(org.opengis.feature.FeatureCollection isoFeatures,
+            AttributeDescriptor isoType) {
             this.isoFeatures = isoFeatures;
             this.isoType = isoType;
         }
@@ -95,7 +96,8 @@ public class GetFeature {
         public void close(FeatureIterator arg0) {
         }
 
-        public void close(Iterator arg0) {
+        public void close(Iterator iterator) {
+            isoFeatures.close(iterator);
         }
 
         public Iterator iterator() {
@@ -391,9 +393,9 @@ public class GetFeature {
                 DataStore dataStore = meta.getDataStoreInfo().getDataStore();
                 String typeName = meta.getTypeName();
 
-                FeatureSource source;
-                FeatureType featureType;
-                Collection features;
+                final FeatureSource source;
+                final FeatureType featureType;
+                final org.opengis.feature.FeatureCollection features;
 
                 AttributeDescriptor descriptor;
 
@@ -420,7 +422,9 @@ public class GetFeature {
 
                 if (source instanceof FeatureSource2) {
                     Filter filter = gtQuery.getFilter();
-                    features = ((FeatureSource2) source).content(filter, queryMaxFeatures);
+                    FeatureSource2 fsource = (FeatureSource2) source;
+                    features = (org.opengis.feature.FeatureCollection) fsource.content(filter,
+                            queryMaxFeatures);
                 } else {
                     FeatureCollection gtFeatures = source.getFeatures(gtQuery);
                     SimpleFeatureFactory featureFactory = new SimpleFeatureFactoryImpl();
