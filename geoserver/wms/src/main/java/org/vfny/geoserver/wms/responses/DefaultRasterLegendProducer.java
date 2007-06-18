@@ -4,11 +4,27 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
+
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
@@ -30,24 +46,12 @@ import org.geotools.util.NumberRange;
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
 
 
 /**
@@ -242,7 +246,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
         }
 
         //this.legendGraphic = scaleImage(mergeLegends(legendsStack,applicableRules), request);
-        this.legendGraphic = mergeLegends(legendsStack, applicableRules);
+        this.legendGraphic = mergeLegends(legendsStack, applicableRules, request);
     }
 
     /**
@@ -282,48 +286,83 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
     *
     * @throws IllegalArgumentException if the list is empty
     */
-    private static BufferedImage mergeLegends(List imageStack, Rule[] rules) {
+    private static BufferedImage mergeLegends(List imageStack, Rule[] rules,
+        GetLegendGraphicRequest req) {
+        
+        Font labelFont = getLabelFont(req);
+        boolean useAA = false;
+        if (req.getLegendOptions().get("fontAntiAliasing") instanceof String) {
+            String aaVal = (String)req.getLegendOptions().get("fontAntiAliasing");
+            if (aaVal.equalsIgnoreCase("on") || aaVal.equalsIgnoreCase("true") ||
+                    aaVal.equalsIgnoreCase("yes") || aaVal.equalsIgnoreCase("1")) {
+                useAA = true;
+            }
+        }
+        
+        boolean forceLabelsOn = false;
+        boolean forceLabelsOff = false;
+        if (req.getLegendOptions().get("forceLabels") instanceof String) {
+            String forceLabelsOpt = (String)req.getLegendOptions().get("forceLabels");
+            if (forceLabelsOpt.equalsIgnoreCase("on")) {
+                forceLabelsOn = true;
+            } else if (forceLabelsOpt.equalsIgnoreCase("off")) {
+                forceLabelsOff = true;
+            }
+        }
+        
         if (imageStack.size() == 0) {
             throw new IllegalArgumentException("No legend graphics passed");
         }
 
         BufferedImage finalLegend = null;
 
-        if (imageStack.size() == 1) {
+        if (imageStack.size() == 1 && !forceLabelsOn) {
             finalLegend = (BufferedImage) imageStack.get(0);
         } else {
             final int imgCount = imageStack.size();
             final String[] labels = new String[imgCount];
 
             BufferedImage img = ((BufferedImage) imageStack.get(0));
-            FontMetrics fontMetrics = img.getGraphics().getFontMetrics();
 
-            final int rowHeight = Math.max(fontMetrics.getHeight(), img.getHeight());
-
-            //calculate the total dimensions of the image
-            int totalHeight = rowHeight * imgCount;
+            int totalHeight = 0;
             int totalWidth = 0;
+            int[] rowHeights = new int[imgCount];
 
             for (int i = 0; i < imgCount; i++) {
                 img = (BufferedImage) imageStack.get(i);
+                
+                if (forceLabelsOff) {
+                    totalWidth = (int) Math.ceil(Math.max(img.getWidth(), totalWidth));
+                    rowHeights[i] = img.getHeight();
+                    totalHeight += img.getHeight(); 
+                } else {
 
-                Rule rule = rules[i];
-
-                //does this rule have a label
-                labels[i] = rule.getTitle();
-
-                if (labels[i] == null) {
-                    labels[i] = rule.getName();
+                    Rule rule = rules[i];
+    
+                    //What's the label on this rule?  We prefer to use
+                    //the 'title' if it's available, but fall-back to 'name'
+                    labels[i] = rule.getTitle();
+                    if (labels[i] == null) labels[i] = rule.getName();
+    
+                    Graphics2D g = img.createGraphics();
+                    g.setFont(labelFont);
+    
+                    if (useAA) {
+                        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                    } else {
+                        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                            RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+                    }
+    
+                    final BufferedImage renderedLabel = renderLabel(labels[i], g);
+                    final Rectangle2D bounds = new Rectangle2D.Double(0, 0, renderedLabel.getWidth(),
+                            renderedLabel.getHeight());
+    
+                    totalWidth = (int) Math.ceil(Math.max(img.getWidth() + bounds.getWidth(), totalWidth));
+                    rowHeights[i] = (int) Math.ceil(Math.max(img.getHeight(), bounds.getHeight()));
+                    totalHeight += rowHeights[i];
                 }
-
-                int w = img.getWidth();
-
-                if (labels[i] != null) {
-                    Graphics g = img.getGraphics();
-                    w += g.getFontMetrics().stringWidth(labels[i]);
-                }
-
-                totalWidth = Math.max(w, totalWidth);
             }
 
             //create the final image
@@ -334,40 +373,161 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
             finalGraphics.setColor(BG_COLOR);
             finalGraphics.fillRect(0, 0, totalWidth, totalHeight);
 
-            int h = 0;
+            int topOfRow = 0;
 
             for (int i = 0; i < imgCount; i++) {
                 img = (BufferedImage) imageStack.get(i);
 
                 //draw the image
-                int y = h;
+                int y = topOfRow;
 
-                if (img.getHeight() < rowHeight) {
+                if (img.getHeight() < rowHeights[i]) {
                     //move the image to the center of the row
-                    y += (int) ((rowHeight - img.getHeight()) / 2d);
+                    y += (int) ((rowHeights[i] - img.getHeight()) / 2d);
                 }
 
                 finalGraphics.drawImage(img, 0, y, imgObs);
+                if (forceLabelsOff) {
+                    topOfRow += rowHeights[i];
+                    continue;
+                }
+                
+                finalGraphics.setFont(labelFont);
+
+                if (useAA) {
+                    finalGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                        RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                } else {
+                    finalGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                        RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+                }
 
                 //draw the label
                 if (labels[i] != null) {
-                    finalGraphics.setColor(Color.BLACK);
+                    //first create the actual overall label image.
+                    final BufferedImage renderedLabel = renderLabel(labels[i], finalGraphics);
 
-                    y = (h + rowHeight) - fontMetrics.getDescent();
+                    y = topOfRow;
 
-                    if (fontMetrics.getHeight() < rowHeight) {
-                        //move the baseline to the center of the row
-                        y -= (int) ((rowHeight - fontMetrics.getHeight()) / 2d);
+                    if (renderedLabel.getHeight() < rowHeights[i]) {
+                        y += (int) ((rowHeights[i] - renderedLabel.getHeight()) / 2d);
                     }
 
-                    finalGraphics.drawString(labels[i], img.getWidth(), y);
+                    finalGraphics.drawImage(renderedLabel, img.getWidth(), y, imgObs);
                 }
 
-                h += rowHeight;
+                topOfRow += rowHeights[i];
             }
         }
 
         return finalLegend;
+    }
+    
+    private static Font getLabelFont(GetLegendGraphicRequest req) {
+        
+        String legendFontName = "Sans-Serif";
+        String legendFontFamily = "plain";
+        int legendFontSize = 12;
+        
+        Map legendOptions = req.getLegendOptions();
+        if (legendOptions.get("fontName") != null) {
+            legendFontName = (String) legendOptions.get("fontName");
+        }
+        if (legendOptions.get("fontStyle") != null) {
+            legendFontFamily = (String)legendOptions.get("fontStyle");
+        }
+        if (legendOptions.get("fontSize") != null) {
+            try {
+                legendFontSize = Integer.parseInt((String)legendOptions.get("fontSize"));
+            } catch (Exception e) {
+                LOGGER.warning("Error trying to interpret legendOption 'fontSize': " + legendOptions.get("fontSize"));
+            }
+        }
+        
+        Font legendFont;
+        if (legendFontFamily.equalsIgnoreCase("italic")) {
+            legendFont = new Font(legendFontName, Font.ITALIC, legendFontSize);
+        } else if (legendFontFamily.equalsIgnoreCase("bold")) {
+            legendFont = new Font(legendFontName, Font.BOLD, legendFontSize);
+        } else {
+            legendFont = new Font(legendFontName, Font.PLAIN, legendFontSize);
+        }
+        
+        return legendFont;
+    }
+
+    /**
+     * Return a {@link BufferedImage} representing this label.
+     * The characters '\n' '\r' and '\f' are interpreted as linebreaks,
+     * as is the characater combination "\n" (as opposed to the actual '\n' character).
+     * This allows people to force line breaks in their labels by
+     * including the character "\" followed by "n" in their
+     * label.
+     *
+     * @param label - the label to render
+     * @param g - the Graphics2D that will be used to render this label
+     * @return a {@link BufferedImage} of the properly rendered label.
+     */
+    public static BufferedImage renderLabel(String label, Graphics2D g) {
+        // We'll accept '/n' as a text string
+        //to indicate a line break, as well as a traditional 'real' line-break in the XML.
+        BufferedImage renderedLabel;
+
+        if ((label.indexOf("\n") != -1) || (label.indexOf("\\n") != -1)) {
+            //this is a label WITH line-breaks...we need to figure out it's height *and*
+            //width, and then adjust the legend size accordingly
+            Rectangle2D bounds = new Rectangle2D.Double(0, 0, 0, 0);
+            ArrayList lineHeight = new ArrayList();
+            final String realLabel = label.replace("\\n", "\n");
+            StringTokenizer st = new StringTokenizer(realLabel, "\n\r\f");
+
+            while (st.hasMoreElements()) {
+                final String token = st.nextToken();
+                Rectangle2D thisLineBounds = g.getFontMetrics().getStringBounds(token, g);
+
+                //if this is directly added as thisLineBounds.getHeight(), then there are rounding errors
+                //because we can only DRAW fonts at discrete integer coords.
+                final int thisLineHeight = (int) Math.ceil(thisLineBounds.getHeight());
+                bounds.add(0, thisLineHeight + bounds.getHeight());
+                bounds.add(thisLineBounds.getWidth(), 0);
+                lineHeight.add(new Integer((int) Math.ceil(thisLineBounds.getHeight())));
+            }
+
+            //make the actual label image
+            renderedLabel = new BufferedImage((int) Math.ceil(bounds.getWidth()),
+                    (int) Math.ceil(bounds.getHeight()), BufferedImage.TYPE_INT_ARGB);
+
+            st = new StringTokenizer(realLabel, "\n\r\f");
+
+            Graphics2D rlg = renderedLabel.createGraphics();
+            rlg.setColor(Color.black);
+            rlg.setFont(g.getFont());
+            rlg.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                g.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING));
+
+            int y = 0 - g.getFontMetrics().getDescent();
+            int c = 0;
+
+            while (st.hasMoreElements()) {
+                y += ((Integer) lineHeight.get(c++)).intValue();
+                rlg.drawString(st.nextToken(), 0, y);
+            }
+        } else {
+            //this is a traditional 'regular-old' label.  Just figure the
+            //size and act accordingly.
+            int height = (int) Math.ceil(g.getFontMetrics().getStringBounds(label, g).getHeight());
+            int width = (int) Math.ceil(g.getFontMetrics().getStringBounds(label, g).getWidth());
+            renderedLabel = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+            Graphics2D rlg = renderedLabel.createGraphics();
+            rlg.setColor(Color.black);
+            rlg.setFont(g.getFont());
+            rlg.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                g.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING));
+            rlg.drawString(label, 0, height - rlg.getFontMetrics().getDescent());
+        }
+
+        return renderedLabel;
     }
 
     /**

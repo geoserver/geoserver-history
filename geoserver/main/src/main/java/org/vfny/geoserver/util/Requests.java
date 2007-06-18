@@ -6,6 +6,11 @@ package org.vfny.geoserver.util;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
@@ -266,21 +271,39 @@ public final class Requests {
     }
 
     /**
-             * Access GeoServer Application State from the WebContainer.
-             *
-             * @param request DOCUMENT ME!
-             *
-             * @return Configuration model for Catalog information.
-             */
-
-    //JD: kill this
-    //    public static ApplicationState getApplicationState(
-    //        HttpServletRequest request) {
-    //
-    //        ServletRequest req = request;
-    //        HttpSession session = request.getSession();
-    //        ServletContext context = session.getServletContext();
-    //
-    //        return (ApplicationState) context.getAttribute(ApplicationState.WEB_CONTAINER_KEY);
-    //    }
+     * Parses an 'option-holding' parameters in the following form
+     * FORMAT_OPTIONS=multiKey:val1,val2,val3;singleKey:val
+     * 
+     * Useful for parsing out the FORMAT_OPTIONS and LEGEND_OPTIONS parameters
+     */
+    public static Map parseOptionParameter(String rawOptionString) throws IllegalArgumentException {
+        HashMap map = new HashMap();
+        if (rawOptionString == null) {
+            return map;
+        }
+        
+        StringTokenizer semiColonSplitter = new StringTokenizer(rawOptionString, ";");
+        while (semiColonSplitter.hasMoreElements()) {
+            String curKVP = semiColonSplitter.nextToken();
+            
+            final int cloc = curKVP.indexOf(":");
+            if (cloc <= 0) {
+                throw new IllegalArgumentException("Key-value-pair: '" + curKVP + "' isn't properly formed.  It must be of the form 'Key:Value1,Value2...'");
+            }
+            String key = curKVP.substring(0, cloc);
+            String values = curKVP.substring(cloc + 1, curKVP.length());
+            if (values.indexOf(",") != -1) {
+                List valueList = new ArrayList();
+                StringTokenizer commaSplitter = new StringTokenizer(values, ",");
+                while (commaSplitter.hasMoreElements())
+                    valueList.add(commaSplitter.nextToken());
+                
+                map.put(key, valueList);
+            } else {
+                map.put(key, values);
+            }
+        }
+        
+        return map;
+    }
 }
