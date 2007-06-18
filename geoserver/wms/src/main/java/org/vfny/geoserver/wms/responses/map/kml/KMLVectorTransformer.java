@@ -128,11 +128,6 @@ public class KMLVectorTransformer extends TransformerBase {
      */
     SLDStyleFactory styleFactory = new SLDStyleFactory();
 
-    /**
-     * Source coordinate reference system
-     */
-    CoordinateReferenceSystem sourceCrs = DefaultGeographicCRS.WGS84;
-
     public KMLVectorTransformer(WMSMapContext mapContext, MapLayer mapLayer) {
         this.mapContext = mapContext;
         this.mapLayer = mapLayer;
@@ -140,15 +135,7 @@ public class KMLVectorTransformer extends TransformerBase {
         setNamespaceDeclarationEnabled(false);
     }
 
-    /**
-     * Sets the source coordinate reference system.
-     *
-     */
-    public void setSourceCrs(CoordinateReferenceSystem sourceCrs) {
-        this.sourceCrs = sourceCrs;
-    }
-
-    /**
+  /**
      * Sets the scale denominator.
      */
     public void setScaleDenominator(double scaleDenominator) {
@@ -747,17 +734,18 @@ public class KMLVectorTransformer extends TransformerBase {
             // get the geometry
             Geometry geom = f.getDefaultGeometry();
 
-            if (!CRS.equalsIgnoreMetadata(sourceCrs, mapContext.getCoordinateReferenceSystem())) {
-                try {
-                    MathTransform transform = CRS.findMathTransform(sourceCrs,
-                            mapContext.getCoordinateReferenceSystem(), true);
-                    geom = JTS.transform(geom, transform);
-                } catch (TransformException e) {
-                    LOGGER.severe(e.getLocalizedMessage());
-                } catch (FactoryException e) {
-                    LOGGER.severe(e.getLocalizedMessage());
-                }
-            }
+            //JD: reprojection done in KMLTransformer
+//            if (!CRS.equalsIgnoreMetadata(sourceCrs, mapContext.getCoordinateReferenceSystem())) {
+//                try {
+//                    MathTransform transform = CRS.findMathTransform(sourceCrs,
+//                            mapContext.getCoordinateReferenceSystem(), true);
+//                    geom = JTS.transform(geom, transform);
+//                } catch (TransformException e) {
+//                    LOGGER.severe(e.getLocalizedMessage());
+//                } catch (FactoryException e) {
+//                    LOGGER.severe(e.getLocalizedMessage());
+//                }
+//            }
 
             return geom;
         }
