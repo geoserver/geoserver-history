@@ -9,6 +9,7 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
@@ -268,8 +269,9 @@ public class KMLTransformer extends TransformerBase {
                     mapContext.getCoordinateReferenceSystem());
             CoordinateReferenceSystem sourceCrs = schema.getDefaultGeometry().getCoordinateSystem();
 
-            if ((sourceCrs != null)
-                    && !CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(), sourceCrs)) {
+            boolean reproject = (sourceCrs != null)
+                && !CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(), sourceCrs); 
+            if (reproject) {
                 aoi = aoi.transform(sourceCrs, true);
             }
 
@@ -293,8 +295,11 @@ public class KMLTransformer extends TransformerBase {
                 }
             }
 
-            q.setCoordinateSystem(layer.getFeatureSource().getSchema().getDefaultGeometry()
-                                       .getCoordinateSystem());
+            //ensure reprojection occurs, do not trust query, use the wrapper 
+            q.setCoordinateSystem(mapContext.getCoordinateReferenceSystem());
+            if ( reproject ) {
+                return new ReprojectFeatureResults( featureSource.getFeatures(q),mapContext.getCoordinateReferenceSystem() );
+            }
 
             return featureSource.getFeatures(q);
         }
