@@ -71,6 +71,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.media.jai.util.Range;
+
 
 /**
  * Transforms a feature collection to a kml "Document" consisting of nested
@@ -121,7 +123,7 @@ public class KMLVectorTransformer extends TransformerBase {
      * size has no meanining for KML yet this is a fudge.
      */
     double scaleDenominator = 1;
-    NumberRange scaleRange = new NumberRange(scaleDenominator, scaleDenominator);
+    //NumberRange scaleRange = new NumberRange(scaleDenominator, scaleDenominator);
 
     /**
      * used to create 2d style objects for features
@@ -179,22 +181,18 @@ public class KMLVectorTransformer extends TransformerBase {
             FeatureTypeStyle[] featureTypeStyles = filterFeatureTypeStyles(mapLayer.getStyle(),
                     featureType);
 
-            for (int i = 0; i < featureTypeStyles.length; i++) {
-                encode(features, featureTypeStyles[i]);
-            }
+            encode( features, featureTypeStyles );
+//            for (int i = 0; i < featureTypeStyles.length; i++) {
+//                encode(features, featureTypeStyles[i]);
+//            }
 
             //encode the legend
             //encodeLegendScreenOverlay();
             end("Document");
         }
 
-        protected void encode(FeatureCollection features, FeatureTypeStyle style) {
-            //if no rules bail out early
-            if ((style.getRules() == null) || (style.getRules().length == 0)) {
-                return;
-            }
-
-            //grab a feader and process
+        protected void encode(FeatureCollection features, FeatureTypeStyle[] styles) {
+        	//grab a feader and process
             FeatureIterator reader = features.features();
 
             try {
@@ -202,7 +200,7 @@ public class KMLVectorTransformer extends TransformerBase {
                     Feature feature = (Feature) reader.next();
 
                     try {
-                        encode(feature, style);
+                        encode(feature, styles);
                     } catch (Throwable t) {
                         //TODO: perhaps rethrow hte exception
                         String msg = "Failure tranforming feature to KML:" + feature.getID();
@@ -215,7 +213,7 @@ public class KMLVectorTransformer extends TransformerBase {
             }
         }
 
-        protected void encode(Feature feature, FeatureTypeStyle style) {
+        protected void encode(Feature feature, FeatureTypeStyle[] styles) {
             //get the feature id
             String featureId = featureId(feature);
 
@@ -228,7 +226,7 @@ public class KMLVectorTransformer extends TransformerBase {
             //encode the styles, keep track of any labels provided by the 
             // styles
             StringBuffer featureLabel = new StringBuffer();
-            encodeStyle(feature, style, featureLabel);
+            encodeStyle(feature, styles, featureLabel);
 
             encodePlacemark(feature, featureLabel.toString());
 
@@ -238,26 +236,33 @@ public class KMLVectorTransformer extends TransformerBase {
         /**
          * Encodes the provided set of rules as KML styles.
          */
-        protected void encodeStyle(Feature feature, FeatureTypeStyle style, StringBuffer label) {
+        protected void encodeStyle(Feature feature, FeatureTypeStyle[] styles, StringBuffer label) {
             //start the style
             start("Style",
                 KMLUtils.attributes(new String[] { "id", "GeoServerStyle" + feature.getID() }));
 
-            Rule[] rules = filterRules(style, feature);
+            //encode the icon
+            encodeIconStyle(feature, styles);
+            
+            //encode hte Line/Poly styles
+            for ( int j = 0; j < styles.length ; j++ ) {
+            	Rule[] rules = filterRules(styles[j], feature);
 
-            for (int i = 0; i < rules.length; i++) {
-                encodeStyle(feature, rules[i].getSymbolizers(), label);
+                for (int i = 0; i < rules.length; i++) {
+                    encodeStyle(feature, rules[i].getSymbolizers(), label);
+                }
+
             }
-
+            
             //end the style
             end("Style");
         }
 
         /**
-         * Encodes the provided set of symbolizers as KML styles.
+         * Encodes an IconStyle for a feature.
          */
-        protected void encodeStyle(Feature feature, Symbolizer[] symbolizers, StringBuffer label) {
-            //encode the style for the icon
+        protected void encodeIconStyle(Feature feature, FeatureTypeStyle[] styles ) {
+        	  //encode the style for the icon
             //start IconStyle
             start("IconStyle");
 
@@ -300,12 +305,20 @@ public class KMLVectorTransformer extends TransformerBase {
             //end IconStyle
             end("IconStyle");
 
+        }
+        
+        /**
+         * Encodes the provided set of symbolizers as KML styles.
+         */
+        protected void encodeStyle(Feature feature, Symbolizer[] symbolizers, StringBuffer label) {
+          
             for (int i = 0; i < symbolizers.length; i++) {
                 Symbolizer symbolizer = symbolizers[i];
                 LOGGER.finer(new StringBuffer("Applying symbolizer ").append(symbolizer).toString());
 
                 //create a 2-D style
-                Style2D style = styleFactory.createStyle(feature, symbolizer, scaleRange);
+                Style2D style = styleFactory.createStyle(
+            		feature, symbolizer, new NumberRange( scaleDenominator, scaleDenominator ));
 
                 //split out each type of symbolizer
                 if (symbolizer instanceof TextSymbolizer) {
@@ -360,7 +373,7 @@ public class KMLVectorTransformer extends TransformerBase {
                     opacity = 1.0;
                 }
 
-                encodeColor((Color) style.getFill(), opacity);
+                encodeColor(SLD.color(symbolizer.getFill()), opacity);
             } else {
                 //make it transparent
                 encodeColor("00aaaaaa");
@@ -516,7 +529,7 @@ public class KMLVectorTransformer extends TransformerBase {
                     opacity = 1.0;
                 }
 
-                encodeColor((Color) style.getFill(), opacity);
+                encodeColor(SLD.color(symbolizer.getFill()), opacity);
             } else {
                 //default
                 encodeColor("ffaaaaaa");
@@ -689,30 +702,19 @@ public class KMLVectorTransformer extends TransformerBase {
             element("color", hex);
         }
 
-        /**
-         * Filters a set of rules by the current scale.
-         *
-         * @param rules The original rule set.
-         *
-         * @return The filtered rule set.
-         */
-        Rule[] filterRulesByScale(Rule[] rules) {
-            List filtered = new ArrayList(rules.length);
 
-            for (int j = 0; j < rules.length; j++) {
-                Rule r = rules[j];
-                double min = r.getMinScaleDenominator();
-                double max = r.getMaxScaleDenominator();
-
-                if (((min - TOLERANCE) <= scaleDenominator)
-                        && ((max + TOLERANCE) >= scaleDenominator)) {
-                    filtered.add(r);
-                }
-            }
-
-            return (Rule[]) filtered.toArray(new Rule[filtered.size()]);
-        }
-
+    	/**
+    	 * Checks if a rule can be triggered at the current scale level
+    	 * 
+    	 * @param r
+    	 *            The rule
+    	 * @return true if the scale is compatible with the rule settings
+    	 */
+        boolean isWithInScale(Rule r) {
+    		return ((r.getMinScaleDenominator() - TOLERANCE) <= scaleDenominator)
+    				&& ((r.getMaxScaleDenominator() + TOLERANCE) > scaleDenominator);
+    	}
+        
         /**
          * Returns the id of the feature removing special characters like
          * '&','>','<','%'.
@@ -835,6 +837,11 @@ public class KMLVectorTransformer extends TransformerBase {
                 FeatureTypeStyle featureTypeStyle = featureTypeStyles[i];
                 String featureTypeName = featureTypeStyle.getFeatureTypeName();
 
+                //does this style have any rules
+                if (featureTypeStyle.getRules() == null || featureTypeStyle.getRules().length == 0 ) {
+                	continue;
+                }
+                
                 //does this style apply to the feature collection
                 if (featureType.getTypeName().equalsIgnoreCase(featureTypeName)
                         || featureType.isDescendedFrom(null, featureTypeName)) {
@@ -886,6 +893,11 @@ public class KMLVectorTransformer extends TransformerBase {
                     continue;
                 }
 
+                //is this rule within scale?
+                if ( !isWithInScale(rule)) {
+                	continue;
+                }
+                
                 //does this rule have a filter which applies to the feature
                 Filter filter = rule.getFilter();
 
