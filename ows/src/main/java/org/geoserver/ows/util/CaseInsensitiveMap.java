@@ -1,20 +1,24 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.ows.util;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+
 /**
  * Map decorator which makes String keys case-insensitive.
- * 
+ *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
 public class CaseInsensitiveMap implements Map {
-
     Map delegate;
-    
-    public CaseInsensitiveMap( Map delegate ) {
+
+    public CaseInsensitiveMap(Map delegate) {
         this.delegate = delegate;
     }
 

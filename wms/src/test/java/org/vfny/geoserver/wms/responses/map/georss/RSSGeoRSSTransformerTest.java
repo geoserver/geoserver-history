@@ -29,28 +29,28 @@ public class RSSGeoRSSTransformerTest extends WMSTestSupport {
 
     public void testLatLong() throws Exception {
         RSSGeoRSSTransformer tx = new RSSGeoRSSTransformer();
-        tx.setGeometryEncoding( AtomGeoRSSTransformer.GeometryEncoding.LATLONG );
+        tx.setGeometryEncoding(AtomGeoRSSTransformer.GeometryEncoding.LATLONG);
         tx.setIndentation(2);
-        
+
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        tx.transform( map, output );
-        
+        tx.transform(map, output);
+
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
 
         Element element = document.getDocumentElement();
         assertEquals("rss", element.getNodeName());
-        
+
         NodeList items = element.getElementsByTagName("item");
-        
+
         int n = getFeatureSource(MockData.BASIC_POLYGONS).getCount(Query.ALL);
-        
-        assertEquals(n,items.getLength());
-        
-        for ( int i = 0; i < items.getLength(); i++ ) {
-            Element item = (Element) items.item( i );
-            assertEquals( 1, item.getElementsByTagName("geo:lat").getLength());
-            assertEquals( 1, item.getElementsByTagName("geo:long").getLength());
+
+        assertEquals(n, items.getLength());
+
+        for (int i = 0; i < items.getLength(); i++) {
+            Element item = (Element) items.item(i);
+            assertEquals(1, item.getElementsByTagName("geo:lat").getLength());
+            assertEquals(1, item.getElementsByTagName("geo:long").getLength());
         }
     }
 }

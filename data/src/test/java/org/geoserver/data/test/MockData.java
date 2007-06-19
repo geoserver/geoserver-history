@@ -131,7 +131,7 @@ public class MockData {
     public static String SF_URI = "http://cite.opengeospatial.org/gmlsf";
     public static QName PRIMITIVEGEOFEATURE = new QName(SF_URI, "PrimitiveGeoFeature", SF_PREFIX);
     public static QName AGGREGATEGEOFEATURE = new QName(SF_URI, "AggregateGeoFeature", SF_PREFIX);
-    
+
     // DEFAULT
     public static String DEFAULT_PREFIX = "gs";
     public static String DEFAULT_URI = "http://geoserver.org";

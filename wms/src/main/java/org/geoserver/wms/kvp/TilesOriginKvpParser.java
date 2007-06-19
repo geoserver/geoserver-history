@@ -1,22 +1,24 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wms.kvp;
-
-import java.awt.geom.Point2D;
-import java.util.List;
 
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.KvpUtils;
 import org.vfny.geoserver.ServiceException;
+import java.awt.geom.Point2D;
+import java.util.List;
+
 
 public class TilesOriginKvpParser extends KvpParser {
-
     public TilesOriginKvpParser() {
-        super("tilesorigin", Point2D.Double.class );
-        
+        super("tilesorigin", Point2D.Double.class);
     }
 
     public Object parse(String value) throws Exception {
-        List coordValues = KvpUtils.readFlat(value );
-         
+        List coordValues = KvpUtils.readFlat(value);
+
         if (coordValues.size() != 2) {
             throw new ServiceException(value + " is not a valid coordinate", getClass().getName());
         }
@@ -31,5 +33,4 @@ public class TilesOriginKvpParser extends KvpParser {
                 getClass().getName() + "::parseTilesOrigin()");
         }
     }
-
 }

@@ -1,28 +1,31 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.ows.kvp;
 
+import org.geoserver.ows.KvpParser;
 import java.net.URL;
 
-import org.geoserver.ows.KvpParser;
 
 /**
  * Parses url kvp's of the form 'key=<url>'.
  * <p>
- * 
+ *
  * </p>
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
 public class URLKvpParser extends KvpParser {
-
     /**
      * Creates the parser specifying the name of the key to latch to.
-     * 
+     *
      * @param key The key whose associated value to parse.
      */
     public URLKvpParser(String key) {
-        super( key, URL.class );
+        super(key, URL.class);
     }
-    
+
     public Object parse(String value) throws Exception {
         return new URL(fixURL(value));
     }
@@ -33,7 +36,7 @@ public class URLKvpParser extends KvpParser {
      * @param url
      * @return
      */
-     String fixURL(String url) {
+    String fixURL(String url) {
         StringBuffer sb = new StringBuffer();
 
         for (int i = 0; i < url.length(); i++) {

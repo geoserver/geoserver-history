@@ -151,7 +151,7 @@ public class GeoServerAction extends ActionSupport {
 
     /**
      * Aquire global configuration from the Spring context.
-    
+
      * @return Global configuration of this web app
      */
     public GeoServer getGeoServer() {

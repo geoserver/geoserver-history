@@ -60,6 +60,7 @@ public class MetatileMapProducer implements GetMapProducer {
                 && delegate instanceof RasterMapProducer)) {
             return false;
         }
+
         return true;
     }
 

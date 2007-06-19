@@ -4,13 +4,12 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import com.vividsolutions.jts.geom.Envelope;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.map.MapLayer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -42,12 +41,11 @@ public class KMLUtils {
      */
     public static String getMapUrl(WMSMapContext mapContext, MapLayer mapLayer, Envelope bbox,
         String[] kvp, boolean tile) {
-       
-        if ( tile ) {
-            return WMSRequests.getTiledGetMapUrl( mapContext, mapLayer, bbox, kvp );
+        if (tile) {
+            return WMSRequests.getTiledGetMapUrl(mapContext, mapLayer, bbox, kvp);
         }
-        
-        return WMSRequests.getGetMapUrl( mapContext, mapLayer, bbox, kvp ); 
+
+        return WMSRequests.getGetMapUrl(mapContext, mapLayer, bbox, kvp);
     }
 
     /**
@@ -80,7 +78,6 @@ public class KMLUtils {
      */
     public static String getLegendGraphicUrl(WMSMapContext mapContext, MapLayer mapLayer,
         String[] kvp) {
-       
         return WMSRequests.getGetLegendGraphicUrl(mapContext, mapLayer, kvp);
     }
 

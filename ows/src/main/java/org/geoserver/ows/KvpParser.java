@@ -43,8 +43,8 @@ public abstract class KvpParser {
     /**
      * logger
      */
-    protected static Logger LOGGER = Logger.getLogger("org.geoserver.ows" );
-    
+    protected static Logger LOGGER = Logger.getLogger("org.geoserver.ows");
+
     /**
      * The key.
      */

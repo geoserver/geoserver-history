@@ -5,7 +5,6 @@
 package org.vfny.geoserver.wms.requests;
 
 import com.vividsolutions.jts.geom.Envelope;
-
 import org.geoserver.ows.util.CaseInsensitiveMap;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyledLayerDescriptor;
@@ -44,9 +43,9 @@ public class GetMapRequest extends WMSRequest {
 
     /** set of optionals request's parameters */
     private OptionalParameters optionalParams = new OptionalParameters();
-    
+
     /** format options */
-    private Map/*<String,Object>*/ formatOptions = new CaseInsensitiveMap( new HashMap() );
+    private Map /*<String,Object>*/ formatOptions = new CaseInsensitiveMap(new HashMap());
 
     /**
      * Creates a GetMapRequest request.
@@ -110,13 +109,13 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     * Map of String,Object which contains kvp's which are specific to a 
+     * Map of String,Object which contains kvp's which are specific to a
      * particular output format.
      */
     public Map getFormatOptions() {
         return formatOptions;
     }
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -150,22 +149,22 @@ public class GetMapRequest extends WMSRequest {
     public URL getSld() {
         return this.optionalParams.sld;
     }
-    
+
     /**
-     * Gets the string specified the "SLD_BODY" parameter. 
+     * Gets the string specified the "SLD_BODY" parameter.
      */
     public String getSldBody() {
-       return this.optionalParams.sldBody; 
+        return this.optionalParams.sldBody;
     }
-    
+
     /**
-     * Gets the value of the "VALIDATESCHEMA" parameter which controls wether 
+     * Gets the value of the "VALIDATESCHEMA" parameter which controls wether
      * the value of the "SLD paramter is schema validated.
      */
     public Boolean getValidateSchema() {
         return this.optionalParams.validateSLD;
     }
-    
+
     /**
      * Gets a list of the the filters that will be applied to each layer before rendering
      *
@@ -180,38 +179,38 @@ public class GetMapRequest extends WMSRequest {
      * Gets a list of the the filters that will be applied to each layer before rendering
      *
      * @return  A list of {@link Filter}.
-     * 
+     *
      */
     public List getFilter() {
         return this.optionalParams.filters;
     }
-    
+
     /**
      * Gets a list of the cql filtesr that will be applied to each layer before
      * rendering.
-     * 
+     *
      * @return A list of {@link Filter}.
-     * 
+     *
      */
     public List getCQLFilter() {
         return this.optionalParams.cqlFilters;
     }
-    
+
     /**
      * Gets a list of the feature ids that will be used to filter each layer
      * before rendering.
-     * 
+     *
      * @return A list of {@link String}.
      */
     public List getFeatureId() {
         return this.optionalParams.featureIds;
     }
-    
+
     /**
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
-     * 
+     *
      */
     public boolean isTransparent() {
         return this.optionalParams.transparent;
@@ -228,7 +227,7 @@ public class GetMapRequest extends WMSRequest {
     public Point2D getTilesOrigin() {
         return this.optionalParams.tilesOrigin;
     }
-    
+
     public int getBuffer() {
         return this.optionalParams.buffer;
     }
@@ -251,11 +250,12 @@ public class GetMapRequest extends WMSRequest {
      * @deprecated use <code>getFormatOptions().get( "kmscore" )</code>
      */
     public int getKMScore() {
-        Integer kmscore = (Integer) getFormatOptions().get( "kmscore" );
-        if ( kmscore != null ) {
+        Integer kmscore = (Integer) getFormatOptions().get("kmscore");
+
+        if (kmscore != null) {
             return kmscore.intValue();
         }
-        
+
         return 40; //old default
     }
 
@@ -264,13 +264,13 @@ public class GetMapRequest extends WMSRequest {
      * @deprecated use <code>getFormatOptions().get( "kmattr" )</code>
      */
     public boolean getKMattr() {
-        Boolean kmattr = (Boolean) getFormatOptions().get( "kmattr" );
-        if ( kmattr != null ) {
+        Boolean kmattr = (Boolean) getFormatOptions().get("kmattr");
+
+        if (kmattr != null) {
             return kmattr.booleanValue();
         }
-        
+
         return true; //old default
-        
     }
 
     /**
@@ -278,11 +278,12 @@ public class GetMapRequest extends WMSRequest {
      * @deprecated use <code>getFormatOptions().get( "superoverlay" )</code>
      */
     public boolean getSuperOverlay() {
-        Boolean superOverlay = (Boolean) getFormatOptions().get( "superoverlay" );
-        if ( superOverlay != null ) {
+        Boolean superOverlay = (Boolean) getFormatOptions().get("superoverlay");
+
+        if (superOverlay != null) {
             return superOverlay.booleanValue();
         }
-        
+
         return false; //old default
     }
 
@@ -291,11 +292,12 @@ public class GetMapRequest extends WMSRequest {
      * @deprecated use <code>getFormatOptions().get( "legend" )</code>
      */
     public boolean getLegend() {
-        Boolean legend = (Boolean) getFormatOptions().get( "legend" );
-        if ( legend != null ) {
+        Boolean legend = (Boolean) getFormatOptions().get("legend");
+
+        if (legend != null) {
             return legend.booleanValue();
         }
-        
+
         return false; //old default
     }
 
@@ -312,7 +314,7 @@ public class GetMapRequest extends WMSRequest {
     public Integer getElevation() {
         return this.optionalParams.elevation;
     }
-    
+
     /**
      * Returs the feature version optional parameter
      * @return
@@ -377,14 +379,14 @@ public class GetMapRequest extends WMSRequest {
 
     /**
      * Sets the format options.
-     * 
+     *
      * @param formatOptions A map of String,Object
      * @see #getFormatOptions()
      */
     public void setFormatOptions(Map formatOptions) {
         this.formatOptions = formatOptions;
     }
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -393,6 +395,7 @@ public class GetMapRequest extends WMSRequest {
     public void setHeight(int height) {
         this.mandatoryParams.height = height;
     }
+
     public void setHeight(Integer height) {
         this.mandatoryParams.height = height.intValue();
     }
@@ -405,8 +408,9 @@ public class GetMapRequest extends WMSRequest {
     public void setLayers(MapLayerInfo[] layers) {
         this.mandatoryParams.layers = layers;
     }
-    public void setLayers(List/*<MapLayerInfo>*/ layers) {
-        this.mandatoryParams.layers = (MapLayerInfo[]) layers.toArray( new MapLayerInfo[layers.size()]);
+
+    public void setLayers(List /*<MapLayerInfo>*/ layers) {
+        this.mandatoryParams.layers = (MapLayerInfo[]) layers.toArray(new MapLayerInfo[layers.size()]);
     }
 
     /**
@@ -421,25 +425,25 @@ public class GetMapRequest extends WMSRequest {
     /**
      * Sets the url specified by the "SLD" parameter.
      */
-    public void setSld( URL sld ) {
+    public void setSld(URL sld) {
         this.optionalParams.sld = sld;
     }
-    
+
     /**
      * Sets the string specified by the "SLD_BODY" parameter
      */
-    public void setSldBody( String sldBody ) {
+    public void setSldBody(String sldBody) {
         this.optionalParams.sldBody = sldBody;
     }
-    
+
     /**
      * Sets the flag to validate the "SLD" parameter or not.
      * //TODO
      */
-    public void setValidateSchema( Boolean validateSLD ) {
+    public void setValidateSchema(Boolean validateSLD) {
         this.optionalParams.validateSLD = validateSLD;
     }
-    
+
     /**
      * Sets a list of filters, one for each layer
      *
@@ -447,7 +451,7 @@ public class GetMapRequest extends WMSRequest {
      * @deprecated use {@link #setFilter(List)}.
      */
     public void setFilters(List filters) {
-        setFilter( filters );
+        setFilter(filters);
     }
 
     /**
@@ -458,25 +462,25 @@ public class GetMapRequest extends WMSRequest {
     public void setFilter(List filters) {
         this.optionalParams.filters = filters;
     }
-    
+
     /**
      * Sets a list of filters ( cql ), one for each layer.
-     * 
+     *
      * @param cqlFilters A list of {@link Filter}.
      */
-    public void setCQLFilter( List cqlFilters ) {
+    public void setCQLFilter(List cqlFilters) {
         this.optionalParams.cqlFilters = cqlFilters;
     }
-    
+
     /**
      * Sets a list of feature ids, one for each layer.
-     * 
+     *
      * @param featureIds A list of {@link String}.
      */
-    public void setFeatureId( List featureIds) {
+    public void setFeatureId(List featureIds) {
         this.optionalParams.featureIds = featureIds;
     }
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -485,16 +489,17 @@ public class GetMapRequest extends WMSRequest {
     public void setTransparent(boolean transparent) {
         this.optionalParams.transparent = transparent;
     }
+
     public void setTransparent(Boolean transparent) {
-        this.optionalParams.transparent = transparent != null ? 
-                transparent.booleanValue() : false;    
+        this.optionalParams.transparent = (transparent != null) ? transparent.booleanValue() : false;
     }
 
     public void setBuffer(int buffer) {
         this.optionalParams.buffer = buffer;
     }
-    public void setBuffer(Integer buffer ) {
-       this.optionalParams.buffer = buffer != null ? buffer.intValue() : 0;
+
+    public void setBuffer(Integer buffer) {
+        this.optionalParams.buffer = (buffer != null) ? buffer.intValue() : 0;
     }
 
     public void setPalette(IndexColorModel palette) {
@@ -504,10 +509,11 @@ public class GetMapRequest extends WMSRequest {
     public void setTiled(boolean tiled) {
         this.optionalParams.tiled = tiled;
     }
+
     public void setTiled(Boolean tiled) {
-        this.optionalParams.tiled = tiled != null ? tiled.booleanValue() : false;
+        this.optionalParams.tiled = (tiled != null) ? tiled.booleanValue() : false;
     }
-    
+
     public void setTilesOrigin(Point2D origin) {
         this.optionalParams.tilesOrigin = origin;
     }
@@ -520,16 +526,17 @@ public class GetMapRequest extends WMSRequest {
     public void setWidth(int width) {
         this.mandatoryParams.width = width;
     }
+
     public void setWidth(Integer width) {
         this.mandatoryParams.width = width.intValue();
     }
-    
+
     /**
      * @param score the KML/KMZ score value for image vs. vector response, from 0 to 100
      * @deprecated use <code>getFormatOptions().put( "kmscore", new Integer( score ) );</code>
      */
     public void setKMScore(int score) {
-        getFormatOptions().put( "kmscore", new Integer( score ) );
+        getFormatOptions().put("kmscore", new Integer(score));
     }
 
     /**
@@ -537,7 +544,7 @@ public class GetMapRequest extends WMSRequest {
      * @deprecated use <code>getFormatOptions().put( "kmattr", new Boolean( on ) );</code>
      */
     public void setKMattr(boolean on) {
-        getFormatOptions().put( "kmattr", new Boolean( on ) );
+        getFormatOptions().put("kmattr", new Boolean(on));
     }
 
     /**
@@ -545,7 +552,7 @@ public class GetMapRequest extends WMSRequest {
      * @deprecated use <code>getFormatOptions().put( "superoverlay", new Boolean( superOverlay ) );</code>
      */
     public void setSuperOverlay(boolean superOverlay) {
-        getFormatOptions().put( "superoverlay", new Boolean( superOverlay ) );
+        getFormatOptions().put("superoverlay", new Boolean(superOverlay));
     }
 
     /**
@@ -553,12 +560,12 @@ public class GetMapRequest extends WMSRequest {
      * @deprecated use <code>getFormatOptions().put( "legend", new Boolean( legend ) );</code>
      */
     public void setLegend(boolean legend) {
-        getFormatOptions().put( "legend", new Boolean( legend ) );
+        getFormatOptions().put("legend", new Boolean(legend));
     }
 
     /**
      * Sets the time request parameter.
-     * 
+     *
      */
     public void setTime(Integer time) {
         this.optionalParams.time = time;
@@ -570,7 +577,7 @@ public class GetMapRequest extends WMSRequest {
     public void setElevation(Integer elevation) {
         this.optionalParams.elevation = elevation;
     }
-    
+
     /**
      * Sets the feature version optional param
      * @param featureVersion
@@ -644,10 +651,10 @@ public class GetMapRequest extends WMSRequest {
 
         /** cql filters */
         List cqlFilters;
-        
+
         /** feature id filters */
         List featureIds;
-        
+
         /** DOCUMENT ME!  */
         String exceptions = SE_XML;
 
@@ -683,17 +690,17 @@ public class GetMapRequest extends WMSRequest {
          * SLD parameter
          */
         URL sld;
+
         /**
          * SLD_BODY parameter
          */
         String sldBody;
-        
+
         /** flag to validate SLD parameter */
         Boolean validateSLD = Boolean.FALSE;
-        
+
         /** feature version (for versioned requests) */
         String featureVersion;
-
     }
 
     /**
@@ -732,6 +739,4 @@ public class GetMapRequest extends WMSRequest {
         //returnString.append("\n inside: " + filter.toString());
         return returnString.toString();
     }
-
-    
 }

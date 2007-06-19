@@ -7,39 +7,37 @@ package org.vfny.geoserver.wms.responses.map.georss;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
-
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 
 public class GeoRSSMapProducerFactory implements GetMapProducerFactorySpi {
-    
     static Set formats = new HashSet();
+
     static {
-        formats.add( AtomGeoRSSMapProducer.FORMAT );
-        formats.add( AtomGeoRSSMapProducer.MIME_TYPE );
-        formats.add( RSSGeoRSSMapProducer.FORMAT );
-        formats.add( RSSGeoRSSMapProducer.MIME_TYPE );
+        formats.add(AtomGeoRSSMapProducer.FORMAT);
+        formats.add(AtomGeoRSSMapProducer.MIME_TYPE);
+        formats.add(RSSGeoRSSMapProducer.FORMAT);
+        formats.add(RSSGeoRSSMapProducer.MIME_TYPE);
     }
-    
+
     public boolean canProduce(String mapFormat) {
-        return formats.contains( mapFormat );
+        return formats.contains(mapFormat);
     }
 
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
-        
-        if ( AtomGeoRSSMapProducer.MIME_TYPE.equals( mapFormat ) || 
-            AtomGeoRSSMapProducer.FORMAT.equals( mapFormat ) ) {
+        if (AtomGeoRSSMapProducer.MIME_TYPE.equals(mapFormat)
+                || AtomGeoRSSMapProducer.FORMAT.equals(mapFormat)) {
             return new AtomGeoRSSMapProducer();
         }
-        
-        if ( RSSGeoRSSMapProducer.MIME_TYPE.equals( mapFormat ) || 
-                RSSGeoRSSMapProducer.FORMAT.equals( mapFormat ) ) {
+
+        if (RSSGeoRSSMapProducer.MIME_TYPE.equals(mapFormat)
+                || RSSGeoRSSMapProducer.FORMAT.equals(mapFormat)) {
             return new RSSGeoRSSMapProducer();
         }
-        
+
         return null;
     }
 
