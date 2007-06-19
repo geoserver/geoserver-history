@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.LineSegment;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.MultiPoint;
@@ -758,14 +759,56 @@ public class KMLVectorTransformer extends TransformerBase {
             // multi point?
             if (g instanceof GeometryCollection) {
                 GeometryCollection gc = (GeometryCollection) g;
-                Coordinate[] pts = new Coordinate[gc.getNumGeometries()];
-
-                for (int t = 0; t < gc.getNumGeometries(); t++) {
-                    pts[t] = gc.getGeometryN(t).getCentroid().getCoordinate();
+                
+                //check for case of single geometry
+                if ( gc.getNumGeometries() == 1 ) {
+                        g = gc.getGeometryN(0);
                 }
+                else {
+                        Coordinate[] pts = new Coordinate[gc.getNumGeometries()];
 
-                return g.getFactory().createMultiPoint(pts).getCoordinates()[0];
-            } else {
+                    for (int t = 0; t < gc.getNumGeometries(); t++) {
+                        pts[t] = gc.getGeometryN(t).getCentroid().getCoordinate();
+                    }
+
+                    return g.getFactory().createMultiPoint(pts).getCoordinates()[0];
+                }
+            } 
+            
+            if ( g instanceof Point ) {
+                //thats easy
+                return g.getCoordinate();
+            }
+            else if ( g instanceof LineString ) {
+                //make sure the point we return is actually on the line
+                double tol = 1E-6;
+                double mid = g.getLength() / 2d;
+                
+                Coordinate[] coords = g.getCoordinates();
+                
+                //walk along the linestring until we get to a point where we 
+                // have two coordinates that straddle the midpoint
+                double len = 0d;
+                for ( int i = 1; i < coords.length; i++) {
+                        LineSegment line = new LineSegment( coords[i-1],coords[i] );
+                        len += line.getLength();
+                        
+                        if ( Math.abs( len - mid ) < tol ) {
+                                //close enough
+                                return line.getCoordinate(1);
+                        }
+                        
+                        if ( len > mid ) {
+                                //we have gone past midpoint
+                                return line.pointAlong( 1 - ((len-mid)/line.getLength()) );
+                        }
+                }
+                
+                //should never get there
+                return g.getCentroid().getCoordinate();
+            }
+            else {
+                //return the actual centroid
                 return g.getCentroid().getCoordinate();
             }
         }
