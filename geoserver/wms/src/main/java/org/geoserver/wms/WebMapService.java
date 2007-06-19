@@ -59,6 +59,7 @@ public interface WebMapService {
     /**
      * GetMap reflector
      */
-    GetMapResponse reflect( GetMapRequest request );
-    GetMapResponse getMapReflect( GetMapRequest request );
+    GetMapResponse reflect(GetMapRequest request);
+
+    GetMapResponse getMapReflect(GetMapRequest request);
 }

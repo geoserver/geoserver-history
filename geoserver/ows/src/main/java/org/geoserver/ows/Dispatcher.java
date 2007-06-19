@@ -399,47 +399,47 @@ public class Dispatcher extends AbstractController {
         //if we are in cite compliant mode, do some additional checks to make
         // sure the "mandatory" parameters are specified, even though we 
         // succesfully dispatched the request.
-        if ( citeCompliant ) {
+        if (citeCompliant) {
             if (!"GetCapabilities".equalsIgnoreCase(req.request)) {
                 if (req.version == null) {
                     //must be a version on non-capabilities requests
-                    throw new ServiceException("Could not determine version", "MissingParameterValue",
-                        "version");
+                    throw new ServiceException("Could not determine version",
+                        "MissingParameterValue", "version");
                 } else {
                     //version must be valid
                     if (!req.version.matches("[0-99].[0-99].[0-99]")) {
                         throw new ServiceException("Invalid version: " + req.version,
                             "InvalidParameterValue", "version");
                     }
-    
+
                     //make sure the versoin actually exists
                     boolean found = false;
                     Version version = new Version(req.version);
-    
+
                     for (Iterator s = loadServices().iterator(); s.hasNext();) {
                         Service service = (Service) s.next();
-    
+
                         if (version.equals(service.getVersion())) {
                             found = true;
-    
+
                             break;
                         }
                     }
-    
+
                     if (!found) {
                         throw new ServiceException("Invalid version: " + req.version,
                             "InvalidParameterValue", "version");
                     }
                 }
-    
+
                 if (req.service == null) {
                     //give up 
-                    throw new ServiceException("Could not determine service", "MissingParameterValue",
-                        "service");
+                    throw new ServiceException("Could not determine service",
+                        "MissingParameterValue", "service");
                 }
             }
         }
-        
+
         return new Operation(req.request, serviceDescriptor, operation, parameters);
     }
 

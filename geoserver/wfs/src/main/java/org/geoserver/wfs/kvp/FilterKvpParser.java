@@ -19,7 +19,6 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -66,10 +64,11 @@ public class FilterKvpParser extends KvpParser {
             } catch (Exception e) {
                 //parsing failed, fall back to old parser
                 String msg = "Unable to parse filter: " + string;
-                LOGGER.log( Level.WARNING, msg, e );
-                
+                LOGGER.log(Level.WARNING, msg, e);
+
                 Filter filter = parseXMLFilterWithOldParser(new StringReader(string));
-                if ( filter != null ) {
+
+                if (filter != null) {
                     filters.add(filter);
                 }
             }
@@ -77,11 +76,11 @@ public class FilterKvpParser extends KvpParser {
 
         return filters;
     }
-    
+
     /**
      * Reads the Filter XML request into a geotools Feature object.
      * <p>
-     * This uses the "old" filter parser and is around to maintain some 
+     * This uses the "old" filter parser and is around to maintain some
      * backwards compatability with cases in which the new parser chokes on a
      * filter that hte old one could handle.
      * </p>

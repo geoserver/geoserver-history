@@ -68,7 +68,7 @@ public class NestedKvpParser extends KvpParser {
             tokenSets.set(i, parseTokenSet(parsed));
         }
 
-        return parse( tokenSets );
+        return parse(tokenSets);
     }
 
     /**
@@ -108,10 +108,10 @@ public class NestedKvpParser extends KvpParser {
      * </p>
      * @param values The parsed token sets, each value is an instance of the
      * class returned from {@link #parseTokenSet(List)}.
-     * 
+     *
      * @return The final object.
      */
-    protected Object parse( List values ) throws Exception {
+    protected Object parse(List values) throws Exception {
         return values;
     }
 }

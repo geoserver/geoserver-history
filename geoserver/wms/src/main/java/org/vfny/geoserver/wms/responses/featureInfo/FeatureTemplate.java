@@ -1,19 +1,22 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import org.geoserver.template.FeatureWrapper;
+import org.geoserver.template.GeoServerTemplateLoader;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-import org.geoserver.template.FeatureWrapper;
-import org.geoserver.template.GeoServerTemplateLoader;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureType;
-
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 
 /**
  * Executes a template for a feature.
@@ -23,23 +26,21 @@ import freemarker.template.TemplateException;
  * <code>
  * Feature feature = ...  //some feature
  * Writer writer = ...    //some writer
- * 
+ *
  * FeatureTemplate template = new FeatureTemplate();
- * 
+ *
  *  //title
  * template.title( feature );
- * 
+ *
  *  //description
  * template.description( feature );
  * </code>
  * </pre>
- * </p> 
+ * </p>
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
 public class FeatureTemplate {
-
-
     /**
      * The template configuration used for placemark descriptions
      */
@@ -52,9 +53,28 @@ public class FeatureTemplate {
         templateConfig.setObjectWrapper(new FeatureWrapper());
     }
 
+    /**
+     * Executes the title template for a feature writing the results to an
+     * output stream.
+     * <p>
+     * This method is convenience for:
+     * <code>
+     * description( feature, new OutputStreamWriter( output ) );
+     * </code>
+     * </p>
+     *
+     * @param feature The feature to execute the template against.
+     * @param output The output to write the result of the template to.
+     *
+     * @throws IOException Any errors that occur during execution of the template.
+     */
+    public void title(Feature feature, OutputStream output)
+        throws IOException {
+        title(feature, new OutputStreamWriter(output));
+    }
 
     /**
-     * Executes the title template for a feature writing the results to an 
+     * Executes the description template for a feature writing the results to an
      * output stream.
      * <p>
      * This method is convenience for:
@@ -62,101 +82,80 @@ public class FeatureTemplate {
      * description( feature, new OutputStreamWriter( output ) );
      * </code>
      * </p>
-     * 
+     *
      * @param feature The feature to execute the template against.
      * @param output The output to write the result of the template to.
-     * 
+     *
      * @throws IOException Any errors that occur during execution of the template.
      */
-    public void title( Feature feature, OutputStream output ) throws IOException {
-        title( feature, new OutputStreamWriter( output ) );
+    public void description(Feature feature, OutputStream output)
+        throws IOException {
+        description(feature, new OutputStreamWriter(output));
     }
-    
+
     /**
-     * Executes the description template for a feature writing the results to an 
-     * output stream.
-     * <p>
-     * This method is convenience for:
-     * <code>
-     * description( feature, new OutputStreamWriter( output ) );
-     * </code>
-     * </p>
-     * 
-     * @param feature The feature to execute the template against.
-     * @param output The output to write the result of the template to.
-     * 
-     * @throws IOException Any errors that occur during execution of the template.
-     */
-    public void description( Feature feature, OutputStream output ) throws IOException {
-        description( feature, new OutputStreamWriter( output ) );
-    }
-    
-    /**
-     * Executes the title template for a feature writing the results to a 
+     * Executes the title template for a feature writing the results to a
      * writer.
-     * 
+     *
      * @param feature The feature to execute the template against.
      * @param writer The writer to write the template output to.
-     * 
+     *
      * @throws IOException Any errors that occur during execution of the template.
      */
-    public void title( Feature feature, Writer writer ) throws IOException {
-       execute( feature, feature.getFeatureType(), writer, "title.ftl" );
+    public void title(Feature feature, Writer writer) throws IOException {
+        execute(feature, feature.getFeatureType(), writer, "title.ftl");
     }
-    
-    
+
     /**
-     * Executes the description template for a feature writing the results to a 
+     * Executes the description template for a feature writing the results to a
      * writer.
-     * 
+     *
      * @param feature The feature to execute the template against.
      * @param writer The writer to write the template output to.
-     * 
+     *
      * @throws IOException Any errors that occur during execution of the template.
      */
-    public void description( Feature feature, Writer writer ) throws IOException {
-       execute( feature, feature.getFeatureType(), writer, "description.ftl" );
+    public void description(Feature feature, Writer writer)
+        throws IOException {
+        execute(feature, feature.getFeatureType(), writer, "description.ftl");
     }
-    
+
     /**
-     * Executes the title template for a feature returning the result as a 
+     * Executes the title template for a feature returning the result as a
      * string.
      *
      * @param feature The feature to execute the template against.
-     * 
+     *
      * @throws IOException Any errors that occur during execution of the template.
      */
-    public String title( Feature feature ) throws IOException {
-       
+    public String title(Feature feature) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        title( feature, output );
-        
-        return new String( output.toByteArray() );
+        title(feature, output);
+
+        return new String(output.toByteArray());
     }
-    
+
     /**
-     * Executes the description template for a feature returning the result as a 
+     * Executes the description template for a feature returning the result as a
      * string.
      *
      * @param feature The feature to execute the template against.
-     * 
+     *
      * @throws IOException Any errors that occur during execution of the template.
      */
-    public String description( Feature feature ) throws IOException {
-       
+    public String description(Feature feature) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        description( feature, output );
-        
-        return new String( output.toByteArray() );
+        description(feature, output);
+
+        return new String(output.toByteArray());
     }
-    
+
     /*
-     * Internal helper method to exceute the template against feature or 
+     * Internal helper method to exceute the template against feature or
      * feature collection.
      */
-    private void execute( Object feature, FeatureType featureType, Writer writer, String template ) 
+    private void execute(Object feature, FeatureType featureType, Writer writer, String template)
         throws IOException {
-        
         //descriptions are "templatable" by users, so see if there is a 
         // template available for use
         GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(getClass());

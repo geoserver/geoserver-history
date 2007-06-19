@@ -284,14 +284,12 @@ public class GetMapResponse implements Response {
                         definitionQuery.setVersion(featureVersion);
 
                         layer.setQuery(definitionQuery);
-                    } else if(featureVersion != null) {
+                    } else if (featureVersion != null) {
                         definitionQuery = new DefaultQuery(source.getSchema().getTypeName());
                         definitionQuery.setVersion(featureVersion);
 
                         layer.setQuery(definitionQuery);
                     }
-                    
-                    
 
                     map.addLayer(layer);
                 } else if (layers[i].getType() == MapLayerInfo.TYPE_RASTER) {

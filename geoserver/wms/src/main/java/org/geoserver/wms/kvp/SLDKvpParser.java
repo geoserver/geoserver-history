@@ -1,5 +1,18 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wms.kvp;
 
+import org.geoserver.ows.KvpParser;
+import org.geoserver.ows.kvp.URLKvpParser;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.styling.SLDParser;
+import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyledLayerDescriptor;
+import org.vfny.geoserver.util.Requests;
+import org.vfny.geoserver.util.SLDValidator;
+import org.vfny.geoserver.wms.WmsException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -12,42 +25,31 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
-import org.geoserver.ows.KvpParser;
-import org.geoserver.ows.kvp.URLKvpParser;
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.styling.SLDParser;
-import org.geotools.styling.StyleFactory;
-import org.geotools.styling.StyledLayerDescriptor;
-import org.vfny.geoserver.util.Requests;
-import org.vfny.geoserver.util.SLDValidator;
-import org.vfny.geoserver.wms.WmsException;
 
 public class SLDKvpParser extends KvpParser {
-
     StyleFactory styleFactory;
-    
+
     public SLDKvpParser() {
-        this( CommonFactoryFinder.getStyleFactory( null ) );
+        this(CommonFactoryFinder.getStyleFactory(null));
     }
-    
+
     public SLDKvpParser(StyleFactory styleFactory) {
-        super( "SLD", StyledLayerDescriptor.class );
+        super("SLD", StyledLayerDescriptor.class);
         this.styleFactory = styleFactory;
     }
-    
+
     public Object parse(String value) throws Exception {
-        
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine(new StringBuffer("about to load remote SLD document: '")
-                .append(value).append("'").toString());
+            LOGGER.fine(new StringBuffer("about to load remote SLD document: '").append(value)
+                                                                                .append("'")
+                                                                                .toString());
         }
 
         URL sldUrl = null;
-        
+
         try {
-            sldUrl = (URL) new URLKvpParser("SLD").parse( value );
-        }
-        catch (MalformedURLException e) {
+            sldUrl = (URL) new URLKvpParser("SLD").parse(value);
+        } catch (MalformedURLException e) {
             String msg = new StringBuffer("Creating remote SLD url: ").append(e.getMessage())
                                                                       .toString();
 
@@ -57,7 +59,7 @@ public class SLDKvpParser extends KvpParser {
 
             throw new WmsException(e, msg, "parseSldParam");
         }
-        
+
         SLDParser parser;
 
         try {

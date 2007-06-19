@@ -339,11 +339,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         if (origin != null) {
             request.setTilesOrigin(parseTilesOrigin(origin));
         }
-        
+
         // feature version (for versioned requests)
         String featureVersion = getValue("FEATUREVERSION");
         request.setFeatureVersion(featureVersion);
-        
 
         /** KML/KMZ score value */
         String KMScore = getValue("KMSCORE");
