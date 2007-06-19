@@ -57,6 +57,7 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 import org.vfny.geoserver.wms.responses.map.kml.KMLGeometryTransformer.KMLGeometryTranslator;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -225,10 +226,9 @@ public class KMLVectorTransformer extends TransformerBase {
 
             //encode the styles, keep track of any labels provided by the 
             // styles
-            StringBuffer featureLabel = new StringBuffer();
-            encodeStyle(feature, styles, featureLabel);
+            encodeStyle(feature, styles);
 
-            encodePlacemark(feature, featureLabel.toString());
+            encodePlacemark(feature, styles);
 
             end("Document");
         }
@@ -236,7 +236,7 @@ public class KMLVectorTransformer extends TransformerBase {
         /**
          * Encodes the provided set of rules as KML styles.
          */
-        protected void encodeStyle(Feature feature, FeatureTypeStyle[] styles, StringBuffer label) {
+        protected void encodeStyle(Feature feature, FeatureTypeStyle[] styles) {
             //start the style
             start("Style",
                 KMLUtils.attributes(new String[] { "id", "GeoServerStyle" + feature.getID() }));
@@ -249,7 +249,7 @@ public class KMLVectorTransformer extends TransformerBase {
             	Rule[] rules = filterRules(styles[j], feature);
 
                 for (int i = 0; i < rules.length; i++) {
-                    encodeStyle(feature, rules[i].getSymbolizers(), label);
+                    encodeStyle(feature, rules[i].getSymbolizers());
                 }
 
             }
@@ -310,7 +310,7 @@ public class KMLVectorTransformer extends TransformerBase {
         /**
          * Encodes the provided set of symbolizers as KML styles.
          */
-        protected void encodeStyle(Feature feature, Symbolizer[] symbolizers, StringBuffer label) {
+        protected void encodeStyle(Feature feature, Symbolizer[] symbolizers) {
           
             for (int i = 0; i < symbolizers.length; i++) {
                 Symbolizer symbolizer = symbolizers[i];
@@ -323,23 +323,6 @@ public class KMLVectorTransformer extends TransformerBase {
                 //split out each type of symbolizer
                 if (symbolizer instanceof TextSymbolizer) {
                     encodeTextStyle((TextStyle2D) style, (TextSymbolizer) symbolizer);
-
-                    //figure out the label
-                    Expression e = SLD.textLabel((TextSymbolizer) symbolizer);
-                    Object object = e.evaluate(feature);
-                    String value = null;
-
-                    if (object instanceof String) {
-                        value = (String) object;
-                    } else {
-                        if (object != null) {
-                            value = object.toString();
-                        }
-                    }
-
-                    if ((value != null) && !"".equals(value.trim())) {
-                        label.append(value);
-                    }
                 }
 
                 if (symbolizer instanceof PolygonSymbolizer) {
@@ -541,31 +524,32 @@ public class KMLVectorTransformer extends TransformerBase {
         /**
          * Encodes a KML Placemark from a feature and optional name.
          */
-        protected void encodePlacemark(Feature feature, String name) {
+        protected void encodePlacemark(Feature feature, FeatureTypeStyle[] styles) {
             Geometry geometry = featureGeometry(feature);
             Coordinate centroid = geometryCentroid(geometry);
 
             start("Placemark");
 
-            //name
-            if ((name == null) || "".equals(name.trim())) {
-                name = feature.getID();
+            //encode name + description only if kmattr was specified
+            if (mapContext.getRequest().getKMattr()) {
+            	//name
+            	try {
+            		encodePlacemarkName( feature, styles );
+            	}
+            	catch( IOException e ) {
+            		String msg = "Error occured processing 'title' template.";
+            		LOGGER.log( Level.WARNING, msg, e );
+                }
+            	
+            	//description
+                try {
+                    encodePlacemarkDescription(feature);
+                } catch (IOException e) {
+                	String msg = "Error occured processing 'description' template.";
+            		LOGGER.log( Level.WARNING, msg, e );
+                }
             }
-
-            //element( "name", "<![CDATA[" + name + "]]>" );
-            start("name");
-            cdata(name);
-            end("name");
-
-            //description
-            try {
-                encodePlacemarkDescription(feature);
-            } catch (IOException e) {
-                //TODO: should we just log an error, since templates are fiddled
-                // with by users we may not want to fail hard
-                throw new RuntimeException(e);
-            }
-
+           
             //look at
             encodePlacemarkLookAt(centroid);
 
@@ -579,40 +563,78 @@ public class KMLVectorTransformer extends TransformerBase {
         }
 
         /**
+         * Encodes a KML Placemark name from a feature by processing a
+         * template.
+         */
+        protected void encodePlacemarkName(Feature feature, FeatureTypeStyle[] styles )
+        	throws IOException {
+        	
+        	//order to use when figuring out what the name / label of a 
+        	// placemark should be:
+        	// 1. the title template for features
+        	// 2. a text sym with a label from teh sld
+        	// 3. nothing ( do not use fid )
+
+        	FeatureTemplate template = new FeatureTemplate();
+        	String title = template.title( feature );	
+        	
+        	//ensure not empty and != fid
+        	if ( title == null || "".equals( title ) || feature.getID().equals( title ) ) {
+        		//try sld
+        		StringBuffer label = new StringBuffer();
+        		for ( int i = 0; i < styles.length; i++ ) {
+        			Rule[] rules = filterRules(styles[i], feature );
+        			for ( int j = 0; j < rules.length; j++ ) {
+        				Symbolizer[] syms = rules[j].getSymbolizers();
+        				for ( int k = 0; k < syms.length; k++) {
+        					if ( syms[k] instanceof TextSymbolizer ) {
+        						Expression e = SLD.textLabel((TextSymbolizer) syms[k]);
+                                Object object = e.evaluate(feature);
+                                String value = null;
+
+                                if (object instanceof String) {
+                                    value = (String) object;
+                                } else {
+                                    if (object != null) {
+                                        value = object.toString();
+                                    }
+                                }
+
+                                if ((value != null) && !"".equals(value.trim())) {
+                                    label.append(value);
+                                }
+        					}
+        				}
+        			}
+        		}
+        		
+        		if ( label.length() > 0 ) {
+        			title = label.toString();
+        		}
+        		else {
+        			title = null;
+        		}
+                
+        	}
+        	
+        	if ( title != null ) {
+            	start("name");
+                cdata(title);
+                end("name");	
+            }
+            
+        }
+        
+        /**
          * Encodes a KML Placemark description from a feature by processing a
          * template.
          */
         protected void encodePlacemarkDescription(Feature feature)
             throws IOException {
-            String description = null;
-
-            if (mapContext.getRequest().getKMattr()) {
-                //descriptions are "templatable" by users, so see if there is a 
-                // template available for use
-                FeatureType schema = feature.getFeatureType();
-                GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(getClass());
-                templateLoader.setFeatureType(schema.getTypeName());
-
-                Template template = null;
-
-                //Configuration is not thread safe
-                synchronized (templateConfig) {
-                    templateConfig.setTemplateLoader(templateLoader);
-                    template = templateConfig.getTemplate("kmlPlacemarkDescription.ftl");
-                }
-
-                StringWriter writer = new StringWriter();
-
-                try {
-                    template.process(feature, writer);
-                } catch (TemplateException e) {
-                    String msg = "Error occured processing template.";
-                    throw (IOException) new IOException(msg).initCause(e);
-                }
-
-                description = writer.toString();
-            }
-
+            
+        	FeatureTemplate template = new FeatureTemplate();
+        	String description = template.description( feature );
+        
             if (description != null) {
                 start("description");
                 cdata(description);
