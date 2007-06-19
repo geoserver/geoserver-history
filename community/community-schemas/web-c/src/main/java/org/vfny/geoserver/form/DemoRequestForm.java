@@ -38,6 +38,8 @@ public class DemoRequestForm extends ActionForm {
     private String url;
     private String body;
     private String demo;
+    private String username;
+    private String password;
     private File dir;
     List demoList;
 
@@ -170,5 +172,21 @@ public class DemoRequestForm extends ActionForm {
      */
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
