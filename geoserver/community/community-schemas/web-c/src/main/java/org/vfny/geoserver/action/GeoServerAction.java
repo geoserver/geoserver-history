@@ -63,25 +63,25 @@ public class GeoServerAction extends ActionSupport {
     /** Class logger */
     protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.action");
 
-    /**
-     * Logs the user out from the current Session.
-     *
-     * @param request DOCUMENT ME!
-     */
-    public void logOut(HttpServletRequest request) {
-        Requests.logOut(request);
-    }
-
-    /**
-     * Tests if the user has logged onto the current Session
-     *
-     * @param request DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public boolean isLoggedIn(HttpServletRequest request) {
-        return Requests.isLoggedIn(request);
-    }
+    //    /**
+    //     * Logs the user out from the current Session.
+    //     *
+    //     * @param request DOCUMENT ME!
+    //     */
+    //    public void logOut(HttpServletRequest request) {
+    //        Requests.logOut(request);
+    //    }
+    //
+    //    /**
+    //     * Tests if the user has logged onto the current Session
+    //     *
+    //     * @param request DOCUMENT ME!
+    //     *
+    //     * @return DOCUMENT ME!
+    //     */
+    //    public boolean isLoggedIn(HttpServletRequest request) {
+    //        return Requests.isLoggedIn(request);
+    //    }
 
     /**
      * Aquire type safe session information in a UserContainer.
