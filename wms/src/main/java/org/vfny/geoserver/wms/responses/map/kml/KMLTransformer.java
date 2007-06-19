@@ -34,11 +34,18 @@ import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.ContentHandler;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.transform.Transformer;
 
 
 public class KMLTransformer extends TransformerBase {
+    /**
+     * logger
+     */
+    static Logger LOGGER = Logger.getLogger("org.geoserver.kml");
+        
     /**
      * Factory used to create filter objects
      */
@@ -139,6 +146,19 @@ public class KMLTransformer extends TransformerBase {
                 throw new RuntimeException(e);
             }
 
+            //calculate scale denominator
+            // we do not actually know what the size of the image will be so 
+            // our best guess is 800x600
+            double scaleDenominator = 1; 
+            try {
+               scaleDenominator = 
+                       RendererUtilities.calculateScale(mapContext.getAreaOfInterest(), 800, 600, null);
+            } 
+            catch( Exception e ) {
+               LOGGER.log( Level.WARNING, "Error calculating scale denominator", e );
+            }
+            LOGGER.fine( "scale denominator = " + scaleDenominator );
+
             //was kmz requested?
             if (kmz) {
                 //calculate kmscore to determine if we shoud write as vectors
@@ -149,6 +169,7 @@ public class KMLTransformer extends TransformerBase {
                 if (useVector) {
                     //encode
                     KMLVectorTransformer tx = new KMLVectorTransformer(mapContext, layer);
+                    tx.setScaleDenominator(scaleDenominator);
                     tx.createTranslator(contentHandler).encode(features);
                 } else {
                     KMLRasterTransformer tx = new KMLRasterTransformer(mapContext);
@@ -162,6 +183,7 @@ public class KMLTransformer extends TransformerBase {
             } else {
                 //kmz not selected, just do straight vector
                 KMLVectorTransformer tx = new KMLVectorTransformer(mapContext, layer);
+                tx.setScaleDenominator(scaleDenominator);
                 tx.createTranslator(contentHandler).encode(features);
             }
         }
