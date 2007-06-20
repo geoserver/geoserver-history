@@ -5,6 +5,8 @@
 package org.geoserver.ows;
 
 import org.geoserver.ows.util.OwsUtils;
+import org.geotools.util.Converters;
+
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
@@ -125,6 +127,22 @@ public class KvpRequestReader {
 
             Method setter = OwsUtils.setter(request.getClass(), property, value.getClass());
 
+            if ( setter == null ) {
+                //no setter matching the object of teh type, try to convert
+                setter = OwsUtils.setter( request.getClass(), property, null );
+                if ( setter != null ) {
+                    //convert
+                    Class target = setter.getParameterTypes()[0];
+                    Object converted = Converters.convert( value, target );
+                    if ( converted != null ) {
+                        value = converted;
+                    }
+                    else {
+                        setter = null;
+                    }
+                }
+            }
+            
             if (setter != null) {
                 setter.invoke(request, new Object[] { value });
             }
