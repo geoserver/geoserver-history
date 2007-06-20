@@ -4,16 +4,24 @@
  */
 package org.geoserver.wms.util;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.map.MapLayer;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.util.Requests;
-import org.vfny.geoserver.wms.WMSMapContext;
+import java.lang.reflect.Array;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.geotools.map.MapLayer;
+import org.geotools.styling.Style;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.util.Requests;
+import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.vfny.geoserver.wms.requests.WMSRequest;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Utility class for creating wms requests.
@@ -31,10 +39,10 @@ public class WMSRequests {
      *
      * @return The base for wms requests.
      */
-    public static String getBaseUrl(HttpServletRequest request, GeoServer geoServer) {
-        String baseUrl = Requests.getBaseUrl(request, geoServer);
-        baseUrl = Requests.concatUrl(baseUrl, "wms");
-
+    public static String getBaseUrl( HttpServletRequest request, GeoServer geoServer ) {
+        String baseUrl = Requests.getBaseUrl( request, geoServer );
+        baseUrl = Requests.appendContextPath(baseUrl, "wms" );
+        
         return baseUrl;
     }
 
@@ -42,12 +50,24 @@ public class WMSRequests {
      * Returns the base url for a wms request, something of the form:
      * <pre>&lt;protocol>://&lt;server>:&lt;port>/&lt;context>/wms</pre>
      *
+     * @param req The wms request.
+     * 
+     * @return The base for wms requests.
+     */
+    public static String getBaseUrl( WMSRequest request ) {
+        return getBaseUrl( request.getHttpServletRequest(), request.getGeoServer() );  
+    }
+    
+    /**
+     * Returns the base url for a wms request, something of the form:
+     * <pre>&lt;protocol>://&lt;server>:&lt;port>/&lt;context>/wms</pre>
+     * 
      * @param map A wms map context.
      *
      * @return The base for wms requests.
      */
-    public static String getBaseUrl(WMSMapContext map) {
-        return getBaseUrl(map.getRequest().getHttpServletRequest(), map.getRequest().getGeoServer());
+    public static String getBaseUrl( WMSMapContext map ) {
+        return getBaseUrl( map.getRequest() );
     }
 
     /**
@@ -67,23 +87,23 @@ public class WMSRequests {
      * is used for the bbox parameter.
      * </p>
      *
-     * @param map The map context.
+     * @param req The getMap request.
      * @param layer The Map layer, may be <code>null</code>.
      * @param bbox The bounding box of the request, may be <code>null</code>.
      * @param kvp Additional or overidding kvp parameters, may be <code>null</code>
      *
      * @return The full url for a getMap request.
      */
-    public static String getTiledGetMapUrl(WMSMapContext map, MapLayer layer, Envelope bbox,
-        String[] kvp) {
-        String baseUrl = Requests.getTileCacheBaseUrl(map.getRequest().getHttpServletRequest(),
-                map.getRequest().getGeoServer());
+    public static String getTiledGetMapUrl(GetMapRequest req, MapLayer layer, Envelope bbox, String[] kvp) {
+        String baseUrl = Requests.getTileCacheBaseUrl(req.getHttpServletRequest(),
+                    req.getGeoServer());
+        
+        if ( baseUrl == null ) {
+            return getGetMapUrl( req, layer, bbox, kvp );
 
-        if (baseUrl == null) {
-            return getGetMapUrl(map, layer, bbox, kvp);
         }
-
-        return getGetMapUrl(baseUrl, map, layer, bbox, kvp);
+        
+        return getGetMapUrl( baseUrl, req, layer.getTitle(),layer.getStyle().getName(), bbox, kvp );
     }
 
     /**
@@ -97,30 +117,64 @@ public class WMSRequests {
      * is used for the bbox parameter.
      * </p>
      *
-     * @param map The map context.
+     * @param req The getMap request
      * @param layer The Map layer, may be <code>null</code>.
      * @param bbox The bounding box of the request, may be <code>null</code>.
      * @param kvp Additional or overidding kvp parameters, may be <code>null</code>
      *
      * @return The full url for a getMap request.
      */
-    public static String getGetMapUrl(WMSMapContext map, MapLayer layer, Envelope bbox, String[] kvp) {
+    public static String getGetMapUrl(GetMapRequest req, MapLayer layer, Envelope bbox, String[] kvp) {
         //base url
-        String baseUrl = getBaseUrl(map);
-
-        return getGetMapUrl(baseUrl, map, layer, bbox, kvp);
+        String baseUrl = getBaseUrl( req );
+    
+        String layerName = layer != null ? layer.getTitle() : null;
+        String style = layer != null ? layer.getStyle().getTitle() : null;
+        
+        return getGetMapUrl( baseUrl, req, layerName,style, bbox, kvp );
     }
 
     /**
+     * Encodes the url of a GetMap request.
+     * <p>
+     * If the <tt>layer</tt> argument is <code>null</code>, the request is
+     * made including all layers in the <tt>mapContexT</tt>.
+     * </p>
+     * <p>
+     * If the <tt>style</tt> argument is not <code>null</code> and the <tt>layer</tt>
+     * argument is <code>null</code>, then the default style for that layer 
+     * is used.
+     * </p>
+     * <p>
+     * If the <tt>bbox</tt> argument is <code>null</code>. {@link WMSMapContext#getAreaOfInterest()}
+     * is used for the bbox parameter.
+     * </p>
+     *
+     * @param req The getMap request
+     * @param layer The layer name, may be <code>null</code>.
+     * @param style The style name, may be <code>null</code>
+     * @param bbox The bounding box of the request, may be <code>null</code>.
+     * @param kvp Additional or overidding kvp parameters, may be <code>null</code>
+     *
+     * @return The full url for a getMap request.
+     */
+    public static String getGetMapUrl(GetMapRequest req, String layer, String style, Envelope bbox, String[] kvp) {
+        //base url
+        String baseUrl = getBaseUrl( req );
+    
+        return getGetMapUrl( baseUrl, req, layer, style, bbox, kvp );
+    }
+    
+    /**
      * Encodes the url of a GetLegendGraphic request.
      *
-     * @param map The map context.
+     * @param req The wms request.
      * @param layer The Map layer, may not be <code>null</code>.
      * @param kvp Additional or overidding kvp parameters, may be <code>null</code>
      *
      * @return The full url for a getMap request.
      */
-    public static String getGetLegendGraphicUrl(WMSMapContext map, MapLayer layer, String[] kvp) {
+    public static String getGetLegendGraphicUrl( WMSRequest req, MapLayer layer, String[] kvp ) {
         //parameters
         HashMap params = new HashMap();
 
@@ -138,34 +192,50 @@ public class WMSRequests {
             params.put(kvp[i], kvp[i + 1]);
         }
 
-        return encode(getBaseUrl(map), params);
+        return encode(getBaseUrl(req),params);    
+
     }
 
     /**
      * Helper method for encoding GetMap request.
      *
      */
-    static String getGetMapUrl(String baseUrl, WMSMapContext map, MapLayer layer, Envelope bbox,
-        String[] kvp) {
+    static String getGetMapUrl( String baseUrl, GetMapRequest req, String layer, String style, Envelope bbox, String[] kvp ) {
         //parameters
         HashMap params = new HashMap();
 
         params.put("service", "wms");
         params.put("request", "GetMap");
         params.put("version", "1.1.1");
-        params.put("format", "image/png");
 
+        params.put( "format", req.getFormat() );
+        
         StringBuffer layers = new StringBuffer();
         StringBuffer styles = new StringBuffer();
+        
+        if ( layer != null ) {
+             layers.append( layer );
+             if ( style != null ) {
+                 styles.append( style );
+             }
+             else {
+                 //use default for layer
+                 for ( int i = 0; i < req.getLayers().length; i++ ) {
+                     if ( layer.equals( req.getLayers()[i].getName() ) ) {
+                         styles.append( req.getLayers()[i].getDefaultStyle().getName() );
+                     }
+                 }
+             }
+        }
+        else {
+            //no layer specified, use layers+styles specified by request
+            for ( int i = 0; i < req.getLayers().length; i++ ) {
+                MapLayerInfo mapLayer = req.getLayers()[ i ];
+                Style s = (Style) req.getStyles().get( 0 );
+                
+                layers.append( mapLayer.getName() ).append( "," );
+                styles.append( s.getName() ).append( "," );   
 
-        if (layer != null) {
-            layers.append(layer.getTitle());
-            styles.append(layer.getStyle().getName());
-        } else {
-            for (int i = 0; i < map.getLayerCount(); i++) {
-                layer = (MapLayer) map.getLayer(i);
-                layers.append(layer.getTitle()).append(",");
-                styles.append(layer.getStyle().getName()).append(",");
             }
 
             layers.setLength(layers.length() - 1);
@@ -175,18 +245,23 @@ public class WMSRequests {
         params.put("layers", layers.toString());
         params.put("styles", styles.toString());
 
-        params.put("height", String.valueOf(map.getMapHeight()));
-        params.put("width", String.valueOf(map.getMapWidth()));
+        params.put("height", String.valueOf(req.getHeight()));
+        params.put("width", String.valueOf(req.getWidth()));
 
         if (bbox == null) {
-            bbox = map.getAreaOfInterest();
+            bbox = req.getBbox();
         }
 
         params.put("bbox", encode(bbox));
 
-        params.put("srs", "EPSG:4326");
-        params.put("transparent", "true");
 
+        params.put( "srs", req.getSRS() );
+        params.put( "transparent", ""+req.isTransparent() );
+        
+        if ( req.getFormatOptions() != null && !req.getFormatOptions().isEmpty()) {
+            params.put( "format_options", encodeFormatOptions(req.getFormatOptions()));
+        }
+        
         //overrides / additions
         for (int i = 0; (kvp != null) && (i < kvp.length); i += 2) {
             params.put(kvp[i], kvp[i + 1]);
@@ -195,6 +270,49 @@ public class WMSRequests {
         return encode(baseUrl, params);
     }
 
+    /**
+     * Encodes a map of formation options to be used as the value in a kvp.
+     * 
+     * @param formatOptions The map of formation options.
+     * 
+     * @return A string of the form 'key1:value1,value2;key2:value1;...'
+     *
+     */
+    public static String encodeFormatOptions( Map formatOptions ) {
+        StringBuffer sb = new StringBuffer();
+        for ( Iterator e = formatOptions.entrySet().iterator(); e.hasNext(); ) {
+            Map.Entry entry = (Map.Entry) e.next();
+            String key = (String) entry.getKey();
+            Object val = entry.getValue();
+            
+            sb.append( key ).append( ":" );
+            if ( val instanceof Collection ) {
+                Iterator i = ((Collection)val).iterator();
+                while( i.hasNext() ) {
+                    sb.append( i.next() ).append( "," );
+                }
+                sb.setLength(sb.length()-1);
+            }
+            else if ( val.getClass().isArray() ) {
+                int len = Array.getLength( val );
+                for ( int i = 0; i < len; i++ ) {
+                    Object o = Array.get( val, i );
+                    if ( o != null ) {
+                        sb.append( o ).append( "," );
+                    }
+                }
+                sb.setLength(sb.length()-1);
+            }
+            else {
+                sb.append( val.toString() );
+            }
+            sb.append( ";" );
+        }
+        
+        sb.setLength( sb.length() );
+        return sb.toString();
+    }
+    
     /**
      * Helper method to encode an envelope to be used in a wms request.
      */
@@ -213,15 +331,14 @@ public class WMSRequests {
      * @return The full request url.
      */
     static String encode(String baseUrl, Map kvp) {
-        StringBuffer href = new StringBuffer(baseUrl);
-
+        StringBuffer query = new StringBuffer();
+      
         for (Iterator e = kvp.entrySet().iterator(); e.hasNext();) {
             Map.Entry entry = (Map.Entry) e.next();
-            href.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+            query.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
 
-        href.setLength(href.length() - 1);
-
-        return href.toString();
+        query.setLength(query.length() - 1);
+        return Requests.appendQueryString( baseUrl, query.toString() );
     }
 }
