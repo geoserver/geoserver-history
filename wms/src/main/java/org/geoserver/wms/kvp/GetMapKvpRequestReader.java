@@ -202,8 +202,10 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
 
             if ((layers != null) && (layers.length > 0)) {
                 //if no styles specified, generate from layer defaults
-                if (getMap.getStyles().isEmpty()) {
-                    for (int i = 0; i < layers.length; i++) {
+                if ( getMap.getStyles() == null || getMap.getStyles().isEmpty() ) {
+                    getMap.setStyles( new ArrayList() );
+                    for( int i =0; i < layers.length; i++ ) {
+
                         if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
                             getMap.getStyles().add(layers[i].getFeature().getDefaultStyle());
                         } else if (layers[i].getType() == MapLayerInfo.TYPE_RASTER) {
