@@ -76,7 +76,7 @@ public final class Requests {
         String url = ((geoserver != null) ? geoserver.getProxyBaseUrl() : null);
 
         if ((geoserver != null) && (url != null)) {
-            url = concatUrl(url, httpServletRequest.getContextPath());
+            url = appendContextPath(url, httpServletRequest.getContextPath());
         }
 
         if ((url == null) || (url.trim().length() == 0)) {
@@ -90,7 +90,7 @@ public final class Requests {
                     + ":" + httpServletRequest.getServerPort()
                     + httpServletRequest.getContextPath() + "/";
             } else {
-                url = concatUrl(url, httpServletRequest.getContextPath());
+                url = appendContextPath(url, httpServletRequest.getContextPath());
             }
         }
 
@@ -109,7 +109,7 @@ public final class Requests {
         String url = geoserver.getProxyBaseUrl();
 
         if ((geoserver != null) && (url != null)) {
-            url = concatUrl(url, httpServletRequest.getRequestURI());
+            url = appendContextPath(url, httpServletRequest.getRequestURI());
         }
 
         if ((url == null) || (url.trim().length() == 0)) {
@@ -123,7 +123,7 @@ public final class Requests {
                     + ":" + httpServletRequest.getServerPort() + httpServletRequest.getRequestURI()
                     + "/";
             } else {
-                url = concatUrl(url, httpServletRequest.getRequestURI());
+                url = appendContextPath(url, httpServletRequest.getRequestURI());
             }
         }
 
@@ -161,7 +161,7 @@ public final class Requests {
             } catch (MalformedURLException e1) {
                 //try relative to the same host as request
                 try {
-                    String url = concatUrl(request.getScheme() + "://" + request.getServerName(),
+                    String url = appendContextPath(request.getScheme() + "://" + request.getServerName(),
                             tileCacheBaseUrl);
                     new URL(url);
 
@@ -176,7 +176,15 @@ public final class Requests {
         return null;
     }
 
-    public static String concatUrl(String url, String contextPath) {
+    /**
+     * Appends a context path to a base url.
+     * 
+     * @param url The base url.
+     * @param contextPath The context path to be appended.
+     * 
+     * @return A full url with the context path appended.
+     */
+    public static String appendContextPath(String url, String contextPath) {
         if (url.endsWith("/")) {
             url = url.substring(0, url.length() - 1);
         }
@@ -186,6 +194,30 @@ public final class Requests {
         }
 
         return url + "/" + contextPath;
+    }
+    
+    /**
+     * Appends a query string to a url.
+     * <p>
+     * This method checks <code>url</code> to see if the appended query string requires a '?' or
+     * '&' to be prepended.
+     * </p>
+     *
+     * @param url The base url.
+     * @param queryString The query string to be appended, should not contain the '?' character.
+     *
+     * @return A full url with the query string appended.
+     */
+    public static String appendQueryString(String url, String queryString) {
+        if (url.endsWith("?") || url.endsWith("&")) {
+            return url + queryString;
+        }
+
+        if (url.indexOf('?') != -1) {
+            return url + "&" + queryString;
+        }
+
+        return url + "?" + queryString;
     }
 
     /**
