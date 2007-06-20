@@ -111,8 +111,14 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
 
             FeatureTemplate template = new FeatureTemplate();
 
-            element("title", template.title(feature));
-
+            try {
+                element("title", template.title(feature));
+            }
+            catch( Exception e ) {
+                String msg = "Error occured executing title template for: " + feature.getID();
+                LOGGER.log( Level.WARNING, msg, e );
+            }
+            
             //create the link as getFeature request with fid filter
             //TODO: throw this into a utility class
             //TODO: use an html based output format
@@ -126,10 +132,17 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
             end("link");
 
             //element( "description", template.execute(feature));
-            start("description");
-            cdata(template.description(feature));
-            end("description");
-
+            try {
+                String description = template.description(feature);
+                start("description");
+                cdata(description);
+                end("description");
+            }
+            catch( Exception e ) {
+                String msg = "Error occured executing description template for: " + feature.getID();
+                LOGGER.log( Level.WARNING, msg, e );
+            }
+            
             encodeGeometry(feature);
 
             end("item");
