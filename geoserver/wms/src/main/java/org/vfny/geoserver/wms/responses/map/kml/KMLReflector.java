@@ -72,6 +72,7 @@ public class KMLReflector {
         response.setContentType( KML_MIME_TYPE );
         
         KMLNetworkLinkTransformer transformer = new KMLNetworkLinkTransformer();
+        transformer.setIndentation(3);
         transformer.setEncodeAsRegion( request.getSuperOverlay() );
         transformer.transform( request, response.getOutputStream() );
     }
