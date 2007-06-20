@@ -51,16 +51,15 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
                 MapLayer layer = map.getLayer(i);
                 title.append(layer.getTitle()).append(",");
             }
-
-            title.setLength(title.length() - 1);
-
-            element("title", title.toString());
-
-            start("link");
-
-            cdata(WMSRequests.getGetMapUrl(map, null, null, null));
-            end("link");
-
+            title.setLength(title.length()-1);
+            
+            element( "title", title.toString() );
+            
+            start( "link" );
+            
+            cdata(WMSRequests.getGetMapUrl(map.getRequest(),null,null,null));
+            end( "link" );
+            
             //element( "description", "description" );
 
             //items
