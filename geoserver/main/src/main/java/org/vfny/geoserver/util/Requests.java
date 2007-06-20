@@ -306,4 +306,48 @@ public final class Requests {
         
         return map;
     }
+    
+    /**
+     * Appends a context path to a base url.
+     * 
+     * @param url The base url.
+     * @param contextPath The context path to be appended.
+     * 
+     * @return A full url with the context path appended.
+     */
+    public static String appendContextPath(String url, String contextPath) {
+        if (url.endsWith("/")) {
+            url = url.substring(0, url.length() - 1);
+        }
+
+        if (contextPath.startsWith("/")) {
+            contextPath = contextPath.substring(1);
+        }
+
+        return url + "/" + contextPath;
+    }
+    
+    /**
+     * Appends a query string to a url.
+     * <p>
+     * This method checks <code>url</code> to see if the appended query string requires a '?' or
+     * '&' to be prepended.
+     * </p>
+     *
+     * @param url The base url.
+     * @param queryString The query string to be appended, should not contain the '?' character.
+     *
+     * @return A full url with the query string appended.
+     */
+    public static String appendQueryString(String url, String queryString) {
+        if (url.endsWith("?") || url.endsWith("&")) {
+            return url + queryString;
+        }
+
+        if (url.indexOf('?') != -1) {
+            return url + "&" + queryString;
+        }
+
+        return url + "?" + queryString;
+    }
 }
