@@ -14,12 +14,17 @@ import java.lang.reflect.Method;
  *
  */
 public class OwsUtils {
+    
     /**
      * Returns a setter method for a property of java bean.
-     *
+     * <p>
+     * The <tt>type</tt> parameter may be <code>null</code> to indicate the 
+     * the setter for the property should be returned regardless of the type. If
+     * not null it will be used to filter the returned method.
+     * </p>
      * @param clazz The type of the bean.
      * @param property The property name.
-     * @param type The type of the property.
+     * @param type The type of the property, may be <code>null</code>.
      *
      * @return The setter method, or <code>null</code> if not found.
      */
@@ -32,13 +37,41 @@ public class OwsUtils {
             Method method = methods[i];
 
             if (method.getName().equalsIgnoreCase("set" + property)) {
-                if ((method.getParameterTypes().length == 1)
-                        && method.getParameterTypes()[0].isAssignableFrom(type)) {
-                    return method;
+                if (method.getParameterTypes().length == 1) {
+                    if ( type != null ) {
+                        if (method.getParameterTypes()[0].isAssignableFrom(type)) {
+                            return method;
+                        }
+                    }
+                    else {
+                        return method;
+                    }
                 }
             }
         }
 
+        //nto found, check for case where setter property is primtive and the 
+        // class specified is its wrapper class
+        if ( type != null ) {
+            for (int i = 0; i < methods.length; i++) {
+                Method method = methods[i];
+
+                if (method.getName().equalsIgnoreCase("set" + property)) {
+                    if ((method.getParameterTypes().length == 1)) {
+                        Class target =  method.getParameterTypes()[0];
+                        if ( target.isPrimitive() && type == wrapper( target ) ) {
+                            return method;
+                        }
+                        
+                        if ( type.isPrimitive() && target == wrapper( type ) ) {
+                            return method;
+                        }
+                    }
+                }
+            }
+        }
+        
+        
         //could not be found, try again with a more lax match
         String lax = lax(property);
 
@@ -77,6 +110,29 @@ public class OwsUtils {
             }
         }
 
+        //check for case where one of the classes is primitive and the other
+        // is a wrapper
+        if ( type != null ) {
+            for (int i = 0; i < methods.length; i++) {
+                Method method = methods[i];
+
+                if (method.getName().equalsIgnoreCase("get" + property)) {
+                   Class target = method.getReturnType();
+                   if ( target != null ) {
+                       
+                       if ( target.isPrimitive() && type == wrapper( target ) ) {
+                           return method;
+                       }
+                       if ( type.isPrimitive() && target == wrapper( type ) ) {
+                           return method;
+                       }
+
+                   }
+                }
+            }
+        }
+       
+        
         //could not be found, try again with a more lax match
         String lax = lax(property);
 
@@ -154,6 +210,41 @@ public class OwsUtils {
         return null;
     }
 
+    /**
+     * Returns the wrapper class for a primitive class.
+     * 
+     * @param primitive A primtive class, like int.class, double.class, etc...
+     */
+    static Class wrapper( Class primitive ) {
+        if ( boolean.class == primitive ) {
+            return Boolean.class;
+        }
+        if ( char.class == primitive ) {
+            return Character.class;
+        }
+        if ( byte.class == primitive ) {
+            return Byte.class;
+        }
+        if ( short.class == primitive ) {
+            return Short.class;
+        }
+        if ( int.class == primitive ) {
+            return Integer.class;
+        }
+        if ( long.class == primitive ) {
+            return Long.class;
+        }
+        
+        if ( float.class == primitive ) {
+            return Float.class;
+        }
+        if ( double.class == primitive ) {
+            return Double.class;
+        }
+        
+        return null;
+    }
+    
     /**
      * Does some checks on the property name to turn it into a java bean property.
      * <p>
