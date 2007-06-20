@@ -112,6 +112,10 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
                 
                 start( "Url" );
                 
+                //set bbox to null so its not included in the request, google 
+                // earth will append it for us
+                request.setBbox(null);
+                
                 String href = WMSRequests.getGetMapUrl(request, layers[i].getName(),null, null, null);
                 start( "href" );
                 cdata( href );
