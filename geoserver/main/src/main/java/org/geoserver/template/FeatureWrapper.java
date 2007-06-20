@@ -103,7 +103,14 @@ public class FeatureWrapper extends BeansWrapper {
                 AttributeType type = feature.getFeatureType().getAttributeType(i);
 
                 Map attribute = new HashMap();
-                attribute.put("value", feature.getAttribute(i));
+                if ( feature.getAttribute(i) != null ) {
+                    attribute.put("value", feature.getAttribute(i));    
+                }
+                else {
+                    //nulls throw tempaltes off, use empty string
+                    attribute.put( "value", "" );
+                }
+                
                 attribute.put("name", type.getName());
                 attribute.put("type", type.getType().getName());
                 attribute.put("isGeometry",
