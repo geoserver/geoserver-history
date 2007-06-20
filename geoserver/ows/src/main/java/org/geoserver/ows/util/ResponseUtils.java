@@ -111,6 +111,8 @@ public class ResponseUtils {
      * @param queryString The query string to be appended, should not contain the '?' character.
      *
      * @return A full url with the query string appended.
+     * 
+     * TODO: remove this and replace with Requetss.appendQueryString
      */
     public static String appendQueryString(String url, String queryString) {
         if (url.endsWith("?") || url.endsWith("&")) {
@@ -151,6 +153,7 @@ public class ResponseUtils {
      * @param path The path to be appended to the url.
      *
      * @return The full url with the path appended.
+     * TODO: remove this and replace with Requetss.appendContextPath
      */
     public static String appendPath(String url, String path) {
         if (path.startsWith("/")) {
