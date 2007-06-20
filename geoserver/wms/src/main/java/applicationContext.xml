@@ -89,16 +89,6 @@
 		parent="wmsService">
 	</bean>
 	
-	<!-- bean id="kmlReflectorService" class="org.vfny.geoserver.wms.servlets.KMLReflector
-		parent="wmsService">
-	</bean>	
-	<bean id="kmlReflector"
-		class="org.springframework.web.servlet.mvc.ServletWrappingController">
-		<property name="servletClass"
-			value="org.vfny.geoserver.wms.servlets.KMLReflector"/>
-		<property name="servletName" value="kmlReflector"/>
-	</bean-->
-	
 	<!-- wms service + descriptor -->
  	<bean id="wmsService2" class="org.geoserver.wms.DefaultWebMapService"/>
  	<bean id="wmsServiceDescriptor" class="org.geoserver.platform.Service">
@@ -154,19 +144,6 @@
  		<constructor-arg value="validateschema"/>
  	</bean>
  	
- 	<!-- kml kvp parsers -->
- 	<bean id="superOverlayKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
-		<constructor-arg value="superoverlay"/>
- 	</bean>
- 	<bean id="legendKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
-		<constructor-arg value="legend"/>
- 	</bean>
- 	<bean id="kmatrrKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
-		<constructor-arg value="kmattr"/>
- 	</bean>
- 	 	<bean id="kmscoreKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
-		<constructor-arg value="kmscore"/>
- 	</bean>
  	<!-- kvp request readers -->
  	<bean id="wmsGetCapabilitiesKvpReader" 
  		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
@@ -321,5 +298,41 @@
 	<bean id="GeoRSSMapProducerFactory"
 		class="org.vfny.geoserver.wms.responses.map.georss.GeoRSSMapProducerFactory">
 	</bean>
-			
+	
+	<!--  kml service stuff -->
+	<!--  TODO: move this to s eperate module -->
+	<bean id="kmlService" class="org.vfny.geoserver.wms.responses.map.kml.KMLReflector">
+		<constructor-arg ref="wmsService2"/>
+	</bean>	
+	<bean id="kmlServiceDescriptor" class="org.geoserver.platform.Service">
+		<constructor-arg index="0" value="kml"/>
+		<constructor-arg index="1" ref="kmlService"/>
+		<constructor-arg index="2" value="1.0.0"/>
+ 	</bean>
+ 	
+	<!-- http url mapping -->
+	<bean id="kmlURLMapping" 
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="alwaysUseFullPath" value="true"/>
+		<property name="mappings">
+			<props>
+				<prop key="/kml">dispatcher</prop>
+				<prop key="/kml/*">dispatcher</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<!-- kml kvp parsers -->
+ 	<bean id="superOverlayKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
+		<constructor-arg value="superoverlay"/>
+ 	</bean>
+ 	<bean id="legendKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
+		<constructor-arg value="legend"/>
+ 	</bean>
+ 	<bean id="kmatrrKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
+		<constructor-arg value="kmattr"/>
+ 	</bean>
+ 	<bean id="kmscoreKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
+		<constructor-arg value="kmscore"/>
+ 	</bean>
 </beans>
