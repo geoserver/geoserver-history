@@ -41,11 +41,13 @@ public class KMLUtils {
      */
     public static String getMapUrl(WMSMapContext mapContext, MapLayer mapLayer, Envelope bbox,
         String[] kvp, boolean tile) {
-        if (tile) {
-            return WMSRequests.getTiledGetMapUrl(mapContext, mapLayer, bbox, kvp);
-        }
+       
+        if ( tile ) {
+            return WMSRequests.getTiledGetMapUrl( mapContext.getRequest(), mapLayer, bbox, kvp );
 
-        return WMSRequests.getGetMapUrl(mapContext, mapLayer, bbox, kvp);
+        }
+        
+        return WMSRequests.getGetMapUrl( mapContext.getRequest(), mapLayer, bbox, kvp ); 
     }
 
     /**
@@ -78,7 +80,7 @@ public class KMLUtils {
      */
     public static String getLegendGraphicUrl(WMSMapContext mapContext, MapLayer mapLayer,
         String[] kvp) {
-        return WMSRequests.getGetLegendGraphicUrl(mapContext, mapLayer, kvp);
+        return WMSRequests.getGetLegendGraphicUrl(mapContext.getRequest(), mapLayer, kvp);
     }
 
     /**
