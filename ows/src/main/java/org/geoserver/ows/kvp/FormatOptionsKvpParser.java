@@ -67,17 +67,19 @@ public class FormatOptionsKvpParser extends KvpParser implements ApplicationCont
 
             for (Iterator p = parsers.iterator(); p.hasNext();) {
                 KvpParser parser = (KvpParser) p.next();
+                if ( key.equalsIgnoreCase( parser.getKey() ) ) {
+                    parsed = parser.parse( raw );
+                    if ( parsed != null ) {
 
-                if (key.equals(parser.getKey())) {
-                    parsed = parser.parse(raw);
-
-                    if (parsed != null) {
                         break;
                     }
                 }
             }
 
             if (parsed == null) {
+                String msg = new StringBuffer( "Could not find kvp parser for: '" )
+                    .append( key ).append( "'. Storing as raw string." ).toString();
+                LOGGER.info( msg );
                 parsed = raw;
             }
 
