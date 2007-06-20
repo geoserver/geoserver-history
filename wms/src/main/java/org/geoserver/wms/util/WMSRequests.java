@@ -251,8 +251,10 @@ public class WMSRequests {
         if (bbox == null) {
             bbox = req.getBbox();
         }
-
-        params.put("bbox", encode(bbox));
+        if (bbox != null) {
+            params.put("bbox", encode(bbox));    
+        }
+        
 
 
         params.put( "srs", req.getSRS() );
