@@ -99,7 +99,7 @@ public class GeoServerConfigurationForm extends ActionForm {
     private boolean jaiJPEGNativeChecked;
     private boolean jaiPNGNative;
     private boolean jaiPNGNativeChecked;
-    
+
     /** tile cache location, full url or relative path */
     private String tileCache;
 
@@ -793,7 +793,7 @@ public class GeoServerConfigurationForm extends ActionForm {
     public void setJaiTileThreads(int jaiTileThreads) {
         this.jaiTileThreads = jaiTileThreads;
     }
-   
+
     /**
      * tile cache parameter
      * @see GeoServer#getTileCache()
@@ -801,6 +801,7 @@ public class GeoServerConfigurationForm extends ActionForm {
     public String getTileCache() {
         return tileCache;
     }
+
     public void setTileCache(String tileCache) {
         this.tileCache = tileCache;
     }

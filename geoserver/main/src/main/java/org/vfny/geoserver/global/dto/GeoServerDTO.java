@@ -110,7 +110,7 @@ public final class GeoServerDTO implements DataTransferObject {
     private Boolean imageIOCache = Defaults.ImageIOCache;
     private Boolean jaiJPEGNative = Defaults.JaiJPEGNative;
     private Boolean jaiPNGNative = Defaults.JaiPNGNative;
-    
+
     /** tile cache location, full url or relative path */
     private String tileCache;
 
@@ -164,7 +164,7 @@ public final class GeoServerDTO implements DataTransferObject {
         jaiPNGNative = g.getJaiPNGNative();
 
         tileCache = g.getTileCache();
-        
+
         if (g.getContact() != null) {
             contact = (ContactDTO) (g.getContact().clone());
         } else {
@@ -239,12 +239,11 @@ public final class GeoServerDTO implements DataTransferObject {
         r = r && (jaiPNGNative == g.getJaiPNGNative());
 
         if (tileCache != null) {
-        	r = r && tileCache.equals(g.getTileCache());
+            r = r && tileCache.equals(g.getTileCache());
+        } else if (g.getTileCache() != null) {
+            return false;
         }
-        else if (g.getTileCache() != null) {
-    		return false;
-        }
-        
+
         return r;
     }
 
@@ -263,9 +262,10 @@ public final class GeoServerDTO implements DataTransferObject {
             i *= schemaBaseUrl.hashCode();
         }
 
-        if (tileCache != null ) {
-        	i *= tileCache.hashCode();
+        if (tileCache != null) {
+            i *= tileCache.hashCode();
         }
+
         return i;
     }
 
@@ -623,12 +623,13 @@ public final class GeoServerDTO implements DataTransferObject {
      * tile cache parameter
      * @see GeoServer#getTileCache()
      */
-     public String getTileCache() {
-         return tileCache;
-     }
-     public void setTileCache(String tileCache) {
-         this.tileCache = tileCache;
-     }
+    public String getTileCache() {
+        return tileCache;
+    }
+
+    public void setTileCache(String tileCache) {
+        this.tileCache = tileCache;
+    }
 
     public static class Defaults {
         /**
@@ -680,6 +681,5 @@ public final class GeoServerDTO implements DataTransferObject {
         public static final Boolean JaiJPEGNative = Boolean.TRUE;
         public static final Boolean JaiPNGNative = Boolean.TRUE;
         public static final String BaseURL = null;
-        
     }
 }

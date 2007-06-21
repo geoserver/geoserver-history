@@ -145,7 +145,8 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         }
 
         String tileCache = form.getTileCache();
-        if ( tileCache == null || "".equals(tileCache.trim())) {
+
+        if ((tileCache == null) || "".equals(tileCache.trim())) {
             tileCache = null;
         }
 
