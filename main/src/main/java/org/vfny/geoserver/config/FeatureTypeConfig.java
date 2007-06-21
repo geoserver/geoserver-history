@@ -17,7 +17,7 @@ import org.geotools.referencing.CRS;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
-import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+import org.vfny.geoserver.global.dto.CloneLibrary;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import java.util.ArrayList;
@@ -342,8 +342,8 @@ public class FeatureTypeConfig {
     public FeatureTypeInfoDTO toDTO() {
         FeatureTypeInfoDTO f = new FeatureTypeInfoDTO();
         f.setDataStoreId(dataStoreId);
-        f.setLatLongBBox(new Envelope(latLongBBox));
-        f.setNativeBBox(new Envelope(nativeBBox));
+        f.setLatLongBBox(CloneLibrary.clone(latLongBBox));
+        f.setNativeBBox(CloneLibrary.clone(nativeBBox));
         f.setSRS(SRS);
 
         if (schemaAttributes == null) {
