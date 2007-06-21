@@ -73,6 +73,7 @@
                             Y: e.xy.y,
                             INFO_FORMAT: 'text/html',
                             QUERY_LAYERS: map.layers[0].params.LAYERS,
+                            FEATURE_COUNT: 50,
 <#assign skipped=["request","bbox","service","version","format","width","height"]>
 <#list parameters as param>            
   <#if !(skipped?seq_contains(param.name?lower_case))>
