@@ -169,11 +169,13 @@ public class KMLTransformer extends TransformerBase {
                 if (useVector) {
                     //encode
                     KMLVectorTransformer tx = new KMLVectorTransformer(mapContext, layer);
+                    initTransformer(tx);
                     tx.setScaleDenominator(scaleDenominator);
                     tx.createTranslator(contentHandler).encode(features);
                 } else {
                     KMLRasterTransformer tx = new KMLRasterTransformer(mapContext);
 
+                    initTransformer(tx);
                     //set inline to true to have the transformer reference images
                     // inline in the zip file
                     tx.setInline(true);
@@ -183,6 +185,7 @@ public class KMLTransformer extends TransformerBase {
             } else {
                 //kmz not selected, just do straight vector
                 KMLVectorTransformer tx = new KMLVectorTransformer(mapContext, layer);
+                initTransformer(tx);
                 tx.setScaleDenominator(scaleDenominator);
                 tx.createTranslator(contentHandler).encode(features);
             }
@@ -216,8 +219,9 @@ public class KMLTransformer extends TransformerBase {
             tx.createTranslator(contentHandler).encode(layer);
         }
 
-        protected void initTransformer(TransformerBase delegate) {
+        protected void initTransformer(KMLTransformerBase delegate) {
             delegate.setIndentation( getIndentation() );
+            delegate.setStandAlone(false);
         }
         
         double computeScaleDenominator(MapLayer layer, WMSMapContext mapContext) {
