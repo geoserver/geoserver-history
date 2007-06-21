@@ -48,7 +48,15 @@ public class KMLReflector {
 
     public void wms(GetMapRequest request, HttpServletResponse response) throws Exception {
         
-        //first set all the normal wms reflecting defaults
+        //first set up some of the normal wms defaults
+        if ( request.getWidth() < 1 ) {
+            request.setWidth( 1024 );
+        }
+        if ( request.getHeight() < 1 ) {
+            request.setHeight( 1024 );
+        }
+        
+        //set rest of the wms defaults
         wms.reflect( request );
         
         //set some kml specific defaults
