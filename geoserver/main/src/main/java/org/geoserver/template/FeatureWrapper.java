@@ -15,6 +15,9 @@ import freemarker.template.TemplateModelException;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
+
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -104,7 +107,14 @@ public class FeatureWrapper extends BeansWrapper {
 
                 Map attribute = new HashMap();
                 if ( feature.getAttribute(i) != null ) {
-                    attribute.put("value", feature.getAttribute(i));    
+                	//special case check for date
+                    if ( feature.getAttribute(i) instanceof Date ) {
+                          Date date = (Date) feature.getAttribute( i );
+                          attribute.put( "value", DateFormat.getInstance().format( date ) );
+                    }
+                    else {
+                         attribute.put("value", feature.getAttribute(i));  
+                    }    
                 }
                 else {
                     //nulls throw tempaltes off, use empty string
