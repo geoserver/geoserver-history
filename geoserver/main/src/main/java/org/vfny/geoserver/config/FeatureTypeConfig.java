@@ -13,6 +13,7 @@ import org.geotools.filter.Filter;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+import org.vfny.geoserver.global.dto.CloneLibrary;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -311,8 +312,8 @@ public class FeatureTypeConfig {
     public FeatureTypeInfoDTO toDTO() {
         FeatureTypeInfoDTO f = new FeatureTypeInfoDTO();
         f.setDataStoreId(dataStoreId);
-        f.setLatLongBBox(new Envelope(latLongBBox));
-        f.setNativeBBox(new Envelope(nativeBBox));
+        f.setLatLongBBox(CloneLibrary.clone(latLongBBox));
+        f.setNativeBBox(CloneLibrary.clone(nativeBBox));
         f.setSRS(SRS);
 
         if (schemaAttributes == null) {
