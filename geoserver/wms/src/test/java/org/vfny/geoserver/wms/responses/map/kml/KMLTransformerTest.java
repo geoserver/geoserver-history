@@ -77,8 +77,9 @@ public class KMLTransformerTest extends WMSTestSupport {
         Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
 
         Element element = document.getDocumentElement();
-        assertEquals("Document", element.getNodeName());
-        assertEquals(nfeatures, element.getElementsByTagName("Document").getLength());
+        assertEquals("kml", element.getNodeName());
+        assertEquals(nfeatures, element.getElementsByTagName("Style").getLength());
+        assertEquals(nfeatures, element.getElementsByTagName("Placemark").getLength());
     }
     
     //JD: commented out because there is no way to specify a coordinate reference
@@ -136,7 +137,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
 
-        assertEquals("Document", document.getDocumentElement().getNodeName());
+        assertEquals("kml", document.getDocumentElement().getNodeName());
 
         assertEquals(mapContext.getLayerCount(), document.getElementsByTagName("Folder").getLength());
         assertEquals(mapContext.getLayerCount(),
@@ -158,7 +159,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
 
-        assertEquals("Document", document.getDocumentElement().getNodeName());
+        assertEquals("kml", document.getDocumentElement().getNodeName());
 
         assertEquals(mapContext.getLayerCount(), document.getElementsByTagName("Folder").getLength());
         assertEquals(mapContext.getLayerCount(),
@@ -178,11 +179,15 @@ public class KMLTransformerTest extends WMSTestSupport {
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         transformer.transform(mapLayer, output);
-
+        
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
 
-        assertEquals("Document", document.getDocumentElement().getNodeName());
+        assertEquals("kml", document.getDocumentElement().getNodeName());
+        assertEquals( 3, document.getElementsByTagName("Region").getLength() );
+        assertEquals( 2, document.getElementsByTagName("NetworkLink").getLength() );
+        assertEquals( 2, document.getElementsByTagName("GroundOverlay").getLength() );
+        
     }
 
     public void testTransformer() throws Exception {

@@ -45,7 +45,7 @@ import java.util.Map;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public class KMLRasterTransformer extends TransformerBase {
+public class KMLRasterTransformer extends KMLTransformerBase {
     /**
      * The map context
      */
@@ -70,17 +70,21 @@ public class KMLRasterTransformer extends TransformerBase {
         return new KMLRasterTranslator(handler);
     }
 
-    class KMLRasterTranslator extends TranslatorSupport {
+    class KMLRasterTranslator extends KMLTranslatorSupport {
         public KMLRasterTranslator(ContentHandler handler) {
-            super(handler, null, null);
+            super(handler);
         }
 
         public void encode(Object o) throws IllegalArgumentException {
             MapLayer mapLayer = (MapLayer) o;
             int mapLayerOrder = mapContext.indexOf(mapLayer);
 
-            start("Document");
-            element("name", mapLayer.getTitle());
+            if ( isStandAlone() ) {
+                start( "kml" );
+            }
+            
+            //start("Document");
+            //element("name", mapLayer.getTitle());
 
             //start the folder naming it 'layer_<mapLayerOrder>', this is 
             // necessary for a GroundOverlay
@@ -115,7 +119,10 @@ public class KMLRasterTransformer extends TransformerBase {
 
             end("Folder");
 
-            end("Document");
+            //end("Document");
+            if (isStandAlone()) {
+                end( "kml" );
+            }
         }
 
         protected void encodeHref(MapLayer mapLayer) {

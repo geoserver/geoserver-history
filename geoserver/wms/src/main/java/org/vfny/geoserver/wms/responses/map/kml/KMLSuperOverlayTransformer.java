@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 
-public class KMLSuperOverlayTransformer extends TransformerBase {
+public class KMLSuperOverlayTransformer extends KMLTransformerBase {
     /**
      * logger
      */
@@ -55,9 +55,9 @@ public class KMLSuperOverlayTransformer extends TransformerBase {
         return new KMLSuperOverlayerTranslator(handler);
     }
 
-    class KMLSuperOverlayerTranslator extends TranslatorSupport {
+    class KMLSuperOverlayerTranslator extends KMLTranslatorSupport {
         public KMLSuperOverlayerTranslator(ContentHandler contentHandler) {
-            super(contentHandler, null, null);
+            super(contentHandler);
         }
 
         public void encode(Object o) throws IllegalArgumentException {
@@ -124,6 +124,10 @@ public class KMLSuperOverlayTransformer extends TransformerBase {
             LOGGER.fine("top level = " + top);
 
             //start document
+            if (isStandAlone()) {
+                start( "kml" );
+            }
+            
             start("Document");
 
             //encode top level region
@@ -174,6 +178,10 @@ public class KMLSuperOverlayTransformer extends TransformerBase {
 
             //end document
             end("Document");
+            
+            if (isStandAlone()) {
+                end( "kml" );
+            }
         }
 
         void encodeGroundOverlay(MapLayer mapLayer, int drawOrder, Envelope box) {

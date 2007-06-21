@@ -169,20 +169,22 @@ public class KMLTransformer extends TransformerBase {
                 if (useVector) {
                     //encode
                     KMLVectorTransformer tx = new KMLVectorTransformer(mapContext, layer);
+                    initTransformer(tx);
                     tx.setScaleDenominator(scaleDenominator);
                     tx.createTranslator(contentHandler).encode(features);
                 } else {
                     KMLRasterTransformer tx = new KMLRasterTransformer(mapContext);
-
+                    initTransformer(tx);
+                    
                     //set inline to true to have the transformer reference images
                     // inline in the zip file
                     tx.setInline(true);
-
                     tx.createTranslator(contentHandler).encode(layer);
                 }
             } else {
                 //kmz not selected, just do straight vector
                 KMLVectorTransformer tx = new KMLVectorTransformer(mapContext, layer);
+                initTransformer(tx);
                 tx.setScaleDenominator(scaleDenominator);
                 tx.createTranslator(contentHandler).encode(features);
             }
@@ -193,10 +195,9 @@ public class KMLTransformer extends TransformerBase {
          */
         protected void encodeRasterLayer(WMSMapContext mapContext, MapLayer layer) {
             KMLRasterTransformer tx = new KMLRasterTransformer(mapContext);
-            tx.setInline(kmz);
-
             initTransformer(tx);
             
+            tx.setInline(kmz);
             tx.createTranslator(contentHandler).encode(layer);
         }
 
@@ -218,8 +219,9 @@ public class KMLTransformer extends TransformerBase {
             tx.createTranslator(contentHandler).encode(layer);
         }
         
-        protected void initTransformer(TransformerBase delegate) {
+        protected void initTransformer(KMLTransformerBase delegate) {
             delegate.setIndentation( getIndentation() );
+            delegate.setStandAlone(false);
         }
 
         double computeScaleDenominator(MapLayer layer, WMSMapContext mapContext) {

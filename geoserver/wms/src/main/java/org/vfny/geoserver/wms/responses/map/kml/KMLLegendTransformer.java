@@ -20,7 +20,7 @@ import java.util.Map;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public class KMLLegendTransformer extends TransformerBase {
+public class KMLLegendTransformer extends KMLTransformerBase {
     WMSMapContext mapContext;
 
     public KMLLegendTransformer(WMSMapContext mapContext) {
@@ -32,9 +32,9 @@ public class KMLLegendTransformer extends TransformerBase {
         return new KMLLegendTranslator(handler);
     }
 
-    class KMLLegendTranslator extends TranslatorSupport {
+    class KMLLegendTranslator extends KMLTranslatorSupport {
         public KMLLegendTranslator(ContentHandler contentHandler) {
-            super(contentHandler, null, null);
+            super(contentHandler);
         }
 
         /**
@@ -43,6 +43,10 @@ public class KMLLegendTransformer extends TransformerBase {
         public void encode(Object o) throws IllegalArgumentException {
             MapLayer mapLayer = (MapLayer) o;
 
+            if ( isStandAlone() ) {
+                start( "kml" );
+            }
+            
             start("ScreenOverlay");
             element("name", "Legend");
 
@@ -61,6 +65,10 @@ public class KMLLegendTransformer extends TransformerBase {
             end("Icon");
 
             end("ScreenOverlay");
+            
+            if ( isStandAlone() ) {
+                end( "kml" );
+            }
         }
     }
 }
