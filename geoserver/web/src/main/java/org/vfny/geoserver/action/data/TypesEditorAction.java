@@ -4,7 +4,20 @@
  */
 package org.vfny.geoserver.action.data;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -35,18 +48,8 @@ import org.vfny.geoserver.form.data.TypesEditorForm;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.DataStoreUtils;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -341,8 +344,13 @@ public class TypesEditorAction extends ConfigAction {
 
         config.setSRS(Integer.parseInt(form.getSRS()));
         config.setTitle(form.getTitle());
-        config.setLatLongBBox(getBoundingBox(form));
-        config.setNativeBBox(getNativeBBox(form));
+        Envelope latLonBbox = getBoundingBox(form);
+        // if the lat/lon bbox did not change, don't try to update stuff, since we don't have
+        // the native bbox calculated
+        if(config.getLatLongBBox().equals(latLonBbox))  {
+            config.setLatLongBBox(latLonBbox);
+            config.setNativeBBox(getNativeBBox(form));
+        }
         config.setKeywords(keyWords(form));
         config.setMetadataLinks(metadataLinks(form));
         config.setWmsPath(form.getWmsPath());
@@ -491,9 +499,15 @@ public class TypesEditorAction extends ConfigAction {
      * @return Bounding box in lat long
      */
     private Envelope getNativeBBox(TypesEditorForm typeForm) {
-        return new Envelope(Double.parseDouble(typeForm.getDataMinX()),
-            Double.parseDouble(typeForm.getDataMaxX()), Double.parseDouble(typeForm.getDataMinY()),
-            Double.parseDouble(typeForm.getDataMaxY()));
+        // here, we try to use the native bbox computed during "generate", but if the
+        // user specified the bbox by hand, we have to resort to back-project the lat/lon one
+        try {
+            return new Envelope(Double.parseDouble(typeForm.getDataMinX()),
+                Double.parseDouble(typeForm.getDataMaxX()), Double.parseDouble(typeForm.getDataMinY()),
+                Double.parseDouble(typeForm.getDataMaxY()));
+        } catch(NumberFormatException e) {
+            return null;
+        }
     }
 
     /**
