@@ -65,15 +65,15 @@ import java.util.logging.Logger;
 
 
 /**
- * Transforms a feature collection to a kml "Document" consisting of nested
- * "Document" elements for each feature.
+ * Transforms a feature collection to a kml document consisting of nested
+ * "Style" and "Placemark" elements for each feature in the collection.
  * <p>
  * Usage:
  * </p>
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public class KMLVectorTransformer extends TransformerBase {
+public class KMLVectorTransformer extends KMLTransformerBase {
     /**
      * logger
      */
@@ -126,15 +126,14 @@ public class KMLVectorTransformer extends TransformerBase {
         return new KMLTranslator(handler);
     }
 
-    class KMLTranslator extends TranslatorSupport {
+    class KMLTranslator extends KMLTranslatorSupport {
         /**
          * Geometry transformer
          */
         KMLGeometryTransformer.KMLGeometryTranslator geometryTranslator;
 
         public KMLTranslator(ContentHandler contentHandler) {
-            //super(contentHandler, "kml", "http://earth.google.com/kml/2.0" );
-            super(contentHandler, null, null);
+            super(contentHandler);
 
             KMLGeometryTransformer geometryTransformer = new KMLGeometryTransformer();
             //geometryTransformer.setUseDummyZ( true );
@@ -155,12 +154,19 @@ public class KMLVectorTransformer extends TransformerBase {
             start("Document");
             element("name", mapLayer.getTitle());
 
+            if (isStandAlone()) {
+                start( "kml" );
+            }
+            
             //get the styles for hte layer
             FeatureTypeStyle[] featureTypeStyles = filterFeatureTypeStyles(mapLayer.getStyle(),
                     featureType);
 
             encode(features, featureTypeStyles);
             
+            if ( isStandAlone() ) {
+                end( "kml" );
+            }
             //encode the legend
             //encodeLegendScreenOverlay();
             end("Document");
@@ -193,17 +199,17 @@ public class KMLVectorTransformer extends TransformerBase {
             String featureId = featureId(feature);
 
             //start the document
-            start("Document");
+            //start("Document");
 
-            element("name", featureId);
-            element("title", mapLayer.getTitle());
+//            element("name", featureId);
+//            element("title", mapLayer.getTitle());
 
             //encode the styles, keep track of any labels provided by the 
             // styles
             encodeStyle(feature, styles);
             encodePlacemark(feature,styles);
 
-            end("Document");
+            //end("Document");
         }
 
         /**
