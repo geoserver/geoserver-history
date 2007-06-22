@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses.map.openlayers;
 
+import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -50,6 +51,9 @@ public class OpenLayersMapProducer implements GetMapProducer {
     static {
         cfg = new Configuration();
         cfg.setClassForTemplateLoading(OpenLayersMapProducer.class, "");
+        BeansWrapper bw = new BeansWrapper();
+        bw.setExposureLevel(BeansWrapper.EXPOSE_PROPERTIES_ONLY);
+        cfg.setObjectWrapper(bw);
     }
 
     /**
