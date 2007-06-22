@@ -150,13 +150,14 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             FeatureCollection features = (FeatureCollection) o;
             FeatureType featureType = features.getSchema();
 
+            if (isStandAlone()) {
+                start( "kml" );
+            }
+
             //start the root document, name it the name of the layer
             start("Document");
             element("name", mapLayer.getTitle());
 
-            if (isStandAlone()) {
-                start( "kml" );
-            }
             
             //get the styles for hte layer
             FeatureTypeStyle[] featureTypeStyles = filterFeatureTypeStyles(mapLayer.getStyle(),
@@ -164,12 +165,13 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
             encode(features, featureTypeStyles);
             
-            if ( isStandAlone() ) {
-                end( "kml" );
-            }
             //encode the legend
             //encodeLegendScreenOverlay();
             end("Document");
+            
+            if ( isStandAlone() ) {
+                end( "kml" );
+            }
         }
 
         protected void encode(FeatureCollection features, FeatureTypeStyle[] styles) {
