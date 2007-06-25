@@ -54,6 +54,26 @@
 			}// end for
 			return true;
 		}
+  function onClean() {
+     var iFrameBody = document.getElementById("response").contentWindow.document.body;
+     var url = document.getElementById("url").value;
+     var body = document.getElementById("body").value;
+     var username = document.getElementById("username").value;
+     var password = document.getElementById("password").value;
+     iFrameBody.innerHTML = "<form action='http://localhost:8080/geoserver/TestWfsPost' method='POST'>\n" + 
+                            "<input type='hidden' name='url' value='" + url + "'/>\n" +
+                            "<input type='hidden' name='body' value='" + body + "'/>\n" + 
+                            "<input type='hidden' name='username' value='" + username + "'/>\n" + 
+                            "<input type='hidden' name='password' value='" + password + "'/>\n" +
+                            "<input type='hidden' value='submit'/>\n" +
+                            "</form>";
+     var form = iFrameBody.firstChild;
+     form.submit();
+  }
+  function loadResults() {
+     document.getElementById("response").src = "about:blank";
+     setTimeout('onClean()', 10);
+  };
 		-->
 	</script>
   	
