@@ -37,14 +37,10 @@
         <td class="label"><bean:message key="label.username"/>:</td>
         <td class="datum">
           <input type="text" size="30" name="username" id="username"><bean:write name="demoRequestForm" property="username"/>
-        </td>      
-      </tr>
-      <tr>
-        <td class="label"><bean:message key="label.password"/>:</td>
-        <td class="datum">
+          <bean:message key="label.password"/>:
           <input type="password" size="30" name="password" id="password"><bean:write name="demoRequestForm" property="username"/>
         </td>      
-      </tr>    
+      </tr>
       <tr>
         <td class="label" width="1%"></td>
         <td class="datum" width="99%">
