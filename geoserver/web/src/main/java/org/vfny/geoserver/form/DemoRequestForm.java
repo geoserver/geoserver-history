@@ -60,10 +60,8 @@ public class DemoRequestForm extends ActionForm {
 
         //DJB: changed this for geoserver_data_dir 
         // this.dir = new File(context.getRealPath("/data/demo"));
-        File dataDir = GeoserverDataDirectory.getGeoserverDataDirectory();
-
         try {
-            this.dir = GeoserverDataDirectory.findConfigDir(dataDir, "demo/");
+            this.dir = GeoserverDataDirectory.findCreateConfigDir("demo/");
 
             //commented out, findConfigDir does this for us.    
             //if( dir.exists() && dir.isDirectory() ){
