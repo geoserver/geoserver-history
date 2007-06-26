@@ -26,6 +26,7 @@
         <prop key="/ows">requestDispatcher</prop>
         <prop key="/ows/*">requestDispatcher</prop>
         <prop key="/styles/*">filePublisher</prop>
+        <prop key="/www/**">filePublisher</prop>
       </props>
     </property>
   </bean>
