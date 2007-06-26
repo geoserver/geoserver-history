@@ -18,7 +18,7 @@ public class MessageXmlParser extends XmlRequestReader {
         super(new QName(null, "Hello"), new Version("1.0.0"), "hello");
     }
 
-    public Object read(Reader reader) throws Exception {
+    public Object read(Object request, Reader reader) throws Exception {
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
         Document doc = builder.parse(new InputSource(reader));
