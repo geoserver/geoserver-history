@@ -102,6 +102,7 @@ public class RollbackTypeBinding extends AbstractComplexBinding {
         rollback.setToFeatureVersion((String) node.getAttributeValue("toFeatureVersion"));
         rollback.setVendorId((String) node.getAttributeValue("vendorId"));
         rollback.setSafeToIgnore(((Boolean) node.getAttributeValue("safeToIgnore")).booleanValue());
+        rollback.setUser((String) node.getAttributeValue("user"));
 
         return rollback;
     }
