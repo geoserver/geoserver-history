@@ -203,7 +203,9 @@
     	<constructor-arg index="2" ref="wmsGetMap"/>
     	<constructor-arg index="3" value="org.vfny.geoserver.wms.requests.GetMapXmlReader"/>
     </bean>
-   	
+   	<bean id="sldXmlReader"
+   		class="org.geoserver.wms.xml.SLDXmlRequestReader"/>
+   		
 	<!--  responses -->
 	<bean id="wmwGetCapabilitiesResponse"
 		class="org.geoserver.ows.adapters.ResponseAdapter">
