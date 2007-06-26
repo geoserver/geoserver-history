@@ -140,7 +140,7 @@ public class GetCapabilities {
                 for (; v.hasNext();) {
                     Version current = (Version) v.next();
 
-                    if (current.compareTo(accepted.last()) < 0) {
+                    if (current.compareTo(accepted.last()) > 0) {
                         break;
                     }
 
