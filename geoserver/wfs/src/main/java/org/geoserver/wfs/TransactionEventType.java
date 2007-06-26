@@ -19,7 +19,7 @@ public class TransactionEventType extends SimpleEnumerationType {
      * contains newly inserted features). Depending on the operation, only pre
      * or post insert will be issued
      */
-    public static final TransactionEventType PRE_INSERT = new TransactionEventType("PostInsert",
+    public static final TransactionEventType PRE_INSERT = new TransactionEventType("PreInsert",
             "Features just inserted");
 
     /**
