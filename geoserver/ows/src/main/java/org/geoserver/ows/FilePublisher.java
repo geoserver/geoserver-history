@@ -77,7 +77,7 @@ public class FilePublisher extends AbstractController {
         }
 
         //figure out the mime type
-        MagicMatch match = Magic.getMagicMatch(file, true);
+        MagicMatch match = Magic.getMagicMatch(file, true, true);
 
         if (match == null) {
             //return a 415: Unsupported Media Type
@@ -85,13 +85,12 @@ public class FilePublisher extends AbstractController {
 
             return null;
         }
-
         response.setContentType(match.getMimeType());
 
-        //TODO: should hte encpoding be gotten from the file?
+        //TODO: should the encoding be gotten from the file?
         response.setCharacterEncoding("UTF-8");
 
-        //copy teh content to the output
+        //copy the content to the output
         byte[] buffer = new byte[8192];
         InputStream input = new FileInputStream(file);
         OutputStream output = response.getOutputStream();
