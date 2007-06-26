@@ -146,7 +146,7 @@ public class GetLog {
                 // extract collection
                 VersioningFeatureSource store = (VersioningFeatureSource) source;
                 FeatureCollection logs = store.getLog(query.getFromFeatureVersion(),
-                        query.getToFeatureVersion(), filter);
+                        query.getToFeatureVersion(), filter, null);
 
                 // TODO: handle logs reprojection in another CRS
                 result.getFeature().add(logs);

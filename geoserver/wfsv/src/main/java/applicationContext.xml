@@ -80,6 +80,12 @@
     <constructor-arg ref="gml3SchemaBuilder" />
   </bean>
   
+  <!-- Transaction element handlers -->
+    <bean id="wfsRollbackElementHandler" class="org.geoserver.wfsv.RollbackElementHandler">
+      <constructor-arg ref="wfs"/>
+      <constructor-arg ref="filterFactory"/>
+    </bean>
+  
   <!-- 1.1 wfsv xml readers -->
   <bean id="wfsv-xmlReader-1.1.0" class="org.geoserver.wfsv.xml.v1_1_0.WfsvXmlReader" abstract="true">
     <constructor-arg ref="wfs"/>

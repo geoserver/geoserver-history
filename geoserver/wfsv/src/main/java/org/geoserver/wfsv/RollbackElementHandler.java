@@ -103,7 +103,10 @@ public class RollbackElementHandler implements TransactionElementHandler {
             Filter filter = (rollback.getFilter() != null) ? (Filter) rollback.getFilter()
                     : Filter.INCLUDE;
             String version = rollback.getToFeatureVersion();
-            reader = vstore.getDifferences(null, version, filter);
+            String user = rollback.getUser();
+            String[] users = ((user != null) && !user.trim().equals("")) ? new String[] { user }
+                    : null;
+            reader = vstore.getDifferences(null, version, filter, users);
 
             Set insertedIds = new HashSet();
             Set updatedIds = new HashSet();
@@ -145,11 +148,8 @@ public class RollbackElementHandler implements TransactionElementHandler {
 
             // now do the actual rollback
             try {
-                String user = rollback.getUser();
-                String[] users = ((user != null) && !user.trim().equals("")) ? new String[] { user }
-                        : null;
                 vstore.rollback(version, (Filter) rollback.getFilter(), users);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new WFSTransactionException("Could not perform the rollback", e, rollback
                         .getHandle());
             }

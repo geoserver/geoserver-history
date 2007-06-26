@@ -142,7 +142,7 @@ public class GetDiff {
                 // extract collection
                 VersioningFeatureSource store = (VersioningFeatureSource) source;
                 FeatureDiffReader differences = store.getDifferences(query.getFromFeatureVersion(),
-                        query.getToFeatureVersion(), filter);
+                        query.getToFeatureVersion(), filter, null);
 
                 // TODO: handle logs reprojection in another CRS
                 result.add(differences);
