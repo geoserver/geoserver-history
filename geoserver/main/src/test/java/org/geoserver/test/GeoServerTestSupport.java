@@ -5,18 +5,40 @@
 package org.geoserver.test;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
+import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletContext;
+import com.mockrunner.mock.web.MockServletOutputStream;
+
 import junit.framework.TestCase;
 import org.geoserver.data.test.MockData;
+import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.util.ResponseUtils;
+import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.data.FeatureSource;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.w3c.dom.Document;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.StringTokenizer;
+
+import javax.servlet.ServletOutputStream;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 
 /**
@@ -96,6 +118,13 @@ public class GeoServerTestSupport extends TestCase {
     protected GeoServer getGeoServer() {
         return (GeoServer) applicationContext.getBean("geoServer");
     }
+    
+    /**
+     * Accessor for global resource loader instance from the test application context.
+     */
+    protected GeoServerResourceLoader getResourceLoader() {
+        return (GeoServerResourceLoader) applicationContext.getBean( "resourceLoader" );
+    }
 
     /**
      * Loads a feature source from the catalog.
@@ -143,6 +172,149 @@ public class GeoServerTestSupport extends TestCase {
         return request;
     }
 
+    /**
+     * Executes an ows request using the GET method.
+     *
+     * @param path The porition of the request after hte context, 
+     *      example: 'wms?request=GetMap&version=1.1.1&..."
+     * 
+     * @return An input stream which is the result of the request.
+     * 
+     * @throws Exception
+     */
+    protected InputStream get( String path ) throws Exception {
+        MockHttpServletRequest request = createRequest( path ); 
+        request.setMethod( "GET" );
+        request.setBodyContent(new byte[]{});
+        
+        MockHttpServletResponse response = dispatch( request );
+        return new ByteArrayInputStream( response.getOutputStreamContent().getBytes() );
+    }
+        
+    /**
+     * Executes an ows request using the POST method with key value pairs 
+     * form encoded. 
+     *
+     * @param path The porition of the request after hte context, 
+     *      example: 'wms?request=GetMap&version=1.1.1&..."
+     * 
+     * @return An input stream which is the result of the request.
+     * 
+     * @throws Exception
+     */
+    protected InputStream post( String path ) throws Exception {
+        MockHttpServletRequest request = createRequest( path ); 
+        request.setMethod( "POST" );
+        request.setContentType( "application/x-www-form-urlencoded" );
+        
+        MockHttpServletResponse response = dispatch( request );
+        return new ByteArrayInputStream( response.getOutputStreamContent().getBytes() );
+    }
+    
+    /**
+     * Executes an ows request using the POST method.
+     * <p>
+     * 
+     * </p>
+     * @param path The porition of the request after the context ( no query string ), 
+     *      example: 'wms'. 
+     * 
+     * @return An input stream which is the result of the request.
+     * 
+     * @throws Exception
+     */
+    protected InputStream post( String path , String xml ) throws Exception {
+        MockHttpServletRequest request = createRequest( path );
+        request.setMethod( "POST" );
+        request.setContentType( "application/xml" );
+        request.setBodyContent(xml);
+        
+        MockHttpServletResponse response = dispatch( request );
+        return new ByteArrayInputStream( response.getOutputStreamContent().getBytes() );
+    }
+    
+    /**
+     * Executes an ows request using the GET method and returns the result as an 
+     * xml document.
+     * 
+     * @param path The porition of the request after hte context, 
+     *      example: 'wms?request=GetMap&version=1.1.1&..."
+     * 
+     * @return A result of the request parsed into a dom.
+     * 
+     * @throws Exception
+     */
+    protected Document getAsDOM( String path ) throws Exception {
+        return dom( get( path ) );
+    }
+    
+    /**
+     * Executes an ows request using the POST method with key value pairs 
+     * form encoded, returning the result as a dom.
+     *
+     * @param path The porition of the request after hte context, 
+     *      example: 'wms?request=GetMap&version=1.1.1&..."
+     * 
+     * @return An input stream which is the result of the request.
+     * 
+     * @throws Exception
+     */
+    protected Document postAsDOM( String path ) throws Exception {
+        return dom( post( path ) );
+    }
+    
+    /**
+     * Executes an ows request using the POST method and returns the result as an
+     * xml document.
+     * <p>
+     * 
+     * </p>
+     * @param path The porition of the request after the context ( no query string ), 
+     *      example: 'wms'. 
+     * 
+     * @return An input stream which is the result of the request.
+     * 
+     * @throws Exception
+     */
+    protected Document postAsDOM( String path, String xml ) throws Exception {
+            return dom( post( path, xml ) );
+    }
+        
+    /**
+     * Parses a stream into a dom.
+     */
+    protected Document dom( InputStream input ) throws Exception {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); 
+        factory.setNamespaceAware( true );
+        //factory.setValidating( true );
+        
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document dom = builder.parse( input );
+//        
+//        if ( isLogging() ) {
+//                TransformerFactory txFactory = TransformerFactory.newInstance();
+//                
+//                Transformer tx = txFactory.newTransformer();
+//                tx.setOutputProperty( OutputKeys.INDENT, "yes" );
+//                
+//                tx.transform( new DOMSource( dom ), new StreamResult( System.out ) );
+//        }
+        
+        return dom;
+    }
+    
+    /**
+     * Utility method to print out a dom.
+     */
+    protected void print( Document dom ) throws Exception {
+        TransformerFactory txFactory = TransformerFactory.newInstance();
+      
+        Transformer tx = txFactory.newTransformer();
+        tx.setOutputProperty( OutputKeys.INDENT, "yes" );
+          
+        tx.transform( new DOMSource( dom ), new StreamResult( System.out ) );
+    }
+    
     /*
      * Helper method to create the kvp params from the query string.
      */
@@ -161,5 +333,45 @@ public class GeoServerTestSupport extends TestCase {
             String[] keyValuePair = token.split("=");
             request.setupAddParameter(keyValuePair[0], keyValuePair[1]);
         }
+    }
+    
+    /*
+     * Helper method for dispatching an executing an ows request. 
+     */
+    private MockHttpServletResponse dispatch( MockHttpServletRequest request ) throws Exception {
+        //create the response
+        //final MockServletOutputStream output = new MockServletOutputStream();
+        MockHttpServletResponse response = new MockHttpServletResponse() {
+            public void setCharacterEncoding( String encoding ) {
+                    
+            }
+//            public ServletOutputStream getOutputStream() throws IOException {
+//                return output;
+//            }
+        };
+        
+        //look up the handler
+        Dispatcher dispatcher = 
+                (Dispatcher) applicationContext.getBean( "dispatcher" ); 
+        //dispatcher.setApplicationContext( getGeoServer().getApplicationContext() );
+        
+        //excute the pre handler step
+        Collection interceptors = 
+            GeoServerExtensions.extensions(HandlerInterceptor.class, applicationContext );
+        for ( Iterator i = interceptors.iterator(); i.hasNext(); ) {
+            HandlerInterceptor interceptor = (HandlerInterceptor) i.next();
+            interceptor.preHandle( request, response, dispatcher );
+        }
+        
+        //execute 
+        dispatcher.handleRequest( request, response );
+        
+        //execute the post handler step
+        for ( Iterator i = interceptors.iterator(); i.hasNext(); ) {
+            HandlerInterceptor interceptor = (HandlerInterceptor) i.next();
+            interceptor.postHandle( request, response, dispatcher, null );
+        }
+        
+        return response;
     }
 }
