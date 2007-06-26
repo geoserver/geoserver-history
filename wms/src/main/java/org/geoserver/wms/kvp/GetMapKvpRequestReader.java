@@ -344,7 +344,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
 
         return parser.parseSLD();
     }
-
+    
     /**
      * Looks in <code>sld</code> for the layers and styles to use in the map
      * composition and sets them to the <code>request</code>
@@ -370,7 +370,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
      * @throws WmsException if anything goes wrong
      * @throws RuntimeException DOCUMENT ME!
      */
-    private void processSld(final GetMapRequest request, final StyledLayerDescriptor sld)
+    public static void processSld(final GetMapRequest request, final StyledLayerDescriptor sld)
         throws WmsException {
         MapLayerInfo[] libraryModeLayers = null;
 
@@ -612,7 +612,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
      * shuoldn't happen, since the only allowed subinterfaces of StyledLayer are NamedLayer and UserLayer.
      * @throws WmsException
      */
-    private Style findStyleOf(GetMapRequest request, FeatureTypeInfo layer,
+    private static Style findStyleOf(GetMapRequest request, FeatureTypeInfo layer,
         StyledLayer[] styledLayers) throws WmsException {
         Style style = null;
         String layerName = layer.getName();
@@ -672,7 +672,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
      *
      * @throws WmsException DOCUMENT ME!
      */
-    private void checkStyle(Style style, FeatureType fType)
+    private static void checkStyle(Style style, FeatureType fType)
         throws WmsException {
         StyleAttributeExtractor sae = new StyleAttributeExtractor();
         sae.visit(style);
@@ -695,7 +695,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
     /**
      * Method to initialize a user layer which contains inline features.
      *
-     * @param request The request
+     * @param httpRequest The request
      * @param mapLayer The map layer.
      *
      * @throws Exception
