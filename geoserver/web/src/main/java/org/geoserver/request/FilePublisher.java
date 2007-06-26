@@ -62,7 +62,7 @@ public class FilePublisher extends AbstractController {
         }
 
         //figure out the mime type
-        MagicMatch match = Magic.getMagicMatch(file, true);
+        MagicMatch match = Magic.getMagicMatch(file, true, true);
 
         if (match == null) {
             //return a 415: Unsupported Media Type
