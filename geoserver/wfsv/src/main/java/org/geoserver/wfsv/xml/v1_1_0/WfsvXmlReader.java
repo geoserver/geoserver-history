@@ -26,7 +26,7 @@ public class WfsvXmlReader extends XmlRequestReader {
         this.configuration = configuration;
     }
 
-    public Object read(Reader reader) throws Exception {
+    public Object read(Object request, Reader reader) throws Exception {
         // TODO: make this configurable?
         configuration.getProperties().add(Parser.Properties.PARSE_UNKNOWN_ELEMENTS);
 

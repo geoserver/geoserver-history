@@ -18,7 +18,7 @@ public class XmlRequestReaderAdapter extends org.geoserver.ows.XmlRequestReader
     implements HttpServletRequestAware {
     Class delegateClass;
     AbstractService service;
-    HttpServletRequest request;
+    HttpServletRequest httpRequest;
 
     public XmlRequestReaderAdapter(QName element, AbstractService service, Class delegate) {
         super(element);
@@ -32,10 +32,10 @@ public class XmlRequestReaderAdapter extends org.geoserver.ows.XmlRequestReader
     }
 
     public void setHttpRequest(HttpServletRequest request) {
-        this.request = request;
+        this.httpRequest = request;
     }
 
-    public Object read(Reader reader) throws Exception {
+    public Object read(Object request, Reader reader) throws Exception {
         //look for a constructor, may have to walk up teh class hierachy
         Class clazz = service.getClass();
         Constructor constructor = null;
@@ -55,7 +55,7 @@ public class XmlRequestReaderAdapter extends org.geoserver.ows.XmlRequestReader
         }
 
         XmlRequestReader delegate = (XmlRequestReader) constructor.newInstance(new Object[] { service });
-
-        return delegate.read(reader, request);
+        
+        return delegate.read(reader, httpRequest);
     }
 }

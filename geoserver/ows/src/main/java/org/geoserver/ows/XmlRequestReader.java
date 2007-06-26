@@ -106,14 +106,21 @@ public abstract class XmlRequestReader {
         return version;
     }
 
+
     /**
-     * Reads the xml and produces the request object.
-     *
-     * @param reader The xml input stream.
-     *
-     * @return The request object.
+     * Reads the xml and initializes the request object.
+     * <p>
+     * The <tt>request</tt> parameter may be <code>null</code>, so in this case
+     * the request reader would be responsible for creating the request object, 
+     * or throwing an exception if this is not supported. 
+     * </p>
+     * <p>
+     * In the case of the <tt>request</tt> being non <code>null</code>, the 
+     * request reader may chose to modify and return <tt>request</tt>, or create
+     * a new request object and return it.
+     * </p>
      */
-    public abstract Object read(Reader reader) throws Exception;
+    public abstract Object read(Object request, Reader reader) throws Exception;
 
     /**
      * Two XmlReaders considered equal if namespace,element, and version properties
