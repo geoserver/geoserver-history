@@ -225,10 +225,10 @@ public class Dispatcher extends AbstractController {
         request.get = "GET".equalsIgnoreCase(httpRequest.getMethod())
             || "application/x-www-form-urlencoded".equals(httpRequest.getContentType());
 
-        if (request.get) {
-            //create the kvp map
-            parseKVP(request);
-        } else {
+        //create the kvp map
+        parseKVP(request);
+        
+        if ( !request.get ) {
             //wrap the input stream in a buffer input stream
             request.input = reader(httpRequest);
 
@@ -266,20 +266,28 @@ public class Dispatcher extends AbstractController {
     }
 
     Service service(Request req) throws Exception {
-        if (req.get) {
-            //check kvp
+        //check kvp
+        if (req.kvp != null) {
+
             req.service = normalize((String) req.kvp.get("service"));
             req.version = normalize((String) req.kvp.get("version"));
             req.request = normalize((String) req.kvp.get("request"));
             req.outputFormat = normalize((String) req.kvp.get("outputFormat"));
-        } else {
-            //check the body
-            if (req.input != null) {
-                Map xml = readOpPost(req.input);
-                req.service = normalize((String) xml.get("service"));
-                req.version = normalize((String) xml.get("version"));
-                req.request = normalize((String) xml.get("request"));
-                req.outputFormat = normalize((String) xml.get("outputFormat"));
+        } 
+        //check the body
+        if (req.input != null) {
+            Map xml = readOpPost(req.input);
+            if (req.service == null) {
+                req.service = normalize((String) xml.get("service"));    
+            }
+            if (req.version == null) {
+                req.version = normalize((String) xml.get("version"));    
+            }
+            if (req.request == null) {
+                req.request = normalize((String) xml.get("request"));    
+            }
+            if (req.outputFormat == null) {
+                req.outputFormat = normalize((String) xml.get("outputFormat"));    
             }
         }
 
@@ -364,12 +372,13 @@ public class Dispatcher extends AbstractController {
                 //check for a request object
                 Object requestBean = null;
 
-                if (req.get) {
+                if (req.kvp != null) {
                     //use the kvp reader mechanism
                     requestBean = parseRequestKVP(parameterType, req);
-                } else {
+                }
+                if (req.input != null) {
                     //use the xml reader mechanism
-                    requestBean = parseRequestXML(req.input, req, serviceDescriptor.getId());
+                    requestBean = parseRequestXML(requestBean,req.input, req);
                 }
 
                 // another couple of thos of those lovley cite things, version+service has to specified for 
@@ -740,7 +749,7 @@ public class Dispatcher extends AbstractController {
         return xmlReaders;
     }
 
-    XmlRequestReader findXmlReader(String namespace, String element, String serviceId, String ver) {
+    XmlRequestReader findXmlReader(String namespace, String element, /*String serviceId,*/ String ver) {
         Collection xmlReaders = loadXmlReaders();
 
         //first just match on namespace, element
@@ -759,7 +768,9 @@ public class Dispatcher extends AbstractController {
 
         if (matches.isEmpty()) {
             String msg = "No xml reader: (" + namespace + "," + element + ")";
-            throw new RuntimeException(msg);
+            logger.fine(msg);
+            return null;
+            //throw new RuntimeException(msg);
         }
 
         XmlRequestReader xmlReader = null;
@@ -884,8 +895,8 @@ public class Dispatcher extends AbstractController {
         Map kvp = request.getParameterMap();
 
         if (kvp == null) {
-            req.kvp = Collections.EMPTY_MAP;
-
+            //req.kvp = Collections.EMPTY_MAP;
+            req.kvp = null;
             return;
         }
 
@@ -957,7 +968,7 @@ public class Dispatcher extends AbstractController {
         return null;
     }
 
-    Object parseRequestXML(BufferedReader input, Request request, String serviceId)
+    Object parseRequestXML(Object requestBean, BufferedReader input, Request request)
         throws Exception {
         //check for an empty input stream
         //if (input.available() == 0) {
@@ -993,13 +1004,18 @@ public class Dispatcher extends AbstractController {
         //reset input stream
         input.reset();
 
-        XmlRequestReader xmlReader = findXmlReader(namespace, element, serviceId, version);
+        XmlRequestReader xmlReader = findXmlReader(namespace, element, version);
+        if (xmlReader == null ) {
+            //no xml reader, just return object passed in
+            return requestBean;
+        }
 
         if (xmlReader instanceof HttpServletRequestAware) {
             ((HttpServletRequestAware) xmlReader).setHttpRequest(request.httpRequest);
         }
 
-        return xmlReader.read(input);
+        //return xmlReader.read(input);
+        return xmlReader.read( requestBean, input );
     }
 
     Map readOpContext(HttpServletRequest request) {
