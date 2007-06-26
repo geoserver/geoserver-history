@@ -95,7 +95,7 @@ public class PartialBufferedOutputStream2 extends OutputStream {
         BUFFER_SIZE = KILOBYTE * kilobytes;
         this.response = response;
         out_buffer = new ByteArrayOutputStream(BUFFER_SIZE);
-        out_real = response.getOutputStream();
+        this.response = response;
         currentStream = out_buffer;
     }
 
@@ -161,6 +161,7 @@ public class PartialBufferedOutputStream2 extends OutputStream {
     }
 
     private void flushBuffer() throws IOException {
+        out_real = response.getOutputStream();
         out_buffer.writeTo(out_real);
         out_buffer.reset();
         currentStream = out_real;
