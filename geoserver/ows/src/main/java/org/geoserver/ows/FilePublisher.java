@@ -4,17 +4,21 @@
  */
 package org.geoserver.ows;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import net.sf.jmimemagic.Magic;
 import net.sf.jmimemagic.MagicMatch;
+
+import org.geoserver.ows.util.EncodingInfo;
+import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -65,6 +69,12 @@ public class FilePublisher extends AbstractController {
         if ((reqPath.length() > 1) && reqPath.startsWith("/")) {
             reqPath = reqPath.substring(1);
         }
+        
+        // sigh, in order to serve the file we have to open it 2 times
+        // 1) to determine its mime type
+        // 2) to determine its encoding and really serve it
+        // we can't coalish 1) because we don't have a way to give jmimemagic the bytes at the 
+        // beginning of the file without disabling extension quick matching
 
         //load the file
         File file = loader.find(reqPath);
@@ -87,23 +97,34 @@ public class FilePublisher extends AbstractController {
         }
         response.setContentType(match.getMimeType());
 
-        //TODO: should the encoding be gotten from the file?
-        response.setCharacterEncoding("UTF-8");
-
-        //copy the content to the output
-        byte[] buffer = new byte[8192];
-        InputStream input = new FileInputStream(file);
-        OutputStream output = response.getOutputStream();
-
+        // Guessing the charset (and closing the stream)
+        EncodingInfo encInfo = null;
+        FileInputStream input = null;
+        OutputStream output = null;
+        final byte[] b4 = new byte[4];
+        int count = 0;
         try {
+            // open the output
+            input = new FileInputStream(file);
+           
+            // Read the first four bytes, and determine charset encoding
+            count = input.read(b4);
+            encInfo = XmlCharsetDetector.getEncodingName(b4, count);
+            response.setCharacterEncoding(encInfo.getEncoding() != null ? encInfo.getEncoding() : "UTF-8");
+            
+            // send out the first four bytes read
+            output = response.getOutputStream();
+            output.write(b4, 0, count);
+        
+            // copy the content to the output
+            byte[] buffer = new byte[8192];
             int n = -1;
-
             while ((n = input.read(buffer)) != -1) {
                 output.write(buffer, 0, n);
             }
         } finally {
-            output.flush();
-            input.close();
+            if(output != null) output.flush();
+            if(input != null) input.close();
         }
 
         return null;
