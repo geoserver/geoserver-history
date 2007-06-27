@@ -345,7 +345,7 @@ public class XmlCharsetDetector {
      * @return Instance of EncodingInfo incapsulating all encoding-related
      *         data.
      */
-    protected static EncodingInfo getEncodingName(byte[] b4, int count) {
+    public static EncodingInfo getEncodingName(byte[] b4, int count) {
         if (count < 2) {
             return new EncodingInfo("UTF-8", null);
         }

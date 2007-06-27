@@ -28,8 +28,10 @@ import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
 import java.awt.Color;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLEncoder;
@@ -86,7 +88,7 @@ public class XMLConfigWriter {
         File catalogFile = WriterUtils.initWriteFile(new File(configDir, "catalog.xml"), false);
 
         try {
-            FileWriter fw = new FileWriter(catalogFile);
+            Writer fw = new OutputStreamWriter(new FileOutputStream(catalogFile), getDefaultEncoding());
             storeCatalog(new WriterHelper(fw), data);
             fw.close();
         } catch (IOException e) {
@@ -106,6 +108,15 @@ public class XMLConfigWriter {
 
         File coverageDir = WriterUtils.initFile(new File(dataDir, "coverages/"), true);
         storeCoverages(coverageDir, data);
+    }
+
+    /**
+     * Returns the default encoding for configuration files. For the moment we default to
+     * UTF8, but we may want to make this user configurable (UTF-16 may be needed?)
+     * @return
+     */
+    private static String getDefaultEncoding() {
+        return "UTF-8";
     }
 
     public static void store(WCSDTO wcs, WMSDTO wms, WFSDTO wfs, GeoServerDTO geoServer, File root)
@@ -133,7 +144,7 @@ public class XMLConfigWriter {
         File configFile = WriterUtils.initWriteFile(new File(configDir, "services.xml"), false);
 
         try {
-            FileWriter fw = new FileWriter(configFile);
+            Writer fw = new OutputStreamWriter(new FileOutputStream(configFile), getDefaultEncoding());
             storeServices(new WriterHelper(fw), wcs, wms, wfs, geoServer);
             fw.close();
         } catch (IOException e) {
@@ -815,7 +826,7 @@ public class XMLConfigWriter {
 
                 try { // encode the file name (this is to catch colons in FT
                       // names)
-                    ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
+                    ftDirName = URLEncoder.encode(ftDirName, getDefaultEncoding());
 
                     if (LOGGER.isLoggable(Level.FINER)) {
                         LOGGER.finer(new StringBuffer("Writing encoded URL: ").append(ftDirName)
@@ -872,7 +883,7 @@ public class XMLConfigWriter {
 
                 try { // encode the file name (this is to catch colons in FT
                       // names)
-                    ftDirName = URLEncoder.encode(ftDirName, "UTF-8");
+                    ftDirName = URLEncoder.encode(ftDirName, getDefaultEncoding());
 
                     if (LOGGER.isLoggable(Level.FINER)) {
                         LOGGER.finer(new StringBuffer("Decoded URL: ").append(ftDirName).toString());
@@ -930,7 +941,7 @@ public class XMLConfigWriter {
         File f = WriterUtils.initWriteFile(new File(dir, "info.xml"), false);
 
         try {
-            FileWriter fw = new FileWriter(f);
+            Writer fw = new OutputStreamWriter(new FileOutputStream(f), getDefaultEncoding());
             WriterHelper cw = new WriterHelper(fw);
             Map m = new HashMap();
 
@@ -1121,7 +1132,7 @@ public class XMLConfigWriter {
         File f = WriterUtils.initWriteFile(new File(dir, "schema.xml"), false);
 
         try {
-            FileWriter fw = new FileWriter(f);
+            Writer fw = new OutputStreamWriter(new FileOutputStream(f), getDefaultEncoding());
             storeFeatureSchema(fs, fw);
             fw.close();
         } catch (IOException e) {
@@ -1281,7 +1292,7 @@ public class XMLConfigWriter {
         File f = WriterUtils.initWriteFile(new File(dir, "info.xml"), false);
 
         try {
-            FileWriter fw = new FileWriter(f);
+            Writer fw = new OutputStreamWriter(new FileOutputStream(f), getDefaultEncoding());
             WriterHelper cw = new WriterHelper(fw);
             Map m = new HashMap();
 

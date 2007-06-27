@@ -4,18 +4,21 @@
  */
 package org.geoserver.request;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import net.sf.jmimemagic.Magic;
 import net.sf.jmimemagic.MagicMatch;
-import org.geoserver.GeoServerResourceLoader;
+
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.vfny.geoserver.util.requests.EncodingInfo;
+import org.vfny.geoserver.util.requests.XmlCharsetDetector;
 
 
 /**
@@ -73,23 +76,34 @@ public class FilePublisher extends AbstractController {
 
         response.setContentType(match.getMimeType());
 
-        //TODO: should hte encpoding be gotten from the file?
-        response.setCharacterEncoding("UTF-8");
-
-        //copy teh content to the output
-        byte[] buffer = new byte[8192];
-        InputStream input = new FileInputStream(file);
-        OutputStream output = response.getOutputStream();
-
+        // Guessing the charset (and closing the stream)
+        EncodingInfo encInfo = null;
+        FileInputStream input = null;
+        OutputStream output = null;
+        final byte[] b4 = new byte[4];
+        int count = 0;
         try {
+            // open the output
+            input = new FileInputStream(file);
+           
+            // Read the first four bytes, and determine charset encoding
+            count = input.read(b4);
+            encInfo = XmlCharsetDetector.getEncodingName(b4, count);
+            response.setCharacterEncoding(encInfo.getEncoding() != null ? encInfo.getEncoding() : "UTF-8");
+            
+            // send out the first four bytes read
+            output = response.getOutputStream();
+            output.write(b4, 0, count);
+        
+            // copy the content to the output
+            byte[] buffer = new byte[8192];
             int n = -1;
-
             while ((n = input.read(buffer)) != -1) {
                 output.write(buffer, 0, n);
             }
         } finally {
-            output.flush();
-            input.close();
+            if(output != null) output.flush();
+            if(input != null) input.close();
         }
 
         return null;
