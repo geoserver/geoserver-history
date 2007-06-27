@@ -9,6 +9,7 @@ import com.vividsolutions.jts.geom.Envelope;
 import org.apache.xml.serialize.LineSeparator;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
+import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geoserver.util.ReaderUtils;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridGeometry2D;
@@ -27,7 +28,6 @@ import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageDimension;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
@@ -51,8 +51,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -236,9 +236,9 @@ public class XMLConfigReader {
         Element configElem = null;
 
         try {
-            FileReader fr = new FileReader(configFile);
-            configElem = ReaderUtils.parse(fr);
-            fr.close();
+            Reader reader = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(configFile));
+            configElem = ReaderUtils.parse(reader);
+            reader.close();
         } catch (FileNotFoundException e) {
             throw new ConfigurationException(e);
         } catch (IOException e) {
@@ -343,7 +343,7 @@ public class XMLConfigReader {
                                                                               .toString());
             }
 
-            FileReader fr = new FileReader(catalogFile);
+            Reader fr = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(catalogFile));
             catalogElem = ReaderUtils.parse(fr);
             fr.close();
         } catch (FileNotFoundException e) {
@@ -1454,8 +1454,7 @@ public class XMLConfigReader {
                                                                               .toString());
             }
 
-            Reader reader = null;
-            reader = new FileReader(infoFile);
+            Reader reader = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(infoFile));
             featureElem = ReaderUtils.parse(reader);
             reader.close();
         } catch (FileNotFoundException fileNotFound) {
@@ -1694,8 +1693,7 @@ public class XMLConfigReader {
         Element coverageElem = null;
 
         try {
-            Reader reader = null;
-            reader = new FileReader(infoFile);
+            Reader reader = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(infoFile));
             coverageElem = ReaderUtils.parse(reader);
             reader.close();
         } catch (FileNotFoundException fileNotFound) {
@@ -2304,8 +2302,7 @@ public class XMLConfigReader {
                                                                               .toString());
             }
 
-            Reader reader;
-            reader = new FileReader(schemaFile);
+            Reader reader = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(schemaFile));
             elem = ReaderUtils.parse(reader);
             reader.close();
         } catch (FileNotFoundException e) {
