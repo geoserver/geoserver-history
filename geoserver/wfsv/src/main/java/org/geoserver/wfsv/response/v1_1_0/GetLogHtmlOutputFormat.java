@@ -65,7 +65,7 @@ public class GetLogHtmlOutputFormat extends Response {
 
         // setup template subsystem
         GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(getClass());
-        templateLoader.setFeatureType(fc.getSchema().getTypeName());
+        templateLoader.setFeatureType(fc.getSchema());
 
         Template template = null;
 

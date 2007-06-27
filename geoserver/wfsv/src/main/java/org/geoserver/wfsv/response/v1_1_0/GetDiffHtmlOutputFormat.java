@@ -53,7 +53,7 @@ public class GetDiffHtmlOutputFormat extends Response {
 
         // setup template subsystem
         GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(getClass());
-        templateLoader.setFeatureType(diffReaders[0].getSchema().getTypeName());
+        templateLoader.setFeatureType(diffReaders[0].getSchema());
 
         Template template = null;
 

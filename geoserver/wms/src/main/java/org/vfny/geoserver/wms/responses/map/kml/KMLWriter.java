@@ -810,7 +810,7 @@ public class KMLWriter extends OutputStreamWriter {
             //descriptions are "templatable" by users, so see if there is a 
             // template available for use
             GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(getClass());
-            templateLoader.setFeatureType(schema.getTypeName());
+            templateLoader.setFeatureType(schema);
 
             Template template = null;
 
