@@ -60,13 +60,16 @@
      var body = document.getElementById("body").value;
      var username = document.getElementById("username").value;
      var password = document.getElementById("password").value;
-     iFrameBody.innerHTML = "<form action='http://localhost:8080/geoserver/TestWfsPost' method='POST'>\n" + 
+     iFrameBody.innerHTML = "<form action='http://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath()%>/TestWfsPost' method='POST'>\n" + 
                             "<input type='hidden' name='url' value='" + url + "'/>\n" +
                             "<input type='hidden' name='body' value='" + body + "'/>\n" + 
                             "<input type='hidden' name='username' value='" + username + "'/>\n" + 
                             "<input type='hidden' name='password' value='" + password + "'/>\n" +
                             "<input type='hidden' value='submit'/>\n" +
                             "</form>";
+     document.getElementById("body").value = "action: http://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath()%>/TestWfsPost'\n" + 
+                            "url: " + url + "\n" +
+                            "body:\n " + body + "";
      var form = iFrameBody.firstChild;
      form.submit();
   }
