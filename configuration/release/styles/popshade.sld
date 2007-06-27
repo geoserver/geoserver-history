@@ -29,7 +29,7 @@
            <Fill>
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->
               <CssParameter name="fill">#FF4D4D</CssParameter>
-              <CssParameter name="fill-opacity">0.65</CssParameter>
+              <CssParameter name="fill-opacity">0.7</CssParameter>
            </Fill>     
         </PolygonSymbolizer>
       </Rule>
@@ -45,7 +45,7 @@
            <Fill>
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->
               <CssParameter name="fill">#4DFF4D</CssParameter>
-              <CssParameter name="fill-opacity">0.65</CssParameter>
+              <CssParameter name="fill-opacity">0.7</CssParameter>
            </Fill>     
         </PolygonSymbolizer>
       </Rule>
@@ -61,7 +61,7 @@
            <Fill>
               <!-- CssParameters allowed are fill (the color) and fill-opacity -->
               <CssParameter name="fill">#4D4DFF</CssParameter>
-              <CssParameter name="fill-opacity">0.65</CssParameter>
+              <CssParameter name="fill-opacity">0.7</CssParameter>
            </Fill>     
         </PolygonSymbolizer>
       </Rule>
