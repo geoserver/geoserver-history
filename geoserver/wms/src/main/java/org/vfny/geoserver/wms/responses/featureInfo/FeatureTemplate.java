@@ -165,7 +165,7 @@ public class FeatureTemplate {
         //descriptions are "templatable" by users, so see if there is a 
         // template available for use
         GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(getClass());
-        templateLoader.setFeatureType(featureType.getTypeName());
+        templateLoader.setFeatureType(featureType);
 
         Template t = null;
 

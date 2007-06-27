@@ -39,7 +39,7 @@ public class RSSGeoRSSMapProducer implements GetMapProducer {
 
         try {
             tx.transform(map, out);
-        } catch (TransformerException e) {
+        } catch (Exception e) {
             throw (IOException) new IOException().initCause(e);
         }
     }

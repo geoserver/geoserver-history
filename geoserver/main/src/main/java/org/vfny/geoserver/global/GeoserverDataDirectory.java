@@ -5,6 +5,10 @@
 package org.vfny.geoserver.global;
 
 import org.geoserver.GeoServerResourceLoader;
+import org.geotools.feature.FeatureType;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /* Copyright (c) 2001 - 2007 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
@@ -12,7 +16,9 @@ import org.geoserver.GeoServerResourceLoader;
  */
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
+import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 
@@ -42,6 +48,8 @@ import javax.servlet.ServletContext;
 public class GeoserverDataDirectory {
     // caches the dataDir
     private static GeoServerResourceLoader loader;
+    private static Data catalog;
+    private static ApplicationContext appContext;
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
     private static boolean isTrueDataDir = false;
 
@@ -54,6 +62,33 @@ public class GeoserverDataDirectory {
      */
     static public File getGeoserverDataDirectory() {
         return loader.getBaseDirectory();
+    }
+    
+    /**
+     * Locate feature type directory name using the FeatureType as a key into the catalog 
+     * @see Data#getFeatureTypeInfo(String) 
+     * @param name
+     *            String The FeatureTypeInfo Name
+
+     * @return the feature type dir name, or null if not found (either the feature type or the directory)
+     *
+     * @throws NoSuchElementException
+     */
+    static public String findFeatureTypeDirName(FeatureType featureType) {
+        String name = featureType.getTypeName();
+        URI namespace = featureType.getNamespace();
+        FeatureTypeInfo ftInfo = null;
+        Data data = getCatalog();
+        if(namespace != null) {
+            NameSpaceInfo nsInfo = data.getNameSpaceFromURI(namespace.toString());
+            if(nsInfo != null)
+                ftInfo = data.getFeatureTypeInfo(nsInfo.getPrefix() + ":" + name);
+        }
+        if(ftInfo == null) 
+            ftInfo = data.getFeatureTypeInfo(name);
+        if(ftInfo == null)
+            return null;
+        return ftInfo.getDirName();
     }
 
     /**
@@ -150,7 +185,16 @@ public class GeoserverDataDirectory {
      * Initializes the data directory lookup service.
      * @param servContext
      */
-    public static void init(ServletContext servContext) {
+    public static void init(WebApplicationContext context) {
+        ServletContext servContext = context.getServletContext();
+        
+        // Oh, this is really sad. We need a reference to Data in order to
+        // resolve feature type dirs, but gathering it here triggers the loading
+        // of Geoserver (on whose Catalog depends on), which depends on having 
+        // DataDirectory and Config initialized, but this is not possible here...
+        // So we keep a reference to context in order to resolve Data later
+        appContext = context;
+
         // This was once in the GetGeoserverDataDirectory method, I've moved
         // here so that servlet
         // context is not needed as a parameter anymore.
@@ -220,5 +264,12 @@ public class GeoserverDataDirectory {
             loader.addSearchLocation(new File(servContext.getRealPath("WEB-INF")));
             loader.addSearchLocation(new File(servContext.getRealPath("data")));
         }
+    }
+    
+    private static Data getCatalog() {
+        if(catalog == null) {
+            catalog = (Data) appContext.getBean("data");
+        }
+        return catalog;
     }
 }

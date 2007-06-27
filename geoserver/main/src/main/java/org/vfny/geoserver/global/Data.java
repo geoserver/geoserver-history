@@ -1083,6 +1083,30 @@ SCHEMA:
 
         return retNS;
     }
+    
+    /**
+     * Returns the NamespaceINfo object corresponding to a particular
+     * namespace uri.
+     * <p>
+     * If a namespace info object could not be found with mathces <param>uri</param>
+     * then <code>null</code> is returned.
+     * </p>
+     *
+     * @param uri A namespace uri, non-null
+     *
+     * @return NameSpaceInfo resulting from the specified uri.
+     */
+    public synchronized NameSpaceInfo getNameSpaceFromURI(String uri) {
+        for (Iterator i = nameSpaces.values().iterator(); i.hasNext();) {
+            NameSpaceInfo nsInfo = (NameSpaceInfo) i.next();
+
+            if (nsInfo.getURI().equals(uri)) {
+                return nsInfo;
+            }
+        }
+
+        return null;
+    }
 
     /**
      * getDefaultNameSpace purpose.
