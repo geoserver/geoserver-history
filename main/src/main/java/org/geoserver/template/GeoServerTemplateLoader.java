@@ -8,6 +8,8 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
+
+import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +67,7 @@ public class GeoServerTemplateLoader implements TemplateLoader {
     /**
      * Feature type directory to load template against
      */
-    String featureType;
+    FeatureType featureType;
 
     /**
      * Constructs the template loader.
@@ -92,7 +94,7 @@ public class GeoServerTemplateLoader implements TemplateLoader {
      * </p>
      * @param featureType
      */
-    public void setFeatureType(String featureType) {
+    public void setFeatureType(FeatureType featureType) {
         this.featureType = featureType;
     }
 
@@ -101,15 +103,16 @@ public class GeoServerTemplateLoader implements TemplateLoader {
 
         //first check relative to set feature type
         if (featureType != null) {
+            String dirName = GeoserverDataDirectory.findFeatureTypeDirName(featureType);
             template = (File) fileTemplateLoader.findTemplateSource("featureTypes" + File.separator
-                    + featureType + File.separator + path);
+                    + dirName + File.separator + path);
 
             if (template != null) {
                 return template;
             }
         }
 
-        //next, try relative to feature types
+        // next, try relative to feature types
         template = (File) fileTemplateLoader.findTemplateSource("featureTypes" + File.separator
                 + path);
 
