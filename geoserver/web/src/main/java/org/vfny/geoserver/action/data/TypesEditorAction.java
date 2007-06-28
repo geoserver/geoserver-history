@@ -347,7 +347,7 @@ public class TypesEditorAction extends ConfigAction {
         Envelope latLonBbox = getBoundingBox(form);
         // if the lat/lon bbox did not change, don't try to update stuff, since we don't have
         // the native bbox calculated
-        if(config.getLatLongBBox().equals(latLonBbox))  {
+        if(!config.getLatLongBBox().equals(latLonBbox))  {
             config.setLatLongBBox(latLonBbox);
             config.setNativeBBox(getNativeBBox(form));
         }
