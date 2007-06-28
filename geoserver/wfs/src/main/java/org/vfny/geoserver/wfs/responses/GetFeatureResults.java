@@ -177,7 +177,7 @@ public class GetFeatureResults {
         if ((meta.getNativeCRS() != null)
                 && !CRS.equalsIgnoreMetadata(meta.getNativeCRS(), meta.getDeclaredCRS())) {
             try {
-                features = new ReprojectFeatureResults(features, meta.getDeclaredCRS());
+                features = new ForceCoordinateSystemFeatureResults(features, meta.getDeclaredCRS());
             } catch (Exception e) {
                 LOGGER.severe("Could not map original CRS to external CRS, "
                     + "serving data in original CRS: " + e.getMessage());
