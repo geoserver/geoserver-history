@@ -85,10 +85,10 @@ public class XmlCharsetDetector {
             }
         }
 
-        if (LOGGER.isLoggable(Level.FINE)) {
+        if (LOGGER.isLoggable(Level.FINER)) {
             // Such number of concatenating strings makes me sick.
             // But using StringBuffer will make this uglier, not?
-            LOGGER.fine("First 4 bytes of XML doc are : "
+            LOGGER.finer("First 4 bytes of XML doc are : "
                 + Integer.toHexString((int) b4[0] & 0xff).toUpperCase() + " ('" + (char) b4[0]
                 + "') " + Integer.toHexString((int) b4[1] & 0xff).toUpperCase() + " ('"
                 + (char) b4[1] + "') " + Integer.toHexString((int) b4[2] & 0xff).toUpperCase()
@@ -458,8 +458,8 @@ public class XmlCharsetDetector {
              * depths of their code :)
              */
             if ((6 > count) || (!"<?xml ".equals(sw.toString()))) {
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning("Invalid(?) XML declaration: " + sw.toString() + ".");
+                if (LOGGER.isLoggable(Level.FINER)) {
+                    LOGGER.finer("Invalid(?) XML declaration: " + sw.toString() + ".");
                 }
 
                 return null;
