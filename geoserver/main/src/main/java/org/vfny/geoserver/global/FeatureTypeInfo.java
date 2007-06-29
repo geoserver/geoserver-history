@@ -477,6 +477,15 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
             CoordinateReferenceSystem crs = forcedCRS ? getDeclaredCRS() : getNativeCRS();
             nativeBBox = new ReferencedEnvelope(nativeBBox, crs);
         }
+        
+        if(!forcedCRS && ! ((ReferencedEnvelope) nativeBBox).getCoordinateReferenceSystem().equals(getDeclaredCRS())) {
+            try {
+                ReferencedEnvelope re = (ReferencedEnvelope) nativeBBox;
+                nativeBBox = re.transform(getDeclaredCRS(), true);
+            } catch(Exception e) {
+                LOGGER.warning("Issues trying to transform native CRS");
+            }
+        }
 
         return nativeBBox;
     }
