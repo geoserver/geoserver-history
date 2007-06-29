@@ -229,7 +229,6 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                             else
                                 newStyles.add(currLayer.getDefaultStyle());
                         }
-                        newStyles.addAll(info.getStyles());
                     } else {
                         newLayers.add(info);
                         if(style != null)
