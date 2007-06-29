@@ -54,29 +54,59 @@
 			}// end for
 			return true;
 		}
-  function onClean() {
-     var iFrameBody = document.getElementById("response").contentWindow.document.body;
-     var url = document.getElementById("url").value;
-     var body = document.getElementById("body").value;
-     var username = document.getElementById("username").value;
-     var password = document.getElementById("password").value;
-     iFrameBody.innerHTML = "<form action='http://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath()%>/TestWfsPost' method='POST'>\n" + 
-                            "<input type='hidden' name='url' value='" + url + "'/>\n" +
-                            "<input type='hidden' name='body' value='" + body + "'/>\n" + 
-                            "<input type='hidden' name='username' value='" + username + "'/>\n" + 
-                            "<input type='hidden' name='password' value='" + password + "'/>\n" +
-                            "<input type='hidden' value='submit'/>\n" +
-                            "</form>";
-     document.getElementById("body").value = "action: http://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath()%>/TestWfsPost'\n" + 
-                            "url: " + url + "\n" +
-                            "body:\n " + body + "";
-     var form = iFrameBody.firstChild;
-     form.submit();
-  }
-  function loadResults() {
-     document.getElementById("response").src = "about:blank";
-     setTimeout('onClean()', 10);
-  };
+	function onClean() {
+	   var iFrameBody = document.getElementById("demoResponse").contentWindow.document.body;
+	   var url = document.getElementById("url").value;
+	   var body = document.getElementById("body").value;
+	   var username = document.getElementById("username").value;
+	   var password = document.getElementById("password").value;
+	   iFrameBody.innerHTML = "<form action='http://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath()%>/TestWfsPost' method='POST'>\n" + 
+	                          "<input type='hidden' name='url' value='" + url + "'/>\n" +
+	                          "<input type='hidden' name='body' value='" + body + "'/>\n" + 
+	                          "<input type='hidden' name='username' value='" + username + "'/>\n" + 
+	                          "<input type='hidden' name='password' value='" + password + "'/>\n" +
+	                          "<input type='hidden' value='submit'/>\n" +
+	                          "</form>";
+	   var form = iFrameBody.firstChild;
+	   form.submit();
+	}
+	function loadResults() {
+	   document.getElementById("demoResponse").src = "about:blank";
+	   setTimeout('onClean()', 10);
+	};
+	function resize_iframe()
+	{
+	    if(!document.getElementById("demoResponse"))
+	      return;
+	
+		var height=window.innerWidth;//Firefox
+		if (document.body.clientHeight)
+		{
+			height=document.body.clientHeight;//IE
+		}
+		//resize the iframe according to the size of the
+		//window (all these should be on the same line)
+		document.getElementById("demoResponse").style.height=parseInt(height-
+	 	findPos(document.getElementById("demoResponse"))[1] - 8)+"px";
+	}
+	
+	function findPos(obj) {
+		var curleft = curtop = 0;
+		if (obj.offsetParent) {
+			curleft = obj.offsetLeft
+			curtop = obj.offsetTop
+			while (obj = obj.offsetParent) {
+				curleft += obj.offsetLeft
+				curtop += obj.offsetTop
+			}
+		}
+		return [curleft,curtop];
+	}
+
+	// this will resize the iframe every
+	// time you change the size of the window.
+	window.onresize=resize_iframe; 
+
 		-->
 	</script>
   	
