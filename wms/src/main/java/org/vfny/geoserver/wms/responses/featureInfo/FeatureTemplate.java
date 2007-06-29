@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -37,7 +39,11 @@ import java.io.Writer;
  * </code>
  * </pre>
  * </p>
+ * For performance reasons the template lookups will be cached, so it's advised to 
+ * use the same FeatureTemplate object in a loop that encodes various features, but not
+ * to cache it for a long time (static reference).
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
+ * @author Andrea Aime, TOPP
  *
  */
 public class FeatureTemplate {
@@ -52,6 +58,8 @@ public class FeatureTemplate {
         templateConfig = new Configuration();
         templateConfig.setObjectWrapper(new FeatureWrapper());
     }
+    
+    Map templateCache = new HashMap();
 
     /**
      * Executes the title template for a feature writing the results to an
@@ -156,24 +164,84 @@ public class FeatureTemplate {
      */
     private void execute(Object feature, FeatureType featureType, Writer writer, String template)
         throws IOException {
-        //descriptions are "templatable" by users, so see if there is a 
-        // template available for use
-        GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(getClass());
-        templateLoader.setFeatureType(featureType);
-
         Template t = null;
-
-        //Configuration is not thread safe
-        synchronized (templateConfig) {
-            templateConfig.setTemplateLoader(templateLoader);
-            t = templateConfig.getTemplate(template);
-        }
+        
+        t = lookupTemplate(featureType, template);
 
         try {
             t.process(feature, writer);
         } catch (TemplateException e) {
             String msg = "Error occured processing template.";
             throw (IOException) new IOException(msg).initCause(e);
+        }
+    }
+
+    /**
+     * Returns the template for the specified feature type. Looking up templates is pretty
+     * expensive, so we cache templates by feture type and template.
+     * @param featureType
+     * @param template
+     * @return
+     * @throws IOException
+     */
+    private Template lookupTemplate(FeatureType featureType, String template) throws IOException {
+        Template t;
+        
+        // lookup the cache first
+        TemplateKey key = new TemplateKey(featureType, template);
+        t = (Template) templateCache.get(key);
+        if(t != null)
+            return t;
+        
+        // otherwise, build a loader and do the lookup
+        GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(getClass());
+        templateLoader.setFeatureType(featureType);
+
+        //Configuration is not thread safe
+        synchronized (templateConfig) {
+            templateConfig.setTemplateLoader(templateLoader);
+            t = templateConfig.getTemplate(template);
+        }
+        templateCache.put(key, t);
+        return t;
+    }
+    
+    private static class TemplateKey {
+        FeatureType type;
+        String template;
+        public TemplateKey(FeatureType type, String template) {
+            super();
+            this.type = type;
+            this.template = template;
+        }
+        
+        public int hashCode() {
+            final int PRIME = 31;
+            int result = 1;
+            result = PRIME * result + ((template == null) ? 0 : template.hashCode());
+            result = PRIME * result + ((type == null) ? 0 : type.hashCode());
+            return result;
+        }
+        
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            final TemplateKey other = (TemplateKey) obj;
+            if (template == null) {
+                if (other.template != null)
+                    return false;
+            } else if (!template.equals(other.template))
+                return false;
+            if (type == null) {
+                if (other.type != null)
+                    return false;
+            } else if (!type.equals(other.type))
+                return false;
+            return true;
         }
     }
 }
