@@ -44,6 +44,9 @@ public final class WMSDTO implements DataTransferObject {
     /** The interpolation rendering hint **/
     private Map baseMapLayers;
     private Map baseMapStyles;
+   private Map baseMapEnvelopes;
+
+    /** The interpolation rendering hint */
     private String allowInterpolation;
 
     /**
@@ -76,6 +79,7 @@ public final class WMSDTO implements DataTransferObject {
         allowInterpolation = other.getAllowInterpolation();
         baseMapLayers = other.getBaseMapLayers();
         baseMapStyles = other.getBaseMapStyles();
+        baseMapEnvelopes = other.getBaseMapEnvelopes();
     }
 
     /**
@@ -145,6 +149,14 @@ public final class WMSDTO implements DataTransferObject {
             }
         }
 
+        if (equals) {
+            if (baseMapEnvelopes == null) {
+                equals = dto.getBaseMapEnvelopes() == null;
+            } else {
+                equals = baseMapEnvelopes.equals(dto.getBaseMapEnvelopes());
+            }
+        }
+
         return equals;
     }
 
@@ -161,7 +173,8 @@ public final class WMSDTO implements DataTransferObject {
         | ((service == null) ? 0 : service.hashCode())
         | ((svgRenderer == null) ? 0 : svgRenderer.hashCode())
         | ((baseMapLayers == null) ? 0 : baseMapLayers.hashCode())
-        | ((baseMapStyles == null) ? 0 : baseMapStyles.hashCode());
+        | ((baseMapStyles == null) ? 0 : baseMapStyles.hashCode())
+        | ((baseMapEnvelopes == null) ? 0 : baseMapEnvelopes.hashCode());
     }
 
     /**
@@ -268,6 +281,14 @@ public final class WMSDTO implements DataTransferObject {
 
     public Map getBaseMapStyles() {
         return baseMapStyles;
+    }
+
+    public void setBaseMapEnvelopes(Map envelopes) {
+        baseMapEnvelopes = envelopes;
+    }
+
+    public Map getBaseMapEnvelopes() {
+        return baseMapEnvelopes;
     }
 
     /**

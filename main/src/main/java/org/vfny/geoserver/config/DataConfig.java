@@ -233,7 +233,7 @@ public class DataConfig {
      *
      * @see org.vfny.geoserver.config.DataStructure#loadDTO(java.lang.Object)
      */
-    public void update(DataDTO data) {
+    public synchronized void update(DataDTO data) {
         if (data == null) {
             throw new NullPointerException("Data Data Transfer Object required");
         }

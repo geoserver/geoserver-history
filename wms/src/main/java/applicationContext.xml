@@ -113,7 +113,7 @@
 		<constructor-arg value="height"/>
  	</bean>
  	<bean id="layersKvpParser" class="org.geoserver.wms.kvp.LayersKvpParser">
-		<constructor-arg ref="catalog"/>
+        <constructor-arg ref="wms"/>
  	</bean>
  	<bean id="stylesKvpParser" class="org.geoserver.wms.kvp.StylesKvpParser">
 		<constructor-arg ref="catalog"/>
@@ -167,7 +167,8 @@
 	</bean-->
 	<bean id="getMapKvpReader"
 		class="org.geoserver.wms.kvp.GetMapKvpRequestReader">
-		<constructor-arg ref="wmsGetMap"/>
+        <constructor-arg ref="wmsGetMap"/>
+        <constructor-arg ref="wms"/>
 	</bean>
 	<bean id="getFeatureInfoKvpReader"
 			class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">

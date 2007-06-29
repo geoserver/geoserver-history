@@ -12,6 +12,7 @@ import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.util.DataStoreUtils;
 import java.io.IOException;
+import java.util.List;
 
 
 /**
@@ -25,6 +26,7 @@ import java.io.IOException;
 public final class MapLayerInfo extends GlobalLayerSupertype {
     public static int TYPE_VECTOR = Data.TYPE_VECTOR.intValue();
     public static int TYPE_RASTER = Data.TYPE_RASTER.intValue();
+    public static int TYPE_BASEMAP = Data.TYPE_RASTER.intValue() + 1;
 
     /**
      *
@@ -69,6 +71,16 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
      * @uml.property name="dirName" multiplicity="(0 1)"
      */
     private String dirName;
+    
+    /**
+     * List of sublayer for a grouped layer
+     */
+    private List subLayerInfo;
+    
+    /**
+     * List of styles for a grouped layer
+     */
+    private List styles;
 
     public MapLayerInfo() {
         name = "";
@@ -161,6 +173,35 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
         this.coverage = coverage;
         this.feature = null;
         this.type = TYPE_RASTER;
+    }
+    
+    /**
+     * Sets this up as a base layer
+     * @param baseLayerName
+     * @param subLayerInfo
+     * @param styles
+     */
+    public void setBase(String baseLayerName, List subLayerInfo, List styles) {
+        this.name = baseLayerName;
+        this.type = TYPE_BASEMAP;
+        this.subLayerInfo = subLayerInfo;
+        this.styles = styles;
+    }
+    
+    /**
+     * Returns the sub layers of a base layer, as a list of MapLayerInfo objects
+     * @return
+     */
+    public List getSubLayers() {
+        return subLayerInfo;
+    }
+    
+    /**
+     * Returns the styles of a base layer
+     * @return
+     */
+    public List getStyles() {
+        return styles;
     }
 
     /**

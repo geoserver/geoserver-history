@@ -4,14 +4,32 @@
  */
 package org.vfny.geoserver.wms.responses.helpers;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.transformer.TransformerIdentityImpl;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.resources.CRSUtilities;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
@@ -28,18 +46,8 @@ import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -480,28 +488,35 @@ public class WMSCapsTransformer extends TransformerBase {
             LayerTree coveragesLayerTree = new LayerTree(coverages);
             handleCoveragesTree(coveragesLayerTree);
 
+            try {
+                handleLayerGroups(wms.getBaseMapLayers(), wms.getBaseMapStyles(),
+                    wms.getBaseMapEnvelopes());
+            } catch (FactoryException e) {
+                throw new RuntimeException("Can't obtain Envelope of Layer-Groups: "
+                    + e.getMessage(), e);
+            } catch (TransformException e) {
+                throw new RuntimeException("Can't obtain Envelope of Layer-Groups: "
+                    + e.getMessage(), e);
+            }
+
             end("Layer");
         }
 
         /**
-         * Called from <code>handleLayers()</code>, does the first iteration
-         * over the available featuretypes to look for common SRS's and
-         * summarize their LatLonBBox'es, to state at the root layer.
-         *
-         * <p>
-         * NOTE: by now we just have "layer.getSRS()", so the search is done
-         * against this only SRS.
-         * </p>
-         *
-         * @param ftypes
-         *            DOCUMENT ME!
-         *
-         * @throws RuntimeException
-         *             DOCUMENT ME!
-         *
-         * @task TODO: figure out how to incorporate multiple SRS using the
-         *       reprojection facilities from gt2
-         */
+        * Called from <code>handleLayers()</code>, does the first
+        * iteration over the available featuretypes to look for common SRS's
+        * and summarize their LatLonBBox'es, to state at the root layer.<p>NOTE:
+        * by now we just have "layer.getSRS()", so the search is done against
+        * this only SRS.</p>
+        *
+        * @param ftypes DOCUMENT ME!
+        * @param TYPE DOCUMENT ME!
+        *
+        * @throws RuntimeException DOCUMENT ME!
+        *
+        * @task TODO: figure out how to incorporate multiple SRS using the
+        *       reprojection facilities from gt2
+        */
         private void handleRootSRSAndBbox(Collection ftypes, int TYPE) {
             String commonSRS = "";
             boolean isCommonSRS = true;
@@ -924,6 +939,77 @@ public class WMSCapsTransformer extends TransformerBase {
             }
 
             end("Layer");
+        }
+
+        protected void handleLayerGroups(Map baseMapLayers, Map baseMapStyles, Map baseMapEnvelopes)
+            throws FactoryException, TransformException {
+            if (baseMapLayers == null) {
+                return;
+            }
+
+            Iterator it = baseMapLayers.keySet().iterator();
+
+            CoordinateReferenceSystem wgs84 = CRS.decode("EPSG:4326");
+
+            for (; it.hasNext();) {
+                String layerName = (String) it.next();
+
+                AttributesImpl qatts = new AttributesImpl();
+                qatts.addAttribute("", "queryable", "queryable", "", "0");
+                // qatts.addAttribute("", "opaque", "opaque", "", "1");
+                // qatts.addAttribute("", "cascaded", "cascaded", "", "1");
+                start("Layer", qatts);
+                element("Name", layerName);
+                element("Title", layerName);
+                element("Abstract", "Layer-Group type layer: " + layerName);
+
+                //handleKeywordList(...getKeywords());
+
+                /*String desc = "WKT definition of this CRS:\n" + coverage.getSrsWKT();
+                comment(desc);*/
+                GeneralEnvelope bounds = (GeneralEnvelope) baseMapEnvelopes.get(layerName);
+                GeneralEnvelope llBounds = null;
+
+                String authority = bounds.getCoordinateReferenceSystem().getIdentifiers().toArray()[0]
+                    .toString();
+
+                element("SRS", authority);
+
+                if (CRSUtilities.equalsIgnoreMetadata(wgs84, bounds.getCoordinateReferenceSystem())) {
+                    llBounds = bounds;
+                } else {
+                    final MathTransform srcCRStoWGS84 = CRS.findMathTransform(bounds
+                            .getCoordinateReferenceSystem(), wgs84);
+                    final GeneralEnvelope latLonEnvelope = CRSUtilities.transform(srcCRStoWGS84,
+                            bounds);
+                    latLonEnvelope.setCoordinateReferenceSystem(wgs84);
+                    llBounds = latLonEnvelope;
+                }
+
+                final Envelope bbox = new Envelope(bounds.getLowerCorner().getOrdinate(0),
+                        bounds.getUpperCorner().getOrdinate(0),
+                        bounds.getLowerCorner().getOrdinate(1),
+                        bounds.getUpperCorner().getOrdinate(1));
+
+                final Envelope llBbox = new Envelope(llBounds.getLowerCorner().getOrdinate(0),
+                        llBounds.getUpperCorner().getOrdinate(0),
+                        llBounds.getLowerCorner().getOrdinate(1),
+                        llBounds.getUpperCorner().getOrdinate(1));
+
+                handleLatLonBBox(llBbox);
+                handleBBox(bbox, authority);
+
+                // add the layer style
+                start("Style");
+
+                element("Name", layerName);
+                element("Title", layerName);
+                element("Abstract", "Layer-Group complex style");
+                //handleLegendURL(...URL);
+                end("Style");
+
+                end("Layer");
+            }
         }
 
         /**

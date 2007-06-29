@@ -258,7 +258,6 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         keywords = dto.getKeywords();
         metadataLinks = dto.getMetadataLinks();
         latLongBBox = dto.getLatLongBBox();
-        nativeBBox = dto.getNativeBBox();
         typeName = dto.getName();
         wmsPath = dto.getWmsPath();
         numDecimals = dto.getNumDecimals();
@@ -277,6 +276,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         schemaName = dto.getSchemaName();
         schemaFile = dto.getSchemaFile();
         SRS = dto.getSRS();
+        nativeBBox = dto.getNativeBBox();
         title = dto.getTitle();
 
         cacheMaxAge = dto.getCacheMaxAge();
@@ -571,9 +571,23 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * @throws IOException when an error occurs
      */
     public Envelope getBoundingBox() throws IOException {
-        if (nativeBBox == null) {
+        if ((nativeBBox == null) || nativeBBox.isNull()) {
             CoordinateReferenceSystem crs = forcedCRS ? getDeclaredCRS() : getNativeCRS();
             nativeBBox = getBoundingBox(crs);
+        }
+
+        if (!(nativeBBox instanceof ReferencedEnvelope)) {
+            CoordinateReferenceSystem crs = forcedCRS ? getDeclaredCRS() : getNativeCRS();
+            nativeBBox = new ReferencedEnvelope(nativeBBox, crs);
+        }
+        
+        if(!forcedCRS && ! ((ReferencedEnvelope) nativeBBox).getCoordinateReferenceSystem().equals(getDeclaredCRS())) {
+            try {
+                ReferencedEnvelope re = (ReferencedEnvelope) nativeBBox;
+                nativeBBox = re.transform(getDeclaredCRS(), true);
+            } catch(Exception e) {
+                LOGGER.warning("Issues trying to transform native CRS");
+            }
         }
 
         return nativeBBox;

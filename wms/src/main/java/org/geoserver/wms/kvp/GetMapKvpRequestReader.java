@@ -34,6 +34,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.wms.WmsException;
@@ -49,6 +50,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -83,11 +86,17 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
      * Flag to control wether styles are mandatory
      */
     boolean styleRequired;
+    
+    /**
+     * The WMS service, that we use to pick up base layer definitions
+     */
+    WMS wms;
 
-    public GetMapKvpRequestReader(GetMap getMap) {
+    public GetMapKvpRequestReader(GetMap getMap, WMS wms) {
         super(GetMapRequest.class);
 
         this.getMap = getMap;
+        this.wms = wms;
     }
 
     public void setHttpRequest(HttpServletRequest httpRequest) {
@@ -197,23 +206,46 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine("Getting layers and styles from LAYERS and STYLES");
             }
-
-            MapLayerInfo[] layers = getMap.getLayers();
-
-            if ((layers != null) && (layers.length > 0)) {
-                //if no styles specified, generate from layer defaults
-                if ( getMap.getStyles() == null || getMap.getStyles().isEmpty() ) {
-                    getMap.setStyles( new ArrayList() );
-                    for( int i =0; i < layers.length; i++ ) {
-
-                        if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
-                            getMap.getStyles().add(layers[i].getFeature().getDefaultStyle());
-                        } else if (layers[i].getType() == MapLayerInfo.TYPE_RASTER) {
-                            getMap.getStyles().add(layers[i].getCoverage().getDefaultStyle());
+            
+            // first, expand base layers and default styles
+            if(getMap.getLayers() != null) {
+                List oldLayers = new ArrayList(Arrays.asList(getMap.getLayers()));
+                List oldStyles = new ArrayList(getMap.getStyles());
+                List newLayers = new ArrayList();
+                List newStyles = new ArrayList();
+                
+                for (int i = 0; i < oldLayers.size(); i++) {
+                    MapLayerInfo info  = (MapLayerInfo) oldLayers.get(i);
+                    Style style = oldStyles.isEmpty() ? null : (Style) oldStyles.get(i);
+                    if(info.getType() == MapLayerInfo.TYPE_BASEMAP) {
+                        List subLayers = info.getSubLayers();
+                        newLayers.addAll(subLayers);
+                        List currStyles = info.getStyles();
+                        for (int j = 0; j < subLayers.size(); j++) {
+                            MapLayerInfo currLayer = (MapLayerInfo) subLayers.get(j);
+                            Style currStyle = currStyles.isEmpty() ? null: (Style) currStyles.get(j)  ;
+                            if(currStyle != null) 
+                                newStyles.add(currStyle);
+                            else
+                                newStyles.add(currLayer.getDefaultStyle());
                         }
+                        newStyles.addAll(info.getStyles());
+                    } else {
+                        newLayers.add(info);
+                        if(style != null)
+                            newStyles.add(style);
+                        else
+                            newStyles.add(info.getDefaultStyle());
                     }
                 }
-
+                getMap.setLayers(newLayers);
+                getMap.setStyles(newStyles);
+            }
+            
+            
+            // then proceed with standard processing
+            MapLayerInfo[] layers = getMap.getLayers();
+            if ((layers != null) && (layers.length > 0)) {
                 List styles = getMap.getStyles();
 
                 if (layers.length != styles.size()) {
@@ -226,18 +258,6 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
 
                 for (int i = 0; i < getMap.getStyles().size(); i++) {
                     Style currStyle = (Style) getMap.getStyles().get(i);
-
-                    if (currStyle == null) {
-                        //use the default
-                        if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
-                            currStyle = layers[i].getFeature().getDefaultStyle();
-                        } else if (layers[i].getType() == MapLayerInfo.TYPE_RASTER) {
-                            currStyle = layers[i].getCoverage().getDefaultStyle();
-                        }
-
-                        getMap.getStyles().set(i, currStyle);
-                    }
-
                     MapLayerInfo currLayer = layers[i];
 
                     if (currLayer.getType() == MapLayerInfo.TYPE_VECTOR) {

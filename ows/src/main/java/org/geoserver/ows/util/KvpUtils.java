@@ -97,13 +97,8 @@ public class KvpUtils {
      */
     public static List readFlat(String rawList, String delimiter) {
         // handles implicit unconstrained case
-        if (rawList == null) {
+        if (rawList == null || rawList.equals("*") || rawList.trim().equals("")) {
             return Collections.EMPTY_LIST;
-
-            // handles explicit unconstrained case
-        } else if (rawList.equals("*")) {
-            return Collections.EMPTY_LIST;
-
             // handles explicit, constrained element lists
         } else {
             List kvpList = null;

@@ -235,16 +235,20 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
                 try {
                     getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
+//<<<<<<< .locale
+//                    ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac
+//                        .createLiteralExpression(pixelRect));
+//
+//                    if (finfo.getFeatureType().getDefaultGeometry() != null) {
+//                        ((GeometryFilter) getFInfoFilter).addRightGeometry(filterFac
+//                            .createAttributeExpression(finfo.getFeatureType().getDefaultGeometry()
+//                                                            .getName()));
+//                    } else {
+//                        LOGGER.warning("GetFeatureInfo for feature type with no default geometry.");
+//                    }
+//=======
                     ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac
                         .createLiteralExpression(pixelRect));
-
-                    if (finfo.getFeatureType().getDefaultGeometry() != null) {
-                        ((GeometryFilter) getFInfoFilter).addRightGeometry(filterFac
-                            .createAttributeExpression(finfo.getFeatureType().getDefaultGeometry()
-                                                            .getName()));
-                    } else {
-                        LOGGER.warning("GetFeatureInfo for feature type with no default geometry.");
-                    }
                 } catch (IllegalFilterException e) {
                     e.printStackTrace();
                     throw new WmsException(null, "Internal error : " + e.getMessage());

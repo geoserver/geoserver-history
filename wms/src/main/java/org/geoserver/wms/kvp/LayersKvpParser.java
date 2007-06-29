@@ -4,23 +4,28 @@
  */
 package org.geoserver.wms.kvp;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 import org.geoserver.ows.FlatKvpParser;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 
 public class LayersKvpParser extends FlatKvpParser {
     Data catalog;
+    private WMS wms;
 
-    public LayersKvpParser(Data catalog) {
+    public LayersKvpParser(WMS wms) {
         super("layers", MapLayerInfo.class);
-        this.catalog = catalog;
+        this.wms = wms;
+        this.catalog = wms.getData();
     }
 
     protected Object parse(List values) throws Exception {
@@ -42,43 +47,37 @@ public class LayersKvpParser extends FlatKvpParser {
             Integer layerType = catalog.getLayerType(layerName);
 
             if (layerType == null) {
-                ////
-                // Search for grouped layers (attention: heavy process)
-                ////
-                String catalogLayerName = null;
-
-                for (Iterator c_keys = catalog.getLayerNames().iterator(); c_keys.hasNext();) {
-                    catalogLayerName = (String) c_keys.next();
-
-                    try {
-                        FeatureTypeInfo ftype = findFeatureLayer(catalogLayerName);
-                        String wmsPath = ftype.getWmsPath();
-
-                        if ((wmsPath != null) && wmsPath.matches(".*/" + layerName)) {
-                            realLayerNames.add(catalogLayerName);
-                            l_counter++;
-
-                            //                            if (l_counter > s_counter) {
-                            //                                rawStyles = ((rawStyles.length() > 0) ? (rawStyles + ",") : rawStyles)
-                            //                                    + ftype.getDefaultStyle().getName();
-                            //                            }
-                        }
-                    } catch (WmsException e_1) {
+                if(wms.getBaseMapLayers().containsKey(layerName)) {
+                    realLayerNames.add(layerName);
+                    l_counter++;
+                } else {
+                    ////
+                    // Search for grouped layers (attention: heavy process)
+                    ////
+                    String catalogLayerName = null;
+    
+                    for (Iterator c_keys = catalog.getLayerNames().iterator(); c_keys.hasNext();) {
+                        catalogLayerName = (String) c_keys.next();
+    
                         try {
-                            CoverageInfo cv = findCoverageLayer(catalogLayerName);
-                            String wmsPath = cv.getWmsPath();
-
+                            FeatureTypeInfo ftype = findFeatureLayer(catalogLayerName);
+                            String wmsPath = ftype.getWmsPath();
+    
                             if ((wmsPath != null) && wmsPath.matches(".*/" + layerName)) {
                                 realLayerNames.add(catalogLayerName);
                                 l_counter++;
-
-                                //                                if (l_counter > s_counter) {
-                                //                                    rawStyles = ((rawStyles.length() > 0) ? (rawStyles + ",")
-                                //                                                                          : rawStyles)
-                                //                                        + cv.getDefaultStyle().getName();
-                                //                                }
                             }
-                        } catch (WmsException e_2) {
+                        } catch (WmsException e_1) {
+                            try {
+                                CoverageInfo cv = findCoverageLayer(catalogLayerName);
+                                String wmsPath = cv.getWmsPath();
+    
+                                if ((wmsPath != null) && wmsPath.matches(".*/" + layerName)) {
+                                    realLayerNames.add(catalogLayerName);
+                                    l_counter++;
+                                }
+                            } catch (WmsException e_2) {
+                            }
                         }
                     }
                 }
@@ -98,20 +97,37 @@ public class LayersKvpParser extends FlatKvpParser {
 
         for (int i = 0; i < layerCount; i++) {
             layerName = (String) layerNames.get(i);
-            layers[i] = new MapLayerInfo();
-
-            try {
-                FeatureTypeInfo ftype = findFeatureLayer(layerName);
-
-                layers[i].setFeature(ftype);
-            } catch (WmsException e) {
-                CoverageInfo cv = findCoverageLayer(layerName);
-
-                layers[i].setCoverage(cv);
-            }
+            layers[i] = buildMapLayerInfo(layerName);
         }
 
         return layers;
+    }
+    
+    private MapLayerInfo buildMapLayerInfo(String layerName) throws Exception {
+        MapLayerInfo li = new MapLayerInfo();
+
+        FeatureTypeInfo ftype = findFeatureLayer(layerName);
+        if (ftype != null) {
+            li.setFeature(ftype);
+        } else {
+            CoverageInfo cv = findCoverageLayer(layerName);
+            if (cv != null) {
+                li.setCoverage(cv);
+            } else {
+                if (wms.getBaseMapLayers().containsKey(layerName)) {
+                    String styleCsl = (String) wms.getBaseMapStyles().get(layerName);
+                    String layerCsl = (String) wms.getBaseMapLayers().get(layerName);
+                    LayersKvpParser lparser = new LayersKvpParser(wms);
+                    StylesKvpParser sparser = new StylesKvpParser(wms.getData());
+                    MapLayerInfo[] layerArray = (MapLayerInfo[]) lparser.parse(layerCsl);
+                    List styleList = (List) sparser.parse(styleCsl);
+                    li.setBase(layerName, new ArrayList(Arrays.asList(layerArray)), styleList);
+                } else {
+                    throw new WmsException("Layer " + layerName + " could not be found");
+                }
+            }
+        }
+        return li;
     }
 
     FeatureTypeInfo findFeatureLayer(String layerName)
@@ -120,8 +136,7 @@ public class LayersKvpParser extends FlatKvpParser {
         Integer layerType = catalog.getLayerType(layerName);
 
         if (Data.TYPE_VECTOR != layerType) {
-            throw new WmsException(new StringBuffer(layerName).append(
-                    ": no such layer on this server").toString(), "LayerNotDefined");
+            return null;
         } else {
             ftype = catalog.getFeatureTypeInfo(layerName);
         }
@@ -134,8 +149,7 @@ public class LayersKvpParser extends FlatKvpParser {
         Integer layerType = catalog.getLayerType(layerName);
 
         if (Data.TYPE_RASTER != layerType) {
-            throw new WmsException(new StringBuffer(layerName).append(
-                    ": no such layer on this server").toString(), "LayerNotDefined");
+            return null;
         } else {
             cv = catalog.getCoverageInfo(layerName);
         }
