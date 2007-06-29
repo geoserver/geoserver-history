@@ -1,5 +1,6 @@
 package org.geoserver.wfs;
 
+import org.geoserver.data.test.MockData;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -58,6 +59,29 @@ public class GetFeatureTest extends WFSTestSupport {
 
         NodeList featureMembers = doc.getElementsByTagName("gml:featureMember");
         assertFalse(featureMembers.getLength() == 0);
+    }
+    
+    public void testLax() throws Exception {
+        String xml = 
+            "<GetFeature xmlns:gml=\"http://www.opengis.net/gml\">" +  
+            " <Query typeName=\"" + MockData.BUILDINGS.getLocalPart() + "\">" + 
+            "   <PropertyName>ADDRESS</PropertyName>" + 
+            "   <Filter>" + 
+            "     <PropertyIsEqualTo>" + 
+            "       <PropertyName>ADDRESS</PropertyName>" + 
+            "       <Literal>123 Main Street</Literal>" + 
+            "     </PropertyIsEqualTo>" + 
+            "   </Filter>" + 
+            " </Query>" + 
+            "</GetFeature>";
+        
+        Document doc = postAsDOM( "wfs", xml );
+        print( doc );
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
+                .getNodeName());
+
+        NodeList featureMembers = doc.getElementsByTagName("cite:Buildings");
+        assertEquals(1,featureMembers.getLength());
     }
 
 }
