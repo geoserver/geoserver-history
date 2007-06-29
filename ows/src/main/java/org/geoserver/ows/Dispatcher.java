@@ -767,10 +767,41 @@ public class Dispatcher extends AbstractController {
         }
 
         if (matches.isEmpty()) {
+            //do a more lax serach, search only on the element name if the 
+            // namespace was unspecified
+            if ( namespace == null || namespace.equals( "" ) ) {
+                String msg = "No namespace specified in request, searching for "
+                    + " xml reader by element name only";
+                logger.info( msg );
+                
+                for ( Iterator itr = xmlReaders.iterator(); itr.hasNext(); ) {
+                    XmlRequestReader xmlReader = (XmlRequestReader) itr.next();
+                    if ( xmlReader.getElement().getLocalPart().equals( element ) ) {
+                        matches.add( xmlReader );
+                    }
+                }
+                
+                if ( !matches.isEmpty() ) {
+                    //we found some matches, make sure they are all in the 
+                    // same namespace
+                    Iterator itr = matches.iterator();
+                    XmlRequestReader first = (XmlRequestReader) itr.next();
+                    while( itr.hasNext() ) {
+                        XmlRequestReader xmlReader = (XmlRequestReader ) itr.next();
+                        if ( !first.getElement().equals( xmlReader.getElement() ) ) {
+                            //abort
+                            matches.clear();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
+        if ( matches.isEmpty() ) {
             String msg = "No xml reader: (" + namespace + "," + element + ")";
-            logger.fine(msg);
+            logger.info(msg);
             return null;
-            //throw new RuntimeException(msg);
         }
 
         XmlRequestReader xmlReader = null;
