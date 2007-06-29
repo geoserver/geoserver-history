@@ -28,6 +28,8 @@ import java.util.logging.Level;
  *
  */
 public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
+    FeatureTemplate template = new FeatureTemplate();
+        
     public Translator createTranslator(ContentHandler handler) {
         return new RSSGeoRSSTranslator(handler);
     }
@@ -109,8 +111,6 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
         void encodeItem(Feature feature, WMSMapContext map, MapLayer layer)
             throws IOException {
             start("item");
-
-            FeatureTemplate template = new FeatureTemplate();
 
             try {
             	element("title", template.title(feature));	
