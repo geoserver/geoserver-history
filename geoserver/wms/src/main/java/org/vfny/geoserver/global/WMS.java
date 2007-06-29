@@ -53,6 +53,7 @@ public class WMS extends Service {
     /** rendering interpolation or not **/
     private Map baseMapLayers;
     private Map baseMapStyles;
+    private Map baseMapEnvelopes;
     private String allowInterpolation;
     private WFS wfs;
 
@@ -74,6 +75,7 @@ public class WMS extends Service {
         allowInterpolation = config.getAllowInterpolation();
         baseMapLayers = config.getBaseMapLayers();
         baseMapStyles = config.getBaseMapStyles();
+        baseMapEnvelopes = config.getBaseMapEnvelopes();
     }
 
     /**
@@ -116,6 +118,7 @@ public class WMS extends Service {
         allowInterpolation = config.getAllowInterpolation();
         baseMapLayers = config.getBaseMapLayers();
         baseMapStyles = config.getBaseMapStyles();
+        baseMapEnvelopes = config.getBaseMapEnvelopes();
     }
 
     /**
@@ -155,6 +158,7 @@ public class WMS extends Service {
         w.setAllowInterpolation(allowInterpolation);
         w.setBaseMapLayers(baseMapLayers);
         w.setBaseMapStyles(baseMapStyles);
+        w.setBaseMapEnvelopes(baseMapEnvelopes);
 
         return w;
     }
@@ -287,5 +291,13 @@ public class WMS extends Service {
 
     public void setBaseMapStyles(Map styles) {
         baseMapStyles = styles;
+    }
+
+    public Map getBaseMapEnvelopes() {
+        return baseMapEnvelopes;
+    }
+
+    public void getBaseMapEnvelopes(Map envelopes) {
+        baseMapEnvelopes = envelopes;
     }
 }

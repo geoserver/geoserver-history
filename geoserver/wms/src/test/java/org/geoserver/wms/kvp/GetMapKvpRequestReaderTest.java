@@ -10,6 +10,7 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.Id;
 import org.opengis.filter.PropertyIsEqualTo;
 import org.vfny.geoserver.config.PaletteManager;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.servlets.GetMap;
 import java.awt.Color;
@@ -24,7 +25,8 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         super.setUp();
 
         GetMap getMap = (GetMap) applicationContext.getBean("wmsGetMap");
-        reader = new GetMapKvpRequestReader(getMap);
+        WMS wms = (WMS) applicationContext.getBean("wms");
+        reader = new GetMapKvpRequestReader(getMap, wms);
     }
 
     public void testCreateRequest() throws Exception {

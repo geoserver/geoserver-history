@@ -885,6 +885,7 @@ public class XMLConfigReader {
     private void loadBaseMapLayers(Element wmsElement) {
         HashMap layerMap = new HashMap();
         HashMap styleMap = new HashMap();
+        HashMap envelopeMap = new HashMap();
 
         Element groupBase = ReaderUtils.getChildElement(wmsElement, "BaseMapGroups");
 
@@ -903,8 +904,12 @@ public class XMLConfigReader {
                 String title = ReaderUtils.getAttribute(group, "baseMapTitle", true);
                 String layers = ReaderUtils.getChildText(group, "baseMapLayers");
                 String styles = ReaderUtils.getChildText(group, "baseMapStyles");
+
+                Element envelope = ReaderUtils.getChildElement(group, "baseMapEnvelope");
+                String srsName = ReaderUtils.getAttribute(envelope, "srsName", true);
                 layerMap.put(title, layers);
                 styleMap.put(title, styles);
+                envelopeMap.put(title, loadEnvelope(envelope, CRS.decode(srsName)));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -912,6 +917,7 @@ public class XMLConfigReader {
 
         wms.setBaseMapLayers(layerMap);
         wms.setBaseMapStyles(styleMap);
+        wms.setBaseMapEnvelopes(envelopeMap);
     }
 
     /**
