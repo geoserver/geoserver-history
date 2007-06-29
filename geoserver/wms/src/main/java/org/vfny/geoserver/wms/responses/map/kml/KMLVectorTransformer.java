@@ -107,6 +107,11 @@ public class KMLVectorTransformer extends KMLTransformerBase {
      * used to create 2d style objects for features
      */
     SLDStyleFactory styleFactory = new SLDStyleFactory();
+    
+    /**
+     * Feature template, cached for performance reasons
+     */
+    FeatureTemplate template = new FeatureTemplate();
 
     public KMLVectorTransformer(WMSMapContext mapContext, MapLayer mapLayer) {
         this.mapContext = mapContext;
@@ -554,7 +559,6 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             // 2. a text sym with a label from teh sld
             // 3. nothing ( do not use fid )
 
-            FeatureTemplate template = new FeatureTemplate();
             String title = template.title( feature );       
             
             //ensure not empty and != fid
@@ -611,7 +615,6 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         protected void encodePlacemarkDescription(Feature feature)
             throws IOException {
         
-           FeatureTemplate template = new FeatureTemplate();
            String description = template.description( feature );
          
             if (description != null) {
