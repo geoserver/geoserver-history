@@ -5,22 +5,37 @@
 package org.geoserver.template;
 
 import com.vividsolutions.jts.geom.Geometry;
+
+import freemarker.ext.beans.ArrayModel;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.ext.beans.CollectionModel;
+import freemarker.ext.beans.DateModel;
+import freemarker.ext.beans.EnumerationModel;
+import freemarker.ext.beans.IteratorModel;
+import freemarker.ext.beans.MapModel;
+import freemarker.ext.beans.NumberModel;
+import freemarker.ext.beans.ResourceBundleModel;
+import freemarker.ext.beans.SimpleMapModel;
+import freemarker.ext.beans.StringModel;
 import freemarker.template.Configuration;
 import freemarker.template.SimpleHash;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateModel;
+import freemarker.template.TemplateModelAdapter;
 import freemarker.template.TemplateModelException;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 
 import java.text.DateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 
 /**
@@ -92,7 +107,7 @@ public class FeatureWrapper extends BeansWrapper {
             Feature feature = (Feature) object;
 
             //create the model
-            HashMap map = new HashMap();
+            SimpleHash map = new SimpleHash();
 
             //first add the feature id
             map.put("fid", feature.getID());
@@ -106,25 +121,24 @@ public class FeatureWrapper extends BeansWrapper {
                 AttributeType type = feature.getFeatureType().getAttributeType(i);
 
                 Map attribute = new HashMap();
-                if ( feature.getAttribute(i) != null ) {
+                Object value = feature.getAttribute(i);
+                if ( value != null ) {
                     //some special case checks
-                    if ( feature.getAttribute(i) instanceof Date ) {
-                          Date date = (Date) feature.getAttribute( i );
-                          attribute.put( "value", DateFormat.getInstance().format( date ) );
+                    if ( value instanceof Date ) {
+                          Date date = (Date) value;
+                          attribute.put("value", DateFormat.getInstance().format( date ) );
+                    } else {
+                         attribute.put("value", value);  
                     }
-                    else {
-                         attribute.put("value", feature.getAttribute(i));  
-                    }
-                }
-                else {
+                    attribute.put("isGeometry", Boolean.valueOf(value instanceof Geometry));
+                } else {
                     //nulls throw tempaltes off, use empty string
                     attribute.put( "value", "" );
+                    attribute.put("isGeometry", Boolean.valueOf(Geometry.class.isAssignableFrom(type.getType())));
                 }
 
                 attribute.put("name", type.getName());
                 attribute.put("type", type.getType().getName());
-                attribute.put("isGeometry",
-                    Boolean.valueOf(Geometry.class.isAssignableFrom(type.getType())));
 
                 map.put(type.getName(), attribute);
                 attributeMap.put(type.getName(), attribute);
@@ -135,9 +149,8 @@ public class FeatureWrapper extends BeansWrapper {
             // attributes, but at the same time, is a map keyed by name
             map.put("attributes", new SequenceMapModel(attributeMap, this));
 
-            return new SimpleHash(map);
+            return map;
         }
-
         return super.wrap(object);
     }
 }
