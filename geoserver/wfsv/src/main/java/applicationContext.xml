@@ -67,13 +67,12 @@
   </bean>
 
 
-  <!-- xml configuration 
+  <!-- xml configuration --> 
   <bean id="wfsvXmlConfiguration-1.0"
     class="org.geoserver.wfsv.xml.v1_0_0.WFSConfiguration">
     <constructor-arg ref="catalog" />
     <constructor-arg ref="gml2SchemaBuilder" />
   </bean>
-  -->
   <bean id="wfsvXmlConfiguration-1.1"
     class="org.geoserver.wfsv.xml.v1_1_0.WFSVConfiguration">
     <constructor-arg ref="catalog" />
