@@ -67,7 +67,7 @@
 	   var password = document.getElementById("password").value;
 	   iFrameBody.innerHTML = "<form action='http://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath()%>/TestWfsPost' method='POST'>\n" + 
 	                          "<input type='hidden' name='url' value='" + url + "'/>\n" +
-	                          "<input type='hidden' name='body' value='" + body + "'/>\n" + 
+	                          "<textarea style='visibility:hidden' name='body' />" + body + "</textarea>\n" + 
 	                          "<input type='hidden' value='submit'/>\n" +
 	                          "</form>";
 	   var form = iFrameBody.firstChild;
