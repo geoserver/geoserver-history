@@ -55,6 +55,16 @@
 	   var iFrameBody = document.getElementById("demoResponse").contentWindow.document.body;
 	   var url = document.getElementById("url").value;
 	   var body = document.getElementById("body").value;
+	   
+	   // we need to escape & and other simbols that the browser parsed for us, and make
+	   // them &amp; again...
+	   var div = document.createElement('div');
+	   var text = document.createTextNode(body);
+	   div.appendChild(text);
+	   body = div.innerHTML;
+	   
+	   var username = document.getElementById("username").value;
+	   var password = document.getElementById("password").value;
 	   iFrameBody.innerHTML = "<form action='http://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath()%>/TestWfsPost' method='POST'>\n" + 
 	                          "<input type='hidden' name='url' value='" + url + "'/>\n" +
 	                          "<input type='hidden' name='body' value='" + body + "'/>\n" + 
