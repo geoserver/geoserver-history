@@ -7,6 +7,8 @@ package org.vfny.geoserver.global;
 import org.geoserver.wfs.WFS;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
+
+import java.util.Collections;
 import java.util.Map;
 
 
@@ -278,7 +280,7 @@ public class WMS extends Service {
     }
 
     public Map getBaseMapLayers() {
-        return baseMapLayers;
+        return baseMapLayers != null ? baseMapLayers : Collections.EMPTY_MAP;
     }
 
     public void setBaseMapLayers(Map layers) {
@@ -286,7 +288,7 @@ public class WMS extends Service {
     }
 
     public Map getBaseMapStyles() {
-        return baseMapStyles;
+        return baseMapStyles != null ? baseMapStyles : Collections.EMPTY_MAP;
     }
 
     public void setBaseMapStyles(Map styles) {
@@ -294,7 +296,7 @@ public class WMS extends Service {
     }
 
     public Map getBaseMapEnvelopes() {
-        return baseMapEnvelopes;
+        return baseMapEnvelopes != null ? baseMapEnvelopes : Collections.EMPTY_MAP;
     }
 
     public void getBaseMapEnvelopes(Map envelopes) {
