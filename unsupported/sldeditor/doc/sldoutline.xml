@@ -176,10 +176,14 @@
 	    </OverlapBehavior>
 	    <ColorMap> <!--optional-->
 	      <!--choice: 0 or 1 of each: ColorMapEntry-->
-	      <ColorMapEntry color="colorString"  <!--required-->
-			     opacity="opacityDouble"  <!--optional-->
-			     quantity="quantityDouble"  <!--optional-->
-			     label="labelString" <!--optional-->/>  <!--optional-->
+	      <ColorMapEntry color="colorString"  
+			     opacity="opacityDouble"  
+			     quantity="quantityDouble"  
+			     label="labelString"/>  <!--optional-->
+	      <!--required-->
+	      <!--optional-->
+	      <!--optional-->
+	      <!--optional-->
 	    </ColorMap>
 	    <ContrastEnhancement>***</ContrastEnhancement> <!--optional-->
 	    <ShadedRelief> <!--optional-->
