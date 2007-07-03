@@ -171,7 +171,7 @@ public class Dispatcher extends AbstractController {
         HttpServletResponse httpResponse) throws Exception {
         preprocessRequest(httpRequest);
 
-        //create a new request instnace
+        //create a new request instance
         Request request = new Request();
 
         //set request / response
@@ -925,7 +925,7 @@ public class Dispatcher extends AbstractController {
         //unparsed kvp set
         Map kvp = request.getParameterMap();
 
-        if (kvp == null) {
+        if (kvp == null || kvp.isEmpty()) {
             //req.kvp = Collections.EMPTY_MAP;
             req.kvp = null;
             return;
