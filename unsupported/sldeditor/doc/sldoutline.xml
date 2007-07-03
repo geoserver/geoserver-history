@@ -42,11 +42,11 @@
 	    <Graphic> <!--required-->
 	      <!--choice: 0 or 1 of each: ExternalGraphic, Mark-->
 	      <ExternalGraphic> <!--optional-->
-		<OnlineResource <!--required-->
-				<!--attribute group is xlink:simpleLink-->
-				xmlns:xlink="http://www.w3.org/1999/xlink"
+		<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
 				xlink:type="simple"
-				xlink:href="http://www.vendor.com/geosym/2267.png"/>
+				xlink:href="http://www.vendor.com/geosym/2267.png"/> <!--required-->
+		<!--attribute group is xlink:simpleLink-->
+		
 		<Format>image/pngString</Format> <!--required-->
 	      </ExternalGraphic>
 	      <Mark> <!--optional-->
@@ -199,10 +199,10 @@
   
   <UserLayer> <!--optional-->
     <Name>***</Name> <!--optional-->
-    <RemoteOWS>
+    <RemoteOWS> <!--optional-->
       <Service>WFS or WCS (string)</Service><!--required-->
       <OnlineResource>***</OnlineResource> <!--required-->
-    </RemoteOWS> <!--optional-->
+    </RemoteOWS>
     <LayerFeatureConstraints>***</LayerFeatureConstraints> <!--required-->
     <UserStyle>***<UserStyle> <!--multiple-->
   </UserLayer>
