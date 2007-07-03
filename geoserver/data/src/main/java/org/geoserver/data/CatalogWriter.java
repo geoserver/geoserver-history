@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -193,6 +194,7 @@ public class CatalogWriter {
     public void write(File file) throws IOException {
         try {
             Transformer tx = TransformerFactory.newInstance().newTransformer();
+            tx.setOutputProperty(OutputKeys.INDENT, "yes");
             DOMSource source = new DOMSource(document);
             StreamResult result = new StreamResult(file);
 
