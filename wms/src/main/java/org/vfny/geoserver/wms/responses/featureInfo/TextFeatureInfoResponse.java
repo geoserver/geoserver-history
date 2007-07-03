@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 
 /**
@@ -140,6 +141,7 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
                 }
             }
         } catch (Exception ife) {
+            LOGGER.log(Level.WARNING, "Error generating getFeaturInfo, HTML format", ife);
             writer.println("Unable to generate information " + ife);
         } finally {
             if (reader != null) {
