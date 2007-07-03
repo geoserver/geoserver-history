@@ -208,6 +208,6 @@
       <OnlineResource>***</OnlineResource> <!--required-->
     </RemoteOWS>
     <LayerFeatureConstraints>***</LayerFeatureConstraints> <!--required-->
-    <UserStyle>***<UserStyle> <!--multiple-->
+    <UserStyle>***</UserStyle> <!--multiple-->
   </UserLayer>
 </StyledLayerDescriptor>
