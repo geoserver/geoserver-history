@@ -79,19 +79,19 @@
 	    </Graphic>
 	  </LegendGraphic>
 	  <!--choice:0 or 1 of 1: Filter, ElseFilter-->
-	  <ogc:Filter> <!--optional-->
+	  <Filter> <!--optional-->
 	    <!--ogc:filter (try wfs spec)-->
-	  </ogc:Filter>
+	  </Filter>
 	  <ElseFilter/> <!--optional-->
 	  <MinScaleDenominator>6000Double</MinScaleDenominator> <!--optional-->
 	  <MaxScaleDenominator>10000000Double</MaxScaleDenominator> <!--optional-->
 	  <!--choice: 0 or 1 of each: LineSymbolizer, PolygonSymbolizer, PointSymbolizer, TextSymbolizer, RasterSymbolizer-->
 	  <LineSymbolizer> <!--optional-->
 	    <Geometry> <!--optional-->
-	      <ogc:PropertyName>
+	      <PropertyName>
 		centerline
 		<!--ogc:PropertyName-->
-	      </ogc:PropertyName>
+	      </PropertyName>
 	    </Geometry>
 	    <Stroke>***</Stroke> <!--optional-->
 	  </LineSymbolizer>
