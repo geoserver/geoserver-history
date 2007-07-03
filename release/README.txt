@@ -1,3 +1,20 @@
+GeoServer 1.6-beta1
+---------------------
+
+This is the first beta release in the 1.6 series of GeoServer 
+which contains integrated WFS 1.1 support, along with the 
+first version of the security subsystem, templated GeoRSS and KML,
+revamped demos and sample requests, faster shapefile rendering,
+as well as the option to test out the new versioning WFS module. 
+
+The issue log for this release can be found here:
+
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&fixfor=13250&pid=10311
+
+This release is based on Geotools 2.4-SNAPSHOT, tag = geoserver-1.6-beta1,
+revision = 26134
+
+
 GeoServer 1.6-alpha2
 ---------------------
 

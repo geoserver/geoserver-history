@@ -866,6 +866,8 @@
   <module>main</module>
   <module>wcs</module>
   <module>wfs</module>
+  <module>net.opengis.vwfs</module>
+  <module>wfsv</module>
   <module>wms</module>
   <module>validation</module>
   <module>web</module>
@@ -898,14 +900,6 @@
    </modules>
   </profile>
   
-  <profile>
-    <id>wfsv</id>
-    <modules>
-      <module>net.opengis.vwfs</module>
-	  <module>wfsv</module>
-   </modules>
-  </profile>
-
   <!-- uml graphing -->
   <profile>
    <id>uml</id>
