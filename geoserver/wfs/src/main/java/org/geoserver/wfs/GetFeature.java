@@ -18,6 +18,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.GeometryAttributeType;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
 import org.geotools.referencing.CRS;
@@ -199,10 +200,13 @@ public class GetFeature {
 
                             if (propName.matches("(\\w+:)?" + ati.getName())) {
                                 tmp.add(ati.getName());
-
                                 break;
                             }
                         }
+                        
+                        if(wfs.isFeatureBounding() && meta.getFeatureType().getAttributeType(ati.getName()) instanceof GeometryAttributeType
+                                && !tmp.contains(ati.getName()))
+                            tmp.add(ati.getName());
                     }
 
                     //replace property names
