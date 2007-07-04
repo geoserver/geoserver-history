@@ -13,12 +13,15 @@ import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WfsFactory;
+
+import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
+import org.geotools.feature.SchemaException;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
 import org.geotools.referencing.CRS;
@@ -34,6 +37,7 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -179,9 +183,10 @@ public class GetFeature {
 
                 //we must also include any properties that are mandatory ( even if not requested ),
                 // ie. those with minOccurs > 0
+                List extraGeometries = new ArrayList();
+                List properties = new ArrayList();
                 if (propNames.size() != 0) {
                     Iterator ii = atts.iterator();
-                    List tmp = new LinkedList();
 
                     while (ii.hasNext()) {
                         AttributeTypeInfo ati = (AttributeTypeInfo) ii.next();
@@ -189,7 +194,7 @@ public class GetFeature {
 
                         if (((ati.getMinOccurs() > 0) && (ati.getMaxOccurs() != 0))) {
                             //mandatory, add it
-                            tmp.add(ati.getName());
+                            properties.add(ati.getName());
 
                             continue;
                         }
@@ -199,19 +204,24 @@ public class GetFeature {
                             String propName = (String) p.next();
 
                             if (propName.matches("(\\w+:)?" + ati.getName())) {
-                                tmp.add(ati.getName());
+                                properties.add(ati.getName());
                                 break;
                             }
                         }
                         
+                        // if we need to force feature bounds computation, we have to load 
+                        // all of the geometries, but we'll have to remove them in the 
+                        // returned feature type
                         if(wfs.isFeatureBounding() && meta.getFeatureType().getAttributeType(ati.getName()) instanceof GeometryAttributeType
-                                && !tmp.contains(ati.getName()))
-                            tmp.add(ati.getName());
+                                && !properties.contains(ati.getName())) {
+                            properties.add(ati.getName());
+                            extraGeometries.add(ati.getName());
+                        }
                     }
 
                     //replace property names
                     query.getPropertyName().clear();
-                    query.getPropertyName().addAll(tmp);
+                    query.getPropertyName().addAll(properties);
                 }
 
                 //make sure filters are sane
@@ -239,6 +249,16 @@ public class GetFeature {
 
                 FeatureCollection features = source.getFeatures(gtQuery);
                 count += features.size();
+                
+                // we may need to shave off geometries we did load only to make bounds
+                // computation happy
+                if(extraGeometries.size() > 0) {
+                    List residualProperties = new ArrayList(properties);
+                    residualProperties.removeAll(extraGeometries);
+                    String[] residualNames = (String[]) residualProperties.toArray(new String[residualProperties.size()]);
+                    FeatureType targetType = DataUtilities.createSubType(features.getSchema(), residualNames);
+                    features = new FeatureBoundsFeatureCollection(features, targetType);
+                }
 
                 //JD: TODO reoptimize
                 //                if ( i == request.getQuery().size() - 1 ) { 
@@ -264,6 +284,8 @@ public class GetFeature {
                 result.getFeature().add(features);
             }
         } catch (IOException e) {
+            throw new WFSException("Error occurred getting features", e, request.getHandle());
+        } catch (SchemaException e) {
             throw new WFSException("Error occurred getting features", e, request.getHandle());
         }
 
