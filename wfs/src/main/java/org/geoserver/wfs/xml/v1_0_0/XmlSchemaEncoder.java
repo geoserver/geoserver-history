@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.transform.TransformerException;
 
@@ -301,7 +302,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
 
             return writer.getBuffer().toString();
         } catch (TransformerException te) {
-            LOGGER.warning(te.toString());
+            LOGGER.log( Level.WARNING, "Error generating schema from feature type", te );
             throw (IOException) new IOException("problem transforming type").initCause(te);
         }
     }
