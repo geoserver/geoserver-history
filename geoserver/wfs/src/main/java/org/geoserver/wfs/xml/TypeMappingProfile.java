@@ -23,11 +23,21 @@ import java.util.Set;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class TypeMappingProfile extends ProfileImpl {
-    public TypeMappingProfile(Schema schema, Set profile) {
-        super(schema, profile);
-    }
+public class TypeMappingProfile /*extends ProfileImpl*/ {
+    
+    /**
+     * Set of profiles to do mappings from.
+     */
+    Set/*<Profile>*/ profiles;
+    
+//    public TypeMappingProfile(Schema schema, Set profile) {
+//        super(schema, profile);
+//    }
 
+    public TypeMappingProfile(Set profiles) {
+        this.profiles = profiles;
+    }
+    
     /**
      * Obtains the {@link AttributeType} mapped to a particular class.
      * <p>
@@ -42,15 +52,19 @@ public class TypeMappingProfile extends ProfileImpl {
     public AttributeType type(Class clazz) {
         ArrayList assignable = new ArrayList();
 
-        for (Iterator i = values().iterator(); i.hasNext();) {
-            AttributeType type = (AttributeType) i.next();
-
-            if (type.getType().isAssignableFrom(clazz)) {
-                assignable.add(type);
-            }
-
-            if (clazz.equals(type.getType())) {
-                return type;
+        for (Iterator p = profiles.iterator(); p.hasNext(); ) {
+            ProfileImpl profile = (ProfileImpl) p.next();
+            
+            for (Iterator i = profile.values().iterator(); i.hasNext();) {
+                AttributeType type = (AttributeType) i.next();
+    
+                if (type.getType().isAssignableFrom(clazz)) {
+                    assignable.add(type);
+                }
+    
+                if (clazz.equals(type.getType())) {
+                    return type;
+                }
             }
         }
 
@@ -101,16 +115,20 @@ public class TypeMappingProfile extends ProfileImpl {
     public Name name(Class clazz) {
         ArrayList assignable = new ArrayList();
 
-        for (Iterator i = entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry) i.next();
-            AttributeType type = (AttributeType) entry.getValue();
-
-            if (type.getType().isAssignableFrom(clazz)) {
-                assignable.add(entry);
-            }
-
-            if (clazz.equals(type.getType())) {
-                return (Name) entry.getKey();
+        for (Iterator p = profiles.iterator(); p.hasNext(); ) {
+            ProfileImpl profile = (ProfileImpl) p.next();
+            
+            for (Iterator i = profile.entrySet().iterator(); i.hasNext();) {
+                Map.Entry entry = (Map.Entry) i.next();
+                AttributeType type = (AttributeType) entry.getValue();
+        
+                if (type.getType().isAssignableFrom(clazz)) {
+                    assignable.add(entry);
+                }
+        
+                if (clazz.equals(type.getType())) {
+                    return (Name) entry.getKey();
+                }
             }
         }
 
