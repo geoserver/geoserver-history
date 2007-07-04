@@ -102,6 +102,7 @@ from New York City.</abstract>
 <onlineResource>http://www.openplans.org/</onlineResource>
 <fees>NONE</fees>
 <accessConstraints>NONE</accessConstraints>
+<featureBounding value = "true" />
 <srsXmlStyle value = "true" />
 <serviceLevel value = "31" />
 <citeConformanceHacks>true</citeConformanceHacks>
