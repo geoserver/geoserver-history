@@ -177,5 +177,42 @@ public class GetFeatureTest extends WFSTestSupport {
         assertEquals(1, dom.getElementsByTagName("cdf:Seven")
                 .getLength());
     }
+    
+    public void testPostWithBoundsEnabled() throws Exception {
+        // enable feature bounds computation
+        boolean oldFeatureBounding = getWFS().isFeatureBounding();
+        getWFS().setFeatureBounding(true);
+        try {
+            String xml = "<wfs:GetFeature " + "service=\"WFS\" "
+                    + "version=\"1.1.0\" "
+                    + "xmlns:cdf=\"http://www.opengis.net/cite/data\" "
+                    + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
+                    + "xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> "
+                    + "<wfs:Query typeName=\"cdf:Other\"> "
+                    + "<wfs:PropertyName>cdf:string2</wfs:PropertyName> "
+                    + "</wfs:Query> " + "</wfs:GetFeature>";
+    
+            Document doc = postAsDOM("wfs", xml);
+            assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
+                    .getNodeName());
+    
+            NodeList features = doc.getElementsByTagName("cdf:Other");
+            assertFalse(features.getLength() == 0);
+    
+            for (int i = 0; i < features.getLength(); i++) {
+                Element feature = (Element) features.item(i);
+                assertTrue(feature.hasAttribute("gml:id"));
+                NodeList boundList = feature.getElementsByTagName("gml:boundedBy");
+                assertEquals(1, boundList.getLength());
+                Element boundedBy = (Element) boundList.item(0);
+                NodeList boxList = boundedBy.getElementsByTagName("gml:Envelope");
+                assertEquals(1, boxList.getLength());
+                Element box = (Element) boxList.item(0);
+                assertTrue(box.hasAttribute("srsName"));
+            }
+        } finally {
+            getWFS().setFeatureBounding(oldFeatureBounding);
+        }
+    }
 
 }
