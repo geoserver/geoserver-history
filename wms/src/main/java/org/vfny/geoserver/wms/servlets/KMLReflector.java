@@ -49,6 +49,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  *
  * @author Brent Owens
+ * 
+ * @deprecated use {@link org.vfny.geoserver.wms.responses.map.kml.KMLReflector}.
  *
  */
 public class KMLReflector extends WMService {
