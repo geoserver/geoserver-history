@@ -6,6 +6,7 @@ package org.vfny.geoserver.wfs.responses;
 
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureResults;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
 import org.vfny.geoserver.ServiceException;
@@ -205,7 +206,7 @@ public class GML2FeatureResponseDelegate implements FeatureResponseDelegate {
         //
         // execute should also fail if all of the locks could not be aquired
         List resultsList = results.getFeatures();
-        FeatureResults[] featureResults = (FeatureResults[]) resultsList.toArray(new FeatureResults[resultsList
+        FeatureCollection[] featureResults = (FeatureCollection[]) resultsList.toArray(new FeatureCollection[resultsList
                 .size()]);
 
         try {

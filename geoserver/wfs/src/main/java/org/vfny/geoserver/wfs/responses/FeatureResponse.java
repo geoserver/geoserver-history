@@ -4,6 +4,18 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
@@ -14,7 +26,11 @@ import org.geotools.data.Transaction;
 import org.geotools.factory.FactoryFinder;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.IllegalAttributeException;
+import org.geotools.feature.SchemaException;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
@@ -27,21 +43,12 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.wfs.FeatureResponseDelegateProducerSpi;
 import org.vfny.geoserver.wfs.Query;
 import org.vfny.geoserver.wfs.WfsException;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
 import org.vfny.geoserver.wfs.requests.FeatureWithLockRequest;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.logging.Logger;
 
 
 /**
@@ -224,8 +231,9 @@ public class FeatureResponse implements Response {
         // - if we fail to aquire all the locks we will need to fail and
         //   itterate through the the FeatureSources to release the locks
         //
-        GeoServer config = request.getWFS().getGeoServer();
-        Data catalog = request.getWFS().getData();
+        WFS wfs = request.getWFS();
+        GeoServer config = wfs.getGeoServer();
+        Data catalog = wfs.getData();
         FeatureTypeInfo meta = null;
         NameSpaceInfo namespace;
         Query query;
@@ -274,11 +282,15 @@ public class FeatureResponse implements Response {
                             + "The possible propertyName values are: " + attributeNames;
                         throw new WfsException(mesg);
                     }
+                    
+                    
                 }
 
+                List extraGeometries = new ArrayList();
+                List properties = new ArrayList();
                 if (propNames.size() != 0) {
                     Iterator ii = attrs.iterator();
-                    List tmp = new LinkedList();
+                    
 
                     while (ii.hasNext()) {
                         AttributeTypeInfo ati = (AttributeTypeInfo) ii.next();
@@ -288,11 +300,17 @@ public class FeatureResponse implements Response {
 
                         if (((ati.getMinOccurs() > 0) && (ati.getMaxOccurs() != 0))
                                 || propNames.contains(ati.getName())) {
-                            tmp.add(ati.getName());
+                            properties.add(ati.getName());
+                        }
+                        
+                        if(wfs.isFeatureBounding() && meta.getFeatureType().getAttributeType(ati.getName()) instanceof GeometryAttributeType
+                                && !properties.contains(ati.getName())) {
+                            properties.add(ati.getName());
+                            extraGeometries.add(ati.getName());
                         }
                     }
 
-                    query.setPropertyNames(tmp);
+                    query.setPropertyNames(properties);
                 }
 
                 // This doesn't seem to be working?
@@ -302,7 +320,7 @@ public class FeatureResponse implements Response {
                 LOGGER.fine("Query is " + query + "\n To gt2: " + query.toDataQuery(maxFeatures));
 
                 //DJB: note if maxFeatures gets to 0 the while loop above takes care of this! (this is a subtle situation)
-                FeatureResults features = source.getFeatures(query.toDataQuery(maxFeatures));
+                FeatureCollection features = source.getFeatures(query.toDataQuery(maxFeatures));
 
                 if (it.hasNext()) { //DJB: dont calculate feature count if you dont have to. The MaxFeatureReader will take care of the last iteration
 
@@ -316,6 +334,16 @@ public class FeatureResponse implements Response {
                     }
 
                     maxFeatures -= count;
+                }
+                
+                // we may need to shave off geometries we did load only to make bounds
+                // computation happy
+                if(extraGeometries.size() > 0) {
+                    List residualProperties = new ArrayList(properties);
+                    residualProperties.removeAll(extraGeometries);
+                    String[] residualNames = (String[]) residualProperties.toArray(new String[residualProperties.size()]);
+                    FeatureType targetType = DataUtilities.createSubType(features.getSchema(), residualNames);
+                    features = new FeatureBoundsFeatureCollection(features, targetType);
                 }
 
                 //GR: I don't know if the featuresults should be added here for later
@@ -399,6 +427,8 @@ public class FeatureResponse implements Response {
         } catch (NoSuchElementException e) {
             throw new ServiceException(e, "problem with FeatureResults", request.getHandle());
         } catch (IllegalAttributeException e) {
+            throw new ServiceException(e, "problem with FeatureResults", request.getHandle());
+        } catch (SchemaException e) {
             throw new ServiceException(e, "problem with FeatureResults", request.getHandle());
         }
     }
