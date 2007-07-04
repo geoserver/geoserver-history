@@ -63,8 +63,6 @@
 	   div.appendChild(text);
 	   body = div.innerHTML;
 	   
-	   var username = document.getElementById("username").value;
-	   var password = document.getElementById("password").value;
 	   iFrameBody.innerHTML = "<form action='http://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath()%>/TestWfsPost' method='POST'>\n" + 
 	                          "<input type='hidden' name='url' value='" + url + "'/>\n" +
 	                          "<textarea style='visibility:hidden' name='body' />" + body + "</textarea>\n" + 
