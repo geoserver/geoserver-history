@@ -80,14 +80,15 @@ public class WfsExceptionHandler extends DefaultServiceExceptionHandler {
 
             s.append(">");
 
-            if ((e.getMessage() != null) && !e.getMessage().equals("")) {
+            if (e.getMessage() != null) {
                 s.append("\n" + tab + tab);
-                s.append(ResponseUtils.encodeXML(e.getMessage()));
+                dumpExceptionMessages(e, s);
 
                 if(verboseExceptions) {
                   ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();
                   e.printStackTrace(new PrintStream(stackTrace));
 
+                  s.append("\nDetails:\n");
                   s.append(ResponseUtils.encodeXML(new String(stackTrace.toByteArray())));
                 }
             }

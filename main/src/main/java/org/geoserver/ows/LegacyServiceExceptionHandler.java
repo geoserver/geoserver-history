@@ -161,14 +161,15 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
         sb.append(">");
 
         //message
-        if ((exception.getMessage() != null) && !exception.getMessage().equals("")) {
+        if ((exception.getMessage() != null)) {
             sb.append("\n" + tab + tab);
-            sb.append(ResponseUtils.encodeXML(exception.getMessage()));
+            dumpExceptionMessages(exception, sb);
 
             if(geoServer.isVerboseExceptions()) {
                 ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();
                 exception.printStackTrace(new PrintStream(stackTrace));
 
+                sb.append("\nDetails:\n");
                 sb.append(ResponseUtils.encodeXML(new String(stackTrace.toByteArray())));
             }
         }
