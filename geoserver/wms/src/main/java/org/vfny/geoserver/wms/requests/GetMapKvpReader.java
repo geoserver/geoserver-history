@@ -35,6 +35,7 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.servlets.WMService;
@@ -1438,6 +1439,19 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
         String layersParam = getValue("LAYERS");
         List layerNames = readFlat(layersParam, INNER_DELIMETER);
         List realLayerNames = new ArrayList();
+        
+        // expand base layers, if there is any
+        WMS wms = request.getWMS();
+        if(wms.getBaseMapLayers() != null) {
+            for (int i = 0; i < layerNames.size(); i++) {
+                String layerGroup = (String) wms.getBaseMapLayers().get(layerNames.get(i));
+                if(layerGroup != null) {
+                    List layerGroupExpanded = readFlat(layerGroup, INNER_DELIMETER);
+                    layerNames.remove(i);
+                    layerNames.addAll(i, layerGroupExpanded);
+                }
+            }
+        }
 
         String layerName = null;
         Data catalog = request.getWMS().getData();
