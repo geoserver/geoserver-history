@@ -173,20 +173,38 @@ public class ServiceException extends org.geoserver.ows.ServiceException {
         String indent = "   ";
         StringBuffer mesg = new StringBuffer();
 
-        //this distinction no longer so much applies, as we don't always
-        //throw Service exceptions for all expected exceptions.
-        //if (!isEmpty(this.preMessage)) {
-        //    mesg.append(this.preMessage + ": ");
-        //}
-        //mesg.append(ResponseUtils.encodeXML(this.getMessage()) + "\n");
-        //        if (printStackTrace) {
         if (printStackTrace) {
             mesg.append(createStackTrace());
         } else {
-            mesg.append(this.getMessage());
+            dumpExceptionMessages(this, mesg);
         }
 
         return ResponseUtils.encodeXML(mesg.toString());
+    }
+    
+    /**
+     * Dumps an exception message along all its causes messages (since more often
+     * than not the real cause, such as "unknown property xxx" is a few levels down)
+     * @param e
+     * @param s
+     */
+    protected void dumpExceptionMessages(ServiceException e, StringBuffer s) {
+        Throwable ex = e;
+        do {
+            Throwable cause = ex.getCause();
+            if(e.getMessage() != null && !"".equals(e.getMessage())) {
+                s.append(e.getMessage());
+                if(cause != null)
+                    s.append("\n");
+            }
+            
+            // avoid infinite loop if someone did the very stupid thing of setting
+            // the cause as the exception itself (I only found this situation once, but...)
+            if(ex == cause || cause == null)
+                break;
+            else
+                ex = cause;
+        } while(true);
     }
 
     private String createStackTrace() {
