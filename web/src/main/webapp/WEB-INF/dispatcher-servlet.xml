@@ -2,21 +2,9 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-  <!-- publisher for files -->
-  <bean id="filePublisher" class="org.geoserver.ows.FilePublisher">
-    <constructor-arg><ref bean="resourceLoader" /></constructor-arg>
-  </bean>
-  
-  <!-- url mappings -->
-  <bean id="urlMapping"
-    class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-  <property name="alwaysUseFullPath" value="true"/>
-    <property name="mappings">
-      <props>
-        <prop key="/styles/*">filePublisher</prop>
-        <prop key="/www/**">filePublisher</prop>
-      </props>
-    </property>
-  </bean>
+  <!-- 
+    Do not declare controllers here, but in applicationContext.xml please. See for example
+    the configuration file in this module.
+  -->
 </beans>
  
