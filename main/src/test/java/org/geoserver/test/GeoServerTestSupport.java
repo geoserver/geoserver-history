@@ -23,9 +23,11 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.w3c.dom.Document;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -279,7 +281,11 @@ public class GeoServerTestSupport extends TestCase {
     protected Document postAsDOM( String path, String xml ) throws Exception {
             return dom( post( path, xml ) );
     }
-        
+    
+    protected String getAsString(String path) throws Exception {
+        return string(get(path));
+    }
+    
     /**
      * Parses a stream into a dom.
      */
@@ -301,6 +307,25 @@ public class GeoServerTestSupport extends TestCase {
 //        }
         
         return dom;
+    }
+    
+    /**
+     * Parses a stream into a String
+     */
+    protected String string(InputStream input) throws Exception {
+        BufferedReader reader = null;
+        StringBuffer sb = new StringBuffer();
+        char[] buf = new char[8192];
+        try {
+            reader = new BufferedReader(new InputStreamReader(input));
+            String line = null;
+            while((line = reader.readLine()) != null)
+                sb.append(line);
+        } finally {
+            if(reader != null)
+                reader.close();
+        }
+        return sb.toString();
     }
     
     /**
@@ -331,7 +356,7 @@ public class GeoServerTestSupport extends TestCase {
         while (st.hasMoreTokens()) {
             String token = st.nextToken();
             String[] keyValuePair = token.split("=");
-            request.setupAddParameter(keyValuePair[0], keyValuePair[1]);
+            request.setupAddParameter(keyValuePair[0], keyValuePair.length > 1 ?  keyValuePair[1]: "");
         }
     }
     
