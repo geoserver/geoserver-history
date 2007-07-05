@@ -83,10 +83,12 @@ public class WfsExceptionHandler extends DefaultServiceExceptionHandler {
                 s.append("\n" + tab + tab);
                 s.append(ResponseUtils.encodeXML(e.getMessage()));
 
-                ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();
-                e.printStackTrace(new PrintStream(stackTrace));
+                if(wfs.getGeoServer().isVerboseExceptions()) {
+                  ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();
+                  e.printStackTrace(new PrintStream(stackTrace));
 
-                s.append(ResponseUtils.encodeXML(new String(stackTrace.toByteArray())));
+                  s.append(ResponseUtils.encodeXML(new String(stackTrace.toByteArray())));
+                }
             }
 
             s.append("\n</ServiceException>");

@@ -7,6 +7,8 @@ package org.geoserver.ows;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
+import org.vfny.geoserver.global.GeoServer;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -73,14 +75,21 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
      */
     String contentType = "text/xml";
 
-    public LegacyServiceExceptionHandler(List services, OWS ows) {
+    /**
+     * The central configuration, used to decide whether to dump a verbose stack trace, or not
+     */
+    GeoServer geoServer;
+
+    public LegacyServiceExceptionHandler(List services, OWS ows, GeoServer geoServer) {
         super(services);
         this.ows = ows;
+        this.geoServer = geoServer;
     }
 
-    public LegacyServiceExceptionHandler(Service service, OWS ows) {
+    public LegacyServiceExceptionHandler(Service service, OWS ows, GeoServer geoServer) {
         super(service);
         this.ows = ows;
+        this.geoServer = geoServer;
     }
 
     public void setVersion(String version) {
@@ -156,10 +165,12 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
             sb.append("\n" + tab + tab);
             sb.append(ResponseUtils.encodeXML(exception.getMessage()));
 
-            ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();
-            exception.printStackTrace(new PrintStream(stackTrace));
+            if(geoServer.isVerboseExceptions()) {
+                ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();
+                exception.printStackTrace(new PrintStream(stackTrace));
 
-            sb.append(ResponseUtils.encodeXML(new String(stackTrace.toByteArray())));
+                sb.append(ResponseUtils.encodeXML(new String(stackTrace.toByteArray())));
+            }
         }
 
         sb.append("\n</ServiceException>");
