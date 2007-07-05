@@ -4,6 +4,7 @@
  */
 package org.geoserver.ows;
 
+import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
 import java.util.Collections;
@@ -85,4 +86,29 @@ public abstract class ServiceExceptionHandler {
      */
     public abstract void handleServiceException(ServiceException exception, Service service,
         HttpServletRequest request, HttpServletResponse response);
+    
+    /**
+     * Dumps an exception message along all its causes messages (since more often
+     * than not the real cause, such as "unknown property xxx" is a few levels down)
+     * @param e
+     * @param s
+     */
+    protected void dumpExceptionMessages(ServiceException e, StringBuffer s) {
+        Throwable ex = e;
+        do {
+            Throwable cause = ex.getCause();
+            if(e.getMessage() != null && !"".equals(e.getMessage())) {
+                s.append(ResponseUtils.encodeXML(e.getMessage()));
+                if(cause != null)
+                    s.append("\n");
+            }
+            
+            // avoid infinite loop if someone did the very stupid thing of setting
+            // the cause as the exception itself (I only found this situation once, but...)
+            if(ex == cause || cause == null)
+                break;
+            else
+                ex = cause;
+        } while(true);
+    }
 }

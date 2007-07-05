@@ -72,12 +72,15 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
         e.setLocator(exception.getLocator());
 
         //add the message
-        e.getExceptionText().add(exception.getMessage());
+        StringBuffer sb = new StringBuffer();
+        dumpExceptionMessages(exception, sb);
+        e.getExceptionText().add(sb.toString());
         e.getExceptionText().addAll(exception.getExceptionText());
 
         if(verboseExceptions) {
             //add the entire stack trace
             //exception.
+            e.getExceptionText().add("Details:");
             ByteArrayOutputStream trace = new ByteArrayOutputStream();
             exception.printStackTrace(new PrintStream(trace));
             e.getExceptionText().add(new String(trace.toByteArray()));
