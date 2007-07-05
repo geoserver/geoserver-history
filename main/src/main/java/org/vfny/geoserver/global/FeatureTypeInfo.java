@@ -493,7 +493,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     return (FeatureSource) m.invoke(null,
                         new Object[] {
                             realSource, getFeatureType(realSource), getDefinitionQuery(),
-                            forcedCRS ? getSRS(SRS) : null
+                            isForcedCRS() ? getSRS(SRS) : null
                         });
                 }
             } catch (Exception e) {
@@ -501,7 +501,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             }
 
             return GeoServerFeatureLocking.create(realSource, getFeatureType(realSource),
-                getDefinitionQuery(), forcedCRS ? getSRS(SRS) : null);
+                getDefinitionQuery(), isForcedCRS() ? getSRS(SRS) : null);
         }
     }
 
@@ -574,16 +574,16 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         CoordinateReferenceSystem declaredCRS = getDeclaredCRS();
         CoordinateReferenceSystem nativeCRS = getNativeCRS();
         if ((nativeBBox == null) || nativeBBox.isNull()) {
-            CoordinateReferenceSystem crs = forcedCRS ? declaredCRS : nativeCRS;
+            CoordinateReferenceSystem crs = isForcedCRS() ? declaredCRS : nativeCRS;
             nativeBBox = getBoundingBox(crs);
         }
 
         if (!(nativeBBox instanceof ReferencedEnvelope)) {
-            CoordinateReferenceSystem crs = forcedCRS ? declaredCRS : nativeCRS;
+            CoordinateReferenceSystem crs = isForcedCRS() ? declaredCRS : nativeCRS;
             nativeBBox = new ReferencedEnvelope(nativeBBox, crs);
         }
         
-        if(!forcedCRS && !declaredCRS.equals(((ReferencedEnvelope) nativeBBox).getCoordinateReferenceSystem())) {
+        if(!isForcedCRS() && !declaredCRS.equals(((ReferencedEnvelope) nativeBBox).getCoordinateReferenceSystem())) {
             try {
                 ReferencedEnvelope re = (ReferencedEnvelope) nativeBBox;
                 nativeBBox = re.transform(declaredCRS, true);
@@ -1350,5 +1350,18 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     public void setCachingEnabled(boolean cachingEnabled) {
         this.cachingEnabled = cachingEnabled;
+    }
+
+    /**
+     * Internal getter for forcedCRS computation. Always use this method to access the
+     * forcedCRS value, since it's lazily computed and this method will make sure
+     * the value is up to date 
+     */
+    private boolean isForcedCRS() throws IOException {
+        // forced CRS flag gets computed as a side effect of computing the feature type
+        // so we need to make it compute the ft if missing
+        if(ft == null)
+            getFeatureType();
+        return forcedCRS;
     }
 }
