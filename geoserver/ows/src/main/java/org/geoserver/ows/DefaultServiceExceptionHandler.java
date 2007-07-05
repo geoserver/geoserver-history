@@ -34,6 +34,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  */
 public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
+    protected boolean verboseExceptions = false;
+    
     /**
      * Constructor to be called if the exception is not for a particular service.
      *
@@ -73,11 +75,13 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
         e.getExceptionText().add(exception.getMessage());
         e.getExceptionText().addAll(exception.getExceptionText());
 
-        //add the entire stack trace
-        //exception.
-        ByteArrayOutputStream trace = new ByteArrayOutputStream();
-        exception.printStackTrace(new PrintStream(trace));
-        e.getExceptionText().add(new String(trace.toByteArray()));
+        if(verboseExceptions) {
+            //add the entire stack trace
+            //exception.
+            ByteArrayOutputStream trace = new ByteArrayOutputStream();
+            exception.printStackTrace(new PrintStream(trace));
+            e.getExceptionText().add(new String(trace.toByteArray()));
+        }
 
         ExceptionReportType report = factory.createExceptionReportType();
         report.setVersion("1.0.0");
