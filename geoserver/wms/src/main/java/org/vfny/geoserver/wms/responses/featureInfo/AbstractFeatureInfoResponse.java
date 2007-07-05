@@ -4,23 +4,25 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.Query;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.filter.AbstractFilter;
-import org.geotools.filter.Filter;
-import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
-import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.geometry.jts.JTS;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -32,14 +34,12 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
 
 
 /**
@@ -204,7 +204,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
         Polygon pixelRect = geomFac.createPolygon(boundary, null);
 
-        FilterFactory filterFac = FilterFactoryFinder.createFilterFactory();
+        FilterFactory2 filterFac = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
         Filter getFInfoFilter = null;
 
@@ -234,21 +234,20 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                 }
 
                 try {
-                    getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
-//<<<<<<< .locale
+                    getFInfoFilter = filterFac.intersects(filterFac.property(finfo.getFeatureType().getDefaultGeometry()
+                            .getName()), filterFac.literal(pixelRect));
+//                    getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
 //                    ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac
 //                        .createLiteralExpression(pixelRect));
 //
 //                    if (finfo.getFeatureType().getDefaultGeometry() != null) {
 //                        ((GeometryFilter) getFInfoFilter).addRightGeometry(filterFac
-//                            .createAttributeExpression(finfo.getFeatureType().getDefaultGeometry()
-//                                                            .getName()));
+//                            .createAttributeExpression());
 //                    } else {
 //                        LOGGER.warning("GetFeatureInfo for feature type with no default geometry.");
 //                    }
-//=======
-                    ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac
-                        .createLiteralExpression(pixelRect));
+//                    ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac
+//                        .createLiteralExpression(pixelRect));
                 } catch (IllegalFilterException e) {
                     e.printStackTrace();
                     throw new WmsException(null, "Internal error : " + e.getMessage());
@@ -256,7 +255,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
                 // include the eventual layer definition filter
                 if (filters[i] != null) {
-                    getFInfoFilter = getFInfoFilter.and(filters[i]);
+                    getFInfoFilter = filterFac.and(getFInfoFilter, filters[i]);
                 }
 
                 Query q = new DefaultQuery(finfo.getTypeName(), null, getFInfoFilter,

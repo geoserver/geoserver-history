@@ -4,18 +4,9 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.data.DefaultQuery;
-import org.geotools.data.Query;
-import org.geotools.feature.FeatureType;
-import org.geotools.filter.AbstractFilter;
-import org.geotools.filter.BBoxExpression;
-import org.geotools.filter.Expression;
-import org.geotools.filter.Filter;
-import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
-import org.geotools.filter.GeometryFilter;
-import org.geotools.filter.IllegalFilterException;
+import java.util.List;
+
+import org.opengis.filter.Filter;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -23,8 +14,6 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -118,7 +107,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
         //use the layer of the QUERY_LAYERS parameter, not the LAYERS one
         FeatureTypeInfo[] layers = request.getQueryLayers();
 
-        List filterList = request.getGetMapRequest().getFilters();
+        List filterList = request.getGetMapRequest().getFilter();
         Filter[] filters;
 
         if (filterList != null) {
@@ -127,10 +116,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
             filters = new Filter[layers.length];
         }
 
-        Query[] queries = buildQueries(layers, filters);
         int x = request.getXPixel();
         int y = request.getYPixel();
-
         execute(layers, filters, x, y);
     }
 
@@ -159,127 +146,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
     protected abstract void execute(FeatureTypeInfo[] requestedLayers, Filter[] filters, int x,
         int y) throws WmsException;
 
-    /**
-     * Creates the array of queries to be executed for the request.
-     *
-     * <p>
-     * Each query is setted up to retrieve the features that matches the BBOX
-     * specified in the GetMap request
-     * </p>
-     *
-     * @param layers The layers to request against.
-     *
-     * @return An array of queries, matching the arrays passed in.
-     *
-     * @throws WmsException If the custom filter can't be constructed.
-     */
-    private Query[] buildQueries(FeatureTypeInfo[] layers, Filter[] filters)
-        throws WmsException {
-        int nLayers = layers.length;
-        Query[] queries = new Query[nLayers];
-        GetFeatureInfoRequest infoRequest = getRequest();
-        Envelope requestExtent = infoRequest.getGetMapRequest().getBbox();
-        FilterFactory ffactory = FilterFactoryFinder.createFilterFactory();
-
-        try {
-            Filter finalLayerFilter;
-            Query layerQuery;
-
-            for (int i = 0; i < nLayers; i++) {
-                FeatureType schema = layers[i].getFeatureType();
-
-                finalLayerFilter = buildFilter(requestExtent, filters[i], ffactory, schema);
-
-                String[] props = guessProperties(layers[i], finalLayerFilter);
-                layerQuery = new DefaultQuery(schema.getTypeName(), finalLayerFilter, props);
-                queries[i] = layerQuery;
-            }
-        } catch (IllegalFilterException ex) {
-            throw new WmsException(ex, "Can't build layer queries: " + ex.getMessage(),
-                getClass().getName() + "::parseFilters");
-        } catch (java.io.IOException e) {
-            throw new WmsException(e);
-        }
-
-        return queries;
-    }
-
-    /**
-     * Builds the filter for a layer containing the BBOX filter defined by the
-     * extent queries (BBOX param).
-     *
-     * @param requestExtent The extent to filter out.
-     * @param ffactory A filterFactory to create new filters.
-     * @param schema The FeatureTypeInfo of the request of this filter.
-     *
-     * @return A custom filter of the bbox and any optional custom filters.
-     *
-     * @throws IllegalFilterException For problems making the filter.
-     */
-    private Filter buildFilter(Envelope requestExtent, Filter layerFilter, FilterFactory ffactory,
-        FeatureType schema) throws IllegalFilterException {
-        GeometryFilter bboxFilter;
-        bboxFilter = ffactory.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
-
-        BBoxExpression bboxExpr = ffactory.createBBoxExpression(requestExtent);
-        Expression geomAttExpr = ffactory.createAttributeExpression(schema,
-                schema.getDefaultGeometry().getName());
-        bboxFilter.addLeftGeometry(geomAttExpr);
-        bboxFilter.addRightGeometry(bboxExpr);
-
-        if (layerFilter != null) {
-            return bboxFilter.and(layerFilter);
-        } else {
-            return bboxFilter;
-        }
-    }
-
-    /**
-     * Tries to guesss exactly wich property names are needed to query for a
-     * given FeatureTypeInfo and the Filter that will be applied to it. By
-     * this way, only the needed propertied will be queried to the underlying
-     * FeatureSource in the hope that it will speed up the query
-     *
-     * <p>
-     * Note that just the attributes exposed by the FeatureTypeInfo will be
-     * taken in count. a FeatureTypeInfo exposes all it's attributes except if
-     * the subset of desiref exposed attributes are specified in the catalog
-     * configuration.
-     * </p>
-     *
-     * <p>
-     * This method guarantiees that at lest the default geometry attribute of
-     * <code>layer</code> will be returned.
-     * </p>
-     *
-     * @param layer The layer to process.
-     * @param filter The filter to process with.
-     *
-     * @return An array of the propertyNames needed.
-     *
-     * @throws java.io.IOException DOCUMENT ME!
-     *
-     * @task TODO: by now just returns the geometry att. Implement the rest of
-     *       the method to find the rest of attributes needed by inspecting
-     *       the filter (would be enough to get all the
-     *       AttributeExpression's?). I think that the style should be taken
-     *       in count too.
-     */
-    private String[] guessProperties(FeatureTypeInfo layer, Filter filter)
-        throws java.io.IOException {
-        FeatureType type = layer.getFeatureType();
-        List atts = new ArrayList();
-        String geom_name = type.getDefaultGeometry().getName();
-
-        if (!atts.contains(geom_name)) {
-            atts.add(geom_name);
-        }
-
-        String[] properties = (String[]) atts.toArray(new String[atts.size()]);
-
-        return properties;
-    }
-
+    
     /**
      * Gets the map request.  Used by delegate children to find out more
      * information about the request.
