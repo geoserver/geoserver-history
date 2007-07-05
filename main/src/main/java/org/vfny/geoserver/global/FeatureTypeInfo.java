@@ -571,20 +571,22 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * @throws IOException when an error occurs
      */
     public Envelope getBoundingBox() throws IOException {
+        CoordinateReferenceSystem declaredCRS = getDeclaredCRS();
+        CoordinateReferenceSystem nativeCRS = getNativeCRS();
         if ((nativeBBox == null) || nativeBBox.isNull()) {
-            CoordinateReferenceSystem crs = forcedCRS ? getDeclaredCRS() : getNativeCRS();
+            CoordinateReferenceSystem crs = forcedCRS ? declaredCRS : nativeCRS;
             nativeBBox = getBoundingBox(crs);
         }
 
         if (!(nativeBBox instanceof ReferencedEnvelope)) {
-            CoordinateReferenceSystem crs = forcedCRS ? getDeclaredCRS() : getNativeCRS();
+            CoordinateReferenceSystem crs = forcedCRS ? declaredCRS : nativeCRS;
             nativeBBox = new ReferencedEnvelope(nativeBBox, crs);
         }
         
-        if(!forcedCRS && ! ((ReferencedEnvelope) nativeBBox).getCoordinateReferenceSystem().equals(getDeclaredCRS())) {
+        if(!forcedCRS && !declaredCRS.equals(((ReferencedEnvelope) nativeBBox).getCoordinateReferenceSystem())) {
             try {
                 ReferencedEnvelope re = (ReferencedEnvelope) nativeBBox;
-                nativeBBox = re.transform(getDeclaredCRS(), true);
+                nativeBBox = re.transform(declaredCRS, true);
             } catch(Exception e) {
                 LOGGER.warning("Issues trying to transform native CRS");
             }
@@ -605,7 +607,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         CoordinateReferenceSystem originalCRS = defaultGeometry.getCoordinateSystem();
 
         try {
-            if (!CRS.equalsIgnoreMetadata(originalCRS, targetCrs)) {
+            if (targetCrs != null && !CRS.equalsIgnoreMetadata(originalCRS, targetCrs)) {
                 MathTransform xform = CRS.findMathTransform(originalCRS, targetCrs, true);
 
                 // bbox = JTS.transform(bbox, null, xform, 10);
