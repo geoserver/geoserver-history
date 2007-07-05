@@ -47,8 +47,10 @@ public class LayersKvpParser extends FlatKvpParser {
             Integer layerType = catalog.getLayerType(layerName);
 
             if (layerType == null) {
+                boolean found = false;
                 if(wms.getBaseMapLayers().containsKey(layerName)) {
                     realLayerNames.add(layerName);
+                    found = true;
                     l_counter++;
                 } else {
                     ////
@@ -65,22 +67,26 @@ public class LayersKvpParser extends FlatKvpParser {
     
                             if ((wmsPath != null) && wmsPath.matches(".*/" + layerName)) {
                                 realLayerNames.add(catalogLayerName);
+                                found = true;
                                 l_counter++;
                             }
-                        } catch (WmsException e_1) {
+                        } catch (Exception e_1) {
                             try {
                                 CoverageInfo cv = findCoverageLayer(catalogLayerName);
                                 String wmsPath = cv.getWmsPath();
     
                                 if ((wmsPath != null) && wmsPath.matches(".*/" + layerName)) {
                                     realLayerNames.add(catalogLayerName);
+                                    found = true;
                                     l_counter++;
                                 }
-                            } catch (WmsException e_2) {
+                            } catch (Exception e_2) {
                             }
                         }
                     }
                 }
+                if(!found)
+                    throw new WmsException("Could not find layer "  + layerName);
             } else {
                 realLayerNames.add(layerName);
                 l_counter++;
