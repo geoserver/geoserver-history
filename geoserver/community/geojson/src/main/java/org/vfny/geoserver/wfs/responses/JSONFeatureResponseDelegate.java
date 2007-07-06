@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
-import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.Geometry;
 import net.sf.json.JSONException;
 import org.geotools.data.FeatureLock;
 import org.geotools.feature.AttributeType;
@@ -25,17 +25,12 @@ import java.util.logging.Logger;
 
 
 /**
- * handles the encoding the results of a GetFeature or GetFeatureWithLock
+ * Handles the encoding the results of a GetFeature or GetFeatureWithLock
  * request's results to JSON
  *
  * <p>
- * The output is inspired by Sean Gillies's GeoJSON
- * http://icon.stoa.org/trac/pleiades/wiki/GeoJSON But it's been updated to
- * use Well Known Text output, as it seems a bit  more in line with the
- * standards.  One shortcoming at the moment is no SRS.  I'd prefer this on
- * the collection, instead of returning for each feature as Sean does.
- * Especially since it's easy for us to reproject in to the same SRS for all.
- * </p>
+ * The output is an implementation of the 1.0-RC1 specification of http://geojson.org
+ * As that spec gets finalized we will update
  *
  * <p>
  * I thought about adding a bounds to the featureType as well, but it seems
@@ -155,7 +150,6 @@ public class JSONFeatureResponseDelegate implements FeatureResponseDelegate {
         //it's part of the constructor, just need to hook it up.
         Writer outWriter = new BufferedWriter(new OutputStreamWriter(output));
 
-        //StringWriter outWriter = new StringWriter();
         GeoJSONBuilder jsonWriter = new GeoJSONBuilder(outWriter);
 
         // execute should of set all the header information
@@ -169,12 +163,13 @@ public class JSONFeatureResponseDelegate implements FeatureResponseDelegate {
         LOGGER.info("about to encode JSON");
 
         try {
-            jsonWriter.object().key("features");
+            jsonWriter.object().key("type").value("FeatureCollection");
+            //TODO: Add CRS stuff.
+            jsonWriter.key("members");
+            jsonWriter.array();
 
             for (int i = 0; i < resultsList.size(); i++) {
                 FeatureCollection collection = (FeatureCollection) resultsList.get(i);
-
-                jsonWriter.array();
 
                 FeatureIterator iterator = collection.features();
 
@@ -185,29 +180,55 @@ public class JSONFeatureResponseDelegate implements FeatureResponseDelegate {
                     while (iterator.hasNext()) {
                         Feature feature = iterator.next();
                         jsonWriter.object();
+                        jsonWriter.key("type").value("Feature");
                         jsonWriter.key("id");
                         jsonWriter.value(feature.getID());
 
                         fType = feature.getFeatureType();
                         types = fType.getAttributeTypes();
 
-                        for (int j = 0; j < types.length; j++) {
-                            jsonWriter.key(types[j].getName());
+                        AttributeType defaultGeomType = fType.getDefaultGeometry();
+                        jsonWriter.key("geometry");
 
+                        if (feature.getDefaultGeometry() != null) {
+                            jsonWriter.writeGeom(feature.getDefaultGeometry());
+                        } else {
+                            jsonWriter.value("null");
+                        }
+
+                        jsonWriter.key("geometry_name").value(defaultGeomType.getName());
+                        jsonWriter.key("properties");
+                        jsonWriter.object();
+
+                        for (int j = 0; j < types.length; j++) {
                             Object value = feature.getAttribute(j);
 
                             if (value != null) {
-                                if (value instanceof com.vividsolutions.jts.geom.Geometry) {
-                                    jsonWriter.writeGeom((Geometry) value);
+                                if (value instanceof Geometry) {
+                                    //This is an area of the spec where they decided to 'let
+                                    //convention evolve', that is how to handle multiple 
+                                    //geometries.  My take is to print the geometry here if
+                                    //it's not the default.  If it's the default that you already
+                                    //printed above, so you don't need it here.
+                                    if (types[j].equals(defaultGeomType)) {
+                                        //Do nothing, we wrote it above
+                                        //jsonWriter.value("geometry_name");
+                                    } else {
+                                        jsonWriter.key(types[j].getName());
+                                        jsonWriter.writeGeom((Geometry) value);
+                                    }
                                 } else {
+                                    jsonWriter.key(types[j].getName());
                                     jsonWriter.value(value);
                                 }
                             } else {
+                                jsonWriter.key(types[j].getName());
                                 jsonWriter.value("null");
                             }
                         }
 
-                        jsonWriter.endObject();
+                        jsonWriter.endObject(); //end the properties
+                        jsonWriter.endObject(); //end the feature
                     }
                 } //catch an exception here?
                 finally {

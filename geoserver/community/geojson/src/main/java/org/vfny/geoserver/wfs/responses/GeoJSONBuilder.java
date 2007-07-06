@@ -67,10 +67,13 @@ public class GeoJSONBuilder extends JSONBuilder {
                 break;
 
             case MULTILINESTRING:
+                this.array();
 
                 for (int i = 0, n = geometry.getNumGeometries(); i < n; i++) {
                     writeCoordinates(geometry.getGeometryN(i).getCoordinates());
                 }
+
+                this.endArray();
 
                 break;
 
