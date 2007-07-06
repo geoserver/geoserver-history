@@ -13,8 +13,7 @@ import java.util.Set;
 /**
  *
  */
-public class JSONFeatureResponseDelegateFactory
-    implements FeatureResponseDelegateProducerSpi {
+public class JSONFeatureResponseDelegateFactory implements FeatureResponseDelegateProducerSpi {
     static HashSet supportedFormats = new HashSet();
 
     static {

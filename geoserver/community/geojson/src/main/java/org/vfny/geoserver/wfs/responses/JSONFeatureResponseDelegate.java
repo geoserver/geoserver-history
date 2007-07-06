@@ -4,38 +4,30 @@
  */
 package org.vfny.geoserver.wfs.responses;
 
+import com.vividsolutions.jts.geom.*;
+import net.sf.json.JSONException;
 import org.geotools.data.FeatureLock;
-import org.geotools.data.FeatureResults;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wfs.requests.FeatureRequest;
-import org.json.*;
 import java.io.BufferedWriter;
-import java.io.Writer;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.io.Writer;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
-
-import com.vividsolutions.jts.geom.*;
 
 
 /**
  * handles the encoding the results of a GetFeature or GetFeatureWithLock
  * request's results to JSON
- * 
+ *
  * <p>
  * The output is inspired by Sean Gillies's GeoJSON
  * http://icon.stoa.org/trac/pleiades/wiki/GeoJSON But it's been updated to
@@ -44,7 +36,7 @@ import com.vividsolutions.jts.geom.*;
  * the collection, instead of returning for each feature as Sean does.
  * Especially since it's easy for us to reproject in to the same SRS for all.
  * </p>
- * 
+ *
  * <p>
  * I thought about adding a bounds to the featureType as well, but it seems
  * like it might be more useful to have it as a separate call, since it's
@@ -58,12 +50,11 @@ import com.vividsolutions.jts.geom.*;
  */
 public class JSONFeatureResponseDelegate implements FeatureResponseDelegate {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
     public static final String formatName = "JSON";
 
     /**
-     * the results of a getfeature request wich this object will encode as GML2
+     * the results of a getfeature request wich this object will encode as geojson
      */
     private GetFeatureResults results;
 
@@ -154,11 +145,9 @@ public class JSONFeatureResponseDelegate implements FeatureResponseDelegate {
      * @throws IOException DOCUMENT ME!
      * @throws IllegalStateException DOCUMENT ME!
      */
-    public void encode(OutputStream output)
-        throws ServiceException, IOException {
+    public void encode(OutputStream output) throws ServiceException, IOException {
         if (results == null) {
-            throw new IllegalStateException(
-                "It seems prepare() has not been called"
+            throw new IllegalStateException("It seems prepare() has not been called"
                 + " or has not succeed");
         }
 
@@ -167,7 +156,7 @@ public class JSONFeatureResponseDelegate implements FeatureResponseDelegate {
         Writer outWriter = new BufferedWriter(new OutputStreamWriter(output));
 
         //StringWriter outWriter = new StringWriter();
-        JSONWriter jsonWriter = new JSONWriter(outWriter);
+        GeoJSONBuilder jsonWriter = new GeoJSONBuilder(outWriter);
 
         // execute should of set all the header information
         // including the lockID
@@ -183,8 +172,7 @@ public class JSONFeatureResponseDelegate implements FeatureResponseDelegate {
             jsonWriter.object().key("features");
 
             for (int i = 0; i < resultsList.size(); i++) {
-                FeatureCollection collection = (FeatureCollection) resultsList
-                    .get(i);
+                FeatureCollection collection = (FeatureCollection) resultsList.get(i);
 
                 jsonWriter.array();
 
@@ -209,12 +197,11 @@ public class JSONFeatureResponseDelegate implements FeatureResponseDelegate {
                             Object value = feature.getAttribute(j);
 
                             if (value != null) {
-				
-				if (value instanceof com.vividsolutions.jts.geom.Geometry) {
-				    jsonWriter.writeGeom((Geometry)value);
-				} else {
-				    jsonWriter.value(value);
-				 }
+                                if (value instanceof com.vividsolutions.jts.geom.Geometry) {
+                                    jsonWriter.writeGeom((Geometry) value);
+                                } else {
+                                    jsonWriter.value(value);
+                                }
                             } else {
                                 jsonWriter.value("null");
                             }
@@ -233,8 +220,7 @@ public class JSONFeatureResponseDelegate implements FeatureResponseDelegate {
                 outWriter.flush();
             }
         } catch (JSONException jsonException) {
-            ServiceException serviceException = new ServiceException(results.getRequest()
-                                                                            .getHandle()
+            ServiceException serviceException = new ServiceException(results.getRequest().getHandle()
                     + " error:" + jsonException.getMessage());
             serviceException.initCause(jsonException);
             throw serviceException;
