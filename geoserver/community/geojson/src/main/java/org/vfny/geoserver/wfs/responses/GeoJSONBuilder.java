@@ -20,10 +20,8 @@ import java.io.Writer;
 
 
 /**
- * This class extends the JSONBuilder to be able to write out geometric types, as per geojson.org.
- * The current version is out of date, needs to be updated to the latest version of the spec,
- * but for now am leaving as is since we just transferred over from another json lib.
- * <p>
+ * This class extends the JSONBuilder to be able to write out geometric types.  It is coded
+ * against the 1.0-RC1 version of the spec on http://geojson.org
  *
  * @author Chris Holmes, The Open Planning Project
  * @version $Id$
@@ -49,52 +47,61 @@ public class GeoJSONBuilder extends JSONBuilder {
         int geometryType = getGeometryType(geometry);
 
         if (geometryType != MULTIGEOMETRY) {
-        	this.key("coordinates");
-        
-        	switch (geometryType) {
-        	case POINT:
-        		writeCoordinate(geometry.getCoordinate());
-        		break;
-        	case LINESTRING:
-        	case MULTIPOINT:
-        		writeCoordinates(geometry.getCoordinates());
+            this.key("coordinates");
 
-        		break;
+            switch (geometryType) {
+            case POINT:
+                writeCoordinate(geometry.getCoordinate());
 
-        	case POLYGON:
-        		writePolygon((Polygon) geometry);
+                break;
 
-        		break;
+            case LINESTRING:
+            case MULTIPOINT:
+                writeCoordinates(geometry.getCoordinates());
 
-        	case MULTILINESTRING:
-        		for (int i = 0, n = geometry.getNumGeometries(); i < n; i++) {
+                break;
+
+            case POLYGON:
+                writePolygon((Polygon) geometry);
+
+                break;
+
+            case MULTILINESTRING:
+
+                for (int i = 0, n = geometry.getNumGeometries(); i < n; i++) {
                     writeCoordinates(geometry.getGeometryN(i).getCoordinates());
                 }
-        		break;
-        	case MULTIPOLYGON:
-        		this.array();
-        		for (int i = 0, n = geometry.getNumGeometries(); i < n; i++) {
+
+                break;
+
+            case MULTIPOLYGON:
+                this.array();
+
+                for (int i = 0, n = geometry.getNumGeometries(); i < n; i++) {
                     writePolygon((Polygon) geometry.getGeometryN(i));
                 }
-        		this.endArray();
 
-            break;
-        	} 
+                this.endArray();
+
+                break;
+            }
         } else {
-        	writeGeomCollection((GeometryCollection)geometry);
+            writeGeomCollection((GeometryCollection) geometry);
         }
 
         return this.endObject();
     }
-        
-        private JSONBuilder writeGeomCollection(GeometryCollection collection) {
-        	this.array();
-        	this.key("members");
-    		for (int i = 0, n = collection.getNumGeometries(); i < n; i++) {
-                writeGeom(collection.getGeometryN(i));
-            }
-        	return this.endArray();
+
+    private JSONBuilder writeGeomCollection(GeometryCollection collection) {
+        this.array();
+        this.key("members");
+
+        for (int i = 0, n = collection.getNumGeometries(); i < n; i++) {
+            writeGeom(collection.getGeometryN(i));
         }
+
+        return this.endArray();
+    }
 
     /**
      * Write the coordinates of a geometry
@@ -106,19 +113,20 @@ public class GeoJSONBuilder extends JSONBuilder {
         throws JSONException {
         this.array();
 
-        	for (int i = 0; i < coords.length; i++) {
-        		Coordinate coord = coords[i];
-        		writeCoordinate(coord);
+        for (int i = 0; i < coords.length; i++) {
+            Coordinate coord = coords[i];
+            writeCoordinate(coord);
         }
 
         return this.endArray();
     }
-    
+
     private JSONBuilder writeCoordinate(Coordinate coord) {
-    	this.array();
-    	this.value(coord.x);
-    	this.value(coord.y);
-    	return this.endArray();
+        this.array();
+        this.value(coord.x);
+        this.value(coord.y);
+
+        return this.endArray();
     }
 
     /**
@@ -133,11 +141,10 @@ public class GeoJSONBuilder extends JSONBuilder {
         for (int i = 0, ii = geometry.getNumInteriorRing(); i < ii; i++) {
             writeCoordinates(geometry.getInteriorRingN(i).getCoordinates());
         }
+
         this.endArray(); //end the linear ring
-        //this.endObject(); //end the 
+                         //this.endObject(); //end the 
     }
-
-
 
     /** Internal representation of OGC SF Point */
     protected static final int POINT = 1;
