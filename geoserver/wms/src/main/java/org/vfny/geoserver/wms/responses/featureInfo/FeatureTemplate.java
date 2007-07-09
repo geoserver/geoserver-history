@@ -1,10 +1,9 @@
 package org.vfny.geoserver.wms.responses.featureInfo;
 
-import java.io.ByteArrayOutputStream;
+import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.logging.Logger;
 import java.util.HashMap;
@@ -15,7 +14,6 @@ import org.geoserver.template.GeoServerTemplateLoader;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
 
-import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -42,6 +40,7 @@ import freemarker.template.TemplateException;
  * For performance reasons the template lookups will be cached, so it's advised to 
  * use the same FeatureTemplate object in a loop that encodes various features, but not
  * to cache it for a long time (static reference).
+ * Moreover, FeatureTemplate is not thread safe, so instantiate one for each thread.
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  * @author Andrea Aime, TOPP
  *
@@ -65,7 +64,16 @@ public class FeatureTemplate {
         templateConfig.setObjectWrapper(new FeatureWrapper());
     }
     
+    /**
+     * Template cache used to avoid paying the cost of template lookup for each feature
+     */
     Map templateCache = new HashMap();
+    
+    /**
+     * Cached writer used for plain conversion from Feature to String. Improves performance
+     * significantly compared to an OutputStreamWriter over a ByteOutputStream. 
+     */
+    CharArrayWriter caw = new CharArrayWriter();
 
 
     /**
@@ -141,13 +149,11 @@ public class FeatureTemplate {
      * 
      * @throws IOException Any errors that occur during execution of the template.
      */
-    public String title( Feature feature ) throws IOException {
-//      ByteArrayOutputStream output = new ByteArrayOutputStream();
-        StringWriter writer = new StringWriter();
-        title(feature, writer);
-
-        return writer.toString();  //new String(output.toByteArray());
-
+    public String title(Feature feature) throws IOException {
+        caw.reset();
+        title(feature, caw);
+        
+        return caw.toString();
     }
     
     /**
@@ -158,13 +164,11 @@ public class FeatureTemplate {
      * 
      * @throws IOException Any errors that occur during execution of the template.
      */
-    public String description( Feature feature ) throws IOException {
-       
-        //ByteArrayOutputStream output = new ByteArrayOutputStream();
-        StringWriter writer = new StringWriter();
-        description( feature, writer );
-        
-        return  writer.toString();  // new String( output.toByteArray() );
+    public String description(Feature feature) throws IOException {
+        caw.reset();
+        description(feature, caw);
+
+        return caw.toString();
     }
     
     /*
