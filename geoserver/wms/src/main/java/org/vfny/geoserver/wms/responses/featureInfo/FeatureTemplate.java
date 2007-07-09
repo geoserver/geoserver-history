@@ -11,7 +11,7 @@ import org.geoserver.template.FeatureWrapper;
 import org.geoserver.template.GeoServerTemplateLoader;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureType;
-import java.io.ByteArrayOutputStream;
+import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -42,6 +42,7 @@ import java.util.Map;
  * For performance reasons the template lookups will be cached, so it's advised to 
  * use the same FeatureTemplate object in a loop that encodes various features, but not
  * to cache it for a long time (static reference).
+ * Moreover, FeatureTemplate is not thread safe, so instantiate one for each thread.
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  * @author Andrea Aime, TOPP
  *
@@ -59,7 +60,16 @@ public class FeatureTemplate {
         templateConfig.setObjectWrapper(new FeatureWrapper());
     }
     
+    /**
+     * Template cache used to avoid paying the cost of template lookup for each feature
+     */
     Map templateCache = new HashMap();
+    
+    /**
+     * Cached writer used for plain conversion from Feature to String. Improves performance
+     * significantly compared to an OutputStreamWriter over a ByteOutputStream. 
+     */
+    CharArrayWriter caw = new CharArrayWriter();
 
     /**
      * Executes the title template for a feature writing the results to an
@@ -137,10 +147,10 @@ public class FeatureTemplate {
      * @throws IOException Any errors that occur during execution of the template.
      */
     public String title(Feature feature) throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        title(feature, output);
+        caw.reset();
+        title(feature, caw);
 
-        return new String(output.toByteArray());
+        return caw.toString();
     }
 
     /**
@@ -152,10 +162,10 @@ public class FeatureTemplate {
      * @throws IOException Any errors that occur during execution of the template.
      */
     public String description(Feature feature) throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        description(feature, output);
+        caw.reset();
+        description(feature, caw);
 
-        return new String(output.toByteArray());
+        return caw.toString();
     }
 
     /*
