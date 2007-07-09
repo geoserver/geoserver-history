@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -444,7 +445,9 @@ public class Transaction {
      */
     private Map gatherElementHandlers(FeatureMap group)
         throws WFSTransactionException {
-        Map map = new HashMap();
+        //JD: use a linked hashmap since the order of elements in a transaction
+        // must be respected
+        Map map = new LinkedHashMap();
 
         for (Iterator it = group.iterator(); it.hasNext();) {
             FeatureMap.Entry entry = (FeatureMap.Entry) it.next();
