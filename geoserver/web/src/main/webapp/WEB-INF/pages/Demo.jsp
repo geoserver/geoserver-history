@@ -70,5 +70,19 @@
 			</center>
 			</td>
 		</tr>
+		
+		<tr>
+			<td width=70/>
+			<td width=600 class="label" valign="top">
+			<center><u><b><font size=+2><bean:message key="welcome.demo.georss.title"/></font></b></u><br>
+			<p>
+			<bean:message key="welcome.demo.georss.short"/><br><br>
+			<a href="../../../rss/gmaps.html" target="newwindow">Google Maps</a>&nbsp;&nbsp;&nbsp;
+			<a href="../../../rss/ymaps.html" target="newwindow">Yahoo! Maps</a>&nbsp;&nbsp;&nbsp;
+			<a href="../../../rss/ve.html" target="newwindow">Microsoft Virtual Earth</a>
+			</p>
+			</center>
+			</td>
+		</tr>
 
 </table>
