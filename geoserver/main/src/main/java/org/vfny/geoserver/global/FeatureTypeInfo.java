@@ -4,8 +4,17 @@
  */
 package org.vfny.geoserver.global;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.geoserver.feature.FeatureSourceUtils;
 import org.geotools.catalog.GeoResource;
 import org.geotools.catalog.GeoResourceInfo;
@@ -37,19 +46,11 @@ import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.LegendURLDTO;
-import org.vfny.geoserver.util.DataStoreUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
@@ -426,7 +427,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
             return realSource;
         } else {
             return GeoServerFeatureLocking.create(realSource, getFeatureType(realSource),
-                getDefinitionQuery(), forcedCRS ? getSRS(SRS) : null);
+                getDefinitionQuery(), isForcedCRS() ? getSRS(SRS) : null);
         }
     }
 
@@ -468,20 +469,22 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
      * @throws IOException when an error occurs
      */
     public Envelope getBoundingBox() throws IOException {
+        CoordinateReferenceSystem declaredCRS = getDeclaredCRS();
+        CoordinateReferenceSystem nativeCRS = getNativeCRS();
         if ((nativeBBox == null) || nativeBBox.isNull()) {
-            CoordinateReferenceSystem crs = forcedCRS ? getDeclaredCRS() : getNativeCRS();
+            CoordinateReferenceSystem crs = isForcedCRS() ? declaredCRS : nativeCRS;
             nativeBBox = getBoundingBox(crs);
         }
 
         if (!(nativeBBox instanceof ReferencedEnvelope)) {
-            CoordinateReferenceSystem crs = forcedCRS ? getDeclaredCRS() : getNativeCRS();
+            CoordinateReferenceSystem crs = isForcedCRS() ? declaredCRS : nativeCRS;
             nativeBBox = new ReferencedEnvelope(nativeBBox, crs);
         }
         
-        if(!forcedCRS && ! ((ReferencedEnvelope) nativeBBox).getCoordinateReferenceSystem().equals(getDeclaredCRS())) {
+        if(!isForcedCRS() && !declaredCRS.equals(((ReferencedEnvelope) nativeBBox).getCoordinateReferenceSystem())) {
             try {
                 ReferencedEnvelope re = (ReferencedEnvelope) nativeBBox;
-                nativeBBox = re.transform(getDeclaredCRS(), true);
+                nativeBBox = re.transform(declaredCRS, true);
             } catch(Exception e) {
                 LOGGER.warning("Issues trying to transform native CRS");
             }
@@ -502,7 +505,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
         CoordinateReferenceSystem originalCRS = defaultGeometry.getCoordinateSystem();
 
         try {
-            if (!CRS.equalsIgnoreMetadata(originalCRS, targetCrs)) {
+            if (targetCrs != null && !CRS.equalsIgnoreMetadata(originalCRS, targetCrs)) {
                 MathTransform xform = CRS.findMathTransform(originalCRS, targetCrs, true);
 
                 // bbox = JTS.transform(bbox, null, xform, 10);
@@ -1278,5 +1281,18 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
 
     public void fire(ResolveChangeEvent event) {
         // events not supported
+    }
+
+    /**
+     * Internal getter for forcedCRS computation. Always use this method to access the
+     * forcedCRS value, since it's lazily computed and this method will make sure
+     * the value is up to date 
+     */
+    private boolean isForcedCRS() throws IOException {
+        // forced CRS flag gets computed as a side effect of computing the feature type
+        // so we need to make it compute the ft if missing
+        if(ft == null)
+            getFeatureType();
+        return forcedCRS;
     }
 }
