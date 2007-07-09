@@ -103,10 +103,13 @@ public class QuickTileCache {
      * @return
      */
     Point getTileCoordinates(Envelope env, Point2D origin) {
-        double minx = env.getMinX();
-        double miny = env.getMinY();
-        int x = (int) Math.round((minx - origin.getX()) / env.getWidth());
-        int y = (int) Math.round((miny - origin.getY()) / env.getWidth());
+        // this was using the low left corner and Math.round, but turned
+        // out to be fragile when fairly zoomed in. Using the tile center
+        // and then flooring the division seems to work much more reliably.
+        double centerx = env.getMinX() + env.getWidth() / 2;
+        double centery = env.getMinY() + env.getHeight() / 2;
+        int x = (int) Math.floor((centerx - origin.getX()) / env.getWidth());
+        int y = (int) Math.floor((centery - origin.getY()) / env.getWidth());
 
         return new Point(x, y);
     }
