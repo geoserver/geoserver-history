@@ -117,7 +117,7 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
                         LOGGER.fine(new StringBuffer(layerName).append(" found").toString());
                     }
                 } catch (NoSuchElementException cex) {
-                    throw new WmsException(cex, layerName + ": no such layer on this server",
+                    throw new WmsException(layerName + ": no such layer on this server",
                         "LayerNotDefined");
                 }
 
