@@ -116,6 +116,5 @@
        </tr>
      </table>
      <div id="nodelist">Click on the map to get feature infos</div>
-  </p>
   </body>
 </html>
