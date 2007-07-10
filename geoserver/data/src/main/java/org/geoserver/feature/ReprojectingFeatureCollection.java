@@ -17,6 +17,7 @@ import org.geotools.feature.FeatureTypes;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
 import org.geotools.geometry.jts.GeometryCoordinateSequenceTransformer;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.ReferencingFactoryFinder;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.FactoryException;
@@ -181,7 +182,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
         return array;
     }
 
-    public Envelope getBounds() {
+    public ReferencedEnvelope getBounds() {
         Envelope bounds = new Envelope();
         Iterator i = iterator();
 
@@ -189,7 +190,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
             if (!i.hasNext()) {
                 bounds.setToNull();
 
-                return bounds;
+                return ReferencedEnvelope.reference(bounds);
             } else {
                 Feature first = (Feature) i.next();
                 bounds.init(first.getBounds());
@@ -203,7 +204,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
             close(i);
         }
 
-        return bounds;
+        return ReferencedEnvelope.reference(bounds);
     }
 
     public FeatureCollection collection() throws IOException {
