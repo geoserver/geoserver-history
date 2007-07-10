@@ -11,14 +11,15 @@
     -->
     <loggingLevel>CONFIG</loggingLevel>
     <loggingToFile value = "false" />
+    <logLocation>logs/geoserver.log</logLocation>
     <JaiMemoryCapacity value = "0.5" />
     <JaiMemoryThreshold value = "0.75" />
     <JaiTileThreads value = "7" />
     <JaiTilePriority value = "5" />
     <JaiRecycling value = "true" />
     <ImageIOCache value = "false" />
-    <JaiJPEGNative value = "true" />
-    <JaiPNGNative value = "true" />
+    <JaiJPEGNative value = "false" />
+    <JaiPNGNative value = "false" />
     <!--
       Sets the max number of Features returned by GetFeature
     -->
@@ -61,7 +62,7 @@
     <adminPassword>geoserver</adminPassword>
   </global>
   <services >
-    <service type = "WCS" enabled = "true" >
+    <service enabled = "true" type = "WCS" >
       <!--
         ServiceDTO elements, needed for the capabilities document
         Title and OnlineResource are the two required
@@ -71,7 +72,7 @@
       <abstract>
 This is a description of your Web Coverage Server.
      </abstract>
-      <metadataLink about = "http://geoserver.sourceforge.net/html/index.php" metadataType = "other" type = "undef" >
+      <metadataLink about = "http://geoserver.sourceforge.net/html/index.php" type = "undef" metadataType = "other" >
 	NONE
       </metadataLink>
       <keywords >
@@ -85,7 +86,7 @@ This is a description of your Web Coverage Server.
       <srsXmlStyle value = "false" />
       <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
     </service>
-    <service type = "WFS" enabled = "true" >
+    <service enabled = "true" type = "WFS" >
       <!--
         ServiceDTO elements, needed for the capabilities document
         Title and OnlineResource are the two required
@@ -113,7 +114,7 @@ data.
       <citeConformanceHacks>false</citeConformanceHacks>
       <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
     </service>
-    <service type = "WMS" enabled = "true" >
+    <service enabled = "true" type = "WMS" >
       <!--
         ServiceDTO elements, needed for the capabilities document
         Title and OnlineResource are the two required
@@ -134,6 +135,24 @@ This is a description of your Web Map Server.
       <accessConstraints>NONE</accessConstraints>
       <srsXmlStyle value = "false" />
       <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
+      <BaseMapGroups >
+        <BaseMapGroup baseMapTitle = "tiger-ny" >
+          <baseMapLayers>tiger:poly_landmarks,tiger:tiger_roads,tiger:poi</baseMapLayers>
+          <baseMapStyles></baseMapStyles>
+          <baseMapEnvelope srsName = "EPSG:4326" >
+            <pos>-74.047185 40.679648</pos>
+            <pos>-73.907005 40.882078</pos>
+          </baseMapEnvelope>
+        </BaseMapGroup>
+        <BaseMapGroup baseMapTitle = "spearfish" >
+          <baseMapLayers>sf:dem,sf:streams,sf:roads,sf:restricted,sf:archsites,sf:bugsites</baseMapLayers>
+          <baseMapStyles></baseMapStyles>
+          <baseMapEnvelope srsName = "EPSG:26713" >
+            <pos>589425.9342365642 4913959.224611808</pos>
+            <pos>609518.6719560538 4928082.949945881</pos>
+          </baseMapEnvelope>
+        </BaseMapGroup>
+      </BaseMapGroups>
       <svgAntiAlias>true</svgAntiAlias>
       <allowInterpolation>Nearest</allowInterpolation>
     </service>

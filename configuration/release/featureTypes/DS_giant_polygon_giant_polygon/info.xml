@@ -8,7 +8,8 @@
   <abstract>Generated from DS_giant_polygon</abstract>
   <numDecimals value = "8" />
   <keywords>DS_giant_polygon giant_polygon</keywords>
-  <latLonBoundingBox dynamic = "false" miny = "-90.0" maxy = "90.0" maxx = "180.0" minx = "-180.0" />
+  <latLonBoundingBox dynamic = "false" maxx = "180.0" maxy = "90.0" minx = "-180.0" miny = "-90.0" />
+  <nativeBBox dynamic = "true" />
   <!--
     the default style this FeatureTypeInfoDTO can be represented by.
     at least must contain the "default" attribute
