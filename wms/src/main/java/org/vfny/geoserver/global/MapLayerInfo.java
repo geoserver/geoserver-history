@@ -149,7 +149,10 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
             }
         } else {
             // using referenced envelope (experiment)
-            return new ReferencedEnvelope(coverage.getEnvelope(), coverage.getCrs());
+            return new ReferencedEnvelope(
+                coverage.getEnvelope().getMinimum(0),coverage.getEnvelope().getMaximum(0),
+                coverage.getEnvelope().getMinimum(1),coverage.getEnvelope().getMaximum(1),
+                coverage.getCrs());
         }
     }
 

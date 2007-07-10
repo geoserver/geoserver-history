@@ -9,6 +9,8 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.store.DataFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -38,8 +40,8 @@ public class CompositeFeatureCollection extends DataFeatureCollection {
         return null;
     }
 
-    public Envelope getBounds() {
-        return DataUtilities.bounds(this);
+    public ReferencedEnvelope getBounds() {
+        return ReferencedEnvelope.reference(DataUtilities.bounds(this));
     }
 
     public int getCount() throws IOException {

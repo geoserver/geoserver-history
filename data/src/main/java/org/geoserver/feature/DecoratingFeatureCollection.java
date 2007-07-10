@@ -13,6 +13,7 @@ import org.geotools.feature.FeatureList;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.visitor.FeatureVisitor;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.util.ProgressListener;
 import org.opengis.filter.Filter;
 import org.opengis.filter.sort.SortBy;
@@ -136,7 +137,7 @@ public class DecoratingFeatureCollection implements FeatureCollection {
         return delegate.toArray(a);
     }
 
-    public Envelope getBounds() {
+    public ReferencedEnvelope getBounds() {
         return delegate.getBounds();
     }
 
@@ -174,7 +175,15 @@ public class DecoratingFeatureCollection implements FeatureCollection {
         return delegate.getDefaultGeometry();
     }
 
+    public Geometry getPrimaryGeometry() {
+        return delegate.getPrimaryGeometry();
+    }
+    
     public void setDefaultGeometry(Geometry geometry) throws IllegalAttributeException {
         delegate.setDefaultGeometry(geometry);
+    }
+    
+    public void setPrimaryGeometry(Geometry geometry) throws IllegalAttributeException {
+        delegate.setPrimaryGeometry(geometry);
     }
 }

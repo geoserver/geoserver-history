@@ -115,7 +115,7 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
             return retval;
         }
 
-        public Envelope getBounds() {
+        public ReferencedEnvelope getBounds() {
             // we may not have the default geometry around in the reduced feature type,
             // so let's output a referenced envelope if possible
             if(wrapped.getFeatureType().getDefaultGeometry() != null) {
@@ -128,10 +128,13 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
         }
 
         public Geometry getDefaultGeometry() {
-            GeometryAttributeType defaultGeometry = type.getDefaultGeometry();
-            if(defaultGeometry == null)
-                return null;
-            return (Geometry) wrapped.getAttribute(defaultGeometry.getName());
+           return getPrimaryGeometry();
+        }
+        public Geometry getPrimaryGeometry() {
+        	 GeometryAttributeType defaultGeometry = type.getDefaultGeometry();
+             if(defaultGeometry == null)
+                 return null;
+             return (Geometry) wrapped.getAttribute(defaultGeometry.getName());
         }
 
         public FeatureType getFeatureType() {
@@ -156,6 +159,9 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
         }
 
         public void setDefaultGeometry(Geometry geometry) throws IllegalAttributeException {
+            setPrimaryGeometry(geometry);
+        }
+        public void setPrimaryGeometry(Geometry geometry) throws IllegalAttributeException  {
             throw new UnsupportedOperationException("This feature wrapper is read only");
         }
 
