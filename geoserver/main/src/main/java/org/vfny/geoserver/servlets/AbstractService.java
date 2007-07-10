@@ -555,6 +555,16 @@ public abstract class AbstractService extends HttpServlet implements Application
                 LOGGER.fine("content encoding is: " + encoding);
                 response.setHeader("Content-Disposition", disposition);
             }
+            
+           if (serviceResponse.getResponseHeaders() != null) {
+               HashMap headers = serviceResponse.getResponseHeaders();
+               Iterator iHeaders = headers.keySet().iterator();
+               String curKey;
+               while (iHeaders.hasNext()) {
+                   curKey = iHeaders.next().toString();
+                   response.addHeader(curKey, headers.get(curKey).toString());
+               }
+           }
         } catch (SocketException socketException) {
             LOGGER.fine("it seems that the user has closed the request stream: "
                 + socketException.getMessage());
