@@ -14,9 +14,16 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.map.openlayers.OpenLayersMapProducer;
 import org.w3c.dom.Document;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.xml.parsers.DocumentBuilder;
@@ -49,7 +56,25 @@ public class OpenLayersMapTemplateTest extends WMSTestSupport {
         map.put("layerName", "layer");
         template.process(map, new OutputStreamWriter(output));
 
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setValidating(false);
+        dbf.setExpandEntityReferences(false);
+        
+        DocumentBuilder docBuilder = dbf.newDocumentBuilder();
+        docBuilder.setEntityResolver(
+            new EntityResolver() {
+
+                public InputSource resolveEntity(String publicId,
+                    String systemId) throws SAXException, IOException {
+                    StringReader reader = new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                    InputSource source = new InputSource(reader);
+                    source.setPublicId(publicId); 
+                    source.setSystemId(systemId); 
+                    return source;
+                }
+            }
+        );
+
         Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
         assertNotNull(document);
 
