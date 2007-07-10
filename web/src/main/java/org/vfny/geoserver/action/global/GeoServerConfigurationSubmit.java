@@ -78,8 +78,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
 
         String baseURL = form.getProxyBaseUrl();
         String schemaBaseURL = form.getSchemaBaseURL();
-        String stringLevel = form.getLoggingLevel();
-        Level loggingLevel = Level.parse(stringLevel);
+        String log4jConfigFile = form.getLog4jConfigFile();
         String adminUserName = form.getAdminUserName();
         String adminPassword = form.getAdminPassword();
         boolean verboseExceptions = form.isVerboseExceptions();
@@ -88,10 +87,10 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
             verboseExceptions = false;
         }
 
-        boolean loggingToFile = form.isLoggingToFile();
+        boolean suppressStdOutLogging = form.isSuppressStdOutLogging();
 
-        if (!form.isLoggingToFileChecked()) {
-            loggingToFile = false;
+        if (!form.isSuppressStdOutLoggingChecked()) {
+            suppressStdOutLogging = false;
         }
 
         String logLocation = form.getLogLocation();
@@ -168,8 +167,8 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         globalConfig.setCharSet(charset);
         globalConfig.setAdminUserName(adminUserName);
         globalConfig.setAdminPassword(adminPassword);
-        globalConfig.setLoggingLevel(loggingLevel);
-        globalConfig.setLoggingToFile(loggingToFile);
+        globalConfig.setLog4jConfigFile(log4jConfigFile);
+        globalConfig.setSuppressStdOutLogging(suppressStdOutLogging);
         globalConfig.setLogLocation(logLocation);
         globalConfig.setVerboseExceptions(verboseExceptions);
         globalConfig.setJaiMemoryCapacity(jaiMemoryCapacity);

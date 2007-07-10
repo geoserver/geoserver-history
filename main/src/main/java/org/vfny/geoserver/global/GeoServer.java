@@ -5,19 +5,32 @@
 package org.vfny.geoserver.global;
 
 import com.sun.media.jai.util.SunTileCache;
+
+import org.apache.log4j.Appender;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.RollingFileAppender;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.jdbc.ConnectionPoolManager;
 import org.geotools.util.Logging;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.util.Log4jConfigurer;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.util.Requests;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.util.Enumeration;
+import java.util.Properties;
 import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
@@ -81,16 +94,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     /** Should we throw the stack traces back in responses? */
     private boolean verboseExceptions = false;
 
-    /** Default Logging level */
-    private Level loggingLevel = Logger.getLogger("org.vfny.geoserver").getLevel();
-
-    /** to log or not to log **/
-    private boolean logToFile = false;
-
-    /** to log to file or not to log to file **/
-    private boolean loggingToFile = false;
-
-    /** where to log **/
+    private String log4jConfigFile;
+    private boolean suppressStdOutLogging = false;
     private String logLocation = null;
 
     /** central log redirector controller **/
@@ -304,8 +309,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     *
     * @return String the Logging Level.
     */
-    public Level getLoggingLevel() {
-        return loggingLevel;
+    public String getLog4jConfigFile() {
+        return log4jConfigFile;
     }
 
     /**
@@ -416,17 +421,19 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             contactPerson = dto.getContact().getContactPerson();
             contactPosition = dto.getContact().getContactPosition();
             contactVoice = dto.getContact().getContactVoice();
-            loggingLevel = dto.getLoggingLevel();
-
-            loggingToFile = dto.getLoggingToFile();
+            
+            log4jConfigFile = dto.getLog4jConfigFile();
+            suppressStdOutLogging = dto.getSuppressStdOutLogging();
             logLocation = dto.getLogLocation();
-
-            //TODO: logging needs to be revisited and done a better way
-            //            try {
-            //                initLogging(loggingLevel, loggingToFile, logLocation);
-            //            } catch (IOException e) {
-            //                throw new ConfigurationException(e);
-            //            }
+            try {
+                configureGeoServerLogging(log4jConfigFile, suppressStdOutLogging, logLocation);
+            } catch (IOException ioe) {
+                if (LOGGER.isLoggable(Level.FINE)) {
+                    LOGGER.log(Level.FINE,"",ioe);
+                }
+                throw new ConfigurationException("", ioe);
+            }
+            
             memoryCapacity = dto.getJaiMemoryCapacity();
             memoryThreshold = dto.getJaiMemoryThreshold();
             tileThreads = dto.getJaiTileThreads();
@@ -517,45 +524,178 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
 
         return f;
     }
-
-    /**
-     * Initializes logging based on configuration paramters.
-     *
-     */
-    public static void initLogging(Level level, boolean logToFile, String location)
-        throws IOException {
-        Log4JFormatter.init("org.geotools", level);
-        Log4JFormatter.init("org.vfny.geoserver", level);
-
-        Logger logger = Logger.getLogger("org.vfny.geoserver");
-
-        //        Handler[] handlers = logger.getHandlers();
-        //    	Handler old = null;
-        //    	for (int i = 0; i < handlers.length; i++) {
-        //    		Handler handler = handlers[i];
-        //    		if (handler instanceof StreamHandler) {
-        //    			old = handler;
-        //    			break;
-        //    		}
-        //    			
-        //    	}
-        //    	if (old != null) {
-        //    		logger.removeHandler(old);
-        //    	}
-        if (logToFile && (location != null)) {
-            //map the location to an actual location on disk
-            File logFile = GeoServer.getLogLocation(location);
-
-            //add the new handler
-            Handler handler = new StreamHandler(new BufferedOutputStream(
-                        new FileOutputStream(logFile, true)), new SimpleFormatter());
-            handler.setLevel(level);
-            logger.addHandler(handler);
-
-            if (Logger.getLogger("org.geotools") != null) {
-                Logger.getLogger("org.geotools").addHandler(handler);
-            }
+    
+    public static boolean isGeoserverControllingLogging() {
+        URL clurl = Thread.currentThread().getContextClassLoader().getResource("commons-logging.properties");
+        File clfile;
+        if (clurl != null) {
+            clfile = new File(clurl.getFile());
+        } else {
+            LOGGER.warning("No 'commons-logging.properties' found on GeoServer's classpath.  GeoServer");
+            return false;
         }
+        
+        Properties clprops = new Properties();
+        try {
+            clprops.load(new FileInputStream(clfile));
+            if (clprops.get("org.apache.commons.logging.Log") == null) {
+                LOGGER.warning("No 'org.apache.commons.logging.Log' property found in commons-logging.");
+                return false;
+            }
+            String loggingSystem = (String)clprops.get("org.apache.commons.logging.Log");
+            if (loggingSystem.indexOf("Log4JLogger") == -1) {
+                LOGGER.warning("Non Log4JLogger commons-logging.properties detected: " + loggingSystem);
+                return false;
+            }
+            
+            //ok, so GeoServer has commons-logging set up and Log4JLogger is the commons-logging output.
+            //So geoserver can definitely control the logging setup.
+            return true;
+            
+        } catch (IOException ioe) {
+            LOGGER.warning("Error figuring out GeoServer logging configuration: " + ioe);
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.log(Level.FINE, "", ioe);
+            }
+            return false;
+        }
+        
+        
+        
+    }
+    
+    public static void configureGeoServerLogging(String log4jConfigFileStr, boolean suppressStdOutLogging, String logFileName) throws IOException, ConfigurationException {
+        
+        //to initialize logging we need to do a couple of things:
+        // 1)  Figure out whether the user has 'overridden' some configuration settings
+        // in the logging system (not using log4j in commons-logging.properties or perhaps
+        // has set up their own 'custom' log4j.properties file.
+        // 2)  If they *have*, then we don't worry about configuring logging
+        // 3)  If they haven't, then we configure logging to use the log4j config file
+        // specified, and remove console appenders if the suppressstdoutlogging is true.
+        LOGGER.info("CONFIGURING GEOSERVER LOGGING -------------------------");
+        if (!isGeoserverControllingLogging()) {
+            LOGGER.warning("GeoServer isn't controlling the logging system.");
+            return;
+        }
+        
+        if (log4jConfigFileStr == null) {
+            log4jConfigFileStr = "DEFAULT_LOGGING.properties";
+            LOGGER.warning("No log4jConfigFile defined in services.xml:  using 'DEFAULT_LOGGING.properties'");
+        }
+        
+        File log4jConfigFile = GeoserverDataDirectory.findConfigFile("loggingConfigs/" + log4jConfigFileStr);
+        
+        if (log4jConfigFile == null) {
+            //hmm, well, we don't have a log4j config file and this could be due to the fact
+            //that this is a data-dir upgrade.  We can count on the DEFAULT_LOGGING.properties file
+            //being present on the classpath, so we'll upgrade their data_dir and then use the
+            //default DEFAULT_LOGGING.properties configuration.
+            LOGGER.warning("log4jConfigFile '" + log4jConfigFileStr + "' couldn't be found in the data dir, so GeoServer will " +
+            "install the various logging config file into the data dir, and then try to find it again.");
+            
+            //this forces the data_dir/loggingConfigs directory to be present (if it wasn't already)
+            File lcdir = GeoserverDataDirectory.findCreateConfigDir("loggingConfigs");
+            
+            //now we copy in the various logging config files from the base repo location on the classpath
+            final String[] lcfiles = new String[] { "DEFAULT_LOGGING.properties",
+                    "VERBOSE_LOGGING.properties",
+                    "PRODUCTION_LOGGING.properties",
+                    "GEOTOOLS_DEVELOPER_LOGGING.properties",
+                    "GEOSERVER_DEVELOPER_LOGGING.properties" };
+            
+            for (int i = 0; i < lcfiles.length; i++) {
+                File target = new File(lcdir.getAbsolutePath() + File.separator + lcfiles[i]);
+                if (!target.exists()) {
+                    URL logConfFile = Thread.currentThread().getContextClassLoader().getResource(lcfiles[i]);
+                    copyFile(DataUtilities.urlToFile(logConfFile), target);
+                }
+            }
+            
+            //ok, the new loggingConfig directory is in-place, with all the various configs there.
+            // Is the originally configured log4jconfigfile there now?
+            log4jConfigFile = GeoserverDataDirectory.findConfigFile("loggingConfigs/" + log4jConfigFileStr);
+            if (log4jConfigFile == null) {
+                LOGGER.warning("Still couldn't find log4jConfigFile '" + log4jConfigFileStr + "'.  Using DEFAULT_LOGGING.properties instead.");
+            }
+            
+            log4jConfigFile = GeoserverDataDirectory.findConfigFile("loggingConfigs" + File.separator + "DEFAULT_LOGGING.properties");
+        }
+
+        if (log4jConfigFile == null) {
+            throw new ConfigurationException("Unable to load logging configuration '" + log4jConfigFileStr + "'.  In addition, an attempt " +
+                    "was made to create the 'loggingConfigs' directory in your data dir, and to use the DEFAULT_LOGGING configuration, but" +
+                    "this failed as well.  Is your data dir writeable?");
+        }
+        
+        InputStream loggingConfigStream = new FileInputStream(log4jConfigFile);
+        if (loggingConfigStream == null) {
+            LOGGER.warning("Couldn't find Log4J configuration file '" + log4jConfigFileStr + "' in the 'loggingConfigs' directory.");
+            return;
+        } else {
+            LOGGER.info("GeoServer logging profile '" + log4jConfigFile.getName() + "' enabled.");
+        }
+        
+        //reset logging for geotools and geoserver.
+        org.apache.log4j.Logger.getLogger("org.geotools").getLoggerRepository().resetConfiguration();
+        org.apache.log4j.Logger.getLogger("org.geoserver").getLoggerRepository().resetConfiguration();
+        org.apache.log4j.Logger.getLogger("org.vfny").getLoggerRepository().resetConfiguration();
+        
+        Appender gslf = org.apache.log4j.Logger.getRootLogger().getAppender("geoserverlogfile");
+        if (gslf != null) {
+            //clear out previous configuration
+            org.apache.log4j.LogManager.getRootLogger().removeAppender(gslf);
+        }
+        
+        
+        Properties lprops = new Properties();
+        lprops.load(loggingConfigStream);
+        PropertyConfigurator.configure(lprops);
+        
+        gslf = org.apache.log4j.Logger.getRootLogger().getAppender("geoserverlogfile");
+        if (gslf instanceof org.apache.log4j.RollingFileAppender) {
+            if (logFileName == null ) {
+                logFileName = GeoserverDataDirectory.getGeoserverDataDirectory().getAbsolutePath() + File.separator + "logs" + File.separator + "geoserver.log";
+            } else { 
+                if (!new File(logFileName).isAbsolute()) {
+                    logFileName = GeoserverDataDirectory.getGeoserverDataDirectory().getAbsolutePath() + File.separator + logFileName;
+                    LOGGER.fine("Non-absolute pathname detected for logfile.  Setting logfile relative to data dir.");
+                }
+            }
+            lprops.setProperty("log4j.appender.geoserverlogfile.File", logFileName);
+            PropertyConfigurator.configure(lprops);
+            LOGGER.info("Logging output to file '" + logFileName + "'");
+        } else if (gslf != null) {
+            LOGGER.warning("'log4j.appender.geoserverlogfile' appender is defined, but isn't a RollingFileAppender.  GeoServer won't control the file-based logging.");
+        } else {
+            LOGGER.warning("'log4j.appender.geoserverlogfile' appender isn't defined.  GeoServer won't control the file-based logging.");
+        }
+        
+        if (suppressStdOutLogging) {
+            LOGGER.warning("Suppressing StdOut logging.  If you want to see GeoServer logs, be sure to look in '" + logFileName + "'");
+            Enumeration allAppenders = org.apache.log4j.Logger.getRootLogger().getAllAppenders();
+            Appender curApp;
+            while (allAppenders.hasMoreElements()) {
+                curApp = (Appender)allAppenders.nextElement();
+                if (curApp instanceof org.apache.log4j.ConsoleAppender) {
+                    org.apache.log4j.Logger.getRootLogger().removeAppender(curApp);
+                }
+            }
+        } else {
+            LOGGER.warning("StdOut logging enabled.  Log file also output to '" + logFileName + "'");
+        }
+        LOGGER.info("FINISHED CONFIGURING GEOSERVER LOGGING -------------------------");
+    }
+    
+    
+    private static void copyFile(File source, File target) throws IOException {
+        
+        FileChannel sourceChannel = new FileInputStream(source).getChannel();
+        FileChannel targetChannel = new FileOutputStream(target).getChannel();
+        
+        sourceChannel.transferTo(0, sourceChannel.size(), targetChannel);
+        sourceChannel.close();
+        targetChannel.close();
     }
 
     public void initJAI(final double memCapacity, final double memoryThreshold,
@@ -600,7 +740,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     public Object toDTO() {
         GeoServerDTO dto = new GeoServerDTO();
         dto.setCharSet(charSet);
-        dto.setLoggingLevel(loggingLevel);
+        dto.setLog4jConfigFile(log4jConfigFile);
         dto.setMaxFeatures(maxFeatures);
         dto.setNumDecimals(numDecimals);
         dto.setSchemaBaseUrl(schemaBaseUrl);
@@ -609,7 +749,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         dto.setAdminUserName(adminUserName);
         dto.setAdminPassword(adminPassword);
         dto.setVerboseExceptions(verboseExceptions);
-        dto.setLoggingToFile(loggingToFile);
+        dto.setSuppressStdOutLogging(suppressStdOutLogging);
         dto.setLogLocation(logLocation);
         dto.setJaiMemoryCapacity(memoryCapacity);
         dto.setJaiMemoryThreshold(memoryThreshold);
@@ -700,7 +840,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         geoserver.append("\n   verbose - " + verbose);
         geoserver.append("\n   numDecimals - " + numDecimals);
         geoserver.append("\n   charSet - " + charSet);
-        geoserver.append("\n   loggingLevel - " + loggingLevel);
+        geoserver.append("\n   log4jConfigFile - " + log4jConfigFile);
         geoserver.append("\n   adminUserName - " + adminUserName);
         geoserver.append("\n   adminPassword - " + adminPassword);
 
@@ -749,15 +889,15 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     /**
      * @return True if the server is logging to file, otherwise false.
      */
-    public boolean getLoggingToFile() {
-        return loggingToFile;
+    public boolean getSuppressStdOutLogging() {
+        return suppressStdOutLogging;
     }
 
     /**
      * Toggles server logging to file.
      */
-    public void setLoggingToFile(boolean loggingToFile) {
-        this.loggingToFile = loggingToFile;
+    public void setSuppressStdOutLogging(boolean loggingToFile) {
+        this.suppressStdOutLogging = loggingToFile;
     }
 
     public JAI getJAIDefault() {

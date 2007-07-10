@@ -13,6 +13,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.logging.Level;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -186,7 +188,9 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
             response.getOutputStream().write(sb.toString().getBytes());
             response.getOutputStream().flush();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            //throw new RuntimeException(e);
+            // Hmm, not much we can do here.  I guess log the fact that we couldn't write out the exception and be done with it...
+            LOGGER.log(Level.INFO, "Problem writing exception information back to calling client:", e);
         }
     }
 }

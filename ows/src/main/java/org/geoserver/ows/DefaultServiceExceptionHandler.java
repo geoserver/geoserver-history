@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -110,7 +112,9 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
             encoder.encode(report, org.geoserver.ows.xml.v1_0.OWS.EXCEPTIONREPORT,
                 response.getOutputStream());
         } catch (Exception ex) {
-            throw new RuntimeException(ex);
+            //throw new RuntimeException(ex);
+            // Hmm, not much we can do here.  I guess log the fact that we couldn't write out the exception and be done with it...
+            LOGGER.log(Level.INFO, "Problem writing exception information back to calling client:", e);
         } finally {
             try {
                 response.getOutputStream().flush();
