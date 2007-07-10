@@ -31,6 +31,7 @@ import org.geotools.feature.Name;
 import org.geotools.feature.iso.simple.SimpleFeatureFactoryImpl;
 import org.geotools.feature.iso.type.AttributeDescriptorImpl;
 import org.geotools.feature.visitor.FeatureVisitor;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.util.ProgressListener;
 import org.geotools.xml.EMFUtils;
@@ -207,12 +208,16 @@ public class GetFeature {
             throw new UnsupportedOperationException();
         }
 
-        public Envelope getBounds() {
+        public ReferencedEnvelope getBounds() {
             throw new UnsupportedOperationException();
         }
 
         public Geometry getDefaultGeometry() {
-            throw new UnsupportedOperationException();
+            return getPrimaryGeometry();
+        }
+
+        public Geometry getPrimaryGeometry() {
+        	throw new UnsupportedOperationException();
         }
 
         public String getID() {
@@ -234,7 +239,11 @@ public class GetFeature {
         }
 
         public void setDefaultGeometry(Geometry arg0) throws IllegalAttributeException {
-            throw new UnsupportedOperationException();
+            setPrimaryGeometry(arg0);
+        }
+
+        public void setPrimaryGeometry(Geometry geometry) throws IllegalAttributeException {
+             throw new UnsupportedOperationException();
         }
     }
 
