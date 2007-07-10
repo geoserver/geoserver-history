@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.ContactConfig;
 import org.vfny.geoserver.config.GlobalConfig;
 import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO.Defaults;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +51,7 @@ public class GeoServerConfigurationForm extends ActionForm {
     private String charset;
     private String proxyBaseUrl;
     private String schemaBaseURL;
-    private String loggingLevel;
+    private String log4jConfigFile;
     private String adminUserName;
     private String adminPassword;
     private boolean verboseExceptions;
@@ -94,8 +95,8 @@ public class GeoServerConfigurationForm extends ActionForm {
     private boolean verboseExceptionsChecked;
 
     /** log to disk ? **/
-    private boolean loggingToFile;
-    private boolean loggingToFileChecked;
+    private boolean suppressStdOutLogging;
+    private boolean suppressStdOutLoggingChecked;
     private String logLocation;
     private double jaiMemoryCapacity;
     private double jaiMemoryThreshold;
@@ -131,15 +132,10 @@ public class GeoServerConfigurationForm extends ActionForm {
         adminUserName = globalConfig.getAdminUserName();
         adminPassword = globalConfig.getAdminPassword();
 
-        if (globalConfig.getLoggingLevel() == null) {
-            //@TODO - shouldn't have to do this.. should never return null
-            loggingLevel = Level.OFF.getName();
-        } else {
-            loggingLevel = globalConfig.getLoggingLevel().getName();
-        }
+        log4jConfigFile = globalConfig.getLog4jConfigFile();
 
-        loggingToFile = globalConfig.getLoggingToFile();
-        loggingToFileChecked = false;
+        suppressStdOutLogging = globalConfig.getSuppressStdOutLogging();
+        suppressStdOutLoggingChecked = false;
         logLocation = globalConfig.getLogLocation();
 
         jaiMemoryCapacity = globalConfig.getJaiMemoryCapacity();
@@ -369,8 +365,8 @@ public class GeoServerConfigurationForm extends ActionForm {
      *
      * @return Returns the loggingLevel.
      */
-    public String getLoggingLevel() {
-        return loggingLevel;
+    public String getLog4jConfigFile() {
+        return log4jConfigFile;
     }
 
     /**
@@ -378,8 +374,8 @@ public class GeoServerConfigurationForm extends ActionForm {
      *
      * @param loggingLevel The loggingLevel to set.
      */
-    public void setLoggingLevel(String loggingLevel) {
-        this.loggingLevel = loggingLevel;
+    public void setLog4jConfigFile(String s) {
+        this.log4jConfigFile = s;
     }
 
     /**
@@ -628,9 +624,9 @@ public class GeoServerConfigurationForm extends ActionForm {
      *
      * @param verbose The loggingToFile to set.
      */
-    public void setLoggingToFile(boolean loggingToFile) {
-        loggingToFileChecked = true;
-        this.loggingToFile = loggingToFile;
+    public void setSuppressStdOutLogging(boolean b) {
+        suppressStdOutLoggingChecked = true;
+        this.suppressStdOutLogging = b;
     }
 
     /**
@@ -638,8 +634,8 @@ public class GeoServerConfigurationForm extends ActionForm {
      *
      * @return Returns the loggingToFile.
      */
-    public boolean isLoggingToFile() {
-        return loggingToFile;
+    public boolean isSuppressStdOutLogging() {
+        return suppressStdOutLogging;
     }
 
     /**
@@ -647,8 +643,8 @@ public class GeoServerConfigurationForm extends ActionForm {
      *
      * @return Returns the loggingToFileChecked.
      */
-    public boolean isLoggingToFileChecked() {
-        return loggingToFileChecked;
+    public boolean isSuppressStdOutLoggingChecked() {
+        return suppressStdOutLoggingChecked;
     }
 
     /**
@@ -656,8 +652,8 @@ public class GeoServerConfigurationForm extends ActionForm {
      *
      * @param loggingToFileChecked The loggingToFileChecked to set.
      */
-    public void setLoggingToFileChecked(boolean loggingToFileChecked) {
-        this.loggingToFileChecked = loggingToFileChecked;
+    public void setSuppressStdOutLoggingChecked(boolean b) {
+        this.suppressStdOutLoggingChecked = b;
     }
 
     public double getJaiMemoryCapacity() {

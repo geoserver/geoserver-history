@@ -44,9 +44,6 @@ public final class GeoServerDTO implements DataTransferObject {
         /** Default is four decimal places. */
         public static final int NumDecimals = 4;
 
-        /** The default logging level is info. */
-        public static final Level LoggingLevel = Level.INFO;
-
         /** The default Administrator's user name (admin) */
         public static final String AdminUserName = "admin";
 
@@ -58,12 +55,7 @@ public final class GeoServerDTO implements DataTransferObject {
          * service exceptions don't look like someone 'kacked'.
          */
         public static final boolean VerboseExceptions = false;
-
-        /** Default of wether to log to disk **/
-        public static final boolean LoggingToFile = false;
-
-        /** Default logging location on disk **/
-        public static final String LogLocation = null;
+;
         public static final long JaiMemoryCapacity = 200 * 1024 * 1024;
         public static final double JaiMemoryThreshold = 0.75;
         public static final int JaiTileThreads = 7;
@@ -73,6 +65,11 @@ public final class GeoServerDTO implements DataTransferObject {
         public static final Boolean JaiJPEGNative = Boolean.TRUE;
         public static final Boolean JaiPNGNative = Boolean.TRUE;
         public static final String BaseURL = null;
+        public static final String Log4jConfigFile = null;
+        /** Default of wether to log to StdOut as well **/
+        public static final boolean SuppressStdOutLogging = false;
+        /** Default logging location on disk **/
+        public static final String LogLocation = null;
     }
 
     /** Sets the max number of Features returned by GetFeature */
@@ -165,7 +162,10 @@ public final class GeoServerDTO implements DataTransferObject {
      * seems to also use log4j.
      * </p>
      */
-    private Level loggingLevel = Defaults.LoggingLevel;
+    private String log4jConfigFile = Defaults.Log4jConfigFile;
+    
+    private boolean suppressStdOutLogging = Defaults.SuppressStdOutLogging;
+    private String logLocation = Defaults.LogLocation;
 
     /** The Server contact person and their contact information. */
     private ContactDTO contact = null;
@@ -179,11 +179,6 @@ public final class GeoServerDTO implements DataTransferObject {
     /** Whether the exceptions returned to the client should contain full stack traces */
     private boolean verboseExceptions = Defaults.VerboseExceptions;
 
-    /** to log to disk or not to log to disk **/
-    private boolean loggingToFile = Defaults.LoggingToFile;
-
-    /** Where on disk the server should log to **/
-    private String logLocation = Defaults.LogLocation;
     private double jaiMemoryCapacity = Defaults.JaiMemoryCapacity;
     private double jaiMemoryThreshold = Defaults.JaiMemoryThreshold;
     private int jaiTileThreads = Defaults.JaiTileThreads;
@@ -230,10 +225,10 @@ public final class GeoServerDTO implements DataTransferObject {
         charSet = g.getCharSet();
         schemaBaseUrl = g.getSchemaBaseUrl();
         proxyBaseUrl = g.getProxyBaseUrl();
-        loggingLevel = g.getLoggingLevel();
+        log4jConfigFile = g.getLog4jConfigFile();
         verboseExceptions = g.isVerboseExceptions();
 
-        loggingToFile = g.getLoggingToFile();
+        suppressStdOutLogging = g.getSuppressStdOutLogging();
         logLocation = g.getLogLocation();
 
         jaiMemoryCapacity = g.getJaiMemoryCapacity();
@@ -310,7 +305,7 @@ public final class GeoServerDTO implements DataTransferObject {
             return false;
         }
 
-        r = r && (loggingToFile == g.getLoggingToFile());
+        r = r && (log4jConfigFile.equals(g.getLog4jConfigFile()));
 
         if (logLocation != null) {
             r = r && logLocation.equals(g.getLogLocation());
@@ -557,8 +552,8 @@ public final class GeoServerDTO implements DataTransferObject {
      *
      * @return
      */
-    public Level getLoggingLevel() {
-        return loggingLevel;
+    public String getLog4jConfigFile() {
+        return log4jConfigFile;
     }
 
     /**
@@ -570,9 +565,8 @@ public final class GeoServerDTO implements DataTransferObject {
      *
      * @param level
      */
-    public void setLoggingLevel(Level level) {
-        //init this now so the rest of the config has correct log levels.
-        loggingLevel = level;
+    public void setLog4jConfigFile(String s) {
+        log4jConfigFile = s;
     }
 
     /**
@@ -655,15 +649,15 @@ public final class GeoServerDTO implements DataTransferObject {
     /**
      * @return True if the server is logging to file, otherwise false.
      */
-    public boolean getLoggingToFile() {
-        return loggingToFile;
+    public boolean getSuppressStdOutLogging() {
+        return suppressStdOutLogging;
     }
 
     /**
-     * Toggles server logging to file.
+     * Toggles server also sending logging stream to stdout via ConsoleLogger.
      */
-    public void setLoggingToFile(boolean loggingToFile) {
-        this.loggingToFile = loggingToFile;
+    public void setSuppressStdOutLogging(boolean b) {
+        this.suppressStdOutLogging = b;
     }
 
     public String toString() {
@@ -672,7 +666,7 @@ public final class GeoServerDTO implements DataTransferObject {
         dto.append("\n   verbose - " + verbose);
         dto.append("\n   numDecimals - " + numDecimals);
         dto.append("\n   charSet - " + charSet);
-        dto.append("\n   loggingLevel - " + loggingLevel);
+        dto.append("\n   logLocation - " + logLocation);
         dto.append("\n   adminUserName - " + adminUserName);
         dto.append("\n   adminPassword - " + adminPassword);
         dto.append("\n   contact - " + contact);

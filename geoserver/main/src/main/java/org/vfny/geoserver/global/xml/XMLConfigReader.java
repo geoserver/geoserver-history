@@ -466,35 +466,34 @@ public class XMLConfigReader {
             if (LOGGER.isLoggable(Level.FINER)) {
                 LOGGER.finer("parsing global configuration parameters");
             }
+            
+            
+            String log4jConfigFile = ReaderUtils.getChildText(globalElem, "log4jConfigFile", false);
+            geoServer.setLog4jConfigFile(log4jConfigFile);
+            
 
-            Level loggingLevel = getLoggingLevel(globalElem);
-            geoServer.setLoggingLevel(loggingLevel);
-
-            boolean loggingToFile = false;
+            boolean suppressStdOutLogging = false;
             Element elem = null;
-            elem = ReaderUtils.getChildElement(globalElem, "loggingToFile", false);
+            elem = ReaderUtils.getChildElement(globalElem, "suppressStdOutLogging", false);
 
             if (elem != null) {
-                loggingToFile = ReaderUtils.getBooleanAttribute(elem, "value", false, false);
+                suppressStdOutLogging = ReaderUtils.getBooleanAttribute(elem, "value", false, false);
             }
 
             String logLocation = ReaderUtils.getChildText(globalElem, "logLocation");
+            
+            
 
             if ((logLocation != null) && "".equals(logLocation.trim())) {
                 logLocation = null;
             }
 
-            geoServer.setLoggingToFile(loggingToFile);
+            geoServer.setSuppressStdOutLogging(suppressStdOutLogging);
             geoServer.setLogLocation(logLocation);
 
-            //init this now so the rest of the config has correct log levels.
-            /*try {
-                GeoServer.initLogging(loggingLevel, loggingToFile, logLocation);
-            } catch (IOException e) {
-                throw new ConfigurationException(e);
-            }*/
+
             if (LOGGER.isLoggable(Level.CONFIG)) {
-                LOGGER.config(new StringBuffer("logging level is ").append(loggingLevel).toString());
+                LOGGER.config(new StringBuffer("logging config is ").append(log4jConfigFile).toString());
             }
 
             if (logLocation != null) {

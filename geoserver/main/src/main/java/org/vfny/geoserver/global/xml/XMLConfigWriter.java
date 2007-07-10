@@ -191,14 +191,11 @@ public class XMLConfigWriter {
         if (g != null) {
             cw.openTag("global");
 
-            if (g.getLoggingLevel() != null) {
-                cw.comment("Defines the logging level.  Common options are SEVERE,\n"
-                    + "WARNING, INFO, CONFIG, FINER, FINEST, in order of\n"
-                    + "Increasing statements logged.");
-                cw.textTag("loggingLevel", g.getLoggingLevel().getName());
+            if (g.getLog4jConfigFile() != null) {
+                cw.textTag("log4jConfigFile", g.getLog4jConfigFile());
             }
 
-            cw.valueTag("loggingToFile", g.getLoggingToFile() + "");
+            cw.valueTag("suppressStdOutLogging", g.getSuppressStdOutLogging() + "");
 
             if (g.getLogLocation() != null) {
                 cw.textTag("logLocation", g.getLogLocation());

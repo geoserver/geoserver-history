@@ -128,9 +128,17 @@ public class GlobalConfig {
      * controls logging, the jakarta commons logging system is used by struts,
      * these names seem taken from the jdk14 logging framework and GeoServer
      * seems to also use log4j.
+     * 
+     * See http://docs.codehaus.org/display/GEOS/GSIP+13+-+Logging
+     * for how this is now implemented.
      * </p>
      */
-    private Level loggingLevel = null;
+    private String log4jConfigFile = null;
+    private boolean suppressStdOutLogging = false;
+    /** custom log location **/
+    private String logLocation = null;
+    
+    
     private String adminUserName;
     private String adminPassword;
 
@@ -140,11 +148,6 @@ public class GlobalConfig {
     /** The Server contact person and their contact information. */
     private ContactConfig contact = null;
 
-    /** to log to disk or not to log to disk **/
-    private boolean loggingToFile = false;
-
-    /** location on disk to log to **/
-    private String logLocation = null;
     private double jaiMemoryCapacity;
     private double jaiMemoryThreshold;
     private int jaiTileThreads;
@@ -210,12 +213,12 @@ public class GlobalConfig {
         charSet = g.getCharSet();
         proxyBaseUrl = g.getProxyBaseUrl();
         schemaBaseUrl = g.getSchemaBaseUrl();
-        loggingLevel = g.getLoggingLevel();
         adminUserName = g.getAdminUserName();
         adminPassword = g.getAdminPassword();
         verboseExceptions = g.isVerboseExceptions();
 
-        loggingToFile = g.getLoggingToFile();
+        log4jConfigFile = g.getLog4jConfigFile();
+        suppressStdOutLogging = g.getSuppressStdOutLogging();
         logLocation = g.getLogLocation();
 
         jaiMemoryCapacity = g.getJaiMemoryCapacity();
@@ -261,10 +264,10 @@ public class GlobalConfig {
         schemaBaseUrl = g.getSchemaBaseUrl();
         proxyBaseUrl = g.getProxyBaseUrl();
 
-        loggingLevel = g.getLoggingLevel();
         verboseExceptions = g.isVerboseExceptions();
 
-        loggingToFile = g.getLoggingToFile();
+        log4jConfigFile = g.getLog4jConfigFile();
+        suppressStdOutLogging = g.getSuppressStdOutLogging();
         logLocation = g.getLogLocation();
 
         jaiMemoryCapacity = g.getJaiMemoryCapacity();
@@ -303,12 +306,12 @@ public class GlobalConfig {
         g.setAdminPassword(adminPassword);
         g.setAdminUserName(adminUserName);
         g.setNumDecimals(numDecimals);
-        g.setLoggingLevel(loggingLevel);
         g.setCharSet(charSet);
         g.setSchemaBaseUrl(schemaBaseUrl);
         g.setVerboseExceptions(verboseExceptions);
         g.setContact((ContactDTO) contact.toDTO());
-        g.setLoggingToFile(loggingToFile);
+        g.setLog4jConfigFile(log4jConfigFile);
+        g.setSuppressStdOutLogging(suppressStdOutLogging);
         g.setLogLocation(logLocation);
         g.setJaiMemoryCapacity(jaiMemoryCapacity);
         g.setJaiMemoryThreshold(jaiMemoryThreshold);
@@ -523,8 +526,8 @@ public class GlobalConfig {
      *
      * @return
      */
-    public Level getLoggingLevel() {
-        return loggingLevel;
+    public String getLog4jConfigFile() {
+        return log4jConfigFile;
     }
 
     /**
@@ -536,8 +539,8 @@ public class GlobalConfig {
      *
      * @param level
      */
-    public void setLoggingLevel(Level level) {
-        loggingLevel = level;
+    public void setLog4jConfigFile(String s) {
+        log4jConfigFile = s;
     }
 
     /**
@@ -616,15 +619,15 @@ public class GlobalConfig {
     /**
      * @return True if the server is logging to file, otherwise false.
      */
-    public boolean getLoggingToFile() {
-        return loggingToFile;
+    public boolean getSuppressStdOutLogging() {
+        return suppressStdOutLogging;
     }
 
     /**
      * Toggles server logging to file.
      */
-    public void setLoggingToFile(boolean loggingToFile) {
-        this.loggingToFile = loggingToFile;
+    public void setSuppressStdOutLogging(boolean b) {
+        this.suppressStdOutLogging = b;
     }
 
     public double getJaiMemoryCapacity() {

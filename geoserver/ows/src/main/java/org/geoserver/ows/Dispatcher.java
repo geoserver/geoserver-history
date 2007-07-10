@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -234,6 +235,17 @@ public class Dispatcher extends AbstractController {
 
             //mark the input stream, support up to 2KB, TODO: make this configuratable
             request.input.mark(2048);
+            
+            if (logger.isLoggable(Level.FINE)) {
+                char[] req = new char[1024];
+                int read = request.input.read(req, 0, 1024);
+                if (read < 1024) {
+                    logger.fine("Raw XML request starts with: " + new String(req));
+                } else {
+                    logger.fine("Raw XML request starts with: " + new String(req) + "...");
+                }
+                request.input.reset();
+            }
         }
 
         return request;
@@ -338,7 +350,7 @@ public class Dispatcher extends AbstractController {
     Operation dispatch(Request req, Service serviceDescriptor)
         throws Throwable {
         if (req.request == null) {
-            String msg = "Could not determine request.";
+            String msg = "Could not determine geoserver request from http request " + req.httpRequest;
             throw new ServiceException(msg, "MissingParameterValue", "request");
         }
 
@@ -1121,7 +1133,7 @@ public class Dispatcher extends AbstractController {
     }
 
     void exception(Throwable t, Service service, Request request) {
-        t.printStackTrace();
+        logger.log(Level.WARNING, "", t);
 
         //wrap in service exception if necessary
         ServiceException se = null;
