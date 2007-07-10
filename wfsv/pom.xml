@@ -59,6 +59,7 @@
       <plugin>
         <groupId>org.geotools.maven</groupId>
         <artifactId>gt2-xmlcodegen</artifactId>
+	<version>${gt.version}</version>
         <configuration>
           <schemaLocation>wfsv.xsd</schemaLocation>
           <schemaSourceDirectory>
