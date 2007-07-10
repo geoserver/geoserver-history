@@ -947,6 +947,11 @@ public class Dispatcher extends AbstractController {
                 value = (String) ((String[]) entry.getValue())[0];
             }
 
+            //trim the string
+            if ( value != null ) {
+                value = value.trim(); 
+            }
+            
             //find the parser for this key value pair
             Object parsed = null;
 
