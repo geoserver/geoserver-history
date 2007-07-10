@@ -16,5 +16,5 @@
     at least must contain the "default" attribute
   -->
   <styles default = "simple_streams" />
-  <cacheinfo enabled = "false" maxage = "" />
+  <cacheinfo enabled = "true" maxage = "3600" />
 </featureType>

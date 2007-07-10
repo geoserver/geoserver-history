@@ -7,7 +7,7 @@
   <title>USA Population</title>
   <abstract>This is some census data on the states.</abstract>
   <numDecimals value = "0" />
-  <keywords>census, state boundaries, united states</keywords>
+  <keywords>census state boundaries united states</keywords>
   <latLonBoundingBox dynamic = "false" maxx = "-66.969849" maxy = "49.371735" minx = "-124.731422" miny = "24.955967" />
   <nativeBBox dynamic = "true" />
   <!--
@@ -15,5 +15,5 @@
     at least must contain the "default" attribute
   -->
   <styles default = "population" />
-  <cacheinfo enabled = "false" />
+  <cacheinfo enabled = "true" maxage = "3600" />
 </featureType>
