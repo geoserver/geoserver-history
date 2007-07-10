@@ -31,7 +31,8 @@ function StyledLayerDescriptor() {
 StyledLayerDescriptor.prototype.toString = function() {
     var str = this.name.toString() + this.title.toString() + this.abs.toString() + this.namedLayer.toString() + this.userLayer.toString();
     if (str.length != 0)
-	return '<?xml version="1.0" encoding="UTF-8"?>\n<StyledLayerDescriptor version="1.0.0">\n' + str + '</StyledLayerDescriptor>\n';
+	// what encoding? UTF-8, ISO-8859-1
+	return '<?xml version="1.0" encoding="UTF-8"?>\n<StyledLayerDescriptor version="1.0.0" xsi:schemalocation="http://www.opengis.net/sld/StyledLayerDescriptor.xsd" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n' + str + '</StyledLayerDescriptor>\n';
     else
 	return '';
 }
@@ -389,7 +390,7 @@ SemanticTypeIdentifier.prototype.toString = function () {
 	// defines a graphic symbol to be displayed in the legend for this rule
 	this.legendGrahpic;
 	
-	// may only have 1 filter OR 1 ElseFilter
+	// choice: may only have 1 filter OR 1 ElseFilter
 	// <Filter>
 	// optional
 	this.filter;
@@ -445,59 +446,579 @@ Rule.prototype.toString = function () {
 }
 
 // LegendGraphic Class
-    
+    function LegendGraphic() {
+	// <Graphic>
+	// required
+	this.graphic;
+    }
+
+LegendGraphic.prototype.toString = function () {
+    var str = this.graphic.toString();
+    if (str.length != 0)
+	return '<LegendGraphic>\n' + str + '</LegendGraphic>\n';
+    else 
+	return '';
+}
 
 // Graphic Class
-    
+    function Graphic() {
+	// <ExternalGraphic>
+	// optional
+	// specifies a URI for an external image
+	this.externalGraphic;
+	
+	// <Mark>
+	// optional
+	// describes an image
+	this.mark;
+
+	// <Opacity>
+	// optional
+	// percentage opacity
+	this.opacity;
+	
+	// <Size>
+	// optional
+	// size in pixels
+	this.size;
+	
+	// <Rotation>
+	// optional
+	// clockwise rotation in degrees
+	this.rotation;
+    }
+
+Graphic.prototype.toString = function () {
+    var str = this.externalGraphic.toString() + this.mark.toString() + this.opacity.toString() + this.size.toString() + this.rotation.toString();
+    if (str.length != 0)
+	return '<Graphic>\n' + str + '</Graphic>\n';
+    else
+	return '';
+}
+  
 // ExternalGraphic Class
-    
+    function ExternalGraphic() {
+	// <OnlineResource>
+	// required
+	// defines the URI
+	this.onlineResource;
+	
+	// <Format>
+	// required
+	// string describing the type of the resource
+	// i.e. image/png
+	this.format;
+    }
+
+ExternalGraphic.prototype.toString = function () {
+    var str = this.onlineResource.toString() + this.format.toString();
+    if (str.length != 0)
+	return '<ExternalGraphic>\n' + str + '</ExternalGraphic>\n';
+    else
+	return '';
+}
+
 // OnlineResource Class
+    function OnlineResource(value) {
+	// href
+	this.value = value.toString();
+    }
+
+OnlineResource.prototype.toString = function () {
+    var str = '<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="' + this.value + '"/>\n'
+    if (this.value.length != 0)
+	return str;
+    else
+	return '';
+}
 
 // Format Class
+    function Format(value) {
+	// format string
+	// e.g. image/png
+	this.value = value.toString();
+    }
+
+Format.prototype.toString = function () {
+    if (this.value.length != 0)
+	return '<Format>' + this.value + '</Format>\n';
+    else
+	return '';
+}
 
 // Mark Class
+    function Mark() {
+	// <WellKnownName>
+	// optional
+	// identifies an existing mark by name
+	this.wellKnownName;
+	
+	// <Fill>
+	// optional
+	// describes a fill for the Mark
+	this.fill;
+	
+	// <Stroke>
+	// optional
+	// describes a stroke for the Mark
+	this.stroke;
+    }
+
+Mark.prototype.toString = function () {
+    var str = this.wellKnownName.toString() + this.fill.toString() + this.stroke.toString();
+    if (this.str.length != 0) 
+	return '<Mark>\n' + str + '</Mark>\n';
+    else
+	return '';
+}
 
 // WellKnownName Class
+    function WellKnownName(value) {
+	this.value = value.toString();
+    }
+
+WellKnownName.prototype.toString = function () {
+    if (this.value.length != 0)
+	return '<WellKnownName>' + this.value + '</WellKnownName>\n';
+    else
+	return '';
+}
 
 // Fill Class
+    function Fill() {
+	// <GraphicFill>
+	this.graphicFill;
+	
+	// CssParameters
+	this.cssParameterFill;
+	this.cssParameterFillOpacity;
+    }
 
+Fill.prototype.toString() = function () {
+    var str = this.graphicFill.toString() + this.cssParameterFill.toString() + this.cssParameterFillOpacity.toString();
+    if (str.length != 0)
+	return '<Fill>\n' + str + '</Fill>\n';
+    else 
+	return '';
+}
+    
 // GraphicFill Class
+    function GraphicFill() {
+	// <Graphic>
+	this.graphic;
+    }
 
-// CssParameter Class (for fill, stroke, and font parameters)
+GraphicFill.prototype.toString() = function () {
+    var str = this.graphic.toString();
+    if (str.length != 0)
+	return '<GraphicFill>\n' + str + '</GraphicFill>\n';
+    else 
+	return '';    
+}
+
+// CssParameter Classes (for fill, stroke, and font parameters)
+    function CssParameterFill(value) {
+	this.value = value.toString();
+    }
+
+CssParameterFill.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<CssParameter name="fill">' + this.value + '</CssParameter>\n';
+    else 
+	return '';    
+}
+    function CssParameterFillOpacity(value) {
+	this.value = value.toString();
+    }
+
+CssParameterFillOpacity.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<CssParameter name="fill-opacity">' + this.value + '</CssParameter>\n';
+    else 
+	return '';    
+}
+    function CssParameterStroke(value) {
+	this.value = value.toString();
+    }
+
+CssParameterStroke.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<CssParameter name="stroke">' + this.value + '</CssParameter>\n';
+    else 
+	return '';    
+}
+    function CssParameterStrokeOpacity(value) {
+	this.value = value.toString();
+    }
+
+CssParameterStrokeOpacity.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<CssParameter name="stroke-opacity">' + this.value + '</CssParameter>\n';
+    else 
+	return '';    
+}
+    function CssParameterStrokeWidth(value) {
+	this.value = value.toString();
+    }
+
+CssParameterStrokeWidth.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<CssParameter name="stroke-width">' + this.value + '</CssParameter>\n';
+    else 
+	return '';    
+}
+    function CssParameterStrokeLineJoin(value) {
+	this.value = value.toString();
+    }
+
+CssParameterStrokeLineJoin.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<CssParameter name="stroke-linejoin">' + this.value + '</CssParameter>\n';
+    else 
+	return '';    
+}
+    function CssParameterStrokeLineCap(value) {
+	this.value = value.toString();
+    }
+
+CssParameterStrokeLineCap.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<CssParameter name="stroke-linecap">' + this.value + '</CssParameter>\n';
+    else 
+	return '';    
+}
+    function CssParameterStrokeDashArray(value) {
+	this.value = value.toString();
+    }
+
+CssParameterStrokeDashArray.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<CssParameter name="stroke-dasharray">' + this.value + '</CssParameter>\n';
+    else 
+	return '';    
+}
+    function CssParameterStrokeDashOffset(value) {
+	this.value = value.toString();
+    }
+
+CssParameterStrokeDashOffset.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<CssParameter name="stroke-dashoffset">' + this.value + '</CssParameter>\n';
+    else 
+	return '';    
+}
+    function CssParameterFontFamily(value) {
+	this.value = value.toString();
+    }
+
+CssParameterFontFamily.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<CssParameter name="font-family">' + this.value + '</CssParameter>\n';
+    else 
+	return '';    
+}
+    function CssParameterFontStyle(value) {
+	this.value = value.toString();
+    }
+
+CssParameterFontStyle.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<CssParameter name="font-style">' + this.value + '</CssParameter>\n';
+    else 
+	return '';    
+}
+    function CssParameterFontWeight(value) {
+	this.value = value.toString();
+    }
+
+CssParameterFontWeight.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<CssParameter name="font-weight">' + this.value + '</CssParameter>\n';
+    else 
+	return '';    
+}
+    function CssParameterFontSize(value) {
+	this.value = value.toString();
+    }
+
+CssParameterFontSize.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<CssParameter name="font-size">' + this.value + '</CssParameter>\n';
+    else 
+	return '';    
+}
 
 // Stroke Class
+    function Stroke() {
+	// choice: 0 or 1 of 1: GraphicFill, GraphicStroke
+	
+	// <GraphicFill>
+	this.graphicFill;
+	
+	// <GraphicStroke>
+	this.graphicStroke;
+    }
+
+Stroke.prototype.toString() = function () {
+    var str = this.graphicFill.toString() + this.graphicStroke.toString();
+    if (str.length != 0)
+	return '<Stroke>\n' + str + '</Stroke>\n';
+    else 
+	return '';    
+}    
 
 // GraphicStroke Class
+    function GraphicStroke() {
+	// <Graphic>
+	this.graphic;
+    }
+
+GraphicStroke.prototype.toString() = function () {
+    var str = this.graphic.toString();
+    if (str.length != 0)
+	return '<GraphicStroke>\n' + str + '</GraphicStroke>\n';
+    else 
+	return '';    
+}
 
 // Opacity Class
+    function Opacity(value) {
+	this.value = value.toString();
+    }
+
+Opacity.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<Opacity>' + this.value + '</Opacity>\n';
+    else 
+	return '';    
+}
 
 // Size Class
+    function Size(value) {
+	this.value = value.toString();
+    }
+
+Size.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<Size>' + this.value + '</Size>\n';
+    else 
+	return '';    
+}
 
 // Rotation Class
+    function Rotation(value) {
+	this.value = value.toString();
+    }
 
+Rotation.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<Rotation>' + this.value + '</Rotation>\n';
+    else 
+	return '';    
+}
+    
 // MinScaleDenominator Class
+    function MinScaleDenominator(value) {
+	this.value = value.toString();
+    }
+
+MinScaleDenominator.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<MinScaleDenominator>' + this.value + '</MinScaleDenominator>\n';
+    else 
+	return '';    
+}
 
 // MaxScaleDenominator Class
+    function MaxScaleDenominator(value) {
+	this.value = value.toString();
+    }
+
+MaxScaleDenominator.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<MaxScaleDenominator>' + this.value + '</MaxScaleDenominator>\n';
+    else 
+	return '';    
+}
 
 // LineSymbolizer Class
+    function LineSymbolizer() {
+	// <Geometry>
+	// optional
+	this.geometry;
+	
+	// <Stroke>
+	// optional
+	this.stroke;
+    }
+
+LineSymbolzier.prototype.toString() = function () {
+    var str = this.geometry.toString() + this.stroke.toString;
+    if (str.length != 0)
+	return '<LineSymbolizer>\n' + str + '</LineSymbolizer>\n';
+    else 
+	return '';    
+}
 
 // Geometry Class
+    function Geometry() {
+	// <PropertyName>
+	this.propertyName;
+    }
+
+Geometry.prototype.toString() = function () {
+    var str = this.propertyName.toString();
+    if (str.length != 0)
+	return '<Geometry>\n' + str + '</Geometry>\n';
+    else 
+	return '';    
+}
 
 // PropertyName Class
+    function PropertyName(value) {
+	this.value = value.toString();
+    }
+
+PropertyName.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<ogc:PropertyName>' + this.value + '</ogc:PropertyName>\n';
+    else 
+	return '';    
+}
 
 // PolygonSymbolizer Class
+    function PolygonSymbolizer() {
+	// <Geometry>
+	// optional
+	this.geometry;
+	
+	// <Fill>
+	// optional
+	this.fill;
+
+	// <Stroke>
+	// optional
+	this.stroke;
+    }
+
+PolygonSymbolizer.prototype.toString() = function () {
+    var str = this.geometry.toString() + this.fill.toString() + this.stroke.toString();
+    if (str.length != 0)
+	return '<PolygonSymbolizer>\n' + str + '</PolygonSymbolizer>\n';
+    else 
+	return '';    
+}
 
 // PointSymbolizer Class
+    function PointSymbolizer() {
+	// <Geometry>
+	// optional
+	this.geometry;
+	
+	// <Graphic>
+	// optional
+	this.graphic;
+    }
+
+PointSymbolizer.prototype.toString() = function () {
+    var str = this.geometry.toString() + this.graphic.toString();
+    if (str.length != 0)
+	return '<PointSymbolizer>\n' + str + '</PointSymbolizer>\n';
+    else 
+	return '';    
+}
 
 // TextSymbolizer Class
+    function TextSymbolizer() {
+	// <Geometry>
+	// optional
+	this.geometry;
+
+	// <Label>
+	// optional
+	this.label;
+    }
+
+TextSymbolizer.prototype.toString() = function () {
+    var str = this.geometry.toString() + this.label.toString();
+    if (str.length != 0)
+	return '<TextSymbolizer>\n' + str + '</TextSymbolizer>\n';
+    else 
+	return '';    
+}
 
 // Label Class
+    function Label(value) {
+	this.value = value.toString();
+    }
+
+Label.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<Label>' + this.value + '</Label>\n';
+    else 
+	return '';    
+}
 
 // Font Class
+    function Font() {
+	// Font CssParameters
+	// optional
+	this.cssParameterFontFamily;
+	this.cssParameterFontStyle;
+	this.cssParameterFontWeight;
+	this.cssParameterFontSize;
+    }
+
+Font.prototype.toString() = function () {
+    var str = this.cssParameterFontFamily.toString() + this.cssParameterFontStyle.toString() + this.cssParameterFontWeight.toString() + this.cssParameterFontSize.toString();
+    if (str.length != 0)
+	return '<Font>\n' + str + '</Font>\n';
+    else 
+	return '';    
+}
 
 // LabelPlacement Class
+    function LabelPlacement() {
+	//choice: 1 of 1: PointPlacement, LinePlacement
+	// <PointPlacement>
+	// optional
+	this.pointPlacement;
+
+	// <LinePlacement>
+	// optional
+	this.linePlacement;
+    }
+
+LabelPlacement.prototype.toString() = function () {
+    var str = this.pointPlacement.toString() + this.LinePlacement.toString();
+    if (str.length != 0)
+	return '<LabelPlacement>\n' + str + '</LabelPlacement>\n';
+    else 
+	return '';    
+}
 
 // PointPlacement Class
+    function PointPlacement() {
+	// <AnchorPoint>
+	// optional
+	this.anchorPoint;
+
+	// <Displacement>
+	// optional
+	this.displacement;
+	
+	// <Rotation>
+	// optional
+	this.rotation;
+    }
+
+TextSymbolizer.prototype.toString() = function () {
+    var str = this.geometry.toString() + this.label.toString();
+    if (str.length != 0)
+	return '<TextSymbolizer>\n' + str + '</TextSymbolizer>\n';
+    else 
+	return '';    
+}
 
 // AnchorPoint Class
 
