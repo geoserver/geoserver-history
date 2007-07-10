@@ -115,6 +115,17 @@
     <enabled>false</enabled>
    </releases>
   </pluginRepository>
+  <pluginRepository>
+   <id>refractions-plugins</id>
+   <name>refractions-plugins</name>
+   <url>http://lists.refractions.net/m2/</url>
+   <snapshots>
+    <enabled>true</enabled>
+   </snapshots>
+   <releases>
+    <enabled>false</enabled>
+   </releases>
+  </pluginRepository>
  </pluginRepositories>
 
  <dependencyManagement>
