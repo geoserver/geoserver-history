@@ -1,9 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <#-- 
      All numerical values use the ?c "computer audience" built-in to avoid 
      freemarker inserting thousands separators
    -->
   <head>
+     <title>OpenLayers map preview</title>
      <style type="text/css">
       #map {
         width: ${request.width?c}px;
@@ -12,7 +16,8 @@
       }
      </style>
      
-     <script src="${baseUrl}/openlayers/OpenLayers.js"></script>
+     <script src="${baseUrl}/openlayers/OpenLayers.js" type="text/javascript">
+     </script>
      <script defer="defer" type="text/javascript">
        var map;
        var untiled;
@@ -94,7 +99,7 @@
   <body onload="init()">
      <table>
        <tr>
-         <td width="40" valign="center" rowspan="3"><div id="nav"></div></td>
+         <td style="width:40px" valign="middle" rowspan="3"><div id="nav"></div></td>
          <td colspan="3" align="right">
            <!-- Switch layers when links are pressed -->
            <a id="untiledLink" href="#" onclick="map.removeLayer(tiled);map.addLayer(untiled)">Untiled</a>
@@ -111,5 +116,6 @@
        </tr>
      </table>
      <div id="nodelist">Click on the map to get feature infos</div>
+  </p>
   </body>
 </html>
