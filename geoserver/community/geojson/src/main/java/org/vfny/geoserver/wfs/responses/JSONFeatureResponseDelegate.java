@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  * request's results to JSON
  *
  * <p>
- * The output is an implementation of the 1.0-RC1 specification of http://geojson.org
+ * The output is an implementation of the 'Draft 2' specification of http://geojson.org
  * As that spec gets finalized we will update
  *
  * <p>
@@ -118,7 +118,7 @@ public class JSONFeatureResponseDelegate implements FeatureResponseDelegate {
      * @return DOCUMENT ME!
      */
     public String getContentType(GeoServer gs) {
-        return "text/plain"; //todo: change to application/javascript?
+        return "applications/json"; //This seems to be an official mime type, let's see how it works
     }
 
     /**
