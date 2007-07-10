@@ -15,5 +15,5 @@
     at least must contain the "default" attribute
   -->
   <styles default = "tiger_roads" />
-  <cacheinfo enabled = "false" />
+  <cacheinfo enabled = "true" maxage = "3600" />
 </featureType>
