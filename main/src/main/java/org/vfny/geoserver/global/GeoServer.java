@@ -573,7 +573,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         // 2)  If they *have*, then we don't worry about configuring logging
         // 3)  If they haven't, then we configure logging to use the log4j config file
         // specified, and remove console appenders if the suppressstdoutlogging is true.
-        LOGGER.info("CONFIGURING GEOSERVER LOGGING -------------------------");
+        LOGGER.fine("CONFIGURING GEOSERVER LOGGING -------------------------");
         if (!isGeoserverControllingLogging()) {
             LOGGER.warning("GeoServer isn't controlling the logging system.");
             return;
@@ -664,7 +664,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             }
             lprops.setProperty("log4j.appender.geoserverlogfile.File", logFileName);
             PropertyConfigurator.configure(lprops);
-            LOGGER.info("Logging output to file '" + logFileName + "'");
+            LOGGER.fine("Logging output to file '" + logFileName + "'");
         } else if (gslf != null) {
             LOGGER.warning("'log4j.appender.geoserverlogfile' appender is defined, but isn't a RollingFileAppender.  GeoServer won't control the file-based logging.");
         } else {
@@ -684,7 +684,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         } else {
             LOGGER.warning("StdOut logging enabled.  Log file also output to '" + logFileName + "'");
         }
-        LOGGER.info("FINISHED CONFIGURING GEOSERVER LOGGING -------------------------");
+        LOGGER.fine("FINISHED CONFIGURING GEOSERVER LOGGING -------------------------");
     }
     
     
