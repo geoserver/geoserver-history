@@ -86,7 +86,7 @@ public class LayersKvpParser extends FlatKvpParser {
                     }
                 }
                 if(!found)
-                    throw new WmsException("Could not find layer "  + layerName);
+                    throw new WmsException("Could not find layer "  + layerName,"LayerNotDefined");
             } else {
                 realLayerNames.add(layerName);
                 l_counter++;
