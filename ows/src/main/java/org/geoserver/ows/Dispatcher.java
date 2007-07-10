@@ -593,7 +593,7 @@ public class Dispatcher extends AbstractController {
                     req.httpResponse.addHeader(headers[i][0], headers[i][1]);
                 }
             }
-
+            
             //TODO: initialize any header params (gzip,deflate,etc...)
             OutputStream output = outputStrategy.getDestination(req.httpResponse);
             response.write(result, output, opDescriptor);

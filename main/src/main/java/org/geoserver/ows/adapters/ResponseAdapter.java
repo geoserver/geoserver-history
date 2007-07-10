@@ -12,6 +12,9 @@ import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.GeoServer;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -55,5 +58,20 @@ public class ResponseAdapter extends org.geoserver.ows.Response {
 
         //write the response
         delegate.writeTo(output);
+    }
+    
+    public String[][] getHeaders(Object value, Operation operation) throws ServiceException {
+        Response delegate = (Response) value;
+        HashMap map = delegate.getResponseHeaders();
+        if(map == null || map.isEmpty())
+            return null;
+        
+        String[][] headers = new String[map.size()][2];
+        List keys = new ArrayList(map.keySet());
+        for (int i = 0; i < headers.length; i++) {
+            headers[i][0] = (String) keys.get(i);
+            headers[i][1] = (String) map.get(keys.get(i));
+        }
+        return headers;
     }
 }

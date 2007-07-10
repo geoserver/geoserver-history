@@ -374,7 +374,7 @@ public class GetMapResponse implements Response {
             this.delegate.produceMap(map);
 
             if (cachingPossible) {
-                responseHeaders.put("Cache-Control: max-age", maxAge + "s");
+                responseHeaders.put("Cache-Control",  "max-age=" + maxAge + ", must-revalidate");
             }
 
             String contentDisposition = this.delegate.getContentDisposition();
