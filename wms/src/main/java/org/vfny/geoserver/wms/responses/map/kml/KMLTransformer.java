@@ -16,10 +16,6 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.filter.BBoxExpression;
-import org.geotools.filter.Expression;
-import org.geotools.filter.Filter;
-import org.geotools.filter.FilterFactory;
-import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
@@ -27,6 +23,8 @@ import org.geotools.referencing.CRS;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -34,6 +32,8 @@ import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.ContentHandler;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -299,8 +299,7 @@ public class KMLTransformer extends TransformerBase {
                 aoi = aoi.transform(sourceCrs, true);
             }
 
-            BBoxExpression rightBBox = filterFactory.createBBoxExpression(aoi);
-            Filter filter = createBBoxFilter(schema, rightBBox);
+            Filter filter = createBBoxFilter(schema, aoi);
 
             // now build the query using only the attributes and the bounding
             // box needed
@@ -339,32 +338,24 @@ public class KMLTransformer extends TransformerBase {
          *         its corresponding <code>GeometryFilter</code>.
          * @throws IllegalFilterException if something goes wrong creating the filter
          */
-        Filter createBBoxFilter(FeatureType schema, BBoxExpression bbox)
+        Filter createBBoxFilter(FeatureType schema, Envelope bbox)
             throws IllegalFilterException {
-            Filter filter = null;
-
+            List filters = new ArrayList();
             for (int j = 0; j < schema.getAttributeCount(); j++) {
                 AttributeType attType = schema.getAttributeType(j);
 
                 if (attType instanceof GeometryAttributeType) {
-                    GeometryFilter gfilter = filterFactory.createGeometryFilter(Filter.GEOMETRY_BBOX);
-
-                    // TODO: how do I get the full xpath of an attribute should
-                    // feature composition be used?
-                    Expression left = filterFactory.createAttributeExpression(schema,
-                            attType.getName());
-                    gfilter.addLeftGeometry(left);
-                    gfilter.addRightGeometry(bbox);
-
-                    if (filter == null) {
-                        filter = gfilter;
-                    } else {
-                        filter = filter.or(gfilter);
-                    }
+                    Filter gfilter = filterFactory.bbox(attType.getLocalName(), bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), null);
+                    filters.add(gfilter);
                 }
             }
 
-            return filter;
+            if(filters.size() == 0)
+                return Filter.INCLUDE;
+            else if(filters.size() == 1)
+                return (Filter) filters.get(0);
+            else
+                return filterFactory.or(filters);
         }
     }
 }
