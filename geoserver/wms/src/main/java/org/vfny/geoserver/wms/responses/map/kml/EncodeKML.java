@@ -9,17 +9,12 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
-import org.geotools.factory.Hints;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.GeoTools;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
-import org.geotools.filter.BBoxExpression;
-import org.geotools.filter.Expression;
-import org.geotools.filter.Filter;
-import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
-import org.geotools.filter.GeometryFilter;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.image.ImageWorker;
@@ -28,6 +23,8 @@ import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.wms.WMSMapContext;
 import java.awt.AlphaComposite;
@@ -41,6 +38,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,10 +65,6 @@ public class EncodeKML {
     /** the KML closing element */
     private static final String KML_FOOTER = "</kml>\n";
 
-    static {
-        Hints hints = new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
-    }
-
     /**
      * Map context document - layers, styles aoi etc.
      *
@@ -88,7 +82,7 @@ public class EncodeKML {
     private KMLWriter writer;
 
     /** Filter factory for creating bounding box filters */
-    private FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
+    private FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
     /** Flag to be monotored by writer loops */
     private boolean abortProcess;
@@ -338,8 +332,7 @@ public class EncodeKML {
                     aoi = aoi.transform(schema.getDefaultGeometry().getCoordinateSystem(), true);
                 }
 
-                BBoxExpression rightBBox = filterFactory.createBBoxExpression(aoi);
-                filter = createBBoxFilters(schema, attributes, rightBBox);
+                filter = createBBoxFilters(schema, attributes, aoi);
 
                 // now build the query using only the attributes and the bounding
                 // box needed
@@ -541,18 +534,16 @@ public class EncodeKML {
      *
      * @param schema the layer's feature source schema
      * @param attributes set of needed attributes
-     * @param bbox the expression holding the target rendering bounding box
+     * @param bbox the rendering bounding box
      * @return an or'ed list of bbox filters, one for each geometric attribute in
      *         <code>attributes</code>. If there are just one geometric attribute, just returns
      *         its corresponding <code>GeometryFilter</code>.
      * @throws IllegalFilterException if something goes wrong creating the filter
      */
-    private Filter createBBoxFilters(FeatureType schema, String[] attributes, BBoxExpression bbox)
+    private Filter createBBoxFilters(FeatureType schema, String[] attributes, Envelope bbox)
         throws IllegalFilterException {
-        Filter filter = null;
-
+        List filters = new ArrayList();
         final int length = attributes.length;
-
         for (int j = 0; j < length; j++) {
             AttributeType attType = schema.getAttributeType(attributes[j]);
 
@@ -571,22 +562,16 @@ public class EncodeKML {
             }
 
             if (attType instanceof GeometryAttributeType) {
-                GeometryFilter gfilter = filterFactory.createGeometryFilter(Filter.GEOMETRY_BBOX);
-
-                // TODO: how do I get the full xpath of an attribute should
-                // feature composition be used?
-                Expression left = filterFactory.createAttributeExpression(schema, attType.getName());
-                gfilter.addLeftGeometry(left);
-                gfilter.addRightGeometry(bbox);
-
-                if (filter == null) {
-                    filter = gfilter;
-                } else {
-                    filter = filter.or(gfilter);
-                }
+                Filter gfilter = filterFactory.bbox(attType.getLocalName(), bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), null);
+                filters.add(gfilter);
             }
         }
 
-        return filter;
+        if(filters.size() == 0)
+            return Filter.INCLUDE;
+        else if(filters.size() == 1)
+            return (Filter) filters.get(0);
+        else
+            return filterFactory.or(filters);
     }
 }

@@ -147,7 +147,7 @@ public class QueryTypeBinding extends AbstractComplexBinding {
         Filter filter = (Filter) node.getChildValue(Filter.class);
 
         if (filter == null) {
-            filter = (Filter) org.geotools.filter.Filter.NONE;
+            filter = (Filter) Filter.INCLUDE;
         }
 
         queryType.setFilter(filter);
