@@ -397,7 +397,7 @@ public class GetFeature {
 
             //if the crs are not equal, then reproject
             if (!crs.equals(target)) {
-                dataQuery.setCoordinateSystemReproject(crs);
+                dataQuery.setCoordinateSystemReproject(target);
             }
         }
 
