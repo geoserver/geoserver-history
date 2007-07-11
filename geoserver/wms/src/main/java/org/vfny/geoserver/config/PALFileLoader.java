@@ -18,7 +18,29 @@ import java.util.logging.Logger;
  * I made a real minor extension to the usual form of a JASC pal file which
  * allows us to provide values in the #ffffff or 0Xffffff hex form.
  * 
- * @author Simone Giannecchini - GeoSolutions
+ * <p>
+ * Note that this kind of file does not support explicitly setting transparent
+ * pixel. However I have implemented this workaround, if you use less than 256
+ * colors in your palette I will accordingly set the transparent pixel to the
+ * first available position in the palette, which is palette_size. If you use
+ * 256 colors no transparency will be used for the image we generate.
+ * 
+ * <p>
+ * <strong>Be aware</strong> that IrfanView does not always report correctly
+ * the size of the palette it exports. Be ready to manually correct the number
+ * of colors reported.
+ * 
+ * <p>
+ * Here is an explanation of what a JASC pal file should lokk like:
+ * 
+ * <a href="http://www.cryer.co.uk/filetypes/p/pal.htm">JASC PAL file</a>
+ * 
+ * and here is a list of other possible formats we could parse (in the future if
+ * we have time or someone pays for it :-) )
+ * 
+ * <a href="http://www.pl32.com/forum/viewtopic.php?t=873">alternative PAL file formats</a>
+ * 
+ * @author Simone Giannecchini
  * 
  */
 public class PALFileLoader {
@@ -45,7 +67,7 @@ public class PALFileLoader {
 	 * @param transparentIndex
 	 *            transparent pixel index (zero-based).
 	 */
-	public PALFileLoader(final String filePath, int transparentIndex) {
+	public PALFileLoader(final String filePath) {
 		this(new File(filePath));
 	}
 
@@ -90,7 +112,8 @@ public class PALFileLoader {
 						"The provided number of colors is invalid");
 
 			// load various colors
-			final byte colorMap[][] = new byte[3][mapsize+1];
+			final byte colorMap[][] = new byte[3][mapsize < 256 ? mapsize + 1
+					: mapsize];
 			for (int i = 0; i < mapsize; i++) {
 				// get the line
 				temp = reader.readLine().trim();
@@ -122,9 +145,18 @@ public class PALFileLoader {
 				}
 			}
 
-			// create the index color model
-			this.indexColorModel = new IndexColorModel(8, mapsize + 1,
-					colorMap[0], colorMap[1], colorMap[2], mapsize);
+			// //
+			//
+			// create the index color model reserving space for the transparent
+			// pixel is room exists.
+			//
+			// //
+			if (mapsize < 256)
+				this.indexColorModel = new IndexColorModel(8, mapsize + 1,
+						colorMap[0], colorMap[1], colorMap[2], mapsize);
+			else
+				this.indexColorModel = new IndexColorModel(8, mapsize,
+						colorMap[0], colorMap[1], colorMap[2]);
 		} catch (FileNotFoundException e) {
 			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
 		} catch (IOException e) {

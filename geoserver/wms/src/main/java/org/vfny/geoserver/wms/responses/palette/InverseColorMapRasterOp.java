@@ -10,10 +10,20 @@ import java.awt.image.IndexColorModel;
 import java.awt.image.Raster;
 import java.awt.image.RasterOp;
 import java.awt.image.WritableRaster;
+
 /**
+ * This class uses the {@link EfficientInverseColorMapComputation} in order to
+ * implement inversion of color map to perform quantization of a true color
+ * image using a given palette.
+ * 
+ * <p>
+ * Note that this class actually performs the magic of making a palette with a
+ * transparent color work. Using the provided input threshold we transform all
+ * the pixel whose alpha is below the threshold into fully transparent while all
+ * the others become opaque.
  * 
  * @author Simone Giannecchini - GeoSolutions
- *
+ * 
  */
 public class InverseColorMapRasterOp implements RasterOp {
 	private final IndexColorModel icm;
@@ -52,7 +62,7 @@ public class InverseColorMapRasterOp implements RasterOp {
 	}
 
 	public InverseColorMapRasterOp(final IndexColorModel destCM) {
-		this(destCM, 5, 1);
+		this(destCM, 5, 255);
 	}
 
 	public WritableRaster createCompatibleDestRaster(Raster src) {
