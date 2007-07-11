@@ -43,7 +43,6 @@ import javax.media.jai.JAI;
 import javax.media.jai.TiledImage;
 import javax.media.jai.operator.BandMergeDescriptor;
 
-
 /**
  * Abstract base class for GetMapProducers that relies in LiteRenderer for
  * creating the raster map and then outputs it in the format they specializes
@@ -63,330 +62,349 @@ import javax.media.jai.operator.BandMergeDescriptor;
  * </p>
  * <p>
  * </p>
- *
+ * 
  * @author Chris Holmes, TOPP
  * @author Simone Giannecchini, GeoSolutions
  */
-public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
-    implements RasterMapProducer {
-    public final static Interpolation NN_INTERPOLATION = new InterpolationNearest();
-    public final static Interpolation BIL_INTERPOLATION = new InterpolationBilinear();
-    public final static Interpolation BIC_INTERPOLATION = new InterpolationBicubic2(0);
+public abstract class DefaultRasterMapProducer extends
+		AbstractRasterMapProducer implements RasterMapProducer {
+	public final static Interpolation NN_INTERPOLATION = new InterpolationNearest();
 
-    /** A logger for this class. */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
+	public final static Interpolation BIL_INTERPOLATION = new InterpolationBilinear();
 
-    /** Which format to encode the image in if one is not supplied */
-    private static final String DEFAULT_MAP_FORMAT = "image/png";
+	public final static Interpolation BIC_INTERPOLATION = new InterpolationBicubic2(
+			0);
 
-    /** WMS Service configuration */
-    private WMS wms;
+	/** A logger for this class. */
+	private static final Logger LOGGER = Logger
+			.getLogger("org.vfny.geoserver.responses.wms.map");
 
-    /**
-     *
-     */
-    public DefaultRasterMapProducer() {
-        this(DEFAULT_MAP_FORMAT, null);
-    }
+	/** Which format to encode the image in if one is not supplied */
+	private static final String DEFAULT_MAP_FORMAT = "image/png";
 
-    /**
-     *
-     */
-    public DefaultRasterMapProducer(WMS wms) {
-        this(DEFAULT_MAP_FORMAT, wms);
-    }
+	/** WMS Service configuration */
+	private WMS wms;
 
-    /**
-     *
-     */
-    public DefaultRasterMapProducer(String outputFormat, WMS wms) {
-        this(outputFormat, outputFormat, wms);
-    }
+	/**
+	 * 
+	 */
+	public DefaultRasterMapProducer() {
+		this(DEFAULT_MAP_FORMAT, null);
+	}
 
-    /**
-    *
-    */
-    public DefaultRasterMapProducer(String outputFormat, String mime, WMS wms) {
-        super(outputFormat, mime);
-        this.wms = wms;
-    }
+	/**
+	 * 
+	 */
+	public DefaultRasterMapProducer(WMS wms) {
+		this(DEFAULT_MAP_FORMAT, wms);
+	}
 
-    /**
-     * Writes the image to the client.
-     *
-     * @param out
-     *            The output stream to write to.
-     */
-    public void writeTo(OutputStream out)
-        throws org.vfny.geoserver.ServiceException, java.io.IOException {
-        formatImageOutputStream(this.image, out);
-    }
+	/**
+	 * 
+	 */
+	public DefaultRasterMapProducer(String outputFormat, WMS wms) {
+		this(outputFormat, outputFormat, wms);
+	}
 
-    /**
-     * Performs the execute request using geotools rendering.
-     *
-     * @param map
-     *            The information on the types requested.
-     *
-     * @throws WmsException
-     *             For any problems.
-     */
-    public void produceMap() throws WmsException {
-        final int width = mapContext.getMapWidth();
-        final int height = mapContext.getMapHeight();
+	/**
+	 * 
+	 */
+	public DefaultRasterMapProducer(String outputFormat, String mime, WMS wms) {
+		super(outputFormat, mime);
+		this.wms = wms;
+	}
 
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine(new StringBuffer("setting up ").append(width).append("x").append(height)
-                                                       .append(" image").toString());
-        }
+	/**
+	 * Writes the image to the client.
+	 * 
+	 * @param out
+	 *            The output stream to write to.
+	 */
+	public void writeTo(OutputStream out)
+			throws org.vfny.geoserver.ServiceException, java.io.IOException {
+		formatImageOutputStream(this.image, out);
+	}
 
-        final RenderedImage preparedImage = prepareImage(width, height, mapContext.getPalette());
-        final Graphics2D graphic;
+	/**
+	 * Performs the execute request using geotools rendering.
+	 * 
+	 * @param map
+	 *            The information on the types requested.
+	 * 
+	 * @throws WmsException
+	 *             For any problems.
+	 */
+	public void produceMap() throws WmsException {
+		final int width = mapContext.getMapWidth();
+		final int height = mapContext.getMapHeight();
 
-        if (preparedImage instanceof BufferedImage) {
-            graphic = ((BufferedImage) preparedImage).createGraphics();
-        } else if (preparedImage instanceof TiledImage) {
-            graphic = ((TiledImage) preparedImage).createGraphics();
-        } else if (preparedImage instanceof VolatileImage) {
-            graphic = ((VolatileImage) preparedImage).createGraphics();
-        } else {
-            throw new WmsException("Unrecognized back-end image type");
-        }
+		if (LOGGER.isLoggable(Level.FINE)) {
+			LOGGER.fine(new StringBuffer("setting up ").append(width).append(
+					"x").append(height).append(" image").toString());
+		}
 
-        Map hintsMap = new HashMap();
+		final RenderedImage preparedImage = prepareImage(width, height,
+				mapContext.getPalette());
+		final Graphics2D graphic;
 
-        if (preparedImage.getColorModel() instanceof IndexColorModel) {
-            hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-            // This can be added, but it increases the image size significantly
-            // for png's... hum...
-            // we should really expose these settings to the users
-            // hintsMap.put(RenderingHints.KEY_TEXT_ANTIALIASING,
-            // RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            hintsMap.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
-        } else {
-            hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        }
+		if (preparedImage instanceof BufferedImage) {
+			graphic = ((BufferedImage) preparedImage).createGraphics();
+		} else if (preparedImage instanceof TiledImage) {
+			graphic = ((TiledImage) preparedImage).createGraphics();
+		} else if (preparedImage instanceof VolatileImage) {
+			graphic = ((VolatileImage) preparedImage).createGraphics();
+		} else {
+			throw new WmsException("Unrecognized back-end image type");
+		}
 
-        // turn off/on interpolation rendering hint
-        if ((wms != null) && WMSConfig.INT_NEAREST.equals(wms.getAllowInterpolation())) {
-            hintsMap.put(JAI.KEY_INTERPOLATION, NN_INTERPOLATION);
-        } else if ((wms != null) && WMSConfig.INT_BIlINEAR.equals(wms.getAllowInterpolation())) {
-            hintsMap.put(JAI.KEY_INTERPOLATION, BIL_INTERPOLATION);
-        } else if ((wms != null) && WMSConfig.INT_BICUBIC.equals(wms.getAllowInterpolation())) {
-            hintsMap.put(JAI.KEY_INTERPOLATION, BIC_INTERPOLATION);
-        }
+		Map hintsMap = new HashMap();
 
-        // make sure the hints are set before we start rendering the map
-        graphic.setRenderingHints(hintsMap);
+		// if (preparedImage.getColorModel() instanceof IndexColorModel) {
+		// hintsMap.put(RenderingHints.KEY_ANTIALIASING,
+		// RenderingHints.VALUE_ANTIALIAS_OFF);
+		// // This can be added, but it increases the image size significantly
+		// // for png's... hum...
+		// // we should really expose these settings to the users
+		// // hintsMap.put(RenderingHints.KEY_TEXT_ANTIALIASING,
+		// // RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		// hintsMap.put(RenderingHints.KEY_DITHERING,
+		// RenderingHints.VALUE_DITHER_DISABLE);
+		// } else {
+		hintsMap.put(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		// }
 
-        if (!mapContext.isTransparent()) {
-            graphic.setColor(mapContext.getBgColor());
-            graphic.fillRect(0, 0, width, height);
-        } else {
-            if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.fine("setting to transparent");
-            }
+		// turn off/on interpolation rendering hint
+		if ((wms != null)
+				&& WMSConfig.INT_NEAREST.equals(wms.getAllowInterpolation())) {
+			hintsMap.put(JAI.KEY_INTERPOLATION, NN_INTERPOLATION);
+		} else if ((wms != null)
+				&& WMSConfig.INT_BIlINEAR.equals(wms.getAllowInterpolation())) {
+			hintsMap.put(JAI.KEY_INTERPOLATION, BIL_INTERPOLATION);
+		} else if ((wms != null)
+				&& WMSConfig.INT_BICUBIC.equals(wms.getAllowInterpolation())) {
+			hintsMap.put(JAI.KEY_INTERPOLATION, BIC_INTERPOLATION);
+		}
 
-            int type = AlphaComposite.SRC;
-            graphic.setComposite(AlphaComposite.getInstance(type));
+		// make sure the hints are set before we start rendering the map
+		graphic.setRenderingHints(hintsMap);
 
-            Color c = new Color(mapContext.getBgColor().getRed(),
-                    mapContext.getBgColor().getGreen(), mapContext.getBgColor().getBlue(), 0);
-            graphic.setBackground(mapContext.getBgColor());
-            graphic.setColor(c);
-            graphic.fillRect(0, 0, width, height);
-            type = AlphaComposite.SRC_OVER;
-            graphic.setComposite(AlphaComposite.getInstance(type));
-        }
+		if (!mapContext.isTransparent()) {
+			graphic.setColor(mapContext.getBgColor());
+			graphic.fillRect(0, 0, width, height);
+		} else {
+			if (LOGGER.isLoggable(Level.FINE)) {
+				LOGGER.fine("setting to transparent");
+			}
 
-        Rectangle paintArea = new Rectangle(width, height);
-        RenderingHints hints = new RenderingHints(hintsMap);
-        renderer = new StreamingRenderer();
-        renderer.setContext(mapContext);
-        renderer.setJava2DHints(hints);
+			int type = AlphaComposite.SRC;
+			graphic.setComposite(AlphaComposite.getInstance(type));
 
-        // we already do everything that the optimized data loading does...
-        // if we set it to true then it does it all twice...
-        Map rendererParams = new HashMap();
-        rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
-        rendererParams.put("renderingBuffer", new Integer(mapContext.getBuffer()));
-        renderer.setRendererHints(rendererParams);
+			Color c = new Color(mapContext.getBgColor().getRed(), mapContext
+					.getBgColor().getGreen(),
+					mapContext.getBgColor().getBlue(), 0);
+			graphic.setBackground(mapContext.getBgColor());
+			graphic.setColor(c);
+			graphic.fillRect(0, 0, width, height);
+			type = AlphaComposite.SRC_OVER;
+			graphic.setComposite(AlphaComposite.getInstance(type));
+		}
 
-        final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
+		Rectangle paintArea = new Rectangle(width, height);
+		RenderingHints hints = new RenderingHints(hintsMap);
+		renderer = new StreamingRenderer();
+		renderer.setContext(mapContext);
+		renderer.setJava2DHints(hints);
 
-        if (this.abortRequested) {
-            graphic.dispose();
+		// we already do everything that the optimized data loading does...
+		// if we set it to true then it does it all twice...
+		Map rendererParams = new HashMap();
+		rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
+		rendererParams.put("renderingBuffer", new Integer(mapContext
+				.getBuffer()));
+		renderer.setRendererHints(rendererParams);
 
-            return;
-        }
+		final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
 
-        renderer.paint(graphic, paintArea, dataArea);
-        graphic.dispose();
+		if (this.abortRequested) {
+			graphic.dispose();
 
-        if (!this.abortRequested) {
-            this.image = preparedImage;
-        }
-    }
+			return;
+		}
 
-    /**
-     * Sets up a {@link BufferedImage#TYPE_4BYTE_ABGR} if the palette is not
-     * provided, or a indexed image otherwise. Subclasses may override this
-     * method should they need a special kind of image
-     *
-     * @param width
-     * @param height
-     * @param palette
-     * @return
-     */
-    protected RenderedImage prepareImage(int width, int height, IndexColorModel palette) {
-        if (palette != null) {
-            WritableRaster raster = Raster.createInterleavedRaster(palette.getTransferType(),
-                    width, height, 1, null);
+		renderer.paint(graphic, paintArea, dataArea);
+		graphic.dispose();
 
-            return new BufferedImage(palette, raster, false, null);
-        }
+		if (!this.abortRequested) {
+			this.image = preparedImage;
+		}
+	}
 
-        return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-    }
+	/**
+	 * Sets up a {@link BufferedImage#TYPE_4BYTE_ABGR} if the palette is not
+	 * provided, or a indexed image otherwise. Subclasses may override this
+	 * method should they need a special kind of image
+	 * 
+	 * @param width
+	 * @param height
+	 * @param palette
+	 * @return
+	 */
+	protected RenderedImage prepareImage(int width, int height,
+			IndexColorModel palette) {
+		// if (palette != null) {
+		// WritableRaster raster =
+		// Raster.createInterleavedRaster(palette.getTransferType(),
+		// width, height, 1, null);
+		//
+		// return new BufferedImage(palette, raster, false, null);
+		// }
 
-    /**
-     * @param originalImage
-     * @return
-     */
-    protected RenderedImage forceIndexed8Bitmask(RenderedImage originalImage) {
-        // /////////////////////////////////////////////////////////////////
-        //
-        // Check what we need to do depending on the color model of the image we
-        // are working on.
-        //
-        // /////////////////////////////////////////////////////////////////
-        final ColorModel cm = originalImage.getColorModel();
-        final boolean dataTypeByte = originalImage.getSampleModel().getDataType() == DataBuffer.TYPE_BYTE;
-        RenderedImage image;
+		return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+	}
 
-        // /////////////////////////////////////////////////////////////////
-        //
-        // IndexColorModel and DataBuffer.TYPE_BYTE
-        //
-        // ///
-        //
-        // If we got an image whose color model is already indexed on 8 bits
-        // palette,we have to check if it is bitmask or not.
-        //
-        // /////////////////////////////////////////////////////////////////
-        if ((cm instanceof IndexColorModel) && dataTypeByte) {
-            final IndexColorModel icm = (IndexColorModel) cm;
+	/**
+	 * @param originalImage
+	 * @return
+	 */
+	protected RenderedImage forceIndexed8Bitmask(RenderedImage originalImage) {
+		// /////////////////////////////////////////////////////////////////
+		//
+		// Check what we need to do depending on the color model of the image we
+		// are working on.
+		//
+		// /////////////////////////////////////////////////////////////////
+		final ColorModel cm = originalImage.getColorModel();
+		final boolean dataTypeByte = originalImage.getSampleModel()
+				.getDataType() == DataBuffer.TYPE_BYTE;
+		RenderedImage image;
 
-            if (icm.getTransparency() != Transparency.TRANSLUCENT) {
-                // //
-                //
-                // The image is indexed on 8 bits and the color model is either
-                // opaque or bitmask. WE do not have to do anything.
-                //
-                // //
-                image = originalImage;
-            } else {
-                // //
-                //
-                // The image is indexed on 8 bits and the color model is
-                // Translucent, we have to perform some color operations in
-                // order to convert it to bitmask.
-                //
-                // //
-                image = new ImageWorker(originalImage).forceBitmaskIndexColorModel()
-                                                      .getRenderedImage();
-            }
-        } else {
-            // /////////////////////////////////////////////////////////////////
-            //
-            // NOT IndexColorModel and DataBuffer.TYPE_BYTE
-            //
-            // ///
-            //
-            // We got an image that needs to be converted.
-            //
-            // /////////////////////////////////////////////////////////////////
-            if (this.getMapContext().getPalette() != null) {
-                // //
-                //
-                // Do the color inversion since we already have a palette.
-                //
-                // //
-                final InverseColorMapOp invColorMap = new InverseColorMapOp(this.getMapContext()
-                                                                                .getPalette());
-                // make me parametric which means make me work with other image
-                // types
-                image = invColorMap.filter((BufferedImage) originalImage, null);
-            } else {
-                // //
-                //
-                // We do not have a palette, let's create one that is as good as
-                // possible.
-                //
-                // //
-                // make sure we start from a componentcolormodel.
-                image = new ImageWorker(originalImage).forceComponentColorModel().getRenderedImage();
+		// /////////////////////////////////////////////////////////////////
+		//
+		// IndexColorModel and DataBuffer.TYPE_BYTE
+		//
+		// ///
+		//
+		// If we got an image whose color model is already indexed on 8 bits
+		// palette,we have to check if it is bitmask or not.
+		//
+		// /////////////////////////////////////////////////////////////////
+		if ((cm instanceof IndexColorModel) && dataTypeByte) {
+			final IndexColorModel icm = (IndexColorModel) cm;
 
-                if (originalImage.getColorModel().hasAlpha()) {
-                    // //
-                    //
-                    // We want to use the CustomPaletteBuilder but to do so we
-                    // have first to reduce the image to either opaque or
-                    // bitmask because otherwise the CustomPaletteBuilder will
-                    // fail to address transparency.
-                    //
-                    // //
-                    // I am exploiting the clamping property of the JAI
-                    // MultiplyCOnst operation.
-                    // TODO make this code parametric since people might want to
-                    // use a different transparency threshold. Right now we are
-                    // thresholding the transparency band using a fixed
-                    // threshold of 255, which means that anything that was not
-                    // transparent will become opaque.
-                    final RenderedImage alpha = new ImageWorker(originalImage).retainLastBand()
-                                                                              .multiplyConst(new double[] {
-                                255.0
-                            }).retainFirstBand().getRenderedImage();
+			if (icm.getTransparency() != Transparency.TRANSLUCENT) {
+				// //
+				//
+				// The image is indexed on 8 bits and the color model is either
+				// opaque or bitmask. WE do not have to do anything.
+				//
+				// //
+				image = originalImage;
+			} else {
+				// //
+				//
+				// The image is indexed on 8 bits and the color model is
+				// Translucent, we have to perform some color operations in
+				// order to convert it to bitmask.
+				//
+				// //
+				image = new ImageWorker(originalImage)
+						.forceBitmaskIndexColorModel().getRenderedImage();
+			}
+		} else {
+			// /////////////////////////////////////////////////////////////////
+			//
+			// NOT IndexColorModel and DataBuffer.TYPE_BYTE
+			//
+			// ///
+			//
+			// We got an image that needs to be converted.
+			//
+			// /////////////////////////////////////////////////////////////////
+			if (this.getMapContext().getPalette() != null) {
+				// //
+				//
+				// Do the color inversion since we already have a palette.
+				//
+				// //
+				final InverseColorMapOp invColorMap = new InverseColorMapOp(
+						this.getMapContext().getPalette());
+				// make me parametric which means make me work with other image
+				// types
+				image = invColorMap.filter((BufferedImage) originalImage, null);
+			} else {
+				// //
+				//
+				// We do not have a palette, let's create one that is as good as
+				// possible.
+				//
+				// //
+				// make sure we start from a componentcolormodel.
+				image = new ImageWorker(originalImage)
+						.forceComponentColorModel().getRenderedImage();
 
-                    final int numBands = originalImage.getSampleModel().getNumBands();
-                    originalImage = new ImageWorker(originalImage).retainBands(numBands - 1)
-                                                                  .getRenderedImage();
+				if (originalImage.getColorModel().hasAlpha()) {
+					// //
+					//
+					// We want to use the CustomPaletteBuilder but to do so we
+					// have first to reduce the image to either opaque or
+					// bitmask because otherwise the CustomPaletteBuilder will
+					// fail to address transparency.
+					//
+					// //
+					// I am exploiting the clamping property of the JAI
+					// MultiplyCOnst operation.
+					// TODO make this code parametric since people might want to
+					// use a different transparency threshold. Right now we are
+					// thresholding the transparency band using a fixed
+					// threshold of 255, which means that anything that was not
+					// transparent will become opaque.
+					final RenderedImage alpha = new ImageWorker(originalImage)
+							.retainLastBand().multiplyConst(
+									new double[] { 255.0 }).retainFirstBand()
+							.getRenderedImage();
 
-                    final ImageLayout layout = new ImageLayout();
+					final int numBands = originalImage.getSampleModel()
+							.getNumBands();
+					originalImage = new ImageWorker(originalImage).retainBands(
+							numBands - 1).getRenderedImage();
 
-                    if (numBands == 4) {
-                        layout.setColorModel(new ComponentColorModel(ColorSpace.getInstance(
-                                    ColorSpace.CS_sRGB), true, false, Transparency.BITMASK,
-                                DataBuffer.TYPE_BYTE));
-                    } else {
-                        layout.setColorModel(new ComponentColorModel(ColorSpace.getInstance(
-                                    ColorSpace.CS_GRAY), true, false, Transparency.BITMASK,
-                                DataBuffer.TYPE_BYTE));
-                    }
+					final ImageLayout layout = new ImageLayout();
 
-                    image = BandMergeDescriptor.create(originalImage, alpha,
-                            new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout)).getNewRendering();
-                } else {
-                    // //
-                    //
-                    // Everything is fine
-                    //
-                    // //
-                    image = originalImage;
-                }
+					if (numBands == 4) {
+						layout.setColorModel(new ComponentColorModel(ColorSpace
+								.getInstance(ColorSpace.CS_sRGB), true, false,
+								Transparency.BITMASK, DataBuffer.TYPE_BYTE));
+					} else {
+						layout.setColorModel(new ComponentColorModel(ColorSpace
+								.getInstance(ColorSpace.CS_GRAY), true, false,
+								Transparency.BITMASK, DataBuffer.TYPE_BYTE));
+					}
 
-                // //
-                //
-                // Build the palette doing some good subsampling.
-                //
-                // //
-                final int subsx = (int) Math.pow(2, image.getWidth() / 256);
-                final int subsy = (int) Math.pow(2, image.getHeight() / 256);
-                image = new CustomPaletteBuilder(image, 255, subsx, subsy).buildPalette()
-                                                                          .getIndexedImage();
-            }
-        }
+					image = BandMergeDescriptor.create(originalImage, alpha,
+							new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout))
+							.getNewRendering();
+				} else {
+					// //
+					//
+					// Everything is fine
+					//
+					// //
+					image = originalImage;
+				}
 
-        return image;
-    }
+				// //
+				//
+				// Build the palette doing some good subsampling.
+				//
+				// //
+				final int subsx = (int) Math.pow(2, image.getWidth() / 256);
+				final int subsy = (int) Math.pow(2, image.getHeight() / 256);
+				image = new CustomPaletteBuilder(image, 255, subsx, subsy)
+						.buildPalette().getIndexedImage();
+			}
+		}
+
+		return image;
+	}
 }

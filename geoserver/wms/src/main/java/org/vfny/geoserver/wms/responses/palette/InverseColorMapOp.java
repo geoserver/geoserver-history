@@ -1,7 +1,3 @@
-/* Copyright (c) 2001, 2007 TOPP - www.openplans.org. All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
 package org.vfny.geoserver.wms.responses.palette;
 
 import java.awt.Point;
@@ -17,74 +13,78 @@ import java.awt.image.IndexColorModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
-
+/**
+ * 
+ * @author Simone Giannecchini - GeoSolutions
+ *
+ */
 public class InverseColorMapOp implements BufferedImageOp {
-    protected final InverseColorMapRasterOp rasterOp;
-    protected final IndexColorModel icm;
-    protected final int alphaThreshold;
-    protected final boolean hasAlpha;
-    protected final int transparencyIndex;
 
-    public InverseColorMapOp(final IndexColorModel destCM, final int quantizationColors,
-        final int alphaThreshold) {
-        this.rasterOp = new InverseColorMapRasterOp(destCM, quantizationColors, alphaThreshold);
-        this.icm = destCM;
-        this.alphaThreshold = alphaThreshold;
-        hasAlpha = icm.hasAlpha();
-        transparencyIndex = icm.getTransparentPixel();
-    }
+	protected final InverseColorMapRasterOp rasterOp;
 
-    public InverseColorMapOp(final IndexColorModel destCM) {
-        this(destCM, 5, 1);
-    }
+	protected final IndexColorModel icm;
 
-    public BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel destCM) {
-        if (!(destCM instanceof IndexColorModel)
-                || (((IndexColorModel) destCM).getTransparency() == Transparency.TRANSLUCENT)) {
-            return null;
-        }
+	protected final int alphaThreshold;
 
-        return new BufferedImage(src.getWidth(), src.getHeight(), BufferedImage.TYPE_BYTE_INDEXED,
-            (IndexColorModel) destCM);
-    }
+	protected final boolean hasAlpha;
 
-    public BufferedImage filter(BufferedImage src, BufferedImage dest) {
-        if (dest == null) {
-            dest = new BufferedImage(src.getWidth(), src.getHeight(),
-                    BufferedImage.TYPE_BYTE_INDEXED, icm);
-        } else {
-            if (!(dest.getColorModel() instanceof IndexColorModel)
-                    || (((IndexColorModel) dest.getColorModel()).getTransparency() != this.transparencyIndex)) {
-                throw new IllegalArgumentException();
-            }
+	protected final int transparencyIndex;
 
-            if (((IndexColorModel) dest.getColorModel()).getTransparentPixel() != this.transparencyIndex) {
-                throw new IllegalArgumentException();
-            }
-        }
+	public InverseColorMapOp(final IndexColorModel destCM,
+			final int quantizationColors, final int alphaThreshold) {
+		this.rasterOp = new InverseColorMapRasterOp(destCM, quantizationColors,
+				alphaThreshold);
+		this.icm = destCM;
+		this.alphaThreshold = alphaThreshold;
+		hasAlpha = icm.hasAlpha();
+		transparencyIndex = icm.getTransparentPixel();
 
-        final WritableRaster wr = dest.getRaster();
-        final Raster ir = src.getRaster();
-        this.rasterOp.filter(ir, wr);
+	}
 
-        return dest;
-    }
+	public InverseColorMapOp(final IndexColorModel destCM) {
+		this(destCM, 5, 1);
+	}
 
-    public Rectangle2D getBounds2D(BufferedImage src) {
-        return new Rectangle(src.getWidth(), src.getHeight());
-    }
+	public BufferedImage createCompatibleDestImage(BufferedImage src,
+			ColorModel destCM) {
+		if (!(destCM instanceof IndexColorModel)
+				|| ((IndexColorModel) destCM).getTransparency() == Transparency.TRANSLUCENT)
+			return null;
+		return new BufferedImage(src.getWidth(), src.getHeight(),
+				BufferedImage.TYPE_BYTE_INDEXED, (IndexColorModel) destCM);
+	}
 
-    public Point2D getPoint2D(Point2D srcPt, Point2D dstPt) {
-        if (dstPt == null) {
-            dstPt = new Point();
-        }
+	public BufferedImage filter(BufferedImage src, BufferedImage dest) {
+		if (dest == null)
+			dest = new BufferedImage(src.getWidth(), src.getHeight(),
+					BufferedImage.TYPE_BYTE_INDEXED, icm);
+		else {
+			if (!(dest.getColorModel() instanceof IndexColorModel)
+					|| ((IndexColorModel) dest.getColorModel())
+							.getTransparency() != this.transparencyIndex)
+				throw new IllegalArgumentException();
+			if (((IndexColorModel) dest.getColorModel()).getTransparentPixel() != this.transparencyIndex)
+				throw new IllegalArgumentException();
+		}
+		final WritableRaster wr = dest.getRaster();
+		final Raster ir = src.getRaster();
+		this.rasterOp.filter(ir, wr);
+		return dest;
+	}
 
-        dstPt.setLocation(srcPt);
+	public Rectangle2D getBounds2D(BufferedImage src) {
+		return new Rectangle(src.getWidth(), src.getHeight());
+	}
 
-        return dstPt;
-    }
+	public Point2D getPoint2D(Point2D srcPt, Point2D dstPt) {
+		if (dstPt == null)
+			dstPt = new Point();
+		dstPt.setLocation(srcPt);
+		return dstPt;
+	}
 
-    public RenderingHints getRenderingHints() {
-        return null;
-    }
+	public RenderingHints getRenderingHints() {
+		return null;
+	}
+
 }

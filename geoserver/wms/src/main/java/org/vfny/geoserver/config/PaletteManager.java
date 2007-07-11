@@ -20,187 +20,203 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
 
-
 /**
  * Allows access to palettes (implemented as {@link IndexColorModel} classes)
- *
+ * 
  * @author Andrea Aime - TOPP
- *
+ * @author Simone Giannecchini - GeoSolutions
+ * 
  */
 public class PaletteManager {
-    private static final Logger LOG = Logger.getLogger("PaletteManager");
+	private static final Logger LOG = Logger.getLogger("PaletteManager");
 
-    /**
-     * Safe palette, a 6x6x6 color cube, followed by a 39 elements gray scale,
-     * and a final transparent element. See the internet safe color palette for
-     * a reference <a href="http://www.intuitive.com/coolweb/colors.html">
-     */
-    public static final String SAFE = "SAFE";
-    public static final IndexColorModel safePalette = buildDefaultPalette();
-    static SoftValueHashMap paletteCache = new SoftValueHashMap();
+	/**
+	 * Safe palette, a 6x6x6 color cube, followed by a 39 elements gray scale,
+	 * and a final transparent element. See the internet safe color palette for
+	 * a reference <a href="http://www.intuitive.com/coolweb/colors.html">
+	 */
+	public static final String SAFE = "SAFE";
 
-    /**
-     * TODO: we should probably provide the data directory as a constructor
-     * parameter here
-     */
-    private PaletteManager() {
-    }
+	public static final IndexColorModel safePalette = buildDefaultPalette();
 
-    /**
-     * Loads a PaletteManager
-     *
-     * @param name
-     * @return
-     * @throws Exception
-     */
-    public static IndexColorModel getPalette(String name)
-        throws Exception {
-        // check for safe palette
-        if ("SAFE".equals(name.toUpperCase())) {
-            return safePalette;
-        }
+	static SoftValueHashMap paletteCache = new SoftValueHashMap();
 
-        // check for cached one, making sure it's not stale
-        PaletteCacheEntry entry = (PaletteCacheEntry) paletteCache.get(name);
+	/**
+	 * TODO: we should probably provide the data directory as a constructor
+	 * parameter here
+	 */
+	private PaletteManager() {
+	}
 
-        if (entry != null) {
-            if (entry.isStale()) {
-                paletteCache.remove(name);
-            } else {
-                return entry.model;
-            }
-        }
+	/**
+	 * Loads a PaletteManager
+	 * 
+	 * @param name
+	 * @return
+	 * @throws Exception
+	 */
+	public static IndexColorModel getPalette(String name) throws Exception {
+		// check for safe palette
+		if ("SAFE".equals(name.toUpperCase())) {
+			return safePalette;
+		}
 
-        // ok, load it. for the moment we load palettes from .png and .gif
-        // files, but we may want to extend this ability to other file formats
-        // (Gimp palettes for example), in this case we'll adopt the classic
-        // plugin approach using either the Spring context of the SPI
+		// check for cached one, making sure it's not stale
+		PaletteCacheEntry entry = (PaletteCacheEntry) paletteCache.get(name);
 
-        // hum... loading the paletteDir could be done once, but then if the
-        // users
-        // adds the palette dir with a running Geoserver, we won't find it
-        // anymore...
-        File root = GeoserverDataDirectory.getGeoserverDataDirectory();
-        File paletteDir = GeoserverDataDirectory.findConfigDir(root, "palettes");
+		if (entry != null) {
+			if (entry.isStale()) {
+				paletteCache.remove(name);
+			} else {
+				return entry.model;
+			}
+		}
 
-        final String[] names = new String[] { name + ".gif", name + ".png" };
-        File[] paletteFiles = paletteDir.listFiles(new FilenameFilter() {
-                    public boolean accept(File dir, String name) {
-                        for (int i = 0; i < names.length; i++) {
-                            if (name.toLowerCase().equals(names[i])) {
-                                return true;
-                            }
-                        }
+		// ok, load it. for the moment we load palettes from .png and .gif
+		// files, but we may want to extend this ability to other file formats
+		// (Gimp palettes for example), in this case we'll adopt the classic
+		// plugin approach using either the Spring context of the SPI
 
-                        return false;
-                    }
-                });
+		// hum... loading the paletteDir could be done once, but then if the
+		// users
+		// adds the palette dir with a running Geoserver, we won't find it
+		// anymore...
+		File root = GeoserverDataDirectory.getGeoserverDataDirectory();
+		File paletteDir = GeoserverDataDirectory
+				.findConfigDir(root, "palettes");
 
-        // scan the files found (we may have multiple files with different
-        // extensions and return the first palette you find
-        for (int i = 0; i < paletteFiles.length; i++) {
-            File file = paletteFiles[i];
+		final String[] names = new String[] { name + ".gif", name + ".png",
+				name + ".pal", name + ".tif" };
+		File[] paletteFiles = paletteDir.listFiles(new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				for (int i = 0; i < names.length; i++) {
+					if (name.toLowerCase().equals(names[i])) {
+						return true;
+					}
+				}
 
-            final Iterator it = ImageIO.getImageReaders(file);
+				return false;
+			}
+		});
 
-            if (it.hasNext()) {
-                final ImageReader reader = (ImageReader) it.next();
-                final ColorModel cm = ((ImageTypeSpecifier) reader.getImageTypes(0).next())
-                    .getColorModel();
+		// scan the files found (we may have multiple files with different
+		// extensions and return the first palette you find
+		for (int i = 0; i < paletteFiles.length; i++) {
+			final File file = paletteFiles[i];
+			final String fileName = file.getName();
+			if (fileName.endsWith("pal")) {
+				IndexColorModel icm = new PALFileLoader(file)
+						.getIndexColorModel();
+				if (icm != null) {
+					paletteCache.put(name, new PaletteCacheEntry(file, icm));
+					return icm;
+				}
+			} else {
+				final Iterator it = ImageIO.getImageReaders(file);
+				if (it.hasNext()) {
+					final ImageReader reader = (ImageReader) it.next();
+					final ColorModel cm = ((ImageTypeSpecifier) reader
+							.getImageTypes(0).next()).getColorModel();
+					if (cm instanceof IndexColorModel) {
+						final IndexColorModel icm = (IndexColorModel) cm;
+						paletteCache
+								.put(name, new PaletteCacheEntry(file, icm));
 
-                if (cm instanceof IndexColorModel) {
-                    final IndexColorModel icm = (IndexColorModel) cm;
-                    paletteCache.put(name, new PaletteCacheEntry(file, icm));
+						return icm;
+					}
+				}
+			}
+			LOG
+					.warning("Skipping palette file "
+							+ file.getName()
+							+ " since color model is not indexed (no 256 colors palette)");
+		}
 
-                    return icm;
-                }
-            }
+		return null;
+	}
 
-            LOG.warning("Skipping palette file " + file.getName()
-                + " since color model is not indexed (no 256 colors palette)");
-        }
+	/**
+	 * Builds a buffered image with the specified indexed color model, width and
+	 * height
+	 * 
+	 * @param model
+	 * @param width
+	 * @param height
+	 * @return
+	 */
+	public static BufferedImage buildIndexedImage(IndexColorModel model,
+			int width, int height) {
+		IndexColorModel colorModel = buildDefaultPalette();
+		WritableRaster raster = Raster.createInterleavedRaster(
+				DataBuffer.TYPE_BYTE, width, height, 1, null);
 
-        return null;
-    }
+		return new BufferedImage(colorModel, raster, false, null);
+	}
 
-    /**
-     * Builds a buffered image with the specified indexed color model, width and
-     * height
-     *
-     * @param model
-     * @param width
-     * @param height
-     * @return
-     */
-    public static BufferedImage buildIndexedImage(IndexColorModel model, int width, int height) {
-        IndexColorModel colorModel = buildDefaultPalette();
-        WritableRaster raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, width, height,
-                1, null);
+	/**
+	 * Builds the internet safe palette
+	 */
+	static IndexColorModel buildDefaultPalette() {
+		int[] cmap = new int[256];
 
-        return new BufferedImage(colorModel, raster, false, null);
-    }
+		// Create the standard 6x6x6 color cube (all elements do cycle
+		// between 00, 33, 66, 99, CC and FF, the decimal difference is 51)
+		// The color is made of alpha, red, green and blue, in this order, from
+		// the most significant bit onwards.
+		int i = 0;
+		int opaqueAlpha = 255 << 24;
 
-    /**
-     * Builds the internet safe palette
-     */
-    static IndexColorModel buildDefaultPalette() {
-        int[] cmap = new int[256];
+		for (int r = 0; r < 256; r += 51) {
+			for (int g = 0; g < 256; g += 51) {
+				for (int b = 0; b < 256; b += 51) {
+					cmap[i] = opaqueAlpha | (r << 16) | (g << 8) | b;
+					i++;
+				}
+			}
+		}
 
-        // Create the standard 6x6x6 color cube (all elements do cycle
-        // between 00, 33, 66, 99, CC and FF, the decimal difference is 51)
-        // The color is made of alpha, red, green and blue, in this order, from
-        // the most significant bit onwards.
-        int i = 0;
-        int opaqueAlpha = 255 << 24;
+		// The gray scale. Make sure we end up with gray == 255
+		int grayIncr = 256 / (255 - i);
+		int gray = 255 - ((255 - i - 1) * grayIncr);
 
-        for (int r = 0; r < 256; r += 51) {
-            for (int g = 0; g < 256; g += 51) {
-                for (int b = 0; b < 256; b += 51) {
-                    cmap[i] = opaqueAlpha | (r << 16) | (g << 8) | b;
-                    i++;
-                }
-            }
-        }
+		for (; i < 255; i++) {
+			cmap[i] = opaqueAlpha | (gray << 16) | (gray << 8) | gray;
+			gray += grayIncr;
+		}
 
-        // The gray scale. Make sure we end up with gray == 255
-        int grayIncr = 256 / (255 - i);
-        int gray = 255 - ((255 - i - 1) * grayIncr);
+		// setup the transparent color (alpha == 0)
+		cmap[255] = (255 << 16) | (255 << 8) | 255;
 
-        for (; i < 255; i++) {
-            cmap[i] = opaqueAlpha | (gray << 16) | (gray << 8) | gray;
-            gray += grayIncr;
-        }
+		// create the color model
+		return new IndexColorModel(8, 256, cmap, 0, true, 255,
+				DataBuffer.TYPE_BYTE);
+	}
 
-        // setup the transparent color (alpha == 0)
-        cmap[255] = (255 << 16) | (255 << 8) | 255;
+	/**
+	 * An entry in the palette cache. Can determine wheter it's stale or not,
+	 * too
+	 */
+	private static class PaletteCacheEntry {
+		File file;
 
-        // create the color model
-        return new IndexColorModel(8, 256, cmap, 0, true, 255, DataBuffer.TYPE_BYTE);
-    }
+		long lastModified;
 
-    /**
-     * An entry in the palette cache. Can determine wheter it's stale or not,
-     * too
-     */
-    private static class PaletteCacheEntry {
-        File file;
-        long lastModified;
-        IndexColorModel model;
+		IndexColorModel model;
 
-        public PaletteCacheEntry(File file, IndexColorModel model) {
-            this.file = file;
-            this.model = model;
-            this.lastModified = file.lastModified();
-        }
+		public PaletteCacheEntry(File file, IndexColorModel model) {
+			this.file = file;
+			this.model = model;
+			this.lastModified = file.lastModified();
+		}
 
-        /**
-         * Returns true if the backing file does not exist any more, or has been
-         * modified
-         *
-         * @return
-         */
-        public boolean isStale() {
-            return !file.exists() || (file.lastModified() != lastModified);
-        }
-    }
+		/**
+		 * Returns true if the backing file does not exist any more, or has been
+		 * modified
+		 * 
+		 * @return
+		 */
+		public boolean isStale() {
+			return !file.exists() || (file.lastModified() != lastModified);
+		}
+	}
 }
