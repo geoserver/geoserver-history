@@ -584,7 +584,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             LOGGER.warning("No log4jConfigFile defined in services.xml:  using 'DEFAULT_LOGGING.properties'");
         }
         
-        File log4jConfigFile = GeoserverDataDirectory.findConfigFile("loggingConfigs/" + log4jConfigFileStr);
+        File log4jConfigFile = GeoserverDataDirectory.findConfigFile("logs"+ File.separator + log4jConfigFileStr);
         
         if (log4jConfigFile == null) {
             //hmm, well, we don't have a log4j config file and this could be due to the fact
@@ -594,8 +594,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             LOGGER.warning("log4jConfigFile '" + log4jConfigFileStr + "' couldn't be found in the data dir, so GeoServer will " +
             "install the various logging config file into the data dir, and then try to find it again.");
             
-            //this forces the data_dir/loggingConfigs directory to be present (if it wasn't already)
-            File lcdir = GeoserverDataDirectory.findCreateConfigDir("loggingConfigs");
+            //this forces the data_dir/logs directory to be present (if it wasn't already)
+            File lcdir = GeoserverDataDirectory.findCreateConfigDir("logs");
             
             //now we copy in the various logging config files from the base repo location on the classpath
             final String[] lcfiles = new String[] { "DEFAULT_LOGGING.properties",
@@ -608,23 +608,28 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
                 File target = new File(lcdir.getAbsolutePath() + File.separator + lcfiles[i]);
                 if (!target.exists()) {
                     URL logConfFile = Thread.currentThread().getContextClassLoader().getResource(lcfiles[i]);
-                    copyFile(DataUtilities.urlToFile(logConfFile), target);
+                    try {
+                        copyFile(DataUtilities.urlToFile(logConfFile), target);
+                    } catch (Exception e) {
+                        LOGGER.log(Level.FINE, "Couldn't copy log configuration files into your data dir.  Geoserver won't control logging.", e);
+                        return;
+                    }
                 }
             }
             
-            //ok, the new loggingConfig directory is in-place, with all the various configs there.
+            //ok, the possibly-new 'logs' directory is in-place, with all the various configs there.
             // Is the originally configured log4jconfigfile there now?
-            log4jConfigFile = GeoserverDataDirectory.findConfigFile("loggingConfigs/" + log4jConfigFileStr);
+            log4jConfigFile = GeoserverDataDirectory.findConfigFile("logs" + File.separator + log4jConfigFileStr);
             if (log4jConfigFile == null) {
                 LOGGER.warning("Still couldn't find log4jConfigFile '" + log4jConfigFileStr + "'.  Using DEFAULT_LOGGING.properties instead.");
             }
             
-            log4jConfigFile = GeoserverDataDirectory.findConfigFile("loggingConfigs" + File.separator + "DEFAULT_LOGGING.properties");
+            log4jConfigFile = GeoserverDataDirectory.findConfigFile("logs" + File.separator + "DEFAULT_LOGGING.properties");
         }
 
         if (log4jConfigFile == null) {
             throw new ConfigurationException("Unable to load logging configuration '" + log4jConfigFileStr + "'.  In addition, an attempt " +
-                    "was made to create the 'loggingConfigs' directory in your data dir, and to use the DEFAULT_LOGGING configuration, but" +
+                    "was made to create the 'logs' directory in your data dir, and to use the DEFAULT_LOGGING configuration, but" +
                     "this failed as well.  Is your data dir writeable?");
         }
         
@@ -640,6 +645,19 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         org.apache.log4j.Logger.getLogger("org.geotools").getLoggerRepository().resetConfiguration();
         org.apache.log4j.Logger.getLogger("org.geoserver").getLoggerRepository().resetConfiguration();
         org.apache.log4j.Logger.getLogger("org.vfny").getLoggerRepository().resetConfiguration();
+        
+        //let all java logging pass 'through' the java logging into the log4j system.
+        //Some java loggers might have been created/first-used since we last configured the logging system
+        // so we need to go through this each time we re-configure.
+        Enumeration names = LogManager.getLogManager().getLoggerNames();
+        while (names.hasMoreElements()) {
+            String curLName = (String)names.nextElement();
+            if (    curLName.startsWith("org.geotools") || 
+                    curLName.startsWith("org.geoserver") ||
+                    curLName.startsWith("org.vfny")
+               ) 
+                Logger.getLogger(curLName).setLevel(Level.ALL);
+        }
         
         Appender gslf = org.apache.log4j.Logger.getRootLogger().getAppender("geoserverlogfile");
         if (gslf != null) {
