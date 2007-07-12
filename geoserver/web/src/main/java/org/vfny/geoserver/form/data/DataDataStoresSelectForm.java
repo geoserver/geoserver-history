@@ -4,6 +4,14 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
@@ -12,11 +20,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.ConfigRequests;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -45,8 +48,8 @@ public class DataDataStoresSelectForm extends ActionForm {
         super.reset(mapping, request);
 
         // Pass data from congif layer to screen
-        // REVIST: Bad Design JSP should lookup data itself!
         dataStoreIds = ConfigRequests.getDataConfig(request).listDataStoreIds();
+        Collections.sort(dataStoreIds);
 
         // Usual reset stuff
         selectedDataStoreId = null; // nothing selected yet        
