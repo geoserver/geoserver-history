@@ -52,16 +52,5 @@ public class LoggingStartupContextListener implements ServletContextListener {
                 + " load the stored logging configuration once geoserver has finished"
                 + " reading its config files.");
         
-        //let all java logging pass 'through' the java logging into the log4j system.
-        Enumeration names = LogManager.getLogManager().getLoggerNames();
-        while (names.hasMoreElements()) {
-            String curLName = (String)names.nextElement();
-            if (    curLName.startsWith("org.geotools") || 
-                    curLName.startsWith("org.geoserver") ||
-                    curLName.startsWith("org.vfny")
-               ) 
-                Logger.getLogger(curLName).setLevel(Level.ALL);
-        }
-        
     }
 }
