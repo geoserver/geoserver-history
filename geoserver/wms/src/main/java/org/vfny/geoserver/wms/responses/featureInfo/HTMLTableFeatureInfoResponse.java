@@ -4,34 +4,46 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
-import com.vividsolutions.jts.geom.Geometry;
-import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureResults;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.IllegalAttributeException;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.logging.Level;
+import java.util.Iterator;
+
+import org.geoserver.template.FeatureWrapper;
+import org.geoserver.template.GeoServerTemplateLoader;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureType;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 
 /**
- * Produces a FeatureInfo response in HTML.  Relies on abstractfeatureinfo
- * and the feature delegate to do most of the work, just implements an html
- * based writeTo method.<p>In the future James suggested that we allow some
- * sort of template system, so that one can control the formatting of the html
- * output, since now we just hard code some minimal header stuff. See
- * http://jira.codehaus.org/browse/GEOS-196</p>
+ * Produces a FeatureInfo response in HTML.  Relies on {@link AbstractFeatureInfoResponse} and
+ * the feature delegate to do most of the work, just implements an HTML based
+ * writeTo method.
  *
  * @author James Macgill, PSU
+ * @author Andrea Aime, TOPP
  * @version $Id: HTMLTableFeatureInfoResponse.java,v 1.1 2004/07/19 22:32:22 jmacgill Exp $
  */
 public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
+    private static Configuration templateConfig;
+
+    static {
+        // initialize the template engine, this is static to maintain a cache
+        // over instantiations of kml writer
+        templateConfig = new Configuration();
+        templateConfig.setObjectWrapper(new FeatureWrapper());
+    }
+    
+    GeoServerTemplateLoader templateLoader;
+    
+    
     /**
              *
              */
@@ -57,83 +69,52 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
      */
     public void writeTo(OutputStream out)
         throws org.vfny.geoserver.ServiceException, java.io.IOException {
+        // setup the writer
         Charset charSet = getRequest().getGeoServer().getCharSet();
         OutputStreamWriter osw = new OutputStreamWriter(out, charSet);
-        PrintWriter writer = new PrintWriter(osw);
-        writer.println("<html><body>");
-
-        FeatureReader reader = null;
-
-        try {
-            final int size = results.size();
-            FeatureResults fr;
-            FeatureType schema;
-            Feature f;
-            AttributeType[] types;
-            int attCount;
-
-            for (int i = 0; i < size; i++) {
-                fr = (FeatureResults) results.get(i);
-                schema = fr.getSchema();
-
-                writer.println("<table border='1'>");
-                writer.println("<tr><th colspan=");
-                writer.println(schema.getAttributeCount());
-                writer.println(" scope='col'>");
-                writer.println(schema.getTypeName());
-                writer.println(" </th></tr>");
-                writer.println("<tr>");
-
-                attCount = schema.getAttributeCount();
-
-                for (int j = 0; j < attCount; j++) {
-                    writer.println("<td>");
-                    writer.println(schema.getAttributeType(j).getName());
-                    writer.println("</td>");
-                }
-
-                writer.println("</tr>");
-
-                //writer.println("Found " + fr.getCount() + " in " + schema.getTypeName());
-                reader = fr.reader();
-
-                while (reader.hasNext()) {
-                    f = reader.next();
-                    types = schema.getAttributeTypes();
-                    writer.println("<tr>");
-
-                    for (int j = 0; j < types.length; j++) {
-                        if (Geometry.class.isAssignableFrom(types[j].getType())) {
-                            writer.println("<td>");
-                            writer.println("[GEOMETRY]");
-                            writer.println("</td>");
-                        } else {
-                            writer.println("<td>");
-                            writer.print(f.getAttribute(types[j].getName()));
-                            writer.println("</td>");
-                        }
-                    }
-
-                    writer.println("</tr>");
-                }
-
-                writer.println("</table>");
-                writer.println("<p>");
-                writer.println("</body></html>");
-            }
-        } catch (IllegalAttributeException ife) {
-            LOGGER.log(Level.WARNING, "Error generating getFeaturInfo, HTML format", ife);
-            writer.println("Unable to generate information " + ife);
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
+        
+        // if there is only one feature type loaded, we allow for header/footer customization,
+        // otherwise we stick with the generic ones
+        FeatureType templateFeatureType = null;
+        if(results.size() == 1) {
+            templateFeatureType = ((FeatureCollection) results.get(0)).getSchema();
         }
-
-        writer.flush();
+        Template header = getTemplate(templateFeatureType, "header.ftl");
+        Template footer = getTemplate(templateFeatureType, "footer.ftl");
+        
+        try {
+            header.process(null, osw);
+            
+            for (Iterator it = results.iterator(); it.hasNext();) {
+                FeatureCollection fc = (FeatureCollection) it.next();
+                if(fc.size() > 0) {
+                    FeatureType ft = fc.getSchema();
+                    Template content = getTemplate(ft, "content.ftl");
+                    content.process(fc, osw);
+                }
+            }
+            footer.process(null, osw);
+        } catch(TemplateException e) {
+            String msg = "Error occured processing template.";
+            throw (IOException) new IOException(msg).initCause(e);
+        }
+        osw.flush();
     }
 
     public String getContentDisposition() {
         return null;
+    }
+    
+    Template getTemplate(FeatureType featureType, String templateFileName) throws IOException {
+        // setup template subsystem
+        if(templateLoader == null) {
+            templateLoader = new GeoServerTemplateLoader(getClass());
+        }
+        templateLoader.setFeatureType(featureType);
+
+        synchronized (templateConfig) {
+            templateConfig.setTemplateLoader(templateLoader);
+            return templateConfig.getTemplate(templateFileName);
+        }
     }
 }

@@ -4,38 +4,27 @@
  */
 package org.geoserver.template;
 
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.GeometryAttributeType;
+
 import com.vividsolutions.jts.geom.Geometry;
 
-import freemarker.ext.beans.ArrayModel;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.ext.beans.CollectionModel;
-import freemarker.ext.beans.DateModel;
-import freemarker.ext.beans.EnumerationModel;
-import freemarker.ext.beans.IteratorModel;
-import freemarker.ext.beans.MapModel;
-import freemarker.ext.beans.NumberModel;
-import freemarker.ext.beans.ResourceBundleModel;
-import freemarker.ext.beans.SimpleMapModel;
-import freemarker.ext.beans.StringModel;
 import freemarker.template.Configuration;
 import freemarker.template.SimpleHash;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelAdapter;
 import freemarker.template.TemplateModelException;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureCollection;
-
-import java.text.DateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
 
 
 /**
@@ -88,6 +77,7 @@ import java.util.ResourceBundle;
  * </p>
  * </p>
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
+ * @author Andrea Aime, TOPP
  *
  */
 public class FeatureWrapper extends BeansWrapper {
@@ -99,10 +89,33 @@ public class FeatureWrapper extends BeansWrapper {
         //check for feature collection
         if (object instanceof FeatureCollection) {
             //create a model with just one variable called 'features'
-            HashMap map = new HashMap();
+            SimpleHash map = new SimpleHash();
             map.put("features", new CollectionModel((FeatureCollection) object, this));
+            map.put("type", wrap(((FeatureCollection) object).getSchema()));
 
-            return new SimpleHash(map);
+            return map;
+        } else if (object instanceof FeatureType) {
+            FeatureType ft = (FeatureType) object;
+            
+            // create a variable "attributes" which his a list of all the 
+            // attributes, but at the same time, is a map keyed by name
+            Map attributeMap = new LinkedHashMap();
+            for (int i = 0; i < ft.getAttributeCount(); i++) {
+                AttributeType type = ft.getAttributeType(i);
+
+                Map attribute = new HashMap();
+                attribute.put("name", type.getName());
+                attribute.put("type", type.getType().getName());
+                attribute.put("isGeometry", Boolean.valueOf(type instanceof GeometryAttributeType));
+
+                attributeMap.put(type.getName(), attribute);
+            }
+
+            // build up the result, feature type is represented by its name an attributes
+            SimpleHash map = new SimpleHash();
+            map.put("attributes", new SequenceMapModel(attributeMap, this));
+            map.put("name", ft.getTypeName());
+            return map;
         } else if (object instanceof Feature) {
             Feature feature = (Feature) object;
 
@@ -150,6 +163,7 @@ public class FeatureWrapper extends BeansWrapper {
 
             return map;
         }
+        
         return super.wrap(object);
     }
 }
