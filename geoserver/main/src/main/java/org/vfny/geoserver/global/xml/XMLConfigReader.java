@@ -20,6 +20,7 @@ import org.geotools.referencing.CRS;
 import org.geotools.util.NameFactory;
 import org.geotools.util.NumberRange;
 import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.filter.Filter;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
@@ -2225,11 +2226,11 @@ public class XMLConfigReader {
      *
      * @throws ConfigurationException When an error occurs.
      */
-    protected org.geotools.filter.Filter loadDefinitionQuery(Element typeRoot)
+    protected Filter loadDefinitionQuery(Element typeRoot)
         throws ConfigurationException {
         try {
             Element defQNode = ReaderUtils.getChildElement(typeRoot, "definitionQuery", false);
-            org.geotools.filter.Filter filter = null;
+            Filter filter = null;
 
             if (defQNode != null) {
                 LOGGER.finer("definitionQuery element found, looking for Filter");

@@ -7,6 +7,7 @@ package org.geoserver.template;
 import com.vividsolutions.jts.geom.Geometry;
 
 import freemarker.ext.beans.ArrayModel;
+import freemarker.ext.beans.BeanModel;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.ext.beans.CollectionModel;
 import freemarker.ext.beans.DateModel;
@@ -26,6 +27,8 @@ import freemarker.template.TemplateModelException;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureType;
+import org.geotools.feature.GeometryAttributeType;
 
 import java.text.DateFormat;
 import java.util.Collection;
@@ -88,6 +91,7 @@ import java.util.ResourceBundle;
  * </p>
  * </p>
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
+ * @author Andrea Aime, TOPP
  *
  */
 public class FeatureWrapper extends BeansWrapper {
@@ -99,10 +103,33 @@ public class FeatureWrapper extends BeansWrapper {
         //check for feature collection
         if (object instanceof FeatureCollection) {
             //create a model with just one variable called 'features'
-            HashMap map = new HashMap();
+            SimpleHash map = new SimpleHash();
             map.put("features", new CollectionModel((FeatureCollection) object, this));
+            map.put("type", wrap(((FeatureCollection) object).getSchema()));
 
-            return new SimpleHash(map);
+            return map;
+        } else if (object instanceof FeatureType) {
+            FeatureType ft = (FeatureType) object;
+            
+            // create a variable "attributes" which his a list of all the 
+            // attributes, but at the same time, is a map keyed by name
+            Map attributeMap = new LinkedHashMap();
+            for (int i = 0; i < ft.getAttributeCount(); i++) {
+                AttributeType type = ft.getAttributeType(i);
+
+                Map attribute = new HashMap();
+                attribute.put("name", type.getLocalName());
+                attribute.put("type", type.getBinding().getName());
+                attribute.put("isGeometry", Boolean.valueOf(type instanceof GeometryAttributeType));
+
+                attributeMap.put(type.getLocalName(), attribute);
+            }
+
+            // build up the result, feature type is represented by its name an attributes
+            SimpleHash map = new SimpleHash();
+            map.put("attributes", new SequenceMapModel(attributeMap, this));
+            map.put("name", ft.getTypeName());
+            return map;
         } else if (object instanceof Feature) {
             Feature feature = (Feature) object;
 
@@ -151,6 +178,7 @@ public class FeatureWrapper extends BeansWrapper {
 
             return map;
         }
+        
         return super.wrap(object);
     }
 }
