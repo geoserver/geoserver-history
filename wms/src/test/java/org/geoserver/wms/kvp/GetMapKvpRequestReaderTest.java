@@ -15,6 +15,7 @@ import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.servlets.GetMap;
 import java.awt.Color;
 import java.awt.geom.Point2D;
+import java.net.URL;
 import java.util.HashMap;
 
 
@@ -134,5 +135,18 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         assertEquals(1, request.getFeatureId().size());
 
         assertEquals("foo", request.getFeatureId().get(0));
+    }
+    
+    public void testSld() throws Exception {
+        HashMap kvp = new HashMap();
+        URL url = MockData.class.getResource("BasicPolygons.sld");
+        kvp.put("sld", url.toString());
+        kvp.put("layers", MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
+
+        GetMapRequest request = (GetMapRequest) reader.createRequest();
+        request = (GetMapRequest) reader.read(request, parseKvp(kvp));
+
+        assertNotNull(request.getSld());
+        assertEquals(url, request.getSld());
     }
 }

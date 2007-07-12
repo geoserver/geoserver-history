@@ -140,7 +140,6 @@
  	<bean id="elevationKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
 		<constructor-arg value="elevation"/>
  	</bean>
- 	<bean id="sldKvpParsaer" class="org.geoserver.wms.kvp.SLDKvpParser"/>
  	<bean id="validateSldKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
  		<constructor-arg value="validateschema"/>
  	</bean>
