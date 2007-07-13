@@ -4,20 +4,6 @@
  */
 package org.vfny.geoserver.global;
 
-import com.sun.media.jai.util.SunTileCache;
-
-import org.apache.log4j.Appender;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.RollingFileAppender;
-import org.geotools.data.DataUtilities;
-import org.geotools.data.jdbc.ConnectionPoolManager;
-import org.geotools.util.Logging;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.util.Log4jConfigurer;
-import org.vfny.geoserver.global.dto.ContactDTO;
-import org.vfny.geoserver.global.dto.GeoServerDTO;
-import org.vfny.geoserver.util.Requests;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -26,18 +12,35 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
-import java.util.logging.Handler;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-import java.util.logging.StreamHandler;
+
 import javax.imageio.ImageIO;
 import javax.media.jai.JAI;
 import javax.media.jai.RecyclingTileFactory;
 import javax.servlet.ServletContext;
+
+import org.apache.log4j.Appender;
+import org.apache.log4j.PropertyConfigurator;
+import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.jdbc.ConnectionPoolManager;
+import org.geotools.util.Logging;
+import org.springframework.beans.factory.DisposableBean;
+import org.vfny.geoserver.global.dto.ContactDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.util.Requests;
+
+import com.sun.media.jai.util.SunTileCache;
 
 
 /**
@@ -573,7 +576,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         // 2)  If they *have*, then we don't worry about configuring logging
         // 3)  If they haven't, then we configure logging to use the log4j config file
         // specified, and remove console appenders if the suppressstdoutlogging is true.
-        LOGGER.fine("CONFIGURING GEOSERVER LOGGING -------------------------");
+        LOGGER.info("CONFIGURING GEOSERVER LOGGING -------------------------");
         if (!isGeoserverControllingLogging()) {
             LOGGER.warning("GeoServer isn't controlling the logging system.");
             return;
@@ -641,22 +644,48 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             LOGGER.info("GeoServer logging profile '" + log4jConfigFile.getName() + "' enabled.");
         }
         
-        //reset logging for geotools and geoserver.
-        org.apache.log4j.Logger.getLogger("org.geotools").getLoggerRepository().resetConfiguration();
-        org.apache.log4j.Logger.getLogger("org.geoserver").getLoggerRepository().resetConfiguration();
-        org.apache.log4j.Logger.getLogger("org.vfny").getLoggerRepository().resetConfiguration();
         
-        //let all java logging pass 'through' the java logging into the log4j system.
-        //Some java loggers might have been created/first-used since we last configured the logging system
-        // so we need to go through this each time we re-configure.
+        //We've got two levels of logging going on here, and two 'gating' systems, as well.  Java logging is used
+        //often in the following manner:
+        // if (LOGGER.isLoggable(Level.FINE)) {
+        //   expensive logging statement...
+        // }
+        // So we need to make sure that each logger is properly updated to reflect the real logging level of that logger
+        // This means we need to do two things:
+        // 1)  read the log4j config file and propogate the log4j logging levels to the java logging loggers
+        // 2)  check each *already existing* java-logging logger, and make sure it's set to the proper log4j level
+        
+        Properties lprops = new Properties();
+        lprops.load(loggingConfigStream);
+        
+        List sortedCategories = getSortedLog4JCategories(lprops);
+        LOGGER.fine("sorted log4j categories: " + sortedCategories);
+
+        // Here's step 1.
+        for (Iterator i = sortedCategories.iterator(); i.hasNext();) {
+            String curCategory = (String)i.next();
+            String logLevel = lprops.getProperty("log4j.category." + curCategory);
+            Logger.getLogger(curCategory).setLevel(log4JLevelToJDKLoggingLevel(logLevel));
+            //TODO: reset log level to fine
+            LOGGER.fine("set logger '" + curCategory + "' to level '" + log4JLevelToJDKLoggingLevel(logLevel).getLocalizedName() + "' (from log4j string " + logLevel);
+        }
+        
+        
         Enumeration names = LogManager.getLogManager().getLoggerNames();
         while (names.hasMoreElements()) {
+            //ok, we've got a real live java logger.  We need to match it to the longest
             String curLName = (String)names.nextElement();
-            if (    curLName.startsWith("org.geotools") || 
-                    curLName.startsWith("org.geoserver") ||
-                    curLName.startsWith("org.vfny")
-               ) 
-                Logger.getLogger(curLName).setLevel(Level.ALL);
+            Iterator iCats = sortedCategories.iterator();
+            while (iCats.hasNext()) {
+                String curCat = (String)iCats.next();
+                if (curLName.startsWith(curCat)) {
+                    //this is the best-matching category from log4j for this Java Logging category.
+                    String logLevel = lprops.getProperty("log4j.category." + curCat);
+                    Logger.getLogger(curLName).setLevel(log4JLevelToJDKLoggingLevel(logLevel));
+                    //TODO: reset log level to fine
+                    LOGGER.fine("set java logger '" + curLName + "' to level '" + log4JLevelToJDKLoggingLevel(logLevel).getLocalizedName() + "', figured from log4j level '" + logLevel + "'");
+                }
+            }
         }
         
         Appender gslf = org.apache.log4j.Logger.getRootLogger().getAppender("geoserverlogfile");
@@ -665,9 +694,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             org.apache.log4j.LogManager.getRootLogger().removeAppender(gslf);
         }
         
+        // reset logging for geotools and geoserver.
+        org.apache.log4j.Logger.getLogger("org.geotools").getLoggerRepository().resetConfiguration();
+        org.apache.log4j.Logger.getLogger("org.geoserver").getLoggerRepository().resetConfiguration();
+        org.apache.log4j.Logger.getLogger("org.vfny").getLoggerRepository().resetConfiguration();
         
-        Properties lprops = new Properties();
-        lprops.load(loggingConfigStream);
         PropertyConfigurator.configure(lprops);
         
         gslf = org.apache.log4j.Logger.getRootLogger().getAppender("geoserverlogfile");
@@ -700,9 +731,63 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
                 }
             }
         } else {
-            LOGGER.warning("StdOut logging enabled.  Log file also output to '" + logFileName + "'");
+            LOGGER.info("StdOut logging enabled.  Log file also output to '" + logFileName + "'");
         }
-        LOGGER.fine("FINISHED CONFIGURING GEOSERVER LOGGING -------------------------");
+        LOGGER.info("FINISHED CONFIGURING GEOSERVER LOGGING -------------------------");
+    }
+    
+    /**
+     * This mapping comes directly from {@link org.geotools.util.CommonHandler#publish()}
+     * 
+     * @param log4jLevel - the String of the log4j logging level (from the log4j config file)
+     * @return a {@link java.util.logging.Level} representing the correct jdk logging level
+     */
+    private static Level log4JLevelToJDKLoggingLevel(String log4jLevel) {
+        if (log4jLevel.equalsIgnoreCase("DEBUG")) {
+            return Level.FINER;
+        } else if (log4jLevel.equalsIgnoreCase("INFO")) {
+            return Level.CONFIG;
+        } else if (log4jLevel.equalsIgnoreCase("WARN")) {
+            return Level.WARNING;
+        } else if (log4jLevel.equalsIgnoreCase("ERROR")) {
+            return Level.SEVERE;
+        } else {
+            LOGGER.warning("Can't figure out what sort of Log4j log level '" + log4jLevel + "' is.");
+            return Level.ALL;
+        }
+    }
+    
+    /**
+     * Returns a (reverse) sorted list of log4j category packages.
+     * Results are sorted from the deepest-package to the shallowest.
+     */
+    private static List getSortedLog4JCategories(Properties log4jProps) {
+        ArrayList ret = new ArrayList();
+        
+        Iterator iCats = log4jProps.keySet().iterator();
+        String curCat;
+        while (iCats.hasNext()) {
+            curCat = (String)iCats.next();
+            if (curCat.startsWith("log4j.category."))
+                ret.add(curCat.substring("log4j.category.".length()));
+        }
+        
+        Collections.sort(ret, new Comparator() {
+            public int compare(Object arg0, Object arg1) {
+                String s1 = (String)arg0, s2 = (String)arg1;
+                int numDots1 = new StringTokenizer(s1, ".").countTokens();
+                int numDots2 = new StringTokenizer(s2, ".").countTokens();
+                if (numDots1 > numDots2) {
+                    return -1;
+                } else if (numDots1 < numDots2) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+        
+        return ret;
     }
     
     
