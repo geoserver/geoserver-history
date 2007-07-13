@@ -119,6 +119,6 @@ public class WFSConfiguration extends Configuration {
 
         //remove bindings for MultiPolygon and MultiLineString
         //TODO: make this cite configurable
-        Schemas.unregisterComponent(container, GML.MultiPolygonType);
+        //Schemas.unregisterComponent(container, GML.MultiPolygonType);
     }
 }
