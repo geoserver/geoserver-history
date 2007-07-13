@@ -520,7 +520,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 try {
                         encodePlacemarkName( feature, styles );
                 }
-                catch( IOException e ) {
+                catch( Exception e ) {
                         String msg = "Error occured processing 'title' template.";
                         LOGGER.log( Level.WARNING, msg, e );
                 }
@@ -528,7 +528,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 //description
                 try {
                     encodePlacemarkDescription(feature);
-                } catch (IOException e) {
+                } catch (Exception e) {
                         String msg = "Error occured processing 'description' template.";
                         LOGGER.log( Level.WARNING, msg, e );
                 }
