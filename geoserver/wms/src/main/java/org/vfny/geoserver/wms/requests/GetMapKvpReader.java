@@ -292,7 +292,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
         if (paletteValue != null) {
             try {
-                IndexColorModel model = PaletteManager.getPalette(paletteValue);
+                IndexColorModel model = PaletteManager.getPalette(paletteValue).getIcm();
 
                 if (model == null) {
                     throw new WmsException("Palette " + paletteValue + " could not be found "

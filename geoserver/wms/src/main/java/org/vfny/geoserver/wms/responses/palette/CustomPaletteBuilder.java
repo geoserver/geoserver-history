@@ -45,12 +45,11 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
-import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
-import java.awt.image.WritableRenderedImage;
 
 import javax.imageio.ImageTypeSpecifier;
+import javax.media.jai.TiledImage;
 
 /**
  * This class implements the octree quantization method as it is described in
@@ -61,13 +60,11 @@ public final class CustomPaletteBuilder {
 	/**
 	 * maximum of tree depth
 	 */
-	protected final int maxLevel;
+	protected int maxLevel;
 
-	protected RenderedImage src;
+	protected TiledImage src;
 
 	protected ColorModel srcColorModel;
-
-	protected Raster srcRaster;
 
 	protected int requiredSize;
 
@@ -92,6 +89,8 @@ public final class CustomPaletteBuilder {
 	protected int subsampleX;
 
 	protected int subsampley;
+	
+	protected int numBands;
 
 	/**
 	 * Returns <code>true</code> if PaletteBuilder is able to create palette
@@ -177,19 +176,12 @@ public final class CustomPaletteBuilder {
 			throw new IllegalArgumentException("Invalid subsample y size");
 		}
 
-		this.src = src;
+		this.src = new TiledImage(src,true);
 		this.srcColorModel = src.getColorModel();
+		this.numBands=srcColorModel.getNumComponents();
 		this.subsampleX = subsx;
 		this.subsampley = subsy;
-
-		if (src instanceof WritableRenderedImage) {
-			this.srcRaster = ((BufferedImage) src).getRaster();
-		} else {
-			this.srcRaster = src.getData();
-		}
-
 		this.transparency = srcColorModel.getTransparency();
-
 		if (transparency != Transparency.OPAQUE) {
 			// make room for the transparent color
 			this.requiredSize = size - 1;
@@ -208,8 +200,11 @@ public final class CustomPaletteBuilder {
 	}
 
 	private Color getSrcColor(int x, int y) {
-		int argb = srcColorModel.getRGB(srcRaster.getDataElements(x, y, null));
+		final byte components[]=new byte[numBands];
+		for(int i=0;i<numBands;i++)
+			components[i]=(byte)(0xff&src.getSample(x, y, i));
 
+		final int argb=this.srcColorModel.getRGB(components);
 		return new Color(argb, transparency != Transparency.OPAQUE);
 	}
 

@@ -4,8 +4,6 @@
  */
 package org.vfny.geoserver.config;
 
-import org.geotools.util.SoftValueHashMap;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
@@ -16,9 +14,14 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Iterator;
 import java.util.logging.Logger;
+
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
+
+import org.geotools.util.SoftValueHashMap;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.vfny.geoserver.wms.responses.palette.EfficientInverseColorMapComputation;
 
 /**
  * Allows access to palettes (implemented as {@link IndexColorModel} classes)
@@ -37,7 +40,8 @@ public class PaletteManager {
 	 */
 	public static final String SAFE = "SAFE";
 
-	public static final IndexColorModel safePalette = buildDefaultPalette();
+	public static final EfficientInverseColorMapComputation safePalette = new EfficientInverseColorMapComputation(
+			buildDefaultPalette(),7,255);
 
 	static SoftValueHashMap paletteCache = new SoftValueHashMap();
 
@@ -55,7 +59,8 @@ public class PaletteManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public static IndexColorModel getPalette(String name) throws Exception {
+	public static EfficientInverseColorMapComputation getPalette(String name)
+			throws Exception {
 		// check for safe palette
 		if ("SAFE".equals(name.toUpperCase())) {
 			return safePalette;
@@ -68,7 +73,7 @@ public class PaletteManager {
 			if (entry.isStale()) {
 				paletteCache.remove(name);
 			} else {
-				return entry.model;
+				return entry.eicm;
 			}
 		}
 
@@ -105,11 +110,13 @@ public class PaletteManager {
 			final File file = paletteFiles[i];
 			final String fileName = file.getName();
 			if (fileName.endsWith("pal")) {
-				IndexColorModel icm = new PALFileLoader(file)
+				final IndexColorModel icm = new PALFileLoader(file)
 						.getIndexColorModel();
+				final EfficientInverseColorMapComputation eicm = new EfficientInverseColorMapComputation(
+						icm,7,255);
 				if (icm != null) {
-					paletteCache.put(name, new PaletteCacheEntry(file, icm));
-					return icm;
+					paletteCache.put(name, new PaletteCacheEntry(file, eicm));
+					return eicm;
 				}
 			} else {
 				final Iterator it = ImageIO.getImageReaders(file);
@@ -119,10 +126,12 @@ public class PaletteManager {
 							.getImageTypes(0).next()).getColorModel();
 					if (cm instanceof IndexColorModel) {
 						final IndexColorModel icm = (IndexColorModel) cm;
-						paletteCache
-								.put(name, new PaletteCacheEntry(file, icm));
+						final EfficientInverseColorMapComputation eicm = new EfficientInverseColorMapComputation(
+								icm,7,255);
+						paletteCache.put(name,
+								new PaletteCacheEntry(file, eicm));
 
-						return icm;
+						return eicm;
 					}
 				}
 			}
@@ -201,11 +210,12 @@ public class PaletteManager {
 
 		long lastModified;
 
-		IndexColorModel model;
+		EfficientInverseColorMapComputation eicm;
 
-		public PaletteCacheEntry(File file, IndexColorModel model) {
+		public PaletteCacheEntry(File file,
+				EfficientInverseColorMapComputation eicm) {
 			this.file = file;
-			this.model = model;
+			this.eicm = eicm;
 			this.lastModified = file.lastModified();
 		}
 

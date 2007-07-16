@@ -331,7 +331,7 @@ public abstract class DefaultRasterMapProducer extends
 						this.getMapContext().getPalette());
 				// make me parametric which means make me work with other image
 				// types
-				image = invColorMap.filter((BufferedImage) originalImage, null);
+				image = invColorMap.filterRenderedImage(originalImage);
 			} else {
 				// //
 				//
