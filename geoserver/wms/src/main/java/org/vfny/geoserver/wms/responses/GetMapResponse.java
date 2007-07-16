@@ -173,7 +173,7 @@ public class GetMapResponse implements Response {
 		map.setBgColor(request.getBgColor());
 		map.setTransparent(request.isTransparent());
 		map.setBuffer(request.getBuffer());
-		map.setPalette(request.getPalette());
+		map.setPaletteInverter(request.getPaletteInverter());
 
 		// //
 		//

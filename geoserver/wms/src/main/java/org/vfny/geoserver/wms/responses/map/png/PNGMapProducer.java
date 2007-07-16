@@ -4,16 +4,17 @@
  */
 package org.vfny.geoserver.wms.responses.map.png;
 
-import org.geotools.image.ImageWorker;
-import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.geotools.image.ImageWorker;
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 
 
 /**
@@ -62,7 +63,7 @@ public final class PNGMapProducer extends DefaultRasterMapProducer {
             LOGGER.fine("Writing png image ...");
         }
 
-        if (this.format.equalsIgnoreCase("image/png8") || (this.mapContext.getPalette() != null)) {
+        if (this.format.equalsIgnoreCase("image/png8") || (this.mapContext.getPaletteInverter() != null)) {
             image = forceIndexed8Bitmask(image);
         }
 

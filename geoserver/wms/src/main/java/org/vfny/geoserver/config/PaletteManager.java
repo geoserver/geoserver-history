@@ -4,12 +4,9 @@
  */
 package org.vfny.geoserver.config;
 
-import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Iterator;
@@ -34,16 +31,17 @@ public class PaletteManager {
 	private static final Logger LOG = Logger.getLogger("PaletteManager");
 
 	/**
-	 * Safe palette, a 6x6x6 color cube, followed by a 39 elements gray scale,
-	 * and a final transparent element. See the internet safe color palette for
+	 * Safe paletteInverter, a 6x6x6 color cube, followed by a 39 elements gray scale,
+	 * and a final transparent element. See the internet safe color paletteInverter for
 	 * a reference <a href="http://www.intuitive.com/coolweb/colors.html">
 	 */
 	public static final String SAFE = "SAFE";
 
-	public static final EfficientInverseColorMapComputation safePalette = new EfficientInverseColorMapComputation(
-			buildDefaultPalette(),7,255);
+	public static final IndexColorModel safePalette = buildDefaultPalette();
 
 	static SoftValueHashMap paletteCache = new SoftValueHashMap();
+
+	private static EfficientInverseColorMapComputation safePaletteInversion= new EfficientInverseColorMapComputation(safePalette);
 
 	/**
 	 * TODO: we should probably provide the data directory as a constructor
@@ -61,14 +59,14 @@ public class PaletteManager {
 	 */
 	public static EfficientInverseColorMapComputation getPalette(String name)
 			throws Exception {
-		// check for safe palette
+		// check for safe paletteInverter
 		if ("SAFE".equals(name.toUpperCase())) {
-			return safePalette;
+			return safePaletteInversion;
 		}
 
 		// check for cached one, making sure it's not stale
-		PaletteCacheEntry entry = (PaletteCacheEntry) paletteCache.get(name);
-
+		final PaletteCacheEntry entry = (PaletteCacheEntry) paletteCache
+				.get(name);
 		if (entry != null) {
 			if (entry.isStale()) {
 				paletteCache.remove(name);
@@ -84,15 +82,14 @@ public class PaletteManager {
 
 		// hum... loading the paletteDir could be done once, but then if the
 		// users
-		// adds the palette dir with a running Geoserver, we won't find it
+		// adds the paletteInverter dir with a running Geoserver, we won't find it
 		// anymore...
-		File root = GeoserverDataDirectory.getGeoserverDataDirectory();
-		File paletteDir = GeoserverDataDirectory
-				.findConfigDir(root, "palettes");
-
+		final File root = GeoserverDataDirectory.getGeoserverDataDirectory();
+		final File paletteDir = GeoserverDataDirectory.findConfigDir(root,
+				"palettes");
 		final String[] names = new String[] { name + ".gif", name + ".png",
 				name + ".pal", name + ".tif" };
-		File[] paletteFiles = paletteDir.listFiles(new FilenameFilter() {
+		final File[] paletteFiles = paletteDir.listFiles(new FilenameFilter() {
 			public boolean accept(File dir, String name) {
 				for (int i = 0; i < names.length; i++) {
 					if (name.toLowerCase().equals(names[i])) {
@@ -105,16 +102,17 @@ public class PaletteManager {
 		});
 
 		// scan the files found (we may have multiple files with different
-		// extensions and return the first palette you find
+		// extensions and return the first paletteInverter you find
 		for (int i = 0; i < paletteFiles.length; i++) {
 			final File file = paletteFiles[i];
 			final String fileName = file.getName();
 			if (fileName.endsWith("pal")) {
 				final IndexColorModel icm = new PALFileLoader(file)
 						.getIndexColorModel();
-				final EfficientInverseColorMapComputation eicm = new EfficientInverseColorMapComputation(
-						icm,7,255);
+
 				if (icm != null) {
+					final EfficientInverseColorMapComputation eicm = new EfficientInverseColorMapComputation(
+							icm);
 					paletteCache.put(name, new PaletteCacheEntry(file, eicm));
 					return eicm;
 				}
@@ -127,43 +125,24 @@ public class PaletteManager {
 					if (cm instanceof IndexColorModel) {
 						final IndexColorModel icm = (IndexColorModel) cm;
 						final EfficientInverseColorMapComputation eicm = new EfficientInverseColorMapComputation(
-								icm,7,255);
+								icm);
 						paletteCache.put(name,
 								new PaletteCacheEntry(file, eicm));
-
 						return eicm;
 					}
 				}
 			}
 			LOG
-					.warning("Skipping palette file "
+					.warning("Skipping paletteInverter file "
 							+ file.getName()
-							+ " since color model is not indexed (no 256 colors palette)");
+							+ " since color model is not indexed (no 256 colors paletteInverter)");
 		}
 
 		return null;
 	}
 
 	/**
-	 * Builds a buffered image with the specified indexed color model, width and
-	 * height
-	 * 
-	 * @param model
-	 * @param width
-	 * @param height
-	 * @return
-	 */
-	public static BufferedImage buildIndexedImage(IndexColorModel model,
-			int width, int height) {
-		IndexColorModel colorModel = buildDefaultPalette();
-		WritableRaster raster = Raster.createInterleavedRaster(
-				DataBuffer.TYPE_BYTE, width, height, 1, null);
-
-		return new BufferedImage(colorModel, raster, false, null);
-	}
-
-	/**
-	 * Builds the internet safe palette
+	 * Builds the internet safe paletteInverter
 	 */
 	static IndexColorModel buildDefaultPalette() {
 		int[] cmap = new int[256];
@@ -202,7 +181,7 @@ public class PaletteManager {
 	}
 
 	/**
-	 * An entry in the palette cache. Can determine wheter it's stale or not,
+	 * An entry in the paletteInverter cache. Can determine wheter it's stale or not,
 	 * too
 	 */
 	private static class PaletteCacheEntry {

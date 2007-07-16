@@ -61,7 +61,7 @@ public class GeoTiffMapProducer extends DefaultRasterMapProducer {
         }
 
         // do we want it to be 8 bits?
-        if (this.format.equalsIgnoreCase("image/tiff8") || (this.mapContext.getPalette() != null)) {
+        if (this.format.equalsIgnoreCase("image/tiff8") || (this.mapContext.getPaletteInverter() != null)) {
             image = forceIndexed8Bitmask(image);
         }
 

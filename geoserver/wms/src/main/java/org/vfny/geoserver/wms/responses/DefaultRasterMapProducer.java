@@ -4,15 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.image.ImageWorker;
-import org.geotools.renderer.lite.StreamingRenderer;
-import org.vfny.geoserver.config.WMSConfig;
-import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.wms.RasterMapProducer;
-import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.palette.CustomPaletteBuilder;
-import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -25,15 +16,14 @@ import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
-import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.VolatileImage;
-import java.awt.image.WritableRaster;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.media.jai.ImageLayout;
 import javax.media.jai.Interpolation;
 import javax.media.jai.InterpolationBicubic2;
@@ -42,6 +32,17 @@ import javax.media.jai.InterpolationNearest;
 import javax.media.jai.JAI;
 import javax.media.jai.TiledImage;
 import javax.media.jai.operator.BandMergeDescriptor;
+
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.image.ImageWorker;
+import org.geotools.renderer.lite.StreamingRenderer;
+import org.vfny.geoserver.config.WMSConfig;
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.wms.RasterMapProducer;
+import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.responses.palette.CustomPaletteBuilder;
+import org.vfny.geoserver.wms.responses.palette.EfficientInverseColorMapComputation;
+import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 
 /**
  * Abstract base class for GetMapProducers that relies in LiteRenderer for
@@ -143,8 +144,10 @@ public abstract class DefaultRasterMapProducer extends
 					"x").append(height).append(" image").toString());
 		}
 
+		final EfficientInverseColorMapComputation paletteInverter = mapContext
+				.getPaletteInverter();
 		final RenderedImage preparedImage = prepareImage(width, height,
-				mapContext.getPalette());
+				paletteInverter != null ? paletteInverter.getIcm() : null);
 		final Graphics2D graphic;
 
 		if (preparedImage instanceof BufferedImage) {
@@ -241,23 +244,23 @@ public abstract class DefaultRasterMapProducer extends
 	}
 
 	/**
-	 * Sets up a {@link BufferedImage#TYPE_4BYTE_ABGR} if the palette is not
-	 * provided, or a indexed image otherwise. Subclasses may override this
+	 * Sets up a {@link BufferedImage#TYPE_4BYTE_ABGR} if the paletteInverter is
+	 * not provided, or a indexed image otherwise. Subclasses may override this
 	 * method should they need a special kind of image
 	 * 
 	 * @param width
 	 * @param height
-	 * @param palette
+	 * @param paletteInverter
 	 * @return
 	 */
 	protected RenderedImage prepareImage(int width, int height,
 			IndexColorModel palette) {
-		// if (palette != null) {
+		// if (paletteInverter != null) {
 		// WritableRaster raster =
-		// Raster.createInterleavedRaster(palette.getTransferType(),
+		// Raster.createInterleavedRaster(paletteInverter.getTransferType(),
 		// width, height, 1, null);
 		//
-		// return new BufferedImage(palette, raster, false, null);
+		// return new BufferedImage(paletteInverter, raster, false, null);
 		// }
 
 		return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
@@ -286,7 +289,7 @@ public abstract class DefaultRasterMapProducer extends
 		// ///
 		//
 		// If we got an image whose color model is already indexed on 8 bits
-		// palette,we have to check if it is bitmask or not.
+		// paletteInverter,we have to check if it is bitmask or not.
 		//
 		// /////////////////////////////////////////////////////////////////
 		if ((cm instanceof IndexColorModel) && dataTypeByte) {
@@ -321,21 +324,26 @@ public abstract class DefaultRasterMapProducer extends
 			// We got an image that needs to be converted.
 			//
 			// /////////////////////////////////////////////////////////////////
-			if (this.getMapContext().getPalette() != null) {
+			EfficientInverseColorMapComputation paletteInverter = this
+					.getMapContext().getPaletteInverter();
+			if (paletteInverter != null) {
 				// //
 				//
-				// Do the color inversion since we already have a palette.
+				// Do the color inversion since we already have a
+				// paletteInverter.
 				//
 				// //
 				final InverseColorMapOp invColorMap = new InverseColorMapOp(
-						this.getMapContext().getPalette());
+						paletteInverter);
+
 				// make me parametric which means make me work with other image
 				// types
 				image = invColorMap.filterRenderedImage(originalImage);
 			} else {
 				// //
 				//
-				// We do not have a palette, let's create one that is as good as
+				// We do not have a paletteInverter, let's create one that is as
+				// good as
 				// possible.
 				//
 				// //
@@ -395,7 +403,7 @@ public abstract class DefaultRasterMapProducer extends
 
 				// //
 				//
-				// Build the palette doing some good subsampling.
+				// Build the paletteInverter doing some good subsampling.
 				//
 				// //
 				final int subsx = (int) Math.pow(2, image.getWidth() / 256);

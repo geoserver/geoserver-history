@@ -21,8 +21,8 @@ import java.util.logging.Logger;
  * <p>
  * Note that this kind of file does not support explicitly setting transparent
  * pixel. However I have implemented this workaround, if you use less than 256
- * colors in your palette I will accordingly set the transparent pixel to the
- * first available position in the palette, which is palette_size. If you use
+ * colors in your paletteInverter I will accordingly set the transparent pixel to the
+ * first available position in the paletteInverter, which is palette_size. If you use
  * 256 colors no transparency will be used for the image we generate.
  * 
  * <p>
@@ -88,7 +88,7 @@ public class PALFileLoader {
 			String temp = reader.readLine().trim();
 			if (temp.equalsIgnoreCase("JASC-PAL")) {
 				if (LOGGER.isLoggable(Level.FINE))
-					LOGGER.fine("Found header in palette file");
+					LOGGER.fine("Found header in paletteInverter file");
 				loadNext = true;
 			}
 

@@ -32,6 +32,10 @@ public class InverseColorMapOp implements BufferedImageOp {
 
 	protected final EfficientInverseColorMapComputation invCM;
 
+	public InverseColorMapOp(EfficientInverseColorMapComputation eicm){
+		this.invCM=eicm;
+		this.icm=eicm.getIcm();
+	}
 	/**
 	 * @see EfficientInverseColorMapComputation#EfficientInverseColorMapComputation(IndexColorModel,
 	 *      int, int).
