@@ -1,0 +1,90 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Tab test page</title>
+    
+    <script type="text/javascript" src="src/dojo/dojo.js"></script>
+    <script type="text/javascript">
+      dojo.require("dojo.event.*");
+      dojo.require("dojo.widget.*");
+      dojo.require("dojo.io.*");
+      dojo.require("dojo.widget.Button");
+      dojo.require("dojo.widget.TabContainer");
+      dojo.require("dojo.widget.LinkPane");
+      dojo.require("dojo.widget.ContentPane");
+      dojo.require("dojo.widget.LayoutContainer");
+    </script>
+    <script type="text/javascript">
+		  function helloPressed()
+      {
+      var mainMenu = dojo.widget.byId('mainMenu');
+      mainMenu.addChild
+      alert('You pressed the button');
+      }
+      
+      var exampleObj = {
+      counter: 0,
+      foo: function(){
+      alert ("foo");
+      this.counter++;
+      },
+      bar: function(){
+      var str = "bar " + this.counter;
+      alert(str);
+      this.counter++;
+      }
+      };
+
+      function init()
+      {
+      var helloButton = dojo.widget.byId('helloButton');
+      dojo.event.connect(helloButton, 'onClick', 'helloPressed');
+      dojo.event.connect(helloButton, 'onClick', exampleObj, 'foo');
+      dojo.event.connect(exampleObj, "foo", exampleObj, "bar");
+      }
+
+      dojo.addOnLoad(init);
+    </script>
+    
+    <style type="text/css">
+      .dojoTabPaneWrapper{
+      padding: 5px;
+      overflow: hidden;
+      }
+      
+      #tabBlock{
+      top: 150px:
+      left: 120px;
+      width: 67%;
+      height: 100%;
+      }
+      #mainMenu{
+      width: 100%;
+      height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div dojoType="SplitContainer" widgetID="SplitWindow" activesizing="true" sizerwidth="3" orientation="horizontal">
+      <div id="tabBlock">
+	<div dojoType="TabContainer" widgetID="TabMenu" selectedChild="splitmain" sizeShare="60">
+	  <div dojoType="SplitContainer" label="Main" id="splitmain" activesizing="true" sizerwidth="3" orientation="horizontal">
+	    <div dojoType="ContentPane" label="CurrentLevel" id="currentlevel" sizeShare="20"> Contents of CurrentLevel</div>
+	    <div dojoType="ContentPane" label="DataArea" id="dataarea" sizeShare="80"> Contents of DataArea</div>
+	  </div>
+	  <div dojoType="ContentPane" label="Save/Load" id="save/load"> Contents of Tab 2 Pane</div>
+	  <div dojoType="ContentPane" label="Options" id="options"> Contents of Tab 3 Pane</div>
+	  <div dojoType="ContentPane" label="Defaults" id="defaults"> Contents of Tab 4 Pane</div>
+	  <div dojoType="ContentPane" label="Preview" id="preview"> Contents of Tab 5 Pane</div>
+	  <div dojoType="ContentPane" label="Help" id="help"> Contents of Tab 6 Pane
+	    <button dojoType="Button" widgetId="helloButton" >Hello World!</button>
+	  </div>
+	</div>
+      </div>
+      <div dojoType="SplitContainer" widgetID="SplitRight" activesizing="true" sizerwidth="3" orientation="vertical" sizeShare="40">
+	<div dojoType="ContentPane" label="PreviewArea" sizeShare="50"> Contents of PreviewWindow</div>
+	<div dojoType="ContentPane" label="OutlineArea" sizeShare="50"> Contents of OutlineArea</div> 
+      </div>
+    </div>
+  </body>
+</html>

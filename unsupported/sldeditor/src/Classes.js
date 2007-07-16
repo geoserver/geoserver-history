@@ -218,7 +218,7 @@ FeatureTypeName.prototype.toString = function() {
 	return '';
 }
 
-// Filter Class
+// ogc:Filter Class
 // ??? TODO
 
 // ElseFilter Class
@@ -229,7 +229,7 @@ ElseFilter.prototype.toString = function() {
     return '\n<ElseFilter/>\n';
 }
 
-// Expression Class
+// ogc:Expression Class
 // ??? TODO
 
 // Extent Class
@@ -1021,8 +1021,35 @@ TextSymbolizer.prototype.toString() = function () {
 }
 
 // AnchorPoint Class
+    function AnchorPoint() {
+	// <AnchorPointX>
+	// required
+	this.anchorPointX;
+
+	// <AnchorPointY>
+	// required
+	this.anchorPointY;
+    }
+
+AnchorPoint.prototype.toString() = function () {
+    var str = this.anchorPointX.toString() + this.anchorPointY.toString();
+    if (str.length != 0)
+	return '<AnchorPoint>\n' + str + '</AnchorPoint>\n';
+    else
+	return '';
+}
 
 // AnchorPointX Class
+    function AnchorPointX(value) {
+	this.value = value.toString();
+    }
+
+AnchorPointX.prototype.toString() = function () {
+    if (this.value.length != 0)
+	return '<AnchorPointX>' + this.value + '</AnchorPointX>\n';
+    else 
+	return '';    
+}
 
 // AnchorPointY Class
 
