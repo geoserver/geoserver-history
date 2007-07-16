@@ -243,6 +243,6 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
 
     protected String typeSchemaLocation(WFS wfs, FeatureTypeInfo meta) {
         return ResponseUtils.appendQueryString(wfs.getOnlineResource().toString(),
-            "version=1.0.0&request=DescribeFeatureType&typeName=" + meta.getName());
+            "service=WFS&version=1.0.0&request=DescribeFeatureType&typeName=" + meta.getName());
     }
 }
