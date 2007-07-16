@@ -24,7 +24,7 @@ public final class EfficientInverseColorMapComputation {
 	 * Default value for the threshold to decide whther a pixel is opaque (>=)
 	 * or transparent (<).
 	 */
-	public static final int DEFAULT_ALPHA_TH = 255;
+	public static final int DEFAULT_ALPHA_TH = 1;
 
 
 	/**
