@@ -468,7 +468,7 @@ public class MockUtils {
      *            DOCUMENT ME!
      */
     private static void deleteTempFile(File f) {
-        if(!f.delete())
+        if(f.exists() && !f.delete())
             throw new RuntimeException("Could not delete file " + f);
     }
 
