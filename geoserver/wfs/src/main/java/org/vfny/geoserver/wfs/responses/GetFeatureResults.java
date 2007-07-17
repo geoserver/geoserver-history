@@ -174,7 +174,7 @@ public class GetFeatureResults {
                 + " do not seems to belong to the same type");
         }
 
-        if ((meta.getNativeCRS() != null)
+        if ((meta.getNativeCRS() != null) && features.getSchema().getDefaultGeometry() != null
                 && !CRS.equalsIgnoreMetadata(meta.getNativeCRS(), meta.getDeclaredCRS())) {
             try {
                 features = new ForceCoordinateSystemFeatureResults(features, meta.getDeclaredCRS());
