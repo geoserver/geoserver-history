@@ -5,11 +5,14 @@
 package org.vfny.geoserver.wfs.responses;
 
 import com.vividsolutions.jts.geom.Envelope;
+
+import org.apache.commons.collections.ComparatorUtils;
 import org.geotools.factory.FactoryFinder;
 import org.geotools.filter.FunctionExpression;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.FeatureTypeInfoTitleComparator;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.global.WFS;
 import org.vfny.geoserver.global.dto.WFSDTO;
@@ -20,7 +23,9 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -407,7 +412,8 @@ public class WFSCapsTransformer extends TransformerBase {
 
             end("Operations");
 
-            Collection featureTypes = wfs.getData().getFeatureTypeInfos().values();
+            List featureTypes = new ArrayList(wfs.getData().getFeatureTypeInfos().values());
+            Collections.sort(featureTypes, new FeatureTypeInfoTitleComparator());
             FeatureTypeInfo ftype;
 
             for (Iterator it = featureTypes.iterator(); it.hasNext();) {
