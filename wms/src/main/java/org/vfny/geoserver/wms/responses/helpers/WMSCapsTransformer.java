@@ -32,8 +32,10 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.global.CoverageInfo;
+import org.vfny.geoserver.global.CoverageInfoLabelComparator;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.FeatureTypeInfoTitleComparator;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.LegendURL;
 import org.vfny.geoserver.global.MapLayerInfo;
@@ -46,6 +48,7 @@ import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
+import java.util.Collections;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -684,10 +687,11 @@ public class WMSCapsTransformer extends TransformerBase {
          * @param featuresLayerTree
          */
         private void handleFeaturesTree(LayerTree featuresLayerTree) {
-            final Collection data = featuresLayerTree.getData();
+            final List data = new ArrayList(featuresLayerTree.getData());
             final Collection childrens = featuresLayerTree.getChildrens();
             FeatureTypeInfo fLayer;
 
+            Collections.sort(data, new FeatureTypeInfoTitleComparator());
             for (Iterator it = data.iterator(); it.hasNext();) {
                 fLayer = (FeatureTypeInfo) it.next();
 
@@ -807,10 +811,11 @@ public class WMSCapsTransformer extends TransformerBase {
          * @param coveragesLayerTree
          */
         private void handleCoveragesTree(LayerTree coveragesLayerTree) {
-            final Collection data = coveragesLayerTree.getData();
+            final List data = new ArrayList(coveragesLayerTree.getData());
             final Collection childrens = coveragesLayerTree.getChildrens();
             CoverageInfo cLayer;
 
+            Collections.sort(data, new CoverageInfoLabelComparator());
             for (Iterator it = data.iterator(); it.hasNext();) {
                 cLayer = (CoverageInfo) it.next();
 
@@ -947,11 +952,12 @@ public class WMSCapsTransformer extends TransformerBase {
                 return;
             }
 
-            Iterator it = baseMapLayers.keySet().iterator();
+            List names = new ArrayList(baseMapLayers.keySet());
+            Collections.sort(names);
 
             CoordinateReferenceSystem wgs84 = CRS.decode("EPSG:4326");
 
-            for (; it.hasNext();) {
+            for (Iterator it = names.iterator(); it.hasNext();) {
                 String layerName = (String) it.next();
 
                 AttributesImpl qatts = new AttributesImpl();

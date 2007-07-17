@@ -9,6 +9,7 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.vfny.geoserver.global.CoverageInfo;
+import org.vfny.geoserver.global.CoverageInfoLabelComparator;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WCS;
@@ -17,8 +18,12 @@ import org.vfny.geoserver.wcs.requests.WCSRequest;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 
@@ -503,9 +508,11 @@ public class WCSCapsTransformer extends TransformerBase {
 
             start("ContentMetadata", attributes);
 
-            for (Iterator i = config.getData().getCoverageInfos().keySet().iterator(); i.hasNext();) {
+            List coverages = new ArrayList(config.getData().getCoverageInfos().values());
+            Collections.sort(coverages, new CoverageInfoLabelComparator());
+            for (Iterator i = coverages.iterator(); i.hasNext();) {
                 handleCoverageOfferingBrief(config,
-                    (CoverageInfo) config.getData().getCoverageInfos().get(i.next()));
+                    (CoverageInfo) i.next());
             }
 
             end("ContentMetadata");
