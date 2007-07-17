@@ -316,7 +316,7 @@ public class GeoServerFeatureSource implements FeatureSource {
         try {
             FeatureCollection fc = source.getFeatures(newQuery);
 
-            if (forcedCRS != null) {
+            if (forcedCRS != null && fc.getSchema().getPrimaryGeometry() != null) {
                 return new ForceCoordinateSystemFeatureResults(fc, forcedCRS);
             } else {
                 return fc;
