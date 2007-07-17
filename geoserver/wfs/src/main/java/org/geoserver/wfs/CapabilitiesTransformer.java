@@ -18,11 +18,13 @@ import org.geotools.xml.transform.Translator;
 import org.opengis.filter.expression.Function;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.FeatureTypeInfoTitleComparator;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -515,8 +517,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                 end("Operations");
 
-                Collection featureTypes = catalog.getFeatureTypeInfos().values();
-
+                List featureTypes = new ArrayList(catalog.getFeatureTypeInfos().values());
+                Collections.sort(featureTypes, new FeatureTypeInfoTitleComparator());
                 for (Iterator it = featureTypes.iterator(); it.hasNext();) {
                     FeatureTypeInfo ftype = (FeatureTypeInfo) it.next();
 
@@ -1064,8 +1066,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                 end("Operations");
 
-                Collection featureTypes = catalog.getFeatureTypeInfos().values();
-
+                List featureTypes = new ArrayList(catalog.getFeatureTypeInfos().values());
+                Collections.sort(featureTypes, new FeatureTypeInfoTitleComparator());
                 for (Iterator i = featureTypes.iterator(); i.hasNext();) {
                     FeatureTypeInfo featureType = (FeatureTypeInfo) i.next();
                     featureType(featureType);
