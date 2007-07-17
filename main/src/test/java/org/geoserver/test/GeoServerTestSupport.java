@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -185,12 +186,26 @@ public class GeoServerTestSupport extends TestCase {
      * @throws Exception
      */
     protected InputStream get( String path ) throws Exception {
+        MockHttpServletResponse response = getAsServletResponse(path);
+        return new ByteArrayInputStream( response.getOutputStreamContent().getBytes() );
+    }
+    
+    /**
+     * Executes an ows request using the GET method.
+     *
+     * @param path The porition of the request after hte context, 
+     *      example: 'wms?request=GetMap&version=1.1.1&..."
+     * 
+     * @return the mock servlet response
+     * 
+     * @throws Exception
+     */
+    protected MockHttpServletResponse getAsServletResponse( String path ) throws Exception {
         MockHttpServletRequest request = createRequest( path ); 
         request.setMethod( "GET" );
         request.setBodyContent(new byte[]{});
         
-        MockHttpServletResponse response = dispatch( request );
-        return new ByteArrayInputStream( response.getOutputStreamContent().getBytes() );
+        return dispatch( request );
     }
         
     /**
