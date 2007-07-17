@@ -33,7 +33,6 @@ import org.apache.log4j.Appender;
 import org.apache.log4j.PropertyConfigurator;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.jdbc.ConnectionPoolManager;
 import org.geotools.util.Logging;
 import org.springframework.beans.factory.DisposableBean;
 import org.vfny.geoserver.global.dto.ContactDTO;
@@ -1086,7 +1085,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * </p>
      */
     public void destroy() throws Exception {
-        ConnectionPoolManager.getInstance().closeAll();
+        // ConnectionPoolManager.getInstance().closeAll();
 
         /*
            HACK: we must get a standard API way for releasing resources...
