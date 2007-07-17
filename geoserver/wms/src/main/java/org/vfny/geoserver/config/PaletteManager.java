@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.stream.ImageInputStream;
 
 import org.geotools.util.SoftValueHashMap;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
@@ -117,9 +118,11 @@ public class PaletteManager {
 					return eicm;
 				}
 			} else {
-				final Iterator it = ImageIO.getImageReaders(file);
+				ImageInputStream iis = ImageIO.createImageInputStream(file);
+                final Iterator it = ImageIO.getImageReaders(iis);
 				if (it.hasNext()) {
 					final ImageReader reader = (ImageReader) it.next();
+					reader.setInput(iis);
 					final ColorModel cm = ((ImageTypeSpecifier) reader
 							.getImageTypes(0).next()).getColorModel();
 					if (cm instanceof IndexColorModel) {
