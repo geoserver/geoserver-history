@@ -4,28 +4,31 @@
  */
 package org.geoserver.wms.kvp;
 
+import java.awt.Color;
+import java.awt.geom.Point2D;
+import java.net.URL;
+import java.util.HashMap;
+
 import org.geoserver.data.test.MockData;
+import org.geoserver.ows.Dispatcher;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
-import org.opengis.filter.Filter;
 import org.opengis.filter.Id;
 import org.opengis.filter.PropertyIsEqualTo;
 import org.vfny.geoserver.config.PaletteManager;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.servlets.GetMap;
-import java.awt.Color;
-import java.awt.geom.Point2D;
-import java.net.URL;
-import java.util.HashMap;
 
 
 public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
     GetMapKvpRequestReader reader;
+    Dispatcher dispatcher;
 
     protected void setUp() throws Exception {
         super.setUp();
 
         GetMap getMap = (GetMap) applicationContext.getBean("wmsGetMap");
+        dispatcher = (Dispatcher) applicationContext.getBean("dispatcher");
         WMS wms = (WMS) applicationContext.getBean("wms");
         reader = new GetMapKvpRequestReader(getMap, wms);
     }
@@ -148,5 +151,16 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
 
         assertNotNull(request.getSld());
         assertEquals(url, request.getSld());
+    }
+    
+    /**
+     * One of the cite tests ensures that WMTVER is recognized as VERSION and the server does 
+     * not complain
+     * @throws Exception 
+     */
+    public void testWmtVer() throws Exception {
+        dispatcher.setCiteCompliant(true);
+        String request = "wms?SERVICE=WMS&&WiDtH=200&FoRmAt=image/png&LaYeRs=cite:Lakes&StYlEs=&BbOx=0,-0.0020,0.0040,0&ReQuEsT=GetMap&HeIgHt=100&SrS=EPSG:4326&WmTvEr=1.1.1";
+        assertEquals("image/png", getAsServletResponse(request).getContentType());
     }
 }
