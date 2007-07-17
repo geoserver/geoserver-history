@@ -1,3 +1,19 @@
+GeoServer 1.6-beta2
+---------------------
+
+This is the second beta release in the 1.6 series of GeoServer.
+Besides the usual raft of bug fixes, the most notable additions are
+templated GetFeatureInfo, a much more configurable logging subsystem, 
+and the new connection pooling subystem with much better control 
+on the number of opened database connections.
+
+The full change log for this release can be found here:
+http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&styleName=Html&version=13547
+
+This release is based on Geotools 2.4-SNAPSHOT, tag = geoserver-1.6-beta2,
+revision 26251.
+
+
 GeoServer 1.6-beta1
 ---------------------
 
