@@ -939,6 +939,11 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
                     continue;
                 }
+                
+                //is this rule within scale?
+                if ( !isWithInScale(rule)) {
+                        continue;
+                }
 
                 //does this rule have a filter which applies to the feature
                 Filter filter = rule.getFilter();
