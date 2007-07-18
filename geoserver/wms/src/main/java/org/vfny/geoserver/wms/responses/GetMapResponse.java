@@ -241,7 +241,7 @@ public class GetMapResponse implements Response {
 					//
 					// /////////////////////////////////////////////////////////
 					try {
-						source = layers[i].getFeature().getFeatureSource();
+						source = layers[i].getFeature().getFeatureSource(true);
 
 						// NOTE for the future. Here there was some code that
 						// sounded like:
@@ -277,7 +277,6 @@ public class GetMapResponse implements Response {
 					if (definitionFilter != null) {
 						definitionQuery = new DefaultQuery(source.getSchema()
 								.getTypeName(), definitionFilter);
-
 						layer.setQuery(definitionQuery);
 					} else if (optionalFilter != null) {
 						definitionQuery = new DefaultQuery(source.getSchema()

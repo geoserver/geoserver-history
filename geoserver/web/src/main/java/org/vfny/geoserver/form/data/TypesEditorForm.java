@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.GeometryAttributeType;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -23,6 +24,7 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.config.StyleConfig;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
@@ -94,6 +96,14 @@ public class TypesEditorForm extends ActionForm {
      * to give some info about the error.
      */
     private String SRSWKT;
+    
+    /**
+     * WKT representation of the native SRS
+     */
+    private String nativeSRSWKT;
+    
+    private List allSrsHandling;
+    private int srsHandling = FeatureTypeInfo.FORCE;
 
     /** Title of this FeatureType */
     private String title;
@@ -181,6 +191,8 @@ public class TypesEditorForm extends ActionForm {
     private String dataMinY;
     private String dataMaxX;
     private String dataMaxY;
+    private CoordinateReferenceSystem declaredCRS;
+    private CoordinateReferenceSystem nativeCRS;
 
     /**
      * Set up FeatureTypeEditor from from Web Container.<p>The key
@@ -195,7 +207,8 @@ public class TypesEditorForm extends ActionForm {
 
         action = "";
 
-        ServletContext context = getServlet().getServletContext();
+        ServletContext servletContext = getServlet().getServletContext();
+        ServletContext context = servletContext;
 
         DataConfig config = ConfigRequests.getDataConfig(request);
         UserContainer user = Requests.getUserContainer(request);
@@ -248,6 +261,31 @@ public class TypesEditorForm extends ActionForm {
 
         typeName = type.getName();
         setSRS(Integer.toString(type.getSRS())); // doing it this way also sets SRSWKT
+        srsHandling = type.getSRSHandling();
+        
+        nativeSRSWKT = "-";
+        try {
+            DataConfig dataConfig =  (DataConfig) servletContext.getAttribute(DataConfig.CONFIG_KEY);
+            DataStoreConfig dsConfig = dataConfig.getDataStore(type.getDataStoreId());
+            DataStore dataStore = dsConfig.findDataStore(servletContext);
+            FeatureType featureType = dataStore.getSchema(type.getName());
+            GeometryAttributeType dg = featureType.getDefaultGeometry();
+            if(dg != null && dg.getCoordinateSystem() != null) {
+                nativeCRS = dg.getCoordinateSystem();
+                nativeSRSWKT = dg.getCoordinateSystem().toString();
+            }
+        } catch(Exception e) {
+            // never mind
+        }
+        
+        // load localized
+        MessageResources resources = ((MessageResources) request.getAttribute(Globals.MESSAGES_KEY));
+        if(nativeSRSWKT == "-")
+            allSrsHandling =  Arrays.asList(new String[] {resources.getMessage("label.type.forceSRS")});
+        else
+            allSrsHandling =  Arrays.asList(new String[] {resources.getMessage("label.type.forceSRS"),
+                resources.getMessage("label.type.reprojectSRS"), resources.getMessage("label.type.leaveSRS")});
+        
 
         title = type.getTitle();
         wmsPath = type.getWmsPath();
@@ -260,7 +298,7 @@ public class TypesEditorForm extends ActionForm {
         FeatureType featureType = null;
 
         try {
-            DataStore dataStore = dataStoreConfig.findDataStore(getServlet().getServletContext());
+            DataStore dataStore = dataStoreConfig.findDataStore(servletContext);
             featureType = dataStore.getSchema(typeName);
         } catch (IOException e) {
             // DataStore unavailable!
@@ -655,6 +693,15 @@ public class TypesEditorForm extends ActionForm {
     public String getSRSWKT() {
         return SRSWKT;
     }
+    
+    /**
+     * Access SRSWKT property.  There is no setSRSWKT() because its derived from the SRS id.
+     *
+     * @return Returns the sRS.
+     */
+    public String getNativeSRSWKT() {
+        return nativeSRSWKT;
+    }
 
     /**
      * Set sRS to srs. Also sets WKTSRS. srs should be an Integer (in
@@ -675,8 +722,8 @@ public class TypesEditorForm extends ActionForm {
                 newSrs = "EPSG:" + srs;
             }
 
-            CoordinateReferenceSystem crsTheirData = CRS.decode(newSrs);
-            SRSWKT = crsTheirData.toWKT();
+            declaredCRS = CRS.decode(newSrs);
+            SRSWKT = declaredCRS.toString();
         } catch (FactoryException e) // couldnt decode their code
          {
             // DJB:
@@ -981,4 +1028,39 @@ public class TypesEditorForm extends ActionForm {
     public SortedSet getTypeStyles() {
         return typeStyles;
     }
+    
+    public List getAllSrsHandling() {
+        return allSrsHandling;
+    }
+    
+    /**
+     * This methods are used by the form, where the "leave" option cannot be offered, if
+     * they are equal the drop down list won't be shown, that's all
+     * @return
+     */
+    public String getSrsHandling() {
+        if(srsHandling >= 0 && srsHandling < allSrsHandling.size())
+            return (String) allSrsHandling.get(srsHandling);
+        else
+            return (String) allSrsHandling.get(0);
+    }
+    
+    public void setSrsHandling(String handling) {
+        srsHandling = allSrsHandling.indexOf(handling);
+        if(srsHandling == -1)
+            srsHandling = FeatureTypeInfo.FORCE;
+    }
+    
+    public int getSrsHandlingCode() {
+        return srsHandling;
+    }
+    
+    public void setSrsHandlingCode(int code) {
+        this.srsHandling = code;
+    }
+    
+    public boolean isDeclaredCRSDifferent() {
+        return nativeCRS == null || (declaredCRS != null && !CRS.equalsIgnoreMetadata(declaredCRS, nativeCRS));
+    }
+    
 }

@@ -957,6 +957,8 @@ public class XMLConfigWriter {
 
             cw.comment("native wich EPGS code for the FeatureTypeInfoDTO");
             cw.textTag("SRS", ft.getSRS() + "");
+            
+            cw.textTag("SRSHandling", String.valueOf(ft.getSRSHandling()));
 
             if ((ft.getTitle() != null) && (ft.getTitle() != "")) {
                 cw.textTag("title", ft.getTitle());

@@ -29,16 +29,17 @@ import java.io.IOException;
  */
 public class GeoServerFeatureLocking extends GeoServerFeatureStore implements FeatureLocking {
     /**
-             * Creates a new DEFQueryFeatureLocking object.
-             *
-             * @param locking GeoTools2 FeatureSource
-             * @param schema DOCUMENT ME!
-             * @param definitionQuery DOCUMENT ME!
-             * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
-             */
+     * Creates a new DEFQueryFeatureLocking object.
+     *
+     * @param locking GeoTools2 FeatureSource
+     * @param schema DOCUMENT ME!
+     * @param definitionQuery DOCUMENT ME!
+     * @param declaredCRS 
+     * @param srsHandling see {@link FeatureTypeInfo#FORCE} & co.
+     */
     GeoServerFeatureLocking(FeatureLocking locking, FeatureType schema, Filter definitionQuery,
-        CoordinateReferenceSystem forcedCRS) {
-        super(locking, schema, definitionQuery, forcedCRS);
+        CoordinateReferenceSystem declaredCRS, int srsHandling) {
+        super(locking, schema, definitionQuery, declaredCRS, srsHandling);
     }
 
     FeatureLocking locking() {

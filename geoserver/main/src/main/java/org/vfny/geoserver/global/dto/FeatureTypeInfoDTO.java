@@ -7,6 +7,8 @@ package org.vfny.geoserver.global.dto;
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.filter.Filter;
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.global.FeatureTypeInfo;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -39,6 +41,9 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /** native wich EPGS code for the FeatureTypeInfo */
     private int SRS;
+    
+    /** either reproject or force, see {@link FeatureTypeInfo} */
+    private int SRSHandling;
 
     /** Copy of the featuretype schema as a string. */
     private List schema;
@@ -147,6 +152,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         latLongBBox = CloneLibrary.clone(dto.getLatLongBBox());
         nativeBBox = CloneLibrary.clone(dto.getNativeBBox());
         SRS = dto.getSRS();
+        SRSHandling = dto.getSRSHandling();
         schema = dto.getSchemaAttributes();
         name = dto.getName();
         wmsPath = dto.getWmsPath();
@@ -225,6 +231,8 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         }
 
         r = r && (SRS == f.getSRS());
+        
+        r = r && (SRSHandling == f.getSRSHandling());
 
         if (schema != null) {
             r = r && schema.equals(f.getSchemaAttributes());
@@ -307,7 +315,9 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         if (SRS != 0) {
             r = SRS % r;
         }
-
+        
+        r += SRSHandling;
+        
         if (cacheMaxAge != null) {
             r *= cacheMaxAge.hashCode();
         }
@@ -402,6 +412,10 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      */
     public int getSRS() {
         return SRS;
+    }
+    
+    public int getSRSHandling() {
+        return SRSHandling;
     }
 
     /**
@@ -510,6 +524,10 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      */
     public void setSRS(int i) {
         SRS = i;
+    }
+    
+    public void setSRSHandling(int i) {
+        SRSHandling = i;
     }
 
     /**
