@@ -54,6 +54,7 @@ public class OpenLayersMapTemplateTest extends WMSTestSupport {
         map.put("baseUrl", "http://localhost:8080/geoserver/wms");
         map.put("parameters", new ArrayList());
         map.put("layerName", "layer");
+        map.put("units", "degrees");
         template.process(map, new OutputStreamWriter(output));
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
