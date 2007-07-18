@@ -1101,7 +1101,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             LOGGER.fine("got sde connection pool factory instance: " + pfInstance);
 
             java.lang.reflect.Method closeMethod = pfInstance.getClass()
-                                                             .getMethod("closeAll", new Class[0]);
+                                                             .getMethod("clear", new Class[0]);
 
             closeMethod.invoke(pfInstance, new Object[0]);
             LOGGER.info("just asked SDE datasource to release connections");
