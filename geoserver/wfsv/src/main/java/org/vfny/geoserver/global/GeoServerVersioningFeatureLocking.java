@@ -25,8 +25,8 @@ import java.io.IOException;
 public class GeoServerVersioningFeatureLocking extends GeoServerFeatureLocking
     implements VersioningFeatureLocking {
     GeoServerVersioningFeatureLocking(VersioningFeatureLocking locking, FeatureType schema,
-        Filter definitionQuery, CoordinateReferenceSystem forcedCRS) {
-        super(locking, schema, definitionQuery, forcedCRS);
+        Filter definitionQuery, CoordinateReferenceSystem declaredCRS, int srsHandling) {
+        super(locking, schema, definitionQuery, declaredCRS, srsHandling);
     }
 
     public void rollback(String toVersion, Filter filter, String[] users)

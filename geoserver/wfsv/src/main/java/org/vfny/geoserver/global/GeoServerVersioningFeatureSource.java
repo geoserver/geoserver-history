@@ -25,8 +25,8 @@ import java.io.IOException;
 public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource
     implements VersioningFeatureSource {
     GeoServerVersioningFeatureSource(VersioningFeatureSource source, FeatureType schema,
-        Filter definitionQuery, CoordinateReferenceSystem forcedCRS) {
-        super(source, schema, definitionQuery, forcedCRS);
+        Filter definitionQuery, CoordinateReferenceSystem declaredCRS, int srsHandling) {
+        super(source, schema, definitionQuery, declaredCRS, srsHandling);
     }
 
     public FeatureDiffReader getDifferences(String fromVersion, String toVersion, Filter filter, String[] users)
@@ -53,23 +53,22 @@ public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource
      * @param featureSource
      * @param schema
      * @param definitionQuery
-     * @param forcedCRS
-     *            Geometries will be forced to this CRS (or null, if no forcing
-     *            is needed)
+     * @param declaredCRS
+     *            
      *
      * @return
      */
     public static GeoServerFeatureSource create(VersioningFeatureSource featureSource,
-        FeatureType schema, Filter definitionQuery, CoordinateReferenceSystem forcedCRS) {
+        FeatureType schema, Filter definitionQuery, CoordinateReferenceSystem declaredCRS, int srsHandling) {
         if (featureSource instanceof VersioningFeatureLocking) {
             return new GeoServerVersioningFeatureLocking((VersioningFeatureLocking) featureSource,
-                schema, definitionQuery, forcedCRS);
+                schema, definitionQuery, declaredCRS, srsHandling);
         } else if (featureSource instanceof VersioningFeatureStore) {
             return new GeoServerVersioningFeatureStore((VersioningFeatureStore) featureSource,
-                schema, definitionQuery, forcedCRS);
+                schema, definitionQuery, declaredCRS, srsHandling);
         }
 
         return new GeoServerVersioningFeatureSource(featureSource, schema, definitionQuery,
-            forcedCRS);
+            declaredCRS, srsHandling);
     }
 }

@@ -240,7 +240,7 @@ public class GetMapResponse implements Response {
                     //
                     // /////////////////////////////////////////////////////////
                     try {
-                        source = layers[i].getFeature().getFeatureSource();
+                        source = layers[i].getFeature().getFeatureSource(true);
 
                         // NOTE for the feature. Here there was some code that
                         // sounded like:

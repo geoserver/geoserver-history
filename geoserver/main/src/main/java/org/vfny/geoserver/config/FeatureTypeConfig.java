@@ -16,6 +16,7 @@ import org.geotools.feature.GeometryAttributeType;
 import org.geotools.referencing.CRS;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.CloneLibrary;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
@@ -50,6 +51,12 @@ public class FeatureTypeConfig {
 
     /** native wich EPGS code for the FeatureTypeInfo */
     private int SRS;
+    
+    /** 
+     * Either force declared or reproject from native to declared, see {@link FeatureTypeInfo#FORCE}
+     * and {@link FeatureTypeInfo#REPROJECT}
+     */
+    private int SRSHandling;
 
     /**
      * This is an ordered list of AttributeTypeInfoConfig.
@@ -286,6 +293,7 @@ public class FeatureTypeConfig {
         latLongBBox = new Envelope(dto.getLatLongBBox());
         nativeBBox = new Envelope(dto.getNativeBBox());
         SRS = dto.getSRS();
+        SRSHandling = dto.getSRSHandling();
 
         if (dto.getSchemaAttributes() == null) {
             schemaAttributes = null;
@@ -345,6 +353,7 @@ public class FeatureTypeConfig {
         f.setLatLongBBox(CloneLibrary.clone(latLongBBox));
         f.setNativeBBox(CloneLibrary.clone(nativeBBox));
         f.setSRS(SRS);
+        f.setSRSHandling(SRSHandling);
 
         if (schemaAttributes == null) {
             // Use generated default attributes
@@ -701,6 +710,8 @@ public class FeatureTypeConfig {
     public int getSRS() {
         return SRS;
     }
+    
+    
 
     /**
      * Set sRS to srs.
@@ -709,6 +720,14 @@ public class FeatureTypeConfig {
      */
     public void setSRS(int srs) {
         SRS = srs;
+    }
+    
+    public int getSRSHandling() {
+        return SRSHandling;
+    }
+    
+    public void setSRSHandling(int srsHandling) {
+        this.SRSHandling = srsHandling;
     }
 
     /**
