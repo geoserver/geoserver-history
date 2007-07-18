@@ -29,6 +29,7 @@ import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageDimension;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
@@ -1553,6 +1554,12 @@ public class XMLConfigReader {
 
             ft.setDataStoreId(ReaderUtils.getAttribute(fTypeRoot, "datastore", true));
             ft.setSRS(Integer.parseInt(ReaderUtils.getChildText(fTypeRoot, "SRS", true)));
+            try {
+                String srsHandling = ReaderUtils.getChildText(fTypeRoot, "SRSHandling", false);
+                ft.setSRSHandling(srsHandling != null ? Integer.parseInt(srsHandling) : FeatureTypeInfo.FORCE);
+            } catch(Exception e) {
+                ft.setSRSHandling(FeatureTypeInfo.FORCE);
+            }
 
             Element tmp = ReaderUtils.getChildElement(fTypeRoot, "styles");
 

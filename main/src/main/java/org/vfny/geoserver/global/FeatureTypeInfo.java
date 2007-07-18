@@ -61,6 +61,21 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     /** hash table that takes a epsg# to its definition**/
     private static Hashtable SRSLookup = new Hashtable();
 
+    /**
+     * Force declared SRS
+     */
+    public static int FORCE = 0;
+    
+    /**
+     * Reproject to declared SRS
+     */
+    public static int REPROJECT = 1;
+    
+    /**
+     * Don't do anything, declared and actual are equal
+     */
+    public static int LEAVE = 2;
+
     /** Default constant */
     private static final int DEFAULT_NUM_DECIMALS = 8;
 
@@ -225,8 +240,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
      */
     private boolean cachingEnabled;
-    private boolean forcedCRS;
-
+    
+    /**
+     * Either force or reproject (force is the only way if native data has no native SRS)
+     */
+    private int srsHandling;
+    
     /**
      * FeatureTypeInfo constructor.
      *
@@ -276,6 +295,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         schemaName = dto.getSchemaName();
         schemaFile = dto.getSchemaFile();
         SRS = dto.getSRS();
+        srsHandling = dto.getSRSHandling();
         nativeBBox = dto.getNativeBBox();
         title = dto.getTitle();
 
@@ -464,6 +484,16 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * @throws IOException when an error occurs.
      */
     public FeatureSource getFeatureSource() throws IOException {
+        return getFeatureSource(false);
+    }
+    
+    /**
+     * If this layers has been setup to reproject data, skipReproject = true will
+     * disable reprojection. This method is build especially for the rendering subsystem
+     * that should be able to perform a full reprojection on its own, and do generalization
+     * before reprojection (thus avoid to reproject all of the original coordinates)
+     */
+    public FeatureSource getFeatureSource(boolean skipReproject) throws IOException {
         if (!isEnabled() || (getDataStoreInfo().getDataStore() == null)) {
             throw new IOException("featureType: " + getName()
                 + " does not have a properly configured " + "datastore");
@@ -471,6 +501,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
         DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
         FeatureSource realSource = dataStore.getFeatureSource(typeName);
+        
+        // avoid reprojection if the calling code can do it better
+        int localSrsHandling = srsHandling;
+        if(srsHandling == REPROJECT && skipReproject)
+            localSrsHandling = LEAVE;
 
         if (((schema == null) || schema.isEmpty())) { // &&
 
@@ -493,7 +528,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     return (FeatureSource) m.invoke(null,
                         new Object[] {
                             realSource, getFeatureType(realSource), getDefinitionQuery(),
-                            isForcedCRS() ? getSRS(SRS) : null
+                            getSRS(SRS), new Integer(localSrsHandling)
                         });
                 }
             } catch (Exception e) {
@@ -501,7 +536,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             }
 
             return GeoServerFeatureLocking.create(realSource, getFeatureType(realSource),
-                getDefinitionQuery(), isForcedCRS() ? getSRS(SRS) : null);
+                getDefinitionQuery(), getSRS(SRS), localSrsHandling);
         }
     }
 
@@ -574,16 +609,16 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         CoordinateReferenceSystem declaredCRS = getDeclaredCRS();
         CoordinateReferenceSystem nativeCRS = getNativeCRS();
         if ((nativeBBox == null) || nativeBBox.isNull()) {
-            CoordinateReferenceSystem crs = isForcedCRS() ? declaredCRS : nativeCRS;
+            CoordinateReferenceSystem crs = srsHandling == LEAVE ? nativeCRS : declaredCRS;
             nativeBBox = getBoundingBox(crs);
         }
 
         if (!(nativeBBox instanceof ReferencedEnvelope)) {
-            CoordinateReferenceSystem crs = isForcedCRS() ? declaredCRS : nativeCRS;
+            CoordinateReferenceSystem crs = srsHandling == LEAVE ? nativeCRS : declaredCRS;
             nativeBBox = new ReferencedEnvelope(nativeBBox, crs);
         }
         
-        if(!isForcedCRS() && !declaredCRS.equals(((ReferencedEnvelope) nativeBBox).getCoordinateReferenceSystem())) {
+        if(srsHandling == REPROJECT) {
             try {
                 ReferencedEnvelope re = (ReferencedEnvelope) nativeBBox;
                 nativeBBox = re.transform(declaredCRS, true);
@@ -1059,15 +1094,16 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     String attName = ati.getName();
                     attributes[count] = ft.getAttributeType(attName);
 
-                    // force the user specified CRS if the data has no CRS 
+                    // force the user specified CRS if the data has no CRS, or reproject it 
+                    // if necessary
                     if (Geometry.class.isAssignableFrom(attributes[count].getType())) {
                         GeometricAttributeType old = (GeometricAttributeType) attributes[count];
 
                         try {
-                            if (old.getCoordinateSystem() == null) {
+                            if (old.getCoordinateSystem() == null || srsHandling == REPROJECT) {
                                 attributes[count] = new GeometricAttributeType(old, getSRS(SRS));
-                                forcedCRS = true;
-                            }
+                                srsHandling = FORCE;
+                            } 
                         } catch (Exception e) {
                             e.printStackTrace(); //DJB: this is okay to ignore since (a) it should never happen (b) we'll use the default one (crs=null)
                         }
@@ -1350,18 +1386,5 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     public void setCachingEnabled(boolean cachingEnabled) {
         this.cachingEnabled = cachingEnabled;
-    }
-
-    /**
-     * Internal getter for forcedCRS computation. Always use this method to access the
-     * forcedCRS value, since it's lazily computed and this method will make sure
-     * the value is up to date 
-     */
-    private boolean isForcedCRS() throws IOException {
-        // forced CRS flag gets computed as a side effect of computing the feature type
-        // so we need to make it compute the ft if missing
-        if(ft == null)
-            getFeatureType();
-        return forcedCRS;
     }
 }

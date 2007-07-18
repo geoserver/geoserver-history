@@ -356,6 +356,7 @@ public class TypesEditorAction extends ConfigAction {
         config.setWmsPath(form.getWmsPath());
         config.setCacheMaxAge(form.getCacheMaxAge());
         config.setCachingEnabled(form.isCachingEnabled());
+        config.setSRSHandling(form.getSrsHandlingCode());
 
         if (!form.isCachingEnabledChecked()) {
             config.setCachingEnabled(false);

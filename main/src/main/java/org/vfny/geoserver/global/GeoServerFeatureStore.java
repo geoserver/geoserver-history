@@ -42,11 +42,12 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Fea
      * @param store GeoTools2 FeatureSource
      * @param schema FeatureType served by source
      * @param definitionQuery Filter that constrains source
-     * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
+     * @param declaredCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
+     * @param srsHandling
      */
     GeoServerFeatureStore(FeatureStore store, FeatureType schema, Filter definitionQuery,
-        CoordinateReferenceSystem forcedCRS) {
-        super(store, schema, definitionQuery, forcedCRS);
+        CoordinateReferenceSystem declaredCRS, int srsHandling) {
+        super(store, schema, definitionQuery, declaredCRS, srsHandling);
     }
 
     /**

@@ -131,6 +131,9 @@ function prepareFormData(){
         </table>
 	</td></tr>
 	<!------------------------->
+	
+	
+	
 	<!------ This puts in the SRS WKT definition --->
 	
 	<tr>
@@ -142,6 +145,31 @@ function prepareFormData(){
 	  <td class="greyedOut2">
               <bean:write name="typesEditorForm" property="SRSWKT"/>
             </td>
+	</tr>
+	
+	<tr>
+	<td class="label">
+		<span class="help" title="<bean:message key="label.type.crswkt"/>">
+          <bean:message key="label.type.crswkt"/>:
+        </span>
+	  </td>
+	  <td class="greyedOut2">
+              <bean:write name="typesEditorForm" property="nativeSRSWKT"/>
+            </td>
+	</tr>
+	
+	<tr>
+	
+	<td class="label">
+		<span class="help" title="<bean:message key="label.type.srshandling"/>">
+          <bean:message key="label.type.srshandling"/>:
+        </span>
+	  </td>
+	  <td class="greyedOut2">
+              <html:select property="srsHandling">
+	             <html:options property="allSrsHandling"/>
+              </html:select>
+      </td>
 	</tr>
 	
 	

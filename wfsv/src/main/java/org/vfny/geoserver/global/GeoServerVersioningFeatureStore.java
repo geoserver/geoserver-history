@@ -17,8 +17,8 @@ import java.io.IOException;
 public class GeoServerVersioningFeatureStore extends GeoServerFeatureStore
     implements VersioningFeatureStore {
     GeoServerVersioningFeatureStore(VersioningFeatureStore store, FeatureType schema,
-        Filter definitionQuery, CoordinateReferenceSystem forcedCRS) {
-        super(store, schema, definitionQuery, forcedCRS);
+        Filter definitionQuery, CoordinateReferenceSystem declaredCRS, int srsHandling) {
+        super(store, schema, definitionQuery, declaredCRS, srsHandling);
     }
 
     public void rollback(String toVersion, Filter filter, String[] users)

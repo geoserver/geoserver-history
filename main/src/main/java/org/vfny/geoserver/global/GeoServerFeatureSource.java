@@ -1,5 +1,5 @@
 /* Copyright (c) 2001 - 2007 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
+ * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 package org.vfny.geoserver.global;
@@ -14,11 +14,10 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
+import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
-import org.geotools.feature.SchemaException;
-import org.geotools.filter.AbstractFilter;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -67,7 +66,10 @@ public class GeoServerFeatureSource implements FeatureSource {
     private Filter definitionQuery = Filter.INCLUDE;
 
     /** Geometries will be forced to this CRS (or null, if no forcing is needed) */
-    private CoordinateReferenceSystem forcedCRS;
+    private CoordinateReferenceSystem declaredCRS;
+
+    /** How to handle SRS   */
+    private int srsHandling;
 
     /**
      * Creates a new GeoServerFeatureSource object.
@@ -75,14 +77,15 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @param source GeoTools2 FeatureSource
      * @param schema FeatureType returned by this FeatureSource
      * @param definitionQuery Filter used to limit results
-     * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
+     * @param declaredCRS Geometries will be forced or projected to this CRS
      */
     GeoServerFeatureSource(FeatureSource source, FeatureType schema, Filter definitionQuery,
-        CoordinateReferenceSystem forcedCRS) {
+        CoordinateReferenceSystem declaredCRS, int srsHandling) {
         this.source = source;
         this.schema = schema;
         this.definitionQuery = definitionQuery;
-        this.forcedCRS = forcedCRS;
+        this.declaredCRS = declaredCRS;
+        this.srsHandling = srsHandling;
 
         if (this.definitionQuery == null) {
             this.definitionQuery = Filter.INCLUDE;
@@ -101,21 +104,21 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @param featureSource
      * @param schema DOCUMENT ME!
      * @param definitionQuery DOCUMENT ME!
-     * @param forcedCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
+     * @param declaredCRS 
      *
      * @return
      */
     public static GeoServerFeatureSource create(FeatureSource featureSource, FeatureType schema,
-        Filter definitionQuery, CoordinateReferenceSystem forcedCRS) {
+        Filter definitionQuery, CoordinateReferenceSystem declaredCRS, int srsHandling) {
         if (featureSource instanceof FeatureLocking) {
             return new GeoServerFeatureLocking((FeatureLocking) featureSource, schema,
-                definitionQuery, forcedCRS);
+                definitionQuery, declaredCRS, srsHandling);
         } else if (featureSource instanceof FeatureStore) {
             return new GeoServerFeatureStore((FeatureStore) featureSource, schema, definitionQuery,
-                forcedCRS);
+                declaredCRS, srsHandling);
         }
 
-        return new GeoServerFeatureSource(featureSource, schema, definitionQuery, forcedCRS);
+        return new GeoServerFeatureSource(featureSource, schema, definitionQuery, declaredCRS, srsHandling);
     }
 
     /**
@@ -316,12 +319,15 @@ public class GeoServerFeatureSource implements FeatureSource {
         try {
             FeatureCollection fc = source.getFeatures(newQuery);
 
-            if (forcedCRS != null && fc.getSchema().getPrimaryGeometry() != null) {
-                return new ForceCoordinateSystemFeatureResults(fc, forcedCRS);
+            if (declaredCRS != null && fc.getSchema().getPrimaryGeometry() != null && srsHandling != FeatureTypeInfo.LEAVE) {
+                if(srsHandling == FeatureTypeInfo.FORCE)
+                    return new ForceCoordinateSystemFeatureResults(fc, declaredCRS);
+                else
+                    return new ReprojectFeatureResults(fc, declaredCRS);
             } else {
                 return fc;
             }
-        } catch (SchemaException e) {
+        } catch (Exception e) {
             throw new DataSourceException(e);
         }
     }
