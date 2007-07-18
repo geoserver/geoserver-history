@@ -17,7 +17,6 @@ import net.opengis.wfs.WfsFactory;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
@@ -265,18 +264,6 @@ public class GetFeature {
                 //                	//DJB: dont calculate feature count if you dont have to. The MaxFeatureReader will take care of the last iteration
                 //                	maxFeatures -= features.getCount();
                 //                }
-
-                // handle difference between declared and original CRS
-                if ((meta.getNativeCRS() != null)
-                        && !CRS.equalsIgnoreMetadata(meta.getNativeCRS(), meta.getDeclaredCRS())) {
-                    try {
-                        features = new ReprojectFeatureResults(features, meta.getDeclaredCRS());
-                    } catch (Exception e) {
-                        LOGGER.severe("Could not map original CRS to external CRS, "
-                            + "serving data in original CRS: " + e.getMessage());
-                        LOGGER.log(Level.FINE, "Detailed mapping error: ", e);
-                    }
-                }
 
                 //GR: I don't know if the featuresults should be added here for later
                 //encoding if it was a lock request. may be after ensuring the lock
