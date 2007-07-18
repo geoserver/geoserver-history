@@ -365,6 +365,9 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
                 }
             }
 
+            //buffer the width a bit
+            totalWidth += 2;
+
             //create the final image
             finalLegend = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_ARGB);
 
@@ -455,7 +458,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
         
         return legendFont;
     }
-
+    
     /**
      * Return a {@link BufferedImage} representing this label.
      * The characters '\n' '\r' and '\f' are interpreted as linebreaks,
