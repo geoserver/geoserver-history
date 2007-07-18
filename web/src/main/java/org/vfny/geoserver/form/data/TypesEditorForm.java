@@ -1062,10 +1062,10 @@ public class TypesEditorForm extends ActionForm {
      * @return
      */
     public String getSrsHandling() {
-        if(srsHandling == 0 || srsHandling == 1)
+        if(srsHandling >= 0 && srsHandling < allSrsHandling.size())
             return (String) allSrsHandling.get(srsHandling);
         else
-            return "";
+            return (String) allSrsHandling.get(0);
     }
     
     public void setSrsHandling(String handling) {
