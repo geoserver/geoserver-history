@@ -27,7 +27,8 @@
        };
        
        function init(){
-          map = new OpenLayers.Map('map', {controls:[]} );
+          map = new OpenLayers.Map('map', {controls:[], 'projection': '${request.SRS}', 'units':'${units}'}); 
+          
           OpenLayers.IMAGE_RELOAD_ATTEMPTS = 5;
           
           // setup tiled layer

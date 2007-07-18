@@ -9,11 +9,14 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.crs.ProjectedCRS;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -24,10 +27,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 
 
 public class OpenLayersMapProducer implements GetMapProducer {
+    /** A logger for this class. */
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.responses.wms.map.openlayers");
+    
     /**
      * Set of parameters that we can ignore, since they are not part of the OpenLayers WMS request
      */
@@ -102,6 +112,7 @@ public class OpenLayersMapProducer implements GetMapProducer {
             map.put("maxResolution", new Double(getMaxResolution(mapContext.getAreaOfInterest())));
             map.put("baseUrl", canonicUrl(mapContext.getRequest().getBaseUrl()));
             map.put("parameters", getLayerParameter(mapContext.getRequest().getHttpServletRequest()));
+            map.put("units", getOLUnits(mapContext.getRequest()));
 
             if (mapContext.getLayerCount() == 1) {
                 map.put("layerName", mapContext.getLayer(0).getTitle());
@@ -119,9 +130,47 @@ public class OpenLayersMapProducer implements GetMapProducer {
     }
 
     /**
+<<<<<<< .locale
      * Returns a list of maps with the name and value of each parameter that we have to
      * forward to OpenLayers. Forwarded parameters are all the provided ones, besides a short
      * set contained in {@link #ignoredParameters}.
+=======
+     * OL does support only a limited number of unit types, we have to try and return
+     * one of those, otherwise the scale won't be shown.
+     * From the OL guide: possible values are ‘degrees’ (or ‘dd’), ‘m’, ‘ft’, ‘km’, ‘mi’, ‘inches’.
+     * @param request
+     * @return
+     */
+    private String getOLUnits(GetMapRequest request) {
+        CoordinateReferenceSystem crs =  request.getCrs();
+        // first rough approximation, meters for projected CRS, degrees for the others
+        String result = crs instanceof ProjectedCRS ? "m" : "degrees";
+        try {
+            String unit = crs.getCoordinateSystem().getAxis(0).getUnit().toString();
+            if("°".equals(unit) || "degrees".equals(unit) || "dd".equals(unit)) 
+                result = "degrees";
+            else if("m".equals(unit) || "meters".equals(unit))
+                result = "m";
+            else if("km".equals(unit) || "kilometers".equals(unit))
+                result = "mi";
+            else if("in".equals(unit) || "inches".equals(unit))
+                result = "inches";
+            else if("ft".equals(unit) || "feets".equals(unit))
+                result = "ft";
+            else if("mi".equals(unit) || "miles".equals(unit))
+                result = "mi";
+        } catch(Exception e) {
+            LOGGER.log(Level.WARNING, "Error trying to determine unit of measure", e);
+        }
+        return result;
+    }
+
+    /**
+     * Returns a list of maps with the name and value of each parameter that we
+     * have to forward to OpenLayers. Forwarded parameters are all the provided
+     * ones, besides a short set contained in {@link #ignoredParameters}.
+     *
+>>>>>>> .merge-dx.r7269
      * @param request
      * @return
      */
