@@ -2,9 +2,9 @@
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ taglib uri="/tags/struts-logic" prefix="logic" %>
 
-<html:form action="/config/data/styleEditorSubmit" enctype="multipart/form-data">
+<html:form action="/config/data/styleEditorSubmit" enctype="multipart/form-data" styleId="editorForm">
 
-<table class="info" width="100%">
+<table class="info" width="100%" height="100%">
   <tr>
     <td class="label"><bean:message key="label.styleID"/>:</td>
     <td class="datum"><html:text property="styleID" size="60"/></td>
@@ -16,7 +16,7 @@
   </tr>
   <tr>
     <td class="label"><bean:message key="label.sldContents"/>:</td>
-    <td class="code"><html:textarea property="sldContents" style="width:95%" rows="20"/></td>
+    <td class="code"><html:textarea styleId="editor" property="sldContents" style="width:95%;height:400px"/></td>
   </tr>
   <tr>
     <td class="label"><bean:message key="label.filename"/></td>
