@@ -135,8 +135,8 @@ public final class EfficientInverseColorMapComputation {
 			}
 		} else {
 			icm.getReds(colorMap[0]);
-			icm.getReds(colorMap[1]);
-			icm.getReds(colorMap[2]);
+			icm.getGreens(colorMap[1]);
+			icm.getBlues(colorMap[2]);
 		}
 		init();
 	}

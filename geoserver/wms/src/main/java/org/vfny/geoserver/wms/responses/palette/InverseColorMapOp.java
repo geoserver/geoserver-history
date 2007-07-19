@@ -213,6 +213,7 @@ public class InverseColorMapOp implements BufferedImageOp {
 		// //
 		int xx = 0;
 		final int srcW = src.getWidth();
+		final int rgba[] = new int[src.getSampleModel().getNumBands()];
 		for (int ti = minTileX; ti < maxTileX; ti++)
 			for (int tj = minTileY; tj < maxTileY; tj++) {
 				// get the source raster tile
@@ -232,9 +233,10 @@ public class InverseColorMapOp implements BufferedImageOp {
 						//
 						// /////////////////////////////////////////////////////////////////////
 						// // get the pixel bands
+						r.getPixel(i, j,
+								rgba);
 						wr.setSample(xx % srcW, xx / srcW, 0,
-								(invCM.getIndexNearest(r.getPixel(i, j,
-										(int[]) null)) & 0xff));
+								(invCM.getIndexNearest(rgba) & 0xff));
 
 						// //
 						//
