@@ -1193,7 +1193,18 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                 if (currLayer.getType() == MapLayerInfo.TYPE_VECTOR) {
                     currStyle = findStyleOf(request, currLayer.getFeature(), styledLayers);
                 } else if (currLayer.getType() == MapLayerInfo.TYPE_RASTER) {
-                    currStyle = findStyle(request, "raster");
+                    try {
+		        currStyle = findStyleOf(request, currLayer.getFeature(),
+			          styledLayers);
+                    } catch (WmsException wm) {
+                        currStyle = findStyleOf(request, currLayer.getFeature(),
+                                styledLayers);
+                        if (currStyle == null) {
+                            //nope, there's no default raster style.  Give up.
+                            throw new WmsException(wm.getMessage() + "  Also tried to use " +
+                                    "the generic raster style 'raster', but it wasn't available.");
+                        }
+		    }
                 }
 
                 layers.add(currLayer);
@@ -1251,10 +1262,21 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
                     // (b).
                     addStyles(request, currLayer, styledLayers[i], layers, styles);
                 } else if (currLayer.getType() == MapLayerInfo.TYPE_RASTER) {
-                    currStyle = findStyle(request, "raster");
-
-                    layers.add(currLayer);
-                    styles.add(currStyle);
+                    try {
+			addStyles(request, currLayer, styledLayers[i], layers,
+				styles);
+			} catch (WmsException wm) {
+				//hmm, well, the style they specified in the wms request
+				//wasn't found.  Let's try the default raster style named 'raster'
+				currStyle = findStyle(request, "raster");
+				if (currStyle == null) {
+					//nope, there's no default raster style.  Give up.
+					throw new WmsException(wm.getMessage() + "  Also tried to use " +
+					"the generic raster style 'raster', but it wasn't available.");
+				}
+				layers.add(currLayer);
+				styles.add(currStyle);
+			}
                 }
             }
         }
