@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -298,13 +299,11 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                         + "conflicting filters.  Filter: " + filters + ", fid: " + featureId);
                 }
 
-                filters = new ArrayList(featureId.size());
-
+                Set ids = new HashSet();
                 for (Iterator i = featureId.iterator(); i.hasNext();) {
-                    FeatureId fid = filterFactory.featureId((String) i.next());
-                    Id filter = filterFactory.id(Collections.singleton(fid));
-                    filters.add(filter);
+                    ids.add(filterFactory.featureId((String) i.next()));
                 }
+                filters = Collections.singletonList(filterFactory.id(ids));
             }
 
             if (!cqlFilters.isEmpty()) {

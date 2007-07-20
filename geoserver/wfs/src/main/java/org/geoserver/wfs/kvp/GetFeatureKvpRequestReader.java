@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import javax.xml.namespace.QName;
 
 
@@ -117,16 +119,15 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
         } else if (kvp.containsKey("featureId")) {
             //set filter from featureId
             List featureIdList = (List) kvp.get("featureId");
-            List filters = new ArrayList();
+            Set ids = new HashSet();
 
             for (Iterator i = featureIdList.iterator(); i.hasNext();) {
                 String fid = (String) i.next();
                 FeatureId featureId = filterFactory.featureId(fid);
-
-                HashSet featureIds = new HashSet();
-                featureIds.add(featureId);
-                filters.add(filterFactory.id(featureIds));
+               ids.add(featureId);
             }
+            // build a single feature id filter
+            List filters = Collections.singletonList(filterFactory.id(ids));
 
             querySet(eObject, "filter", filters);
         } else if (kvp.containsKey("bbox")) {
