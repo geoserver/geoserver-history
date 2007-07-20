@@ -425,22 +425,14 @@ public class FeatureSuiteTest extends RequestTestCase {
             + "FEATUREID=rail.123,rail.456,rail.789";
 
         // make base comparison objects        
-        FidFilter filter1 = factory.createFidFilter("rail.123");
-        FidFilter filter2 = factory.createFidFilter("rail.456");
-        FidFilter filter3 = factory.createFidFilter("rail.789");
+        FidFilter filter = factory.createFidFilter("rail.123");
+        filter.addFid("rail.456");
+        filter.addFid("rail.789");
         Query query = new Query();
         query.setTypeName("rail");
-        query.addFilter(filter1);
+        query.addFilter(filter);
 
         FeatureRequest baseRequest = new FeatureRequest(service);
-        baseRequest.addQuery(query);
-        query = new Query();
-        query.setTypeName("rail");
-        query.addFilter(filter2);
-        baseRequest.addQuery(query);
-        query = new Query();
-        query.setTypeName("rail");
-        query.addFilter(filter3);
         baseRequest.addQuery(query);
         baseRequest.setVersion("1.0.0");
 
@@ -458,24 +450,24 @@ public class FeatureSuiteTest extends RequestTestCase {
         FeatureRequest baseRequest = new FeatureRequest(service);
         baseRequest.setVersion("1.0.0");
 
-        FidFilter filter1 = factory.createFidFilter("rail1.123");
-        FidFilter filter2 = factory.createFidFilter("rail2.456");
-        FidFilter filter3 = factory.createFidFilter("rail3.789");
+        FidFilter filter = factory.createFidFilter("rail1.123");
+        filter.addFid("rail2.456");
+        filter.addFid("rail3.789");
         Query query = new Query();
         query.setTypeName("rail1");
-        query.addFilter(filter1);
+        query.addFilter(filter);
         query.addPropertyName("loc1");
         query.addPropertyName("id1");
         baseRequest.addQuery(query);
         query = new Query();
         query.setTypeName("rail2");
-        query.addFilter(filter2);
+        query.addFilter(filter);
         query.addPropertyName("loc2");
         query.addPropertyName("id2");
         baseRequest.addQuery(query);
         query = new Query();
         query.setTypeName("rail3");
-        query.addFilter(filter3);
+        query.addFilter(filter);
         query.addPropertyName("loc3");
         query.addPropertyName("id3");
         baseRequest.addQuery(query);
@@ -575,14 +567,11 @@ public class FeatureSuiteTest extends RequestTestCase {
         baseRequest.setVersion("1.0.0");
 
         FidFilter filter = factory.createFidFilter("rail.123");
-        FidFilter filter2 = factory.createFidFilter("rail.456");
+        filter.addFid("rail.456");
         Query query = new Query();
         query.setTypeName("rail");
         query.addFilter(filter);
         baseRequest.addQuery(query);
-        query = new Query();
-        query.setTypeName("rail");
-        query.addFilter(filter2);
         baseRequest.addQuery(query);
 
         // run test       
@@ -599,17 +588,12 @@ public class FeatureSuiteTest extends RequestTestCase {
         baseRequest.setVersion("1.0.0");
 
         FidFilter filter = factory.createFidFilter("rail1.123");
-        FidFilter filter2 = factory.createFidFilter("rail2.456");
+        filter.addFid("rail2.456");
         Query query = new Query();
         query.setTypeName("rail1");
         query.addFilter(filter);
         query.addPropertyName("loc1");
         query.addPropertyName("id1");
-        baseRequest.addQuery(query);
-        query = new Query();
-        query.setTypeName("rail2");
-        query.addFilter(filter2);
-        query.addPropertyName("loc2");
         baseRequest.addQuery(query);
         query = new Query();
 

@@ -527,26 +527,19 @@ abstract public class KvpRequestReader {
      * @return
      */
     protected List readFidFilters(String fid) {
-        List filters = new ArrayList();
         List unparsed;
         ListIterator i;
         LOGGER.finest("reading fid filter: " + fid);
-        unparsed = readNested(fid);
+        unparsed = readFlat(fid, ",");
         i = unparsed.listIterator();
 
+        FidFilter fidFilter = factory.createFidFilter();
         while (i.hasNext()) {
-            List ids = (List) i.next();
-            ListIterator innerIterator = ids.listIterator();
-
-            while (innerIterator.hasNext()) {
-                FidFilter fidFilter = factory.createFidFilter();
-                fidFilter.addFid((String) innerIterator.next());
-                filters.add(fidFilter);
-                LOGGER.finest("added fid filter: " + fidFilter);
-            }
+            fidFilter.addFid((String) i.next());
+            LOGGER.finest("added fid filter: " + fidFilter);
         }
 
-        return filters;
+        return Collections.singletonList(fidFilter);
     }
 
     /**
