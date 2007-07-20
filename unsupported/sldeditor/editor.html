@@ -3,202 +3,13 @@
     <title>Tab test page</title>
     
     <script type="text/javascript" src="src/dojo/dojo.js"></script>
-    <script type="text/javascript">
-      dojo.require("dojo.event.*");
-      dojo.require("dojo.widget.*");
-      dojo.require("dojo.io.*");
-      dojo.require("dojo.widget.Button");
-      dojo.require("dojo.widget.TabContainer");
-      dojo.require("dojo.widget.ContentPane");
-      dojo.require("dojo.widget.SplitContainer");
-      dojo.require("dojo.widget.TreeV3");
-      dojo.require("dojo.widget.TreeBasicControllerV3");
-      dojo.require("dojo.widget.TreeNodeV3");
-      dojo.require("dojo.widget.TreeSelectorV3");
-      dojo.require("dojo.widget.TreeContextMenuV3");
-      
-    </script>
-    <script type="text/javascript">
-      // holds the SLD being edited
-      var xmlDoc;
-      
-      // NOTE:
-      // nodeName
-      // nodeName of Text nodes is always #text
-      // nodeName of element nodes is tag name
-      // nodeName of attribute nodes is attribute name
-      // Element node: nodeType = 1
-      // Attribute node: nodeType = 2
-      // attribute and text nodes have nodeValue
-      // Text node: nodeType = 3
-      // Comment node: nodeType = 8
-      // Document node: nodeType = 9
-
-      function loadXMLFromString()
-      {
-      if (window.ActiveXObject)
-      {
-      var doc=new ActiveXObject("Microsoft.XMLDOM");
-      xmlDoc.async="false";
-      xmlDoc.loadXML(text);
-      }
-      // code for Mozilla, Firefox, Opera, etc.
-      else
-      {
-      var parser=new DOMParser();
-      var xmlDoc=parser.parseFromString(text,"text/xml");
-      }
-      }
-      
-      function loadXMLFromFile()
-      {
-      var file = document.loadform.sldfile.value;
-      //load xml file
-      // code for IE
-      if (window.ActiveXObject)
-      {
-      xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
-      xmlDoc.async=false;
-      xmlDoc.load(file);
-      getmessage();
-      }
-      // does not work in safari?
-      // code for Mozilla, Firefox, Opera, etc.
-      else if (document.implementation && document.implementation.createDocument)
-      {
-      xmlDoc=document.implementation.createDocument("","",null);
-      xmlDoc.load(file);
-      xmlDoc.onload=sldLoaded;
-      }
-      else
-      {
-      alert('Your browser cannot handle this script.');
-      }
-      }
-      
-      function generateXML()
-      {
-      if (xmlDoc)
-      {
-      var serializer = new XMLSerializer();
-      str = serializer.serializeToString(xmlDoc);
-      document.getElementById('generatedXML').value = str;
-      }
-      else
-      {
-      document.getElementById('generatedXML').value = "No SLD Loaded.";
-      }
-      }
-      
-
-      function bindMenuAction() {
-      dojo.event.topic.subscribe('treeContextMenuDestroy/engage',
-      function (menuItem) {
-      var node = menuItem.getTreeNode();
-      alert('destroy');
-      }
-      );
-      dojo.event.topic.subscribe('treeContextMenuCreate/engage',
-      function (menuItem) {
-      var node = menuItem.getTreeNode();
-      alert('create');
-      }
-      );
-      dojo.event.topic.subscribe('treeContextMenuUp/engage',
-      function (menuItem) {
-      var node = menuItem.getTreeNode();
-      alert('up');
-      }
-      );
-      dojo.event.topic.subscribe('treeContextMenuDown/engage',
-      function (menuItem) {
-      var node = menuItem.getTreeNode();
-      alert('down');
-      }
-      );
-      }
-      function createTree(data) {
-      var parent = dojo.widget.byId('firstTree');
-      createChildren(parent,data);
-      }
-      function createChildren(parent,xmlNode) {
-      var children = xmlNode.childNodes;
-      for (var i=0 ; i<children.length ; i++) {
-      if (children[i].nodeType == children[i].ELEMENT_NODE) {
-      var label = children[i].nodeName;
-      newChild = dojo.widget.TreeBasicControllerV3.prototype.doCreateChild(parent,0,{ title: label});
-      if (children[i].hasAttributes()) {
-      createAttributes(newChild,children[i]);
-      }
-      createChildren(newChild,children[i]);
-      }
-      }
-      }
-      function createAttributes(parent,xmlNode) {
-      var attributes = xmlNode.attributes;
-      for (var i=0 ; i<attributes.length ; i++) {
-      var label = attributes[i].nodeName + " = " + attributes[i].nodeValue;
-      dojo.widget.TreeBasicControllerV3.prototype.doCreateChild(parent,0,{ title: label});
-      }
-      }
-      
-      
-      // runs on SLD Loaded
-      function sldLoaded()
-      {
-      alert("SLD Loaded.");
-      createTree(xmlDoc);
-      }
-      
-      // Runs on page load
-      function init()
-      {
-      var loadButton = dojo.widget.byId('loadButton');
-      dojo.event.connect(loadButton, 'onClick', 'loadXMLFromFile');
-      
-      var generateButton = dojo.widget.byId('generateButton');
-      dojo.event.connect(generateButton, 'onClick', 'generateXML');
-      
-      }
-      dojo.addOnLoad(init);
-    </script>
-    
-    <!--
-	<script type="text/javascript">
-	  // Sample Dojo Code
-	  function helloPressed()
-	  {
-	  alert('You pressed the button');
-	  }
-	  var exampleObj = {
-	  counter: 0,
-	  foo: function(){
-	  alert ("foo");
-	  this.counter++;
-	  },
-	  bar: function(){
-	  var str = "bar " + this.counter;
-	  alert(str);
-	  this.counter++;
-	  }
-	  };
-	  function init()
-	  {
-	  var helloButton = dojo.widget.byId('helloButton');
-	  dojo.event.connect(helloButton, 'onClick', 'helloPressed');
-	  dojo.event.connect(helloButton, 'onClick', exampleObj, 'foo');
-	  dojo.event.connect(exampleObj, "foo", exampleObj, "bar");
-	  }
-	  //dojo.addOnLoad(init);
-	</script>
-	-->
+    <script type="text/javascript" src="src/editor.js"></script>
     
     <style type="text/css">
       .dojoTabPaneWrapper{
       padding: 5px;
       overflow: hidden;
       }
-      
       #tabBlock{
       top: 150px:
       left: 120px;
@@ -222,15 +33,15 @@
 	  </div>
 	  <div dojoType="ContentPane" label="Save/Load" id="save/load">
 	    <form name="loadform">
-	      Select a SLD to load:
-	      <br>
+	      <table><tr><td>Select a SLD to load: <td><button dojoType="Button" id="loadFileButton">Load from File</button></table>
 	      <input type="file" name="sldfile" size="35"></input>
-	      <button dojoType="Button" id="loadButton">Load</button>
 	    </form>
+	    <table><tr><td>Paste a SLD to load: <td><button dojoType="Button" id="loadStringButton">Load from String</button></table>
+	    <textarea id="pastedXML" style="width: 100%; height: 10%"></textarea> 
 	    <br>
-	    Generate the current SLD XML:
-	    <button dojoType="Button" id="generateButton">Generate</button>
-	    <textarea id="generatedXML" style="width: 100%; height: 80%"rows="30" cols="50" readonly="true"></textarea>
+	    <br>
+	    <table><tr><td>Generate the current SLD XML: <td><button dojoType="Button" id="generateButton">Generate</button></table>
+	    <textarea id="generatedXML" style="width: 100%; height: 50%" readonly="true"></textarea>
 	    </div>
 	  <div dojoType="ContentPane" label="Options" id="options"> Contents of Tab 3 Pane</div>
 	  <div dojoType="ContentPane" label="Defaults" id="defaults"> Contents of Tab 4 Pane</div>
@@ -242,7 +53,12 @@
       </div>
       <div dojoType="SplitContainer" widgetID="SplitRight" activesizing="true" sizerwidth="3" orientation="vertical" sizeShare="40">
 	<div dojoType="ContentPane" label="PreviewArea" sizeShare="50"> Contents of PreviewWindow</div>
-	<div dojoType="TreeV3" widgetID="firstTree" sizeShare="50">
+	<div dojoType="ContentPane" label="TreeArea" id="treeArea" sizeShare="50">
+	  <button dojoType="Button" id="treeButton">Generate Tree</button>
+	  <div dojoType="TreeSelector" id="treeSelector" eventNames="select:nodeSelected"></div>
+	  <div dojoType="Tree" id="firstTree" selector="treeSelector" toggler="fade"></div>
+	    
+	  </div>
 	</div> 
       </div>
     </div>
