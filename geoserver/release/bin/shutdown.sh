@@ -22,13 +22,13 @@ _RUNJAVA="$JAVA_HOME"/bin/java
 if [ -z $GEOSERVER_HOME ]; then
   #If GEOSERVER_HOME not set then guess a few locations before giving
   # up and demanding user set it.
-  if [ -r bin/stop.jar ]; then
+  if [ -r start.jar ]; then
      echo "GEOSERVER_HOME environment variable not found, using current "
      echo "directory.  If not set then running this script from other "
      echo "directories will not work in the future."
      export GEOSERVER_HOME=.
   else 
-    if [ -r stop.jar ]; then
+    if [ -r ../start.jar ]; then
       echo "GEOSERVER_HOME environment variable not found, using current "
       echo "location.  If not set then running this script from other "
       echo "directories will not work in the future."
@@ -45,11 +45,11 @@ if [ -z $GEOSERVER_HOME ]; then
 
 fi
 
-if [ ! -r "$GEOSERVER_HOME"/bin/stop.jar ]; then
+if [ ! -r "$GEOSERVER_HOME"/start.jar ]; then
   echo "The GEOSERVER_HOME environment variable is not defined correctly"
   echo "This environment variable is needed to run this program"
   exit 1
 fi
 
-cd "$GEOSERVER_HOME"/bin
-exec "$_RUNJAVA" -DSTOP.PORT=8079 -DSTOP.KEY=geoserver -jar stop.jar
+cd "$GEOSERVER_HOME"
+exec "$_RUNJAVA" -DSTOP.PORT=8079 -DSTOP.KEY=geoserver -jar start.jar --stop

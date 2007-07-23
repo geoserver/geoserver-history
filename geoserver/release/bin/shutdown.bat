@@ -32,7 +32,7 @@ goto end
 goto end
 
 :noGeo1
-  if exist stop.jar goto doGeo1
+  if exist start.jar goto doGeo1
   echo The GEOSERVER_HOME environment variable is not defined.
   echo This environment variable is needed to run this program.
 goto end
@@ -44,7 +44,7 @@ echo directory.  Please set GEOSERVER_HOME for future uses.
  goto end
 
 :noGeo2
-  if exist stop.jar goto doGeo2
+  if exist start.jar goto doGeo2
   echo The GEOSERVER_HOME environment variable is not defined correctly.
   echo This environment variable is needed to run this program.
 goto end
