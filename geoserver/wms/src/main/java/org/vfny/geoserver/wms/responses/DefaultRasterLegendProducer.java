@@ -343,7 +343,8 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
                     //the 'title' if it's available, but fall-back to 'name'
                     labels[i] = rule.getTitle();
                     if (labels[i] == null) labels[i] = rule.getName();
-    
+                    if (labels[i] == null) labels[i] = "";
+                    
                     Graphics2D g = img.createGraphics();
                     g.setFont(labelFont);
     
