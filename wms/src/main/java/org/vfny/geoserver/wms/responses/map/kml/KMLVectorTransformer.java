@@ -256,35 +256,27 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 encodeColor("00ffffff");
             }
 
+            //figure out if line or polygon
+            boolean lineOrPoly = feature.getDefaultGeometry() != null && 
+                (feature.getDefaultGeometry() instanceof LineString
+                    || feature.getDefaultGeometry() instanceof MultiLineString
+                    || feature.getDefaultGeometry() instanceof Polygon
+                    || feature.getDefaultGeometry() instanceof MultiPolygon);
+            
+            //if line or polygon scale the label
+            if ( lineOrPoly ) {
+                element( "scale", "0.2" );
+            }
             //start Icon
             start("Icon");
-
-            if (((feature.getDefaultGeometry() != null)
-                    && feature.getDefaultGeometry() instanceof Point)
-                    || feature.getDefaultGeometry() instanceof MultiPoint) {
-                //do nothing, this is handled by encodePointStyle
-            } else if ((feature.getDefaultGeometry() != null)
-                    && (feature.getDefaultGeometry() instanceof LineString
-                    || feature.getDefaultGeometry() instanceof MultiLineString)) {
-                //line
-                element("href", "root://icons/palette-3.png");
-                element("x", "224");
-                element("y", "32");
-                element("w", "32");
-                element("h", "32");
-            } else if (((feature.getDefaultGeometry() != null)
-                    && feature.getDefaultGeometry() instanceof Polygon)
-                    || feature.getDefaultGeometry() instanceof MultiPolygon) {
-                //polygon
-                element("href", "root://icons/palette-3.png");
-                element("x", "224");
-                element("y", "32");
-                element("w", "32");
-                element("h", "32");
-            } else {
-                //default
+            
+            if ( lineOrPoly ) {
+                element("href", "http://maps.google.com/mapfiles/kml/pal3/icon61.png"); 
             }
-
+            else {
+                //do nothing, this is handled by encodePointStyle
+            }
+            
             end("Icon");
 
             //end IconStyle
