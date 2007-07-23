@@ -7,11 +7,21 @@
 	<moduleSets>
 	  <moduleSet>
   		<includes>
-  			<include>org.geoserver:main</include>
-  			<include>org.geoserver:wfs</include>
-  			<include>org.geoserver:wms</include>
-  			<include>org.geoserver:validation</include>
-  			<include>org.geoserver:web</include>
+                   <include>org.geoserver:main</include>
+                   <include>org.geoserver:ows</include>
+                   <include>org.geoserver:net.opengis.wfs</include>
+                   <include>org.geoserver:net.opengis.ows</include>
+                   <include>org.geoserver:net.opengis.vwfs</include>
+                   <include>org.geoserver:wfs</include>
+                   <include>org.geoserver:wms</include>
+                   <include>org.geoserver:validation</include>
+                   <include>org.geoserver:web</include>
+                   <include>org.geoserver:wcs</include>
+                   <include>org.geoserver:data</include>
+                   <include>org.geoserver:platform</include>
+                   <include>org.geoserver:test</include>
+                   <include>org.geoserver:stress</include>
+                   <include>org.geoserver.maven:maven</include>
   		</includes>
   		<sources>
  	  		<outputDirectory>geoserver/${artifactId}/</outputDirectory>
@@ -19,6 +29,14 @@
 	 	</moduleSet>
 	</moduleSets>
 	<fileSets>
+		<fileSet>
+			<directory>.</directory>
+ 			<outputDirectory>geoserver/</outputDirectory>
+                        <includes>
+                                <include>pom.xml</include>
+                        </includes>
+
+		</fileSet>
 		<fileSet>
 			<directory>release</directory>
 			<outputDirectory>/</outputDirectory>
@@ -28,5 +46,24 @@
 				<include>GPL.txt</include>
 			</includes>
 		</fileSet>
+                <fileSet>
+                        <directory>web/target/geoserver/data</directory>
+                        <outputDirectory>configuration/release</outputDirectory>
+                        <includes>
+                                <include>**/*</include>
+                        </includes>
+                </fileSet>
+                <fileSet>
+                        <directory>web/minimal</directory>
+                        <outputDirectory>configuration/minimal</outputDirectory>
+                        <includes>
+                                <include>**/*</include>
+                        </includes>
+                        <excludes>
+                                <exclude>.svn</exclude>
+                                <exclude>**/.svn</exclude>
+                        </excludes>
+                </fileSet>
+
 	</fileSets>
 </assembly>
