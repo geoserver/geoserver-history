@@ -8,15 +8,9 @@
     <style type="text/css">
       .dojoTabPaneWrapper{
       padding: 5px;
-      overflow: hidden;
+      overflow: auto;
       }
       #tabBlock{
-      top: 150px:
-      left: 120px;
-      width: 67%;
-      height: 100%;
-      }
-      #mainMenu{
       width: 100%;
       height: 100%;
       }
@@ -24,14 +18,14 @@
   </head>
 
   <body>
-    <div dojoType="SplitContainer" id="SplitWindow" activesizing="true" sizerwidth="3" orientation="horizontal">
+    <div dojoType="SplitContainer" id="splitWindow" activesizing="true" sizerwidth="3" orientation="horizontal">
       <div id="tabBlock">
-	<div dojoType="TabContainer" id="TabMenu" selectedChild="save/load" sizeShare="60" labelPosition="top">
+	<div dojoType="TabContainer" id="tabMenu" selectedChild="save/load" sizeShare="60" labelPosition="top">
 	  <div dojoType="ContentPane" label="Main" id="mainArea">
 	    <div id="mainButtonArea" style="height: 10%">
 	      <table><tr>
 		  <td align="left"><button dojoType="Button" id="mainUpButton">Up a level</button></td>
-		  <td align="left" width="80%"> <span id="mainCurrentArea"></span></td>
+		  <td align="left" width="80%"> <span id="mainCurrentArea">Current Node</span></td>
 	      </tr></table>
 	      <table width="100%"><tr>
 		  <td align="left"><button dojoType="Button" id="mainAddButton">Add</button></td>
@@ -46,8 +40,7 @@
 	      </table>
 	    </div>
 	    <div dojoType="TabContainer" id="tabMain" labelPosition="left-h" style="height: 90%">
-	      <div dojoType="ContentPane" label="List1" id="list1"></div>
-	      <div dojoType="ContentPane" label="List2" id="list2"></div>
+	      <div dojoType="ContentPane" id="tab1" label="tabOne">La la la</div>
 	    </div>
 	  </div>
 	  <div dojoType="ContentPane" label="Save/Load" id="save/load">

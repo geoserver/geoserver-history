@@ -85,9 +85,12 @@ function collapseAllHelper(treeNode){
 function nodeSelectedHandler(message){
     var str = "selected: \n" + message.node.title + "\n" + message.node + "\n" + message.node.object;
     var node = message.node;
+    
+    // if we didn't select the same node again
     if(unselectNode && unselectNode != message.node){
+	// take care of the unselect node
 	unselectNode.unMarkSelected();
-    unselectNode='';
+	unselectNode='';
     }
     
     // if this is an attribute node
@@ -96,7 +99,7 @@ function nodeSelectedHandler(message){
 	node.unMarkSelected();
 	//set its parent as the focus
 	focusNode = node.parent;
-	//and select it in the tree
+	//select it in the tree
 	unselectNode = focusNode;
 	focusNode.markSelected();
     } else {
@@ -107,6 +110,28 @@ function nodeSelectedHandler(message){
     // set the Current node label
     document.getElementById('mainCurrentArea').innerHTML = focusNode.title;
     
+    // update the tab list
+    updateTabs();
+}
+
+function updateTabs(){
+    // eventual flow for this function:
+    //
+    // get the tab container object
+    // kill its children if we did not select the same node
+    // update the tab container with the appropriate children for the focusNode
+    // 
+    
+    var tabs = dojo.widget.byId('tabMain');
+    tabs.destroyChildren();
+    var tab = '';
+    var id = '';
+    for (var i=0; i<focusNode.children.length; i++){
+	id = dojo.dom.getUniqueId();
+	tab = new dojo.widget.createWidget("ContentPane", {widgetId:id, label:focusNode.children[i].title, refreshOnShow:"true"});
+	tab.setContent("This is the tab for " + focusNode.children[i].title);
+	tabs.addChild(tab);
+    }
 }
 
 // consider only building tree levels that are expanded
