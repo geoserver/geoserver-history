@@ -1,6 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <title>Tab test page</title>
+    <title>SLD Editor</title>
     
     <script type="text/javascript" src="src/dojo/dojo.js"></script>
     <script type="text/javascript" src="src/editor.js"></script>
@@ -24,42 +24,76 @@
   </head>
 
   <body>
-    <div dojoType="SplitContainer" widgetID="SplitWindow" activesizing="true" sizerwidth="3" orientation="horizontal">
+    <div dojoType="SplitContainer" id="SplitWindow" activesizing="true" sizerwidth="3" orientation="horizontal">
       <div id="tabBlock">
-	<div dojoType="TabContainer" widgetID="TabMenu" selectedChild="save/load" sizeShare="60">
-	  <div dojoType="SplitContainer" label="Main" id="splitmain" activesizing="true" sizerwidth="3" orientation="horizontal">
-	    <div dojoType="ContentPane" label="CurrentLevel" id="currentlevel" sizeShare="20"> Contents of CurrentLevel</div>
-	    <div dojoType="ContentPane" label="DataArea" id="dataarea" sizeShare="80"> Contents of DataArea</div>
+	<div dojoType="TabContainer" id="TabMenu" selectedChild="save/load" sizeShare="60" labelPosition="top">
+	  <div dojoType="ContentPane" label="Main" id="mainArea">
+	    <div id="mainButtonArea" style="height: 10%">
+	      <table><tr>
+		  <td align="left"><button dojoType="Button" id="mainUpButton">Up a level</button></td>
+		  <td align="left" width="80%"> <span id="mainCurrentArea"></span></td>
+	      </tr></table>
+	      <table width="100%"><tr>
+		  <td align="left"><button dojoType="Button" id="mainAddButton">Add</button></td>
+		  <td align="left"><button dojoType="Button" id="mainCopyButton">Copy</button></td>
+		  <td align="left"><button dojoType="Button" id="mainRemoveButton">Remove</button></td>
+		  <td width="60%"></td>
+		  <td align="right"><button dojoType="Button" id="mainRevertButton">Revert</button></td>
+		  <td align="right"><button dojoType="Button" id="mainClearButton">Clear</button></td>
+		  <td width="20%"></td>
+		  <td align="right"><button dojoType="Button" id="mainApplyButton">Apply</button></td>
+		</tr>
+	      </table>
+	    </div>
+	    <div dojoType="TabContainer" id="tabMain" labelPosition="left-h" style="height: 90%">
+	      <div dojoType="ContentPane" label="List1" id="list1"></div>
+	      <div dojoType="ContentPane" label="List2" id="list2"></div>
+	    </div>
 	  </div>
 	  <div dojoType="ContentPane" label="Save/Load" id="save/load">
 	    <form name="loadform">
-	      <table><tr><td>Select a SLD to load: <td><button dojoType="Button" id="loadFileButton">Load from File</button></table>
+	      Select a SLD to load:
+	      <br>
 	      <input type="file" name="sldfile" size="35"></input>
+	      <button dojoType="Button" id="loadFileButton">Load from File</button>
 	    </form>
-	    <table><tr><td>Paste a SLD to load: <td><button dojoType="Button" id="loadStringButton">Load from String</button></table>
+	    Paste a SLD to load:
+	    <br>
 	    <textarea id="pastedXML" style="width: 100%; height: 10%"></textarea> 
+	    <button dojoType="Button" id="loadStringButton">Load from String</button>
 	    <br>
+	    Generate the current SLD XML:
 	    <br>
-	    <table><tr><td>Generate the current SLD XML: <td><button dojoType="Button" id="generateButton">Generate</button></table>
 	    <textarea id="generatedXML" style="width: 100%; height: 50%" readonly="true"></textarea>
-	    </div>
-	  <div dojoType="ContentPane" label="Options" id="options"> Contents of Tab 3 Pane</div>
-	  <div dojoType="ContentPane" label="Defaults" id="defaults"> Contents of Tab 4 Pane</div>
-	  <div dojoType="ContentPane" label="Preview" id="preview"> Contents of Tab 5 Pane</div>
-	  <div dojoType="ContentPane" label="Help" id="help"> Contents of Tab 6 Pane
-	    <button dojoType="Button" widgetID="helloButton" >Hello World!</button>
+	    <button dojoType="Button" id="generateButton">Generate</button>
+	    <br>
+	    This area should also have the capability to fetch and post SLDs to servers online using getStyle and putStyle.
+	  </div>
+	  <div dojoType="ContentPane" label="Options" id="options"> Contents of Options Pane</div>
+	  <div dojoType="ContentPane" label="Help" id="help"> Contents of Help Pane
 	  </div>
 	</div>
       </div>
-      <div dojoType="SplitContainer" widgetID="SplitRight" activesizing="true" sizerwidth="3" orientation="vertical" sizeShare="40">
-	<div dojoType="ContentPane" label="PreviewArea" sizeShare="50"> Contents of PreviewWindow</div>
-	<div dojoType="ContentPane" label="TreeArea" id="treeArea" sizeShare="50">
-	  <button dojoType="Button" id="treeButton">Generate Tree</button>
-	  <div dojoType="TreeSelector" id="treeSelector" eventNames="select:nodeSelected"></div>
-	  <div dojoType="Tree" id="firstTree" selector="treeSelector" toggler="fade"></div>
-	    
+      <div dojoType="SplitContainer" id="splitRight" activesizing="true" sizerwidth="3" orientation="vertical" sizeShare="40">
+	<div dojoType="ContentPane" id="previewArea" sizeShare="50">
+	  Contents of PreviewWindow
+	</div>
+	<div dojoType="ContentPane" id="treeArea" sizeShare="50">
+	  <div id="treeListArea" style="height: 90%; overflow: auto">
+	    <div dojoType="TreeSelector" id="treeSelector" eventNames="select:nodeSelected"></div>
+	    <div dojoType="Tree" id="firstTree" selector="treeSelector" toggler="fade"></div>
 	  </div>
-	</div> 
+	  <div id="treeButtonArea" style="height: 16px">
+	    <table width="100%"><tr>
+		<td align="left"><button dojoType="Button" id="addButton">Add</button></td>
+		<td align="left"><button dojoType="Button" id="copyButton">Copy</button></td>
+		<td align="left"><button dojoType="Button" id="removeButton">Remove</button></td>
+		<td width="50%"></td>
+		<td align="right"><button dojoType="Button" id="expandButton">Expand All</button></td>
+		<td align="right"><button dojoType="Button" id="collapseButton">Collapse All</button></td>
+	    </tr></table>
+	  </div>
+	</div>
       </div>
     </div>
   </body>

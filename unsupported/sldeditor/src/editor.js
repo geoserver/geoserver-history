@@ -14,18 +14,25 @@ dojo.require("dojo.widget.TreeContextMenu");
 // holds the SLD being edited
 var xmlDoc;
 
+// Holds the current nodes
+var focusNode = '';
+var unselectNode = '';
+
 function loadXMLFromString(){
     var text = document.getElementById('pastedXML').value;
-    xmlDoc = dojo.dom.createDocumentFromText(text);
-    sldLoaded();
+    if(text){
+	xmlDoc = dojo.dom.createDocumentFromText(text);
+	sldLoaded();
+    }
 }
 
 function loadXMLFromFile(){
     var file = document.loadform.sldfile.value;
-    alert(file);
-    xmlDoc = dojo.dom.createDocument();
-    xmlDoc.load(file);
-    sldLoaded();
+    if(file){
+	xmlDoc = dojo.dom.createDocument();
+	xmlDoc.load(file);
+	sldLoaded();
+    }
     // does not work in Safari... possibly not IE or PC Firefox
     // do I need something like:
     // netscape.security.PrivilegeManager.enablePrivilege('UniversalFileRead');
@@ -53,11 +60,56 @@ function generateXML(){
 
 
 // TREE CODE
-function nodeSelectedHandler(message){
-    var str = "selected: \n" + message.node.title + "\n" + message.node;
-    alert(str);
+function expandAll(){
+    expandAllHelper(dojo.widget.byId('firstTree').children[0]);
 }
 
+function expandAllHelper(treeNode){
+    treeNode.expand();
+    for(var i=0; i<treeNode.children.length; i++){
+	expandAllHelper(treeNode.children[i]);
+    }
+}
+
+function collapseAll(){
+    collapseAllHelper(dojo.widget.byId('firstTree').children[0]);
+}
+
+function collapseAllHelper(treeNode){
+    treeNode.collapse();
+    for(var i=0; i<treeNode.children.length; i++){
+	collapseAllHelper(treeNode.children[i]);
+    }
+}
+
+function nodeSelectedHandler(message){
+    var str = "selected: \n" + message.node.title + "\n" + message.node + "\n" + message.node.object;
+    var node = message.node;
+    if(unselectNode && unselectNode != message.node){
+	unselectNode.unMarkSelected();
+    unselectNode='';
+    }
+    
+    // if this is an attribute node
+    if(node.children.length == 0){
+	//unselect it
+	node.unMarkSelected();
+	//set its parent as the focus
+	focusNode = node.parent;
+	//and select it in the tree
+	unselectNode = focusNode;
+	focusNode.markSelected();
+    } else {
+	//otherwise, set it as the focus
+	focusNode = node;
+    }
+    
+    // set the Current node label
+    document.getElementById('mainCurrentArea').innerHTML = focusNode.title;
+    
+}
+
+// consider only building tree levels that are expanded
 function buildTree(node, tree){
     var tree = dojo.widget.byId("firstTree");
     tree.destroyChildren();
@@ -70,15 +122,16 @@ function buildTreeHelper(node, tree){
     var nodeid;
     var childnode;
     while(curnode){
-	if(curnode.childNodes.length == 1){
-	    strtitle = curnode.tagName + ": " + curnode.textContent;
-	} else {
-	    strtitle = curnode.tagName;
-	}
+	//if(curnode.childNodes.length == 1){
+	//    strtitle = curnode.tagName + ": " + curnode.textContent;
+	//} else {
+	strtitle = curnode.tagName;
+	//}
 	nodeid = dojo.dom.getUniqueId();
 	tree.addChild(dojo.widget.createWidget("TreeNode", {
 		    title:strtitle,
-			widgetId:nodeid
+			widgetId:nodeid,
+			object:curnode
 			}));
 	childnode = dojo.dom.firstElement(curnode);
 	if(childnode){
@@ -108,6 +161,13 @@ function init()
     
     var generateButton = dojo.widget.byId('generateButton');
     dojo.event.connect(generateButton, 'onClick', 'generateXML');
+    
+    var expandButton = dojo.widget.byId('expandButton');
+    dojo.event.connect(expandButton, 'onClick', 'expandAll');
+
+    var collapseButton = dojo.widget.byId('collapseButton');
+    dojo.event.connect(collapseButton, 'onClick', 'collapseAll');
+    
     
 }
 dojo.addOnLoad(init);
