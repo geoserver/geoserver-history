@@ -54,7 +54,8 @@ public class KMLReflector extends WMService {
     final String KMZ_MIME_TYPE = "application/vnd.google-earth.kmz+xml";
 
     // Values for the prepared WMS request. Later move these to web.xml server config
-    final int KMSCORE = 30;
+    final int KMSCORE = 50;
+    final int REFRESH = 1;
     final boolean KMATTR = true;
     final boolean TRANSPARENT = true;
     final int WIDTH = 1024;
@@ -234,7 +235,7 @@ public class KMLReflector extends WMService {
                     + serviceRequest.getKMattr() + "&legend="
                     + String.valueOf(serviceRequest.getLegend()) + "]]></href>\n");
                 sb.append("<viewRefreshMode>onStop</viewRefreshMode>\n");
-                sb.append("<viewRefreshTime>3</viewRefreshTime>\n");
+                sb.append("<viewRefreshTime>" + REFRESH + "</viewRefreshTime>\n");
                 sb.append("</Url>\n");
                 sb.append("</NetworkLink>\n");
             }
