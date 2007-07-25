@@ -96,30 +96,35 @@ public class KvpUtils {
      * @return A list of the tokenized string.
      */
     public static List readFlat(String rawList, String delimiter) {
+        List kvpList = null;
+
         // handles implicit unconstrained case
-        if (rawList == null || rawList.equals("*") || rawList.trim().equals("")) {
+        if ((rawList == null) || "".equals(rawList)) {
             return Collections.EMPTY_LIST;
+
+            // handles explicit unconstrained case
+        } else if (rawList.equals("*")) {
+            return Collections.EMPTY_LIST;
+
             // handles explicit, constrained element lists
         } else {
-            List kvpList = null;
-
             /**
-             * GR: avoid using StringTokenizer because it does not returns
-             * empty trailing strings (i.e. if the string after the last match
-             * of the pattern is empty)
+             * GR: avoid using StringTokenizer because it does not returns empty
+             * trailing strings (i.e. if the string after the last match of the
+             * pattern is empty)
              */
 
-            //HACK: if there are more than one character in delimiter, I assume
-            //they are the parenthesis, for wich I don't know how to create
-            //a regular expression, so I keep using the StringTokenizer since
-            //it works for that case.
+            // HACK: if there are more than one character in delimiter, I assume
+            // they are the parenthesis, for wich I don't know how to create
+            // a regular expression, so I keep using the StringTokenizer since
+            // it works for that case.
             if (delimiter.length() == 1) {
                 int index = -1;
-                kvpList = new ArrayList();
+                kvpList = new ArrayList(10);
 
                 String token;
 
-                //if(rawList.endsWith(delimiter))
+                // if(rawList.endsWith(delimiter))
                 rawList += delimiter;
 
                 while ((index = rawList.indexOf(delimiter)) > -1) {
@@ -137,7 +142,10 @@ public class KvpUtils {
                 kvpList = new ArrayList(kvps.countTokens());
 
                 while (kvps.hasMoreTokens()) {
-                    LOGGER.finest("adding simple element");
+                    if (LOGGER.isLoggable(Level.FINEST)) {
+                        LOGGER.finest("adding simple element");
+                    }
+
                     kvpList.add(kvps.nextToken());
                 }
             }
@@ -160,29 +168,39 @@ public class KvpUtils {
      * @throws WfsException When the string structure cannot be read.
      */
     public static List readNested(String rawList) {
-        LOGGER.finest("reading nested: " + rawList);
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.finest("reading nested: " + rawList);
+        }
 
-        List kvpList = new ArrayList();
+        List kvpList = new ArrayList(10);
 
         // handles implicit unconstrained case
         if (rawList == null) {
-            LOGGER.finest("found implicit all requested");
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.finest("found implicit all requested");
+            }
 
             return kvpList;
 
             // handles explicit unconstrained case
         } else if (rawList.equals("*")) {
-            LOGGER.finest("found explicit all requested");
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.finest("found explicit all requested");
+            }
 
             return kvpList;
 
             // handles explicit, constrained element lists
         } else {
-            LOGGER.finest("found explicit requested");
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.finest("found explicit requested");
+            }
 
             // handles multiple elements list case
             if (rawList.startsWith("(")) {
-                LOGGER.finest("reading complex list");
+                if (LOGGER.isLoggable(Level.FINEST)) {
+                    LOGGER.finest("reading complex list");
+                }
 
                 List outerList = readFlat(rawList, OUTER_DELIMETER);
                 Iterator i = outerList.listIterator();
@@ -193,7 +211,10 @@ public class KvpUtils {
 
                 // handles single element list case
             } else {
-                LOGGER.finest("reading simple list");
+                if (LOGGER.isLoggable(Level.FINEST)) {
+                    LOGGER.finest("reading simple list");
+                }
+
                 kvpList.add(readFlat(rawList, INNER_DELIMETER));
             }
 

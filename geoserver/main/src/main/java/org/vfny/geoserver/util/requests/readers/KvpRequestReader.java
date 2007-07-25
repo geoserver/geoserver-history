@@ -5,6 +5,8 @@
 package org.vfny.geoserver.util.requests.readers;
 
 import com.vividsolutions.jts.geom.Envelope;
+
+import org.geoserver.ows.util.KvpUtils;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.FilterFilter;
@@ -188,62 +190,7 @@ abstract public class KvpRequestReader {
      * @return A list of the tokenized string.
      */
     protected static List readFlat(String rawList, String delimiter) {
-        List kvpList = null;
-
-        // handles implicit unconstrained case
-        if ((rawList == null) || "".equals(rawList)) {
-            return Collections.EMPTY_LIST;
-
-            // handles explicit unconstrained case
-        } else if (rawList.equals("*")) {
-            return Collections.EMPTY_LIST;
-
-            // handles explicit, constrained element lists
-        } else {
-            /**
-             * GR: avoid using StringTokenizer because it does not returns empty
-             * trailing strings (i.e. if the string after the last match of the
-             * pattern is empty)
-             */
-
-            // HACK: if there are more than one character in delimiter, I assume
-            // they are the parenthesis, for wich I don't know how to create
-            // a regular expression, so I keep using the StringTokenizer since
-            // it works for that case.
-            if (delimiter.length() == 1) {
-                int index = -1;
-                kvpList = new ArrayList(10);
-
-                String token;
-
-                // if(rawList.endsWith(delimiter))
-                rawList += delimiter;
-
-                while ((index = rawList.indexOf(delimiter)) > -1) {
-                    token = rawList.substring(0, index);
-
-                    if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.finest("adding simple element " + token);
-                    }
-
-                    kvpList.add(token);
-                    rawList = rawList.substring(++index);
-                }
-            } else {
-                StringTokenizer kvps = new StringTokenizer(rawList, delimiter);
-                kvpList = new ArrayList(kvps.countTokens());
-
-                while (kvps.hasMoreTokens()) {
-                    if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.finest("adding simple element");
-                    }
-
-                    kvpList.add(kvps.nextToken());
-                }
-            }
-
-            return kvpList;
-        }
+        return KvpUtils.readFlat(rawList,delimiter);
     }
 
     /**
@@ -261,58 +208,7 @@ abstract public class KvpRequestReader {
      *             When the string structure cannot be read.
      */
     protected static List readNested(String rawList) {
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("reading nested: " + rawList);
-        }
-
-        List kvpList = new ArrayList(10);
-
-        // handles implicit unconstrained case
-        if (rawList == null) {
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("found implicit all requested");
-            }
-
-            return kvpList;
-
-            // handles explicit unconstrained case
-        } else if (rawList.equals("*")) {
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("found explicit all requested");
-            }
-
-            return kvpList;
-
-            // handles explicit, constrained element lists
-        } else {
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("found explicit requested");
-            }
-
-            // handles multiple elements list case
-            if (rawList.startsWith("(")) {
-                if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.finest("reading complex list");
-                }
-
-                List outerList = readFlat(rawList, OUTER_DELIMETER);
-                Iterator i = outerList.listIterator();
-
-                while (i.hasNext()) {
-                    kvpList.add(readFlat((String) i.next(), INNER_DELIMETER));
-                }
-
-                // handles single element list case
-            } else {
-                if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.finest("reading simple list");
-                }
-
-                kvpList.add(readFlat(rawList, INNER_DELIMETER));
-            }
-
-            return kvpList;
-        }
+        return KvpUtils.readNested(rawList);
     }
 
     /**
