@@ -552,7 +552,7 @@ public abstract class AbstractService extends HttpServlet implements Application
             String disposition = serviceResponse.getContentDisposition();
 
             if (disposition != null) {
-                LOGGER.fine("content encoding is: " + encoding);
+                LOGGER.fine("content disposition is: " + disposition);
                 response.setHeader("Content-Disposition", disposition);
             }
             
