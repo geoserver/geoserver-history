@@ -29,7 +29,7 @@ public class KMLReflector {
     public static final String KMZ_MIME_TYPE = "application/vnd.google-earth.kmz+xml";
 
     /** default 'kmscore' value */
-    public static final Integer KMSCORE = new Integer(30);
+    public static final Integer KMSCORE = new Integer(50);
 
     /** default 'kmattr' value */
     public static final Boolean KMATTR = Boolean.TRUE;
