@@ -5,6 +5,8 @@
 package org.vfny.geoserver.wms.servlets;
 
 import com.vividsolutions.jts.geom.Envelope;
+
+import org.geoserver.ows.util.KvpUtils;
 import org.geotools.styling.Style;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -21,8 +23,10 @@ import org.vfny.geoserver.wms.responses.GetMapResponse;
 import org.vfny.geoserver.wms.responses.map.kml.KMLMapProducerFactory;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.servlet.ServletConfig;
@@ -184,6 +188,34 @@ public class KMLReflector extends WMService {
             serviceRequest.setVersion(VERSION);
         }
 
+        List filters = null;
+        String filterKey = null;
+        if (requestParams.containsKey("FILTER")) {
+                String filter = (String) requestParams.get("FILTER");
+                filters = KvpUtils.readFlat(filter, "()");
+                filterKey = "filter";
+        }
+        else if ( requestParams.containsKey("CQL_FILTER")) {
+                String filter = (String) requestParams.get("CQL_FILTER");
+                filters = KvpUtils.readFlat(filter, "|" );
+                filterKey = "cql_filter";
+        }
+        else if ( requestParams.containsKey("FEATUREID") ) {
+                //JD: featureid semantics slightly different then other types of 
+                // filters
+                String filter = (String) requestParams.get("FEATUREID");
+                filters = new ArrayList();
+                for ( int i = 0; i < layers.length; i++ ) {
+                        filters.add(filter);
+                }
+                filterKey = "featureid";
+        }
+        
+        if ( filters != null && filters.size() != layers.length) {
+                throw (IOException) new IOException().initCause(
+                        new ServiceException( layers.length + " layers specified, but " + filters.size() + " filters")
+                        );
+        }
         // we use the mandatory SRS value of 4326 (lat/lon)
         serviceRequest.setFormat(KML_MIME_TYPE); // output mime type of KML
 
@@ -202,6 +234,13 @@ public class KMLReflector extends WMService {
                 style = "&styles=" + styles[i].getName(); // use them, else we use the default style
             }
 
+            String filter = (String) (filters != null ? filters.get(i) : null);
+            if ( filter != null ) {
+                filter = "&" + filterKey + "=" + filter;
+            }
+            else {
+                filter = "";
+            }
             if (serviceRequest.getSuperOverlay()) {
                 Envelope bbox = serviceRequest.getBbox();
 
@@ -225,6 +264,7 @@ public class KMLReflector extends WMService {
                     + "/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kml+XML"
                     + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + "&layers="
                     + layers[i].getName() + style + "&bbox=" + (String) requestParams.get("BBOX")
+                    + filter
                     + "&legend=" + String.valueOf(serviceRequest.getLegend())
                     + "&superoverlay=true]]></href>\n");
                 sb.append("<viewRefreshMode>onRegion</viewRefreshMode>\n");
@@ -240,7 +280,7 @@ public class KMLReflector extends WMService {
                 sb.append("<href><![CDATA[" + serviceRequest.getBaseUrl()
                     + "/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kmz+XML"
                     + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + "&layers="
-                    + layers[i].getName() + style // optional
+                    + layers[i].getName() + style + filter // optional
                     + "&KMScore=" + serviceRequest.getKMScore() + "&KMAttr="
                     + String.valueOf(serviceRequest.getKMattr()) + "&legend="
                     + String.valueOf(serviceRequest.getLegend()) + "]]></href>\n");
