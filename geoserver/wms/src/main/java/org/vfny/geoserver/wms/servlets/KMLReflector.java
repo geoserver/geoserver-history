@@ -19,9 +19,12 @@ import org.vfny.geoserver.wms.responses.GetMapResponse;
 import org.vfny.geoserver.wms.responses.map.kml.KMLMapProducerFactory;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -174,6 +177,53 @@ public class KMLReflector extends WMService {
             serviceRequest.setVersion(VERSION);
         }
 
+        List filters = null;
+        String filterKey = null;
+        if (requestParams.containsKey("FILTER")) {
+        	String filter = (String) requestParams.get("FILTER");
+        	filters = KvpRequestReader.readFlat(filter, "()");
+        	filterKey = "filter";
+        }
+        else if ( requestParams.containsKey("CQL_FILTER")) {
+        	String filter = (String) requestParams.get("CQL_FILTER");
+        	filters = KvpRequestReader.readFlat(filter, "|" );
+        	filterKey = "cql_filter";
+        }
+        else if ( requestParams.containsKey("FEATUREID") ) {
+        	//JD: featureid semantics slightly different then other types of 
+        	// filters
+        	String filter = (String) requestParams.get("FEATUREID");
+        	filters = new ArrayList();
+        	for ( int i = 0; i < layers.length; i++ ) {
+        		filters.add(filter);
+        	}
+        	filterKey = "featureid";
+        }
+        
+        if ( filters != null && filters.size() != layers.length) {
+        	throw (IOException) new IOException().initCause(
+    			new ServiceException( layers.length + " layers specified, but " + filters.size() + " filters")
+			);
+        }
+        
+        //set the content disposition
+        StringBuffer filename = new StringBuffer();
+        for ( int i = 0; i < layers.length; i++ ) {
+        	String name = layers[i].getName();
+        	
+        	//strip off prefix
+        	int j = name.indexOf(':');
+        	if ( j > -1 ) {
+        		name = name.substring( j + 1 );
+        	}
+        	
+        	filename.append(name + "_");
+        }
+        filename.setLength(filename.length()-1);
+        
+        response.setHeader("Content-Disposition", 
+        		"attachment; filename=" + filename.toString() + ".kml");
+        
         // we use the mandatory SRS value of 4326 (lat/lon)
         serviceRequest.setFormat(KML_MIME_TYPE); // output mime type of KML
 
@@ -191,6 +241,14 @@ public class KMLReflector extends WMService {
                 style = "&styles=" + styles[i].getName(); // use them, else we use the default style
             }
 
+            String filter = (String) (filters != null ? filters.get(i) : null);
+            if ( filter != null ) {
+            	filter = "&" + filterKey + "=" + filter;
+            }
+            else {
+            	filter = "";
+            }
+          
             if (serviceRequest.getSuperOverlay()) {
                 Envelope bbox = serviceRequest.getBbox();
 
@@ -209,11 +267,13 @@ public class KMLReflector extends WMService {
                 sb.append("</Lod>");
                 sb.append("</Region>");
 
+                
                 sb.append("<Link>\n");
                 sb.append("<href><![CDATA[" + serviceRequest.getBaseUrl()
                     + "/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kml+XML"
                     + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + "&layers="
                     + layers[i].getName() + style + "&bbox=" + (String) requestParams.get("BBOX")
+                    + filter
                     + "&legend=" + String.valueOf(serviceRequest.getLegend())
                     + "&superoverlay=true]]></href>\n");
                 sb.append("<viewRefreshMode>onRegion</viewRefreshMode>\n");
@@ -231,6 +291,7 @@ public class KMLReflector extends WMService {
                     + "&width=" + serviceRequest.getWidth() + "&height="
                     + serviceRequest.getHeight() + "&srs=" + SRS + "&layers=" + layers[i].getName()
                     + style // optional
+                    + filter
                     + "&KMScore=" + serviceRequest.getKMScore() + "&KMAttr="
                     + serviceRequest.getKMattr() + "&legend="
                     + String.valueOf(serviceRequest.getLegend()) + "]]></href>\n");
