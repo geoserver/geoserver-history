@@ -47,6 +47,9 @@ public class GetMapRequest extends WMSRequest {
     /** format options */
     private Map /*<String,Object>*/ formatOptions = new CaseInsensitiveMap(new HashMap());
 
+    /** raw kvp parameters non-parsed */
+    private Map /*<String,String>*/ rawKvp;
+    
     /**
      * Creates a GetMapRequest request.
      *
@@ -324,6 +327,13 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
+     * Gets the raw kvp parameters which were used to create the request.
+     */
+    public Map getRawKvp() {
+        return rawKvp;
+    }
+    
+    /**
      * DOCUMENT ME!
      *
      * @param bbox DOCUMENT ME!
@@ -586,6 +596,13 @@ public class GetMapRequest extends WMSRequest {
         this.optionalParams.featureVersion = featureVersion;
     }
 
+    /**
+     * Sets the raw kvp parameters which were used to create the request.
+     */
+    public void setRawKvp( Map rawKvp ) {
+        this.rawKvp = rawKvp;
+    }
+    
     /**
      * decodes a color of the form <code>#FFFFFF</code> into a
      * <code>java.awt.Color</code> object
