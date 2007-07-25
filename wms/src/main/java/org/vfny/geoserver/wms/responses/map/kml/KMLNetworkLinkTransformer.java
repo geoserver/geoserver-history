@@ -122,7 +122,7 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
                 end( "href" );
                 
                 element( "viewRefreshMode", "onStop" );
-                element( "viewRefreshTime", "3" );
+                element( "viewRefreshTime", "1" );
                 end( "Url" );
                 
                 end( "NetworkLink" );
