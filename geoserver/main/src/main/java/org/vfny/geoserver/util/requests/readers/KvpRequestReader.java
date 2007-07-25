@@ -181,7 +181,7 @@ abstract public class KvpRequestReader {
      *
      * @return A list of the tokenized string.
      */
-    protected static List readFlat(String rawList, String delimiter) {
+    public static List readFlat(String rawList, String delimiter) {
         List kvpList = null;
 
         // handles implicit unconstrained case
