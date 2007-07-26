@@ -795,7 +795,10 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         FileChannel sourceChannel = new FileInputStream(source).getChannel();
         FileChannel targetChannel = new FileOutputStream(target).getChannel();
         
-        sourceChannel.transferTo(0, sourceChannel.size(), targetChannel);
+        //JD: source.transferTo(target) seems to fail on some 2.6. linux kernels.
+        //the easy workaround is to just use target.transferFrom(source)
+        //sourceChannel.transferTo(0, sourceChannel.size(), targetChannel);
+        targetChannel.transferFrom(sourceChannel, 0, sourceChannel.size() );
         sourceChannel.close();
         targetChannel.close();
     }
