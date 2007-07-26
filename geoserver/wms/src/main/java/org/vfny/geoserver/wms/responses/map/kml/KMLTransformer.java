@@ -152,7 +152,7 @@ public class KMLTransformer extends TransformerBase {
             double scaleDenominator = 1; 
             try {
 				scaleDenominator = 
-					RendererUtilities.calculateScale(mapContext.getAreaOfInterest(), 800, 600, null);
+					RendererUtilities.calculateScale(mapContext.getAreaOfInterest(), 1024, 1024, null);
 			} 
             catch( Exception e ) {
             	LOGGER.log( Level.WARNING, "Error calculating scale denominator", e );
@@ -275,7 +275,7 @@ public class KMLTransformer extends TransformerBase {
             // The lowest bound is 1 feature and the highest bound is 3.98 million features
             // The most useful kmscore values are between 20 and 70 (21 and 46000 features respectively)
             // A good default kmscore value is around 40 (464 features)
-            double magic = Math.pow(10, kmscore / 15);
+            double magic = Math.pow(10, kmscore / 15d);
 
             if (numFeatures > magic) {
                 return false; // return raster
