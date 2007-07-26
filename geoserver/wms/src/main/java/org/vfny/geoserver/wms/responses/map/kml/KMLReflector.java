@@ -79,9 +79,28 @@ public class KMLReflector {
         
         response.setContentType( KML_MIME_TYPE );
         
+        //set the content disposition
+        StringBuffer filename = new StringBuffer();
+        for ( int i = 0; i < request.getLayers().length; i++ ) {
+            String name = request.getLayers()[i].getName();
+            
+            //strip off prefix
+            int j = name.indexOf(':');
+            if ( j > -1 ) {
+                    name = name.substring( j + 1 );
+            }
+            
+            filename.append(name + "_");
+        }
+        filename.setLength(filename.length()-1);
+        response.setHeader("Content-Disposition", 
+                        "attachment; filename=" + filename.toString() + ".kml");
+        
         KMLNetworkLinkTransformer transformer = new KMLNetworkLinkTransformer();
         transformer.setIndentation(3);
         transformer.setEncodeAsRegion( request.getSuperOverlay() );
         transformer.transform( request, response.getOutputStream() );
+        
+     
     }
 }

@@ -216,6 +216,25 @@ public class KMLReflector extends WMService {
                         new ServiceException( layers.length + " layers specified, but " + filters.size() + " filters")
                         );
         }
+        
+        //set the content disposition
+        StringBuffer filename = new StringBuffer();
+        for ( int i = 0; i < layers.length; i++ ) {
+            String name = layers[i].getName();
+            
+            //strip off prefix
+            int j = name.indexOf(':');
+            if ( j > -1 ) {
+                    name = name.substring( j + 1 );
+            }
+            
+            filename.append(name + "_");
+        }
+        filename.setLength(filename.length()-1);
+        
+        response.setHeader("Content-Disposition", 
+                        "attachment; filename=" + filename.toString() + ".kml");
+        
         // we use the mandatory SRS value of 4326 (lat/lon)
         serviceRequest.setFormat(KML_MIME_TYPE); // output mime type of KML
 
