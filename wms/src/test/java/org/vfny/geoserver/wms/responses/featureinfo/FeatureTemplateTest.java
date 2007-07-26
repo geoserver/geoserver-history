@@ -8,6 +8,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
+import org.vfny.geoserver.wms.responses.featureinfo.dummy.Dummy;
 
 public class FeatureTemplateTest extends WMSTestSupport {
 
@@ -63,5 +64,15 @@ public class FeatureTemplateTest extends WMSTestSupport {
       
     }
     
-    
+    public void testAlternateLookup() throws Exception {
+        
+        FeatureSource source = getFeatureSource( MockData.PRIMITIVEGEOFEATURE );
+        FeatureCollection fc = source.getFeatures();
+        Feature f = fc.features().next();
+        
+        FeatureTemplate template = new FeatureTemplate();
+        String result = template.template(f, "dummy.ftl", Dummy.class );
+        
+        assertEquals( "dummy", result );
+    }
 }
