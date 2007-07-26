@@ -311,16 +311,7 @@ public class GeoServerTestSupport extends TestCase {
         
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document dom = builder.parse( input );
-//        
-//        if ( isLogging() ) {
-//                TransformerFactory txFactory = TransformerFactory.newInstance();
-//                
-//                Transformer tx = txFactory.newTransformer();
-//                tx.setOutputProperty( OutputKeys.INDENT, "yes" );
-//                
-//                tx.transform( new DOMSource( dom ), new StreamResult( System.out ) );
-//        }
-        
+
         return dom;
     }
     
@@ -353,6 +344,21 @@ public class GeoServerTestSupport extends TestCase {
         tx.setOutputProperty( OutputKeys.INDENT, "yes" );
           
         tx.transform( new DOMSource( dom ), new StreamResult( System.out ) );
+    }
+
+    /**
+     * Sets up a template in a feature type directory.
+     * 
+     * @param featureTypeName The name of the feature type.
+     * @param template The name of the template.
+     * @param body The content of the template.
+     * 
+     * @throws IOException
+     */
+    protected void setupTemplate(QName featureTypeName,String template,String body)
+        throws IOException {
+        
+        dataDirectory.copyToFeatureTypeDirectory( new ByteArrayInputStream(body.getBytes()), featureTypeName, template );
     }
     
     /*
