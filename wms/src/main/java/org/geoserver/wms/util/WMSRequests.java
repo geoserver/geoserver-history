@@ -8,10 +8,12 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.geoserver.ows.util.KvpUtils;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.global.GeoServer;
@@ -245,9 +247,52 @@ public class WMSRequests {
         params.put("layers", layers.toString());
         params.put("styles", styles.toString());
 
+        //filters, we grab them from the original raw kvp since re-encoding 
+        // them from objects is kind of silly
+        if (layer != null) {
+            //only get filters for hte layer
+            int index = 0;
+            for ( ; index < req.getLayers().length; index++) {
+                if ( req.getLayers()[index].getName().equals( layer ) ) {
+                    break;
+                }
+            }
+            
+            if ( req.getRawKvp().get("filter") != null ) {
+                //split out the filter we need
+                List filters = KvpUtils.readFlat((String)req.getRawKvp().get("filter"),"()");
+                params.put( "filter", filters.get(index) );
+            }
+            else if ( req.getRawKvp().get("cql_filter") != null ) {
+                //split out the filter we need
+                List filters = KvpUtils.readFlat((String)req.getRawKvp().get("cql_filter"),"|");
+                params.put( "cql_filter", filters.get(index) );
+            }
+            else if ( req.getRawKvp().get("featureid") != null  ) {
+                //semantics of feautre id slightly different, replicate entire value
+                params.put("featureid", req.getRawKvp().get("featureid"));
+            }
+        
+        }
+        else {
+            //include all
+            if ( req.getRawKvp().get("filter") != null ) {
+                params.put("filter",req.getRawKvp().get("filter") );
+            }
+            else if ( req.getRawKvp().get("cql_filter") != null ) {
+                params.put("cql_filter",req.getRawKvp().get("cql_filter") );
+            }
+            else if (req.getRawKvp().get("featureid") != null  ) {
+                params.put("featureid", req.getRawKvp().get("featureid"));
+            }
+        }
+        
+        //image params
         params.put("height", String.valueOf(req.getHeight()));
         params.put("width", String.valueOf(req.getWidth()));
-
+        params.put( "transparent", ""+req.isTransparent() );
+        
+        //bbox
         if (bbox == null) {
             bbox = req.getBbox();
         }
@@ -255,11 +300,10 @@ public class WMSRequests {
             params.put("bbox", encode(bbox));    
         }
         
-
-
+        //srs
         params.put( "srs", req.getSRS() );
-        params.put( "transparent", ""+req.isTransparent() );
         
+        //format options
         if ( req.getFormatOptions() != null && !req.getFormatOptions().isEmpty()) {
             params.put( "format_options", encodeFormatOptions(req.getFormatOptions()));
         }
