@@ -175,18 +175,19 @@ class KMZMapProducer extends AbstractGetMapProducer implements GetMapProducer {
     }
 
     public String getContentDisposition() {
-        if (this.mapContext.getLayer(0) != null) {
-            try {
-                String title = this.mapContext.getLayer(0).getFeatureSource().getSchema()
-                                              .getTypeName();
-
-                if ((title != null) && !title.equals("")) {
-                    return "attachment; filename=" + title + ".kmz";
-                }
-            } catch (NullPointerException e) {
-            }
-        }
-
-        return "attachment; filename=geoserver.kmz";
+    	StringBuffer sb = new StringBuffer();
+    	for ( int i = 0; i < mapContext.getLayerCount(); i++) {
+    		MapLayer layer = mapContext.getLayer(i);
+    		String title = layer.getFeatureSource().getSchema() .getTypeName();
+    		if (title != null && !title.equals("")) {
+    			sb.append( title ).append("_");
+    		}
+    	}
+    	if ( sb.length() > 0 ) {
+    		sb.setLength(sb.length()-1);
+    		return "attachment; filename=" + sb.toString() + ".kmz";
+    	}
+    	return "attachment; filename=geoserver.kmz";
+    	
     }
 }

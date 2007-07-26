@@ -89,8 +89,14 @@ public class KMLTransformer extends TransformerBase {
             boolean group = (layers.length > 1) || request.getLegend();
 
             if (group) {
+            	 StringBuffer sb = new StringBuffer();
+                 for ( int i = 0; i < layers.length; i++ ) {
+                     sb.append( layers[i].getTitle() + "," );
+                 }
+                 sb.setLength(sb.length()-1);
+                 
                 start("Document");
-                element("name", "GeoServer");
+                element("name", sb.toString());
             }
 
             //for every layer specified in the request
