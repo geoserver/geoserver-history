@@ -75,7 +75,6 @@ public class FeatureTemplate {
      */
     CharArrayWriter caw = new CharArrayWriter();
 
-
     /**
      * Executes the title template for a feature writing the results to an 
      * output stream.
@@ -124,7 +123,7 @@ public class FeatureTemplate {
      * @throws IOException Any errors that occur during execution of the template.
      */
     public void title( Feature feature, Writer writer ) throws IOException {
-       execute( feature, feature.getFeatureType(), writer, "title.ftl" );
+       execute( feature, feature.getFeatureType(), writer, "title.ftl",null );
     }
     
     
@@ -138,7 +137,7 @@ public class FeatureTemplate {
      * @throws IOException Any errors that occur during execution of the template.
      */
     public void description( Feature feature, Writer writer ) throws IOException {
-       execute( feature, feature.getFeatureType(), writer, "description.ftl" );
+       execute( feature, feature.getFeatureType(), writer, "description.ftl",null );
     }
     
     /**
@@ -171,13 +170,70 @@ public class FeatureTemplate {
         return caw.toString();
     }
     
+    /**
+     * Executes a template for the feature writing the results to a writer.
+     * <p>
+     * The template to execute is secified via the <tt>template</tt>, and 
+     * <tt>lookup</tt> parameters. The <tt>lookup</tt> is used to specify the 
+     * class from which <tt>template</tt> shoould be loaded relative to in teh 
+     * case where the user has not specified an override in the data directory.
+     * </p>
+     * @param feature The feature to execute the template against.
+     * @param writer The writer for output.
+     * @param template The template name.
+     * @param lookup The class to lookup the template relative to.
+     * 
+     */
+    public void template(Feature feature, Writer writer, String template, Class lookup)
+    	throws IOException {
+    	execute(feature,feature.getFeatureType(),writer,template,lookup);
+    }
+    
+    /**
+     * Executes a template for the feature writing the results to an output stream.
+     * <p>
+     * The template to execute is secified via the <tt>template</tt>, and 
+     * <tt>lookup</tt> parameters. The <tt>lookup</tt> is used to specify the 
+     * class from which <tt>template</tt> shoould be loaded relative to in teh 
+     * case where the user has not specified an override in the data directory.
+     * </p>
+     * @param feature The feature to execute the template against.
+     * @param output The output.
+     * @param template The template name.
+     * @param lookup The class to lookup the template relative to.
+     * 
+     */
+    public void template(Feature feature, OutputStream output, String template, Class lookup)
+    	throws IOException {
+    	template( feature, new OutputStreamWriter( output ), template, lookup );
+    }
+    
+    /**
+     * Executes a template for the feature returning the result as a string.
+     * <p>
+     * The template to execute is secified via the <tt>template</tt>, and 
+     * <tt>lookup</tt> parameters. The <tt>lookup</tt> is used to specify the 
+     * class from which <tt>template</tt> shoould be loaded relative to in teh 
+     * case where the user has not specified an override in the data directory.
+     * </p>
+     * @param feature The feature to execute the template against.
+     * @param template The template name.
+     * @param lookup The class to lookup the template relative to.
+     * 
+     */
+    public String template(Feature feature, String template, Class lookup) throws IOException {
+    	caw.reset();
+    	template(feature,caw,template,lookup);
+    	return caw.toString();
+    }
+    
     /*
      * Internal helper method to exceute the template against feature or 
      * feature collection.
      */
-    private void execute( Object feature, FeatureType featureType, Writer writer, String template ) 
+    private void execute( Object feature, FeatureType featureType, Writer writer, String template, Class lookup ) 
         throws IOException {
-        Template t = lookupTemplate(featureType, template);
+        Template t = lookupTemplate(featureType, template, lookup);
 
         try {
             t.process(feature, writer);
@@ -192,10 +248,11 @@ public class FeatureTemplate {
      * expensive, so we cache templates by feture type and template.
      * @param featureType
      * @param template
+     * @param lookup
      * @return
      * @throws IOException
      */
-    private Template lookupTemplate(FeatureType featureType, String template) throws IOException {
+    private Template lookupTemplate(FeatureType featureType, String template, Class lookup) throws IOException {
         Template t;
         
         // lookup the cache first
@@ -205,7 +262,8 @@ public class FeatureTemplate {
             return t;
         
         // otherwise, build a loader and do the lookup
-        GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(getClass());
+        GeoServerTemplateLoader templateLoader = 
+        	new GeoServerTemplateLoader(lookup != null ? lookup : getClass());
         templateLoader.setFeatureType(featureType);
 
         //Configuration is not thread safe
