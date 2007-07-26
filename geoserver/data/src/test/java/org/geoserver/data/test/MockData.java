@@ -226,6 +226,27 @@ public class MockData {
         throws IOException {
         copy(input, new File(getDataDirectoryRoot(), location));
     }
+    
+    /**
+     * Copies some content to a file udner a specific feature type directory 
+     * of the data directory.
+     * Example:
+     * <p>
+     *  <code>
+     *    dd.copyToFeautreTypeDirectory(input,MockData.PrimitiveGeoFeature,"info.xml");
+     *  </code>
+     * </p>
+     * @param input The content to copy.
+     * @param featureTypeName The name of the feature type.
+     * @param location The resulting location to copy to relative to the 
+     *  feautre type directory.
+     */
+    public void copyToFeatureTypeDirectory(InputStream input, QName featureTypeName, String location )
+        throws IOException {
+        
+        copyTo(input, "featureTypes" + File.separator + featureTypeName.getPrefix() 
+                + "_" + featureTypeName.getLocalPart() + File.separator + location );
+    }
 
     /**
      * Sets up the data directory, creating all the necessary files.
