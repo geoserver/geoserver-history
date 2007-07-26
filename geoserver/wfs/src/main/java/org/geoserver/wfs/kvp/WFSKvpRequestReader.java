@@ -68,7 +68,7 @@ public class WFSKvpRequestReader extends KvpRequestReader {
         }
     }
 
-    public Object read(Object request, Map kvp) throws Exception {
+    public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
         //use emf reflection
         EObject eObject = (EObject) request;
 

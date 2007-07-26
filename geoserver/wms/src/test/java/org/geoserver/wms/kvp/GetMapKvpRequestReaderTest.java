@@ -50,7 +50,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         raw.put("width", "800");
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
-        request = (GetMapRequest) reader.read(request, parseKvp(raw));
+        request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
 
         String layer = MockData.BASIC_POLYGONS.getLocalPart();
         assertEquals(1, request.getLayers().length);
@@ -84,7 +84,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         kvp.put("elevation", "4");
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
-        request = (GetMapRequest) reader.read(request, parseKvp(kvp));
+        request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
 
         assertEquals(Color.BLACK, request.getBgColor());
         assertTrue(request.isTransparent());
@@ -103,7 +103,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         kvp.put("filter", "<Filter><FeatureId id=\"foo\"/></Filter>");
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
-        request = (GetMapRequest) reader.read(request, parseKvp(kvp));
+        request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
 
         assertNotNull(request.getFilter());
         assertEquals(1, request.getFilter().size());
@@ -119,7 +119,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         kvp.put("cql_filter", "foo = bar");
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
-        request = (GetMapRequest) reader.read(request, parseKvp(kvp));
+        request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
 
         assertNotNull(request.getCQLFilter());
         assertEquals(1, request.getCQLFilter().size());
@@ -132,7 +132,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         kvp.put("featureid", "foo");
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
-        request = (GetMapRequest) reader.read(request, parseKvp(kvp));
+        request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
 
         assertNotNull(request.getFeatureId());
         assertEquals(1, request.getFeatureId().size());
@@ -147,7 +147,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         kvp.put("layers", MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
-        request = (GetMapRequest) reader.read(request, parseKvp(kvp));
+        request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
 
         assertNotNull(request.getSld());
         assertEquals(url, request.getSld());
