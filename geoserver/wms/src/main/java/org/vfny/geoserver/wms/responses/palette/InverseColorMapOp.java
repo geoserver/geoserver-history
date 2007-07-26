@@ -14,6 +14,8 @@ import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 
+import javax.media.jai.TiledImage;
+
 /**
  * This class provide an Image oriented interface for the
  * {@link EfficientInverseColorMapComputation}. Specifically, it is designed in
@@ -26,33 +28,32 @@ import java.awt.image.WritableRaster;
  * @see EfficientInverseColorMapComputation
  * 
  */
-public class InverseColorMapOp implements BufferedImageOp {
+public final class InverseColorMapOp implements BufferedImageOp {
+
+	protected final InverseColorMapRasterOp rasterOp;
 
 	protected final IndexColorModel icm;
 
-	protected final EfficientInverseColorMapComputation invCM;
+	protected final int alphaThreshold;
 
-	public InverseColorMapOp(EfficientInverseColorMapComputation eicm){
-		this.invCM=eicm;
-		this.icm=eicm.getIcm();
-	}
-	/**
-	 * @see EfficientInverseColorMapComputation#EfficientInverseColorMapComputation(IndexColorModel,
-	 *      int, int).
-	 */
+	protected final boolean hasAlpha;
+
+	protected final int transparencyIndex;
+
 	public InverseColorMapOp(final IndexColorModel destCM,
 			final int quantizationColors, final int alphaThreshold) {
+		this.rasterOp = new InverseColorMapRasterOp(destCM, quantizationColors,
+				alphaThreshold);
 		this.icm = destCM;
-		invCM = new EfficientInverseColorMapComputation(destCM,
-				quantizationColors, alphaThreshold);
+		this.alphaThreshold = alphaThreshold;
+		hasAlpha = icm.hasAlpha();
+		transparencyIndex = icm.getTransparentPixel();
 
 	}
 
 	public InverseColorMapOp(final IndexColorModel destCM) {
-		this(
-				destCM,
-				EfficientInverseColorMapComputation.DEFAULT_QUANTIZATION_COLORS,
-				EfficientInverseColorMapComputation.DEFAULT_ALPHA_TH);
+		this(destCM, InverseColorMapRasterOp.DEFAULT_QUANTIZATION_COLORS,
+				InverseColorMapRasterOp.DEFAULT_ALPHA_TH);
 	}
 
 	public BufferedImage createCompatibleDestImage(BufferedImage src,
@@ -64,94 +65,44 @@ public class InverseColorMapOp implements BufferedImageOp {
 				BufferedImage.TYPE_BYTE_INDEXED, (IndexColorModel) destCM);
 	}
 
-	/**
-	 * @see BufferedImageOp#filter(BufferedImage, BufferedImage)
-	 */
 	public BufferedImage filter(BufferedImage src, BufferedImage dest) {
-		// //
-		//
-		// Creating destination BufferedImage
-		//
-		// //
 		if (dest == null)
 			dest = new BufferedImage(src.getWidth(), src.getHeight(),
 					BufferedImage.TYPE_BYTE_INDEXED, icm);
-
-		// //
-		//
-		// Collecting info about the source and destination image
-		//
-		// //
+		else {
+			if (!(dest.getColorModel() instanceof IndexColorModel)
+					|| ((IndexColorModel) dest.getColorModel())
+							.getTransparency() != this.transparencyIndex)
+				throw new IllegalArgumentException();
+			if (((IndexColorModel) dest.getColorModel()).getTransparentPixel() != this.transparencyIndex)
+				throw new IllegalArgumentException();
+		}
 		final WritableRaster wr = dest.getRaster();
-		final Raster r = src.getRaster();
-		final int minx = r.getMinX();
-		final int miny = r.getMinY();
-		final int maxx = minx + r.getWidth();
-		final int maxy = miny + r.getHeight();
-
-		// //
-		//
-		// Main loop
-		//
-		// //
-		for (int j = miny; j < maxy; j++)
-			for (int i = minx; i < maxx; i++) {
-
-				// /////////////////////////////////////////////////////////////////////
-				//
-				// This is where the magic takes place
-				//
-				// /////////////////////////////////////////////////////////////////////
-				// // get the pixel bands
-				final int rgba[] = r.getPixel(i, j, (int[]) null);
-				wr.setSample(i, j, 0, (invCM.getIndexNearest(rgba) & 0xff));
-
-			}
-
+		final Raster ir = src.getRaster();
+		this.rasterOp.filter(ir, wr);
 		return dest;
 	}
 
-
-
-	public Rectangle2D getBounds2D(BufferedImage src) {
-		return new Rectangle(src.getWidth(), src.getHeight());
-	}
-
-	public Point2D getPoint2D(Point2D srcPt, Point2D dstPt) {
-		if (dstPt == null)
-			dstPt = new Point();
-		dstPt.setLocation(srcPt);
-		return dstPt;
-	}
-
-	public RenderingHints getRenderingHints() {
-		return null;
-	}
-
-	/**
-	 * Filter the source {@link RenderedImage} using the provided color map.
-	 * 
-	 * @param src
-	 *            is the {@link RenderedImage} to process.
-	 * @return a processed {@link RenderedImage}.
-	 */
-	public RenderedImage filterRenderedImage(RenderedImage src) {
+	public BufferedImage filterRenderedImage(RenderedImage in) {
 		// //
 		//
 		// ShortCut for using bufferedimages and avoiding tiling
 		//
 		// //
-		if (src instanceof BufferedImage)
-			return filter((BufferedImage) src, null);
+		if (in instanceof BufferedImage)
+			return filter((BufferedImage) in, null);
 
 		// //
 		//
 		// Create the destination image
 		//
 		// //
+		final TiledImage src = new TiledImage(in, true);
 		final BufferedImage dest = new BufferedImage(src.getWidth(), src
 				.getHeight(), BufferedImage.TYPE_BYTE_INDEXED, icm);
-		final WritableRaster wr = dest.getRaster();
+		final WritableRaster destWr = dest.getRaster();
+
+
 		// //
 		//
 		// Filter the image out
@@ -173,33 +124,17 @@ public class InverseColorMapOp implements BufferedImageOp {
 		//
 		// //
 		if (src.getNumXTiles() == 1 && src.getNumYTiles() == 1) {
-			
-			final int srcMinx = src.getMinX();
-			final int srcMiny =src.getMinY();
-			final int srcMaxx = srcMinx + src.getWidth();
-			final int srcMaxy = srcMiny + src.getHeight();
-			final Raster r=src.getTile(minTileX, minTileY);
-			// //
-			//
-			// Main loop
-			//
-			// //
-			for (int j = srcMiny,jd=0; j < srcMaxy; j++,jd++)
-				for (int i = srcMinx,id=0; i < srcMaxx; i++,id++) {
-
-					// /////////////////////////////////////////////////////////////////////
-					//
-					// This is where the magic takes place
-					//
-					// /////////////////////////////////////////////////////////////////////
-					// // get the pixel bands
-					final int rgba[] = r.getPixel(i, j, (int[]) null);
-					wr.setSample(id, jd, 0, (invCM.getIndexNearest(rgba) & 0xff));
-
-				}
+			final Raster sourceR = src.getTile(minTileX, minTileY);
+			rasterOp.filter(sourceR.createChild(src.getMinX(), src.getMinY(),
+					src.getWidth(), src.getHeight(), 0, 0, null), destWr);
 			return dest;
 		}
 
+		// //
+		//
+		// Test me more!!!
+		//
+		// //
 		// if we got here we have more than one tile
 		final int maxTileX = src.getNumXTiles() + minTileX;
 		final int maxTileY = src.getNumYTiles() + minTileY;
@@ -214,11 +149,12 @@ public class InverseColorMapOp implements BufferedImageOp {
 		int xx = 0;
 		final int srcW = src.getWidth();
 		final int rgba[] = new int[src.getSampleModel().getNumBands()];
+		final boolean sourceHasAlpha = rgba.length == 0;
+		final EfficientInverseColorMapComputation invCM = rasterOp.getInvCM();
 		for (int ti = minTileX; ti < maxTileX; ti++)
 			for (int tj = minTileY; tj < maxTileY; tj++) {
 				// get the source raster tile
 				final Raster r = src.getTile(ti, tj);
-
 				// loop over it;
 				final int minx = r.getMinX();
 				final int miny = r.getMinY();
@@ -233,10 +169,18 @@ public class InverseColorMapOp implements BufferedImageOp {
 						//
 						// /////////////////////////////////////////////////////////////////////
 						// // get the pixel bands
-						r.getPixel(i, j,
-								rgba);
-						wr.setSample(xx % srcW, xx / srcW, 0,
-								(invCM.getIndexNearest(rgba) & 0xff));
+						for (int b = 0; b < rgba.length; b++)
+							rgba[b] = src.getSample(i, j, b);
+						if ((sourceHasAlpha && hasAlpha && rgba[3] >= this.alphaThreshold)
+								|| !hasAlpha) {
+							int val = invCM.getIndexNearest(rgba[0] & 0xff,
+									rgba[1] & 0xff, rgba[2]);
+							if (hasAlpha && val >= transparencyIndex)
+								val++;
+							destWr.setSample(xx % srcW, xx / srcW, 0, val);
+						} else
+							destWr.setSample(xx % srcW, xx / srcW, 0,
+									transparencyIndex);
 
 						// //
 						//
@@ -247,6 +191,26 @@ public class InverseColorMapOp implements BufferedImageOp {
 					}
 			}
 		return dest;
+	}
+
+
+	public Rectangle2D getBounds2D(BufferedImage src) {
+		return new Rectangle(src.getWidth(), src.getHeight());
+	}
+
+	public Point2D getPoint2D(Point2D srcPt, Point2D dstPt) {
+		if (dstPt == null)
+			dstPt = new Point();
+		dstPt.setLocation(srcPt);
+		return dstPt;
+	}
+
+	public RenderingHints getRenderingHints() {
+		return null;
+	}
+
+	public IndexColorModel getIcm() {
+		return icm;
 	}
 
 }

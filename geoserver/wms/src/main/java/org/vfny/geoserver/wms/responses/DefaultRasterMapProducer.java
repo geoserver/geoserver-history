@@ -18,12 +18,15 @@ import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
 import java.awt.image.VolatileImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
 import javax.media.jai.ImageLayout;
 import javax.media.jai.Interpolation;
 import javax.media.jai.InterpolationBicubic2;
@@ -41,7 +44,6 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.palette.CustomPaletteBuilder;
-import org.vfny.geoserver.wms.responses.palette.EfficientInverseColorMapComputation;
 import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 
 /**
@@ -144,7 +146,7 @@ public abstract class DefaultRasterMapProducer extends
 					"x").append(height).append(" image").toString());
 		}
 
-		final EfficientInverseColorMapComputation paletteInverter = mapContext
+		final InverseColorMapOp paletteInverter = mapContext
 				.getPaletteInverter();
 		final RenderedImage preparedImage = prepareImage(width, height,
 				paletteInverter != null ? paletteInverter.getIcm() : null);
@@ -324,17 +326,10 @@ public abstract class DefaultRasterMapProducer extends
 			// We got an image that needs to be converted.
 			//
 			// /////////////////////////////////////////////////////////////////
-			EfficientInverseColorMapComputation paletteInverter = this
-					.getMapContext().getPaletteInverter();
-			if (paletteInverter != null) {
-				// //
-				//
-				// Do the color inversion since we already have a
-				// paletteInverter.
-				//
-				// //
-				final InverseColorMapOp invColorMap = new InverseColorMapOp(
-						paletteInverter);
+			final InverseColorMapOp invColorMap = this.getMapContext()
+					.getPaletteInverter();
+			if (invColorMap != null) {
+
 
 				// make me parametric which means make me work with other image
 				// types

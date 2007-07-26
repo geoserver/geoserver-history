@@ -54,6 +54,7 @@ import javax.media.jai.TiledImage;
 /**
  * This class implements the octree quantization method as it is described in
  * the "Graphics Gems" (ISBN 0-12-286166-3, Chapter 4, pages 297-293)
+ * 
  * @author Simone Giannecchini - GeoSolutions
  */
 public final class CustomPaletteBuilder {
@@ -89,7 +90,7 @@ public final class CustomPaletteBuilder {
 	protected int subsampleX;
 
 	protected int subsampley;
-	
+
 	protected int numBands;
 
 	/**
@@ -176,9 +177,9 @@ public final class CustomPaletteBuilder {
 			throw new IllegalArgumentException("Invalid subsample y size");
 		}
 
-		this.src = new TiledImage(src,true);
+		this.src = new TiledImage(src, true);
 		this.srcColorModel = src.getColorModel();
-		this.numBands=srcColorModel.getNumComponents();
+		this.numBands = srcColorModel.getNumComponents();
 		this.subsampleX = subsx;
 		this.subsampley = subsy;
 		this.transparency = srcColorModel.getTransparency();
@@ -200,11 +201,11 @@ public final class CustomPaletteBuilder {
 	}
 
 	private Color getSrcColor(int x, int y) {
-		final byte components[]=new byte[numBands];
-		for(int i=0;i<numBands;i++)
-			components[i]=(byte)(0xff&src.getSample(x, y, i));
+		final byte components[] = new byte[numBands];
+		for (int i = 0; i < numBands; i++)
+			components[i] = (byte) (0xff & src.getSample(x, y, i));
 
-		final int argb=this.srcColorModel.getRGB(components);
+		final int argb = this.srcColorModel.getRGB(components);
 		return new Color(argb, transparency != Transparency.OPAQUE);
 	}
 

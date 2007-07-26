@@ -6,7 +6,6 @@ package org.vfny.geoserver.wms.requests;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
-import java.awt.image.IndexColorModel;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -61,7 +60,7 @@ import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.palette.EfficientInverseColorMapComputation;
+import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 import org.vfny.geoserver.wms.servlets.WMService;
 import org.xml.sax.InputSource;
 
@@ -296,7 +295,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
 		if (paletteValue != null) {
 			try {
-				final EfficientInverseColorMapComputation eicm = PaletteManager.getPalette(paletteValue);
+				final InverseColorMapOp eicm = PaletteManager
+						.getPalette(paletteValue);
 				if (eicm == null) {
 					throw new WmsException("Palette " + paletteValue
 							+ " could not be found "

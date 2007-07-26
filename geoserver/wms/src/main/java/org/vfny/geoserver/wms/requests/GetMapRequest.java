@@ -12,7 +12,7 @@ import java.util.List;
 import org.geotools.styling.Style;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.wms.responses.palette.EfficientInverseColorMapComputation;
+import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 import org.vfny.geoserver.wms.servlets.WMService;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -170,7 +170,7 @@ public class GetMapRequest extends WMSRequest {
 		return this.optionalParams.buffer;
 	}
 
-	public EfficientInverseColorMapComputation getPaletteInverter() {
+	public InverseColorMapOp getPaletteInverter() {
 		return this.optionalParams.paletteInverter;
 	}
 
@@ -340,8 +340,7 @@ public class GetMapRequest extends WMSRequest {
 		this.optionalParams.buffer = buffer;
 	}
 
-	public void setPaletteInverter(
-			EfficientInverseColorMapComputation paletteInverter) {
+	public void setPaletteInverter(InverseColorMapOp paletteInverter) {
 		this.optionalParams.paletteInverter = paletteInverter;
 	}
 
@@ -499,7 +498,7 @@ public class GetMapRequest extends WMSRequest {
 		int buffer;
 
 		/** The paletteInverter used for rendering, if any */
-		EfficientInverseColorMapComputation paletteInverter;
+		InverseColorMapOp paletteInverter;
 
 		/** score value for KML/KMZ */
 		int KMScore = 40;

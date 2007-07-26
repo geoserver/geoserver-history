@@ -20,6 +20,7 @@ import javax.imageio.stream.ImageInputStream;
 import org.geotools.util.SoftValueHashMap;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.responses.palette.EfficientInverseColorMapComputation;
+import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 
 /**
  * Allows access to palettes (implemented as {@link IndexColorModel} classes)
@@ -42,7 +43,7 @@ public class PaletteManager {
 
 	static SoftValueHashMap paletteCache = new SoftValueHashMap();
 
-	private static EfficientInverseColorMapComputation safePaletteInversion= new EfficientInverseColorMapComputation(safePalette);
+	private static InverseColorMapOp safePaletteInversion= new InverseColorMapOp(safePalette);
 
 	/**
 	 * TODO: we should probably provide the data directory as a constructor
@@ -58,7 +59,7 @@ public class PaletteManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public static EfficientInverseColorMapComputation getPalette(String name)
+	public static InverseColorMapOp getPalette(String name)
 			throws Exception {
 		// check for safe paletteInverter
 		if ("SAFE".equals(name.toUpperCase())) {
@@ -112,7 +113,7 @@ public class PaletteManager {
 						.getIndexColorModel();
 
 				if (icm != null) {
-					final EfficientInverseColorMapComputation eicm = new EfficientInverseColorMapComputation(
+					final InverseColorMapOp eicm = new InverseColorMapOp(
 							icm);
 					paletteCache.put(name, new PaletteCacheEntry(file, eicm));
 					return eicm;
@@ -127,7 +128,7 @@ public class PaletteManager {
 							.getImageTypes(0).next()).getColorModel();
 					if (cm instanceof IndexColorModel) {
 						final IndexColorModel icm = (IndexColorModel) cm;
-						final EfficientInverseColorMapComputation eicm = new EfficientInverseColorMapComputation(
+						final InverseColorMapOp eicm = new InverseColorMapOp(
 								icm);
 						paletteCache.put(name,
 								new PaletteCacheEntry(file, eicm));
@@ -192,10 +193,10 @@ public class PaletteManager {
 
 		long lastModified;
 
-		EfficientInverseColorMapComputation eicm;
+		InverseColorMapOp eicm;
 
 		public PaletteCacheEntry(File file,
-				EfficientInverseColorMapComputation eicm) {
+				InverseColorMapOp eicm) {
 			this.file = file;
 			this.eicm = eicm;
 			this.lastModified = file.lastModified();

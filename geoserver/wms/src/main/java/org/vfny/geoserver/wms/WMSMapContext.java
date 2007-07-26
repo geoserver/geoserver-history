@@ -9,7 +9,7 @@ import java.awt.Color;
 import org.geotools.map.GraphicEnhancedMapContext;
 import org.geotools.map.MapLayer;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.vfny.geoserver.wms.responses.palette.EfficientInverseColorMapComputation;
+import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 
 /**
  * Extends DefaultMapContext to provide the whole set of request parameters a
@@ -46,7 +46,7 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
 	 */
 	private int buffer;
 
-	private EfficientInverseColorMapComputation paletteInverter;
+	private InverseColorMapOp paletteInverter;
 
 	private GetMapRequest request; // hold onto it so we can grab info from it
 
@@ -165,12 +165,11 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
 		this.buffer = buffer;
 	}
 
-	public EfficientInverseColorMapComputation getPaletteInverter() {
+	public InverseColorMapOp getPaletteInverter() {
 		return paletteInverter;
 	}
 
-	public void setPaletteInverter(
-			EfficientInverseColorMapComputation paletteInverter) {
+	public void setPaletteInverter(InverseColorMapOp paletteInverter) {
 		this.paletteInverter = paletteInverter;
 	}
 }
