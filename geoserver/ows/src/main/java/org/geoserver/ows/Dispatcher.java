@@ -946,7 +946,8 @@ public class Dispatcher extends AbstractController {
         //look up parser objects
         Collection parsers = getApplicationContext().getBeansOfType(KvpParser.class).values();
         Map parsedKvp = new KvpMap();
-
+        Map rawKvp = new KvpMap();
+        
         for (Iterator itr = kvp.entrySet().iterator(); itr.hasNext();) {
             Map.Entry entry = (Map.Entry) itr.next();
             String key = (String) entry.getKey();
@@ -988,15 +989,16 @@ public class Dispatcher extends AbstractController {
 
             //convert key to lowercase 
             parsedKvp.put(key.toLowerCase(), parsed);
+            rawKvp.put(key.toLowerCase(), value );
         }
 
         req.kvp = parsedKvp;
+        req.rawKvp = rawKvp;
     }
 
     Object parseRequestKVP(Class type, Request request)
         throws Exception {
         KvpRequestReader kvpReader = findKvpRequestReader(type);
-        Map kvp = request.kvp;
 
         if (kvpReader != null) {
             //check for http request awareness
@@ -1007,7 +1009,7 @@ public class Dispatcher extends AbstractController {
             Object requestBean = kvpReader.createRequest();
 
             if (requestBean != null) {
-                requestBean = kvpReader.read(requestBean, kvp);
+                requestBean = kvpReader.read(requestBean, request.kvp, request.rawKvp);
             }
 
             return requestBean;
@@ -1240,6 +1242,10 @@ public class Dispatcher extends AbstractController {
          */
         Map kvp;
 
+        /**
+         * raw kvp parameters, unparsed
+         */
+        Map rawKvp;
         /**
          * buffered input stream, only non-null if get = false
          */

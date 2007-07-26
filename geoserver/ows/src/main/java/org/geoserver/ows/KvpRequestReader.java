@@ -107,15 +107,19 @@ public class KvpRequestReader {
      * taken from the kvp map.
      * </p>
      * <p>
+     * The "raw" (unparsed) kvp map is also made available.
+     * </p>
+     * <p>
      * This method may return a new instance of the request object, or the original
      * passed in.
      * </p>
      * @param request The request instance.
      * @param kvp The kvp set, map of String,Object.
-     *
+     * @param rawKvp The raw kvp set (unparsed), map of String,String
+     * 
      * @return A new request object, or the ori
      */
-    public Object read(Object request, Map kvp) throws Exception {
+    public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
         for (Iterator e = kvp.entrySet().iterator(); e.hasNext();) {
             Map.Entry entry = (Map.Entry) e.next();
             String property = (String) entry.getKey();
