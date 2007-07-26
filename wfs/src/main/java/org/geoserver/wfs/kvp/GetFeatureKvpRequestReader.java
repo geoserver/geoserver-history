@@ -47,8 +47,8 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
     /**
      * Performs additinon GetFeature kvp parsing requirements
      */
-    public Object read(Object request, Map kvp) throws Exception {
-        request = super.read(request, kvp);
+    public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
+        request = super.read(request, kvp, rawKvp);
 
         // make sure the filter is specified in just one way
         ensureMutuallyExclusive(kvp, new String[] { "featureId", "filter", "bbox", "cql_filter" });

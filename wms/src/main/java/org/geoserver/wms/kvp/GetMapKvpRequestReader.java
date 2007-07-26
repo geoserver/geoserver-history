@@ -6,6 +6,7 @@ package org.geoserver.wms.kvp;
 
 import org.geoserver.ows.HttpServletRequestAware;
 import org.geoserver.ows.KvpRequestReader;
+import org.geoserver.ows.util.CaseInsensitiveMap;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
@@ -53,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -127,8 +129,8 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         return request;
     }
 
-    public Object read(Object request, Map kvp) throws Exception {
-        GetMapRequest getMap = (GetMapRequest) super.read(request, kvp);
+    public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
+        GetMapRequest getMap = (GetMapRequest) super.read(request, kvp, rawKvp);
 
         //do some additional checks
 
@@ -211,7 +213,8 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             // first, expand base layers and default styles
             if(getMap.getLayers() != null) {
                 List oldLayers = new ArrayList(Arrays.asList(getMap.getLayers()));
-                List oldStyles = new ArrayList(getMap.getStyles());
+                List oldStyles = getMap.getStyles() != null 
+                    ? new ArrayList( getMap.getStyles() ) : new ArrayList();
                 List newLayers = new ArrayList();
                 List newStyles = new ArrayList();
                 
@@ -340,6 +343,9 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             }
         }
 
+        //set the raw params used to create the request
+        getMap.setRawKvp(rawKvp);
+        
         return getMap;
     }
 

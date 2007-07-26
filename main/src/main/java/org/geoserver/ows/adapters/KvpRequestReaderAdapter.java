@@ -93,7 +93,7 @@ public class KvpRequestReaderAdapter extends org.geoserver.ows.KvpRequestReader
         return delegate.getRequest(request);
     }
 
-    public Object read(Object request, Map kvp) throws Exception {
+    public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
         //request object already initialized, just send it back
         return request;
     }
