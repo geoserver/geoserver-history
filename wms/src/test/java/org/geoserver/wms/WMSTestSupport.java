@@ -21,6 +21,7 @@ import org.vfny.geoserver.wms.servlets.GetMap;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.xml.namespace.QName;
 
@@ -57,7 +58,10 @@ public class WMSTestSupport extends GeoServerTestSupport {
         FeatureTypeInfo info = getCatalog().getFeatureTypeInfo(layerName);
         Style style = info.getDefaultStyle();
 
-        return new DefaultMapLayer(info.getFeatureSource(), style);
+        DefaultMapLayer layer = new DefaultMapLayer(info.getFeatureSource(), style);
+        layer.setTitle( info.getTypeName() );
+        
+        return layer;
     }
 
     /**
@@ -107,7 +111,7 @@ public class WMSTestSupport extends GeoServerTestSupport {
         request.setBbox(new Envelope(-180, -90, 180, 90));
         request.setCrs(DefaultGeographicCRS.WGS84);
         request.setSRS("EPSG:4326");
-
+        request.setRawKvp(new HashMap());
         return request;
     }
 }
