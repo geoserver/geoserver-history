@@ -39,28 +39,10 @@ public class KMLTransformerTest extends WMSTestSupport {
     protected void setUp() throws Exception {
         super.setUp();
 
-        //get some data
-        Data catalog = getCatalog();
-        FeatureSource featureSource = getFeatureSource(MockData.BASIC_POLYGONS);
-        Style style = catalog.getStyle(MockData.BASIC_POLYGONS.getLocalPart());
-
-        //create a map context
-        GetMap getMap = new GetMap(getWMS());
-        GetMapRequest request = new GetMapRequest(getMap);
-        request.setBbox(new Envelope(-180, -90, 180, 90));
-
-        FeatureTypeInfo ftInfo = catalog.getFeatureTypeInfo(MockData.BASIC_POLYGONS);
-
-        MapLayerInfo mapLayerInfo = new MapLayerInfo((FeatureTypeInfoDTO) ftInfo.toDTO(), catalog);
-        request.setLayers(new MapLayerInfo[] { mapLayerInfo });
-        mapContext = new WMSMapContext(request);
-
-        mapLayer = new DefaultMapLayer(featureSource, style);
-        mapLayer.setTitle(featureSource.getSchema().getTypeName());
+        mapLayer = createMapLayer( MockData.BASIC_POLYGONS );
+        
+        mapContext = new WMSMapContext(createGetMapRequest(MockData.BASIC_POLYGONS));
         mapContext.addLayer(mapLayer);
-
-        MockHttpServletRequest httpRequest = createRequest("wms");
-        request.setHttpServletRequest(httpRequest);
     }
 
     public void testVectorTransformer() throws Exception {
