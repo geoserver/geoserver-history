@@ -39,7 +39,7 @@
 <#list parameters as param>            
               ${param.name}: '${param.value}',
 </#list>
-              format: 'image/gif', tiled: 'true', tilesOrigin : "${request.bbox.minX?c},${request.bbox.minY?c}"
+              format: 'image/png', tiled: 'true', tilesOrigin : "${request.bbox.minX?c},${request.bbox.minY?c}"
             },
             {maxExtent: bounds, maxResolution: ${maxResolution?c}, projection: "${request.SRS}"} 
           );
