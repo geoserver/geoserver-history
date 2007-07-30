@@ -7,7 +7,13 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,6 +22,7 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.type.DateUtil;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.style.LineStyle2D;
 import org.geotools.renderer.style.MarkStyle2D;
@@ -41,6 +48,7 @@ import org.opengis.filter.expression.Expression;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
+import org.vfny.geoserver.wms.responses.featureInfo.FeatureTimeTemplate;
 import org.vfny.geoserver.wms.responses.map.kml.KMLGeometryTransformer.KMLGeometryTranslator;
 import org.xml.sax.ContentHandler;
 
@@ -118,7 +126,53 @@ public class KMLVectorTransformer extends KMLTransformerBase {
      * Caching the feature template
      */
     FeatureTemplate template = new FeatureTemplate();
-
+    
+    /**
+     * list of formats which correspond to the default formats in which 
+     * freemarker outputs dates when a user calls the ?datetime(),?date(),?time()
+     * fuctions. 
+     */
+    static List/*<SimpleDateFormat>*/ formats = new ArrayList();
+    static {
+        
+        //add default freemarker ones first since they are likely to be used 
+        // first
+        formats.add( FeatureTemplate.DATETIME_FORMAT );
+        formats.add( FeatureTemplate.DATE_FORMAT );
+        formats.add( FeatureTemplate.TIME_FORMAT );
+        
+        //year-month-day
+        addFormats(formats,"yyyy%MM%dd" );
+        addFormats(formats,"yyyy%MMM%dd" );
+        
+        //day-month-year
+        addFormats(formats,"dd%MM%yyyy" );
+        addFormats(formats,"dd%MMM%yyyy" );
+        
+        //month-day-year
+        addFormats(formats,"MM%dd%yyyy" );
+        addFormats(formats,"MMM%dd%yyyy" );
+    }
+    
+    static void addFormats( List formats, String pattern ) {
+        
+        formats.add( new SimpleDateFormat( pattern.replaceAll("%","-" ) ) );
+        formats.add( new SimpleDateFormat( pattern.replaceAll("%","-" ) + " hh:mm") );
+        formats.add( new SimpleDateFormat( pattern.replaceAll("%","-" ) + " hh:mm:ss") );
+        formats.add( new SimpleDateFormat( pattern.replaceAll("%","/" ) ) );
+        formats.add( new SimpleDateFormat( pattern.replaceAll("%","/" ) + " hh:mm") );
+        formats.add( new SimpleDateFormat( pattern.replaceAll("%","/" ) + " hh:mm:ss") );
+        formats.add( new SimpleDateFormat( pattern.replaceAll("%","." ) ) );
+        formats.add( new SimpleDateFormat( pattern.replaceAll("%","." ) + " hh:mm") );
+        formats.add( new SimpleDateFormat( pattern.replaceAll("%","." ) + " hh:mm:ss") );
+        formats.add( new SimpleDateFormat( pattern.replaceAll("%"," " ) ) );
+        formats.add( new SimpleDateFormat( pattern.replaceAll("%"," " ) + " hh:mm") );
+        formats.add( new SimpleDateFormat( pattern.replaceAll("%"," " ) + " hh:mm:ss") );
+        formats.add( new SimpleDateFormat( pattern.replaceAll("%","," ) ) );
+        formats.add( new SimpleDateFormat( pattern.replaceAll("%","," ) + " hh:mm") );
+        formats.add( new SimpleDateFormat( pattern.replaceAll("%","," ) + " hh:mm:ss") );
+    }
+    
     public KMLVectorTransformer(WMSMapContext mapContext, MapLayer mapLayer) {
         this.mapContext = mapContext;
         this.mapLayer = mapLayer;
@@ -541,7 +595,16 @@ public class KMLVectorTransformer extends KMLTransformerBase {
            
             //look at
             encodePlacemarkLookAt(centroid);
-
+            
+            //time
+            try {
+                encodePlacemarkTime(feature);
+            } catch (Exception e) {
+                String msg = "Error occured processing 'time' template: " +  e.getMessage();
+                LOGGER.log( Level.WARNING, msg );
+                LOGGER.log( Level.FINE, "", e );
+            }
+            
             //style reference
             element("styleUrl", "#GeoServerStyle" + feature.getID());
 
@@ -643,7 +706,83 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
             end("LookAt");
         }
+        
+        /**
+         * Encodes a KML TimePrimitive geometry from a feature.
+         */
+        protected void encodePlacemarkTime(Feature feature) throws IOException {
+            String[] time = new FeatureTimeTemplate(template).execute(feature);
+            if ( time.length == 0 ) {
+                return;
+            }
+            
+            if ( time.length == 1 ) {
+                String datetime = encodeDateTime(time[0]);
+                if ( datetime != null ) {
+                    //timestamp case
+                    start("TimeStamp");
+                    element("when", datetime );
+                    end("TimeStamp");    
+                }
+                
+            }
+            else {
+                //timespan case
+                String begin = encodeDateTime(time[0]);
+                String end = encodeDateTime(time[1]);
+                
+                if (!(begin == null && end == null)) {
+                    start("TimeSpan");    
+                    if ( begin != null ) {
+                        element("begin", begin);
+                    }
+                    if ( end != null ) {
+                        element("end", end);
+                    }    
+                    end("TimeSpan");
+                }
+            }
+        }
 
+        /**
+         * Encodes a date as an xs:dateTime.
+         */
+        protected String encodeDateTime( String date ) {
+            Date d = null;
+            for ( Iterator f = formats.iterator(); f.hasNext(); ) {
+                SimpleDateFormat format = (SimpleDateFormat) f.next();
+                try {
+                    d = format.parse(date);
+                } catch (ParseException e) {}
+                
+                if ( d != null ) {
+                    break;
+                }
+            }
+            
+            if ( d == null ) {
+                try {
+                    //try as xml date time
+                    d = DateUtil.deserializeDateTime( date );
+                }
+                catch( Exception e1 ) {
+                    try {
+                        //try as xml date
+                        d = DateUtil.deserializeDate( date );
+                    }
+                    catch( Exception e2 ) {}
+                }
+            }
+            
+            if ( d != null ) {
+            	return DateUtil.serializeDateTime(d);
+            }
+            else {
+                LOGGER.warning("Could not parse date: " + date);
+                return null;
+            }
+        }
+        
         /**
          * Encodes a KML Placemark geometry from a geometry + centroid.
          */

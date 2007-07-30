@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.logging.Logger;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.geoserver.template.FeatureWrapper;
@@ -62,8 +64,30 @@ public class FeatureTemplate {
         // over instantiations of kml writer
         templateConfig = new Configuration();
         templateConfig.setObjectWrapper(new FeatureWrapper());
+        
+        //set the default output formats for dates
+        templateConfig.setDateFormat("MM/dd/yyyy");
+        templateConfig.setDateTimeFormat("MM/dd/yyyy HH:mm:ss");
+        templateConfig.setTimeFormat("HH:mm:ss");
+
+        //set the default locale to be US and the 
+        //TODO: this may be somethign we want to configure/change
+        templateConfig.setLocale(Locale.US);
+        templateConfig.setNumberFormat("0.###########");
     }
-    
+    /**
+     * Default date format produced by templates
+     */
+    public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
+    /**
+     * Default datetime format produced by templates
+     */
+    public static SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+    /**
+     * Default time format produced by templates
+     */
+    public static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
+
     /**
      * Template cache used to avoid paying the cost of template lookup for each feature
      */
