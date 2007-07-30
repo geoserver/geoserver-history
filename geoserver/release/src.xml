@@ -17,7 +17,7 @@
 			<include>org.geoserver:platform</include>
 			<include>org.geoserver:test</include>
 			<include>org.geoserver:stress</include>
-		        <include>org.geoserver.maven:maven</include>
+		        <include>org.geoserver:maven</include>
   		</includes>
   		<sources>
  	  		<outputDirectory>geoserver/${artifactId}/</outputDirectory>

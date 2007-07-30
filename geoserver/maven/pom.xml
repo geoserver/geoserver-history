@@ -9,8 +9,8 @@
 		<version>1.5.1</version>
 	</parent>
 
-	<groupId>org.geoserver.maven</groupId>
-  <artifactId>plugins</artifactId>
+	<groupId>org.geoserver</groupId>
+  <artifactId>maven</artifactId>
 	<packaging>pom</packaging>
   <name>GeoServer Maven Plugins</name>
 	<version>1.5.1</version>
