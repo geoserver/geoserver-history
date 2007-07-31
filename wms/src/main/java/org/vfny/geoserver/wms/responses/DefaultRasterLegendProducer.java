@@ -357,12 +357,17 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
                             RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
                     }
     
-                    final BufferedImage renderedLabel = renderLabel(labels[i], g);
-                    final Rectangle2D bounds = new Rectangle2D.Double(0, 0, renderedLabel.getWidth(),
-                            renderedLabel.getHeight());
-    
-                    totalWidth = (int) Math.ceil(Math.max(img.getWidth() + bounds.getWidth(), totalWidth));
-                    rowHeights[i] = (int) Math.ceil(Math.max(img.getHeight(), bounds.getHeight()));
+                    if(labels[i] != null && labels[i].length() > 0) {
+                        final BufferedImage renderedLabel = renderLabel(labels[i], g);
+                        final Rectangle2D bounds = new Rectangle2D.Double(0, 0, renderedLabel.getWidth(),
+                                renderedLabel.getHeight());
+        
+                        totalWidth = (int) Math.ceil(Math.max(img.getWidth() + bounds.getWidth(), totalWidth));
+                        rowHeights[i] = (int) Math.ceil(Math.max(img.getHeight(), bounds.getHeight()));
+                    } else {
+                        totalWidth = (int) Math.ceil(Math.max(img.getWidth(), totalWidth));
+                        rowHeights[i] = (int) Math.ceil(img.getHeight());
+                    }
                     totalHeight += rowHeights[i];
                 }
             }
@@ -408,7 +413,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
                 }
 
                 //draw the label
-                if (labels[i] != null) {
+                if (labels[i] != null && labels[i].length() > 0) {
                     //first create the actual overall label image.
                     final BufferedImage renderedLabel = renderLabel(labels[i], finalGraphics);
 
