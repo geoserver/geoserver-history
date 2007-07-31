@@ -41,7 +41,7 @@
 </#list>
               format: 'image/png', tiled: 'true', tilesOrigin : "${request.bbox.minX?c},${request.bbox.minY?c}"
             },
-            {maxExtent: bounds, maxResolution: ${maxResolution?c}, projection: "${request.SRS}"} 
+            {maxExtent: bounds, maxResolution: ${maxResolution?c}, projection: "${request.SRS}", buffer: 0} 
           );
           //map.addLayer(tiled);
           
