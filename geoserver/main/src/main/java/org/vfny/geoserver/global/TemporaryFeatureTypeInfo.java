@@ -63,6 +63,10 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
     public DataStoreInfo getDataStoreInfo() {
         throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
+    
+    public FeatureSource getFeatureSource(boolean skipReproject) throws IOException {
+        return getFeatureSource();
+    }
 
     public Style getDefaultStyle() {
         throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
