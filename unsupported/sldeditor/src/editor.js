@@ -111,7 +111,8 @@ function nodeSelectedHandler(message){
     document.getElementById('mainCurrentArea').innerHTML = focusNode.title;
     
     // update the tab list
-    updateTabs();
+	updateTabs();
+
 }
 
 function updateTabs(){
@@ -121,16 +122,21 @@ function updateTabs(){
     // kill its children if we did not select the same node
     // update the tab container with the appropriate children for the focusNode
     // 
-    
-    var tabs = dojo.widget.byId('tabMain');
-    tabs.destroyChildren();
-    var tab = '';
-    var id = '';
-    for (var i=0; i<focusNode.children.length; i++){
-	id = dojo.dom.getUniqueId();
-	tab = new dojo.widget.createWidget("ContentPane", {widgetId:id, label:focusNode.children[i].title, refreshOnShow:"true"});
-	tab.setContent("This is the tab for " + focusNode.children[i].title);
+    if(dojo.widget.byId('tabMenu').selectedChild=="mainArea" && focusNode){
+	var tabs = dojo.widget.byId('tabMain');
+	tabs.destroyChildren();
+	var tab = '';
+	var id = '';	
+	tab = new dojo.widget.createWidget("ContentPane", {widgetId:id, label:"Parent Attributes", refreshOnShow:"true"});
+	var tmpContent = document.getElementById(focusNode.title);
+	tab.setContent(tmpContent);
 	tabs.addChild(tab);
+	for (var i=0; i<focusNode.children.length; i++){
+	    id = dojo.dom.getUniqueId();
+	    tab = new dojo.widget.createWidget("ContentPane", {widgetId:id, label:focusNode.children[i].title, refreshOnShow:"true"});
+	    tab.setContent("This is the tab for " + focusNode.children[i].title);
+	    tabs.addChild(tab);
+	}
     }
 }
 
@@ -172,6 +178,14 @@ function sldLoaded()
 {
     alert("SLD Loaded.");
     buildTree(xmlDoc);
+    // Set the root node as the focusNode and select it in the tree
+    var tree = dojo.widget.byId("firstTree");
+    focusNode = tree.children[0];
+    var message = {node:focusNode};
+    unselectNode = focusNode;
+    focusNode.markSelected();
+    nodeSelectedHandler(message);
+    
 }
 
 // Runs on page load
@@ -193,6 +207,8 @@ function init()
     var collapseButton = dojo.widget.byId('collapseButton');
     dojo.event.connect(collapseButton, 'onClick', 'collapseAll');
     
+    var mainArea = dojo.widget.byId('mainArea');
+    dojo.event.connect(mainArea, 'onShow', 'updateTabs');
     
 }
 dojo.addOnLoad(init);

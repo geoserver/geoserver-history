@@ -25,7 +25,7 @@
 	    <div id="mainButtonArea" style="height: 10%">
 	      <table><tr>
 		  <td align="left"><button dojoType="Button" id="mainUpButton">Up a level</button></td>
-		  <td align="left" width="80%"> <span id="mainCurrentArea">Current Node</span></td>
+		  <td align="left" width="80%"> <span id="mainCurrentArea">Please Load a SLD</span></td>
 	      </tr></table>
 	      <table width="100%"><tr>
 		  <td align="left"><button dojoType="Button" id="mainAddButton">Add</button></td>
@@ -40,7 +40,7 @@
 	      </table>
 	    </div>
 	    <div dojoType="TabContainer" id="tabMain" labelPosition="left-h" style="height: 90%">
-	      <div dojoType="ContentPane" id="tab1" label="tabOne">La la la</div>
+	      <div dojoType="ContentPane" id="tab1" label="StyledLayerDescriptor"></div>
 	    </div>
 	  </div>
 	  <div dojoType="ContentPane" label="Save/Load" id="save/load">
@@ -87,6 +87,31 @@
 	    </tr></table>
 	  </div>
 	</div>
+      </div>
+    </div>
+
+    <!--Here are definitions for the tab content-->
+    <div style="display:none">
+      <div id="StyledLayerDescriptor">
+	<form id="StyledLayerDescriptorForm">
+	  Name: <input type="text" name="Name"></input>
+	  <br>
+	  Title: <input type="text" name="Title"></input>
+	  <br>
+	  Abstract: <br>
+	  <textarea style="width:100%" name="Abstract"></textarea>
+	  <br>
+	  <input type="checkbox" name="NamedLayer">NamedLayer</input>
+	  <br>
+	  <input type="checkbox" name="UserLayer">UserLayer</input>
+	</form>
+      </div>
+      
+      <div id="NamedLayer">
+	
+      </div>
+      <div id="StyledLayerDescriptor" style="display:none">
+	
       </div>
     </div>
   </body>
