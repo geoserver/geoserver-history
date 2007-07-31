@@ -44,6 +44,10 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
     public FeatureSource getFeatureSource() throws IOException {
         return ds.getFeatureSource(ds.getTypeNames()[0]);
     }
+    
+    public FeatureSource getFeatureSource(boolean skipReproject) throws IOException {
+        return getFeatureSource();
+    }
 
     public Filter getDefinitionQuery() {
         return Filter.INCLUDE;
