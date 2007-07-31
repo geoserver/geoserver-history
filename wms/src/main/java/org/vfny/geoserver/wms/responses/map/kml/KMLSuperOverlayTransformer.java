@@ -33,7 +33,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
     /**
      * resolutions
      */
-    final static double[] resolutions = new double[20];
+    final static double[] resolutions = new double[100];
 
     static {
         for (int i = 0; i < resolutions.length; i++) {
