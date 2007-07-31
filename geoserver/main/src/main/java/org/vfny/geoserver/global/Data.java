@@ -1234,7 +1234,14 @@ SCHEMA:
      * @return FeatureTypeInfo
      */
     public synchronized FeatureTypeInfo getFeatureTypeInfo(String typename, String uri) {
-        // System.out.println("Finding TypeName = "+typename+" URI = "+uri);
+        // For some reason I don't understand GR patched this to remove the namespace 
+        // test, but this breaks if there are multiple feature types with the same
+        // name in different namespaces. Now, to stay on the safe side, I will lookup
+        // first based on both name and namespace, and return a pure name matcher only
+        // if a full name + namespace match was not found
+        
+        // This will be returned if we matched only the name but not the namespace
+        FeatureTypeInfo fallback = null;
         for (Iterator it = featureTypes.values().iterator(); it.hasNext();) {
             FeatureTypeInfo fType = (FeatureTypeInfo) it.next();
 
@@ -1243,22 +1250,21 @@ SCHEMA:
                 boolean t1 = fType.getName().equals(typeId);
                 boolean t2 = fType.getNameSpace().getUri().equals(uri);
 
-                // System.out.println("Type id = "+typeId+" real name =
-                // "+fType.getName()+" T1="+t1+" T2="+t2);
-                // if (t1 && t2) {
                 /**
                  * GR:
                  *
                  * @HACK it seems not to be working, so I'm just comparing the
                  *       prefixed name (don't should it be enough?)
                  */
-                if (t1) {
+                if (t1 && t2) {
                     return fType;
+                } else if(t1) {
+                    fallback = fType;
                 }
             }
         }
 
-        return null;
+        return fallback;
     }
 
     public synchronized CoverageInfo getCoverageInfo(String name)
