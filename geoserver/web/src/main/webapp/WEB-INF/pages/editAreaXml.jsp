@@ -7,6 +7,7 @@
 			,start_highlight: false	// if start with highlight
 			,font_size: "8"
 			,allow_toggle: true
-			,syntax: "xml"	
+			,syntax: "xml"
+			,toolbar: "highlight, change_smooth_selection, fullscreen, |, undo, redo, |, select_font, |, search, go_to_line, |, help"
 		});
 </script>
