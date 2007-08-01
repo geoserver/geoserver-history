@@ -210,6 +210,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
 
             BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
             Graphics2D graphics = image.createGraphics();
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             graphics.setColor(BG_COLOR);
             graphics.fillRect(0, 0, w, h);
 
