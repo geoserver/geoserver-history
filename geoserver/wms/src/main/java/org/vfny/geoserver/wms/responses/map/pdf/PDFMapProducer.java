@@ -202,8 +202,6 @@ class PDFMapProducer extends AbstractRasterMapProducer implements RasterMapProdu
 
             renderer.paint(graphic, paintArea, at);
 
-            mapContext = null;
-
             if (!this.abortRequested) {
                 this.bos = curOs;
             }
@@ -229,13 +227,13 @@ class PDFMapProducer extends AbstractRasterMapProducer implements RasterMapProdu
                                               .getTypeName();
 
                 if ((title != null) && !title.equals("")) {
-                    return "attachment; filename=" + title + ".pdf";
+                    return "filename=" + title + ".pdf";
                 }
             } catch (NullPointerException e) {
             }
         }
 
-        return "attachment; filename=geoserver.pdf";
+        return "filename=geoserver.pdf";
     }
 
     public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
