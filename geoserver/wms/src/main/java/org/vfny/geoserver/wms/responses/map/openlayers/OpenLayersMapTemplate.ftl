@@ -61,11 +61,11 @@
 	  map.addLayer(untiled);
 		  
           // setup controls and initial zooms
-	  map.addControl(new OpenLayers.Control.PanZoomBar({div:$('nav')}));
-          map.addControl(new OpenLayers.Control.LayerSwitcher());
+	      map.addControl(new OpenLayers.Control.PanZoomBar({div:$('nav')}));
           map.addControl(new OpenLayers.Control.MouseDefaults());
           map.addControl(new OpenLayers.Control.Scale($('scale')));
           map.addControl(new OpenLayers.Control.MousePosition({element: $('position')}));
+          //map.addControl(new OpenLayers.Control.LayerSwitcher());
           //map.addControl(new OpenLayers.Control.OverviewMap());
           map.zoomToExtent(bounds);
           
