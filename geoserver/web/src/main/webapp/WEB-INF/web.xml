@@ -70,10 +70,11 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-  <!-- Temporarily disable this until we have a UI to set logging levels -->
+  <!-- Temporarily disable this until we have a UI to set logging levels 
   <listener>
     <listener-class>org.geoserver.logging.LoggingStartupContextListener</listener-class>
   </listener>
+  -->
 
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
