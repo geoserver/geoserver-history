@@ -145,6 +145,7 @@ public class SVGBatikMapProducer implements GetMapProducer {
             // this way firefox will show it
             Element root = g.getDOMTreeManager().getRoot();
             root.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+            root.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
 
             //this method does output the DOCTYPE def
             //g.stream(new OutputStreamWriter(out,"UTF-8"));
