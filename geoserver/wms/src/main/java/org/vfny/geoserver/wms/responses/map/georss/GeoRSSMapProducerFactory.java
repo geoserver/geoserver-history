@@ -16,9 +16,7 @@ public class GeoRSSMapProducerFactory implements GetMapProducerFactorySpi {
     static Set formats = new HashSet();
 
     static {
-        formats.add(AtomGeoRSSMapProducer.FORMAT);
         formats.add(AtomGeoRSSMapProducer.MIME_TYPE);
-        formats.add(RSSGeoRSSMapProducer.FORMAT);
         formats.add(RSSGeoRSSMapProducer.MIME_TYPE);
     }
 
