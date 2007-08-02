@@ -1,3 +1,39 @@
+Geoserver 1.5.2
+---------------
+Geoserver 1.5.2 is a bugfix and minor feature release... you should
+not underestimate. The changelog contains a whopping 77 issues fixed,
+between improvements and fixes.
+
+Major improvements include:
+- Full support for 256 color images, thru the new png8 and gif output formats,
+  as well as very good user provided palette support. Generated image sizes
+  go down 2-4 times, and the quality is the same as ever in most maps (and
+  if you really want it both very fast and good, just provide a custom palette so
+  that GeoServer does not have to devise one at each request);
+- Full templates for GetFeatureInfo as well as improvements in the KML ones;
+- GeoRSS output;
+- So many minor improvement/fixes in the KML output it's hard to provide a list (have a
+  look in the changelog);
+- GeoServer can now serve your static files as well, just put them into the "www"
+  subdirectory of the GeoServer data directory. This means your data dir can now
+  host your full application, and you don't need to play anymore with proxies
+  when setting up a WFS-T javascript client such as OL or MapBuilder.
+- Revamped demo page, with more mashup demos, and improved preview page that
+  lets you try out each of the WMS output formats;
+- Various Oracle datastore improvements;
+- Extended character now working from the datastore up to the map (tested with a Chinese map,
+  look here: http://jira.codehaus.org/secure/attachment/28200/wms-chinese.png);
+- Sorted elements in WMS GetCapabilities preview, so that clients can show an easily searchable 
+  list to the user;
+- Various WMS GetLegendGraphics improvements, leading to a better looking output and better labels
+  (thanks Saul Farber for working on this)
+
+Full changelog is here:
+http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&styleName=Html&version=13503
+
+This release is based off Geoserver 2.3.3
+
+
 GeoServer 1.5.1
 ---------------
 
