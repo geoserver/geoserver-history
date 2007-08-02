@@ -648,7 +648,7 @@
             <descriptor>release/ext-arcsde.xml</descriptor>
             <descriptor>release/ext-pyramid.xml</descriptor>
           </descriptors>
-          <finalName>geoserver-1.5.1</finalName>
+          <finalName>geoserver-1.5.2</finalName>
           <outputDirectory>
             ${project.build.directory}/release
           </outputDirectory>
