@@ -19,6 +19,8 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
+
+import org.apache.commons.collections.comparators.ReverseComparator;
 import org.apache.xalan.transformer.TransformerIdentityImpl;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
@@ -340,7 +342,15 @@ public class WMSCapsTransformer extends TransformerBase {
 
             start("GetMap");
 
-            for (Iterator it = formats.iterator(); it.hasNext();) {
+            List sortedFormats = new ArrayList(formats);
+            Collections.sort(sortedFormats);
+            // this is a hack necessary to make cite tests pass: we need an output format
+            // that is equal to the mime type as the first one....
+            if( sortedFormats.contains("image/png")) {
+                sortedFormats.remove("image/png");
+                sortedFormats.add(0, "image/png");
+            }
+            for (Iterator it = sortedFormats.iterator(); it.hasNext();) {
                 element("Format", String.valueOf(it.next()));
             }
 
