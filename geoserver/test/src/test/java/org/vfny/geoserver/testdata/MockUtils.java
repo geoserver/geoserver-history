@@ -392,6 +392,7 @@ public class MockUtils {
         }
 
         tempDir.mkdir();
+        
 
         if (!tempDir.exists() || !tempDir.isDirectory()) {
             throw new IOException(tempDir.getAbsolutePath() + " is not a writable directory");
@@ -400,6 +401,7 @@ public class MockUtils {
         for (int i = 0; i < AbstractCiteDataTest.CITE_TYPE_NAMES.length; i++) {
             writeTempFile(tempDir, AbstractCiteDataTest.CITE_TYPE_NAMES[i]);
         }
+        tempDir.deleteOnExit();
     }
 
     /**
