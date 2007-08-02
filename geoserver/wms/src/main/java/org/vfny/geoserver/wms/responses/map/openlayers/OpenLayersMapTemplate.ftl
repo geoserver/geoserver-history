@@ -106,7 +106,6 @@
            <!-- Switch layers when links are pressed -->
            <a id="untiledLink" href="#" onclick="map.removeLayer(tiled);map.addLayer(untiled)">Untiled</a>
            <a id="tiledLink" href="#" onclick="map.removeLayer(untiled);map.addLayer(tiled);">Tiled</a>
-           <a id="tiledLink" href="${baseUrl}/wms/kml_reflect?<#list parameters as param>${param.name}=${param.value}&</#list>">KML</a>
          </td>
        </tr>
        <tr>
