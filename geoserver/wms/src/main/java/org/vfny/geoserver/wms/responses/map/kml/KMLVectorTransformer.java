@@ -778,7 +778,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         protected void encodePlacemarkGeometry(Geometry geometry, Coordinate centroid) {
             //if point, just encode a single point, otherwise encode the geometry
             // + centroid
-            if ( geometry instanceof Point ) {
+            if ( geometry instanceof Point || 
+                    (geometry instanceof MultiPoint) && ((MultiPoint)geometry).getNumPoints() == 1 ) {
                 encodeGeometry( geometry );
             }
             else {
