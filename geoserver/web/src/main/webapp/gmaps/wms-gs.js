@@ -47,7 +47,7 @@
  * Then you can overlay on google maps with something like:
  * var layer=[G_SATELLITE_MAP.getTileLayers()[0],tileCountry];
  * var custommap = new GMapType(layer, G_SATELLITE_MAP.getProjection(), "WMS");
- * var map = new GMap(document.getElementById("map"));
+ * var ma+p = new GMap(document.getElementById("map"));
  *     map.addMapType(custommap);
  */
 
@@ -56,10 +56,10 @@ var DEG2RAD=0.0174532922519943;
 var PI=3.14159267;
 
 //Default image format, used if none is specified
-var FORMAT_DEFAULT="image/png";
+var FORMAT_DEFAULT = "image/png";
 
-//Google Maps Zoom level at which we switch from Mercator to Lat/Long.  
-var MERC_ZOOM_DEFAULT = 5;
+//EPSG code with the Google projection definition
+var EPSG_GOOGLE_CODE = "EPSG:100003"
 function dd2MercMetersLng(p_lng) { 
 	return MAGIC_NUMBER*(p_lng*DEG2RAD); 
 }
@@ -93,15 +93,12 @@ CustomGetTileUrl=function(a,b,c) {
 	
 	// switch between Mercator and DD if merczoomlevel is set
 	eval("var lwz = "+ this.myMapname + ".getZoom()");
-	if (this.myMercZoomLevel!=0 && lwz < this.myMercZoomLevel) {
-    	var 
-lBbox=dd2MercMetersLng(lUL.x)+","+dd2MercMetersLat(lUL.y)+","+dd2MercMetersLng(lLR.x)+","+dd2MercMetersLat(lLR.y);
+        var lBbox= dd2MercMetersLng(lUL.x)+","+dd2MercMetersLat(lUL.y)+","+dd2MercMetersLng(lLR.x)+","+dd2MercMetersLat(lLR.y);
         //Change for GeoServer - 41001 is mercator and installed by default.
-    	var lSRS="EPSG:41001";
-	} else {
-    	var lBbox=lUL.x+","+lUL.y+","+lLR.x+","+lLR.y;
-    	var lSRS="EPSG:4326";
-	}
+   	var lSRS= EPSG_GOOGLE_CODE;
+   	var lLLx = dd2MercMetersLng(0)
+   	var lLLy = dd2MercMetersLat(0)
+
 	var lURL=this.myBaseURL;
 	lURL+="&REQUEST=GetMap";
 	lURL+="&SERVICE=WMS";
