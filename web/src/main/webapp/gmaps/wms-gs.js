@@ -58,10 +58,10 @@ var DEG2RAD=0.0174532922519943;
 var PI=3.14159267;
 
 //Default image format, used if none is specified
-var FORMAT_DEFAULT="image/png";
+var FORMAT_DEFAULT = "image/png";
 
-//Google Maps Zoom level at which we switch from Mercator to Lat/Long.  
-var MERC_ZOOM_DEFAULT = 5;
+//EPSG code with the Google projection definition
+var EPSG_GOOGLE_CODE = "EPSG:100003"
 
 // Enable/disable meta tiling
 var META_TILING = true;
@@ -77,10 +77,6 @@ function dd2MercMetersLat(p_lat) {
 }
 
 CustomGetTileUrl=function(a,b,c) {
-        if (this.myMercZoomLevel == undefined) {
-	    this.myMercZoomLevel = MERC_ZOOM_DEFAULT;
-        }
-
         if (this.myFormat == undefined) {
 	    this.myFormat = FORMAT_DEFAULT;
         }
@@ -99,15 +95,12 @@ CustomGetTileUrl=function(a,b,c) {
 	
 	// switch between Mercator and DD if merczoomlevel is set
 	eval("var lwz = "+ this.myMapname + ".getZoom()");
-	if (this.myMercZoomLevel!=0 && lwz < this.myMercZoomLevel) {
-    	var 
-lBbox=dd2MercMetersLng(lUL.x)+","+dd2MercMetersLat(lUL.y)+","+dd2MercMetersLng(lLR.x)+","+dd2MercMetersLat(lLR.y);
-        //Change for GeoServer - 41001 is mercator and installed by default.
-    	var lSRS="EPSG:41001";
-	} else {
-    	var lBbox=lUL.x+","+lUL.y+","+lLR.x+","+lLR.y;
-    	var lSRS="EPSG:4326";
-	}
+   	var lBbox= dd2MercMetersLng(lUL.x)+","+dd2MercMetersLat(lUL.y)+","+dd2MercMetersLng(lLR.x)+","+dd2MercMetersLat(lLR.y);
+       //Change for GeoServer - 41001 is mercator and installed by default.
+   	var lSRS= EPSG_GOOGLE_CODE;
+   	var lLLx = dd2MercMetersLng(0)
+   	var lLLy = dd2MercMetersLat(0)
+
 	var lURL=this.myBaseURL;
 	lURL+="&REQUEST=GetMap";
 	lURL+="&SERVICE=WMS";
@@ -129,7 +122,7 @@ lBbox=dd2MercMetersLng(lUL.x)+","+dd2MercMetersLat(lUL.y)+","+dd2MercMetersLng(l
 	lURL+="&reaspect=false";
 	if(META_TILING == true) {
   	  lURL+="&tiled=true";
-	  lURL+="&tilesOrigin=" + lLL.x + "," + lLL.y;
+	  lURL+="&tilesOrigin=" + lLLx + "," + lLLy;
 	}
 //document.write(lURL + "<br/>")        
 //alert(" url is " + lURL);
