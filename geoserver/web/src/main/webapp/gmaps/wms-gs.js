@@ -71,15 +71,12 @@ function dd2MercMetersLat(p_lat) {
 }
 
 CustomGetTileUrl=function(a,b,c) {
-        if (this.myMercZoomLevel == undefined) {
-	    this.myMercZoomLevel = MERC_ZOOM_DEFAULT;
-        }
-
         if (this.myFormat == undefined) {
 	    this.myFormat = FORMAT_DEFAULT;
         }
 
         if (this.myMapname == undefined) {
+
 	    this.myMapname = "map";
         }
 
