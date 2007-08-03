@@ -516,8 +516,10 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                         File file = new File(graphic.getLocation().getFile());
                         iconHref = mapContext.getRequest().getBaseUrl() + "styles/"
                             + file.getName();
+                    } else if ( "http".equals(graphic.getLocation().getProtocol()) ) {
+                    	iconHref = graphic.getLocation().toString();
                     } else {
-                        //TODO: should we check for http:// and use it directly?
+                    	//other protocols?
                     }
                 } catch (Exception e) {
                     LOGGER.log(Level.WARNING, "Error processing external graphic:" + graphic, e);
@@ -525,17 +527,13 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             }
 
             if (iconHref == null) {
-                iconHref = "root://icons/palette-4.png";
+                iconHref = "http://maps.google.com/mapfiles/kml/pal4/icon25.png";
             }
 
             start("Icon");
 
             element("href", iconHref);
-            element("x", "32");
-            element("y", "128");
-            element("w", "32");
-            element("h", "32");
-
+          
             end("Icon");
 
             end("IconStyle");
@@ -789,7 +787,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         protected void encodePlacemarkGeometry(Geometry geometry, Coordinate centroid) {
     		//if point, just encode a single point, otherwise encode the geometry
             // + centroid
-            if ( geometry instanceof Point ) {
+            if ( geometry instanceof Point || 
+        		( geometry instanceof MultiPoint && ((MultiPoint)geometry).getNumPoints() == 1) ) {
                 encodeGeometry( geometry );
             }
             else {
