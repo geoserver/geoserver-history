@@ -18,15 +18,12 @@ import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
 import java.awt.image.VolatileImage;
-import java.io.File;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
 import javax.media.jai.ImageLayout;
 import javax.media.jai.Interpolation;
 import javax.media.jai.InterpolationBicubic2;
@@ -238,6 +235,9 @@ public abstract class DefaultRasterMapProducer extends
 		}
 
 		renderer.paint(graphic, paintArea, dataArea);
+		// uncomment this to have a black border drawn around the "tile"
+		// graphic.setColor(Color.BLACK);
+		// graphic.drawRect(0, 0, (int) paintArea.getWidth(), (int) paintArea.getHeight());
 		graphic.dispose();
 
 		if (!this.abortRequested) {

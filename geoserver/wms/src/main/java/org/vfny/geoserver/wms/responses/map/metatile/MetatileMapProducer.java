@@ -4,6 +4,18 @@
  */
 package org.vfny.geoserver.wms.responses.map.metatile;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.RenderingHints;
+import java.awt.image.RenderedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.media.jai.JAI;
+import javax.media.jai.operator.CropDescriptor;
+
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.wms.GetMapProducer;
@@ -13,14 +25,6 @@ import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
 import org.vfny.geoserver.wms.responses.map.metatile.QuickTileCache.MetaTileKey;
-import java.awt.RenderingHints;
-import java.awt.image.RenderedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.media.jai.JAI;
-import javax.media.jai.operator.CropDescriptor;
 
 
 /**
@@ -60,10 +64,7 @@ public final class MetatileMapProducer extends AbstractGetMapProducer implements
             return false;
         }
 
-        double resx = request.getBbox().getWidth() / request.getWidth();
-        double resy = request.getBbox().getHeight() / request.getHeight();
-
-        return Math.abs(resx - resy) < EPS;
+        return true;
     }
 
     public MetatileMapProducer(GetMapRequest request, RasterMapProducer delegate) {
