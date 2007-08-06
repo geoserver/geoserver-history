@@ -575,7 +575,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         // 2)  If they *have*, then we don't worry about configuring logging
         // 3)  If they haven't, then we configure logging to use the log4j config file
         // specified, and remove console appenders if the suppressstdoutlogging is true.
-        LOGGER.info("CONFIGURING GEOSERVER LOGGING -------------------------");
+        LOGGER.fine("CONFIGURING GEOSERVER LOGGING -------------------------");
         if (!isGeoserverControllingLogging()) {
             LOGGER.warning("GeoServer isn't controlling the logging system.");
             return;
@@ -640,7 +640,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             LOGGER.warning("Couldn't find Log4J configuration file '" + log4jConfigFileStr + "' in the 'loggingConfigs' directory.");
             return;
         } else {
-            LOGGER.info("GeoServer logging profile '" + log4jConfigFile.getName() + "' enabled.");
+            LOGGER.fine("GeoServer logging profile '" + log4jConfigFile.getName() + "' enabled.");
         }
         
         
@@ -732,7 +732,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         } else {
             LOGGER.info("StdOut logging enabled.  Log file also output to '" + logFileName + "'");
         }
-        LOGGER.info("FINISHED CONFIGURING GEOSERVER LOGGING -------------------------");
+        LOGGER.fine("FINISHED CONFIGURING GEOSERVER LOGGING -------------------------");
     }
     
     /**
@@ -1107,9 +1107,9 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
                                                              .getMethod("clear", new Class[0]);
 
             closeMethod.invoke(pfInstance, new Object[0]);
-            LOGGER.info("just asked SDE datasource to release connections");
+            LOGGER.info("Asking ArcSDE datasource to release connections.");
         } catch (ClassNotFoundException cnfe) {
-            LOGGER.fine("No SDE datasource found");
+            LOGGER.fine("No ArcSDE datasource found.");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
