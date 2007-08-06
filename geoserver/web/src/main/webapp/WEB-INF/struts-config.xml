@@ -66,6 +66,10 @@
             name="HeightList" 
             type="java.lang.String[]" 
         />
+        <form-property 
+            name="CoverageStatus" 
+            type="java.lang.Integer[]" 
+        />
 		</form-bean>
 
     	<form-bean

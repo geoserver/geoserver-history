@@ -131,9 +131,21 @@
 			<center><b><font size="-1">
 			<a href="../../wms?bbox=<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>&styles=&Format=application/openlayers&request=GetMap&layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>&width=<bean:write property='<%= "WidthList[" + idx + "]" %>' name="mapPreviewForm"/>&height=<bean:write property='<%= "HeightList[" + idx + "]" %>' name="mapPreviewForm"/>&srs=<bean:write property='<%= "SRSList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank">OpenLayers</a>&nbsp;&nbsp;
 			<a href="../../wms/kml_reflect?layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank">KML</a>&nbsp;&nbsp;
-			<a href="../../wms?bbox=<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>&styles=&Format=application/rss%2Bxml&request=GetMap&layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>&width=<bean:write property='<%= "WidthList[" + idx + "]" %>' name="mapPreviewForm"/>&height=<bean:write property='<%= "HeightList[" + idx + "]" %>' name="mapPreviewForm"/>&srs=<bean:write property='<%= "SRSList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank">GeoRSS</a>&nbsp;&nbsp;
-			<a href="../../wms?bbox=<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>&styles=&Format=application/pdf&request=GetMap&layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>&width=<bean:write property='<%= "WidthList[" + idx + "]" %>' name="mapPreviewForm"/>&height=<bean:write property='<%= "HeightList[" + idx + "]" %>' name="mapPreviewForm"/>&srs=<bean:write property='<%= "SRSList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank">PDF</a>&nbsp;&nbsp;
-			<a href="../../wms?bbox=<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>&styles=&Format=image/svg%2Bxml&request=GetMap&layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>&width=<bean:write property='<%= "WidthList[" + idx + "]" %>' name="mapPreviewForm"/>&height=<bean:write property='<%= "HeightList[" + idx + "]" %>' name="mapPreviewForm"/>&srs=<bean:write property='<%= "SRSList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank">SVG</a>
+			<logic:greaterEqual property='<%= "CoverageStatus[" + idx + "]" %>' name="mapPreviewForm" value="1">
+				<a href="../../wms?bbox=<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>&styles=&Format=application/rss%2Bxml&request=GetMap&layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>&width=<bean:write property='<%= "WidthList[" + idx + "]" %>' name="mapPreviewForm"/>&height=<bean:write property='<%= "HeightList[" + idx + "]" %>' name="mapPreviewForm"/>&srs=<bean:write property='<%= "SRSList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank">GeoRSS</a>&nbsp;&nbsp;
+			</logic:greaterEqual>
+			<logic:equal property='<%= "CoverageStatus[" + idx + "]" %>' name="mapPreviewForm" value="0">
+			    <font color="gray">GeoRSS&nbsp;&nbsp;</font>
+			</logic:equal>
+			<logic:equal property='<%= "CoverageStatus[" + idx + "]" %>' name="mapPreviewForm" value="2">
+				<a href="../../wms?bbox=<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>&styles=&Format=application/pdf&request=GetMap&layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>&width=<bean:write property='<%= "WidthList[" + idx + "]" %>' name="mapPreviewForm"/>&height=<bean:write property='<%= "HeightList[" + idx + "]" %>' name="mapPreviewForm"/>&srs=<bean:write property='<%= "SRSList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank">PDF</a>&nbsp;&nbsp;
+				<a href="../../wms?bbox=<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>&styles=&Format=image/svg%2Bxml&request=GetMap&layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>&width=<bean:write property='<%= "WidthList[" + idx + "]" %>' name="mapPreviewForm"/>&height=<bean:write property='<%= "HeightList[" + idx + "]" %>' name="mapPreviewForm"/>&srs=<bean:write property='<%= "SRSList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank">SVG</a>
+			</logic:equal>
+			<logic:notEqual property='<%= "CoverageStatus[" + idx + "]" %>' name="mapPreviewForm" value="2">
+			    <font color="gray">PDF&nbsp;&nbsp;</font>
+			    <font color="gray">SVG</font>
+			</logic:notEqual>
+			
 			</font>
 			</b></center>
 		 </td>
