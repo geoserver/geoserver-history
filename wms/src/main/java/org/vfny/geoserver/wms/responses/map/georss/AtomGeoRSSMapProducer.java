@@ -10,12 +10,18 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashSet;
+
 import javax.xml.transform.TransformerException;
 
 
 public class AtomGeoRSSMapProducer implements GetMapProducer {
-    /** format name */
-    public static String FORMAT = "atom";
+    /** format names/aliases */
+    public static HashSet FORMATS = new HashSet();
+    static {
+        FORMATS.add("atom");
+        FORMATS.add("application/atom xml");
+    }
 
     /** mime type */
     public static String MIME_TYPE = "application/atom+xml";
