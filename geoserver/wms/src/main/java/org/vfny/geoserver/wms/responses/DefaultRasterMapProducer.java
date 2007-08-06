@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.responses;
 
 import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -236,8 +237,9 @@ public abstract class DefaultRasterMapProducer extends
 
 		renderer.paint(graphic, paintArea, dataArea);
 		// uncomment this to have a black border drawn around the "tile"
-		// graphic.setColor(Color.BLACK);
-		// graphic.drawRect(0, 0, (int) paintArea.getWidth(), (int) paintArea.getHeight());
+//		 graphic.setColor(Color.BLACK);
+//		 graphic.setStroke(new BasicStroke(2));
+//		 graphic.drawRect(0, 0, (int) paintArea.getWidth(), (int) paintArea.getHeight());
 		graphic.dispose();
 
 		if (!this.abortRequested) {
