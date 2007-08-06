@@ -16,6 +16,7 @@ import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.resources.coverage.CoverageUtilities;
+import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.Style;
 import org.opengis.filter.Filter;
 import org.opengis.parameter.ParameterDescriptor;
@@ -340,7 +341,7 @@ public class GetMapResponse implements Response {
                         }
 
                         try {
-                            layer = new DefaultMapLayer(CoverageUtilities.wrapGcReader(reader),
+                            layer = new DefaultMapLayer(FeatureUtilities.wrapGridCoverageReader(reader),
                                     style);
                             layer.setTitle(layers[i].getName());
                             layer.setQuery(Query.ALL);
