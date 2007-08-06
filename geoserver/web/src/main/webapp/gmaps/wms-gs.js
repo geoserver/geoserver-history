@@ -51,9 +51,8 @@
  *     map.addMapType(custommap);
  */
 
-var MAGIC_NUMBER=6356752.3142;
-var DEG2RAD=0.0174532922519943;
-var PI=3.14159267;
+var MAGIC_NUMBER=6356752.314245179;
+var PI=3.14159265358979323846;
 
 //Default image format, used if none is specified
 var FORMAT_DEFAULT = "image/png";
@@ -61,13 +60,13 @@ var FORMAT_DEFAULT = "image/png";
 //EPSG code with the Google projection definition
 var EPSG_GOOGLE_CODE = "EPSG:100003"
 function dd2MercMetersLng(p_lng) { 
-	return MAGIC_NUMBER*(p_lng*DEG2RAD); 
+	return MAGIC_NUMBER * p_lng; 
 }
 
 function dd2MercMetersLat(p_lat) {
 	if (p_lat >= 85) p_lat=85;
 	if (p_lat <= -85) p_lat=-85;
-	return MAGIC_NUMBER*Math.log(Math.tan(((p_lat*DEG2RAD)+(PI/2)) /2));
+	return MAGIC_NUMBER * Math.log(Math.tan(p_lat / 2 + PI / 4));
 }
 
 CustomGetTileUrl=function(a,b,c) {
@@ -81,8 +80,8 @@ CustomGetTileUrl=function(a,b,c) {
         }
 
 	if (typeof(window['this.myStyles'])=="undefined") this.myStyles=""; 
-	var lULP = new GPoint(a.x*256,(a.y+1)*256);
-	var lLRP = new GPoint((a.x+1)*256,a.y*256);
+	var lULP = new GPoint(a.x*256.0,(a.y+1)*256.0);
+	var lLRP = new GPoint((a.x+1)*256.0,a.y*256.0-1);
 	var lUL = G_NORMAL_MAP.getProjection().fromPixelToLatLng(lULP,b,c);
 	var lLR = G_NORMAL_MAP.getProjection().fromPixelToLatLng(lLRP,b,c);
 	// set a fixed position as the tiles origin for the on the fly meta tiler (0,0) should be good
@@ -90,7 +89,7 @@ CustomGetTileUrl=function(a,b,c) {
 	
 	// switch between Mercator and DD if merczoomlevel is set
 	eval("var lwz = "+ this.myMapname + ".getZoom()");
-        var lBbox= dd2MercMetersLng(lUL.x)+","+dd2MercMetersLat(lUL.y)+","+dd2MercMetersLng(lLR.x)+","+dd2MercMetersLat(lLR.y);
+        var lBbox= dd2MercMetersLng(lUL.lngRadians())+","+dd2MercMetersLat(lUL.latRadians())+","+dd2MercMetersLng(lLR.lngRadians())+","+dd2MercMetersLat(lLR.latRadians());
         //Change for GeoServer - 41001 is mercator and installed by default.
    	var lSRS= EPSG_GOOGLE_CODE;
    	var lLLx = dd2MercMetersLng(0)
