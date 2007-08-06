@@ -59,6 +59,14 @@ import com.vividsolutions.jts.geom.Envelope;
  * @version
  */
 public class MapPreviewAction extends GeoServerAction {
+    // the layer is a coverage, or is made exclusively of coverages
+    public static final Integer LAYER_IS_COVERAGE = new Integer(0);
+    // the layer is a group with at least one coverage
+    public static final Integer LAYER_HAS_COVERAGE = new Integer(1);
+    // the layer or group is made of vectors only
+    public static final Integer LAYER_IS_VECTOR = new Integer(2);
+    
+    
     /* (non-Javadoc)
      * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -72,6 +80,7 @@ public class MapPreviewAction extends GeoServerAction {
         ArrayList ftnsList = new ArrayList();
         ArrayList widthList = new ArrayList();
         ArrayList heightList = new ArrayList();
+        ArrayList coverageStatus = new ArrayList();
 
         // 1) get the capabilities info so we can find out our feature types
         WMS wms = getWMS(request);
@@ -189,6 +198,9 @@ public class MapPreviewAction extends GeoServerAction {
                 widthList.add(String.valueOf(imageBox[0]));
                 heightList.add(String.valueOf(imageBox[1]));
             }
+            
+            // not a coverage
+            coverageStatus.add(LAYER_IS_VECTOR);
         }
 
         // 3.5) Go through each *Coverage* and collect its info
@@ -217,6 +229,9 @@ public class MapPreviewAction extends GeoServerAction {
                 int[] imageBox = getMapWidthHeight(bbox);
                 widthList.add(String.valueOf(imageBox[0]));
                 heightList.add(String.valueOf(imageBox[1]));
+                
+                // this layer is a coverage, all right
+                coverageStatus.add(LAYER_IS_COVERAGE);
             }
         }
         
@@ -237,6 +252,10 @@ public class MapPreviewAction extends GeoServerAction {
             int[] imageBox = getMapWidthHeight(bbox);
             widthList.add(String.valueOf(imageBox[0]));
             heightList.add(String.valueOf(imageBox[1]));
+            
+            // this depends on the composition, we raise the flag if the layer has at least
+            // one coverage
+           coverageStatus.add(computeGroupCoverageStatus(wms, baseMapTitle));
         }
 
         // 4) send off gathered information to the .jsp
@@ -249,8 +268,30 @@ public class MapPreviewAction extends GeoServerAction {
         myForm.set("WidthList", widthList.toArray(new String[widthList.size()]));
         myForm.set("HeightList", heightList.toArray(new String[heightList.size()]));
         myForm.set("FTNamespaceList", ftnsList.toArray(new String[ftnsList.size()]));
+        myForm.set("CoverageStatus", coverageStatus.toArray(new Integer[coverageStatus.size()]));
 
         return mapping.findForward("success");
+    }
+
+    /**
+     * Computes the coverage status flag for the specified layer
+     * @param baseMapTitle
+     * @return
+     */
+    private Integer computeGroupCoverageStatus(WMS wms, String baseMapTitle) {
+        String layerParam = (String) wms.getBaseMapLayers().get(baseMapTitle);
+        String[] layers = layerParam.split(",");
+        int coverageCount = 0;
+        for (int i = 0; i < layers.length; i++) {
+            if(wms.getData().getLayerType(layers[i]) == Data.TYPE_RASTER)
+                coverageCount++;
+        }
+        if(coverageCount == 0)
+            return LAYER_IS_VECTOR;
+        else if(coverageCount < layers.length)
+            return LAYER_HAS_COVERAGE;
+        else
+            return LAYER_IS_COVERAGE;
     }
 
     private int[] getMapWidthHeight(Envelope bbox) {
