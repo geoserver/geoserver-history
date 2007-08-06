@@ -10,12 +10,18 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashSet;
+
 import javax.xml.transform.TransformerException;
 
 
 public class RSSGeoRSSMapProducer implements GetMapProducer {
-    /** format name */
-    public static String FORMAT = "rss";
+    /** format names/aliases */
+    public static HashSet FORMATS = new HashSet();
+    static {
+    	FORMATS.add("rss");
+    	FORMATS.add("application/rss xml");
+    }
 
     /** mime type */
     public static String MIME_TYPE = "application/rss+xml";
@@ -60,7 +66,7 @@ public class RSSGeoRSSMapProducer implements GetMapProducer {
 	}
 
 	public String getOutputFormat() {
-		return FORMAT;
+		return MIME_TYPE;
 	}
 	
 	public void setOutputFormat(String format) {

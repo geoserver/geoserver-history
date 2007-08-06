@@ -14,25 +14,29 @@ import java.util.Set;
 
 public class GeoRSSMapProducerFactory implements GetMapProducerFactorySpi {
     static Set formats = new HashSet();
-
+    static Set aliases = new HashSet();
+    
     static {
         formats.add(AtomGeoRSSMapProducer.MIME_TYPE);
         formats.add(RSSGeoRSSMapProducer.MIME_TYPE);
+        
+        aliases.addAll(AtomGeoRSSMapProducer.FORMATS);
+        aliases.addAll(RSSGeoRSSMapProducer.FORMATS);
     }
 
     public boolean canProduce(String mapFormat) {
-        return formats.contains(mapFormat);
+        return formats.contains(mapFormat) || aliases.contains(mapFormat);
     }
 
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
         if (AtomGeoRSSMapProducer.MIME_TYPE.equals(mapFormat)
-                || AtomGeoRSSMapProducer.FORMAT.equals(mapFormat)) {
+                || AtomGeoRSSMapProducer.FORMATS.contains(mapFormat)) {
             return new AtomGeoRSSMapProducer();
         }
 
         if (RSSGeoRSSMapProducer.MIME_TYPE.equals(mapFormat)
-                || RSSGeoRSSMapProducer.FORMAT.equals(mapFormat)) {
+                || RSSGeoRSSMapProducer.FORMATS.contains(mapFormat)) {
             return new RSSGeoRSSMapProducer();
         }
 
