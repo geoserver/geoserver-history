@@ -230,7 +230,7 @@ public class XMLConfigReader {
      * @throws ConfigurationException When an error occurs.
      */
     protected void loadServices(File configFile) throws ConfigurationException {
-        if (LOGGER.isLoggable(Level.CONFIG)) {
+        if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.config(new StringBuffer("Loading configuration file: ").append(configFile)
                                                                           .toString());
         }
@@ -247,8 +247,8 @@ public class XMLConfigReader {
             throw new ConfigurationException(e);
         }
 
-        if (LOGGER.isLoggable(Level.CONFIG)) {
-            LOGGER.config("parsing configuration documents");
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.fine("parsing configuration documents");
         }
 
         Element elem = (Element) configElem.getElementsByTagName("global").item(0);
@@ -340,7 +340,7 @@ public class XMLConfigReader {
         Element catalogElem = null;
 
         try {
-            if (LOGGER.isLoggable(Level.CONFIG)) {
+            if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.config(new StringBuffer("Loading configuration file: ").append(catalogFile)
                                                                               .toString());
             }
@@ -441,7 +441,7 @@ public class XMLConfigReader {
                 }
             }
         } else {
-            if (LOGGER.isLoggable(Level.CONFIG)) {
+            if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.config("No loggingLevel found, using default logging.properties setting");
             }
         }
@@ -494,13 +494,13 @@ public class XMLConfigReader {
             geoServer.setLogLocation(logLocation);
 
 
-            if (LOGGER.isLoggable(Level.CONFIG)) {
-                LOGGER.config(new StringBuffer("logging config is ").append(log4jConfigFile).toString());
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine(new StringBuffer("logging config is ").append(log4jConfigFile).toString());
             }
 
             if (logLocation != null) {
-                if (LOGGER.isLoggable(Level.CONFIG)) {
-                    LOGGER.config(new StringBuffer("logging to ").append(logLocation).toString());
+                if (LOGGER.isLoggable(Level.FINE)) {
+                    LOGGER.fine(new StringBuffer("logging to ").append(logLocation).toString());
                 }
             }
 
@@ -590,8 +590,8 @@ public class XMLConfigReader {
                         geoServer.getMaxFeatures()));
             }
 
-            if (LOGGER.isLoggable(Level.CONFIG)) {
-                LOGGER.config(new StringBuffer("maxFeatures is ").append(geoServer.getMaxFeatures())
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine(new StringBuffer("maxFeatures is ").append(geoServer.getMaxFeatures())
                                                                  .toString());
             }
 
@@ -602,8 +602,8 @@ public class XMLConfigReader {
                         geoServer.getNumDecimals()));
             }
 
-            if (LOGGER.isLoggable(Level.CONFIG)) {
-                LOGGER.config(new StringBuffer("numDecimals returning is ").append(
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine(new StringBuffer("numDecimals returning is ").append(
                         geoServer.getNumDecimals()).toString());
             }
 
@@ -627,8 +627,8 @@ public class XMLConfigReader {
                 }
             }
 
-            if (LOGGER.isLoggable(Level.CONFIG)) {
-                LOGGER.config(new StringBuffer("charSet is ").append(geoServer.getCharSet())
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine(new StringBuffer("charSet is ").append(geoServer.getCharSet())
                                                              .toString());
             }
 
@@ -780,8 +780,8 @@ public class XMLConfigReader {
 
             Element elem = ReaderUtils.getChildElement(wfsElement, "srsXmlStyle", false);
 
-            if (LOGGER.isLoggable(Level.CONFIG)) {
-                LOGGER.config(new StringBuffer("reading srsXmlStyle: ").append(elem).toString());
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine(new StringBuffer("reading srsXmlStyle: ").append(elem).toString());
             }
 
             if (elem != null) {
@@ -1000,7 +1000,7 @@ public class XMLConfigReader {
                 ns.setDefault(ReaderUtils.getBooleanAttribute(elem, "default", false, false)
                     || (nsCount == 1));
 
-                if (LOGGER.isLoggable(Level.CONFIG)) {
+                if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.config(new StringBuffer("added namespace ").append(ns).toString());
                 }
 
@@ -1060,7 +1060,7 @@ public class XMLConfigReader {
                 s.setDefault(ReaderUtils.getBooleanAttribute(styleElem, "default", false, false));
                 styles.put(s.getId(), s);
 
-                if (LOGGER.isLoggable(Level.CONFIG)) {
+                if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.config(new StringBuffer("Loaded style ").append(s.getId()).toString());
                 }
             } catch (Exception e) {
@@ -1264,7 +1264,7 @@ public class XMLConfigReader {
             throw new ConfigurationException(e);
         }
 
-        if (LOGGER.isLoggable(Level.CONFIG)) {
+        if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.config(new StringBuffer("Loaded datastore ").append(ds.getId()).toString());
         }
 
@@ -1393,7 +1393,7 @@ public class XMLConfigReader {
                 try { // Decode the URL of the FT. This is to catch colons used in filenames
                     ftName = URLDecoder.decode(dto.getKey(), "UTF-8");
 
-                    if (LOGGER.isLoggable(Level.CONFIG)) {
+                    if (LOGGER.isLoggable(Level.FINE)) {
                         LOGGER.config("Decoding file name: " + ftName);
                     }
                 } catch (UnsupportedEncodingException e) {
@@ -1456,7 +1456,7 @@ public class XMLConfigReader {
         Element featureElem = null;
 
         try {
-            if (LOGGER.isLoggable(Level.CONFIG)) {
+            if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.config(new StringBuffer("Loading configuration file: ").append(infoFile)
                                                                               .toString());
             }
@@ -1496,7 +1496,7 @@ public class XMLConfigReader {
             dto.setSchemaAttributes(Collections.EMPTY_LIST);
         }
 
-        if (LOGGER.isLoggable(Level.CONFIG)) {
+        if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.config(new StringBuffer("added featureType ").append(dto.getName()).toString());
         }
 
@@ -2310,7 +2310,7 @@ public class XMLConfigReader {
         }
 
         try {
-            if (LOGGER.isLoggable(Level.CONFIG)) {
+            if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.config(new StringBuffer("Loading configuration file: ").append(schemaFile)
                                                                               .toString());
             }

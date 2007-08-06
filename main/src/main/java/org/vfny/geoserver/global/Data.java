@@ -27,7 +27,9 @@ import org.vfny.geoserver.global.dto.StyleDTO;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -445,8 +447,24 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
         String dataStoreId;
         String typeName;
         Style s;
+        
+        //let's sort the featuretypes first, and give some good loading messages as we go along.
+        FeatureTypeInfoDTO[] ftypes = (FeatureTypeInfoDTO[])
+            dto.getFeaturesTypes().values().toArray(new FeatureTypeInfoDTO[dto.getFeaturesTypes().size()]);
+        Arrays.sort(ftypes, new Comparator() {
+            public int compare(Object arg0, Object arg1) {
+                FeatureTypeInfoDTO a0 = (FeatureTypeInfoDTO)arg0;
+                FeatureTypeInfoDTO a1 = (FeatureTypeInfoDTO)arg1;
+                return a0.getKey().compareToIgnoreCase(a1.getKey());
+            }
+        });
+        
+        int curLayerNum = 0;
+        final int totalLayers = ftypes.length;
+        
 SCHEMA: 
-        for (Iterator i = dto.getFeaturesTypes().values().iterator(); i.hasNext();) {
+        for (Iterator i = Arrays.asList(ftypes).iterator(); i.hasNext();) {
+            curLayerNum++;
             featureTypeDTO = (FeatureTypeInfoDTO) i.next();
 
             if (featureTypeDTO == null) {
@@ -458,6 +476,8 @@ SCHEMA:
             }
 
             key = featureTypeDTO.getKey(); // dataStoreId:typeName
+            
+            LOGGER.info("Loading feature type '" + key + "' (layer " + curLayerNum + "/" + totalLayers + ")");
 
             if (LOGGER.isLoggable(Level.FINER)) {
                 LOGGER.finer(new StringBuffer("FeatureType ").append(key)
