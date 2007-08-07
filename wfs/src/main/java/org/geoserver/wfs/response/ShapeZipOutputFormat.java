@@ -199,7 +199,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
         FeatureType schema = c.getSchema();
 
         try {
-            File file = new File(tempDir, schema.getTypeName());
+            File file = new File(tempDir, schema.getTypeName() + ".shp");
             ShapefileDataStore sfds = new ShapefileDataStore(file.toURL());
 
             try {
