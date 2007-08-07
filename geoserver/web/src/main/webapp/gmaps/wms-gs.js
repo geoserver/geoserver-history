@@ -82,7 +82,6 @@ CustomGetTileUrl=function(a,b,c) {
 	    this.myMapname = "map";
         }
 
-	if (typeof(window['this.myStyles'])=="undefined") this.myStyles=""; 
 	var lULP = new GPoint(a.x*256.0,(a.y+1)*256.0);
 	var lLRP = new GPoint((a.x+1)*256.0,a.y*256.0-1);
 	var lUL = G_NORMAL_MAP.getProjection().fromPixelToLatLng(lULP,b,c);
@@ -103,6 +102,7 @@ CustomGetTileUrl=function(a,b,c) {
 	lURL+="&VERSION=1.1.1";
 	lURL+="&LAYERS="+this.myLayers;
 	if (this.mySLD == null || this.mySLD == '') {
+	    if(this.myStyles == null) this.myStyles = '';
         lURL+="&STYLES="+this.myStyles;
     }
     if (this.mySLD != null && this.mySLD != '') {
@@ -125,6 +125,9 @@ CustomGetTileUrl=function(a,b,c) {
 	lURL+="&WIDTH=256";
 	lURL+="&HEIGHT=256";
 	lURL+="&reaspect=false";
+	if(this.myPalette != null && this.myPalette != "") {
+		lURL+="&palette=" + this.myPalette;
+	}
 	if(META_TILING == true) {
 	  lURL+="&tiled=true";
 	  lURL+="&tilesOrigin=" + lLLx + "," + lLLy;
