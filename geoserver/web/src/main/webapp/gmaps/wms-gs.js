@@ -54,6 +54,9 @@
 var MAGIC_NUMBER=6356752.314245179;
 var PI=3.14159265358979323846;
 
+// Enable/disable meta tiling
+var META_TILING = true;
+
 //Default image format, used if none is specified
 var FORMAT_DEFAULT = "image/png";
 
@@ -89,19 +92,32 @@ CustomGetTileUrl=function(a,b,c) {
 	
 	// switch between Mercator and DD if merczoomlevel is set
 	eval("var lwz = "+ this.myMapname + ".getZoom()");
-        var lBbox= dd2MercMetersLng(lUL.lngRadians())+","+dd2MercMetersLat(lUL.latRadians())+","+dd2MercMetersLng(lLR.lngRadians())+","+dd2MercMetersLat(lLR.latRadians());
-        //Change for GeoServer - 41001 is mercator and installed by default.
-   	var lSRS= EPSG_GOOGLE_CODE;
-   	var lLLx = dd2MercMetersLng(0)
-   	var lLLy = dd2MercMetersLat(0)
+	var lBbox= dd2MercMetersLng(lUL.lngRadians())+","+dd2MercMetersLat(lUL.latRadians())+","+dd2MercMetersLng(lLR.lngRadians())+","+dd2MercMetersLat(lLR.latRadians());
+	var lSRS= EPSG_GOOGLE_CODE;
+	var lLLx = dd2MercMetersLng(0)
+	var lLLy = dd2MercMetersLat(0)
 
 	var lURL=this.myBaseURL;
 	lURL+="&REQUEST=GetMap";
 	lURL+="&SERVICE=WMS";
 	lURL+="&VERSION=1.1.1";
 	lURL+="&LAYERS="+this.myLayers;
-	lURL+="&STYLES="+this.myStyles; 
-lURL+="&FORMAT="+this.myFormat;
+	if (this.mySLD == null || this.mySLD == '') {
+        lURL+="&STYLES="+this.myStyles;
+    }
+    if (this.mySLD != null && this.mySLD != '') {
+        lURL+="&SLD="+this.mySLD;
+    }
+    if (this.myCQL != null && this.myCQL != '') {
+        lURL+="&CQL_FILTER="+this.myCql;
+	}
+	if (this.myFilter != null && this.myFilter != '') {
+        lURL+="&FILTER="+this.myFilter;
+	}
+	if (this.myFeatureIds != null && this.myFeatureIds != '') {
+        lURL+="&FEATUREID="+this.myFeatureIds;
+	}
+    lURL+="&FORMAT="+this.myFormat;
 	lURL+="&BGCOLOR=0xFFFFFF";
 	lURL+="&TRANSPARENT=TRUE";
 	lURL+="&SRS="+lSRS;
@@ -109,8 +125,10 @@ lURL+="&FORMAT="+this.myFormat;
 	lURL+="&WIDTH=256";
 	lURL+="&HEIGHT=256";
 	lURL+="&reaspect=false";
-	lURL+="&tiled=true";
-	lURL+="&tilesOrigin=" + lLL.x + "," + lLL.y;
+	if(META_TILING == true) {
+	  lURL+="&tiled=true";
+	  lURL+="&tilesOrigin=" + lLLx + "," + lLLy;
+	}
 //document.write(lURL + "<br/>")        
 //alert(" url is " + lURL);
 	return lURL;
