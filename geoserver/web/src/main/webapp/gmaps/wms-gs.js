@@ -61,7 +61,7 @@ var META_TILING = true;
 var FORMAT_DEFAULT = "image/png";
 
 //EPSG code with the Google projection definition
-var EPSG_GOOGLE_CODE = "EPSG:100003"
+var EPSG_GOOGLE_CODE = "EPSG:900913"
 function dd2MercMetersLng(p_lng) { 
 	return MAGIC_NUMBER * p_lng; 
 }
