@@ -24,6 +24,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 
@@ -443,4 +444,8 @@ public class GeoServerFeatureSource implements FeatureSource {
             return 0;
         }
     }
+    
+    public Set getSupportedHints() {
+        return source.getSupportedHints();
+    }   
 }
