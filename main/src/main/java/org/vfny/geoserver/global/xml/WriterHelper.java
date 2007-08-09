@@ -129,7 +129,7 @@ public class WriterHelper {
             String s = (String) i.next();
 
             if (attributes.get(s) != null) {
-                sb.append(s + " = " + "\"" + (attributes.get(s)).toString() + "\" ");
+                sb.append(s + " = " + "\"" + escape((attributes.get(s)).toString()) + "\" ");
             }
         }
 
@@ -170,7 +170,7 @@ public class WriterHelper {
      */
     public void valueTag(String tagName, String value)
         throws ConfigurationException {
-        writeln("<" + tagName + " value = \"" + value + "\" />");
+        writeln("<" + tagName + " value = \"" + escape(value) + "\" />");
     }
 
     /**
@@ -197,7 +197,7 @@ public class WriterHelper {
             String s = (String) i.next();
 
             if (attributes.get(s) != null) {
-                sb.append(s + " = " + "\"" + (attributes.get(s)).toString() + "\" ");
+                sb.append(s + " = " + "\"" + escape((attributes.get(s)).toString()) + "\" ");
             }
         }
 
@@ -247,11 +247,11 @@ public class WriterHelper {
             String s = (String) i.next();
 
             if (attributes.get(s) != null) {
-                sb.append(s + " = " + "\"" + (attributes.get(s)).toString() + "\" ");
+                sb.append(s + " = " + "\"" + escape((attributes.get(s)).toString()) + "\" ");
             }
         }
 
-        sb.append(">" + ((data != null) ? data : "") + "</" + tagName + ">");
+        sb.append(">" + escape(((data != null) ? data : "")) + "</" + tagName + ">");
         writeln(sb.toString());
     }
 
@@ -277,5 +277,23 @@ public class WriterHelper {
         writeln(comment);
         decreaseIndent();
         writeln("-->");
+    }
+    
+    /**
+     * Escapes the provided text with XML entities, 
+     * see (http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references#Character_entities_in_XML)
+     * @param text
+     * @return
+     */
+    private String escape(String text) {
+    	String s = text;
+    	if(s.matches(".*[\"&'<>].*")) {
+			s = s.replaceAll("\"", "&quot;");
+			s = s.replaceAll("&", "&amp;");
+			s = s.replaceAll("'", "&apos;");
+			s = s.replaceAll("<", "&lt;");
+			s = s.replaceAll(">", "&gt;");
+		}
+    	return s;
     }
 }
