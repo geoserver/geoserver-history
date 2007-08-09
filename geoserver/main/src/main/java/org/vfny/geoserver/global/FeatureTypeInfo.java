@@ -522,7 +522,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     Method m = clazz.getMethod("create",
                             new Class[] {
                                 Class.forName("org.geotools.data.VersioningFeatureSource"),
-                                FeatureType.class, Filter.class, CoordinateReferenceSystem.class
+                                FeatureType.class, Filter.class, CoordinateReferenceSystem.class, int.class
                             });
 
                     return (FeatureSource) m.invoke(null,
