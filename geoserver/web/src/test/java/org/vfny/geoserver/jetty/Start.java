@@ -37,7 +37,11 @@ public class Start {
             tp.setMaxThreads(50);
 
             SocketConnector conn = new SocketConnector();
-            conn.setPort(8080);
+            String portVariable = System.getProperty("jetty.port");
+            int port = parsePort(portVariable);
+            if(port <= 0)
+            	port = 8080;
+            conn.setPort(port);
             conn.setThreadPool(tp);
             conn.setAcceptQueueSize(100);
             jettyServer.setConnectors(new Connector[] { conn });
@@ -67,4 +71,14 @@ public class Start {
             }
         }
     }
+
+	private static int parsePort(String portVariable) {
+		if(portVariable == null)
+			return -1;
+	    try {
+	    	return Integer.valueOf(portVariable).intValue();
+	    } catch(NumberFormatException e) {
+	    	return -1;
+	    }
+	}
 }
