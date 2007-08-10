@@ -399,8 +399,8 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         MapLayerInfo[] libraryModeLayers = null;
 
         if ((request.getLayers() != null) && (request.getLayers().length > 0)) {
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.info("request comes in \"library\" mode");
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine("request comes in \"library\" mode");
             }
 
             libraryModeLayers = request.getLayers();
@@ -428,7 +428,19 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                 if (currLayer.getType() == MapLayerInfo.TYPE_VECTOR) {
                     currStyle = findStyleOf(request, currLayer.getFeature(), styledLayers);
                 } else if (currLayer.getType() == MapLayerInfo.TYPE_RASTER) {
-                    currStyle = findStyle(request, "raster");
+                    try {
+                        currStyle = findStyleOf(request, currLayer.getFeature(), styledLayers);
+                    } catch (WmsException wm) {
+                        //hmm, well, the style they specified in the wms request
+                        //wasn't found.  Let's try the default raster style named 'raster'
+                        currStyle = findStyle(request, "raster");
+                        if (currStyle == null) {
+                            //nope, no default raster style either.  Give up.
+                            throw new WmsException(wm.getMessage() + "  Also tried to use " +
+                            "the generic raster style 'raster', but it wasn't available.");
+                        }
+                    }
+                    
                 }
 
                 layers.add(currLayer);
@@ -486,10 +498,20 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                     // (b).
                     addStyles(request, currLayer, styledLayers[i], layers, styles);
                 } else if (currLayer.getType() == MapLayerInfo.TYPE_RASTER) {
-                    currStyle = findStyle(request, "raster");
-
-                    layers.add(currLayer);
-                    styles.add(currStyle);
+                    try {                        
+                        addStyles(request, currLayer, styledLayers[i], layers, styles);
+                    } catch (WmsException wm) {
+                        //hmm, well, the style they specified in the wms request
+                        //wasn't found.  Let's try the default raster style named 'raster'
+                        currStyle = findStyle(request, "raster");
+                        if (currStyle == null) {
+                            //nope, no default raster style either.  Give up.
+                            throw new WmsException(wm.getMessage() + "  Also tried to use " +
+                            "the generic raster style 'raster', but it wasn't available.");
+                        }
+                        layers.add(currLayer);
+                        styles.add(currStyle);
+                    }
                 }
             }
         }
