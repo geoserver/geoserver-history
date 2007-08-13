@@ -354,7 +354,7 @@ public class TransactionResponse implements Response {
                 try {
                     Filter filter = delete.getFilter();
 
-                    Envelope damaged = store.getBounds(new DefaultQuery(delete.getTypeName(), filter));
+                    Envelope damaged = store.getBounds(new DefaultQuery(null, filter));
 
                     if (damaged == null) {
                         damaged = store.getFeatures(filter).getBounds();
@@ -417,8 +417,8 @@ public class TransactionResponse implements Response {
 
                     envelope.expandToInclude(damaged);
                 } catch (IOException ioException) {
-                    throw new WfsTransactionException(ioException.getMessage(),
-                        element.getHandle(), request.getHandle());
+                    throw (WfsTransactionException) (new WfsTransactionException(ioException.getMessage(),
+                        element.getHandle(), request.getHandle()).initCause(ioException));
                 }
             }
 
