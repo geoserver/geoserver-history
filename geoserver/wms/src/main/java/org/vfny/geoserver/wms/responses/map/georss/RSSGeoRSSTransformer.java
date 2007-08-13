@@ -89,7 +89,7 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
                     while (iterator.hasNext()) {
                         Feature feature = iterator.next();
                         try {
-                            encodeItem(iterator.next(), map);                            
+                            encodeItem(feature, map);
                         }
                         catch( Exception e ) {
                             LOGGER.warning("Encoding failed for feature: " + feature.getID());
