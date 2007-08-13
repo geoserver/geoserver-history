@@ -20,7 +20,7 @@
         map.addControl(new GLargeMapControl());
         map.setCenter(new GLatLng(40,-98), 4);
 
-        var geoXml = new GGeoXml("http://sigma.openplans.org:8080/geoserver/wms/reflect?layers=states&format=rss");
+        var geoXml = new GGeoXml("http://sigma1.openplans.org:8080/geoserver/wms/reflect?layers=states&a=b&format=rss");
         map.addOverlay(geoXml);
       }
     }
