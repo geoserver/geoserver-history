@@ -27,6 +27,8 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
     public class AtomGeoRSSTranslator extends GeoRSSTranslatorSupport {
         public AtomGeoRSSTranslator(ContentHandler contentHandler) {
             super(contentHandler, null, "http://www.w3.org/2005/Atom");
+            
+            nsSupport.declarePrefix("georss","http://www.georss.org/georss");
         }
 
         public void encode(Object o) throws IllegalArgumentException {
