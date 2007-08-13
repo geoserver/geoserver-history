@@ -4,10 +4,10 @@
  */
 package org.vfny.geoserver.wms.responses.map.georss;
 
+import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.Feature;
@@ -124,8 +124,11 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
 
                         // query and eventually reproject
                         features = source.getFeatures(query);
-                        if(sourceCRS != null && !CRS.equalsIgnoreMetadata(wgs84, sourceCRS)) 
-                            features = new ReprojectFeatureResults(features, wgs84);
+                        if(sourceCRS != null && !CRS.equalsIgnoreMetadata(wgs84, sourceCRS)) { 
+                            ReprojectingFeatureCollection coll = new ReprojectingFeatureCollection(features, wgs84);
+                            coll.setDefaultSource(sourceCRS);
+                            features = coll;
+                        }
                     }
                 } catch (Exception e) {
                     String msg = "Unable to encode map layer: " + layer;
