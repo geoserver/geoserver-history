@@ -79,9 +79,6 @@
 				<CssParameter name="font-style">Normal</CssParameter>
 				<CssParameter name="font-size">14</CssParameter>
 		    </Font>
-			<Fill>
-				<CssParameter name="fill">#000000</CssParameter>
-		    </Fill>
 		</TextSymbolizer>
       </Rule>
     </FeatureTypeStyle>
