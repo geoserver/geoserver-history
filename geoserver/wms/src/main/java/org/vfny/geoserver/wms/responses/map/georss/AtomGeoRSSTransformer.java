@@ -4,18 +4,19 @@
  */
 package org.vfny.geoserver.wms.responses.map.georss;
 
-import org.geotools.data.FeatureSource;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
+
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.map.MapLayer;
 import org.geotools.xml.transform.Translator;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
@@ -47,41 +48,43 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
             element("updated", new Date().toString());
 
             //entries
-            encodeEntries(map);
+            try {
+                encodeEntries(map);
+            } 
+            catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
             end("feed");
         }
 
-        void encodeEntries(WMSMapContext map) {
-            for (int i = 0; i < map.getLayerCount(); i++) {
-                MapLayer layer = map.getLayer(i);
-
-                FeatureCollection features = null;
+        void encodeEntries(WMSMapContext map) throws IOException{
+            List featureCollections = loadFeatureCollections(map);
+            for (Iterator f = featureCollections.iterator(); f.hasNext();) {
+                FeatureCollection features = (FeatureCollection) f.next();
+                FeatureIterator iterator = null;
 
                 try {
-                    FeatureSource source = layer.getFeatureSource();
-                    features = source.getFeatures();
-                } catch (Exception e) {
-                    String msg = "Unable to encode map layer: " + layer;
-                    LOGGER.log(Level.SEVERE, msg, e);
-                }
+                    iterator = features.features();
 
-                if (features != null) {
-                    FeatureIterator iterator = null;
-
-                    try {
-                        iterator = features.features();
-
-                        while (iterator.hasNext()) {
-                            encodeEntry(iterator.next());
+                    while (iterator.hasNext()) {
+                        Feature feature = iterator.next();
+                        try {
+                            encodeEntry(feature);
                         }
-                    } finally {
-                        if (iterator != null) {
-                            features.close(iterator);
+                        catch( Exception e ) {
+                            LOGGER.warning("Encoding failed for feature: " + feature.getID());
+                            LOGGER.log(Level.FINE, "", e );
                         }
+                        
+                    }
+                } finally {
+                    if (iterator != null) {
+                        features.close(iterator);
                     }
                 }
             }
+            
         }
 
         void encodeEntry(Feature feature) {

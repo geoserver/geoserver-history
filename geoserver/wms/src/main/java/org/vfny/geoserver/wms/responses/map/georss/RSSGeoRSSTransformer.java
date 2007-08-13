@@ -4,31 +4,22 @@
  */
 package org.vfny.geoserver.wms.responses.map.georss;
 
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
+
 import org.geoserver.wms.util.WMSRequests;
-import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureSource;
-import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.GeometryAttributeType;
-import org.geotools.filter.Filter;
-import org.geotools.filter.FilterFactory;
-import org.geotools.filter.FilterFactoryFinder;
-import org.geotools.filter.GeometryFilter;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
-import org.geotools.referencing.CRS;
 import org.geotools.xml.transform.Translator;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
-import java.io.IOException;
-import java.util.logging.Level;
 
 
 /**
@@ -87,73 +78,35 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
         }
 
         void encodeItems(WMSMapContext map) throws IOException {
-            ReferencedEnvelope mapArea = map.getAreaOfInterest();
-            CoordinateReferenceSystem wgs84 = null;
-            FilterFactory ff = FilterFactoryFinder.createFilterFactory();
-            try {
-                // this should never throw an exception, but we have to deal with it anyways
-                wgs84 = CRS.decode("EPSG:4326");
-            } catch(Exception e) {
-                throw (IOException) (new IOException("Unable to decode WGS84...").initCause(e));
-            }
-            for (int i = 0; i < map.getLayerCount(); i++) {
-                MapLayer layer = map.getLayer(i);
-                DefaultQuery query = new DefaultQuery(layer.getQuery());
+            List featureCollections = loadFeatureCollections(map);
+            for (Iterator f = featureCollections.iterator(); f.hasNext();) {
+                FeatureCollection features = (FeatureCollection) f.next();
+                FeatureIterator iterator = null;
 
-                FeatureCollection features = null;
                 try {
-                    FeatureSource source = layer.getFeatureSource();
-                    
-                    GeometryAttributeType at = source.getSchema().getDefaultGeometry();
-                    if(at == null) {
-                        // geometryless layers...
-                        features = source.getFeatures(query);
-                    } else {
-                        // make sure we are querying the source with the bbox in the right CRS, if
-                        // not, reproject the bbox
-                        ReferencedEnvelope env = new ReferencedEnvelope(mapArea);
-                        CoordinateReferenceSystem sourceCRS = at.getCoordinateSystem();
-                        if(sourceCRS != null && 
-                            !CRS.equalsIgnoreMetadata(mapArea.getCoordinateReferenceSystem(), sourceCRS)) {
-                            env = env.transform(sourceCRS, true);
+                    iterator = features.features();
+
+                    while (iterator.hasNext()) {
+                        Feature feature = iterator.next();
+                        try {
+                            encodeItem(iterator.next(), map);                            
+                        }
+                        catch( Exception e ) {
+                            LOGGER.warning("Encoding failed for feature: " + feature.getID());
+                            LOGGER.log(Level.FINE, "", e );
                         }
                         
-                        // build the mixed query
-                        Filter original = query.getFilter();
-                        GeometryFilter box = ff.createGeometryFilter(Filter.GEOMETRY_BBOX);
-                        box.addLeftGeometry(ff.createAttributeExpression(at.getName()));
-                        box.addRightGeometry(ff.createBBoxExpression(env));
-                        query.setFilter(box.and(original));
-
-                        // query and eventually reproject
-                        features = source.getFeatures(query);
-                        if(sourceCRS != null && !CRS.equalsIgnoreMetadata(wgs84, sourceCRS)) 
-                            features = new ReprojectFeatureResults(features, wgs84);
                     }
-                } catch (Exception e) {
-                    String msg = "Unable to encode map layer: " + layer;
-                    LOGGER.log(Level.SEVERE, msg, e);
-                }
-
-                if (features != null) {
-                    FeatureIterator iterator = null;
-
-                    try {
-                        iterator = features.features();
-
-                        while (iterator.hasNext()) {
-                            encodeItem(iterator.next(), map, layer);
-                        }
-                    } finally {
-                        if (iterator != null) {
-                            features.close(iterator);
-                        }
+                } finally {
+                    if (iterator != null) {
+                        features.close(iterator);
                     }
                 }
             }
+           
         }
 
-        void encodeItem(Feature feature, WMSMapContext map, MapLayer layer)
+        void encodeItem(Feature feature, WMSMapContext map)
             throws IOException {
             start("item");
 
