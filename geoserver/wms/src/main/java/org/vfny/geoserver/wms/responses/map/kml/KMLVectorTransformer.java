@@ -569,7 +569,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 encodeColor(SLD.color(symbolizer.getFill()), opacity);
             } else {
                 //default
-                encodeColor("ffaaaaaa");
+                encodeColor("ffffffff");
             }
 
             end("LabelStyle");
