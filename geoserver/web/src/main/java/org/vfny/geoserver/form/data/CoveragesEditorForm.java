@@ -15,6 +15,7 @@ import org.apache.struts.upload.MultipartRequestHandler;
 import org.apache.struts.util.MessageResources;
 import org.geotools.data.coverage.grid.AbstractGridFormat;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.CRS;
 import org.opengis.coverage.grid.Format;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
@@ -432,8 +433,16 @@ public final class CoveragesEditorForm extends ActionForm {
         //
         //
         // //
-        if ("UNKNOWN".equals(srsName) && !LOOKUP_SRS.equals(action)) {
-            errors.add("envelope", new ActionError("error.coverage.nativeCRS.required"));
+        if (!LOOKUP_SRS.equals(action)) {
+            if(!srsName.toUpperCase().startsWith("EPSG:")) {
+                srsName = "EPSG:" + srsName;
+            }
+            try {
+                CRS.decode(srsName);
+            } catch(Exception e) {
+                errors.add("envelope", new ActionError("config.data.coverage.srs", srsName));
+            }
+            
         }
 
         // //

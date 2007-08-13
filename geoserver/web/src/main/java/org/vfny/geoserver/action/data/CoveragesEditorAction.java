@@ -257,7 +257,10 @@ public final class CoveragesEditorAction extends ConfigAction {
         config.setRequestCRSs(requestCRSs(form));
         config.setResponseCRSs(responseCRSs(form));
         config.setCrs(CRS.parseWKT(form.getWKTString()));
-        config.setSrsName(form.getSrsName());
+        if(!form.getSrsName().toUpperCase().startsWith("EPSG"))
+            config.setSrsName("EPSG:" + form.getSrsName());
+        else
+            config.setSrsName(form.getSrsName());
         config.setSrsWKT(form.getWKTString());
 
         if (!"UNKNOWN".equals(config.getSrsName()) && (config.getSrsName() != null)
