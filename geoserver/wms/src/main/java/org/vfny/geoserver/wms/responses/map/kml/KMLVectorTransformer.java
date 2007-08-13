@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -296,14 +297,16 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             encodeIconStyle(feature, styles);
             
             //encode hte Line/Poly styles
+            List symbolizerList = new ArrayList();
             for ( int j = 0; j < styles.length ; j++ ) {
             	Rule[] rules = filterRules(styles[j], feature);
-
+            	
                 for (int i = 0; i < rules.length; i++) {
-                    encodeStyle(feature, rules[i].getSymbolizers());
+                    symbolizerList.addAll(Arrays.asList(rules[i].getSymbolizers()));
                 }
-
             }
+            Symbolizer[] symbolizers = (Symbolizer[]) symbolizerList.toArray(new Symbolizer[symbolizerList.size()]);
+            encodeStyle(feature, symbolizers);
             
             //end the style
             end("Style");
@@ -354,6 +357,16 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          * Encodes the provided set of symbolizers as KML styles.
          */
         protected void encodeStyle(Feature feature, Symbolizer[] symbolizers) {
+            
+            // look for line symbolizers, if there is any, we should tell the
+            // polygon style to have an outline
+            boolean forceOutline = false;
+            for (int i = 0; i < symbolizers.length; i++) {
+                if (symbolizers[i] instanceof LineSymbolizer) {
+                    forceOutline = true;
+                    break;
+                }
+            }
           
             for (int i = 0; i < symbolizers.length; i++) {
                 Symbolizer symbolizer = symbolizers[i];
@@ -369,7 +382,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 }
 
                 if (symbolizer instanceof PolygonSymbolizer) {
-                    encodePolygonStyle((PolygonStyle2D) style, (PolygonSymbolizer) symbolizer);
+                    encodePolygonStyle((PolygonStyle2D) style, (PolygonSymbolizer) symbolizer, forceOutline);
                 }
 
                 if (symbolizer instanceof LineSymbolizer) {
@@ -385,7 +398,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML IconStyle + PolyStyle from a polygon style and symbolizer.
          */
-        protected void encodePolygonStyle(PolygonStyle2D style, PolygonSymbolizer symbolizer) {
+        protected void encodePolygonStyle(PolygonStyle2D style, PolygonSymbolizer symbolizer, boolean forceOutline) {
             //star the polygon style
             start("PolyStyle");
 
@@ -406,7 +419,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             }
 
             //outline
-            if (symbolizer.getStroke() != null) {
+            if (symbolizer.getStroke() != null || forceOutline) {
                 element("outline", "1");
             } else {
                 element("outline", "0");
