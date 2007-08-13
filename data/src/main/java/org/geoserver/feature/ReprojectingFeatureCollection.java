@@ -80,13 +80,13 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
         super(delegate);
 
         this.target = target;
-        this.schema = FeatureTypes.transform(delegate.getFeatureType(), target);
+        this.schema = FeatureTypes.transform(delegate.getSchema(), target);
 
         //create transform cache
         transformers = new HashMap();
 
         //cache "default" transform
-        CoordinateReferenceSystem source = delegate.getFeatureType().getDefaultGeometry()
+        CoordinateReferenceSystem source = delegate.getSchema().getPrimaryGeometry()
                                                    .getCoordinateSystem();
 
         if (source != null) {
