@@ -18,7 +18,7 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
         + "</wfs:DescribeFeatureType>";
 
         Document doc = postAsDOM("wfs", xml);
-        print( doc );
+        //print( doc );
         assertEquals("xsd:schema", doc.getDocumentElement()
                 .getNodeName());
         

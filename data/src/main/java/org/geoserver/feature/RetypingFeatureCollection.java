@@ -5,6 +5,7 @@
 package org.geoserver.feature;
 
 import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureWriter;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
@@ -68,7 +69,7 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
             attributes[i] = value;
         }
 
-        return target.create(attributes);
+        return target.create(attributes, source.getID());
     }
 
     public static class RetypingIterator implements Iterator {
@@ -122,6 +123,59 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
 
         public Feature next() throws IOException, IllegalAttributeException, NoSuchElementException {
             return RetypingFeatureCollection.retype(delegate.next(), target);
+        }
+    }
+    
+    public static class RetypingFeatureWriter implements FeatureWriter {
+        FeatureWriter delegate;
+        FeatureType target;
+        private Feature current;
+        private Feature retyped;
+
+        public RetypingFeatureWriter(FeatureWriter delegate, FeatureType target) {
+            this.delegate = delegate;
+            this.target = target;
+        }
+
+        public void close() throws IOException {
+            delegate.close();
+            delegate = null;
+            target = null;
+        }
+
+        public FeatureType getFeatureType() {
+            return target;
+        }
+
+        public boolean hasNext() throws IOException {
+            return delegate.hasNext();
+        }
+
+        public Feature next() throws IOException {
+            try {
+                current = delegate.next();
+                retyped = RetypingFeatureCollection.retype(current, target);
+                return retyped;
+            } catch (IllegalAttributeException e) {
+                throw (IOException) new IOException("Error occurred while retyping feature").initCause(e);
+            }
+        }
+
+        public void remove() throws IOException {
+            delegate.write();
+        }
+
+        public void write() throws IOException {
+            try {
+                for (int i = 0; i < target.getAttributeCount(); i++) {
+                    AttributeType at = target.getAttributeType(i);
+                    Object value = retyped.getAttribute(i);
+                    current.setAttribute(at.getLocalName(), value);
+                }
+                delegate.write();
+            } catch(IllegalAttributeException e) {
+                throw (IOException) new IOException("Error occurred while retyping feature").initCause(e);
+            }
         }
     }
 }

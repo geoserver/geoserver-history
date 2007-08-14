@@ -7,6 +7,8 @@ package org.vfny.geoserver.global;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
+import org.vfny.geoserver.util.DataStoreUtils;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -203,7 +205,7 @@ public class DataStoreInfo extends GlobalLayerSupertype {
 
         if (dataStore == null) {
             try {
-                dataStore = DataStoreFinder.getDataStore(m);
+                dataStore = DataStoreUtils.getDataStore(m);
                 LOGGER.fine("connection established by " + toString());
             } catch (Throwable ex) {
                 throw new IllegalStateException("can't create the datastore " + getId() + ": "

@@ -564,7 +564,7 @@ public class TypesEditorAction extends ConfigAction {
 
         Map params = dataStoreConfig.getConnectionParams();
 
-        return DataStoreFinder.getDataStore(params);
+        return DataStoreUtils.getDataStore(params);
     }
 
     FeatureType getSchema(String dataStoreID, String typeName)

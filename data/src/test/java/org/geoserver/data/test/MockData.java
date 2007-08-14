@@ -14,7 +14,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 
@@ -247,13 +250,17 @@ public class MockData {
         copyTo(input, "featureTypes" + File.separator + featureTypeName.getPrefix() 
                 + "_" + featureTypeName.getLocalPart() + File.separator + location );
     }
+    
+    public void setUp() throws IOException {
+        setUp(TYPENAMES);
+    }
 
     /**
      * Sets up the data directory, creating all the necessary files.
      *
      * @throws IOException
      */
-    public void setUp() throws IOException {
+    public void setUp(QName[] typeNames) throws IOException {
         data.delete();
         data.mkdir();
 
@@ -280,8 +287,8 @@ public class MockData {
         templates.mkdir();
 
         //set up the types
-        for (int i = 0; i < TYPENAMES.length; i++) {
-            setup(TYPENAMES[i]);
+        for (int i = 0; i < typeNames.length; i++) {
+            setup(typeNames[i]);
         }
 
         // create the catalog.xml
@@ -332,9 +339,12 @@ public class MockData {
         // styles
         HashMap styles = new HashMap();
 
+        List typeList = Arrays.asList(typeNames);
         for (int i = 0; i < WMS_TYPENAMES.length; i++) {
-            QName type = WMS_TYPENAMES[i];
-            styles.put(type.getLocalPart(), type.getLocalPart() + ".sld");
+            if(typeList.contains(WMS_TYPENAMES[i])) {
+                QName type = WMS_TYPENAMES[i];
+                styles.put(type.getLocalPart(), type.getLocalPart() + ".sld");
+            }
         }
 
         styles.put("Default", "Default.sld");
@@ -361,15 +371,14 @@ public class MockData {
     }
 
     void copy(InputStream from, File to) throws IOException {
-        InputStream in = new BufferedInputStream(from);
-        OutputStream out = new BufferedOutputStream(new FileOutputStream(to));
+        OutputStream out = new FileOutputStream(to);
 
-        int b = 0;
+        byte[] buffer = new byte[4096];
+        int bytes = 0;
+        while ((bytes = from.read(buffer)) != -1)
+            out.write(buffer, 0, bytes);
 
-        while ((b = in.read()) != -1)
-            out.write(b);
-
-        in.close();
+        from.close();
         out.flush();
         out.close();
     }
