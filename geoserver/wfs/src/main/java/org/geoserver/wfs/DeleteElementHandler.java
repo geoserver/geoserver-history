@@ -154,19 +154,18 @@ public class DeleteElementHandler implements TransactionElementHandler {
                 }
             } else {
                 // We don't have to worry about locking right now
-                FeatureWriter writer = store.getDataStore()
-                                            .getFeatureWriter(typeName, filter,
-                        store.getTransaction());
+                deleted += store.getCount(new DefaultQuery(null, filter));
+                store.removeFeatures(filter);
 
-                try {
-                    while (writer.hasNext()) {
-                        writer.next();
-                        writer.remove();
-                        deleted++;
-                    }
-                } finally {
-                    writer.close();
-                }
+//                try {
+//                    while (writer.hasNext()) {
+//                        writer.next();
+//                        writer.remove();
+//                        deleted++;
+//                    }
+//                } finally {
+//                    writer.close();
+//                }
             }
         } catch (IOException e) {
             String msg = e.getMessage();

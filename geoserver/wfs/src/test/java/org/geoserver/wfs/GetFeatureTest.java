@@ -5,7 +5,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 public class GetFeatureTest extends WFSTestSupport {
-
+    
     public void testGet() throws Exception {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=cdf:Fifteen&version=1.0.0&service=wfs");
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
@@ -14,7 +14,7 @@ public class GetFeatureTest extends WFSTestSupport {
         NodeList featureMembers = doc.getElementsByTagName("gml:featureMember");
         assertFalse(featureMembers.getLength() == 0);
     }
-
+    
     public void testPost() throws Exception {
 
         String xml = "<wfs:GetFeature " + "service=\"WFS\" "
@@ -76,7 +76,7 @@ public class GetFeatureTest extends WFSTestSupport {
             "</GetFeature>";
         
         Document doc = postAsDOM( "wfs", xml );
-        print( doc );
+        //print( doc );
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
                 .getNodeName());
 

@@ -6,6 +6,7 @@ package org.vfny.geoserver.util;
 
 import com.vividsolutions.jts.geom.Envelope;
 import org.geoserver.feature.FeatureSourceUtils;
+import org.geoserver.feature.retype.RetypingDataStore;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFactorySpi.Param;
@@ -31,21 +32,43 @@ import javax.servlet.ServletContext;
  * @version $Id$
  */
 public abstract class DataStoreUtils {
+    
+    /**
+     * Uses the standard datastore factory mechanism, but first manipulates the
+     * specified parameters so that data dir relative paths gets turned into
+     * absolute ones
+     * @param params
+     * @param sc
+     * @return
+     * @throws IOException
+     */
     public static DataStore acquireDataStore(Map params, ServletContext sc)
         throws IOException {
         //DJB: changed this for geoserver_data_dir   	
         //String baseDir = sc.getRealPath("/");
         File baseDir = GeoserverDataDirectory.getGeoserverDataDirectory();
 
-        DataStore store = DataStoreFinder.getDataStore(getParams(params, baseDir.getAbsolutePath()));
-
-        if (store == null) {
-            //TODO: this should throw an exception, but the classes using
-            //this class aren't ready to actually get it...
+        return getDataStore(getParams(params, baseDir.getAbsolutePath()));
+    }
+    
+    /**
+     * Looks up the datastore using the given params, verbatim, and then
+     * eventually wraps it into a renaming wrapper so that feature type
+     * names are good ones from the wfs point of view (that is, no ":" in the type names)
+     * @param params
+     * @return
+     */
+    public static DataStore getDataStore(Map params) throws IOException {
+        DataStore store = DataStoreFinder.getDataStore(params);
+        if(store == null)
             return null;
-        } else {
-            return store;
+        
+        String[] names = store.getTypeNames();
+        for (int i = 0; i < names.length; i++) {
+            if(names[i].indexOf(":") >= 0)
+                return new RetypingDataStore(store); 
         }
+        return store;
     }
 
     public static Map getParams(Map m, ServletContext sc) {
