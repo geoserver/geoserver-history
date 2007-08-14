@@ -159,7 +159,7 @@ public class GetFeatureWithLockTest extends WFSTestSupport {
                 .getNodeName());
 
         String lockId = dom.getDocumentElement().getAttribute("lockId");
-        System.out.println(lockId);
+        //System.out.println(lockId);
         xml = "<wfs:Transaction" + "  service=\"WFS\"" + "  version=\"1.0.0\""
                 + "  releaseAction=\"SOME\""
                 + "  xmlns:cdf=\"http://www.opengis.net/cite/data\""
