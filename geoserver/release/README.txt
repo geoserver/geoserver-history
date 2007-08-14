@@ -1,3 +1,12 @@
+GeoServer 1.5.3
+---------------
+GeoServer 1.5.3 contains some minor bug fixes relating to GeoRSS and KML. The
+changlog can be found here:
+
+http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&styleName=Html&version=13649
+
+This release is based off of Geotools 2.3.4.
+
 Geoserver 1.5.2
 ---------------
 Geoserver 1.5.2 is a bugfix and minor feature release... you should

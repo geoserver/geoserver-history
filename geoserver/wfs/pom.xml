@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>geoserver</artifactId>
-    <version>1.5.2</version>
+    <version>1.5.3</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -19,12 +19,12 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.5.2</version>
+      <version>1.5.3</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>validation</artifactId>
-      <version>1.5.2</version>
+      <version>1.5.3</version>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>

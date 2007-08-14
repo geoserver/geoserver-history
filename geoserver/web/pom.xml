@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver</artifactId>
-		<version>1.5.2</version>
+		<version>1.5.3</version>
 	</parent>
 
 	<groupId>org.geoserver</groupId>
@@ -34,37 +34,37 @@
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>platform</artifactId>
-			<version>1.5.2</version>
+			<version>1.5.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>data</artifactId>
-			<version>1.5.2</version>
+			<version>1.5.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>main</artifactId>
-			<version>1.5.2</version>
+			<version>1.5.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>wcs</artifactId>
-			<version>1.5.2</version>
+			<version>1.5.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>wfs</artifactId>
-			<version>1.5.2</version>
+			<version>1.5.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>wms</artifactId>
-			<version>1.5.2</version>
+			<version>1.5.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>validation</artifactId>
-			<version>1.5.2</version>
+			<version>1.5.3</version>
 		</dependency>
 
 		<dependency>
@@ -313,12 +313,12 @@
 						${project.build.directory}/geoserver
 					</webApp>
 					<!-- uncomment following to set a GEOSERVER_DATA_DIR -->
-					<!--systemProperties>
+					<systemProperties>
 						<systemProperty>
 							<name>GEOSERVER_DATA_DIR</name>
-							<value>/home/jdeolive/devel/geoserver/configurations/citeWFS</value>
+							<value>/home/jdeolive/devel/geoserver/1.5.x/configuration/cite</value>
 						</systemProperty>
-					</systemProperties-->
+					</systemProperties>
 				</configuration>
 			</plugin>
 
