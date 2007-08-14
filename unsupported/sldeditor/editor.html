@@ -24,23 +24,15 @@
 	  <div dojoType="ContentPane" label="Main" id="mainArea">
 	    <div id="mainButtonArea" style="height: 10%">
 	      <table><tr>
-		  <td align="left"><button dojoType="Button" id="mainUpButton">Up a level</button></td>
-		  <td align="left" width="80%"> <span id="mainCurrentArea">Please Load a SLD</span></td>
-	      </tr></table>
-	      <table width="100%"><tr>
-		  <td align="left"><button dojoType="Button" id="mainAddButton">Add</button></td>
-		  <td align="left"><button dojoType="Button" id="mainCopyButton">Copy</button></td>
-		  <td align="left"><button dojoType="Button" id="mainRemoveButton">Remove</button></td>
-		  <td width="60%"></td>
-		  <td align="right"><button dojoType="Button" id="mainRevertButton">Revert</button></td>
-		  <td align="right"><button dojoType="Button" id="mainClearButton">Clear</button></td>
+		  <td align="left" width="70%"> <span id="mainCurrentArea">Please Load a SLD</span></td>
+	     	  <td align="left"><button dojoType="Button" id="mainRevertButton">Revert</button></td>
 		  <td width="20%"></td>
 		  <td align="right"><button dojoType="Button" id="mainApplyButton">Apply</button></td>
 		</tr>
 	      </table>
 	    </div>
-	    <div dojoType="TabContainer" id="tabMain" labelPosition="left-h" style="height: 90%">
-	      <div dojoType="ContentPane" id="tab1" label="StyledLayerDescriptor"></div>
+	    <div dojoType="ContentPane" id="mainDataArea" style="height: 90%; width=100%">
+	      
 	    </div>
 	  </div>
 	  <div dojoType="ContentPane" label="Save/Load" id="save/load">
@@ -78,12 +70,9 @@
 	  </div>
 	  <div id="treeButtonArea" style="height: 16px">
 	    <table width="100%"><tr>
-		<td align="left"><button dojoType="Button" id="addButton">Add</button></td>
-		<td align="left"><button dojoType="Button" id="copyButton">Copy</button></td>
-		<td align="left"><button dojoType="Button" id="removeButton">Remove</button></td>
-		<td width="50%"></td>
-		<td align="right"><button dojoType="Button" id="expandButton">Expand All</button></td>
-		<td align="right"><button dojoType="Button" id="collapseButton">Collapse All</button></td>
+		<td align="left"><button dojoType="Button" id="expandButton">Expand Selected</button></td>
+		<td align="left"><button dojoType="Button" id="collapseButton">Collapse Selected</button></td>
+		<td style="width:100%"></td>
 	    </tr></table>
 	  </div>
 	</div>
@@ -91,27 +80,179 @@
     </div>
 
     <!--Here are definitions for the tab content-->
-    <div style="display:none">
+    <div id="hiddenArea" style="display:none">
       <div id="StyledLayerDescriptor">
-	<form id="StyledLayerDescriptorForm">
-	  Name: <input type="text" name="Name"></input>
-	  <br>
-	  Title: <input type="text" name="Title"></input>
-	  <br>
-	  Abstract: <br>
-	  <textarea style="width:100%" name="Abstract"></textarea>
-	  <br>
-	  <input type="checkbox" name="NamedLayer">NamedLayer</input>
-	  <br>
-	  <input type="checkbox" name="UserLayer">UserLayer</input>
-	</form>
+	Name: <div dojoType="textbox" id="SLDName"></div>
+	<br>
+	Title: <div dojoType="textbox" id="SLDTitle"></div>
+	<br>
+	Abstract: <br>
+	<textarea style="width:100%" rows="3" id="SLDAbstract"></textarea>
+	<br>
+	<div dojoType="checkbox" id="SLDNamedLayer"></div> NamedLayer
+	<br>
+	<div dojoType="checkbox" id="SLDUserLayer"></div> UserLayer
+	<br>
       </div>
-      
       <div id="NamedLayer">
-	
+	Name: <div dojoType="textbox" id="NamedLayerName"></div>
+	<br>
+	LayerFeatureConstraints::FeatureTypeConstraint (multiple)
+	<br>
+	NamedStyle: <div dojoType="textbox" id="NamedLayerNamedStyle"></div>
+	<br>
+	UserStyle
+	<br>
+	UserLayer
       </div>
-      <div id="StyledLayerDescriptor" style="display:none">
-	
+      <div id="LayerFeatureConstraints">
+	FeatureTypeConstraint (multiple)
+	<br>
+	FeatureTypeName: <div dojoType="textbox" id="LayerFeatureConstraintsFeatureTypeName"></div>
+	<br>
+	Filter
+	<br>
+	Extent (multiple)
+	<br>
+	Name: <div dojoType="textbox" id="LayerFeatureConstraintsExtentName"></div>
+	<br>
+	Value: <div dojoType="textbox" id="LayerFeatureConstraintsExtentValue"></div>
+      </div>
+      <div id="UserStyle">
+	Name: <div dojoType="textbox" id="UserStyleName"></div>
+	<br>
+	Title: <div dojoType="textbox" id="UserStyleTitle"></div>
+	<br>
+	Abstract: <br>
+	<textarea style="width:100%" rows="3" id="UserStyleAbstract"></textarea>
+	<br>
+	<div dojoType="checkbox" name="UserStyleisDefault"></div> isDefault
+	<br>
+	FeatureTypeStyle (multiple)
+      </div>
+      <div id="FeatureTypeStyle">
+	Name: <div dojoType="textbox" id="FeatureTypeStyleName"></div>
+	<br>
+	Title: <div dojoType="textbox" id="FeatureTypeStyleTitle"></div>
+	<br>
+	Abstract: <br>
+	<textarea style="width:100%" rows="3" id="FeatureTypeStyleAbstract"></textarea>
+	<br>
+	FeatureTypeName: <div dojoType="textbox" id="FeatureTypeStyleFeatureTypeName"></div>
+	<br>
+	SemanticTypeIdentifier: <div dojoType="textbox" id="FeatureTypeStyleSemanticTypeIdentifier"></div>
+	<br>
+	Rule (multiple)
+      </div>
+      <div id="UserLayer">
+	Name: <div dojoType="textbox" id="UserLayerName"></div>
+	<br>
+	RemoteOWS: <div dojoType="textbox" id="UserLayerLink"></div>
+	<br>
+	<input type="radio" name="service" id="UserLayerWFS" checked>WFS</input>
+	<input type="radio" name="service" id="UserLayerWCS">WCS</input>
+	<br>
+	LayerFeatureConstraints
+	<br>
+	UserStyle (multiple)
+      </div>
+      <div id="Rule">
+	Name: <div dojoType="textbox" id="RuleName"></div>
+	<br>
+	Title: <div dojoType="textbox" id="RuleTitle"></div>
+	<br>
+	Abstract: <br>
+	<textarea style="width:100%" rows="3" id="RuleAbstract"></textarea>
+	<br>
+	MinScaleDenominator
+	MaxScaleDenominator
+	LegendGraphic::Graphic
+	Filter/Elsefilter
+	Symbolizers: Line, Polygon, Point, Text, Raster
+      </div>
+      <div id="Graphic">
+	ExternalGraphic: <div dojoType="textbox" id="UserLayerLink"></div>
+	<br>
+	MIME type: image/<div dojoType="textbox" id="UserLayerType"></div>
+	<br>
+	WellKnownName: square, circle, triangle, star, cross, x
+	<br>
+	Fill graphic:
+	<br>
+	Fill color:
+	<br>
+	Fill opacity:
+	<br>
+	Stroke GraphicFill:
+	<br>
+	Stroke GraphicStroke:
+	<br>
+	Stroke color:
+	Stroke opacity:
+	Stroke width:
+	Stroke linejoin:
+	Stroke linecap:
+	Stroke dasharray:
+	Stroke dashoffset:
+	<br>
+	Graphic Opacity:
+	<br>
+	Graphic Size:
+	<br>
+	Graphic Rotation:
+      </div>
+      <div id="Filter">
+	For now, type your own filter.
+      </div>
+      <div id="Elsefilter">
+	Placeholder, don't really know how to handle this.
+      </div>
+      <div id="LineSymbolizer">
+	Geometry:
+	<br>
+	Stroke GraphicFill:
+	<br>
+	Stroke GraphicStroke:
+	<br>
+	Stroke color:
+	Stroke opacity:
+	Stroke width:
+	Stroke linejoin:
+	Stroke linecap:
+	Stroke dasharray:
+	Stroke dashoffset:
+      </div>
+      <div id="PolygonSymbolizer">
+	Geometry:
+	<br>
+	Fill graphic:
+	<br>
+	Fill color:
+	<br>
+	Fill opacity:
+	<br>
+	Stroke GraphicFill:
+	<br>
+	Stroke GraphicStroke:
+	<br>
+	Stroke color:
+	Stroke opacity:
+	Stroke width:
+	Stroke linejoin:
+	Stroke linecap:
+	Stroke dasharray:
+	Stroke dashoffset:
+      </div>
+      <div id="PointSymbolizer">
+	Geometry:
+	<br>
+	Graphic:
+      </div>
+      <div id="TextSymbolizer">
+	Blargh!
+      </div>
+      <div id="RasterSymbolizer">
+	Bleeargh!
       </div>
     </div>
   </body>
