@@ -956,10 +956,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype implements GeoResource
                         GeometricAttributeType old = (GeometricAttributeType) attributes[count];
 
                         try {
-                            if (old.getCoordinateSystem() == null || srsHandling == REPROJECT) {
+                            if (old.getCoordinateSystem() == null) {
                                 attributes[count] = new GeometricAttributeType(old, getSRS(SRS));
                                 srsHandling = FORCE;
-                            } 
+                            } else if(srsHandling == REPROJECT || srsHandling == FORCE) {
+                                attributes[count] = new GeometricAttributeType(old, getSRS(SRS));
+                            }
                         } catch (Exception e) {
                             e.printStackTrace(); //DJB: this is okay to ignore since (a) it should never happen (b) we'll use the default one (crs=null)
                         }
