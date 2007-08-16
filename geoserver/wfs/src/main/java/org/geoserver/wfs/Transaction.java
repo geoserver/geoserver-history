@@ -10,6 +10,9 @@ import net.opengis.wfs.InsertedFeatureType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.WfsFactory;
+
+import org.acegisecurity.context.SecurityContextHolder;
+import org.acegisecurity.userdetails.UserDetails;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.geoserver.platform.ServiceException;
@@ -510,8 +513,21 @@ public class Transaction {
      * @return
      */
     protected DefaultTransaction getDatastoreTransaction(TransactionType request)
-        throws IOException {
-        return new DefaultTransaction();
+    throws IOException {
+        DefaultTransaction transaction = new DefaultTransaction();
+        // use handle as the log messages
+        String username = "anonymous";
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername(); 
+        }
+        
+        // Ok, this is a hack. We assume there is only one versioning datastore, the postgis one,
+        // and that we can the following properties won't hurt transactio processing anyways...
+        transaction.putProperty("PgVersionedCommitAuthor", username);
+        transaction.putProperty("PgVersionedCommitMessage", request.getHandle());
+    
+        return transaction;
     }
 
     /*
