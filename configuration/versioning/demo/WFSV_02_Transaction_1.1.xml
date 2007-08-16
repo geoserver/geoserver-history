@@ -12,7 +12,7 @@
                       http://localhost:8080/geoserver/wfsv?request=DescribeFeatureType&amp;version=1.1.0&amp;typeName=topp:archsites"
   handle="Updating Signature rock label">
   <wfs:Insert>
-    <topp:archsites fid="archsites.2">
+    <topp:archsites>
       <topp:cat>2</topp:cat>
       <topp:str1>Alien crash site</topp:str1>
       <topp:the_geom>
