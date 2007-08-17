@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import net.opengis.wfs.FeatureCollectionType;
 import net.sf.json.JSONException;
@@ -23,7 +24,7 @@ import org.geotools.feature.FeatureType;
 import com.vividsolutions.jts.geom.Geometry;
 
 public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
-
+    private final Logger LOGGER = Logger.getLogger(this.getClass().toString());
     public static final String FORMAT = "json";
     
     public GeoJSONOutputFormat() {
