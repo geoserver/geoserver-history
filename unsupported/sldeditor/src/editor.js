@@ -28,6 +28,13 @@ var importantElements = new Array();
 function loadXMLFromString(){
     var text = document.getElementById('pastedXML').value;
     if(text){
+	if(xmlDoc){
+	    if(confirm("Do you really want to load a new SLD?")){
+		xmlDoc = null;
+	    } else {
+		return;
+	    }
+	}
 	xmlDoc = dojo.dom.createDocumentFromText(text);
 	sldLoaded();
     }
@@ -52,6 +59,21 @@ function loadXMLFromFile(){
     // does not work in Safari... possibly not IE or PC Firefox
     // do I need something like:
     // netscape.security.PrivilegeManager.enablePrivilege('UniversalFileRead');
+}
+
+function createSLD(){
+    if(xmlDoc){
+	if(confirm("Do you really want to create a new SLD?")){
+	    xmlDoc = null;
+	} else {
+	    return;
+	}
+    }
+    //I'm lazy
+    //How should this encoding actually be chosen?
+    var text = '<?xml version="1.0" encoding="ISO-8859-1"?>\n<StyledLayerDescriptor version="1.0.0"\n xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd"\n xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc"\n xmlns:xlink="http://www.w3.org/1999/xlink"\n xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n </StyledLayerDescriptor>';
+    xmlDoc = dojo.dom.createDocumentFromText(text);
+    sldLoaded();
 }
 
 function generateXML(){
@@ -147,22 +169,22 @@ function updateData(){
 	    loadStyledLayerDescriptor();
 	    break
 	case 'NamedLayer':
-	    
+		loadNamedLayer();
 	    break
 	case 'LayerFeatureConstraints':
 	    
 	    break
 	case 'UserStyle':
-	    
+		loadUserStyle();
 	    break
 	case 'FeatureTypeStyle':
-	    
+		loadFeatureTypeStyle();
 	    break
 	case 'UserLayer':
 	    
 	    break
 	case 'Rule':
-	    
+		loadRule();
 	    break
 	case 'Graphic':
 	    
@@ -201,23 +223,23 @@ function saveData(){
 	saveStyledLayerDescriptor();
 	break
     case 'NamedLayer':
-	    
-	    break
+	    saveNamedLayer();
+	break
     case 'LayerFeatureConstraints':
 	    
 	    break
     case 'UserStyle':
-	    
-	    break
+	    saveUserStyle();
+	break
     case 'FeatureTypeStyle':
-	    
-	    break
+	    saveFeatureTypeStyle();
+	break
     case 'UserLayer':
 	    
 	    break
     case 'Rule':
-	    
-	    break
+	    saveRule();
+	break
     case 'Graphic':
 	    
 	    break
@@ -294,7 +316,7 @@ function saveStyledLayerDescriptor(){
     var UL = dojo.widget.byId('SLDUserLayer');
     var isName = 0, isTitle = 0, isAbstract = 0, isUL = 0, isNL = 0;
     var newel = '', nodeid = '', locnode = '';
-
+    
     var node = dojo.dom.firstElement(focusNode.object);
     var nextnode = '';
     
@@ -306,7 +328,7 @@ function saveStyledLayerDescriptor(){
 		node.parentNode.removeChild(node);
 		//update tree title
 		focusNode.title = focusNode.object.tagName;
-		focusNode.edit(FocusNode);
+		focusNode.edit(focusNode);
 	    }else{
 		node.firstChild.data = name.textbox.value;
 		//update tree title
@@ -391,9 +413,12 @@ function saveStyledLayerDescriptor(){
 	locnode = dojo.dom.nextElement(locnode);   
 	newel = xmlDoc.createElement('Title');
 	newel.appendChild(xmlDoc.createTextNode(title.textbox.value));
-	//insert it as the second element
+	//insert it as the next element
 	focusNode.object.insertBefore(newel, locnode);
 	locnode = newel;
+    }else if(isTitle){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
     }
     
     // add an Abstract element
@@ -402,10 +427,12 @@ function saveStyledLayerDescriptor(){
 	locnode = dojo.dom.nextElement(locnode);   
 	newel = xmlDoc.createElement('Abstract');
 	newel.appendChild(xmlDoc.createTextNode(abst.value));
-	//insert it as the third element
+	//insert it as the next element
 	focusNode.object.insertBefore(newel, locnode);
 	locnode = newel;
-	focusNode.object.appendChild(newel);
+    }else if(isAbstract){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
     }
     
     // if the NL box is checked but there is no NL element
@@ -414,7 +441,7 @@ function saveStyledLayerDescriptor(){
 	locnode = dojo.dom.nextElement(locnode);   
 	//create one
         newel = xmlDoc.createElement('NamedLayer');
-	//insert it as the second element
+	//insert it as the next element
 	focusNode.object.insertBefore(newel, locnode);
 	locnode = newel;
 	// update the tree
@@ -426,6 +453,9 @@ function saveStyledLayerDescriptor(){
 			}),
 	    0
 	    );
+    }else if(isNL){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
     }
     // same for UL
     if(isUL == 0 && UL.checked == 1){
@@ -433,7 +463,7 @@ function saveStyledLayerDescriptor(){
 	locnode = dojo.dom.nextElement(locnode);   
 	//create one
 	newel = xmlDoc.createElement('UserLayer');
-	//insert it as the second element
+	//insert it as the next element
 	focusNode.object.insertBefore(newel, locnode);
 	locnode = newel;
 	// update tree
@@ -444,6 +474,962 @@ function saveStyledLayerDescriptor(){
 			object:newel
 			}),
 	    focusNode.children.length > 0 ? 1 : 0
+	    );
+    }
+}
+
+function loadNamedLayer(){
+    var name = dojo.widget.byId('NamedLayerName'); 
+    // TODO: LayerFeatureConstraints::FeatureTypeConstraint (multiple)
+    var namedstyle = dojo.widget.byId('NamedLayerNamedStyle');
+    var US = dojo.widget.byId('NLUserStyle');
+    
+    // Set to defaults
+    name.textbox.value = '';
+    namedstyle.textbox.value = '';
+    US.setValue(0);
+    
+    // Update with existing values
+    var node = dojo.dom.firstElement(focusNode.object);
+    while(node){
+	switch(node.tagName){
+	case 'Name':
+	    name.textbox.value = node.textContent;
+	    break
+	case 'LayerFeatureConstraints':
+		//TODO
+		break
+	case 'NamedStyle':
+		namedstyle.textbox.value = dojo.dom.firstElement(node).textContent;
+	    break
+	case 'UserStyle':
+		US.setValue(1);
+	    break
+	default:
+	}
+	node = dojo.dom.nextElement(node);
+    }
+}
+
+function saveNamedLayer(){
+    var name = dojo.widget.byId('NamedLayerName');
+    // TODO: LayerFeatureConstraints::FeatureTypeConstraint (multiple)
+    var namedstyle = dojo.widget.byId('NamedLayerNamedStyle');
+    var US = dojo.widget.byId('NLUserStyle');
+    
+    var isName = 0, isNamedStyle = 0, isUS = 0;
+    var newel = '', nodeid = '', locnode = '';
+    
+    var node = dojo.dom.firstElement(focusNode.object);
+    var nextnode = '';
+    
+    while(node){
+	nextnode = dojo.dom.nextElement(node);
+	switch(node.tagName){
+	case 'Name':
+	    if(name.textbox.value == ''){
+		node.parentNode.removeChild(node);
+		//update tree title
+		focusNode.title = focusNode.object.tagName;
+		focusNode.edit(focusNode);
+	    }else{
+		node.firstChild.data = name.textbox.value;
+		//update tree title
+		focusNode.title = focusNode.object.tagName + ': ' + node.firstChild.data;
+		focusNode.edit(focusNode);
+		isName = 1;
+	    }
+	    break
+	case 'LayerFeatureConstraints':
+		//TODO
+		break
+	case 'NamedStyle':
+		if(namedstyle.textbox.value == ''){
+		    node.parentNode.removeChild(node);
+		}else{
+		    dojo.dom.firstElement(node).firstChild.data = namedstyle.textbox.value;
+		    isNamedStyle = 1;
+		}
+	    break
+	case 'UserStyle':
+		if(US.checked == 0){
+		    if(confirm("Do you really want to delete this UserStyle?")){
+			//remove it from the tree
+			for (var i=0; i<focusNode.children.length; i++){
+			    if(focusNode.children[i].object == node){
+				focusNode.removeNode(focusNode.children[i]);
+				break;
+			    }
+			}
+			//remove it from the DOM
+			node.parentNode.removeChild(node);
+		    }
+		}else{
+		    isUS = 1;
+		}
+	    break
+	default:
+	}
+	node = nextnode;
+    }
+    //initialize the position element to keep track of order
+    locnode = dojo.dom.firstElement(focusNode.object);
+    // add a Name element
+    if(isName == 0 && name.textbox.value != ''){
+	newel = xmlDoc.createElement('Name');
+	newel.appendChild(xmlDoc.createTextNode(name.textbox.value));
+	//insert it as the first element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+	//update the tree title
+	focusNode.title = focusNode.object.tagName + ': ' + newel.firstChild.data;
+	focusNode.edit(focusNode);
+    }
+    //update the title display area
+    document.getElementById('mainCurrentArea').innerHTML = focusNode.title;
+    
+     // add a NamedStyle element
+    if(isNamedStyle == 0 && namedstyle.textbox.value != ''){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	newel = xmlDoc.createElement('NamedStyle');
+	var tmp = xmlDoc.createElement('Name');
+	tmp.appendChild(xmlDoc.createTextNode(namedstyle.textbox.value));
+	newel.appendChild(tmp);
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isNamedStyle){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    
+    //TODO LayerFeatureConstraints
+    
+    // if the US box is checked but there is no US element
+    if(isUS == 0 && US.checked == 1){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	//create one
+        newel = xmlDoc.createElement('UserStyle');
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+	// update the tree
+	nodeid = dojo.dom.getUniqueId();
+	//insert at index 0 in tree
+	focusNode.addChild(dojo.widget.createWidget("TreeNode", {title:'UserStyle',
+			widgetId:nodeid,
+			object:newel
+			}),
+	    0
+	    );
+    }else if(isUS){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+}
+
+function loadUserStyle(){
+    var name = dojo.widget.byId('UserStyleName'); 
+    var title = dojo.widget.byId('UserStyleTitle');
+    var abst = document.getElementById('UserStyleAbstract');
+    var IsDefault = dojo.widget.byId('UserStyleIsDefault');
+    //TODO: make FeatureTypeStyle multiple
+    var FTS = dojo.widget.byId('UserStyleFTS');
+        
+    // Set to defaults
+    name.textbox.value = '';
+    title.textbox.value = '';
+    abst.value = '';
+    IsDefault.setValue(0);
+    FTS.setValue(0);
+    
+    // Update with existing values
+    var node = dojo.dom.firstElement(focusNode.object);
+    while(node){
+	switch(node.tagName){
+	case 'Name':
+	    name.textbox.value = node.textContent;
+	    break
+	case 'Title':
+	    title.textbox.value = node.textContent;
+	    break
+	case 'Abstract':
+	    abst.value = node.textContent;
+	    break
+	case 'IsDefault':
+	    IsDefault.setValue(1);
+	    break
+	case 'FeatureTypeStyle':
+	    FTS.setValue(1);
+	    break
+	default:
+	}
+	node = dojo.dom.nextElement(node);
+    }
+}
+
+function saveUserStyle(){
+    var name = dojo.widget.byId('UserStyleName');
+    var title = dojo.widget.byId('UserStyleTitle');
+    var abst = document.getElementById('UserStyleAbstract');
+    var IsDefault = dojo.widget.byId('UserStyleIsDefault');
+    //TODO: make FeatureTypeStyle multiple
+    var FTS = dojo.widget.byId('UserStyleFTS');
+   
+    var isName = 0, isTitle = 0, isAbstract = 0, isIsDefault = 0, isFTS = 0;
+    var newel = '', nodeid = '', locnode = '';
+    
+    var node = dojo.dom.firstElement(focusNode.object);
+    var nextnode = '';
+    
+    while(node){
+	nextnode = dojo.dom.nextElement(node);
+	switch(node.tagName){
+	case 'Name':
+	    if(name.textbox.value == ''){
+		node.parentNode.removeChild(node);
+		//update tree title
+		focusNode.title = focusNode.object.tagName;
+		focusNode.edit(focusNode);
+	    }else{
+		node.firstChild.data = name.textbox.value;
+		//update tree title
+		focusNode.title = focusNode.object.tagName + ': ' + node.firstChild.data;
+		focusNode.edit(focusNode);
+		isName = 1;
+	    }
+	    break
+	case 'Title':
+		if(title.textbox.value == ''){
+		    node.parentNode.removeChild(node);
+		}else{
+		    node.firstChild.data = title.textbox.value;
+		    isTitle = 1;
+		}
+	    break
+	case 'Abstract':
+		if(abst.value == ''){
+		    node.parentNode.removeChild(node);
+		}else{
+		    node.firstChild.data = abst.value;
+		    isAbstract = 1;
+		}
+	    break
+	case 'IsDefault':
+		if(IsDefault.checked == 0){
+		    node.parentNode.removeChild(node);
+		}else{
+		    node.firstChild.data = '1';
+		    isIsDefault = 1;
+		}
+	    break
+	case 'FeatureTypeStyle':
+		if(FTS.checked == 0){
+		    if(confirm("Do you really want to delete this FeatureTypeStyle?")){
+			//remove it from the tree
+			for (var i=0; i<focusNode.children.length; i++){
+			    if(focusNode.children[i].object == node){
+				focusNode.removeNode(focusNode.children[i]);
+				break;
+			    }
+			}
+			//remove it from the DOM
+			node.parentNode.removeChild(node);
+		    }
+		}else{
+		    isFTS = 1;
+		}
+	    break
+	default:
+	}
+	node = nextnode;
+    }
+    //initialize the position element to keep track of order
+    locnode = dojo.dom.firstElement(focusNode.object);
+    // add a Name element
+    if(isName == 0 && name.textbox.value != ''){
+	newel = xmlDoc.createElement('Name');
+	newel.appendChild(xmlDoc.createTextNode(name.textbox.value));
+	//insert it as the first element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+	//update the tree title
+	focusNode.title = focusNode.object.tagName + ': ' + newel.firstChild.data;
+	focusNode.edit(focusNode);
+    }
+    //update the title display area
+    document.getElementById('mainCurrentArea').innerHTML = focusNode.title;
+    
+     // add a Title element
+    if(isTitle == 0 && title.textbox.value != ''){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	newel = xmlDoc.createElement('Title');
+	newel.appendChild(xmlDoc.createTextNode(title.textbox.value));
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isTitle){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    
+    // add an Abstract element
+    if(isAbstract == 0 && abst.value != ''){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	newel = xmlDoc.createElement('Abstract');
+	newel.appendChild(xmlDoc.createTextNode(abst.value));
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isAbstract){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    
+    // if the IsDefault box is checked but there is no IsDefault element
+    if(isIsDefault == 0 && IsDefault.checked == 1){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	//create one
+        newel = xmlDoc.createElement('IsDefault');
+	newel.appendChild(xmlDoc.createTextNode('1'));
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isIsDefault){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    // same for FTS
+    if(isFTS == 0 && FTS.checked == 1){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	//create one
+	newel = xmlDoc.createElement('FeatureTypeStyle');
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+	// update tree
+	nodeid = dojo.dom.getUniqueId();
+	//insert at index 0 in the tree
+	focusNode.addChild(dojo.widget.createWidget("TreeNode", {title:'FeatureTypeStyle',
+			widgetId:nodeid,
+			object:newel
+			}),
+	    0
+	    );
+    }
+}
+
+function loadFeatureTypeStyle(){
+    var name = dojo.widget.byId('FeatureTypeStyleName'); 
+    var title = dojo.widget.byId('FeatureTypeStyleTitle');
+    var abst = document.getElementById('FeatureTypeStyleAbstract');
+    var ftname = dojo.widget.byId('FTSFeatureTypeName');
+    var ftsem = dojo.widget.byId('FTSSemanticTypeIdentifier');
+    //TODO: make Rule multiple
+    var rule = dojo.widget.byId('FTSRule');
+        
+    // Set to defaults
+    name.textbox.value = '';
+    title.textbox.value = '';
+    abst.value = '';
+    ftname.textbox.value = '';
+    ftsem.textbox.value = '';
+    rule.setValue(0);
+    
+    // Update with existing values
+    var node = dojo.dom.firstElement(focusNode.object);
+    while(node){
+	switch(node.tagName){
+	case 'Name':
+	    name.textbox.value = node.textContent;
+	    break
+	case 'Title':
+		title.textbox.value = node.textContent;
+	    break
+	case 'Abstract':
+		abst.value = node.textContent;
+	    break
+	case 'FeatureTypeName':
+		ftname.textbox.value = node.textContent;
+	    break
+	case 'SemanticTypeIdentifier':
+		ftsem.textbox.value = node.textContent;
+	    break
+	case 'Rule':
+		rule.setValue(1);
+	    break
+	default:
+	}
+	node = dojo.dom.nextElement(node);
+    }
+}
+
+function saveFeatureTypeStyle(){
+    var name = dojo.widget.byId('FeatureTypeStyleName');
+    var title = dojo.widget.byId('FeatureTypeStyleTitle');
+    var abst = document.getElementById('FeatureTypeStyleAbstract');
+    var ftname = dojo.widget.byId('FTSFeatureTypeName');
+    var ftsem = dojo.widget.byId('FTSSemanticTypeIdentifier');
+    //TODO: make Rule multiple
+    var rule = dojo.widget.byId('FTSRule');
+    
+    var isName = 0, isTitle = 0, isAbstract = 0, isFtname = 0, isFtsem = 0, isRule = 0;
+    var newel = '', nodeid = '', locnode = '';
+    
+    var node = dojo.dom.firstElement(focusNode.object);
+    var nextnode = '';
+    
+    while(node){
+	nextnode = dojo.dom.nextElement(node);
+	switch(node.tagName){
+	case 'Name':
+	    if(name.textbox.value == ''){
+		node.parentNode.removeChild(node);
+		//update tree title
+		focusNode.title = focusNode.object.tagName;
+		focusNode.edit(focusNode);
+	    }else{
+		node.firstChild.data = name.textbox.value;
+		//update tree title
+		focusNode.title = focusNode.object.tagName + ': ' + node.firstChild.data;
+		focusNode.edit(focusNode);
+		isName = 1;
+	    }
+	    break
+	case 'Title':
+		if(title.textbox.value == ''){
+		    node.parentNode.removeChild(node);
+		}else{
+		    node.firstChild.data = title.textbox.value;
+		    isTitle = 1;
+		}
+	    break
+	case 'Abstract':
+		if(abst.value == ''){
+		    node.parentNode.removeChild(node);
+		}else{
+		    node.firstChild.data = abst.value;
+		    isAbstract = 1;
+		}
+	    break
+	case 'FeatureTypeName':
+		if(ftname.textbox.value == ''){
+		    node.parentNode.removeChild(node);
+		}else{
+		    node.firstChild.data = ftname.textbox.value;
+		    isFtname = 1;
+		}
+	    break
+	case 'SemanticTypeIdentifier':
+		if(ftsem.textbox.value == ''){
+		    node.parentNode.removeChild(node);
+		}else{
+		    node.firstChild.data = ftsem.textbox.value;
+		    isFtsem = 1;
+		}
+	    break
+	case 'Rule':
+		if(rule.checked == 0){
+		    if(confirm("Do you really want to delete this Rule?")){
+			//remove it from the tree
+			for (var i=0; i<focusNode.children.length; i++){
+			    if(focusNode.children[i].object == node){
+				focusNode.removeNode(focusNode.children[i]);
+				break;
+			    }
+			}
+			//remove it from the DOM
+			node.parentNode.removeChild(node);
+		    }
+		}else{
+		    isRule = 1;
+		}
+	    break
+	default:
+	}
+	node = nextnode;
+    }
+    //initialize the position element to keep track of order
+    locnode = dojo.dom.firstElement(focusNode.object);
+    // add a Name element
+    if(isName == 0 && name.textbox.value != ''){
+	newel = xmlDoc.createElement('Name');
+	newel.appendChild(xmlDoc.createTextNode(name.textbox.value));
+	//insert it as the first element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+	//update the tree title
+	focusNode.title = focusNode.object.tagName + ': ' + newel.firstChild.data;
+	focusNode.edit(focusNode);
+    }
+    //update the title display area
+    document.getElementById('mainCurrentArea').innerHTML = focusNode.title;
+    
+     // add a Title element
+    if(isTitle == 0 && title.textbox.value != ''){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	newel = xmlDoc.createElement('Title');
+	newel.appendChild(xmlDoc.createTextNode(title.textbox.value));
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isTitle){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    
+    // add an Abstract element
+    if(isAbstract == 0 && abst.value != ''){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	newel = xmlDoc.createElement('Abstract');
+	newel.appendChild(xmlDoc.createTextNode(abst.value));
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isAbstract){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    
+    // add a FeatureTypeName element
+    if(isFtname == 0 && ftname.textbox.value != ''){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	//create one
+        newel = xmlDoc.createElement('FeatureTypeName');
+	newel.appendChild(xmlDoc.createTextNode(ftname.textbox.value));
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isFtname){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    // if the Rule box is checked but there is no Rule element
+    if(isRule == 0 && rule.checked == 1){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	//create one
+	newel = xmlDoc.createElement('Rule');
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+	// update tree
+	nodeid = dojo.dom.getUniqueId();
+	//insert at index 0 in the tree
+	focusNode.addChild(dojo.widget.createWidget("TreeNode", {title:'Rule',
+			widgetId:nodeid,
+			object:newel
+			}),
+	    0
+	    );
+    }
+}
+
+function loadRule(){
+    var name = dojo.widget.byId('RuleName'); 
+    var title = dojo.widget.byId('RuleTitle');
+    var abst = document.getElementById('RuleAbstract');
+    var min = dojo.widget.byId('RuleMin');
+    var max = dojo.widget.byId('RuleMax');
+    //TODO: Filter/Elsefilter
+    var line = dojo.widget.byId('RuleLine');
+    var polygon = dojo.widget.byId('RulePolygon');
+    var point = dojo.widget.byId('RulePoint');
+    var text = dojo.widget.byId('RuleText');
+    var raster = dojo.widget.byId('RuleRaster');
+    
+    // Set to defaults
+    name.textbox.value = '';
+    title.textbox.value = '';
+    abst.value = '';
+    min.textbox.value = '';
+    max.textbox.value = '';
+    line.setValue(0);
+    polygon.setValue(0);
+    point.setValue(0);
+    text.setValue(0);
+    raster.setValue(0);
+    
+    // Update with existing values
+    var node = dojo.dom.firstElement(focusNode.object);
+    while(node){
+	switch(node.tagName){
+	case 'Name':
+	    name.textbox.value = node.textContent;
+	    break
+	case 'Title':
+		title.textbox.value = node.textContent;
+	    break
+	case 'Abstract':
+		abst.value = node.textContent;
+	    break
+	case 'MinScaleDenominator':
+		min.textbox.value = node.textContent;
+	    break
+	case 'MaxScaleDenominator':
+		max.textbox.value = node.textContent;
+	    break
+	case 'LineSymbolizer':
+		line.setValue(1);
+	    break
+	case 'PolygonSymbolizer':
+		polygon.setValue(1);
+	    break
+	case 'PointSymbolizer':
+		point.setValue(1);
+	    break
+	case 'TextSymbolizer':
+		text.setValue(1);
+	    break
+	case 'RasterSymbolizer':
+		raster.setValue(1);
+	    break
+		
+	default:
+	}
+	node = dojo.dom.nextElement(node);
+    }
+}
+
+function saveRule(){
+    var name = dojo.widget.byId('RuleName'); 
+    var title = dojo.widget.byId('RuleTitle');
+    var abst = document.getElementById('RuleAbstract');
+    var min = dojo.widget.byId('RuleMin');
+    var max = dojo.widget.byId('RuleMax');
+    //TODO: Filter/Elsefilter
+    var line = dojo.widget.byId('RuleLine');
+    var polygon = dojo.widget.byId('RulePolygon');
+    var point = dojo.widget.byId('RulePoint');
+    var text = dojo.widget.byId('RuleText');
+    var raster = dojo.widget.byId('RuleRaster');
+    
+    var isName = 0, isTitle = 0, isAbstract = 0, isMin = 0, isMax = 0, isLine = 0, isPolygon = 0, isPoint = 0, isText = 0, isRaster = 0;
+    var newel = '', nodeid = '', locnode = '';
+    
+    var node = dojo.dom.firstElement(focusNode.object);
+    var nextnode = '';
+    
+    while(node){
+	nextnode = dojo.dom.nextElement(node);
+	switch(node.tagName){
+	case 'Name':
+	    if(name.textbox.value == ''){
+		node.parentNode.removeChild(node);
+		//update tree title
+		focusNode.title = focusNode.object.tagName;
+		focusNode.edit(focusNode);
+	    }else{
+		node.firstChild.data = name.textbox.value;
+		//update tree title
+		focusNode.title = focusNode.object.tagName + ': ' + node.firstChild.data;
+		focusNode.edit(focusNode);
+		isName = 1;
+	    }
+	    break
+	case 'Title':
+		if(title.textbox.value == ''){
+		    node.parentNode.removeChild(node);
+		}else{
+		    node.firstChild.data = title.textbox.value;
+		    isTitle = 1;
+		}
+	    break
+	case 'Abstract':
+		if(abst.value == ''){
+		    node.parentNode.removeChild(node);
+		}else{
+		    node.firstChild.data = abst.value;
+		    isAbstract = 1;
+		}
+	    break
+	case 'MinScaleDenominator':
+		if(min.textbox.value == ''){
+		    node.parentNode.removeChild(node);
+		}else{
+		    node.firstChild.data = min.textbox.value;
+		    isMin = 1;
+		}
+	    break
+	case 'MaxScaleDenominator':
+		if(max.textbox.value == ''){
+		    node.parentNode.removeChild(node);
+		}else{
+		    node.firstChild.data = max.textbox.value;
+		    isMax = 1;
+		}
+	    break
+	case 'LineSymbolizer':
+		if(line.checked == 0){
+		    if(confirm("Do you really want to delete this LineSymbolizer?")){
+			//remove it from the tree
+			for (var i=0; i<focusNode.children.length; i++){
+			    if(focusNode.children[i].object == node){
+				focusNode.removeNode(focusNode.children[i]);
+				break;
+			    }
+			}
+			//remove it from the DOM
+			node.parentNode.removeChild(node);
+		    }
+		}else{
+		    isLine = 1;
+		}
+	    break
+	case 'LineSymbolizer':
+		if(line.checked == 0){
+		    if(confirm("Do you really want to delete this LineSymbolizer?")){
+			//remove it from the tree
+			for (var i=0; i<focusNode.children.length; i++){
+			    if(focusNode.children[i].object == node){
+				focusNode.removeNode(focusNode.children[i]);
+				break;
+			    }
+			}
+			//remove it from the DOM
+			node.parentNode.removeChild(node);
+		    }
+		}else{
+		    isLine = 1;
+		}
+	    break
+	case 'PolygonSymbolizer':
+		if(polygon.checked == 0){
+		    if(confirm("Do you really want to delete this PolygonSymbolizer?")){
+			//remove it from the tree
+			for (var i=0; i<focusNode.children.length; i++){
+			    if(focusNode.children[i].object == node){
+				focusNode.removeNode(focusNode.children[i]);
+				break;
+			    }
+			}
+			//remove it from the DOM
+			node.parentNode.removeChild(node);
+		    }
+		}else{
+		    isPolygon = 1;
+		}
+	    break
+	case 'PointSymbolizer':
+		if(line.checked == 0){
+		    if(confirm("Do you really want to delete this PointSymbolizer?")){
+			//remove it from the tree
+			for (var i=0; i<focusNode.children.length; i++){
+			    if(focusNode.children[i].object == node){
+				focusNode.removeNode(focusNode.children[i]);
+				break;
+			    }
+			}
+			//remove it from the DOM
+			node.parentNode.removeChild(node);
+		    }
+		}else{
+		    isPoint = 1;
+		}
+	    break
+	case 'TextSymbolizer':
+		if(text.checked == 0){
+		    if(confirm("Do you really want to delete this TextSymbolizer?")){
+			//remove it from the tree
+			for (var i=0; i<focusNode.children.length; i++){
+			    if(focusNode.children[i].object == node){
+				focusNode.removeNode(focusNode.children[i]);
+				break;
+			    }
+			}
+			//remove it from the DOM
+			node.parentNode.removeChild(node);
+		    }
+		}else{
+		    isText = 1;
+		}
+	    break
+
+	default:
+	}
+	node = nextnode;
+    }
+    //initialize the position element to keep track of order
+    locnode = dojo.dom.firstElement(focusNode.object);
+    // add a Name element
+    if(isName == 0 && name.textbox.value != ''){
+	newel = xmlDoc.createElement('Name');
+	newel.appendChild(xmlDoc.createTextNode(name.textbox.value));
+	//insert it as the first element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+	//update the tree title
+	focusNode.title = focusNode.object.tagName + ': ' + newel.firstChild.data;
+	focusNode.edit(focusNode);
+    }
+    //update the title display area
+    document.getElementById('mainCurrentArea').innerHTML = focusNode.title;
+    
+     // add a Title element
+    if(isTitle == 0 && title.textbox.value != ''){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	newel = xmlDoc.createElement('Title');
+	newel.appendChild(xmlDoc.createTextNode(title.textbox.value));
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isTitle){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    
+    // add an Abstract element
+    if(isAbstract == 0 && abst.value != ''){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	newel = xmlDoc.createElement('Abstract');
+	newel.appendChild(xmlDoc.createTextNode(abst.value));
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isAbstract){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    
+    // add a MinScaleDenominator element
+    if(isMin == 0 && min.textbox.value != ''){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	//create one
+        newel = xmlDoc.createElement('FeatureTypeName');
+	newel.appendChild(xmlDoc.createTextNode(min.textbox.value));
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isMin){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    var ind = 0;
+    // if the LineSymbolizer box is checked but there is no LineSymbolizer element
+    if(isLine == 0 && line.checked == 1){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	//create one
+	newel = xmlDoc.createElement('LineSymbolizer');
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+	// update tree
+	nodeid = dojo.dom.getUniqueId();
+	//insert at index in the tree
+	focusNode.addChild(dojo.widget.createWidget("TreeNode", {title:'LineSymbolizer',
+			widgetId:nodeid,
+			object:newel
+			}),
+	    ind
+	    );
+	//update the index
+	ind = ind + 1;
+    }else if(isLine){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    // if the PolygonSymbolizer box is checked but there is no PolygonSymbolizer element
+    if(isPolygon == 0 && polygon.checked == 1){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	//create one
+	newel = xmlDoc.createElement('PolygonSymbolizer');
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+	// update tree
+	nodeid = dojo.dom.getUniqueId();
+	//insert at index in the tree
+	focusNode.addChild(dojo.widget.createWidget("TreeNode", {title:'PolygonSymbolizer',
+			widgetId:nodeid,
+			object:newel
+			}),
+	    ind
+	    );
+	//update the index
+	ind = ind + 1;
+    }else if(isPolygon){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    // if the PointSymbolizer box is checked but there is no PointSymbolizer element
+    if(isPoint == 0 && point.checked == 1){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	//create one
+	newel = xmlDoc.createElement('PointSymbolizer');
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+	// update tree
+	nodeid = dojo.dom.getUniqueId();
+	//insert at index in the tree
+	focusNode.addChild(dojo.widget.createWidget("TreeNode", {title:'PointSymbolizer',
+			widgetId:nodeid,
+			object:newel
+			}),
+	    ind
+	    );
+	//update the index
+	ind = ind + 1;
+    }else if(isPoint){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    // if the TextSymbolizer box is checked but there is no TextSymbolizer element
+    if(isText == 0 && text.checked == 1){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	//create one
+	newel = xmlDoc.createElement('TextSymbolizer');
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+	// update tree
+	nodeid = dojo.dom.getUniqueId();
+	//insert at index in the tree
+	focusNode.addChild(dojo.widget.createWidget("TreeNode", {title:'TextSymbolizer',
+			widgetId:nodeid,
+			object:newel
+			}),
+	    ind
+	    );
+	//update the index
+	ind = ind + 1;
+    }else if(isText){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+        // if the RasterSymbolizer box is checked but there is no RasterSymbolizer element
+    if(isRaster == 0 && raster.checked == 1){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	//create one
+	newel = xmlDoc.createElement('RasterSymbolizer');
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+	// update tree
+	nodeid = dojo.dom.getUniqueId();
+	//insert at index in the tree
+	focusNode.addChild(dojo.widget.createWidget("TreeNode", {title:'RasterSymbolizer',
+			widgetId:nodeid,
+			object:newel
+			}),
+	    ind
 	    );
     }
 }
@@ -514,6 +1500,9 @@ function sldLoaded(){
 function init(){
     
     // Init Save/Load
+    var createSLDButton = dojo.widget.byId('createSLDButton');
+    dojo.event.connect(createSLDButton, 'onClick', 'createSLD');
+
     var loadFileButton = dojo.widget.byId('loadFileButton');
     dojo.event.connect(loadFileButton, 'onClick', 'loadXMLFromFile');
     

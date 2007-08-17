@@ -36,8 +36,13 @@
 	    </div>
 	  </div>
 	  <div dojoType="ContentPane" label="Save/Load" id="save/load">
+	    <form name="createform">
+	      Create a new SLD:
+	      <br>
+	      <button dojoType="Button" id="createSLDButton">Create</button>
+	    </form>
 	    <form name="loadform">
-	      Select a SLD to load:
+	      Select a SLD to load: (May not work in all browsers.)
 	      <br>
 	      <input type="file" name="sldfile" size="35"></input>
 	      <button dojoType="Button" id="loadFileButton">Load from File</button>
@@ -49,19 +54,28 @@
 	    <br>
 	    Generate the current SLD XML:
 	    <br>
-	    <textarea id="generatedXML" style="width: 100%; height: 50%" readonly="true"></textarea>
+	    <textarea id="generatedXML" style="width: 100%; height: 20%" readonly="true"></textarea>
 	    <button dojoType="Button" id="generateButton">Generate</button>
 	    <br>
-	    This area should also have the capability to fetch and post SLDs to servers online using getStyle and putStyle.
+	    TODO: add the capability to fetch and post SLDs to servers online using getStyle and putStyle. Check that the file is actually a valid SLD before loading it.
 	  </div>
-	  <div dojoType="ContentPane" label="Options" id="options"> Contents of Options Pane</div>
-	  <div dojoType="ContentPane" label="Help" id="help"> Contents of Help Pane
+	  <div dojoType="ContentPane" label="Options" id="options">
+	    Options Pane
+	    <br>
+	    TODO: Add options. Things to go here would be anything needed to configure the preview window, as well as defaults and keybindings(?). This would probably require a config file.
+	  </div>
+	  <div dojoType="ContentPane" label="Help" id="help">
+	    Help Pane
+	    <br>
+	    TODO: Add information on SLDs and how to use the editor. Possible option to enable/disable tooltip descriptions.
 	  </div>
 	</div>
       </div>
       <div dojoType="SplitContainer" id="splitRight" activesizing="true" sizerwidth="3" orientation="vertical" sizeShare="40">
 	<div dojoType="ContentPane" id="previewArea" sizeShare="50">
-	  Contents of PreviewWindow
+	  PreviewWindow
+	  <br>
+	  TODO: Add visual preview.
 	</div>
 	<div dojoType="ContentPane" id="treeArea" sizeShare="50">
 	  <div id="treeListArea" style="height: 90%; overflow: auto">
@@ -97,15 +111,15 @@
       <div id="NamedLayer">
 	Name: <div dojoType="textbox" id="NamedLayerName"></div>
 	<br>
-	LayerFeatureConstraints::FeatureTypeConstraint (multiple)
+	NamedStyle Name: <div dojoType="textbox" id="NamedLayerNamedStyle"></div>
 	<br>
-	NamedStyle: <div dojoType="textbox" id="NamedLayerNamedStyle"></div>
+	<div dojoType="checkbox" id="NLUserStyle"></div> UserStyle
 	<br>
-	UserStyle
-	<br>
-	UserLayer
+	TODO: LayerFeatureConstraints::FeatureTypeConstraint (multiple)
       </div>
       <div id="LayerFeatureConstraints">
+	NON FUNCTIONING
+	<br>
 	FeatureTypeConstraint (multiple)
 	<br>
 	FeatureTypeName: <div dojoType="textbox" id="LayerFeatureConstraintsFeatureTypeName"></div>
@@ -126,9 +140,11 @@
 	Abstract: <br>
 	<textarea style="width:100%" rows="3" id="UserStyleAbstract"></textarea>
 	<br>
-	<div dojoType="checkbox" name="UserStyleisDefault"></div> isDefault
+	<div dojoType="checkbox" id="UserStyleIsDefault"></div> IsDefault
 	<br>
-	FeatureTypeStyle (multiple)
+	<div dojoType="checkbox" id="UserStyleFTS"></div> FeatureTypeStyle
+	<br>
+	TODO: allow creation/removal of multiple FeatureTypeStyles
       </div>
       <div id="FeatureTypeStyle">
 	Name: <div dojoType="textbox" id="FeatureTypeStyleName"></div>
@@ -138,11 +154,13 @@
 	Abstract: <br>
 	<textarea style="width:100%" rows="3" id="FeatureTypeStyleAbstract"></textarea>
 	<br>
-	FeatureTypeName: <div dojoType="textbox" id="FeatureTypeStyleFeatureTypeName"></div>
+	FeatureTypeName: <div dojoType="textbox" id="FTSFeatureTypeName"></div>
 	<br>
-	SemanticTypeIdentifier: <div dojoType="textbox" id="FeatureTypeStyleSemanticTypeIdentifier"></div>
+	SemanticTypeIdentifier: <div dojoType="textbox" id="FTSSemanticTypeIdentifier"></div>
 	<br>
-	Rule (multiple)
+	<div dojoType="checkbox" id="FTSRule"></div> Rule
+	<br>
+	TODO: allow creation/removal of multiple Rules
       </div>
       <div id="UserLayer">
 	Name: <div dojoType="textbox" id="UserLayerName"></div>
@@ -152,7 +170,7 @@
 	<input type="radio" name="service" id="UserLayerWFS" checked>WFS</input>
 	<input type="radio" name="service" id="UserLayerWCS">WCS</input>
 	<br>
-	LayerFeatureConstraints
+	LayerFeatureConstraints::FeatureTypeConstraint (multiple)
 	<br>
 	UserStyle (multiple)
       </div>
@@ -164,13 +182,29 @@
 	Abstract: <br>
 	<textarea style="width:100%" rows="3" id="RuleAbstract"></textarea>
 	<br>
-	MinScaleDenominator
-	MaxScaleDenominator
-	LegendGraphic::Graphic
-	Filter/Elsefilter
-	Symbolizers: Line, Polygon, Point, Text, Raster
+	MinScaleDenominator: <div dojoType="textbox" id="RuleMin"></div>
+	<br>
+	MaxScaleDenominator: <div dojoType="textbox" id="RuleMax"></div>
+	<br>
+	<div dojoType="checkbox" id="RuleGraphic"></div> Graphic
+	<br>
+	TODO: Filter/Elsefilter
+	<br>
+	Symbolizers: 
+	<br>
+	<div dojoType="checkbox" id="RuleLine"></div> Line
+	<br>
+	<div dojoType="checkbox" id="RulePolygon"></div> Polygon
+	<br>
+	<div dojoType="checkbox" id="RulePoint"></div> Point
+	<br>
+	<div dojoType="checkbox" id="RuleText"></div> Text
+	<br>
+	<div dojoType="checkbox" id="RuleRaster"></div> Raster
       </div>
       <div id="Graphic">
+	NON FUNCTIONING
+	<br>
 	ExternalGraphic: <div dojoType="textbox" id="UserLayerLink"></div>
 	<br>
 	MIME type: image/<div dojoType="textbox" id="UserLayerType"></div>
@@ -202,12 +236,18 @@
 	Graphic Rotation:
       </div>
       <div id="Filter">
+	NON FUNCTIONING
+	<br>
 	For now, type your own filter.
       </div>
       <div id="Elsefilter">
+	NON FUNCTIONING
+	<br>
 	Placeholder, don't really know how to handle this.
       </div>
       <div id="LineSymbolizer">
+	NON FUNCTIONING
+	<br>
 	Geometry:
 	<br>
 	Stroke GraphicFill:
@@ -223,6 +263,8 @@
 	Stroke dashoffset:
       </div>
       <div id="PolygonSymbolizer">
+	NON FUNCTIONING
+	<br>
 	Geometry:
 	<br>
 	Fill graphic:
@@ -244,14 +286,20 @@
 	Stroke dashoffset:
       </div>
       <div id="PointSymbolizer">
+	NON FUNCTIONING
+	<br>
 	Geometry:
 	<br>
 	Graphic:
       </div>
       <div id="TextSymbolizer">
+	NON FUNCTIONING
+	<br>
 	Blargh!
       </div>
       <div id="RasterSymbolizer">
+	NON FUNCTIONING
+	<br>
 	Bleeargh!
       </div>
     </div>
