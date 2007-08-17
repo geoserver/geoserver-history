@@ -397,6 +397,10 @@ public class MockData {
         writer.write("<featureType datastore=\"" + prefix + "\">");
         writer.write("<name>" + type + "</name>");
         writer.write("<SRS>4326</SRS>");
+        // this mock type may have wrong SRS compared to the actual one in the property files...
+        // let's configure SRS handling not to alter the original one, and have 4326 used only
+        // for capabilities
+        writer.write("<SRSHandling>2</SRSHandling>");
         writer.write("<title>" + type + "</title>");
         writer.write("<abstract>abstract about " + type + "</abstract>");
         writer.write("<numDecimals value=\"8\"/>");
