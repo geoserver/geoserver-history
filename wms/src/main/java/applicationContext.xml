@@ -84,10 +84,12 @@
 		parent="wmsService">
 	</bean>	
 	
+  <!-- 
 	<bean id="wmsPutStyles"
 		class="org.vfny.geoserver.sld.servlets.PutStyles"
 		parent="wmsService">
 	</bean>
+   -->
 	
 	<!-- wms service + descriptor -->
  	<bean id="wmsService2" class="org.geoserver.wms.DefaultWebMapService"/>
@@ -182,12 +184,14 @@
       	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.GetLegendGraphicKvpReader" />
       	<constructor-arg index="2" ref="wmsGetLegendGraphic" />
 	</bean>
+  <!-- 
 	<bean id="putStylesKvpReader"
 		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
 		<constructor-arg index="0" value="org.vfny.geoserver.sld.requests.PutStylesRequest" />
       	<constructor-arg index="1" value="org.vfny.geoserver.sld.requests.PutStylesKvpReader" />
       	<constructor-arg index="2" ref="wmsPutStyles" />
 	</bean>
+   -->
 		
 	<!-- xml request readers -->
     <bean id="wmsCapabilitiesXmlReader" 

@@ -116,6 +116,10 @@
   	<servlet-name>kmlreflector</servlet-name>
   	<servlet-class>org.vfny.geoserver.wms.servlets.KMLReflector</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>putstyles</servlet-name>
+    <servlet-class>org.vfny.geoserver.sld.servlets.PutStyles</servlet-class>
+  </servlet>
 	
    <!-- Struts config needs to load before all the other servlets. -->
    <servlet>
@@ -147,6 +151,10 @@
   <servlet-mapping>
   	<servlet-name>kmlreflector</servlet-name>
 	<url-pattern>/wms/kml_reflect</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>putstyles</servlet-name>
+    <url-pattern>/wms/putstyles</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>dispatcher</servlet-name>
