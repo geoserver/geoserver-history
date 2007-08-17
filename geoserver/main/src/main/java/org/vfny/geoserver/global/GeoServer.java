@@ -10,7 +10,6 @@ import org.geotools.data.jdbc.ConnectionPoolManager;
 import org.springframework.beans.factory.DisposableBean;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -488,8 +487,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             File logFile = GeoServer.getLogLocation(location);
 
             //add the new handler
-            Handler handler = new StreamHandler(new BufferedOutputStream(
-                        new FileOutputStream(logFile, true)), new SimpleFormatter());
+            Handler handler = new StreamHandler(new FileOutputStream(logFile, true), new SimpleFormatter());
             handler.setLevel(level);
             logger.addHandler(handler);
 
