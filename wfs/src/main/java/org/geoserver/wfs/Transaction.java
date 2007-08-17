@@ -11,6 +11,7 @@ import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.WfsFactory;
 
+import org.acegisecurity.Authentication;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.userdetails.UserDetails;
 import org.eclipse.emf.ecore.EObject;
@@ -517,9 +518,12 @@ public class Transaction {
         DefaultTransaction transaction = new DefaultTransaction();
         // use handle as the log messages
         String username = "anonymous";
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(principal instanceof UserDetails) {
-            username = ((UserDetails) principal).getUsername(); 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null) {
+            Object principal = authentication.getPrincipal();
+            if(principal instanceof UserDetails) {
+                username = ((UserDetails) principal).getUsername(); 
+            }
         }
         
         // Ok, this is a hack. We assume there is only one versioning datastore, the postgis one,
