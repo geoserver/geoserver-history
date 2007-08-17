@@ -63,8 +63,8 @@ public class PutStyles extends AbstractService {
     public final String success_mime_type = "application/vnd.ogc.success+xml";
     private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
 
-    public PutStyles(WMS wms) {
-        super("WMS", "PutStyles", wms);
+    public PutStyles() {
+        super("WMS", "PutStyles", null);
     }
 
     protected boolean isServiceEnabled(HttpServletRequest req) {

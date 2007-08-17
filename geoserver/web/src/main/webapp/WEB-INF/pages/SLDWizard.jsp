@@ -436,7 +436,7 @@ function saveStyle(SLD)
 	}
 
 	// build XML POST query
-	URL  = "/geoserver/wms?request=putstyles";//"http://"+SERVERHOSTNAME+"/
+	URL  = "/geoserver/wms/putstyles?";//"http://"+SERVERHOSTNAME+"/
 
 	getXML(URL,SLD,XMLProgressFunction);
 	
