@@ -51,7 +51,7 @@
  *     map.addMapType(custommap);
  */
 
-var MAGIC_NUMBER=6356752.314245179;
+var MAGIC_NUMBER=6378137.0;
 var PI=3.14159265358979323846;
 
 // Enable/disable meta tiling
@@ -84,7 +84,7 @@ CustomGetTileUrl=function(a,b,c) {
 
 	if (typeof(window['this.myStyles'])=="undefined") this.myStyles=""; 
 	var lULP = new GPoint(a.x*256.0,(a.y+1)*256.0);
-	var lLRP = new GPoint((a.x+1)*256.0,a.y*256.0-1);
+	var lLRP = new GPoint((a.x+1)*256.0,a.y*256.0);
 	var lUL = G_NORMAL_MAP.getProjection().fromPixelToLatLng(lULP,b,c);
 	var lLR = G_NORMAL_MAP.getProjection().fromPixelToLatLng(lLRP,b,c);
 	// set a fixed position as the tiles origin for the on the fly meta tiler (0,0) should be good
