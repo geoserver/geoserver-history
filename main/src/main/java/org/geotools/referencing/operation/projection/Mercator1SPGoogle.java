@@ -124,7 +124,7 @@ public class Mercator1SPGoogle extends Mercator {
                 throws ParameterNotFoundException
         {
             // make sure we assume a spherical reference
-            parameters.parameter("semi_major").setValue(parameters.parameter("semi_minor").getValue());
+            parameters.parameter("semi_minor").setValue(parameters.parameter("semi_major").getValue());
             return new Spherical(parameters);
         }
     }
