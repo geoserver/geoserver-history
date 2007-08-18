@@ -196,7 +196,7 @@ function updateData(){
 	    
 	    break
 	case 'LineSymbolizer':
-	    
+		loadLineSymbolizer();
 	    break
 	case 'PolygonSymbolizer':
 	    
@@ -250,7 +250,7 @@ function saveData(){
 	    
 	    break
     case 'LineSymbolizer':
-	    
+	    saveLineSymbolizer();
 	    break
     case 'PolygonSymbolizer':
 	    
@@ -1431,6 +1431,370 @@ function saveRule(){
 			}),
 	    ind
 	    );
+    }
+}
+
+function loadLineSymbolizer(){
+    var geom = dojo.widget.byId('LineGeometry'); 
+    var solid = document.getElementById('LineSolid');
+    var fill = document.getElementById('LineFill');
+    var stroke = document.getElementById('LineStroke');
+    var color = dojo.widget.byId('LineColor');
+    var opacity = dojo.widget.byId('LineOpacity');
+    var width = dojo.widget.byId('LineWidth');
+    var linejoin = dojo.widget.byId('LineLinejoin');
+    var linecap = dojo.widget.byId('LineLinecap');
+    var dasharray = dojo.widget.byId('LineDasharray');
+    var dashoffset = dojo.widget.byId('LineDashoffset');
+    
+    // Set to defaults
+    geom.textbox.value = '';
+    solid.checked = true;
+    color.textbox.value = '';
+    opacity.textbox.value = '';
+    width.textbox.value = '';
+    linejoin.textbox.value = '';
+    linecap.textbox.value = '';
+    dasharray.textbox.value = '';
+    dashoffset.textbox.value = '';
+    
+    // Update with existing values
+    var node = dojo.dom.firstElement(focusNode.object);
+    var node2;
+    while(node){
+	switch(node.tagName){
+	case 'Geometry':
+	    geom.textbox.value = dojo.dom.firstElement(node).textContent;
+	    break
+	case 'Stroke':
+		node2 = dojo.dom.firstElement(node);
+	    while(node2){
+		switch (node2.tagName){
+		case 'GraphicFill':
+		    fill.checked = true;
+		    break
+		case 'GraphicStroke':
+			stroke.checked = true;
+		    break
+		case 'CssParameter':
+			switch(node2.getAttribute('name')){
+			case 'stroke':
+			    color.textbox.value = node2.textContent;
+			    break
+			case 'stroke-opacity':
+				opacity.textbox.value = node2.textContent;
+			    break
+			case 'stroke-width':
+				width.textbox.value = node2.textContent;
+			    break
+			case 'stroke-linejoin':
+				linejoine.textbox.value = node2.textContent;
+			    break
+			case 'stroke-linecap':
+				linecap.textbox.value = node2.textContent;
+			    break
+			case 'stroke-dasharray':
+				dasharray.textbox.value = node2.textContent;
+			    break
+			case 'stroke-dashoffset':
+				dashoffset.textbox.value = node2.textContent;
+			    break
+			default:
+			}
+		    break
+		default:
+		}
+		node2 = dojo.dom.nextElement(node2);
+	    }
+	    break
+	default:
+	}
+	node = dojo.dom.nextElement(node);
+    }
+}
+
+function saveLineSymbolizer(){
+    var geom = dojo.widget.byId('LineGeometry'); 
+    var solid = document.getElementById('LineSolid');
+    var fill = document.getElementById('LineFill');
+    var stroke = document.getElementById('LineStroke');
+    var color = dojo.widget.byId('LineColor');
+    var opacity = dojo.widget.byId('LineOpacity');
+    var width = dojo.widget.byId('LineWidth');
+    var linejoin = dojo.widget.byId('LineLinejoin');
+    var linecap = dojo.widget.byId('LineLinecap');
+    var dasharray = dojo.widget.byId('LineDasharray');
+    var dashoffset = dojo.widget.byId('LineDashoffset');
+    
+    var parentStroke = 0, strokenode = '';
+    var isGeom = 0, isSolid = solid.checked, isFill = 0, isStroke = 0, isGraphic = 0, isColor = 0, isOpacity = 0, isWidth = 0, isLinejoin = 0, isLinecap = 0, isDasharray = 0, isDashoffset = 0;
+    var newel = '', nodeid = '', locnode = '';
+    
+    var node = dojo.dom.firstElement(focusNode.object);
+    var node2;
+    var nextnode = '', graphicnode = '';
+    
+    while(node){
+	nextnode = dojo.dom.nextElement(node);
+	switch(node.tagName){
+	case 'Geometry':
+	    if(geom.textbox.value == ''){
+		node.parentNode.removeChild(node);
+	    }else{
+		dojo.dom.firstElement(node).firstChild.data = geom.textbox.value;
+		isGeom = 1;
+	    }
+	    break
+	case 'Stroke':
+		parentStroke = 1;
+	    strokenode = node;
+		node2 = dojo.dom.firstElement(node);
+	    while(node2){
+		switch (node2.tagName){
+		case 'GraphicFill':
+		    if(solid.checked){
+			if(confirm("Do you really want to remove this GraphicFill?")){
+			    node.parentNode.removeChild(node);
+			}
+		    }else if(stroke.checked){
+			graphicnode = dojo.dom.firstElement(node);
+		    }else{
+			isFill = 1;
+		    }
+		    break
+		case 'GraphicStroke':
+			if(stroke.checked){
+			    if(confirm("Do you really want to remove this GraphicStroke?")){
+				node.parentNode.removeChild(node);
+			    }
+			}else if(fill.checked){
+			    graphicnode = dojo.dom.firstElement(node);
+			}else {
+			    isStroke = 1;
+			}
+		    break
+		case 'CssParameter':
+			switch(node2.getAttribute('name')){
+			case 'stroke':
+			    if(color.textbox.value == ''){
+				node2.parentNode.removeChild(node2);
+			    } else {
+				isColor = 1;
+			    }
+			    break
+			case 'stroke-opacity':
+				if(opacity.textbox.value == ''){
+				    node2.parentNode.removeChild(node2);
+				} else {
+				    isOpacity = 1;
+			    }
+			    break
+			case 'stroke-width':
+				if(width.textbox.value == ''){
+				    node2.parentNode.removeChild(node2);
+				} else {
+				    isWidth = 1;
+			    }
+			    break
+			case 'stroke-linejoin':
+				if(linejoin.textbox.value == ''){
+				    node2.parentNode.removeChild(node2);
+				} else {
+				    isLinejoin = 1;
+			    }
+			    break
+			case 'stroke-linecap':
+				if(linecap.textbox.value == ''){
+				    node2.parentNode.removeChild(node2);
+				} else {
+				    isLinecap = 1;
+			    }
+			    break
+			case 'stroke-dasharray':
+				if(dasharray.textbox.value == ''){
+				    node2.parentNode.removeChild(node2);
+				} else {
+				    isDasharray = 1;
+			    }
+			    break
+			case 'stroke-dashoffset':
+				if(dashoffset.textbox.value == ''){
+				    node2.parentNode.removeChild(node2);
+				} else {
+				    isDashoffset = 1;
+			    }
+			    break
+			default:
+			}
+		    break
+		default:
+		}
+		node2 = dojo.dom.nextElement(node2);
+	    }
+	    break
+	default:
+	}
+	node = nextnode;
+    }
+    //initialize the position element to keep track of order
+    locnode = dojo.dom.firstElement(focusNode.object);
+    // add a Geometry element
+    if(isGeom == 0 && geom.textbox.value != ''){
+	newel = xmlDoc.createElement('Geometry');
+	var tmp = xmlDoc.createElement('ogc:PropertyName');
+	tmp.appendChild(xmlDoc.createTextNode(geom.textbox.value));
+	newel.appendChild(tmp);
+	//insert it as the first element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }
+    // add a Stroke element
+    if(parentStroke == 0){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	newel = xmlDoc.createElement('Stroke');
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = dojo.dom.firstElement(newel);
+    }else if(parentStroke){
+	//increment the position counter
+	//The rest of the nodes are children of Stroke
+	locnode = dojo.dom.firstElement(strokenode);
+    }
+    // add a Graphic node if there isn't one
+    if(graphicnode == ''){
+	graphicnode = xmlDoc.createElement('Graphic');
+	nodeid = dojo.dom.getUniqueId();
+	focusNode.addChild(dojo.widget.createWidget("TreeNode", {title:'Graphic',
+			widgetId:nodeid,
+			object:graphicnode
+			}),
+	    0
+	    );
+    }
+    // add a GraphicFill element
+    if(isFill == 0 &&  fill.checked){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	newel = xmlDoc.createElement('GraphicFill');
+	newel.appendChild(graphicnode);
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isFill){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    // add a GraphicStroke element
+    if(isStroke == 0 &&  stroke.checked){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	newel = xmlDoc.createElement('GraphicStroke');
+	newel.appendChild(graphicnode);
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isStroke){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    // add a CssParameter Color element
+    if(isColor == 0 && color.textbox.value != ''){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	newel = xmlDoc.createElement('CssParameter');
+	newel.setAttribute('name','stroke');
+	newel.appendChild(xmlDoc.createTextNode(color.textbox.value));
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isColor){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    // add a CssParameter Opacity element
+    if(isOpacity == 0 && opacity.textbox.value != ''){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	newel = xmlDoc.createElement('CssParameter');
+	newel.setAttribute('name','stroke-opacity');
+	newel.appendChild(xmlDoc.createTextNode(opacity.textbox.value));
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isOpacity){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+        // add a CssParameter Width element
+    if(isWidth == 0 && width.textbox.value != ''){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	newel = xmlDoc.createElement('CssParameter');
+	newel.setAttribute('name','stroke-width');
+	newel.appendChild(xmlDoc.createTextNode(width.textbox.value));
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isWidth){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    // add a CssParameter linejoin element
+    if(isLinejoin == 0 &&  linejoin.textbox.value != ''){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	newel = xmlDoc.createElement('CssParameter');
+	newel.setAttribute('name','stroke-linejoin');
+	newel.appendChild(xmlDoc.createTextNode(linejoin.textbox.value));
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isLinejoin){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    // add a CssParameter linecap element
+    if(isLinecap == 0 &&  linecap.textbox.value != ''){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	newel = xmlDoc.createElement('CssParameter');
+	newel.setAttribute('name','stroke-linecap');
+	newel.appendChild(xmlDoc.createTextNode(linecap.textbox.value));
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isLinecap){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    // add a CssParameter dasharray element
+    if(isDasharray == 0 &&  dasharray.textbox.value != ''){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	newel = xmlDoc.createElement('CssParameter');
+	newel.setAttribute('name','stroke-dasharray');
+	newel.appendChild(xmlDoc.createTextNode(dasharray.textbox.value));
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isDasharray){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
+    }
+    // add a CssParameter dashoffset element
+    if(isDashoffset == 0 &&  dashoffset.textbox.value != ''){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);   
+	newel = xmlDoc.createElement('CssParameter');
+	newel.setAttribute('name','stroke-dashoffset');
+	newel.appendChild(xmlDoc.createTextNode(dashoffset.textbox.value));
+	//insert it as the next element
+	focusNode.object.insertBefore(newel, locnode);
+	locnode = newel;
+    }else if(isDashoffset){
+	//increment the position counter
+	locnode = dojo.dom.nextElement(locnode);
     }
 }
 

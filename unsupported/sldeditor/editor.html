@@ -188,7 +188,7 @@
 	<br>
 	<div dojoType="checkbox" id="RuleGraphic"></div> Graphic
 	<br>
-	TODO: Filter/Elsefilter
+	TODO: Filter/Elsefilter (radio buttons?)
 	<br>
 	Symbolizers: 
 	<br>
@@ -246,21 +246,29 @@
 	Placeholder, don't really know how to handle this.
       </div>
       <div id="LineSymbolizer">
-	NON FUNCTIONING
+	TODO: CONSTRAIN INPUTS
 	<br>
-	Geometry:
+	Geometry: <div dojoType="textbox" id="LineGeometry"></div>
 	<br>
-	Stroke GraphicFill:
+	<input type="radio" name="linestyle" id="LineSolid">Solid</input>
 	<br>
-	Stroke GraphicStroke:
+	<input type="radio" name="linestyle" id="LineFill">GraphicFill</input>
 	<br>
-	Stroke color:
-	Stroke opacity:
-	Stroke width:
-	Stroke linejoin:
-	Stroke linecap:
-	Stroke dasharray:
-	Stroke dashoffset:
+	<input type="radio" name="linestyle" id="LineStroke">GraphicStroke</input>
+	<br><br>
+	color #RRGGBB: <div dojoType="textbox" id="LineColor"></div>
+	<br>
+	opacity 0.0-1.0: <div dojoType="textbox" id="LineOpacity"></div>
+	<br>
+	width pixels: <div dojoType="textbox" id="LineWidth"></div>
+	<br>
+	linejoin (mitre, round, bevel): <div dojoType="textbox" id="LineLinejoin"></div>
+	<br>
+	linecap (butt, round, square): <div dojoType="textbox" id="LineLinecap"></div>
+	<br>
+	dasharray (pixels_dash pixels_space): <div dojoType="textbox" id="LineDasharray"></div>
+	<br>
+	dashoffset (pixels_offset): <div dojoType="textbox" id="LineDashoffset"></div>
       </div>
       <div id="PolygonSymbolizer">
 	NON FUNCTIONING
