@@ -13,6 +13,7 @@
             categories of population, drawn in different colors</Abstract>
     <FeatureTypeStyle>
       <Rule>
+        <Title>2M - 4M</Title>
         <!-- like a linesymbolizer but with a fill too -->
         <ogc:Filter xmlns:gml="http://www.opengis.net/gml">
           <ogc:PropertyIsBetween>
@@ -35,6 +36,7 @@
       </Rule>
       <Rule>
         <!-- like a linesymbolizer but with a fill too -->
+        <Title>&lt; 2M</Title>
         <ogc:Filter xmlns:gml="http://www.opengis.net/gml">
           <ogc:PropertyIsLessThan>
            <ogc:PropertyName>PERSONS</ogc:PropertyName>
@@ -50,6 +52,7 @@
         </PolygonSymbolizer>
       </Rule>
       <Rule>
+        <Title>&gt; 2M</Title>
         <!-- like a linesymbolizer but with a fill too -->
         <ogc:Filter xmlns:gml="http://www.opengis.net/gml">
           <ogc:PropertyIsGreaterThan>
@@ -66,6 +69,7 @@
         </PolygonSymbolizer>
       </Rule>
       <Rule>
+        <Title>Boundary</Title>
         <LineSymbolizer>
            <Stroke/>    
         </LineSymbolizer>
