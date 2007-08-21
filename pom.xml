@@ -729,6 +729,7 @@
    <!-- eclipse ide integration -->
    <plugin>
     <artifactId>maven-eclipse-plugin</artifactId>
+    <version>2.4</version>
     <configuration>
      <!--downloadSources>true</downloadSources-->
      <additionalProjectnatures>
