@@ -108,11 +108,13 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
     private static final GeometryFactory geomFac = new GeometryFactory();
 
     /**
-     * Legend graphics background color, since no BGCOLOR parameter is defined
-     * for the GetLegendGraphic operation.
+     * Default Legend graphics background color
      */
     public static final Color BG_COLOR = Color.WHITE;
-
+    /**
+     * Default label color
+     */
+    public static final Color FONT_COLOR = Color.BLACK;
     /**
      * Image observer to help in creating the stack like legend graphic from
      * the images created for each rule
@@ -205,13 +207,14 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
         final int w = request.getWidth();
         final int h = request.getHeight();
 
+        final Color bgColor = getBackgroundColor(request);
         for (int i = 0; i < ruleCount; i++) {
             Symbolizer[] symbolizers = applicableRules[i].getSymbolizers();
 
             BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
             Graphics2D graphics = image.createGraphics();
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            graphics.setColor(BG_COLOR);
+            graphics.setColor(bgColor);
             graphics.fillRect(0, 0, w, h);
 
             for (int sIdx = 0; sIdx < symbolizers.length; sIdx++) {
@@ -263,7 +266,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
 
         BufferedImage scaledImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = scaledImage.createGraphics();
-        graphics.setColor(BG_COLOR);
+        graphics.setColor(getBackgroundColor(request));
         graphics.fillRect(0, 0, w, h);
 
         AffineTransform xform = new AffineTransform();
@@ -359,7 +362,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
                     }
     
                     if(labels[i] != null && labels[i].length() > 0) {
-                        final BufferedImage renderedLabel = renderLabel(labels[i], g);
+                        final BufferedImage renderedLabel = renderLabel(labels[i], g, req);
                         final Rectangle2D bounds = new Rectangle2D.Double(0, 0, renderedLabel.getWidth(),
                                 renderedLabel.getHeight());
         
@@ -381,7 +384,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
 
             Graphics2D finalGraphics = finalLegend.createGraphics();
 
-            finalGraphics.setColor(BG_COLOR);
+            finalGraphics.setColor(getBackgroundColor(req));
             finalGraphics.fillRect(0, 0, totalWidth, totalHeight);
 
             int topOfRow = 0;
@@ -416,7 +419,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
                 //draw the label
                 if (labels[i] != null && labels[i].length() > 0) {
                     //first create the actual overall label image.
-                    final BufferedImage renderedLabel = renderLabel(labels[i], finalGraphics);
+                    final BufferedImage renderedLabel = renderLabel(labels[i], finalGraphics, req);
 
                     y = topOfRow;
 
@@ -467,6 +470,48 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
         return legendFont;
     }
     
+    private static Color getLabelFontColor(GetLegendGraphicRequest req) {
+        Map legendOptions = req.getLegendOptions();
+        String color = (String) legendOptions.get("fontColor");
+        if ( color == null ) {
+            //return the default
+            return FONT_COLOR;
+        }
+            
+        try {
+            return color(color);
+        }
+        catch(NumberFormatException e) {
+            LOGGER.warning("Could not decode label color: " + color + ", default to " + FONT_COLOR.toString() );
+            return FONT_COLOR;
+        }
+    }
+    
+    private static Color getBackgroundColor( GetLegendGraphicRequest req ) {
+        Map legendOptions = req.getLegendOptions();
+        String color = (String) legendOptions.get("bgColor");
+        if ( color == null ) {
+            //return the default
+            return BG_COLOR;
+        }
+        
+        try {
+            return color(color);
+        }
+        catch( NumberFormatException e ) {
+            LOGGER.warning("Could not decode background color: " + color + ", default to " + BG_COLOR.toString() );
+            return BG_COLOR;
+        }
+        
+    }
+    
+    private static Color color(String hex) throws NumberFormatException {
+        if (!hex.startsWith("#")) {
+            hex = "#" + hex;
+        }
+        return Color.decode(hex);
+    }
+    
     /**
      * Return a {@link BufferedImage} representing this label.
      * The characters '\n' '\r' and '\f' are interpreted as linebreaks,
@@ -479,11 +524,11 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
      * @param g - the Graphics2D that will be used to render this label
      * @return a {@link BufferedImage} of the properly rendered label.
      */
-    public static BufferedImage renderLabel(String label, Graphics2D g) {
+    public static BufferedImage renderLabel(String label, Graphics2D g, GetLegendGraphicRequest req) {
         // We'll accept '/n' as a text string
         //to indicate a line break, as well as a traditional 'real' line-break in the XML.
         BufferedImage renderedLabel;
-
+        Color labelColor = getLabelFontColor(req);
         if ((label.indexOf("\n") != -1) || (label.indexOf("\\n") != -1)) {
             //this is a label WITH line-breaks...we need to figure out it's height *and*
             //width, and then adjust the legend size accordingly
@@ -512,7 +557,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
             st = new StringTokenizer(realLabel, "\n\r\f");
 
             Graphics2D rlg = renderedLabel.createGraphics();
-            rlg.setColor(Color.black);
+            rlg.setColor(labelColor);
             rlg.setFont(g.getFont());
             rlg.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                 g.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING));
@@ -532,7 +577,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
             renderedLabel = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
             Graphics2D rlg = renderedLabel.createGraphics();
-            rlg.setColor(Color.black);
+            rlg.setColor(labelColor);
             rlg.setFont(g.getFont());
             rlg.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                 g.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING));
