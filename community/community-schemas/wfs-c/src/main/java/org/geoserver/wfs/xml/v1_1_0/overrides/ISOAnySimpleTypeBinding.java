@@ -96,7 +96,7 @@ public class ISOAnySimpleTypeBinding extends AbstractComplexBinding {
             }
         }
 
-        Object attContent = attribute.get();
+        Object attContent = attribute.getValue();
         String attValue = (String) Converters.convert(attContent, String.class);
 
         if (attValue != null) {

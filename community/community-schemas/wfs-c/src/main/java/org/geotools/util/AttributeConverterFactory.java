@@ -15,7 +15,7 @@ public class AttributeConverterFactory implements ConverterFactory {
                     public Object convert(Object source, Class target)
                         throws Exception {
                         Attribute att = (Attribute) source;
-                        Object value = att.get();
+                        Object value = att.getValue();
 
                         if (value == null) {
                             return null;

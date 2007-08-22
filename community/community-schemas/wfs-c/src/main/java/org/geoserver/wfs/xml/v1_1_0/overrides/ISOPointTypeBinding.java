@@ -41,7 +41,7 @@ public class ISOPointTypeBinding extends PointTypeBinding {
 
             if (object instanceof Attribute) {
                 Attribute att = (Attribute) object;
-                point = (Point) att.get();
+                point = (Point) att.getValue();
             } else {
                 point = (Point) object;
             }

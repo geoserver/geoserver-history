@@ -22,7 +22,7 @@ public class WfsXmlReader extends XmlRequestReader {
         this.configuration = configuration;
     }
 
-    public Object read(Object object,Reader reader) throws Exception {
+    public Object read(Object object, Reader reader) throws Exception {
         Parser parser = new Parser(configuration);
 
         return parser.parse(reader);
