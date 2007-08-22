@@ -11,14 +11,22 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
+import org.geotools.data.jdbc.FeatureTypeInfo;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
+import org.vfny.geoserver.config.CoverageConfig;
+import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
+import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.form.data.StylesSelectForm;
 import org.vfny.geoserver.global.UserContainer;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -68,6 +76,15 @@ public class StylesSelectAction extends ConfigAction {
         // Something is selected lets do the requested action
         //
         if (action.equals(DELETE)) {
+            // check if the style has any users
+            List userNames = getStyleUsers(config, styleId);
+
+            if (userNames.size() > 0) {
+                doFileExistsError(styleId, userNames, request);
+
+                return mapping.findForward("config.data.style");
+            }
+
             config.removeStyle(styleId);
             getApplicationState().notifyConfigChanged();
             selectForm.setSelectedStyle(null);
@@ -113,5 +130,62 @@ public class StylesSelectAction extends ConfigAction {
         request.setAttribute(Globals.ERROR_KEY, errors);
 
         return mapping.findForward("config.data.style");
+    }
+
+    /**
+     * Returns a list of strings, with the name of the layers using the style as the default one
+     * @param config
+     * @param styleId
+     * @return
+     */
+    private List getStyleUsers(DataConfig config, String styleId) {
+        List results = new ArrayList();
+
+        for (Iterator it = config.getFeaturesTypes().values().iterator(); it.hasNext();) {
+            FeatureTypeConfig ft = (FeatureTypeConfig) it.next();
+
+            if (styleId.equals(ft.getDefaultStyle())) {
+                DataStoreConfig ds = config.getDataStore(ft.getDataStoreId());
+
+                // misconfigured data stores are not included int the map, ouff...
+                if (ds != null) {
+                    results.add(ds.getNameSpaceId() + ":" + ft.getName());
+                } else {
+                    results.add(ft.getName());
+                }
+            }
+        }
+
+        for (Iterator it = config.getCoverages().values().iterator(); it.hasNext();) {
+            CoverageConfig cc = (CoverageConfig) it.next();
+
+            if (styleId.equals(cc.getDefaultStyle())) {
+                CoverageStoreConfig cs = config.getDataFormat(cc.getFormatId());
+                results.add(cs.getNameSpaceId() + ":" + cc.getName());
+            }
+        }
+
+        return results;
+    }
+
+    /*
+     * reports an error for an attempt to upload an sld file that is already
+     * in the system.*/
+    private void doFileExistsError(String styleId, List styleUsers, HttpServletRequest request) {
+        StringBuffer sb = new StringBuffer();
+
+        for (Iterator it = styleUsers.iterator(); it.hasNext();) {
+            String user = (String) it.next();
+            sb.append(user);
+
+            if (it.hasNext()) {
+                sb.append(", ");
+            }
+        }
+
+        ActionErrors errors = new ActionErrors();
+        errors.add(ActionErrors.GLOBAL_ERROR,
+            new ActionError("error.style.sldInUse", new String[] { styleId, sb.toString() }));
+        saveErrors(request, errors);
     }
 }

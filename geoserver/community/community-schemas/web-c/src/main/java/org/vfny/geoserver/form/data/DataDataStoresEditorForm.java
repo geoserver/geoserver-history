@@ -214,12 +214,13 @@ public class DataDataStoresEditorForm extends ActionForm {
                             //let this paramter die later
                         }
                     }
-
-                    //do a check to see if the shapefile url is valid, report 
-                    // an error if it does not 
-                    File file = GeoserverDataDirectory.findDataFile(value);
-
-                    return FormUtils.checkFileExistsAndCanRead(file, errors);
+                    
+                    if(url.getProtocol() == null || url.getProtocol() == "file") {
+	                    //do a check to see if the shapefile url is valid, report 
+	                    // an error if it does not 
+	                    File file = GeoserverDataDirectory.findDataFile(value);
+	                    FormUtils.checkFileExistsAndCanRead(file, errors);
+                    } 
                 }
             }
 

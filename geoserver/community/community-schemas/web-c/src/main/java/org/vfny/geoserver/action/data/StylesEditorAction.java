@@ -10,12 +10,14 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
+import org.apache.struts.util.MessageResources;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.vfny.geoserver.action.ConfigAction;
+import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.StyleConfig;
 import org.vfny.geoserver.form.data.StylesEditorForm;
@@ -25,13 +27,16 @@ import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.SLDValidator;
 import org.xml.sax.SAXParseException;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -61,147 +66,161 @@ public class StylesEditorAction extends ConfigAction {
         DataConfig config = (DataConfig) getDataConfig();
         StylesEditorForm stylesForm = (StylesEditorForm) form;
         FormFile file = stylesForm.getSldFile();
-        final String filename = file.getFileName();
         final String styleID = stylesForm.getStyleID();
-
+        final String originalStyleID = stylesForm.getOriginalStyleId();
         StyleConfig style = user.getStyle();
-
         boolean doFullValidation = stylesForm.getFullyValidate();
+        String action = stylesForm.getAction();
+        String sldContents = stylesForm.getSldContents();
 
-        if (stylesForm.getFullyValidateChecked() == false) {
-            doFullValidation = false;
-        }
+        // decide what has been pressed
+        Locale locale = (Locale) request.getLocale();
+        MessageResources messages = getResources(request);
 
-        if (doFullValidation) {
-            List l = getSchemaExceptions(file, request);
+        // final String SUBMIT = HTMLEncoder.decode(messages.getMessage(locale, "label.submit"));
+        final String UPLOAD = HTMLEncoder.decode(messages.getMessage(locale, "label.upload"));
 
-            if (l.size() != 0) {
-                handleValidationErrors(l, file, stylesForm);
+        if (UPLOAD.equals(action)) {
+            stylesForm.setSldContents(readSldContents(file));
 
-                return mapping.findForward("schemaErrors");
+            return mapping.findForward("config.data.style.editor");
+        } else {
+            if (stylesForm.getFullyValidateChecked() == false) {
+                doFullValidation = false;
             }
-        }
 
-        if (style == null) {
-            // Must of bookmarked? Redirect so they can select            
-            return mapping.findForward("config.data.style");
-        }
+            if (doFullValidation) {
+                List l = getSchemaExceptions(sldContents, request);
 
-        ServletContext sc = getServlet().getServletContext();
+                if (l.size() != 0) {
+                    handleValidationErrors(l, sldContents, stylesForm);
 
-        //DJB: changed for geoserver_data_dir
-        //File rootDir = new File(getServlet().getServletContext().getRealPath("/"));
-        File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
+                    return mapping.findForward("schemaErrors");
+                }
+            }
 
-        File styleDir;
+            if (style == null) {
+                // Must of bookmarked? Redirect so they can select            
+                return mapping.findForward("config.data.style");
+            }
 
-        try {
-            styleDir = GeoserverDataDirectory.findConfigDir(rootDir, "styles");
-        } catch (ConfigurationException cfe) {
-            LOGGER.warning("no style dir found, creating new one");
-            //if for some bizarre reason we don't fine the dir, make a new one.
-            styleDir = new File(rootDir, "styles");
-        }
+            //            ServletContext sc = getServlet().getServletContext();
 
-        // send content of FormFile to /styles :
-        // there nothing to keep the styles in memory for XMLConfigWriter.store() 
-        InputStreamReader isr = new InputStreamReader(file.getInputStream());
-        File newSldFile = new File(styleDir, filename);
+            //DJB: changed for geoserver_data_dir
+            //File rootDir = new File(getServlet().getServletContext().getRealPath("/"));
+            File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
 
-        //here we do a check to see if the file we are trying to upload is
-        //overwriting another style file. 
-        LOGGER.fine("new sld file is: " + newSldFile + ", exists: " + newSldFile.exists());
+            File styleDir;
 
-        if (newSldFile.exists()) {
-            StyleConfig styleForID = config.getStyle(styleID);
+            try {
+                styleDir = GeoserverDataDirectory.findConfigDir(rootDir, "styles");
+            } catch (ConfigurationException cfe) {
+                LOGGER.warning("no style dir found, creating new one");
+                //if for some bizarre reason we don't fine the dir, make a new one.
+                styleDir = new File(rootDir, "styles");
+            }
 
-            if (styleForID == null) {
-                //if there is already a file at the location (file.exists()), and
-                //the system does not have a record of this styleId then it means
-                //we are trying to add a new sld at a location that would overwrite
-                //another's sld file.
-                doFileExistsError(newSldFile, request);
+            // send content of FormFile to /styles :
+            // there nothing to keep the styles in memory for XMLConfigWriter.store()
+            StyleConfig styleForID = config.getStyle(originalStyleID);
+            File newSldFile = null;
 
-                return mapping.findForward("config.data.style.editor");
-            } else {
-                //if the system has a record of the file, then we need to check if this
-                //update is being performed on the correct style id, so we see if the
-                //file in the system is the same as this one.  
+            if (styleForID != null) {
+                // for backward compatibility, use the old style file
                 File oldFile = styleForID.getFilename();
-                LOGGER.fine("old file: " + oldFile + ", newFile: " + newSldFile);
+                newSldFile = oldFile;
+            } else {
+                newSldFile = new File(styleDir, styleID + ".sld");
 
-                if (!oldFile.equals(newSldFile)) {
+                if (newSldFile.exists()) {
                     doFileExistsError(newSldFile, request);
 
                     return mapping.findForward("config.data.style.editor");
                 }
             }
-        }
 
-        //When we have time we should put this in a temp file, to be safe, before
-        //we do the validation, and only write to the real style directory when we
-        //have things set.  If only java had a nice file copy utility.
-        FileWriter fw = new FileWriter(newSldFile);
-        char[] tampon = new char[1024];
-        int charsRead;
+            //here we do a check to see if the file we are trying to upload is
+            //overwriting another style file. 
+            LOGGER.fine("new sld file is: " + newSldFile + ", exists: " + newSldFile.exists());
 
-        while ((charsRead = isr.read(tampon, 0, 1024)) != -1) {
-            fw.write(tampon, 0, charsRead);
-        }
+            //When we have time we should put this in a temp file, to be safe, before
+            //we do the validation, and only write to the real style directory when we
+            //have things set.  If only java had a nice file copy utility.
+            FileWriter fw = new FileWriter(newSldFile);
+            fw.write(sldContents);
+            fw.flush();
+            fw.close();
+            style.setFilename(newSldFile);
 
-        fw.flush();
-        fw.close();
-        isr.close();
-        style.setFilename(new File(styleDir, filename));
+            style.setId(styleID);
 
-        style.setId(styleID);
+            StyleFactory factory = StyleFactoryFinder.createStyleFactory();
+            SLDParser styleReader = new SLDParser(factory, newSldFile.toURL());
+            Style[] readStyles = null;
+            Style newStyle;
 
-        StyleFactory factory = StyleFactoryFinder.createStyleFactory();
-        SLDParser styleReader = new SLDParser(factory, newSldFile.toURL());
-        Style[] readStyles = null;
-        Style newStyle;
+            try {
+                readStyles = styleReader.readXML();
 
-        try {
-            readStyles = styleReader.readXML();
+                if (readStyles.length == 0) {
+                    //I think our style parser does pretty much no error reporting.
+                    //This is one of the many reasons we need a new SLD parser.
+                    //We could add new exceptions to it, but it's really just 
+                    //patching a sinking ship.  One option that we could do
+                    //here is do a xerces validating parse, to make sure the
+                    //sld matches the schema before we try to pass it to our
+                    //crappy parser.
+                    String message = "The xml was valid, but couldn't get a Style"
+                        + " from it.  Make sure your style validates against " + " the SLD schema";
+                    doStyleParseError(message, newSldFile, request);
 
-            if (readStyles.length == 0) {
-                //I think our style parser does pretty much no error reporting.
-                //This is one of the many reasons we need a new SLD parser.
-                //We could add new exceptions to it, but it's really just 
-                //patching a sinking ship.  One option that we could do
-                //here is do a xerces validating parse, to make sure the
-                //sld matches the schema before we try to pass it to our
-                //crappy parser.
-                String message = "The xml was valid, but couldn't get a Style"
-                    + " from it.  Make sure your style validates against " + " the SLD schema";
+                    return mapping.findForward("config.data.style.editor");
+                }
+
+                newStyle = readStyles[0];
+                LOGGER.fine("sld is " + newStyle);
+            } catch (Exception e) {
+                e.printStackTrace();
+
+                String message = (e.getCause() == null) ? e.getLocalizedMessage()
+                                                        : e.getCause().getLocalizedMessage();
                 doStyleParseError(message, newSldFile, request);
 
                 return mapping.findForward("config.data.style.editor");
             }
 
-            newStyle = readStyles[0];
-            LOGGER.fine("sld is " + newStyle);
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (newStyle == null) {
+                throw new RuntimeException("new style equals null"); //I don't 
 
-            String message = (e.getCause() == null) ? e.getLocalizedMessage()
-                                                    : e.getCause().getLocalizedMessage();
-            doStyleParseError(message, newSldFile, request);
+                //think this will ever happen, our SLD parser won't return a null.
+            }
 
-            return mapping.findForward("config.data.style.editor");
+            // Do configuration parameters here
+            config.removeStyle(originalStyleID);
+            config.addStyle(style.getId(), style);
+            getApplicationState().notifyConfigChanged();
+
+            return mapping.findForward("config.data.style");
+        }
+    }
+
+    private String readSldContents(FormFile file) throws IOException {
+        StringBuffer sb = new StringBuffer();
+        BufferedReader reader = null;
+
+        try {
+            reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
+
+            String line = null;
+
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+        } finally {
+            reader.close();
         }
 
-        if (newStyle == null) {
-            throw new RuntimeException("new style equals null"); //I don't 
-
-            //think this will ever happen, our SLD parser won't return a null.
-        }
-
-        // Do configuration parameters here
-        config.addStyle(style.getId(), style);
-        getApplicationState().notifyConfigChanged();
-
-        return mapping.findForward("config.data.style");
+        return sb.toString();
     }
 
     /**
@@ -213,12 +232,12 @@ public class StylesEditorAction extends ConfigAction {
          * @param file
          * @param stylesForm
          */
-    private void handleValidationErrors(List errors, FormFile file, StylesEditorForm stylesForm) {
+    private void handleValidationErrors(List errors, String sldContents, StylesEditorForm stylesForm) {
         ArrayList lines = new ArrayList();
         BufferedReader reader = null;
 
         try {
-            reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
+            reader = new BufferedReader(new StringReader(sldContents));
 
             String line = reader.readLine();
             int linenumber = 1;
@@ -297,13 +316,14 @@ public class StylesEditorAction extends ConfigAction {
      * @param file
      * @return
      */
-    private List getSchemaExceptions(FormFile file, HttpServletRequest request) {
+    private List getSchemaExceptions(String sldContents, HttpServletRequest request) {
         SLDValidator validator = new SLDValidator();
 
         ServletContext sc = request.getSession().getServletContext();
 
         try {
-            List l = validator.validateSLD(file.getInputStream(), sc);
+            List l = validator.validateSLD(new ByteArrayInputStream(sldContents.getBytes("UTF-8")),
+                    sc);
 
             return l;
         } catch (Exception e) {

@@ -55,38 +55,38 @@ errors.suffix=</LI>
 errors.footer=</UL>
 
 # -- validator --
-errors.invalid={0}�?�無効�?��?�。
-errors.maxlength={0}�?�{1}文字以上�?��?��?��?��?��?�ん。
-errors.minlength={0}�?�{1}文字以下�?��?��?��?��?��?�ん。
-errors.range={0}�?�{1}�?�ら{2}�?�範囲�?��?�り�?��?�ん。
-errors.required={0}�?�必�?�?��?�。
-errors.byte={0}�?��?イト�?��?��?�れ�?��?�り�?��?�ん。
-errors.date={0}�?�日付�?��?�り�?��?�ん。
-errors.double={0}�?��?精度(double)�?��?��?�れ�?��?�り�?��?�ん。
-errors.float={0}�?�浮動�?数点(float)�?��?��?�れ�?��?�り�?��?�ん。
-errors.integer={0}�?�整数(integer�?��?��?�れ�?��?�り�?��?�ん。
-errors.long={0}�?�長整数(long)�?��?��?�れ�?��?�り�?��?�ん。
-errors.short={0}�?�短整数(short)�?��?��?�れ�?��?�り�?��?�ん。
-errors.creditcard={0}�?�有効�?�クレジットカード番�?��?��?��?�り�?��?�ん。
-errors.email={0}�?�無効�?�メールアドレス�?��?�。
+errors.invalid={0}�?�無効�?��?�。
+errors.maxlength={0}�?�{1}文字以上�?��?��?��?��?��?�ん。
+errors.minlength={0}�?�{1}文字以下�?��?��?��?��?��?�ん。
+errors.range={0}�?�{1}�?�ら{2}�?�範囲�?��?�り�?��?�ん。
+errors.required={0}�?�必�?�?��?�。
+errors.byte={0}�?��?イト�?��?��?�れ�?��?�り�?��?�ん。
+errors.date={0}�?�日付�?��?�り�?��?�ん。
+errors.double={0}�?��?精度(double)�?��?��?�れ�?��?�り�?��?�ん。
+errors.float={0}�?�浮動�?数点(float)�?��?��?�れ�?��?�り�?��?�ん。
+errors.integer={0}�?�整数(integer�?��?��?�れ�?��?�り�?��?�ん。
+errors.long={0}�?�長整数(long)�?��?��?�れ�?��?�り�?��?�ん。
+errors.short={0}�?�短整数(short)�?��?��?�れ�?��?�り�?��?�ん。
+errors.creditcard={0}�?�有効�?�クレジットカード番�?��?��?��?�り�?��?�ん。
+errors.email={0}�?�無効�?�メールアドレス�?��?�。
 
 # -- other --
-errors.cancel=�?作�?�キャンセル�?�れ�?��?��?�。
+errors.cancel=�?作�?�キャンセル�?�れ�?��?��?�。
 errors.detail={0}
-errors.general=プロセス�?�完了�?��?��?�ん�?��?��?�。 詳細�?�次�?��?�。
-errors.token=リクエスト�?�完�?�?��?��?�ん�?��?��?�. �?作�?�順番�?��?�り�?��?��?�り�?��?�ん。
+errors.general=プロセス�?�完了�?��?��?�ん�?��?��?�。 詳細�?�次�?��?�。
+errors.token=リクエスト�?�完�?�?��?��?�ん�?��?��?�. �?作�?�順番�?��?�り�?��?��?�り�?��?�ん。
 
 label.validationConfig=検証設定
 label.wfsConfig=WFS設定
 label.wmsConfig=WMS設定
 label.dataConfig=データ設定
-label.name=�??�?
+label.name=�??�?
 label.title=タイトル
-label.accessConstraints=アクセス制�?
+label.accessConstraints=アクセス制�?
 label.fees=ライセンス料金等
-label.maintainer=�?守担当者
+label.maintainer=�?守担当者
 label.keywords=キーワード
-label.abstract=�?約
+label.abstract=�?約
 label.description=説明
 label.contents=内容
 label.login=ログイン
@@ -95,44 +95,44 @@ label.help=ヘルプ
 label.actions=アクション
 label.buttons=設定
 label.context=コンテキスト
-label.toGeoserver=GeoServer�?�
-label.saveXML=XML�?��?存
-label.loadXML=XML�?�読込
+label.toGeoserver=GeoServer�?�
+label.saveXML=XML�?��?存
+label.loadXML=XML�?�読込
 label.onlineResource=オンライン・リソース
 label.coverages=Coverages
-label.featureTypes=フュー�?ャー(地物)�?�タイプ
+label.featureTypes=フュー�?ャー(地物)�?�タイプ
 label.createNewFormat=Create a new Coverage Data Set
-label.namespace=�??�?空間
-label.namespaceID=�??�?空間ID
-label.namespaces=�??�?空間
-label.new=新�?
+label.namespace=�??�?空間
+label.namespaceID=�??�?空間ID
+label.namespaces=�??�?空間
+label.new=新�?
 label.edit=編集
 label.delete=削除
 label.dataFormatID=Coverage Data Set ID
 label.dataStoreID=データストアID
 label.enabled=有効
-label.srsXmlStyle=XML�?�srsName
-label.username=ユーザー�??
-label.server=サー�?ー
-label.port=�?ート
+label.srsXmlStyle=XML�?�srsName
+label.username=ユーザー�??
+label.server=サー�?ー
+label.port=�?ート
 label.password=パスワード
-label.password.confirm=パスワード�?�確�?
+label.password.confirm=パスワード�?�確�?
 label.URI=URI
 label.default=デフォルト
 label.prefix=プリフックス
-label.filename=ファイル�??
+label.filename=ファイル�??
 label.SRS=SRS
 label.latLonBoundingBox=経緯度境界ボックス
 label.parameters=Parameters
 label.dataFormatDescription=Coverage Data Set Description
 label.connectionParameters=接続パラメータ
-label.dataStoreDescription=データストア�?�説明
+label.dataStoreDescription=データストア�?�説明
 label.attributeTypes=属性タイプ
-label.attributeTypeName=属性タイプ�??
-label.isNillible=ヌル�?�
+label.attributeTypeName=属性タイプ�??
+label.isNillible=ヌル�?�
 label.isRef=isRef
-label.minOccurs=最�?�?�存在
-label.maxOccurs=最大�?�存在
+label.minOccurs=最�?�?�存在
+label.maxOccurs=最大�?�存在
 label.coverage=Coverages
 label.type=タイプ
 label.messages=メッセージ
@@ -141,29 +141,29 @@ label.status=ステータス
 label.configStatus=設定ステータス
 label.configChangedTrue=変更済
 label.configChangedFalse=未変更
-label.geoServerStatus=GeoServer�?�ステータス
+label.geoServerStatus=GeoServer�?�ステータス
 label.geoServerChangedTrue=変更済
 label.geoServerChangedFalse=未変更
 label.submit=実行
 label.reset=リセット
 label.credits=クレジット
 label.credits.url=http://docs.codehaus.org/display/GEOS/Contributors
-label.newLoginAndPassword=新�?��?�ログイン�?�パスワードを入力�?��?��??�?��?��?�。
-label.wms.svgRenderer=SVG�??画
-label.wms.svgSimple=シンプル(早�?��?�?定�?�れ�?�スタイル)
-label.wms.svgBatik=�?�?ック(�?��?��?フルスタイル)
-label.wms.svgAntiAlias=アン�?・アリアス
+label.newLoginAndPassword=新�?��?�ログイン�?�パスワードを入力�?��?��??�?��?��?�。
+label.wms.svgRenderer=SVG�??画
+label.wms.svgSimple=シンプル(早�?��?�?定�?�れ�?�スタイル)
+label.wms.svgBatik=�?�?ック(�?��?��?フルスタイル)
+label.wms.svgAntiAlias=アン�?・アリアス
 label.wms.path=WMS Path
 
-help.name_service=サービス�??�?��?�。
-help.title_service=サービス�?�タイトル�?��?�。
-help.accessConstraints_service=サービス�?�制約
-help.fees_service=ライセンス料金等�?�必�?�?��?�。
-help.maintainer_service=�?守対象�?��??�?
-help.keywords_service=サービス�?�関�?�るキーワード�?�リスト
-help.dataFeatureTypeKeywords_service=フュー�?ャータイプ�?�キーワード
-help.abstract_service=サービス�?��?��?��?��?�短�?��?約
-help.onlineResource_service=Webサービス�?�オンラインリファレンスURL
+help.name_service=サービス�??�?��?�。
+help.title_service=サービス�?�タイトル�?��?�。
+help.accessConstraints_service=サービス�?�制約
+help.fees_service=ライセンス料金等�?�必�?�?��?�。
+help.maintainer_service=�?守対象�?��??�?
+help.keywords_service=サービス�?�関�?�るキーワード�?�リスト
+help.dataFeatureTypeKeywords_service=フュー�?ャータイプ�?�キーワード
+help.abstract_service=サービス�?��?��?��?��?�短�?��?約
+help.onlineResource_service=Webサービス�?�オンラインリファレンスURL
 help.serviceType_service=サービスタイプ
 help.cacheControl_defaultMaxAge=The time (in seconds) to instruct external caches to save generated maps.
 help.dataFormat_id=A unique Coverage Data Set identifier.
@@ -178,32 +178,32 @@ help.dataFormat_port=The connection port on the server.
 help.dataFormat_username=The username to login to the server with.
 help.dataFormat_password=The password to login to the server with.
 
-help.dataStore_id=ユニーク�?�データストア識別�?
-help.dataStore_enabled=データストアを有効�?��?�る�?��?�?��?ェック�?�れ�?��?�。
-help.dataStore_nameSpace=�?��?�データストア�?�関連�?�る�??�?空間�?�プレフィックス
-help.dataStore_description=�?��?�データストア�?��?��?��?��?�短�?�説明
-help.dataStore_server=接続�?�るサー�?ー�??
-help.dataStore_port=サー�?ー�?�接続�?ート
-help.dataStore_username=サー�?ー�?�ログイン�?�るユーザー�??
-help.dataStore_password=サー�?ー�?�ログイン�?�るパスワード
+help.dataStore_id=ユニーク�?�データストア識別�?
+help.dataStore_enabled=データストアを有効�?��?�る�?��?�?��?ェック�?�れ�?��?�。
+help.dataStore_nameSpace=�?��?�データストア�?�関連�?�る�??�?空間�?�プレフィックス
+help.dataStore_description=�?��?�データストア�?��?��?��?��?�短�?�説明
+help.dataStore_server=接続�?�るサー�?ー�??
+help.dataStore_port=サー�?ー�?�接続�?ート
+help.dataStore_username=サー�?ー�?�ログイン�?�るユーザー�??
+help.dataStore_password=サー�?ー�?�ログイン�?�るパスワード
 
-help.namespace.default=何も指定�?��?��?�時�?��?��?��??�?空間を仮定�?�る�?�ら�?��?�?ェック�?�れ�?��?�。
-help.namespace.prefix=プレフィックス�?�GMLドキュメント�?�中�?��?��?��??�?空間を識別�?�る�?��?�使�?れ�?��?�。
-help.namespace.uri=�??�?空間�?�定義を記述�?��?�ドキュメント�?�URI
+help.namespace.default=何も指定�?��?��?�時�?��?��?��??�?空間を仮定�?�る�?�ら�?��?�?ェック�?�れ�?��?�。
+help.namespace.prefix=プレフィックス�?�GMLドキュメント�?�中�?��?��?��??�?空間を識別�?�る�?��?�使�?れ�?��?�。
+help.namespace.uri=�??�?空間�?�定義を記述�?��?�ドキュメント�?�URI
 
 
-help.dataFeatureTypeAbstract_service=フュー�?ャータイプ�?�説明
+help.dataFeatureTypeAbstract_service=フュー�?ャータイプ�?�説明
 
 help.dataFeatureTypeKeywords=BLAH
 help.dataFeatureTypeAbstract=BLAH
 
-error.name.required=�??�?�?�必�?�?��?�。
-error.title.required=タイトル�?�必�?�?��?�。
-error.fees.required=ライセンス料金等�?�必�?�?��?�。
-error.maintainer.required=�?守担当者�?�必�?�?��?�。
-error.keywords.required=キーワード�?�必�?�?��?�。
-error.abstract.required=�?約�?�必�?�?��?�。
-error.accessConstraints.required=アクセス制�?�?�必�?�?��?�。
+error.name.required=�??�?�?�必�?�?��?�。
+error.title.required=タイトル�?�必�?�?��?�。
+error.fees.required=ライセンス料金等�?�必�?�?��?�。
+error.maintainer.required=�?守担当者�?�必�?�?��?�。
+error.keywords.required=キーワード�?�必�?�?��?�。
+error.abstract.required=�?約�?�必�?�?��?�。
+error.accessConstraints.required=アクセス制�?�?�必�?�?��?�。
 
 error.geoserver.JAIMemCapacity=JAI Memory Capacity value must be between 0.0 and 1.0
 error.geoserver.JAIMemThreshold=JAI Memory Threshold value must be between 0.0 and 1.0
@@ -217,151 +217,153 @@ error.dataFormatEditor.param.required={0} is a required parameter
 error.dataFormatEditor.param.parse={0} must be a valid {1}: {2}
 error.dataformatEditor.validation=Provided parameters can not be processed
 
-error.dataStoreId.invalid=データストアID '{0}'�?�英数字�?�制�?�?�れ�?��?��?�。(A-Z, a-z, 0-9)
-error.dataStoreId.required=データストアID�?�必�?�?��?�。
-error.dataStoreFactory.invalid=無効�?�データストア・ファクトリ�?��?�。(リスト�?�ら一�?��?�択�?��?��??�?��?��?�)
-error.dataStoreEditor.param.required={0}�?�必須パラメータ�?��?�。
-error.dataStoreEditor.param.parse={0}�?�妥当�?�{1}: {2}�?��?��?�れ�?��?�り�?��?�ん。
-error.datastoreEditor.validation=与�?�られ�?�パラメタを処�?��?��??�?��?�ん。
-errors.buttonAction.invalid=無効�?�ボタン�?�押�?�れ�?��?��?�。
-errors.factory.invalid=無効�?�データストアID�?��?�択�?�れ�?��?��?�。
-error.dataStoreEditor.param.missing={1}�?�対�?��?�{0}�?�見�?��?�られ�?��?�ん。
+error.dataStoreId.invalid=データストアID '{0}'�?�英数字�?�制�?�?�れ�?��?��?�。(A-Z, a-z, 0-9)
+error.dataStoreId.required=データストアID�?�必�?�?��?�。
+error.dataStoreFactory.invalid=無効�?�データストア・ファクトリ�?��?�。(リスト�?�ら一�?��?�択�?��?��??�?��?��?�)
+error.dataStoreEditor.param.required={0}�?�必須パラメータ�?��?�。
+error.dataStoreEditor.param.parse={0}�?�妥当�?�{1}: {2}�?��?��?�れ�?��?�り�?��?�ん。
+error.datastoreEditor.validation=与�?�られ�?�パラメタを処�?��?��??�?��?�ん。
+errors.buttonAction.invalid=無効�?�ボタン�?�押�?�れ�?��?��?�。
+errors.factory.invalid=無効�?�データストアID�?��?�択�?�れ�?��?��?�。
+error.dataStoreEditor.param.missing={1}�?�対�?��?�{0}�?�見�?��?�られ�?��?�ん。
 error.exception={0}
-error.invalidConnectionParams=接続パラメータ�?�無効�?��?�。
-error.cannotProcessConnectionParams=与�?�られ�?�パラメータ�?�接続�?��??�?��?�ん。
-error.badCharSet=与�?�られ�?�文字セット�?�無効�?��?� - �??�?�?�IANAキャラクタセット・レジストリ�?�記述�?�れ�?��?約�?�従�?�?��?�れ�?��?�り�?��?�ん。
-error.cannotRunValidation=妥当性検証�?�実行�?��??�?��?�ん。: {0}
-error.password.mismatch=パスワード�?�確�?�?�パスワード�?�一致�?��?��?�ん。�?入力�?��?��??�?��?��?�。
-error.prefix.invalid=�??�?空間�?�プレフックス '(0}' �?�英数字�?��?��?��?�。(A-Z, a-z, 0-9)
-error.prefix.required=�??�?空間�?�プレフックス�?�必�?�?��?�。
-error.uri.malformed=�??�?空間�?�URI�?�奇妙�?��?�。: {0}
-error.uri.required=Nam�??�?空間�?�URI�?�必�?�?��?�。
+error.invalidConnectionParams=接続パラメータ�?�無効�?��?�。
+error.cannotProcessConnectionParams=与�?�られ�?�パラメータ�?�接続�?��??�?��?�ん。
+error.badCharSet=与�?�られ�?�文字セット�?�無効�?��?� - �??�?�?�IANAキャラクタセット・レジストリ�?�記述�?�れ�?��?約�?�従�?�?��?�れ�?��?�り�?��?�ん。
+error.cannotRunValidation=妥当性検証�?�実行�?��??�?��?�ん。: {0}
+error.password.mismatch=パスワード�?�確�?�?�パスワード�?�一致�?��?��?�ん。�?入力�?��?��??�?��?��?�。
+error.prefix.invalid=�??�?空間�?�プレフックス '(0}' �?�英数字�?��?��?��?�。(A-Z, a-z, 0-9)
+error.prefix.required=�??�?空間�?�プレフックス�?�必�?�?��?�。
+error.uri.malformed=�??�?空間�?�URI�?�奇妙�?��?�。: {0}
+error.uri.required=Nam�??�?空間�?�URI�?�必�?�?��?�。
 error.coveragedir.create=Cannot create Coverage Format Dir: {0}
 error.coveragedir.write=Cannot write into Coverage Format Dir: {0}
 
-error.style.required=�?�択�?�れ�?�スタイル�?�必�?�?��?�。
-error.style.invalid=�?�択�?�れ�?�スタイル�?�定義�?�れ�?��?��?��?�ん。
+error.style.required=�?�択�?�れ�?�スタイル�?�必�?�?��?�。
+error.style.invalid=�?�択�?�れ�?�スタイル�?�定義�?�れ�?��?��?��?�ん。
 
-error.noWritePermission={0}�?�書�??込�?�許�?��?��?�り�?��?�ん。
+error.noWritePermission={0}�?�書�??込�?�許�?��?��?�り�?��?�ん。
 
-welcome.heading=Welcome　よ�?��?��??
+welcome.heading=Welcome　よ�?��?��??
 
 geoserver.logo=GeoServer
 
 label.defaultTitle=GeoServer
 label.coverageName=Coverage Data Set ID
-label.featureTypeName=フュー�?ャータイプ�??
-label.moveUp=下�?�移動
-label.moveDown=上�?�移動
+label.featureTypeName=フュー�?ャータイプ�??
+label.moveUp=下�?�移動
+label.moveDown=上�?�移動
 label.testSuite=テスト・スィート
-label.testName=テスト�??
-label.testDescription=テスト�?�説明
-label.newName=新�?��?��??�?
-label.currentTestSuite=�?�在�?�テストスイート
+label.testName=テスト�??
+label.testDescription=テスト�?�説明
+label.newName=新�?��?��??�?
+label.currentTestSuite=�?�在�?�テストスイート
 label.plugInType=プラグイン・タイプ
-label.plugInDescription=プラグイン�?�説明
-label.maxFeatures=最大フュー�?ャー数
-label.verbose=�?ーボーズ
-label.verboseExceptions=例外�?��?ーボーズ
-label.numDecimals=�?数点以下�?��?数
+label.plugInDescription=プラグイン�?�説明
+label.maxFeatures=最大フュー�?ャー数
+label.verbose=�?ーボーズ
+label.verboseExceptions=例外�?��?ーボーズ
+label.numDecimals=�?数点以下�?��?数
 label.charset=キャラクタセット
 label.baseURL=ベースURL
-label.schemaBaseURL=スキーマ・ベース�?�URL
+label.schemaBaseURL=スキーマ・ベース�?�URL
 label.loggingLevel=ロギング・レベル
-label.loggingToDisk=ディスク�?�ログを書込�?��?��?�
-label.logLocation=ログ�?��?存場所
+label.loggingToDisk=ディスク�?�ログを書込�?��?��?�
+label.logLocation=ログ�?��?存場所
 label.contactInformation=連絡先
 label.contactPerson=担当者
 label.contactOrganization=組織
-label.contactPosition=役�?��??
-label.addressType=�?所タイプ
-label.address=�?所
-label.addressCity=市区町�?�
-label.addressState=都�?�府県
-label.addressPostalCode=郵便番�?�
+label.contactPosition=役�?��??
+label.addressType=�?所タイプ
+label.address=�?所
+label.addressCity=市区町�?�
+label.addressState=都�?�府県
+label.addressPostalCode=郵便番�?�
 label.addressCountry=国
-label.contactVoice=電話番�?�
-label.contactFacsimile=ファックス番�?�
+label.contactVoice=電話番�?�
+label.contactFacsimile=ファックス番�?�
 label.contactEmail=Eメール
 label.wcs=Web Coverage Server
-label.wfs=Webフュー�?ャー・サー�?
-label.wms=Webマップ・サー�?ー
+label.wfs=Webフュー�?ャー・サー�?
+label.wms=Webマップ・サー�?ー
 label.data=データ
 label.wfsStatus=WFS ステータス
 label.wmsStatus=WMS ステータス
 label.dataStatus=Data ステータス
-label.apply=�?�用
-label.save=�?存
+label.apply=�?�用
+label.save=�?存
 label.load=読込
-label.calculateBoundingBox=境界矩形�?�計算
-label.wfsDescription=WFS�?�説明
+label.calculateBoundingBox=境界矩形�?�計算
+label.wfsDescription=WFS�?�説明
 label.wfsContent=WFSコンテンツ
-label.wmsDescription=WMS�?�説明
+label.wmsDescription=WMS�?�説明
 label.wmsContent=WMSコンテンツ
-label.wmsRendering=WMS�??画
+label.wmsRendering=WMS�??画
 label.formats=CoverageStores
 label.dataStores=データストア
 label.coverages=Coverages
-label.createNewDataStore=新�?��?�データストアを作�?�?��?��?�。
-label.createNewNamespace=新�?��?��??�?空間を作�?�?��?��?�。
+label.createNewDataStore=新�?��?�データストアを作�?�?��?��?�。
+label.createNewNamespace=新�?��?��??�?空間を作�?�?��?��?�。
 label.serviceLevel=サービスレベル
 label.serviceLevel.basic=ベーシック
 label.serviceLevel.transactional=トランザクション
 label.serviceLevel.complete=完全
 label.validation=妥当性検証
 label.contact=連絡先
-label.none=�?��?�
-label.phoneNumber=電話番�?�
-label.faxNumber=ファックス番�?�
+label.none=�?��?�
+label.phoneNumber=電話番�?�
+label.faxNumber=ファックス番�?�
 label.email=Eメール
-label.info=窓�?�
+label.info=窓�?�
+label.tileCache=Tile Cache
 
-help.enabled=サービス�?�有効/無効
-help.srsXmlStyle=も�?�返�?�れ�?�GML�?�srsName�?�(仕様�?�よ�?��?�)xmlスタイル�?��?�る�?�ら�?��?ェック�?��?��??�?��?��?�。EPSG�?��?�る�?�ら�?ェックを外�?��?��??�?��?��?�。
-help.featureList=サービス�?�中�?�個々�?�フュー�?ャータイプを有効�?無効�?��?�る�?�を許�?��?��?��?�。
-help.global.maxFeatures=GetFeature�?�よ�?��?�返�?�れ�?�フュー�?ャー�?�最大数を設定�?��?��?�。
-help.global.verbose=XML応答�?�改行�?�インデント�?�返�?�れる�?��?��?��?��?�関係�?��??設定�?��?��?�。
-help.global.verboseExceptions=ユーザ�?�返�?�れ�?�サービス例外�?��?フル�?�javaスタックトレースを�?�?��?��?�る�?��?��?��?��?�関係�?��??セット�?��?��?�。
-help.global.numDecimals=�??進�?��?数�?�GetFeature�?�応答�?�返�?�れ�?��?�。
-help.global.charset=クロー�?ルキャラクターセットを設定�?��?��?�。
-help.global.baseURL=サーブレットを実行�?�るベースURL
-help.global.schemaBaseURL=WFSスキーマ�?��?置�?�対�?�るベースURLを定義�?��?��?�。
-help.global.loggingLevel=アプリケーション�?�ロギングレベルを定義�?��?��?�。
-help.global.loggingToDisk=ディスク�?��?�ロギングを有効/無効�?��?��?��?�。
-help.global.logLocation=ディレクトリ�?�ファイル�?�ログ�?置を指定�?��?��??�?��?��?�。空白�?�状態�?��?��?��?��?�ロギング�?�無効�?��?�り�?��?�。
+help.enabled=サービス�?�有効/無効
+help.srsXmlStyle=も�?�返�?�れ�?�GML�?�srsName�?�(仕様�?�よ�?��?�)xmlスタイル�?��?�る�?�ら�?��?ェック�?��?��??�?��?��?�。EPSG�?��?�る�?�ら�?ェックを外�?��?��??�?��?��?�。
+help.featureList=サービス�?�中�?�個々�?�フュー�?ャータイプを有効�?無効�?��?�る�?�を許�?��?��?��?�。
+help.global.maxFeatures=GetFeature�?�よ�?��?�返�?�れ�?�フュー�?ャー�?�最大数を設定�?��?��?�。
+help.global.verbose=XML応答�?�改行�?�インデント�?�返�?�れる�?��?��?��?��?�関係�?��??設定�?��?��?�。
+help.global.verboseExceptions=ユーザ�?�返�?�れ�?�サービス例外�?��?フル�?�javaスタックトレースを�?�?��?��?�る�?��?��?��?��?�関係�?��??セット�?��?��?�。
+help.global.numDecimals=�??進�?��?数�?�GetFeature�?�応答�?�返�?�れ�?��?�。
+help.global.charset=クロー�?ルキャラクターセットを設定�?��?��?�。
+help.global.baseURL=サーブレットを実行�?�るベースURL
+help.global.schemaBaseURL=WFSスキーマ�?��?置�?�対�?�るベースURLを定義�?��?��?�。
+help.global.loggingLevel=アプリケーション�?�ロギングレベルを定義�?��?��?�。
+help.global.loggingToDisk=ディスク�?��?�ロギングを有効/無効�?��?��?��?�。
+help.global.logLocation=ディレクトリ�?�ファイル�?�ログ�?置を指定�?��?��??�?��?��?�。空白�?�状態�?��?��?��?��?�ロギング�?�無効�?��?�り�?��?�。
 
-help.global.contactPerson=連絡先�?�担当者�??;
-help.global.contactOrganization=連絡�?��??�?�先�?��?�る組織�?��??�?
-help.global.contactPosition=組織内�?�連絡担当者�?�役�?�
-help.global.addressType=指定�?�れ�?�アドレス�?�タイプ�?�?��?��?�?�郵便�?�よ�?��?�
-help.global.address=実際�?�ストリート・アドレス
+help.global.contactPerson=連絡先�?�担当者�??;
+help.global.contactOrganization=連絡�?��??�?�先�?��?�る組織�?��??�?
+help.global.contactPosition=組織内�?�連絡担当者�?�役�?�
+help.global.addressType=指定�?�れ�?�アドレス�?�タイプ�?�?��?��?�?�郵便�?�よ�?��?�
+help.global.address=実際�?�ストリート・アドレス
 help.global.addressCity=市
 help.global.addressState=州
-help.global.addressPostalCode=郵便番�?�
+help.global.addressPostalCode=郵便番�?�
 help.global.addressCountry=国
-help.global.contactVoice=連絡先電話番�?�
-help.global.contactFacsimile=ファックス番�?�
+help.global.contactVoice=連絡先電話番�?�
+help.global.contactFacsimile=ファックス番�?�
 help.global.contactEmail=eメールアドレス
+help.global.tileCache=Location of tile cache. Either an absolute url: (<protocol>://<host>[:<port>]/<path>) or simple path (interpreted as path relative to same host as GeoServer).
 
-help.serviceLevel=WFS�?��??供�?�るサービスレベル�?�定義
+help.serviceLevel=WFS�?��??供�?�るサービスレベル�?�定義
 
-help.wms.svgRenderer=WMS SVGリクエストをサービス�?�る時�?�使用�?�るsvg �??画方法を�?�択�?��?��?�。
+help.wms.svgRenderer=WMS SVGリクエストをサービス�?�る時�?�使用�?�るsvg �??画方法を�?�択�?��?��?�。
 help.wms.path=Specifies the layer hierarchy in the WMS capabilities
 
 tab.description=説明
 tab.content=コンテンツ
 tab.formats=Coverage Data Sets
 tab.dataStores=データ・ストア
-tab.namespaces=�??�?空間
+tab.namespaces=�??�?空間
 tab.styles=スタイル
-tab.featureTypes=フュー�?ャー・タイプ
+tab.featureTypes=フュー�?ャー・タイプ
 
-error.login.invalidCombo=無効�?�ユーザー�??�?�パスワード�?�組�?��?��?��?�。
-error.login.required=�?��?�フュー�?ャー�?�アクセス�?�る�?��?�?��?�ログイン�?��?��?�れ�?��?�り�?��?�ん。
+error.login.invalidCombo=無効�?�ユーザー�??�?�パスワード�?�組�?��?��?��?�。
+error.login.required=�?��?�フュー�?ャー�?�アクセス�?�る�?��?�?��?�ログイン�?��?��?�れ�?��?�り�?��?�ん。
 
-error.latLonBoundingBox.required=経緯度境界上�?�全エレメント�?�必�?�?��?�。
-error.latLonBoundingBox.invalid=無効�?�経緯度境界�?��?�。: {0}
-error.serviceLevel.invalid=無効�?�サービスレベル�?��?�択�?�れ�?��?��?�。
+error.latLonBoundingBox.required=経緯度境界上�?�全エレメント�?�必�?�?��?�。
+error.latLonBoundingBox.invalid=無効�?�経緯度境界�?��?�。: {0}
+error.serviceLevel.invalid=無効�?�サービスレベル�?��?�択�?�れ�?��?��?�。
 
 error.envelope.required=All elements on the Envelope are required.
 error.envelope.invalid=Invalid Envelope: {0}
@@ -375,159 +377,159 @@ link.license=http://geoserver.sourceforge.net/documentation/developer/license.ht
 
 # --- changed ----
 label.geoServerConfiguration=GeoServer 設定
-message.login.hint=(デフォルトユーザー�?�'admin'�?パスワード�?�'geoserver'�?��?�)
-message.noContact=連絡先�?��??供�?�れ�?��?�り�?��?�ん。
-message.notLoaded=アプリケーション�?�リソース�?�ロード�?�れ�?��?�ん�?��?��?�。--サーブレットコンテナ・ログ�?�エラーメッセージを�?ェック�?��?��?��?�。
+message.login.hint=(デフォルトユーザー�?�'admin'�?パスワード�?�'geoserver'�?��?�)
+message.noContact=連絡先�?��??供�?�れ�?��?�り�?��?�ん。
+message.notLoaded=アプリケーション�?�リソース�?�ロード�?�れ�?��?�ん�?��?��?�。--サーブレットコンテナ・ログ�?�エラーメッセージを�?ェック�?��?��?��?�。
 message.noTitle=My GeoServer
-message.dataOkay=データ�?�障害�?��??読込�?�れ�?��?��?�。
+message.dataOkay=データ�?�障害�?��??読込�?�れ�?��?��?�。
 
 
 # WELCOME
 welcome.label=Welcome
 welcome.title=Welcome GeoServer
-welcome.short=よ�?��?��??　GeoServer 1.6-alpha2�?�　　GeoServer�?��?�利用�?�り�?��?��?��?��?��?��?��?�!
+welcome.short=よ�?��?��??　GeoServer 1.6.0-beta�?�　　GeoServer�?��?�利用�?�り�?��?��?��?��?��?��?��?�!
 welcome.words=(GeoServer) (GIS) (Geographic Information Systems) (WFS)
 
 welcome.contact.label=連絡先
 welcome.contact.title=連絡先
-welcome.contact.short=サイト管�?�者�?�連絡先�?��?�
+welcome.contact.short=サイト管�?�者�?�連絡先�?��?�
 welcome.contact.words=(Webマスター) (連絡先) 
 
 welcome.demo.label=デモ
 welcome.demo.title=デモ
-welcome.demo.short=Geoserver�?�デモページ　Geoserver�?�ツール�?�使用方法�?�例を�?�覧下�?��?�。
+welcome.demo.short=Geoserver�?�デモページ　Geoserver�?�ツール�?�使用方法�?�例を�?�覧下�?��?�。
 welcome.demo.words=(GeoServer) (デモ)
 welcome.demo.wmsexample.title=WMS　事例
 welcome.demo.wmsexample.label=WMS　ニューヨークを見る
-welcome.demo.wmsexample.short=ニューヨーク・マン�?ッタン�?�WMS表示�?��?�。パン�?ズーム�?��?��??�?��?イメージをクリック�?�る�?�拡大画�?�?��?ップアップ�?��?��?�。�?�れ�?�Javascript�?�書�?�れ�?��?�り�?コード�?�[geoserver]/conf/popup_map�?�下�?�見る�?��?��?��?��??�?��?�。
+welcome.demo.wmsexample.short=ニューヨーク・マン�?ッタン�?�WMS表示�?��?�。パン�?ズーム�?��?��??�?��?イメージをクリック�?�る�?�拡大画�?�?��?ップアップ�?��?��?�。�?�れ�?�Javascript�?�書�?�れ�?��?�り�?コード�?�[geoserver]/conf/popup_map�?�下�?�見る�?��?��?��?��??�?��?�。
 welcome.demo.mappreview.title=地図プレビュー
-welcome.demo.mappreview.label=有効�?�フュー�?ャータイプ�?�WMSプレビュー
-welcome.demo.mappreview.short=地図プレビューページページ�?��?有効�?��?�フュー�?ャータイプを表示�?��?MapBuilder�?�WMSフォーム�?�見る�?��?��?��?��??るリンクを与�?��?��?�。
+welcome.demo.mappreview.label=有効�?�フュー�?ャータイプ�?�WMSプレビュー
+welcome.demo.mappreview.short=地図プレビューページページ�?��?有効�?��?�フュー�?ャータイプを表示�?��?MapBuilder�?�WMSフォーム�?�見る�?��?��?��?��??るリンクを与�?��?��?�。
 welcome.demo.requests.title=サンプル・リクエスト
-welcome.demo.requests.label=Example WMS�?�WFSリクエスト�?�例
-welcome.demo.requests.short=�?��?�ページ�?��?使用や試験�?変更�?��?��??るWMS�?�WFSリクエスト�?�例�?��?�り�?��?�。Geoserver�?��?�対話方法や�?自分�?�カスタムやリクエストを作る方法を見る�?��?�大変役�?�立�?��?��?�。
+welcome.demo.requests.label=Example WMS�?�WFSリクエスト�?�例
+welcome.demo.requests.short=�?��?�ページ�?��?使用や試験�?変更�?��?��??るWMS�?�WFSリクエスト�?�例�?��?�り�?��?�。Geoserver�?��?�対話方法や�?自分�?�カスタムやリクエストを作る方法を見る�?��?�大変役�?�立�?��?��?�。
 welcome.demo.documentation.title=ドキュメンテーション
 welcome.demo.documentation.label=メイン・ドキュメントページ
-welcome.demo.documentation.short=�?�れ�?�Geoserver�?�メイン・ドキュメントページ�?��?�。�??れ�?� �?�?�らゆるドキュメントやウォークスルー�?�?ュートリアル�?�?��?��?�他�?�ユーザ�?��?��?�?��?�る�?��?�?れる情報等を加�?�る�?��?��?�自由�?�WIKI�?��?�。
+welcome.demo.documentation.short=�?�れ�?�Geoserver�?�メイン・ドキュメントページ�?��?�。�??れ�?� �?�?�らゆるドキュメントやウォークスルー�?�?ュートリアル�?�?��?��?�他�?�ユーザ�?��?��?�?��?�る�?��?�?れる情報等を加�?�る�?��?��?�自由�?�WIKI�?��?�。
 welcome.demo.wfst.title=WFS-T demo
 welcome.demo.wfst.label=Example WFS-T (transactional) page
-welcome.demo.wfst.short=This page, powered by MapBuilder, is an example of WFS-T (transactional) requests that you can use. It allows you to insert points and lines into the various layers of the map.
+welcome.demo.wfst.short=This page, powered by OpenLayers, is an example of WFS-T (transactional) requests that you can use. It allows you to insert points and lines into the various layers of the map.
 
 welcome.demoRequest.label=デモ・リクエスト
 welcome.demoRequest.title=デモ・リクエスト
-welcome.demoRequest.short=(テストServletを使�?��?�)GeoServer�?��?�リクエスト例　ドロップダウン・リスト�?�らリクエストを�?��?��?'変更'をクリック�?��?��??�?��?��?�。リクエストURL(�?�xmlリクエスト�?�ら�?�body)�?�表示�?�れ�?��?�。GeoServer�?�リクエストを�?る�?��?�?�実行をクリック�?��?�下�?��?�。
+welcome.demoRequest.short=(テストServletを使�?��?�)GeoServer�?��?�リクエスト例　ドロップダウン・リスト�?�らリクエストを�?��?��?'変更'をクリック�?��?��??�?��?��?�。リクエストURL(�?�xmlリクエスト�?�ら�?�body)�?�表示�?�れ�?��?�。GeoServer�?�リクエストを�?る�?��?�?�実行をクリック�?��?�下�?��?�。
 welcome.demoRequest.words=(GeoServer) (デモ)
 
 # WELCOME resources
-text.welcome1=GeoServer project�?��?OpenGIS Consortium�?�Web Feature Server仕様をWeb Map Server�?�統�?��?��?�フルトランザクション�?�Java (J2EE)�?�実装�?�るも�?��?��?�。
-text.welcome2=GeoServer�?�GPL 2.0ライセンス�?�下�?�利用�?�能�?�フリーソフトウエア�?��?�。
-text.welcome3=柔軟�?��?��?�産業的�?�推奨�?�れ�?�標準を使�?��?��?インター�?ット上�?�自身�?�地�?�的データ�?�アクセス�?��?�更新�?��?��?�ユーザー�?��?GeoServerを見る�?��??�?��?�。
-text.welcome4=WFS�?�WMS�?�説明文�?�上�?�リンク�?��?�る設定を使�?��?�編集�?�れ�?��?�。GeoServer�?�設定(連絡先を�?�む）や�?実行�?��?��?�るアプリケーション�?�管�?�を変更�?�る�?��?��?ログイン(リンクトップ�?��?��?�)�?��?��?�れ�?��?�り�?��?�ん。
-text.welcome5=�?��?�リリース�?�ドキュメント�?��?以下�?�リンク�?�オンライン利用�?��??�?��?�。GeoServer wiki�?�最新版�?��?��?�?�使�?れ�?��?�。; GeoServer�?��?��?��?��?�経験やヒント�?�?��?�を共有�?��?��??�?��?��?�。タスクトラッカー�?�機能�?求�?��?グを報告�?�る所�?��?�。�?��?�　�?�手数�?��?��?�GeoServer�?��?�支�?�を示�?��?��?�?��?ユーザーマップ�?��?��?��?�を加�?��?��??�?��?��?�。
+text.welcome1=GeoServer project�?��?OpenGIS Consortium�?�Web Feature Server仕様をWeb Map Server�?�統�?��?��?�フルトランザクション�?�Java (J2EE)�?�実装�?�るも�?��?��?�。
+text.welcome2=GeoServer�?�GPL 2.0ライセンス�?�下�?�利用�?�能�?�フリーソフトウエア�?��?�。
+text.welcome3=柔軟�?��?��?�産業的�?�推奨�?�れ�?�標準を使�?��?��?インター�?ット上�?�自身�?�地�?�的データ�?�アクセス�?��?�更新�?��?��?�ユーザー�?��?GeoServerを見る�?��??�?��?�。
+text.welcome4=WFS�?�WMS�?�説明文�?�上�?�リンク�?��?�る設定を使�?��?�編集�?�れ�?��?�。GeoServer�?�設定(連絡先を�?�む）や�?実行�?��?��?�るアプリケーション�?�管�?�を変更�?�る�?��?��?ログイン(リンクトップ�?��?��?�)�?��?��?�れ�?��?�り�?��?�ん。
+text.welcome5=�?��?�リリース�?�ドキュメント�?��?以下�?�リンク�?�オンライン利用�?��??�?��?�。GeoServer wiki�?�最新版�?��?��?�?�使�?れ�?��?�。; GeoServer�?��?��?��?��?�経験やヒント�?�?��?�を共有�?��?��??�?��?��?�。タスクトラッカー�?�機能�?求�?��?グを報告�?�る所�?��?�。�?��?�　�?�手数�?��?��?�GeoServer�?��?�支�?�を示�?��?��?�?��?ユーザーマップ�?��?��?��?�を加�?��?��??�?��?��?�。
 
 text.welcome.mapbuilder=Mapbuilderデモ
-text.welcome.mapbuilder.detail= <a href='http://mapbuilder.sourceforge.net/'>Mapbuilder</a> �?�java-script�?�よるWFS-Tクライアント�?��?�。�?��?�Geoserver�?�インストール�?��?��?�るデータを編集�?�る�?��?��?Mapbuilder�?�利用�?��??�?��?�。
+text.welcome.mapbuilder.detail= <a href='http://mapbuilder.sourceforge.net/'>Mapbuilder</a> �?�java-script�?�よるWFS-Tクライアント�?��?�。�?��?�Geoserver�?�インストール�?��?��?�るデータを編集�?�る�?��?��?Mapbuilder�?�利用�?��??�?��?�。
 
 # NEW features
 text.visitDemoPage=Visit the <b><a href="../../../demo.do">demo</a></b> page for examples of GeoServer in action. This includes an integrated <b><a href="../../../mapPreview.do"/>Mapbuilder client</a></b>.
 text.newFeatureLogo=<b><font color='red'>NEW!</font></b>
-text.newFeature1=新�?��?�MapBuilder GUI�?�WMSレイヤーを�?�らん�??�?��?��?�。
-text.newFeature2=デモページ�?��?��?�ら�?��?�WMS�?�WFS�?�デモを確�?�?��?��??�?��?��?�。
+text.newFeature1=新�?��?�MapBuilder GUI�?�WMSレイヤーを�?�らん�??�?��?��?�。
+text.newFeature2=デモページ�?��?��?�ら�?��?�WMS�?�WFS�?�デモを確�?�?��?��??�?��?��?�。
 
 # ADMIN
-admin.label=管�?�
-admin.title=GeoServer�?�管�?�
-admin.short=実行中�?�GeoServerアプリケーションを管�?��?��?��?�。
-admin.words=(管�?�)
+admin.label=管�?�
+admin.title=GeoServer�?�管�?�
+admin.short=実行中�?�GeoServerアプリケーションを管�?��?��?��?�。
+admin.words=(管�?�)
 
 admin.login.label=ログイン
 admin.login.title=ログイン
-admin.login.short=GeoServer�?�ログイン�?��?��??�?��?��?�。 (デフォルト�?��?ユーザー�??：admin�?パスワード：geoserver�?��?�。 Config->Server->Password�?�ら変更�?��??�?��?�。)
+admin.login.short=GeoServer�?�ログイン�?��?��??�?��?��?�。 (デフォルト�?��?ユーザー�??：admin�?パスワード：geoserver�?��?�。 Config->Server->Password�?�ら変更�?��??�?��?�。)
 admin.login.words=(GeoServer) (ログイン)
 
 admin.freeLocks.label=ロック解放
-admin.freeLocks.title=ロック�?�全解放
-admin.freeLocks.short=サー�?ー�?��?�在ホールド�?��?��?�るロックを全�?�解放�?��?��?�。
-admin.freeLocks.words=(機能ロック) (解放) (管�?�)
+admin.freeLocks.title=ロック�?�全解放
+admin.freeLocks.short=サー�?ー�?��?�在ホールド�?��?��?�るロックを全�?�解放�?��?��?�。
+admin.freeLocks.words=(機能ロック) (解放) (管�?�)
 
 admin.freeMemory.label=メモリ解放
-admin.freeMemory.title=利用�?�能メモリ�?�解放
-admin.freeMemory.short=ガベージコレクター�?�実行�?�より利用�?�能�?�メモリを解放�?��?��?�。
-admin.freeMemory.words=(メモリ) (解放) (管�?�)
+admin.freeMemory.title=利用�?�能メモリ�?�解放
+admin.freeMemory.short=ガベージコレクター�?�実行�?�より利用�?�能�?�メモリを解放�?��?��?�。
+admin.freeMemory.words=(メモリ) (解放) (管�?�)
 
 # resources for Admin
 label.locks=ロック
 label.connections=接続
 label.memory=メモリ
-help.locks=機能ロック�?�数
+help.locks=機能ロック�?�数
 help.connections=データ接続数
-help.memory=利用�?�能�?�メモリ容�?
-text.admin=�?��?�管�?�ページ�?��?�在�?��?��?��?アイディア段階�?��?�り�?（アプリケーション�?��?�対話を許�?��?�る共�?�）GeoSeverアプリケーション�?�実行状態を表示�?�る�?��?�を目的�?��?��?��?��?��?�。
-message.freeLocks=ロック�?�解除�?�れ�?��?��?�。 ({0}�?��?�?�?�れ�?��?��?�)
-message.memory=メモリ�?�解放�?�れ�?��?��?� 。({0}Kを解放�?��?��?��?�)
+help.memory=利用�?�能�?�メモリ容�?
+text.admin=�?��?�管�?�ページ�?��?�在�?��?��?��?アイディア段階�?��?�り�?（アプリケーション�?��?�対話を許�?��?�る共�?�）GeoSeverアプリケーション�?�実行状態を表示�?�る�?��?�を目的�?��?��?��?��?��?�。
+message.freeLocks=ロック�?�解除�?�れ�?��?��?�。 ({0}�?��?�?�?�れ�?��?��?�)
+message.memory=メモリ�?�解放�?�れ�?��?��?� 。({0}Kを解放�?��?��?��?�)
 
 # CONFIG
 config.label=設定
-config.title=GeoServer�?�設定
-config.short=GeoServerアプリケーションを設定�?��?��?�。
+config.title=GeoServer�?�設定
+config.short=GeoServerアプリケーションを設定�?��?��?�。
 config.words=(設定)
 
 # CONFIG Server
-config.server.label=サー�?ー
-config.server.title=サー�?ー�?�設定
-config.server.short=サー�?ー�?�連絡先を設定�?��?��?�。
-config.server.words=(設定) (連絡) (サー�?ー)
+config.server.label=サー�?ー
+config.server.title=サー�?ー�?�設定
+config.server.short=サー�?ー�?�連絡先を設定�?��?��?�。
+config.server.words=(設定) (連絡) (サー�?ー)
 
 # CONFIG Server Login
 config.server.login.label=パスワード
-config.server.login.title=パスワード�?�変更
-config.server.login.short=ユーザー�??/パスワードを編集�?��?��?�。
-config.server.login.words=(GeoServer) (ログイン) (管�?�)
+config.server.login.title=パスワード�?�変更
+config.server.login.short=ユーザー�??/パスワードを編集�?��?��?�。
+config.server.login.words=(GeoServer) (ログイン) (管�?�)
 
 # CONFIG validation
 config.validation.label=妥当性検証
-config.validation.title=妥当性検証�?�設定
-config.validation.short=GeoServer�?�妥当性検証プロセッサーを設定�?��?��?�。
+config.validation.title=妥当性検証�?�設定
+config.validation.short=GeoServer�?�妥当性検証プロセッサーを設定�?��?��?�。
 config.validation.words=(Configuration) (妥当性検証)
 
 config.validation.suite.label=テスト・スィート
-config.validation.suite.title=妥当性検証用テスト・スィート�?�設定
-config.validation.suite.short=妥当性検証プロセッサー�?�テスト・スィートを設定�?��?��?�。
-config.validation.suite.words=(妥当性検証処�?�) (テスト・スィート)
+config.validation.suite.title=妥当性検証用テスト・スィート�?�設定
+config.validation.suite.short=妥当性検証プロセッサー�?�テスト・スィートを設定�?��?��?�。
+config.validation.suite.words=(妥当性検証処�?�) (テスト・スィート)
 
-config.validation.suite.doit.label=テスト�?�実行
-config.validation.suite.doit.title=テスト・スィート�?�実行
-config.validation.suite.doit.short=テスト・スィートを実行�?��?��?�。
-config.validation.suite.doit.words=(妥当性検証処�?�) (テスト・スィート)
+config.validation.suite.doit.label=テスト�?�実行
+config.validation.suite.doit.title=テスト・スィート�?�実行
+config.validation.suite.doit.short=テスト・スィートを実行�?��?��?�。
+config.validation.suite.doit.words=(妥当性検証処�?�) (テスト・スィート)
 
 config.validation.test.label=テスト
-config.validation.test.title=妥当性検証テスト�?�設定
-config.validation.test.short=（テスト・スィート中�?�）妥当性検証テストを設定�?��?��?�。
+config.validation.test.title=妥当性検証テスト�?�設定
+config.validation.test.short=（テスト・スィート中�?�）妥当性検証テストを設定�?��?��?�。
 config.validation.test.words=(妥当性検証プロセッサー) (妥当性検証) (テスト)
 
 config.validation.suite.editor.label=編集
-config.validation.suite.editor.title=妥当性検証テスト・スィート�?�編集
-config.validation.suite.editor.short=妥当性検証テスト・スィートを編集�?��?��?�。
+config.validation.suite.editor.title=妥当性検証テスト・スィート�?�編集
+config.validation.suite.editor.short=妥当性検証テスト・スィートを編集�?��?��?�。
 config.validation.suite.editor.words=(妥当性検証プロセッサー) (妥当性検証) (テストスィート)
 
 config.validation.test.editor.label=編集
-config.validation.test.editor.title=妥当性検証テスト�?�編集
-config.validation.test.editor.short=妥当性検証テストを編集�?��?��?�。
+config.validation.test.editor.title=妥当性検証テスト�?�編集
+config.validation.test.editor.short=妥当性検証テストを編集�?��?��?�。
 config.validation.test.editor.words=(妥当性検証プロセッサー) (妥当性検証) (テスト)
 
-config.validation.test.doit.label=テスト�?�実行
-config.validation.test.doit.title=妥当性検証テスト�?�実行
-config.validation.test.doit.short=妥当性検証テストを実行�?��?��?�。
+config.validation.test.doit.label=テスト�?�実行
+config.validation.test.doit.title=妥当性検証テスト�?�実行
+config.validation.test.doit.short=妥当性検証テストを実行�?��?��?�。
 config.validation.test.doit.words=(妥当性検証プロセッサー) (テスト)
 
-config.validation.displayResults.label=�?果�?�表示
-config.validation.displayResults.title=テスト�?�実行�?果
-config.validation.displayResults.short=テスト�?�実行�?果を表示�?��?��?�。
-config.validation.displayResults.words=(妥当性検証プロセッサー) (妥当性検証) (テストスィート) (�?果)
+config.validation.displayResults.label=�?果�?�表示
+config.validation.displayResults.title=テスト�?�実行�?果
+config.validation.displayResults.short=テスト�?�実行�?果を表示�?��?��?�。
+config.validation.displayResults.words=(妥当性検証プロセッサー) (妥当性検証) (テストスィート) (�?果)
 config.validation.displayResults.errors=エラー
-config.validation.displayResults.runCompleted=実行�?�完了
-config.validation.displayResults.runNotCompleted=実行�?�完了�?��?��?�ん�?��?��?�
-config.validation.displayResults.stop=�?�止
+config.validation.displayResults.runCompleted=実行�?�完了
+config.validation.displayResults.runNotCompleted=実行�?�完了�?��?��?�ん�?��?��?�
+config.validation.displayResults.stop=�?�止
 
 # CONFIG wcs
 config.wcs.label=WCS
@@ -551,51 +553,51 @@ error.wcs.onlineResource.malformed=Online Resource is malformed: {0}
 
 # CONFIG wfs
 config.wfs.label=WFS
-config.wfs.title=Web Feature Server�?�設定
-config.wfs.short=Web Feature Serverを設定�?��?��?�。
+config.wfs.title=Web Feature Server�?�設定
+config.wfs.short=Web Feature Serverを設定�?��?��?�。
 config.wfs.words=(WFS) (Web Feature Server) (設定)
 
 config.wfs.content.label=コンテンツ
-config.wfs.content.title=Web Feature Server�?�コンテンツ
-config.wfs.content.short=Web Feature Server�?�機能を設定�?��?��?�。
+config.wfs.content.title=Web Feature Server�?�コンテンツ
+config.wfs.content.short=Web Feature Server�?�機能を設定�?��?��?�。
 config.wfs.content.words=(WFS) (Web Feature Server) (設定)
 
 config.wfs.description.label=説明
-config.wfs.description.title=Web Feature Server�?�説明
-config.wfs.description.short=Web Feature Server�?�情報�?�メタデータを設定�?��?��?�。
+config.wfs.description.title=Web Feature Server�?�説明
+config.wfs.description.short=Web Feature Server�?�情報�?�メタデータを設定�?��?��?�。
 config.wfs.description.words=(WFS) (Web Feature Server) (設定)
 
-error.wfs.onlineResource.required=オンラインリソース�?�必�?�?��?�。
-error.wfs.onlineResource.malformed=オンラインリソース�?��?��?��?��?��?��?�。: {0}
+error.wfs.onlineResource.required=オンラインリソース�?�必�?�?��?�。
+error.wfs.onlineResource.malformed=オンラインリソース�?��?��?��?��?��?��?�。: {0}
 
 # CONFIG wms
 config.wms.label=WMS
-config.wms.title=Web Map Server�?�設定
-config.wms.short=Web Map Serverを設定�?��?��?�。
+config.wms.title=Web Map Server�?�設定
+config.wms.short=Web Map Serverを設定�?��?��?�。
 config.wms.words=(WMS) (Web Map Server) (設定)
 
 config.wms.content.label=コンテンツ
 config.wms.content.title=Web Map Server コンテンツ
-config.wms.content.short=Web Map Server�?�機能を設定�?��?��?�。
+config.wms.content.short=Web Map Server�?�機能を設定�?��?��?�。
 config.wms.content.words=(WMS) (Web Map Server) (設定)
 
 config.wms.description.label=説明
-config.wms.description.title=Web Map Server�?�説明
-config.wms.description.short=Web Map Server�?�情報�?�メタデータを設定�?��?��?�。
+config.wms.description.title=Web Map Server�?�説明
+config.wms.description.short=Web Map Server�?�情報�?�メタデータを設定�?��?��?�。
 config.wms.description.words=(WMS) (Web Map Server) (Configuration)
 
 config.wms.rendering.label=レンダリング
-config.wms.rendering.title=Web Map Server�?�レンダリング
-config.wms.rendering.short=Web Map Server�?�レンダリングを設定�?��?��?�。
+config.wms.rendering.title=Web Map Server�?�レンダリング
+config.wms.rendering.short=Web Map Server�?�レンダリングを設定�?��?��?�。
 config.wms.rendering.words=(WMS) (Web Map Server) (レンダリング)
 
-error.wms.onlineResource.required=オンライン・リソース�?�必�?�?��?�。
-error.wms.onlineResource.malformed=オンライン・リソース�?�奇妙�?��?�。: {0}
+error.wms.onlineResource.required=オンライン・リソース�?�必�?�?��?�。
+error.wms.onlineResource.malformed=オンライン・リソース�?�奇妙�?��?�。: {0}
 
 # DATA
 config.data.label=データ
-config.data.title=GeoServer�?�データ設定
-config.data.short=GeoServerアプリケーション�?�config.data�?�アクセス�?�表示を設定�?��?��?�。
+config.data.title=GeoServer�?�データ設定
+config.data.short=GeoServerアプリケーション�?�config.data�?�アクセス�?�表示を設定�?��?��?�。
 config.data.words=(設定) (データ) (空間データ)
 
 # DATA - config.data.coverageplugins
@@ -623,103 +625,103 @@ config.data.format.editor.requiredField=required field
 
 # DATA - config.dataStores
 config.data.store.label=データストア
-config.data.store.title=データストア�?�設定
-config.data.store.short=設定�?�るデータストアを�?�択�?��?��??�?��?��?�。
+config.data.store.title=データストア�?�設定
+config.data.store.short=設定�?�るデータストアを�?�択�?��?��??�?��?��?�。
 config.data.store.words=(設定) (データベース) (Shapeファイル) (空間データ) (データ)
 
-config.data.store.new.label=新�?
-config.data.store.new.title=新�?��?�データストア�?�作�?
-config.data.store.new.short=空間情報�?�ソースを作�?�?��?��?�。
+config.data.store.new.label=新�?
+config.data.store.new.title=新�?��?�データストア�?�作�?
+config.data.store.new.short=空間情報�?�ソースを作�?�?��?��?�。
 config.data.store.new.words=(設定) (データｰベース) (Shapeファイル) (空間データ) (データ)
 
 config.data.store.editor.label=編集
-config.data.store.editor.title=データストア�?�編集
-config.data.store.editor.short=空間情報�?�ソースを編集�?��?��?�。
+config.data.store.editor.title=データストア�?�編集
+config.data.store.editor.short=空間情報�?�ソースを編集�?��?��?�。
 config.data.store.editor.words=(設定)(データｰベース) (Shapeファイル) (空間データ) (データ) 
-config.data.store.editor.requiredField=必�?�?�フィールド
+config.data.store.editor.requiredField=必�?�?�フィールド
 
 # DATA namespace
-config.data.namespace.label=�??�?空間
-config.data.namespace.title=�??�?空間�?�設定
-config.data.namespace.short=GML�?�生�?�?�使用�?�る�??�?空間を設定�?��?��?�。
-config.data.namespace.words=(GML) (�??�?空間) (プレフィックス)
+config.data.namespace.label=�??�?空間
+config.data.namespace.title=�??�?空間�?�設定
+config.data.namespace.short=GML�?�生�?�?�使用�?�る�??�?空間を設定�?��?��?�。
+config.data.namespace.words=(GML) (�??�?空間) (プレフィックス)
 
-config.data.namespace.new.label=新�?
-config.data.namespace.new.title=新�?��?��??�?空間�?�作�?
-config.data.namespace.new.short=GMLコンテンツ�?�新�?��?��??�?空間を作�?�?��?��?�。
-config.data.namespace.new.words=(GML) (�??�?空間) (プレフィックス)
+config.data.namespace.new.label=新�?
+config.data.namespace.new.title=新�?��?��??�?空間�?�作�?
+config.data.namespace.new.short=GMLコンテンツ�?�新�?��?��??�?空間を作�?�?��?��?�。
+config.data.namespace.new.words=(GML) (�??�?空間) (プレフィックス)
 
 config.data.namespace.editor.label=編集
-config.data.namespace.editor.title=�??�?空間�?�編集
-config.data.namespace.editor.short=GML�??�?空間�?�URI�?�プレフィックスを編集�?��?��?�。
-config.data.namespace.editor.words=(GML) (�??�?空間) (プレフィックス)
+config.data.namespace.editor.title=�??�?空間�?�編集
+config.data.namespace.editor.short=GML�??�?空間�?�URI�?�プレフィックスを編集�?��?��?�。
+config.data.namespace.editor.words=(GML) (�??�?空間) (プレフィックス)
 
-text.namespace=リスト�?�ら�??�?空間を�?�択�?��?��??�?��?��?�。＊�?�デフォルト�?��??�?空間を示�?��?��?�。
+text.namespace=リスト�?�ら�??�?空間を�?�択�?��?��??�?��?��?�。＊�?�デフォルト�?��??�?空間を示�?��?��?�。
 # DATA styles
 # -----------
 config.data.style.label=スタイル
-config.data.style.title=スタイル�?�設定
-config.data.style.short=使用�?�能�?�スタイルを定義�?��?��?�。
+config.data.style.title=スタイル�?�設定
+config.data.style.short=使用�?�能�?�スタイルを定義�?��?��?�。
 config.data.style.words=(WMS) (Web Map Server) (スタイル)
 config.data.sldWizard.label=Create new SLD
 
-config.data.style.new.label=新�?
-config.data.style.new.title=新�?スタイル
-config.data.style.new.short=新�?��?�スタイルを作�?�?��?��?�。
+config.data.style.new.label=新�?
+config.data.style.new.title=新�?スタイル
+config.data.style.new.short=新�?��?�スタイルを作�?�?��?��?�。
 config.data.style.new.words=(WMS) (Web Map Server) (スタイル)
 
 config.data.style.editor.label=編集
-config.data.style.editor.title=スタイル�?�編集
-config.data.style.editor.short=�?�択�?��?�スタイルを編集�?��?��?�。
+config.data.style.editor.title=スタイル�?�編集
+config.data.style.editor.short=�?�択�?��?�スタイルを編集�?��?��?�。
 config.data.style.editor.words=(WMS) (Web Map Server) (スタイル)
 
 # Resources for styles
 label.styles=スタイル
 label.styleID=スタイルID
-help.styles=利用�?�能�?�スタイル�?�リスト
-help.styleID=スタイル�?�識別�?
-error.style.exists=スタイルID {0} �?�既�?��?�り�?��?�。
-error.file.required=ファイル�??�?�必�?�?��?�。
+help.styles=利用�?�能�?�スタイル�?�リスト
+help.styleID=スタイル�?�識別�?
+error.style.exists=スタイルID {0} �?�既�?��?�り�?��?�。
+error.file.required=ファイル�??�?�必�?�?��?�。
 # didier, 2004-04-20, not anymore used :
-error.file.nonexistent=ファイル {0} �?��?�り�?��?�ん。
+error.file.nonexistent=ファイル {0} �?��?�り�?��?�ん。
 # didier, 2004-04-20, FormFile :
-error.file.maxLengthExceeded=SLD文書�?�最大アップロード長を越�?��?��?��?�。 ({0} �?イト�?��?�許容）
-error.action.invalid=アクション '{0}' �?��?�解�?�れ�?��?�ん�?��?��?�。
-error.styleID.required=StyleID �?�必�?�?��?�。
+error.file.maxLengthExceeded=SLD文書�?�最大アップロード長を越�?��?��?��?�。 ({0} �?イト�?��?�許容）
+error.action.invalid=アクション '{0}' �?��?�解�?�れ�?��?�ん�?��?��?�。
+error.styleID.required=StyleID �?�必�?�?��?�。
 error.styleID.invalid=StyleID must begin with an alpha-numeric character and cannot contain spaces.
-error.style.sldFileExists=既�?�{0}�?��?�り�?��?�　ファイルをリ�?ーム�?��?�実行�?��?��??�?��?��?�。
+error.style.sldFileExists=既�?�{0}�?��?�り�?��?�　ファイルをリ�?ーム�?��?�実行�?��?��??�?��?��?�。
 
 
-error.namespace.namespaceInUse=削除�?�る�??�?空間�?�データベース�?�使用�?��?��?��?�　最�?�?�データストアを削除�?��?��??�?��?��?�。
+error.namespace.namespaceInUse=削除�?�る�??�?空間�?�データベース�?�使用�?��?��?��?�　最�?�?�データストアを削除�?��?��??�?��?��?�。
 
 
 # DATA featureType
 # -----------
-config.data.type.label=フュー�?ャータイプ
-config.data.type.title=フュー�?ャータイプ�?�設定
-config.data.type.short=�?��?�サービス�?�利用�?�能�?�フュー�?ャータイプを定義�?��?��?�。
-config.data.type.words=(フュー�?ャータイプ) (空間情報)
+config.data.type.label=フュー�?ャータイプ
+config.data.type.title=フュー�?ャータイプ�?�設定
+config.data.type.short=�?��?�サービス�?�利用�?�能�?�フュー�?ャータイプを定義�?��?��?�。
+config.data.type.words=(フュー�?ャータイプ) (空間情報)
 
-config.data.type.new.label=新�?
-config.data.type.new.title=新�?��?�フュー�?ャータイプ�?�作�?
-config.data.type.new.short=利用�?�能�?�データストア�?�ら新�?��?�フュー�?ャータイプを作�?�?��?��?�。
-config.data.type.new.words=(フュー�?ャータイプ) (空間情報)
+config.data.type.new.label=新�?
+config.data.type.new.title=新�?��?�フュー�?ャータイプ�?�作�?
+config.data.type.new.short=利用�?�能�?�データストア�?�ら新�?��?�フュー�?ャータイプを作�?�?��?��?�。
+config.data.type.new.words=(フュー�?ャータイプ) (空間情報)
 
 config.data.type.editor.label=編集
-config.data.type.editor.title=フュー�?ャータイプ�?�編集
-config.data.type.editor.short=フュー�?ャータイプ�?�定義�?�スキーマを編集�?��?��?�。
-config.data.type.editor.words=(フュー�?ャータイプ) (空間情報)
+config.data.type.editor.title=フュー�?ャータイプ�?�編集
+config.data.type.editor.short=フュー�?ャータイプ�?�定義�?�スキーマを編集�?��?��?�。
+config.data.type.editor.words=(フュー�?ャータイプ) (空間情報)
 
-config.data.calculateBoundingBox.label=生�?
-config.data.calculateBoundingBox.title=境界�?�計算
-config.data.calculateBoundingBox.short=フュー�?ャータイプ定義�?��?��?�?�境界を計算�?��?��?�。
-config.data.calculateBoundingBox.words=(フュー�?ャータイプ) (空間情報) (境界) 
+config.data.calculateBoundingBox.label=生�?
+config.data.calculateBoundingBox.title=境界�?�計算
+config.data.calculateBoundingBox.short=フュー�?ャータイプ定義�?��?��?�?�境界を計算�?��?��?�。
+config.data.calculateBoundingBox.words=(フュー�?ャータイプ) (空間情報) (境界) 
 
-error.data.nullBBOX=フュー�?ャータイプ'{0}'�?�範囲�?�ヌル�?��?� <br> ヒント: データセット�?�空�?��?ジオメトリ�?�属性�?�デフォルト�?�り�?��?�ん。
-error.data.couldNotFindSRSAuthority=�?��?��?��?�SRSを解釈�?�る�?��?�?�SRS判例�?�見�?��?�り�?��?�ん。 SRS�?�正�?��?��?��?�を確�?��?�?��??�?��?��?�。-�?��?��?��?�SRS�?�確実�?�リスト�?�れる�?��?�?��?SRS判例�?�プラグイン�?��?��?��?�相談�?�る必�?�?��?�る�?�も�?�れ�?��?�ん。 <br> {0} <br> {1} 
-error.data.factoryException=SRS変�?�を構築�?�る�?��?��?��?��??�?��?�ん�?��?��?�。 - {0}
-error.data.transformException=座標変�?�を�?�る�?��?��?��?��??�?��?�ん�?��?��?�。
-error.style.noParse=スタイルを解�?�?�る�?��?��?��?��??�?��?�ん�?��?��?�。 - {0}
+error.data.nullBBOX=フュー�?ャータイプ'{0}'�?�範囲�?�ヌル�?��?� <br> ヒント: データセット�?�空�?��?ジオメトリ�?�属性�?�デフォルト�?�り�?��?�ん。
+error.data.couldNotFindSRSAuthority=�?��?��?��?�SRSを解釈�?�る�?��?�?�SRS判例�?�見�?��?�り�?��?�ん。 SRS�?�正�?��?��?��?�を確�?��?�?��??�?��?��?�。-�?��?��?��?�SRS�?�確実�?�リスト�?�れる�?��?�?��?SRS判例�?�プラグイン�?��?��?��?�相談�?�る必�?�?��?�る�?�も�?�れ�?��?�ん。 <br> {0} <br> {1} 
+error.data.factoryException=SRS変�?�を構築�?�る�?��?��?��?��??�?��?�ん�?��?��?�。 - {0}
+error.data.transformException=座標変�?�を�?�る�?��?��?��?��??�?��?�ん�?��?��?�。
+error.style.noParse=スタイルを解�?�?�る�?��?��?��?��??�?��?�ん�?��?��?�。 - {0}
 
 
 label.SRSHelp=SRS Help
@@ -735,15 +737,15 @@ label.type.dataminy=データ min Y
 label.type.datamaxx=データ max X
 label.type.datamaxy=データ max Y
 
-help.type.dataminx=データセット�?�SRS�?��?��?�るX座標最�?値
-help.type.dataminy=データセット�?�SRS�?��?��?�るY座標最�?値
-help.type.datamaxx=データセット�?�SRS�?��?��?�るX座標最大値
-help.type.datamaxy=データセット�?�SRS�?��?��?�るY座標最大値
+help.type.dataminx=データセット�?�SRS�?��?��?�るX座標最�?値
+help.type.dataminy=データセット�?�SRS�?��?��?�るY座標最�?値
+help.type.datamaxx=データセット�?�SRS�?��?��?�るX座標最大値
+help.type.datamaxy=データセット�?�SRS�?��?��?�るY座標最大値
 
-error.badsrc=SRS�?�定義を見�?��?�る�?��?��?��?��??�?��?�ん。 - {0}
+error.badsrc=SRS�?�定義を見�?��?�る�?��?��?��?��??�?��?�ん。 - {0}
 
 label.type.srswkt=SRS WKT
-help.type.srswkt=SRS�?�EPSG番�?��?�OGC Well Known Text 定義
+help.type.srswkt=SRS�?�EPSG番�?��?�OGC Well Known Text 定義
 
 # Resources for FeatureType
 label.bbox=Bounding Box
@@ -762,24 +764,24 @@ label.coverage.maxx=Max X
 label.coverage.maxy=Max Y
 
 label.base=スキーマ・ベース
-label.schemaName=スキーマ�??
+label.schemaName=スキーマ�??
 label.style=スタイル
 label.change=変更
 label.add=追加
-label.nillable=ヌル値�?�
-label.min=最�?
+label.nillable=ヌル値�?�
+label.min=最�?
 label.max=最大
-help.type.name=フュー�?ャータイプ�??
-help.type.style=�??画フュー�?ャータイプ�?�使用�?�るデフォルト�?�スタイル
-help.type.srs=フュー�?ャータイプ�?��?�空間�?�照システム
-help.type.title=�?��?�フュー�?ャータイプ�?�エンドユーザー�?��?�タイトル
-help.type.bbox=全体�?�フュー�?ャータイプ�?�対�?�る領域ボックス
-help.type.minx=フュー�?ャータイプ�?�最�?緯度
-help.type.miny=フュー�?ャータイプ�?�最�?経度
-help.type.maxx=フュー�?ャータイプ�?�最大緯度
-help.type.maxy=フュー�?ャータイプ�?�最大経度
-help.type.base=ベースXMLスキーマ�?素(必須�?�属性を定義�?�る�?��?生�?�?�る)
-help.type.schemaName=タイプを説明�?�るXMLスキーマ�?素�??
+help.type.name=フュー�?ャータイプ�??
+help.type.style=�??画フュー�?ャータイプ�?�使用�?�るデフォルト�?�スタイル
+help.type.srs=フュー�?ャータイプ�?��?�空間�?�照システム
+help.type.title=�?��?�フュー�?ャータイプ�?�エンドユーザー�?��?�タイトル
+help.type.bbox=全体�?�フュー�?ャータイプ�?�対�?�る領域ボックス
+help.type.minx=フュー�?ャータイプ�?�最�?緯度
+help.type.miny=フュー�?ャータイプ�?�最�?経度
+help.type.maxx=フュー�?ャータイプ�?�最大緯度
+help.type.maxy=フュー�?ャータイプ�?�最大経度
+help.type.base=ベースXMLスキーマ�?素(必須�?�属性を定義�?�る�?��?生�?�?�る)
+help.type.schemaName=タイプを説明�?�るXMLスキーマ�?素�??
 help.type.cachingEnabled=Instruct other servers to cache maps generated from this featuretype?
 help.type.cacheMaxAge=Time (in seconds) other servers should cache maps generated from this featuretype.
 help.coverage.name=Name of Coverage
@@ -801,31 +803,31 @@ help.coverage.supportedFormats=Supported Output Formats for this Coverage
 help.coverage.defaultInterpolationMethod=Default Interpolation Method
 help.coverage.interpolationMethods=Interpolation Methods for Coverage
 
-error.styleId.notFound=スタイルId '{0}'�?�定義�?�れ�?��?��?�ん。
+error.styleId.notFound=スタイルId '{0}'�?�定義�?�れ�?��?��?�ん。
 
-type.title.up=�?��?�タイプを1レベル上�?�動�?��?��?��??�?��?��?�。
-type.title.down=�?��?�タイプを1レベル下�?�動�?��?��?��??�?��?��?�。
-type.title.delete=�?��?�タイプを削除�?�る。
-label.jai=JAI�?�利用
+type.title.up=�?��?�タイプを1レベル上�?�動�?��?��?��??�?��?��?�。
+type.title.down=�?��?�タイプを1レベル下�?�動�?��?��?��??�?��?��?�。
+type.title.delete=�?��?�タイプを削除�?�る。
+label.jai=JAI�?�利用
 
-help.jai=JAI (Java Advanced Imaging) 拡張�?�WMS�?��?��?��?��?��?�イメージ�??画�?�使�?れ�?��?�。
+help.jai=JAI (Java Advanced Imaging) 拡張�?�WMS�?��?��?��?��?��?�イメージ�??画�?�使�?れ�?��?�。
 
-label.jvm=JVM�?ージョン
+label.jvm=JVM�?ージョン
 
-help.jvm=�?��?�JVM�?��?ージョン�?�サー�?ーを動�?��?��?��?�使�?��?��?�を指示�?��?��?�。
+help.jvm=�?��?�JVM�?��?ージョン�?�サー�?ーを動�?��?��?��?�使�?��?��?�を指示�?��?��?�。
 
 
-srsList.title=空間�?�照システム系番�?��?�一覧
+srsList.title=空間�?�照システム系番�?��?�一覧
 srsList.tableTitle=EPSG WKT 定義
 
-mapPreview.title=有効�?�フュー�?ャータイプ�?�最�?地図プレビュー
+mapPreview.title=有効�?�フュー�?ャータイプ�?�最�?地図プレビュー
 
-sldValididity.title=.SLDファイル�?�SLDスキーマ�?�従�?��?��?��?��?�ん。
-sldValiditity.help.text=�?�ら�?�ヘルプ�?��?��?��?�利用�?��??�?��?�。
+sldValididity.title=.SLDファイル�?�SLDスキーマ�?�従�?��?��?��?��?�ん。
+sldValiditity.help.text=�?�ら�?�ヘルプ�?��?��?��?�利用�?��??�?��?�。
 sldValiditity.help.url=http://docs.codehaus.org/display/GEOS/SLD+Validation
 
-help.citeConformanceHacks=厳密�?�CITEテスト�?�一致を望む�?��?��?��?��?ェック�?��?��??�?��?��?�。CITEテストを実行�?��?��?��?��?��?り�?多分�?�れを�?ェック�?��?��??�?��?��?��?�ょ�?�。
-label.citeConformanceHacks=厳密�?�CITEテスト�?�一致
+help.citeConformanceHacks=厳密�?�CITEテスト�?�一致を望む�?��?��?��?��?ェック�?��?��??�?��?��?�。CITEテストを実行�?��?��?��?��?��?り�?多分�?�れを�?ェック�?��?��??�?��?��?��?�ょ�?�。
+label.citeConformanceHacks=厳密�?�CITEテスト�?�一致
 
-help.featureBounding=フュー�?ャー�?�デフォルトジオメトリ�?�境界をGetFeature�?�gml出力�?�自動的�?��?�むよ�?��?��?�る�?�ら�?ェック�?��?��??�?��?��?�。大部分�?�クライアント�?��??れを�?求�?��?�余分�?��?ンド幅�?��?�得も�?��?��?��?��?��?推奨�?��?��?�ん。
-label.featureBounding=フュー�?ャー�?�境界生�?
+help.featureBounding=フュー�?ャー�?�デフォルトジオメトリ�?�境界をGetFeature�?�gml出力�?�自動的�?��?�むよ�?��?��?�る�?�ら�?ェック�?��?��??�?��?��?�。大部分�?�クライアント�?��??れを�?求�?��?�余分�?��?ンド幅�?��?�得も�?��?��?��?��?��?推奨�?��?��?�ん。
+label.featureBounding=フュー�?ャー�?�境界生�?

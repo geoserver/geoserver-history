@@ -259,7 +259,10 @@ public final class CoveragesEditorAction extends ConfigAction {
         config.setRequestCRSs(requestCRSs(form));
         config.setResponseCRSs(responseCRSs(form));
         config.setCrs(CRS.parseWKT(form.getWKTString()));
-        config.setSrsName(form.getSrsName());
+        if(!form.getSrsName().toUpperCase().startsWith("EPSG"))
+            config.setSrsName("EPSG:" + form.getSrsName());
+        else
+            config.setSrsName(form.getSrsName());
         config.setSrsWKT(form.getWKTString());
 
         if (!"UNKNOWN".equals(config.getSrsName()) && (config.getSrsName() != null)
@@ -429,7 +432,7 @@ public final class CoveragesEditorAction extends ConfigAction {
             final GeneralEnvelope gEnvelope = reader.getOriginalEnvelope();
             final GeneralEnvelope targetEnvelope = gEnvelope;
             GeneralEnvelope envelope = targetEnvelope;
-            String s = CRS.lookupIdentifier(sourceCRS, Collections.singleton("EPSG"), true);
+            String s = CRS.lookupIdentifier(sourceCRS, true);
 
             if (s == null) {
                 coverageForm.setSrsName("UNKNOWN");

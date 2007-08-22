@@ -30,8 +30,9 @@
 	 <property name="mappings">
       <props>
         <prop key="/ows">dispatcher</prop>
-        <prop key="/ows/*">dispatcher</prop>
-        <prop key="/styles/*">filePublisher</prop>
+        <prop key="/ows/**">dispatcher</prop>
+        <prop key="/styles/**">filePublisher</prop>
+        <prop key="/www/**">filePublisher</prop>
       </props>
     </property>
 
