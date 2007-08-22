@@ -49,6 +49,8 @@ public class StylesEditorForm extends ActionForm {
     private boolean defaultChecked = false;
     private boolean defaultInitial;
     private String[] validationReport = null; // the SLD file with validation errors for it (saxexceptions)
+    private String sldContents;
+    private String action;
 
     /**
      *  okay this is a bit weird because of how struts html:checkbox works.
@@ -68,6 +70,7 @@ public class StylesEditorForm extends ActionForm {
      */
     private boolean fullyValidate;
     private boolean fullyValidateChecked;
+    private String originalStyleId;
 
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         validationReport = null;
@@ -83,11 +86,13 @@ public class StylesEditorForm extends ActionForm {
         if (style == null) {
             // Should not happen (unless they bookmark)
             styleID = "";
+            originalStyleId = "";
             _default = config.getStyles().isEmpty();
             filename = "";
             sldFile = null;
         } else {
             styleID = style.getId();
+            originalStyleId = style.getId();
             _default = style.isDefault();
 
             if (style.getFilename() != null) {
@@ -96,6 +101,8 @@ public class StylesEditorForm extends ActionForm {
 
             sldFile = null;
         }
+
+        sldContents = readSldFileContents(filename);
 
         defaultChecked = false;
         defaultInitial = _default;
@@ -133,12 +140,11 @@ public class StylesEditorForm extends ActionForm {
             return errors;
         }
 
-        if (this.getSldFile().getFileSize() == 0) { // filename not filed or file does not exist
-            errors.add("styleID", new ActionError("error.file.required"));
-
-            return errors;
-        }
-
+        //        if (this.getSldFile().getFileSize() == 0) { // filename not filed or file does not exist
+        //            errors.add("styleID", new ActionError("error.file.required"));
+        //
+        //            return errors;
+        //        }
         filename = this.getSldFile().getFileName();
 
         //Requests.getApplicationState(request);
@@ -278,16 +284,16 @@ public class StylesEditorForm extends ActionForm {
         validationReport = exs;
     }
 
-    public String getSldContents() {
-        if (filename == null) {
-            return "-";
+    public String readSldFileContents(String sldFileName) {
+        if (sldFileName == null) {
+            return "";
         }
 
         BufferedReader br = null;
 
         try {
             File styleDir = new File(GeoserverDataDirectory.getGeoserverDataDirectory(), "styles");
-            File styleFile = new File(styleDir, filename);
+            File styleFile = new File(styleDir, sldFileName);
             br = new BufferedReader(new FileReader(styleFile));
 
             StringBuffer sb = new StringBuffer();
@@ -310,5 +316,25 @@ public class StylesEditorForm extends ActionForm {
 
             return "-";
         }
+    }
+
+    public String getSldContents() {
+        return sldContents;
+    }
+
+    public void setSldContents(String sldContents) {
+        this.sldContents = sldContents;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public String getOriginalStyleId() {
+        return originalStyleId;
     }
 }

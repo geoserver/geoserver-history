@@ -66,6 +66,10 @@ public class DataDataStoresNewForm extends ActionForm {
             return Collections.EMPTY_LIST;
         }
 
+        String enableVersioning = (String) getServlet().getServletContext().getInitParameter("enableVersioning");
+        if(enableVersioning == null ||  !"TRUE".equals(enableVersioning.toUpperCase())) {
+            descriptions.remove("Versioning Postgis");
+        }
         return descriptions;
     }
 
@@ -115,6 +119,6 @@ public class DataDataStoresNewForm extends ActionForm {
      * Allows the JSP page to easily access the list of dataStore Descriptions
      */
     public SortedSet getDataStoreDescriptions() {
-        return new TreeSet(DataStoreUtils.listDataStoresDescriptions());
+        return new TreeSet(getDescriptions());
     }
 }
