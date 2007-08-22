@@ -56,7 +56,7 @@ public class EncodingUtils {
         // it might be it is not a complex type and thus its content has to be
         // encoded here, as ElementEncoderExecutor will not catch it
         if (!(attribute instanceof ComplexAttribute)) {
-            Object attValue = attribute.get();
+            Object attValue = attribute.getValue();
 
             // figure out if the node has any text
             Text text = null;

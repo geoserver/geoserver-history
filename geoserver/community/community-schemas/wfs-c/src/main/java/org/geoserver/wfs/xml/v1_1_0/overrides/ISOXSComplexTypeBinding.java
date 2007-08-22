@@ -168,7 +168,7 @@ public class ISOXSComplexTypeBinding extends AbstractComplexBinding {
             }
         }
 
-        String attValue = (String) Converters.convert(attribute.get(), String.class);
+        String attValue = (String) Converters.convert(attribute.getValue(), String.class);
 
         if (attValue != null) {
             // figure out if the node has any text

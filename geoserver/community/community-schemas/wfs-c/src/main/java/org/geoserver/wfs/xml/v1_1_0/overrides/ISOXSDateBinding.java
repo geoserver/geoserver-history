@@ -109,7 +109,7 @@ public class ISOXSDateBinding implements SimpleBinding {
     public String encode(Object object, String value) throws Exception {
         Attribute att = (Attribute) object;
 
-        Date date = (Date) att.get();
+        Date date = (Date) att.getValue();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));

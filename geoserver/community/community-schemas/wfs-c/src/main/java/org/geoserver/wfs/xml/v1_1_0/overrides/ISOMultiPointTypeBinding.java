@@ -38,7 +38,7 @@ public class ISOMultiPointTypeBinding extends MultiPointTypeBinding {
         throws Exception {
         if (GML.pointMember.equals(name)) {
             Attribute att = (Attribute) object;
-            MultiPoint multiPoint = (MultiPoint) att.get();
+            MultiPoint multiPoint = (MultiPoint) att.getValue();
 
             if (multiPoint != null) {
                 Point[] members = new Point[multiPoint.getNumGeometries()];

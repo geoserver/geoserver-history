@@ -38,7 +38,7 @@ public class ISOMultiSurfaceTypeBinding extends MultiSurfaceTypeBinding {
         throws Exception {
         if (GML.surfaceMember.equals(name)) {
             Attribute att = (Attribute) object;
-            MultiPolygon multiSurface = (MultiPolygon) att.get();
+            MultiPolygon multiSurface = (MultiPolygon) att.getValue();
 
             if (multiSurface != null) {
                 Polygon[] members = new Polygon[multiSurface.getNumGeometries()];

@@ -57,7 +57,7 @@ public class ISOXSDateTimeBinding extends XSDateTimeBinding {
     public String encode(Object object, String value) {
         Attribute att = (Attribute) object;
 
-        Calendar datetime = (Calendar) att.get();
+        Calendar datetime = (Calendar) att.getValue();
 
         String printDateTime = null;
 

@@ -27,7 +27,8 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureList;
 import org.geotools.feature.IllegalAttributeException;
-import org.geotools.feature.Name;
+import org.geotools.feature.iso.FeatureCollections;
+import org.geotools.feature.iso.Types;
 import org.geotools.feature.iso.simple.SimpleFeatureFactoryImpl;
 import org.geotools.feature.iso.type.AttributeDescriptorImpl;
 import org.geotools.feature.visitor.FeatureVisitor;
@@ -40,7 +41,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryType;
-import org.opengis.feature.type.TypeName;
+import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.sort.SortBy;
@@ -108,7 +109,7 @@ public class GetFeature {
         }
 
         public int size() {
-            int size = isoFeatures.size();
+            int size = FeatureCollections.getSize(isoFeatures);
 
             return size;
         }
@@ -217,7 +218,7 @@ public class GetFeature {
         }
 
         public Geometry getPrimaryGeometry() {
-        	throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException();
         }
 
         public String getID() {
@@ -242,8 +243,9 @@ public class GetFeature {
             setPrimaryGeometry(arg0);
         }
 
-        public void setPrimaryGeometry(Geometry geometry) throws IllegalAttributeException {
-             throw new UnsupportedOperationException();
+        public void setPrimaryGeometry(Geometry geometry)
+            throws IllegalAttributeException {
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -410,7 +412,7 @@ public class GetFeature {
 
                 if (dataStore instanceof FeatureAccess) {
                     String uri = meta.getNameSpace().getURI();
-                    Name name = new Name(uri, typeName);
+                    Name name = Types.typeName(uri, typeName);
                     source = (FeatureSource2) ((FeatureAccess) dataStore).access(name);
 
                     descriptor = (AttributeDescriptor) ((FeatureSource2) source).describe();
@@ -419,10 +421,10 @@ public class GetFeature {
                     source = dataStore.getFeatureSource(typeName);
                     featureType = new ISOFeatureTypeAdapter(source.getSchema());
 
-                    TypeName tname = featureType.getName();
-                    Name name = new Name(tname.getNamespaceURI(), tname.getLocalPart());
+                    Name tname = featureType.getName();
+                    Name name = Types.typeName(tname.getNamespaceURI(), tname.getLocalPart());
                     descriptor = new AttributeDescriptorImpl(featureType, name, 0,
-                            Integer.MAX_VALUE, true);
+                            Integer.MAX_VALUE, true, null);
                 }
 
                 int queryMaxFeatures = maxFeatures - count;
@@ -442,7 +444,7 @@ public class GetFeature {
                     ((FeatureCollectionAdapter) features).setMaxFeatures(queryMaxFeatures);
                 }
 
-                count += features.size();
+                count += FeatureCollections.getSize(features);
 
                 FeatureCollection hackFeatureCollection = new GTHackFeatureCollection(features,
                         descriptor);

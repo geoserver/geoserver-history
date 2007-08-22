@@ -36,7 +36,7 @@ public class ISOCurvePropertyTypeBinding extends CurvePropertyTypeBinding {
         throws Exception {
         if (GML._Curve.equals(name)) {
             Attribute att = (Attribute) object;
-            Geometry geom = (Geometry) att.get();
+            Geometry geom = (Geometry) att.getValue();
 
             return geom;
         }

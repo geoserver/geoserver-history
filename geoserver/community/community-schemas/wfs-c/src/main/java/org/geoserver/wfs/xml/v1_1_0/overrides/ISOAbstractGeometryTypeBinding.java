@@ -103,7 +103,7 @@ public class ISOAbstractGeometryTypeBinding extends AbstractComplexBinding {
         throws Exception {
         if (object instanceof GeometryAttribute) {
             GeometryAttribute att = (GeometryAttribute) object;
-            System.out.println("Att: " + att.get());
+            System.out.println("Att: " + att.getValue());
         }
 
         /*
