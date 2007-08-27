@@ -5,6 +5,9 @@
 package org.geoserver.wfs.xml;
 
 import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.QueryType;
+
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
@@ -14,6 +17,9 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
+import org.geotools.gml2.bindings.GML2EncodingUtils;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
@@ -26,6 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 import javax.xml.transform.TransformerException;
 
@@ -104,7 +111,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
     *
     * @throws IOException DOCUMENT ME!
     */
-    public void prepare(String outputFormat, FeatureCollectionType results)
+    public void prepare(String outputFormat, FeatureCollectionType results, GetFeatureType request)
         throws IOException {
         this.compressOutput = formatNameCompressed.equalsIgnoreCase(outputFormat);
 
@@ -116,10 +123,9 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         //TODO: the srs is a back, it only will work property when there is 
         // one type, we really need to set it on the feature level
         int srs = -1;
-
-        for (Iterator f = results.getFeature().iterator(); f.hasNext();) {
+        for (int i = 0; i < results.getFeature().size(); i++) {
             //FeatureResults features = (FeatureResults) f.next();
-            FeatureCollection features = (FeatureCollection) f.next();
+            FeatureCollection features = (FeatureCollection) results.getFeature().get(i);
             FeatureType featureType = features.getSchema();
 
             FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getTypeName(),
@@ -138,7 +144,22 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
                 ftNamespaces.put(uri, location);
             }
 
-            srs = Integer.parseInt(meta.getSRS());
+            //JD: wfs reprojection: should not set srs form metadata but from 
+            // the request
+            //srs = Integer.parseInt(meta.getSRS());
+            QueryType query = (QueryType) request.getQuery().get(i);
+            if (query.getSrsName() != null ) {
+                try {
+                    CoordinateReferenceSystem crs = CRS.decode(query.getSrsName().toString());
+                    String srsName = GML2EncodingUtils.crs(crs);
+                    srs = Integer.parseInt(srsName.split(":")[1]);
+                }
+                catch( Exception e ) {
+                    LOGGER.log(Level.WARNING, "Problem encoding:" + query.getSrsName(), e);
+                    
+                }
+            }
+            
         }
 
         System.setProperty("javax.xml.transform.TransformerFactory",
@@ -190,7 +211,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
      * @throws IOException DOCUMENT ME!
      * @throws IllegalStateException DOCUMENT ME!
      */
-    public void encode(OutputStream output, FeatureCollectionType results)
+    public void encode(OutputStream output, FeatureCollectionType results, GetFeatureType request)
         throws ServiceException, IOException {
         if (results == null) {
             throw new IllegalStateException("It seems prepare() has not been called"
@@ -229,8 +250,9 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
 
     protected void write(FeatureCollectionType featureCollection, OutputStream output,
         Operation getFeature) throws IOException, ServiceException {
-        prepare("GML2", featureCollection);
-        encode(output, featureCollection);
+        GetFeatureType request = (GetFeatureType)getFeature.getParameters()[0];
+        prepare("GML2", featureCollection, request);
+        encode(output, featureCollection, request );
     }
 
     protected FeatureTransformer createTransformer() {
