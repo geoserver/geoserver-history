@@ -18,6 +18,7 @@ import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
+import org.geotools.referencing.CRS;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -322,12 +323,21 @@ public class GeoServerFeatureSource implements FeatureSource {
 
             if (declaredCRS != null && fc.getSchema().getPrimaryGeometry() != null && srsHandling != FeatureTypeInfo.LEAVE) {
                 if(srsHandling == FeatureTypeInfo.FORCE)
-                    return new ForceCoordinateSystemFeatureResults(fc, declaredCRS);
+                    //return new ForceCoordinateSystemFeatureResults(fc, declaredCRS);
+                    fc =  new ForceCoordinateSystemFeatureResults(fc, declaredCRS);
                 else
-                    return new ReprojectFeatureResults(fc, declaredCRS);
+                    //return new ReprojectFeatureResults(fc, declaredCRS);
+                    fc = new ReprojectFeatureResults(fc, declaredCRS);
             } else {
-                return fc;
+                //return fc;
             }
+            
+            if (query.getCoordinateSystemReproject() != null && 
+                    !CRS.equalsIgnoreMetadata(query.getCoordinateSystemReproject(),declaredCRS)) {
+                fc = new ReprojectFeatureResults(fc, query.getCoordinateSystemReproject());
+            }
+            
+            return fc;
         } catch (Exception e) {
             throw new DataSourceException(e);
         }
