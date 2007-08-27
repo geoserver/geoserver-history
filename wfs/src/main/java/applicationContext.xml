@@ -187,10 +187,7 @@
 		<constructor-arg index="1" value="java.math.BigInteger"/>
 	</bean>
 	
-	<bean id="srsNameFeatureKvpParser" class="org.geoserver.ows.FlatKvpParser">
-		<constructor-arg index="0" value="srsName"/>
-		<constructor-arg index="1" value="java.lang.String"/>
-	</bean>
+	<bean id="srsNameKvpParser" class="org.geoserver.wfs.kvp.SrsNameKvpParser"/>
 	<bean id="sortByKvpParser" class="org.geoserver.wfs.kvp.SortByKvpParser">
 		<constructor-arg ref="filterFactory"/>
 	</bean>

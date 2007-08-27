@@ -171,6 +171,11 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
             querySet(eObject, "sortBy", (List) kvp.get("sortBy"));
         }
 
+        //srsName
+        if (kvp.containsKey("srsName")) {
+            querySet(eObject, "srsName",(List)kvp.get("srsName"));
+        }
+
         //featureversion
         if (kvp.containsKey("featureVersion")) {
             querySet(eObject, "featureVersion",
