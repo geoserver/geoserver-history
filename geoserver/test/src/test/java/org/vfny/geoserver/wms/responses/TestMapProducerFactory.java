@@ -97,7 +97,7 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
      * @author Gabriel Roldan, Axios Engineering
      * @version $Id$
      */
-    private class TestingMapProducer implements GetMapProducer {
+    private class TestingMapProducer extends AbstractGetMapProducer implements GetMapProducer {
         /**
          * DOCUMENT ME!
          *
@@ -105,7 +105,7 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
          *
          * @throws WmsException DOCUMENT ME!
          */
-        public void produceMap(WMSMapContext map) throws WmsException {
+        public void produceMap() throws WmsException {
         }
 
         /**

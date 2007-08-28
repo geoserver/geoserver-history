@@ -41,7 +41,6 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
      * Creates a new KMLMapProducerFactory object.
      */
     public KMLMapProducerFactory() {
-        super();
     }
 
     /**
@@ -100,16 +99,22 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
     /**
      * Create an actual instance of a KMLMapProducer.
      *
-     * @param mapFormat String which MUST match the supported formats.  Call
-     * canProcess fisrt if you are unsure.
+     * @param mapFormat
+     *            String which MUST match the supported formats. Call canProcess
+     *            fisrt if you are unsure.
      *
      * @return GetMapProducer instance.
      *
-     * @throws IllegalArgumentException DOCUMENT ME!
+     * @throws IllegalArgumentException
+     *             DOCUMENT ME!
      */
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
-        return new KMLMapProducer();
+        if (canProduce(mapFormat)) {
+            return new KMLMapProducer(mapFormat, MIME_TYPE);
+        }
+
+        throw new IllegalArgumentException("Unable to produce format " + mapFormat);
     }
 
     /* (non-Javadoc)

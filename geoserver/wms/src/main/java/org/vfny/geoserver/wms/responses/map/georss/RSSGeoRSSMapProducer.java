@@ -36,9 +36,9 @@ public class RSSGeoRSSMapProducer implements GetMapProducer {
         return "application/xml";
     }
 
-    public void produceMap(WMSMapContext map) throws WmsException {
-        this.map = map;
-    }
+    public void produceMap() throws WmsException {
+		
+	}
 
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         RSSGeoRSSTransformer tx = new RSSGeoRSSTransformer();
@@ -56,4 +56,23 @@ public class RSSGeoRSSMapProducer implements GetMapProducer {
     public String getContentDisposition() {
         return "inline; filename=geoserver.xml";
     }
+	public WMSMapContext getMapContext() {
+		return map;
+	}
+	
+	public void setMapContext(WMSMapContext mapContext) {
+		this.map = mapContext;
+	}
+
+	public String getOutputFormat() {
+		return MIME_TYPE;
+	}
+	
+	public void setOutputFormat(String format) {
+		throw new UnsupportedOperationException();
+	}
+    
+	public void setContentType(String mime) {
+		throw new UnsupportedOperationException();
+	}
 }

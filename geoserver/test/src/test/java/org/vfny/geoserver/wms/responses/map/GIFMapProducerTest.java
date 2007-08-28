@@ -9,6 +9,7 @@ import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducerTest;
 import org.vfny.geoserver.wms.responses.map.gif.GIFMapProducer;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -40,7 +41,7 @@ public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
      * @param producer DOCUMENT ME!
      */
     protected void assertNotBlank(String testName, DefaultRasterMapProducer producer) {
-        BufferedImage image = producer.getImage();
+        RenderedImage image = producer.getImage();
 
         BufferedImage product = null;
         File tmpGif = null;

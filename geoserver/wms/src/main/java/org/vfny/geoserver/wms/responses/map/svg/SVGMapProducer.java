@@ -4,96 +4,108 @@
  */
 package org.vfny.geoserver.wms.responses.map.svg;
 
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.WmsException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
 
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.Service;
+import org.vfny.geoserver.wms.GetMapProducer;
+import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
 
 /**
  * Handles a GetMap request that spects a map in SVG format.
- *
+ * 
  * @author Gabriel Rold?n
  * @version $Id$
  */
-public class SVGMapProducer implements GetMapProducer {
-    /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
+public class SVGMapProducer extends AbstractGetMapProducer implements
+		GetMapProducer {
+	/** DOCUMENT ME! */
+	private static final Logger LOGGER = Logger
+			.getLogger("org.vfny.geoserver.responses.wms.map");
 
-    /** DOCUMENT ME! */
-    private EncodeSVG svgEncoder;
+	/** DOCUMENT ME! */
+	private EncodeSVG svgEncoder;
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param gs DOCUMENT ME!
-     */
-    public void abort(Service gs) {
-        this.svgEncoder.abort();
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param gs
+	 *            DOCUMENT ME!
+	 */
+	public void abort(Service gs) {
+		this.svgEncoder.abort();
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param gs DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getContentType() {
-        return SvgMapProducerFactory.MIME_TYPE;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param gs
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public String getContentType() {
+		return SvgMapProducerFactory.MIME_TYPE;
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public String getContentEncoding() {
-        return null;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	public String getContentEncoding() {
+		return null;
+	}
 
-    /**
-     * aborts the encoding.
-     */
-    public void abort() {
-        LOGGER.fine("aborting SVG map response");
+	/**
+	 * aborts the encoding.
+	 */
+	public void abort() {
+		LOGGER.fine("aborting SVG map response");
 
-        if (this.svgEncoder != null) {
-            LOGGER.info("aborting SVG encoder");
-            this.svgEncoder.abort();
-        }
-    }
+		if (this.svgEncoder != null) {
+			LOGGER.info("aborting SVG encoder");
+			this.svgEncoder.abort();
+		}
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param map DOCUMENT ME!
-     * @param format DOCUMENT ME!
-     *
-     * @throws WmsException DOCUMENT ME!
-     */
-    public void produceMap(WMSMapContext map) throws WmsException {
-        this.svgEncoder = new EncodeSVG(map);
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param map
+	 *            DOCUMENT ME!
+	 * 
+	 * @throws WmsException
+	 *             DOCUMENT ME!
+	 */
+	public void produceMap() throws WmsException {
+		if (mapContext == null) {
+			throw new WmsException("The map context is not set");
+		}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param out DOCUMENT ME!
-     *
-     * @throws ServiceException DOCUMENT ME!
-     * @throws IOException DOCUMENT ME!
-     */
-    public void writeTo(OutputStream out) throws ServiceException, IOException {
-        this.svgEncoder.encode(out);
-    }
+		this.svgEncoder = new EncodeSVG(mapContext);
+	}
 
-    public String getContentDisposition() {
-        // can be null
-        return null;
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param out
+	 *            DOCUMENT ME!
+	 * 
+	 * @throws ServiceException
+	 *             DOCUMENT ME!
+	 * @throws IOException
+	 *             DOCUMENT ME!
+	 */
+	public void writeTo(OutputStream out) throws ServiceException, IOException {
+		this.svgEncoder.encode(out);
+	}
+
+	public String getContentDisposition() {
+		// can be null
+		return null;
+	}
 }

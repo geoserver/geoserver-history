@@ -73,7 +73,8 @@ public class SVGMapProducerTest extends AbstractCiteDataTest {
         map.addLayer(fs, basicStyle);
 
         SVGMapProducer producer = new SVGMapProducer();
-        producer.produceMap(map);
+        producer.setMapContext(map)
+;        producer.produceMap();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         producer.writeTo(out);
