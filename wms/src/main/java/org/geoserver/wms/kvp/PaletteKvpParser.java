@@ -13,7 +13,7 @@ import java.awt.image.IndexColorModel;
 
 /**
  * 
- * @author Simone Giannecchini, GeoSolutions
+ * @author Simone Giannecchini, GeoSolutions SAS
  * 
  */
 public class PaletteKvpParser extends KvpParser {
