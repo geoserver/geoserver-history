@@ -11,6 +11,7 @@ import org.geotools.styling.StyledLayerDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.servlets.WMService;
 import java.awt.Color;
@@ -235,9 +236,9 @@ public class GetMapRequest extends WMSRequest {
         return this.optionalParams.buffer;
     }
 
-    public IndexColorModel getPalette() {
-        return this.optionalParams.palette;
-    }
+	public InverseColorMapOp getPalette() {
+		return this.optionalParams.paletteInverter;
+	}
 
     /**
      * DOCUMENT ME!
@@ -508,13 +509,13 @@ public class GetMapRequest extends WMSRequest {
         this.optionalParams.buffer = buffer;
     }
 
+	public void setPalette(InverseColorMapOp paletteInverter) {
+		this.optionalParams.paletteInverter = paletteInverter;
+	}
     public void setBuffer(Integer buffer) {
         this.optionalParams.buffer = (buffer != null) ? buffer.intValue() : 0;
     }
 
-    public void setPalette(IndexColorModel palette) {
-        this.optionalParams.palette = palette;
-    }
 
     public void setTiled(boolean tiled) {
         this.optionalParams.tiled = tiled;
@@ -694,8 +695,8 @@ public class GetMapRequest extends WMSRequest {
         /** the rendering buffer, in pixels **/
         int buffer;
 
-        /** The palette used for rendering, if any */
-        IndexColorModel palette;
+		/** The paletteInverter used for rendering, if any */
+		InverseColorMapOp paletteInverter;
 
         /** time elevation parameter */
         Integer time;

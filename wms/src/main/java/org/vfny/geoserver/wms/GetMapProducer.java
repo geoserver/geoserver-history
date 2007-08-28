@@ -27,6 +27,7 @@ import java.io.OutputStream;
  * </p>
  *
  * @author Gabriel Roldan, Axios Engineering
+ * @author Simone Giannecchini, GeoSolutions
  * @version $Id$
  */
 public interface GetMapProducer {
@@ -35,12 +36,10 @@ public interface GetMapProducer {
      * WMSMapContext}, which contains enough information for doing such a
      * process.
      *
-     * @param map the map context that contains all the information required to
-     *        create the map image.
      *
      * @throws WmsException something goes wrong
      */
-    void produceMap(WMSMapContext map) throws WmsException;
+    void produceMap() throws WmsException;
 
     /**
      * Writes the map created in produceMap to the destination stream, though
@@ -55,29 +54,6 @@ public interface GetMapProducer {
      */
     void writeTo(OutputStream out) throws ServiceException, IOException;
 
-    /**
-     * Returns the MIME type of the content to be writen at
-     * <code>writeTo(OutputStream)</code>
-     *
-     * @return the output format
-     *
-     * @throws java.lang.IllegalStateException if this method is called before
-     *         {@linkPlain #produceMap(WMSMapContext)},
-     */
-    String getContentType() throws java.lang.IllegalStateException;
-
-    /**
-     * The content disposition is the file name of the returned result.
-     * If there is no file name, null is returned.
-     * The returned string should be in the form:
-     * "inline; filename=name.ext"
-     * You need the "inline;" prefix and the filename can be whatever you want.
-     * An example would be:
-     * "inline; filename=states.pdf"
-     *
-     * @return Header information for setting the file name
-     */
-    String getContentDisposition();
 
     /**
      * asks the legend graphic producer to stop processing since it will be no
@@ -85,4 +61,60 @@ public interface GetMapProducer {
      * user)
      */
     void abort();
+    
+    
+    /**
+     * Sets the {@link MapContext} for this MapProducer.
+     *
+     * @param mapContext
+     *            to use for producing a map.
+     */
+    public void setMapContext(WMSMapContext mapContext);
+
+    /**
+     * Gets the {@link MapContext} for this MapProducer.
+     *
+     * @return the {@link WMSMapContext} for this map producer.
+     */
+    public WMSMapContext getMapContext();
+
+    /**
+     * Returns the MIME type of the content to be written at
+     * <code>writeTo(OutputStream)</code>
+     *
+     * @return the output format
+     */
+    public String getContentType() throws java.lang.IllegalStateException;
+
+    /**
+     * Sets the MIME Type to be used for this {@link GetMapProducer}.
+     *
+     */
+    public void setContentType(String mime);
+
+    /**
+     * Gets the output map type of the output image.
+     *
+     * @return the desired output map format.
+     */
+    public String getOutputFormat();
+
+    /**
+     * Sets the MIME type of the output image.
+     *
+     * @param format
+     *            the desired output map format.
+     */
+    public void setOutputFormat(String format);
+
+    /**
+     * The content disposition is the file name of the returned result. If there
+     * is no file name, null is returned. The returned string should be in the
+     * form: "inline; filename=name.ext" You need the "inline;" prefix and the
+     * filename can be whatever you want. An example would be: "inline;
+     * filename=states.pdf"
+     *
+     * @return Header information for setting the file name
+     */
+    String getContentDisposition();
 }

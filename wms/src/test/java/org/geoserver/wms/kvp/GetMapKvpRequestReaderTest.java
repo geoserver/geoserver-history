@@ -93,7 +93,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         assertEquals(new Point2D.Double(1.2, 3.4), request.getTilesOrigin());
         assertEquals(1, request.getBuffer());
 
-        assertEquals(PaletteManager.safePalette, request.getPalette());
+        assertEquals(PaletteManager.safePalette, request.getPalette().getIcm());
         assertEquals(new Integer(2), request.getTime());
         assertEquals(new Integer(4), request.getElevation());
     }

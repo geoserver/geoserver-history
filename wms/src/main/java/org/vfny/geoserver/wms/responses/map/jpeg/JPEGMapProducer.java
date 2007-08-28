@@ -8,20 +8,14 @@ import org.geotools.image.ImageWorker;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
+import java.awt.image.Raster;
+import java.awt.image.RenderedImage;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
-import javax.imageio.stream.MemoryCacheImageOutputStream;
-import javax.media.jai.PlanarImage;
 
 
 /**
@@ -32,6 +26,17 @@ import javax.media.jai.PlanarImage;
  *
  */
 public final class JPEGMapProducer extends DefaultRasterMapProducer {
+    protected RenderedImage prepareImage(int width, int height, IndexColorModel palette) {
+        if (palette != null) {
+            WritableRaster raster = Raster.createInterleavedRaster(palette.getTransferType(),
+                    width, height, 1, null);
+
+            return new BufferedImage(palette, raster, false, null);
+        }
+
+        //there is no transparency in JPEG anyway :-)
+        return new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+    }
     /** Logger. */
     private final static Logger LOGGER = Logger.getLogger(JPEGMapProducer.class.toString());
 
@@ -46,7 +51,7 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
         this.JPEGNativeAcc = wms.getGeoServer().getJPEGNativeAcceleration();
     }
 
-    public void formatImageOutputStream(BufferedImage image, OutputStream outStream)
+    public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
         throws IOException {
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("About to write a JPEG image.");

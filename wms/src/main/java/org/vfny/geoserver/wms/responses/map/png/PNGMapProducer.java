@@ -4,28 +4,17 @@
  */
 package org.vfny.geoserver.wms.responses.map.png;
 
-import com.sun.imageio.plugins.png.PNGImageWriter;
-import com.sun.media.jai.codecimpl.PNGImageEncoder;
+import java.awt.image.IndexColorModel;
+import java.awt.image.RenderedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.geotools.image.ImageWorker;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
-import java.awt.image.BufferedImage;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.IndexColorModel;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.MemoryCacheImageOutputStream;
-import javax.media.jai.PlanarImage;
 
 
 /**
@@ -37,13 +26,14 @@ import javax.media.jai.PlanarImage;
  */
 public class PNGMapProducer extends DefaultRasterMapProducer {
     /** Logger */
-    private static final Logger LOGGER = Logger.getLogger(PNGMapProducer.class.getPackage().getName());
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.wms.responses.map.png");
 
     /** PNG Native Acceleration Mode * */
-    protected Boolean PNGNativeAcc;
+	protected Boolean PNGNativeAcc;
 
-    public PNGMapProducer(String format, WMS wms) {
-        super(format, wms);
+    public PNGMapProducer(String format, String mime_type, WMS wms) {
+        super(format, mime_type, wms);
         this.PNGNativeAcc = wms.getGeoServer().getPNGNativeAcceleration();
     }
 
@@ -60,15 +50,28 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
      * @throws IOException
      *             if encoding to <code>outStream</code> fails.
      */
-    public void formatImageOutputStream(BufferedImage image, OutputStream outStream)
+    public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
         throws WmsException, IOException {
         // /////////////////////////////////////////////////////////////////
         //
         // Reformatting this image for png
         //
         // /////////////////////////////////////////////////////////////////
+        // tiff
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.fine("Writing png image ...");
+        }
+
+        if (this.format.equalsIgnoreCase("image/png8") || (this.mapContext.getPaletteInverter() != null)) {
+            image = forceIndexed8Bitmask(image);
+        }
+
         new ImageWorker(image).writePNG(outStream, "FILTERED", 0.5f, PNGNativeAcc.booleanValue(),
             image.getColorModel() instanceof IndexColorModel);
+
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.fine("Writing png image ... done!");
+        }
     }
 
     public String getContentDisposition() {
