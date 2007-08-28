@@ -13,6 +13,7 @@ import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.logging.Logger;
 
 
 /**
@@ -31,6 +32,11 @@ import java.io.OutputStream;
  *
  */
 public abstract class WFSGetFeatureOutputFormat extends Response {
+
+    /**
+     * logger
+     */
+    protected static Logger LOGGER = Logger.getLogger("org.geoserver.wfs");
     /**
      * Constructor which sets the outputFormat.
      *
