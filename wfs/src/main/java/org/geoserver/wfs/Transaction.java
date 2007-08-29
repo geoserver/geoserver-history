@@ -16,6 +16,7 @@ import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.userdetails.UserDetails;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.FeatureMap;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
@@ -77,10 +78,9 @@ public class Transaction {
         this.wfs = wfs;
         this.catalog = catalog;
         // register element handlers, listeners and plugins
-        transactionElementHandlers.addAll(context.getBeansOfType(TransactionElementHandler.class)
-                                                 .values());
-        transactionListeners.addAll(context.getBeansOfType(TransactionListener.class).values());
-        transactionPlugins.addAll(context.getBeansOfType(TransactionPlugin.class).values());
+        transactionElementHandlers.addAll(GeoServerExtensions.extensions(TransactionElementHandler.class));
+        transactionListeners.addAll(GeoServerExtensions.extensions(TransactionListener.class));
+        transactionPlugins.addAll(GeoServerExtensions.extensions(TransactionPlugin.class));
         // plugins are listeners too, but I want to make sure they are notified
         // of
         // changes in the same order as the other plugin callbacks
