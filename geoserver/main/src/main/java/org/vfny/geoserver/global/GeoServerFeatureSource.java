@@ -4,7 +4,12 @@
  */
 package org.vfny.geoserver.global;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
+
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
@@ -22,11 +27,8 @@ import org.geotools.referencing.CRS;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Logger;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -319,24 +321,55 @@ public class GeoServerFeatureSource implements FeatureSource {
         }
 
         try {
+            //JD: this is a huge hack... but its the only way to ensure that we 
+            // we get what we ask for ... which is not reprojection, since 
+            // datastores are unreliable in this aspect we dont know if they will
+            // reproject or not.
+            CoordinateReferenceSystem targetCRS = newQuery.getCoordinateSystemReproject();
+            if ( targetCRS != null ) {
+                ((DefaultQuery)newQuery).setCoordinateSystemReproject(null);
+            }
+            
+            //this is the raw "unprojected" feature collection
             FeatureCollection fc = source.getFeatures(newQuery);
 
-            if (declaredCRS != null && fc.getSchema().getPrimaryGeometry() != null && srsHandling != FeatureTypeInfo.LEAVE) {
-                if(srsHandling == FeatureTypeInfo.FORCE)
-                    //return new ForceCoordinateSystemFeatureResults(fc, declaredCRS);
-                    fc =  new ForceCoordinateSystemFeatureResults(fc, declaredCRS);
-                else
-                    //return new ReprojectFeatureResults(fc, declaredCRS);
-                    fc = new ReprojectFeatureResults(fc, declaredCRS);
-            } else {
-                //return fc;
+            CoordinateReferenceSystem nativeCRS = null;
+            if ( fc.getSchema().getPrimaryGeometry() != null ) {
+                nativeCRS = fc.getSchema().getPrimaryGeometry().getCoordinateSystem();
             }
             
-            if (query.getCoordinateSystemReproject() != null && 
-                    !CRS.equalsIgnoreMetadata(query.getCoordinateSystemReproject(),declaredCRS)) {
-                fc = new ReprojectFeatureResults(fc, query.getCoordinateSystemReproject());
+            if (srsHandling == FeatureTypeInfo.LEAVE) {
+                //do nothing
+            }
+            else if (srsHandling == FeatureTypeInfo.FORCE) {
+                //force the declared crs
+                fc =  new ForceCoordinateSystemFeatureResults(fc, declaredCRS);
+                nativeCRS = declaredCRS;
+            }
+            else {
+                //reproject to declared crs only if no reprojection has been
+                // specified in the query
+                if ( targetCRS == null ) {
+                    fc = new ReprojectFeatureResults(fc,declaredCRS);
+                }
             }
             
+            //was reproject specified as part of the query?
+            if (targetCRS != null ) {
+                //reprojection is occuring
+                if ( nativeCRS == null ) {
+                    //we do not know what the native crs which means we can 
+                    // not be sure if we should reproject or not... so we go 
+                    // ahead and reproject regardless
+                    fc = new ReprojectFeatureResults(fc,targetCRS);
+                }
+                else {
+                    //only reproject if native != target
+                    if (!CRS.equalsIgnoreMetadata(nativeCRS, targetCRS)) {
+                        fc = new ReprojectFeatureResults(fc,targetCRS);                        
+                    }
+                }
+            }
             return fc;
         } catch (Exception e) {
             throw new DataSourceException(e);
