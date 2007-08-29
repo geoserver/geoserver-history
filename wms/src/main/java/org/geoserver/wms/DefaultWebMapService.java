@@ -78,8 +78,7 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
     }
 
     public WMSCapabilitiesResponse getCapabilities(WMSCapabilitiesRequest request) {
-        Capabilities capabilities = (Capabilities) context.getBeansOfType(Capabilities.class)
-                                                          .values().iterator().next();
+        Capabilities capabilities = (Capabilities) context.getBean("wmsGetCapabilities");
 
         return (WMSCapabilitiesResponse) capabilities.getResponse();
     }
@@ -89,14 +88,13 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
     }
 
     public DescribeLayerResponse describeLayer(DescribeLayerRequest request) {
-        DescribeLayer describeLayer = (DescribeLayer) context.getBeansOfType(DescribeLayer.class)
-                                                             .values().iterator().next();
+        DescribeLayer describeLayer = (DescribeLayer) context.getBean("wmsDescribeLayer");
 
         return (DescribeLayerResponse) describeLayer.getResponse();
     }
 
     public GetMapResponse getMap(GetMapRequest request) {
-        GetMap getMap = (GetMap) context.getBeansOfType(GetMap.class).values().iterator().next();
+        GetMap getMap = (GetMap) context.getBean("wmsGetMap");
 
         return (GetMapResponse) getMap.getResponse();
     }
@@ -106,15 +104,13 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
     }
 
     public GetFeatureInfoResponse getFeatureInfo(GetFeatureInfoRequest request) {
-        GetFeatureInfo getFeatureInfo = (GetFeatureInfo) context.getBeansOfType(GetFeatureInfo.class)
-                                                                .values().iterator().next();
+        GetFeatureInfo getFeatureInfo = (GetFeatureInfo) context.getBean("wmsGetFeatureInfo");
 
         return (GetFeatureInfoResponse) getFeatureInfo.getResponse();
     }
 
     public GetLegendGraphicResponse getLegendGraphic(GetLegendGraphicRequest request) {
-        GetLegendGraphic getLegendGraphic = (GetLegendGraphic) context.getBeansOfType(GetLegendGraphic.class)
-                                                                      .values().iterator().next();
+        GetLegendGraphic getLegendGraphic = (GetLegendGraphic) context.getBean("wmsGetLegendGraphic");
 
         return (GetLegendGraphicResponse) getLegendGraphic.getResponse();
     }
