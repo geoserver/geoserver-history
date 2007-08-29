@@ -14,13 +14,11 @@ import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 
-import javax.media.jai.TiledImage;
-
 /**
  * This class provide an Image oriented interface for the
  * {@link EfficientInverseColorMapComputation}. Specifically, it is designed in
  * order to implement the {@link BufferedImage} for processing
- * {@link BufferedImage}s efficiently accessgint eh raster pixels directly but
+ * {@link BufferedImage}s efficiently accessing the raster pixels directly but
  * it also provide a method to process general {@link RenderedImage}s
  * implementations.
  * 
@@ -83,47 +81,39 @@ public final class InverseColorMapOp implements BufferedImageOp {
 		return dest;
 	}
 
-	public BufferedImage filterRenderedImage(RenderedImage in) {
+	public BufferedImage filterRenderedImage(RenderedImage src) {
 		// //
 		//
 		// ShortCut for using bufferedimages and avoiding tiling
 		//
 		// //
-		if (in instanceof BufferedImage)
-			return filter((BufferedImage) in, null);
+		if (src instanceof BufferedImage)
+			return filter((BufferedImage) src, null);
 
 		// //
 		//
 		// Create the destination image
 		//
 		// //
-		final TiledImage src = new TiledImage(in, true);
 		final BufferedImage dest = new BufferedImage(src.getWidth(), src
 				.getHeight(), BufferedImage.TYPE_BYTE_INDEXED, icm);
 		final WritableRaster destWr = dest.getRaster();
-
 
 		// //
 		//
 		// Filter the image out
 		//
 		// //
-		// /////////////////////////////////////////////////////////////////////
+
+		// /
 		//
-		// The external loop is performed on the tiles the internal one on each
-		// single tile. While we do these loops we set the pixels of the
-		// destination image.
-		//
-		// /////////////////////////////////////////////////////////////////////
-		final int minTileX = src.getMinTileX();
-		final int minTileY = src.getMinTileY();
-		// //
-		//
-		// Optimize the hell out of this code. WE have a single tile, let's go
+		// Optimize the hell out of this code. We have a single tile, let's go
 		// fast!
 		//
 		// //
 		if (src.getNumXTiles() == 1 && src.getNumYTiles() == 1) {
+			final int minTileX = src.getMinTileX();
+			final int minTileY = src.getMinTileY();
 			final Raster sourceR = src.getTile(minTileX, minTileY);
 			rasterOp.filter(sourceR.createChild(src.getMinX(), src.getMinY(),
 					src.getWidth(), src.getHeight(), 0, 0, null), destWr);
@@ -132,67 +122,72 @@ public final class InverseColorMapOp implements BufferedImageOp {
 
 		// //
 		//
-		// Test me more!!!
-		//
-		// //
-		// if we got here we have more than one tile
-		final int maxTileX = src.getNumXTiles() + minTileX;
-		final int maxTileY = src.getNumYTiles() + minTileY;
-		final int tileW = src.getTileWidth();
-		final int tileH = src.getTileHeight();
-
-		// //
-		//
 		// Collecting info about the source image
 		//
 		// //
-		int xx = 0;
-		final int srcW = src.getWidth();
-		final int rgba[] = new int[src.getSampleModel().getNumBands()];
-		final boolean sourceHasAlpha = rgba.length == 0;
+		final int numBands = src.getSampleModel().getNumBands();
+		final int rgba[] = new int[numBands];
+		final boolean sourceHasAlpha = (numBands % 2 == 0);
+		final int alphaBand = sourceHasAlpha ? numBands - 1 : -1;
 		final EfficientInverseColorMapComputation invCM = rasterOp.getInvCM();
-		for (int ti = minTileX; ti < maxTileX; ti++)
-			for (int tj = minTileY; tj < maxTileY; tj++) {
-				// get the source raster tile
-				final Raster r = src.getTile(ti, tj);
-				// loop over it;
-				final int minx = r.getMinX();
-				final int miny = r.getMinY();
-				final int maxx = minx + tileW;
-				final int maxy = miny + tileH;
-				for (int j = miny; j < maxy; j++)
-					for (int i = minx; i < maxx; i++) {
+		final int minx_ = src.getMinX();
+		final int miny_ = src.getMinY();
+		final int srcW_ = src.getWidth();
+		final int srcH_ = src.getHeight();
+		final int maxx_ = minx_ + srcW_;
+		final int maxy_ = miny_ + srcH_;
+		final int minTileX = src.getMinTileX();
+		final int minTileY = src.getMinTileY();
+		final int tileW = src.getTileWidth();
+		final int tileH = src.getTileHeight();
+		final int maxTileX = minTileX + src.getNumXTiles();
+		final int maxTileY = minTileY + src.getNumYTiles();
+		int dstTempX = 0;
+		int dstTempY = 0;
+		for (int ty = minTileY; ty < maxTileY; ty++) {
+			dstTempX = 0;
+			int actualWidth = 0;
+			int actualHeight = 0;
+			for (int tx = minTileX; tx < maxTileX; tx++) {
+				// get the source raster
+				final Raster r = src.getTile(tx, ty);
 
-						// /////////////////////////////////////////////////////////////////////
-						//
-						// This is where the magic takes place
-						//
-						// /////////////////////////////////////////////////////////////////////
-						// // get the pixel bands
-						for (int b = 0; b < rgba.length; b++)
-							rgba[b] = src.getSample(i, j, b);
-						if ((sourceHasAlpha && hasAlpha && rgba[3] >= this.alphaThreshold)
-								|| !hasAlpha) {
+				int minx = r.getMinX();
+				int miny = r.getMinY();
+				minx = minx < minx_ ? minx_ : minx;
+				miny = miny < miny_ ? miny_ : miny;
+				int maxx = minx + tileW;
+				int maxy = miny + tileH;
+				maxx = maxx > maxx_ ? maxx_ : maxx;
+				maxy = maxy > maxy_ ? maxy_ : maxy;
+				actualWidth = maxx - minx;
+				actualHeight = maxy - miny;
+				for (int j = miny, jj = dstTempY; j < maxy; j++, jj++) {
+					for (int i = minx, ii = dstTempX; i < maxx; i++, ii++) {
+						r.getPixel(i, j, rgba);
+
+						// wr.setPixel(i, j, rgba);
+
+						if (!sourceHasAlpha
+								|| !hasAlpha
+								|| (sourceHasAlpha && hasAlpha && rgba[alphaBand] >= this.alphaThreshold)) {
 							int val = invCM.getIndexNearest(rgba[0] & 0xff,
 									rgba[1] & 0xff, rgba[2]);
 							if (hasAlpha && val >= transparencyIndex)
 								val++;
-							destWr.setSample(xx % srcW, xx / srcW, 0, val);
+							destWr.setSample(ii, jj, 0, (byte) (val & 0xff));
 						} else
-							destWr.setSample(xx % srcW, xx / srcW, 0,
-									transparencyIndex);
+							destWr.setSample(ii, jj, 0, transparencyIndex);
 
-						// //
-						//
-						// Advance couner on the output image
-						//
-						// //
-						xx++;
 					}
+				}
+				dstTempX += actualWidth;
+
 			}
+			dstTempY += actualHeight;
+		}
 		return dest;
 	}
-
 
 	public Rectangle2D getBounds2D(BufferedImage src) {
 		return new Rectangle(src.getWidth(), src.getHeight());

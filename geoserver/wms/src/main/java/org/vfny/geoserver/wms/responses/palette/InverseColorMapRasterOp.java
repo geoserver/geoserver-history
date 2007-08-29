@@ -109,15 +109,16 @@ public final class InverseColorMapRasterOp implements RasterOp {
 		final int srcMaxY = srcMinY + h;
 		final int dstMinX = src.getMinX();
 		final int dstMinY = src.getMinY();
-		// final int dstMaxX = srcMinX + w;
-		// final int dstMaxY = srcMinY + h;
-		final int rgba[] = new int[src.getNumBands()];
-		final boolean sourceHasAlpha = src.getNumBands() % 2 == 0;
+		final int numBands = src.getSampleModel().getNumBands();
+		final boolean sourceHasAlpha = (numBands % 2 == 0);
+		final int alphaBand = sourceHasAlpha ? numBands - 1 : -1;
+		final int rgba[] = new int[numBands];
 		for (int y = srcMinY, y_ = dstMinY; y < srcMaxY; y++, y_++) {
 			for (int x = srcMinX, x_ = dstMinX; x < srcMaxX; x++, x_++) {
 				src.getPixel(x, y, rgba);
-				if ((sourceHasAlpha && hasAlpha && rgba[3] >= this.alphaThreshold)
-						|| !hasAlpha) {
+				if (!sourceHasAlpha
+						|| !hasAlpha
+						|| (sourceHasAlpha && hasAlpha && rgba[alphaBand] >= this.alphaThreshold)) {
 					int val = invCM.getIndexNearest(rgba[0] & 0xff,
 							rgba[1] & 0xff, rgba[2]);
 					if (hasAlpha && val >= transparencyIndex)
