@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>geoserver</artifactId>
-    <version>1.5.3</version>
+    <version>1.6-SNAPSHOT</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -16,7 +16,7 @@
   <dependencies>
 
     <dependency>
-      <groupId>freemarker</groupId>
+      <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
     </dependency>
     <dependency>
