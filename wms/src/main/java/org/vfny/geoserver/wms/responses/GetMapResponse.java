@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
@@ -24,7 +25,6 @@ import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
 import org.geotools.map.DefaultMapLayer;
-import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.Style;
@@ -41,6 +41,7 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import org.vfny.geoserver.wms.RasterMapProducer;
@@ -146,8 +147,8 @@ public class GetMapResponse implements Response {
 		final MapLayerInfo[] layers = request.getLayers();
 		final Style[] styles = (Style[]) request.getStyles().toArray(
 				new Style[] {});
-		final Filter[] filters = ((request.getFilters() != null) ? (Filter[]) request
-				.getFilters().toArray(new Filter[] {})
+		final Filter[] filters = ((request.getFilter() != null) ? (Filter[]) request
+				.getFilter().toArray(new Filter[] {})
 				: null);
 
 
@@ -557,9 +558,7 @@ public class GetMapResponse implements Response {
 	 */
 	private GetMapProducer getDelegate(String outputFormat, WMS wms)
 			throws WmsException {
-		final Map beans = applicationContext
-				.getBeansOfType(GetMapProducerFactorySpi.class);
-		final Collection producers = beans.values();	
+		final Collection producers = GeoServerExtensions.extensions(GetMapProducerFactorySpi.class);	
 
 		for (Iterator iter = producers.iterator(); iter.hasNext();) {
 			final GetMapProducerFactorySpi factory = (GetMapProducerFactorySpi) iter.next();
@@ -598,9 +597,7 @@ public class GetMapResponse implements Response {
 	 * 
 	 */
 	public static Set loadImageFormats(ApplicationContext applicationContext) {
-		final Map beans = applicationContext
-				.getBeansOfType(GetMapProducerFactorySpi.class);
-		final Collection producers = beans.values();
+		final Collection producers = GeoServerExtensions.extensions(GetMapProducerFactorySpi.class);
 		final Set formats = new HashSet();
 
 		for (Iterator iter = producers.iterator(); iter.hasNext();) {
