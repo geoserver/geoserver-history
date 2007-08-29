@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import org.geoserver.platform.GeoServerExtensions;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
@@ -175,8 +176,7 @@ public class GetLegendGraphicResponse implements Response {
      */
     private GetLegendGraphicProducer getDelegate(String outputFormat)
         throws WmsException {
-        Map beans = applicationContext.getBeansOfType(GetLegendGraphicProducerSpi.class);
-        Collection producers = beans.values();
+        Collection producers = GeoServerExtensions.extensions(GetLegendGraphicProducerSpi.class);
         GetLegendGraphicProducerSpi factory;
 
         for (Iterator iter = producers.iterator(); iter.hasNext();) {
@@ -224,8 +224,7 @@ public class GetLegendGraphicResponse implements Response {
      *
      */
     private static Set loadLegendFormats(ApplicationContext applicationContext) {
-        Map beans = applicationContext.getBeansOfType(GetLegendGraphicProducerSpi.class);
-        Collection producers = beans.values();
+        Collection producers = GeoServerExtensions.extensions(GetLegendGraphicProducerSpi.class);
         Set formats = new HashSet();
         GetLegendGraphicProducerSpi producer;
 
@@ -237,11 +236,7 @@ public class GetLegendGraphicResponse implements Response {
         return formats;
     }
 
-    /* (non-Javadoc)
-     * @see org.vfny.geoserver.Response#getContentDisposition()
-     */
     public String getContentDisposition() {
-        // TODO Auto-generated method stub
         return null;
     }
 }
