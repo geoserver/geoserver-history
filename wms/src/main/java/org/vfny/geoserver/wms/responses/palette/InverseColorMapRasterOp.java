@@ -20,7 +20,7 @@ public final class InverseColorMapRasterOp implements RasterOp {
 	public static final int DEFAULT_QUANTIZATION_COLORS = 5;
 
 	/**
-	 * Default value for the threshold to decide whther a pixel is opaque (>=)
+	 * Default value for the threshold to decide whether a pixel is opaque (>=)
 	 * or transparent (<).
 	 */
 	public static final int DEFAULT_ALPHA_TH = 1;
