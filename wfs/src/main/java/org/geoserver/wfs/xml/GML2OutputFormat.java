@@ -151,8 +151,8 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
             if (query.getSrsName() != null ) {
                 try {
                     CoordinateReferenceSystem crs = CRS.decode(query.getSrsName().toString());
-                    String srsName = GML2EncodingUtils.crs(crs);
-                    srs = Integer.parseInt(srsName.split(":")[1]);
+                    String epsgCode = GML2EncodingUtils.epsgCode(crs);
+                    srs = Integer.parseInt(epsgCode);
                 }
                 catch( Exception e ) {
                     LOGGER.log(Level.WARNING, "Problem encoding:" + query.getSrsName(), e);
