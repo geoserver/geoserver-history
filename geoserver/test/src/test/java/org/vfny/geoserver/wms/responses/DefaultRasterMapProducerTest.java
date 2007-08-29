@@ -22,6 +22,7 @@ import org.geotools.styling.StyleFactoryFinder;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -114,6 +115,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
 		map.setMapHeight(300);
 		map.setBgColor(Color.red);
 		map.setTransparent(false);
+		map.setRequest(new GetMapRequest(null));
 
 		Style basicStyle = getStyle("default.sld");
 		map.addLayer(basicPolygons, basicStyle);
@@ -170,6 +172,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
 		map.setMapHeight(h);
 		map.setBgColor(BG_COLOR);
 		map.setTransparent(true);
+		map.setRequest(new GetMapRequest(null));
 
 		map.addLayer(ds.getFeatureSource(FORESTS_TYPE),
 				getDefaultStyle(FORESTS_TYPE));
@@ -241,6 +244,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
 				- shift, env.getMaxY() + shift);
 
 		WMSMapContext map = new WMSMapContext();
+		map.setRequest(new GetMapRequest(null));
 		map.addLayer(fSource, style);
 		map.setAreaOfInterest(env);
 		map.setMapWidth(w);
