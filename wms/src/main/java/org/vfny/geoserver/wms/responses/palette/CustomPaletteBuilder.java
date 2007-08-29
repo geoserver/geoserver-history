@@ -40,16 +40,15 @@
  */
 package org.vfny.geoserver.wms.responses.palette;
 
-import java.awt.Color;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
+import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 
 import javax.imageio.ImageTypeSpecifier;
-import javax.media.jai.TiledImage;
 
 /**
  * This class implements the octree quantization method as it is described in
@@ -59,11 +58,17 @@ import javax.media.jai.TiledImage;
  */
 public final class CustomPaletteBuilder {
 	/**
+	 * Default value for the threshold to decide whether a pixel is opaque (>=)
+	 * or transparent (<). Default is 1 to try to preserve antialising
+	 */
+	public static final int DEFAULT_ALPHA_TH = 1;
+
+	/**
 	 * maximum of tree depth
 	 */
 	protected int maxLevel;
 
-	protected TiledImage src;
+	protected RenderedImage src;
 
 	protected ColorModel srcColorModel;
 
@@ -92,6 +97,8 @@ public final class CustomPaletteBuilder {
 	protected int subsampley;
 
 	protected int numBands;
+
+	protected int alphaThreshold;
 
 	/**
 	 * Returns <code>true</code> if PaletteBuilder is able to create palette
@@ -139,36 +146,86 @@ public final class CustomPaletteBuilder {
 	}
 
 	public RenderedImage getIndexedImage() {
+		// //
+		//
+		// Create the destination image
+		//
+		// //
 		final IndexColorModel icm = getIndexColorModel();
 		final BufferedImage dst = new BufferedImage(src.getWidth(), src
 				.getHeight(), BufferedImage.TYPE_BYTE_INDEXED, icm);
+		final WritableRaster destWr = dst.getRaster();
 
-		final int minx = src.getMinX();
-		final int miny = src.getMinY();
-		int w = src.getWidth();
-		int h = src.getHeight();
-		WritableRaster wr = dst.getRaster();
+		// //
+		//
+		// Filter the image out
+		//
+		// //
 
-		for (int y = 0, ys = miny; y < h; y++, ys++) {
-			for (int x = 0, xs = minx; x < w; x++, xs++) {
-				final Color aColor = getSrcColor(xs, ys);
+		// //
+		//
+		// Collecting info about the source image
+		//
+		// //
+		final int numBands = src.getSampleModel().getNumBands();
+		final int rgba[] = new int[numBands];
+		final boolean sourceHasAlpha = (numBands % 2 == 0);
+		final int alphaBand = sourceHasAlpha ? numBands - 1 : -1;
+		final int minx_ = src.getMinX();
+		final int miny_ = src.getMinY();
+		final int srcW_ = src.getWidth();
+		final int srcH_ = src.getHeight();
+		final int maxx_ = minx_ + srcW_;
+		final int maxy_ = miny_ + srcH_;
+		final int minTileX = src.getMinTileX();
+		final int minTileY = src.getMinTileY();
+		final int tileW = src.getTileWidth();
+		final int tileH = src.getTileHeight();
+		final int maxTileX = minTileX + src.getNumXTiles();
+		final int maxTileY = minTileY + src.getNumYTiles();
+		int dstTempX = 0;
+		int dstTempY = 0;
+		for (int ty = minTileY; ty < maxTileY; ty++) {
+			dstTempX = 0;
+			int actualWidth = 0;
+			int actualHeight = 0;
+			for (int tx = minTileX; tx < maxTileX; tx++) {
+				// get the source raster
+				final Raster r = src.getTile(tx, ty);
 
-				try {
-					wr.setSample(x, y, 0, findColorIndex(root, aColor));
-				} catch (Exception e) {
+				int minx = r.getMinX();
+				int miny = r.getMinY();
+				minx = minx < minx_ ? minx_ : minx;
+				miny = miny < miny_ ? miny_ : miny;
+				int maxx = minx + tileW;
+				int maxy = miny + tileH;
+				maxx = maxx > maxx_ ? maxx_ : maxx;
+				maxy = maxy > maxy_ ? maxy_ : maxy;
+				actualWidth = maxx - minx;
+				actualHeight = maxy - miny;
+				for (int j = miny, jj = dstTempY; j < maxy; j++, jj++) {
+					for (int i = minx, ii = dstTempX; i < maxx; i++, ii++) {
+						r.getPixel(i, j, rgba);
+
+						destWr.setSample(ii, jj, 0, findColorIndex(root, rgba,
+								alphaBand));
+
+					}
 				}
-			}
-		}
+				dstTempX += actualWidth;
 
+			}
+			dstTempY += actualHeight;
+		}
 		return dst;
 	}
 
 	public CustomPaletteBuilder(RenderedImage src) {
-		this(src, 256, 1, 1);
+		this(src, 256, 1, 1, DEFAULT_ALPHA_TH);
 	}
 
 	public CustomPaletteBuilder(RenderedImage src, int size, int subsx,
-			int subsy) {
+			int subsy, int alpha_th) {
 		if ((subsx <= 0) || (subsx >= src.getWidth())) {
 			throw new IllegalArgumentException("Invalid subsample x size");
 		}
@@ -177,13 +234,15 @@ public final class CustomPaletteBuilder {
 			throw new IllegalArgumentException("Invalid subsample y size");
 		}
 
-		this.src = new TiledImage(src, true);
+		this.alphaThreshold = alpha_th;
+		this.src = src;
 		this.srcColorModel = src.getColorModel();
 		this.numBands = srcColorModel.getNumComponents();
 		this.subsampleX = subsx;
 		this.subsampley = subsy;
 		this.transparency = srcColorModel.getTransparency();
 		if (transparency != Transparency.OPAQUE) {
+			transparency = Transparency.BITMASK;
 			// make room for the transparent color
 			this.requiredSize = size - 1;
 			transColor = new ColorNode();
@@ -200,44 +259,42 @@ public final class CustomPaletteBuilder {
 		this.maxLevel = (int) Math.ceil(Math.log(requiredSize) / Math.log(2));
 	}
 
-	private Color getSrcColor(int x, int y) {
-		final byte components[] = new byte[numBands];
-		for (int i = 0; i < numBands; i++)
-			components[i] = (byte) (0xff & src.getSample(x, y, i));
-
-		final int argb = this.srcColorModel.getRGB(components);
-		return new Color(argb, transparency != Transparency.OPAQUE);
-	}
-
-	protected int findColorIndex(ColorNode aNode, Color aColor) {
+	protected int findColorIndex(ColorNode aNode, int[] rgba, int transpBand) {
 		if ((transparency != Transparency.OPAQUE)
-				&& (aColor.getAlpha() != 0xff)) {
+				&& (rgba[transpBand] < alphaThreshold)) {
 			return 0; // default transparent pixel
 		}
 
-		if (aNode.isLeaf) {
-			return aNode.paletteIndex;
-		} else {
-			int childIndex = getBranchIndex(aColor, aNode.level);
+		try {
+			if (aNode.isLeaf) {
+				return aNode.paletteIndex;
+			} else {
+				int childIndex = getBranchIndex(rgba, aNode.level);
 
-			if (aNode.children[childIndex] == null) {
-				for (int i = 1; i < 8; i++) {
-					if (((childIndex + i) < 8)
-							&& (aNode.children[childIndex + i] != null)) {
-						childIndex += i;
-						break;
-					}
+				if (aNode.children[childIndex] == null) {
+					int i = 1;
+					for (; i < 8; i++) {
+						if (((childIndex + i) < 8)
+								&& (aNode.children[childIndex + i] != null)) {
+							childIndex += i;
 
-					if (((childIndex - i) >= 0L)
-							&& (aNode.children[childIndex - i] != null)) {
-						childIndex -= i;
-						break;
+							break;
+						}
+
+						if (((childIndex - i) >= 0)
+								&& (aNode.children[childIndex - i] != null)) {
+							childIndex -= i;
+
+							break;
+						}
 					}
 				}
+				return findColorIndex(aNode.children[childIndex], rgba,
+						transpBand);
 			}
-
-			return findColorIndex(aNode.children[childIndex], aColor);
+		} catch (Exception e) {
 		}
+		return 0;
 	}
 
 	public CustomPaletteBuilder buildPalette() {
@@ -253,46 +310,76 @@ public final class CustomPaletteBuilder {
 		currSize = 0;
 		currLevel = maxLevel;
 
-		final int minx = src.getMinX();
-		final int miny = src.getMinY();
-		int w = src.getWidth();
-		int h = src.getHeight();
-		final int maxx = w + minx;
-		final int maxy = h + miny;
-		final boolean discriminant = transparency != Transparency.OPAQUE;
+		// //
+		//
+		// Collecting info about the source image
+		//
+		// //
+		final int numBands = src.getSampleModel().getNumBands();
+		final int rgba[] = new int[numBands];
+		final boolean discriminantTransparency = transparency != Transparency.OPAQUE;
+		final int transpBand = numBands - 1;
+		final int minx_ = src.getMinX();
+		final int miny_ = src.getMinY();
+		final int srcW_ = src.getWidth();
+		final int srcH_ = src.getHeight();
+		final int maxx_ = minx_ + srcW_;
+		final int maxy_ = miny_ + srcH_;
+		final int minTileX = src.getMinTileX();
+		final int minTileY = src.getMinTileY();
+		final int tileW = src.getTileWidth();
+		final int tileH = src.getTileHeight();
+		final int maxTileX = minTileX + src.getNumXTiles();
+		final int maxTileY = minTileY + src.getNumYTiles();
+		for (int ty = minTileY; ty < maxTileY; ty++) {
+			for (int tx = minTileX; tx < maxTileX; tx++) {
+				// get the source raster
+				final Raster r = src.getTile(tx, ty);
 
-		for (int y = miny; y < maxy; y++) {
-			if ((subsampley > 1) && ((y % subsampley) != 0)) {
-				continue;
-			}
+				int minx = r.getMinX();
+				int miny = r.getMinY();
+				minx = minx < minx_ ? minx_ : minx;
+				miny = miny < miny_ ? miny_ : miny;
+				int maxx = minx + tileW;
+				int maxy = miny + tileH;
+				maxx = maxx > maxx_ ? maxx_ : maxx;
+				maxy = maxy > maxy_ ? maxy_ : maxy;
+				for (int j = miny; j < maxy; j++) {
+					if ((subsampley > 1) && ((j % subsampley) != 0)) {
+						continue;
+					}
 
-			for (int x = minx; x < maxx; x++) {
-				if ((subsampleX > 1) && ((x % subsampleX) != 0)) {
-					continue;
+					for (int i = minx; i < maxx; i++) {
+						if ((subsampleX > 1) && ((i % subsampleX) != 0)) {
+							continue;
+						}
+						r.getPixel(i, j, rgba);
+						/*
+						 * If transparency of given image is not opaque we
+						 * assume all colors with alpha less than 1.0 as fully
+						 * transparent.
+						 */
+						if (discriminantTransparency
+								&& (rgba[transpBand] < alphaThreshold)) {
+							transColor = insertNode(transColor, rgba, 0);
+						} else {
+
+							root = insertNode(root, rgba, 0);
+						}
+
+						if (currSize > requiredSize) {
+							reduceTree();
+						}
+
+					}
 				}
 
-				final Color aColor = getSrcColor(x, y);
-
-				/*
-				 * If transparency of given image is not opaque we assume all
-				 * colors with alpha less than 1.0 as fully transparent.
-				 */
-				if (discriminant && (aColor.getAlpha() != 0xff)) {
-					transColor = insertNode(transColor, aColor, 0);
-				} else {
-					root = insertNode(root, aColor, 0);
-				}
-
-				if (currSize > requiredSize) {
-					reduceTree();
-				}
 			}
 		}
-
 		return this;
 	}
 
-	protected ColorNode insertNode(ColorNode aNode, Color aColor, int aLevel) {
+	protected ColorNode insertNode(ColorNode aNode, int[] rgba, int aLevel) {
 		if (aNode == null) {
 			aNode = new ColorNode();
 			numNodes++;
@@ -310,12 +397,12 @@ public final class CustomPaletteBuilder {
 		}
 
 		aNode.colorCount++;
-		aNode.red += aColor.getRed();
-		aNode.green += aColor.getGreen();
-		aNode.blue += aColor.getBlue();
+		aNode.red += rgba[0];
+		aNode.green += rgba[1];
+		aNode.blue += rgba[2];
 
 		if (!aNode.isLeaf) {
-			int branchIndex = getBranchIndex(aColor, aLevel);
+			int branchIndex = getBranchIndex(rgba, aLevel);
 
 			if (aNode.children[branchIndex] == null) {
 				aNode.childCount++;
@@ -327,7 +414,7 @@ public final class CustomPaletteBuilder {
 			}
 
 			aNode.children[branchIndex] = insertNode(
-					aNode.children[branchIndex], aColor, aLevel + 1);
+					aNode.children[branchIndex], rgba, aLevel + 1);
 		}
 
 		return aNode;
@@ -350,13 +437,10 @@ public final class CustomPaletteBuilder {
 		if (transparency == Transparency.BITMASK) {
 			index++;
 		}
-
 		findPaletteEntry(root, index, red, green, blue);
-
 		if (transparency == Transparency.BITMASK) {
 			return new IndexColorModel(8, size, red, green, blue, 0);
 		}
-
 		return new IndexColorModel(8, currSize, red, green, blue);
 	}
 
@@ -387,16 +471,16 @@ public final class CustomPaletteBuilder {
 		return index;
 	}
 
-	protected int getBranchIndex(Color aColor, int aLevel) {
+	protected int getBranchIndex(int[] rgba, int aLevel) {
 		if ((aLevel > maxLevel) || (aLevel < 0)) {
 			throw new IllegalArgumentException("Invalid octree node depth: "
 					+ aLevel);
 		}
 
 		int shift = maxLevel - aLevel;
-		int red_index = 0x1 & ((0xff & aColor.getRed()) >> shift);
-		int green_index = 0x1 & ((0xff & aColor.getGreen()) >> shift);
-		int blue_index = 0x1 & ((0xff & aColor.getBlue()) >> shift);
+		int red_index = 0x1 & ((0xff & rgba[0]) >> shift);
+		int green_index = 0x1 & ((0xff & rgba[1]) >> shift);
+		int blue_index = 0x1 & ((0xff & rgba[2]) >> shift);
 		int index = (red_index << 2) | (green_index << 1) | blue_index;
 
 		return index;
@@ -404,7 +488,6 @@ public final class CustomPaletteBuilder {
 
 	protected void reduceTree() {
 		int level = reduceList.length - 1;
-
 		while ((reduceList[level] == null) && (level >= 0)) {
 			level--;
 		}
@@ -451,12 +534,10 @@ public final class CustomPaletteBuilder {
 		thisNode.isLeaf = true;
 		currSize -= (leafChildCount - 1);
 
-		int aDepth = thisNode.level;
-
+		final int aDepth = thisNode.level;
 		for (int i = 0; i < 8; i++) {
 			thisNode.children[i] = freeTree(thisNode.children[i]);
 		}
-
 		thisNode.childCount = 0;
 	}
 
@@ -482,7 +563,7 @@ public final class CustomPaletteBuilder {
 
 		public int childCount;
 
-		ColorNode[] children;
+		public ColorNode[] children;
 
 		public int colorCount;
 
@@ -496,7 +577,7 @@ public final class CustomPaletteBuilder {
 
 		public int level;
 
-		ColorNode nextReducible;
+		public ColorNode nextReducible;
 
 		public ColorNode() {
 			isLeaf = false;
@@ -545,4 +626,9 @@ public final class CustomPaletteBuilder {
 			return c;
 		}
 	}
+
+	public int findNearestColorIndex(int[] rgba, int transparentBand) {
+		return findColorIndex(root, rgba, transparentBand);
+	}
+
 }

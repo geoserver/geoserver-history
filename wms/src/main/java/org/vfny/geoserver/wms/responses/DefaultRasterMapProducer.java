@@ -409,7 +409,7 @@ public abstract class DefaultRasterMapProducer extends
 				// //
 				final int subsx = (int) Math.pow(2, image.getWidth() / 256);
 				final int subsy = (int) Math.pow(2, image.getHeight() / 256);
-				image = new CustomPaletteBuilder(image, 255, subsx, subsy)
+				image = new CustomPaletteBuilder(image, 255, subsx, subsy,1)
 						.buildPalette().getIndexedImage();
 			}
 		}
