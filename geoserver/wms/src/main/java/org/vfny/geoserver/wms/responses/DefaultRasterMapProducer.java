@@ -16,10 +16,14 @@ import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
+import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.VolatileImage;
+import java.awt.image.WritableRaster;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,12 +39,10 @@ import javax.media.jai.operator.BandMergeDescriptor;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.image.ImageWorker;
-import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.shape.ShapefileRenderer;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.RasterMapProducer;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.palette.CustomPaletteBuilder;
 import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
@@ -80,6 +82,12 @@ public abstract class DefaultRasterMapProducer extends
 
 	private final static Interpolation BIC_INTERPOLATION = new InterpolationBicubic2(
 			0);
+	
+	// antialiasing settings, no antialias, only text, full antialias
+	private final static String AA_NONE = "NONE";
+	private final static String AA_TEXT = "TEXT";
+	private final static String AA_FULL = "FULL";
+	private final static List AA_SETTINGS = Arrays.asList(new String[] {AA_NONE, AA_TEXT, AA_FULL}); 
 
 	/** WMS Service configuration * */
 	private WMS wms;
@@ -154,10 +162,15 @@ public abstract class DefaultRasterMapProducer extends
 			LOGGER.fine(new StringBuffer("setting up ").append(width).append(
 					"x").append(height).append(" image").toString());
 		}
+		
+		// extra antialias setting
+		String antialias = (String) mapContext.getRequest().getFormatOptions().get("antialias");
+		if(antialias != null)
+		    antialias = antialias.toUpperCase();
 
 		final InverseColorMapOp paletteInverter = mapContext.getPaletteInverter();
 		final RenderedImage preparedImage = prepareImage(width, height,
-				paletteInverter != null ? paletteInverter.getIcm() : null);
+				paletteInverter != null && AA_NONE.equals(antialias) ? paletteInverter.getIcm() : null);
 		final Graphics2D graphic;
 
 		if (preparedImage instanceof BufferedImage) {
@@ -171,21 +184,47 @@ public abstract class DefaultRasterMapProducer extends
 		}
 
 		final Map hintsMap = new HashMap();
-//	WE DO NOT NEED IT ANYMORE (SIMONE)
-//		if (preparedImage.getColorModel() instanceof IndexColorModel) {
-//			hintsMap.put(RenderingHints.KEY_ANTIALIASING,
-//					RenderingHints.VALUE_ANTIALIAS_OFF);
-//			// This can be added, but it increases the image size significantly
-//			// for png's... hum...
-//			// we should really expose these settings to the users
-//			// hintsMap.put(RenderingHints.KEY_TEXT_ANTIALIASING,
-//			// RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-//			hintsMap.put(RenderingHints.KEY_DITHERING,
-//					RenderingHints.VALUE_DITHER_DISABLE);
-//		} else {
-//			hintsMap.put(RenderingHints.KEY_ANTIALIASING,
-//					RenderingHints.VALUE_ANTIALIAS_ON);
-//		}
+		
+		// fill the background with no antialiasing
+		hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		graphic.setRenderingHints(hintsMap);
+		if (!mapContext.isTransparent()) {
+            graphic.setColor(mapContext.getBgColor());
+            graphic.fillRect(0, 0, width, height);
+        } else {
+            if (LOGGER.isLoggable(Level.FINE)) {
+                    LOGGER.fine("setting to transparent");
+            }
+
+            int type = AlphaComposite.SRC;
+            graphic.setComposite(AlphaComposite.getInstance(type));
+
+            Color c = new Color(mapContext.getBgColor().getRed(), mapContext.getBgColor()
+                            .getGreen(), mapContext.getBgColor().getBlue(), 0);
+            graphic.setBackground(mapContext.getBgColor());
+            graphic.setColor(c);
+            graphic.fillRect(0, 0, width, height);
+            type = AlphaComposite.SRC_OVER;
+            graphic.setComposite(AlphaComposite.getInstance(type));
+        }
+		
+		// set up the antialias hints
+		if (AA_NONE.equals(antialias)) {
+		    hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		    if(preparedImage.getColorModel() instanceof IndexColorModel) {
+    		    // otherwise we end up with dithered colors where the match is not 100%
+    			hintsMap.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
+		    }
+		} else if(AA_TEXT.equals(antialias)){
+		    hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		    hintsMap.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		} else {
+		    if(antialias != null && !AA_FULL.equals(antialias)) {
+		        LOGGER.warning("Unrecognized antialias setting '" + antialias + "', valid values are " + AA_SETTINGS);
+		    }
+		    hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		}
+		
 		// turn off/on interpolation rendering hint
 		if ((wms != null)
 				&& WMSConfig.INT_NEAREST.equals(wms.getAllowInterpolation())) {
@@ -201,34 +240,13 @@ public abstract class DefaultRasterMapProducer extends
 		// make sure the hints are set before we start rendering the map
 		graphic.setRenderingHints(hintsMap);
 
-		if (!mapContext.isTransparent()) {
-			graphic.setColor(mapContext.getBgColor());
-			graphic.fillRect(0, 0, width, height);
-		} else {
-			if (LOGGER.isLoggable(Level.FINE)) {
-				LOGGER.fine("setting to transparent");
-			}
-
-			int type = AlphaComposite.SRC;
-			graphic.setComposite(AlphaComposite.getInstance(type));
-
-			Color c = new Color(mapContext.getBgColor().getRed(), mapContext.getBgColor()
-					.getGreen(), mapContext.getBgColor().getBlue(), 0);
-			graphic.setBackground(mapContext.getBgColor());
-			graphic.setColor(c);
-			graphic.fillRect(0, 0, width, height);
-			type = AlphaComposite.SRC_OVER;
-			graphic.setComposite(AlphaComposite.getInstance(type));
-		}
-
 		Rectangle paintArea = new Rectangle(width, height);
 		RenderingHints hints = new RenderingHints(hintsMap);
 		renderer = new ShapefileRenderer();
 		renderer.setContext(mapContext);
 		renderer.setJava2DHints(hints);
 
-		// we already do everything that the optimized data loading does...
-		// if we set it to true then it does it all twice...
+		// setup the renderer hints
 		Map rendererParams = new HashMap();
 		rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
 		rendererParams.put("renderingBuffer", new Integer(mapContext.getBuffer()));
@@ -236,17 +254,16 @@ public abstract class DefaultRasterMapProducer extends
 				ShapefileRenderer.SCALE_OGC);
 		renderer.setRendererHints(rendererParams);
 
-		final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
-
+		// if abort already requested bail out
 		if (this.abortRequested) {
 			graphic.dispose();
-
 			return;
 		}
 
+		// finally render the image
+		final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
 		renderer.paint(graphic, paintArea, dataArea);
 		graphic.dispose();
-
 		if (!this.abortRequested) {
 			this.image = preparedImage;
 		}
@@ -264,13 +281,13 @@ public abstract class DefaultRasterMapProducer extends
 	 */
 	protected RenderedImage prepareImage(int width, int height,
 			IndexColorModel palette) {
-		// if (paletteInverter != null) {
-		// WritableRaster raster =
-		// Raster.createInterleavedRaster(paletteInverter.getTransferType(),
-		// width, height, 1, null);
-		//
-		// return new BufferedImage(paletteInverter, raster, false, null);
-		// }
+		 if (palette != null) {
+    		 WritableRaster raster =
+    		 Raster.createInterleavedRaster(palette.getTransferType(),
+    		 width, height, 1, null);
+    		
+    		 return new BufferedImage(palette, raster, false, null);
+		 }
 
 		return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 	}
