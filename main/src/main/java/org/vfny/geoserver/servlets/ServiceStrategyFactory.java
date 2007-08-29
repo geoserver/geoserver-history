@@ -80,17 +80,7 @@ public class ServiceStrategyFactory implements OutputStrategyFactory, Applicatio
 
             // do a lookup
             if (serviceStrategy != null) {
-                Map strategies = context.getBeansOfType(ServiceStrategy.class);
-
-                for (Iterator itr = strategies.values().iterator(); itr.hasNext();) {
-                    ServiceStrategy bean = (ServiceStrategy) itr.next();
-
-                    if (bean.getId().equals(serviceStrategy)) {
-                        theStrategy = bean;
-
-                        break;
-                    }
-                }
+                theStrategy = (ServiceStrategy) context.getBean(serviceStrategy);
             }
         }
 

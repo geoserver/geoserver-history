@@ -74,21 +74,21 @@
  	<!-- 
 		service strategies 
 	-->
-	<bean id="serviceStrategyFactory" 
+	<bean id="serviceStrategyFactory" name="serviceStrategyFactory"
 		class="org.vfny.geoserver.servlets.ServiceStrategyFactory">
 		<constructor-arg ref="geoServer"/>
 	</bean>
 	
-	<bean id="speedServiceStrategy"
+	<bean id="speedServiceStrategy" name="SPEED"
 		class="org.vfny.geoserver.servlets.SpeedStrategy"/>
 		
-	<bean id="fileServiceStrategy"
+	<bean id="fileServiceStrategy" name="FILE"
 		class="org.vfny.geoserver.servlets.FileStrategy"/>
 		
-	<bean id="bufferServiceStrategy"
+	<bean id="bufferServiceStrategy" name="BUFFER"
 		class="org.vfny.geoserver.servlets.BufferStrategy"/>
 		
-    <bean id="partialBufferServiceStrategy2"
+    <bean id="partialBufferServiceStrategy2" name="PARTIAL-BUFFER2"
         class="org.vfny.geoserver.servlets.PartialBufferStrategy2"/>
 		
 	<!-- 
