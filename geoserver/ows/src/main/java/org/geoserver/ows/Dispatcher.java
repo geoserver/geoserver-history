@@ -17,6 +17,7 @@ import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
 import org.geotools.util.Version;
 import org.geotools.xml.EMFUtils;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.xmlpull.v1.XmlPullParser;
@@ -136,7 +137,7 @@ public class Dispatcher extends AbstractController {
     protected void preprocessRequest(HttpServletRequest request)
         throws Exception {
         //initialize all OWS instances
-        Collection services = getApplicationContext().getBeansOfType(OWS.class).values();
+        Collection services = GeoServerExtensions.extensions(OWS.class);
 
         for (Iterator s = services.iterator(); s.hasNext();) {
             OWS ows = (OWS) s.next();
@@ -618,7 +619,7 @@ public class Dispatcher extends AbstractController {
     }
 
     Collection loadServices() {
-        Collection services = getApplicationContext().getBeansOfType(Service.class).values();
+        Collection services = GeoServerExtensions.extensions(Service.class);
 
         if (!(new HashSet(services).size() == services.size())) {
             String msg = "Two identical service descriptors found";
@@ -750,8 +751,7 @@ public class Dispatcher extends AbstractController {
     }
 
     Collection loadXmlReaders() {
-        Collection xmlReaders = getApplicationContext().getBeansOfType(XmlRequestReader.class)
-                                    .values();
+        Collection xmlReaders = GeoServerExtensions.extensions(XmlRequestReader.class);
 
         if (!(new HashSet(xmlReaders).size() == xmlReaders.size())) {
             String msg = "Two identical xml readers found";
@@ -904,27 +904,14 @@ public class Dispatcher extends AbstractController {
         return xmlReader;
     }
 
-    Collection loadOutputStrategyFactories() {
-        return GeoServerExtensions.extensions(OutputStrategyFactory.class);
-    }
-
     ServiceStrategy findOutputStrategy(HttpServletResponse response) {
-        //load all available factories
-        Collection strategyFactories = loadOutputStrategyFactories();
-
-        for (Iterator i = strategyFactories.iterator(); i.hasNext();) {
-            OutputStrategyFactory factory = (OutputStrategyFactory) i.next();
-
-            //can this factory create a strategy for the response
-            ServiceStrategy strategy = factory.createOutputStrategy(response);
-
-            if (strategy != null) {
-                //yes it can, return it
-                return strategy;
-            }
+        OutputStrategyFactory factory = null;
+        try {
+            factory = (OutputStrategyFactory) GeoServerExtensions.bean("serviceStrategyFactory");
+        } catch(NoSuchBeanDefinitionException e) {
+            return null;
         }
-
-        return null;
+        return factory.createOutputStrategy(response);
     }
 
     BufferedInputStream input(File cache) throws IOException {
@@ -944,7 +931,7 @@ public class Dispatcher extends AbstractController {
         }
 
         //look up parser objects
-        Collection parsers = getApplicationContext().getBeansOfType(KvpParser.class).values();
+        Collection parsers = GeoServerExtensions.extensions(KvpParser.class);
         Map parsedKvp = new KvpMap();
         Map rawKvp = new KvpMap();
         
@@ -1168,9 +1155,7 @@ public class Dispatcher extends AbstractController {
 
         if (service != null) {
             //look up the service exception handler
-            Collection handlers = getApplicationContext()
-                                      .getBeansOfType(ServiceExceptionHandler.class).values();
-
+            Collection handlers = GeoServerExtensions.extensions(ServiceExceptionHandler.class);
             for (Iterator h = handlers.iterator(); h.hasNext();) {
                 ServiceExceptionHandler seh = (ServiceExceptionHandler) h.next();
 
