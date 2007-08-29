@@ -22,6 +22,9 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -346,6 +349,18 @@ public class GeoServerTestSupport extends TestCase {
         tx.transform( new DOMSource( dom ), new StreamResult( System.out ) );
     }
 
+    /**
+     * Convenience method for element.getElementsByTagName() to return the 
+     * first element in the resulting node list.
+     */
+    protected Element getFirstElementByTagName( Element element, String name ) {
+        NodeList elements = element.getElementsByTagName(name);
+        if ( elements.getLength() > 0 ) {
+            return (Element) elements.item(0);
+        }
+        
+        return null;
+    }
     /**
      * Sets up a template in a feature type directory.
      * 
