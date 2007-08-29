@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 
 
 /**
@@ -77,9 +78,8 @@ public class FormatOptionsKvpParser extends KvpParser implements ApplicationCont
             }
 
             if (parsed == null) {
-                String msg = new StringBuffer( "Could not find kvp parser for: '" )
-                    .append( key ).append( "'. Storing as raw string." ).toString();
-                LOGGER.info( msg );
+                if(LOGGER.isLoggable(Level.FINER))
+                    LOGGER.finer( "Could not find kvp parser for: '" + key + "'. Storing as raw string.");
                 parsed = raw;
             }
 
