@@ -33,10 +33,11 @@ public class OwsUtils {
         // that are in the same class hierachy
         Method[] methods = clazz.getMethods();
 
+        final String methodName = "set" + property;
         for (int i = 0; i < methods.length; i++) {
             Method method = methods[i];
 
-            if (method.getName().equalsIgnoreCase("set" + property)) {
+            if (method.getName().equalsIgnoreCase(methodName)) {
                 if (method.getParameterTypes().length == 1) {
                     if ( type != null ) {
                         if (method.getParameterTypes()[0].isAssignableFrom(type)) {
@@ -56,7 +57,7 @@ public class OwsUtils {
             for (int i = 0; i < methods.length; i++) {
                 Method method = methods[i];
 
-                if (method.getName().equalsIgnoreCase("set" + property)) {
+                if (method.getName().equalsIgnoreCase(methodName)) {
                     if ((method.getParameterTypes().length == 1)) {
                         Class target =  method.getParameterTypes()[0];
                         if ( target.isPrimitive() && type == wrapper( target ) ) {
