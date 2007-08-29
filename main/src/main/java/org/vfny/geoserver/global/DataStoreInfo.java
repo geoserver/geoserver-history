@@ -201,9 +201,8 @@ public class DataStoreInfo extends GlobalLayerSupertype {
                 "this datastore is not enabled, check your configuration");
         }
 
-        Map m = getParams();
-
         if (dataStore == null) {
+            Map m = getParams();
             try {
                 dataStore = DataStoreUtils.getDataStore(m);
                 LOGGER.fine("connection established by " + toString());
