@@ -853,7 +853,7 @@
 
   <properties>
     <gs.version>1.5.3</gs.version>
-    <gt.version>2.3.4</gt.version>
+    <gt.version>2.3.5-SNAPSHOT</gt.version>
     <!-- change this property in your settings.xml file to 
       exclude files from being formatted -->
     <jalopy.srcExcludesPattern>disabled</jalopy.srcExcludesPattern>
