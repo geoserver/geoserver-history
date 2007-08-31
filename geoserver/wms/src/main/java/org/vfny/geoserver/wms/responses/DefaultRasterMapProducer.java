@@ -23,6 +23,7 @@ import java.awt.image.WritableRaster;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -39,7 +40,10 @@ import javax.media.jai.operator.BandMergeDescriptor;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.image.ImageWorker;
+import org.geotools.map.MapLayer;
+import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.shape.ShapefileRenderer;
+import org.geotools.styling.StyleAttributeExtractor;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.RasterMapProducer;
@@ -167,10 +171,26 @@ public abstract class DefaultRasterMapProducer extends
 		String antialias = (String) mapContext.getRequest().getFormatOptions().get("antialias");
 		if(antialias != null)
 		    antialias = antialias.toUpperCase();
-
+		
+		// figure out a palette for buffered image creation
+		IndexColorModel palette = null;
 		final InverseColorMapOp paletteInverter = mapContext.getPaletteInverter();
-		final RenderedImage preparedImage = prepareImage(width, height,
-				paletteInverter != null && AA_NONE.equals(antialias) ? paletteInverter.getIcm() : null);
+		if(paletteInverter != null && AA_NONE.equals(antialias)) {
+		    palette = paletteInverter.getIcm();
+		} else if (AA_NONE.equals(antialias)) {
+		    PaletteExtractor pe = new PaletteExtractor(mapContext.isTransparent() ? null : mapContext.getBgColor());
+		    MapLayer[] layers = mapContext.getLayers();
+		    for (int i = 0; i < layers.length; i++) {
+                pe.visit(layers[i].getStyle());
+                if(!pe.canComputePalette())
+                    break;
+            }
+		    if(pe.canComputePalette())
+		        palette = pe.getPalette();
+		}
+
+		
+		final RenderedImage preparedImage = prepareImage(width, height, palette);
 		final Graphics2D graphic;
 
 		if (preparedImage instanceof BufferedImage) {
@@ -279,18 +299,24 @@ public abstract class DefaultRasterMapProducer extends
 	 * @param paletteInverter
 	 * @return
 	 */
-	protected RenderedImage prepareImage(int width, int height,
-			IndexColorModel palette) {
-		 if (palette != null) {
-    		 WritableRaster raster =
-    		 Raster.createInterleavedRaster(palette.getTransferType(),
-    		 width, height, 1, null);
+    protected RenderedImage prepareImage(int width, int height,
+    		IndexColorModel palette) {
+    	 if (palette != null) {
+    		 WritableRaster raster = null;
+    		 final int pixelSize = palette.getPixelSize();
+    		 if(pixelSize == 1) {
+    		     raster = Raster.createPackedRaster(palette.getTransferType(),
+                         width, height, 1, 1, null);
+    		 } else {
+    		     raster = Raster.createInterleavedRaster(palette.getTransferType(),
+                         width, height, 1, null);
+    		 }
     		
     		 return new BufferedImage(palette, raster, false, null);
-		 }
-
-		return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-	}
+    	 }
+    
+    	return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+    }
 
 	/**
 	 * @param originalImage
