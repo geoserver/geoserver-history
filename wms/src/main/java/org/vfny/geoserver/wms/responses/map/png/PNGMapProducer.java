@@ -57,7 +57,6 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
         // Reformatting this image for png
         //
         // /////////////////////////////////////////////////////////////////
-        // tiff
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Writing png image ...");
         }
@@ -66,7 +65,7 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
             image = forceIndexed8Bitmask(image);
         }
 
-        new ImageWorker(image).writePNG(outStream, "FILTERED", 0.5f, PNGNativeAcc.booleanValue(),
+        new ImageWorker(image).writePNG(outStream, "FILTERED", 0.1f, PNGNativeAcc.booleanValue(),
             image.getColorModel() instanceof IndexColorModel);
 
         if (LOGGER.isLoggable(Level.FINE)) {
