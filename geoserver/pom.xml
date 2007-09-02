@@ -687,7 +687,7 @@
       <include>**/*Test.java</include>
      </includes>
      <forkMode>once</forkMode>
-     <argLine>${test.maxHeapSize} -enableassertions -Djava.awt.headless=${java.awt.headless}</argLine>
+     <argLine>-Xmx${test.maxHeapSize} -enableassertions -Djava.awt.headless=${java.awt.headless}</argLine>
      <printSummary>true</printSummary>
      <testFailureIgnore>${allow.test.failure.ignore}</testFailureIgnore>
     </configuration>
@@ -907,7 +907,7 @@
   <java.awt.headless>true</java.awt.headless>
   <jalopy.phase>disabled</jalopy.phase>
   <jalopy.srcExcludesPattern>disabled</jalopy.srcExcludesPattern>
-  <test.maxHeapSize>-Xmx512M</test.maxHeapSize>
+  <test.maxHeapSize>512M</test.maxHeapSize>
  </properties>
 
  <profiles>
@@ -993,7 +993,7 @@
         <include>**/*TestHttp.java</include>
        </includes>
        <forkMode>once</forkMode>
-       <argLine>${test.maxHeapSize} -enableassertions</argLine>
+       <argLine>-Xmx${test.maxHeapSize} -enableassertions</argLine>
        <printSummary>false</printSummary>
        <testFailureIgnore>${allow.test.failure.ignore}</testFailureIgnore>
       </configuration>
