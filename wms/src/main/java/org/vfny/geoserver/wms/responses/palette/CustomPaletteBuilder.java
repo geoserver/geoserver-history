@@ -152,9 +152,9 @@ public final class CustomPaletteBuilder {
 		//
 		// //
 		final IndexColorModel icm = getIndexColorModel();
-		final BufferedImage dst = new BufferedImage(src.getWidth(), src
-				.getHeight(), BufferedImage.TYPE_BYTE_INDEXED, icm);
-		final WritableRaster destWr = dst.getRaster();
+		final WritableRaster destWr = icm.createCompatibleWritableRaster(src
+				.getWidth(), src.getHeight());
+		final BufferedImage dst = new BufferedImage(icm, destWr, false, null);
 
 		// //
 		//

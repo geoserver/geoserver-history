@@ -88,8 +88,8 @@ public final class InverseColorMapRasterOp implements RasterOp {
 	}
 
 	public WritableRaster createCompatibleDestRaster(Raster src) {
-		return Raster.createBandedRaster(DataBuffer.TYPE_BYTE, src.getWidth(),
-				src.getHeight(), 1, new Point(src.getMinX(), src.getMinY()));
+		return icm.createCompatibleWritableRaster(src
+				.getWidth(), src.getHeight());
 	}
 
 	public WritableRaster filter(Raster src, WritableRaster dest) {
