@@ -582,7 +582,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             Geometry geometry = featureGeometry(feature);
             Coordinate centroid = geometryCentroid(geometry);
 
-            start("Placemark");
+            start("Placemark", KMLUtils.attributes(new String[] { "id", feature.getID() }));
 
             //encode name + description only if kmattr was specified
             if (mapContext.getRequest().getKMattr()) {
