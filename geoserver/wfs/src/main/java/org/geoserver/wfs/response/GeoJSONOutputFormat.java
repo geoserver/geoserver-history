@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wfs.responses;
+package org.geoserver.wfs.response;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -95,16 +95,16 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
                         fType = feature.getFeatureType();
                         types = fType.getAttributeTypes();
 
-                        AttributeType defaultGeomType = fType.getDefaultGeometry();
+                        AttributeType defaultGeomType = fType.getPrimaryGeometry();
                         jsonWriter.key("geometry");
 
-                        if (feature.getDefaultGeometry() != null) {
-                            jsonWriter.writeGeom(feature.getDefaultGeometry());
+                        if (feature.getPrimaryGeometry() != null) {
+                            jsonWriter.writeGeom(feature.getPrimaryGeometry());
                         } else {
                             jsonWriter.value("null");
                         }
 
-                        jsonWriter.key("geometry_name").value(defaultGeomType.getName());
+                        jsonWriter.key("geometry_name").value(defaultGeomType.getLocalName());
                         jsonWriter.key("properties");
                         jsonWriter.object();
 
@@ -122,15 +122,15 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
                                         //Do nothing, we wrote it above
                                         //jsonWriter.value("geometry_name");
                                     } else {
-                                        jsonWriter.key(types[j].getName());
+                                        jsonWriter.key(types[j].getLocalName());
                                         jsonWriter.writeGeom((Geometry) value);
                                     }
                                 } else {
-                                    jsonWriter.key(types[j].getName());
+                                    jsonWriter.key(types[j].getLocalName());
                                     jsonWriter.value(value);
                                 }
                             } else {
-                                jsonWriter.key(types[j].getName());
+                                jsonWriter.key(types[j].getLocalName());
                                 jsonWriter.value("null");
                             }
                         }
