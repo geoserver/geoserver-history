@@ -559,6 +559,12 @@
     <artifactId>jmimemagic</artifactId>
     <version>0.1.2</version>
    </dependency>
+   <dependency> 
+     <groupId>net.sf.json-lib</groupId> 
+     <artifactId>json-lib</artifactId> 
+     <version>1.1</version> 
+     <classifier>jdk13</classifier>
+   </dependency>
   </dependencies>
  </dependencyManagement>
 

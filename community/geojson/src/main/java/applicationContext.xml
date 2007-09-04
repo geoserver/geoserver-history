@@ -3,6 +3,6 @@
 
 <beans>
 
-  <bean id="geojsonOutputFormat" class="org.vfny.geoserver.wfs.responses.GeoJSONOutputFormat"/>
+  
   
 </beans>
