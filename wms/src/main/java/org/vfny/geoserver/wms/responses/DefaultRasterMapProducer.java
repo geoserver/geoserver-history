@@ -318,16 +318,7 @@ public abstract class DefaultRasterMapProducer extends
 	protected RenderedImage prepareImage(int width, int height,
 			IndexColorModel palette) {
 		if (palette != null) {
-			WritableRaster raster = null;
-			final int pixelSize = palette.getPixelSize();
-			if (pixelSize == 1) {
-				raster = Raster.createPackedRaster(palette.getTransferType(),
-						width, height, 1, 1, null);
-			} else {
-				raster = Raster.createInterleavedRaster(palette
-						.getTransferType(), width, height, 1, null);
-			}
-
+			final WritableRaster raster = palette.createCompatibleWritableRaster(width, height);
 			return new BufferedImage(palette, raster, false, null);
 		}
 
