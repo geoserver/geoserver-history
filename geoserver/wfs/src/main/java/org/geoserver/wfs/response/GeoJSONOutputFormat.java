@@ -34,7 +34,7 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
     
     public String getMimeType(Object value, Operation operation)
             throws ServiceException {
-        return "applications/json"; 
+        return "application/json"; 
     }
     
     protected String getContentDisposition(
