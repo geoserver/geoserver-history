@@ -12,6 +12,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureResults;
 import org.geotools.data.Query;
+import org.geotools.feature.FeatureType;
 import org.geotools.filter.AbstractFilter;
 import org.geotools.filter.Filter;
 import org.geotools.filter.FilterFactory;
@@ -210,7 +211,8 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
             for (int i = 0; i < layerCount; i++) {
                 FeatureTypeInfo finfo = requestedLayers[i];
 
-                CoordinateReferenceSystem dataCRS = finfo.getFeatureType().getDefaultGeometry()
+                FeatureType featureType = finfo.getFeatureType();
+                CoordinateReferenceSystem dataCRS = featureType.getDefaultGeometry()
                                                          .getCoordinateSystem();
 
                 // reproject the bounding box
@@ -228,9 +230,11 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                 }
 
                 try {
-                    getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
-                    ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac
-                        .createLiteralExpression(pixelRect));
+                    GeometryFilter gf = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
+                    gf.addRightGeometry(filterFac.createAttributeExpression(featureType.getDefaultGeometry().getName()));
+                    gf.addLeftGeometry(filterFac.createLiteralExpression(pixelRect));
+                     
+                    getFInfoFilter = gf;
                 } catch (IllegalFilterException e) {
                     e.printStackTrace();
                     throw new WmsException(null, "Internal error : " + e.getMessage());
