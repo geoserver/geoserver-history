@@ -318,7 +318,11 @@ public abstract class DefaultRasterMapProducer extends
 	protected RenderedImage prepareImage(int width, int height,
 			IndexColorModel palette) {
 		if (palette != null) {
-			final WritableRaster raster = palette.createCompatibleWritableRaster(width, height);
+		    // unfortunately we can't use packed rasters because line rendering gets completely
+		    // broken, see GEOS-1312 (http://jira.codehaus.org/browse/GEOS-1312)
+//			final WritableRaster raster = palette.createCompatibleWritableRaster(width, height);
+		    final WritableRaster raster = Raster.createInterleavedRaster(palette.getTransferType(),
+                    width, height, 1, null);
 			return new BufferedImage(palette, raster, false, null);
 		}
 
