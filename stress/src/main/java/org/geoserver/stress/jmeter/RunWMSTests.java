@@ -14,11 +14,11 @@ import java.io.IOException;
  */
 public class RunWMSTests {
     public static void main(String[] args) throws IOException, InterruptedException {
-        final int loops = 7; // up to 64 concurrent threads
+        final int loops = 5; // up to 64 concurrent threads
 
         JMeterRunner runner = new JMeterRunner();
         runner.runTest("StatesWMSGetMap", loops);
-        runner.runTest("StatesWMSGetMapSafePalette", loops);
-        runner.runTest("StatesWMSGetMapSafePaletteGif", loops);
+//        runner.runTest("StatesWMSGetMapSafePalette", loops);
+//        runner.runTest("StatesWMSGetMapSafePaletteGif", loops);
     }
 }

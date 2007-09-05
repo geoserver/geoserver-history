@@ -11,6 +11,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.color.ColorSpace;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
@@ -301,7 +302,16 @@ public abstract class DefaultRasterMapProducer extends
 		renderer.paint(graphic, paintArea, dataArea);
 		graphic.dispose();
 		if (!this.abortRequested) {
-			this.image = preparedImage;
+//          This makes the output image smaller, but also hinders performance. It's a possible counter
+//          measure to http://jira.codehaus.org/browse/GEOS-1312
+//		    final WritableRaster raster = palette.createCompatibleWritableRaster(width, height);
+//		    BufferedImage dest = new BufferedImage(palette, raster, false, null);
+//		    Graphics2D g = dest.createGraphics();
+//		    g.drawRenderedImage(preparedImage, new AffineTransform());
+//		    g.dispose();
+//		    
+//			this.image = dest;
+		    this.image = preparedImage;
 		}
 	}
 
