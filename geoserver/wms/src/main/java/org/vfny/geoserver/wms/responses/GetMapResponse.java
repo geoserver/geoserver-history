@@ -31,6 +31,7 @@ import org.geotools.styling.Style;
 import org.opengis.filter.Filter;
 import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterValue;
+import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.context.ApplicationContext;
@@ -41,6 +42,7 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
@@ -360,8 +362,14 @@ public class GetMapResponse implements Response {
 						}
 
 						try {
+							final ParameterValueGroup params = reader.getFormat().getReadParameters();
+
 							layer = new DefaultMapLayer(FeatureUtilities
-									.wrapGridCoverageReader(reader), style);
+									.wrapGridCoverageReader(reader, CoverageUtils
+											.getParameters(params, layers[i]
+													.getCoverage()
+													.getParameters())), style);
+							
 							layer.setTitle(layers[i].getName());
 							layer.setQuery(Query.ALL);
 							map.addLayer(layer);
