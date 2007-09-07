@@ -27,8 +27,7 @@
 					<!-- like a polygonsymbolizer -->
 					<LineSymbolizer>
 						<Stroke>
-							<CssParameter name="stroke">#319738</CssParameter>
-							<CssParameter name="stroke-width">2</CssParameter>
+							<CssParameter name="stroke">#0000FF</CssParameter>
 						</Stroke>
 					</LineSymbolizer>
 				</Rule>

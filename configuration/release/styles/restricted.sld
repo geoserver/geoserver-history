@@ -8,11 +8,11 @@
     <!-- a named layer is the basic building block of an sld document -->
 
   <NamedLayer>
-    <Name>Default Polygon</Name>
+    <Name>Restricted areas</Name>
     <UserStyle>
         <!-- they have names, titles and abstracts -->
       
-      <Title>A boring default style</Title>
+      <Title>Red, translucent style</Title>
       <Abstract>A sample style that just prints out a transparent red interior with a red outline</Abstract>
       <!-- FeatureTypeStyles describe how to render different features -->
       <!-- a feature type for polygons -->
@@ -27,10 +27,11 @@
           <!-- like a linesymbolizer but with a fill too -->
           <PolygonSymbolizer>
             <Fill>
-              <CssParameter name="fill">#AAAAAA</CssParameter>
+              <CssParameter name="fill">#FF0000</CssParameter>
+              <CssParameter name="fill-opacity">0.7</CssParameter>
             </Fill>
             <Stroke>
-              <CssParameter name="stroke">#000000</CssParameter>
+              <CssParameter name="stroke">#AA0000</CssParameter>
               <CssParameter name="stroke-width">1</CssParameter>
             </Stroke>
           </PolygonSymbolizer>
