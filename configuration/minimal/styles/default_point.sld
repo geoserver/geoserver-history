@@ -13,7 +13,7 @@
 		    <!-- they have names, titles and abstracts -->
 		  
 			<Title>A boring default style</Title>
-			<Abstract>A sample style that just prints out a purple circle</Abstract>
+			<Abstract>A sample style that just prints out a purple square</Abstract>
 			<!-- FeatureTypeStyles describe how to render different features -->
 			<!-- a feature type for points -->
 
@@ -21,17 +21,16 @@
 				<!--FeatureTypeName>Feature</FeatureTypeName-->
 				<Rule>
 					<Name>Rule 1</Name>
-					<Title>PurpleFill</Title>
-					<Abstract>A purple fill with an 11 pixel size</Abstract>
+					<Title>RedSquare</Title>
+					<Abstract>A red fill with an 11 pixel size</Abstract>
 
 					<!-- like a linesymbolizer but with a fill too -->
 					<PointSymbolizer>
 						<Graphic>
 							<Mark>
-								<WellKnownName>circle</WellKnownName>
+								<WellKnownName>square</WellKnownName>
 								<Fill>
-									<CssParameter name="fill">#9F4DC5</CssParameter>
-									<CssParameter name="fill-opacity">1.0</CssParameter>
+									<CssParameter name="fill">#FF0000</CssParameter>
 								</Fill>
 							</Mark>
 							<Size>6</Size>
