@@ -104,18 +104,18 @@
       <type>GeoTIFF</type>
       <url>file:data/sf/dem.tif</url>
     </format>
-    <format id = "arcGridSample" enabled = "true" namespace = "nurc" >
-      <description>A test ArcGrid Coverage</description>
-      <type>ArcGrid</type>
-      <url>file:coverages/arc_sample/precip30min.asc</url>
+    <format id = "mosaic" enabled = "true" namespace = "nurc" >
+      <type>ImageMosaic</type>
+      <url>file:coverages/mosaic_sample/mosaic.shp</url>
     </format>
     <format id = "img_sample2" enabled = "true" namespace = "nurc" >
       <type>WorldImage</type>
       <url>file:coverages/img_sample/Pk50095.tif</url>
     </format>
-    <format id = "mosaic" enabled = "true" namespace = "nurc" >
-      <type>ImageMosaic</type>
-      <url>file:coverages/mosaic_sample/mosaic.shp</url>
+    <format id = "arcGridSample" enabled = "true" namespace = "nurc" >
+      <description>A test ArcGrid Coverage</description>
+      <type>ArcGrid</type>
+      <url>file:coverages/arc_sample/precip30min.asc</url>
     </format>
     <format id = "worldImageSample" enabled = "true" namespace = "nurc" >
       <type>WorldImage</type>
@@ -142,6 +142,7 @@
     <style id = "simple_roads" filename = "simpleRoads.sld" />
     <style id = "cite_lakes" filename = "Lakes.sld" />
     <style id = "green" filename = "green.sld" />
+    <style id = "restricted" filename = "restricted.sld" />
     <style id = "giant_polygon" filename = "giant_polygon.sld" />
     <style id = "simple_streams" filename = "simple_streams.sld" />
     <style id = "line" filename = "default_line.sld" />
@@ -150,8 +151,8 @@
     <style id = "raster" filename = "raster.sld" />
     <style id = "point" filename = "default_point.sld" />
     <style id = "tiger_roads" filename = "tiger_roads.sld" />
-    <style id = "dem" filename = "dem.sld" />
     <style id = "poly_landmarks" filename = "poly_landmarks.sld" />
+    <style id = "dem" filename = "dem.sld" />
     <style id = "population" filename = "popshade.sld" />
   </styles>
 </catalog>
