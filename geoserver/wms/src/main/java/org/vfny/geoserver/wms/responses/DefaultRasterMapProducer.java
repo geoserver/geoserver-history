@@ -10,11 +10,8 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
-import java.awt.color.ColorSpace;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
-import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
 import java.awt.image.Raster;
@@ -24,7 +21,6 @@ import java.awt.image.WritableRaster;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -36,15 +32,14 @@ import javax.media.jai.InterpolationBicubic2;
 import javax.media.jai.InterpolationBilinear;
 import javax.media.jai.InterpolationNearest;
 import javax.media.jai.JAI;
+import javax.media.jai.LookupTableJAI;
 import javax.media.jai.TiledImage;
-import javax.media.jai.operator.BandMergeDescriptor;
+import javax.media.jai.operator.LookupDescriptor;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.image.ImageWorker;
 import org.geotools.map.MapLayer;
-import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.shape.ShapefileRenderer;
-import org.geotools.styling.StyleAttributeExtractor;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.RasterMapProducer;
@@ -97,6 +92,18 @@ public abstract class DefaultRasterMapProducer extends
 
 	private final static List AA_SETTINGS = Arrays.asList(new String[] {
 			AA_NONE, AA_TEXT, AA_FULL });
+
+	/**
+	 * The lookup table used for data type transformation (it's really the identity one)
+	 */
+	private static LookupTableJAI IDENTITY_TABLE = new LookupTableJAI(getTable());
+    private static byte[] getTable() {
+        byte[] arr = new byte[256];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = (byte) i;
+        }
+        return arr;
+    }
 
 	/** WMS Service configuration * */
 	private WMS wms;
@@ -302,16 +309,10 @@ public abstract class DefaultRasterMapProducer extends
 		renderer.paint(graphic, paintArea, dataArea);
 		graphic.dispose();
 		if (!this.abortRequested) {
-//          This makes the output image smaller, but also hinders performance. It's a possible counter
-//          measure to http://jira.codehaus.org/browse/GEOS-1312
-//		    final WritableRaster raster = palette.createCompatibleWritableRaster(width, height);
-//		    BufferedImage dest = new BufferedImage(palette, raster, false, null);
-//		    Graphics2D g = dest.createGraphics();
-//		    g.drawRenderedImage(preparedImage, new AffineTransform());
-//		    g.dispose();
-//		    
-//			this.image = dest;
-		    this.image = preparedImage;
+            if(palette != null && palette.getMapSize() < 256)
+                this.image = optimizeSampleModel(preparedImage);
+            else 
+                this.image = preparedImage;
 		}
 	}
 
@@ -481,5 +482,26 @@ public abstract class DefaultRasterMapProducer extends
 
 		return image;
 	}
+    
+	/**
+	 * This takes an image with an indexed color model that uses
+	 * less than 256 colors and has a 8bit sample model, and transforms it to
+	 * one that has the optimal sample model (for example, 1bit if the palette only has 2 colors)
+	 * @param source
+	 * @return
+	 */
+    private RenderedImage optimizeSampleModel(RenderedImage source) {
+        int w = source.getWidth();
+        int h = source.getHeight();
+        ImageLayout layout = new ImageLayout();
+        layout.setColorModel(source.getColorModel());
+        layout.setSampleModel(source.getColorModel().createCompatibleSampleModel(w, h));
+        // if I don't force tiling off with this setting an exception is thrown
+        // when writing the image out...
+        layout.setTileWidth(w);
+        layout.setTileHeight(h);
+        RenderingHints hints = new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout);
+        return LookupDescriptor.create(source, IDENTITY_TABLE, hints);
+    }
 
 }
