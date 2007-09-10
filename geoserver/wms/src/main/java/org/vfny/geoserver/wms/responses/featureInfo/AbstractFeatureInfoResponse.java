@@ -35,6 +35,8 @@ import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
+import sun.security.action.GetLongAction;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -234,8 +236,8 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                 }
 
                 try {
-                    getFInfoFilter = filterFac.intersects(filterFac.property(finfo.getFeatureType().getDefaultGeometry()
-                            .getName()), filterFac.literal(pixelRect));
+                    getFInfoFilter = filterFac.intersects(filterFac.property(finfo.getFeatureType().getPrimaryGeometry()
+                            .getLocalName()), filterFac.literal(pixelRect));
 //                    getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
 //                    ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac
 //                        .createLiteralExpression(pixelRect));
