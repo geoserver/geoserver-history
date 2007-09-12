@@ -204,7 +204,7 @@ public abstract class DefaultRasterMapProducer extends
 				palette = pe.getPalette();
 		}
 
-		final RenderedImage preparedImage = prepareImage(width, height, palette);
+		final RenderedImage preparedImage = prepareImage(width, height, palette, mapContext.isTransparent());
 		final Graphics2D graphic;
 
 		if (preparedImage instanceof BufferedImage) {
@@ -327,7 +327,7 @@ public abstract class DefaultRasterMapProducer extends
 	 * @return
 	 */
 	protected RenderedImage prepareImage(int width, int height,
-			IndexColorModel palette) {
+			IndexColorModel palette, boolean transparent) {
 		if (palette != null) {
 		    // unfortunately we can't use packed rasters because line rendering gets completely
 		    // broken, see GEOS-1312 (http://jira.codehaus.org/browse/GEOS-1312)
@@ -337,7 +337,12 @@ public abstract class DefaultRasterMapProducer extends
 			return new BufferedImage(palette, raster, false, null);
 		}
 
-		return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+		if(transparent)
+		    return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+		else
+		    // don't use alpha channel if the image is not transparent
+		    return new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+		    
 	}
 
 	/**
