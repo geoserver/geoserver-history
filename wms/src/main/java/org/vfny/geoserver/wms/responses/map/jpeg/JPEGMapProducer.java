@@ -9,9 +9,7 @@ import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
-import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
-import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
@@ -26,12 +24,9 @@ import java.util.logging.Logger;
  *
  */
 public final class JPEGMapProducer extends DefaultRasterMapProducer {
-    protected RenderedImage prepareImage(int width, int height, IndexColorModel palette) {
+    protected RenderedImage prepareImage(int width, int height, IndexColorModel palette, boolean transparent) {
         if (palette != null) {
-            WritableRaster raster = Raster.createInterleavedRaster(palette.getTransferType(),
-                    width, height, 1, null);
-
-            return new BufferedImage(palette, raster, false, null);
+            return super.prepareImage(width, height, palette, transparent);
         }
 
         //there is no transparency in JPEG anyway :-)
