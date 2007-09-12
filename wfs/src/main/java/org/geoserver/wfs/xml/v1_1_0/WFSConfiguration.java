@@ -11,6 +11,7 @@ import org.geoserver.ows.xml.v1_0.OWSConfiguration;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.PropertyTypePropertyExtractor;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
+import org.geoserver.wfs.xml.XSQNameBinding;
 import org.geoserver.wfs.xml.filter.v1_1.FilterTypeBinding;
 import org.geoserver.wfs.xml.filter.v1_1.PropertyNameTypeBinding;
 import org.geoserver.wfs.xml.gml3.AbstractGeometryTypeBinding;
@@ -24,7 +25,6 @@ import org.geotools.gml3.GMLConfiguration;
 import org.geotools.gml3.bindings.GML;
 import org.geotools.xml.BindingConfiguration;
 import org.geotools.xml.Configuration;
-import org.geotools.xml.Schemas;
 import org.geotools.xs.bindings.XS;
 import org.picocontainer.MutablePicoContainer;
 import org.vfny.geoserver.global.Data;
@@ -116,9 +116,8 @@ public class WFSConfiguration extends Configuration {
         container.registerComponentImplementation(GML.CircleType, CircleTypeBinding.class);
         container.registerComponentImplementation(GML.AbstractGeometryType,
             AbstractGeometryTypeBinding.class);
-
-        //remove bindings for MultiPolygon and MultiLineString
-        //TODO: make this cite configurable
-        //Schemas.unregisterComponent(container, GML.MultiPolygonType);
+        
+        // override XSQName binding
+        container.registerComponentImplementation(XS.QNAME, XSQNameBinding.class);
     }
 }
