@@ -1,7 +1,10 @@
 package org.geoserver.wfs.v1_1;
 
+import junit.textui.TestRunner;
+
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.gml3.bindings.GML;
+import org.geotools.referencing.CRS;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -85,6 +88,89 @@ public class GetFeatureTest extends WFSTestSupport {
             Element feature = (Element) features.item(i);
             assertTrue(feature.hasAttribute("gml:id"));
         }
+    }
+    
+    public void testPostWithBboxFilter() throws Exception {
+        String xml = "<wfs:GetFeature " + "service=\"WFS\" "
+                + "version=\"1.1.0\" "
+                + "outputFormat=\"text/xml; subtype=gml/3.1.1\" "
+                + "xmlns:gml=\"http://www.opengis.net/gml\" " 
+                + "xmlns:sf=\"http://www.opengis.net/cite/data\" "
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\" "
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" > "
+                + "<wfs:Query typeName=\"sf:PrimitiveGeoFeature\">"
+                + "<ogc:Filter>"
+                + "<ogc:BBOX>"
+                + "   <ogc:PropertyName>pointProperty</ogc:PropertyName>"
+                + "   <gml:Envelope srsName=\"EPSG:4326\">"
+                + "      <gml:lowerCorner>57.0 -4.5</gml:lowerCorner>"
+                + "      <gml:upperCorner>62.0 1.0</gml:upperCorner>"
+                + "   </gml:Envelope>"
+                + "</ogc:BBOX>"
+                + "</ogc:Filter>"
+                + "</wfs:Query>"
+                + "</wfs:GetFeature>";
+        
+        Document doc = postAsDOM("wfs", xml);
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
+                .getNodeName());
+
+        NodeList features = doc.getElementsByTagName("sf:PrimitiveGeoFeature");
+        assertEquals(1, features.getLength());
+    }
+    
+    public void testPostWithFailingUrnBboxFilter() throws Exception {
+        String xml = "<wfs:GetFeature " + "service=\"WFS\" "
+            + "version=\"1.1.0\" "
+            + "outputFormat=\"text/xml; subtype=gml/3.1.1\" "
+            + "xmlns:gml=\"http://www.opengis.net/gml\" " 
+            + "xmlns:sf=\"http://www.opengis.net/cite/data\" "
+            + "xmlns:wfs=\"http://www.opengis.net/wfs\" "
+            + "xmlns:ogc=\"http://www.opengis.net/ogc\" > "
+            + "<wfs:Query typeName=\"sf:PrimitiveGeoFeature\">"
+            + "<ogc:Filter>"
+            + "<ogc:BBOX>"
+            + "   <ogc:PropertyName>pointProperty</ogc:PropertyName>"
+            + "   <gml:Envelope srsName=\"urn:x-ogc:def:crs:EPSG:6.11.2:4326\">"
+            + "      <gml:lowerCorner>57.0 -4.5</gml:lowerCorner>"
+            + "      <gml:upperCorner>62.0 1.0</gml:upperCorner>"
+            + "   </gml:Envelope>"
+            + "</ogc:BBOX>"
+            + "</ogc:Filter>"
+            + "</wfs:Query>"
+            + "</wfs:GetFeature>";
+
+        Document doc = postAsDOM("wfs", xml);
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
+        NodeList features = doc.getElementsByTagName("sf:PrimitiveGeoFeature");
+        assertEquals(0, features.getLength());
+    }
+    
+    public void testPostWithMatchingUrnBboxFilter() throws Exception {
+        String xml = "<wfs:GetFeature " + "service=\"WFS\" "
+            + "version=\"1.1.0\" "
+            + "outputFormat=\"text/xml; subtype=gml/3.1.1\" "
+            + "xmlns:gml=\"http://www.opengis.net/gml\" " 
+            + "xmlns:sf=\"http://www.opengis.net/cite/data\" "
+            + "xmlns:wfs=\"http://www.opengis.net/wfs\" "
+            + "xmlns:ogc=\"http://www.opengis.net/ogc\" > "
+            + "<wfs:Query typeName=\"sf:PrimitiveGeoFeature\">"
+            + "<ogc:Filter>"
+            + "<ogc:BBOX>"
+            + "   <ogc:PropertyName>pointProperty</ogc:PropertyName>"
+            + "   <gml:Envelope srsName=\"urn:x-ogc:def:crs:EPSG:6.11.2:4326\">"
+            + "      <gml:lowerCorner>-4.5 57.0</gml:lowerCorner>"
+            + "      <gml:upperCorner>1.0 62.0</gml:upperCorner>"
+            + "   </gml:Envelope>"
+            + "</ogc:BBOX>"
+            + "</ogc:Filter>"
+            + "</wfs:Query>"
+            + "</wfs:GetFeature>";
+
+        Document doc = postAsDOM("wfs", xml);
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
+        NodeList features = doc.getElementsByTagName("sf:PrimitiveGeoFeature");
+        assertEquals(1, features.getLength());
     }
 
     public void testResultTypeHitsGet() throws Exception {
@@ -215,4 +301,8 @@ public class GetFeatureTest extends WFSTestSupport {
         }
     }
 
+    public static void main(String[] args) {
+        TestRunner runner = new TestRunner();
+        runner.run(GetFeatureTest.class);
+    }
 }
