@@ -80,6 +80,24 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
 
         return false;
     }
+    
+    /**
+     * capabilities output format string.  Something that's a valid XML element name.
+     * This should be overriden in each outputformat subclass, and if it's not a warning will be
+     * issued.
+     */
+    public /*abstract*/ String getCapabilitiesElementName() {
+        LOGGER.severe("ERROR IN " + this.getClass() + " IMPLEMENTATION.  getCapabilitiesElementName() should return a" + 
+                "valid XML element name string for use in the WFS 1.0.0 capabilities document.");
+        String of = getOutputFormat();
+        
+        //wfs 1.1 form is not a valid xml element, do a check
+        if (of.matches("(\\w)+")) {
+            return getOutputFormat();
+        } else {
+            return this.getClass().getSimpleName();
+        }
+    }
 
     /**
      * Hook for subclasses to add addtional checks to {@link #canHandle(Operation)}.

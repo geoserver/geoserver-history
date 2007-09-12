@@ -24,21 +24,21 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  */
 public class NoSRSTypeImpl extends EObjectImpl implements NoSRSType {
 	/**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
 	protected NoSRSTypeImpl() {
-		super();
-	}
+        super();
+    }
 
 	/**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
 	protected EClass eStaticClass() {
-		return WfsPackage.Literals.NO_SRS_TYPE;
-	}
+        return WfsPackage.Literals.NO_SRS_TYPE;
+    }
 
 } //NoSRSTypeImpl

@@ -20,7 +20,7 @@ public class FeatureTypeInfoSchemaBuilderTest extends WFSTestSupport {
                 getWFS(), getCatalog(), getResourceLoader());
 
         FeatureTypeInfo lines = getCatalog().getFeatureTypeInfo(MockData.LINES);
-        XSDSchema schema = builder.build(new FeatureTypeInfo[] { lines });
+        XSDSchema schema = builder.build(new FeatureTypeInfo[] { lines }, getWFS().getOnlineResource().toExternalForm());
 
         assertNotNull(schema);
         XSDElementDeclaration element = Schemas.getElementDeclaration(schema,

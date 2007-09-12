@@ -28,20 +28,20 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface GMLObjectTypeListType extends EObject {
 	/**
-	 * Returns the value of the '<em><b>GML Object Type</b></em>' containment reference list.
-	 * The list contents are of type {@link net.opengis.wfs.GMLObjectTypeType}.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>GML Object Type</b></em>' containment reference list.
+     * The list contents are of type {@link net.opengis.wfs.GMLObjectTypeType}.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * 
-	 *                   Name of this GML object type, including any namespace prefix
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>GML Object Type</em>' containment reference list.
-	 * @see net.opengis.wfs.WfsPackage#getGMLObjectTypeListType_GMLObjectType()
-	 * @model type="net.opengis.wfs.GMLObjectTypeType" containment="true" required="true"
-	 *        extendedMetaData="kind='element' name='GMLObjectType' namespace='##targetNamespace'"
-	 * @generated
-	 */
+     * <!-- begin-model-doc -->
+     * 
+     *                   Name of this GML object type, including any namespace prefix
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>GML Object Type</em>' containment reference list.
+     * @see net.opengis.wfs.WfsPackage#getGMLObjectTypeListType_GMLObjectType()
+     * @model type="net.opengis.wfs.GMLObjectTypeType" containment="true" required="true"
+     *        extendedMetaData="kind='element' name='GMLObjectType' namespace='##targetNamespace'"
+     * @generated
+     */
 	EList getGMLObjectType();
 
 } // GMLObjectTypeListType

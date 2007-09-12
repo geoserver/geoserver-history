@@ -35,6 +35,20 @@ public class WFSSchemaLocator extends SchemaLocator {
     }
 
     protected XSDSchema createSchema() throws Exception {
+        return createSchema(null);
+    }
+    
+    /**
+     * Creates the schema using this SchemaLocator.  Note that in order to locate
+     * schemas, you need to know *where* the schemas are, and they might be
+     * in different places, depending on who's calling the server.  Thus the 
+     * baseUrl parameter.
+     * @param baseUrl If this parameter is not null, its value will be used as the starting
+     * point for figuring out the baseUrl for any schemas built with this class.
+     * @return
+     * @throws Exception
+     */
+    protected XSDSchema createSchema(String baseUrl) throws Exception {
         XSDSchema wfsSchema = super.createSchema();
 
         //incorporate application schemas into the wfs schema
@@ -44,7 +58,7 @@ public class WFSSchemaLocator extends SchemaLocator {
             FeatureTypeInfo meta = (FeatureTypeInfo) i.next();
 
             //build the schema for the types in the single namespace
-            XSDSchema schema = schemaBuilder.build(new FeatureTypeInfo[] { meta });
+            XSDSchema schema = schemaBuilder.build(new FeatureTypeInfo[] { meta }, baseUrl);
 
             //declare the namespace
             String prefix = meta.getNameSpace().getPrefix();

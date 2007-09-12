@@ -158,6 +158,9 @@ public class GetMapResponse implements Response {
 		// DJB: the WMS spec says that the request must not be 0 area
 		// if it is, throw a service exception!
 		final Envelope env = request.getBbox();
+		if (env == null) {
+		    throw new WmsException("GetMap requests must include a BBOX parameter.");
+		}
 		if (env.isNull() || (env.getWidth() <= 0) || (env.getHeight() <= 0)) {
 			throw new WmsException(new StringBuffer(
 					"The request bounding box has zero area: ").append(env)

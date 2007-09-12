@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link net.opengis.ows.GetCapabilitiesType#getSections <em>Sections</em>}</li>
  *   <li>{@link net.opengis.ows.GetCapabilitiesType#getAcceptFormats <em>Accept Formats</em>}</li>
  *   <li>{@link net.opengis.ows.GetCapabilitiesType#getUpdateSequence <em>Update Sequence</em>}</li>
+ *   <li>{@link net.opengis.ows.GetCapabilitiesType#getBaseUrl <em>Base Url</em>}</li>
  * </ul>
  * </p>
  *
@@ -33,107 +34,133 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface GetCapabilitiesType extends EObject {
 	/**
-	 * Returns the value of the '<em><b>Accept Versions</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>Accept Versions</b></em>' containment reference.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * When omitted, server shall return latest supported version.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Accept Versions</em>' containment reference.
-	 * @see #setAcceptVersions(AcceptVersionsType)
-	 * @see net.opengis.ows.OwsPackage#getGetCapabilitiesType_AcceptVersions()
-	 * @model containment="true"
-	 *        extendedMetaData="kind='element' name='AcceptVersions' namespace='##targetNamespace'"
-	 * @generated
-	 */
+     * <!-- begin-model-doc -->
+     * When omitted, server shall return latest supported version.
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>Accept Versions</em>' containment reference.
+     * @see #setAcceptVersions(AcceptVersionsType)
+     * @see net.opengis.ows.OwsPackage#getGetCapabilitiesType_AcceptVersions()
+     * @model containment="true"
+     *        extendedMetaData="kind='element' name='AcceptVersions' namespace='##targetNamespace'"
+     * @generated
+     */
 	AcceptVersionsType getAcceptVersions();
 
 	/**
-	 * Sets the value of the '{@link net.opengis.ows.GetCapabilitiesType#getAcceptVersions <em>Accept Versions</em>}' containment reference.
-	 * <!-- begin-user-doc -->
+     * Sets the value of the '{@link net.opengis.ows.GetCapabilitiesType#getAcceptVersions <em>Accept Versions</em>}' containment reference.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Accept Versions</em>' containment reference.
-	 * @see #getAcceptVersions()
-	 * @generated
-	 */
+     * @param value the new value of the '<em>Accept Versions</em>' containment reference.
+     * @see #getAcceptVersions()
+     * @generated
+     */
 	void setAcceptVersions(AcceptVersionsType value);
 
 	/**
-	 * Returns the value of the '<em><b>Sections</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>Sections</b></em>' containment reference.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * When omitted or not supported by server, server shall return complete service metadata (Capabilities) document.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Sections</em>' containment reference.
-	 * @see #setSections(SectionsType)
-	 * @see net.opengis.ows.OwsPackage#getGetCapabilitiesType_Sections()
-	 * @model containment="true"
-	 *        extendedMetaData="kind='element' name='Sections' namespace='##targetNamespace'"
-	 * @generated
-	 */
+     * <!-- begin-model-doc -->
+     * When omitted or not supported by server, server shall return complete service metadata (Capabilities) document.
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>Sections</em>' containment reference.
+     * @see #setSections(SectionsType)
+     * @see net.opengis.ows.OwsPackage#getGetCapabilitiesType_Sections()
+     * @model containment="true"
+     *        extendedMetaData="kind='element' name='Sections' namespace='##targetNamespace'"
+     * @generated
+     */
 	SectionsType getSections();
 
 	/**
-	 * Sets the value of the '{@link net.opengis.ows.GetCapabilitiesType#getSections <em>Sections</em>}' containment reference.
-	 * <!-- begin-user-doc -->
+     * Sets the value of the '{@link net.opengis.ows.GetCapabilitiesType#getSections <em>Sections</em>}' containment reference.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Sections</em>' containment reference.
-	 * @see #getSections()
-	 * @generated
-	 */
+     * @param value the new value of the '<em>Sections</em>' containment reference.
+     * @see #getSections()
+     * @generated
+     */
 	void setSections(SectionsType value);
 
 	/**
-	 * Returns the value of the '<em><b>Accept Formats</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>Accept Formats</b></em>' containment reference.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * When omitted or not supported by server, server shall return service metadata document using the MIME type "text/xml".
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Accept Formats</em>' containment reference.
-	 * @see #setAcceptFormats(AcceptFormatsType)
-	 * @see net.opengis.ows.OwsPackage#getGetCapabilitiesType_AcceptFormats()
-	 * @model containment="true"
-	 *        extendedMetaData="kind='element' name='AcceptFormats' namespace='##targetNamespace'"
-	 * @generated
-	 */
+     * <!-- begin-model-doc -->
+     * When omitted or not supported by server, server shall return service metadata document using the MIME type "text/xml".
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>Accept Formats</em>' containment reference.
+     * @see #setAcceptFormats(AcceptFormatsType)
+     * @see net.opengis.ows.OwsPackage#getGetCapabilitiesType_AcceptFormats()
+     * @model containment="true"
+     *        extendedMetaData="kind='element' name='AcceptFormats' namespace='##targetNamespace'"
+     * @generated
+     */
 	AcceptFormatsType getAcceptFormats();
 
 	/**
-	 * Sets the value of the '{@link net.opengis.ows.GetCapabilitiesType#getAcceptFormats <em>Accept Formats</em>}' containment reference.
-	 * <!-- begin-user-doc -->
+     * Sets the value of the '{@link net.opengis.ows.GetCapabilitiesType#getAcceptFormats <em>Accept Formats</em>}' containment reference.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Accept Formats</em>' containment reference.
-	 * @see #getAcceptFormats()
-	 * @generated
-	 */
+     * @param value the new value of the '<em>Accept Formats</em>' containment reference.
+     * @see #getAcceptFormats()
+     * @generated
+     */
 	void setAcceptFormats(AcceptFormatsType value);
 
 	/**
-	 * Returns the value of the '<em><b>Update Sequence</b></em>' attribute.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>Update Sequence</b></em>' attribute.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * When omitted or not supported by server, server shall return latest complete service metadata document.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Update Sequence</em>' attribute.
-	 * @see #setUpdateSequence(String)
-	 * @see net.opengis.ows.OwsPackage#getGetCapabilitiesType_UpdateSequence()
-	 * @model unique="false" dataType="net.opengis.ows.UpdateSequenceType"
-	 *        extendedMetaData="kind='attribute' name='updateSequence'"
-	 * @generated
-	 */
+     * <!-- begin-model-doc -->
+     * When omitted or not supported by server, server shall return latest complete service metadata document.
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>Update Sequence</em>' attribute.
+     * @see #setUpdateSequence(String)
+     * @see net.opengis.ows.OwsPackage#getGetCapabilitiesType_UpdateSequence()
+     * @model unique="false" dataType="net.opengis.ows.UpdateSequenceType"
+     *        extendedMetaData="kind='attribute' name='updateSequence'"
+     * @generated
+     */
 	String getUpdateSequence();
 
 	/**
-	 * Sets the value of the '{@link net.opengis.ows.GetCapabilitiesType#getUpdateSequence <em>Update Sequence</em>}' attribute.
-	 * <!-- begin-user-doc -->
+     * Sets the value of the '{@link net.opengis.ows.GetCapabilitiesType#getUpdateSequence <em>Update Sequence</em>}' attribute.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Update Sequence</em>' attribute.
-	 * @see #getUpdateSequence()
-	 * @generated
-	 */
+     * @param value the new value of the '<em>Update Sequence</em>' attribute.
+     * @see #getUpdateSequence()
+     * @generated
+     */
 	void setUpdateSequence(String value);
+
+    /**
+     * Returns the value of the '<em><b>Base Url</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Base Url</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Base Url</em>' attribute.
+     * @see #setBaseUrl(String)
+     * @see net.opengis.ows.OwsPackage#getGetCapabilitiesType_BaseUrl()
+     * @model dataType="org.eclipse.emf.ecore.xml.type.String"
+     * @generated
+     */
+    String getBaseUrl();
+
+    /**
+     * Sets the value of the '{@link net.opengis.ows.GetCapabilitiesType#getBaseUrl <em>Base Url</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Base Url</em>' attribute.
+     * @see #getBaseUrl()
+     * @generated
+     */
+    void setBaseUrl(String value);
 
 } // GetCapabilitiesType

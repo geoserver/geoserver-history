@@ -6,6 +6,12 @@ import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.opengis.wfs.GetCapabilitiesType;
+import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.WfsFactory;
+
+import org.geoserver.platform.Operation;
+import org.geoserver.platform.Service;
 import org.geoserver.util.ErrorHandler;
 import org.geoserver.util.ReaderUtils;
 import org.geoserver.wfs.CapabilitiesTransformer;
@@ -16,11 +22,17 @@ public class CapabilitiesTransformerTest extends WFSTestSupport {
 
     static Logger logger = Logger.getLogger("org.geoserver.wfs.test");
 
+    GetCapabilitiesType request() {
+        GetCapabilitiesType type = WfsFactory.eINSTANCE.createGetCapabilitiesType();
+        type.setBaseUrl("http://localhost:8080/geoserver");
+        return type;
+    }
+    
     public void test() throws Exception {
         CapabilitiesTransformer tx = new CapabilitiesTransformer.WFS1_1(getWFS(),
                 getCatalog());
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        tx.transform(null, output);
+        tx.transform(request(), output);
 
         InputStreamReader reader = new InputStreamReader(
                 new ByteArrayInputStream(output.toByteArray()));

@@ -7,12 +7,15 @@ package org.vfny.geoserver.wms.servlets;
 import com.vividsolutions.jts.geom.Envelope;
 
 import org.geoserver.ows.util.KvpUtils;
+import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.styling.Style;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.config.WMSConfig;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
@@ -243,6 +246,10 @@ public class KMLReflector extends WMService {
         sb.append("<kml xmlns=\"http://earth.google.com/kml/2.0\">\n");
 
         sb.append("<Folder>\n");
+        
+        String proxifiedBaseUrl = RequestUtils.baseURL(request);
+        GeoServer gs = (GeoServer)GeoServerExtensions.extensions(GeoServer.class).get(0);
+        proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(gs.getProxyBaseUrl(), proxifiedBaseUrl);
 
         // make a network link for every layer
         for (int i = 0; i < layers.length; i++) {
@@ -279,7 +286,7 @@ public class KMLReflector extends WMService {
                 sb.append("</Region>");
 
                 sb.append("<Link>\n");
-                sb.append("<href><![CDATA[" + serviceRequest.getBaseUrl()
+                sb.append("<href><![CDATA[" + proxifiedBaseUrl
                     + "/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kml+XML"
                     + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + "&layers="
                     + layers[i].getName() + style + "&bbox=" + (String) requestParams.get("BBOX")
@@ -296,7 +303,7 @@ public class KMLReflector extends WMService {
                 sb.append("<open>1</open>\n");
                 sb.append("<visibility>1</visibility>\n");
                 sb.append("<Url>\n");
-                sb.append("<href><![CDATA[" + serviceRequest.getBaseUrl()
+                sb.append("<href><![CDATA[" + proxifiedBaseUrl
                     + "/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kmz+XML"
                     + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + "&layers="
                     + layers[i].getName() + style + filter // optional

@@ -4,6 +4,11 @@
  */
 package org.geoserver.wfs;
 
+import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.WfsFactory;
+
+import org.geoserver.platform.Operation;
+import org.geoserver.platform.Service;
 import org.geoserver.test.GeoServerTestSupport;
 
 

@@ -5,11 +5,15 @@
 package org.geoserver.wfs.response;
 
 import net.opengis.wfs.ActionType;
+import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.InsertResultsType;
 import net.opengis.wfs.InsertedFeatureType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionResultsType;
+import net.opengis.wfs.TransactionType;
+
 import org.geoserver.ows.Response;
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
@@ -54,13 +58,13 @@ public class TransactionResponse extends Response {
         TransactionResponseType response = (TransactionResponseType) value;
 
         if (new Version("1.0.0").equals(operation.getService().getVersion())) {
-            v_1_0(response, output);
+            v_1_0(response, output, operation);
         } else {
-            v_1_1(response, output);
+            v_1_1(response, output, operation);
         }
     }
 
-    public void v_1_0(TransactionResponseType response, OutputStream output)
+    public void v_1_0(TransactionResponseType response, OutputStream output, Operation operation)
         throws IOException, ServiceException {
         TransactionResultsType result = response.getTransactionResults();
 
@@ -87,8 +91,11 @@ public class TransactionResponse extends Response {
         writer.write(indent);
         writer.write("xsi:schemaLocation=\"http://www.opengis.net/wfs ");
 
-        String baseUrl = ResponseUtils.appendPath(wfs.getSchemaBaseURL(),
-                "wfs/1.0.0/WFS-transaction.xsd");
+        TransactionType req = (TransactionType)operation.getParameters()[0];
+        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+        
+        String baseUrl = ResponseUtils.appendPath(proxifiedBaseUrl,
+                "schemas/wfs/1.0.0/WFS-transaction.xsd");
 
         writer.write(baseUrl);
         writer.write("\">");
@@ -178,7 +185,7 @@ public class TransactionResponse extends Response {
         writer.flush();
     }
 
-    public void v_1_1(TransactionResponseType response, OutputStream output)
+    public void v_1_1(TransactionResponseType response, OutputStream output, Operation operation)
         throws IOException, ServiceException {
         if (!response.getTransactionResults().getAction().isEmpty()) {
             //since we do atomic transactions, an action failure means all we rolled back
@@ -190,8 +197,11 @@ public class TransactionResponse extends Response {
 
         Encoder encoder = new Encoder(configuration, configuration.schema());
 
+        TransactionType req = (TransactionType)operation.getParameters()[0];
+        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+        
         encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
-            ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "wfs/1.1.0/wfs.xsd"));
+            ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd"));
 
         try {
             encoder.encode(response, org.geoserver.wfs.xml.v1_1_0.WFS.TRANSACTIONRESPONSE, output);

@@ -62,12 +62,13 @@ public abstract class FeatureTypeSchema {
     /**
      * @return The {@link XSDSchema} representation of the schema.
      */
-    public XSDSchema schema() throws IOException {
-        return builder.build(new FeatureTypeInfo[] { featureType });
+    public XSDSchema schema(String baseUrl) throws IOException {
+        return builder.build(new FeatureTypeInfo[] { featureType }, baseUrl);
     }
 
     /**
      * Converts the schema to a gml2 schema.
+     * @param baseUrl is the prefix-base to use for self-referencing urls.
      */
     public FeatureTypeSchema toGML2() {
         if (this instanceof GML2) {
@@ -79,7 +80,6 @@ public abstract class FeatureTypeSchema {
 
     /**
      * Converts the schema to a gml3 schema.
-     * @return
      */
     public FeatureTypeSchema toGML3() {
         if (this instanceof GML3) {

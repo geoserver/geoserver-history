@@ -6,9 +6,9 @@
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             elementFormDefault="qualified">
   <xsd:import namespace="http://www.w3.org/1999/xlink"
-              schemaLocation="xlinks.xsd"/>
+              schemaLocation="../xlink/1.0.0/xlinks.xsd"/>
   <xsd:import namespace="http://www.opengis.net/ogc"
-              schemaLocation="filter.xsd"/>
+              schemaLocation="../filter/1.0.0/filter.xsd"/>
 
 <!-- *********************************************************************** -->
   <xsd:annotation>

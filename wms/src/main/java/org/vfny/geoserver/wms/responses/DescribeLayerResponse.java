@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -73,7 +74,7 @@ public class DescribeLayerResponse implements Response {
             LOGGER.fine(new StringBuffer("executing request ").append(request).toString());
         }
 
-        this.transformer = new DescribeLayerTransformer(this.request.getSchemaBaseUrl());
+        this.transformer = new DescribeLayerTransformer(this.request.getBaseUrl(), request.getServiceRef().getGeoServer());
         this.transformer.setNamespaceDeclarationEnabled(false);
         this.transformer.setEncoding(this.request.getGeoServer().getCharSet());
 
