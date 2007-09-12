@@ -1386,21 +1386,26 @@ public class XMLConfigReader {
                 if (LOGGER.isLoggable(Level.FINER)) {
                     LOGGER.finer(new StringBuffer("Info dir:").append(info).toString());
                 }
-
-                FeatureTypeInfoDTO dto = loadFeature(info);
-                String ftName = null;
-
                 try { // Decode the URL of the FT. This is to catch colons used in filenames
+
+                    FeatureTypeInfoDTO dto = loadFeature(info);
+                    String ftName = null;
+
                     ftName = URLDecoder.decode(dto.getKey(), "UTF-8");
 
                     if (LOGGER.isLoggable(Level.FINE)) {
                         LOGGER.config("Decoding file name: " + ftName);
                     }
+                    
+                    map.put(ftName, dto);
                 } catch (UnsupportedEncodingException e) {
-                    throw new ConfigurationException(e);
+                    //throw new ConfigurationException(e);
+                    LOGGER.severe("unable to load featuretype from file " + info + ".  Skipping that featuretype.  Error was: " + e);
+                    continue;
+                } catch (ConfigurationException ce) {
+                    LOGGER.severe("unable to load featuretype from file " + info + ".  Skipping that featuretype.  Error was: " + ce);
+                    continue;
                 }
-
-                map.put(ftName, dto);
             }
         }
 
