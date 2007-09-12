@@ -42,4 +42,18 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
 
     }
     
+    public void testNoNamespaceDeclaration() throws Exception {
+        String xml = "<wfs:DescribeFeatureType " + "service=\"WFS\" "
+        + "version=\"1.1.0\" "
+        + "xmlns:wfs=\"http://www.opengis.net/wfs\">"
+        + " <wfs:TypeName>sf:" + MockData.PRIMITIVEGEOFEATURE.getLocalPart() + "</wfs:TypeName>"
+        + "</wfs:DescribeFeatureType>";
+        
+        Document doc = postAsDOM("wfs", xml);
+        //print( doc );
+        
+        // with previous code missing namespace would have resulted in a service exception
+        assertEquals("xsd:schema", doc.getDocumentElement()
+                .getNodeName());
+    }
 }
