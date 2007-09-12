@@ -17,6 +17,8 @@ import net.opengis.wfs.WfsFactory;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
@@ -24,9 +26,11 @@ import org.geotools.feature.SchemaException;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.factory.GeotoolsFactory;
 import org.geotools.xml.EMFUtils;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
+import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.expression.ExpressionVisitor;
 import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.sort.SortBy;
@@ -350,10 +354,15 @@ public class GetFeature {
         if (filter == null) {
             filter = Filter.INCLUDE;
         }
+        
+        // make sure filters are expressed in the data native CRS
+        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
+        ReprojectingFilterVisitor visitor = new ReprojectingFilterVisitor(ff, source.getSchema());
+        Filter transformedFilter = (Filter) filter.accept(visitor, null);
 
         //only handle non-joins for now
         QName typeName = (QName) query.getTypeName().get(0);
-        DefaultQuery dataQuery = new DefaultQuery(typeName.getLocalPart(), filter, maxFeatures,
+        DefaultQuery dataQuery = new DefaultQuery(typeName.getLocalPart(), transformedFilter, maxFeatures,
                 props, query.getHandle());
 
         //figure out the crs the data is in
@@ -387,7 +396,7 @@ public class GetFeature {
                 dataQuery.setCoordinateSystemReproject(target);
             }
         }
-
+        
         //handle sorting
         if (query.getSortBy() != null) {
             List sortBy = query.getSortBy();
