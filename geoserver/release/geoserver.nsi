@@ -137,7 +137,7 @@ Section "GeoServer Section" SecGeoServer
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\GeoServer Documentation.lnk"\
                    "$INSTDIR\documents\GEOSDOC\Documentation.html"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\GeoServer Administration.lnk" \
-                   "http://127.0.0.1:8080/geoserver/"
+                   "http://localhost:8080/geoserver/"
 
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Start GeoServer.lnk" \
                    "$2\bin\java.exe" '-DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -Xmx300m -DSTOP.PORT=8079 -DSTOP.KEY=geoserver -jar start.jar'\

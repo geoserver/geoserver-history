@@ -137,12 +137,12 @@ public class FeatureWrapper extends BeansWrapper {
                 Object value = feature.getAttribute(i);
                 if ( value != null ) {
                 	//special case check for date
-                    if ( value instanceof Date ) {
-                          Date date = (Date) value;
-                          attribute.put("value", DateFormat.getInstance().format( date ) );
-                    } else {
+//                    if ( value instanceof Date ) {
+//                          Date date = (Date) value;
+//                          attribute.put("value", DateFormat.getInstance().format( date ) );
+//                    } else {
                          attribute.put("value", value);  
-                    }
+//                    }
                     attribute.put("isGeometry", Boolean.valueOf(value instanceof Geometry));
                 } else {
                     //nulls throw tempaltes off, use empty string
