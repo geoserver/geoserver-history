@@ -70,6 +70,10 @@
             name="CoverageStatus" 
             type="java.lang.Integer[]" 
         />
+		<form-property 
+			name="BaseUrl" 
+			type="java.lang.String" 
+		/>	
 		</form-bean>
 
     	<form-bean

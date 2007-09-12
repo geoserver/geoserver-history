@@ -38,145 +38,145 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  */
 public interface IdentificationType extends DescriptionType {
 	/**
-	 * Returns the value of the '<em><b>Identifier</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>Identifier</b></em>' containment reference.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Optional unique identifier or name of this dataset.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Identifier</em>' containment reference.
-	 * @see #setIdentifier(CodeType)
-	 * @see net.opengis.ows.OwsPackage#getIdentificationType_Identifier()
-	 * @model containment="true"
-	 *        extendedMetaData="kind='element' name='Identifier' namespace='##targetNamespace'"
-	 * @generated
-	 */
+     * <!-- begin-model-doc -->
+     * Optional unique identifier or name of this dataset.
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>Identifier</em>' containment reference.
+     * @see #setIdentifier(CodeType)
+     * @see net.opengis.ows.OwsPackage#getIdentificationType_Identifier()
+     * @model containment="true"
+     *        extendedMetaData="kind='element' name='Identifier' namespace='##targetNamespace'"
+     * @generated
+     */
 	CodeType getIdentifier();
 
 	/**
-	 * Sets the value of the '{@link net.opengis.ows.IdentificationType#getIdentifier <em>Identifier</em>}' containment reference.
-	 * <!-- begin-user-doc -->
+     * Sets the value of the '{@link net.opengis.ows.IdentificationType#getIdentifier <em>Identifier</em>}' containment reference.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Identifier</em>' containment reference.
-	 * @see #getIdentifier()
-	 * @generated
-	 */
+     * @param value the new value of the '<em>Identifier</em>' containment reference.
+     * @see #getIdentifier()
+     * @generated
+     */
 	void setIdentifier(CodeType value);
 
 	/**
-	 * Returns the value of the '<em><b>Bounding Box Group</b></em>' attribute list.
-	 * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>Bounding Box Group</b></em>' attribute list.
+     * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Unordered list of zero or more bounding boxes whose union describes the extent of this dataset.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Bounding Box Group</em>' attribute list.
-	 * @see net.opengis.ows.OwsPackage#getIdentificationType_BoundingBoxGroup()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry" many="true"
-	 *        extendedMetaData="kind='group' name='BoundingBox:group' namespace='##targetNamespace'"
-	 * @generated
-	 */
+     * <!-- begin-model-doc -->
+     * Unordered list of zero or more bounding boxes whose union describes the extent of this dataset.
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>Bounding Box Group</em>' attribute list.
+     * @see net.opengis.ows.OwsPackage#getIdentificationType_BoundingBoxGroup()
+     * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry" many="true"
+     *        extendedMetaData="kind='group' name='BoundingBox:group' namespace='##targetNamespace'"
+     * @generated
+     */
 	FeatureMap getBoundingBoxGroup();
 
 	/**
-	 * Returns the value of the '<em><b>Bounding Box</b></em>' containment reference list.
-	 * The list contents are of type {@link net.opengis.ows.BoundingBoxType}.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>Bounding Box</b></em>' containment reference list.
+     * The list contents are of type {@link net.opengis.ows.BoundingBoxType}.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Unordered list of zero or more bounding boxes whose union describes the extent of this dataset.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Bounding Box</em>' containment reference list.
-	 * @see net.opengis.ows.OwsPackage#getIdentificationType_BoundingBox()
-	 * @model type="net.opengis.ows.BoundingBoxType" containment="true" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='BoundingBox' namespace='##targetNamespace' group='BoundingBox:group'"
-	 * @generated
-	 */
+     * <!-- begin-model-doc -->
+     * Unordered list of zero or more bounding boxes whose union describes the extent of this dataset.
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>Bounding Box</em>' containment reference list.
+     * @see net.opengis.ows.OwsPackage#getIdentificationType_BoundingBox()
+     * @model type="net.opengis.ows.BoundingBoxType" containment="true" transient="true" volatile="true" derived="true"
+     *        extendedMetaData="kind='element' name='BoundingBox' namespace='##targetNamespace' group='BoundingBox:group'"
+     * @generated
+     */
 	EList getBoundingBox();
 
 	/**
-	 * Returns the value of the '<em><b>Output Format</b></em>' attribute.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>Output Format</b></em>' attribute.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Unordered list of zero or more references to data formats supported for server outputs.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Output Format</em>' attribute.
-	 * @see #setOutputFormat(String)
-	 * @see net.opengis.ows.OwsPackage#getIdentificationType_OutputFormat()
-	 * @model unique="false" dataType="net.opengis.ows.MimeType"
-	 *        extendedMetaData="kind='element' name='OutputFormat' namespace='##targetNamespace'"
-	 * @generated
-	 */
+     * <!-- begin-model-doc -->
+     * Unordered list of zero or more references to data formats supported for server outputs.
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>Output Format</em>' attribute.
+     * @see #setOutputFormat(String)
+     * @see net.opengis.ows.OwsPackage#getIdentificationType_OutputFormat()
+     * @model unique="false" dataType="net.opengis.ows.MimeType"
+     *        extendedMetaData="kind='element' name='OutputFormat' namespace='##targetNamespace'"
+     * @generated
+     */
 	String getOutputFormat();
 
 	/**
-	 * Sets the value of the '{@link net.opengis.ows.IdentificationType#getOutputFormat <em>Output Format</em>}' attribute.
-	 * <!-- begin-user-doc -->
+     * Sets the value of the '{@link net.opengis.ows.IdentificationType#getOutputFormat <em>Output Format</em>}' attribute.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Output Format</em>' attribute.
-	 * @see #getOutputFormat()
-	 * @generated
-	 */
+     * @param value the new value of the '<em>Output Format</em>' attribute.
+     * @see #getOutputFormat()
+     * @generated
+     */
 	void setOutputFormat(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Available CRS Group</b></em>' attribute list.
-	 * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>Available CRS Group</b></em>' attribute list.
+     * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Unordered list of zero or more available coordinate reference systems.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Available CRS Group</em>' attribute list.
-	 * @see net.opengis.ows.OwsPackage#getIdentificationType_AvailableCRSGroup()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry" many="true"
-	 *        extendedMetaData="kind='group' name='AvailableCRS:group' namespace='##targetNamespace'"
-	 * @generated
-	 */
+     * <!-- begin-model-doc -->
+     * Unordered list of zero or more available coordinate reference systems.
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>Available CRS Group</em>' attribute list.
+     * @see net.opengis.ows.OwsPackage#getIdentificationType_AvailableCRSGroup()
+     * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry" many="true"
+     *        extendedMetaData="kind='group' name='AvailableCRS:group' namespace='##targetNamespace'"
+     * @generated
+     */
 	FeatureMap getAvailableCRSGroup();
 
 	/**
-	 * Returns the value of the '<em><b>Available CRS</b></em>' attribute.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>Available CRS</b></em>' attribute.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Unordered list of zero or more available coordinate reference systems.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Available CRS</em>' attribute.
-	 * @see #setAvailableCRS(String)
-	 * @see net.opengis.ows.OwsPackage#getIdentificationType_AvailableCRS()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.AnyURI" transient="true" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='AvailableCRS' namespace='##targetNamespace' group='AvailableCRS:group'"
-	 * @generated
-	 */
+     * <!-- begin-model-doc -->
+     * Unordered list of zero or more available coordinate reference systems.
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>Available CRS</em>' attribute.
+     * @see #setAvailableCRS(String)
+     * @see net.opengis.ows.OwsPackage#getIdentificationType_AvailableCRS()
+     * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.AnyURI" transient="true" volatile="true" derived="true"
+     *        extendedMetaData="kind='element' name='AvailableCRS' namespace='##targetNamespace' group='AvailableCRS:group'"
+     * @generated
+     */
 	String getAvailableCRS();
 
 	/**
-	 * Sets the value of the '{@link net.opengis.ows.IdentificationType#getAvailableCRS <em>Available CRS</em>}' attribute.
-	 * <!-- begin-user-doc -->
+     * Sets the value of the '{@link net.opengis.ows.IdentificationType#getAvailableCRS <em>Available CRS</em>}' attribute.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Available CRS</em>' attribute.
-	 * @see #getAvailableCRS()
-	 * @generated
-	 */
+     * @param value the new value of the '<em>Available CRS</em>' attribute.
+     * @see #getAvailableCRS()
+     * @generated
+     */
 	void setAvailableCRS(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Metadata</b></em>' containment reference list.
-	 * The list contents are of type {@link net.opengis.ows.MetadataType}.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>Metadata</b></em>' containment reference list.
+     * The list contents are of type {@link net.opengis.ows.MetadataType}.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Optional unordered list of additional metadata about this data(set). A list of optional metadata elements for this data identification could be specified in the Implementation Specification for this service.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Metadata</em>' containment reference list.
-	 * @see net.opengis.ows.OwsPackage#getIdentificationType_Metadata()
-	 * @model type="net.opengis.ows.MetadataType" containment="true"
-	 *        extendedMetaData="kind='element' name='Metadata' namespace='##targetNamespace'"
-	 * @generated
-	 */
+     * <!-- begin-model-doc -->
+     * Optional unordered list of additional metadata about this data(set). A list of optional metadata elements for this data identification could be specified in the Implementation Specification for this service.
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>Metadata</em>' containment reference list.
+     * @see net.opengis.ows.OwsPackage#getIdentificationType_Metadata()
+     * @model type="net.opengis.ows.MetadataType" containment="true"
+     *        extendedMetaData="kind='element' name='Metadata' namespace='##targetNamespace'"
+     * @generated
+     */
 	EList getMetadata();
 
 } // IdentificationType

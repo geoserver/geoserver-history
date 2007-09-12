@@ -22,21 +22,21 @@ import org.eclipse.emf.ecore.EClass;
  */
 public class WGS84BoundingBoxTypeImpl extends BoundingBoxTypeImpl implements WGS84BoundingBoxType {
 	/**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
 	protected WGS84BoundingBoxTypeImpl() {
-		super();
-	}
+        super();
+    }
 
 	/**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
 	protected EClass eStaticClass() {
-		return OwsPackage.Literals.WGS84_BOUNDING_BOX_TYPE;
-	}
+        return OwsPackage.Literals.WGS84_BOUNDING_BOX_TYPE;
+    }
 
 } //WGS84BoundingBoxTypeImpl

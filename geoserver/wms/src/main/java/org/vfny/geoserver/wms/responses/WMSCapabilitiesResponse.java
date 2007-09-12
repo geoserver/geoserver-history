@@ -76,7 +76,7 @@ public class WMSCapabilitiesResponse implements Response {
             throw new IllegalArgumentException("Not a GetCapabilities Request");
         }
 
-        WMSCapsTransformer transformer = new WMSCapsTransformer(request.getSchemaBaseUrl(),
+        WMSCapsTransformer transformer = new WMSCapsTransformer(request.getBaseUrl(),
                 formats, applicationContext);
 
         // if (request.getWFS().getGeoServer().isVerbose()) {

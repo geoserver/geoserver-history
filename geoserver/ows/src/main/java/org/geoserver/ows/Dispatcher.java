@@ -136,37 +136,17 @@ public class Dispatcher extends AbstractController {
 
     protected void preprocessRequest(HttpServletRequest request)
         throws Exception {
-        //initialize all OWS instances
-        Collection services = GeoServerExtensions.extensions(OWS.class);
+        //set the charset
+        Charset charSet = null;
 
-        for (Iterator s = services.iterator(); s.hasNext();) {
-            OWS ows = (OWS) s.next();
-
-            //set the online resource
-            try {
-                URL url = new URL(RequestUtils.baseURL(request) + ows.getId());
-                ows.setOnlineResource(url);
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
-
-            //set the schema base
-            ows.setSchemaBaseURL(RequestUtils.baseURL(request) + "schemas");
-
-            //set the charset
-            Charset charSet = null;
-
-            try {
-                charSet = Charset.forName(request.getCharacterEncoding());
-            } catch (Exception e) {
-                //TODO: make this server settable
-                charSet = Charset.forName("UTF-8");
-            }
-
-            ows.setCharSet(charSet);
-
-            request.setCharacterEncoding(charSet.name());
+        try {
+            charSet = Charset.forName(request.getCharacterEncoding());
+        } catch (Exception e) {
+            //TODO: make this server settable
+            charSet = Charset.forName("UTF-8");
         }
+
+        request.setCharacterEncoding(charSet.name());
     }
 
     protected ModelAndView handleRequestInternal(HttpServletRequest httpRequest,
@@ -392,6 +372,12 @@ public class Dispatcher extends AbstractController {
                 if (req.input != null) {
                     //use the xml reader mechanism
                     requestBean = parseRequestXML(requestBean,req.input, req);
+                }
+                
+                // GEOS-934  and GEOS-1288
+                Method setBaseUrl = OwsUtils.setter(requestBean.getClass(), "baseUrl", String.class);
+                if (setBaseUrl != null) {
+                    setBaseUrl.invoke(requestBean, new String[] { RequestUtils.baseURL(req.httpRequest)});
                 }
 
                 // another couple of thos of those lovley cite things, version+service has to specified for 

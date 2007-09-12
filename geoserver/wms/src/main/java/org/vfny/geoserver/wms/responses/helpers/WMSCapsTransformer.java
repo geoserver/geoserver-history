@@ -22,6 +22,8 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.commons.collections.comparators.ReverseComparator;
 import org.apache.xalan.transformer.TransformerIdentityImpl;
+import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.resources.CRSUtilities;
@@ -66,14 +68,14 @@ public class WMSCapsTransformer extends TransformerBase {
     public static final String WMS_CAPS_MIME = "application/vnd.ogc.wms_xml";
 
     /** DOCUMENT ME! */
-    private String schemaBaseUrl;
+    private String baseUrl;
     private Set formats;
     private ApplicationContext applicationContext;
 
     /**
      * Creates a new WMSCapsTransformer object.
      *
-     * @param schemaBaseUrl
+     * @param baseUrl
      *            needed to get the schema base URL
      * @param formats
      * @param applicationContext
@@ -81,16 +83,16 @@ public class WMSCapsTransformer extends TransformerBase {
      * @throws NullPointerException
      *             if <code>schemaBaseUrl</code> is null;
      */
-    public WMSCapsTransformer(String schemaBaseUrl, Set formats,
+    public WMSCapsTransformer(String baseUrl, Set formats,
         ApplicationContext applicationContext) {
         super();
         this.formats = formats;
 
-        if (schemaBaseUrl == null) {
+        if (baseUrl == null) {
             throw new NullPointerException();
         }
 
-        this.schemaBaseUrl = schemaBaseUrl;
+        this.baseUrl = baseUrl;
         this.setNamespaceDeclarationEnabled(false);
         this.applicationContext = applicationContext;
     }
@@ -126,7 +128,9 @@ public class WMSCapsTransformer extends TransformerBase {
      */
     public Transformer createTransformer() throws TransformerException {
         Transformer transformer = super.createTransformer();
-        String dtdUrl = this.schemaBaseUrl + "wms/1.1.1/WMS_MS_Capabilities.dtd"; // DJB: fixed this to
+        GeoServer gs = (GeoServer)GeoServerExtensions.extensions(GeoServer.class, applicationContext).get(0);
+        String dtdUrl = RequestUtils.proxifiedBaseURL(this.baseUrl,gs.getProxyBaseUrl()) +
+            "schemas/wms/1.1.1/WMS_MS_Capabilities.dtd"; // DJB: fixed this to
                                                                                   // point to correct
                                                                                   // location
 
@@ -224,7 +228,7 @@ public class WMSCapsTransformer extends TransformerBase {
             orAtts.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
             orAtts.addAttribute(XLINK_NS, "xlink:type", "xlink:type", "", "simple");
             orAtts.addAttribute("", "xlink:href", "xlink:href", "",
-                wms.getOnlineResource().toExternalForm());
+                RequestUtils.proxifiedBaseURL(request.getBaseUrl(),wms.getGeoServer().getProxyBaseUrl()) + "wms");
             element("OnlineResource", null, orAtts);
 
             handleContactInfo(wms.getGeoServer());
@@ -327,15 +331,14 @@ public class WMSCapsTransformer extends TransformerBase {
          * DOCUMENT ME!
          */
         private void handleRequest() {
-            WMS wms = (WMS) request.getServiceRef().getServiceRef();
-
             start("Request");
 
             start("GetCapabilities");
             element("Format", WMS_CAPS_MIME);
-
-            // @HACK: pointer to the WMS dispatcher
-            String serviceUrl = request.getBaseUrl() + "wms?SERVICE=WMS&";
+            
+            String serviceUrl = 
+                RequestUtils.proxifiedBaseURL(request.getBaseUrl(), request.getServiceRef().getGeoServer().getProxyBaseUrl()) +
+                "wms?SERVICE=WMS&";
 
             handleDcpType(serviceUrl, serviceUrl);
             end("GetCapabilities");
@@ -1123,7 +1126,11 @@ public class WMSCapsTransformer extends TransformerBase {
                 element("Format", defaultFormat);
                 attrs.clear();
 
-                StringBuffer onlineResource = new StringBuffer(this.request.getBaseUrl());
+                StringBuffer onlineResource =
+                    new StringBuffer(RequestUtils.proxifiedBaseURL(
+                            request.getBaseUrl()
+                            ,request.getServiceRef().getGeoServer().getProxyBaseUrl()
+                            ));
                 onlineResource.append("wms/GetLegendGraphic?VERSION=");
                 onlineResource.append(GetLegendGraphicRequest.SLD_VERSION);
                 onlineResource.append("&FORMAT=");

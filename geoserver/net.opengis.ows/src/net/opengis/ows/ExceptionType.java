@@ -50,55 +50,55 @@ public interface ExceptionType extends EObject {
 	EList getExceptionText();
 
 	/**
-	 * Returns the value of the '<em><b>Exception Code</b></em>' attribute.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>Exception Code</b></em>' attribute.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * A code representing the type of this exception, which shall be selected from a set of exceptionCode values specified for the specific service operation and server.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Exception Code</em>' attribute.
-	 * @see #setExceptionCode(String)
-	 * @see net.opengis.ows.OwsPackage#getExceptionType_ExceptionCode()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
-	 *        extendedMetaData="kind='attribute' name='exceptionCode'"
-	 * @generated
-	 */
+     * <!-- begin-model-doc -->
+     * A code representing the type of this exception, which shall be selected from a set of exceptionCode values specified for the specific service operation and server.
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>Exception Code</em>' attribute.
+     * @see #setExceptionCode(String)
+     * @see net.opengis.ows.OwsPackage#getExceptionType_ExceptionCode()
+     * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
+     *        extendedMetaData="kind='attribute' name='exceptionCode'"
+     * @generated
+     */
 	String getExceptionCode();
 
 	/**
-	 * Sets the value of the '{@link net.opengis.ows.ExceptionType#getExceptionCode <em>Exception Code</em>}' attribute.
-	 * <!-- begin-user-doc -->
+     * Sets the value of the '{@link net.opengis.ows.ExceptionType#getExceptionCode <em>Exception Code</em>}' attribute.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Exception Code</em>' attribute.
-	 * @see #getExceptionCode()
-	 * @generated
-	 */
+     * @param value the new value of the '<em>Exception Code</em>' attribute.
+     * @see #getExceptionCode()
+     * @generated
+     */
 	void setExceptionCode(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Locator</b></em>' attribute.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>Locator</b></em>' attribute.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * When included, this locator shall indicate to the client where an exception was encountered in servicing the client's operation request. This locator should be included whenever meaningful information can be provided by the server. The contents of this locator will depend on the specific exceptionCode and OWS service, and shall be specified in the OWS Implementation Specification.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Locator</em>' attribute.
-	 * @see #setLocator(String)
-	 * @see net.opengis.ows.OwsPackage#getExceptionType_Locator()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
-	 *        extendedMetaData="kind='attribute' name='locator'"
-	 * @generated
-	 */
+     * <!-- begin-model-doc -->
+     * When included, this locator shall indicate to the client where an exception was encountered in servicing the client's operation request. This locator should be included whenever meaningful information can be provided by the server. The contents of this locator will depend on the specific exceptionCode and OWS service, and shall be specified in the OWS Implementation Specification.
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>Locator</em>' attribute.
+     * @see #setLocator(String)
+     * @see net.opengis.ows.OwsPackage#getExceptionType_Locator()
+     * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
+     *        extendedMetaData="kind='attribute' name='locator'"
+     * @generated
+     */
 	String getLocator();
 
 	/**
-	 * Sets the value of the '{@link net.opengis.ows.ExceptionType#getLocator <em>Locator</em>}' attribute.
-	 * <!-- begin-user-doc -->
+     * Sets the value of the '{@link net.opengis.ows.ExceptionType#getLocator <em>Locator</em>}' attribute.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Locator</em>' attribute.
-	 * @see #getLocator()
-	 * @generated
-	 */
+     * @param value the new value of the '<em>Locator</em>' attribute.
+     * @see #getLocator()
+     * @generated
+     */
 	void setLocator(String value);
 
 } // ExceptionType

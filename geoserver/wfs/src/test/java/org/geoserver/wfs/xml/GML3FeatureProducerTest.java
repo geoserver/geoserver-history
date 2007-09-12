@@ -7,9 +7,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.WfsFactory;
 
 import org.geoserver.data.test.MockData;
+import org.geoserver.platform.Operation;
+import org.geoserver.platform.Service;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.data.FeatureSource;
@@ -25,6 +28,15 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
                         getResourceLoader()));
         return new GML3OutputFormat(getWFS(), getCatalog(), configuration);
     }
+    
+    Operation request() {
+        Service service = new Service("wfs", null, null);
+        GetFeatureType type = WfsFactory.eINSTANCE.createGetFeatureType();
+        type.setBaseUrl("http://localhost:8080/geoserver");
+        
+        Operation request = new Operation("wfs", service, null, new Object[] { type });
+        return request;
+    }
 
     public void testSingle() throws Exception {
         DataStoreInfo dataStore = getCatalog().getDataStoreInfo(MockData.CDF_PREFIX);
@@ -38,7 +50,7 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
         fcType.getFeature().add(features);
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        producer().write(fcType, output, null );
+        producer().write(fcType, output, request() );
 
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder();
@@ -64,7 +76,7 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
                         .getFeatures());
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        producer().write(fcType, output, null);
+        producer().write(fcType, output, request());
 
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder();
@@ -96,7 +108,7 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
                 .getFeatures().size();
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        producer().write(fcType, output, null);
+        producer().write(fcType, output, request());
 
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder();

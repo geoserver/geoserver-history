@@ -212,7 +212,7 @@
    		class="org.geoserver.wms.xml.SLDXmlRequestReader"/>
    		
 	<!--  responses -->
-	<bean id="wmwGetCapabilitiesResponse"
+	<bean id="wmsGetCapabilitiesResponse"
 		class="org.geoserver.ows.adapters.ResponseAdapter">
 		<constructor-arg value="org.vfny.geoserver.wms.responses.WMSCapabilitiesResponse"/>
 		<constructor-arg ref="geoServer"/>

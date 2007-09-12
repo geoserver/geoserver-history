@@ -8,15 +8,18 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WfsFactory;
+
+import org.geoserver.platform.Operation;
+import org.geoserver.platform.Service;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WebFeatureService;
 import org.geoserver.wfs.xml.GML2OutputFormat;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.servlets.AbstractService;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
@@ -24,6 +27,8 @@ import org.vfny.geoserver.wms.servlets.WMService;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -91,14 +96,37 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
 
         Data catalog = fInfoReq.getServiceRef().getCatalog();
 
+        //the 'response' object we'll pass to our OutputFormat
         FeatureCollectionType features = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        
+        //the 'request' object we'll pass to our OutputFormat
+        GetFeatureType gfreq = WfsFactory.eINSTANCE.createGetFeatureType();
+        gfreq.setBaseUrl(fInfoReq.getBaseUrl());
 
         for (Iterator i = results.iterator(); i.hasNext();) {
-            features.getFeature().add(i.next());
+            FeatureCollection fc = (FeatureCollection)i.next();
+            features.getFeature().add(fc);
+            
+            QueryType qt = WfsFactory.eINSTANCE.createQueryType();
+            String crs = GML2EncodingUtils.crs(fc.getSchema().getPrimaryGeometry().getCoordinateSystem());
+            if (crs != null) {
+                final String srsName = "EPSG:" + crs; 
+                try {
+                    qt.setSrsName(new URI(srsName));
+                } catch (URISyntaxException e) {
+                    throw new ServiceException("Unable to determite coordinate system for featureType " + fc.getSchema().getTypeName() + ".  Schema told us '" + srsName + "'", e);
+                }
+            }
+            gfreq.getQuery().add(qt);
+            
         }
-
+        
+        //this is a dummy wrapper around our 'request' object so that the new Dispatcher will accept it.
+        Service serviceDesc = new Service("wms", null, null);
+        Operation opDescriptor = new Operation("",serviceDesc,null, new Object[] { gfreq });
+        
         GML2OutputFormat format = new GML2OutputFormat(wfs, gs, catalog);
-        format.write(features, out, null);
+        format.write(features, out, opDescriptor);
     }
 
     public String getContentDisposition() {

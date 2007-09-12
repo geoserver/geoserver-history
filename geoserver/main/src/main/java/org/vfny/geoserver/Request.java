@@ -47,6 +47,13 @@ abstract public class Request {
 
     /** service reference */
     protected AbstractService serviceRef;
+    
+    /** reference to the base Url that this request was called with.
+     * Note that this is a complete duplicate of info in the above HttpServletRequest
+     * object, and is mainly a forward-thinking field that's going to stick around when
+     * the above HttpServletRequest goes away.
+     */
+    protected String baseUrl;
 
     /**
       * ServiceType,RequestType,ServiceRef constructor.
@@ -59,6 +66,23 @@ abstract public class Request {
         this.service = serviceType;
         this.request = requestType;
         this.serviceRef = serviceRef;
+    }
+    
+    /**
+     * Set the baseUrl that this request was called with.
+     */
+    public void setBaseUrl(String s) {
+        baseUrl = s;
+    }
+    
+
+    /**
+     * Gets the base url that made this request.  This is used to return the
+     * referenced schemas and whatnot relative to the request.
+     * @return The base portion of the url that the client used to make the request.
+     */
+    public String getBaseUrl() {
+        return baseUrl;
     }
 
     /**
@@ -200,15 +224,6 @@ abstract public class Request {
             "getRootDir -- functionality removed - please verify that its okay with geoserver_data_dir");
 
         //return httpServletRequest.getSession().getServletContext().getRealPath("/");
-    }
-
-    /**
-     * Gets the base url that made this request.  This is used to return the
-     * referenced schemas and whatnot relative to the request.
-     * @return The url that the client used to make the request.
-     */
-    public String getBaseUrl() {
-        return Requests.getBaseUrl(getHttpServletRequest(), serviceRef.getGeoServer());
     }
 
     /**

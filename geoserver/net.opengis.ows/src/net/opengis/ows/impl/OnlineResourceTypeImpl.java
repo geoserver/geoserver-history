@@ -24,21 +24,21 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  */
 public class OnlineResourceTypeImpl extends EObjectImpl implements OnlineResourceType {
 	/**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
 	protected OnlineResourceTypeImpl() {
-		super();
-	}
+        super();
+    }
 
 	/**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
 	protected EClass eStaticClass() {
-		return OwsPackage.Literals.ONLINE_RESOURCE_TYPE;
-	}
+        return OwsPackage.Literals.ONLINE_RESOURCE_TYPE;
+    }
 
 } //OnlineResourceTypeImpl

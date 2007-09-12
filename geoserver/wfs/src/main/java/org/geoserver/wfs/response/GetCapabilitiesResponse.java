@@ -47,7 +47,7 @@ public class GetCapabilitiesResponse extends Response {
         TransformerBase tx = (TransformerBase) value;
 
         try {
-            tx.transform(this, output);
+            tx.transform(operation.getParameters()[0], output);
         } catch (TransformerException e) {
             throw (IOException) new IOException().initCause(e);
         }

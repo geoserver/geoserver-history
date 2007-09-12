@@ -4,8 +4,12 @@
  */
 package org.vfny.geoserver.wms.responses.helpers;
 
+import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.springframework.context.ApplicationContext;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.xml.sax.ContentHandler;
@@ -24,23 +28,26 @@ import javax.xml.transform.TransformerException;
  * @version $Id$
  */
 public class DescribeLayerTransformer extends TransformerBase {
-    /** The base url upon wich the DesribeLayer DTD should be referenced. */
-    private String schemaBaseUrl;
+    /** The base url upon URLs which point to 'me' should be based. */
+    private String baseUrl;
+    
+    private GeoServer geoserver;
 
     /**
      * Creates a new DescribeLayerTransformer object.
      *
-     * @param schemaBaseUrl the url string wich holds the validation
+     * @param baseUrl the url string wich holds the validation
      * schemas and DTD's on this server instance.
      */
-    public DescribeLayerTransformer(String schemaBaseUrl) {
+    public DescribeLayerTransformer(String baseUrl, GeoServer gs) {
         super();
 
-        if (schemaBaseUrl == null) {
+        if (baseUrl == null) {
             throw new NullPointerException();
         }
 
-        this.schemaBaseUrl = schemaBaseUrl;
+        this.baseUrl = baseUrl;
+        this.geoserver = gs;
     }
 
     /**
@@ -71,7 +78,7 @@ public class DescribeLayerTransformer extends TransformerBase {
      */
     public Transformer createTransformer() throws TransformerException {
         Transformer transformer = super.createTransformer();
-        String dtdUrl = this.schemaBaseUrl + "wms/1.1.1/WMS_DescribeLayerResponse.dtd";
+        String dtdUrl = RequestUtils.proxifiedBaseURL(baseUrl,geoserver.getProxyBaseUrl()) + "schemas/wms/1.1.1/WMS_DescribeLayerResponse.dtd";
         transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdUrl);
 
         return transformer;
@@ -127,7 +134,7 @@ public class DescribeLayerTransformer extends TransformerBase {
         private void handleLayers(DescribeLayerRequest req) {
             MapLayerInfo layer;
 
-            String url = req.getBaseUrl() + "wfs/WfsDispatcher?";
+            String url = RequestUtils.proxifiedBaseURL(req.getBaseUrl(),req.getServiceRef().getGeoServer().getProxyBaseUrl()) + "wfs/WfsDispatcher?";
 
             AttributesImpl layerAtts = new AttributesImpl();
             layerAtts.addAttribute("", "name", "name", "", "");

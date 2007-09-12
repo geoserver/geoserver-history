@@ -5,6 +5,9 @@
 package org.geoserver.wfs.xml;
 
 import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.GetFeatureType;
+
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
@@ -43,6 +46,10 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     public String getMimeType(Object value, Operation operation) {
         return "text/xml; subtype=gml/3.1.1";
     }
+    
+    public String getCapabilitiesElementName() {
+        return "GML3";
+    }
 
     protected void write(FeatureCollectionType results, OutputStream output, Operation getFeature)
         throws ServiceException, IOException {
@@ -74,8 +81,10 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         Encoder encoder = new Encoder(configuration, configuration.schema());
 
         //declare wfs schema location
+        GetFeatureType gft = (GetFeatureType)getFeature.getParameters()[0];
+        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(gft.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
         encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
-            ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "wfs/1.1.0/wfs.xsd"));
+            ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd"));
 
         //declare application schema namespaces
         for (Iterator i = ns2metas.entrySet().iterator(); i.hasNext();) {
@@ -97,7 +106,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
 
             //set the schema location
             encoder.setSchemaLocation(namespaceURI,
-                ResponseUtils.appendQueryString(wfs.getOnlineResource().toString(),
+                ResponseUtils.appendQueryString(proxifiedBaseUrl + "wfs",
                     "service=WFS&version=1.1.0&request=DescribeFeatureType&typeName="
                     + typeNames.toString()));
         }

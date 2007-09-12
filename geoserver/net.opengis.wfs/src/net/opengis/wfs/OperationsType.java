@@ -28,22 +28,22 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface OperationsType extends EObject {
 	/**
-	 * Returns the value of the '<em><b>Operation</b></em>' attribute list.
-	 * The list contents are of type {@link net.opengis.wfs.OperationType}.
-	 * The literals are from the enumeration {@link net.opengis.wfs.OperationType}.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>Operation</b></em>' attribute list.
+     * The list contents are of type {@link net.opengis.wfs.OperationType}.
+     * The literals are from the enumeration {@link net.opengis.wfs.OperationType}.
+     * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Operation</em>' attribute list isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Operation</em>' attribute list.
-	 * @see net.opengis.wfs.OperationType
-	 * @see net.opengis.wfs.WfsPackage#getOperationsType_Operation()
-	 * @model type="net.opengis.wfs.OperationType" default="Insert" unique="false" required="true"
-	 *        extendedMetaData="kind='element' name='Operation' namespace='##targetNamespace'"
-	 * @generated
-	 */
+     * @return the value of the '<em>Operation</em>' attribute list.
+     * @see net.opengis.wfs.OperationType
+     * @see net.opengis.wfs.WfsPackage#getOperationsType_Operation()
+     * @model default="Insert" unique="false" dataType="net.opengis.wfs.OperationType" required="true"
+     *        extendedMetaData="kind='element' name='Operation' namespace='##targetNamespace'"
+     * @generated
+     */
 	EList getOperation();
 
 } // OperationsType

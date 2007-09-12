@@ -3,7 +3,13 @@ package org.geoserver.wfs.v1_1;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 
+import net.opengis.wfs.DescribeFeatureTypeType;
+import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.WfsFactory;
+
 import org.geoserver.data.test.MockData;
+import org.geoserver.platform.Operation;
+import org.geoserver.platform.Service;
 import org.geoserver.util.ReaderUtils;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geoserver.wfs.xml.v1_1_0.XmlSchemaEncoder;
@@ -14,6 +20,15 @@ import org.w3c.dom.NodeList;
 
 public class DescribeFeatureResponseTest extends WFSTestSupport {
 
+    Operation request() {
+        Service service = new Service("wfs", null, null);
+        DescribeFeatureTypeType type = WfsFactory.eINSTANCE.createDescribeFeatureTypeType();
+        type.setBaseUrl("http://localhost:8080/geoserver");
+        
+        Operation request = new Operation("wfs", service, null, new Object[] { type });
+        return request;
+    }
+    
     public void testSingle() throws Exception {
         Data catalog = getCatalog();
         FeatureTypeInfo meta = catalog.getFeatureTypeInfo(MockData.BASIC_POLYGONS);
@@ -21,7 +36,7 @@ public class DescribeFeatureResponseTest extends WFSTestSupport {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
         XmlSchemaEncoder response = new XmlSchemaEncoder(getWFS(), catalog, getResourceLoader());
-        response.write(new FeatureTypeInfo[] { meta }, output, null);
+        response.write(new FeatureTypeInfo[] { meta }, output, request());
 
         Element schema = ReaderUtils.parse(new StringReader(new String(output
                 .toByteArray())));
@@ -40,7 +55,7 @@ public class DescribeFeatureResponseTest extends WFSTestSupport {
 
         XmlSchemaEncoder response = 
             new XmlSchemaEncoder(getWFS(), getCatalog(), getResourceLoader());
-        response.write(new FeatureTypeInfo[] { meta1, meta2 }, output, null);
+        response.write(new FeatureTypeInfo[] { meta1, meta2 }, output, request());
 
         Element schema = ReaderUtils.parse(new StringReader(new String(output
                 .toByteArray())));

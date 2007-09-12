@@ -8,6 +8,7 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
@@ -101,6 +102,10 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         this.geoServer = geoServer;
         this.catalog = catalog;
     }
+    
+    public String getCapabilitiesElementName() {
+        return "GML2";
+    }
 
     /**
     * prepares for encoding into GML2 format, optionally compressing its
@@ -140,7 +145,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
                 String location = (String) ftNamespaces.get(uri);
                 ftNamespaces.put(uri, location + "," + meta.getName());
             } else {
-                String location = typeSchemaLocation(wfs, meta);
+                String location = typeSchemaLocation(wfs, meta, request.getBaseUrl());
                 ftNamespaces.put(uri, location);
             }
 
@@ -148,18 +153,20 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
             // the request
             //srs = Integer.parseInt(meta.getSRS());
             QueryType query = (QueryType) request.getQuery().get(i);
-            if (query.getSrsName() != null ) {
-                try {
+            try {
+                if (query.getSrsName() != null ) {
                     CoordinateReferenceSystem crs = CRS.decode(query.getSrsName().toString());
                     String epsgCode = GML2EncodingUtils.epsgCode(crs);
                     srs = Integer.parseInt(epsgCode);
-                }
-                catch( Exception e ) {
-                    LOGGER.log(Level.WARNING, "Problem encoding:" + query.getSrsName(), e);
-                    
+                } else {
+                    //no SRS in query...asking for the default?
+                    srs = Integer.parseInt(meta.getSRS());
                 }
             }
-            
+            catch( Exception e ) {
+                LOGGER.log(Level.WARNING, "Problem encoding:" + query.getSrsName(), e);
+                
+            }
         }
 
         System.setProperty("javax.xml.transform.TransformerFactory",
@@ -170,7 +177,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         transformer.setFeatureBounding(wfs.isFeatureBounding());
         transformer.setEncoding(wfs.getCharSet());
 
-        String wfsSchemaloc = wfsSchemaLocation(wfs);
+        String wfsSchemaloc = wfsSchemaLocation(wfs,request.getBaseUrl());
         transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaloc);
 
         for (Iterator it = ftNamespaces.keySet().iterator(); it.hasNext();) {
@@ -259,12 +266,14 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         return new FeatureTransformer();
     }
 
-    protected String wfsSchemaLocation(WFS wfs) {
-        return ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "wfs/1.0.0/WFS-basic.xsd");
+    protected String wfsSchemaLocation(WFS wfs, String baseUrl) {
+        return ResponseUtils.appendPath(RequestUtils.proxifiedBaseURL(baseUrl, wfs.getGeoServer().getProxyBaseUrl()),
+                "schemas/wfs/1.0.0/WFS-basic.xsd");
     }
 
-    protected String typeSchemaLocation(WFS wfs, FeatureTypeInfo meta) {
-        return ResponseUtils.appendQueryString(wfs.getOnlineResource().toString(),
+    protected String typeSchemaLocation(WFS wfs, FeatureTypeInfo meta, String baseUrl) {
+        final String proxifiedBase = RequestUtils.proxifiedBaseURL(baseUrl, wfs.getGeoServer().getProxyBaseUrl());
+        return ResponseUtils.appendQueryString(proxifiedBase + "wfs",
             "service=WFS&version=1.0.0&request=DescribeFeatureType&typeName=" + meta.getName());
     }
 }

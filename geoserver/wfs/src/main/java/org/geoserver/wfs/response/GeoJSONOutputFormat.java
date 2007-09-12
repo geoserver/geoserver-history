@@ -37,6 +37,10 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
         return "application/json"; 
     }
     
+    public String getCapabilitiesElementName() {
+        return "GEOJSON";
+    }
+    
     protected String getContentDisposition(
             FeatureCollectionType featureCollection) {
         

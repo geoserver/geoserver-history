@@ -4,6 +4,9 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
+import net.opengis.wfs.DescribeFeatureTypeType;
+
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
@@ -61,7 +64,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
     protected void write(FeatureTypeInfo[] featureTypeInfos, OutputStream output,
         Operation describeFeatureType) throws IOException {
         //generates response, using general function
-        String xmlResponse = generateTypes(featureTypeInfos);
+        String xmlResponse = generateTypes(featureTypeInfos, (DescribeFeatureTypeType) describeFeatureType.getParameters()[0]);
 
         if (!wfs.isVerbose()) {
             //strip out the formatting.  This is pretty much the only way we
@@ -87,7 +90,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
     *
     * @throws WFSException For any problems.
     */
-    private final String generateTypes(FeatureTypeInfo[] infos)
+    private final String generateTypes(FeatureTypeInfo[] infos, DescribeFeatureTypeType request)
         throws IOException {
         // Initialize return information and intermediate return objects
         StringBuffer tempResponse = new StringBuffer();
@@ -95,6 +98,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
         tempResponse.append("<?xml version=\"1.0\" encoding=\"" + wfs.getCharSet().displayName()
             + "\"?>" + "\n<xs:schema ");
 
+        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
         //allSameType will throw WFSException if there are types that are not found.
         if (allSameType(infos)) {
             //all the requested have the same namespace prefix, so return their
@@ -125,9 +129,8 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
             //            tempResponse.append("\n\n<xs:import namespace=" + GML_URL
             //                + " schemaLocation=\"" + request.getSchemaBaseUrl()
             //                + "gml/2.1.2/feature.xsd\"/>\n\n");
-            tempResponse.append("\n\n<xs:import namespace=" + GML_URL + " schemaLocation=\""
-                + ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "gml/2.1.2/feature.xsd")
-                + "\"/>\n\n");
+            tempResponse.append("\n\n<xs:import namespace=" + GML_URL + " schemaLocation=\"" +
+            		ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/gml/2.1.2.1/feature.xsd") + "\"/>\n\n");
             tempResponse.append(generateSpecifiedTypes(infos));
         } else {
             //the featureTypes do not have all the same prefixes.
@@ -147,7 +150,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
             while (prefixIter.hasNext()) {
                 //iterate through prefixes, and add the types that have that prefix.
                 String prefix = prefixIter.next().toString();
-                tempResponse.append(getNSImport(prefix, infos));
+                tempResponse.append(getNSImport(prefix, infos, proxifiedBaseUrl));
             }
         }
 
@@ -170,13 +173,13 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
      *
      * @return The namespace element.
      */
-    private StringBuffer getNSImport(String prefix, FeatureTypeInfo[] infos) {
+    private StringBuffer getNSImport(String prefix, FeatureTypeInfo[] infos, String baseUrl) {
         LOGGER.finer("prefix is " + prefix);
 
         StringBuffer retBuffer = new StringBuffer("\n  <xs:import namespace=\"");
         String namespace = catalog.getNameSpace(prefix).getURI();
         retBuffer.append(namespace + "\"");
-        retBuffer.append("\n        schemaLocation=\"" + wfs.getOnlineResource().toString()
+        retBuffer.append("\n        schemaLocation=\"" + baseUrl
             + "?request=DescribeFeatureType&amp;service=wfs&amp;version=1.0.0&amp;typeName=");
 
         for (int i = 0; i < infos.length; i++) {

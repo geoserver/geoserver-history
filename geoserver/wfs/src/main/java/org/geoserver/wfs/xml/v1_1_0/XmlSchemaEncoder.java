@@ -4,8 +4,11 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import net.opengis.wfs.DescribeFeatureTypeType;
+
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.util.XSDResourceImpl;
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
@@ -43,9 +46,11 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
     protected void write(FeatureTypeInfo[] featureTypeInfos, OutputStream output,
         Operation describeFeatureType) throws IOException {
         //create the schema
+        DescribeFeatureTypeType req = (DescribeFeatureTypeType)describeFeatureType.getParameters()[0];
+        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
         FeatureTypeSchemaBuilder builder = new FeatureTypeSchemaBuilder.GML3(wfs, catalog,
                 resourceLoader);
-        XSDSchema schema = builder.build(featureTypeInfos);
+        XSDSchema schema = builder.build(featureTypeInfos, proxifiedBaseUrl);
 
         //serialize
         schema.updateElement();

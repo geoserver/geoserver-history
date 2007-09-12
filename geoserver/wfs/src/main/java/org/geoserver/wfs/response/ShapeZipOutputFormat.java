@@ -53,6 +53,10 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
         throws ServiceException {
         return "application/zip";
     }
+    
+    public String getCapabilitiesElementName() {
+        return "SHAPE-ZIP";
+    }
 
     /**
      * We abuse this method to pre-discover the query typenames so we know what to set in the

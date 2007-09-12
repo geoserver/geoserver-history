@@ -35,74 +35,74 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface DescriptionType extends EObject {
 	/**
-	 * Returns the value of the '<em><b>Title</b></em>' attribute.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>Title</b></em>' attribute.
+     * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Title</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Title</em>' attribute.
-	 * @see #setTitle(String)
-	 * @see net.opengis.ows.OwsPackage#getDescriptionType_Title()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
-	 *        extendedMetaData="kind='element' name='Title' namespace='##targetNamespace'"
-	 * @generated
-	 */
+     * @return the value of the '<em>Title</em>' attribute.
+     * @see #setTitle(String)
+     * @see net.opengis.ows.OwsPackage#getDescriptionType_Title()
+     * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
+     *        extendedMetaData="kind='element' name='Title' namespace='##targetNamespace'"
+     * @generated
+     */
 	String getTitle();
 
 	/**
-	 * Sets the value of the '{@link net.opengis.ows.DescriptionType#getTitle <em>Title</em>}' attribute.
-	 * <!-- begin-user-doc -->
+     * Sets the value of the '{@link net.opengis.ows.DescriptionType#getTitle <em>Title</em>}' attribute.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Title</em>' attribute.
-	 * @see #getTitle()
-	 * @generated
-	 */
+     * @param value the new value of the '<em>Title</em>' attribute.
+     * @see #getTitle()
+     * @generated
+     */
 	void setTitle(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Abstract</b></em>' attribute.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>Abstract</b></em>' attribute.
+     * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Abstract</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Abstract</em>' attribute.
-	 * @see #setAbstract(String)
-	 * @see net.opengis.ows.OwsPackage#getDescriptionType_Abstract()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
-	 *        extendedMetaData="kind='element' name='Abstract' namespace='##targetNamespace'"
-	 * @generated
-	 */
+     * @return the value of the '<em>Abstract</em>' attribute.
+     * @see #setAbstract(String)
+     * @see net.opengis.ows.OwsPackage#getDescriptionType_Abstract()
+     * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
+     *        extendedMetaData="kind='element' name='Abstract' namespace='##targetNamespace'"
+     * @generated
+     */
 	String getAbstract();
 
 	/**
-	 * Sets the value of the '{@link net.opengis.ows.DescriptionType#getAbstract <em>Abstract</em>}' attribute.
-	 * <!-- begin-user-doc -->
+     * Sets the value of the '{@link net.opengis.ows.DescriptionType#getAbstract <em>Abstract</em>}' attribute.
+     * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Abstract</em>' attribute.
-	 * @see #getAbstract()
-	 * @generated
-	 */
+     * @param value the new value of the '<em>Abstract</em>' attribute.
+     * @see #getAbstract()
+     * @generated
+     */
 	void setAbstract(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Keywords</b></em>' containment reference list.
-	 * The list contents are of type {@link net.opengis.ows.KeywordsType}.
-	 * <!-- begin-user-doc -->
+     * Returns the value of the '<em><b>Keywords</b></em>' containment reference list.
+     * The list contents are of type {@link net.opengis.ows.KeywordsType}.
+     * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Keywords</em>' containment reference list isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Keywords</em>' containment reference list.
-	 * @see net.opengis.ows.OwsPackage#getDescriptionType_Keywords()
-	 * @model type="net.opengis.ows.KeywordsType" containment="true"
-	 *        extendedMetaData="kind='element' name='Keywords' namespace='##targetNamespace'"
-	 * @generated
-	 */
+     * @return the value of the '<em>Keywords</em>' containment reference list.
+     * @see net.opengis.ows.OwsPackage#getDescriptionType_Keywords()
+     * @model type="net.opengis.ows.KeywordsType" containment="true"
+     *        extendedMetaData="kind='element' name='Keywords' namespace='##targetNamespace'"
+     * @generated
+     */
 	EList getKeywords();
 
 } // DescriptionType

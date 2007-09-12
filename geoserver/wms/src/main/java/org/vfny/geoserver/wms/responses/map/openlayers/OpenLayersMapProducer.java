@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.geoserver.ows.util.RequestUtils;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.crs.ProjectedCRS;
@@ -97,9 +98,10 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 			map.put("request", mapContext.getRequest());
 			map.put("maxResolution", new Double(getMaxResolution(mapContext
 					.getAreaOfInterest())));
-			map
-					.put("baseUrl", canonicUrl(mapContext.getRequest()
-							.getBaseUrl()));
+			String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(
+			        mapContext.getRequest().getBaseUrl(),
+			        mapContext.getRequest().getServiceRef().getGeoServer().getProxyBaseUrl());
+			map.put("baseUrl", canonicUrl(proxifiedBaseUrl));
 			map.put("parameters", getLayerParameter(mapContext.getRequest()
 					.getHttpServletRequest()));
 			map.put("units", getOLUnits(mapContext.getRequest()));
