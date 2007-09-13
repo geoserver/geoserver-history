@@ -95,7 +95,12 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
         if (of.matches("(\\w)+")) {
             return getOutputFormat();
         } else {
-            return this.getClass().getSimpleName();
+            String name = this.getClass().getName();
+            if ( name.indexOf('.') != -1 ) {
+                name = name.substring(name.lastIndexOf('.') + 1);
+            }
+            
+            return name;
         }
     }
 
