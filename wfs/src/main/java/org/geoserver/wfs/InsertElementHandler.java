@@ -211,7 +211,8 @@ public class InsertElementHandler implements TransactionElementHandler {
                         GeometryAttributeType gat = (GeometryAttributeType) types[i];
                         if(gat.getCoordinateSystem() != null) {
                             Geometry geom = (Geometry) f.getAttribute(i);
-                            JTS.checkCoordinatesRange(geom, gat.getCoordinateSystem());
+                            if(geom != null)
+                                JTS.checkCoordinatesRange(geom, gat.getCoordinateSystem());
                         }
                     }
                 }

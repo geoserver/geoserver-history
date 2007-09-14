@@ -47,9 +47,13 @@ public class AbstractGeometryTypeBinding extends org.geotools.gml3.bindings.Abst
         //if an srsName is set for this geometry, put it in the context for 
         // children, so they can use it as well
         if ( node.hasAttribute("srsName") ) {
-            CoordinateReferenceSystem crs = GML2ParsingUtils.crs(node);
-            if ( crs != null ) {
-                context.registerComponentInstance(CoordinateReferenceSystem.class, crs);
+            try {
+                CoordinateReferenceSystem crs = GML2ParsingUtils.crs(node);
+                if ( crs != null ) {
+                    context.registerComponentInstance(CoordinateReferenceSystem.class, crs);
+                }
+            } catch(Exception e) {
+                throw new WFSException(e, "InvalidParameterValue");
             }
         }
     }

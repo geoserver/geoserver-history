@@ -7,6 +7,8 @@ package org.geoserver.wfs.xml.v1_1_0;
 import net.opengis.wfs.IdentifierGenerationOptionType;
 import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.WfsFactory;
+
+import org.geoserver.wfs.WFSException;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml2.bindings.GML2ParsingUtils;
@@ -145,9 +147,13 @@ public class InsertElementTypeBinding extends AbstractComplexEMFBinding {
         //if an srsName is set for this geometry, put it in the context for 
         // children, so they can use it as well
         if ( node.hasAttribute("srsName") ) {
-            CoordinateReferenceSystem crs = GML2ParsingUtils.crs(node);
-            if ( crs != null ) {
-                context.registerComponentInstance(CoordinateReferenceSystem.class, crs);
+            try {
+                CoordinateReferenceSystem crs = GML2ParsingUtils.crs(node);
+                if ( crs != null ) {
+                    context.registerComponentInstance(CoordinateReferenceSystem.class, crs);
+                }
+            } catch(Exception e) {
+                throw new WFSException(e, "InvalidParameterValue");
             }
         }
     }
