@@ -9,11 +9,14 @@ import net.opengis.wfs.QueryType;
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.wfs.WFSException;
 import org.geotools.feature.FeatureType;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.xml.EMFUtils;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.spatial.BBOX;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import java.util.ArrayList;
@@ -210,9 +213,21 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 
         //TODO: should this be applied to all geometries?
         String name = featureType.getDefaultGeometry().getName();
-
+        
+        //get the epsg code
+        String epsgCode = null;
+        if ( bbox instanceof ReferencedEnvelope ) {
+            CoordinateReferenceSystem crs = ((ReferencedEnvelope)bbox).getCoordinateReferenceSystem();
+            if ( crs != null ) {
+                epsgCode = GML2EncodingUtils.epsgCode(crs);
+                if ( epsgCode != null ) {
+                    epsgCode = "EPSG:" + epsgCode;
+                }
+            }
+        }
+        
         return filterFactory.bbox(name, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(),
-            bbox.getMaxY(), null);
+            bbox.getMaxY(), epsgCode);
     }
 
     protected void querySet(EObject request, String property, List values)
