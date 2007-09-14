@@ -9,12 +9,17 @@ import net.opengis.wfs.WfsFactory;
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
+import org.geoserver.wfs.xml.gml3.AbstractGeometryTypeBinding;
 import org.geotools.filter.v1_0.OGCConfiguration;
 import org.geotools.gml2.GMLConfiguration;
 import org.geotools.gml2.bindings.GML;
 import org.geotools.xml.BindingConfiguration;
 import org.geotools.xml.Configuration;
+import org.geotools.xml.OptionalComponentParameter;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
+import org.picocontainer.Parameter;
+import org.picocontainer.defaults.SetterInjectionComponentAdapter;
 import org.vfny.geoserver.global.Data;
 
 
@@ -70,5 +75,18 @@ public class WFSConfiguration extends Configuration {
         //override the GMLAbstractFeatureTypeBinding
         bindings.registerComponentImplementation(GML.AbstractFeatureType,
             GMLAbstractFeatureTypeBinding.class);
+        
+        //use setter injection for AbstractGeometryType bindign to allow an 
+        // optional crs to be set in teh binding context for parsing, this crs
+        // is set by the binding of a parent element.
+        // note: it is important that this component adapter is non-caching so 
+        // that the setter property gets updated properly every time
+        bindings.registerComponent(
+            new SetterInjectionComponentAdapter( 
+                GML.AbstractGeometryType, AbstractGeometryTypeBinding.class, 
+                new Parameter[]{ new OptionalComponentParameter(CoordinateReferenceSystem.class)} 
+            )
+        );
+        
     }
 }
