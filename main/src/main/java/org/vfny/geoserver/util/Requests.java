@@ -246,10 +246,18 @@ public final class Requests {
             // acegi variation, login is performed by the acegi subsystem, we do get
             // the information we need from it
             if (user == null) {
-                UserDetails ud = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-                                                                    .getPrincipal();
                 user = new UserContainer();
-                user.setUsername(ud.getUsername());
+                
+                //JD: for some reason there is sometimes a string here. doing
+                // an instanceof check ... although i am not sure why this occurs.
+                Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                if ( o instanceof UserDetails ) {
+                    UserDetails ud = (UserDetails) o;
+                    user.setUsername(ud.getUsername());        
+                }
+                else if ( o instanceof String ) {
+                    user.setUsername((String)o);
+                }
                 request.getSession().setAttribute(UserContainer.SESSION_KEY, user);
             }
 
