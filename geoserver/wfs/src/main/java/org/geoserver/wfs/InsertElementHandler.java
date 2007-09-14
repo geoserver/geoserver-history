@@ -12,13 +12,21 @@ import net.opengis.wfs.WfsFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geotools.data.FeatureStore;
+import org.geotools.feature.AttributeType;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.GeometryAttributeType;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.operation.projection.PointOutsideEnvelopeException;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+import com.vividsolutions.jts.geom.Geometry;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,14 +113,19 @@ public class InsertElementHandler implements TransactionElementHandler {
                 }
 
                 if (collection != null) {
+                    // if we really need to, make sure we are inserting coordinates that do
+                    // match the CRS area of validity
+                    if(wfs.getCiteConformanceHacks()) {
+                        checkFeatureCoordinatesRange(collection);
+                    }
+                    
                     // reprojection
                     CoordinateReferenceSystem target = schema.getDefaultGeometry()
                                                              .getCoordinateSystem();
-
                     if (target != null) {
                         collection = new ReprojectingFeatureCollection(collection, target);
                     }
-
+                    
                     // Need to use the namespace here for the
                     // lookup, due to our weird
                     // prefixed internal typenames. see
@@ -178,6 +191,34 @@ public class InsertElementHandler implements TransactionElementHandler {
 
         // update transaction summary
         response.getTransactionSummary().setTotalInserted(BigInteger.valueOf(inserted));
+    }
+
+    
+    /**
+     * Checks that all features coordinates are within the expected coordinate range
+     * @param collection
+     * @throws PointOutsideEnvelopeException
+     */
+    void checkFeatureCoordinatesRange(FeatureCollection collection)
+            throws PointOutsideEnvelopeException {
+        AttributeType[] types = collection.getSchema().getAttributeTypes();
+        FeatureIterator fi = collection.features();
+        try {
+            while(fi.hasNext()) {
+                Feature f = fi.next();
+                for (int i = 0; i < types.length; i++) {
+                    if(types[i] instanceof GeometryAttributeType) {
+                        GeometryAttributeType gat = (GeometryAttributeType) types[i];
+                        if(gat.getCoordinateSystem() != null) {
+                            Geometry geom = (Geometry) f.getAttribute(i);
+                            JTS.checkCoordinatesRange(geom, gat.getCoordinateSystem());
+                        }
+                    }
+                }
+            }
+        } finally {
+            fi.close();
+        }
     }
 
     public Class getElementClass() {

@@ -7,12 +7,17 @@ package org.geoserver.wfs.xml.gml3;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import org.geoserver.wfs.WFSException;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.gml2.bindings.GML2ParsingUtils;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.operation.projection.PointOutsideEnvelopeException;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.CoordinateSystemAxis;
+import org.picocontainer.MutablePicoContainer;
+import org.vfny.geoserver.global.Data;
 
 
 /**
@@ -30,6 +35,25 @@ import org.opengis.referencing.cs.CoordinateSystemAxis;
  *
  */
 public class AbstractGeometryTypeBinding extends org.geotools.gml3.bindings.AbstractGeometryTypeBinding {
+    
+    CoordinateReferenceSystem crs;
+    
+    public void setCRS(CoordinateReferenceSystem crs) {
+        this.crs = crs;
+    }
+
+    public void initializeChildContext(ElementInstance childInstance,
+            Node node, MutablePicoContainer context) {
+        //if an srsName is set for this geometry, put it in the context for 
+        // children, so they can use it as well
+        if ( node.hasAttribute("srsName") ) {
+            CoordinateReferenceSystem crs = GML2ParsingUtils.crs(node);
+            if ( crs != null ) {
+                context.registerComponentInstance(CoordinateReferenceSystem.class, crs);
+            }
+        }
+    }
+    
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
         try {
@@ -46,30 +70,23 @@ public class AbstractGeometryTypeBinding extends org.geotools.gml3.bindings.Abst
         if (geometry != null) {
             //1. ensure a crs is set
             if (geometry.getUserData() == null) {
-                //set to be server "Default"
-                //TODO: actually make this configurable
-                geometry.setUserData(CRS.decode("EPSG:4326"));
+                //no crs set for the geometry, did we inherit one from a parent?
+                if ( crs != null ) {
+                    geometry.setUserData(crs);
+                } else {
+                    // for the moment we don't do anything since we miss the information
+                    // to infer the CRS from the feature type
+                }
             }
 
-            //2. ensure the coordiantes of the geometry fall into valid space defined by crs
+            //2. ensure the coordinates of the geometry fall into valid space defined by crs
             CoordinateReferenceSystem crs = (CoordinateReferenceSystem) geometry.getUserData();
-            Coordinate[] c = geometry.getCoordinates();
-
-            //named x,y, but could be anything
-            CoordinateSystemAxis x = crs.getCoordinateSystem().getAxis(0);
-            CoordinateSystemAxis y = crs.getCoordinateSystem().getAxis(1);
-
-            for (int i = 0; i < c.length; i++) {
-                if ((c[i].x < x.getMinimumValue()) || (c[i].x > x.getMaximumValue())) {
-                    throw new WFSException(c[i].x + " outside of (" + x.getMinimumValue() + ","
-                        + x.getMaximumValue() + ")", "InvalidParameterValue");
+            if(crs != null)
+                try {
+                    JTS.checkCoordinatesRange(geometry, crs);
+                } catch(PointOutsideEnvelopeException e) {
+                    throw new WFSException(e, "InvalidParameterValue");
                 }
-
-                if ((c[i].y < y.getMinimumValue()) || (c[i].y > y.getMaximumValue())) {
-                    throw new WFSException(c[i].y + " outside of (" + y.getMinimumValue() + ","
-                        + y.getMaximumValue() + ")", "InvalidParameterValue");
-                }
-            }
         }
 
         return geometry;
