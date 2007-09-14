@@ -9,10 +9,14 @@ import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.WfsFactory;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.gml2.bindings.GML2ParsingUtils;
 import org.geotools.gml3.bindings.GML;
 import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.picocontainer.MutablePicoContainer;
+
 import java.net.URI;
 import javax.xml.namespace.QName;
 
@@ -137,6 +141,17 @@ public class InsertElementTypeBinding extends AbstractComplexEMFBinding {
         return InsertElementType.class;
     }
 
+    public void initializeChildContext(ElementInstance childInstance, Node node, MutablePicoContainer context) {
+        //if an srsName is set for this geometry, put it in the context for 
+        // children, so they can use it as well
+        if ( node.hasAttribute("srsName") ) {
+            CoordinateReferenceSystem crs = GML2ParsingUtils.crs(node);
+            if ( crs != null ) {
+                context.registerComponentInstance(CoordinateReferenceSystem.class, crs);
+            }
+        }
+    }
+    
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

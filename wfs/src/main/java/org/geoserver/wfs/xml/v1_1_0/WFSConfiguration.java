@@ -25,8 +25,15 @@ import org.geotools.gml3.GMLConfiguration;
 import org.geotools.gml3.bindings.GML;
 import org.geotools.xml.BindingConfiguration;
 import org.geotools.xml.Configuration;
+import org.geotools.xml.OptionalComponentParameter;
 import org.geotools.xs.bindings.XS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
+import org.picocontainer.Parameter;
+import org.picocontainer.defaults.BasicComponentParameter;
+import org.picocontainer.defaults.CachingComponentAdapter;
+import org.picocontainer.defaults.ComponentParameter;
+import org.picocontainer.defaults.SetterInjectionComponentAdapter;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import java.io.IOException;
@@ -114,8 +121,18 @@ public class WFSConfiguration extends Configuration {
         container.registerComponentImplementation(OGC.PropertyNameType,
             PropertyNameTypeBinding.class);
         container.registerComponentImplementation(GML.CircleType, CircleTypeBinding.class);
-        container.registerComponentImplementation(GML.AbstractGeometryType,
-            AbstractGeometryTypeBinding.class);
+        
+        //use setter injection for AbstractGeometryType bindign to allow an 
+        // optional crs to be set in teh binding context for parsing, this crs
+        // is set by the binding of a parent element.
+        // note: it is important that this component adapter is non-caching so 
+        // that the setter property gets updated properly every time
+        container.registerComponent(
+            new SetterInjectionComponentAdapter( 
+                GML.AbstractGeometryType, AbstractGeometryTypeBinding.class, 
+                new Parameter[]{ new OptionalComponentParameter(CoordinateReferenceSystem.class)} 
+            )
+        );
         
         // override XSQName binding
         container.registerComponentImplementation(XS.QNAME, XSQNameBinding.class);

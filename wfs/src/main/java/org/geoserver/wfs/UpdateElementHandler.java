@@ -10,6 +10,7 @@ import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.UpdateElementType;
 import org.eclipse.emf.ecore.EObject;
+import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
@@ -17,10 +18,20 @@ import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.type.GeometricAttributeType;
+import org.geotools.geometry.jts.GeometryCoordinateSequenceTransformer;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.geotools.referencing.operation.projection.PointOutsideEnvelopeException;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.Id;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+
+import com.vividsolutions.jts.geom.Geometry;
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashSet;
@@ -71,7 +82,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
                     AttributeType attributeType = featureType.getAttributeType(propertyName);
 
                     if ((attributeType != null) && (attributeType.getMinOccurs() > 0)) {
-                        String msg = "Property '" + attributeType.getName()
+                        String msg = "Property '" + attributeType.getLocalName()
                             + "' is mandatory but no value specified.";
                         throw new WFSException(msg, "MissingParameterValue");
                     }
@@ -109,6 +120,47 @@ public class UpdateElementHandler implements TransactionElementHandler {
                 PropertyType property = (PropertyType) update.getProperty().get(j);
                 types[j] = store.getSchema().getAttributeType(property.getName().getLocalPart());
                 values[j] = property.getValue();
+                
+                // if geometry, it may be necessary to reproject it to the native CRS before
+                // update
+                if (values[j] instanceof Geometry ) {
+                    Geometry geometry = (Geometry) values[j];
+                    
+                    //get the source crs, check the geometry itself first
+                    CoordinateReferenceSystem source = null;
+                    if ( geometry.getUserData() instanceof CoordinateReferenceSystem ) {
+                        source = (CoordinateReferenceSystem) geometry.getUserData();
+                    }
+                    
+                    // see if the geometry has a CRS other than the default one
+                    CoordinateReferenceSystem target = null;
+                    if (types[j] instanceof GeometricAttributeType) {
+                        target = ((GeometricAttributeType)types[j]).getCoordinateSystem();
+                    }
+                    
+                    if(wfs.getCiteConformanceHacks())
+                        JTS.checkCoordinatesRange(geometry, source != null ? source : target);
+                    
+                    //if we have a source and target and they are not equal, do 
+                    // the reprojection, otherwise just update the value as is
+                    if ( source != null && target != null && !CRS.equalsIgnoreMetadata(source, target)) {
+                        try {
+                            //TODO: this code should be shared with the code
+                            // from ReprojectingFeatureCollection --JD
+                            MathTransform tx = CRS.findMathTransform(source, target);
+                            GeometryCoordinateSequenceTransformer gtx = 
+                                new GeometryCoordinateSequenceTransformer();
+                            gtx.setMathTransform(tx);
+                            
+                            values[j] = gtx.transform(geometry);    
+                        }
+                        catch( Exception e ) {
+                            String msg = "Failed to reproject geometry:" + e.getLocalizedMessage(); 
+                            throw new WFSTransactionException( msg, e );
+                        }
+                    }
+                    
+                }
             }
 
             // Pass through data to collect fids and damaged
@@ -173,6 +225,8 @@ public class UpdateElementHandler implements TransactionElementHandler {
             // JD: changing from throwing service exception to
             // adding action that failed
             throw new WFSTransactionException(ioException, null, handle);
+        } catch(PointOutsideEnvelopeException poe) {
+            throw new WFSTransactionException(poe, null, handle);
         }
 
         // update transaction summary
