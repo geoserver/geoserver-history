@@ -361,6 +361,20 @@ public class GeoServerTestSupport extends TestCase {
         
         return null;
     }
+    
+    /**
+     * Convenience method for element.getElementsByTagName() to return the 
+     * first element in the resulting node list.
+     */
+    protected Element getFirstElementByTagName(Document dom, String name ) {
+        NodeList elements = dom.getElementsByTagName(name);
+        if ( elements.getLength() > 0 ) {
+            return (Element) elements.item(0);
+        }
+        
+        return null;
+    }
+    
     /**
      * Sets up a template in a feature type directory.
      * 
