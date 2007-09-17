@@ -117,7 +117,10 @@ public class PaletteExtractor extends FilterAttributeExtractor implements StyleV
         } else if(cmap.length <= 16) {
             bits = 4;
         }
-        int length = (int) Math.pow(2, bits);
+        
+        // workaround for GEOS-1341, GEOS-1337 will try to find a solution
+//      int length = (int) Math.pow(2, bits);
+        int length = bits == 1 ? 2 : 256;
         if(cmap.length < length) {
             int[] temp = new int[length];
             System.arraycopy(cmap, 0, temp, 0, cmap.length);
