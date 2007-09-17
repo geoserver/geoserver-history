@@ -203,7 +203,7 @@ public class RetypingDataStore implements DataStore {
         try {
             return FeatureTypeBuilder.newFeatureType(original.getAttributeTypes(), transfomedName,
                     original.getNamespace(), false, original.getAncestors(), original
-                            .getPrimaryGeometry());
+                            .getDefaultGeometry());
         } catch (Exception e) {
             throw new DataSourceException("Could not build the renamed feature type.", e);
         }

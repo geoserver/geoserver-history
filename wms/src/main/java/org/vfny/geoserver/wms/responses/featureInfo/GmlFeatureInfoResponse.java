@@ -108,7 +108,7 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
             features.getFeature().add(fc);
             
             QueryType qt = WfsFactory.eINSTANCE.createQueryType();
-            String crs = GML2EncodingUtils.crs(fc.getSchema().getPrimaryGeometry().getCoordinateSystem());
+            String crs = GML2EncodingUtils.crs(fc.getSchema().getDefaultGeometry().getCoordinateSystem());
             if (crs != null) {
                 final String srsName = "EPSG:" + crs; 
                 try {

@@ -236,7 +236,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                 }
 
                 try {
-                    getFInfoFilter = filterFac.intersects(filterFac.property(finfo.getFeatureType().getPrimaryGeometry()
+                    getFInfoFilter = filterFac.intersects(filterFac.property(finfo.getFeatureType().getDefaultGeometry()
                             .getLocalName()), filterFac.literal(pixelRect));
 //                    getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
 //                    ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac

@@ -281,7 +281,7 @@ public class TypesEditorForm extends ActionForm {
             DataStoreConfig dsConfig = dataConfig.getDataStore(type.getDataStoreId());
             DataStore dataStore = dsConfig.findDataStore(servletContext);
             FeatureType featureType = dataStore.getSchema(type.getName());
-            GeometryAttributeType dg = featureType.getPrimaryGeometry();
+            GeometryAttributeType dg = featureType.getDefaultGeometry();
             if(dg != null && dg.getCoordinateSystem() != null) {
                 nativeCRS = dg.getCoordinateSystem();
                 nativeSRSWKT = dg.getCoordinateSystem().toString();

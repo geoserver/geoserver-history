@@ -229,7 +229,7 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
                 try {
                     FeatureSource source = layer.getFeatureSource();
                     
-                    GeometryAttributeType at = source.getSchema().getPrimaryGeometry();
+                    GeometryAttributeType at = source.getSchema().getDefaultGeometry();
                     if(at == null) {
                         // geometryless layers...
                         features = source.getFeatures(query);
