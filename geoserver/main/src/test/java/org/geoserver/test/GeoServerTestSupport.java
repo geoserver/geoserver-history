@@ -366,13 +366,8 @@ public class GeoServerTestSupport extends TestCase {
      * Convenience method for element.getElementsByTagName() to return the 
      * first element in the resulting node list.
      */
-    protected Element getFirstElementByTagName(Document dom, String name ) {
-        NodeList elements = dom.getElementsByTagName(name);
-        if ( elements.getLength() > 0 ) {
-            return (Element) elements.item(0);
-        }
-        
-        return null;
+    protected Element getFirstElementByTagName( Document dom, String name ) {
+        return getFirstElementByTagName( dom.getDocumentElement(), name );
     }
     
     /**
