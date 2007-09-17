@@ -9,7 +9,6 @@ import org.geotools.feature.type.ProfileImpl;
 import org.geotools.gml3.GMLSchema;
 import org.geotools.gml3.bindings.GML;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
