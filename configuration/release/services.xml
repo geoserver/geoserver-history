@@ -4,13 +4,8 @@
 -->
 <serverConfiguration >
   <global >
-    <!--
-      Defines the logging level.  Common options are SEVERE,
-      WARNING, INFO, CONFIG, FINER, FINEST, in order of
-      Increasing statements logged.
-    -->
-    <loggingLevel>CONFIG</loggingLevel>
-    <loggingToFile value = "false" />
+    <log4jConfigFile>DEFAULT_LOGGING.properties</log4jConfigFile>
+    <suppressStdOutLogging value = "false" />
     <logLocation>logs/geoserver.log</logLocation>
     <JaiMemoryCapacity value = "0.5" />
     <JaiMemoryThreshold value = "0.75" />
@@ -18,8 +13,8 @@
     <JaiTilePriority value = "5" />
     <JaiRecycling value = "true" />
     <ImageIOCache value = "false" />
-    <JaiJPEGNative value = "false" />
-    <JaiPNGNative value = "false" />
+    <JaiJPEGNative value = "true" />
+    <JaiPNGNative value = "true" />
     <!--
       Sets the max number of Features returned by GetFeature
     -->
@@ -60,6 +55,25 @@
       to the web based administration tool.
     -->
     <adminPassword>geoserver</adminPassword>
+    <ContactInformation >
+      <ContactPersonPrimary >
+        <ContactPerson></ContactPerson>
+        <ContactOrganization></ContactOrganization>
+      </ContactPersonPrimary>
+      <ContactPosition></ContactPosition>
+      <ContactAddress >
+        <AddressType></AddressType>
+        <Address></Address>
+        <City></City>
+        <StateOrProvince></StateOrProvince>
+        <PostCode></PostCode>
+        <Country></Country>
+      </ContactAddress>
+      <ContactVoiceTelephone></ContactVoiceTelephone>
+      <ContactFacsimileTelephone></ContactFacsimileTelephone>
+      <ContactElectronicMailAddress></ContactElectronicMailAddress>
+      <ContactOnlineResource></ContactOnlineResource>
+    </ContactInformation>
   </global>
   <services >
     <service enabled = "true" type = "WCS" >
@@ -142,6 +156,14 @@ This is a description of your Web Map Server.
           <baseMapEnvelope srsName = "EPSG:4326" >
             <pos>-74.047185 40.679648</pos>
             <pos>-73.907005 40.882078</pos>
+          </baseMapEnvelope>
+        </BaseMapGroup>
+        <BaseMapGroup baseMapTitle = "tasmania" >
+          <baseMapLayers>topp:tasmania_state_boundaries,topp:tasmania_water_bodies,topp:tasmania_roads,topp:tasmania_cities</baseMapLayers>
+          <baseMapStyles></baseMapStyles>
+          <baseMapEnvelope srsName = "EPSG:4326" >
+            <pos>143.83482400000003 -43.648056</pos>
+            <pos>148.47914100000003 -39.573891</pos>
           </baseMapEnvelope>
         </BaseMapGroup>
         <BaseMapGroup baseMapTitle = "spearfish" >
