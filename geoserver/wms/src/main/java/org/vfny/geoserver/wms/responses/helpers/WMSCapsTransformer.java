@@ -1060,8 +1060,8 @@ public class WMSCapsTransformer extends TransformerBase {
             }
 
             if (legend != null) {
-                if (LOGGER.isLoggable(Level.CONFIG)) {
-                    LOGGER.config("using user supplied legend URL");
+                if (LOGGER.isLoggable(Level.FINE)) {
+                    LOGGER.fine("using user supplied legend URL");
                 }
 
                 AttributesImpl attrs = new AttributesImpl();
@@ -1093,8 +1093,8 @@ public class WMSCapsTransformer extends TransformerBase {
                     return;
                 }
 
-                if (LOGGER.isLoggable(Level.CONFIG)) {
-                    LOGGER.config("Adding GetLegendGraphic call as LegendURL");
+                if (LOGGER.isLoggable(Level.FINE)) {
+                    LOGGER.fine("Adding GetLegendGraphic call as LegendURL");
                 }
 
                 AttributesImpl attrs = new AttributesImpl();
