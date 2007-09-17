@@ -44,6 +44,8 @@ import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
 import org.vfny.geoserver.wms.responses.palette.CustomPaletteBuilder;
 import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 
@@ -180,8 +182,8 @@ public abstract class DefaultRasterMapProducer extends
 		}
 
 		// extra antialias setting
-		String antialias = (String) mapContext.getRequest().getFormatOptions()
-				.get("antialias");
+		final GetMapRequest request = mapContext.getRequest();
+        String antialias = (String) request.getFormatOptions().get("antialias");
 		if (antialias != null)
 			antialias = antialias.toUpperCase();
 
@@ -204,7 +206,11 @@ public abstract class DefaultRasterMapProducer extends
 				palette = pe.getPalette();
 		}
 
-		final RenderedImage preparedImage = prepareImage(width, height, palette, mapContext.isTransparent());
+		// we use the alpha channel if the image is transparent or if the meta tiler
+		// is enabled, since apparently the Crop operation inside the meta-tiler
+		// generates striped images in that case (see GEOS-
+		boolean useAlpha = mapContext.isTransparent() || MetatileMapProducer.isRequestTiled(request, this);
+        final RenderedImage preparedImage = prepareImage(width, height, palette, useAlpha);
 		final Graphics2D graphic;
 
 		if (preparedImage instanceof BufferedImage) {
