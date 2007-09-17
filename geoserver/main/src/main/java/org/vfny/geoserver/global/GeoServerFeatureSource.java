@@ -334,8 +334,8 @@ public class GeoServerFeatureSource implements FeatureSource {
             FeatureCollection fc = source.getFeatures(newQuery);
 
             CoordinateReferenceSystem nativeCRS = null;
-            if ( fc.getSchema().getPrimaryGeometry() != null ) {
-                nativeCRS = fc.getSchema().getPrimaryGeometry().getCoordinateSystem();
+            if ( fc.getSchema().getDefaultGeometry() != null ) {
+                nativeCRS = fc.getSchema().getDefaultGeometry().getCoordinateSystem();
             }
             
             if (srsHandling == FeatureTypeInfo.LEAVE) {
