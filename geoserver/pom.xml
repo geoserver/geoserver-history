@@ -718,7 +718,7 @@
       <descriptor>release/ext-arcsde.xml</descriptor>
       <descriptor>release/ext-pyramid.xml</descriptor>
      </descriptors>
-     <finalName>geoserver-1.6-beta1</finalName>
+     <finalName>geoserver-1.6-beta3</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
     </configuration>
    </plugin>
