@@ -1,3 +1,24 @@
+GeoServer 1.6-beta3
+---------------------
+
+The main focus of this release is WMS performance. 
+We did introduce a new non antialiasing rendering mode that can be enabled by
+appending &format_options=antialias:none to the GetMap request that can generate
+images with an optimal palette automatically, greatly reducing the resulting image
+size (up to 4 times smaller than the standard paletted output, and 10 times smaller
+than the full color png output).
+We also worked on rendering performance, making standard rendering up to 2 times faster, and 
+up to 6 times faster in the specific case of shapefiles (using the non antialiased rendering
+mode, with antialias and translucency in the picture the speed up is not as big, but still
+very interesting).
+
+Moreover, GeoJSON output is now integrated in the release as a standard output format.
+We also had various fixes in WFS, such as the ability to query with bboxes and geometries 
+in SRS other than the feature native one.
+
+For a full change log have a look at:
+http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&styleName=Html&version=13675
+
 GeoServer 1.6-beta2
 ---------------------
 
