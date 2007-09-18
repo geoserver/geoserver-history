@@ -19,6 +19,8 @@ in SRS other than the feature native one.
 For a full change log have a look at:
 http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&styleName=Html&version=13675
 
+This release is based on GeoTools 2.4-SNAPSHOT, tag geoserver-1.6-beta3, revision 27025
+
 GeoServer 1.6-beta2
 ---------------------
 
