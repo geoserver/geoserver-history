@@ -12,7 +12,12 @@ up to 6 times faster in the specific case of shapefiles (using the non antialias
 mode, with antialias and translucency in the picture the speed up is not as big, but still
 very interesting).
 
-Moreover, GeoJSON output is now integrated in the release as a standard output format.
+Another major news is the the integration of the WFS datastore in the release, we went
+through some testing and we are now capable of WFS cascading. This functionality is still
+quite new, so help us test it out.
+
+GeoJSON output is now integrated in the release as a standard output format.
+
 We also had various fixes in WFS, such as the ability to query with bboxes and geometries 
 in SRS other than the feature native one.
 
