@@ -84,8 +84,7 @@ public class InsertElementHandler implements TransactionElementHandler {
                 FeatureCollection collection = (FeatureCollection) schema2features.get(schema);
 
                 if (collection == null) {
-                    collection = new DefaultFeatureCollection(null, schema) {
-                            };
+                    collection = new DefaultFeatureCollection(null, schema);
                     schema2features.put(schema, collection);
                 }
 
@@ -120,7 +119,7 @@ public class InsertElementHandler implements TransactionElementHandler {
                     }
                     
                     // reprojection
-                    CoordinateReferenceSystem target = schema.getDefaultGeometry()
+                    CoordinateReferenceSystem target = store.getSchema().getDefaultGeometry()
                                                              .getCoordinateSystem();
                     if (target != null) {
                         collection = new ReprojectingFeatureCollection(collection, target);
