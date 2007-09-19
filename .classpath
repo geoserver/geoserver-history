@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="jars/wfs-1.5.3.jar"/>
+	<classpathentry kind="lib" path="jars/main-1.5.3.jar"/>
+	<classpathentry kind="lib" path="jars/spring-context-1.2.5.jar"/>
+	<classpathentry kind="lib" path="jars/servlet-api-2.4.jar"/>
+	<classpathentry kind="lib" path="jars/spring-beans-1.2.5.jar"/>
+	<classpathentry kind="lib" path="jars/gt2-main-2.3.4.jar"/>
+	<classpathentry kind="lib" path="jars/gt2-api-2.3.4.jar"/>
+	<classpathentry kind="lib" path="jars/geoapi-nogenerics-2.1-M2.jar"/>
+	<classpathentry kind="lib" path="jars/platform-1.5.3.jar"/>
+	<classpathentry kind="lib" path="jars/gt2-referencing-2.3.4.jar"/>
+	<classpathentry kind="lib" path="jars/jts-1.7.1.jar"/>
+	<classpathentry kind="lib" path="jars/spring-core-1.2.5.jar"/>
+	<classpathentry kind="lib" path="jars/jsr108-0.01.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>
