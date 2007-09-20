@@ -1,0 +1,17 @@
+<ivy-module version="1.0">
+    <info organisation="orci" module="DataGateway-LineMergerPostgisPlugin"/>
+    <configurations>
+    	<conf name="jars" description="jars directory"/>
+    	<conf name="libs" description="libs directory"/>
+    </configurations>
+    
+    <dependencies>
+        <dependency org="geotools" name="jts" rev="1.7" conf="jars->default"/>
+        <dependency org="geotools" name="geoapi" rev="2.0" conf="jars->default"/>
+        <dependency org="geotools" name="gt2-api" rev="2.2.1" conf="jars->default"/>
+        <dependency org="geotools" name="gt2-main" rev="2.2.1" conf="jars->default"/>
+        <dependency org="geotools" name="gt2-referencing" rev="2.2.1" conf="jars->default"/>
+        <dependency org="geotools" name="gt2-postgis" rev="2.2.1" conf="jars->default"/>
+    	
+    </dependencies>
+</ivy-module>
