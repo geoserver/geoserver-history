@@ -1,0 +1,179 @@
+<project name="LineMergerPostgisPlugin" default="jar" basedir="."  xmlns:ivy="antlib:fr.jayasoft.ivy.ant">
+
+    <!-- Set up application info -->
+	<property file="${user.home}/.${ant.project.name}-build.properties" />
+	<property file="${user.home}/.build.properties" />
+	<property environment="env" />
+	<property file="build.properties" />
+    <property name="ivy.conf.dir" value="../ivy" />
+
+	<property name="app.name" value="LineMergerPostgisPlugin" />
+	<property name="app.Name" value="DataGateway GeoServer Plugin" />
+	<property name="app.version" value="1.0" />
+	<property name="app.year" value="2006" />
+	<property name="company.name" value="Open Roads Consulting, Inc." />
+    <property name="product.name" value="LineMergerPostgisPlugin" />
+    <property name="jar.version" value="1.0" />
+
+    <!-- Directories -->
+    <property name="root.dir" location="${basedir}" />
+    <property name="lib.dir" value="${root.dir}/lib" />
+    <property name="jars.dir" value="${root.dir}/jars" />
+    <property name="src.dir" value="${root.dir}/src" />
+    <property name="classes.dir" value="${root.dir}/classes" />
+    <property name="bin.dir" value="${root.dir}/bin" />
+    <property name="javadoc.dir" value="${root.dir}/javadocs" />
+
+    <!-- Names -->
+    <property name="jar.name" value="${app.name}-${jar.version}.jar"/>
+
+    <!-- classpaths -->
+    <path id="build.classpath">
+    	<fileset dir="${lib.dir}">
+        	<include name="*.jar"/>
+        </fileset>
+    	<fileset dir="${jars.dir}">
+        	<include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <!-- ======================================================= -->
+    <!-- Cleanup & Initialization                                -->
+    <!-- ======================================================= -->
+
+    <target name="clean" description="Clean up everything" >
+        <delete dir="${classes.dir}" quiet="true" />
+        <delete dir="${lib.dir}" quiet="true" />
+        <delete dir="${jars.dir}" quiet="true" />
+        <delete dir="${javadoc.dir}" quiet="true" />
+        <delete file="${jar.name}" quiet="true" />
+    </target>
+
+    <!-- init everything -->
+    <target name="init" >
+        <mkdir dir="${javadoc.dir}" />
+        <mkdir dir="${classes.dir}" />
+        <mkdir dir="${lib.dir}" />
+        <mkdir dir="${jars.dir}" />
+        <tstamp/>
+    </target>
+
+	<!-- ============================================================== -->
+	<!-- IVY Tasks                                                      -->
+	<!-- ============================================================== -->
+    
+    <target name="ivy.config" description="--> retreive dependencies with ivy">
+        <property name="ivy.local.default.root" value="${repository.dir}/local"/>
+        <property name="ivy.shared.default.root" value="${repository.dir}/shared"/>
+    	<ivy:configure file="${ivy.conf.dir}/ivyconf.xml" />
+    </target>
+    
+    <target name="ivy.resolve" depends="ivy.config" unless="NORESOLVE" description="--> retreive dependencies with ivy">
+        <ivy:retrieve  pattern="${lib.dir}/[artifact]-[revision].[ext]" conf="libs"/>
+        <ivy:retrieve  pattern="${jars.dir}/[artifact]-[revision].[ext]" conf="jars"/>
+    </target>
+        
+    <target name="ivy.report" depends="ivy.resolve" description="--> generates a report of dependencies">
+        <ivy:report todir="${root.dir}"/>
+    </target>
+	
+	<target name="ivy.publish" depends="jar" description="--> publish this project in the ivy repository">
+	    <property name="revision" value="${app.version}"/>
+		<delete file="${lib.dir}/ivy-${revision}.xml" failonerror="false" />
+	    <ivy:publish artifactspattern="${lib.dir}/[artifact]-[revision].[ext]"
+	        resolver="projects"
+	        pubrevision="${revision}"
+	        status="release"
+	    />
+	</target>
+
+    <!-- ======================================================= -->
+    <!-- Compile java code                                       -->
+    <!-- ======================================================= -->
+
+    <target name="compile" depends="init,ivy.resolve" description="Compile the files" >
+
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" includes="**/*.java" classpathref="build.classpath"
+            debug="${build.debug}"
+            optimize="${build.optimize}"
+            deprecation="${build.deprecation}"
+            verbose="${build.verbose}"
+            target="${build.target}"
+        	source="${build.source}"
+        />
+
+    </target>
+
+
+    <!-- ======================================================= -->
+    <!-- Generate Javadocs                                       -->
+    <!-- ======================================================= -->
+    <target name="javadoc" depends="init,compile" description="Create the javadocs" >
+
+        <condition property="javadoc.breakiterator" value="-breakiterator" >
+            <or>
+                <equals arg1="${ant.java.version}" arg2="1.4" />
+                <equals arg1="${ant.java.version}" arg2="1.5" />
+            </or>
+        </condition>
+        <property name="javadoc.breakiterator" value="" />
+
+        <condition property="javadoc.jdk.href" value="http://java.sun.com/products/jdk/1.2/docs/api/">
+            <equals arg1="${ant.java.version}" arg2="1.2" />
+        </condition>
+        <condition property="javadoc.jdk.href" value="http://java.sun.com/j2se/1.3/docs/api/">
+            <equals arg1="${ant.java.version}" arg2="1.3" />
+        </condition>
+        <condition property="javadoc.jdk.href" value="http://java.sun.com/j2se/1.4/docs/api/">
+            <equals arg1="${ant.java.version}" arg2="1.4" />
+        </condition>
+        <condition property="javadoc.jdk.href" value="http://java.sun.com/j2se/1.5/docs/api/">
+            <equals arg1="${ant.java.version}" arg2="1.5" />
+        </condition>
+        <property name="javadoc.jdk.href" value="" />
+
+        <property name="javadoc.jdk.offline" value="false" />
+        <property name="javadoc.jdk.packaglistLoc" value="" />
+
+        <javadoc
+            destdir="${javadoc.dir}"
+            author="true"
+            classpathref="build.classpath"
+            version="true"
+            use="true"
+            additionalparam="${javadoc.breakiterator}"
+            windowtitle="Toolkit API" >
+
+            <!-- <packageset...> below only works with Ant 1.5+.  Since we now require Ant 1.5.1beta1+,
+                 we can use <packageset...> and remove "packagenames", "excludepackagenames",
+                 and "sourcepath" attributes of the javadoc task -->
+            <packageset dir="${gensrc.dir}" defaultexcludes="yes" >
+                <include name="/**" />
+                <exclude name="/contrib/**/webapp/**" />
+            </packageset>
+
+            <doctitle><![CDATA[<h1>${app.Name}</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; ${app.year} ${company.name} All Rights Reserved.</i>]]></bottom>
+            <link offline="${javadoc.jdk.offline}" href="${javadoc.jdk.href}" packagelistLoc="${javadoc.jdk.packagelistLoc}" />
+           <!-- <classpath refid="build.test.classpath" />-->
+        </javadoc>
+
+    </target>
+
+
+
+    <!-- ======================================================= -->
+    <!-- Make jars for distribution                              -->
+    <!-- ======================================================= -->
+
+    <target name="jar" depends="compile" description="Make the jar files" >
+        <delete file="${lib.dir}/${jar.name}" quiet="true" />
+    	<copy todir="${classes.dir}/META-INF">
+    	    <fileset dir="${src.dir}/META-INF"/>
+    	</copy>
+    	<jar jarfile="${lib.dir}/${jar.name}" basedir="${classes.dir}" includes="**" />
+    </target>
+
+  <target name="all" depends="jar" />
+
+</project>
