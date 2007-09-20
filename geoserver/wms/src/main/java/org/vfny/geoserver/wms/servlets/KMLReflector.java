@@ -249,7 +249,7 @@ public class KMLReflector extends WMService {
         
         String proxifiedBaseUrl = RequestUtils.baseURL(request);
         GeoServer gs = (GeoServer)GeoServerExtensions.extensions(GeoServer.class).get(0);
-        proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(gs.getProxyBaseUrl(), proxifiedBaseUrl);
+        proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(proxifiedBaseUrl,gs.getProxyBaseUrl());
 
         // make a network link for every layer
         for (int i = 0; i < layers.length; i++) {
