@@ -65,7 +65,7 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
             image = forceIndexed8Bitmask(image);
         }
 
-        new ImageWorker(image).writePNG(outStream, "FILTERED", 0.1f, PNGNativeAcc.booleanValue(),
+        new ImageWorker(image).writePNG(outStream, "FILTERED", 0.5f, PNGNativeAcc.booleanValue(),
             image.getColorModel() instanceof IndexColorModel);
 
         if (LOGGER.isLoggable(Level.FINE)) {
