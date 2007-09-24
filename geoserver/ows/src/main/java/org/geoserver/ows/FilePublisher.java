@@ -81,21 +81,19 @@ public class FilePublisher extends AbstractController {
 
         if (file == null) {
             //return a 404
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
 
             return null;
         }
 
-        //figure out the mime type
-        MagicMatch match = Magic.getMagicMatch(file, true, true);
-
-        if (match == null) {
+        String mime = getServletContext().getMimeType(file.getName());
+        if (mime == null) {
             //return a 415: Unsupported Media Type
-            response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+            response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 
             return null;
         }
-        response.setContentType(match.getMimeType());
+        response.setContentType(mime);
 
         // Guessing the charset (and closing the stream)
         EncodingInfo encInfo = null;
