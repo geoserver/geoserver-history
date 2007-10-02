@@ -29,7 +29,7 @@ import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
   */
 public class UserRestlet extends Restlet {
   private EditableUserDAO myUserService;
-w
+
   /**
     * Currently, the UserRestlet constructor requires an EditableUserDAO rather
     * than any UserDetailsService.  Maybe it would make sense to have it hide the 
