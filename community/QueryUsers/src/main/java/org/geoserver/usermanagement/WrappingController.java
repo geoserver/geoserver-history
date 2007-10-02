@@ -3,7 +3,6 @@ package org.geoserver.usermanagement;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.geoserver.security.EditableUserDAO;
 import org.restlet.Restlet;
 import org.restlet.Router;
 import org.springframework.beans.BeansException;
