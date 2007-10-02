@@ -5,7 +5,6 @@ import org.acegisecurity.userdetails.UserDetails;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.acegisecurity.userdetails.memory.UserAttribute;
 import org.acegisecurity.userdetails.memory.UserAttributeEditor;
-import org.geoserver.security.EditableUserDAO;
 import org.restlet.Restlet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
