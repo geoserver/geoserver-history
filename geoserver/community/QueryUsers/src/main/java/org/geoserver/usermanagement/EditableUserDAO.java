@@ -89,6 +89,16 @@ public class EditableUserDAO implements UserDetailsService {
 		myDetailStorage.put(username, makeUser(username, details));
 		syncChanges();
 	}
+	
+	/**
+	 * Remove a user specified by name.  If the username is not used by any 
+	 * known user, nothing happens.
+	 */
+	public void deleteUser(String username) throws IOException, ConfigurationException {
+		update();
+		myDetailStorage.remove(username);
+		syncChanges();
+	}
 
   /**
     * Make sure the user data map matches the information in the user data file.

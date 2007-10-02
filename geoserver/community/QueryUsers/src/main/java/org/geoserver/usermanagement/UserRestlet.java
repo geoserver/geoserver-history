@@ -10,6 +10,7 @@ import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
+import org.restlet.data.Status;
 import org.restlet.resource.StringRepresentation;
 import org.springframework.dao.DataAccessException;
 
@@ -53,6 +54,19 @@ public class UserRestlet extends Restlet {
 		} else if (request.getMethod().equals(Method.GET)) {
 			response.setEntity(new StringRepresentation(
 					fetchDetailsByUserName(username), MediaType.TEXT_PLAIN));
+		} else if (request.getMethod().equals(Method.DELETE)){
+			String message;
+			try {
+				myUserService.deleteUser(username);
+				message = username + " deleted";
+			} catch (Exception e){
+				message = "couldn't delete " + username;
+			}
+			response.setEntity(new StringRepresentation(
+					message, MediaType.TEXT_PLAIN));
+
+		} else {
+			response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
 		}
 	}
 
