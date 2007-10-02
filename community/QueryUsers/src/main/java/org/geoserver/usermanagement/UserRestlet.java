@@ -18,6 +18,7 @@ import org.springframework.dao.DataAccessException;
  * The UserRestlet provides the basic user query and editing features of the 
  * user management API.  Basically, it handles the requests that actually deal
  * with users.
+ * @note This class is currently not handling requests; see UserResource instead.
  * @author David Winslow <dwinslow@openplans.org>
  */
 public class UserRestlet extends Restlet {
