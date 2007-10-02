@@ -4,7 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.geoserver.security.EditableUserDAO;
-import org.geoserver.security.GeoserverUserDao;
 import org.restlet.Restlet;
 import org.restlet.Router;
 import org.springframework.beans.BeansException;
@@ -19,8 +18,21 @@ import com.noelios.restlet.ext.servlet.ServletConverter;
   */
 public class WrappingController extends AbstractController {
 
+	public static String METHOD_PUT = "PUT";
+	public static String METHOD_DELETE = "DELETE";
+	
 	ServletConverter myConverter;
 
+	public WrappingController(){
+		super();
+		setSupportedMethods(new String[]{
+				METHOD_GET,
+				METHOD_POST,
+				METHOD_PUT,
+				METHOD_DELETE}
+		);
+	}
+	
 	protected void initApplicationContext() throws BeansException {
 		super.initApplicationContext();
 
