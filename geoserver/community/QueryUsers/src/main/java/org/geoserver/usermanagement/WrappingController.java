@@ -49,10 +49,12 @@ public class WrappingController extends AbstractController {
 	public Restlet createRoot() {
 		Router router = new Router();
 
+		EditableUserDAO eud = 
+			(EditableUserDAO)getApplicationContext()
+				.getBean("userDetailsService");
 		// router.setRequiredScore(0);
 		// router.attach("/roles", new UserRestlet("Role Management Page"));
-		router.attach("/user/{name}", 
-				new UserRestlet((EditableUserDAO)getApplicationContext().getBean("userDetailsService")));
+		router.attach("/user/{name}", new UserFinder(router.getContext(), eud));
 		router.attach("/dummy/{name}", new DummyRestlet(getApplicationContext()));
 		// router.attach("/geoserver/users/{user}/roles", new
 		// UserRestlet("getting role information"));
