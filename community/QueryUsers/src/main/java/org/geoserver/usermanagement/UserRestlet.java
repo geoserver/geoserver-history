@@ -1,17 +1,9 @@
 package org.geoserver.usermanagement;
 
-import java.io.IOException;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.userdetails.UserDetails;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.geoserver.security.EditableUserDAO;
-import org.geoserver.security.GeoserverUserDao;
 import org.restlet.Restlet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
@@ -19,7 +11,6 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.resource.StringRepresentation;
 import org.springframework.dao.DataAccessException;
-import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 
 /**
   * The UserRestlet provides the basic user query and editing features of the 

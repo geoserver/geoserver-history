@@ -17,17 +17,12 @@ import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.userdetails.UserDetails;
 import org.acegisecurity.userdetails.UserDetailsService;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
-
 import org.restlet.Application;
 import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.Router;
 import org.restlet.ext.spring.SpringContext;
-import org.restlet.ext.spring.SpringFinder;
-
 import org.springframework.dao.DataAccessException;
-import org.springframework.web.context.WebApplicationContext;
-
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
