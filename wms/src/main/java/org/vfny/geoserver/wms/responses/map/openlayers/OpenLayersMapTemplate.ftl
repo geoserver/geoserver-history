@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <#-- 
@@ -32,7 +32,7 @@
           OpenLayers.IMAGE_RELOAD_ATTEMPTS = 5;
           
           // setup tiled layer
-          var bounds = new OpenLayers.Bounds(${request.bbox.minX?c},${request.bbox.minY?c},${request.bbox.maxX?c},${request.bbox.maxY?c})
+          var bounds = new OpenLayers.Bounds(${request.bbox.minX?c},${request.bbox.minY?c},${request.bbox.maxX?c},${request.bbox.maxY?c});
           tiled = new OpenLayers.Layer.WMS(
             "${layerName}", "${baseUrl}/wms",
             {
