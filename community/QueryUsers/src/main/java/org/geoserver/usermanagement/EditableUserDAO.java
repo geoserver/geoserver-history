@@ -43,27 +43,39 @@ public class EditableUserDAO implements UserDetailsService {
   /**
     * Find the file that should provide the user information.
     */
-	private File getUserFile() throws ConfigurationException{
+	private File getUserFile() throws ConfigurationException, IOException{
 		File securityDir = GeoserverDataDirectory.findCreateConfigDir("security");
-        return new File(securityDir, "users.properties");
+		File userFile = new File(securityDir, "users.properties");
+		if (!userFile.exists()  && !userFile.createNewFile()){
+				System.out.println("Couldn't create file: " + userFile.getAbsolutePath());
+				throw new ConfigurationException("Couldn't create users.properties");
+		} else {
+			return userFile;
+		}
 	}
 	
 	public EditableUserDAO(){
 		myDetailStorage = new HashMap();
 		try {
 		myWatcher = new PropertyFileWatcher(getUserFile());
-		} catch (ConfigurationException ce){
+		} catch (Exception e){
 			// TODO:log error someplace
 			createDefaultUser();
 		}
+		
+		update();
+		if (myDetailStorage.isEmpty()) createDefaultUser();
 	}
 
   /**
     * Generate the default geoserver administrator user.
     */
 	private void createDefaultUser() {
-		myDetailStorage.put("admin", new User("admin",
-				"geoserver",
+		String name = (geoServer == null ? "admin" : geoServer.getAdminUserName());
+		String passwd = (geoServer == null ? "geoserver" : geoServer.getAdminPassword());
+		
+		myDetailStorage.put(name, new User(name,
+				passwd,
 				true,
 				true,
 				true,
