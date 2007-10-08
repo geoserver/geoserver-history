@@ -11,6 +11,8 @@ import org.springframework.web.servlet.mvc.AbstractController;
 
 import com.noelios.restlet.ext.servlet.ServletConverter;
 
+import org.geoserver.security.EditableUserDAO;
+
 /**
   * Simple AbstractController implementation that does the translation between
   * Spring requests and Restlet requests.

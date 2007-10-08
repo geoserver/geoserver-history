@@ -14,6 +14,8 @@ import org.restlet.data.Status;
 import org.restlet.resource.StringRepresentation;
 import org.springframework.dao.DataAccessException;
 
+import org.geoserver.security.EditableUserDAO;
+
 /**
  * The UserRestlet provides the basic user query and editing features of the 
  * user management API.  Basically, it handles the requests that actually deal

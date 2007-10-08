@@ -6,6 +6,8 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.resource.Resource;
 
+import org.geoserver.security.EditableUserDAO;
+
 public class UserFinder extends Finder {
 
 	private EditableUserDAO myUserService;
