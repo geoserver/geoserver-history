@@ -1,4 +1,4 @@
-package org.geoserver.usermanagement;
+package org.geoserver.security;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

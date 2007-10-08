@@ -16,6 +16,7 @@ import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.StringRepresentation;
 import org.springframework.dao.DataAccessException;
+import org.geoserver.security.EditableUserDAO;
 
 /**
  * First stab at representing user accounts as Restlet Resource objects.
