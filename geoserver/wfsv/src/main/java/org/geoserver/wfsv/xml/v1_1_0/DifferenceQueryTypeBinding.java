@@ -101,7 +101,7 @@ public class DifferenceQueryTypeBinding extends AbstractComplexBinding {
         DifferenceQueryType result = wfsvFactory.createDifferenceQueryType();
         result.setTypeName(node.getAttributeValue("typeName"));
 
-        if (node.hasChild("filter")) {
+        if (node.hasChild(Filter.class)) {
             result.setFilter((Filter) node.getChildValue(Filter.class));
         }
 
