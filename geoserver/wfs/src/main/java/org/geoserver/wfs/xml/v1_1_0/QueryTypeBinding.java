@@ -9,7 +9,10 @@ import net.opengis.wfs.WfsFactory;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import org.opengis.feature.Property;
 import org.opengis.filter.Filter;
+import org.opengis.filter.expression.Literal;
+import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.sort.SortBy;
 import java.net.URI;
 import java.util.Iterator;
@@ -189,7 +192,12 @@ public class QueryTypeBinding extends AbstractComplexBinding {
         if (node.hasChild("PropertyName")) {
             //HACK, stripping of namespace prefix
             for (Iterator p = node.getChildValues("PropertyName").iterator(); p.hasNext();) {
-                String propertyName = (String) p.next();
+                Object property = p.next();
+                String propertyName;
+                if(property instanceof String)
+                    propertyName = (String) property;
+                else
+                    propertyName = (String) ((PropertyName) property).getPropertyName();
 
                 if (propertyName.indexOf(':') != -1) {
                     propertyName = propertyName.substring(propertyName.indexOf(':') + 1);
