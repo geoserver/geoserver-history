@@ -278,9 +278,9 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
             //encode the styles, keep track of any labels provided by the 
             // styles
-            encodeStyle(feature, styles);
-
-            encodePlacemark(feature, styles);
+            if ( encodeStyle(feature, styles) ) {
+                encodePlacemark(feature, styles);    
+            }
 
             //end("Document");
         }
@@ -288,13 +288,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes the provided set of rules as KML styles.
          */
-        protected void encodeStyle(Feature feature, FeatureTypeStyle[] styles) {
-            //start the style
-            start("Style",
-                KMLUtils.attributes(new String[] { "id", "GeoServerStyle" + feature.getID() }));
-
-            //encode the icon
-            encodeIconStyle(feature, styles);
+        protected boolean encodeStyle(Feature feature, FeatureTypeStyle[] styles) {
             
             //encode hte Line/Poly styles
             List symbolizerList = new ArrayList();
@@ -305,11 +299,29 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                     symbolizerList.addAll(Arrays.asList(rules[i].getSymbolizers()));
                 }
             }
-            Symbolizer[] symbolizers = (Symbolizer[]) symbolizerList.toArray(new Symbolizer[symbolizerList.size()]);
-            encodeStyle(feature, symbolizers);
             
-            //end the style
-            end("Style");
+            if ( !symbolizerList.isEmpty() ) {
+                //start the style
+                start("Style",
+                    KMLUtils.attributes(new String[] { "id", "GeoServerStyle" + feature.getID() }));
+
+                //encode the icon
+                encodeIconStyle(feature, styles);
+
+                Symbolizer[] symbolizers = (Symbolizer[]) symbolizerList.toArray(new Symbolizer[symbolizerList.size()]);
+                encodeStyle(feature, symbolizers);
+                
+                //end the style
+                end("Style");
+                
+                //return true to specify that the feature has a style
+                return true;
+            }
+            else {
+                //dont encode
+                return false;
+            }
+
         }
 
         /**
