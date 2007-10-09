@@ -1,5 +1,6 @@
 <!--             
-  Now let's try and rollback
+  Now let's try an update with the version aware update element. This will fail becase
+  we are no mor at revision 1.
 -->
 <wfs:Transaction service="WFSV" version="1.0.0"
   xmlns:topp="http://www.openplans.org/topp"
@@ -10,6 +11,14 @@
   xmlns:wfs="http://www.opengis.net/wfs"
   xsi:schemaLocation="http://www.opengis.net/wfsv
                       http://localhost:8080/geoserver/schemas/wfs/1.0.0/WFS-versioning.xsd">
-  handle="Rolling back previous changes">
-  <wfsv:Rollback safeToIgnore="false" vendorId="TOPP" typeName="archsites" toFeatureVersion="1"/>
+  handle="Trying an update with wrong version">
+  <wfsv:VersionedUpdate typeName="topp:archsites" featureVersion="1">
+    <wfs:Property>
+      <wfs:Name>str1</wfs:Name>
+      <wfs:Value>You won't see me updated</wfs:Value>
+    </wfs:Property>
+    <ogc:Filter>
+      <ogc:FeatureId fid="archsites.1" />
+    </ogc:Filter>
+  </wfsv:VersionedUpdate>
 </wfs:Transaction>
