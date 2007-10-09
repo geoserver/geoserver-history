@@ -65,6 +65,7 @@ public class LoadXMLAction extends ConfigAction {
         ActionForward r1 = loadValidation(mapping, form, request, response);
         ActionForward r2 = loadGeoserver(mapping, form, request, response);
 
+        getApplicationState().fireChange();
         return mapping.findForward("config");
     }
 

@@ -36,6 +36,8 @@ import org.picocontainer.defaults.ComponentParameter;
 import org.picocontainer.defaults.SetterInjectionComponentAdapter;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.GeoServer;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -57,7 +59,16 @@ public class WFSConfiguration extends Configuration {
 
         this.catalog = catalog;
         this.schemaBuilder = schemaBuilder;
+        
+        catalog.getGeoServer().addListener(
+          new GeoServer.Listener() {
 
+            public void changed() {
+                flush();
+            }
+          }
+        );
+        
         addDependency(new OGCConfiguration());
         addDependency(new GMLConfiguration());
         addDependency(new OWSConfiguration());

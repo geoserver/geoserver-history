@@ -1,7 +1,10 @@
 package org.geoserver.wfs.v1_1;
 
+import javax.xml.namespace.QName;
+
 import junit.textui.TestRunner;
 
+import org.geoserver.data.test.MockData;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.gml3.bindings.GML;
 import org.geotools.referencing.CRS;
@@ -301,6 +304,18 @@ public class GetFeatureTest extends WFSTestSupport {
         }
     }
 
+    public void testAfterFeatureTypeAdded() throws Exception {
+        Document dom = getAsDOM( "wfs?request=getfeature&service=wfs&version=1.1.0&typename=sf:new");
+        assertEquals( "ExceptionReport", dom.getDocumentElement().getLocalName() );
+        
+        //add a feature type
+        dataDirectory.addFeatureType( new QName( MockData.SF_URI, "new", MockData.SF_PREFIX ) );
+        
+        dom = getAsDOM( "wfs?request=getfeature&service=wfs&version=1.1.0&typename=sf:new");
+        print( dom );
+        assertEquals( "FeatureCollection", dom.getDocumentElement().getLocalName() );
+    }
+    
     public static void main(String[] args) {
         TestRunner runner = new TestRunner();
         runner.run(GetFeatureTest.class);
