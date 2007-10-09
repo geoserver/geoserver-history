@@ -250,6 +250,8 @@ public class KMLReflector extends WMService {
         String proxifiedBaseUrl = RequestUtils.baseURL(request);
         GeoServer gs = (GeoServer)GeoServerExtensions.extensions(GeoServer.class).get(0);
         proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(proxifiedBaseUrl,gs.getProxyBaseUrl());
+          
+          Envelope layerbbox = null;
 
         // make a network link for every layer
         for (int i = 0; i < layers.length; i++) {
@@ -298,7 +300,18 @@ public class KMLReflector extends WMService {
                 sb.append("</Link>\n");
                 sb.append("</NetworkLink>\n");
             } else {
+
+//               Envelope le = (layers[i].getFeature() == null ? layers[i].getBoundingBox() : layers[i].getFeature().getLatLongBoundingBox());
+
+              Envelope le = layers[i].getLatLongBoundingBox();
+              if (layerbbox == null){
+                layerbbox = new Envelope(le);
+              } else {
+                layerbbox.expandToInclude(le);
+              }
+              
                 sb.append("<NetworkLink>\n");
+                sb.append(getLookAt(le));
                 sb.append("<name>" + layers[i].getName() + "</name>\n");
                 sb.append("<open>1</open>\n");
                 sb.append("<visibility>1</visibility>\n");
@@ -317,6 +330,8 @@ public class KMLReflector extends WMService {
             }
         }
 
+          sb.append(getLookAt(layerbbox));
+          
         sb.append("</Folder>\n");
 
         sb.append("</kml>\n");
@@ -325,4 +340,72 @@ public class KMLReflector extends WMService {
         out.write(kml_b);
         out.flush();
     }
+
+  private String getLookAt(Envelope e){
+    double lon1 = e.getMinX();
+    double lat1 = e.getMinY();
+    double lon2 = e.getMaxX();
+    double lat2 = e.getMaxY();
+    
+    double R_EARTH = 6.371 * 1000000; // meters
+    double VIEWER_WIDTH = 22 * Math.PI / 180; // The field of view of the google maps camera, in radians
+    double[] p1 = getRect(lon1, lat1, R_EARTH);
+    double[] p2 = getRect(lon2, lat2, R_EARTH);
+    double[] midpoint = new double[]{
+      (p1[0] + p2[0])/2,
+        (p1[1] + p2[1])/2,
+        (p1[2] + p2[2])/2
+    };
+    
+    midpoint = getGeographic(midpoint[0], midpoint[1], midpoint[2]);
+    
+    double distance = distance(p1, p2);
+    
+    double height = distance/ (2 * Math.tan(VIEWER_WIDTH));
+    
+    LOGGER.fine("lat1: " + lat1 + "; lon1: " + lon1);
+    LOGGER.fine("lat2: " + lat2 + "; lon2: " + lon2);
+    LOGGER.fine("latmid: " + midpoint[1] + "; lonmid: " + midpoint[0]);
+    
+    
+    return "<LookAt id=\"geoserver\">" + 
+      "  <longitude>" + midpoint[0] +  "</longitude>      <!-- kml:angle180 -->" +
+      "  <latitude>"+midpoint[1]+"</latitude>        <!-- kml:angle90 -->" +
+    "  <altitude>0</altitude>       <!-- double --> " +
+    "  <range>"+distance+"</range>              <!-- double -->" +
+    "  <tilt>0</tilt>               <!-- float -->" +
+    "  <heading>0</heading>         <!-- float -->" +
+    "  <altitudeMode>clampToGround</altitudeMode> " +
+    "  <!--kml:altitudeModeEnum:clampToGround, relativeToGround, absolute -->" +
+      "</LookAt>";
+  }
+  
+  private double[] getRect(double lat, double lon, double radius){
+    double theta = (90 - lat) * Math.PI/180;
+    double phi   = (90 - lon) * Math.PI/180;
+    
+    double x = radius * Math.sin(phi) * Math.cos(theta);
+    double y = radius * Math.sin(phi) * Math.sin(theta);
+    double z = radius * Math.cos(phi);
+    return new double[]{x, y, z};
+  }
+  
+  private double[] getGeographic(double x, double y, double z){
+    double theta, phi, radius;
+    radius = distance(new double[]{x, y, z}, new double[]{0,0,0});
+    theta = Math.atan2(Math.sqrt(x * x + y * y) , z);
+    phi = Math.atan2(y , x);
+    
+    double lat = 90 - (theta * 180 / Math.PI);
+    double lon = 90 - (phi * 180 / Math.PI);
+    
+    return new double[]{(lon > 180 ? lon - 360 : lon), lat, radius};
+  }
+  
+  private double distance(double[] p1, double[] p2){
+    double dx = p1[0] - p2[0];
+    double dy = p1[1] - p2[1];
+    double dz = p1[2] - p2[2];
+    return Math.sqrt(dx * dx + dy * dy + dz * dz);
+  }
 }

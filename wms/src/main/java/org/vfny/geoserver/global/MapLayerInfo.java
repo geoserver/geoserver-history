@@ -157,6 +157,30 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
     }
 
     /**
+     * Get the bounding box in latitude and longitude for this layer.
+     *
+     * @return Envelope the feature source bounds.
+     *
+     * @throws IOException
+     *             when an error occurs
+     */
+    public Envelope getLatLongBoundingBox() throws IOException {
+        if (this.type == TYPE_VECTOR) {
+            try {
+                return feature.getLatLongBoundingBox();
+            } catch (IllegalArgumentException e) {
+                FeatureSource realSource = feature.getFeatureSource();
+
+                return DataStoreUtils.getBoundingBoxEnvelope(realSource);
+            }
+        } else {
+            // using referenced envelope (experiment)
+            org.geotools.geometry.GeneralEnvelope ge = coverage.getWGS84LonLatEnvelope();
+            return new Envelope(ge.getMinimum(0), ge.getMaximum(0), ge.getMinimum(1), ge.getMaximum(1));
+        }
+    }
+
+    /**
      *
      * @uml.property name="coverage"
      */
