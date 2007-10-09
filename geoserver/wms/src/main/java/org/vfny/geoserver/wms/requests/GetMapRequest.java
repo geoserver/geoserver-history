@@ -308,7 +308,7 @@ public class GetMapRequest extends WMSRequest {
     /**
      * @return The time request parameter.
      */
-    public Integer getTime() {
+    public List getTime() {
         return this.optionalParams.time;
     }
 
@@ -578,7 +578,7 @@ public class GetMapRequest extends WMSRequest {
      * Sets the time request parameter.
      *
      */
-    public void setTime(Integer time) {
+    public void setTime(List time) {
         this.optionalParams.time = time;
     }
 
@@ -698,8 +698,9 @@ public class GetMapRequest extends WMSRequest {
 		/** The paletteInverter used for rendering, if any */
 		InverseColorMapOp paletteInverter;
 
-        /** time elevation parameter */
-        Integer time;
+        /** time elevation parameter, a list since many pattern setup can be possible, see
+         *  for example http://mapserver.gis.umn.edu/docs/howto/wms_time_support/#time-patterns */
+        List time;
 
         /** time elevation parameter */
         Integer elevation;

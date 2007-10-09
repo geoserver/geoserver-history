@@ -30,6 +30,7 @@ import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.Style;
 import org.opengis.filter.Filter;
 import org.opengis.parameter.ParameterDescriptor;
+import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -328,41 +329,39 @@ public class GetMapResponse implements Response {
 						//
 						// /////////////////////////////////////////////////////////
 
-						//
-						// A workaround for subsetting coverages configured from
-						// a netcdf file
-						// based on time and elevation parameters
-						// Added by Alex Petkov
-						//
-						// JD: this is pretty out of place, but a lot of stuff
-						// in this class ( kml ) seems to be out of place, we
-						// need a better way for people to plug into request
-						// parsing
-						if (reader.getFormat().getName().equalsIgnoreCase(
-								"netcdf")) {
-							ParameterValue time = reader.getFormat()
-									.getReadParameters().parameter("TIME");
-							ParameterValue elevation = reader.getFormat()
-									.getReadParameters().parameter("ELEVATION");
+                       /*
+                         * Test if the parameter "TIME" is present in the WMS
+                         * request, and by the way in the reading parameters. If
+                         * it is the case, one can adds it to the request. If an
+                         * exception is thrown, we have nothing to do.
+                         */
+                        try {
+                            ParameterValue time = reader.getFormat().getReadParameters().parameter(
+                                    "TIME");
+                            if (time != null && request.getTime() != null) {
+                                time.setValue(request.getTime());
+                            }
+                        } catch (ParameterNotFoundException p) {
+                        }
 
-							if (request.getTime() != null) {
-								time.setValue(request.getTime().intValue());
-							} else {
-								ParameterDescriptor timeDescriptor = (ParameterDescriptor) time
-										.getDescriptor();
-								time.setValue(timeDescriptor.getDefaultValue());
-							}
+//                      uncomment when the DIM_RANGE vendor parameter will be enabled                        
+//                        try {
+//                            ParameterValue dimRange = reader.getFormat().getReadParameters()
+//                                    .parameter("DIM_RANGE");
+//                            if (dimRange != null && request.getDimRange() != null) {
+//                                dimRange.setValue(request.getDimRange());
+//                            }
+//                        } catch (ParameterNotFoundException p) {
+//                        }
 
-							if (request.getElevation() != null) {
-								elevation.setValue(request.getElevation()
-										.intValue());
-							} else {
-								ParameterDescriptor elevDescriptor = (ParameterDescriptor) elevation
-										.getDescriptor();
-								elevation.setValue(elevDescriptor
-										.getDefaultValue());
-							}
-						}
+                        try {
+                            ParameterValue elevation = reader.getFormat().getReadParameters()
+                                    .parameter("ELEVATION");
+                            if (elevation != null && request.getElevation() != null) {
+                                elevation.setValue(request.getElevation().intValue());
+                            }
+                        } catch (ParameterNotFoundException p) {
+                        }
 
 						try {
 							final ParameterValueGroup params = reader.getFormat().getReadParameters();

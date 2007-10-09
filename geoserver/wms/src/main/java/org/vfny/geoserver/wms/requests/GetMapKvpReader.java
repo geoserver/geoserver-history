@@ -390,16 +390,16 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 					|| "ON".equalsIgnoreCase(legend));
 		}
 
-		/** TIME: a time stamp for multidim coverages <description> */
-		String time = getValue("TIME");
-
-		if (time != null) {
-			request.setTime(Integer.valueOf(time));
-
-			if (LOGGER.isLoggable(Level.INFO)) {
-				LOGGER.info("Set TIME: " + time);
-			}
-		}
+//		/** TIME: a time stamp for multidim coverages <description> */
+//		String time = getValue("TIME");
+//
+//		if (time != null) {
+//			request.setTime(Integer.valueOf(time));
+//
+//			if (LOGGER.isLoggable(Level.INFO)) {
+//				LOGGER.info("Set TIME: " + time);
+//			}
+//		}
 
 		/**
 		 * ELEVATION: elevation (or depth) valu for multidim coverages

@@ -7,7 +7,11 @@ package org.geoserver.wms.kvp;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.net.URL;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.TimeZone;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
@@ -80,7 +84,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         kvp.put("tilesorigin", "1.2,3.4");
         kvp.put("buffer", "1");
         kvp.put("palette", "SAFE");
-        kvp.put("time", "2");
+        kvp.put("time", "2006-02-27T22:08:12Z");
         kvp.put("elevation", "4");
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
@@ -94,8 +98,14 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         assertEquals(1, request.getBuffer());
 
         assertEquals(PaletteManager.safePalette, request.getPalette().getIcm());
-        assertEquals(new Integer(2), request.getTime());
         assertEquals(new Integer(4), request.getElevation());
+        
+        Calendar cal = Calendar.getInstance();
+        cal.set(2006, 1, 27, 22, 8, 12);
+        List times = request.getTime();
+        assertEquals(1, request.getTime().size());
+        assertEquals(cal.getTime().toString(), times.get(0).toString());
+        
     }
 
     public void testFilter() throws Exception {
