@@ -136,7 +136,7 @@
  		<constructor-arg value="buffer"/>
  	</bean>
  	<bean id="paletteKvpParser" class="org.geoserver.wms.kvp.PaletteKvpParser"/>
- 	<bean id="timeKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
+ 	<bean id="timeKvpParser" class="org.geoserver.wms.kvp.TimeKvpParser">
 		<constructor-arg value="time"/>
  	</bean>
  	<bean id="elevationKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
