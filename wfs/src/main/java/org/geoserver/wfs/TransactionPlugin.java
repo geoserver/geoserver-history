@@ -11,7 +11,7 @@ import net.opengis.wfs.TransactionType;
  * A transaction plugin is able to listen to a transaction evolution, perform
  * checks and throw exceptions, alter transaction requests, as well as
  */
-interface TransactionPlugin extends TransactionListener {
+public interface TransactionPlugin extends TransactionListener {
     /**
      * Check/alter the transaction request elements
      */
