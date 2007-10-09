@@ -186,7 +186,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
         this(config.getXMLReader().getData(), config.dataDirectory(), g);
     }
 
-    GeoServer getGeoServer() {
+    public GeoServer getGeoServer() {
         return gs;
     }
 

@@ -51,6 +51,19 @@ import com.sun.media.jai.util.SunTileCache;
  */
 public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     /**
+     * Simple listener interface.
+     * 
+     * JD: this is a temporary substitute until we have a decent config system.
+     */
+    public interface Listener {
+        /**
+         * Callback fired when application state has changed.
+         */
+        void changed();
+        
+    }
+    
+    /**
      * For finding the instance of this class to use from the web container
      *
      * <p>
@@ -103,6 +116,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     /** central log redirector controller **/
     private static Logging[] GEOSERVER_LOGGING;
 
+    private List listeners;
+    
     public GeoServer() {
     }
 
@@ -114,8 +129,39 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     public GeoServer(Config config) throws ConfigurationException {
         LOGGER.fine("Creating GeoServer");
         load(config.getXMLReader().getGeoServer());
+        
+        listeners = new ArrayList();    
     }
 
+    /**
+     * Adds a listener to be notified of state change.
+     */
+    public void addListener( Listener listener ) {
+        listeners.add( listener );
+    }
+
+    /**
+     * Removes a listener.
+     */
+    public void removeListener( Listener listener ) {
+        listeners.remove( listener );
+    }
+    
+    /**
+     * Notifies all listeners of a change.
+     */
+    public void fireChange() {
+        for ( Iterator l = listeners.iterator(); l.hasNext(); ) {
+            Listener listener = (Listener) l.next();
+            try {
+                listener.changed();
+            }
+            catch( Throwable t ) {
+                LOGGER.warning( "listener threw exception, turn logging to FINE to view stack trace" );
+                LOGGER.log( Level.FINE, t.getLocalizedMessage(), t );
+            }
+        }
+    }
     /**
      * getAddress purpose.
      *

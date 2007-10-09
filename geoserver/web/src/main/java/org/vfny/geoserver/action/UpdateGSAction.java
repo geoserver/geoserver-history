@@ -48,6 +48,7 @@ public class UpdateGSAction extends ConfigAction {
         ActionForward r1 = updateGeoserver(mapping, form, request, response);
         ActionForward r2 = updateValidation(mapping, form, request, response);
 
+        getApplicationState().fireChange();
         return mapping.findForward("config");
     }
 

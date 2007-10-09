@@ -21,13 +21,14 @@ import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Parameter;
 import org.picocontainer.defaults.SetterInjectionComponentAdapter;
 import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.GeoServer;
 
 
 /**
  * Parser configuration for wfs 1.0.
  *
  * @author Justin Deoliveira, The Open Planning Project
- *
+ * TODO: this class duplicates a lot of what is is in the 1.1 configuration, merge them
  */
 public class WFSConfiguration extends Configuration {
     Data catalog;
@@ -39,6 +40,15 @@ public class WFSConfiguration extends Configuration {
         this.catalog = catalog;
         this.schemaBuilder = schemaBuilder;
 
+        catalog.getGeoServer().addListener(
+            new GeoServer.Listener() {
+    
+              public void changed() {
+                  flush();
+              }
+            }
+          );
+        
         addDependency(new OGCConfiguration());
         addDependency(new GMLConfiguration());
     }
