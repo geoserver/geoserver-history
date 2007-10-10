@@ -359,6 +359,9 @@ public class KMLReflector extends WMService {
     
     midpoint = getGeographic(midpoint[0], midpoint[1], midpoint[2]);
     
+    // averaging the longitudes; using the rectangular coordinates makes the calculated center tend toward the corner that's closer to the equator. 
+    midpoint[0] = ((lon1 + lon2)/2); 
+    
     double distance = distance(p1, p2);
     
     double height = distance/ (2 * Math.tan(VIEWER_WIDTH));
@@ -369,7 +372,7 @@ public class KMLReflector extends WMService {
     
     
     return "<LookAt id=\"geoserver\">" + 
-      "  <longitude>" + midpoint[0] +  "</longitude>      <!-- kml:angle180 -->" +
+      "  <longitude>" + ((lon1 + lon2)/2) +  "</longitude>      <!-- kml:angle180 -->" +
       "  <latitude>"+midpoint[1]+"</latitude>        <!-- kml:angle90 -->" +
     "  <altitude>0</altitude>       <!-- double --> " +
     "  <range>"+distance+"</range>              <!-- double -->" +
