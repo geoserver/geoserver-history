@@ -9,6 +9,7 @@ import org.geotools.data.property.PropertyDataStoreFactory;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -261,25 +262,47 @@ public class MockData {
     
     /**
      * Adds a new feature type.
+     * <p>
+     * Note that callers of this code should call <code>applicationContext.refresh()</code>
+     * in order to force the catalog to reload.
+     * </p>
+     * <p>
+     * The feature type is "empty", in that it has no attributes and no data.
+     * Use {@link #addFeatureType(QName, InputStream)} to add a feature type 
+     * with data.
+     * </p>
      * 
      */
     public void addFeatureType( QName name ) throws IOException {
-        //create a dummy properties file
+        
+        addFeatureType( name, new ByteArrayInputStream( "-=".getBytes() ) );
+    }
+    
+    /**
+     * Adds a new feature type.
+     * <p>
+     * Note that callers of this code should call <code>applicationContext.refresh()</code>
+     * in order to force the catalog to reload.
+     * </p>
+     * <p>
+     * The <tt>properties</tt> parameter is an input stream containing the feature
+     * type info and data to be used by property datastore.
+     * </p>
+     * 
+     */
+    public void addFeatureType( QName name, InputStream properties ) throws IOException {
         File directory = new File(data, name.getPrefix());
         if ( !directory.exists() ) {
             directory.mkdir();    
         }
         
+        //create the properties file
         File f = new File(directory, name.getLocalPart() + ".properties");
-        f.createNewFile();
         
-        BufferedWriter w = new BufferedWriter( new FileWriter( f ) );
-        w.write( "_=" );
-        w.flush();
-        w.close();
-        
-        //set up the info directory
+        //copy over the contents
+        copy( properties, f );
         info( name );
+        
     }
     
     public void setUp() throws IOException {
