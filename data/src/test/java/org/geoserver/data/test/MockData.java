@@ -8,6 +8,7 @@ import org.geoserver.data.CatalogWriter;
 import org.geotools.data.property.PropertyDataStoreFactory;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -213,6 +214,13 @@ public class MockData {
     }
 
     /**
+     * @return the "featureTypes" directory under the root
+     */
+    public File getFeatureTypesDirectory() {
+        return featureTypes;
+    }
+    
+    /**
      * Copies some content to a file under the base of the data directory.
      * <p>
      * The <code>location</code> is considred to be a path relative to the
@@ -249,6 +257,29 @@ public class MockData {
         
         copyTo(input, "featureTypes" + File.separator + featureTypeName.getPrefix() 
                 + "_" + featureTypeName.getLocalPart() + File.separator + location );
+    }
+    
+    /**
+     * Adds a new feature type.
+     * 
+     */
+    public void addFeatureType( QName name ) throws IOException {
+        //create a dummy properties file
+        File directory = new File(data, name.getPrefix());
+        if ( !directory.exists() ) {
+            directory.mkdir();    
+        }
+        
+        File f = new File(directory, name.getLocalPart() + ".properties");
+        f.createNewFile();
+        
+        BufferedWriter w = new BufferedWriter( new FileWriter( f ) );
+        w.write( "_=" );
+        w.flush();
+        w.close();
+        
+        //set up the info directory
+        info( name );
     }
     
     public void setUp() throws IOException {
@@ -363,11 +394,12 @@ public class MockData {
     void properties(QName name) throws IOException {
         // copy over the properties file
         InputStream from = MockData.class.getResourceAsStream(name.getLocalPart() + ".properties");
+        
         File directory = new File(data, name.getPrefix());
         directory.mkdir();
 
         File to = new File(directory, name.getLocalPart() + ".properties");
-        copy(from, to);
+        copy(from, to);     
     }
 
     void copy(InputStream from, File to) throws IOException {
