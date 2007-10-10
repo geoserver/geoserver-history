@@ -15,14 +15,7 @@
     <ogc:Filter>
        <ogc:FeatureId fid="archsites.1"/>
        <ogc:FeatureId fid="archsites.2"/>
-       <ogc:FeatureId fid="archsites.25"/>
-    </ogc:Filter>
-  </wfs:Query>
-  <wfs:Query typeName="topp:archsites">
-    <ogc:Filter>
-       <ogc:FeatureId fid="archsites.1"/>
-       <ogc:FeatureId fid="archsites.2"/>
-       <ogc:FeatureId fid="archsites.25"/>
+       <ogc:FeatureId fid="archsites.26"/>
     </ogc:Filter>
   </wfs:Query>
 </wfs:GetFeature>
