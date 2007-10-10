@@ -133,45 +133,48 @@ public class KMLVectorTransformer extends KMLTransformerBase {
      * freemarker outputs dates when a user calls the ?datetime(),?date(),?time()
      * fuctions. 
      */
-    static List/*<SimpleDateFormat>*/ formats = new ArrayList();
+    static List/*<SimpleDateFormat>*/ dtformats = new ArrayList();
+    static List/*<SimpleDateFormat>*/ dformats = new ArrayList();
+    static List/*<SimpleDateFormat>*/ tformats = new ArrayList();
     static {
         
         //add default freemarker ones first since they are likely to be used 
-        // first
-        formats.add( FeatureTemplate.DATETIME_FORMAT );
-        formats.add( FeatureTemplate.DATE_FORMAT );
-        formats.add( FeatureTemplate.TIME_FORMAT );
+        // first, the order of this list matters.
         
-        //year-month-day
-        addFormats(formats,"yyyy%MM%dd" );
-        addFormats(formats,"yyyy%MMM%dd" );
+        dtformats.add( FeatureTemplate.DATETIME_FORMAT );
+        addFormats(dtformats,"dd%MM%yy hh:mm:ss" );
+        addFormats(dtformats,"MM%dd%yy hh:mm:ss" );
+        //addFormats(formats,"yy%MM%dd hh:mm:ss" );
+        addFormats(dtformats,"dd%MMM%yy hh:mm:ss" );
+        addFormats(dtformats,"MMM%dd%yy hh:mm:ss" );
+        //addFormats(formats,"yy%MMM%dd hh:mm:ss" );
         
-        //day-month-year
-        addFormats(formats,"dd%MM%yyyy" );
-        addFormats(formats,"dd%MMM%yyyy" );
+        addFormats(dtformats,"dd%MM%yy hh:mm" );
+        addFormats(dtformats,"MM%dd%yy hh:mm" );
+        //addFormats(formats,"yy%MM%dd hh:mm" );
+        addFormats(dtformats,"dd%MMM%yy hh:mm" );
+        addFormats(dtformats,"MMM%dd%yy hh:mm" );
+        //addFormats(formats,"yy%MMM%dd hh:mm" );
         
-        //month-day-year
-        addFormats(formats,"MM%dd%yyyy" );
-        addFormats(formats,"MMM%dd%yyyy" );
+        dformats.add( FeatureTemplate.DATE_FORMAT );
+        addFormats(dformats,"dd%MM%yy" );
+        addFormats(dformats,"MM%dd%yy" );
+        //addFormats(formats,"yy%MM%dd" );
+        addFormats(dformats,"dd%MMM%yy" );
+        addFormats(dformats,"MMM%dd%yy" );
+        //addFormats(formats,"yy%MMM%dd" );
+         
+        tformats.add( FeatureTemplate.TIME_FORMAT );
     }
     
     static void addFormats( List formats, String pattern ) {
         
         formats.add( new SimpleDateFormat( pattern.replaceAll("%","-" ) ) );
-        formats.add( new SimpleDateFormat( pattern.replaceAll("%","-" ) + " hh:mm") );
-        formats.add( new SimpleDateFormat( pattern.replaceAll("%","-" ) + " hh:mm:ss") );
         formats.add( new SimpleDateFormat( pattern.replaceAll("%","/" ) ) );
-        formats.add( new SimpleDateFormat( pattern.replaceAll("%","/" ) + " hh:mm") );
-        formats.add( new SimpleDateFormat( pattern.replaceAll("%","/" ) + " hh:mm:ss") );
         formats.add( new SimpleDateFormat( pattern.replaceAll("%","." ) ) );
-        formats.add( new SimpleDateFormat( pattern.replaceAll("%","." ) + " hh:mm") );
-        formats.add( new SimpleDateFormat( pattern.replaceAll("%","." ) + " hh:mm:ss") );
         formats.add( new SimpleDateFormat( pattern.replaceAll("%"," " ) ) );
-        formats.add( new SimpleDateFormat( pattern.replaceAll("%"," " ) + " hh:mm") );
-        formats.add( new SimpleDateFormat( pattern.replaceAll("%"," " ) + " hh:mm:ss") );
         formats.add( new SimpleDateFormat( pattern.replaceAll("%","," ) ) );
-        formats.add( new SimpleDateFormat( pattern.replaceAll("%","," ) + " hh:mm") );
-        formats.add( new SimpleDateFormat( pattern.replaceAll("%","," ) + " hh:mm:ss") );
+        
     }
     
     public KMLVectorTransformer(WMSMapContext mapContext, MapLayer mapLayer) {
@@ -734,56 +737,61 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          * Encodes a KML TimePrimitive geometry from a feature.
          */
         protected void encodePlacemarkTime(Feature feature) throws IOException {
-            String[] time = new FeatureTimeTemplate(template).execute(feature);
-            if ( time.length == 0 ) {
-                return;
-            }
-            
-            if ( time.length == 1 ) {
-                String datetime = encodeDateTime(time[0]);
-                if ( datetime != null ) {
-                    //timestamp case
-                    start("TimeStamp");
-                    element("when", datetime );
-                    end("TimeStamp");    
+            try {
+                String[] time = new FeatureTimeTemplate(template).execute(feature);
+                if ( time.length == 0 ) {
+                    return;
                 }
                 
-            }
-            else {
-                //timespan case
-                String begin = encodeDateTime(time[0]);
-                String end = encodeDateTime(time[1]);
-                
-                if (!(begin == null && end == null)) {
-                    start("TimeSpan");    
-                    if ( begin != null ) {
-                        element("begin", begin);
+                if ( time.length == 1 ) {
+                    String datetime = encodeDateTime(time[0]);
+                    if ( datetime != null ) {
+                        //timestamp case
+                        start("TimeStamp");
+                        element("when", datetime );
+                        end("TimeStamp");    
                     }
-                    if ( end != null ) {
-                        element("end", end);
-                    }    
-                    end("TimeSpan");
+                    
                 }
+                else {
+                    //timespan case
+                    String begin = encodeDateTime(time[0]);
+                    String end = encodeDateTime(time[1]);
+                    
+                    if (!(begin == null && end == null)) {
+                        start("TimeSpan");    
+                        if ( begin != null ) {
+                            element("begin", begin);
+                        }
+                        if ( end != null ) {
+                            element("end", end);
+                        }    
+                        end("TimeSpan");
+                    }
+                }
+            } catch (Exception e) {
+                throw (IOException) new IOException().initCause(e);
             }
         }
-
+ 
         /**
          * Encodes a date as an xs:dateTime.
          */
-        protected String encodeDateTime( String date ) {
-            Date d = null;
-            for ( Iterator f = formats.iterator(); f.hasNext(); ) {
-                SimpleDateFormat format = (SimpleDateFormat) f.next();
-                try {
-                    d = format.parse(date);
-                } catch (ParseException e) {}
-                
-                if ( d != null ) {
-                    break;
-                }
+        protected String encodeDateTime( String date ) throws Exception {
+            
+            //first try as date time
+            Date d = parseDate( dtformats, date );
+            if ( d == null ) {
+                //then try as date
+                d = parseDate( dformats, date );    
+            }
+            if ( d == null ) {
+                //try as time
+                d = parseDate( tformats, date );
             }
             
             if ( d == null ) {
+              //last ditch effort, try to parse as xml dates
                 try {
                     //try as xml date time
                     d = DateUtil.deserializeDateTime( date );
@@ -798,12 +806,30 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             }
             
             if ( d != null ) {
-            	return DateUtil.serializeDateTime(d);
+                return DateUtil.serializeDateTime(d);
             }
-            else {
-                LOGGER.warning("Could not parse date: " + date);
-                return null;
+            
+            LOGGER.warning("Could not parse date: " + date);
+            return null;
+        }
+        
+        /**
+         * Parses a date as a string into a well-known format.
+         */
+        protected Date parseDate( List formats, String date ) {
+            for ( Iterator f = formats.iterator(); f.hasNext(); ) {
+                SimpleDateFormat format = (SimpleDateFormat) f.next();
+                Date d = null;
+                try {
+                    d = format.parse(date);
+                } catch (ParseException e) {}
+                
+                if ( d != null ) {
+                    return d;
+                }
             }
+            
+            return null;
         }
         
         /**

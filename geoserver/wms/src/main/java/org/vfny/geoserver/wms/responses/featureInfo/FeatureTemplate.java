@@ -78,11 +78,11 @@ public class FeatureTemplate {
     /**
      * Default date format produced by templates
      */
-    public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
+    public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yy");
     /**
      * Default datetime format produced by templates
      */
-    public static SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+    public static SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
     /**
      * Default time format produced by templates
      */
