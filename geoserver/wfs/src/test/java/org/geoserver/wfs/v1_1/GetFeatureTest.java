@@ -312,8 +312,32 @@ public class GetFeatureTest extends WFSTestSupport {
         dataDirectory.addFeatureType( new QName( MockData.SF_URI, "new", MockData.SF_PREFIX ) );
         
         dom = getAsDOM( "wfs?request=getfeature&service=wfs&version=1.1.0&typename=sf:new");
-        print( dom );
         assertEquals( "FeatureCollection", dom.getDocumentElement().getLocalName() );
+    }
+    
+    public void testWithGMLProperties() throws Exception {
+        
+        dataDirectory.addFeatureType( 
+           new QName( MockData.SF_URI, "WithGMLProperties", MockData.SF_PREFIX ), 
+           getClass().getResourceAsStream("WithGMLProperties.properties") 
+        );
+        applicationContext.refresh();
+        
+        Document dom = getAsDOM( "wfs?request=getfeature&service=wfs&version=1.1.0&typename=sf:WithGMLProperties");
+        
+        assertEquals( "FeatureCollection", dom.getDocumentElement().getLocalName() );
+        
+        NodeList features = dom.getElementsByTagName("sf:WithGMLProperties");
+        assertEquals( 1, features.getLength() );
+        
+        for ( int i = 0; i < features.getLength(); i++ ) {
+            Element feature = (Element) features.item( i );
+            assertEquals( "one", getFirstElementByTagName( feature, "gml:name").getFirstChild().getNodeValue() );
+            assertEquals( "1", getFirstElementByTagName( feature, "sf:foo").getFirstChild().getNodeValue());
+            
+            Element location = getFirstElementByTagName( feature, "gml:location" );
+            assertNotNull( getFirstElementByTagName( location, "gml:Point" ) );
+        }
     }
     
     public static void main(String[] args) {
