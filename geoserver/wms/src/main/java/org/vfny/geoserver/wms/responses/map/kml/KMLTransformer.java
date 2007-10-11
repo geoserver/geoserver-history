@@ -325,7 +325,7 @@ public class KMLTransformer extends TransformerBase {
             }
 
             //ensure reprojection occurs, do not trust query, use the wrapper 
-            q.setCoordinateSystem(mapContext.getCoordinateReferenceSystem());
+            q.setCoordinateSystemReproject(mapContext.getCoordinateReferenceSystem());
             if ( reproject ) {
                 return new ReprojectFeatureResults( featureSource.getFeatures(q),mapContext.getCoordinateReferenceSystem() );
             }
