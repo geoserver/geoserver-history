@@ -20,6 +20,7 @@ import org.geotools.feature.FeatureCollection;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 
 
 /**
@@ -75,7 +76,8 @@ public class GetLogHtmlOutputFormat extends Response {
         }
 
         try {
-            template.process(fc, new OutputStreamWriter(output));
+            template.setOutputEncoding("UTF-8");
+            template.process(fc, new OutputStreamWriter(output, Charset.forName("UTF-8")));
         } catch (TemplateException e) {
             String msg = "Error occured processing template.";
             throw (IOException) new IOException(msg).initCause(e);

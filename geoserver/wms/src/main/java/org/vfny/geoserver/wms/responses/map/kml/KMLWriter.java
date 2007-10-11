@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -168,7 +169,7 @@ public class KMLWriter extends OutputStreamWriter {
 	 *            WMSMapContext describing the map to be generated.
 	 */
 	public KMLWriter(OutputStream out, WMSMapContext mapContext) {
-		super(out);
+		super(out, Charset.forName("UTF-8"));
 		this.mapContext = mapContext;
 
 		transformer = new GeometryTransformer();
@@ -888,6 +889,7 @@ public class KMLWriter extends OutputStreamWriter {
 			}
 
 			try {
+			    template.setEncoding("UTF-8");
 				template.process(feature, this);
 			} catch (TemplateException e) {
 				String msg = "Error occured processing template.";

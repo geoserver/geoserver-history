@@ -16,7 +16,7 @@
       }
      </style>
      
-     <script src="${baseUrl}/openlayers/OpenLayers.js" type="text/javascript">
+     <script src="http://openlayers.org/api/2.5-rc5/OpenLayers.js" type="text/javascript">
      </script>
      <script defer="defer" type="text/javascript">
        var map;

@@ -87,8 +87,8 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         if(results.size() == 1) {
             templateFeatureType = ((FeatureCollection) results.get(0)).getSchema();
         }
-        Template header = getTemplate(templateFeatureType, "header.ftl");
-        Template footer = getTemplate(templateFeatureType, "footer.ftl");
+        Template header = getTemplate(templateFeatureType, "header.ftl", charSet);
+        Template footer = getTemplate(templateFeatureType, "footer.ftl", charSet);
         
         try {
             header.process(null, osw);
@@ -97,7 +97,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
                 FeatureCollection fc = (FeatureCollection) it.next();
                 if(fc.size() > 0) {
                     FeatureType ft = fc.getSchema();
-                    Template content = getTemplate(ft, "content.ftl");
+                    Template content = getTemplate(ft, "content.ftl", charSet);
                     content.process(fc, osw);
                 }
             }
@@ -114,7 +114,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         return null;
     }
     
-    Template getTemplate(FeatureType featureType, String templateFileName) throws IOException {
+    Template getTemplate(FeatureType featureType, String templateFileName, Charset charset) throws IOException {
         // setup template subsystem
         if(templateLoader == null) {
             templateLoader = new GeoServerTemplateLoader(getClass());
@@ -123,7 +123,9 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
 
         synchronized (templateConfig) {
             templateConfig.setTemplateLoader(templateLoader);
-            return templateConfig.getTemplate(templateFileName);
+            Template t = templateConfig.getTemplate(templateFileName);
+            t.setEncoding(charset.name());
+            return t;
         }
     }
 }

@@ -5,6 +5,7 @@ will be called multiple times if there are various feature collections
 <table class="featureInfo">
   <caption class="featureInfo">${type.name}</caption>
   <tr>
+  <th>fid</th>
 <#list type.attributes as attribute>
   <#if !attribute.isGeometry>
     <th >${attribute.name}</th>
@@ -20,10 +21,11 @@ will be called multiple times if there are various feature collections
     <tr>
   </#if>
   <#assign odd = !odd>
-    
+
+  <td>${feature.fid}</td>    
   <#list feature.attributes as attribute>
     <#if !attribute.isGeometry>
-      <td>${attribute.value}</td>
+      <td>${attribute.value?string}</td>
     </#if>
   </#list>
   </tr>

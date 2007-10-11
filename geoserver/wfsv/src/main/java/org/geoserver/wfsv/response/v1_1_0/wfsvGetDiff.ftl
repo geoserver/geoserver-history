@@ -18,7 +18,7 @@ diff from version ${queryDiff.fromVersion}  to version ${queryDiff.toVersion} </
       inserted, feature content:
       <ul>
       <#list difference.feature.attributes as attribute>
-        <li>${attribute.name}: ${attribute.value}
+        <li>${attribute.name}: ${attribute.value.toString()}
       </#list>
       </ul>
     </#if>
@@ -27,7 +27,7 @@ diff from version ${queryDiff.fromVersion}  to version ${queryDiff.toVersion} </
       <table border="1" cellspacing="0">
       <tr><td>Attribute</td><td>Value at ${queryDiff.fromVersion}</td><td>Value at ${queryDiff.toVersion}</td></tr>
       <#list difference.changedAttributes as attName>
-        <tr><td>${attName}</td><td>${difference.oldFeature.attributes[attName].value}</td><td>${difference.feature.attributes[attName].value}</td></tr>
+        <tr><td>${attName}</td><td>${difference.oldFeature.attributes[attName].value.toString()}</td><td>${difference.feature.attributes[attName].value.toString()}</td></tr>
       </#list>
       </table>
       </ul>
@@ -36,7 +36,7 @@ diff from version ${queryDiff.fromVersion}  to version ${queryDiff.toVersion} </
       deleted, old feature content:
       <ul>
       <#list difference.oldFeature.attributes as attribute>
-        <li>${attribute.name}: ${attribute.value}
+        <li>${attribute.name}: ${attribute.value.toString()}
        </#list>
       </ul>
     </#if>

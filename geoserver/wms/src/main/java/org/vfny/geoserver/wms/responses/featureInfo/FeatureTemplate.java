@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Locale;
@@ -113,7 +114,7 @@ public class FeatureTemplate {
      */
     public void title(Feature feature, OutputStream output)
         throws IOException {
-        title(feature, new OutputStreamWriter(output));
+        title(feature, new OutputStreamWriter(output, Charset.forName("UTF-8")));
     }
 
     /**
@@ -133,7 +134,7 @@ public class FeatureTemplate {
      */
     public void description(Feature feature, OutputStream output)
         throws IOException {
-        description(feature, new OutputStreamWriter(output));
+        description(feature, new OutputStreamWriter(output, Charset.forName("UTF-8")));
     }
 
     /**
@@ -291,6 +292,7 @@ public class FeatureTemplate {
         synchronized (templateConfig) {
             templateConfig.setTemplateLoader(templateLoader);
             t = templateConfig.getTemplate(template);
+            t.setEncoding("UTF-8");
         }
         templateCache.put(key, t);
         return t;
