@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses.map.openlayers;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -26,7 +27,6 @@ import org.opengis.referencing.crs.ProjectedCRS;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
@@ -112,7 +112,8 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 				map.put("layerName", "Geoserver layers");
 			}
 
-			template.process(map, new OutputStreamWriter(out));
+			template.setOutputEncoding("UTF-8");
+			template.process(map, new OutputStreamWriter(out, Charset.forName("UTF-8")));
 		} catch (TemplateException e) {
 			throw new WmsException(e);
 		}
