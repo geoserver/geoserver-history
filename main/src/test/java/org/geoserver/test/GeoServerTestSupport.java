@@ -105,10 +105,12 @@ public class GeoServerTestSupport extends TestCase {
 
         //kill the context
         applicationContext.destroy();
-
+        applicationContext = null;
+        
         //kill the data directory
         dataDirectory.tearDown();
         GeoserverDataDirectory.destroy();
+        dataDirectory = null;
     }
 
     /**
