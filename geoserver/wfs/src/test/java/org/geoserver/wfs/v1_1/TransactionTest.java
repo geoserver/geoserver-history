@@ -10,6 +10,17 @@ import org.w3c.dom.NodeList;
 
 public class TransactionTest extends WFSTestSupport {
 
+    protected void setUp() throws Exception {
+        super.setUp();
+    
+        dataDirectory.addFeatureType( 
+            new QName( MockData.SF_URI, "WithGMLProperties", MockData.SF_PREFIX ), 
+            getClass().getResourceAsStream("WithGMLProperties.properties") 
+         );
+         applicationContext.refresh();
+         
+    }
+    
     public void testInsert1() throws Exception {
         String xml = "<wfs:Transaction service=\"WFS\" version=\"1.1.0\" "
                 + " xmlns:wfs=\"http://www.opengis.net/wfs\" "
@@ -167,12 +178,7 @@ public class TransactionTest extends WFSTestSupport {
     }
 
     public void testInsertWithGMLProperties() throws Exception {
-        dataDirectory.addFeatureType( 
-            new QName( MockData.SF_URI, "WithGMLProperties", MockData.SF_PREFIX ), 
-            getClass().getResourceAsStream("WithGMLProperties.properties") 
-         );
-         applicationContext.refresh();
-         
+    
          String xml = "<wfs:Transaction service=\"WFS\" version=\"1.1.0\" " + 
              "xmlns:wfs=\"http://www.opengis.net/wfs\" " + 
              "xmlns:sf=\"http://cite.opengeospatial.org/gmlsf\" " + 
@@ -243,7 +249,111 @@ public class TransactionTest extends WFSTestSupport {
          pos = getFirstElementByTagName(location, "gml:pos");
          
          assertEquals( "3.0 3.0", pos.getFirstChild().getNodeValue() );
-         
-         
+    }
+    
+    public void testUpdateWithGMLProperties() throws Exception {
+        String xml = 
+            "<wfs:Transaction service=\"WFS\" version=\"1.1.0\"" + 
+               " xmlns:sf=\"http://cite.opengeospatial.org/gmlsf\"" +
+               " xmlns:ogc=\"http://www.opengis.net/ogc\"" +
+               " xmlns:gml=\"http://www.opengis.net/gml\"" +
+               " xmlns:wfs=\"http://www.opengis.net/wfs\">" +
+               " <wfs:Update typeName=\"sf:WithGMLProperties\">" +
+               "   <wfs:Property>" +
+               "     <wfs:Name>gml:name</wfs:Name>" +
+               "     <wfs:Value>two</wfs:Value>" +
+               "   </wfs:Property>" + 
+               "   <wfs:Property>" +
+               "     <wfs:Name>gml:location</wfs:Name>" +
+               "     <wfs:Value>" +
+               "        <gml:Point>" + 
+               "          <gml:coordinates>2,2</gml:coordinates>" + 
+               "        </gml:Point>" + 
+               "     </wfs:Value>" +
+               "   </wfs:Property>" +
+               "   <wfs:Property>" +
+               "     <wfs:Name>sf:foo</wfs:Name>" +
+               "     <wfs:Value>2</wfs:Value>" +
+               "   </wfs:Property>" +
+               "   <ogc:Filter>" +
+               "     <ogc:PropertyIsEqualTo>" +
+               "       <ogc:PropertyName>foo</ogc:PropertyName>" + 
+               "       <ogc:Literal>1</ogc:Literal>" + 
+               "     </ogc:PropertyIsEqualTo>" + 
+               "   </ogc:Filter>" +
+               " </wfs:Update>" +
+              "</wfs:Transaction>"; 
+
+        Document dom = postAsDOM( "wfs", xml );
+        assertEquals( "wfs:TransactionResponse", dom.getDocumentElement().getNodeName());
+        
+        Element updated = getFirstElementByTagName(dom, "wfs:totalUpdated");
+        assertEquals( "1", updated.getFirstChild().getNodeValue());
+        
+        dom = getAsDOM("wfs?request=getfeature&service=wfs&version=1.1.0&typename=sf:WithGMLProperties");
+        print( dom );
+        NodeList features = dom.getElementsByTagName("sf:WithGMLProperties");
+        assertEquals( 1, features.getLength() );
+     
+        Element feature = (Element) features.item( 0 );
+        assertEquals( "two", getFirstElementByTagName(feature, "gml:name" ).getFirstChild().getNodeValue());
+        assertEquals( "2", getFirstElementByTagName(feature, "sf:foo" ).getFirstChild().getNodeValue());
+        
+        Element location = getFirstElementByTagName( feature, "gml:location" );
+        Element pos = getFirstElementByTagName(location, "gml:pos");
+        
+        assertEquals( "2.0 2.0", pos.getFirstChild().getNodeValue() );
+        
+        xml = 
+            "<wfs:Transaction service=\"WFS\" version=\"1.1.0\"" + 
+               " xmlns:sf=\"http://cite.opengeospatial.org/gmlsf\"" +
+               " xmlns:ogc=\"http://www.opengis.net/ogc\"" +
+               " xmlns:gml=\"http://www.opengis.net/gml\"" +
+               " xmlns:wfs=\"http://www.opengis.net/wfs\">" +
+               " <wfs:Update typeName=\"sf:WithGMLProperties\">" +
+               "   <wfs:Property>" +
+               "     <wfs:Name>sf:name</wfs:Name>" +
+               "     <wfs:Value>trhee</wfs:Value>" +
+               "   </wfs:Property>" + 
+               "   <wfs:Property>" +
+               "     <wfs:Name>sf:location</wfs:Name>" +
+               "     <wfs:Value>" +
+               "        <gml:Point>" + 
+               "          <gml:coordinates>3,3</gml:coordinates>" + 
+               "        </gml:Point>" + 
+               "     </wfs:Value>" +
+               "   </wfs:Property>" +
+               "   <wfs:Property>" +
+               "     <wfs:Name>sf:foo</wfs:Name>" +
+               "     <wfs:Value>3</wfs:Value>" +
+               "   </wfs:Property>" +
+               "   <ogc:Filter>" +
+               "     <ogc:PropertyIsEqualTo>" +
+               "       <ogc:PropertyName>foo</ogc:PropertyName>" + 
+               "       <ogc:Literal>2</ogc:Literal>" + 
+               "     </ogc:PropertyIsEqualTo>" + 
+               "   </ogc:Filter>" +
+               " </wfs:Update>" +
+              "</wfs:Transaction>"; 
+
+        dom = postAsDOM( "wfs", xml );
+        assertEquals( "wfs:TransactionResponse", dom.getDocumentElement().getNodeName());
+        
+        updated = getFirstElementByTagName(dom, "wfs:totalUpdated");
+        assertEquals( "1", updated.getFirstChild().getNodeValue());
+        
+        dom = getAsDOM("wfs?request=getfeature&service=wfs&version=1.1.0&typename=sf:WithGMLProperties");
+        
+        features = dom.getElementsByTagName("sf:WithGMLProperties");
+        assertEquals( 1, features.getLength() );
+     
+        feature = (Element) features.item( 0 );
+        assertEquals( "trhee", getFirstElementByTagName(feature, "gml:name" ).getFirstChild().getNodeValue());
+        assertEquals( "3", getFirstElementByTagName(feature, "sf:foo" ).getFirstChild().getNodeValue());
+        
+        location = getFirstElementByTagName( feature, "gml:location" );
+        pos = getFirstElementByTagName(location, "gml:pos");
+        
+        assertEquals( "3.0 3.0", pos.getFirstChild().getNodeValue() );
     }
 }
