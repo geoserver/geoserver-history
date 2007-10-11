@@ -1,5 +1,8 @@
 package org.geoserver.wfs.v1_1;
 
+import javax.xml.namespace.QName;
+
+import org.geoserver.data.test.MockData;
 import org.geoserver.wfs.WFSTestSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -163,4 +166,84 @@ public class TransactionTest extends WFSTestSupport {
         assertEquals(n + 1, pointsList.getLength());
     }
 
+    public void testInsertWithGMLProperties() throws Exception {
+        dataDirectory.addFeatureType( 
+            new QName( MockData.SF_URI, "WithGMLProperties", MockData.SF_PREFIX ), 
+            getClass().getResourceAsStream("WithGMLProperties.properties") 
+         );
+         applicationContext.refresh();
+         
+         String xml = "<wfs:Transaction service=\"WFS\" version=\"1.1.0\" " + 
+             "xmlns:wfs=\"http://www.opengis.net/wfs\" " + 
+             "xmlns:sf=\"http://cite.opengeospatial.org/gmlsf\" " + 
+             "xmlns:gml=\"http://www.opengis.net/gml\">" +  
+             "<wfs:Insert>" +    
+               "<sf:WithGMLProperties>" + 
+                  "<gml:location>" + 
+                       "<gml:Point>" + 
+                          "<gml:coordinates>2,2</gml:coordinates>" + 
+                       "</gml:Point>" + 
+                   "</gml:location>" + 
+                   "<gml:name>two</gml:name>" + 
+                   "<sf:foo>2</sf:foo>" +
+                 "</sf:WithGMLProperties>" + 
+               "</wfs:Insert>" + 
+             "</wfs:Transaction>";
+         
+         Document dom = postAsDOM("wfs", xml);
+         assertEquals( "wfs:TransactionResponse", dom.getDocumentElement().getNodeName());
+         
+         Element inserted = getFirstElementByTagName(dom, "wfs:totalInserted");
+         assertEquals( "1", inserted.getFirstChild().getNodeValue());
+         
+         dom = getAsDOM("wfs?request=getfeature&service=wfs&version=1.1.0&typename=sf:WithGMLProperties");
+         NodeList features = dom.getElementsByTagName("sf:WithGMLProperties");
+         assertEquals( 2, features.getLength() );
+         
+         Element feature = (Element) features.item( 1 );
+         assertEquals( "two", getFirstElementByTagName(feature, "gml:name" ).getFirstChild().getNodeValue());
+         assertEquals( "2", getFirstElementByTagName(feature, "sf:foo" ).getFirstChild().getNodeValue());
+         
+         Element location = getFirstElementByTagName( feature, "gml:location" );
+         Element pos = getFirstElementByTagName(location, "gml:pos");
+         
+         assertEquals( "2.0 2.0", pos.getFirstChild().getNodeValue() );
+         
+         xml = "<wfs:Transaction service=\"WFS\" version=\"1.1.0\" " + 
+         "xmlns:wfs=\"http://www.opengis.net/wfs\" " + 
+         "xmlns:sf=\"http://cite.opengeospatial.org/gmlsf\" " + 
+         "xmlns:gml=\"http://www.opengis.net/gml\">" +  
+         "<wfs:Insert>" +    
+           "<sf:WithGMLProperties>" + 
+              "<sf:location>" + 
+                   "<gml:Point>" + 
+                      "<gml:coordinates>3,3</gml:coordinates>" + 
+                   "</gml:Point>" + 
+               "</sf:location>" + 
+               "<sf:name>three</sf:name>" +
+               "<sf:foo>3</sf:foo>" +
+             "</sf:WithGMLProperties>" + 
+           "</wfs:Insert>" + 
+         "</wfs:Transaction>";
+         
+         dom = postAsDOM("wfs", xml);
+         
+         assertEquals( "wfs:TransactionResponse", dom.getDocumentElement().getNodeName());
+         
+         dom = getAsDOM("wfs?request=getfeature&service=wfs&version=1.1.0&typename=sf:WithGMLProperties");
+         
+         features = dom.getElementsByTagName("sf:WithGMLProperties");
+         assertEquals( 3, features.getLength() );
+         
+         feature = (Element) features.item( 2 );
+         assertEquals( "three", getFirstElementByTagName(feature, "gml:name" ).getFirstChild().getNodeValue());
+         assertEquals( "3", getFirstElementByTagName(feature, "sf:foo" ).getFirstChild().getNodeValue());
+         
+         location = getFirstElementByTagName( feature, "gml:location" );
+         pos = getFirstElementByTagName(location, "gml:pos");
+         
+         assertEquals( "3.0 3.0", pos.getFirstChild().getNodeValue() );
+         
+         
+    }
 }
