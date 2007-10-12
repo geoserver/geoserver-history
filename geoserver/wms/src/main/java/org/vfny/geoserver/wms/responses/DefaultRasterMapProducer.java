@@ -285,6 +285,8 @@ public abstract class DefaultRasterMapProducer extends
 				&& WMSConfig.INT_BICUBIC.equals(wms.getAllowInterpolation())) {
 			hintsMap.put(JAI.KEY_INTERPOLATION, BIC_INTERPOLATION);
 		}
+		// line look better with this hint, they are less blurred
+		hintsMap.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
 
 		// make sure the hints are set before we start rendering the map
 		graphic.setRenderingHints(hintsMap);
@@ -302,6 +304,13 @@ public abstract class DefaultRasterMapProducer extends
 				.getBuffer()));
 		rendererParams.put(ShapefileRenderer.SCALE_COMPUTATION_METHOD_KEY,
 				ShapefileRenderer.SCALE_OGC);
+		if(AA_NONE.equals(antialias)) {
+		    rendererParams.put(ShapefileRenderer.TEXT_RENDERING_KEY, 
+		            ShapefileRenderer.TEXT_RENDERING_STRING);
+		} else {
+		    rendererParams.put(ShapefileRenderer.TEXT_RENDERING_KEY, 
+                    ShapefileRenderer.TEXT_RENDERING_OUTLINE);
+		}
 		renderer.setRendererHints(rendererParams);
 
 		// if abort already requested bail out
