@@ -1197,8 +1197,15 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                 //TODO: other srs's
                 start("OutputFormats");
-                //TODO: process extension point
-                element("Format", "text/gml; subtype=gml/3.1.1");
+
+                Collection featureProducers = GeoServerExtensions.extensions(WFSGetFeatureOutputFormat.class);
+                for (Iterator i = featureProducers.iterator(); i.hasNext();) {
+                    WFSGetFeatureOutputFormat format = (WFSGetFeatureOutputFormat) i.next();
+                    for ( Iterator f = format.getOutputFormats().iterator(); f.hasNext(); ) {
+                        element( "Format", f.next().toString() );
+                    }
+                }
+                    
                 end("OutputFormats");
 
                 Envelope bbox = null;
