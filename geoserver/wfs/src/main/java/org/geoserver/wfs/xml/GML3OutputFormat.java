@@ -37,7 +37,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     WFSConfiguration configuration;
 
     public GML3OutputFormat(WFS wfs, Data catalog, WFSConfiguration configuration) {
-        super(new HashSet(Arrays.asList("gml3", "text/xml; subtype=gml/3.1.1")));
+        super(new HashSet(Arrays.asList(new Object[] {"gml3", "text/xml; subtype=gml/3.1.1"})));
 
         this.wfs = wfs;
         this.catalog = catalog;
