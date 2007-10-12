@@ -8,7 +8,9 @@ import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Set;
 
 
 /**
@@ -40,7 +42,7 @@ public abstract class Response {
     /**
      * The well known "outputFormat" of the response
      */
-    final String outputFormat;
+    final Set outputFormats;
 
     /**
      * Constructor which specified the class this response is bound to.
@@ -48,7 +50,7 @@ public abstract class Response {
      * @param binding The class of object the response serializes.
      */
     public Response(Class binding) {
-        this(binding, null);
+        this(binding, (Set)null);
     }
 
     /**
@@ -57,14 +59,30 @@ public abstract class Response {
      *
      * @param binding The class of object the response serializes
      * @param outputFormat A common name for the response.
+     *
      */
     public Response(Class binding, String outputFormat) {
-        this.binding = binding;
-        this.outputFormat = outputFormat;
+       this( binding, outputFormat == null ? null : Collections.singleton(outputFormat));
+    }
 
+    /**
+     * Constructor which specified the class this response is bound to, and a
+     * set of common names for the type of response.
+     *
+     * @param binding The class of object the response serializes
+     * @param outputFormats A set of common names for the response.
+     */
+    public Response(Class binding, Set outputFormats) {
         if (binding == null) {
             throw new NullPointerException("binding may not be null");
         }
+        
+        if (outputFormats == null ) {
+            outputFormats = Collections.EMPTY_SET;
+        }
+        
+        this.binding = binding;
+        this.outputFormats = outputFormats;
     }
 
     /**
@@ -75,12 +93,26 @@ public abstract class Response {
     }
 
     /**
+     * @deprecated use {@link #getOutputFormats()}.
+     * 
      * @return A common or well-known name for the response, may be <code>null</code>.
      */
     public final String getOutputFormat() {
-        return outputFormat;
+        if ( outputFormats.isEmpty() ) {
+            return null;
+        }
+        
+        return (String) outputFormats.iterator().next();
     }
 
+    /**
+     *  
+     * @return Set of common or well-known name for the response, may be empty.
+     */
+    public final Set getOutputFormats()  {
+        return outputFormats;
+    }
+    
     /**
      * Determines if the response can handle the operation being performed.
      * <p>

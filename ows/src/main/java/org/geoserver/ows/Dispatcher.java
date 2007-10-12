@@ -44,6 +44,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
@@ -505,7 +506,7 @@ public class Dispatcher extends AbstractController {
             List responses = GeoServerExtensions.extensions(Response.class);
 
             //first filter by binding, and canHandle
-            for (Iterator itr = responses.iterator(); itr.hasNext();) {
+         O: for (Iterator itr = responses.iterator(); itr.hasNext();) {
                 Response response = (Response) itr.next();
 
                 Class binding = response.getBinding();
@@ -518,10 +519,19 @@ public class Dispatcher extends AbstractController {
                 }
 
                 //filter by output format
-                String outputFormat = response.getOutputFormat();
+                Set outputFormats = response.getOutputFormats();
 
-                if ((req.outputFormat != null) && (outputFormat != null)
-                        && !req.outputFormat.equals(outputFormat)) {
+                if ((req.outputFormat != null) && (!outputFormats.isEmpty())
+                        && !outputFormats.contains(req.outputFormat)) {
+                    
+                    //must do a case insensitive check
+                    for ( Iterator of = outputFormats.iterator(); of.hasNext(); ) {
+                        String outputFormat = (String) of.next();
+                        if( req.outputFormat.equalsIgnoreCase( outputFormat ) ) {
+                            continue O;
+                        }
+                    }
+                    
                     itr.remove();
                 }
             }
