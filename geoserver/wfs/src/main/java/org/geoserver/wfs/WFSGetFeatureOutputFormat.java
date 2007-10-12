@@ -13,6 +13,7 @@ import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Set;
 import java.util.logging.Logger;
 
 
@@ -44,6 +45,15 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
      */
     public WFSGetFeatureOutputFormat(String outputFormat) {
         super(FeatureCollectionType.class, outputFormat);
+    }
+    
+    /**
+     * Constructor which sets the outputFormats.
+     *
+     * @param outputFormats Set of well-known name of the format, not <code>null</code>
+     */
+    public WFSGetFeatureOutputFormat(Set outputFormats) {
+        super(FeatureCollectionType.class, outputFormats);
     }
 
     /**

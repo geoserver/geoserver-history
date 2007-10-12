@@ -22,6 +22,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,7 +37,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     WFSConfiguration configuration;
 
     public GML3OutputFormat(WFS wfs, Data catalog, WFSConfiguration configuration) {
-        super("text/xml; subtype=gml/3.1.1");
+        super(new HashSet(Arrays.asList("gml3", "text/xml; subtype=gml/3.1.1")));
 
         this.wfs = wfs;
         this.catalog = catalog;

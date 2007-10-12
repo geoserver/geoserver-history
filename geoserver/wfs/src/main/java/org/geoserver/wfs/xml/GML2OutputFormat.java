@@ -8,6 +8,7 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 
+import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
@@ -96,7 +97,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
      * using it.
      */
     public GML2OutputFormat(WFS wfs, GeoServer geoServer, Data catalog) {
-        super("GML2");
+        super(new HashSet(Arrays.asList(new String[] { "GML2", "text/xml; subtype=gml/2.1.2", "GML2-GZIP" })));
 
         this.wfs = wfs;
         this.geoServer = geoServer;
@@ -196,10 +197,6 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         }
     }
 
-    public Set getOutputFormats() {
-        return new HashSet(Arrays.asList(new String[] { "GML2", "text/xml; subtype=gml/2.1.2" }));
-    }
-
     /**
       * DOCUMENT ME!
       *
@@ -258,7 +255,8 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
     protected void write(FeatureCollectionType featureCollection, OutputStream output,
         Operation getFeature) throws IOException, ServiceException {
         GetFeatureType request = (GetFeatureType)getFeature.getParameters()[0];
-        prepare("GML2", featureCollection, request);
+        
+        prepare(request.getOutputFormat(), featureCollection, request);
         encode(output, featureCollection, request );
     }
 
