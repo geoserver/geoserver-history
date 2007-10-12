@@ -26,6 +26,7 @@ import org.geotools.referencing.operation.projection.PointOutsideEnvelopeExcepti
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.Id;
+import org.opengis.filter.expression.PropertyName;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -67,6 +68,8 @@ public class UpdateElementHandler implements TransactionElementHandler {
             throw new WFSException("Transaction Update support is not enabled");
         }
 
+        FilterFactory ff = CommonFactoryFinder.getFilterFactory( null );
+        
         // check that all required properties have a specified value
         UpdateElementType update = (UpdateElementType) element;
 
@@ -77,6 +80,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
             for (Iterator prop = update.getProperty().iterator(); prop.hasNext();) {
                 PropertyType property = (PropertyType) prop.next();
 
+                //check that valus that are non-nillable exist
                 if (property.getValue() == null) {
                     String propertyName = property.getName().getLocalPart();
                     AttributeType attributeType = featureType.getAttributeType(propertyName);
@@ -86,6 +90,22 @@ public class UpdateElementHandler implements TransactionElementHandler {
                             + "' is mandatory but no value specified.";
                         throw new WFSException(msg, "MissingParameterValue");
                     }
+                }
+                
+                //check that property names are actually valid
+                QName name = property.getName();
+                PropertyName propertyName = null;
+                
+                if ( name.getPrefix() != null && !"".equals( name.getPrefix() )) {
+                    propertyName = ff.property( name.getPrefix() + ":" + name.getLocalPart() );
+                }
+                else {
+                    propertyName = ff.property( name.getLocalPart() ); 
+                }
+                
+                if ( propertyName.evaluate( featureType ) == null ) {
+                    String msg = "No such property: " + property.getName();
+                    throw new WFSException( msg );
                 }
             }
         } catch (IOException e) {
