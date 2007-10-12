@@ -338,10 +338,10 @@ public class GeoServerFeatureSource implements FeatureSource {
                 nativeCRS = fc.getSchema().getDefaultGeometry().getCoordinateSystem();
             }
             
-            if (srsHandling == FeatureTypeInfo.LEAVE) {
+            if (srsHandling == FeatureTypeInfo.LEAVE && nativeCRS != null) {
                 //do nothing
             }
-            else if (srsHandling == FeatureTypeInfo.FORCE) {
+            else if (srsHandling == FeatureTypeInfo.FORCE || nativeCRS == null) {
                 //force the declared crs
                 fc =  new ForceCoordinateSystemFeatureResults(fc, declaredCRS);
                 nativeCRS = declaredCRS;
