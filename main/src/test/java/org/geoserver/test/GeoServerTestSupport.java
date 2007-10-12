@@ -403,6 +403,14 @@ public class GeoServerTestSupport extends TestCase {
         while (st.hasMoreTokens()) {
             String token = st.nextToken();
             String[] keyValuePair = token.split("=");
+            
+            //check for any special characters
+            if ( keyValuePair.length > 1 ) {
+                //replace any equals or & characters
+                keyValuePair[1] = keyValuePair[1].replaceAll( "%3D", "=" );
+                keyValuePair[1] = keyValuePair[1].replaceAll( "%3d", "=" );
+                keyValuePair[1] = keyValuePair[1].replaceAll( "%23", "&" );
+            }
             request.setupAddParameter(keyValuePair[0], keyValuePair.length > 1 ?  keyValuePair[1]: "");
         }
     }
