@@ -4,13 +4,19 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
+
 import net.opengis.ows.OwsFactory;
 import net.opengis.wfs.WfsFactory;
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
 import org.geoserver.wfs.xml.gml3.AbstractGeometryTypeBinding;
+import org.geotools.feature.FeatureType;
 import org.geotools.filter.v1_0.OGCConfiguration;
+import org.geotools.gml2.FeatureTypeCache;
 import org.geotools.gml2.GMLConfiguration;
 import org.geotools.gml2.bindings.GML;
 import org.geotools.xml.BindingConfiguration;
@@ -21,6 +27,7 @@ import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Parameter;
 import org.picocontainer.defaults.SetterInjectionComponentAdapter;
 import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
 
 
@@ -77,6 +84,24 @@ public class WFSConfiguration extends Configuration {
         context.registerComponentInstance(WfsFactory.eINSTANCE);
         context.registerComponentInstance(new WFSHandlerFactory(catalog, schemaBuilder));
         context.registerComponentInstance(catalog);
+        
+        //TODO: this code is copied from the 1.1 configuration, FACTOR IT OUT!!!
+        //seed the cache with entries from the catalog
+        FeatureTypeCache featureTypeCache = (FeatureTypeCache) context
+            .getComponentInstanceOfType(FeatureTypeCache.class);
+
+        try {
+            Collection featureTypes = catalog.getFeatureTypeInfos().values();
+
+            for (Iterator f = featureTypes.iterator(); f.hasNext();) {
+                FeatureTypeInfo meta = (FeatureTypeInfo) f.next();
+                FeatureType featureType = meta.getFeatureType();
+
+                featureTypeCache.put(featureType);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected void configureBindings(MutablePicoContainer bindings) {

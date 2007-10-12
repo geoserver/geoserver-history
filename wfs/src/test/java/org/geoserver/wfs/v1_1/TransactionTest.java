@@ -356,4 +356,44 @@ public class TransactionTest extends WFSTestSupport {
         
         assertEquals( "3.0 3.0", pos.getFirstChild().getNodeValue() );
     }
+    
+    public void testInsertWithBoundedBy() throws Exception {
+        String xml = "<wfs:Transaction service=\"WFS\" version=\"1.1.0\" "
+            + " xmlns:wfs=\"http://www.opengis.net/wfs\" "
+            + " xmlns:gml=\"http://www.opengis.net/gml\" "
+            + " xmlns:cite=\"http://www.opengeospatial.org/cite\">"
+            + "<wfs:Insert>"
+            + " <cite:BasicPolygons>"
+            + " <gml:boundedBy>"
+            + "  <gml:Envelope>"
+            + "<gml:lowerCorner>-1.0 2.0</gml:lowerCorner>"
+            + "<gml:upperCorner>2.0 5.0</gml:upperCorner>"
+            + "  </gml:Envelope>"
+            + " </gml:boundedBy>"
+            + "  <cite:the_geom>"
+            + "    <gml:MultiPolygon>"
+            + "      <gml:polygonMember>" 
+            + "         <gml:Polygon>" 
+            + "<gml:exterior>" 
+            + "<gml:LinearRing>" 
+            + "<gml:posList>-1.0 5.0 2.0 5.0 2.0 2.0 -1.0 2.0 -1.0 5.0</gml:posList>" 
+            + "</gml:LinearRing>" 
+            + "</gml:exterior>" 
+            + "         </gml:Polygon>" 
+            + "      </gml:polygonMember>"
+            + "    </gml:MultiPolygon>"
+            + "  </cite:the_geom>"
+            + "  <cite:ID>foo</cite:ID>"
+            + " </cite:BasicPolygons>"
+            + "</wfs:Insert>"
+            + "</wfs:Transaction>";
+    
+        Document dom = postAsDOM("wfs", xml);
+        
+        assertEquals("wfs:TransactionResponse", dom.getDocumentElement().getNodeName());
+        
+        assertEquals( "1", getFirstElementByTagName(dom, "wfs:totalInserted").getFirstChild().getNodeValue());
+        assertTrue(dom.getElementsByTagName("ogc:FeatureId").getLength() > 0);
+    }
+    
 }

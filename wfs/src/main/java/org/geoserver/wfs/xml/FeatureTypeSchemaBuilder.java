@@ -235,14 +235,10 @@ public abstract class FeatureTypeSchemaBuilder {
         for (int i = 0; i < attributes.length; i++) {
             AttributeType attribute = attributes[i];
 
-            //ignore the attribute types from abstract feature type
-            if ("name".equals(attribute.getName()) || "description".equals(attribute.getName())
-                    || "location".equals(attribute.getName())
-                    || "metaDataProperty".equals(attribute.getName())
-                    || "boundedBy".equals(attribute.getName())) {
+            if ( filterAttributeType( attribute ) ) {
                 continue;
             }
-
+           
             XSDElementDeclaration element = factory.createXSDElementDeclaration();
             element.setName(attribute.getName());
             element.setNillable(attribute.isNillable());
@@ -286,6 +282,8 @@ public abstract class FeatureTypeSchemaBuilder {
         schema.updateElement();
     }
 
+   
+    
     Name findTypeName(Class binding) {
         for (Iterator p = profiles.iterator(); p.hasNext();) {
             TypeMappingProfile profile = (TypeMappingProfile) p.next();
@@ -301,6 +299,12 @@ public abstract class FeatureTypeSchemaBuilder {
 
     protected abstract XSDSchema gmlSchema();
 
+    protected boolean filterAttributeType( AttributeType attribute ) {
+        return "name".equals( attribute.getName() ) 
+            || "description".equals( attribute.getName()) 
+            || "boundedBy".equals( attribute.getName());
+    }
+    
     public static final class GML2 extends FeatureTypeSchemaBuilder {
         /**
          * Cached gml2 schema
@@ -347,6 +351,12 @@ public abstract class FeatureTypeSchemaBuilder {
             }
 
             return gml3Schema;
+        }
+        
+        protected boolean filterAttributeType( AttributeType attribute ) {
+            return super.filterAttributeType( attribute ) || 
+                "metaDataProperty".equals( attribute.getName() ) || 
+                "location".equals( attribute.getName() );
         }
     }
 }
