@@ -4,41 +4,27 @@
  */
 package org.geoserver.template;
 
-import com.vividsolutions.jts.geom.Geometry;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import freemarker.ext.beans.ArrayModel;
-import freemarker.ext.beans.BeanModel;
-import freemarker.ext.beans.BeansWrapper;
-import freemarker.ext.beans.CollectionModel;
-import freemarker.ext.beans.DateModel;
-import freemarker.ext.beans.EnumerationModel;
-import freemarker.ext.beans.IteratorModel;
-import freemarker.ext.beans.MapModel;
-import freemarker.ext.beans.NumberModel;
-import freemarker.ext.beans.ResourceBundleModel;
-import freemarker.ext.beans.SimpleMapModel;
-import freemarker.ext.beans.StringModel;
-import freemarker.template.Configuration;
-import freemarker.template.SimpleHash;
-import freemarker.template.SimpleSequence;
-import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelAdapter;
-import freemarker.template.TemplateModelException;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
 
-import java.text.DateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import com.vividsolutions.jts.geom.Geometry;
+
+import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.CollectionModel;
+import freemarker.template.Configuration;
+import freemarker.template.SimpleHash;
+import freemarker.template.SimpleSequence;
+import freemarker.template.TemplateModel;
+import freemarker.template.TemplateModelException;
 
 
 /**
@@ -98,6 +84,17 @@ public class FeatureWrapper extends BeansWrapper {
     public FeatureWrapper() {
         setSimpleMapWrapper(true);
     }
+    
+    /**
+     * Wrapper to make it possible to subclass for different date formats,
+     * or other behaviors.
+     * 
+     * @param o could be an instance of Date (a special case)
+     * @return the formated date as a String, or the object
+     */
+    protected Object wrapValue(Object o) {
+    	if ( o instanceof Date ) { return DateFormat.getInstance().format( (Date)o ); } else { return o; }
+    }
 
     public TemplateModel wrap(Object object) throws TemplateModelException {
         //check for feature collection
@@ -151,12 +148,8 @@ public class FeatureWrapper extends BeansWrapper {
                 Object value = feature.getAttribute(i);
                 if ( value != null ) {
                     //some special case checks
-                    if ( value instanceof Date ) {
-                          Date date = (Date) value;
-                          attribute.put("value", DateFormat.getInstance().format( date ) );
-                    } else {
-                         attribute.put("value", value);  
-                    }
+                	attribute.put("value", wrapValue(value));
+                	
                     attribute.put("isGeometry", Boolean.valueOf(value instanceof Geometry));
                 } else {
                     //nulls throw tempaltes off, use empty string

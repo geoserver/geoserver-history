@@ -14,7 +14,6 @@ import org.geoserver.ows.Response;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.template.FeatureWrapper;
 import org.geoserver.template.GeoServerTemplateLoader;
 import org.geotools.feature.FeatureCollection;
 import java.io.IOException;
@@ -35,7 +34,7 @@ public class GetLogHtmlOutputFormat extends Response {
         //initialize the template engine, this is static to maintain a cache 
         // over instantiations of kml writer
         templateConfig = new Configuration();
-        templateConfig.setObjectWrapper(new FeatureWrapper());
+        templateConfig.setObjectWrapper(new FeatureISODateWrapper());
     }
 
     public GetLogHtmlOutputFormat() {
