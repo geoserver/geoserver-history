@@ -26,6 +26,5 @@
 		<module>hello</module>
 		<module>preferences</module>
 		<module>community-schemas</module>
-		<module>geojson</module>
 	</modules>
 </project>
