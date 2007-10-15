@@ -103,10 +103,5 @@ public class LoginTest extends GeoServerTestSupport {
 	    
 //	    System.out.println(resultString);
 	    return be.encode((username + "\0" + resultString).getBytes());
-	}
-	
-	public static void main(String[] args) throws Exception{
-		(new LoginTest()).testLoggedInToAdminPage();
-	}
-	
+	}	
 }
