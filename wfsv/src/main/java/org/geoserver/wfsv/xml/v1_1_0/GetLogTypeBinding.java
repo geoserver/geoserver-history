@@ -142,6 +142,8 @@ public class GetLogTypeBinding extends AbstractComplexBinding {
 
         if (node.hasAttribute("outputFormat")) {
             result.setOutputFormat((String) node.getAttributeValue("outputFormat"));
+        } else {
+        	result.setOutputFormat("text/xml; subtype=gml/3.1.1");
         }
 
         return result;

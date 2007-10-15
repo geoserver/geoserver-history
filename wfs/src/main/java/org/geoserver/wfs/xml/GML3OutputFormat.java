@@ -7,6 +7,7 @@ package org.geoserver.wfs.xml;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 
+import net.opengis.wfs.BaseRequestType;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
@@ -82,7 +83,8 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         Encoder encoder = new Encoder(configuration, configuration.schema());
 
         //declare wfs schema location
-        GetFeatureType gft = (GetFeatureType)getFeature.getParameters()[0];
+        BaseRequestType gft = (BaseRequestType)getFeature.getParameters()[0];
+        
         String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(gft.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
         encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
             ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd"));
