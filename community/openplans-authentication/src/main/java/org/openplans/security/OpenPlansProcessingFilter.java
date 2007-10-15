@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package org.geoserver.security;
+package org.openplans.security;
 
 import java.io.IOException;
 
@@ -212,6 +212,7 @@ public class OpenPlansProcessingFilter implements Filter, InitializingBean {
 		String[] pair = null;
 	
 		for (int i = 0; i < request.getCookies().length; i++) {
+System.out.println("Cookie: " + request.getCookies()[i]);
 			if (request.getCookies()[i].getName().equals("__ac")) {
 				cookie = request.getCookies()[i].getValue();
 				System.out.println("Found authentication cookie");
