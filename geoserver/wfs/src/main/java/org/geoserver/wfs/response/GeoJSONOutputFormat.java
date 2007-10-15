@@ -105,10 +105,12 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
                         if (feature.getDefaultGeometry() != null) {
                             jsonWriter.writeGeom(feature.getDefaultGeometry());
                         } else {
-                            jsonWriter.value("null");
+                            jsonWriter.value(null);
                         }
 
-                        jsonWriter.key("geometry_name").value(defaultGeomType.getLocalName());
+                        if(defaultGeomType != null)
+                        	jsonWriter.key("geometry_name").value(defaultGeomType.getLocalName());
+                        
                         jsonWriter.key("properties");
                         jsonWriter.object();
 
