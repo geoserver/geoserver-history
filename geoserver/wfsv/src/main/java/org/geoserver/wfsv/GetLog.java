@@ -12,6 +12,7 @@ import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.VersioningFeatureSource;
+import org.geotools.data.store.MaxFeaturesFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
@@ -106,12 +107,12 @@ public class GetLog {
         }
 
         FeatureCollectionType result = WfsFactory.eINSTANCE.createFeatureCollectionType();
-        int count = 0;
+        int residual = request.getMaxFeatures() != null ? request.getMaxFeatures().intValue() : Integer.MAX_VALUE;
 
         // for each difference query check the feature type is versioned, and
         // gather bounds
         try {
-            for (int i = 0; (i < queries.size()); i++) {
+            for (int i = 0; i < queries.size() && residual > 0; i++) {
                 DifferenceQueryType query = (DifferenceQueryType) queries.get(i);
                 FeatureTypeInfo meta = featureTypeInfo((QName) query.getTypeName());
                 FeatureSource source = meta.getFeatureSource();
@@ -146,17 +147,17 @@ public class GetLog {
                 // extract collection
                 VersioningFeatureSource store = (VersioningFeatureSource) source;
                 FeatureCollection logs = store.getLog(query.getFromFeatureVersion(),
-                        query.getToFeatureVersion(), filter, null);
+                        query.getToFeatureVersion(), filter, null, residual);
+                residual -= logs.size();
 
                 // TODO: handle logs reprojection in another CRS
                 result.getFeature().add(logs);
-                count += logs.size();
             }
         } catch (IOException e) {
             throw new WFSException("Error occurred getting features", e, request.getHandle());
         }
 
-        result.setNumberOfFeatures(BigInteger.valueOf(count));
+        result.setNumberOfFeatures(BigInteger.valueOf(residual));
         result.setTimeStamp(Calendar.getInstance());
 
         return result;

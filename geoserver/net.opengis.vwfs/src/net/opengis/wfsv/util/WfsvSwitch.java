@@ -144,13 +144,13 @@ public class WfsvSwitch {
     }
 
     /**
-     * Returns the result of interpretting the object as an instance of '<em>Difference Query Type</em>'.
+     * Returns the result of interpreting the object as an instance of '<em>Difference Query Type</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
      * returning a non-null result will terminate the switch.
      * <!-- end-user-doc -->
      * @param object the target of the switch.
-     * @return the result of interpretting the object as an instance of '<em>Difference Query Type</em>'.
+     * @return the result of interpreting the object as an instance of '<em>Difference Query Type</em>'.
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
@@ -159,13 +159,13 @@ public class WfsvSwitch {
     }
 
     /**
-     * Returns the result of interpretting the object as an instance of '<em>Document Root</em>'.
+     * Returns the result of interpreting the object as an instance of '<em>Document Root</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
      * returning a non-null result will terminate the switch.
      * <!-- end-user-doc -->
      * @param object the target of the switch.
-     * @return the result of interpretting the object as an instance of '<em>Document Root</em>'.
+     * @return the result of interpreting the object as an instance of '<em>Document Root</em>'.
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
@@ -174,13 +174,13 @@ public class WfsvSwitch {
     }
 
     /**
-     * Returns the result of interpretting the object as an instance of '<em>Get Diff Type</em>'.
+     * Returns the result of interpreting the object as an instance of '<em>Get Diff Type</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
      * returning a non-null result will terminate the switch.
      * <!-- end-user-doc -->
      * @param object the target of the switch.
-     * @return the result of interpretting the object as an instance of '<em>Get Diff Type</em>'.
+     * @return the result of interpreting the object as an instance of '<em>Get Diff Type</em>'.
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
@@ -189,13 +189,13 @@ public class WfsvSwitch {
     }
 
     /**
-     * Returns the result of interpretting the object as an instance of '<em>Get Log Type</em>'.
+     * Returns the result of interpreting the object as an instance of '<em>Get Log Type</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
      * returning a non-null result will terminate the switch.
      * <!-- end-user-doc -->
      * @param object the target of the switch.
-     * @return the result of interpretting the object as an instance of '<em>Get Log Type</em>'.
+     * @return the result of interpreting the object as an instance of '<em>Get Log Type</em>'.
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
@@ -204,13 +204,13 @@ public class WfsvSwitch {
     }
 
     /**
-     * Returns the result of interpretting the object as an instance of '<em>Rollback Type</em>'.
+     * Returns the result of interpreting the object as an instance of '<em>Rollback Type</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
      * returning a non-null result will terminate the switch.
      * <!-- end-user-doc -->
      * @param object the target of the switch.
-     * @return the result of interpretting the object as an instance of '<em>Rollback Type</em>'.
+     * @return the result of interpreting the object as an instance of '<em>Rollback Type</em>'.
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
@@ -219,13 +219,13 @@ public class WfsvSwitch {
     }
 
     /**
-     * Returns the result of interpretting the object as an instance of '<em>Versioned Delete Element Type</em>'.
+     * Returns the result of interpreting the object as an instance of '<em>Versioned Delete Element Type</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
      * returning a non-null result will terminate the switch.
      * <!-- end-user-doc -->
      * @param object the target of the switch.
-     * @return the result of interpretting the object as an instance of '<em>Versioned Delete Element Type</em>'.
+     * @return the result of interpreting the object as an instance of '<em>Versioned Delete Element Type</em>'.
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
@@ -234,13 +234,13 @@ public class WfsvSwitch {
     }
 
     /**
-     * Returns the result of interpretting the object as an instance of '<em>Versioned Update Element Type</em>'.
+     * Returns the result of interpreting the object as an instance of '<em>Versioned Update Element Type</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
      * returning a non-null result will terminate the switch.
      * <!-- end-user-doc -->
      * @param object the target of the switch.
-     * @return the result of interpretting the object as an instance of '<em>Versioned Update Element Type</em>'.
+     * @return the result of interpreting the object as an instance of '<em>Versioned Update Element Type</em>'.
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
@@ -249,13 +249,13 @@ public class WfsvSwitch {
     }
 
     /**
-     * Returns the result of interpretting the object as an instance of '<em>Base Request Type</em>'.
+     * Returns the result of interpreting the object as an instance of '<em>Base Request Type</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
      * returning a non-null result will terminate the switch.
      * <!-- end-user-doc -->
      * @param object the target of the switch.
-     * @return the result of interpretting the object as an instance of '<em>Base Request Type</em>'.
+     * @return the result of interpreting the object as an instance of '<em>Base Request Type</em>'.
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
@@ -264,13 +264,13 @@ public class WfsvSwitch {
     }
 
     /**
-     * Returns the result of interpretting the object as an instance of '<em>Native Type</em>'.
+     * Returns the result of interpreting the object as an instance of '<em>Native Type</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
      * returning a non-null result will terminate the switch.
      * <!-- end-user-doc -->
      * @param object the target of the switch.
-     * @return the result of interpretting the object as an instance of '<em>Native Type</em>'.
+     * @return the result of interpreting the object as an instance of '<em>Native Type</em>'.
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
@@ -279,13 +279,13 @@ public class WfsvSwitch {
     }
 
     /**
-     * Returns the result of interpretting the object as an instance of '<em>Delete Element Type</em>'.
+     * Returns the result of interpreting the object as an instance of '<em>Delete Element Type</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
      * returning a non-null result will terminate the switch.
      * <!-- end-user-doc -->
      * @param object the target of the switch.
-     * @return the result of interpretting the object as an instance of '<em>Delete Element Type</em>'.
+     * @return the result of interpreting the object as an instance of '<em>Delete Element Type</em>'.
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
@@ -294,13 +294,13 @@ public class WfsvSwitch {
     }
 
     /**
-     * Returns the result of interpretting the object as an instance of '<em>Update Element Type</em>'.
+     * Returns the result of interpreting the object as an instance of '<em>Update Element Type</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
      * returning a non-null result will terminate the switch.
      * <!-- end-user-doc -->
      * @param object the target of the switch.
-     * @return the result of interpretting the object as an instance of '<em>Update Element Type</em>'.
+     * @return the result of interpreting the object as an instance of '<em>Update Element Type</em>'.
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
@@ -309,13 +309,13 @@ public class WfsvSwitch {
     }
 
     /**
-     * Returns the result of interpretting the object as an instance of '<em>EObject</em>'.
+     * Returns the result of interpreting the object as an instance of '<em>EObject</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
      * returning a non-null result will terminate the switch, but this is the last case anyway.
      * <!-- end-user-doc -->
      * @param object the target of the switch.
-     * @return the result of interpretting the object as an instance of '<em>EObject</em>'.
+     * @return the result of interpreting the object as an instance of '<em>EObject</em>'.
      * @see #doSwitch(org.eclipse.emf.ecore.EObject)
      * @generated
      */

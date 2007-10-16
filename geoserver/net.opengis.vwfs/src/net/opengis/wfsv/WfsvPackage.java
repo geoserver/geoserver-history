@@ -336,13 +336,22 @@ public interface WfsvPackage extends EPackage {
     int GET_LOG_TYPE__DIFFERENCE_QUERY = WfsPackage.BASE_REQUEST_TYPE_FEATURE_COUNT + 0;
 
     /**
+     * The feature id for the '<em><b>Max Features</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GET_LOG_TYPE__MAX_FEATURES = WfsPackage.BASE_REQUEST_TYPE_FEATURE_COUNT + 1;
+
+    /**
      * The feature id for the '<em><b>Output Format</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int GET_LOG_TYPE__OUTPUT_FORMAT = WfsPackage.BASE_REQUEST_TYPE_FEATURE_COUNT + 1;
+    int GET_LOG_TYPE__OUTPUT_FORMAT = WfsPackage.BASE_REQUEST_TYPE_FEATURE_COUNT + 2;
 
     /**
      * The feature id for the '<em><b>Result Type</b></em>' attribute.
@@ -351,7 +360,7 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int GET_LOG_TYPE__RESULT_TYPE = WfsPackage.BASE_REQUEST_TYPE_FEATURE_COUNT + 2;
+    int GET_LOG_TYPE__RESULT_TYPE = WfsPackage.BASE_REQUEST_TYPE_FEATURE_COUNT + 3;
 
     /**
      * The number of structural features of the '<em>Get Log Type</em>' class.
@@ -360,7 +369,7 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int GET_LOG_TYPE_FEATURE_COUNT = WfsPackage.BASE_REQUEST_TYPE_FEATURE_COUNT + 3;
+    int GET_LOG_TYPE_FEATURE_COUNT = WfsPackage.BASE_REQUEST_TYPE_FEATURE_COUNT + 4;
 
     /**
      * The meta object id for the '{@link net.opengis.wfsv.impl.RollbackTypeImpl <em>Rollback Type</em>}' class.
@@ -810,6 +819,17 @@ public interface WfsvPackage extends EPackage {
     EReference getGetLogType_DifferenceQuery();
 
     /**
+     * Returns the meta object for the attribute '{@link net.opengis.wfsv.GetLogType#getMaxFeatures <em>Max Features</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Max Features</em>'.
+     * @see net.opengis.wfsv.GetLogType#getMaxFeatures()
+     * @see #getGetLogType()
+     * @generated
+     */
+    EAttribute getGetLogType_MaxFeatures();
+
+    /**
      * Returns the meta object for the attribute '{@link net.opengis.wfsv.GetLogType#getOutputFormat <em>Output Format</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1135,6 +1155,14 @@ public interface WfsvPackage extends EPackage {
          * @generated
          */
         EReference GET_LOG_TYPE__DIFFERENCE_QUERY = eINSTANCE.getGetLogType_DifferenceQuery();
+
+        /**
+         * The meta object literal for the '<em><b>Max Features</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute GET_LOG_TYPE__MAX_FEATURES = eINSTANCE.getGetLogType_MaxFeatures();
 
         /**
          * The meta object literal for the '<em><b>Output Format</b></em>' attribute feature.

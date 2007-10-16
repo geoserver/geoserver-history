@@ -6,6 +6,7 @@
  */
 package net.opengis.wfsv;
 
+import javax.xml.namespace.QName;
 import net.opengis.wfs.NativeType;
 
 import org.eclipse.emf.ecore.EObject;
@@ -46,7 +47,7 @@ public interface RollbackType extends NativeType {
      * @return the value of the '<em>Filter</em>' attribute.
      * @see #setFilter(Object)
      * @see net.opengis.wfsv.WfsvPackage#getRollbackType_Filter()
-     * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.AnySimpleType"
+     * @model dataType="org.eclipse.emf.ecore.xml.type.AnySimpleType"
      *        extendedMetaData="kind='element' name='Filter' namespace='http://www.opengis.net/ogc'"
      * @generated
      */
@@ -79,7 +80,7 @@ public interface RollbackType extends NativeType {
      * @return the value of the '<em>Handle</em>' attribute.
      * @see #setHandle(String)
      * @see net.opengis.wfsv.WfsvPackage#getRollbackType_Handle()
-     * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String"
+     * @model dataType="org.eclipse.emf.ecore.xml.type.String"
      *        extendedMetaData="kind='attribute' name='handle'"
      * @generated
      */
@@ -111,7 +112,7 @@ public interface RollbackType extends NativeType {
      * @see #unsetToFeatureVersion()
      * @see #setToFeatureVersion(String)
      * @see net.opengis.wfsv.WfsvPackage#getRollbackType_ToFeatureVersion()
-     * @model default="FIRST" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
+     * @model default="FIRST" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
      *        extendedMetaData="kind='attribute' name='toFeatureVersion'"
      * @generated
      */
@@ -165,13 +166,13 @@ public interface RollbackType extends NativeType {
      *             
      * <!-- end-model-doc -->
      * @return the value of the '<em>Type Name</em>' attribute.
-     * @see #setTypeName(Object)
+     * @see #setTypeName(QName)
      * @see net.opengis.wfsv.WfsvPackage#getRollbackType_TypeName()
-     * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.QName" required="true"
+     * @model dataType="org.eclipse.emf.ecore.xml.type.QName" required="true"
      *        extendedMetaData="kind='attribute' name='typeName'"
      * @generated
      */
-    Object getTypeName();
+    QName getTypeName();
 
     /**
      * Sets the value of the '{@link net.opengis.wfsv.RollbackType#getTypeName <em>Type Name</em>}' attribute.
@@ -181,7 +182,7 @@ public interface RollbackType extends NativeType {
      * @see #getTypeName()
      * @generated
      */
-    void setTypeName(Object value);
+    void setTypeName(QName value);
 
     /**
      * Returns the value of the '<em><b>User</b></em>' attribute.
@@ -200,7 +201,7 @@ public interface RollbackType extends NativeType {
      * @see #unsetUser()
      * @see #setUser(String)
      * @see net.opengis.wfsv.WfsvPackage#getRollbackType_User()
-     * @model default="" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
+     * @model default="" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
      *        extendedMetaData="kind='attribute' name='user'"
      * @generated
      */

@@ -68,6 +68,14 @@
             </xsd:documentation>
           </xsd:annotation>
         </xsd:attribute>
+        <xsd:attribute name="maxFeatures" type="xsd:positiveInteger" use="optional">
+          <xsd:annotation>
+            <xsd:documentation>
+              The maxFeatures attribute is used to specify the maximum number of features that a
+              GetFeature operation should generate (regardless of the actual number of query hits).
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>

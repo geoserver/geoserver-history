@@ -38,6 +38,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link net.opengis.wfsv.GetLogType#getDifferenceQuery <em>Difference Query</em>}</li>
+ *   <li>{@link net.opengis.wfsv.GetLogType#getMaxFeatures <em>Max Features</em>}</li>
  *   <li>{@link net.opengis.wfsv.GetLogType#getOutputFormat <em>Output Format</em>}</li>
  *   <li>{@link net.opengis.wfsv.GetLogType#getResultType <em>Result Type</em>}</li>
  * </ul>
@@ -68,6 +69,35 @@ public interface GetLogType extends BaseRequestType {
     EList getDifferenceQuery();
 
     /**
+     * Returns the value of the '<em><b>Max Features</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * <!-- begin-model-doc -->
+     * 
+     *               The maxFeatures attribute is used to specify the maximum number of features that a
+     *               GetFeature operation should generate (regardless of the actual number of query hits).
+     *             
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>Max Features</em>' attribute.
+     * @see #setMaxFeatures(BigInteger)
+     * @see net.opengis.wfsv.WfsvPackage#getGetLogType_MaxFeatures()
+     * @model dataType="org.eclipse.emf.ecore.xml.type.PositiveInteger"
+     *        extendedMetaData="kind='attribute' name='maxFeatures'"
+     * @generated
+     */
+    BigInteger getMaxFeatures();
+
+    /**
+     * Sets the value of the '{@link net.opengis.wfsv.GetLogType#getMaxFeatures <em>Max Features</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Max Features</em>' attribute.
+     * @see #getMaxFeatures()
+     * @generated
+     */
+    void setMaxFeatures(BigInteger value);
+
+    /**
      * Returns the value of the '<em><b>Output Format</b></em>' attribute.
      * The default value is <code>"text/xml; subtype=gml/3.1.1"</code>.
      * <!-- begin-user-doc -->
@@ -89,7 +119,7 @@ public interface GetLogType extends BaseRequestType {
      * @see #unsetOutputFormat()
      * @see #setOutputFormat(String)
      * @see net.opengis.wfsv.WfsvPackage#getGetLogType_OutputFormat()
-     * @model default="text/xml; subtype=gml/3.1.1" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
+     * @model default="text/xml; subtype=gml/3.1.1" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
      *        extendedMetaData="kind='attribute' name='outputFormat'"
      * @generated
      */
@@ -152,7 +182,7 @@ public interface GetLogType extends BaseRequestType {
      * @see #unsetResultType()
      * @see #setResultType(ResultTypeType)
      * @see net.opengis.wfsv.WfsvPackage#getGetLogType_ResultType()
-     * @model default="results" unique="false" unsettable="true"
+     * @model default="results" unsettable="true"
      *        extendedMetaData="kind='attribute' name='resultType'"
      * @generated
      */

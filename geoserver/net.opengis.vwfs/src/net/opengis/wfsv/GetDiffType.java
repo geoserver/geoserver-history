@@ -80,7 +80,7 @@ public interface GetDiffType extends BaseRequestType {
      * @see #unsetOutputFormat()
      * @see #setOutputFormat(String)
      * @see net.opengis.wfsv.WfsvPackage#getGetDiffType_OutputFormat()
-     * @model default="text/xml; subtype=wfs-transaction/1.1.0" unique="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
+     * @model default="text/xml; subtype=wfs-transaction/1.1.0" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.String"
      *        extendedMetaData="kind='attribute' name='outputFormat'"
      * @generated
      */

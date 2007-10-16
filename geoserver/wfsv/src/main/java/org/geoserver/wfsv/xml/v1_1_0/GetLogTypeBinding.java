@@ -4,6 +4,8 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
+import java.math.BigInteger;
+
 import net.opengis.wfs.ResultTypeType;
 import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.GetLogType;
@@ -144,6 +146,10 @@ public class GetLogTypeBinding extends AbstractComplexBinding {
             result.setOutputFormat((String) node.getAttributeValue("outputFormat"));
         } else {
         	result.setOutputFormat("text/xml; subtype=gml/3.1.1");
+        }
+        
+        if(node.hasAttribute("maxFeatures")) {
+            result.setMaxFeatures((BigInteger) node.getAttributeValue("maxFeatures"));
         }
 
         return result;

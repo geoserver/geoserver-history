@@ -99,16 +99,16 @@ public class DifferenceQueryTypeBinding extends AbstractComplexBinding {
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
         DifferenceQueryType result = wfsvFactory.createDifferenceQueryType();
-        result.setTypeName(node.getAttributeValue("typeName"));
+        result.setTypeName((QName) node.getAttributeValue("typeName"));
 
         if (node.hasChild(Filter.class)) {
             result.setFilter((Filter) node.getChildValue(Filter.class));
         }
 
-        // if(node.hasAttribute("fromFeatureVersion"))
-        result.setFromFeatureVersion((String) node.getAttributeValue("fromFeatureVersion"));
-        // if(node.hasAttribute("toFeatureVersion"))
-        result.setToFeatureVersion((String) node.getAttributeValue("toFeatureVersion"));
+        if(node.hasAttribute("fromFeatureVersion"))
+            result.setFromFeatureVersion((String) node.getAttributeValue("fromFeatureVersion"));
+        if(node.hasAttribute("toFeatureVersion"))
+            result.setToFeatureVersion((String) node.getAttributeValue("toFeatureVersion"));
 
         return result;
     }

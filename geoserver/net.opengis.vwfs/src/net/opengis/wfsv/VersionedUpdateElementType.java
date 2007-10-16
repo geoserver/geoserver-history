@@ -41,7 +41,7 @@ public interface VersionedUpdateElementType extends UpdateElementType {
      * @return the value of the '<em>Feature Version</em>' attribute.
      * @see #setFeatureVersion(String)
      * @see net.opengis.wfsv.WfsvPackage#getVersionedUpdateElementType_FeatureVersion()
-     * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
+     * @model dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
      *        extendedMetaData="kind='attribute' name='featureVersion'"
      * @generated
      */

@@ -6,6 +6,7 @@
  */
 package net.opengis.wfsv.impl;
 
+import javax.xml.namespace.QName;
 import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.WfsvPackage;
 
@@ -81,7 +82,7 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
      * @generated
      * @ordered
      */
-    protected boolean fromFeatureVersionESet = false;
+    protected boolean fromFeatureVersionESet;
 
     /**
      * The default value of the '{@link #getSrsName() <em>Srs Name</em>}' attribute.
@@ -130,7 +131,7 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
      * @generated
      * @ordered
      */
-    protected boolean toFeatureVersionESet = false;
+    protected boolean toFeatureVersionESet;
 
     /**
      * The default value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
@@ -140,7 +141,7 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
      * @generated
      * @ordered
      */
-    protected static final Object TYPE_NAME_EDEFAULT = null;
+    protected static final QName TYPE_NAME_EDEFAULT = null;
 
     /**
      * The cached value of the '{@link #getTypeName() <em>Type Name</em>}' attribute.
@@ -150,7 +151,7 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
      * @generated
      * @ordered
      */
-    protected Object typeName = TYPE_NAME_EDEFAULT;
+    protected QName typeName = TYPE_NAME_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -309,7 +310,7 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
      * <!-- end-user-doc -->
      * @generated
      */
-    public Object getTypeName() {
+    public QName getTypeName() {
         return typeName;
     }
 
@@ -318,8 +319,8 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setTypeName(Object newTypeName) {
-        Object oldTypeName = typeName;
+    public void setTypeName(QName newTypeName) {
+        QName oldTypeName = typeName;
         typeName = newTypeName;
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, WfsvPackage.DIFFERENCE_QUERY_TYPE__TYPE_NAME, oldTypeName, typeName));
@@ -354,7 +355,7 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
             case WfsvPackage.DIFFERENCE_QUERY_TYPE__FILTER:
-                setFilter((Object)newValue);
+                setFilter(newValue);
                 return;
             case WfsvPackage.DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION:
                 setFromFeatureVersion((String)newValue);
@@ -366,7 +367,7 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
                 setToFeatureVersion((String)newValue);
                 return;
             case WfsvPackage.DIFFERENCE_QUERY_TYPE__TYPE_NAME:
-                setTypeName((Object)newValue);
+                setTypeName((QName)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
