@@ -15,6 +15,13 @@ public class GetFeatureTest extends WFSTestSupport {
         assertFalse(featureMembers.getLength() == 0);
     }
     
+    public void testAlienNamespace() throws Exception {
+        // if the namespace is not known, complain with a service exception
+        Document doc = getAsDOM("wfs?request=GetFeature&typename=youdontknowme:Fifteen&version=1.0.0&service=wfs");
+        assertEquals("ServiceExceptionReport", doc.getDocumentElement()
+                .getNodeName());
+    }
+    
     public void testPost() throws Exception {
 
         String xml = "<wfs:GetFeature " + "service=\"WFS\" "
