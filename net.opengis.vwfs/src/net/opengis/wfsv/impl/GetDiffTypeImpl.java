@@ -52,7 +52,7 @@ public class GetDiffTypeImpl extends BaseRequestTypeImpl implements GetDiffType 
      * @generated
      * @ordered
      */
-    protected EList differenceQuery = null;
+    protected EList differenceQuery;
 
     /**
      * The default value of the '{@link #getOutputFormat() <em>Output Format</em>}' attribute.
@@ -81,7 +81,7 @@ public class GetDiffTypeImpl extends BaseRequestTypeImpl implements GetDiffType 
      * @generated
      * @ordered
      */
-    protected boolean outputFormatESet = false;
+    protected boolean outputFormatESet;
 
     /**
      * <!-- begin-user-doc -->
