@@ -72,7 +72,7 @@ public class KMLTransformer extends TransformerBase {
         this.kmz = kmz;
     }
 
-    class KMLTranslator extends TranslatorSupport {
+    protected class KMLTranslator extends TranslatorSupport {
         public KMLTranslator(ContentHandler handler) {
             super(handler, null, null);
         }
@@ -174,12 +174,12 @@ public class KMLTransformer extends TransformerBase {
 
                 if (useVector) {
                     //encode
-                    KMLVectorTransformer tx = new KMLVectorTransformer(mapContext, layer);
+                    KMLVectorTransformer tx = createVectorTransformer(mapContext, layer);
                     initTransformer(tx);
                     tx.setScaleDenominator(scaleDenominator);
                     tx.createTranslator(contentHandler).encode(features);
                 } else {
-                    KMLRasterTransformer tx = new KMLRasterTransformer(mapContext);
+                    KMLRasterTransformer tx = createRasterTransfomer(mapContext);
                     initTransformer(tx);
                     
                     //set inline to true to have the transformer reference images
@@ -189,7 +189,7 @@ public class KMLTransformer extends TransformerBase {
                 }
             } else {
                 //kmz not selected, just do straight vector
-                KMLVectorTransformer tx = new KMLVectorTransformer(mapContext, layer);
+                KMLVectorTransformer tx = createVectorTransformer(mapContext, layer);
                 initTransformer(tx);
                 tx.setScaleDenominator(scaleDenominator);
                 tx.createTranslator(contentHandler).encode(features);
@@ -197,10 +197,29 @@ public class KMLTransformer extends TransformerBase {
         }
 
         /**
+         * Factory method, allows subclasses to inject their own version of the raster transfomer
+         * @param mapContext
+         * @return
+         */
+        protected KMLRasterTransformer createRasterTransfomer(WMSMapContext mapContext) {
+            return new KMLRasterTransformer(mapContext);
+        }
+
+        /**
+         * Factory method, allows subclasses to inject their own version of the vector transfomer
+         * @param mapContext
+         * @return
+         */
+        protected KMLVectorTransformer createVectorTransformer(WMSMapContext mapContext,
+                MapLayer layer) {
+            return new KMLVectorTransformer(mapContext, layer);
+        }
+
+        /**
          * Encodes a raster layer as kml.
          */
         protected void encodeRasterLayer(WMSMapContext mapContext, MapLayer layer) {
-            KMLRasterTransformer tx = new KMLRasterTransformer(mapContext);
+            KMLRasterTransformer tx = createRasterTransfomer(mapContext);
             initTransformer(tx);
             
             tx.setInline(kmz);

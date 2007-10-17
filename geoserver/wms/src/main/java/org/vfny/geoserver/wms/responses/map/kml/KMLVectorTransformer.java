@@ -80,6 +80,9 @@ import java.util.logging.Logger;
 /**
  * Transforms a feature collection to a kml document consisting of nested
  * "Style" and "Placemark" elements for each feature in the collection.
+ * A new transfomer must be instantianted for each feature collection, 
+ * the feature collection provided to the translator is supposed to be
+ * the one coming out of the MapLayer 
  * <p>
  * Usage:
  * </p>
@@ -100,12 +103,12 @@ public class KMLVectorTransformer extends KMLTransformerBase {
     /**
      * The map context
      */
-    final WMSMapContext mapContext;
+    protected final WMSMapContext mapContext;
 
     /**
      * The map layer being transformed
      */
-    final MapLayer mapLayer;
+    protected final MapLayer mapLayer;
 
     /**
      * The scale denominator.
@@ -193,11 +196,11 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         return new KMLTranslator(handler);
     }
 
-    class KMLTranslator extends KMLTranslatorSupport {
+    protected class KMLTranslator extends KMLTranslatorSupport {
         /**
          * Geometry transformer
          */
-        KMLGeometryTransformer.KMLGeometryTranslator geometryTranslator;
+        Translator geometryTranslator;
 
         public KMLTranslator(ContentHandler contentHandler) {
             super(contentHandler);
@@ -210,7 +213,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             GeoServer config = mapContext.getRequest().getGeoServer();
             geometryTransformer.setNumDecimals(config.getNumDecimals());
 
-            geometryTranslator = (KMLGeometryTranslator) geometryTransformer.createTranslator(contentHandler);
+            geometryTranslator = geometryTransformer.createTranslator(contentHandler);
         }
 
         public void encode(Object o) throws IllegalArgumentException {
@@ -225,11 +228,14 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             start("Document");
             element("name", mapLayer.getTitle());
 
-            
             //get the styles for hte layer
             FeatureTypeStyle[] featureTypeStyles = filterFeatureTypeStyles(mapLayer.getStyle(),
                     featureType);
+            
+            // encode the schemas (kml 2.2)
+            encodeSchemas(features);
 
+            // encode the layers
             encode(features, featureTypeStyles);
             
             //encode the legend
@@ -239,6 +245,14 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             if ( isStandAlone() ) {
                 end( "kml" );
             }
+        }
+
+        /**
+         * Encodes the <Schema> element in kml 2.2
+         * @param featureTypeStyles
+         */
+        protected void encodeSchemas(FeatureCollection featureTypeStyles) {
+            // the code is at the moment in KML3VectorTransformer
         }
 
         protected void encode(FeatureCollection features, FeatureTypeStyle[] styles) {
@@ -627,11 +641,22 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             
             //style reference
             element("styleUrl", "#GeoServerStyle" + feature.getID());
+            
+            // encode extended data (kml 2.2)
+            encodeExtendedData(feature);
 
             //geometry
             encodePlacemarkGeometry(geometry, centroid);
 
             end("Placemark");
+        }
+
+        /**
+         * Encodes kml 2.2 extended data section
+         * @param feature
+         */
+        protected void encodeExtendedData(Feature feature) {
+            // code at the moment is in KML3VectorTransfomer
         }
 
         /**

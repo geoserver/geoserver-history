@@ -24,7 +24,7 @@ import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
  */
 class KMLMapProducer extends AbstractGetMapProducer implements GetMapProducer {
 	/** standard logger */
-	private static final Logger LOGGER = Logger
+	protected static final Logger LOGGER = Logger
 			.getLogger("org.vfny.geoserver.responses.wms.kml");
 
 	/**
@@ -36,7 +36,7 @@ class KMLMapProducer extends AbstractGetMapProducer implements GetMapProducer {
 
 	// private EncodeKML kmlEncoder;
 	/** kml transformer which turns the map contedxt into kml */
-	private KMLTransformer transformer;
+	protected KMLTransformer transformer;
 
 	public KMLMapProducer(String mapFormat, String mime_type) {
 		super(mapFormat, mime_type);
