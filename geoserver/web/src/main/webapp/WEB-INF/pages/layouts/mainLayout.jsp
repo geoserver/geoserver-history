@@ -120,7 +120,7 @@
     <link type="image/gif" href="<html:rewrite forward='icon'/>" rel="icon"/>
     <link href="<html:rewrite forward='favicon'/>" rel="SHORTCUT ICON"/>
     <% 
-	    GeoServer gs = (GeoServer) getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY);
+	    GeoServer gs = (GeoServer) getServletConfig().getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY);
         String baseUrl = Requests.getBaseJspUrl(request, gs);
     %>
      <base href="<%=baseUrl%>"/> 
