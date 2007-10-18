@@ -26,5 +26,6 @@
 		<module>hello</module>
 		<module>preferences</module>
 		<module>community-schemas</module>
+		<module>kml3</module>
 	</modules>
 </project>
