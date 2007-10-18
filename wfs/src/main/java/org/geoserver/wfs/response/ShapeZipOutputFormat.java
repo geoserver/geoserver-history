@@ -131,13 +131,14 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
 
                 // if we generated the prj file, include it as well
                 f = new File(tempDir, name + ".prj");
-                entry = new ZipEntry(outputName + ".prj");
-                zipOut.putNextEntry(entry);
-
-                InputStream prj_in = new FileInputStream(f);
-                readInWriteOutBytes(zipOut, prj_in);
-                zipOut.closeEntry();
-                prj_in.close();
+                if(f.exists()) {
+                    entry = new ZipEntry(outputName + ".prj");
+                    zipOut.putNextEntry(entry);
+                    InputStream prj_in = new FileInputStream(f);
+                    readInWriteOutBytes(zipOut, prj_in);
+                    zipOut.closeEntry();
+                    prj_in.close();
+                }
             }
 
             zipOut.finish();
@@ -218,6 +219,12 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
 
             FeatureStore store = (FeatureStore) sfds.getFeatureSource(schema.getTypeName());
             store.addFeatures(c);
+            try {
+                if(schema.getDefaultGeometry().getCoordinateSystem() != null)
+                    sfds.forceSchemaCRS(schema.getDefaultGeometry().getCoordinateSystem());
+            } catch(Exception e) {
+                LOGGER.log(Level.WARNING, "Could not properly create the .prj file", e);
+            }
         } catch (IOException ioe) {
             LOGGER.log(Level.WARNING,
                 "Error while writing featuretype '" + schema.getTypeName() + "' to shapefile.", ioe);
