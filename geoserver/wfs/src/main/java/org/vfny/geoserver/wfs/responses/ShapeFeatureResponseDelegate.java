@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -229,13 +230,15 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
 
                 // if we generated the prj file, include it as well
                 f = new File(tempDir, name + ".prj");
-                entry = new ZipEntry(name + ".prj");
-                zipOut.putNextEntry(entry);
-
-                InputStream prj_in = new FileInputStream(f);
-                readInWriteOutBytes(output, prj_in);
-                zipOut.closeEntry();
-                prj_in.close();
+                if(f.exists()) {
+                    entry = new ZipEntry(name + ".prj");
+                    zipOut.putNextEntry(entry);
+    
+                    InputStream prj_in = new FileInputStream(f);
+                    readInWriteOutBytes(output, prj_in);
+                    zipOut.closeEntry();
+                    prj_in.close();
+                }
             }
 
             zipOut.finish();
@@ -336,6 +339,12 @@ public class ShapeFeatureResponseDelegate implements FeatureResponseDelegate {
 
         FeatureStore store = (FeatureStore) sfds.getFeatureSource(name);
         store.addFeatures(reader);
+        try {
+            if(schema.getDefaultGeometry().getCoordinateSystem() != null)
+                sfds.forceSchemaCRS(schema.getDefaultGeometry().getCoordinateSystem());
+        } catch(Exception e) {
+            LOGGER.log(Level.WARNING, "Could not properly create the .prj file", e);
+        }
     }
 
     public String getContentDisposition(String featureTypeName) {
