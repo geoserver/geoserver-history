@@ -788,14 +788,20 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return a {@link java.util.logging.Level} representing the correct jdk logging level
      */
     private static Level log4JLevelToJDKLoggingLevel(String log4jLevel) {
-        if (log4jLevel.equalsIgnoreCase("DEBUG")) {
+        if (log4jLevel.equalsIgnoreCase("ALL")) {
+            return Level.FINEST;
+        } else if (log4jLevel.equalsIgnoreCase("TRACE")) {
             return Level.FINER;
-        } else if (log4jLevel.equalsIgnoreCase("INFO")) {
+        } else if (log4jLevel.equalsIgnoreCase("DEBUG")) {
             return Level.CONFIG;
-        } else if (log4jLevel.equalsIgnoreCase("WARN")) {
+        } else if (log4jLevel.equalsIgnoreCase("INFO")) {
+            return Level.INFO;
+        } else if (log4jLevel.equalsIgnoreCase("WARN") || log4jLevel.equalsIgnoreCase("ERROR")) {
             return Level.WARNING;
-        } else if (log4jLevel.equalsIgnoreCase("ERROR")) {
+        } else if (log4jLevel.equalsIgnoreCase("FATAL")) {
             return Level.SEVERE;
+        } else if (log4jLevel.equalsIgnoreCase("OFF")) {
+            return Level.OFF;
         } else {
             LOGGER.warning("Can't figure out what sort of Log4j log level '" + log4jLevel + "' is.");
             return Level.ALL;
