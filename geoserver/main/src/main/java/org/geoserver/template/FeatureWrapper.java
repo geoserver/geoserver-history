@@ -41,7 +41,8 @@ import freemarker.template.TemplateModelException;
  *       <li>typeName (String)</li>
  *       <li>attributes -> attribute</li>
  *       <ul>
- *         <li>value (Object)</li>
+ *         <li>value (String), a default String representation of the attribute value</li>
+ *         <li>rawValue (Object), the actual attribute value if it's non null, the empty string otherwise</li>
  *         <li>name (String)</li>
  *         <li>type (String)</li>
  *         <li>isGeometry (Boolean)</li>
@@ -83,6 +84,36 @@ import freemarker.template.TemplateModelException;
 public class FeatureWrapper extends BeansWrapper {
     public FeatureWrapper() {
         setSimpleMapWrapper(true);
+    }
+    
+    /**
+     * Returns a sensible String value for attributes so they are
+     * easily used by templates.
+     * <p>
+     * Special cases:
+     * <ul>
+     * <li>for Date values returns a default {@link DateFormat} representation</li>
+     * <li>for Boolean values returns "true" or "false"</li>
+     * <li>for null values returns an empty string</li>
+     * <li>for any other value returns its toString()</li>
+     * </ul> 
+     * </p>
+     * 
+     * @param o could be an instance of Date (a special case)
+     * @return the formated date as a String, or the object
+     */
+    protected String wrapValue(Object o) {
+        if(o == null){
+            //nulls throw tempaltes off, use empty string
+            return "";
+        }
+    	if ( o instanceof Date ) { 
+    	    return DateFormat.getInstance().format( (Date)o ); 
+    	}
+    	if( o instanceof Boolean){
+    	    return ((Boolean)o).booleanValue()? "true" : "false";
+    	}
+    	return String.valueOf(o);
     }
 
     public TemplateModel wrap(Object object) throws TemplateModelException {
@@ -135,20 +166,16 @@ public class FeatureWrapper extends BeansWrapper {
 
                 Map attribute = new HashMap();
                 Object value = feature.getAttribute(i);
-                if ( value != null ) {
-                	//special case check for date
-//                    if ( value instanceof Date ) {
-//                          Date date = (Date) value;
-//                          attribute.put("value", DateFormat.getInstance().format( date ) );
-//                    } else {
-                         attribute.put("value", value);  
-//                    }
-                    attribute.put("isGeometry", Boolean.valueOf(value instanceof Geometry));
-                } else {
-                    //nulls throw tempaltes off, use empty string
-                    attribute.put( "value", "" );
+                attribute.put("value", wrapValue(value));
+                if ( value == null ) {
+                    //some special case checks
+                    attribute.put("rawValue", "");
                     attribute.put("isGeometry", Boolean.valueOf(Geometry.class.isAssignableFrom(type.getType())));
+                } else {
+                    attribute.put("rawValue", value);
+                    attribute.put("isGeometry", Boolean.valueOf(value instanceof Geometry));
                 }
+
                 attribute.put("name", type.getName());
                 attribute.put("type", type.getType().getName());
 
