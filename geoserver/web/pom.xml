@@ -309,12 +309,12 @@
 						${project.build.directory}/geoserver
 					</webApp>
 					<!-- uncomment following to set a GEOSERVER_DATA_DIR -->
-					<systemProperties>
+					<!--systemProperties>
 						<systemProperty>
 							<name>GEOSERVER_DATA_DIR</name>
 							<value>/home/jdeolive/devel/geoserver/1.5.x/configuration/cite</value>
 						</systemProperty>
-					</systemProperties>
+					</systemProperties-->
 				</configuration>
 			</plugin>
 
