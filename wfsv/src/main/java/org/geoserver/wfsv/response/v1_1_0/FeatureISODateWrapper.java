@@ -14,19 +14,20 @@ import java.util.Date;
 *
 */
 public class FeatureISODateWrapper extends org.geoserver.template.FeatureWrapper {
+
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    
     /**
-     * Wrapper to make it possible to subclass for different date formats,
-     * or other behaviors.
+     * Wraps dates as ISO date strings; defaults to the superclass for other kind of objects.
      * 
      * @param o could be an instance of Date (a special case)
-     * @return the formated date as a String, or the object
+     * @return the formated date as a String, or the value returned by the overriden method in the superclass.
      */
-    protected Object wrapValue(Object o) {
+    protected String wrapValue(Object o) {
     	if ( o instanceof Date ) { 
-    		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     		return sdf.format((Date) o);
     	} else { 
-    		return o; 
+    		return super.wrapValue(o); 
     	}
     }
 }
