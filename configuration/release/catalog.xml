@@ -154,5 +154,6 @@
     <style id = "poly_landmarks" filename = "poly_landmarks.sld" />
     <style id = "dem" filename = "dem.sld" />
     <style id = "population" filename = "popshade.sld" />
+    <style id = "burg" filename = "burg.sld" />
   </styles>
 </catalog>
