@@ -60,6 +60,67 @@
 			<groupId>itext</groupId>
 			<artifactId>itext</artifactId>
 		</dependency>
+		
+		<!-- SVG rendering markers support
+			These dependencies need to be declared here as they're marked
+			as optional in the geotools renderer module and thus are not
+			transitive
+		 -->
+		<dependency>
+			<groupId>batik</groupId>
+			<artifactId>batik-dom</artifactId>
+			<version>1.6</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>batik</groupId>
+			<artifactId>batik-bridge</artifactId>
+			<version>1.6</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>batik</groupId>
+			<artifactId>batik-gvt</artifactId>
+			<version>1.6</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>batik</groupId>
+			<artifactId>batik-svg-dom</artifactId>
+			<version>1.6</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>batik</groupId>
+			<artifactId>batik-css</artifactId>
+			<version>1.6</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>batik</groupId>
+			<artifactId>batik-ext</artifactId>
+			<version>1.6</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>batik</groupId>
+			<artifactId>batik-xml</artifactId>
+			<version>1.6</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>batik</groupId>
+			<artifactId>batik-script</artifactId>
+			<version>1.6</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>batik</groupId>
+			<artifactId>batik-parser</artifactId>
+			<version>1.6</version>
+			<type>jar</type>
+		</dependency>
+		<!-- end of SVG rendering markers support -->
 	</dependencies>
 	
   <!-- =========================================================== -->
