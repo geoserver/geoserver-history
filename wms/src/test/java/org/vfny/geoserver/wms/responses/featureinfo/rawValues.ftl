@@ -16,7 +16,7 @@
   <#if a.isGeometry >
 [GEOMETRY]
   <#else>
-${a.value}
+${a.rawValue.toString()}
   </#if>
   </td>
 </#list>

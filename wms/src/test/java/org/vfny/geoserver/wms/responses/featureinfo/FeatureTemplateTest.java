@@ -12,7 +12,7 @@ import org.vfny.geoserver.wms.responses.featureinfo.dummy.Dummy;
 
 public class FeatureTemplateTest extends WMSTestSupport {
 
-    public void testWithDate() throws Exception {
+    public void testWithDateAndBoolean() throws Exception {
 
         FeatureSource source = getFeatureSource( MockData.PRIMITIVEGEOFEATURE );
         FeatureCollection fc = source.getFeatures();
@@ -28,14 +28,31 @@ public class FeatureTemplateTest extends WMSTestSupport {
                 e.printStackTrace();
                 fail("template threw exception on null value");
             }
-            
         }
         finally {
             fc.close( i );
         }
-      
     }
-    
+     
+    public void testRawValue() throws Exception {
+        FeatureSource source = getFeatureSource(MockData.PRIMITIVEGEOFEATURE);
+        FeatureCollection fc = source.getFeatures();
+        Iterator i = fc.iterator();
+        try {
+            Feature f = (Feature) i.next();
+
+            FeatureTemplate template = new FeatureTemplate();
+            try {
+                template.template(f, "rawValues.ftl", FeatureTemplateTest.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw(e);
+            }
+        } finally {
+            fc.close(i);
+        }
+    }
+
     public void testWithNull() throws Exception {
         
         FeatureSource source = getFeatureSource( MockData.BASIC_POLYGONS );
