@@ -199,7 +199,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
 
         /**
          * A legend graphic is produced for each applicable rule. They're being
-         * holded here until the process is done and then painted on a "stack"
+         * held here until the process is done and then painted on a "stack"
          * like legend.
          */
         final List /*<BufferedImage>*/ legendsStack = new ArrayList(ruleCount);
