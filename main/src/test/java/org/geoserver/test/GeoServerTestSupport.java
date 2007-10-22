@@ -34,6 +34,8 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -60,6 +62,11 @@ import javax.xml.transform.stream.StreamResult;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  */
 public class GeoServerTestSupport extends TestCase {
+    /**
+     * Common logger for test cases
+     */
+    protected static final Logger LOGGER = Logger.getLogger("org.geoserver.test"); 
+    
     /**
      * mock GeoServer data directory
      */
