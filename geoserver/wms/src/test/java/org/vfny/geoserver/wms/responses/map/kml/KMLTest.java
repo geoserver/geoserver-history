@@ -46,10 +46,10 @@ public class KMLTest extends WMSTestSupport {
             "wms?request=getmap&service=wms&version=1.1.1" + 
             "&format=" + KMLMapProducerFactory.MIME_TYPE + 
             "&layers=topp:states" + 
-            "&styles=" + MockData.BASIC_POLYGONS.getLocalPart() + 
+            "&styles=Default" + 
             "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +
-            "remote_ows_type=wfs" +
-            "remote_ows_url=" + SIGMA_WFS_URL +
+            "&remote_ows_type=wfs" +
+            "&remote_ows_url=" + SIGMA_WFS_URL +
             "&featureid=states.1"
         );
         
