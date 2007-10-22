@@ -4,47 +4,16 @@
  */
 package org.geoserver.test;
 
-import com.mockrunner.mock.web.MockHttpServletRequest;
-import com.mockrunner.mock.web.MockHttpServletResponse;
-import com.mockrunner.mock.web.MockHttpSession;
-import com.mockrunner.mock.web.MockServletContext;
-import com.mockrunner.mock.web.MockServletOutputStream;
-
-import junit.framework.TestCase;
-import org.geoserver.data.test.MockData;
-import org.geoserver.ows.Dispatcher;
-import org.geoserver.ows.util.ResponseUtils;
-import org.geoserver.platform.GeoServerExtensions;
-import org.geoserver.platform.GeoServerResourceLoader;
-import org.geotools.data.DataStore;
-import org.geotools.data.FeatureSource;
-import org.geotools.data.wfs.WFSDataStoreFactory;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -53,6 +22,27 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import junit.framework.TestCase;
+
+import org.geoserver.data.test.MockData;
+import org.geoserver.ows.Dispatcher;
+import org.geoserver.ows.util.ResponseUtils;
+import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.GeoServerResourceLoader;
+import org.geotools.data.FeatureSource;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import com.mockrunner.mock.web.MockHttpServletRequest;
+import com.mockrunner.mock.web.MockHttpServletResponse;
+import com.mockrunner.mock.web.MockHttpSession;
+import com.mockrunner.mock.web.MockServletContext;
 
 
 /**
@@ -68,11 +58,6 @@ import javax.xml.transform.stream.StreamResult;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  */
 public class GeoServerTestSupport extends TestCase {
-    // support for remote OWS layers
-    protected static final String TOPP_STATES = "topp:states";
-    protected static final String SIGMA_WFS_URL = "http://sigma.openplans.org:8080/geoserver/wfs?";
-    Boolean remoteStatesAvailable;
-    
     /**
      * Common logger for test cases
      */
@@ -473,24 +458,5 @@ public class GeoServerTestSupport extends TestCase {
         return response;
     }
     
-    public boolean isRemoteStatesAvailable() {
-        if(remoteStatesAvailable == null) {
-            // let's check if the remote WFS tests are runnable
-            try {
-                WFSDataStoreFactory factory = new WFSDataStoreFactory();
-                Map params = new HashMap(factory.getImplementationHints());
-                URL url = new URL(SIGMA_WFS_URL + "service=WFS&request=GetCapabilities");
-                params.put(WFSDataStoreFactory.URL.key, url);
-                params.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.TRUE);
-                DataStore remoteStore = factory.createDataStore(params);
-                remoteStore.getFeatureSource(TOPP_STATES);
-                remoteStatesAvailable = Boolean.TRUE;
-            } catch(IOException e) {
-                LOGGER.log(Level.WARNING, "Skipping remote OWS test, either sigma " +
-                        "is down or the topp:states layer is not there", e);
-                remoteStatesAvailable = Boolean.FALSE;
-            }
-        } 
-        return remoteStatesAvailable.booleanValue();
-    } 
+    
 }
