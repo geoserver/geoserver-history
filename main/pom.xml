@@ -77,6 +77,11 @@
 			<groupId>org.geotools</groupId>
 			<artifactId>gt2-cql</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt2-wfs</artifactId>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
