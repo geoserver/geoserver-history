@@ -37,4 +37,23 @@ public class KMLTest extends WMSTestSupport {
         assertEquals( 1, doc.getElementsByTagName("Placemark").getLength());
         
     }
+    
+    public void testVectorWithRemoteLayer() throws Exception {
+        if(!isRemoteStatesAvailable())
+            return;
+        
+        Document doc = getAsDOM(
+            "wms?request=getmap&service=wms&version=1.1.1" + 
+            "&format=" + KMLMapProducerFactory.MIME_TYPE + 
+            "&layers=topp:states" + 
+            "&styles=" + MockData.BASIC_POLYGONS.getLocalPart() + 
+            "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +
+            "remote_ows_type=wfs" +
+            "remote_ows_url=" + SIGMA_WFS_URL +
+            "&featureid=states.1"
+        );
+        
+        assertEquals( 1, doc.getElementsByTagName("Placemark").getLength());
+        
+    }
 }

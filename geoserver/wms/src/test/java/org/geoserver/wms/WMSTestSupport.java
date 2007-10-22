@@ -6,6 +6,8 @@ package org.geoserver.wms;
 
 import com.vividsolutions.jts.geom.Envelope;
 import org.geoserver.test.GeoServerTestSupport;
+import org.geotools.data.DataStore;
+import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -20,9 +22,14 @@ import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.servlets.GetMap;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+
 import javax.xml.namespace.QName;
 
 
@@ -114,4 +121,7 @@ public class WMSTestSupport extends GeoServerTestSupport {
         request.setRawKvp(new HashMap());
         return request;
     }
+    
+    
+    
 }

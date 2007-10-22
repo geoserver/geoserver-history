@@ -158,6 +158,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 		
 		// remote OWS
 		String remoteOwsType = getMap.getRemoteOwsType();
+		remoteOwsType = remoteOwsType != null ? remoteOwsType.toUpperCase() : null;
 		if(remoteOwsType != null && !"WFS".equals(remoteOwsType)) {
 		    throw new WmsException("Unsupported remote OWS type '" + remoteOwsType + "'");
 		}

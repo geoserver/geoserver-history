@@ -16,7 +16,9 @@ import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
@@ -31,9 +33,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -62,6 +68,11 @@ import javax.xml.transform.stream.StreamResult;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  */
 public class GeoServerTestSupport extends TestCase {
+    // support for remote OWS layers
+    protected static final String TOPP_STATES = "topp:states";
+    protected static final String SIGMA_WFS_URL = "http://sigma.openplans.org:8080/geoserver/wfs?";
+    Boolean remoteStatesAvailable;
+    
     /**
      * Common logger for test cases
      */
@@ -461,4 +472,25 @@ public class GeoServerTestSupport extends TestCase {
         
         return response;
     }
+    
+    public boolean isRemoteStatesAvailable() {
+        if(remoteStatesAvailable == null) {
+            // let's check if the remote WFS tests are runnable
+            try {
+                WFSDataStoreFactory factory = new WFSDataStoreFactory();
+                Map params = new HashMap(factory.getImplementationHints());
+                URL url = new URL(SIGMA_WFS_URL + "service=WFS&request=GetCapabilities");
+                params.put(WFSDataStoreFactory.URL.key, url);
+                params.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.TRUE);
+                DataStore remoteStore = factory.createDataStore(params);
+                remoteStore.getFeatureSource(TOPP_STATES);
+                remoteStatesAvailable = Boolean.TRUE;
+            } catch(IOException e) {
+                LOGGER.log(Level.WARNING, "Skipping remote OWS test, either sigma " +
+                        "is down or the topp:states layer is not there", e);
+                remoteStatesAvailable = Boolean.FALSE;
+            }
+        } 
+        return remoteStatesAvailable.booleanValue();
+    } 
 }
