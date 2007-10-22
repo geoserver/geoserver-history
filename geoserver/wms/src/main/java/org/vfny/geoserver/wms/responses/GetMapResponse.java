@@ -232,7 +232,30 @@ public class GetMapResponse implements Response {
 				}
 
 				final DefaultMapLayer layer;
-				if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
+				if(layers[i].getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
+				    cachingPossible = false;
+				    
+				    final FeatureSource source = layers[i].getRemoteFeatureSource();
+                    layer = new DefaultMapLayer(source, style);
+                    layer.setTitle(layers[i].getName());
+                    
+                    final DefaultQuery definitionQuery;
+                    if (optionalFilter != null) {
+                        definitionQuery = new DefaultQuery(source.getSchema()
+                                .getTypeName(), optionalFilter);
+                        definitionQuery.setVersion(featureVersion);
+
+                        layer.setQuery(definitionQuery);
+                    } else if (featureVersion != null) {
+                        definitionQuery = new DefaultQuery(source.getSchema()
+                                .getTypeName());
+                        definitionQuery.setVersion(featureVersion);
+
+                        layer.setQuery(definitionQuery);
+                    }
+
+                    map.addLayer(layer);
+				} else if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
 					if (cachingPossible) {
 						if (layers[i].getFeature().isCachingEnabled()) {
 							int nma = Integer.parseInt(layers[i].getFeature()

@@ -115,12 +115,6 @@
  	<bean id="heightKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
 		<constructor-arg value="height"/>
  	</bean>
- 	<bean id="layersKvpParser" class="org.geoserver.wms.kvp.LayersKvpParser">
-        <constructor-arg ref="wms"/>
- 	</bean>
- 	<bean id="stylesKvpParser" class="org.geoserver.wms.kvp.StylesKvpParser">
-		<constructor-arg ref="catalog"/>
- 	</bean>
  	<bean id="formatOptionsKvpParser" class="org.geoserver.ows.kvp.FormatOptionsKvpParser"/>
  	<bean id="bgColorKvpParser" class="org.geoserver.wms.kvp.ColorKvpParser">
 		<constructor-arg value="bgcolor"/>

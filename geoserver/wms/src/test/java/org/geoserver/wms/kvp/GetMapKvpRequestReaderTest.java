@@ -6,20 +6,25 @@ package org.geoserver.wms.kvp;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
+import java.util.Map;
+import java.util.logging.Level;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
+import org.geotools.data.DataStore;
+import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.opengis.filter.Id;
 import org.opengis.filter.PropertyIsEqualTo;
 import org.vfny.geoserver.config.PaletteManager;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.servlets.GetMap;
 
@@ -27,6 +32,27 @@ import org.vfny.geoserver.wms.servlets.GetMap;
 public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
     GetMapKvpRequestReader reader;
     Dispatcher dispatcher;
+    private boolean canTestRemoteWFS;
+    
+    public GetMapKvpRequestReaderTest() {
+        super();
+        
+        // let's check if the remote WFS tests are runnable
+        try {
+            WFSDataStoreFactory factory = new WFSDataStoreFactory();
+            Map params = new HashMap(factory.getImplementationHints());
+            URL url = new URL("http://sigma.openplans.org:8080/geoserver/wfs?service=WFS&request=GetCapabilities");
+            params.put(WFSDataStoreFactory.URL.key, url);
+            params.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.TRUE);
+            DataStore remoteStore = factory.createDataStore(params);
+            remoteStore.getFeatureSource("topp:states");
+            canTestRemoteWFS = true;
+        } catch(IOException e) {
+            LOGGER.log(Level.WARNING, "Skipping remote OWS test, either sigma " +
+                    "is down or the topp:states layer is not there", e);
+            return;
+        }
+    } 
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -172,5 +198,77 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         dispatcher.setCiteCompliant(true);
         String request = "wms?SERVICE=WMS&&WiDtH=200&FoRmAt=image/png&LaYeRs=cite:Lakes&StYlEs=&BbOx=0,-0.0020,0.0040,0&ReQuEsT=GetMap&HeIgHt=100&SrS=EPSG:4326&WmTvEr=1.1.1";
         assertEquals("image/png", getAsServletResponse(request).getContentType());
+    }
+    
+    public void testRemoteWFS() throws Exception {
+        if(!canTestRemoteWFS)
+            return;
+        
+        HashMap raw = new HashMap();
+        raw.put("layers", "topp:states");
+        raw.put("styles", MockData.BASIC_POLYGONS.getLocalPart());
+        raw.put("format", "image/png");
+        raw.put("srs", "epsg:4326");
+        raw.put("bbox", "-100,20,-60,50");
+        raw.put("height", "300");
+        raw.put("width", "300");
+        raw.put("remote_ows_type", "WFS");
+        raw.put("remote_ows_url", "http://sigma.openplans.org:8080/geoserver/wfs?");
+
+        GetMapRequest request = (GetMapRequest) reader.createRequest();
+        request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
+        
+        assertEquals("WFS", request.getRemoteOwsType()); // TODO: handle case?
+        assertEquals(new URL("http://sigma.openplans.org:8080/geoserver/wfs?"), request.getRemoteOwsURL());
+        assertEquals(1, request.getLayers().length);
+        assertEquals(MapLayerInfo.TYPE_REMOTE_VECTOR, request.getLayers()[0].getType());
+        assertEquals("topp:states", request.getLayers()[0].getRemoteFeatureSource().getSchema().getTypeName());
+    }
+    
+    public void testRemoteWFSNoStyle() throws Exception {
+        if(!canTestRemoteWFS)
+            return;
+        
+        HashMap raw = new HashMap();
+        raw.put("layers", "topp:states");
+        raw.put("format", "image/png");
+        raw.put("srs", "epsg:4326");
+        raw.put("bbox", "-100,20,-60,50");
+        raw.put("height", "300");
+        raw.put("width", "300");
+        raw.put("remote_ows_type", "WFS");
+        raw.put("remote_ows_url", "http://sigma.openplans.org:8080/geoserver/wfs?");
+
+        GetMapRequest request = (GetMapRequest) reader.createRequest();
+        try {
+            request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
+            fail("This should have thrown an exception because of the missing style");
+        } catch(WmsException e) {
+            assertEquals("NoDefaultStyle", e.getCode());
+        }
+    }
+    
+    public void testRemoteWFSInvalidURL() throws Exception {
+        if(!canTestRemoteWFS)
+            return;
+        
+        HashMap raw = new HashMap();
+        raw.put("layers", "topp:states");
+        raw.put("format", "image/png");
+        raw.put("srs", "epsg:4326");
+        raw.put("bbox", "-100,20,-60,50");
+        raw.put("height", "300");
+        raw.put("width", "300");
+        raw.put("remote_ows_type", "WFS");
+        raw.put("remote_ows_url", "http://phantom.openplans.org:8080/crapserver/wfs?");
+
+        GetMapRequest request = (GetMapRequest) reader.createRequest();
+        try {
+            request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
+            fail("This should have thrown an exception because of the non existent layer");
+        } catch(WmsException e) {
+            e.printStackTrace();
+            assertEquals("RemoteOWSFailure", e.getCode());
+        }
     }
 }

@@ -44,6 +44,10 @@
       <artifactId>gt2-geotiff</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt2-wfs</artifactId>
+    </dependency>
+    <dependency>
       <groupId>batik</groupId>
       <artifactId>batik-svggen</artifactId>
     </dependency>
@@ -54,6 +58,42 @@
     <dependency>
       <groupId>batik</groupId>
       <artifactId>batik-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-dom</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-bridge</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-gvt</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-svg-dom</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-css</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-ext</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-xml</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-script</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-parser</artifactId>
     </dependency>
     <dependency>
       <groupId>itext</groupId>
