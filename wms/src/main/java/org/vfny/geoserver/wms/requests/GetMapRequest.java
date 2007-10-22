@@ -326,6 +326,22 @@ public class GetMapRequest extends WMSRequest {
     public String getFeatureVersion() {
         return this.optionalParams.featureVersion;
     }
+    
+    /**
+     * Returns the remote OWS type
+     * @return
+     */
+    public String getRemoteOwsType() {
+        return optionalParams.remoteOwsType;
+    }
+
+    /**
+     * Returs the remote OWS URL
+     * @return
+     */
+    public URL getRemoteOwsURL() {
+        return optionalParams.remoteOwsURL;
+    }
 
     /**
      * Gets the raw kvp parameters which were used to create the request.
@@ -596,6 +612,14 @@ public class GetMapRequest extends WMSRequest {
     public void setFeatureVersion(String featureVersion) {
         this.optionalParams.featureVersion = featureVersion;
     }
+    
+    public void setRemoteOwsType(String remoteOwsType) {
+        this.optionalParams.remoteOwsType = remoteOwsType;
+    }
+
+    public void setRemoteOwsURL(URL remoteOwsURL) {
+        this.optionalParams.remoteOwsURL = remoteOwsURL;
+    }
 
     /**
      * Sets the raw kvp parameters which were used to create the request.
@@ -720,6 +744,12 @@ public class GetMapRequest extends WMSRequest {
 
         /** feature version (for versioned requests) */
         String featureVersion;
+        
+        /** Remote OWS type */
+        String remoteOwsType;
+        
+        /** Remote OWS url */
+        URL remoteOwsURL;
     }
 
     /**

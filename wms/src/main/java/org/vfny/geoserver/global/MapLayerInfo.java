@@ -27,6 +27,8 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
     public static int TYPE_VECTOR = Data.TYPE_VECTOR.intValue();
     public static int TYPE_RASTER = Data.TYPE_RASTER.intValue();
     public static int TYPE_BASEMAP = Data.TYPE_RASTER.intValue() + 1;
+    public static int TYPE_REMOTE_VECTOR = Data.TYPE_RASTER.intValue() + 2;
+    
 
     /**
      *
@@ -34,6 +36,11 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
      * @uml.associationEnd multiplicity="(0 1)"
      */
     private FeatureTypeInfo feature;
+    
+    /**
+     * The feature source for the remote WFS layer (see REMOVE_OWS_TYPE/URL in the SLD spec)
+     */
+    private FeatureSource remoteFeatureSource;
 
     /**
      *
@@ -115,6 +122,16 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
         feature = new FeatureTypeInfo(dto, data);
         coverage = null;
         type = TYPE_VECTOR;
+    }
+
+    public MapLayerInfo(FeatureSource remoteSource) {
+        name = remoteSource.getSchema().getTypeName();
+        label = name;
+        description = "Remote WFS";
+        dirName = null;
+        this.remoteFeatureSource = remoteSource;
+        
+        type = TYPE_REMOTE_VECTOR;
     }
 
     /*
@@ -350,5 +367,13 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
         }
 
         return null;
+    }
+
+    /**
+     * Returns the remote feature source in case this layer is a remote WFS layer
+     * @return
+     */
+    public FeatureSource getRemoteFeatureSource() {
+        return remoteFeatureSource;
     }
 }
