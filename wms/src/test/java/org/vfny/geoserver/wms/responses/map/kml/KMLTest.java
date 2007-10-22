@@ -1,6 +1,7 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import org.geoserver.data.test.MockData;
+import org.geoserver.wms.RemoteOWSTestSupport;
 import org.geoserver.wms.WMSTestSupport;
 import org.w3c.dom.Document;
 
@@ -39,7 +40,7 @@ public class KMLTest extends WMSTestSupport {
     }
     
     public void testVectorWithRemoteLayer() throws Exception {
-        if(!isRemoteStatesAvailable())
+        if(!RemoteOWSTestSupport.isRemoteStatesAvailable())
             return;
         
         Document doc = getAsDOM(
@@ -49,7 +50,7 @@ public class KMLTest extends WMSTestSupport {
             "&styles=Default" + 
             "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +
             "&remote_ows_type=wfs" +
-            "&remote_ows_url=" + SIGMA_WFS_URL +
+            "&remote_ows_url=" + RemoteOWSTestSupport.WFS_SERVER_URL +
             "&featureid=states.1"
         );
         
