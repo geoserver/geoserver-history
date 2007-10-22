@@ -227,6 +227,11 @@
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
+    <artifactId>gt2-xml-gml2</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geotools</groupId>
     <artifactId>gt2-xml-gml3</artifactId>
     <version>${gt.version}</version>
    </dependency>
@@ -453,8 +458,62 @@
     <type>jar</type>
    </dependency>
    <dependency>
-    <groupId>batik</groupId>
+   <groupId>batik</groupId>
     <artifactId>batik-util</artifactId>
+    <version>1.6</version>
+    <type>jar</type>
+   </dependency>
+   <dependency>
+   <groupId>batik</groupId>
+    <artifactId>batik-dom</artifactId>
+    <version>1.6</version>
+    <type>jar</type>
+   </dependency>
+   <dependency>
+   <groupId>batik</groupId>
+    <artifactId>batik-bridge</artifactId>
+    <version>1.6</version>
+    <type>jar</type>
+   </dependency>
+   <dependency>
+   <groupId>batik</groupId>
+    <artifactId>batik-gvt</artifactId>
+    <version>1.6</version>
+    <type>jar</type>
+   </dependency>
+   <dependency>
+   <groupId>batik</groupId>
+    <artifactId>batik-svg-dom</artifactId>
+    <version>1.6</version>
+    <type>jar</type>
+   </dependency>
+   <dependency>
+   <groupId>batik</groupId>
+    <artifactId>batik-css</artifactId>
+    <version>1.6</version>
+    <type>jar</type>
+   </dependency>
+   <dependency>
+   <groupId>batik</groupId>
+    <artifactId>batik-ext</artifactId>
+    <version>1.6</version>
+    <type>jar</type>
+   </dependency>
+   <dependency>
+   <groupId>batik</groupId>
+    <artifactId>batik-xml</artifactId>
+    <version>1.6</version>
+    <type>jar</type>
+   </dependency>
+   <dependency>
+   <groupId>batik</groupId>
+    <artifactId>batik-script</artifactId>
+    <version>1.6</version>
+    <type>jar</type>
+   </dependency>
+   <dependency>
+   <groupId>batik</groupId>
+    <artifactId>batik-parser</artifactId>
     <version>1.6</version>
     <type>jar</type>
    </dependency>
@@ -890,7 +949,6 @@
   <module>main</module>
   <module>wcs</module>
   <module>wfs</module>
-  <module>net.opengis.vwfs</module>
   <module>wfsv</module>
   <module>wms</module>
   <module>validation</module>
@@ -899,6 +957,7 @@
   <module>ows</module>
   <module>net.opengis.ows</module>
   <module>net.opengis.wfs</module>
+  <module>net.opengis.vwfs</module>
  </modules>
 
  <properties>
