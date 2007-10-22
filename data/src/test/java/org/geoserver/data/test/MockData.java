@@ -325,8 +325,9 @@ public class MockData {
         // create the styles directory
         styles = new File(data, "styles");
         styles.mkdir();
-        //copy over the minimal style
+        //copy over the minimal style and population
         copy(MockData.class.getResourceAsStream("Default.sld"), new File(styles, "Default.sld"));
+        copy(MockData.class.getResourceAsStream("Population.sld"), new File(styles, "Population.sld"));
 
         //plugins
         plugIns = new File(data, "plugIns");
@@ -400,7 +401,7 @@ public class MockData {
                 styles.put(type.getLocalPart(), type.getLocalPart() + ".sld");
             }
         }
-
+        styles.put("Population", "Population.sld");
         styles.put("Default", "Default.sld");
 
         writer.styles(styles);
