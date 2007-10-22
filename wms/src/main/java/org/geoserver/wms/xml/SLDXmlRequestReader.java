@@ -40,7 +40,7 @@ public class SLDXmlRequestReader extends XmlRequestReader {
             new SLDParser( styleFactory, reader ).parseSLD();
         
         //process the sld 
-        GetMapKvpRequestReader.processSld(getMap, sld);
+        GetMapKvpRequestReader.processStandaloneSld(getMap, sld);
     
         return getMap;
     }

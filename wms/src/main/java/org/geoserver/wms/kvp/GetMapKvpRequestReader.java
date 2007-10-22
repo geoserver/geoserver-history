@@ -172,12 +172,12 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 		String layerParam = (String) kvp.get("LAYERS");
 		if(layerParam != null)
 		    getMap.setLayers(parseLayers(KvpUtils.readFlat(layerParam), remoteOwsUrl, remoteOwsType)); 
-		
-		// styles parameter
-		String stylesParam = (String) kvp.get("STYLES");
+
+		// raw styles parameter
+        String stylesParam = (String) kvp.get("STYLES");
+        List styleNameList = Collections.EMPTY_LIST;
         if(stylesParam != null)
-            getMap.setStyles(parseStyles(KvpUtils.readFlat(stylesParam)));
-		
+            styleNameList = KvpUtils.readFlat(stylesParam);
 
 		// styles
 		// process SLD_BODY, SLD, then STYLES parameter
@@ -199,7 +199,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 
 			StyledLayerDescriptor sld = parseSld(new ByteArrayInputStream(
 					getMap.getSldBody().getBytes()));
-			processSld(getMap, sld);
+			processSld(getMap, sld, styleNameList);
 		} else if (getMap.getSld() != null) {
 			if (LOGGER.isLoggable(Level.FINE)) {
 				LOGGER.fine("Getting layers and styles from reomte SLD");
@@ -235,7 +235,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 
 			try {
 				StyledLayerDescriptor sld = parseSld(input);
-				processSld(getMap, sld);
+				processSld(getMap, sld, styleNameList);
 			} finally {
 				input.close();
 			}
@@ -243,6 +243,10 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 			if (LOGGER.isLoggable(Level.FINE)) {
 				LOGGER.fine("Getting layers and styles from LAYERS and STYLES");
 			}
+			
+			// ok, parse the styles parameter in isolation
+			if(styleNameList.size() > 0)
+			    getMap.setStyles(parseStyles(styleNameList));
 
 			// first, expand base layers and default styles
 			if (getMap.getLayers() != null) {
@@ -401,176 +405,198 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 		return parser.parseSLD();
 	}
 
-	/**
-	 * Looks in <code>sld</code> for the layers and styles to use in the map
-	 * composition and sets them to the <code>request</code>
-	 * 
-	 * <p>
-	 * If <code>sld</code> is used in "library" mode, that is, the LAYERS
-	 * param is also present, saying what layers must be taken in count, then
-	 * only the layers from the LAYERS parameter are used and <code>sld</code>
-	 * is used as a style library, which means that for each layer requested
-	 * through LAYERS=..., if a style if found in it for that layer it is used,
-	 * and if not, the layers default is used.
-	 * </p>
-	 * 
-	 * <p>
-	 * By the other hand, if the LAYERS parameter is not present all the layers
-	 * found in <code>sld</code> are setted to <code>request</code>.
-	 * </p>
-	 * 
-	 * @param request
-	 *            the GetMap request to which to set the layers and styles
-	 * @param sld
-	 *            a SLD document to take layers and styles from, following the
-	 *            "literal" or "library" rule.
-	 * 
-	 * @throws WmsException
-	 *             if anything goes wrong
-	 * @throws RuntimeException
-	 *             DOCUMENT ME!
-	 */
-	public static void processSld(final GetMapRequest request,
-			final StyledLayerDescriptor sld) throws WmsException {
-		MapLayerInfo[] libraryModeLayers = null;
-
-		if ((request.getLayers() != null) && (request.getLayers().length > 0)) {
-			if (LOGGER.isLoggable(Level.FINE)) {
-				LOGGER.fine("request comes in \"library\" mode");
-			}
-
-			libraryModeLayers = request.getLayers();
-		}
-
-		final StyledLayer[] styledLayers = sld.getStyledLayers();
-		final int slCount = styledLayers.length;
-
-		if (slCount == 0) {
-			throw new WmsException("SLD document contains no layers");
-		}
-
-		final List layers = new ArrayList();
-		final List styles = new ArrayList();
-
-		MapLayerInfo currLayer = null;
-		Style currStyle = null;
-
-		if (null != libraryModeLayers) {
-			int lCount = libraryModeLayers.length;
-
-			for (int i = 0; i < lCount; i++) {
-				currLayer = libraryModeLayers[i];
-
-				if (currLayer.getType() == MapLayerInfo.TYPE_VECTOR) {
-					currStyle = findStyleOf(request, currLayer,
-							styledLayers);
-				} else if (currLayer.getType() == MapLayerInfo.TYPE_RASTER) {
-					try {
-						currStyle = findStyleOf(request,
-								currLayer, styledLayers);
-					} catch (WmsException wm) {
-						// hmm, well, the style they specified in the wms
-						// request
-						// wasn't found. Let's try the default raster style
-						// named 'raster'
-						currStyle = findStyle(request, "raster");
-						if (currStyle == null) {
-							// nope, no default raster style either. Give up.
-							throw new WmsException(
-									wm.getMessage()
-											+ "  Also tried to use "
-											+ "the generic raster style 'raster', but it wasn't available.");
-						}
-					}
-
-				}
-
-				layers.add(currLayer);
-				styles.add(currStyle);
-			}
-		} else {
-			StyledLayer sl = null;
-			String layerName;
-			UserLayer ul;
-
-			for (int i = 0; i < slCount; i++) {
-				sl = styledLayers[i];
-				layerName = sl.getName();
-
-				if (null == layerName) {
-					throw new WmsException(
-							"A UserLayer without layer name was passed");
-				}
-
-				currLayer = new MapLayerInfo();
-
-				// handle the InLineFeature stuff
-				// TODO: add support for remote WFS here
-				if ((sl instanceof UserLayer)
-						&& ((((UserLayer) sl)).getInlineFeatureDatastore() != null)) {
-					// SPECIAL CASE - we make the temporary version
-					ul = ((UserLayer) sl);
-
-					try {
-						initializeInlineFeatureLayer(request, ul, currLayer);
-					} catch (Exception e) {
-						throw new WmsException(e);
-					}
-				} else {
-					try {
-						currLayer.setFeature(GetMapKvpReader.findFeatureLayer(
-								request, layerName));
-					} catch (WmsException e) {
-						currLayer.setCoverage(GetMapKvpReader
-								.findCoverageLayer(request, layerName));
-					}
-				}
-
-				if (currLayer.getType() == MapLayerInfo.TYPE_VECTOR) {
-					// currStyle = findStyleOf(request, currLayer,
-					// styledLayers); // DJB: this looks like a bug, we should
-					// get the style from styledLayers[i]
-
-					// the correct thing to do its grab the style from
-					// styledLayers[i]
-					// inside the styledLayers[i] will either be :
-					// a) nothing - in which case grab the layer's default style
-					// b) a set of:
-					// i) NameStyle -- grab it from the pre-loaded styles
-					// ii)UserStyle -- grab it from the sld the user uploaded
-					//
-					// NOTE: we're going to get a set of layer->style pairs for
-					// (b).
-					addStyles(request, currLayer, styledLayers[i], layers,
-							styles);
-				} else if (currLayer.getType() == MapLayerInfo.TYPE_RASTER) {
-					try {
-						addStyles(request, currLayer, styledLayers[i], layers,
-								styles);
-					} catch (WmsException wm) {
-						// hmm, well, the style they specified in the wms
-						// request
-						// wasn't found. Let's try the default raster style
-						// named 'raster'
-						currStyle = findStyle(request, "raster");
-						if (currStyle == null) {
-							// nope, no default raster style either. Give up.
-							throw new WmsException(
-									wm.getMessage()
-											+ "  Also tried to use "
-											+ "the generic raster style 'raster', but it wasn't available.");
-						}
-						layers.add(currLayer);
-						styles.add(currStyle);
-					}
-				}
-			}
-		}
-
-		request.setLayers((MapLayerInfo[]) layers
-				.toArray(new MapLayerInfo[layers.size()]));
-		request.setStyles(styles);
+	
+	public void processSld(final GetMapRequest request,
+			final StyledLayerDescriptor sld, final List styleNames) throws WmsException {
+	    if(request.getLayers() == null || request.getLayers().length == 0) {
+	        processStandaloneSld(request, sld);
+	    } else {
+	        processLibrarySld(request, sld, styleNames);
+	    }
 	}
+	
+	
+	/**
+     * Looks in <code>sld</code> for the layers and styles to use in the map
+     * composition and sets them to the <code>request</code>
+     * 
+     * <p>
+     * This method processes SLD in library mode
+     * Library mode engages when "SLD" or "SLD_BODY" are used in conjuction with
+     * LAYERS and STYLES. From the spec: <br>
+     * <cite> When an SLD is used as a style
+     * library, the STYLES CGI parameter is interpreted in the usual way in the
+     * GetMap request, except that the handling of the style names is organized
+     * so that the styles defined in the SLD take precedence over the named
+     * styles stored within the map server. The user-defined SLD styles can be
+     * given names and they can be marked as being the default style for a
+     * layer. To be more specific, if a style named “CenterLine” is referenced
+     * for a layer and a style with that name is defined for the corresponding
+     * layer in the SLD, then the SLD style definition is used. Otherwise, the
+     * standard named-style mechanism built into the map server is used. If the
+     * use of a default style is specified and a style is marked as being the
+     * default for the corresponding layer in the SLD, then the default style
+     * from the SLD is used; otherwise, the standard default style in the map
+     * server is used. </cite>
+     * 
+     * @param request
+     *            the GetMap request to which to set the layers and styles
+     * @param sld
+     *            a SLD document to take layers and styles from, following the
+     *            "literal" or "library" rule.
+     * 
+     * @throws WmsException
+     *             if anything goes wrong
+     * @throws RuntimeException
+     *             DOCUMENT ME!
+     */
+    private void processLibrarySld(final GetMapRequest request,
+            final StyledLayerDescriptor sld, final List styleNames) {
+        final StyledLayer[] styledLayers = sld.getStyledLayers();
+        final int slCount = styledLayers.length;
+
+        if (slCount == 0) {
+            throw new WmsException("SLD document contains no layers");
+        }
+
+        final List layers = new ArrayList();
+        final List styles = new ArrayList();
+        MapLayerInfo[] libraryModeLayers = request.getLayers();
+        MapLayerInfo currLayer = null;
+        Style currStyle = null;
+        String styleName = null;
+
+        for (int i = 0; i < libraryModeLayers.length; i++) {
+            currLayer = libraryModeLayers[i];
+            if(styleNames != null && styleNames.size() > 0)
+                styleName = (String) styleNames.get(i);
+
+            // base map layers do not participate in library mode
+            if (currLayer.getType() == MapLayerInfo.TYPE_BASEMAP) {
+                List subLayers = currLayer.getSubLayers();
+                layers.addAll(subLayers);
+                List currStyles = currLayer.getStyles();
+                for (int j = 0; j < subLayers.size(); j++) {
+                    MapLayerInfo l = (MapLayerInfo) subLayers.get(j);
+                    Style s = currStyles.isEmpty() ? null
+                            : (Style) currStyles.get(j);
+                    if (s != null)
+                        styles.add(currStyle);
+                    else
+                        styles.add(currLayer.getDefaultStyle());
+                }
+            } else {
+                layers.add(currLayer);
+                styles.add(findStyleOf(request, currLayer, styleName, styledLayers));
+            }
+        }
+        
+        request.setLayers((MapLayerInfo[]) layers
+                .toArray(new MapLayerInfo[layers.size()]));
+        request.setStyles(styles);
+    }
+
+    /**
+     * This one processes an SLD in non library mode, that is, it assumes it's the
+     * definition of the map
+     * @param request
+     * @param sld
+     */
+    public static void processStandaloneSld(final GetMapRequest request,
+            final StyledLayerDescriptor sld) {
+        final StyledLayer[] styledLayers = sld.getStyledLayers();
+        final int slCount = styledLayers.length;
+
+        if (slCount == 0) {
+            throw new WmsException("SLD document contains no layers");
+        }
+
+        final List layers = new ArrayList();
+        final List styles = new ArrayList();
+        MapLayerInfo currLayer = null;
+        Style currStyle = null;
+        
+        StyledLayer sl = null;
+        String layerName;
+        UserLayer ul;
+
+        for (int i = 0; i < slCount; i++) {
+            sl = styledLayers[i];
+            layerName = sl.getName();
+
+            if (null == layerName) {
+                throw new WmsException(
+                        "A UserLayer without layer name was passed");
+            }
+
+            currLayer = new MapLayerInfo();
+
+            // handle the InLineFeature stuff
+            // TODO: add support for remote WFS here
+            if ((sl instanceof UserLayer)
+                    && ((((UserLayer) sl)).getInlineFeatureDatastore() != null)) {
+                // SPECIAL CASE - we make the temporary version
+                ul = ((UserLayer) sl);
+
+                try {
+                    initializeInlineFeatureLayer(request, ul, currLayer);
+                } catch (Exception e) {
+                    throw new WmsException(e);
+                }
+            } else {
+                try {
+                    currLayer.setFeature(GetMapKvpReader.findFeatureLayer(
+                            request, layerName));
+                } catch (WmsException e) {
+                    currLayer.setCoverage(GetMapKvpReader
+                            .findCoverageLayer(request, layerName));
+                }
+            }
+
+            if (currLayer.getType() == MapLayerInfo.TYPE_VECTOR) {
+                // currStyle = findStyleOf(request, currLayer,
+                // styledLayers); // DJB: this looks like a bug, we should
+                // get the style from styledLayers[i]
+
+                // the correct thing to do its grab the style from
+                // styledLayers[i]
+                // inside the styledLayers[i] will either be :
+                // a) nothing - in which case grab the layer's default style
+                // b) a set of:
+                // i) NameStyle -- grab it from the pre-loaded styles
+                // ii)UserStyle -- grab it from the sld the user uploaded
+                //
+                // NOTE: we're going to get a set of layer->style pairs for
+                // (b).
+                addStyles(request, currLayer, styledLayers[i], layers,
+                        styles);
+            } else if (currLayer.getType() == MapLayerInfo.TYPE_RASTER) {
+                try {
+                    addStyles(request, currLayer, styledLayers[i], layers,
+                            styles);
+                } catch (WmsException wm) {
+                    // hmm, well, the style they specified in the wms
+                    // request
+                    // wasn't found. Let's try the default raster style
+                    // named 'raster'
+                    currStyle = findStyle(request, "raster");
+                    if (currStyle == null) {
+                        // nope, no default raster style either. Give up.
+                        throw new WmsException(
+                                wm.getMessage()
+                                        + "  Also tried to use "
+                                        + "the generic raster style 'raster', but it wasn't available.");
+                    }
+                    layers.add(currLayer);
+                    styles.add(currStyle);
+                }
+            }
+        }
+        
+        request.setLayers((MapLayerInfo[]) layers
+                .toArray(new MapLayerInfo[layers.size()]));
+        request.setStyles(styles);
+    }
 
 	/**
 	 * the correct thing to do its grab the style from styledLayers[i] inside
@@ -719,8 +745,8 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 	 *             subinterfaces of StyledLayer are NamedLayer and UserLayer.
 	 * @throws WmsException
 	 */
-	private static Style findStyleOf(GetMapRequest request,
-			MapLayerInfo layer, StyledLayer[] styledLayers)
+	private Style findStyleOf(GetMapRequest request,
+			MapLayerInfo layer, String styleName, StyledLayer[] styledLayers)
 			throws WmsException {
 		Style style = null;
 		String layerName = layer.getName();
@@ -733,15 +759,25 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 				if (sl instanceof UserLayer) {
 					Style[] styles = ((UserLayer) sl).getUserStyles();
 
-					if ((null != styles) && (0 < styles.length)) {
-						style = styles[0];
+					// if the style name has not been specified, look it up
+					// the default style, otherwise lookup the one requested
+					for(int j = 0; style == null && styles != null && j < styles.length; j++) {
+					    if(styleName == null || styleName.equals("") && styles[j].isDefault())
+					        style = styles[j];
+					    else if(styleName != null && styleName.equals(styles[j].getName()))
+					        style = styles[j];
 					}
 				} else if (sl instanceof NamedLayer) {
 					Style[] styles = ((NamedLayer) sl).getStyles();
 
-					if ((null != styles) && (0 < styles.length)) {
-						style = styles[0];
-					}
+					// if the style name has not been specified, look it up
+                    // the default style, otherwise lookup the one requested
+                    for(int j = 0; style == null && styles != null && j < styles.length; j++) {
+                        if((styleName == null || styleName.equals("")) && styles[j].isDefault())
+                            style = styles[j];
+                        else if(styleName != null && styleName.equals(styles[j].getName()))
+                            style = styles[j];
+                    }
 
 					if (style instanceof NamedStyle) {
 						style = findStyle(request, style.getName());
@@ -754,8 +790,16 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 			}
 		}
 
-		if (null == style) {
-			style = layer.getDefaultStyle();
+		if (style == null) {
+		    if(styleName == null || "".equals(styleName)) {
+		        style = layer.getDefaultStyle();
+		    } else {
+		        final Style s = catalog.getStyle(styleName);
+                if (s == null) {
+                   String msg = "No such style: " + styleName;
+                   throw new WmsException(msg, "StyleNotDefined");
+                }
+            }
 		}
 
 		checkStyle(style, layer);
