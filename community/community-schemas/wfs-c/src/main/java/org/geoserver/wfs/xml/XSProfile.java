@@ -4,9 +4,15 @@
  */
 package org.geoserver.wfs.xml;
 
+import org.geotools.feature.AttributeTypeFactory;
 import org.geotools.feature.Name;
+import org.geotools.feature.type.ProfileImpl;
+import org.geotools.feature.type.SchemaImpl;
 import org.geotools.xs.XSSchema;
 import org.geotools.xs.bindings.XS;
+import org.opengis.feature.type.Schema;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.namespace.QName;
@@ -17,26 +23,36 @@ import javax.xml.namespace.QName;
  * mapping unique.
  */
 public class XSProfile extends TypeMappingProfile {
-    static Set profile = new HashSet();
+    static Set profiles = new HashSet();
 
     static {
-        profile.add(name(XS.BYTE)); //Byte.class
-        profile.add(name(XS.HEXBINARY)); //byte[].class 
-        profile.add(name(XS.SHORT)); //Short.class
-        profile.add(name(XS.INT)); //Integer.class
-        profile.add(name(XS.FLOAT)); //Float.class
-        profile.add(name(XS.LONG)); //Long.class
-        profile.add(name(XS.QNAME)); //Qname.class
-        profile.add(name(XS.DATE)); //Date.class
-        profile.add(name(XS.DATETIME)); //Calendar.class
-        profile.add(name(XS.BOOLEAN)); //Boolean.class
-        profile.add(name(XS.DOUBLE)); //Double.class
-        profile.add(name(XS.STRING)); //String.class
-        profile.add(name(XS.INTEGER)); //BigInteger.class
-        profile.add(name(XS.DECIMAL)); //BigDecimal.class
-        profile.add(name(XS.ANYURI)); //URI.class
+        Set proper = new HashSet();
+        proper.add(name(XS.BYTE)); //Byte.class
+        proper.add(name(XS.HEXBINARY)); //byte[].class 
+        proper.add(name(XS.SHORT)); //Short.class
+        proper.add(name(XS.INT)); //Integer.class
+        proper.add(name(XS.FLOAT)); //Float.class
+        proper.add(name(XS.LONG)); //Long.class
+        proper.add(name(XS.QNAME)); //Qname.class
+        proper.add(name(XS.DATE)); //java.sql.Date.class
+        proper.add(name(XS.DATETIME)); //java.sql.Timestamp.class
+        proper.add(name(XS.TIME)); //java.sql.Time.class
+        proper.add(name(XS.BOOLEAN)); //Boolean.class
+        proper.add(name(XS.DOUBLE)); //Double.class
+        proper.add(name(XS.STRING)); //String.class
+        proper.add(name(XS.INTEGER)); //BigInteger.class
+        proper.add(name(XS.DECIMAL)); //BigDecimal.class
+        proper.add(name(XS.ANYURI)); //URI.class
+        profiles.add(new ProfileImpl(new XSSchema(), proper));
 
-        profile.add(name(XS.ANYTYPE)); //Map.class
+        //date mappings between java and xml schema are kind of messed up, so 
+        // we create a custom schema which also contains a mapping for 
+        // java.util.Date
+        Schema additional = new SchemaImpl(XS.NAMESPACE);
+        additional.put(name(XS.DATETIME), AttributeTypeFactory.newAttributeType("date", Date.class));
+        profiles.add(new ProfileImpl(additional, Collections.singleton(name(XS.DATETIME))));
+
+        //profile.add(name(XS.ANYTYPE)); //Map.class
     }
 
     static Name name(QName qName) {
@@ -44,6 +60,6 @@ public class XSProfile extends TypeMappingProfile {
     }
 
     public XSProfile() {
-        super(new XSSchema(), profile);
+        super(profiles);
     }
 }

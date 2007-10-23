@@ -61,6 +61,23 @@
 	  	</list>
 	  </property>
 	</bean>
+  
+    <!-- Transaction element handlers -->
+    <bean id="wfsInsertElementHandler" class="org.geoserver.wfs.InsertElementHandler">
+      <constructor-arg ref="wfs"/>
+      <constructor-arg ref="filterFactory"/>
+    </bean>
+    
+    <bean id="wfsUpdateElementHandler" class="org.geoserver.wfs.UpdateElementHandler">
+      <constructor-arg ref="wfs"/>
+    </bean>
+    
+    <bean id="wfsDeleteElementHandler" class="org.geoserver.wfs.DeleteElementHandler">
+      <constructor-arg ref="wfs"/>
+    </bean>
+    
+    <bean id="wfsNativeElementHandler" class="org.geoserver.wfs.NativeElementHandler">
+    </bean>
 		
 	<!-- service descriptors -->
 	<bean id="wfsService-1.0.0" class="org.geoserver.platform.Service">
@@ -81,7 +98,7 @@
 			<list>
 				<ref bean="wfsService-1.0.0"/>
 				<ref bean="wfsService-1.1.0"/>
-			</list>
+			</list>		
 		</constructor-arg>	
 		<constructor-arg ref="wfs"/>
 	</bean>
@@ -132,6 +149,7 @@
 	<!-- http url mapping -->
 	<bean id="wfsURLMapping" 
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="alwaysUseFullPath" value="true"/>
 		<property name="interceptors">
 			<list>
 				<ref bean="citeComplianceHack"/>
@@ -158,7 +176,8 @@
 	</bean>
 	
 	<bean id="bboxKvpParser" class="org.geoserver.wfs.kvp.BBoxKvpParser"/>
-	<bean id="filterKvpParser" class="org.geoserver.wfs.kvp.FilterKvpReader"/>
+	<bean id="filterKvpParser" class="org.geoserver.wfs.kvp.FilterKvpParser"/>
+    <bean id="cqlKvpParser" class="org.geoserver.wfs.kvp.CQLFilterKvpParser"/>
 	<bean id="propertyNameKvpParser" class="org.geoserver.ows.NestedKvpParser">
 		<constructor-arg index="0" value="propertyName"/>
 		<constructor-arg index="1" value="java.lang.String"/>
@@ -168,10 +187,7 @@
 		<constructor-arg index="1" value="java.math.BigInteger"/>
 	</bean>
 	
-	<bean id="srsNameFeatureKvpParser" class="org.geoserver.ows.FlatKvpParser">
-		<constructor-arg index="0" value="srsName"/>
-		<constructor-arg index="1" value="java.lang.String"/>
-	</bean>
+	<bean id="srsNameKvpParser" class="org.geoserver.wfs.kvp.SrsNameKvpParser"/>
 	<bean id="sortByKvpParser" class="org.geoserver.wfs.kvp.SortByKvpParser">
 		<constructor-arg ref="filterFactory"/>
 	</bean>
@@ -289,6 +305,6 @@
 		<constructor-arg ref="wfs"/>
 		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
-		
-
+	<bean id="shapezipOutputFormat" class="org.geoserver.wfs.response.ShapeZipOutputFormat" />
+    <bean id="geojsonOutputFormat" class="org.geoserver.wfs.response.GeoJSONOutputFormat"/>
 </beans>

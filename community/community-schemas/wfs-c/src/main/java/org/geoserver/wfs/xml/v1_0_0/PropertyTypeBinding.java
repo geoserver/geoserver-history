@@ -100,16 +100,25 @@ public class PropertyTypeBinding extends AbstractComplexBinding {
 
         //&lt;xsd:element minOccurs="0" name="Value"&gt;
         if (node.hasChild("Value")) {
-            Map map = (Map) node.getChildValue("Value");
+            Object object = node.getChildValue("Value");
 
-            if (!map.isEmpty()) {
-                //first check for some text
-                if (map.containsKey(null)) {
-                    property.setValue(map.get(null));
-                } else {
-                    //perhaps some other value
-                    property.setValue(map.values().iterator().next());
+            //check for a map
+            if (object instanceof Map) {
+                Map map = (Map) object;
+
+                //this means a complex element parsed by xs:AnyType binding
+                // try to pull out some text
+                if (!map.isEmpty()) {
+                    //first check for some text
+                    if (map.containsKey(null)) {
+                        property.setValue(map.get(null));
+                    } else {
+                        //perhaps some other value
+                        property.setValue(map.values().iterator().next());
+                    }
                 }
+            } else {
+                property.setValue(object);
             }
         }
 

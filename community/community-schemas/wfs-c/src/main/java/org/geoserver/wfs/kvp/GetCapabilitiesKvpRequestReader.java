@@ -15,8 +15,9 @@ public class GetCapabilitiesKvpRequestReader extends WFSKvpRequestReader {
         super(GetCapabilitiesType.class);
     }
 
-    public Object read(Object request, Map kvp) throws Exception {
-        request = super.read(request, kvp);
+    public Object read(Object request, Map kvp, Map rawKvp)
+        throws Exception {
+        request = super.read(request, kvp, rawKvp);
 
         //set the version attribute on the request
         if (kvp.containsKey("version")) {

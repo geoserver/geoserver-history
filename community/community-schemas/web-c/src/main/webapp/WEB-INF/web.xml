@@ -24,7 +24,13 @@
          FILE
          - outputs to the local filesystem first, before sending it off to the user
       -->
-    <param-value>PARTIAL-BUFFER2</param-value>
+    <param-value>SPEED</param-value>
+  </context-param>
+  
+  <!-- If true, enable versioning datastore as well -->
+  <context-param>
+    <param-name>enableVersioning</param-name>
+    <param-value>true</param-value>
   </context-param>
   
   <context-param>
@@ -110,6 +116,10 @@
   	<servlet-name>kmlreflector</servlet-name>
   	<servlet-class>org.vfny.geoserver.wms.servlets.KMLReflector</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>putstyles</servlet-name>
+    <servlet-class>org.vfny.geoserver.sld.servlets.PutStyles</servlet-class>
+  </servlet>
 	
    <!-- Struts config needs to load before all the other servlets. -->
    <servlet>
@@ -143,6 +153,10 @@
 	<url-pattern>/wms/kml_reflect</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
+    <servlet-name>putstyles</servlet-name>
+    <url-pattern>/wms/putstyles</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
   	<servlet-name>dispatcher</servlet-name>
 	<url-pattern>/wms/*</url-pattern>
   </servlet-mapping>
@@ -163,6 +177,10 @@
     <url-pattern>/wfsv/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
+    <servlet-name>dispatcher</servlet-name>
+    <url-pattern>/kml/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
     <servlet-name>hider</servlet-name>
     <url-pattern>/data/services.xml</url-pattern>
   </servlet-mapping>
@@ -178,10 +196,18 @@
    <servlet-name>dispatcher</servlet-name>
    <url-pattern>/styles/*</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+   <servlet-name>dispatcher</servlet-name>
+   <url-pattern>/www/*</url-pattern>
+  </servlet-mapping>
       
   <mime-mapping>
    <extension>xsl</extension>
    <mime-type>text/xml</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>sld</extension>
+    <mime-type>text/xml</mime-type>
   </mime-mapping>
 		      
   <welcome-file-list>

@@ -1,0 +1,38 @@
+<html>
+        <head>
+        <title>Yahoo! Maps GeoRSS Overlay Example</title>
+	<script src="http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=7yL9OCvV34EXLZQnqcln6PcnNhg04wVBwdVPTC5r7oVCXvXr1XprmWDZVqvqEQ--" type="text/javascript"></script>
+	<script type="text/javascript" language="JavaScript">
+
+        function StartYMap() {
+                var map = new YMap(document.getElementById('ymap')); 
+		map.addPanControl();
+		map.addZoomShort();
+
+		function doStart(eventObj) {
+			var defaultEventObject = eventObj;
+			//eventObj.ThisMap [map object]
+			//eventObj.URL [argument]
+			//eventObj.Data [processed input]
+		}
+		function doEnd(eventObj) {
+			var defaultEventObject = eventObj;
+			//eventObj.ThisMap [map object]
+			//eventObj.URL [argument]
+			//eventObj.Data [processed input]
+		map.smoothMoveByXY(new YCoordPoint(10,50));
+		}
+
+		YEvent.Capture(map,EventsList.onStartGeoRSS, function(eventObj) { doStart(eventObj); });
+		YEvent.Capture(map,EventsList.onEndGeoRSS, function(eventObj) { doEnd(eventObj); });
+
+		map.addOverlay(new YGeoRSS('http://sigma.openplans.org/geoserver/wms/reflect?layers=states&format=rss'));
+        }
+	window.onload = StartYMap;
+	</script>
+	</head>
+	<body>
+		<div id="ymap" style="width: 800px; height: 600px; left:2px; top:2px"></div>
+		Yahoo Maps! and GeoRSS demo.
+	</body>
+</html>

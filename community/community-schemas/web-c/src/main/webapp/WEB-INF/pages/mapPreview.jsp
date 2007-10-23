@@ -97,16 +97,16 @@
 	</table>
 <!------------------------------------------------------------------------>
 
-<h1> <bean:message key="mapPreview.title"/> </h1>
+<h1 align="center"> <bean:message key="mapPreview.title"/> </h1>
 
 <!------------------------------------------------------------------------>
 <!-- DISPLAY THE LIST OF FEATURE TYPES AND THEIR INFORMATION             ->
 <!------------------------------------------------------------------------>
 
 
-<table border=1 width=90%>
+<table border=1 cellpadding=4 align="center">
 
-  <tr><th><B><U>Layer</U> (NameSpace:FeatureType)</B></th><th><B><U>DataStore</U></B><!--bean:message key="mapPreview.tableTitle"/--></th><th><B><U>Preview Map</U></B></th></tr>
+  <tr><th><B><U>Layer</U> (NameSpace:FeatureType)</B></th><!-- <th><B><U>DataStore</U></B> --><!--bean:message key="mapPreview.tableTitle"/--></th><th><B><U>Preview Map</U></B></th></tr>
   
   
 <!-- This iterator take idx from 0 to however many items there are in the list.
@@ -116,24 +116,37 @@
  <logic:iterate id="it_value" indexId="idx" name="mapPreviewForm" property="DSNameList">
  
 	<tr >
-	     <td width=30%>
-				<center><b>
-				<a href="../../preview/<bean:write property='<%= "FTNameList[" + idx + "]" %>' name="mapPreviewForm"/>.html" target="_blank"><bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/></a>
-				</b></center>
+	     <td>
+				<b>
+				<a href="<bean:write property="BaseUrl" name="mapPreviewForm"/>wms?bbox=<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>&styles=&Format=application/openlayers&request=GetMap&layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>&width=<bean:write property='<%= "WidthList[" + idx + "]" %>' name="mapPreviewForm"/>&height=<bean:write property='<%= "HeightList[" + idx + "]" %>' name="mapPreviewForm"/>&srs=<bean:write property='<%= "SRSList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank"><bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/></a>
+				</b>
 	     </td>
-	     <td class="greyedOut2" width=15%>
-				 <center><bean:write property='<%= "DSNameList[" + idx + "]" %>' name="mapPreviewForm"/></center>
+	     <!-- 
+	     <td class="greyedOut2">
+				 <bean:write property='<%= "DSNameList[" + idx + "]" %>' name="mapPreviewForm"/>
 	     </td>
-	<!--td class="greyedOut2" width=45%>
-	
-				<b>MinX, MinY, MaxX, MaxY</b><br>
-				<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>
-		 </td-->
-		 <td width=10%>
+	      -->
+		 <td>
 			<!-- add link to FTNameList.html -->
-			<center><b>
-			<a href="../../preview/<bean:write property='<%= "FTNameList[" + idx + "]" %>' name="mapPreviewForm"/>.html" target="_blank">Preview</a>
+			<center><b><font size="-1">
+			<a href="<bean:write property="BaseUrl" name="mapPreviewForm"/>wms?bbox=<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>&styles=&Format=application/openlayers&request=GetMap&layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>&width=<bean:write property='<%= "WidthList[" + idx + "]" %>' name="mapPreviewForm"/>&height=<bean:write property='<%= "HeightList[" + idx + "]" %>' name="mapPreviewForm"/>&srs=<bean:write property='<%= "SRSList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank">OpenLayers</a>&nbsp;&nbsp;
+			<a href="<bean:write property="BaseUrl" name="mapPreviewForm"/>wms/kml_reflect?layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank">KML</a>&nbsp;&nbsp;
+			<logic:greaterEqual property='<%= "CoverageStatus[" + idx + "]" %>' name="mapPreviewForm" value="1">
+				<a href="<bean:write property="BaseUrl" name="mapPreviewForm"/>wms?bbox=<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>&styles=&Format=application/rss%2Bxml&request=GetMap&layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>&width=<bean:write property='<%= "WidthList[" + idx + "]" %>' name="mapPreviewForm"/>&height=<bean:write property='<%= "HeightList[" + idx + "]" %>' name="mapPreviewForm"/>&srs=<bean:write property='<%= "SRSList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank">GeoRSS</a>&nbsp;&nbsp;
+			</logic:greaterEqual>
+			<logic:equal property='<%= "CoverageStatus[" + idx + "]" %>' name="mapPreviewForm" value="0">
+			    <font color="gray">GeoRSS&nbsp;&nbsp;</font>
+			</logic:equal>
+			<logic:equal property='<%= "CoverageStatus[" + idx + "]" %>' name="mapPreviewForm" value="2">
+				<a href="<bean:write property="BaseUrl" name="mapPreviewForm"/>wms?bbox=<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>&styles=&Format=application/pdf&request=GetMap&layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>&width=<bean:write property='<%= "WidthList[" + idx + "]" %>' name="mapPreviewForm"/>&height=<bean:write property='<%= "HeightList[" + idx + "]" %>' name="mapPreviewForm"/>&srs=<bean:write property='<%= "SRSList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank">PDF</a>&nbsp;&nbsp;
+				<a href="<bean:write property="BaseUrl" name="mapPreviewForm"/>wms?bbox=<bean:write property='<%= "BBoxList[" + idx + "]" %>' name="mapPreviewForm"/>&styles=&Format=image/svg%2Bxml&request=GetMap&layers=<bean:write property='<%= "FTNamespaceList[" + idx + "]" %>' name="mapPreviewForm"/>&width=<bean:write property='<%= "WidthList[" + idx + "]" %>' name="mapPreviewForm"/>&height=<bean:write property='<%= "HeightList[" + idx + "]" %>' name="mapPreviewForm"/>&srs=<bean:write property='<%= "SRSList[" + idx + "]" %>' name="mapPreviewForm"/>" target="_blank">SVG</a>
+			</logic:equal>
+			<logic:notEqual property='<%= "CoverageStatus[" + idx + "]" %>' name="mapPreviewForm" value="2">
+			    <font color="gray">PDF&nbsp;&nbsp;</font>
+			    <font color="gray">SVG</font>
+			</logic:notEqual>
 			
+			</font>
 			</b></center>
 		 </td>
 	</tr>

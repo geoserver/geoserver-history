@@ -9,18 +9,23 @@ import net.opengis.wfs.QueryType;
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.wfs.WFSException;
 import org.geotools.feature.FeatureType;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.xml.EMFUtils;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.spatial.BBOX;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.xml.namespace.QName;
 
 
@@ -44,26 +49,12 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
     /**
      * Performs additinon GetFeature kvp parsing requirements
      */
-    public Object read(Object request, Map kvp) throws Exception {
-        request = super.read(request, kvp);
+    public Object read(Object request, Map kvp, Map rawKvp)
+        throws Exception {
+        request = super.read(request, kvp, rawKvp);
 
-        //make sure not both featureid and filter specified
-        if (kvp.containsKey("featureId") && kvp.containsKey("filter")) {
-            String msg = "featureid and filter both specified but are mutually exclusive";
-            throw new WFSException(msg);
-        }
-
-        //make sure not both featureid and bbox specified
-        if (kvp.containsKey("featureId") && kvp.containsKey("bbox")) {
-            String msg = "featureid and bbox both specified but are mutually exclusive";
-            throw new WFSException(msg);
-        }
-
-        //make sure not both filter and bbox specified
-        if (kvp.containsKey("filter") && kvp.containsKey("bbox")) {
-            String msg = "bbox and filter both specified but are mutually exclusive";
-            throw new WFSException(msg);
-        }
+        // make sure the filter is specified in just one way
+        ensureMutuallyExclusive(kvp, new String[] { "featureId", "filter", "bbox", "cql_filter" });
 
         //get feature has some additional parsing requirements
         EObject eObject = (EObject) request;
@@ -126,19 +117,21 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
         //filter
         if (kvp.containsKey("filter")) {
             querySet(eObject, "filter", (List) kvp.get("filter"));
+        } else if (kvp.containsKey("cql_filter")) {
+            querySet(eObject, "filter", (List) kvp.get("cql_filter"));
         } else if (kvp.containsKey("featureId")) {
             //set filter from featureId
             List featureIdList = (List) kvp.get("featureId");
-            List filters = new ArrayList();
+            Set ids = new HashSet();
 
             for (Iterator i = featureIdList.iterator(); i.hasNext();) {
                 String fid = (String) i.next();
                 FeatureId featureId = filterFactory.featureId(fid);
-
-                HashSet featureIds = new HashSet();
-                featureIds.add(featureId);
-                filters.add(filterFactory.id(featureIds));
+                ids.add(featureId);
             }
+
+            // build a single feature id filter
+            List filters = Collections.singletonList(filterFactory.id(ids));
 
             querySet(eObject, "filter", filters);
         } else if (kvp.containsKey("bbox")) {
@@ -182,7 +175,37 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
             querySet(eObject, "sortBy", (List) kvp.get("sortBy"));
         }
 
+        //srsName
+        if (kvp.containsKey("srsName")) {
+            querySet(eObject, "srsName", (List) kvp.get("srsName"));
+        }
+
+        //featureversion
+        if (kvp.containsKey("featureVersion")) {
+            querySet(eObject, "featureVersion",
+                Collections.singletonList((String) kvp.get("featureVersion")));
+        }
+
         return request;
+    }
+
+    /**
+     * Given a set of keys, this method will ensure that no two keys are specified at the same time
+     * @param kvp
+     * @param keys
+     */
+    private void ensureMutuallyExclusive(Map kvp, String[] keys) {
+        for (int i = 0; i < keys.length; i++) {
+            if (kvp.containsKey(keys[i])) {
+                for (int j = i + 1; j < keys.length; j++) {
+                    if (kvp.containsKey(keys[j])) {
+                        String msg = keys[i] + " and " + keys[j]
+                            + " both specified but are mutually exclusive";
+                        throw new WFSException(msg);
+                    }
+                }
+            }
+        }
     }
 
     BBOX bboxFilter(QName typeName, Envelope bbox) throws Exception {
@@ -192,8 +215,23 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
         //TODO: should this be applied to all geometries?
         String name = featureType.getDefaultGeometry().getName();
 
+        //get the epsg code
+        String epsgCode = null;
+
+        if (bbox instanceof ReferencedEnvelope) {
+            CoordinateReferenceSystem crs = ((ReferencedEnvelope) bbox).getCoordinateReferenceSystem();
+
+            if (crs != null) {
+                epsgCode = GML2EncodingUtils.epsgCode(crs);
+
+                if (epsgCode != null) {
+                    epsgCode = "EPSG:" + epsgCode;
+                }
+            }
+        }
+
         return filterFactory.bbox(name, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(),
-            bbox.getMaxY(), null);
+            bbox.getMaxY(), epsgCode);
     }
 
     protected void querySet(EObject request, String property, List values)

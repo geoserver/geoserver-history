@@ -5,6 +5,10 @@
 package org.geoserver.wfs.xml;
 
 import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.QueryType;
+import org.geoserver.ows.util.OwsUtils;
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
@@ -14,6 +18,9 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
+import org.geotools.gml2.bindings.GML2EncodingUtils;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
@@ -26,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 import javax.xml.transform.TransformerException;
 
@@ -88,11 +96,16 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
      * using it.
      */
     public GML2OutputFormat(WFS wfs, GeoServer geoServer, Data catalog) {
-        super("GML2");
+        super(new HashSet(Arrays.asList(
+                    new String[] { "GML2", "text/xml; subtype=gml/2.1.2", "GML2-GZIP" })));
 
         this.wfs = wfs;
         this.geoServer = geoServer;
         this.catalog = catalog;
+    }
+
+    public String getCapabilitiesElementName() {
+        return "GML2";
     }
 
     /**
@@ -104,7 +117,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
     *
     * @throws IOException DOCUMENT ME!
     */
-    public void prepare(String outputFormat, FeatureCollectionType results)
+    public void prepare(String outputFormat, FeatureCollectionType results, GetFeatureType request)
         throws IOException {
         this.compressOutput = formatNameCompressed.equalsIgnoreCase(outputFormat);
 
@@ -117,9 +130,9 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         // one type, we really need to set it on the feature level
         int srs = -1;
 
-        for (Iterator f = results.getFeature().iterator(); f.hasNext();) {
+        for (int i = 0; i < results.getFeature().size(); i++) {
             //FeatureResults features = (FeatureResults) f.next();
-            FeatureCollection features = (FeatureCollection) f.next();
+            FeatureCollection features = (FeatureCollection) results.getFeature().get(i);
             FeatureType featureType = features.getSchema();
 
             FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getTypeName(),
@@ -134,11 +147,27 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
                 String location = (String) ftNamespaces.get(uri);
                 ftNamespaces.put(uri, location + "," + meta.getName());
             } else {
-                String location = typeSchemaLocation(wfs, meta);
+                String location = typeSchemaLocation(wfs, meta, request.getBaseUrl());
                 ftNamespaces.put(uri, location);
             }
 
-            srs = Integer.parseInt(meta.getSRS());
+            //JD: wfs reprojection: should not set srs form metadata but from 
+            // the request
+            //srs = Integer.parseInt(meta.getSRS());
+            QueryType query = (QueryType) request.getQuery().get(i);
+
+            try {
+                if (query.getSrsName() != null) {
+                    CoordinateReferenceSystem crs = CRS.decode(query.getSrsName().toString());
+                    String epsgCode = GML2EncodingUtils.epsgCode(crs);
+                    srs = Integer.parseInt(epsgCode);
+                } else {
+                    //no SRS in query...asking for the default?
+                    srs = Integer.parseInt(meta.getSRS());
+                }
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "Problem encoding:" + query.getSrsName(), e);
+            }
         }
 
         System.setProperty("javax.xml.transform.TransformerFactory",
@@ -149,7 +178,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         transformer.setFeatureBounding(wfs.isFeatureBounding());
         transformer.setEncoding(wfs.getCharSet());
 
-        String wfsSchemaloc = wfsSchemaLocation(wfs);
+        String wfsSchemaloc = wfsSchemaLocation(wfs, request.getBaseUrl());
         transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaloc);
 
         for (Iterator it = ftNamespaces.keySet().iterator(); it.hasNext();) {
@@ -166,10 +195,6 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         if (srs != -1) {
             transformer.setSrsName(wfs.getSrsPrefix() + srs);
         }
-    }
-
-    public Set getOutputFormats() {
-        return new HashSet(Arrays.asList(new String[] { "GML2", "text/xml; subtype=gml/2.1.2" }));
     }
 
     /**
@@ -190,7 +215,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
      * @throws IOException DOCUMENT ME!
      * @throws IllegalStateException DOCUMENT ME!
      */
-    public void encode(OutputStream output, FeatureCollectionType results)
+    public void encode(OutputStream output, FeatureCollectionType results, GetFeatureType request)
         throws ServiceException, IOException {
         if (results == null) {
             throw new IllegalStateException("It seems prepare() has not been called"
@@ -229,20 +254,26 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
 
     protected void write(FeatureCollectionType featureCollection, OutputStream output,
         Operation getFeature) throws IOException, ServiceException {
-        prepare("GML2", featureCollection);
-        encode(output, featureCollection);
+        GetFeatureType request = (GetFeatureType) getFeature.getParameters()[0];
+
+        prepare(request.getOutputFormat(), featureCollection, request);
+        encode(output, featureCollection, request);
     }
 
     protected FeatureTransformer createTransformer() {
         return new FeatureTransformer();
     }
 
-    protected String wfsSchemaLocation(WFS wfs) {
-        return ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "wfs/1.0.0/WFS-basic.xsd");
+    protected String wfsSchemaLocation(WFS wfs, String baseUrl) {
+        return ResponseUtils.appendPath(RequestUtils.proxifiedBaseURL(baseUrl,
+                wfs.getGeoServer().getProxyBaseUrl()), "schemas/wfs/1.0.0/WFS-basic.xsd");
     }
 
-    protected String typeSchemaLocation(WFS wfs, FeatureTypeInfo meta) {
-        return ResponseUtils.appendQueryString(wfs.getOnlineResource().toString(),
-            "version=1.0.0&request=DescribeFeatureType&typeName=" + meta.getName());
+    protected String typeSchemaLocation(WFS wfs, FeatureTypeInfo meta, String baseUrl) {
+        final String proxifiedBase = RequestUtils.proxifiedBaseURL(baseUrl,
+                wfs.getGeoServer().getProxyBaseUrl());
+
+        return ResponseUtils.appendQueryString(proxifiedBase + "wfs",
+            "service=WFS&version=1.0.0&request=DescribeFeatureType&typeName=" + meta.getName());
     }
 }

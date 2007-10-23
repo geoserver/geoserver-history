@@ -131,6 +131,9 @@ function prepareFormData(){
         </table>
 	</td></tr>
 	<!------------------------->
+	
+	
+	
 	<!------ This puts in the SRS WKT definition --->
 	
 	<tr>
@@ -142,6 +145,31 @@ function prepareFormData(){
 	  <td class="greyedOut2">
               <bean:write name="typesEditorForm" property="SRSWKT"/>
             </td>
+	</tr>
+	
+	<tr>
+	<td class="label">
+		<span class="help" title="<bean:message key="label.type.crswkt"/>">
+          <bean:message key="label.type.crswkt"/>:
+        </span>
+	  </td>
+	  <td class="greyedOut2">
+              <bean:write name="typesEditorForm" property="nativeSRSWKT"/>
+            </td>
+	</tr>
+	
+	<tr>
+	
+	<td class="label">
+		<span class="help" title="<bean:message key="label.type.srshandling"/>">
+          <bean:message key="label.type.srshandling"/>:
+        </span>
+	  </td>
+	  <td class="greyedOut2">
+              <html:select property="srsHandling">
+	             <html:options property="allSrsHandling"/>
+              </html:select>
+      </td>
 	</tr>
 	
 	
@@ -172,6 +200,11 @@ function prepareFormData(){
       <!-------------------------------------------------------------->
       <!----- This will add the bounding box of the data (in its CRS) to the page --->
       <!----- Its only added if its actually been calculated (i.e. they presed the generate bbox button) --->
+
+<html:hidden property="dataMinX"/>
+<html:hidden property="dataMinY"/>
+<html:hidden property="dataMaxX"/>
+<html:hidden property="dataMaxY"/>
 
 <logic:notEmpty name="typesEditorForm"  property="dataMinX">
         <table border=0 width=90%>
@@ -508,6 +541,7 @@ function prepareFormData(){
 	  </td>
     </tr>
   </table>
+<html:hidden property="autoGenerateExtent" value="false"/>
 </html:form>
 
 <% } catch (Throwable hate ){

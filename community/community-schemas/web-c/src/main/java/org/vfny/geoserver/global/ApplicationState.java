@@ -194,6 +194,13 @@ public class ApplicationState implements PlugIn, InitializingBean {
         configTimestamp = new Date();
     }
 
+    /**
+     * signal to any listeners that config has changed.
+     */
+    public void fireChange() {
+        data.getGeoServer().fireChange();
+    }
+    
     /** Q: what is this supposed to do? */
     public int getWcsGood() {
         if (geoserverStatus[0] != ((isAppChanged() ? 1 : 0) + (isConfigChanged() ? 2 : 0)

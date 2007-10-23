@@ -292,8 +292,8 @@ public abstract class NameSpaceTranslator {
      */
     public NameSpaceElement getDefaultElement(Class type) {
         Set posibilities = getElements(type);
-        System.out.println("getting default for type: " + type + " = " + posibilities);
 
+        //System.out.println("getting default for type: " + type + " = " + posibilities);
         if (posibilities.size() == 0) {
             return null;
         }

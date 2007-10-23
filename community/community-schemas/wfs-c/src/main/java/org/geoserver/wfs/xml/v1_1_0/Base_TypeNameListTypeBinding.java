@@ -58,6 +58,7 @@ public class Base_TypeNameListTypeBinding extends AbstractSimpleBinding {
      */
     public Object parse(InstanceComponent instance, Object value)
         throws Exception {
-        return value;
+        //TODO: implement
+        return null;
     }
 }

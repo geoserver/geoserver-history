@@ -13,9 +13,10 @@ public class DescribeFeatureTypeKvpRequestReader extends WFSKvpRequestReader {
         super(DescribeFeatureTypeType.class);
     }
 
-    public Object read(Object request, Map kvp) throws Exception {
+    public Object read(Object request, Map kvp, Map rawKvp)
+        throws Exception {
         //let super do its thing
-        request = super.read(request, kvp);
+        request = super.read(request, kvp, rawKvp);
 
         //do an additional check for outputFormat, because the default 
         // in wfs 1.1 is not the default for wfs 1.0

@@ -66,7 +66,7 @@ public class WFSHandlerFactory implements HandlerFactory {
 
             if (meta != null) {
                 //found it
-                XSDSchema schema = schemaBuilder.build(meta);
+                XSDSchema schema = schemaBuilder.build(meta, null);
 
                 for (Iterator e = schema.getElementDeclarations().iterator(); e.hasNext();) {
                     XSDElementDeclaration element = (XSDElementDeclaration) e.next();

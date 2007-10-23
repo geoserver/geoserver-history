@@ -4,13 +4,16 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.WfsFactory;
+
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.eclipse.xsd.util.XSDSchemaLocator;
-import org.geoserver.ows.xml.v1_0.OWS;
 import org.geoserver.ows.xml.v1_0.OWSConfiguration;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
+import org.geoserver.wfs.xml.XSQNameBinding;
 import org.geoserver.wfs.xml.filter.v1_1.FilterTypeBinding;
 import org.geoserver.wfs.xml.filter.v1_1.PropertyNameTypeBinding;
 import org.geoserver.wfs.xml.gml3.AbstractGeometryTypeBinding;
@@ -32,11 +35,15 @@ import org.geotools.gml3.GMLConfiguration;
 import org.geotools.gml3.bindings.GML;
 import org.geotools.xml.BindingConfiguration;
 import org.geotools.xml.Configuration;
+import org.geotools.xml.OptionalComponentParameter;
 import org.geotools.xml.Schemas;
 import org.geotools.xs.bindings.XS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
+import org.picocontainer.Parameter;
+import org.picocontainer.defaults.SetterInjectionComponentAdapter;
 import org.vfny.geoserver.global.Data;
-import javax.xml.namespace.QName;
+import org.vfny.geoserver.global.GeoServer;
 
 
 public class WFSConfiguration extends Configuration {
@@ -56,13 +63,19 @@ public class WFSConfiguration extends Configuration {
         this.catalog = catalog;
         this.schemaBuilder = schemaBuilder;
 
+        catalog.getGeoServer().addListener(new GeoServer.Listener() {
+                public void changed() {
+                    flush();
+                }
+            });
+
         addDependency(new OGCConfiguration());
         addDependency(new GMLConfiguration());
         addDependency(new OWSConfiguration());
     }
 
     public void addDependency(Configuration dependency) {
-        // override to make public
+        //override to make public
         super.addDependency(dependency);
     }
 
@@ -92,10 +105,10 @@ public class WFSConfiguration extends Configuration {
         context.registerComponentInstance(WfsFactory.eINSTANCE);
         context.registerComponentInstance(new WFSHandlerFactory(catalog, schemaBuilder));
         context.registerComponentInstance(catalog);
-
+        //context.registerComponentImplementation(PropertyTypePropertyExtractor.class);
         context.registerComponentImplementation(ISOFeaturePropertyExtractor.class);
-
-        // seed the cache with entries from the catalog
+        
+        //seed the cache with entries from the catalog
         FeatureTypeCache featureTypeCache = (FeatureTypeCache) context
             .getComponentInstanceOfType(FeatureTypeCache.class);
 
@@ -107,13 +120,9 @@ public class WFSConfiguration extends Configuration {
 
             for (Iterator f = featureTypes.iterator(); f.hasNext();) {
                 FeatureTypeInfo meta = (FeatureTypeInfo) f.next();
+                FeatureType featureType = meta.getFeatureType();
 
-                try {
-                    FeatureType featureType = meta.getFeatureType();
-                    featureTypeCache.put(featureType);
-                } catch (RuntimeException e) {
-                    e.printStackTrace();
-                }
+                featureTypeCache.put(featureType);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -122,15 +131,16 @@ public class WFSConfiguration extends Configuration {
     }
 
     protected void configureBindings(MutablePicoContainer container) {
-        // register our custom bindings
+        //register our custom bindings
         container.registerComponentImplementation(XS.DATE, DateBinding.class);
         container.registerComponentImplementation(OGC.Filter, FilterTypeBinding.class);
         container.registerComponentImplementation(OGC.PropertyNameType,
             PropertyNameTypeBinding.class);
         container.registerComponentImplementation(GML.CircleType, CircleTypeBinding.class);
-        container.registerComponentImplementation(GML.AbstractGeometryType,
-            AbstractGeometryTypeBinding.class);
-
+        
+//        container.registerComponentImplementation(GML.AbstractGeometryType,
+//                            AbstractGeometryTypeBinding.class);
+                
         // remove bindings for MultiPolygon and MultiLineString
         // TODO: make this cite configurable
         Schemas.unregisterComponent(container, GML.MultiPolygonType);
@@ -140,8 +150,21 @@ public class WFSConfiguration extends Configuration {
         // register the overriding bindings needed to
         // encode from ISO Features
         registerBindingOverrides(container);
-    }
 
+
+        //use setter injection for AbstractGeometryType bindign to allow an 
+        // optional crs to be set in teh binding context for parsing, this crs
+        // is set by the binding of a parent element.
+        // note: it is important that this component adapter is non-caching so 
+        // that the setter property gets updated properly every time
+//        container.registerComponent(new SetterInjectionComponentAdapter(GML.AbstractGeometryType,
+//                AbstractGeometryTypeBinding.class,
+//                new Parameter[] { new OptionalComponentParameter(CoordinateReferenceSystem.class) }));
+
+        // override XSQName binding
+        container.registerComponentImplementation(XS.QNAME, XSQNameBinding.class);
+    }
+    
     private void registerBindingOverrides(MutablePicoContainer container) {
         registerOverride(container, XS.ANYTYPE, ISOXSAnyTypeBinding.class);
         registerOverride(container, GML.CodeType, ISOCodeTypeBinding.class);
@@ -149,9 +172,9 @@ public class WFSConfiguration extends Configuration {
         /*
         registerOverride(container, XS.DATE, ISOXSDateBinding.class);
         registerOverride(container, XS.DATETIME, ISOXSDateTimeBinding.class);
-
+        
         registerOverride(container, XS.COMPLEXTYPE, ISOXSComplexTypeBinding.class);
-        */
+         */
         registerOverride(container, GML.FeaturePropertyType, ISOFeaturePropertyTypeBinding.class);
         registerOverride(container, GML.AbstractFeatureType, ISOAbstractFeatureTypeBinding.class);
 
@@ -177,4 +200,5 @@ public class WFSConfiguration extends Configuration {
         Schemas.unregisterComponent(container, name);
         container.registerComponentImplementation(name, newBinding);
     }
+
 }

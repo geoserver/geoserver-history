@@ -54,6 +54,26 @@
 	        name="BBoxList" 
 	        type="java.lang.String[]" 
 	    />
+        <form-property 
+            name="SRSList" 
+            type="java.lang.String[]" 
+        />
+        <form-property 
+            name="WidthList" 
+            type="java.lang.String[]" 
+        />
+        <form-property 
+            name="HeightList" 
+            type="java.lang.String[]" 
+        />
+        <form-property 
+            name="CoverageStatus" 
+            type="java.lang.Integer[]" 
+        />
+		<form-property 
+			name="BaseUrl" 
+			type="java.lang.String" 
+		/>	
 		</form-bean>
 
     	<form-bean

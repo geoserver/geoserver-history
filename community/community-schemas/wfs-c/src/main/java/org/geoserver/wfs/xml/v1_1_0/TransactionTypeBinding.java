@@ -5,9 +5,13 @@
 package org.geoserver.wfs.xml.v1_1_0;
 
 import net.opengis.wfs.AllSomeType;
+import net.opengis.wfs.DeleteElementType;
+import net.opengis.wfs.InsertElementType;
+import net.opengis.wfs.NativeType;
 import net.opengis.wfs.TransactionType;
+import net.opengis.wfs.UpdateElementType;
 import net.opengis.wfs.WfsFactory;
-import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import java.util.Iterator;
@@ -98,7 +102,7 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class TransactionTypeBinding extends AbstractComplexBinding {
+public class TransactionTypeBinding extends AbstractComplexEMFBinding {
     WfsFactory wfsfactory;
 
     public TransactionTypeBinding(WfsFactory wfsfactory) {
@@ -152,16 +156,16 @@ public class TransactionTypeBinding extends AbstractComplexBinding {
         //&lt;/xsd:choice&gt;
         for (Iterator itr = node.getChildren().iterator(); itr.hasNext();) {
             Node child = (Node) itr.next();
-            String name = child.getComponent().getName();
+            Object cv = child.getValue();
 
-            if ("Insert".equals(name)) {
-                transaction.getInsert().add(child.getValue());
-            } else if ("Update".equals(name)) {
-                transaction.getUpdate().add(child.getValue());
-            } else if ("Delete".equals(name)) {
-                transaction.getDelete().add(child.getValue());
-            } else if ("Native".equals(name)) {
-                transaction.getNative().add(child.getValue());
+            if (cv instanceof InsertElementType) {
+                transaction.getInsert().add(cv);
+            } else if (cv instanceof UpdateElementType) {
+                transaction.getUpdate().add(cv);
+            } else if (cv instanceof DeleteElementType) {
+                transaction.getDelete().add(cv);
+            } else if (cv instanceof NativeType) {
+                transaction.getNative().add(cv);
             }
         }
 

@@ -84,33 +84,39 @@
 
 	<tr>
 	  <td class="label">
-		<span class="help" title="<bean:message key="help.global.loggingLevel"/>">
-			<bean:message key="label.loggingLevel"/>:
+		<span class="help" title="<bean:message key="help.global.log4jConfigFile"/>">
+			<bean:message key="label.log4jConfigFile"/>:
 		</span>
       </td>
 	  <td class="datum">
-		<html:select property="loggingLevel">
-			<html:option value="OFF"/>
-			<html:option value="SEVERE"/>
-			<html:option value="WARNING"/>
-			<html:option value="INFO"/>
-			<html:option value="CONFIG"/>
-			<html:option value="FINE"/>
-			<html:option value="FINER"/>
-			<html:option value="FINEST"/>
-			<html:option value="ALL"/>			
+	  <% if (!org.vfny.geoserver.global.GeoServer.isGeoserverControllingLogging()) { %>
+	  	<select disabled="true">
+	  		<option>GeoServer Logging Disabled</option>
+	  	</select>
+	  <% } else { %>
+		<html:select property="log4jConfigFile">
+			<html:option value="VERBOSE_LOGGING.properties"/>
+			<html:option value="GEOSERVER_DEVELOPER_LOGGING.properties"/>
+			<html:option value="GEOTOOLS_DEVELOPER_LOGGING.properties"/>
+			<html:option value="DEFAULT_LOGGING.properties"/>
+			<html:option value="PRODUCTION_LOGGING.properties"/>
 		</html:select>
+	  <% } %>
 	  </td>
     </tr>	
     
     <tr>
       <td class="label">
-		<span class="help" title="<bean:message key="help.global.loggingToFile"/>">
-			<bean:message key="label.loggingToFile"/>:
+		<span class="help" title="<bean:message key="help.global.suppressStdOutLogging"/>">
+			<bean:message key="label.suppressStdOutLogging"/>:
 		</span>
       </td>
 	  <td class="datum">
-	  	<html:checkbox property="loggingToFile"/>
+	  <% if (!org.vfny.geoserver.global.GeoServer.isGeoserverControllingLogging()) { %>
+	  	<html:checkbox disabled="true" property="suppressStdOutLogging"/>
+	  <% } else { %>
+	  	<html:checkbox property="suppressStdOutLogging"/>
+	  <% } %>
 	  </td>
 	 </tr> 
 	 
@@ -121,13 +127,16 @@
 			</span>
 		</td>
 		<td class="datum">
-		<logic:empty name="geoServerConfigurationForm" property="logLocation">
-			<html:text property="logLocation" size="60" value="logs/geoserver.log"/>		
-		</logic:empty>
-		<logic:notEmpty name="geoServerConfigurationForm" property="logLocation">
-			<html:text property="logLocation" size="60"/>		
-		</logic:notEmpty>
-
+		<% if (!org.vfny.geoserver.global.GeoServer.isGeoserverControllingLogging()) { %>
+	  		<html:text property="logLocation" size="60" value="" disabled="true"/>
+	  	<% } else { %>
+		  	<logic:empty name="geoServerConfigurationForm" property="logLocation">
+				<html:text property="logLocation" size="60" value="logs/geoserver.log"/>		
+			</logic:empty>
+			<logic:notEmpty name="geoServerConfigurationForm" property="logLocation">
+				<html:text property="logLocation" size="60"/>		
+			</logic:notEmpty>
+	  	<% } %>
 		</td>
     </tr>	
 
@@ -218,7 +227,18 @@
 	  </td>
 	 </tr> 
 
-  </tbody>
+	<tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.global.tileCache"/>">
+			<bean:message key="label.tileCache"/>:
+		</span>
+      </td>
+	  <td class="datum">
+	  	<html:text property="tileCache" size="60"/>
+	  </td>
+	 </tr> 
+	
+	</tbody>
 </table>
 
 <h3><bean:message key="label.contactInformation"/></h3>

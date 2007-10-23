@@ -6,9 +6,23 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.WfsFactory;
+import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.wfs.xml.GML3Profile;
+import org.geoserver.wfs.xml.PropertyTypePropertyExtractor;
+import org.geoserver.wfs.xml.TypeMappingProfile;
+import org.geoserver.wfs.xml.XSProfile;
 import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import org.geotools.xs.bindings.XS;
+import org.opengis.feature.type.Name;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 
@@ -78,6 +92,8 @@ public class PropertyTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
+        //TODO: much of this method is duplicated in the 1.1.0 binding, it 
+        // would be nice if we could sync them up somewhow....
         PropertyType property = wfsfactory.createPropertyType();
 
         //&lt;xsd:element name="Name" type="xsd:QName"&gt;
@@ -85,19 +101,37 @@ public class PropertyTypeBinding extends AbstractComplexBinding {
 
         //&lt;xsd:element minOccurs="0" name="Value"&gt;
         if (node.hasChild("Value")) {
-            Map map = (Map) node.getChildValue("Value");
+            Object object = node.getChildValue("Value");
 
-            if (!map.isEmpty()) {
-                //first check for some text
-                if (map.containsKey(null)) {
-                    property.setValue(map.get(null));
-                } else {
-                    //perhaps some other value
-                    property.setValue(map.values().iterator().next());
+            //check for a map
+            if (object instanceof Map) {
+                Map map = (Map) object;
+
+                //this means a complex element parsed by xs:AnyType binding
+                // try to pull out some text
+                if (!map.isEmpty()) {
+                    //first check for some text
+                    if (map.containsKey(null)) {
+                        property.setValue(map.get(null));
+                    } else {
+                        //perhaps some other value
+                        property.setValue(map.values().iterator().next());
+                    }
                 }
+            } else {
+                property.setValue(object);
             }
         }
 
         return property;
+    }
+
+    /**
+     * This method does nothing, its functionality is implemented by
+     * {@link PropertyTypePropertyExtractor}.
+     */
+    public Object getProperty(Object object, QName name)
+        throws Exception {
+        return null;
     }
 }
