@@ -211,6 +211,13 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
         if (config == null) {
             throw new NullPointerException("Non null DataDTO required for load");
         }
+        
+        // Step 0: dispose datastore and readers as needed
+        if(dataStores != null)
+            for (Iterator it = dataStores.values().iterator(); it.hasNext();) {
+                DataStoreInfo ds = (DataStoreInfo) it.next();
+                ds.dispose();
+            }
 
         // Step 1: load formats, dataStores and Namespaces
         formats = loadFormats(config);

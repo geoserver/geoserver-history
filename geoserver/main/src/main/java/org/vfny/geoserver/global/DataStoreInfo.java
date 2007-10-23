@@ -341,4 +341,9 @@ public class DataStoreInfo extends GlobalLayerSupertype {
     public Object getMetaData(String key) {
         return meta.get(key);
     }
+    
+    public void dispose() {
+        if(dataStore != null)
+            dataStore.dispose();
+    }
 }
