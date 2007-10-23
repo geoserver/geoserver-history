@@ -7,6 +7,7 @@ package org.geoserver.wms.kvp;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +42,7 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.FeatureTypeConstraint;
 import org.geotools.styling.NamedLayer;
 import org.geotools.styling.NamedStyle;
+import org.geotools.styling.RemoteOWS;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleAttributeExtractor;
@@ -351,8 +353,6 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 				filters = cqlFilters;
 			}
 
-			getMap.setFilter(filters);
-
 			int numLayers = getMap.getLayers().length;
 
 			if (!filters.isEmpty() && (numLayers != filters.size())) {
@@ -376,6 +376,8 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 					throw new WmsException(msg, getClass().getName());
 				}
 			}
+			
+			getMap.setFilter(filters);
 		}
 
 		// set the raw params used to create the request
@@ -528,67 +530,79 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
                 throw new WmsException(
                         "A UserLayer without layer name was passed");
             }
-
-            currLayer = new MapLayerInfo();
-
-            // handle the InLineFeature stuff
-            // TODO: add support for remote WFS here
-            if ((sl instanceof UserLayer)
-                    && ((((UserLayer) sl)).getInlineFeatureDatastore() != null)) {
-                // SPECIAL CASE - we make the temporary version
+            
+            if(sl instanceof UserLayer && ((((UserLayer) sl)).getRemoteOWS() != null)) {
+                // this beast can define multiple feature sources and multiple styles, we'll
+                // have to mix and match them (ugh)
                 ul = ((UserLayer) sl);
-
                 try {
-                    initializeInlineFeatureLayer(request, ul, currLayer);
-                } catch (Exception e) {
-                    throw new WmsException(e);
+                    addRemoteLayersFromUserLayer(request, ul, layers, styles);
+                } catch(IOException e) {
+                    throw new WmsException("Error accessing remote layers", "RemoteAccessFailed", e);
                 }
             } else {
-                try {
-                    currLayer.setFeature(GetMapKvpReader.findFeatureLayer(
-                            request, layerName));
-                } catch (WmsException e) {
-                    currLayer.setCoverage(GetMapKvpReader
-                            .findCoverageLayer(request, layerName));
+                // simpler case, one layer, eventually multiple styles
+                currLayer = new MapLayerInfo();
+    
+                // handle the InLineFeature stuff
+                // TODO: add support for remote WFS here
+                if ((sl instanceof UserLayer)
+                        && ((((UserLayer) sl)).getInlineFeatureDatastore() != null)) {
+                    // SPECIAL CASE - we make the temporary version
+                    ul = ((UserLayer) sl);
+    
+                    try {
+                        initializeInlineFeatureLayer(request, ul, currLayer);
+                    } catch (Exception e) {
+                        throw new WmsException(e);
+                    }
+                } else {
+                    try {
+                        currLayer.setFeature(GetMapKvpReader.findFeatureLayer(
+                                request, layerName));
+                    } catch (WmsException e) {
+                        currLayer.setCoverage(GetMapKvpReader
+                                .findCoverageLayer(request, layerName));
+                    }
                 }
-            }
-
-            if (currLayer.getType() == MapLayerInfo.TYPE_VECTOR) {
-                // currStyle = findStyleOf(request, currLayer,
-                // styledLayers); // DJB: this looks like a bug, we should
-                // get the style from styledLayers[i]
-
-                // the correct thing to do its grab the style from
-                // styledLayers[i]
-                // inside the styledLayers[i] will either be :
-                // a) nothing - in which case grab the layer's default style
-                // b) a set of:
-                // i) NameStyle -- grab it from the pre-loaded styles
-                // ii)UserStyle -- grab it from the sld the user uploaded
-                //
-                // NOTE: we're going to get a set of layer->style pairs for
-                // (b).
-                addStyles(request, currLayer, styledLayers[i], layers,
-                        styles);
-            } else if (currLayer.getType() == MapLayerInfo.TYPE_RASTER) {
-                try {
+    
+                if (currLayer.getType() == MapLayerInfo.TYPE_VECTOR) {
+                    // currStyle = findStyleOf(request, currLayer,
+                    // styledLayers); // DJB: this looks like a bug, we should
+                    // get the style from styledLayers[i]
+    
+                    // the correct thing to do its grab the style from
+                    // styledLayers[i]
+                    // inside the styledLayers[i] will either be :
+                    // a) nothing - in which case grab the layer's default style
+                    // b) a set of:
+                    // i) NameStyle -- grab it from the pre-loaded styles
+                    // ii)UserStyle -- grab it from the sld the user uploaded
+                    //
+                    // NOTE: we're going to get a set of layer->style pairs for
+                    // (b).
                     addStyles(request, currLayer, styledLayers[i], layers,
                             styles);
-                } catch (WmsException wm) {
-                    // hmm, well, the style they specified in the wms
-                    // request
-                    // wasn't found. Let's try the default raster style
-                    // named 'raster'
-                    currStyle = findStyle(request, "raster");
-                    if (currStyle == null) {
-                        // nope, no default raster style either. Give up.
-                        throw new WmsException(
-                                wm.getMessage()
-                                        + "  Also tried to use "
-                                        + "the generic raster style 'raster', but it wasn't available.");
+                } else if (currLayer.getType() == MapLayerInfo.TYPE_RASTER) {
+                    try {
+                        addStyles(request, currLayer, styledLayers[i], layers,
+                                styles);
+                    } catch (WmsException wm) {
+                        // hmm, well, the style they specified in the wms
+                        // request
+                        // wasn't found. Let's try the default raster style
+                        // named 'raster'
+                        currStyle = findStyle(request, "raster");
+                        if (currStyle == null) {
+                            // nope, no default raster style either. Give up.
+                            throw new WmsException(
+                                    wm.getMessage()
+                                            + "  Also tried to use "
+                                            + "the generic raster style 'raster', but it wasn't available.");
+                        }
+                        layers.add(currLayer);
+                        styles.add(currStyle);
                     }
-                    layers.add(currLayer);
-                    styles.add(currStyle);
                 }
             }
         }
@@ -598,7 +612,64 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
         request.setStyles(styles);
     }
 
-	/**
+	private static void addRemoteLayersFromUserLayer(GetMapRequest request, UserLayer ul, List layers, List styles) 
+	    throws WmsException, IOException {
+	    RemoteOWS service = ul.getRemoteOWS();
+	    if(!service.getService().equalsIgnoreCase("WFS"))
+	        throw new WmsException("GeoServer only supports WFS as remoteOWS service");
+	    if(service.getOnlineResource() == null)
+            throw new WmsException("OnlineResource for remote WFS not specified in SLD");
+	    final FeatureTypeConstraint[] featureConstraints = ul.getLayerFeatureConstraints();
+        if(featureConstraints == null || featureConstraints.length == 0)
+	        throw new WmsException("No FeatureTypeConstraint specified, no layer can be loaded for this UserStyle");
+	    
+	    DataStore remoteWFS = null;
+	    List remoteTypeNames = null; 
+	    try {
+	        URL url = new URL(service.getOnlineResource());
+	        remoteWFS = connectRemoteWFS(url);
+            remoteTypeNames = new ArrayList(Arrays.asList(remoteWFS.getTypeNames()));
+            Collections.sort(remoteTypeNames);
+	    } catch(MalformedURLException e) {
+	        throw new WmsException("Invalid online resource url: '" + service.getOnlineResource() + "'");
+	    } 
+	    
+	    Style[] layerStyles = ul.getUserStyles();
+	    if(request.getFilter() == null)
+	        request.setFilter(new ArrayList());
+	    for (int i = 0; i < featureConstraints.length; i++) {
+	        // make sure the layer is there
+	        String name = featureConstraints[i].getFeatureTypeName();
+            if(Collections.binarySearch(remoteTypeNames, name) < 0) {
+               throw new WmsException("Could not find layer feature type '" 
+                       + name + "' on remote WFS '" + service.getOnlineResource()); 
+            }
+            
+            // grab the filter
+            Filter filter = featureConstraints[i].getFilter();
+            if(filter == null)
+                filter = Filter.INCLUDE;
+            
+            // connect the layer
+            FeatureSource fs = remoteWFS.getFeatureSource(name);
+            
+            // this is messy, why the spec allows for multiple constraints and multiple
+            // styles is beyond me... we'll style each remote layer with all possible
+            // styles, feauture type style matching will do the rest during rendering
+            for (int j = 0; j < layerStyles.length; j++) {
+                Style style = layerStyles[i];
+                MapLayerInfo info = new MapLayerInfo(fs);
+                layers.add(info);
+                styles.add(style);
+                // treat it like an externally provided filter... ugly I know, but
+                // the sane thing (adding a filter as a MapLayerInfo field) would
+                // break havoc in GetFeatureInfo
+                request.getFilter().add(filter);
+            }
+        }
+    }
+
+    /**
 	 * the correct thing to do its grab the style from styledLayers[i] inside
 	 * the styledLayers[i] will either be : a) nothing - in which case grab the
 	 * layer's default style b) a set of: i) NameStyle -- grab it from the
@@ -980,17 +1051,17 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 	        return (MapLayerInfo[]) layers.toArray(new MapLayerInfo[layers.size()]);
 	    }
 
-    private DataStore connectRemoteWFS(URL remoteOwsUrl) {
-        try {
-            WFSDataStoreFactory factory = new WFSDataStoreFactory();
-            Map params = new HashMap(factory.getImplementationHints());
-            params.put(WFSDataStoreFactory.URL.key, remoteOwsUrl + "request=GetCapabilities&service=WFS");
-            params.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.TRUE);
-            return factory.createDataStore(params);
-        } catch(Exception e) {
-            throw new WmsException("Could not connect to remote OWS", "RemoteOWSFailure",e);
+        private static DataStore connectRemoteWFS(URL remoteOwsUrl) throws WmsException {
+            try {
+                WFSDataStoreFactory factory = new WFSDataStoreFactory();
+                Map params = new HashMap(factory.getImplementationHints());
+                params.put(WFSDataStoreFactory.URL.key, remoteOwsUrl + "request=GetCapabilities&service=WFS");
+                params.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.TRUE);
+                return factory.createDataStore(params);
+            } catch(Exception e) {
+                throw new WmsException("Could not connect to remote OWS", "RemoteOWSFailure",e);
+            }
         }
-    }
 	    
 	    private MapLayerInfo buildMapLayerInfo(String layerName) throws Exception {
 	        MapLayerInfo li = new MapLayerInfo();

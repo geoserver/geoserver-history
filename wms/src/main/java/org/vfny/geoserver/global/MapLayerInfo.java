@@ -8,6 +8,7 @@ import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.Style;
+import org.opengis.filter.Filter;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.util.DataStoreUtils;
@@ -88,7 +89,7 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
      * List of styles for a grouped layer
      */
     private List styles;
-
+    
     public MapLayerInfo() {
         name = "";
         label = "";
@@ -376,4 +377,9 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
     public FeatureSource getRemoteFeatureSource() {
         return remoteFeatureSource;
     }
+
+    public void setRemoteFeatureSource(FeatureSource remoteFeatureSource) {
+        this.remoteFeatureSource = remoteFeatureSource;
+    }
+
 }
