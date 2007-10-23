@@ -223,4 +223,8 @@ public class RetypingDataStore implements DataStore {
 //        }
          return originalName.replaceAll(":", "_");
     }
+
+    public void dispose() {
+        wrapped.dispose();
+    }
 }
