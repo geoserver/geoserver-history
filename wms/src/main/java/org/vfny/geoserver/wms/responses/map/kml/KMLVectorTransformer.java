@@ -65,6 +65,8 @@ import org.xml.sax.ContentHandler;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -350,21 +352,32 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             }
 
             //figure out if line or polygon
-            boolean lineOrPoly = feature.getDefaultGeometry() != null && 
+            boolean line = feature.getDefaultGeometry() != null && 
                 (feature.getDefaultGeometry() instanceof LineString
-                    || feature.getDefaultGeometry() instanceof MultiLineString
-                    || feature.getDefaultGeometry() instanceof Polygon
+                    || feature.getDefaultGeometry() instanceof MultiLineString);
+            boolean poly = feature.getDefaultGeometry() != null && 
+            	(feature.getDefaultGeometry() instanceof Polygon
                     || feature.getDefaultGeometry() instanceof MultiPolygon);
             
             //if line or polygon scale the label
-            if ( lineOrPoly ) {
-                element( "scale", "0.2" );
+            if ( line ) {
+            	element( "scale", "0.7");
+            } else if ( poly ) {
+                element( "scale", "1.4" );
             }
             //start Icon
             start("Icon");
             
-            if ( lineOrPoly ) {
-                element("href", "http://maps.google.com/mapfiles/kml/pal3/icon61.png"); 
+            if ( line || poly ) {
+            	String imageURL;
+            	try {
+            		URL requestURL = new URL(mapContext.getRequest().getBaseUrl());
+            		imageURL = requestURL.getProtocol() + "://" + requestURL.getHost() + ":" + requestURL.getPort();
+            		imageURL += "/geoserver/icon.png";
+            	} catch (MalformedURLException mue){
+            		imageURL = "http://maps.google.com/mapfiles/kml/pal3/icon61.png";
+            	}
+                element("href", imageURL); 
             }
             else {
                 //do nothing, this is handled by encodePointStyle
