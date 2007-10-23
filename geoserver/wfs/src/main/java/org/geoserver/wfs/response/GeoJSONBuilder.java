@@ -21,7 +21,7 @@ import java.io.Writer;
 
 /**
  * This class extends the JSONBuilder to be able to write out geometric types.  It is coded
- * against the 1.0-RC1 version of the spec on http://geojson.org
+ * against the draft 5 version of the spec on http://geojson.org
  *
  * @author Chris Holmes, The Open Planning Project
  * @version $Id$
@@ -97,7 +97,7 @@ public class GeoJSONBuilder extends JSONBuilder {
 
     private JSONBuilder writeGeomCollection(GeometryCollection collection) {
         this.array();
-        this.key("members");
+        this.key("geometries");
 
         for (int i = 0, n = collection.getNumGeometries(); i < n; i++) {
             writeGeom(collection.getGeometryN(i));
