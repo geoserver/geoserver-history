@@ -101,4 +101,13 @@ public interface WebFeatureService {
      */
     TransactionResponseType transaction(TransactionType request)
         throws WFSException;
+
+    /**
+     * Release lock operation.
+     * <p>
+     * This is not an official operation of the spec.
+     * </p>
+     * @param lockId A prefiously held lock id.
+     */
+    void releaseLock(String lockId) throws WFSException;
 }

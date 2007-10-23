@@ -43,7 +43,7 @@ public class PropertyNameTypeBinding extends OGCPropertyNameTypeBinding {
         //JD: temporary hack, this should be carried out at evaluation time
         String name = propertyName.getPropertyName();
 
-        if (name.matches("\\w+:\\w+")) {
+        if ((name != null) && name.matches("\\w+:\\w+")) {
             //namespace qualified name, ensure the prefix is valid
             String prefix = name.substring(0, name.indexOf(':'));
             String namespaceURI = namespaceSupport.getURI(prefix);

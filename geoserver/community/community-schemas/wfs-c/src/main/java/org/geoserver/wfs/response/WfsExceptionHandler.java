@@ -45,6 +45,8 @@ public class WfsExceptionHandler extends DefaultServiceExceptionHandler {
         HttpServletRequest request, HttpServletResponse response) {
         Version version = service.getVersion();
 
+        verboseExceptions = wfs.getGeoServer().isVerboseExceptions();
+
         if (new Version("1.0.0").equals(version)) {
             handle1_0(e, response);
         } else {
@@ -79,14 +81,17 @@ public class WfsExceptionHandler extends DefaultServiceExceptionHandler {
 
             s.append(">");
 
-            if ((e.getMessage() != null) && !e.getMessage().equals("")) {
+            if (e.getMessage() != null) {
                 s.append("\n" + tab + tab);
-                s.append(ResponseUtils.encodeXML(e.getMessage()));
+                dumpExceptionMessages(e, s);
 
-                ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();
-                e.printStackTrace(new PrintStream(stackTrace));
+                if (verboseExceptions) {
+                    ByteArrayOutputStream stackTrace = new ByteArrayOutputStream();
+                    e.printStackTrace(new PrintStream(stackTrace));
 
-                s.append(ResponseUtils.encodeXML(new String(stackTrace.toByteArray())));
+                    s.append("\nDetails:\n");
+                    s.append(ResponseUtils.encodeXML(new String(stackTrace.toByteArray())));
+                }
             }
 
             s.append("\n</ServiceException>");

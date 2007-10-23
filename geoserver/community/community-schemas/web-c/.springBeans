@@ -4,7 +4,6 @@
 		<configExtension>xml</configExtension>
 	</configExtensions>
 	<configs>
-		<config>src/main/java/applicationContext.xml</config>
 	</configs>
 	<configSets>
 	</configSets>

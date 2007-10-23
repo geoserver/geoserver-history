@@ -9,6 +9,9 @@
    	<definition name=".mainLayout"
    	            page="/WEB-INF/pages/layouts/mainLayout.jsp">
 		<put name="key" value="GeoServer"/>
+    
+        <!-- HEADER -->
+        <put name="javascript" value="/WEB-INF/pages/blank.jsp"/>
    		
 		<!-- SIDEBAR -->
    		<put name="status" value="/WEB-INF/pages/status.jsp"/>
@@ -175,6 +178,7 @@
    	</definition>
 
    	<definition name="config.data.style.editor" extends=".mainLayout">
+        <put name="javascript" value="/WEB-INF/pages/editAreaXml.jsp"/>
    		<put name="key" value="config.data.style.editor"/>
    		<put name="body" value="/WEB-INF/pages/data/styles/Editor.jsp"/>
 		<put name="status" value="/WEB-INF/pages/data/status.jsp"/>

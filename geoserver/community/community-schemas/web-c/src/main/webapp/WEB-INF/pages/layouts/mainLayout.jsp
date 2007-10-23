@@ -29,6 +29,8 @@
     <meta name="keywords"
           content="(GeoServer) (GIS) (Geographic Information Systems) <bean:message key="<%= keyWords %>"/>"/>
     <meta name="author" content="Dave Blasby, Chris Holmes, Brent Owens, Justin Deoliveira, Jody Garnett, Richard Gould, David Zwiers"/>
+    
+    <tiles:insert attribute="javascript"/>
   	
   	<script language="JavaScript">
 		<!--
@@ -52,6 +54,67 @@
 			}// end for
 			return true;
 		}
+	function onClean() {
+	   var iFrameBody = document.getElementById("demoResponse").contentWindow.document.body;
+	   var url = document.getElementById("url").value;
+	   var body = document.getElementById("body").value;
+	   
+	   // we need to escape & and other simbols that the browser parsed for us, and make
+	   // them &amp; again...
+	   var div = document.createElement('div');
+	   var text = document.createTextNode(body);
+	   div.appendChild(text);
+	   body = div.innerHTML;
+	   
+	   var username = document.getElementById("username").value;
+	   var password = document.getElementById("password").value;
+	   iFrameBody.innerHTML = "<form action='http://<%=request.getServerName()%>:<%=request.getServerPort()%><%=request.getContextPath()%>/TestWfsPost' method='POST'>\n" + 
+	                          "<input type='hidden' name='url' value='" + url + "'/>\n" +
+	                          "<textarea style='visibility:hidden' name='body' />" + body + "</textarea>\n" + 
+	                          "<input type='hidden' name='username' value='" + username + "'/>\n" + 
+	                          "<input type='hidden' name='password' value='" + password + "'/>\n" +
+	                          "<input type='hidden' value='submit'/>\n" +
+	                          "</form>";
+	   var form = iFrameBody.firstChild;
+	   form.submit();
+	}
+	function loadResults() {
+	   document.getElementById("demoResponse").src = "about:blank";
+	   setTimeout('onClean()', 10);
+	};
+	function resize_iframe()
+	{
+	    if(!document.getElementById("demoResponse"))
+	      return;
+	
+		var height=window.innerWidth;//Firefox
+		if (document.body.clientHeight)
+		{
+			height=document.body.clientHeight;//IE
+		}
+		//resize the iframe according to the size of the
+		//window (all these should be on the same line)
+		document.getElementById("demoResponse").style.height=parseInt(height-
+	 	findPos(document.getElementById("demoResponse"))[1] - 8)+"px";
+	}
+	
+	function findPos(obj) {
+		var curleft = curtop = 0;
+		if (obj.offsetParent) {
+			curleft = obj.offsetLeft
+			curtop = obj.offsetTop
+			while (obj = obj.offsetParent) {
+				curleft += obj.offsetLeft
+				curtop += obj.offsetTop
+			}
+		}
+		return [curleft,curtop];
+	}
+
+	// this will resize the iframe every
+	// time you change the size of the window.
+	window.onresize=resize_iframe; 
+
 		-->
 	</script>
   	
@@ -62,7 +125,7 @@
     <link type="image/gif" href="<html:rewrite forward='icon'/>" rel="icon"/>
     <link href="<html:rewrite forward='favicon'/>" rel="SHORTCUT ICON"/>
     <% 
-	    GeoServer gs = (GeoServer) getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY);
+        GeoServer gs = (GeoServer)getServletConfig().getServletContext().getAttribute(GeoServer.WEB_CONTAINER_KEY );
         String baseUrl = Requests.getBaseJspUrl(request, gs);
     %>
      <base href="<%=baseUrl%>"/> 
@@ -70,9 +133,9 @@
   </head>
   <body>
   
-<table class="page">
+<table class="page" height="100%">
   <tbody>
-	<tr class="header">
+	<tr class="header" height="1%">
         <td class="gutter">
           <span class="project">
             <a href="<bean:message key="link.geoserver"/>">

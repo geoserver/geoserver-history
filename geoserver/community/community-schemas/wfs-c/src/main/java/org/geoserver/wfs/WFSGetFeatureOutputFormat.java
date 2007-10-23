@@ -13,6 +13,8 @@ import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Set;
+import java.util.logging.Logger;
 
 
 /**
@@ -32,12 +34,26 @@ import java.io.OutputStream;
  */
 public abstract class WFSGetFeatureOutputFormat extends Response {
     /**
+     * logger
+     */
+    protected static Logger LOGGER = Logger.getLogger("org.geoserver.wfs");
+
+    /**
      * Constructor which sets the outputFormat.
      *
      * @param outputFormat The well-known name of the format, not <code>null</code>
      */
     public WFSGetFeatureOutputFormat(String outputFormat) {
         super(FeatureCollectionType.class, outputFormat);
+    }
+
+    /**
+     * Constructor which sets the outputFormats.
+     *
+     * @param outputFormats Set of well-known name of the format, not <code>null</code>
+     */
+    public WFSGetFeatureOutputFormat(Set outputFormats) {
+        super(FeatureCollectionType.class, outputFormats);
     }
 
     /**
@@ -58,7 +74,7 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
      * Subclasses may implement
      * </p>
      */
-    public final boolean canHandle(Operation operation) {
+    public boolean canHandle(Operation operation) {
         //GetFeature operation?
         if ("GetFeature".equalsIgnoreCase(operation.getId())
                 || "GetFeatureWithLock".equalsIgnoreCase(operation.getId())) {
@@ -73,6 +89,32 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
         }
 
         return false;
+    }
+
+    /**
+     * capabilities output format string.  Something that's a valid XML element name.
+     * This should be overriden in each outputformat subclass, and if it's not a warning will be
+     * issued.
+     */
+    public /*abstract*/ String getCapabilitiesElementName() {
+        LOGGER.severe("ERROR IN " + this.getClass()
+            + " IMPLEMENTATION.  getCapabilitiesElementName() should return a"
+            + "valid XML element name string for use in the WFS 1.0.0 capabilities document.");
+
+        String of = getOutputFormat();
+
+        //wfs 1.1 form is not a valid xml element, do a check
+        if (of.matches("(\\w)+")) {
+            return getOutputFormat();
+        } else {
+            String name = this.getClass().getName();
+
+            if (name.indexOf('.') != -1) {
+                name = name.substring(name.lastIndexOf('.') + 1);
+            }
+
+            return name;
+        }
     }
 
     /**

@@ -7,11 +7,16 @@ package org.geoserver.wfs.xml.v1_1_0;
 import net.opengis.wfs.IdentifierGenerationOptionType;
 import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.WfsFactory;
+import org.geoserver.wfs.WFSException;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.gml2.bindings.GML2ParsingUtils;
+import org.geotools.gml3.bindings.GML;
+import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.picocontainer.MutablePicoContainer;
 import java.net.URI;
 import javax.xml.namespace.QName;
 
@@ -112,7 +117,7 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class InsertElementTypeBinding extends AbstractComplexBinding {
+public class InsertElementTypeBinding extends AbstractComplexEMFBinding {
     WfsFactory wfsfactory;
 
     public InsertElementTypeBinding(WfsFactory wfsfactory) {
@@ -134,6 +139,23 @@ public class InsertElementTypeBinding extends AbstractComplexBinding {
      */
     public Class getType() {
         return InsertElementType.class;
+    }
+
+    public void initializeChildContext(ElementInstance childInstance, Node node,
+        MutablePicoContainer context) {
+        //if an srsName is set for this geometry, put it in the context for 
+        // children, so they can use it as well
+        if (node.hasAttribute("srsName")) {
+            try {
+                CoordinateReferenceSystem crs = GML2ParsingUtils.crs(node);
+
+                if (crs != null) {
+                    context.registerComponentInstance(CoordinateReferenceSystem.class, crs);
+                }
+            } catch (Exception e) {
+                throw new WFSException(e, "InvalidParameterValue");
+            }
+        }
     }
 
     /**
@@ -182,5 +204,16 @@ public class InsertElementTypeBinding extends AbstractComplexBinding {
         }
 
         return insertElement;
+    }
+
+    public Object getProperty(Object object, QName name)
+        throws Exception {
+        InsertElementType insert = (InsertElementType) object;
+
+        if (GML._Feature.equals(name)) {
+            return insert.getFeature();
+        }
+
+        return super.getProperty(object, name);
     }
 }

@@ -107,10 +107,10 @@
  <logic:iterate id="it_value" indexId="idx" name="srsInfoForm" property="srsIDList">
 	<tr>
 	     <td valign="top" align="right">
-	          <bean:write property="<%= "srsIDList[" + idx + "]" %>" name="srsInfoForm"/>
+	          <bean:write property='<%= "srsIDList[" + idx + "]" %>' name="srsInfoForm"/>
 	     </td>
 	     <td class="greyedOut2">
-	     	<pre><bean:write property="<%= "srsDefinitionList[" + idx + "]" %>" name="srsInfoForm"/></pre>
+	     	<pre><bean:write property='<%= "srsDefinitionList[" + idx + "]" %>' name="srsInfoForm"/></pre>
 	     </td>
 	</tr>
 </logic:iterate>

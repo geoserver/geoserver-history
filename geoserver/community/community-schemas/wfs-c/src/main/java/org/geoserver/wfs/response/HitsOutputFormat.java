@@ -60,7 +60,7 @@ public class HitsOutputFormat extends Response {
         GetFeatureType request = (GetFeatureType) OwsUtils.parameter(operation.getParameters(),
                 GetFeatureType.class);
 
-        return request.getResultType() == ResultTypeType.HITS_LITERAL;
+        return (request != null) && (request.getResultType() == ResultTypeType.HITS_LITERAL);
     }
 
     public void write(Object value, OutputStream output, Operation operation)

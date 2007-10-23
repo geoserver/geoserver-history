@@ -10,6 +10,7 @@ import org.geoserver.ows.util.KvpUtils;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.vfny.geoserver.ServiceException;
 import java.util.List;
 
 
@@ -39,6 +40,22 @@ public class BBoxKvpParser extends KvpParser {
             }
         }
 
+        //ensure the values are sane
+        double minx = bbox[0];
+        double miny = bbox[1];
+        double maxx = bbox[2];
+        double maxy = bbox[3];
+
+        if (minx > maxx) {
+            throw new ServiceException("illegal bbox, minX: " + minx + " is "
+                + "greater than maxX: " + maxx);
+        }
+
+        if (miny > maxy) {
+            throw new ServiceException("illegal bbox, minY: " + miny + " is "
+                + "greater than maxY: " + maxy);
+        }
+
         //check for crs
         CoordinateReferenceSystem crs = null;
 
@@ -48,6 +65,6 @@ public class BBoxKvpParser extends KvpParser {
             //TODO: use the default crs of the system
         }
 
-        return new ReferencedEnvelope(bbox[0], bbox[2], bbox[1], bbox[3], crs);
+        return new ReferencedEnvelope(minx, maxx, miny, maxy, crs);
     }
 }

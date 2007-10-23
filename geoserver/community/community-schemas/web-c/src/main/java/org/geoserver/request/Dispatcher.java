@@ -6,6 +6,7 @@ package org.geoserver.request;
 
 import org.geoserver.ows.util.EncodingInfo;
 import org.geoserver.ows.util.XmlCharsetDetector;
+import org.geoserver.platform.GeoServerExtensions;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.vfny.geoserver.ServiceException;
@@ -73,16 +74,12 @@ public class Dispatcher extends AbstractController {
     AbstractService find(String service, String request)
         throws ServiceException {
         //map request parameters to a Request bean to handle it 
-        Map requests =  //getApplicationContext().getBeansOfType(AbstractService.class);
-            getApplicationContext().getParent().getBeansOfType(AbstractService.class);
+        List requests =  GeoServerExtensions.extensions(AbstractService.class);
 
         List matches = new ArrayList();
 
-        for (Iterator itr = requests.entrySet().iterator(); itr.hasNext();) {
-            Map.Entry entry = (Entry) itr.next();
-
-            AbstractService bean = (AbstractService) entry.getValue();
-
+        for (Iterator itr = requests.iterator(); itr.hasNext();) {
+            AbstractService bean = (AbstractService) itr.next();
             //we allow for a null service
             if (service == null) {
                 if (bean.getRequest().toLowerCase().startsWith(request.toLowerCase().trim())) {

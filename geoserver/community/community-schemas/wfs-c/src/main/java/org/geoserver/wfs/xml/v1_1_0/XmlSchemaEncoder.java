@@ -4,19 +4,16 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
-import org.eclipse.xsd.XSDElementDeclaration;
+import net.opengis.wfs.DescribeFeatureTypeType;
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.util.XSDResourceImpl;
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSDescribeFeatureTypeOutputFormat;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
-import org.geotools.data.DataStore;
-import org.geotools.data.feature.FeatureAccess;
-import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.feature.type.Name;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import java.io.IOException;
@@ -47,37 +44,14 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
 
     protected void write(FeatureTypeInfo[] featureTypeInfos, OutputStream output,
         Operation describeFeatureType) throws IOException {
-        XSDSchema schema = null;
-
-        FeatureTypeInfo fti;
-
-        for (int i = 0; i < featureTypeInfos.length; i++) {
-            fti = featureTypeInfos[i];
-
-            DataStore dataStore = fti.getDataStoreInfo().getDataStore();
-
-            if (dataStore instanceof FeatureAccess) {
-                FeatureAccess fa = (FeatureAccess) dataStore;
-                String uri = fti.getNameSpace().getURI();
-                String localName = fti.getTypeName();
-                Name typeName = new org.geotools.feature.Name(uri, localName);
-                AttributeDescriptor descriptor = (AttributeDescriptor) fa.describe(typeName);
-                XSDElementDeclaration elemDecl = (XSDElementDeclaration) descriptor.getUserData(XSDElementDeclaration.class);
-
-                if (null != elemDecl) {
-                    schema = elemDecl.getSchema();
-
-                    break; //handle only one by now
-                }
-            }
-        }
-
-        if (schema == null) {
-            //create the schema
-            FeatureTypeSchemaBuilder builder = new FeatureTypeSchemaBuilder.GML3(wfs, catalog,
-                    resourceLoader);
-            schema = builder.build(featureTypeInfos);
-        }
+        //create the schema
+        DescribeFeatureTypeType req = (DescribeFeatureTypeType) describeFeatureType
+            .getParameters()[0];
+        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(),
+                wfs.getGeoServer().getProxyBaseUrl());
+        FeatureTypeSchemaBuilder builder = new FeatureTypeSchemaBuilder.GML3(wfs, catalog,
+                resourceLoader);
+        XSDSchema schema = builder.build(featureTypeInfos, proxifiedBaseUrl);
 
         //serialize
         schema.updateElement();

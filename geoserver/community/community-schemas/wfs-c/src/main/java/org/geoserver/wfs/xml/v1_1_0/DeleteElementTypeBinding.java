@@ -6,7 +6,9 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.WfsFactory;
-import org.geotools.xml.AbstractComplexBinding;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.filter.Filter;
@@ -72,7 +74,7 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class DeleteElementTypeBinding extends AbstractComplexBinding {
+public class DeleteElementTypeBinding extends AbstractComplexEMFBinding {
     WfsFactory wfsfactory;
 
     public DeleteElementTypeBinding(WfsFactory wfsfactory) {

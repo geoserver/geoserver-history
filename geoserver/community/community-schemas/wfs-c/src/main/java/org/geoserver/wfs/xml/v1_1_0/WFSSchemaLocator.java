@@ -4,11 +4,14 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.eclipse.xsd.XSDElementDeclaration;
 import org.eclipse.xsd.XSDSchema;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geotools.data.DataStore;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.feature.FeatureAccess;
 import org.geotools.data.feature.FeatureSource2;
 import org.geotools.xml.Configuration;
@@ -16,15 +19,10 @@ import org.geotools.xml.SchemaLocator;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 
 /**
- * Schema locator which adds types defined in applications schemas to the wfs
- * schema proper.
+ * Schema locator which adds types defined in applications schemas to the wfs schema proper.
  *
  * @author Justin Deoliveira, The Open Planning Project
  *
@@ -44,9 +42,23 @@ public class WFSSchemaLocator extends SchemaLocator {
     }
 
     protected XSDSchema createSchema() throws Exception {
+        return createSchema(null);
+    }
+
+    /**
+     * Creates the schema using this SchemaLocator.  Note that in order to locate
+     * schemas, you need to know *where* the schemas are, and they might be
+     * in different places, depending on who's calling the server.  Thus the
+     * baseUrl parameter.
+     * @param baseUrl If this parameter is not null, its value will be used as the starting
+     * point for figuring out the baseUrl for any schemas built with this class.
+     * @return
+     * @throws Exception
+     */
+    protected XSDSchema createSchema(String baseUrl) throws Exception {
         XSDSchema wfsSchema = super.createSchema();
 
-        // incorporate application schemas into the wfs schema
+        //incorporate application schemas into the wfs schema
         Collection featureTypeInfos = catalog.getFeatureTypeInfos().values();
 
         for (Iterator i = featureTypeInfos.iterator(); i.hasNext();) {
@@ -62,7 +74,8 @@ public class WFSSchemaLocator extends SchemaLocator {
                 String name = meta.getTypeName();
                 FeatureSource2 source = (FeatureSource2) dataStore.getFeatureSource(name);
                 AttributeDescriptor descriptor = (AttributeDescriptor) source.describe();
-                XSDElementDeclaration elemDecl = (XSDElementDeclaration) descriptor.getUserData(XSDElementDeclaration.class);
+                XSDElementDeclaration elemDecl = (XSDElementDeclaration) descriptor
+                        .getUserData(XSDElementDeclaration.class);
 
                 if (elemDecl != null) {
                     schema = elemDecl.getSchema();
@@ -71,7 +84,7 @@ public class WFSSchemaLocator extends SchemaLocator {
 
             if (schema == null) {
                 // build the schema for the types in the single namespace
-                schema = schemaBuilder.build(new FeatureTypeInfo[] { meta });
+                schema = schemaBuilder.build(new FeatureTypeInfo[] { meta }, baseUrl);
             }
 
             // declare the namespace
@@ -83,7 +96,7 @@ public class WFSSchemaLocator extends SchemaLocator {
             Map schemaPrefixes = schema.getQNamePrefixToNamespaceMap();
 
             for (Iterator it = schemaPrefixes.entrySet().iterator(); it.hasNext();) {
-                Map.Entry entry = (Entry) it.next();
+                Map.Entry entry = (Map.Entry) it.next();
 
                 if (!namePrefixToNamespaceMap.containsKey(entry.getKey())) {
                     namePrefixToNamespaceMap.put(entry.getKey(), entry.getValue());

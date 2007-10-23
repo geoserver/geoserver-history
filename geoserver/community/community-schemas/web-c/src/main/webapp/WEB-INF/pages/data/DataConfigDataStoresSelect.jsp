@@ -13,7 +13,7 @@
       </td>
       <td class="datum" colspan=2>
         <html:select property="selectedDataStoreId">
-			<html:options name="Config.Data" property="dataStoreIds"/>
+			<html:options property="dataStoreIds"/>
 		</html:select>
       </td>
     </tr>

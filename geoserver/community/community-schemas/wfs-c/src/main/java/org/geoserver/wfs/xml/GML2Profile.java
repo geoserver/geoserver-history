@@ -5,6 +5,7 @@
 package org.geoserver.wfs.xml;
 
 import org.geotools.feature.Name;
+import org.geotools.feature.type.ProfileImpl;
 import org.geotools.gml2.GMLSchema;
 import org.geotools.gml2.bindings.GML;
 import java.util.HashSet;
@@ -12,10 +13,11 @@ import java.util.Set;
 
 
 public class GML2Profile extends TypeMappingProfile {
-    static Set profile = new HashSet();
+    static Set profiles = new HashSet();
 
     static {
         //profile.add(new Name(GML.NAMESPACE, GML.POINTTYPE.getLocalPart()));
+        Set profile = new HashSet();
         profile.add(new Name(GML.NAMESPACE, GML.PointPropertyType.getLocalPart()));
         //profile.add(new Name(GML.NAMESPACE, GML.MULTIPOINTTYPE.getLocalPart()));
         profile.add(new Name(GML.NAMESPACE, GML.MultiPointPropertyType.getLocalPart()));
@@ -31,9 +33,10 @@ public class GML2Profile extends TypeMappingProfile {
         profile.add(new Name(GML.NAMESPACE, GML.MultiPolygonPropertyType.getLocalPart()));
 
         profile.add(new Name(GML.NAMESPACE, GML.GeometryPropertyType.getLocalPart()));
+        profiles.add(new ProfileImpl(new GMLSchema(), profile));
     }
 
     public GML2Profile() {
-        super(new GMLSchema(), profile);
+        super(profiles);
     }
 }
