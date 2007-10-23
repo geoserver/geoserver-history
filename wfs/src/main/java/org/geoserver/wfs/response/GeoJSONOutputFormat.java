@@ -20,6 +20,8 @@ import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureType;
+import org.geotools.referencing.NamedIdentifier;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -76,10 +78,10 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
 
         try {
             jsonWriter.object().key("type").value("FeatureCollection");
-            //TODO: Add CRS stuff.
-            jsonWriter.key("members");
+            jsonWriter.key("features");
             jsonWriter.array();
 
+            CoordinateReferenceSystem crs = null;
             for (int i = 0; i < resultsList.size(); i++) {
                 FeatureCollection collection = (FeatureCollection) resultsList.get(i);
 
@@ -100,17 +102,26 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
                         types = fType.getAttributeTypes();
 
                         AttributeType defaultGeomType = fType.getDefaultGeometry();
-                        jsonWriter.key("geometry");
 
-                        if (feature.getDefaultGeometry() != null) {
-                            jsonWriter.writeGeom(feature.getDefaultGeometry());
-                        } else {
-                            jsonWriter.value(null);
+                        if(crs == null )
+                        	crs = fType.getDefaultGeometry().getCoordinateSystem();
+                        
+                        jsonWriter.key("geometry");
+                        Geometry aGeom = feature.getDefaultGeometry();
+                        if (aGeom == null) {
+                        	// In case the default geometry is not set, we will just use the first geometry we find
+                        	for (int j = 0; j < types.length && aGeom == null; j++) {
+                                Object value = feature.getAttribute(j);
+                                if (value != null && value instanceof Geometry) {
+                                	aGeom = (Geometry) value;
+                                }
+                        	}    
                         }
+                        jsonWriter.writeGeom(aGeom);
 
                         if(defaultGeomType != null)
                         	jsonWriter.key("geometry_name").value(defaultGeomType.getLocalName());
-                        
+                        	
                         jsonWriter.key("properties");
                         jsonWriter.object();
 
@@ -137,7 +148,7 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
                                 }
                             } else {
                                 jsonWriter.key(types[j].getLocalName());
-                                jsonWriter.value("null");
+                                jsonWriter.value(null);
                             }
                         }
 
@@ -149,8 +160,27 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
                     collection.close(iterator);
                 }
 
-                jsonWriter.endArray();
-                jsonWriter.endObject();
+                jsonWriter.endArray(); //end features
+                
+                // Coordinate Referense System, currently only if the namespace is EPSG
+                if(crs != null) {
+                  	NamedIdentifier namedIdent = (NamedIdentifier) crs.getIdentifiers().iterator().next();
+                	String csStr = namedIdent.getCodeSpace().toUpperCase();
+                	
+                	if(csStr.equals("EPSG")) {
+                		jsonWriter.key("crs");
+                		jsonWriter.object();
+                		jsonWriter.key("type").value(csStr);
+                			jsonWriter.key("properties");
+                			jsonWriter.object();
+                				jsonWriter.key("code");
+                				jsonWriter.value(namedIdent.getCode());
+                			jsonWriter.endObject(); // end properties
+                		jsonWriter.endObject(); // end crs
+                	}
+                }
+                
+                jsonWriter.endObject(); // end featurecollection
 
                 outWriter.flush();
             }
