@@ -2,12 +2,14 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.kvp;
+package org.geoserver.ows.kvp;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+
+import org.geoserver.ows.kvp.TimeKvpParser;
 
 import junit.framework.TestCase;
 

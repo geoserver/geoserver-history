@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.kvp;
+package org.geoserver.ows.kvp;
 
 import java.text.DateFormat;
 import java.text.ParseException;
