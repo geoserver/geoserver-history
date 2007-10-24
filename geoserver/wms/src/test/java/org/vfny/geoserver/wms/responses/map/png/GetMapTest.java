@@ -32,7 +32,7 @@ public class GetMapTest extends WMSTestSupport {
         if (!RemoteOWSTestSupport.isRemoteStatesAvailable())
             return;
 
-        URL url = GetMapTest.class.getResource("remoteOWS.sld");
+        URL url = GetMapTest.class.getResource("remoteOws.sld");
 
         ServletResponse response = getAsServletResponse("wms?request=getmap&service=wms&version=1.1.1"
                 + "&format=image/png"
