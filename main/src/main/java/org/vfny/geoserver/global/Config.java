@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geotools.factory.GeoTools;
+import org.geotools.factory.Hints;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.ApplicationContext;
@@ -45,6 +47,9 @@ public class Config implements ApplicationContextAware {
         // before any other opeation can trigger the initialization of the CRS subsystem
         if (System.getProperty("org.geotools.referencing.forceXY") == null) {
             System.setProperty("org.geotools.referencing.forceXY", "true");
+        }
+        if (System.getProperty("org.geotools.referencing.forceXY").equalsIgnoreCase("true")) {
+            Hints.putSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING, "http");
         }
 
         //HACK: java.util.prefs are awful.  See
