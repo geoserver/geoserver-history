@@ -49,10 +49,12 @@ public class PropertyNameTypeBinding extends OGCPropertyNameTypeBinding {
             String namespaceURI = namespaceSupport.getURI(prefix);
 
             //only accept if its an application schema namespace, or gml
-            if (!GML.NAMESPACE.equals(namespaceURI)
-                    && (catalog.getNameSpaceFromURI(namespaceURI) == null)) {
-                throw new WFSException("Illegal attribute namespace: " + namespaceURI);
-            }
+            //GR: we're allowing more than that (like to query an xlink property).
+            //REVISIT though
+//            if (!GML.NAMESPACE.equals(namespaceURI)
+//                    && (catalog.getNameSpaceFromURI(namespaceURI) == null)) {
+//               throw new WFSException("Illegal attribute namespace: " + namespaceURI);
+//            }
         }
 
         return propertyName;
