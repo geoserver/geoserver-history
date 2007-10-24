@@ -891,6 +891,9 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 	 */
 	private static void checkStyle(Style style, MapLayerInfo layer)
 			throws WmsException {
+	    if(layer.getType() == layer.TYPE_BASEMAP || layer.getType() == layer.TYPE_RASTER)
+	        return;
+	    
 	    // extract attributes used in the style
 		StyleAttributeExtractor sae = new StyleAttributeExtractor();
 		sae.visit(style);
