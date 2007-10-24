@@ -9,7 +9,7 @@
       WARNING, INFO, CONFIG, FINER, FINEST, in order of
       Increasing statements logged.
     -->
-    <loggingLevel>FINER</loggingLevel>
+    <log4jConfigFile>GEOSERVER_DEVELOPER_LOGGING.properties</log4jConfigFile>
     <loggingToFile value="false" />
     <JaiMemoryCapacity value="209715200" />
     <JaiMemoryThreshold value="0.75" />
