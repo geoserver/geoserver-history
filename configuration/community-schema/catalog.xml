@@ -5,6 +5,12 @@
       a datastore configuration element serves as a common data source connection
       parameters repository for all featuretypes it holds.
     -->
+    <!--datastore namespace="gsml" enabled="false" id="MappedFeatureTest">
+      <connectionParams>
+        <parameter value="complex" name="dbtype" />
+        <parameter value="file:featureTypes/MappedFeatureTest/MappedFeature.xml" name="url" />
+      </connectionParams>
+    </datastore-->
     <datastore namespace="xmml" enabled="true" id="borehole">
       <connectionParams>
         <parameter value="complex" name="dbtype" />
@@ -19,55 +25,55 @@
       </connectionParams>
     </datastore>
 
-    <datastore namespace="tiger" enabled="true" id="DS_giant_polygon">
+    <datastore namespace="tiger" enabled="false" id="DS_giant_polygon">
       <connectionParams>
         <parameter value="tiger" name="namespace" />
         <parameter value="file:data/nyc/giant_polygon.shp" name="url" />
       </connectionParams>
     </datastore>
-    <datastore namespace="topp" enabled="true" id="states_shapefile">
+    <datastore namespace="topp" enabled="false" id="states_shapefile">
       <connectionParams>
         <parameter value="topp" name="namespace" />
         <parameter value="file:data/shapefiles/states.shp" name="url" />
       </connectionParams>
     </datastore>
-    <datastore namespace="tiger" enabled="true" id="DS_poi">
+    <datastore namespace="tiger" enabled="false" id="DS_poi">
       <connectionParams>
         <parameter value="tiger" name="namespace" />
         <parameter value="file:data/nyc/poi.shp" name="url" />
       </connectionParams>
     </datastore>
-    <datastore namespace="topp" enabled="true" id="tasmania_cities">
+    <datastore namespace="topp" enabled="false" id="tasmania_cities">
       <connectionParams>
         <parameter value="topp" name="namespace" />
         <parameter value="file:data/taz_shapes/tasmania_cities.shp" name="url" />
       </connectionParams>
     </datastore>
-    <datastore namespace="topp" enabled="true" id="tasmania_roads">
+    <datastore namespace="topp" enabled="false" id="tasmania_roads">
       <connectionParams>
         <parameter value="topp" name="namespace" />
         <parameter value="file:data/taz_shapes/tasmania_roads.shp" name="url" />
       </connectionParams>
     </datastore>
-    <datastore namespace="topp" enabled="true" id="tasmania_state_boundaries">
+    <datastore namespace="topp" enabled="false" id="tasmania_state_boundaries">
       <connectionParams>
         <parameter value="topp" name="namespace" />
         <parameter value="file:data/taz_shapes/tasmania_state_boundaries.shp" name="url" />
       </connectionParams>
     </datastore>
-    <datastore namespace="tiger" enabled="true" id="DS_poly_landmarks">
+    <datastore namespace="tiger" enabled="false" id="DS_poly_landmarks">
       <connectionParams>
         <parameter value="tiger" name="namespace" />
         <parameter value="file:data/nyc/poly_landmarks.shp" name="url" />
       </connectionParams>
     </datastore>
-    <datastore namespace="tiger" enabled="true" id="DS_tiger_roads">
+    <datastore namespace="tiger" enabled="false" id="DS_tiger_roads">
       <connectionParams>
         <parameter value="tiger" name="namespace" />
         <parameter value="file:data/nyc/tiger_roads.shp" name="url" />
       </connectionParams>
     </datastore>
-    <datastore namespace="topp" enabled="true" id="tasmania_water_bodies">
+    <datastore namespace="topp" enabled="false" id="tasmania_water_bodies">
       <connectionParams>
         <parameter value="topp" name="namespace" />
         <parameter value="file:data/taz_shapes/tasmania_water_bodies.shp" name="url" />
@@ -134,6 +140,7 @@
     <namespace uri="http://www.opengis.net/cv/0.0" prefix="cv"/>
     <namespace uri="http://www.opengis.net/om" prefix="om"/>
     <namespace uri="http://www.isotc211.org/2005/gco" prefix="gco"/>
+    <namespace uri="http://www.cgi-iugs.org/xml/GeoSciML/2" prefix="gsml"/>
   </namespaces>
   <styles>
     <!--

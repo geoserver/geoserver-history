@@ -37,13 +37,22 @@
     </Namespace>
   </namespaces>
   <sourceDataStores>
-    <DataStore>
+    <!--DataStore>
       <id>borehole_denormalized</id>
       <parameters>
         <Parameter>
           <name>directory</name>
+          <value>file:./data</value>
+        </Parameter>
+      </parameters>
+    </DataStore-->
+    <DataStore>
+      <id>borehole_denormalized</id>
+      <parameters>
+        <Parameter>
+          <name>url</name>
           <!-- path can be relative to this file if starts with "file: -->
-          <value>file:./</value>
+          <value>file:./data/boreholes_denormalized.shp</value>
         </Parameter>
       </parameters>
     </DataStore>
