@@ -1,7 +1,7 @@
 -- PostGIS setup script for wfs 1.1 sf0 cite dataset
 -- Usage:
 --     psql -U <database owner> <database> < dataset-sf0.sql
-
+SET client_encoding = 'UTF8';
 
 delete from geometry_columns where f_table_name = 'PrimitiveGeoFeature' ;
 delete from geometry_columns where f_table_name = 'AggregateGeoFeature' ;
