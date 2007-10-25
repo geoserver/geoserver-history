@@ -48,6 +48,14 @@
       <prefix>gml</prefix>
       <uri>http://www.opengis.net/gml</uri>
     </Namespace>
+    <Namespace>
+      <prefix>xlink</prefix>
+      <uri>http://www.w3.org/1999/xlink</uri>
+    </Namespace>
+    <Namespace>
+      <prefix>xsi</prefix>
+      <uri>http://www.w3.org/2001/XMLSchema-instance</uri>
+    </Namespace>
   </namespaces>
   <sourceDataStores>
     <DataStore>
