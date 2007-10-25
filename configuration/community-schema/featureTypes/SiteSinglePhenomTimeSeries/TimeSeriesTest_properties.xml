@@ -100,7 +100,7 @@
         <AttributeMapping>
           <targetAttribute>SiteSinglePhenomTimeSeries</targetAttribute>
           <idExpression>
-            <OCQL>station_id</OCQL>
+            <OCQL>strConcat("station_", station_id)</OCQL>
           </idExpression>
         </AttributeMapping>
 
@@ -113,6 +113,13 @@
             <name>gml:codeSpace</name>
             <value>'http://escawri.org.au/identifiers/public/samplingstations'</value>
           </ClientProperty>
+        </AttributeMapping>
+
+        <AttributeMapping>
+          <targetAttribute>SiteSinglePhenomTimeSeries/gml:description</targetAttribute>
+          <sourceExpression>
+            <OCQL>determinand_description</OCQL>
+          </sourceExpression>
         </AttributeMapping>
 
        <!-- ####################################### -->
