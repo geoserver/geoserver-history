@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
@@ -574,18 +575,15 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
     
     public static boolean isGeoserverControllingLogging() {
-        URL clurl = Thread.currentThread().getContextClassLoader().getResource("commons-logging.properties");
-        File clfile;
-        if (clurl != null) {
-            clfile = new File(clurl.getFile());
-        } else {
-            LOGGER.warning("No 'commons-logging.properties' found on GeoServer's classpath.  GeoServer");
-            return false;
-        }
-        
         Properties clprops = new Properties();
         try {
-            clprops.load(new FileInputStream(clfile));
+            InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("commons-logging.properties");
+            if(is == null) {
+                LOGGER.warning("No 'commons-logging.properties' found on GeoServer's classpath.  GeoServer");
+                return false;
+            }
+                
+            clprops.load(is);
             if (clprops.get("org.apache.commons.logging.Log") == null) {
                 LOGGER.warning("No 'org.apache.commons.logging.Log' property found in commons-logging.");
                 return false;
