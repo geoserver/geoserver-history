@@ -1,3 +1,30 @@
+GeoServer 1.6-beta4
+---------------------
+
+The main focus of this release is bug fixing.
+We tried to fix most of the outstanding bugs in order to have a final
+beta. Notable changes and fixes are:
+* KML output from layer preview is back at work
+* added support for component WMS, that is, the ability to render on the fly data provided by
+  another WFS server, where the server and the feature type are specified in the WMS request itself,
+  such as: 
+  http://localhost:8080/geoserver/wms?...&styles=population&...&layers=topp:states&...&remote_ows_type=WFS&remote_ows_url=http://sigma.openplans.org:8080/geoserver/wfs
+* better mime type detection for static file published in data_dir/www
+* upgraded GeoJSON output to the latest draft available at geojson.org
+* support for right to left languages in labelling
+* support for deploy into Oracle Application Server
+* improved labelling (labels are now better centered into their halos)
+* various minor KML improvements, including the ability to use external graphics for point symbolizers
+  and to add ogc filters to KML reflector calls
+  
+Please download and test, test test. We'll be releasing a RC1 soon, so this is the right time
+to point out any problem you may encounter with GeoServer 1.6.0.
+
+For a full change log have a look at:
+http://jira.codehaus.org/sr/jira.issueviews:searchrequest-printable/12464/SearchRequest-12464.html?tempMax=1000
+
+This release is based on GeoTools 2.4-SNAPSHOT, tag geoserver-1.6-beta4, revision ?????
+
 GeoServer 1.6-beta3
 ---------------------
 
