@@ -4,6 +4,7 @@ GeoServer 1.6-beta4
 The main focus of this release is bug fixing.
 We tried to fix most of the outstanding bugs in order to have a final
 beta. Notable changes and fixes are:
+* logging issues under windows should be fixed
 * KML output from layer preview is back at work
 * added support for component WMS, that is, the ability to render on the fly data provided by
   another WFS server, where the server and the feature type are specified in the WMS request itself,
