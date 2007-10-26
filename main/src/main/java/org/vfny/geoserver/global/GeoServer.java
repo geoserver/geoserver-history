@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.nio.channels.FileChannel;
@@ -651,15 +652,9 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
                     "GEOSERVER_DEVELOPER_LOGGING.properties" };
             
             for (int i = 0; i < lcfiles.length; i++) {
-                File target = new File(lcdir.getAbsolutePath() + File.separator + lcfiles[i]);
+                File target = new File(lcdir.getAbsolutePath(), lcfiles[i]);
                 if (!target.exists()) {
-                    URL logConfFile = Thread.currentThread().getContextClassLoader().getResource(lcfiles[i]);
-                    try {
-                        copyFile(DataUtilities.urlToFile(logConfFile), target);
-                    } catch (Exception e) {
-                        LOGGER.log(Level.FINE, "Couldn't copy log configuration files into your data dir.  Geoserver won't control logging.", e);
-                        return;
-                    }
+                    copyResourceToFile(lcfiles[i], target);
                 }
             }
             
@@ -747,10 +742,10 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         gslf = org.apache.log4j.Logger.getRootLogger().getAppender("geoserverlogfile");
         if (gslf instanceof org.apache.log4j.RollingFileAppender) {
             if (logFileName == null ) {
-                logFileName = GeoserverDataDirectory.getGeoserverDataDirectory().getAbsolutePath() + File.separator + "logs" + File.separator + "geoserver.log";
+                logFileName = new File(GeoserverDataDirectory.findCreateConfigDir("logs"),  "geoserver.log").getAbsolutePath();
             } else { 
                 if (!new File(logFileName).isAbsolute()) {
-                    logFileName = GeoserverDataDirectory.getGeoserverDataDirectory().getAbsolutePath() + File.separator + logFileName;
+                    logFileName = new File(GeoserverDataDirectory.getGeoserverDataDirectory(), logFileName).getAbsolutePath();
                     LOGGER.fine("Non-absolute pathname detected for logfile.  Setting logfile relative to data dir.");
                 }
             }
@@ -777,6 +772,28 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             LOGGER.info("StdOut logging enabled.  Log file also output to '" + logFileName + "'");
         }
         LOGGER.fine("FINISHED CONFIGURING GEOSERVER LOGGING -------------------------");
+    }
+
+    private static void copyResourceToFile(String resource, File target) {
+        InputStream is = null; 
+        OutputStream os = null;
+        byte[] buffer = new byte[4096];
+        int read;
+        try {
+            is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+            os = new FileOutputStream(target);
+            while((read = is.read(buffer)) > 0)
+                os.write(buffer, 0, read);
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Error trying to copy logging configuration file", e);
+        } finally {
+            try {
+                is.close();
+                os.close();
+            } catch(IOException e) {
+                // we tried...
+            }
+        }
     }
     
     /**
@@ -839,20 +856,6 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         return ret;
     }
     
-    
-    private static void copyFile(File source, File target) throws IOException {
-        
-        FileChannel sourceChannel = new FileInputStream(source).getChannel();
-        FileChannel targetChannel = new FileOutputStream(target).getChannel();
-        
-        //JD: source.transferTo(target) seems to fail on some 2.6. linux kernels.
-        //the easy workaround is to just use target.transferFrom(source)
-        //sourceChannel.transferTo(0, sourceChannel.size(), targetChannel);
-        targetChannel.transferFrom(sourceChannel, 0, sourceChannel.size() );
-        sourceChannel.close();
-        targetChannel.close();
-    }
-
     public void initJAI(final double memCapacity, final double memoryThreshold,
         final Boolean recycling, final Boolean ImageIOCache) {
         // setting JAI wide hints
