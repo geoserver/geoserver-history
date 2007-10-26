@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>community-schemas</artifactId>
-		<version>1.6-beta3</version>
+		<version>1.6-beta4</version>
 	</parent>
 
 	<groupId>org.geoserver</groupId>
@@ -33,17 +33,17 @@
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>main</artifactId>
-			<version>1.6-beta3</version>
+			<version>1.6-beta4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>validation</artifactId>
-			<version>1.6-beta3</version>
+			<version>1.6-beta4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>net.opengis.wfs</artifactId>
-			<version>1.6-beta3</version>
+			<version>1.6-beta4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
@@ -60,14 +60,14 @@
         <dependency>
                 <groupId>org.geoserver</groupId>
                 <artifactId>data</artifactId>
-                <version>1.6-beta3</version>
+                <version>1.6-beta4</version>
                 <classifier>tests</classifier>
                 <scope>test</scope>
         </dependency>
         <dependency>
                 <groupId>org.geoserver</groupId>
                 <artifactId>main</artifactId>
-                <version>1.6-beta3</version>
+                <version>1.6-beta4</version>
                 <classifier>tests</classifier>
                 <scope>test</scope>
         </dependency>

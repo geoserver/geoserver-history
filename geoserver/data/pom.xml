@@ -7,20 +7,20 @@
   <parent>
     <groupId>org.geoserver</groupId>		
 	  <artifactId>geoserver</artifactId>
-	  <version>1.6-beta3</version>
+	  <version>1.6-beta4</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
   <artifactId>data</artifactId>
   <packaging>jar</packaging>
-  <version>1.6-beta3</version>
+  <version>1.6-beta4</version>
   <name>Data Module</name>
 
   <dependencies>
 	<dependency>
 	  <groupId>org.geoserver</groupId>
 	  <artifactId>platform</artifactId>
-	  <version>1.6-beta3</version>
+	  <version>1.6-beta4</version>
 	</dependency>
 	<dependency>
 	  <groupId>org.geotools</groupId>
