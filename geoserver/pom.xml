@@ -772,7 +772,7 @@
       <descriptor>release/ext-arcsde.xml</descriptor>
       <descriptor>release/ext-pyramid.xml</descriptor>
      </descriptors>
-     <finalName>geoserver-1.6-beta3</finalName>
+     <finalName>geoserver-1.6-beta4</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
     </configuration>
    </plugin>
@@ -961,7 +961,7 @@
  </modules>
 
  <properties>
-  <gs.version>1.6-beta3</gs.version>
+  <gs.version>1.6-beta4</gs.version>
   <gt.version>2.4-SNAPSHOT</gt.version>
   <java.awt.headless>true</java.awt.headless>
   <jalopy.phase>disabled</jalopy.phase>
