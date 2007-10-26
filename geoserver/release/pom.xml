@@ -54,16 +54,20 @@
 				<artifactId>commons-el</artifactId>
 			</dependency>
 			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+			</dependency>
+			<dependency>
 				<groupId>commons-pool</groupId>
 				<artifactId>commons-pool</artifactId>
 			</dependency>
 			<dependency>
 				<groupId>ant</groupId>
 				<artifactId>ant</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>jcl104-over-slf4j</artifactId>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -128,7 +132,7 @@
 							<tasks>
 								<delete>
 									<fileset dir="${project.build.directory}/dependency"
-										includes="commons-logging*.jar,servlet-api-2.4.jar,core*.jar"/>
+										includes="servlet-api-2.4.jar,core*.jar"/>
 								
 								</delete>
 							</tasks>

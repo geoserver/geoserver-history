@@ -91,10 +91,11 @@
 			<includes>
               <include>ant-*.jar</include>
               <include>commons-el-*.jar</include>
+			  <include>commons-logging-*.jar</include>
+			  <include>log4j-*.jar</include>
               <include>jasper-compiler-*.jar</include>
               <include>jasper-compiler-jdt-*.jar</include>
               <include>jasper-runtime-*.jar</include>
-              <include>jcl104-over-slf4j-*.jar</include>
               <include>jetty-*.jar</include>
               <include>jetty-util-*.jar</include>
               <include>jsp-api-*.jar</include>
