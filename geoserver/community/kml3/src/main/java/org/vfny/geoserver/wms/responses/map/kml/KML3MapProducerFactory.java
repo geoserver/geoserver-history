@@ -30,7 +30,8 @@ public class KML3MapProducerFactory implements GetMapProducerFactorySpi {
     private static final Set SUPPORTED_FORMATS = Collections.singleton(PRODUCE_TYPE);
 
     public boolean canProduce(String mapFormat) {
-        return PRODUCE_TYPE.equals(mapFormat) || MIME_TYPE.equals(mapFormat);
+        return PRODUCE_TYPE.equals(mapFormat) || MIME_TYPE.equals(mapFormat)
+	|| MIME_TYPE.startsWith("application/kml");
     }
 
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
