@@ -22,9 +22,9 @@ Please download and test, test test. We'll be releasing a RC1 soon, so this is t
 to point out any problem you may encounter with GeoServer 1.6.0.
 
 For a full change log have a look at:
-http://jira.codehaus.org/sr/jira.issueviews:searchrequest-printable/12464/SearchRequest-12464.html?tempMax=1000
+http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&styleName=Html&version=13619
 
-This release is based on GeoTools 2.4-SNAPSHOT, tag geoserver-1.6-beta4, revision ?????
+This release is based on GeoTools 2.4-SNAPSHOT, tag geoserver-1.6-beta4, revision 27634
 
 GeoServer 1.6-beta3
 ---------------------
