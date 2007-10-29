@@ -73,10 +73,10 @@ public class GeoValidator extends ValidationProcessor {
             File plugInDir = GeoserverDataDirectory.findConfigDir(dataDir, "plugIns");
             File validationDir = GeoserverDataDirectory.findConfigDir(dataDir, "validation");
 
-            if (plugInDir.exists()) {
+            if (plugInDir != null && plugInDir.exists()) {
                 plugIns = XMLReader.loadPlugIns(plugInDir);
 
-                if (validationDir.exists()) {
+                if (validationDir != null && validationDir.exists()) {
                     testSuites = XMLReader.loadValidations(validationDir, plugIns);
                 }
 
