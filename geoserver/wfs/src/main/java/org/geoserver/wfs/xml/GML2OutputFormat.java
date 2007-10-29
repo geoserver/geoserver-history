@@ -90,7 +90,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
     /**
      * The catalog
      */
-    private Data catalog;
+    protected Data catalog;
 
     /**
      * Creates the producer with a reference to the GetFeature operation
@@ -254,7 +254,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
 
     protected void write(FeatureCollectionType featureCollection, OutputStream output,
         Operation getFeature) throws IOException, ServiceException {
-        GetFeatureType request = (GetFeatureType)getFeature.getParameters()[0];
+        GetFeatureType request = (GetFeatureType) getFeature.getParameters()[0];
         
         prepare(request.getOutputFormat(), featureCollection, request);
         encode(output, featureCollection, request );

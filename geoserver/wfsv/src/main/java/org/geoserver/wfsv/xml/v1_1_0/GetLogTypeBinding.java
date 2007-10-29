@@ -141,11 +141,18 @@ public class GetLogTypeBinding extends AbstractComplexBinding {
         if (node.hasAttribute("resultType")) {
             result.setResultType((ResultTypeType) node.getAttributeValue("resultType"));
         }
+        if(node.hasAttribute("version"))
+            result.setVersion((String) node.getAttributeValue("version"));
+        else
+            result.setVersion("1.1.0");
 
         if (node.hasAttribute("outputFormat")) {
             result.setOutputFormat((String) node.getAttributeValue("outputFormat"));
         } else {
-        	result.setOutputFormat("text/xml; subtype=gml/3.1.1");
+            if("1.0.0".equals(result.getVersion()))
+                result.setOutputFormat("GML2");
+            else
+                result.setOutputFormat("text/xml; subtype=gml/3.1.1");
         }
         
         if(node.hasAttribute("maxFeatures")) {
@@ -154,4 +161,5 @@ public class GetLogTypeBinding extends AbstractComplexBinding {
 
         return result;
     }
+
 }

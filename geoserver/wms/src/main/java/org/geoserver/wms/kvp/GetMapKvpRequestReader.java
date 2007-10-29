@@ -864,9 +864,11 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 		if (style == null) {
 		    if(styleName == null || "".equals(styleName)) {
 		        style = layer.getDefaultStyle();
+		        if(style == null)
+		            throw new WmsException("Could not find a default style for " + layer.getName());
 		    } else {
-		        final Style s = catalog.getStyle(styleName);
-                if (s == null) {
+		        style = catalog.getStyle(styleName);
+                if (style == null) {
                    String msg = "No such style: " + styleName;
                    throw new WmsException(msg, "StyleNotDefined");
                 }
