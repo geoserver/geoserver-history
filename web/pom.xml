@@ -326,12 +326,12 @@
           <contextPath>geoserver</contextPath>
           <webApp>${project.build.directory}/geoserver</webApp>
           <!-- uncomment following to set a GEOSERVER_DATA_DIR -->
-          <!--systemProperties>
+          <systemProperties>
             <systemProperty>
             <name>GEOSERVER_DATA_DIR</name>
-            <value>/home/jdeolive/devel/geoserver/configurations/citeWFS</value>
+            <value>/home/dwinslow/geoserver-configuration/release</value>
             </systemProperty>
-            </systemProperties-->
+            </systemProperties>
         </configuration>
       </plugin>
 
