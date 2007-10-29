@@ -82,14 +82,14 @@
 		
 		<tr>
 			<td class="label" valign="top">
-			<center><u><b><font size=+1><a href="../../../gmaps/gmaps.html" target="newwindow"><bean:message key="welcome.demo.gmapswms.title"/></a></font></b></u><br>
+			<center><u><b><font size=+1><a href="../../../ol-demo.html" target="newwindow"><bean:message key="welcome.demo.olmapswms.title"/></a></font></b></u><br>
 			<table width="80%" align="center">
               <tr>
                 <td>
 			      <center>
 					<p>
 					  <font size="-1">
-					    <bean:message key="welcome.demo.gmapswms.short"/>
+					    <bean:message key="welcome.demo.olmapswms.short"/>
 					  </font>
 					</p>
 				   </center>
