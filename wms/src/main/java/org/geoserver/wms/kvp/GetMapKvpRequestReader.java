@@ -1127,14 +1127,14 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
                     //return null, this should flag request reader to use default for 
                     // the associated layer
                     styles.add(null);
+                } else {
+                    final Style style = catalog.getStyle(styleid);
+                    if (style == null) {
+                        String msg = "No such style: " + styleid;
+                        throw new WmsException(msg, "StyleNotDefined");
+                    }
+                    styles.add(style);
                 }
-
-                final Style style = catalog.getStyle(styleid);
-                if (style == null) {
-                    String msg = "No such style: " + styleid;
-                    throw new WmsException(msg, "StyleNotDefined");
-                }
-                styles.add(style);
             }
 	        return styles;
 	    }
