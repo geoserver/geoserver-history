@@ -112,7 +112,23 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         List times = request.getTime();
         assertEquals(1, request.getTime().size());
         assertEquals(cal.getTime().toString(), times.get(0).toString());
-        
+    }
+    
+    public void testDefaultStyle() throws Exception {
+        HashMap raw = new HashMap();
+        raw.put("layers",
+            MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart() + "," +
+            MockData.BUILDINGS.getPrefix() + ":" + MockData.BUILDINGS.getLocalPart());
+        raw.put("styles", ",");
+        raw.put("format", "image/jpeg");
+        raw.put("srs", "epsg:3003");
+        raw.put("bbox", "-10,-10,10,10");
+        raw.put("height", "600");
+        raw.put("width", "800");
+
+        GetMapRequest request = (GetMapRequest) reader.createRequest();
+        request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
+        assertEquals(2, request.getStyles().size());
     }
 
     public void testFilter() throws Exception {
