@@ -13,6 +13,7 @@ import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
+import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.feature.FeatureCollection;
@@ -68,6 +69,9 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             String namespaceURI = featureType.getNamespace().toString();
             FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getTypeName(),
                     namespaceURI);
+            
+            if(meta == null)
+                throw new WFSException("Could not find feature type " + namespaceURI + ":" + featureType.getTypeName() + " in the GeoServer catalog");
 
             //add it to the map
             Set metas = (Set) ns2metas.get(namespaceURI);
