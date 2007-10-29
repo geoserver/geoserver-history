@@ -5,11 +5,15 @@
 package org.vfny.geoserver.wms.responses.helpers;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -28,6 +32,7 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.resources.CRSUtilities;
 import org.geotools.styling.Style;
+import org.geotools.util.NumberRange;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.referencing.FactoryException;
@@ -932,7 +937,12 @@ public class WMSCapsTransformer extends TransformerBase {
 
             handleLatLonBBox(llBbox);
             handleBBox(bbox, authority);
-
+            
+            String name = coverage.getName();
+            if (name.contains(":")) {
+                name = name.substring(name.indexOf(":") + 1);
+            }
+            handleDimensions(coverage.getNativeFormat(), name);
             // add the layer style
             start("Style");
 
@@ -959,6 +969,177 @@ public class WMSCapsTransformer extends TransformerBase {
             end("Layer");
         }
 
+        /**
+         * For each nD layers, one adds the "Dimension" and "Extent" elements in the getCapabilities 
+         * file.
+         * @param title The title in the configuration form fields.
+         * @param name The name of the requested layer.
+         */
+        private void handleDimensions(final String title, final String name) {
+            if (isTimePresent(title)) {
+                final AttributesImpl dimAtts = new AttributesImpl();
+                final AttributesImpl extAtts = new AttributesImpl();
+                // The list of dates available for the coverage.
+                final String dates = getDates(name);
+                final String elev = getElevations(name);
+                final String range = getValidRange(name);
+                dimAtts.addAttribute("", "name", "name", "", "time");
+                dimAtts.addAttribute("", "units", "units", "", "ISO8601");
+                element("Dimension", null, dimAtts);
+                dimAtts.clear();
+                if (hasElevations(elev)) {
+                    dimAtts.addAttribute("", "name", "name", "", "elevation");
+                    // EPSG:5030 is WGS84, units in metres.
+                    dimAtts.addAttribute("", "units", "units", "", "EPSG:5030");
+                    element("Dimension", null, dimAtts);
+                    dimAtts.clear();
+                }
+                if (hasDimRange(range)) {
+                    dimAtts.addAttribute("", "name", "name", "", "dim_range");
+                    dimAtts.addAttribute("", "units", "units", "", "degrees");
+                    element("Dimension", null, dimAtts);
+                }
+                // One takes the first element of the list as the default value.
+                final String defaultDate;
+                if (dates.contains(",")) {
+                    defaultDate = dates.substring(0, dates.indexOf(","));
+                } else {
+                    defaultDate = dates;
+                }
+                extAtts.addAttribute("", "name", "name", "", "time");
+                extAtts.addAttribute("", "default", "default", "", defaultDate);
+                element("Extent", dates, extAtts);
+                extAtts.clear();
+                if (hasElevations(elev)) {
+                    // One takes the first element of the list as the default value.
+                    final String defaultElev;
+                    if (elev.contains(",")) {
+                        defaultElev = elev.substring(0, elev.indexOf(","));
+                    } else {
+                        defaultElev = elev;
+                    }
+                    extAtts.addAttribute("", "name", "name", "", "elevation");
+                    extAtts.addAttribute("", "default", "default", "", defaultElev);
+                    element("Extent", elev, extAtts);
+                    extAtts.clear();
+                }
+                if (hasDimRange(range)) {
+                    extAtts.addAttribute("", "name", "name", "", "dim_range");
+                    extAtts.addAttribute("", "default", "default", "", range);
+                    element("Extent", range, extAtts);
+                    extAtts.clear();
+                }
+            }
+        }
+        
+        /**
+         * Verify if the layers used the nD specifications. For the moment only the PostGrid plugin can do
+         * that, so one tests if the layer's plugin used is this one.
+         */
+        private boolean isTimePresent(final String title) {
+            return title.contains("PostGrid");
+        }
+        
+        /**
+         * Verify if the layer has a dim_range specified.
+         * @param dimRange a list of ranges gotten using the getValidRange(layer) method.
+         * @return True if ranges are found.
+         */
+        private boolean hasDimRange(final String dimRange) {
+            return (dimRange != null && !dimRange.equals("") && !dimRange.equals("0,0"));
+        }
+        
+        /**
+         * Verify if the layer has an elevation specified.
+         * @param elev a list of elevations gotten using the getElevations(layer) method.
+         * @return True if elevations are found.
+         */
+        private boolean hasElevations(final String elev) {
+            return (elev != null && !elev.equals("") && !elev.equals("0"));
+        }
+        
+        /**
+         * Invokes the getAvailableTimes() method from the {@linkplain net.sicade.coverage.io.PostGridReader}
+         * that will get all dates from which the data exist.
+         *
+         * @return A comma-separated list of dates.
+         */
+        private String getDates(final String names) {
+            final Set times;
+            try {
+                times = (Set) Class.forName("fr.ifremer.coverage.io.PostGridReader").
+                        getMethod("getAvailableTimes", new Class[]{String.class}).invoke(null, new Object[]{names});
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "GetAvailableTimes has failed.", e);
+                return ""; // There is no date
+            }
+            final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
+            final FieldPosition pos = new FieldPosition(0);
+            final StringBuffer buffer = new StringBuffer();
+            for (final Iterator it=times.iterator(); it.hasNext();) {
+                df.format(it.next(), buffer, pos);
+                buffer.append(',');
+            }
+            int length = buffer.length();
+            if (length != 0) {
+                buffer.setLength(length - 1);
+            }
+            return buffer.toString();
+        }
+        
+        /**
+         * This method will be replaced by an other one in Seagis, that will provide us the corrects values 
+         * for each layers. For the moment it is hard coded.
+         *
+         * @return A comma-separated list of depth values.
+         */
+        private String getElevations(final String names) {
+            final Set timesAndDepths;
+            try {
+                timesAndDepths = (Set) Class.forName("fr.ifremer.coverage.io.PostGridReader").
+                        getMethod("getAvailableAltitudes", new Class[]{String.class}).invoke(null, new Object[]{names});
+            } catch (Exception e) {
+                LOGGER.log(Level.INFO, "GetAvailableAltitudes has failed.", e);
+                return ""; // There is no date
+            }
+            final StringBuffer buffer = new StringBuffer();
+            for (final Iterator it=timesAndDepths.iterator(); it.hasNext();) {
+                final Object value = it.next();
+                if (value instanceof Double) {
+                    double d = ((Double) value).doubleValue();
+                    buffer.append(Math.round(d));
+                } else {
+                    buffer.append(value);
+                }
+                buffer.append(',');
+            }
+            int length = buffer.length();
+            if (length != 0) {
+                buffer.setLength(length - 1);
+            }
+            return buffer.toString();
+        }
+ 
+        /**
+         * Invokes the getValidRange() method from the {@linkplain net.sicade.coverage.io.PostGridReader}
+         * that will get the range for the color palette.
+         *
+         * @return The range for the palette.
+         */
+        private String getValidRange(final String names) {
+            final NumberRange range;
+            try {
+                range = (NumberRange) Class.forName("fr.ifremer.coverage.io.PostGridReader").
+                        getMethod("getValidRange", new Class[]{String.class}).invoke(null, new Object[]{names});
+            } catch (Exception e) {
+                LOGGER.log(Level.INFO, "GetValidRange has failed.", e);
+                return ""; // There is no range
+            }
+            final StringBuffer buffer = new StringBuffer();
+            buffer.append(range.getMinimum()).append(',').append(range.getMaximum());
+            return buffer.toString();
+        }
+        
         protected void handleLayerGroups(Map baseMapLayers, Map baseMapStyles, Map baseMapEnvelopes)
             throws FactoryException, TransformException {
             if (baseMapLayers == null) {

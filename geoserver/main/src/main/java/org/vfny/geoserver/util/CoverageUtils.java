@@ -149,12 +149,18 @@ public class CoverageUtils {
                         parameters.add(new DefaultParameterDescriptor(_key, Color.class, null, value)
                             .createValue());
                     } else {
+                        if (_key.equalsIgnoreCase("TIME") || _key.equalsIgnoreCase("ELEVATION") ||
+                             _key.equalsIgnoreCase("DIM_RANGE")) {
+                            continue;
+                        }
                         parameters.add(new DefaultParameterDescriptor(_key, value.getClass(), null,
                                 value).createValue());
                     }
                 }
             }
 
+            addToParameters("TIME", values, parameters);
+            addToParameters("ELEVATION", values, parameters);
             return (!parameters.isEmpty())
             ? (GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()])
             : null;
@@ -163,6 +169,14 @@ public class CoverageUtils {
         }
     }
 
+    private static void addToParameters(final String key, final Map values, List parameters) {
+        Object content = values.get(key);
+        if (content != null) {
+            parameters.add(new DefaultParameterDescriptor(key, content.getClass(), null,
+                            content).createValue());
+        }
+    }
+    
     public static Map getParametersKVP(ParameterValueGroup params) {
         final Map parameters = new HashMap();
         final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
@@ -208,7 +222,10 @@ public class CoverageUtils {
                     } else {
                         text = value.toString();
                     }
-
+                    if (/*_key.equalsIgnoreCase("TIME") || */_key.equalsIgnoreCase("ELEVATION") ||
+                        _key.equalsIgnoreCase("DIM_RANGE")) {
+                        continue;
+                    }                    
                     parameters.put(_key, (text != null) ? text : "");
                 }
             }
@@ -378,6 +395,10 @@ public class CoverageUtils {
                     Object[] inArray = { params.get(key) };
                     value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
                 }
+            } else if (key.equalsIgnoreCase("time")) {
+                value = params.get(key);
+            } else if (key.equalsIgnoreCase("elevation")) {
+                value = params.get(key);
             } else {
                 Class[] clArray = { String.class };
                 Object[] inArray = { params.get(key) };

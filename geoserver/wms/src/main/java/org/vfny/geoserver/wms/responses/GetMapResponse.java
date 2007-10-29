@@ -367,15 +367,15 @@ public class GetMapResponse implements Response {
                         } catch (ParameterNotFoundException p) {
                         }
 
-//                      uncomment when the DIM_RANGE vendor parameter will be enabled                        
-//                        try {
-//                            ParameterValue dimRange = reader.getFormat().getReadParameters()
-//                                    .parameter("DIM_RANGE");
-//                            if (dimRange != null && request.getDimRange() != null) {
-//                                dimRange.setValue(request.getDimRange());
-//                            }
-//                        } catch (ParameterNotFoundException p) {
-//                        }
+
+                        try {
+                            ParameterValue dimRange = reader.getFormat().getReadParameters()
+                                    .parameter("DIM_RANGE");
+                            if (dimRange != null && request.getDimRange() != null) {
+                                dimRange.setValue(request.getDimRange());
+                            }
+                        } catch (ParameterNotFoundException p) {
+                        }
 
                         try {
                             ParameterValue elevation = reader.getFormat().getReadParameters()

@@ -130,11 +130,14 @@
  		<constructor-arg value="buffer"/>
  	</bean>
  	<bean id="paletteKvpParser" class="org.geoserver.wms.kvp.PaletteKvpParser"/>
-    <bean id="timeKvpParser" class="org.geoserver.ows.kvp.TimeKvpParser">
-        <constructor-arg value="time"/>
-    </bean>
+        <bean id="timeKvpParser" class="org.geoserver.ows.kvp.TimeKvpParser">
+            <constructor-arg value="time"/>
+        </bean>
  	<bean id="elevationKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
 		<constructor-arg value="elevation"/>
+ 	</bean>
+        <bean id="dimRangeKvpParser" class="org.geoserver.wms.kvp.DimRangeKvpParser">
+		<constructor-arg value="dim_range"/>
  	</bean>
  	<bean id="validateSldKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
  		<constructor-arg value="validateschema"/>

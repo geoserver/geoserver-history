@@ -8,6 +8,7 @@ import com.vividsolutions.jts.geom.Envelope;
 import org.geoserver.ows.util.CaseInsensitiveMap;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyledLayerDescriptor;
+import org.geotools.util.NumberRange;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.MapLayerInfo;
@@ -320,6 +321,13 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
+     * @return The dim_range request parameter.
+     */
+    public NumberRange getDimRange() {
+        return this.optionalParams.dimRange;
+    }
+
+    /**
      * Returs the feature version optional parameter
      * @return
      */
@@ -606,6 +614,14 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
+     * Sets the time request parameter.
+     *
+     */
+    public void setDimRange(NumberRange range) {
+        this.optionalParams.dimRange = range;
+    }
+    
+    /**
      * Sets the feature version optional param
      * @param featureVersion
      */
@@ -722,13 +738,22 @@ public class GetMapRequest extends WMSRequest {
 		/** The paletteInverter used for rendering, if any */
 		InverseColorMapOp paletteInverter;
 
-        /** time elevation parameter, a list since many pattern setup can be possible, see
-         *  for example http://mapserver.gis.umn.edu/docs/howto/wms_time_support/#time-patterns */
+        /** 
+         * Time parameter, a list since many pattern setup can be possible, see
+         *  for example http://mapserver.gis.umn.edu/docs/howto/wms_time_support/#time-patterns 
+         */
         List time;
 
-        /** time elevation parameter */
+        /**
+         * Elevation parameter in the default metric units.
+         */
         Integer elevation;
 
+        /** 
+         * The dim_range parameter, which could be used to select a range for color palette.
+         */
+        NumberRange dimRange;
+        
         /**
          * SLD parameter
          */

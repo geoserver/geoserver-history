@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -26,6 +27,9 @@ import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.geoserver.ows.kvp.TimeKvpParser;
+import org.geoserver.wms.kvp.DimRangeKvpParser;
 
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
@@ -47,6 +51,7 @@ import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
+import org.geotools.util.NumberRange;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
@@ -390,17 +395,27 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 					|| "ON".equalsIgnoreCase(legend));
 		}
 
-//		/** TIME: a time stamp for multidim coverages <description> */
-//		String time = getValue("TIME");
-//
-//		if (time != null) {
-//			request.setTime(Integer.valueOf(time));
-//
-//			if (LOGGER.isLoggable(Level.INFO)) {
-//				LOGGER.info("Set TIME: " + time);
-//			}
-//		}
-
+                /** TIME: a time stamp for multidim coverages <description> */
+                String time = getValue("TIME");
+                if (time != null) {
+                    TimeKvpParser timeKvp = new TimeKvpParser("TIME");
+                    try {
+                        request.setTime((List) timeKvp.parse(time));
+                    } catch (ParseException ex) {
+                        throw new WmsException(ex);
+                    }
+                }
+                
+                String palDim = getValue("DIM_RANGE");
+                if (palDim != null) {
+                    DimRangeKvpParser dimRangeKvp = new DimRangeKvpParser("DIM_RANGE");
+                    try {
+                        request.setDimRange((NumberRange) dimRangeKvp.parse(palDim));
+                    } catch (ParseException ex) {
+                        throw new WmsException(ex);
+                    }
+                }
+               
 		/**
 		 * ELEVATION: elevation (or depth) valu for multidim coverages
 		 * <description>
@@ -410,8 +425,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 		if (elev != null) {
 			request.setElevation(Integer.valueOf(elev));
 
-			if (LOGGER.isLoggable(Level.INFO)) {
-				LOGGER.info("Set ELEVATION: " + elev);
+			if (LOGGER.isLoggable(Level.FINE)) {
+				LOGGER.fine("Set ELEVATION: " + elev);
 			}
 		}
 	}
