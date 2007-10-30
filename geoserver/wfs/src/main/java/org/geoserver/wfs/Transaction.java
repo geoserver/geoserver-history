@@ -355,7 +355,7 @@ public class Transaction {
                 // inform plugins we're about to commit
                 for (Iterator it = transactionPlugins.iterator(); it.hasNext();) {
                     TransactionPlugin tp = (TransactionPlugin) it.next();
-                    tp.beforeCommit();
+                    tp.beforeCommit(request);
                 }
 
                 transaction.commit();
@@ -395,7 +395,7 @@ public class Transaction {
         // inform plugins we're done
         for (Iterator it = transactionPlugins.iterator(); it.hasNext();) {
             TransactionPlugin tp = (TransactionPlugin) it.next();
-            tp.afterTransaction(committed);
+            tp.afterTransaction(request, committed);
         }
 
         //        
