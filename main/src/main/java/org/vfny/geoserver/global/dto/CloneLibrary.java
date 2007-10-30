@@ -137,6 +137,8 @@ public final class CloneLibrary {
      * @see com.vividsolutions.jts.geom.Envelope
      */
     public static Envelope clone(Envelope e) {
+        if(e == null)
+            return null;
         Envelope result = new Envelope(e);
 
         return result;
