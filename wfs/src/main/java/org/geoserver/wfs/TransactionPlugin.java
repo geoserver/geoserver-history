@@ -21,7 +21,7 @@ public interface TransactionPlugin extends TransactionListener {
     /**
      * Say the last word before we actually commit the transaction
      */
-    void beforeCommit() throws WFSException;
+    void beforeCommit(TransactionType request) throws WFSException;
 
     /**
      * Notification the transaction ended
@@ -30,7 +30,7 @@ public interface TransactionPlugin extends TransactionListener {
      *            true if the transaction was successful, false if the
      *            transaction was aborted for any reason
      */
-    void afterTransaction(boolean committed);
+    void afterTransaction(TransactionType request, boolean committed);
 
     /**
      * Aspects gets called in a specific order. State your priority, the higher
