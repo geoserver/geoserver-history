@@ -119,10 +119,13 @@ public class InsertElementHandler implements TransactionElementHandler {
                     }
                     
                     // reprojection
-                    CoordinateReferenceSystem target = store.getSchema().getDefaultGeometry()
+                    final GeometryAttributeType defaultGeometry = store.getSchema().getDefaultGeometry();
+                    if(defaultGeometry != null) {
+                        CoordinateReferenceSystem target = defaultGeometry
                                                              .getCoordinateSystem();
-                    if (target != null) {
-                        collection = new ReprojectingFeatureCollection(collection, target);
+                        if (target != null) {
+                            collection = new ReprojectingFeatureCollection(collection, target);
+                        }
                     }
                     
                     // Need to use the namespace here for the

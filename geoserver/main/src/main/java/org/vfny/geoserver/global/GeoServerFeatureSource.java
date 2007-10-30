@@ -333,10 +333,11 @@ public class GeoServerFeatureSource implements FeatureSource {
             //this is the raw "unprojected" feature collection
             FeatureCollection fc = source.getFeatures(newQuery);
 
-            CoordinateReferenceSystem nativeCRS = null;
-            if ( fc.getSchema().getDefaultGeometry() != null ) {
-                nativeCRS = fc.getSchema().getDefaultGeometry().getCoordinateSystem();
-            }
+            if ( fc.getSchema().getDefaultGeometry() == null ) {
+                // reprojection and crs forcing do not make sense, bail out
+                return fc;
+            } 
+            CoordinateReferenceSystem nativeCRS = fc.getSchema().getDefaultGeometry().getCoordinateSystem();
             
             if (srsHandling == FeatureTypeInfo.LEAVE && nativeCRS != null) {
                 //do nothing

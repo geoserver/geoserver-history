@@ -143,6 +143,10 @@ public class MockData {
 
     // public static QName ENTIT\u00C9G\u00C9N\u00C9RIQUE = new QName( SF_URI,
     // "Entit\u00E9G\u00E9n\u00E9rique", SF_PREFIX );
+    
+    // Extra types
+    public static QName GEOMETRYLESS = new QName(CITE_URI, "Geometryless", CITE_PREFIX);
+    
 
     /**
      * List of all cite types names
@@ -153,7 +157,7 @@ public class MockData {
             NAMED_PLACES, PONDS, ROAD_SEGMENTS, STREAMS, // WFS 1.0
             DELETES, FIFTEEN, INSERTS, LOCKS, NULLS, OTHER, SEVEN, UPDATES, LINES, MLINES, MPOINTS,
             MPOLYGONS, POINTS, POLYGONS, // WFS 1.1
-            PRIMITIVEGEOFEATURE, AGGREGATEGEOFEATURE, /* ENTIT\u00C9G\u00C9N\u00C9RIQUE */
+            PRIMITIVEGEOFEATURE, AGGREGATEGEOFEATURE, GEOMETRYLESS /* ENTIT\u00C9G\u00C9N\u00C9RIQUE */
         };
 
     /**
