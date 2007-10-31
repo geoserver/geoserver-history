@@ -77,9 +77,11 @@
 
             // add the created layers to the map (if you want custom layers to show up they must be here as well)
             map.addLayers([gsat, veaer, yahoosat, wms]);
-            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            var control = new OpenLayers.Control.LayerSwitcher();
+            map.addControl(control);
             /*console.log("BBox is: " + bounds.toBBOX());*/
             map.zoomToExtent(bounds);
+            control.maximizeControl();
         }
 
         function osm_getTileURL(bounds) {
@@ -100,7 +102,8 @@
     </script>
   </head>
   <body onload="init()">
-    <h3>Geoserver OpenLayers Demo</h3>
+    <h3>Mapping Provider Overlay Demo</h3>
+    <h5>Google Maps, Yahoo! Maps and Virtual Earth plus GeoServer, Powered by OpenLayers</h5>
     <div id="map"></div>
   </body>
 </html>
