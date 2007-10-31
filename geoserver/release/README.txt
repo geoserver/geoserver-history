@@ -1,6 +1,6 @@
-GeoServer 1.5.3
+GeoServer 1.5.4
 ---------------
-GeoServer 1.5.2 is a bugfix and minor feature release. It provides a bunch
+GeoServer 1.5.4 is a bugfix and minor feature release. It provides a bunch
 of KML and templates related fixes, support for Arabic labeling, propper Google projection
 support,
 validating GML 2.1.2.1 schemas, and a lot more.
