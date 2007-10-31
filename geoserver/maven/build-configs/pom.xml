@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>maven</artifactId>
-		<version>1.5.3</version>
+		<version>1.5.x</version>
 	</parent>
 
 	<groupId>org.geoserver.maven</groupId>
