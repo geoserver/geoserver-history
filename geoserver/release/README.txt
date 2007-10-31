@@ -1,5 +1,17 @@
 GeoServer 1.5.3
 ---------------
+GeoServer 1.5.2 is a bugfix and minor feature release. It provides a bunch
+of KML and templates related fixes, support for Arabic labeling, propper Google projection
+support,
+validating GML 2.1.2.1 schemas, and a lot more.
+
+Full changelog is here:
+http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&styleName=Html&version=13609
+
+This release is based off Geoserver 2.3.5
+
+GeoServer 1.5.3
+---------------
 GeoServer 1.5.3 contains some minor bug fixes relating to GeoRSS and KML. The
 changlog can be found here:
 
