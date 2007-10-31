@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.geoserver</groupId>		
 	<artifactId>community</artifactId>
-	<version>1.5.3</version>
+	<version>1.5.4</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -20,7 +20,7 @@
   	<dependency>
   		<groupId>org.geoserver</groupId>
   		<artifactId>wfs</artifactId>
-		<version>1.5.3</version>
+		<version>1.5.4</version>
   	</dependency>
   	<dependency> 
 		<groupId>net.sf.json-lib</groupId> 
