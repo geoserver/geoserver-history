@@ -2,10 +2,18 @@ package org.openplans.security;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
+
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.Iterator;
+import java.util.Properties;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -18,6 +26,8 @@ import org.acegisecurity.GrantedAuthorityImpl;
 import org.acegisecurity.providers.AuthenticationProvider;
 import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 
+import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.vfny.geoserver.global.ConfigurationException;
 
 /**
  * An authentication provider that can validate OpenPlans.org username and authentication token pairs.
@@ -33,15 +43,51 @@ public class OpenPlansAuthenticationProvider implements AuthenticationProvider {
 	 */
 	final String secret;
 	
-	static Logger LOGGER = Logger.getLogger("org.geoserver.community");
+    private Map roles;
+
+    static Logger LOGGER = Logger.getLogger("org.geoserver.community");
+  
+  private void loadRoles() {
+    Map tempRoles = new HashMap();
+    try{
+      File securityDir = GeoserverDataDirectory.findCreateConfigDir("security");
+      File roleFile = new File(securityDir, "roles.properties");
+      Properties roleProperties = new Properties();
+      roleProperties.load(new BufferedInputStream(new FileInputStream(roleFile)));
+      
+      Iterator it = roleProperties.entrySet().iterator();
+      while(it.hasNext()){
+        try {
+          Map.Entry entry = (Map.Entry)it.next();
+          String username = (String)entry.getKey();
+          String[] roleArray = ((String)entry.getValue()).split(",");
+          Set roleSet = new TreeSet();
+          for (int i = 0; i < roleArray.length; i++){
+            roleSet.add(roleArray[i]);
+          }
+          
+          tempRoles.put(username, roleSet);
+        } catch (Exception e){
+          continue; // of course any problems can be ignored while parsing the file! we have defaults!
+        }
+      }
+    } catch (ConfigurationException gce){
+      LOGGER.warning("Couldn't find or create geoserver security directory!!!");
+    } catch (IOException ioe){
+      LOGGER.warning("Couldn't read extra roles file");
+    }
+    roles = tempRoles;
+  }
+
 	
 	/**
 	 * Override the default constructor to read in the secret key from a file on disk.
 	 */
 	public OpenPlansAuthenticationProvider (){
+    loadRoles(); 
 		String tempSecret = "";
 		try{
-			File secretFile = new File("/usr/lib/secret.txt");
+			File secretFile = new File("/var/lib/secret.txt");
 			BufferedReader br =
 				new BufferedReader(new InputStreamReader(new FileInputStream(secretFile)));
 			tempSecret = br.readLine();
@@ -55,8 +101,16 @@ public class OpenPlansAuthenticationProvider implements AuthenticationProvider {
 	public Authentication authenticate(Authentication arg0)
 			throws AuthenticationException {
 		UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken)arg0;
-		
-		if (auth.getCredentials() != null && getAuth(auth.getName()).equals(auth.getCredentials().toString())) {
+
+        String token = (auth.getCredentials() == null ? "" : auth.getCredentials().toString());
+    
+        token = token.substring(0, 40);  
+            // the token is expected to be 40 characters, this may change depending on the hash function used
+            // the truncating is only needed to deal with weird garbage characters added by tomcat
+        
+        System.out.println("input:" + token);
+
+		if (getAuth(auth.getName()).equals(token)) {
 			return createNewAuthentication(auth);
 		}
 		
@@ -68,25 +122,41 @@ public class OpenPlansAuthenticationProvider implements AuthenticationProvider {
 	 * @param auth the original authentication token
 	 * @return the authenticated one
 	 */
-	private Authentication createNewAuthentication(UsernamePasswordAuthenticationToken auth) {
-		GrantedAuthority[] ga = null;
-		
-		if (auth.getName().equals("cdwinslow")){
-			// grant david admin rights so there's a difference between being logged out and not :D
-			ga = new GrantedAuthority[(auth.getAuthorities() == null? 1 : auth.getAuthorities().length + 1)];
-			for (int i = 0;
-				auth.getAuthorities() != null 
-				&& i < auth.getAuthorities().length;
-				i++)
-			{				
-				ga[i] = auth.getAuthorities()[i];
-			}
-			ga[(auth.getAuthorities() == null ? 0 : auth.getAuthorities().length)] = new GrantedAuthorityImpl("ROLE_ADMINISTRATOR");
-		}
-		
-		UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(auth.getName(), auth.getCredentials(), ga);
-		return upat;
-	}
+    private Authentication createNewAuthentication(UsernamePasswordAuthenticationToken auth) {
+      GrantedAuthority[] ga = null;
+      Set roleSet = null;
+      
+      try { 
+        roleSet = (Set)roles.get(auth.getName());
+      } catch (Exception e){
+        // we can ignore this error because we handle the case where the map.get() returns null anyway
+      } 
+      
+      if (roleSet == null) {
+        roleSet = new TreeSet();
+        roleSet.add("ROLE_ANONYMOUS");
+      }
+      
+      ga = new GrantedAuthority[roleSet.size() + (auth.getAuthorities() == null? 0 : auth.getAuthorities().length)];
+      
+      for (int i = 0;
+           auth.getAuthorities() != null 
+           && i < auth.getAuthorities().length;
+           i++){
+             ga[i] = auth.getAuthorities()[i];
+           }
+      
+      Iterator iter = roleSet.iterator();
+      for (int i = (auth.getAuthorities() != null ? auth.getAuthorities().length : 0);
+           i < ga.length;
+           i++){
+             ga[i] = new GrantedAuthorityImpl((String)iter.next());
+           }
+      
+      UsernamePasswordAuthenticationToken upat =
+        new UsernamePasswordAuthenticationToken(auth.getName(), auth.getCredentials(), ga);
+      return upat;
+    }
 
 	public boolean supports(Class arg0) {
 		return UsernamePasswordAuthenticationToken.class.equals(arg0);
@@ -116,7 +186,7 @@ public class OpenPlansAuthenticationProvider implements AuthenticationProvider {
 		} catch (Exception nsae) {
 			nsae.printStackTrace();
 		}
-		LOGGER.fine( "auth: " + auth);
+        System.out.println("auth: " + auth);
 		return auth;
 	}
 }

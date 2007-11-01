@@ -33,7 +33,7 @@ public class LoginTest extends GeoServerTestSupport {
 	static {
 		String tempsecret;
 		try {
-			File f = new File("/usr/lib/secret.txt");
+			File f = new File("/var/lib/secret.txt");
 
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					new FileInputStream(f)));
