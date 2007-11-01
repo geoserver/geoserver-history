@@ -170,11 +170,12 @@ public class TypesEditorAction extends ConfigAction {
         throws IOException, ServletException {
         DataConfig dataConfig = getDataConfig();
         DataStoreConfig dsConfig = dataConfig.getDataStore(typeForm.getDataStoreId());
-        DataStore dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
-        FeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
-        FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
-
+        DataStore dataStore = null;
         try {
+            dsConfig.findDataStore(request.getSession().getServletContext());
+            FeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
+            FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
+
             CoordinateReferenceSystem crs = fs.getSchema().getDefaultGeometry().getCoordinateSystem();
             String s = CRS.lookupIdentifier(crs, true);
 
@@ -187,6 +188,8 @@ public class TypesEditorAction extends ConfigAction {
             }
         } catch (Exception e) {
             typeForm.setSRS("UNKNOWN");
+        } finally {
+            if(dataStore != null) dataStore.dispose();
         }
 
         return mapping.findForward("config.data.type.editor");
@@ -211,42 +214,43 @@ public class TypesEditorAction extends ConfigAction {
         throws IOException, ServletException {
         DataConfig dataConfig = getDataConfig();
         DataStoreConfig dsConfig = dataConfig.getDataStore(typeForm.getDataStoreId());
-        DataStore dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
-        FeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
-        FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
-
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine(new StringBuffer("calculating bbox for their dataset").toString());
-        }
-
-        Envelope envelope = DataStoreUtils.getBoundingBoxEnvelope(fs);
-
-        if (envelope.isNull()) // there's no data in the featuretype!!
-         {
+        DataStore dataStore = null;
+        try {
+            dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
+            FeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
+            FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
+    
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.fine(new StringBuffer("FeatureType '").append(featureType.getTypeName())
-                                                             .append("' has a null bounding box")
-                                                             .toString());
+                LOGGER.fine(new StringBuffer("calculating bbox for their dataset").toString());
+            }
+    
+            Envelope envelope = DataStoreUtils.getBoundingBoxEnvelope(fs);
+    
+            if (envelope.isNull()) // there's no data in the featuretype!!
+             {
+                if (LOGGER.isLoggable(Level.FINE)) {
+                    LOGGER.fine(new StringBuffer("FeatureType '").append(featureType.getTypeName())
+                                                                 .append("' has a null bounding box")
+                                                                 .toString());
+                }
+    
+                ActionErrors errors = new ActionErrors();
+                errors.add(ActionErrors.GLOBAL_ERROR,
+                    new ActionError("error.data.nullBBOX", featureType.getTypeName()));
+                saveErrors(request, errors);
+    
+                return mapping.findForward("config.data.type.editor");
+            }
+    
+            // do a translation from the data's coordinate system to lat/long
+    
+            //TODO: DJB: NOTE: 1/2 of the config stuff has the srs as an int, 1/2 as string!!  We should be more consistent!
+            String srs = typeForm.getSRS(); // what the user typed in for the srs in the form
+    
+            if (srs.indexOf(':') == -1) { // check to see if its of the form "EPSG:#" (or some such thing)
+                srs = "EPSG:" + srs; //assume they wanted to use an EPSG number
             }
 
-            ActionErrors errors = new ActionErrors();
-            errors.add(ActionErrors.GLOBAL_ERROR,
-                new ActionError("error.data.nullBBOX", featureType.getTypeName()));
-            saveErrors(request, errors);
-
-            return mapping.findForward("config.data.type.editor");
-        }
-
-        // do a translation from the data's coordinate system to lat/long
-
-        //TODO: DJB: NOTE: 1/2 of the config stuff has the srs as an int, 1/2 as string!!  We should be more consistent!
-        String srs = typeForm.getSRS(); // what the user typed in for the srs in the form
-
-        if (srs.indexOf(':') == -1) { // check to see if its of the form "EPSG:#" (or some such thing)
-            srs = "EPSG:" + srs; //assume they wanted to use an EPSG number
-        }
-
-        try {
             CoordinateReferenceSystem crsDeclared = CRS.decode(srs);
             CoordinateReferenceSystem original = null;
 
@@ -318,6 +322,8 @@ public class TypesEditorAction extends ConfigAction {
             saveErrors(request, errors);
 
             return mapping.findForward("config.data.type.editor");
+        } finally {
+            if(dataStore != null) dataStore.dispose();
         }
 
         return mapping.findForward("config.data.type.editor");
@@ -439,13 +445,16 @@ public class TypesEditorAction extends ConfigAction {
     private FeatureType getFeatureType(TypesEditorForm form, HttpServletRequest request) {
         FeatureType featureType = null;
 
+        DataStore dataStore = null; 
         try {
             DataConfig config = ConfigRequests.getDataConfig(request);
             DataStoreConfig dataStoreConfig = config.getDataStore(form.getDataStoreId());
-            DataStore dataStore = dataStoreConfig.findDataStore(getServlet().getServletContext());
+            dataStore = dataStoreConfig.findDataStore(getServlet().getServletContext());
             featureType = dataStore.getSchema(form.getTypeName());
         } catch (IOException e) {
             // DataStore unavailable!
+        } finally {
+            if(dataStore != null) dataStore.dispose();
         }
 
         return featureType;
@@ -569,9 +578,12 @@ public class TypesEditorAction extends ConfigAction {
 
     FeatureType getSchema(String dataStoreID, String typeName)
         throws IOException {
-        DataStore dataStore = aquireDataStore(dataStoreID);
-        FeatureType type;
-
-        return dataStore.getSchema(typeName);
+        DataStore dataStore = null;
+        try {
+            dataStore = aquireDataStore(dataStoreID);
+            return dataStore.getSchema(typeName);
+        } finally {
+            if(dataStore != null) dataStore.dispose();
+        }
     }
 }
