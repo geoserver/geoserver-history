@@ -119,7 +119,8 @@ public class EditableUserDAO implements UserDetailsService {
     */
 	private void update() {
 		try {
-			if (myWatcher == null || myWatcher.isStale()) {
+			if (myWatcher == null) {
+            } else if (myWatcher.isStale()) {
 				Properties prop = myWatcher.getProperties();
 				UserAttributeEditor uae = new UserAttributeEditor();
 				myDetailStorage.clear();
