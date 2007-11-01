@@ -17,8 +17,11 @@ import org.geotools.validation.ValidationResults;
 import org.geotools.validation.Validator;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.servlet.ServletContext;
@@ -160,37 +163,46 @@ public class ValidationRunnable implements Runnable {
 
         //TODO: we only get one datastore here when we may need more than that
         // do another pass through it and get those typesNames
-        while (i.hasNext()) {
-            Map sources = new HashMap();
-            String key = i.next().toString();
-            DataStoreConfig dsc = (DataStoreConfig) dsm.get(key);
-
-            try {
-                DataStore ds = dsc.findDataStore(sc);
-                String[] ss = ds.getTypeNames();
-
-                for (int j = 0; j < ss.length; j++) {
-                    FeatureSource fs = ds.getFeatureSource(ss[j]);
-                    sources.put(dsc.getId() + ":" + ss[j], fs);
-
-                    //v.runFeatureTests(dsc.getId(),fs.getSchema(),
-                    //    fs.getFeatures().collection(), (ValidationResults) vr);
-                    System.out.println("Feature Test Results for " + key + ":" + ss[j]);
-                    System.out.println(vr.toString());
+        List dataStores = new ArrayList();
+        try {
+            while (i.hasNext()) {
+                Map sources = new HashMap();
+                String key = i.next().toString();
+                DataStoreConfig dsc = (DataStoreConfig) dsm.get(key);
+    
+                try {
+                    DataStore ds = dsc.findDataStore(sc);
+                    dataStores.add(ds);
+                    String[] ss = ds.getTypeNames();
+    
+                    for (int j = 0; j < ss.length; j++) {
+                        FeatureSource fs = ds.getFeatureSource(ss[j]);
+                        sources.put(dsc.getId() + ":" + ss[j], fs);
+    
+                        //v.runFeatureTests(dsc.getId(),fs.getSchema(),
+                        //    fs.getFeatures().collection(), (ValidationResults) vr);
+                        System.out.println("Feature Test Results for " + key + ":" + ss[j]);
+                        System.out.println(vr.toString());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+    
+                Envelope env = new Envelope(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE,
+                        Integer.MAX_VALUE);
+    
+                try {
+                    v.runIntegrityTests(sources.keySet(), sources, env, (ValidationResults) vr);
+                    System.out.println("Feature Integrety Test Results");
+                    System.out.println(vr.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-
-            Envelope env = new Envelope(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE,
-                    Integer.MAX_VALUE);
-
-            try {
-                v.runIntegrityTests(sources.keySet(), sources, env, (ValidationResults) vr);
-                System.out.println("Feature Integrety Test Results");
-                System.out.println(vr.toString());
-            } catch (Exception e) {
-                e.printStackTrace();
+        } finally {
+            for (Iterator it = dataStores.iterator(); it.hasNext();) {
+                DataStore ds = (DataStore) it.next();
+                ds.dispose();
             }
         }
 

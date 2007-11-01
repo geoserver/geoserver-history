@@ -276,10 +276,11 @@ public class TypesEditorForm extends ActionForm {
         srsHandling = type.getSRSHandling();
         
         nativeSRSWKT = "-";
+        DataStore dataStore = null;
         try {
             DataConfig dataConfig =  (DataConfig) servletContext.getAttribute(DataConfig.CONFIG_KEY);
             DataStoreConfig dsConfig = dataConfig.getDataStore(type.getDataStoreId());
-            DataStore dataStore = dsConfig.findDataStore(servletContext);
+            dataStore = dsConfig.findDataStore(servletContext);
             FeatureType featureType = dataStore.getSchema(type.getName());
             GeometryAttributeType dg = featureType.getDefaultGeometry();
             if(dg != null && dg.getCoordinateSystem() != null) {
@@ -288,6 +289,8 @@ public class TypesEditorForm extends ActionForm {
             }
         } catch(Exception e) {
             // never mind
+        } finally {
+            if(dataStore != null) dataStore.dispose();
         }
         
         // load localized
@@ -310,10 +313,12 @@ public class TypesEditorForm extends ActionForm {
         FeatureType featureType = null;
 
         try {
-            DataStore dataStore = dataStoreConfig.findDataStore(servletContext);
+            dataStore = dataStoreConfig.findDataStore(servletContext);
             featureType = dataStore.getSchema(typeName);
         } catch (IOException e) {
             // DataStore unavailable!
+        } finally {
+            if(dataStore != null) dataStore.dispose();
         }
 
         if (((type.getSchemaBase() == null) || "--".equals(type.getSchemaBase()))

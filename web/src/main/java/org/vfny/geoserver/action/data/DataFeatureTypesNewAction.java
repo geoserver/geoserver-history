@@ -73,13 +73,14 @@ public class DataFeatureTypesNewAction extends ConfigAction {
                 + DataConfig.SEPARATOR.length());
 
         DataStoreConfig dsConfig = dataConfig.getDataStore(dataStoreID);
-        DataStore dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
+        DataStore dataStore = null;
 
         FeatureTypeConfig ftConfig;
 
         //JD: GEOS-399, wrap rest of method in try catch block in order to 
         // report back nicely to app
         try {
+            dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
             FeatureType featureType = dataStore.getSchema(featureTypeName);
 
             ftConfig = new FeatureTypeConfig(dataStoreID, featureType, false);
@@ -153,6 +154,8 @@ public class DataFeatureTypesNewAction extends ConfigAction {
             saveErrors(request, errors);
 
             return mapping.findForward("config.data.type.new");
+        } finally {
+            if(dataStore != null) dataStore.dispose();
         }
 
         request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE, ftConfig);

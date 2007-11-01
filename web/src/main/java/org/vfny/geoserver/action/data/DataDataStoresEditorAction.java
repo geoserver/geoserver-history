@@ -128,9 +128,10 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
         FeatureType singleFeatureType = null;
 
+        DataStore victim = null;
         try {
             ServletContext sc = request.getSession().getServletContext();
-            DataStore victim = DataStoreUtils.acquireDataStore(paramTexts, sc);
+            victim = DataStoreUtils.acquireDataStore(paramTexts, sc);
 
             if (victim == null) {
                 // We *really* could not use these params!
@@ -164,6 +165,8 @@ public class DataDataStoresEditorAction extends ConfigAction {
             saveErrors(request, errors);
 
             return mapping.findForward("config.data.store.editor");
+        } finally {
+            if(victim != null) victim.dispose();
         }
 
         boolean enabled = dataStoresForm.isEnabled();

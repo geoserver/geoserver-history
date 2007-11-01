@@ -57,13 +57,18 @@ public final class CalculateBoundingBoxAction extends ConfigAction {
                                                                 .getAttribute(DataConfig.SELECTED_FEATURE_TYPE);
         DataConfig dataConfig = getDataConfig();
         DataStoreConfig dsConfig = dataConfig.getDataStore(ftConfig.getDataStoreId());
-        DataStore dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
-        FeatureType featureType = dataStore.getSchema(ftConfig.getName());
-        FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
-
-        ftConfig.setLatLongBBox(DataStoreUtils.getBoundingBoxEnvelope(fs));
-        request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE, ftConfig);
-
-        return mapping.findForward("config.data.type.editor");
+        DataStore dataStore = null;
+        try {
+            dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
+            FeatureType featureType = dataStore.getSchema(ftConfig.getName());
+            FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
+    
+            ftConfig.setLatLongBBox(DataStoreUtils.getBoundingBoxEnvelope(fs));
+            request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE, ftConfig);
+    
+            return mapping.findForward("config.data.type.editor");
+        } finally {
+            if(dataStore != null) dataStore.dispose();
+        }
     }
 }
