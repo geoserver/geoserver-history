@@ -105,8 +105,6 @@ public class OpenPlansProcessingFilter implements Filter, InitializingBean {
                 try {
                     authResult = authenticationManager.authenticate(authRequest);
                 } catch (AuthenticationException failed) {
-                	System.out.println("Authentication request for user: " + username + " failed: " + failed.toString());
-                	
                     // Authentication failed
                     if (logger.isDebugEnabled()) {
                         logger.debug("Authentication request for user: " + username + " failed: " + failed.toString());
@@ -132,8 +130,6 @@ public class OpenPlansProcessingFilter implements Filter, InitializingBean {
                     logger.debug("Authentication success: " + authResult.toString());
                 }
 
-                System.out.println("Authentication success: " + authResult.toString());
-                
                 SecurityContextHolder.getContext().setAuthentication(authResult);
 //                System.out.println(
 //                		((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal())
@@ -142,7 +138,7 @@ public class OpenPlansProcessingFilter implements Filter, InitializingBean {
 //                    rememberMeServices.loginSuccess(httpRequest, httpResponse, authResult);
                 }
             }
-    	} else System.out.println("pair was null");
+    	} else logger.debug("pair was null");
 
         chain.doFilter(request, response);
     }
@@ -211,15 +207,16 @@ public class OpenPlansProcessingFilter implements Filter, InitializingBean {
 		String cookie = null;
 		String[] pair = null;
 	
-		for (int i = 0; i < request.getCookies().length; i++) {
-System.out.println("Cookie: " + request.getCookies()[i]);
-			if (request.getCookies()[i].getName().equals("__ac")) {
-				cookie = request.getCookies()[i].getValue();
-				System.out.println("Found authentication cookie");
-			}
-		}
-		
 		try {
+            for (int i = 0; i < request.getCookies().length; i++) {
+//             System.out.println("Cookie: " + request.getCookies()[i].getName());
+                if (request.getCookies()[i].getName().equals("__ac")) {
+                    cookie = request.getCookies()[i].getValue();
+//                  System.out.println("Found authentication cookie");
+                }
+            }
+
+
 			byte[] decoded = (new BASE64Decoder()).decodeBuffer(cookie);
 			
 			int nullCharacterLocation = 0;
@@ -233,6 +230,7 @@ System.out.println("Cookie: " + request.getCookies()[i]);
 				new String(decoded, nullCharacterLocation+1, decoded.length - nullCharacterLocation-1)
 			};
 		} catch (Exception e) {
+//             System.out.println(e);
 			return null;
 		}	
 		
