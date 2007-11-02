@@ -6,6 +6,9 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WfsFactory;
+
+import org.geoserver.wfs.WFSException;
+import org.geotools.gml2.bindings.GML2ParsingUtils;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -14,6 +17,9 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.expression.Literal;
 import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.sort.SortBy;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.picocontainer.MutablePicoContainer;
+
 import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
@@ -175,6 +181,23 @@ public class QueryTypeBinding extends AbstractComplexBinding {
      */
     public Class getType() {
         return QueryType.class;
+    }
+
+
+    public void initializeChildContext(ElementInstance childInstance,
+            Node node, MutablePicoContainer context) {
+        //if an srsName is set for this geometry, put it in the context for
+        // children, so they can use it as well
+        if ( node.hasAttribute("srsName") ) {
+            try {
+                CoordinateReferenceSystem crs = GML2ParsingUtils.crs(node);
+                if ( crs != null ) {
+                    context.registerComponentInstance(CoordinateReferenceSystem.class, crs);
+                }
+            } catch(Exception e) {
+                throw new WFSException(e, "InvalidParameterValue");
+            }
+        }
     }
 
     /**
