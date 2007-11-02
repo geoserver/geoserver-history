@@ -66,7 +66,7 @@ function setup()
 			log("ft info: "+ftInfo);
 			columnNames = document.getElementById('hidden_ft_attrNames').innerHTML;
 
-			ftInfoSplit = ftInfo.split(",");
+			ftInfoSplit = ftInfo.substring(1, ftInfo.length - 1).split(",");
 			for(i=0;i<ftInfoSplit.length;i++)
 			{
 				var g = ftInfoSplit[i].split(":")[1];
