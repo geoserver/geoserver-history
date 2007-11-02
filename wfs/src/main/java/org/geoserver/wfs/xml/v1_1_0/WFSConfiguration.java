@@ -18,6 +18,7 @@ import org.geoserver.wfs.xml.gml3.AbstractGeometryTypeBinding;
 import org.geoserver.wfs.xml.gml3.CircleTypeBinding;
 import org.geoserver.wfs.xml.xs.DateBinding;
 import org.geotools.feature.FeatureType;
+import org.geotools.filter.v1_0.OGCBBOXTypeBinding;
 import org.geotools.filter.v1_1.OGC;
 import org.geotools.filter.v1_1.OGCConfiguration;
 import org.geotools.gml2.FeatureTypeCache;
@@ -144,6 +145,15 @@ public class WFSConfiguration extends Configuration {
                 new Parameter[]{ new OptionalComponentParameter(CoordinateReferenceSystem.class)} 
             )
         );
+        
+        // use setter injection for OGCBBoxTypeBinding to allow an 
+        // optional crs to be set in teh binding context for parsing, this crs
+        // is set by the binding of a parent element.
+        // note: it is important that this component adapter is non-caching so 
+        // that the setter property gets updated properly every time
+        container.registerComponent(new SetterInjectionComponentAdapter(OGC.BBOXType,
+                OGCBBOXTypeBinding.class,
+                new Parameter[] { new OptionalComponentParameter(CoordinateReferenceSystem.class) }));
         
         // override XSQName binding
         container.registerComponentImplementation(XS.QNAME, XSQNameBinding.class);
