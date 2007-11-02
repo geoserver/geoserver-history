@@ -123,5 +123,17 @@ public class WFSConfiguration extends Configuration {
             )
         );
         
+        //use setter injection for AbstractGeometryType bindign to allow an 
+        // optional crs to be set in teh binding context for parsing, this crs
+        // is set by the binding of a parent element.
+        // note: it is important that this component adapter is non-caching so 
+        // that the setter property gets updated properly every time
+        bindings.registerComponent(
+            new SetterInjectionComponentAdapter( 
+                GML.AbstractGeometryType, AbstractGeometryTypeBinding.class, 
+                new Parameter[]{ new OptionalComponentParameter(CoordinateReferenceSystem.class)} 
+            )
+        );
+        
     }
 }
