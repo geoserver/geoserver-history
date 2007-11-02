@@ -50,6 +50,16 @@ public class KMLTransformer extends TransformerBase {
      * Factory used to create filter objects
      */
     FilterFactory filterFactory = (FilterFactory) CommonFactoryFinder.getFilterFactory(null);
+    
+    private static final CoordinateReferenceSystem WGS84;
+    
+    static {
+        try {
+            WGS84 = CRS.decode("EPSG:4326");
+        } catch(Exception e) {
+            throw new RuntimeException("Cannot decode EPSG:4326, the CRS subsystem must be badly broken...");
+        }
+    }
 
     /**
      * Flag controlling wether kmz was requested.
@@ -318,9 +328,9 @@ public class KMLTransformer extends TransformerBase {
                     mapContext.getCoordinateReferenceSystem());
             CoordinateReferenceSystem sourceCrs = schema.getDefaultGeometry().getCoordinateSystem();
 
-            boolean reproject = (sourceCrs != null)
+            boolean reprojectBBox = (sourceCrs != null)
                 && !CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(), sourceCrs); 
-            if (reproject) {
+            if (reprojectBBox) {
                 aoi = aoi.transform(sourceCrs, true);
             }
 
@@ -343,10 +353,9 @@ public class KMLTransformer extends TransformerBase {
                 }
             }
 
-            //ensure reprojection occurs, do not trust query, use the wrapper 
-            q.setCoordinateSystemReproject(mapContext.getCoordinateReferenceSystem());
-            if ( reproject ) {
-                return new ReprojectFeatureResults( featureSource.getFeatures(q),mapContext.getCoordinateReferenceSystem() );
+            // make sure we output in 4326 since that's what KML mandates
+            if (sourceCrs != null && !CRS.equalsIgnoreMetadata(WGS84, sourceCrs)) {
+                return new ReprojectFeatureResults( featureSource.getFeatures(q), WGS84 );
             }
 
             return featureSource.getFeatures(q);

@@ -5,11 +5,19 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import com.vividsolutions.jts.geom.Envelope;
+
+import net.opengis.ows.WGS84BoundingBoxType;
+
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
+import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.DefaultGeocentricCRS;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.ContentHandler;
 import java.util.Map;
@@ -107,7 +115,16 @@ public class KMLRasterTransformer extends KMLTransformerBase {
             end("Icon");
 
             //encde the bounding box
-            Envelope box = mapContext.getRequest().getBbox();
+            ReferencedEnvelope box = new ReferencedEnvelope(mapContext.getAreaOfInterest());
+            boolean reprojectBBox = (box.getCoordinateReferenceSystem() != null)
+            && !CRS.equalsIgnoreMetadata(box.getCoordinateReferenceSystem(), DefaultGeographicCRS.WGS84); 
+            if (reprojectBBox) {
+                try {
+                    box = box.transform(DefaultGeographicCRS.WGS84, true);
+                } catch(Exception e) {
+                    throw new WmsException("Could not transform bbox to WGS84", "ReprojectionError", e);
+                }
+            }
             start("LatLonBox");
             element("north", Double.toString(box.getMaxY()));
             element("south", Double.toString(box.getMinY()));
