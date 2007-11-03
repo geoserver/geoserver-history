@@ -15,7 +15,9 @@ import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
 import org.geoserver.wfs.xml.gml3.AbstractGeometryTypeBinding;
 import org.geotools.feature.FeatureType;
+import org.geotools.filter.v1_0.OGCBBOXTypeBinding;
 import org.geotools.filter.v1_0.OGCConfiguration;
+import org.geotools.filter.v1_1.OGC;
 import org.geotools.gml2.FeatureTypeCache;
 import org.geotools.gml2.GMLConfiguration;
 import org.geotools.gml2.bindings.GML;
@@ -123,17 +125,14 @@ public class WFSConfiguration extends Configuration {
             )
         );
         
-        //use setter injection for AbstractGeometryType bindign to allow an 
+        // use setter injection for OGCBBoxTypeBinding to allow an 
         // optional crs to be set in teh binding context for parsing, this crs
         // is set by the binding of a parent element.
         // note: it is important that this component adapter is non-caching so 
         // that the setter property gets updated properly every time
-        bindings.registerComponent(
-            new SetterInjectionComponentAdapter( 
-                GML.AbstractGeometryType, AbstractGeometryTypeBinding.class, 
-                new Parameter[]{ new OptionalComponentParameter(CoordinateReferenceSystem.class)} 
-            )
-        );
+        bindings.registerComponent(new SetterInjectionComponentAdapter(OGC.BBOXType,
+                OGCBBOXTypeBinding.class,
+                new Parameter[] { new OptionalComponentParameter(CoordinateReferenceSystem.class) }));
         
     }
 }
