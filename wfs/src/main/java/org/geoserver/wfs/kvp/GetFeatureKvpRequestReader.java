@@ -219,10 +219,7 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
         if ( bbox instanceof ReferencedEnvelope ) {
             CoordinateReferenceSystem crs = ((ReferencedEnvelope)bbox).getCoordinateReferenceSystem();
             if ( crs != null ) {
-                epsgCode = GML2EncodingUtils.epsgCode(crs);
-                if ( epsgCode != null ) {
-                    epsgCode = "EPSG:" + epsgCode;
-                }
+                epsgCode = GML2EncodingUtils.crs(crs);
             }
         }
         
