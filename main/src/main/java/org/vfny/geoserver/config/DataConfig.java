@@ -944,8 +944,9 @@ public class DataConfig {
         for (Iterator iter = dataStores.values().iterator(); iter.hasNext();) {
             DataStoreConfig dataStoreConfig = (DataStoreConfig) iter.next();
 
+            DataStore dataStore = null;
             try {
-                DataStore dataStore = dataStoreConfig.findDataStore(sc);
+                dataStore = dataStoreConfig.findDataStore(sc);
 
                 String[] typeNames = dataStore.getTypeNames();
 
@@ -962,6 +963,8 @@ public class DataConfig {
                 LOGGER.log(Level.WARNING, "", ignore);
 
                 continue;
+            } finally {
+                if(dataStore != null) dataStore.dispose();
             }
         }
 
