@@ -25,6 +25,7 @@ import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
+import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.factory.GeotoolsFactory;
 import org.geotools.xml.EMFUtils;
@@ -247,7 +248,7 @@ public class GetFeature {
                     query.getFilter().accept(new AbstractFilterVisitor(visitor), null);
                 }
 
-                org.geotools.data.Query gtQuery = toDataQuery(query, maxFeatures - count, source);
+                org.geotools.data.Query gtQuery = toDataQuery(query, maxFeatures - count, source, request.getVersion());
                 LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery);
 
                 FeatureCollection features = source.getFeatures(gtQuery);
@@ -333,7 +334,7 @@ public class GetFeature {
      *
      */
     public org.geotools.data.Query toDataQuery(QueryType query, int maxFeatures,
-        FeatureSource source) throws WFSException {
+        FeatureSource source, String wfsVersion) throws WFSException {
         if (maxFeatures <= 0) {
             maxFeatures = DefaultQuery.DEFAULT_MAX;
         }
@@ -355,20 +356,28 @@ public class GetFeature {
             filter = Filter.INCLUDE;
         }
         
-        // make sure filters are expressed in the data native CRS
+        //figure out the crs the data is in
+        CoordinateReferenceSystem crs = (source.getSchema().getDefaultGeometry() != null)
+            ? source.getSchema().getDefaultGeometry().getCoordinateSystem() : null;
+
+        // gather declared CRS
+        CoordinateReferenceSystem declaredCRS = getDeclaredCrs(crs, wfsVersion);
+        
+        // make sure every bbox and geometry that does not have an attached crs will use
+        // the declared crs
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
+        DefaultCRSFilterVisitor defaultVisitor = new DefaultCRSFilterVisitor(ff, source.getSchema(), declaredCRS);
+        Filter transformedFilter = (Filter) filter.accept(defaultVisitor, null);
+        
+        // make sure filters are expressed in the data native CRS
         ReprojectingFilterVisitor visitor = new ReprojectingFilterVisitor(ff, source.getSchema());
-        Filter transformedFilter = (Filter) filter.accept(visitor, null);
+        transformedFilter = (Filter) transformedFilter.accept(visitor, null);
 
         //only handle non-joins for now
         QName typeName = (QName) query.getTypeName().get(0);
         DefaultQuery dataQuery = new DefaultQuery(typeName.getLocalPart(), transformedFilter, maxFeatures,
                 props, query.getHandle());
-
-        //figure out the crs the data is in
-        CoordinateReferenceSystem crs = (source.getSchema().getDefaultGeometry() != null)
-            ? source.getSchema().getDefaultGeometry().getCoordinateSystem() : null;
-
+        
         if (crs == null) {
             //set to be the server default
             try {
@@ -381,20 +390,20 @@ public class GetFeature {
         }
 
         //handle reprojection
+        CoordinateReferenceSystem target;
         if (query.getSrsName() != null) {
-            CoordinateReferenceSystem target;
-
             try {
                 target = CRS.decode(query.getSrsName().toString());
             } catch (Exception e) {
                 String msg = "Unable to support srsName: " + query.getSrsName();
                 throw new WFSException(msg, e);
             }
-
-            //if the crs are not equal, then reproject
-            if (!crs.equals(target)) {
-                dataQuery.setCoordinateSystemReproject(target);
-            }
+        } else {
+            target = declaredCRS;
+        }
+        //if the crs are not equal, then reproject
+        if (target != null && !CRS.equalsIgnoreMetadata(crs, target)) {
+            dataQuery.setCoordinateSystemReproject(target);
         }
         
         //handle sorting
@@ -409,6 +418,20 @@ public class GetFeature {
         }
 
         return dataQuery;
+    }
+
+    private CoordinateReferenceSystem getDeclaredCrs(CoordinateReferenceSystem crs,
+            String wfsVersion) {
+        try {
+            if(wfsVersion.equals("1.0.0")) {
+                return crs;
+            } else {
+                String code = GML2EncodingUtils.epsgCode(crs);
+                return CRS.decode("urn:x-ogc:def:crs:EPSG:6.11.2:" + code);
+            }
+        } catch(Exception e) {
+            throw new WFSException("We have had issues trying to flip axis of " + crs, e);
+        }
     }
 
     FeatureTypeInfo featureTypeInfo(QName name) throws WFSException, IOException {
