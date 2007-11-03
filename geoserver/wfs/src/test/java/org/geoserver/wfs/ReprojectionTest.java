@@ -4,18 +4,23 @@ import java.util.StringTokenizer;
 
 import org.geoserver.data.test.MockData;
 import org.geotools.referencing.CRS;
+import org.omg.IOP.TAG_ALTERNATE_IIOP_ADDRESS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class ReprojectionTest extends WFSTestSupport {
- MathTransform tx;
+    /**
+     * TODO: replace this back to 900913 when bug GEOT-1563 is solved
+     */
+    private static final String TARGET_CRS_CODE = "EPSG:3395";
+    MathTransform tx;
     
     protected void setUp() throws Exception {
         super.setUp();
     
-        CoordinateReferenceSystem epsg4326 = CRS.decode("EPSG:900913");
+        CoordinateReferenceSystem epsg4326 = CRS.decode(TARGET_CRS_CODE);
         CoordinateReferenceSystem epsg32615 = CRS.decode("EPSG:32615");
         
         tx = CRS.findMathTransform(epsg32615, epsg4326);
@@ -26,7 +31,7 @@ public class ReprojectionTest extends WFSTestSupport {
         Document dom1 = getAsDOM("wfs?request=getfeature&service=wfs&version=1.0.0&typename=" + 
             MockData.POLYGONS.getLocalPart());
         Document dom2 = getAsDOM("wfs?request=getfeature&service=wfs&version=1.0.0&typename=" + 
-            MockData.POLYGONS.getLocalPart() + "&srsName=epsg:900913");
+            MockData.POLYGONS.getLocalPart() + "&srsName=" + TARGET_CRS_CODE);
         
         print(dom1);
         print(dom2);
@@ -52,7 +57,7 @@ public class ReprojectionTest extends WFSTestSupport {
         + "xmlns:cdf=\"http://www.opengis.net/cite/data\" "
         + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
         + "xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> "
-        + "<wfs:Query srsName=\"epsg:900913\" typeName=\"" + 
+        + "<wfs:Query srsName=\"" + TARGET_CRS_CODE + "\" typeName=\"" + 
             MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart() + "\"> "
         + "<wfs:PropertyName>cgf:polygonProperty</wfs:PropertyName> "
         + "</wfs:Query> " + "</wfs:GetFeature>";
@@ -78,7 +83,7 @@ public class ReprojectionTest extends WFSTestSupport {
         double[] cr = new double[4];
         tx.transform(c, 0, cr, 0, 2);
         
-        q += "&bbox=" + cr[0] + "," + cr[1] + "," + cr[2] + "," + cr[3] + ",epsg:900913";
+        q += "&bbox=" + cr[0] + "," + cr[1] + "," + cr[2] + "," + cr[3] + "," + TARGET_CRS_CODE;
         dom = getAsDOM( q );
         
         assertEquals( 1, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
@@ -110,7 +115,7 @@ public class ReprojectionTest extends WFSTestSupport {
             + "<ogc:Filter>" 
             +  "<ogc:BBOX>"
             +   "<ogc:PropertyName>polygonProperty</ogc:PropertyName>" 
-            +   "<gml:Box srsName=\"epsg:900913\">"
+            +   "<gml:Box srsName=\"" + TARGET_CRS_CODE + "\">"
             +      "<gml:coord>"
             +        "<gml:X>" + cr[0] + "</gml:X>"
             +        "<gml:Y>" + cr[1] + "</gml:Y>"
@@ -145,7 +150,7 @@ public class ReprojectionTest extends WFSTestSupport {
         + " xmlns:wfs=\"http://www.opengis.net/wfs\" "
         + " xmlns:gml=\"http://www.opengis.net/gml\" "
         + " xmlns:cgf=\"" + MockData.CGF_URI + "\">"
-        + "<wfs:Insert handle=\"insert-1\" srsName=\"epsg:900913\">"
+        + "<wfs:Insert handle=\"insert-1\" srsName=\"" + TARGET_CRS_CODE + "\">"
         + " <cgf:Polygons>"
         +    "<cgf:polygonProperty>"
         +      "<gml:Polygon >" 
@@ -193,7 +198,7 @@ public class ReprojectionTest extends WFSTestSupport {
         + "<wfs:Insert handle=\"insert-1\">"
         + " <cgf:Polygons>"
         +    "<cgf:polygonProperty>"
-        +      "<gml:Polygon srsName=\"epsg:900913\">" 
+        +      "<gml:Polygon srsName=\"" + TARGET_CRS_CODE + "\">" 
         +       "<gml:outerBoundaryIs>"
         +          "<gml:LinearRing>" 
         +             "<gml:coordinates>";
@@ -241,7 +246,7 @@ public class ReprojectionTest extends WFSTestSupport {
                 + "<wfs:Update typeName=\"cgf:Polygons\" > " + "<wfs:Property>"
                 + "<wfs:Name>polygonProperty</wfs:Name>" 
                 + "<wfs:Value>" 
-                +      "<gml:Polygon srsName=\"epsg:900913\">" 
+                +      "<gml:Polygon srsName=\"" + TARGET_CRS_CODE + "\">" 
                 +       "<gml:outerBoundaryIs>"
                 +          "<gml:LinearRing>" 
                 +             "<gml:coordinates>";

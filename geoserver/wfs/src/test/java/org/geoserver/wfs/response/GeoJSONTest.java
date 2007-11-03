@@ -13,7 +13,7 @@ import org.geoserver.wfs.WFSTestSupport;
 public class GeoJSONTest extends WFSTestSupport {
 	
     public void testGet() throws Exception {	
-    	InputStream is = get("wfs?request=GetFeature&typename=sf:PrimitiveGeoFeature&maxfeatures=1&outputformat=json");
+    	InputStream is = get("wfs?request=GetFeature&version=1.0.0&typename=sf:PrimitiveGeoFeature&maxfeatures=1&outputformat=json");
     	BufferedReader in = new BufferedReader(new InputStreamReader(is));
     	StringBuffer buffer = new StringBuffer();
     	String line;
@@ -31,7 +31,7 @@ public class GeoJSONTest extends WFSTestSupport {
 
     public void testPost() throws Exception {
         String xml = "<wfs:GetFeature " + "service=\"WFS\" " + "outputFormat=\"json\" "
-                + "version=\"1.1.0\" "
+                + "version=\"1.0.0\" "
                 + "xmlns:cdf=\"http://www.opengis.net/cite/data\" "
                 + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
                 + "xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> "
@@ -55,7 +55,7 @@ public class GeoJSONTest extends WFSTestSupport {
     }
 
     public void testGeometryCollection() throws Exception {
-    	InputStream is = get("wfs?request=GetFeature&typename=sf:AggregateGeoFeature&maxfeatures=3&outputformat=json");
+    	InputStream is = get("wfs?request=GetFeature&version=1.0.0&typename=sf:AggregateGeoFeature&maxfeatures=3&outputformat=json");
     	BufferedReader in = new BufferedReader(new InputStreamReader(is));
     	StringBuffer buffer = new StringBuffer();
     	String line;
