@@ -214,10 +214,17 @@ public interface BaseRequestType extends EObject {
     String getBaseUrl();
 
     /**
-     * Sets the value of the '{@link net.opengis.wfs.BaseRequestType#getBaseUrl <em>Base Url</em>}' attribute.
-     * <!-- begin-user-doc -->
+     * Sets the value of the '{@link net.opengis.wfs.BaseRequestType#getBaseUrl <em>Base Url</em>}'
+     * attribute. <!-- begin-user-doc --> 
+     * The base url, though not an attribute
+     * declared in the schema, is a legacy one added because we need to
+     * associate the request url being made by the client with the request
+     * object. The reason being that the request object is the only object that
+     * makes its way through the entire dispatch chain. 
      * <!-- end-user-doc -->
-     * @param value the new value of the '<em>Base Url</em>' attribute.
+     * 
+     * @param value
+     *            the new value of the '<em>Base Url</em>' attribute.
      * @see #getBaseUrl()
      * @generated
      */
