@@ -136,6 +136,7 @@ public class MockData {
     public static String SF_URI = "http://cite.opengeospatial.org/gmlsf";
     public static QName PRIMITIVEGEOFEATURE = new QName(SF_URI, "PrimitiveGeoFeature", SF_PREFIX);
     public static QName AGGREGATEGEOFEATURE = new QName(SF_URI, "AggregateGeoFeature", SF_PREFIX);
+    public static QName GENERICENTITY = new QName(SF_URI, "GenericEntity", SF_PREFIX);
 
     // DEFAULT
     public static String DEFAULT_PREFIX = "gs";
@@ -157,7 +158,7 @@ public class MockData {
             NAMED_PLACES, PONDS, ROAD_SEGMENTS, STREAMS, // WFS 1.0
             DELETES, FIFTEEN, INSERTS, LOCKS, NULLS, OTHER, SEVEN, UPDATES, LINES, MLINES, MPOINTS,
             MPOLYGONS, POINTS, POLYGONS, // WFS 1.1
-            PRIMITIVEGEOFEATURE, AGGREGATEGEOFEATURE, GEOMETRYLESS /* ENTIT\u00C9G\u00C9N\u00C9RIQUE */
+            PRIMITIVEGEOFEATURE, AGGREGATEGEOFEATURE, GENERICENTITY, GEOMETRYLESS /* ENTIT\u00C9G\u00C9N\u00C9RIQUE */
         };
 
     /**
@@ -180,7 +181,7 @@ public class MockData {
      * List of wfs 1.1 type names.
      */
     public static QName[] WFS11_TYPENAMES = new QName[] {
-            PRIMITIVEGEOFEATURE, AGGREGATEGEOFEATURE, /* ENTIT\u00C9G\u00C9N\u00C9RIQUE */
+            PRIMITIVEGEOFEATURE, AGGREGATEGEOFEATURE, GENERICENTITY /* ENTIT\u00C9G\u00C9N\u00C9RIQUE */
         };
 
     /** the base of the data directory */

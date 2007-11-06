@@ -4,7 +4,6 @@ import java.util.StringTokenizer;
 
 import org.geoserver.data.test.MockData;
 import org.geotools.referencing.CRS;
-import org.omg.IOP.TAG_ALTERNATE_IIOP_ADDRESS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.w3c.dom.Document;

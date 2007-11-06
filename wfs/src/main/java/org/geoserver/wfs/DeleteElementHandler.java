@@ -16,9 +16,13 @@ import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.FeatureWriter;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.GeoTools;
 import org.geotools.xml.EMFUtils;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
+import org.opengis.filter.FilterFactory2;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashSet;
@@ -87,7 +91,13 @@ public class DeleteElementHandler implements TransactionElementHandler {
 
         try {
             Filter filter = (Filter) delete.getFilter();
-
+            
+            // make sure all geometric elements in the filter have a crs, and that the filter
+            // is reprojected to store's native crs as well
+            CoordinateReferenceSystem declaredCRS = WFSReprojectionUtil.getDeclaredCrs(
+                    store.getSchema(), request.getVersion());
+            filter = WFSReprojectionUtil.normalizeFilterCRS(filter, store.getSchema(), declaredCRS);
+            
             // notify listeners
             listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_DELETE,
                     store.getFeatures(filter)));
@@ -154,17 +164,21 @@ public class DeleteElementHandler implements TransactionElementHandler {
                 }
             } else {
                 // We don't have to worry about locking right now
-                deleted += store.getCount(new DefaultQuery(null, filter));
-                store.removeFeatures(filter);
-
-//                try {
-//                    while (writer.hasNext()) {
-//                        writer.next();
-//                        writer.remove();
-//                        deleted++;
+                deleted += store.getFeatures(filter).size();
+//                if(count >= 0) {
+//                    deleted += store.getCount(new DefaultQuery(null, filter));
+                    store.removeFeatures(filter);
+//                } else {
+//                    store.getFeatures(filter).size();
+//                    try {
+//                        while (writer.hasNext()) {
+//                            writer.next();
+//                            writer.remove();
+//                            deleted++;
+//                        }
+//                    } finally {
+//                        writer.close();
 //                    }
-//                } finally {
-//                    writer.close();
 //                }
             }
         } catch (IOException e) {

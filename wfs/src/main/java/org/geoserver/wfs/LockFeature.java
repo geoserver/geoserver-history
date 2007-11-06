@@ -19,12 +19,16 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.LockingManager;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.GeoTools;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
+import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.Id;
 import org.opengis.filter.identity.FeatureId;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.DataStoreInfo;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -136,7 +140,7 @@ public class LockFeature {
 
                 if (filter == null) {
                     filter = Filter.INCLUDE;
-                }
+                } 
 
                 FeatureTypeInfo meta;
                 FeatureSource source;
@@ -152,6 +156,14 @@ public class LockFeature {
                     }
 
                     source = meta.getFeatureSource();
+                    
+                    // make sure all geometric elements in the filter have a crs, and that the filter
+                    // is reprojected to store's native crs as well
+                    CoordinateReferenceSystem declaredCRS = WFSReprojectionUtil.getDeclaredCrs(
+                            source.getSchema(), request.getVersion());
+                    filter = WFSReprojectionUtil.normalizeFilterCRS(filter, source.getSchema(), declaredCRS);
+                    
+                    // now gather the features
                     features = source.getFeatures(filter);
 
                     if (source instanceof FeatureLocking) {

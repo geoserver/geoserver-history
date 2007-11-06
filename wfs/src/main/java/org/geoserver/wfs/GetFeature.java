@@ -25,7 +25,6 @@ import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
-import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.factory.GeotoolsFactory;
 import org.geotools.xml.EMFUtils;
@@ -361,17 +360,12 @@ public class GetFeature {
             ? source.getSchema().getDefaultGeometry().getCoordinateSystem() : null;
 
         // gather declared CRS
-        CoordinateReferenceSystem declaredCRS = getDeclaredCrs(crs, wfsVersion);
+        CoordinateReferenceSystem declaredCRS = WFSReprojectionUtil.getDeclaredCrs(crs, wfsVersion);
         
         // make sure every bbox and geometry that does not have an attached crs will use
-        // the declared crs
-        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
-        DefaultCRSFilterVisitor defaultVisitor = new DefaultCRSFilterVisitor(ff, source.getSchema(), declaredCRS);
-        Filter transformedFilter = (Filter) filter.accept(defaultVisitor, null);
-        
-        // make sure filters are expressed in the data native CRS
-        ReprojectingFilterVisitor visitor = new ReprojectingFilterVisitor(ff, source.getSchema());
-        transformedFilter = (Filter) transformedFilter.accept(visitor, null);
+        // the declared crs, and then reproject it to the native crs
+        Filter transformedFilter = WFSReprojectionUtil.normalizeFilterCRS(filter, 
+                source.getSchema(), declaredCRS);
 
         //only handle non-joins for now
         QName typeName = (QName) query.getTypeName().get(0);
@@ -418,20 +412,6 @@ public class GetFeature {
         }
 
         return dataQuery;
-    }
-
-    private CoordinateReferenceSystem getDeclaredCrs(CoordinateReferenceSystem crs,
-            String wfsVersion) {
-        try {
-            if(wfsVersion.equals("1.0.0")) {
-                return crs;
-            } else {
-                String code = GML2EncodingUtils.epsgCode(crs);
-                return CRS.decode("urn:x-ogc:def:crs:EPSG:6.11.2:" + code);
-            }
-        } catch(Exception e) {
-            throw new WFSException("We have had issues trying to flip axis of " + crs, e);
-        }
     }
 
     FeatureTypeInfo featureTypeInfo(QName name) throws WFSException, IOException {
