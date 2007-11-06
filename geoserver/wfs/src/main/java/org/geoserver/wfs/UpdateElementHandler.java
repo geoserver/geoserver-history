@@ -14,6 +14,7 @@ import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.GeoTools;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
@@ -25,6 +26,7 @@ import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.projection.PointOutsideEnvelopeException;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
+import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.Id;
 import org.opengis.filter.expression.PropertyName;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -132,6 +134,14 @@ public class UpdateElementHandler implements TransactionElementHandler {
 
         try {
             Filter filter = (Filter) update.getFilter();
+            
+            
+            // make sure all geometric elements in the filter have a crs, and that the filter
+            // is reprojected to store's native crs as well
+            CoordinateReferenceSystem declaredCRS = WFSReprojectionUtil.getDeclaredCrs(
+                    store.getSchema(), request.getVersion());
+            filter = WFSReprojectionUtil.normalizeFilterCRS(filter, store.getSchema(), declaredCRS);
+
 
             AttributeType[] types = new AttributeType[update.getProperty().size()];
             Object[] values = new Object[update.getProperty().size()];
@@ -189,7 +199,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
             //
             Set fids = new HashSet();
             LOGGER.finer("Preprocess to remember modification as a set of fids");
-
+            
             FeatureCollection features = store.getFeatures(filter);
             listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_UPDATE, features));
 
@@ -225,9 +235,9 @@ public class UpdateElementHandler implements TransactionElementHandler {
             if (!fids.isEmpty()) {
                 LOGGER.finer("Post process update for boundary update and featureValidation");
 
-                FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
                 Set featureIds = new HashSet();
 
+                FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
                 for (Iterator f = fids.iterator(); f.hasNext();) {
                     featureIds.add(ff.featureId((String) f.next()));
                 }

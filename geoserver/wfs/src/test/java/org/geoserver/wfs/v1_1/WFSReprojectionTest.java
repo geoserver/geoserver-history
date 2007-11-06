@@ -285,6 +285,124 @@ public class WFSReprojectionTest extends WFSTestSupport {
         
     }
     
+    public void testUpdateReprojectFilter() throws Exception {
+        testUpdateReprojectFilter("srsName=\"urn:x-ogc:def:crs:EPSG:6.11.2:4326\"");
+    }
+    
+    public void testUpdateReprojectFilterDefaultCRS() throws Exception {
+        testUpdateReprojectFilter("");
+    }
+    
+    private void testUpdateReprojectFilter(String envelopeSRS) throws Exception {
+        // slightly adapted from CITE WFS 1.1, "Test wfs:wfs-1.1.0-LockFeature-tc3.1"
+        
+        // perform an update
+        String xml = "<wfs:Transaction service=\"WFS\" version=\"1.1.0\" "
+                + "xmlns:cgf=\"http://www.opengis.net/cite/geometry\" "
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\" "
+                + "xmlns:gml=\"http://www.opengis.net/gml\"> "
+                + "<wfs:Update handle=\"upd-1\" typeName=\"sf:GenericEntity\">" 
+                + "<wfs:Property>"
+                + "  <wfs:Name>sf:description</wfs:Name>"
+                + "  <wfs:Value>bla bla</wfs:Value>"
+                + "</wfs:Property>"
+                + "  <ogc:Filter>"
+                + "    <ogc:BBOX>"
+                + "      <ogc:PropertyName>sf:attribut.geom</ogc:PropertyName>"
+                + "        <gml:Envelope " + envelopeSRS + ">"
+                + "          <gml:lowerCorner>34.5 -10.0</gml:lowerCorner>"
+                + "          <gml:upperCorner>72.0 32.0</gml:upperCorner>"
+                + "        </gml:Envelope>"
+                + "    </ogc:BBOX>"
+                + "  </ogc:Filter>"
+                + "</wfs:Update> </wfs:Transaction>";
+        
+        Document dom = postAsDOM( "wfs", xml );
+        assertEquals( "wfs:TransactionResponse", dom.getDocumentElement().getNodeName() );
+        Element totalUpdated = getFirstElementByTagName(dom, "wfs:totalUpdated" );
+        assertEquals( "3", totalUpdated.getFirstChild().getNodeValue() );
+    }
+    
+    public void testDeleteReprojectFilter() throws Exception{
+        testDeleteReprojectFilter("srsName=\"urn:x-ogc:def:crs:EPSG:6.11.2:4326\"");
+    }
+    
+    public void testDeleteReprojectFilterDefaultCRS() throws Exception{
+        testDeleteReprojectFilter("");
+    }
+    
+    private void testDeleteReprojectFilter(String envelopeSRS) throws Exception {
+        // slightly adapted from CITE WFS 1.1, "Test wfs:wfs-1.1.0-LockFeature-tc3.1"
+        
+        // perform an update
+        String xml = "<wfs:Transaction service=\"WFS\" version=\"1.1.0\" "
+                + "xmlns:cgf=\"http://www.opengis.net/cite/geometry\" "
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\" "
+                + "xmlns:gml=\"http://www.opengis.net/gml\"> "
+                + "<wfs:Delete typeName=\"sf:GenericEntity\">" 
+                + "  <ogc:Filter>"
+                + "    <ogc:BBOX>"
+                + "      <ogc:PropertyName>sf:attribut.geom</ogc:PropertyName>"
+                + "        <gml:Envelope " + envelopeSRS + ">"
+                + "          <gml:lowerCorner>34.5 -10.0</gml:lowerCorner>"
+                + "          <gml:upperCorner>72.0 32.0</gml:upperCorner>"
+                + "        </gml:Envelope>"
+                + "    </ogc:BBOX>"
+                + "  </ogc:Filter>"
+                + "</wfs:Delete> </wfs:Transaction>";
+        
+        Document dom = postAsDOM( "wfs", xml );
+        assertEquals( "wfs:TransactionResponse", dom.getDocumentElement().getNodeName() );
+        Element totalUpdated = getFirstElementByTagName(dom, "wfs:totalDeleted" );
+        assertEquals( "3", totalUpdated.getFirstChild().getNodeValue() );
+    }
+    
+    public void testLockReprojectFilter() throws Exception {
+        testLockReprojectFilter("srsName=\"urn:x-ogc:def:crs:EPSG:6.11.2:4326\"");
+    }
+    
+    public void testLockReprojectFilterDefaultCRS() throws Exception {
+        testLockReprojectFilter("");
+    }
+
+    
+    private void testLockReprojectFilter(String envelopeSRS) throws Exception {
+        // slightly adapted from CITE WFS 1.1, "Test wfs:wfs-1.1.0-LockFeature-tc3.1"
+        
+        // perform a lock
+        String xml = "<wfs:LockFeature xmlns:wfs=\"http://www.opengis.net/wfs\" "
+                + "xmlns:sf=\"http://cite.opengeospatial.org/gmlsf\" "
+                + "xmlns:myparsers=\"http://teamengine.sourceforge.net/parsers\" "
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
+                + "xmlns:gml=\"http://www.opengis.net/gml\" "
+                + "xmlns:xlink=\"http://www.w3.org/1999/xlink\" "
+                + "expiry=\"5\" "
+                + "handle=\"LockFeature-tc3\" "
+                + "lockAction=\"ALL\" "
+                + "service=\"WFS\" "
+                + "version=\"1.1.0\"> "
+                + "<wfs:Lock handle=\"lock-1\" typeName=\"sf:GenericEntity\"> "
+                + "<ogc:Filter>"
+                + "<ogc:BBOX>"
+                + " <ogc:PropertyName>sf:attribut.geom</ogc:PropertyName>"
+                + " <gml:Envelope " + envelopeSRS + ">"
+                + "    <gml:lowerCorner>34.5 -10.0</gml:lowerCorner>"
+                + "    <gml:upperCorner>72.0 32.0</gml:upperCorner>"
+                + " </gml:Envelope>"
+                + "</ogc:BBOX>"
+                + "</ogc:Filter>"
+                + "</wfs:Lock>"
+                + "</wfs:LockFeature>";
+        System.out.println(xml);
+        
+        Document dom = postAsDOM( "wfs", xml );
+        assertEquals( "wfs:LockFeatureResponse", dom.getDocumentElement().getNodeName() );
+        assertEquals(3, dom.getElementsByTagName("ogc:FeatureId").getLength());
+    }
+    
+    
     public void runTest( Document dom1, Document dom2 ) throws Exception {
         Element box = getFirstElementByTagName(dom1.getDocumentElement(), "gml:Box");
         Element coordinates = getFirstElementByTagName(box, "gml:coordinates");
