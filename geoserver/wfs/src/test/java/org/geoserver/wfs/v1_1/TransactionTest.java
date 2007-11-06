@@ -4,6 +4,7 @@ import javax.xml.namespace.QName;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.wfs.WFSTestSupport;
+import org.geoserver.wfs.kvp.SrsNameKvpParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -112,21 +113,39 @@ public class TransactionTest extends WFSTestSupport {
                 + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
                 + "xmlns:wfs=\"http://www.opengis.net/wfs\" "
                 + "xmlns:gml=\"http://www.opengis.net/gml\"> " + "<wfs:Insert > " + "<cgf:Points>"
-                + "<cgf:pointProperty>" + "<gml:Point>" + "<gml:pos>100 100</gml:pos>"
+                + "<cgf:pointProperty>" + "<gml:Point>" + "<gml:pos>20 40</gml:pos>"
                 + "</gml:Point>" + "</cgf:pointProperty>" + "<cgf:id>t0002</cgf:id>"
                 + "</cgf:Points>" + "</wfs:Insert>" + "</wfs:Transaction>";
 
         dom = postAsDOM("wfs", insert);
+        
 
         NodeList numberInserteds = dom.getElementsByTagName("wfs:totalInserted");
         Element numberInserted = (Element) numberInserteds.item(0);
         assertNotNull(numberInserted);
         assertEquals("1", numberInserted.getFirstChild().getNodeValue());
+        String fid = getFirstElementByTagName(dom, "ogc:FeatureId").getAttribute("fid");
+        
+        // check insertion occurred
+        dom = postAsDOM("wfs", getFeature);
+        assertEquals(n + 1, dom.getElementsByTagName("cgf:Points").getLength());
 
-        // do another get feature
+        // check coordinate order is preserved
+        getFeature = "<wfs:GetFeature " + "service=\"WFS\" " + "version=\"1.1.0\" "
+            + "xmlns:cgf=\"http://www.opengis.net/cite/geometry\" "
+            + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
+            + "xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> "
+            + "<wfs:Query typeName=\"cgf:Points\"> "
+            + "<ogc:Filter>"
+            + "<ogc:PropertyIsEqualTo>"
+            + "<ogc:PropertyName>cgf:id</ogc:PropertyName>"
+            + "<ogc:Literal>t0002</ogc:Literal>"
+            + "</ogc:PropertyIsEqualTo>"
+            + "</ogc:Filter></wfs:Query> "
+            + "</wfs:GetFeature>";
         dom = postAsDOM("wfs", getFeature);
         print(dom);
-        assertEquals(n + 1, dom.getElementsByTagName("cgf:Points").getLength());
+        assertEquals("20.0 40.0", getFirstElementByTagName(dom, "gml:pos").getFirstChild().getNodeValue());
     }
 
     public void testInsertWithSRS() throws Exception {
@@ -436,7 +455,15 @@ public class TransactionTest extends WFSTestSupport {
         assertEquals( "4.2582 52.0643 4.2584 52.0648", posList.getFirstChild().getNodeValue() );
     }
     
-    public void testUpdate() throws Exception {
+    public void testUpdateForcedSRS() throws Exception {
+        testUpdate("srsName=\"EPSG:4326\"");
+    }
+    
+    public void testUpdateNoSRS() throws Exception {
+        testUpdate("");
+    }
+    
+    private void testUpdate(String srs) throws Exception {
         String xml =
         "<wfs:Transaction service=\"WFS\" version=\"1.1.0\"" + 
         " xmlns:cite=\"http://www.opengis.net/cite\"" +
@@ -447,7 +474,7 @@ public class TransactionTest extends WFSTestSupport {
         "   <wfs:Property>" +
         "     <wfs:Name>cite:the_geom</wfs:Name>" +
         "     <wfs:Value>" +
-        "      <gml:MultiLineString xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"EPSG:4326\">" + 
+        "      <gml:MultiLineString xmlns:gml=\"http://www.opengis.net/gml\" " + srs + ">" + 
         "       <gml:lineStringMember>" + 
         "         <gml:LineString>" +
         "            <gml:posList>4.2582 52.0643 4.2584 52.0648</gml:posList>" +
@@ -470,7 +497,8 @@ public class TransactionTest extends WFSTestSupport {
         
         assertEquals( "1", getFirstElementByTagName(dom, "wfs:totalUpdated").getFirstChild().getNodeValue());
         
-        dom = getAsDOM( "wfs?request=getfeature&typename=cite:RoadSegments&srsName=EPSG:4326&" +
+        String srsBlock = "".equals(srs) ? "" : "&" + srs.replaceAll("\"", "");
+        dom = getAsDOM( "wfs?request=getfeature&typename=cite:RoadSegments" + srsBlock + "&" +
             "cql_filter=FID%3D'102'");
         assertEquals( "wfs:FeatureCollection", dom.getDocumentElement().getNodeName() );
         
