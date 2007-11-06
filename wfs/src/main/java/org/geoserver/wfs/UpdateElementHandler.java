@@ -156,10 +156,14 @@ public class UpdateElementHandler implements TransactionElementHandler {
                 if (values[j] instanceof Geometry ) {
                     Geometry geometry = (Geometry) values[j];
                     
-                    //get the source crs, check the geometry itself first
+                    // get the source crs, check the geometry itself first. If not set, assume
+                    // the default one
                     CoordinateReferenceSystem source = null;
                     if ( geometry.getUserData() instanceof CoordinateReferenceSystem ) {
                         source = (CoordinateReferenceSystem) geometry.getUserData();
+                    } else {
+                        geometry.setUserData(declaredCRS);
+                        source = declaredCRS;
                     }
                     
                     // see if the geometry has a CRS other than the default one
