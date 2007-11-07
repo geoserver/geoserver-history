@@ -1,5 +1,5 @@
 package org.geoserver.restconfig;
-import java.util.HashMap;
+import java.util.Map;
 import org.restlet.data.MediaType;
 import org.restlet.ext.freemarker.TemplateRepresentation;
 import freemarker.template.Configuration;
@@ -21,7 +21,7 @@ public class HTMLTemplate {
 	}
 
 	public static TemplateRepresentation getHtmlRepresentation(String template,
-			HashMap map) {
+			Map map) {
 		return new TemplateRepresentation(template, cfg, map,
 				MediaType.TEXT_HTML);
 	}
