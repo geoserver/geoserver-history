@@ -30,10 +30,13 @@ public class ResourceFinder extends Finder {
 			case RESOURCE_DATASTORE:
 				return new DataStoreResource(getContext(), request, response, myDataConfig);
 			case RESOURCE_FEATURETYPE:
-				return new FeatureTypeResource(getContext(), request, response, myDataConfig);			
+				return new FeatureTypeResource(getContext(), request, response, myDataConfig);		
+			case RESOURCE_COVERAGE:
+			        return new CoverageResource(getContext(), request, response, myDataConfig);
+                        case RESOURCE_STYLE:
+                                return new StyleResource(getContext(), request, response, myDataConfig);
 			default:
 				return null;
-		}
-		
+		}		
 	}
 }

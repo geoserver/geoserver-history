@@ -25,7 +25,7 @@ public class WrappingController extends AbstractController {
 
 	ServletConverter myConverter;
 
-	public WrappingController(){
+public WrappingController(){
 		super();
 		setSupportedMethods(new String[]{
 				METHOD_GET,
@@ -57,7 +57,11 @@ public class WrappingController extends AbstractController {
 		router.attach("/datastores/{datastore}", new ResourceFinder(ResourceFinder.RESOURCE_DATASTORE, router.getContext(), dc));
 		// This rule messes everything up: router.attach("/datastores/{datastore}/featuretypes", new ResourceFinder(ResourceFinder.RESOURCE_DATASTORE, router.getContext(), dc));
 		router.attach("/datastores/{datastore}/featuretypes/{featuretype}", new ResourceFinder(ResourceFinder.RESOURCE_FEATURETYPE, router.getContext(), dc));
-		//router.attach("/dummy/{name}", new DummyRestlet(getApplicationContext()));
+                router.attach("/styles/{style}", new ResourceFinder(ResourceFinder.RESOURCE_STYLE, router.getContext(), dc));
+                router.attach("/styles", new ResourceFinder(ResourceFinder.RESOURCE_STYLE, router.getContext(), dc));
+                router.attach("/coverages", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), dc));
+                router.attach("/coverages/{coverage}", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), dc));
+                router.attach("/dummy/{name}", new DummyRestlet(getApplicationContext()));
 		
 		return router;
 	}

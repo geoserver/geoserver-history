@@ -76,7 +76,7 @@ public class DataStoreResource extends Resource {
 	public void getIndex(MediaType mt) {		
 		//Get the data
 		HashMap map = makeDataStoreMap();
-
+		map.put("currentURL", getRequest().getResourceRef().getBaseRef());
 		//Do the output formatting
 		if(mt.equals(MediaType.APPLICATION_XML)) {
 			getResponse().setEntity(getIndexXML(map));
@@ -200,6 +200,7 @@ public class DataStoreResource extends Resource {
 			List ftcs = getFeatureTypes(myDSC.getId());
 			HashMap map = makeFeatureTypeMap(ftcs);
 			map.put("datastoreid", myDSC.getId());
+			map.put("currentURL", getRequest().getResourceRef().getBaseRef());
 
 			//Do the output formatting
 			if(mt.equals(MediaType.APPLICATION_XML)) {
