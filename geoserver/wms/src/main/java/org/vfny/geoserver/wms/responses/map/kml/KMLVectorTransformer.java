@@ -373,7 +373,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             	try {
             		URL requestURL = new URL(mapContext.getRequest().getBaseUrl());
             		imageURL = requestURL.getProtocol() + "://" + requestURL.getHost() + ":" + requestURL.getPort();
-            		imageURL += "/geoserver/icon.png";
+            		imageURL += "/geoserver/" + (poly ? "icon-poly.png" : "icon-line.png");
             	} catch (MalformedURLException mue){
             		imageURL = "http://maps.google.com/mapfiles/kml/pal3/icon61.png";
             	}
