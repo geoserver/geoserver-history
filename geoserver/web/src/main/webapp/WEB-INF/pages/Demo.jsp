@@ -82,7 +82,7 @@
 		
 		<tr>
 			<td class="label" valign="top">
-			<center><u><b><font size=+1><a href="../../../ol-demo.html" target="newwindow"><bean:message key="welcome.demo.olmapswms.title"/></a></font></b></u><br>
+			<center><u><b><font size=+1><a href="../../../www/ol-demo.html" target="newwindow"><bean:message key="welcome.demo.olmapswms.title"/></a></font></b></u><br>
 			<table width="80%" align="center">
               <tr>
                 <td>
