@@ -5,6 +5,7 @@
     <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
     <script src="http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=euzuro-openlayers"></script>
 
+    <link rel="stylesheet" href="/geoserver/style.css" type="text/css" />
     <link rel="stylesheet" href="openlayers/theme/default/style.css" type="text/css" />
 
     <style type="text/css">
@@ -112,7 +113,12 @@
             // the part below is just to make the bounds show up on the page
             var boundsOutput = document.getElementById('bounds');
             function updateBounds() {
-                boundsOutput.innerHTML = map.getExtent().toBBOX().replace(/,/g, ', ');
+                var code =
+                    "    var bounds = new OpenLayers.Bounds(\n" +
+                    "        " + map.getExtent().toBBOX().replace(/,/g, ', ') + "\n" +
+                    "    );\n" +
+                    "    map.zoomToExtent(bounds);"
+                boundsOutput.innerHTML = code;
             }
             // update the bounds with each map move
             map.events.register('moveend', map, updateBounds);
@@ -125,8 +131,10 @@
   <body onload="init()">
     <h3>Geoserver OpenLayers Demo</h3>
     <div id="map"></div>
-    <p>Map bounds:
-        <span id="bounds"></span>
+    <p>In creating your own OpenLayers application, you can use the bounds shown
+    above as your initial extent.  For example, the following code would zoom
+    your map to the current extent:
     </p>
+    <pre id="bounds"></pre>
   </body>
 </html>
