@@ -43,6 +43,14 @@
 
  <repositories>
   <repository>
+    <id>skynet.be</id>
+    <name>skynet.be</name>
+    <url>http://maven2.mirrors.skynet.be/pub/maven2</url>
+    <snapshots>
+    <enabled>false</enabled>
+   </snapshots>
+  </repository>
+  <repository>
     <id>Sateh</id>
     <name>Sateh</name>
     <url>http://maven.sateh.com/repository</url>
