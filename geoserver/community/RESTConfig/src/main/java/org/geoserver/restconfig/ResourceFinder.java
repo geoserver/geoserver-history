@@ -7,6 +7,7 @@ import org.restlet.data.Response;
 import org.restlet.resource.Resource;
 
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.WMSConfig;
 
 public class ResourceFinder extends Finder {
 	public final static int RESOURCE_DATASTORE = 1;
@@ -17,11 +18,13 @@ public class ResourceFinder extends Finder {
 	public final static int RESOURCE_LAYERGROUP = 6;
 	
 	private DataConfig myDataConfig;
+	private WMSConfig myWMSConfig;
 	private int myType = 0;
 	
-	public ResourceFinder(int type, Context context, DataConfig dc){
+	public ResourceFinder(int type, Context context, DataConfig dc, WMSConfig wmsc){
 		super(context);
 		myDataConfig = dc;
+		myWMSConfig = wmsc;
 		myType = type;
 	}
 	
@@ -35,6 +38,8 @@ public class ResourceFinder extends Finder {
 			        return new CoverageResource(getContext(), request, response, myDataConfig);
                         case RESOURCE_STYLE:
                                 return new StyleResource(getContext(), request, response, myDataConfig);
+			case RESOURCE_LAYERGROUP:
+			        return new LayerGroupResource(getContext(), request, response, myWMSConfig);
 			default:
 				return null;
 		}		
