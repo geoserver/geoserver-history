@@ -62,7 +62,7 @@
 			</td>
 
 			<td class="label" valign="top">
-			<center><u><b><font size=+1><a href="../../../wfst_demo/wfs-t.html" target="newwindow"><bean:message key="welcome.demo.wfst.title"/></a></font></b></u><br>
+			<center><u><b><font size=+1><a href="../../../www/wfs-t.html" target="newwindow"><bean:message key="welcome.demo.wfst.title"/></a></font></b></u><br>
 			<table width="80%" align="center">
               <tr>
                 <td>
