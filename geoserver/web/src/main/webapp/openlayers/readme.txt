@@ -12,3 +12,10 @@ At the time of writing we're shipping with OpenLayers 2.5.
 
 Update this file every time you upgrade to track what's the
 current version of OpenLayers we ship with.
+
+This compressed build is a build of a select portion of the OpenLayers library.  
+For production environments, you may have to use a different build profile.
+The build profile used here is included in this same directory (wms.cfg).
+
+For information on building OpenLayers, see
+http://trac.openlayers.org/wiki/Profiles
