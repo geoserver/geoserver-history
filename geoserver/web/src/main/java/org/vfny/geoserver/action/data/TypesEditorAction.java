@@ -274,6 +274,7 @@ public class TypesEditorAction extends ConfigAction {
                 declaredEnvelope = JTS.transform(envelope, null, xform, 10); //convert data bbox to lat/long
             }
 
+            LOGGER.finer("Seeting form's data envelope: " + declaredEnvelope);
             typeForm.setDataMinX(Double.toString(declaredEnvelope.getMinX()));
             typeForm.setDataMaxX(Double.toString(declaredEnvelope.getMaxX()));
             typeForm.setDataMinY(Double.toString(declaredEnvelope.getMinY()));
@@ -351,11 +352,16 @@ public class TypesEditorAction extends ConfigAction {
         config.setSRS(Integer.parseInt(form.getSRS()));
         config.setTitle(form.getTitle());
         Envelope latLonBbox = getBoundingBox(form);
+        Envelope nativeBbox = getNativeBBox(form);
         // if the lat/lon bbox did not change, don't try to update stuff, since we don't have
         // the native bbox calculated
         if(!config.getLatLongBBox().equals(latLonBbox))  {
             config.setLatLongBBox(latLonBbox);
-            config.setNativeBBox(getNativeBBox(form));
+        }
+        // may the native bbox have been changed due to a change
+        // in the CRS code by the user
+        if(!config.getNativeBBox().equals(nativeBbox)){
+            config.setNativeBBox(nativeBbox);            
         }
         config.setKeywords(keyWords(form));
         config.setMetadataLinks(metadataLinks(form));
