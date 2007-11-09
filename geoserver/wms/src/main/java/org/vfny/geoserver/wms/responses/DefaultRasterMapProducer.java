@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -14,10 +13,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
-import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
-import java.awt.image.VolatileImage;
-import java.awt.image.WritableRaster;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,7 +29,6 @@ import javax.media.jai.InterpolationBilinear;
 import javax.media.jai.InterpolationNearest;
 import javax.media.jai.JAI;
 import javax.media.jai.LookupTableJAI;
-import javax.media.jai.TiledImage;
 import javax.media.jai.operator.LookupDescriptor;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -66,7 +61,7 @@ import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
  * Gabriel. The word is that we should eventually switch over to
  * StyledMapRenderer and do some fancy stuff with caching layers, but I think we
  * are a ways off with its maturity to try that yet. So Lite treats us quite
- * well, as it is stateless and therefor loads up nice and fast.
+ * well, as it is stateless and therefore loads up nice and fast.
  * </p>
  * 
  * <p>
@@ -191,11 +186,12 @@ public abstract class DefaultRasterMapProducer extends
 		IndexColorModel palette = null;
 		final InverseColorMapOp paletteInverter = mapContext
 				.getPaletteInverter();
-		if (paletteInverter != null && AA_NONE.equals(antialias)) {
+		final boolean transparent = mapContext.isTransparent();
+        final Color bgColor = mapContext.getBgColor();
+        if (paletteInverter != null && AA_NONE.equals(antialias)) {
 			palette = paletteInverter.getIcm();
 		} else if (AA_NONE.equals(antialias)) {
-			PaletteExtractor pe = new PaletteExtractor(mapContext
-					.isTransparent() ? null : mapContext.getBgColor());
+			PaletteExtractor pe = new PaletteExtractor(transparent ? null : bgColor);
 			MapLayer[] layers = mapContext.getLayers();
 			for (int i = 0; i < layers.length; i++) {
 				pe.visit(layers[i].getStyle());
@@ -209,46 +205,12 @@ public abstract class DefaultRasterMapProducer extends
 		// we use the alpha channel if the image is transparent or if the meta tiler
 		// is enabled, since apparently the Crop operation inside the meta-tiler
 		// generates striped images in that case (see GEOS-
-		boolean useAlpha = mapContext.isTransparent() || MetatileMapProducer.isRequestTiled(request, this);
+		boolean useAlpha = transparent || MetatileMapProducer.isRequestTiled(request, this);
         final RenderedImage preparedImage = prepareImage(width, height, palette, useAlpha);
-		final Graphics2D graphic;
+        final Map hintsMap = new HashMap();
 
-		if (preparedImage instanceof BufferedImage) {
-			graphic = ((BufferedImage) preparedImage).createGraphics();
-		} else if (preparedImage instanceof TiledImage) {
-			graphic = ((TiledImage) preparedImage).createGraphics();
-		} else if (preparedImage instanceof VolatileImage) {
-			graphic = ((VolatileImage) preparedImage).createGraphics();
-		} else {
-			throw new WmsException("Unrecognized back-end image type");
-		}
-
-		final Map hintsMap = new HashMap();
-
-		// fill the background with no antialiasing
-		hintsMap.put(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_OFF);
-		graphic.setRenderingHints(hintsMap);
-		if (!mapContext.isTransparent()) {
-			graphic.setColor(mapContext.getBgColor());
-			graphic.fillRect(0, 0, width, height);
-		} else {
-			if (LOGGER.isLoggable(Level.FINE)) {
-				LOGGER.fine("setting to transparent");
-			}
-
-			int type = AlphaComposite.SRC;
-			graphic.setComposite(AlphaComposite.getInstance(type));
-
-			Color c = new Color(mapContext.getBgColor().getRed(), mapContext
-					.getBgColor().getGreen(),
-					mapContext.getBgColor().getBlue(), 0);
-			graphic.setBackground(mapContext.getBgColor());
-			graphic.setColor(c);
-			graphic.fillRect(0, 0, width, height);
-			type = AlphaComposite.SRC_OVER;
-			graphic.setComposite(AlphaComposite.getInstance(type));
-		}
+        final Graphics2D graphic = ImageUtils.prepareTransparency(transparent, bgColor,
+                preparedImage, hintsMap);
 
 		// set up the antialias hints
 		if (AA_NONE.equals(antialias)) {
@@ -332,7 +294,7 @@ public abstract class DefaultRasterMapProducer extends
 		}
 	}
 
-	/**
+    /**
 	 * Sets up a {@link BufferedImage#TYPE_4BYTE_ABGR} if the paletteInverter is
 	 * not provided, or a indexed image otherwise. Subclasses may override this
 	 * method should they need a special kind of image
@@ -344,21 +306,7 @@ public abstract class DefaultRasterMapProducer extends
 	 */
 	protected RenderedImage prepareImage(int width, int height,
 			IndexColorModel palette, boolean transparent) {
-		if (palette != null) {
-		    // unfortunately we can't use packed rasters because line rendering gets completely
-		    // broken, see GEOS-1312 (http://jira.codehaus.org/browse/GEOS-1312)
-//			final WritableRaster raster = palette.createCompatibleWritableRaster(width, height);
-		    final WritableRaster raster = Raster.createInterleavedRaster(palette.getTransferType(),
-                    width, height, 1, null);
-			return new BufferedImage(palette, raster, false, null);
-		}
-
-		if(transparent)
-		    return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-		else
-		    // don't use alpha channel if the image is not transparent
-		    return new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
-		    
+	    return ImageUtils.createImage(width, height, palette, transparent);
 	}
 
 	/**

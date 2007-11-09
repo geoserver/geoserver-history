@@ -9,14 +9,16 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
+import java.awt.image.IndexColorModel;
+import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -199,7 +201,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
 
         /**
          * A legend graphic is produced for each applicable rule. They're being
-         * holded here until the process is done and then painted on a "stack"
+         * held here until the process is done and then painted on a "stack"
          * like legend.
          */
         final List /*<BufferedImage>*/ legendsStack = new ArrayList(ruleCount);
@@ -211,17 +213,18 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
         for (int i = 0; i < ruleCount; i++) {
             Symbolizer[] symbolizers = applicableRules[i].getSymbolizers();
 
-            BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D graphics = image.createGraphics();
+            //BufferedImage image = prepareImage(w, h, request.isTransparent());
+            final boolean transparent = request.isTransparent();
+            final RenderedImage image = ImageUtils.createImage(w, h, (IndexColorModel)null, transparent);
+            final Map hintsMap = new HashMap();
+            Graphics2D graphics = ImageUtils.prepareTransparency(transparent, bgColor, image, hintsMap);
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            graphics.setColor(bgColor);
-            graphics.fillRect(0, 0, w, h);
 
             for (int sIdx = 0; sIdx < symbolizers.length; sIdx++) {
                 Symbolizer symbolizer = symbolizers[sIdx];
 
                 if (symbolizer instanceof RasterSymbolizer) {
-                    BufferedImage imgShape = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+                    BufferedImage imgShape;
 
                     try {
                         imgShape = ImageIO.read(new URL(request.getHttpServletRequest()
@@ -254,30 +257,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
         this.legendGraphic = mergeLegends(legendsStack, applicableRules, request);
     }
 
-    /**
-     *   Scales the image so that its the size specified in the request.
-     *   @hack -- there should be a much better way to do this.  See handleLegendURL() in WMSCapsTransformer.
-         * @param image
-         * @return
-         */
-    private BufferedImage scaleImage(BufferedImage image, GetLegendGraphicRequest request) {
-        final int w = request.getWidth();
-        final int h = request.getHeight();
-
-        BufferedImage scaledImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics = scaledImage.createGraphics();
-        graphics.setColor(getBackgroundColor(request));
-        graphics.fillRect(0, 0, w, h);
-
-        AffineTransform xform = new AffineTransform();
-        xform.setToScale(((double) w) / image.getWidth(), ((double) h) / image.getHeight());
-
-        graphics.drawImage(image, xform, null);
-
-        return scaledImage;
-    }
-
-    /**
+   /**
     * Recieves a list of <code>BufferedImages</code> and produces a new one
     * which holds all  the images in <code>imageStack</code> one above the
     * other.
@@ -319,7 +299,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
             throw new IllegalArgumentException("No legend graphics passed");
         }
 
-        BufferedImage finalLegend = null;
+        final BufferedImage finalLegend;
 
         if (imageStack.size() == 1 && !forceLabelsOn) {
             finalLegend = (BufferedImage) imageStack.get(0);
@@ -379,13 +359,12 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
             //buffer the width a bit
             totalWidth += 2;
 
+            final boolean transparent = req.isTransparent();
+            final Color backgroundColor = getBackgroundColor(req);
+            final Map hintsMap = new HashMap();
             //create the final image
-            finalLegend = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_ARGB);
-
-            Graphics2D finalGraphics = finalLegend.createGraphics();
-
-            finalGraphics.setColor(getBackgroundColor(req));
-            finalGraphics.fillRect(0, 0, totalWidth, totalHeight);
+            finalLegend = ImageUtils.createImage(totalWidth, totalHeight, (IndexColorModel)null, transparent);
+            Graphics2D finalGraphics = ImageUtils.prepareTransparency(transparent, backgroundColor, finalLegend, hintsMap);
 
             int topOfRow = 0;
 
@@ -487,6 +466,16 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
         }
     }
     
+    /**
+     * Returns the image background color for the given
+     * {@link GetLegendGraphicRequest}.
+     * 
+     * @param req
+     * @return the Color for the hexadecimal value passed as the
+     *         <code>BGCOLOR</code>
+     *         {@link GetLegendGraphicRequest#getLegendOptions() legend option},
+     *         or the default background color if no bgcolor were passed.
+     */
     private static Color getBackgroundColor( GetLegendGraphicRequest req ) {
         Map legendOptions = req.getLegendOptions();
         String color = (String) legendOptions.get("bgColor");

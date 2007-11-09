@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import java.util.List;
 import java.util.Map;
 
 import org.geotools.feature.FeatureType;
@@ -129,6 +128,11 @@ public class GetLegendGraphicRequest extends WMSRequest {
      * things like the label font, label font style, label font antialiasing, etc.
      */ 
     private Map legendOptions;
+
+    /**
+     * Whether the legend graphic background shall be transparent or not.
+     */
+    private boolean transparent;
 
     /**
      * Creates a new GetLegendGraphicRequest object.
@@ -306,5 +310,33 @@ public class GetLegendGraphicRequest extends WMSRequest {
     
     public void setLegendOptions(Map legendOptions) {
         this.legendOptions = legendOptions;
+    }
+
+    /**
+     * Sets the value of the background transparency flag depending on the value
+     * of the <code>TRANSPARENT</code> request parameter.
+     * 
+     * @param transparentBackground
+     *            whether the legend graphic background shall be transparent or
+     *            not
+     */
+    public void setTransparent(boolean transparentBackground) {
+        this.transparent = transparentBackground;
+    }
+
+    /**
+     * Returns the value of the optional request parameter
+     * <code>TRANSPARENT</code>, which might be either the literal
+     * <code>true</code> or <code>false</code> and specifies if the
+     * background of the legend graphic to return shall be transparent or not.
+     * <p>
+     * If the <code>TRANSPARENT</code> parameter is not specified, this
+     * property defaults to <code>false</code>.
+     * </p>
+     * 
+     * @return whether the legend graphic background shall be transparent or not
+     */
+    public boolean isTransparent() {
+        return transparent;
     }
 }
