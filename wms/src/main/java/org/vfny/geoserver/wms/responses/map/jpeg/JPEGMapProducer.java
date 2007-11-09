@@ -25,12 +25,9 @@ import java.util.logging.Logger;
  */
 public final class JPEGMapProducer extends DefaultRasterMapProducer {
     protected RenderedImage prepareImage(int width, int height, IndexColorModel palette, boolean transparent) {
-        if (palette != null) {
-            return super.prepareImage(width, height, palette, transparent);
-        }
-
         //there is no transparency in JPEG anyway :-)
-        return new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+        transparent = false;
+        return super.prepareImage(width, height, palette, transparent);
     }
     /** Logger. */
     private final static Logger LOGGER = Logger.getLogger(JPEGMapProducer.class.toString());
