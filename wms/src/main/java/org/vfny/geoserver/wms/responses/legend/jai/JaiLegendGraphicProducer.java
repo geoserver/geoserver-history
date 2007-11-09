@@ -5,6 +5,8 @@
 package org.vfny.geoserver.wms.responses.legend.jai;
 
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 import org.vfny.geoserver.wms.responses.helpers.JAISupport;
 import java.io.IOException;
@@ -32,6 +34,23 @@ class JaiLegendGraphicProducer extends DefaultRasterLegendProducer {
         this.outputFormat = outputFormat;
     }
 
+    /**
+     * Overrides to force request.isTransparent() to false when the output
+     * format is <code>image/jpeg</code>.
+     * 
+     * @see DefaultRasterLegendProducer#produceLegendGraphic(GetLegendGraphicRequest)
+     */
+    public void produceLegendGraphic(GetLegendGraphicRequest request)
+    throws WmsException {
+        //HACK: should we provide a jpeg specific legend producer just
+        //like for GetMap?
+        if(outputFormat.startsWith("image/jpeg")){
+            //no transparency in jpeg
+            request.setTransparent(false);
+        }
+        super.produceLegendGraphic(request);
+    }
+    
     /**
      * Encodes the image created by the superclss to the format specified at
      * the constructor and sends it to <code>out</code>.
