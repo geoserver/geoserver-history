@@ -249,10 +249,16 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
         double bbheight = layerbbox.getHeight();
         double bbwidth = layerbbox.getWidth();
         double bbratio = bbwidth/bbheight;
-        		
+        
+        if(!specifiedBBOX) {
+        	// Zoom out 5%, accomodates for reprojection etc
+        	layerbbox.expandBy(layerbbox.getWidth()/40,layerbbox.getHeight()/40);
+    	}
+        
+        
         double mheight = getMap.getHeight();
         double mwidth = getMap.getWidth();
-            
+        
         if(mheight > 0.5 && mwidth > 0.5 && specifiedBBOX) {
         	// This person really doesnt want our help
         } else {
@@ -281,10 +287,7 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
         		mheight = mwidth / bbratio;
         	}
         	
-            //if(!specifiedBBOX) {
-            	// Zoom out 10%, accomodates for reprojection etc
-            //	layerbbox.expandBy(layerbbox.getWidth()/40,layerbbox.getHeight()/40);
-            //}
+
         	// Actually set the bounding box and size of image
         	getMap.setBbox(layerbbox);    
         	getMap.setWidth((int)mwidth);
