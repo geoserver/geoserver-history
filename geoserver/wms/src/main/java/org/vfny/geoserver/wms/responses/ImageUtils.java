@@ -8,7 +8,10 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
@@ -21,7 +24,10 @@ import java.util.logging.Logger;
 
 import javax.media.jai.TiledImage;
 
+import org.geotools.image.ImageWorker;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.responses.palette.CustomPaletteBuilder;
+import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 
 /**
  * Provides utility methods for the shared handling of images by the raster map
@@ -30,7 +36,7 @@ import org.vfny.geoserver.wms.WmsException;
  * @author Gabriel Roldan
  * @version $Id$
  */
-class ImageUtils {
+public class ImageUtils {
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
 
     /**
@@ -142,5 +148,148 @@ class ImageUtils {
             graphic.fillRect(0, 0, preparedImage.getWidth(), preparedImage.getHeight());
         }
         return graphic;
+    }
+    
+    
+    /**
+     * @param originalImage
+     * @return
+     */
+    public static RenderedImage forceIndexed8Bitmask(RenderedImage originalImage, final InverseColorMapOp invColorMap) {
+        // /////////////////////////////////////////////////////////////////
+        //
+        // Check what we need to do depending on the color model of the image we
+        // are working on.
+        //
+        // /////////////////////////////////////////////////////////////////
+        final ColorModel cm = originalImage.getColorModel();
+        final boolean dataTypeByte = originalImage.getSampleModel()
+                .getDataType() == DataBuffer.TYPE_BYTE;
+        RenderedImage image;
+
+        // /////////////////////////////////////////////////////////////////
+        //
+        // IndexColorModel and DataBuffer.TYPE_BYTE
+        //
+        // ///
+        //
+        // If we got an image whose color model is already indexed on 8 bits
+        // we have to check if it is bitmask or not.
+        //
+        // /////////////////////////////////////////////////////////////////
+        if ((cm instanceof IndexColorModel) && dataTypeByte) {
+            final IndexColorModel icm = (IndexColorModel) cm;
+
+            if (icm.getTransparency() != Transparency.TRANSLUCENT) {
+                // //
+                //
+                // The image is indexed on 8 bits and the color model is either
+                // opaque or bitmask. WE do not have to do anything.
+                //
+                // //
+                image = originalImage;
+            } else {
+                // //
+                //
+                // The image is indexed on 8 bits and the color model is
+                // Translucent, we have to perform some color operations in
+                // order to convert it to bitmask.
+                //
+                // //
+                image = new ImageWorker(originalImage)
+                        .forceBitmaskIndexColorModel().getRenderedImage();
+            }
+        } else {
+            // /////////////////////////////////////////////////////////////////
+            //
+            // NOT IndexColorModel and DataBuffer.TYPE_BYTE
+            //
+            // ///
+            //
+            // We got an image that needs to be converted.
+            //
+            // /////////////////////////////////////////////////////////////////
+
+            if (invColorMap != null) {
+
+                // make me parametric which means make me work with other image
+                // types
+                image = invColorMap.filterRenderedImage(originalImage);
+            } else {
+                // //
+                //
+                // We do not have a paletteInverter, let's create a palette that
+                // is as good as possible.
+                //
+                // //
+                // make sure we start from a componentcolormodel.
+                image = new ImageWorker(originalImage)
+                        .forceComponentColorModel().getRenderedImage();
+
+//              if (originalImage.getColorModel().hasAlpha()) {
+//                  // //
+//                  //
+//                  // We want to use the CustomPaletteBuilder but to do so we
+//                  // have first to reduce the image to either opaque or
+//                  // bitmask because otherwise the CustomPaletteBuilder will
+//                  // fail to address transparency.
+//                  //
+//                  // //
+//                  // I am exploiting the clamping property of the JAI
+//                  // MultiplyCOnst operation.
+//                  // TODO make this code parametric since people might want to
+//                  // use a different transparency threshold. Right now we are
+//                  // thresholding the transparency band using a fixed
+//                  // threshold of 255, which means that anything that was not
+//                  // transparent will become opaque.
+//                  //
+//                  ////
+//                  final RenderedImage alpha = new ImageWorker(originalImage)
+//                          .retainLastBand().multiplyConst(
+//                                  new double[] { 255.0 }).retainFirstBand()
+//                          .getRenderedImage();
+//
+//                  final int numBands = originalImage.getSampleModel()
+//                          .getNumBands();
+//                  originalImage = new ImageWorker(originalImage).retainBands(
+//                          numBands - 1).getRenderedImage();
+//
+//                  final ImageLayout layout = new ImageLayout();
+//
+//                  if (numBands == 4) {
+//                      layout.setColorModel(new ComponentColorModel(ColorSpace
+//                              .getInstance(ColorSpace.CS_sRGB), true, false,
+//                              Transparency.BITMASK, DataBuffer.TYPE_BYTE));
+//                  } else {
+//                      layout.setColorModel(new ComponentColorModel(ColorSpace
+//                              .getInstance(ColorSpace.CS_GRAY), true, false,
+//                              Transparency.BITMASK, DataBuffer.TYPE_BYTE));
+//                  }
+//
+//                  image = BandMergeDescriptor.create(originalImage, alpha,
+//                          new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout))
+//                          .getNewRendering();
+//              } else {
+//                  // //
+//                  //
+//                  // Everything is fine
+//                  //
+//                  // //
+//                  image = originalImage;
+//              }
+
+                // //
+                //
+                // Build the CustomPaletteBuilder doing some good subsampling.
+                //
+                // //
+                final int subsx = (int) Math.pow(2, image.getWidth() / 256);
+                final int subsy = (int) Math.pow(2, image.getHeight() / 256);
+                image = new CustomPaletteBuilder(image, 256, subsx, subsy, 1)
+                        .buildPalette().getIndexedImage();
+            }
+        }
+
+        return image;
     }
 }

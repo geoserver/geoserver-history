@@ -4,16 +4,15 @@
  */
 package org.vfny.geoserver.wms.responses.legend.gif;
 
-import com.sun.media.imageioimpl.plugins.gif.GIFImageWriter;
-import com.sun.media.imageioimpl.plugins.gif.GIFImageWriterSpi;
-import org.vfny.geoserver.ServiceException;
-import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
-import javax.imageio.IIOImage;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.MemoryCacheImageOutputStream;
-import javax.media.jai.PlanarImage;
+
+import org.geotools.image.ImageWorker;
+import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
+import org.vfny.geoserver.wms.responses.ImageUtils;
 
 
 /**
@@ -41,11 +40,11 @@ public class GifLegendGraphicProducer extends DefaultRasterLegendProducer {
      * @see org.vfny.geoserver.wms.responses.GetLegendGraphicProducer#writeTo(java.io.OutputStream)
      */
     public void writeTo(OutputStream out) throws IOException, ServiceException {
-        final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(out);
-        final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(super.getLegendGraphic());
-        final ImageWriter gifWriter = new GIFImageWriter(new GIFImageWriterSpi());
-        gifWriter.setOutput(memOutStream);
-        gifWriter.write(null, new IIOImage(encodedImage, null, null), null);
+        //GR: shall we add a palette parameter to GetLegendGraphic too?
+        final BufferedImage legendGraphic = getLegendGraphic();
+        RenderedImage forcedIndexed8Bitmask = ImageUtils.forceIndexed8Bitmask(legendGraphic, null);
+        ImageWorker imageWorker = new ImageWorker(forcedIndexed8Bitmask);
+        imageWorker.writeGIF(out, "LZW", 0.75f);
     }
 
     /**
