@@ -4,6 +4,23 @@
  */
 package org.vfny.geoserver.global;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.logging.Level;
+
+import javax.xml.namespace.QName;
+
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
@@ -24,21 +41,6 @@ import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.NameSpaceInfoDTO;
 import org.vfny.geoserver.global.dto.StyleDTO;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.logging.Level;
-import javax.xml.namespace.QName;
 
 
 /**
@@ -183,7 +185,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
     }
 
     public Data(Config config, GeoServer g) throws ConfigurationException {
-        this(config.getXMLReader().getData(), config.dataDirectory(), g);
+        this(config.getData(), config.dataDirectory(), g);
     }
 
     public GeoServer getGeoServer() {

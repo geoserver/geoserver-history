@@ -4,10 +4,6 @@
  */
 package org.geoserver.wfs;
 
-import org.geoserver.ows.Dispatcher;
-import org.geoserver.platform.GeoServerExtensions;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.vfny.geoserver.global.Config;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.Data;
@@ -15,8 +11,6 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoValidator;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
-import java.util.Collection;
-import java.util.Iterator;
 
 
 /**
@@ -105,7 +99,7 @@ public class WFS extends org.vfny.geoserver.global.Service {
      */
     public WFS(Config config, Data data, GeoServer geoServer, GeoValidator validator)
         throws ConfigurationException {
-        this(config.getXMLReader().getWfs());
+        this(config.getWfs());
         setData(data);
         setGeoServer(geoServer);
         setValidation(validator);

@@ -91,7 +91,7 @@ public class WMS extends Service {
      */
     public WMS(Config config, Data data, GeoServer geoServer, WFS wfs)
         throws ConfigurationException {
-        this(config.getXMLReader().getWms());
+        this(config.getWms());
         setData(data);
         setGeoServer(geoServer);
         this.wfs = wfs;

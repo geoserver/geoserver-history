@@ -10,9 +10,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
-import java.net.URL;
-import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,8 +31,6 @@ import javax.servlet.ServletContext;
 import org.apache.log4j.Appender;
 import org.apache.log4j.PropertyConfigurator;
 import org.geotools.data.DataStoreFactorySpi;
-import org.geotools.data.DataUtilities;
-import org.geotools.util.Logging;
 import org.springframework.beans.factory.DisposableBean;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
@@ -45,9 +40,9 @@ import com.sun.media.jai.util.SunTileCache;
 
 
 /**
- * Complete configuration ser for the whole server
+ * Complete configuration set for the whole server
  *
- * @author Gabriel Rold?n
+ * @author Gabriel Roldan
  * @author dzwiers
  * @version $Id$
  */
@@ -115,12 +110,14 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     private boolean suppressStdOutLogging = false;
     private String logLocation = null;
 
-    /** central log redirector controller **/
-    private static Logging[] GEOSERVER_LOGGING;
-
     private List listeners;
     
+    /**
+     * Default constructor only to facilitate unit testing mock ups; real
+     * uses shall create an instance through {@link #GeoServer(Config)}.
+     */
     public GeoServer() {
+        //do nothing
     }
 
     /**
@@ -130,7 +127,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      */
     public GeoServer(Config config) throws ConfigurationException {
         LOGGER.fine("Creating GeoServer");
-        load(config.getXMLReader().getGeoServer());
+        load(config.getGeoServer());
         
         listeners = new ArrayList();    
     }

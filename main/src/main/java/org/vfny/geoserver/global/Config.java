@@ -4,17 +4,23 @@
  */
 package org.vfny.geoserver.global;
 
-import org.geotools.factory.GeoTools;
+import java.io.File;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletContext;
+
 import org.geotools.factory.Hints;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.WebApplicationContext;
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
+import org.vfny.geoserver.global.dto.WCSDTO;
+import org.vfny.geoserver.global.dto.WFSDTO;
+import org.vfny.geoserver.global.dto.WMSDTO;
 import org.vfny.geoserver.global.xml.XMLConfigReader;
-import java.io.File;
-import java.util.logging.Logger;
-import javax.servlet.ServletContext;
 
 
 /**
@@ -28,13 +34,11 @@ public class Config implements ApplicationContextAware {
     WebApplicationContext context;
     XMLConfigReader reader;
 
-    public XMLConfigReader getXMLReader() throws ConfigurationException {
-        return reader;
-    }
+//    public XMLConfigReader getXMLReader() throws ConfigurationException {
+//        return reader;
+//    }
 
     public File dataDirectory() {
-        ServletContext sc = this.context.getServletContext();
-
         return GeoserverDataDirectory.getGeoserverDataDirectory();
     }
 
@@ -81,5 +85,25 @@ public class Config implements ApplicationContextAware {
 
     public WebApplicationContext getApplictionContext() {
         return context;
+    }
+
+    public DataDTO getData() {
+        return reader.getData();
+    }
+
+    public GeoServerDTO getGeoServer() {
+        return reader.getGeoServer();
+    }
+
+    public WMSDTO getWms() {
+        return reader.getWms();
+    }
+
+    public WFSDTO getWfs() {
+        return reader.getWfs();
+    }
+
+    public WCSDTO getWcs() {
+        return reader.getWcs();
     }
 }
