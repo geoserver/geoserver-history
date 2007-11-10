@@ -17,8 +17,11 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -33,6 +36,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.geotools.data.DataStoreFactorySpi;
 import org.springframework.beans.factory.DisposableBean;
 import org.vfny.geoserver.global.dto.ContactDTO;
+import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.util.Requests;
 
@@ -111,6 +115,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     private String logLocation = null;
 
     private List listeners;
+    private Config config;
     
     /**
      * Default constructor only to facilitate unit testing mock ups; real
@@ -128,6 +133,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     public GeoServer(Config config) throws ConfigurationException {
         LOGGER.fine("Creating GeoServer");
         load(config.getGeoServer());
+        this.config = config;
         
         listeners = new ArrayList();    
     }
@@ -1138,10 +1144,25 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * </p>
      */
     public void destroy() throws Exception {
-        // ConnectionPoolManager.getInstance().closeAll();
-
+        final Data catalog = (Data) config.getApplictionContext().getBean("data");
+        final Set dataStores = catalog.getDataStores();
+        LOGGER.info("Disposing DataStores at GeoServer shutdown...");
+        for (Iterator it = dataStores.iterator(); it.hasNext();) {
+            DataStoreInfo dataStoreInfo = (DataStoreInfo) it.next();
+            LOGGER.fine("Disposing " + dataStoreInfo.getId());
+            try {
+                dataStoreInfo.dispose();
+            } catch (RuntimeException e) {
+                LOGGER.log(Level.WARNING, "Caught exception while disposing datastore "
+                        + dataStoreInfo.getId(), e);
+            }
+        }
+        LOGGER.info("Done disposing datastores.");
+        
         /*
-           HACK: we must get a standard API way for releasing resources...
+         *  HACK: we must get a standard API way for releasing resources...
+         *  UPDATE: now we do have a standard API to release resources, though ArcSDE does not
+         *  properly implements DataStore.dispose() yet.
          */
         try {
             Class sdepfClass = Class.forName("org.geotools.arcsde.pool.ArcSDEConnectionPoolFactory");
