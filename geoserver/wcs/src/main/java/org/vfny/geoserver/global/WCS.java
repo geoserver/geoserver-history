@@ -70,7 +70,7 @@ public final class WCS extends Service {
      */
     public WCS(Config config, Data data, GeoServer geoServer)
         throws ConfigurationException {
-        this(config.getXMLReader().getWcs());
+        this(config.getWcs());
         setData(data);
         setGeoServer(geoServer);
     }
