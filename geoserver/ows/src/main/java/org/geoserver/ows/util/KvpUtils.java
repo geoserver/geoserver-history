@@ -5,6 +5,7 @@
 package org.geoserver.ows.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,17 +31,69 @@ public class KvpUtils {
     /** Class logger */
     private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
+    /**
+     * Defines how to tokenize a string by using some sort of delimiter.
+     * <p>
+     * Default implementation uses {@link String#split(String)} with the
+     * regular expression provided at the constructor. More specialized
+     * subclasses may just override <code>readFlat(String)</code>.
+     * </p>
+     * @author Gabriel Roldan
+     * @since 1.6.0
+     */
+    public static class Tokenizer {
+        private String regExp;
+
+        public Tokenizer(String regExp) {
+            this.regExp = regExp;
+        }
+
+        private String getRegExp() {
+            return regExp;
+        }
+
+        public String toString() {
+            return getRegExp();
+        }
+        
+        public List readFlat(final String rawList){
+            if ((rawList == null)) {
+                return Collections.EMPTY_LIST;
+            } else if (rawList.equals("*")) {
+                // handles explicit unconstrained case
+                return Collections.EMPTY_LIST;
+            }
+            String []split = rawList.split(getRegExp());
+            return Arrays.asList(split);
+        }
+    }
     /** Delimeter for KVPs in the raw string */
-    public static final String KEYWORD_DELIMITER = "&";
+    public static final Tokenizer KEYWORD_DELIMITER = new Tokenizer("&");
 
     /** Delimeter that seperates keywords from values */
-    public static final String VALUE_DELIMITER = "=";
+    public static final Tokenizer VALUE_DELIMITER = new Tokenizer("=");
 
     /** Delimeter for outer value lists in the KVPs */
-    public static final String OUTER_DELIMETER = "()";
+    public static final Tokenizer OUTER_DELIMETER = new Tokenizer("\\)\\(") {
+        public List readFlat(final String rawList) {
+            List list = new ArrayList(super.readFlat(rawList));
+            final int len = list.size();
+            if (len > 0) {
+                String first = (String) list.get(0);
+                String last = (String) list.get(len - 1);
+                if (first.startsWith("(")) {
+                    list.set(0, first.substring(1));
+                }
+                if (last.endsWith(")")) {
+                    list.set(len - 1, last.substring(0, last.length() - 1));
+                }
+            }
+            return list;
+        }
+    };
 
     /** Delimeter for inner value lists in the KVPs */
-    public static final String INNER_DELIMETER = ",";
+    public static final Tokenizer INNER_DELIMETER = new Tokenizer(",");
 
     /**
      * Attempts to parse out the proper typeNames from the FeatureId filters.
@@ -83,7 +136,33 @@ public class KvpUtils {
     public static List readFlat(String rawList) {
         return readFlat(rawList, INNER_DELIMETER);
     }
-
+    
+    /**
+     * Reads a tokenized string and turns it into a list.
+     * <p>
+     * In this method, the tokenizer is actually responsible to scan the string,
+     * so this method is just a convenience to maintain backwards compatibility
+     * with the old {@link #readFlat(String, String)} and to easy the use of the
+     * default tokenizers {@link #KEYWORD_DELIMITER}, {@link #INNER_DELIMETER},
+     * {@link #OUTER_DELIMETER} and {@value #VALUE_DELIMITER}.
+     * </p>
+     * <p>
+     * Note that if the list is unspecified (ie. is null) or is unconstrained
+     * (ie. is ''), then the method returns an empty list.
+     * </p>
+     * 
+     * @param rawList
+     *            The tokenized string.
+     * @param tokenizer
+     *            The delimeter for the string tokens.
+     * 
+     * @return A list of the tokenized string.
+     * @see Tokenizer
+     */
+    public static List readFlat(final String rawList, final Tokenizer tokenizer) {
+        return tokenizer.readFlat(rawList);
+    }
+    
     /**
      * Reads a tokenized string and turns it into a list.  In this method, the
      * tokenizer is quite flexible.  Note that if the list is unspecified (ie.
@@ -94,78 +173,40 @@ public class KvpUtils {
      * @param delimiter The delimeter for the string tokens.
      *
      * @return A list of the tokenized string.
+     * 
+     * @deprecated at 1.6.0-RC1, use {@link #readFlat(String, org.geoserver.ows.util.KvpUtils.Tokenizer)}
      */
     public static List readFlat(String rawList, String delimiter) {
-        List kvpList = null;
-
-        // handles implicit unconstrained case
-        if ((rawList == null) || "".equals(rawList)) {
-            return Collections.EMPTY_LIST;
-
-            // handles explicit unconstrained case
-        } else if (rawList.equals("*")) {
-            return Collections.EMPTY_LIST;
-
-            // handles explicit, constrained element lists
+        Tokenizer delim;
+        if (KEYWORD_DELIMITER.getRegExp().equals(delimiter)) {
+            delim = KEYWORD_DELIMITER;
+        } else if (VALUE_DELIMITER.getRegExp().equals(delimiter)) {
+            delim = VALUE_DELIMITER;
+        } else if (OUTER_DELIMETER.getRegExp().equals(delimiter)) {
+            delim = OUTER_DELIMETER;
+        } else if (INNER_DELIMETER.getRegExp().equals(delimiter)) {
+            delim = INNER_DELIMETER;
         } else {
-            /**
-             * GR: avoid using StringTokenizer because it does not returns empty
-             * trailing strings (i.e. if the string after the last match of the
-             * pattern is empty)
-             */
-
-            // HACK: if there are more than one character in delimiter, I assume
-            // they are the parenthesis, for wich I don't know how to create
-            // a regular expression, so I keep using the StringTokenizer since
-            // it works for that case.
-            if (delimiter.length() == 1) {
-                int index = -1;
-                kvpList = new ArrayList(10);
-
-                String token;
-
-                // if(rawList.endsWith(delimiter))
-                rawList += delimiter;
-
-                while ((index = rawList.indexOf(delimiter)) > -1) {
-                    token = rawList.substring(0, index);
-
-                    if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.finest("adding simple element " + token);
-                    }
-
-                    kvpList.add(token);
-                    rawList = rawList.substring(++index);
-                }
-            } else {
-                StringTokenizer kvps = new StringTokenizer(rawList, delimiter);
-                kvpList = new ArrayList(kvps.countTokens());
-
-                while (kvps.hasMoreTokens()) {
-                    if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.finest("adding simple element");
-                    }
-
-                    kvpList.add(kvps.nextToken());
-                }
-            }
-
-            return kvpList;
+            throw new IllegalArgumentException("Only the following delimiters are supported: "
+                    + VALUE_DELIMITER + ", " + OUTER_DELIMETER + ", " + INNER_DELIMETER + ", "
+                    + KEYWORD_DELIMITER);
         }
+        return readFlat(rawList, delim);
     }
 
     /**
-     * Reads a nested tokenized string and turns it into a list.  This method
-     * is much more specific to the KVP get request syntax than the more
-     * general readFlat method.  In this case, the outer tokenizer '()' and
-     * inner tokenizer ',' are both from the specification.  Returns a list of
-     * lists.
-     *
-     * @param rawList The tokenized string.
-     *
+     * Reads a nested tokenized string and turns it into a list. This method is
+     * much more specific to the KVP get request syntax than the more general
+     * readFlat method. In this case, the outer tokenizer '()' and inner
+     * tokenizer ',' are both from the specification. Returns a list of lists.
+     * 
+     * @param rawList
+     *            The tokenized string.
+     * 
      * @return A list of lists, containing outer and inner elements.
-     *
-     * @throws WfsException When the string structure cannot be read.
+     * 
+     * @throws WfsException
+     *             When the string structure cannot be read.
      */
     public static List readNested(String rawList) {
         if (LOGGER.isLoggable(Level.FINEST)) {
@@ -228,6 +269,7 @@ public class KvpUtils {
      * @param qString DOCUMENT ME!
      *
      * @return DOCUMENT ME!
+     * @deprecated not being used code wise
      */
     public static Map parseKvpSet(String qString) {
         // uses the request cleaner to remove HTTP junk
@@ -237,7 +279,7 @@ public class KvpUtils {
         Map kvps = new HashMap();
 
         // parses initial request sream into KVPs
-        StringTokenizer requestKeywords = new StringTokenizer(cleanRequest.trim(), KEYWORD_DELIMITER);
+        StringTokenizer requestKeywords = new StringTokenizer(cleanRequest.trim(), KEYWORD_DELIMITER.getRegExp());
 
         // parses KVPs into values and keywords and puts them in a HashTable
         while (requestKeywords.hasMoreTokens()) {
@@ -259,7 +301,7 @@ public class KvpUtils {
             } else {
                 // handles all other standard cases by looking for the correct
                 //  delimeter and then sticking the KVPs into the hash table
-                StringTokenizer requestValues = new StringTokenizer(kvpPair, VALUE_DELIMITER);
+                StringTokenizer requestValues = new StringTokenizer(kvpPair, VALUE_DELIMITER.getRegExp());
 
                 // make sure that there is a key token
                 if (requestValues.hasMoreTokens()) {

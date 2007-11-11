@@ -51,25 +51,29 @@ public class FilterKvpParser extends KvpParser {
 
         while (i.hasNext()) {
             String string = (String) i.next();
-            InputStream input = new ByteArrayInputStream(string.getBytes());
-
-            try {
-                Filter filter = (Filter) parser.parse(input);
-
-                if (filter == null) {
-                    throw new NullPointerException();
-                }
-
-                filters.add(filter);
-            } catch (Exception e) {
-                //parsing failed, fall back to old parser
-                String msg = "Unable to parse filter: " + string;
-                LOGGER.log(Level.WARNING, msg, e);
-
-                Filter filter = parseXMLFilterWithOldParser(new StringReader(string));
-
-                if (filter != null) {
+            if("".equals(string.trim())){
+                filters.add(Filter.INCLUDE);
+            }else{
+                InputStream input = new ByteArrayInputStream(string.getBytes());
+    
+                try {
+                    Filter filter = (Filter) parser.parse(input);
+    
+                    if (filter == null) {
+                        throw new NullPointerException();
+                    }
+    
                     filters.add(filter);
+                } catch (Exception e) {
+                    //parsing failed, fall back to old parser
+                    String msg = "Unable to parse filter: " + string;
+                    LOGGER.log(Level.WARNING, msg, e);
+    
+                    Filter filter = parseXMLFilterWithOldParser(new StringReader(string));
+    
+                    if (filter != null) {
+                        filters.add(filter);
+                    }
                 }
             }
         }
