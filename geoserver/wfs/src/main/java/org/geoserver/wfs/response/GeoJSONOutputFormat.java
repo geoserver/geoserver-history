@@ -95,15 +95,14 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
                         Feature feature = iterator.next();
                         jsonWriter.object();
                         jsonWriter.key("type").value("Feature");
-                        jsonWriter.key("id");
-                        jsonWriter.value(feature.getID());
-
+                        jsonWriter.key("id").value(feature.getID());
+                        
                         fType = feature.getFeatureType();
                         types = fType.getAttributeTypes();
 
                         AttributeType defaultGeomType = fType.getDefaultGeometry();
 
-                        if(crs == null )
+                        if(crs == null && defaultGeomType != null)
                         	crs = fType.getDefaultGeometry().getCoordinateSystem();
                         
                         jsonWriter.key("geometry");
@@ -117,11 +116,15 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
                                 }
                         	}    
                         }
-                        jsonWriter.writeGeom(aGeom);
-
+                        // Write the geometry, whether it is a null or not
+                        if(aGeom != null) {
+                        	jsonWriter.writeGeom(aGeom);
+                        } else {
+                        	jsonWriter.value(null);
+                        }
                         if(defaultGeomType != null)
                         	jsonWriter.key("geometry_name").value(defaultGeomType.getLocalName());
-                        	
+
                         jsonWriter.key("properties");
                         jsonWriter.object();
 
