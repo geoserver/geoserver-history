@@ -101,7 +101,7 @@ public class GeoserverUserDao implements UserDetailsService {
             } finally {
                 if(is != null)
                     try { is.close(); } catch (IOException ei) { /* nothing to do */ }
-                if(os != null);
+                if(os != null)
                     try { os.close(); } catch (IOException eo) { /* nothing to do */ }
             }
         }
