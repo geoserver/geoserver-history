@@ -102,7 +102,7 @@
     </dependency>
     <!-- end of SVG rendering markers support -->
     <dependency>
-      <groupId>itext</groupId>
+      <groupId>com.lowagie</groupId>
       <artifactId>itext</artifactId>
     </dependency>
     <dependency>
