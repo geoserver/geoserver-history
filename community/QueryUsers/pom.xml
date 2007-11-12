@@ -57,6 +57,11 @@
       <artifactId>com.noelios.restlet.ext.servlet</artifactId>
       <version>1.0.5</version>
     </dependency>
+    <dependency>
+      <groupId>org.restlet</groupId>
+      <artifactId>org.restlet.ext.freemarker</artifactId>
+      <version>1.0.5</version>
+    </dependency>
   </dependencies>
 
   
