@@ -6,22 +6,17 @@ import java.util.Date;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.geoserver.wms.util.WMSRequests;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.map.MapLayer;
-import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.xml.transform.Translator;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.responses.map.kml.KML3GeometryTransformer.KML3GeometryTranslator;
-import org.vfny.geoserver.wms.responses.map.kml.KMLGeometryTransformer.KMLGeometryTranslator;
+import org.vfny.geoserver.wms.responses.map.kml.OWS5GeometryTransformer.KML3GeometryTranslator;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.helpers.AttributesImpl;
 
 import com.sun.xml.bind.DatatypeConverterImpl;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -29,9 +24,9 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
 
-public class KML3VectorTransformer extends KMLVectorTransformer {
+public class OWS5VectorTransformer extends KMLVectorTransformer {
 
-    public KML3VectorTransformer(WMSMapContext mapContext, MapLayer mapLayer) {
+    public OWS5VectorTransformer(WMSMapContext mapContext, MapLayer mapLayer) {
         super(mapContext, mapLayer);
     }
 
@@ -45,7 +40,7 @@ public class KML3VectorTransformer extends KMLVectorTransformer {
         public KML3Translator(ContentHandler contentHandler) {
             super(contentHandler);
             
-            KML3GeometryTransformer geometryTransformer = new KML3GeometryTransformer();
+            OWS5GeometryTransformer geometryTransformer = new OWS5GeometryTransformer();
             geometryTranslator = (KML3GeometryTranslator) geometryTransformer.createTranslator(contentHandler);
 
             // we need to make sure the data type converter is registered
@@ -59,9 +54,9 @@ public class KML3VectorTransformer extends KMLVectorTransformer {
             // MapContext, we need to create an artificial ID that's guaranteed
             // to be unique across
             // the encoded KML document. We'll use the layer position as the ID.
-            final MapLayer[] layers = KML3VectorTransformer.this.mapContext.getLayers();
+            final MapLayer[] layers = OWS5VectorTransformer.this.mapContext.getLayers();
             for (int i = 0; i < layers.length; i++) {
-                if (layers[i] == KML3VectorTransformer.this.mapLayer) {
+                if (layers[i] == OWS5VectorTransformer.this.mapLayer) {
                     schemaId = "Schema" + (i + 1);
                 }
             }

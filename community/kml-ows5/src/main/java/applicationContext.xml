@@ -3,7 +3,7 @@
 
 <beans>
 	<bean id="KML3MapProducerFactory" 
-		class="org.vfny.geoserver.wms.responses.map.kml.KML3MapProducerFactory">
+		class="org.vfny.geoserver.wms.responses.map.kml.OWS5MapProducerFactory">
 	</bean>
 	
   <!-- 

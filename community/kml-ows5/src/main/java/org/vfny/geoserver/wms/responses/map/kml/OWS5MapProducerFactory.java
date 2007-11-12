@@ -9,7 +9,7 @@ import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 
 
-public class KML3MapProducerFactory implements GetMapProducerFactorySpi {
+public class OWS5MapProducerFactory implements GetMapProducerFactorySpi {
     
     
     /**
@@ -37,7 +37,7 @@ public class KML3MapProducerFactory implements GetMapProducerFactorySpi {
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
             throws IllegalArgumentException {
         if (canProduce(mapFormat)) {
-            return new KML3MapProducer(mapFormat, MIME_TYPE);
+            return new OWS5MapProducer(mapFormat, MIME_TYPE);
         }
 
         throw new IllegalArgumentException("Unable to produce format " + mapFormat);
