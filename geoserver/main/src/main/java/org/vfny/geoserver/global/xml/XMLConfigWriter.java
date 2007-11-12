@@ -256,17 +256,18 @@ public class XMLConfigWriter {
                 cw.textTag("ProxyBaseUrl", g.getProxyBaseUrl());
             }
 
-            if ((g.getAdminUserName() != null) && (g.getAdminUserName() != "")) {
-                cw.comment("Defines the user name of the administrator for log in\n"
-                    + "to the web based administration tool.");
-                cw.textTag("adminUserName", g.getAdminUserName());
-            }
-
-            if ((g.getAdminPassword() != null) && (g.getAdminPassword() != "")) {
-                cw.comment("Defines the password of the administrator for log in\n"
-                    + "to the web based administration tool.");
-                cw.textTag("adminPassword", g.getAdminPassword());
-            }
+            // removed, the user is now stored in the users.properties file
+//            if ((g.getAdminUserName() != null) && (g.getAdminUserName() != "")) {
+//                cw.comment("Defines the user name of the administrator for log in\n"
+//                    + "to the web based administration tool.");
+//                cw.textTag("adminUserName", g.getAdminUserName());
+//            }
+//
+//            if ((g.getAdminPassword() != null) && (g.getAdminPassword() != "")) {
+//                cw.comment("Defines the password of the administrator for log in\n"
+//                    + "to the web based administration tool.");
+//                cw.textTag("adminPassword", g.getAdminPassword());
+//            }
 
             if (g.getContact() != null) {
                 storeContact(g.getContact(), cw);
