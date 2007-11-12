@@ -11,9 +11,9 @@
   </parent>
 
   <groupId>org.geoserver</groupId>
-  <artifactId>kml3</artifactId>
+  <artifactId>kml-ows5</artifactId>
   <packaging>jar</packaging>
-  <name>KML next generation</name>
+  <name>KML OWS5</name>
 
   <dependencies>
     <dependency>
