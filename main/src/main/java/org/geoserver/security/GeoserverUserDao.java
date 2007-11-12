@@ -13,8 +13,15 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
+
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,6 +54,8 @@ public class GeoserverUserDao implements UserDetailsService {
      * @throws DataAccessResourceFailureException
      */
     private void checkUserMap() throws DataAccessResourceFailureException {
+        InputStream is = null;
+        OutputStream os = null;
         if ((userMap == null) || ((userDefinitionsFile != null) && userDefinitionsFile.isStale())) {
             try {
                 if (userDefinitionsFile == null) {
@@ -67,9 +76,19 @@ public class GeoserverUserDao implements UserDetailsService {
                             p.put("admin", "geoserver,ROLE_ADMINISTRATOR");
                         }
 
-                        FileOutputStream out = new FileOutputStream(propFile);
-                        p.store(out, "Format: name=password,ROLE1,...,ROLEN");
-                        out.close();
+                        os = new FileOutputStream(propFile);
+                        p.store(os, "Format: name=password,ROLE1,...,ROLEN");
+                        os.close();
+                        
+                        // setup a sample service.properties
+                        File serviceFile = new File(securityDir, "service.properties");
+                        os = new FileOutputStream(serviceFile);
+                        is = GeoserverUserDao.class.getResourceAsStream("serviceTemplate.properties");
+                        byte[] buffer = new byte[1024];
+                        int count = 0;
+                        while((count = is.read(buffer)) > 0) {
+                            os.write(buffer, 0, count);
+                        }
                     }
 
                     userDefinitionsFile = new PropertyFileWatcher(propFile);
@@ -79,6 +98,11 @@ public class GeoserverUserDao implements UserDetailsService {
                 UserMapEditor.addUsersFromProperties(userMap, userDefinitionsFile.getProperties());
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "An error occurred loading user definitions", e);
+            } finally {
+                if(is != null)
+                    try { is.close(); } catch (IOException ei) { /* nothing to do */ }
+                if(os != null);
+                    try { os.close(); } catch (IOException eo) { /* nothing to do */ }
             }
         }
     }
