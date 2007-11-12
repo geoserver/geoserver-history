@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.usermanagement;
 
 import java.io.BufferedInputStream;
@@ -40,10 +44,6 @@ public class QueryUsers extends Application {
   public QueryUsers(Context parentContext){
     super(parentContext);
   }
-  
-//   public QueryUsers(UserDetailsService userService) {
-//     myUserService = userService;
-//   }
 
   public void userExists(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {

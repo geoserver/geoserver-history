@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.usermanagement;
 
 import org.acegisecurity.GrantedAuthority;
@@ -24,75 +28,76 @@ import org.geoserver.security.EditableUserDAO;
  * @author David Winslow <dwinslow@openplans.org>
  */
 public class UserRestlet extends Restlet {
-	private EditableUserDAO myUserService;
+  private EditableUserDAO myUserService;
 
-	/**
-	 * Currently, the UserRestlet constructor requires an EditableUserDAO rather
-	 * than any UserDetailsService.  Maybe it would make sense to have it hide the 
-	 * user modification features when using other UserDetailsServices instead?
-	 */
-	public UserRestlet(EditableUserDAO eud) {
-		myUserService = eud;
-	}
+  /**
+   * Currently, the UserRestlet constructor requires an EditableUserDAO rather
+   * than any UserDetailsService.  Maybe it would make sense to have it hide the 
+   * user modification features when using other UserDetailsServices instead?
+   * @param eud the EditableUserDAO to use for retrieving user information
+   */
+  public UserRestlet(EditableUserDAO eud) {
+    myUserService = eud;
+  }
 
-	public void handle(Request request, Response response) {
-		// what to do?
-		String username = request.getAttributes().get("name").toString();
+  public void handle(Request request, Response response) {
+    // what to do?
+    String username = request.getAttributes().get("name").toString();
 
-		if (request.getMethod().equals(Method.PUT)) {
-			String roles;
-			try {
-				roles = request.getEntity().getText();
-				UserAttributeEditor uae = new UserAttributeEditor();
-				uae.setAsText(roles);
-				myUserService.setUserDetails(username, (UserAttribute)uae.getValue());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				roles = "failure";
-			}
+    if (request.getMethod().equals(Method.PUT)) {
+      String roles;
+      try {
+	roles = request.getEntity().getText();
+	UserAttributeEditor uae = new UserAttributeEditor();
+	uae.setAsText(roles);
+	myUserService.setUserDetails(username, (UserAttribute)uae.getValue());
+      } catch (Exception e) {
+	e.printStackTrace();
+	roles = "failure";
+      }
 
-			response.setEntity(new StringRepresentation(roles,
-					MediaType.TEXT_PLAIN));
-		} else if (request.getMethod().equals(Method.GET)) {
-			response.setEntity(new StringRepresentation(
-					fetchDetailsByUserName(username), MediaType.TEXT_PLAIN));
-		} else if (request.getMethod().equals(Method.DELETE)){
-			String message;
-			try {
-				myUserService.deleteUser(username);
-				message = username + " deleted";
-			} catch (Exception e){
-				message = "couldn't delete " + username;
-			}
-			response.setEntity(new StringRepresentation(
-					message, MediaType.TEXT_PLAIN));
+      response.setEntity(new StringRepresentation(roles,
+	    MediaType.TEXT_PLAIN));
+    } else if (request.getMethod().equals(Method.GET)) {
+      response.setEntity(new StringRepresentation(
+	    fetchDetailsByUserName(username), MediaType.TEXT_PLAIN));
+    } else if (request.getMethod().equals(Method.DELETE)){
+      String message;
+      try {
+	myUserService.deleteUser(username);
+	message = username + " deleted";
+      } catch (Exception e){
+	message = "couldn't delete " + username;
+      }
+      response.setEntity(new StringRepresentation(
+	    message, MediaType.TEXT_PLAIN));
 
-		} else {
-			response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-		}
-	}
+    } else {
+      response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+    }
+  }
 
-	/**
-	 * Get user information from the UserDetailsService and return it as a String
-	 * containing the granted authorities for the user.
-	 */
-	private String fetchDetailsByUserName(String username) {
-		String message = "If you see this someone screwed up";
+  /**
+   * Get user information from the UserDetailsService and return it as a String
+   * containing the granted authorities for the user.
+   * @param username the name of the user whose details are to be fetched
+   */
+  private String fetchDetailsByUserName(String username) {
+    String message = "Error fetching user details"; // should never be displayed 
 
-		try {
-			UserDetails user = myUserService.loadUserByUsername(username);
-			GrantedAuthority[] auths = user.getAuthorities();
-			message = user.getUsername() + ": ";
-			for (int i = 0; i < auths.length; i++) {
-				message += auths[i].toString() + "; ";
-			}
-		} catch (UsernameNotFoundException unfe) {
-			message = "User " + username + " does not exist.";
-		} catch (DataAccessException dae) {
-			message = "Could not access database, please try again later.";
-		}
+    try {
+      UserDetails user = myUserService.loadUserByUsername(username);
+      GrantedAuthority[] auths = user.getAuthorities();
+      message = user.getUsername() + ": ";
+      for (int i = 0; i < auths.length; i++) {
+	message += auths[i].toString() + "; ";
+      }
+    } catch (UsernameNotFoundException unfe) {
+      message = "User " + username + " does not exist.";
+    } catch (DataAccessException dae) {
+      message = "Could not access database, please try again later.";
+    }
 
-		return message;
-	}
+    return message;
+  }
 }
