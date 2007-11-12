@@ -5,7 +5,7 @@ import org.geotools.xml.transform.Translator;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 
-public class KML3Transformer extends KMLTransformer {
+public class OWS5Transformer extends KMLTransformer {
 
     public Translator createTranslator(ContentHandler handler) {
         return new KML3Translator(handler);
@@ -19,7 +19,7 @@ public class KML3Transformer extends KMLTransformer {
 
         protected KMLVectorTransformer createVectorTransformer(WMSMapContext mapContext,
                 MapLayer layer) {
-            return new KML3VectorTransformer(mapContext, layer);
+            return new OWS5VectorTransformer(mapContext, layer);
         }
     }
 

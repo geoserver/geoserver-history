@@ -31,7 +31,7 @@ import com.vividsolutions.jts.geom.Polygon;
  * @author Andrea Aime, TOPP
  *
  */
-public class KML3GeometryTransformer extends TransformerBase {
+public class OWS5GeometryTransformer extends TransformerBase {
     
     public Translator createTranslator(ContentHandler handler) {
         return new KML3GeometryTranslator(handler);
@@ -41,7 +41,6 @@ public class KML3GeometryTransformer extends TransformerBase {
      * Subclass which sets prefix and nsuri to null.
      */
     static class KML3GeometryTranslator implements Translator {
-        private boolean running;
         private Encoder encoder;
         private ContentHandler handler;
 
@@ -53,7 +52,7 @@ public class KML3GeometryTransformer extends TransformerBase {
         }
 
         public void abort() {
-            running = false;
+            // cannot do that
         }
 
         public void encode(Object o) throws IllegalArgumentException {
