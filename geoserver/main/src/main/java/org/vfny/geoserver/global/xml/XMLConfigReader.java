@@ -93,7 +93,7 @@ import javax.servlet.ServletContext;
  *
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id$
- */
+ */ 
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
@@ -1306,6 +1306,8 @@ public class XMLConfigReader {
                 param = (Element) paramElems.item(i);
                 paramKey = ReaderUtils.getAttribute(param, "name", true);
                 paramValue = ReaderUtils.getAttribute(param, "value", false);
+                if("shapefile url".equals(paramKey))
+                    paramKey = "url";
                 connectionParams.put(paramKey, paramValue);
 
                 if (LOGGER.isLoggable(Level.FINER)) {
