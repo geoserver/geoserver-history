@@ -4,8 +4,31 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletContext;
+
 import org.apache.xml.serialize.LineSeparator;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -51,49 +74,30 @@ import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.ServletContext;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * XMLConfigReader purpose.
- *
+ * 
  * <p>
- * Description of XMLConfigReader  Static class to load a configuration
+ * Description of XMLConfigReader Static class to load a configuration
  * org.vfny.geoserver.global.dto
  * </p>
- *
+ * 
  * <p>
  * Example Use:
+ * 
  * <pre><code>
- * ModelConfig m = XMLConfigReader.load(new File("/conf/"));
+ * ModelConfig m = XMLConfigReader.load(new File(&quot;/conf/&quot;));
  * </code></pre>
+ * 
  * </p>
- *
+ * 
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id$
- */ 
+ */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
     private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
@@ -103,18 +107,23 @@ public class XMLConfigReader {
 
     /** Is set to true after the model is loaded into memory. */
     private boolean initialized = false;
+
     private WMSDTO wms;
+
     private WFSDTO wfs;
+
     private WCSDTO wcs;
+
     private GeoServerDTO geoServer;
+
     private DataDTO data;
 
-    /** the servlet context **/
+    /** the servlet context * */
     ServletContext context;
 
     /**
      * XMLConfigReader constructor.
-     *
+     * 
      * <p>
      * Should never be called.
      * </p>
@@ -131,34 +140,27 @@ public class XMLConfigReader {
 
     /**
      * <p>
-     * This method loads the config files from the  specified directory into a
-     * ModelConfig. If the path is incorrect,  or the directory is formed
-     * correctly, a ConfigException  will be thrown and/or null returned. <br>
+     * This method loads the config files from the specified directory into a
+     * ModelConfig. If the path is incorrect, or the directory is formed
+     * correctly, a ConfigException will be thrown and/or null returned. <br>
      * <br>
      * The config directory is as follows:<br>
-     *
+     * 
      * <ul>
-     * <li>
-     * ./WEB-INF/catalog.xml
-     * </li>
-     * <li>
-     * ./WEB-INF/services.xml
-     * </li>
-     * <li>
-     * ./data/featuretypes/  /info.xml
-     * </li>
-     * <li>
-     * ./data/featuretypes/  /schema.xml
-     * </li>
+     * <li> ./WEB-INF/catalog.xml </li>
+     * <li> ./WEB-INF/services.xml </li>
+     * <li> ./data/featuretypes/ /info.xml </li>
+     * <li> ./data/featuretypes/ /schema.xml </li>
      * </ul>
      * </p>
-     *
-     * @param root A directory which contains the config files.
-     *
-     * @throws ConfigurationException When an error occurs.
+     * 
+     * @param root
+     *            A directory which contains the config files.
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
      */
-    public XMLConfigReader(File root, ServletContext context)
-        throws ConfigurationException {
+    public XMLConfigReader(File root, ServletContext context) throws ConfigurationException {
         this.root = root;
         this.context = context;
         wms = new WMSDTO();
@@ -176,31 +178,33 @@ public class XMLConfigReader {
 
     /**
      * load purpose.
-     *
+     * 
      * <p>
-     * Main load routine, sets up file handles for various other portions of
-     * the load procedure.
+     * Main load routine, sets up file handles for various other portions of the
+     * load procedure.
      * </p>
-     *
+     * 
      * @throws ConfigurationException
      */
     protected void load() throws ConfigurationException {
         try {
             root = ReaderUtils.checkFile(root, true);
-        } catch (Exception e) {
-            throw new ConfigurationException(e);
+        } catch (FileNotFoundException e) {
+            throw new ConfigurationException("Can't access " + root.getAbsolutePath(), e);
         }
 
-        //		//Doing some trys here for either being in the webapp, with data and web-inf defined
-        //		//or in a true data_dir, with the catalog and service in the same root dir.
-        //		try {
-        //		configDir = ReaderUtils.checkFile(new File(root, "WEB-INF/"), true);
-        //		} catch (ConfigurationException confE) {
-        //		//no WEB-INF, so we're in a data_dir, use as root.
-        //		configDir = root;
-        //		}
-        //		File configFile = ReaderUtils.checkFile(new File(configDir,
-        //		"services.xml"), false);
+        // //Doing some trys here for either being in the webapp, with data and
+        // web-inf defined
+        // //or in a true data_dir, with the catalog and service in the same
+        // root dir.
+        // try {
+        // configDir = ReaderUtils.checkFile(new File(root, "WEB-INF/"), true);
+        // } catch (ConfigurationException confE) {
+        // //no WEB-INF, so we're in a data_dir, use as root.
+        // configDir = root;
+        // }
+        // File configFile = ReaderUtils.checkFile(new File(configDir,
+        // "services.xml"), false);
         File servicesFile = GeoserverDataDirectory.findConfigFile("services.xml");
         loadServices(servicesFile);
 
@@ -213,32 +217,36 @@ public class XMLConfigReader {
         loadCatalog(catalogFile, featureTypeDir, styleDir, coverageDir);
 
         // Future additions
-        // validationDir = ReaderUtils.initFile(new File(dataDir,"validation/"),true);
-        // loadValidation(validationDir);	
+        // validationDir = ReaderUtils.initFile(new
+        // File(dataDir,"validation/"),true);
+        // loadValidation(validationDir);
     }
 
     /**
      * loadServices purpose.
-     *
+     * 
      * <p>
      * loads services.xml into memory with the assistance of other class
      * methods.
      * </p>
-     *
-     * @param configFile services.xml
-     *
-     * @throws ConfigurationException When an error occurs.
+     * 
+     * @param configFile
+     *            services.xml
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
      */
     protected void loadServices(File configFile) throws ConfigurationException {
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.config(new StringBuffer("Loading configuration file: ").append(configFile)
-                                                                          .toString());
+                    .toString());
         }
 
         Element configElem = null;
 
         try {
-            Reader reader = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(configFile));
+            Reader reader = XmlCharsetDetector
+                    .getCharsetAwareReader(new FileInputStream(configFile));
             configElem = ReaderUtils.parse(reader);
             reader.close();
         } catch (FileNotFoundException e) {
@@ -282,9 +290,9 @@ public class XMLConfigReader {
     }
 
     /**
-     * This is a very poor, but effective tempory method of setting a
-     * default service value for WCS, until we get a new config system.
-     *
+     * This is a very poor, but effective tempory method of setting a default
+     * service value for WCS, until we get a new config system.
+     * 
      * @return
      */
     private WCSDTO defaultWcsDto() {
@@ -323,26 +331,28 @@ public class XMLConfigReader {
 
     /**
      * loadCatalog purpose.
-     *
+     * 
      * <p>
-     * loads catalog.xml into memory with the assistance of other class
-     * methods.
+     * loads catalog.xml into memory with the assistance of other class methods.
      * </p>
-     *
-     * @param catalogFile catalog.xml
-     * @param featureTypeDir the directory containing the info.xml files for
-     *        the featuretypes.
-     *
-     * @throws ConfigurationException When an error occurs.
+     * 
+     * @param catalogFile
+     *            catalog.xml
+     * @param featureTypeDir
+     *            the directory containing the info.xml files for the
+     *            featuretypes.
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
      */
     protected void loadCatalog(File catalogFile, File featureTypeDir, File styleDir,
-        File coverageDir) throws ConfigurationException {
+            File coverageDir) throws ConfigurationException {
         Element catalogElem = null;
 
         try {
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.config(new StringBuffer("Loading configuration file: ").append(catalogFile)
-                                                                              .toString());
+                        .toString());
             }
 
             Reader fr = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(catalogFile));
@@ -356,7 +366,7 @@ public class XMLConfigReader {
 
         try {
             data.setNameSpaces(loadNameSpaces(ReaderUtils.getChildElement(catalogElem,
-                        "namespaces", true)));
+                    "namespaces", true)));
             setDefaultNS();
 
             try { // try <formats> to be backwards compatible to 1.4
@@ -365,13 +375,13 @@ public class XMLConfigReader {
                 data.setFormats(loadFormats(formatElement));
             } catch (Exception e) {
                 // gobble
-                LOGGER.warning(
-                    "Your catalog.xml file is not up to date and is probably from an older "
-                    + "version of GeoServer. This problem is now being fixed automatically.");
+                LOGGER
+                        .warning("Your catalog.xml file is not up to date and is probably from an older "
+                                + "version of GeoServer. This problem is now being fixed automatically.");
             }
 
             data.setDataStores(loadDataStores(ReaderUtils.getChildElement(catalogElem,
-                        "datastores", true)));
+                    "datastores", true)));
 
             data.setStyles(loadStyles(ReaderUtils.getChildElement(catalogElem, "styles", false),
                     styleDir));
@@ -385,7 +395,7 @@ public class XMLConfigReader {
 
     /**
      * setDefaultNS purpose.
-     *
+     * 
      * <p>
      * Finds and sets the default namespace. The namespaces in catalog must
      * already be loaded.
@@ -412,20 +422,20 @@ public class XMLConfigReader {
 
     /**
      * getLoggingLevel purpose.
-     *
+     * 
      * <p>
      * Parses the LoggingLevel from a DOM tree and converts the level into a
      * Level Object.
      * </p>
-     *
+     * 
      * @param globalConfigElem
-     *
+     * 
      * @return The logging Level
-     *
-     * @throws ConfigurationException When an error occurs.
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
      */
-    protected Level getLoggingLevel(Element globalConfigElem)
-        throws ConfigurationException {
+    protected Level getLoggingLevel(Element globalConfigElem) throws ConfigurationException {
         Level level = Logger.getLogger("org.vfny.geoserver").getLevel();
         Element levelElem = ReaderUtils.getChildElement(globalConfigElem, "loggingLevel");
 
@@ -436,8 +446,8 @@ public class XMLConfigReader {
                 level = Level.parse(levelName);
             } catch (IllegalArgumentException ex) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning(new StringBuffer("illegal loggingLevel name: ").append(levelName)
-                                                                                  .toString());
+                    LOGGER.warning(new StringBuffer("illegal loggingLevel name: ")
+                            .append(levelName).toString());
                 }
             }
         } else {
@@ -451,15 +461,16 @@ public class XMLConfigReader {
 
     /**
      * loadGlobal purpose.
-     *
+     * 
      * <p>
      * Converts a DOM tree into a GlobalData configuration.
      * </p>
-     *
-     * @param globalElem A DOM tree representing a complete global
-     *        configuration.
-     *
-     * @throws ConfigurationException When an error occurs.
+     * 
+     * @param globalElem
+     *            A DOM tree representing a complete global configuration.
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
      */
     protected void loadGlobal(Element globalElem) throws ConfigurationException {
         try {
@@ -468,23 +479,20 @@ public class XMLConfigReader {
             if (LOGGER.isLoggable(Level.FINER)) {
                 LOGGER.finer("parsing global configuration parameters");
             }
-            
-            
+
             String log4jConfigFile = ReaderUtils.getChildText(globalElem, "log4jConfigFile", false);
             geoServer.setLog4jConfigFile(log4jConfigFile);
-            
 
             boolean suppressStdOutLogging = false;
             Element elem = null;
             elem = ReaderUtils.getChildElement(globalElem, "suppressStdOutLogging", false);
 
             if (elem != null) {
-                suppressStdOutLogging = ReaderUtils.getBooleanAttribute(elem, "value", false, false);
+                suppressStdOutLogging = ReaderUtils
+                        .getBooleanAttribute(elem, "value", false, false);
             }
 
             String logLocation = ReaderUtils.getChildText(globalElem, "logLocation");
-            
-            
 
             if ((logLocation != null) && "".equals(logLocation.trim())) {
                 logLocation = null;
@@ -493,9 +501,9 @@ public class XMLConfigReader {
             geoServer.setSuppressStdOutLogging(suppressStdOutLogging);
             geoServer.setLogLocation(logLocation);
 
-
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.fine(new StringBuffer("logging config is ").append(log4jConfigFile).toString());
+                LOGGER.fine(new StringBuffer("logging config is ").append(log4jConfigFile)
+                        .toString());
             }
 
             if (logLocation != null) {
@@ -537,7 +545,7 @@ public class XMLConfigReader {
 
             if (elem != null) {
                 jaiRecycling = Boolean.valueOf(ReaderUtils.getBooleanAttribute(elem, "value",
-                            false, false));
+                        false, false));
             }
 
             Boolean imageIOCache = Boolean.FALSE;
@@ -545,7 +553,7 @@ public class XMLConfigReader {
 
             if (elem != null) {
                 imageIOCache = Boolean.valueOf(ReaderUtils.getBooleanAttribute(elem, "value",
-                            false, false));
+                        false, false));
             }
 
             Boolean jaiJPEGNative = Boolean.TRUE;
@@ -553,7 +561,7 @@ public class XMLConfigReader {
 
             if (elem != null) {
                 jaiJPEGNative = Boolean.valueOf(ReaderUtils.getBooleanAttribute(elem, "value",
-                            false, false));
+                        false, false));
             }
 
             Boolean jaiPNGNative = Boolean.TRUE;
@@ -561,7 +569,7 @@ public class XMLConfigReader {
 
             if (elem != null) {
                 jaiPNGNative = Boolean.valueOf(ReaderUtils.getBooleanAttribute(elem, "value",
-                            false, false));
+                        false, false));
             }
 
             geoServer.setJaiMemoryCapacity(jaiMemoryCapacity);
@@ -585,21 +593,22 @@ public class XMLConfigReader {
             elem = ReaderUtils.getChildElement(globalElem, "maxFeatures");
 
             if (elem != null) {
-                //if the element is pressent, it's "value" attribute is mandatory
-                geoServer.setMaxFeatures(ReaderUtils.getIntAttribute(elem, "value", true,
-                        geoServer.getMaxFeatures()));
+                // if the element is pressent, it's "value" attribute is
+                // mandatory
+                geoServer.setMaxFeatures(ReaderUtils.getIntAttribute(elem, "value", true, geoServer
+                        .getMaxFeatures()));
             }
 
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine(new StringBuffer("maxFeatures is ").append(geoServer.getMaxFeatures())
-                                                                 .toString());
+                        .toString());
             }
 
             elem = ReaderUtils.getChildElement(globalElem, "numDecimals");
 
             if (elem != null) {
-                geoServer.setNumDecimals(ReaderUtils.getIntAttribute(elem, "value", true,
-                        geoServer.getNumDecimals()));
+                geoServer.setNumDecimals(ReaderUtils.getIntAttribute(elem, "value", true, geoServer
+                        .getNumDecimals()));
             }
 
             if (LOGGER.isLoggable(Level.FINE)) {
@@ -618,7 +627,7 @@ public class XMLConfigReader {
 
                     if (LOGGER.isLoggable(Level.FINER)) {
                         LOGGER.finer(new StringBuffer("charSet: ").append(cs.displayName())
-                                                                  .toString());
+                                .toString());
                     }
                 } catch (Exception ex) {
                     if (LOGGER.isLoggable(Level.INFO)) {
@@ -629,21 +638,27 @@ public class XMLConfigReader {
 
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine(new StringBuffer("charSet is ").append(geoServer.getCharSet())
-                                                             .toString());
+                        .toString());
             }
 
-            //Schema base doesn't work - this root thing is wrong.  So for 1.2.0 I'm 
-            //just going to leave it out.  The GeoServer.getSchemaBaseUrl is never 
-            //called, Request.getSchemaBaseUrl is used, and it always returns the
-            //relative local one.  This field was a hack anyways, so I don't think
-            //anyone is going to miss it much - though I could be proved wrong. ch
+            // Schema base doesn't work - this root thing is wrong. So for 1.2.0
+            // I'm
+            // just going to leave it out. The GeoServer.getSchemaBaseUrl is
+            // never
+            // called, Request.getSchemaBaseUrl is used, and it always returns
+            // the
+            // relative local one. This field was a hack anyways, so I don't
+            // think
+            // anyone is going to miss it much - though I could be proved wrong.
+            // ch
             String schemaBaseUrl = ReaderUtils.getChildText(globalElem, "SchemaBaseUrl");
 
             if (schemaBaseUrl != null) {
                 geoServer.setSchemaBaseUrl(schemaBaseUrl);
             } else {
-                //This is wrong - need some key to tell the method to return based
-                //on the url passed in.
+                // This is wrong - need some key to tell the method to return
+                // based
+                // on the url passed in.
                 geoServer.setSchemaBaseUrl(root.toString() + "/data/capabilities/");
             }
 
@@ -688,19 +703,20 @@ public class XMLConfigReader {
 
     /**
      * loadContact purpose.
-     *
+     * 
      * <p>
      * Converts a DOM tree into a ContactConfig
      * </p>
-     *
-     * @param contactInfoElement a DOM tree to convert into a ContactConfig.
-     *
+     * 
+     * @param contactInfoElement
+     *            a DOM tree to convert into a ContactConfig.
+     * 
      * @return The resulting ContactConfig object from the DOM tree.
-     *
-     * @throws ConfigurationException When an error occurs.
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
      */
-    protected ContactDTO loadContact(Element contactInfoElement)
-        throws ConfigurationException {
+    protected ContactDTO loadContact(Element contactInfoElement) throws ConfigurationException {
         ContactDTO c = new ContactDTO();
 
         if (contactInfoElement == null) {
@@ -740,17 +756,17 @@ public class XMLConfigReader {
 
     /**
      * loadWCS purpose.
-     *
+     * 
      * <p>
      * Converts a DOM tree into a WCS object.
      * </p>
-     *
+     * 
      * @param wfsElement
      *            a DOM tree to convert into a WCS object.
-     *
+     * 
      * @throws ConfigurationException
      *             When an error occurs.
-     *
+     * 
      * @see GlobalData#getBaseUrl()
      */
     protected void loadWCS(Element wcsElement) throws ConfigurationException {
@@ -760,15 +776,17 @@ public class XMLConfigReader {
 
     /**
      * loadWFS purpose.
-     *
+     * 
      * <p>
      * Converts a DOM tree into a WFS object.
      * </p>
-     *
-     * @param wfsElement a DOM tree to convert into a WFS object.
-     *
-     * @throws ConfigurationException When an error occurs.
-     *
+     * 
+     * @param wfsElement
+     *            a DOM tree to convert into a WFS object.
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
+     * 
      * @see GlobalData#getBaseUrl()
      */
     protected void loadWFS(Element wfsElement) throws ConfigurationException {
@@ -776,7 +794,7 @@ public class XMLConfigReader {
 
         try {
             wfs.setFeatureBounding(ReaderUtils.getBooleanAttribute(ReaderUtils.getChildElement(
-                        wfsElement, "featureBounding"), "value", false, false));
+                    wfsElement, "featureBounding"), "value", false, false));
 
             Element elem = ReaderUtils.getChildElement(wfsElement, "srsXmlStyle", false);
 
@@ -788,8 +806,10 @@ public class XMLConfigReader {
                 wfs.setSrsXmlStyle(ReaderUtils.getBooleanAttribute(elem, "value", false, true));
 
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine(new StringBuffer("set srsXmlStyle to ").append(
-                            ReaderUtils.getBooleanAttribute(elem, "value", false, true)).toString());
+                    LOGGER
+                            .fine(new StringBuffer("set srsXmlStyle to ").append(
+                                    ReaderUtils.getBooleanAttribute(elem, "value", false, true))
+                                    .toString());
                 }
             }
 
@@ -813,31 +833,38 @@ public class XMLConfigReader {
                         serviceLevel = Integer.parseInt(serviceLevelValue);
                     } catch (NumberFormatException nfe) {
                         String mesg = "Could not parse serviceLevel.  It "
-                            + "should be one of Basic, Complete, or Transactional"
-                            + " or else an integer value";
+                                + "should be one of Basic, Complete, or Transactional"
+                                + " or else an integer value";
                         throw new ConfigurationException(mesg, nfe);
                     }
                 }
-            } else { //TODO: this should probably parse the strings as well,
+            } else { // TODO: this should probably parse the strings as well,
                 serviceLevel = ReaderUtils.getIntAttribute(ReaderUtils.getChildElement(wfsElement,
-                            "serviceLevel"), "value", false, WFSDTO.COMPLETE);
+                        "serviceLevel"), "value", false, WFSDTO.COMPLETE);
             }
 
             if (LOGGER.isLoggable(Level.FINER)) {
                 LOGGER.finer(new StringBuffer("setting service level to ").append(serviceLevel)
-                                                                          .toString());
+                        .toString());
             }
 
             wfs.setServiceLevel(serviceLevel);
 
-            //get the conformance hacks attribute
-            // it might not be there, in which case we just use the default value 
-            //  (see WFSDTO.java)        
+            // get the conformance hacks attribute
+            // it might not be there, in which case we just use the default
+            // value
+            // (see WFSDTO.java)
             Element e = ReaderUtils.getChildElement(wfsElement, "citeConformanceHacks");
 
             if (e != null) {
                 String text = ReaderUtils.getChildText(wfsElement, "citeConformanceHacks");
-                boolean citeConformanceHacks = Boolean.valueOf(text).booleanValue(); // just get the value and parse it
+                boolean citeConformanceHacks = Boolean.valueOf(text).booleanValue(); // just
+                                                                                        // get
+                                                                                        // the
+                                                                                        // value
+                                                                                        // and
+                                                                                        // parse
+                                                                                        // it
                 wfs.setCiteConformanceHacks(citeConformanceHacks);
 
                 if (LOGGER.isLoggable(Level.FINER)) {
@@ -855,15 +882,17 @@ public class XMLConfigReader {
 
     /**
      * loadWMS purpose.
-     *
+     * 
      * <p>
      * Converts a DOM tree into a WMS object.
      * </p>
-     *
-     * @param wmsElement a DOM tree to convert into a WMS object.
-     *
-     * @throws ConfigurationException When an error occurs.
-     *
+     * 
+     * @param wmsElement
+     *            a DOM tree to convert into a WMS object.
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
+     * 
      * @see GlobalData#getBaseUrl()
      */
     protected void loadWMS(Element wmsElement) throws ConfigurationException {
@@ -923,19 +952,20 @@ public class XMLConfigReader {
 
     /**
      * loadService purpose.
-     *
+     * 
      * <p>
      * Converts a DOM tree into a ServiceDTO object.
      * </p>
-     *
-     * @param serviceRoot a DOM tree to convert into a ServiceDTO object.
-     *
+     * 
+     * @param serviceRoot
+     *            a DOM tree to convert into a ServiceDTO object.
+     * 
      * @return A complete ServiceDTO object loaded from the DOM tree provided.
-     *
-     * @throws ConfigurationException When an error occurs.
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
      */
-    protected ServiceDTO loadService(Element serviceRoot)
-        throws ConfigurationException {
+    protected ServiceDTO loadService(Element serviceRoot) throws ConfigurationException {
         ServiceDTO s = new ServiceDTO();
 
         try {
@@ -944,9 +974,9 @@ public class XMLConfigReader {
             s.setTitle(ReaderUtils.getChildText(serviceRoot, "title", false));
             s.setAbstract(ReaderUtils.getChildText(serviceRoot, "abstract"));
             s.setKeywords(ReaderUtils.getKeyWords(ReaderUtils.getChildElement(serviceRoot,
-                        "keywords")));
+                    "keywords")));
             s.setMetadataLink(getMetaDataLink(ReaderUtils.getChildElement(serviceRoot,
-                        "metadataLink")));
+                    "metadataLink")));
             s.setFees(ReaderUtils.getChildText(serviceRoot, "fees"));
             s.setAccessConstraints(ReaderUtils.getChildText(serviceRoot, "accessConstraints"));
             s.setMaintainer(ReaderUtils.getChildText(serviceRoot, "maintainer"));
@@ -961,7 +991,7 @@ public class XMLConfigReader {
                 s.setOnlineResource(new URL(url));
             } catch (MalformedURLException e) {
                 LOGGER.severe("Invalid online resource URL for service " + name + ": " + url
-                    + ". Defaulting to geoserver home.");
+                        + ". Defaulting to geoserver home.");
                 s.setOnlineResource(new URL("http://www.geoserver.org"));
             }
         } catch (Exception e) {
@@ -973,16 +1003,18 @@ public class XMLConfigReader {
 
     /**
      * loadNameSpaces purpose.
-     *
+     * 
      * <p>
      * Converts a DOM tree into a Map of NameSpaces.
      * </p>
-     *
-     * @param nsRoot a DOM tree to convert into a Map of NameSpaces.
-     *
+     * 
+     * @param nsRoot
+     *            a DOM tree to convert into a Map of NameSpaces.
+     * 
      * @return A complete Map of NameSpaces loaded from the DOM tree provided.
-     *
-     * @throws ConfigurationException When an error occurs.
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
      */
     protected Map loadNameSpaces(Element nsRoot) throws ConfigurationException {
         NodeList nsList = nsRoot.getElementsByTagName("namespace");
@@ -998,7 +1030,7 @@ public class XMLConfigReader {
                 ns.setUri(ReaderUtils.getAttribute(elem, "uri", true));
                 ns.setPrefix(ReaderUtils.getAttribute(elem, "prefix", true));
                 ns.setDefault(ReaderUtils.getBooleanAttribute(elem, "default", false, false)
-                    || (nsCount == 1));
+                        || (nsCount == 1));
 
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.config(new StringBuffer("added namespace ").append(ns).toString());
@@ -1015,20 +1047,22 @@ public class XMLConfigReader {
 
     /**
      * loadStyles purpose.
-     *
+     * 
      * <p>
      * Converts a DOM tree into a Map of Styles.
      * </p>
-     *
-     * @param stylesElem a DOM tree to convert into a Map of Styles.
-     * @param baseDir DOCUMENT ME!
-     *
+     * 
+     * @param stylesElem
+     *            a DOM tree to convert into a Map of Styles.
+     * @param baseDir
+     *            DOCUMENT ME!
+     * 
      * @return A complete Map of Styles loaded from the DOM tree provided.
-     *
-     * @throws ConfigurationException When an error occurs.
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
      */
-    protected Map loadStyles(Element stylesElem, File baseDir)
-        throws ConfigurationException {
+    protected Map loadStyles(Element stylesElem, File baseDir) throws ConfigurationException {
         Map styles = new HashMap();
 
         NodeList stylesList = null;
@@ -1038,7 +1072,7 @@ public class XMLConfigReader {
         }
 
         if ((stylesList == null) || (stylesList.getLength() == 0)) {
-            //no styles where defined, just add a default one
+            // no styles where defined, just add a default one
             StyleDTO s = new StyleDTO();
             s.setId("normal");
             s.setFilename(new File(baseDir, "normal.sld"));
@@ -1055,8 +1089,8 @@ public class XMLConfigReader {
 
                 StyleDTO s = new StyleDTO();
                 s.setId(ReaderUtils.getAttribute(styleElem, "id", true));
-                s.setFilename(new File(baseDir,
-                        ReaderUtils.getAttribute(styleElem, "filename", true)));
+                s.setFilename(new File(baseDir, ReaderUtils.getAttribute(styleElem, "filename",
+                        true)));
                 s.setDefault(ReaderUtils.getBooleanAttribute(styleElem, "default", false, false));
                 styles.put(s.getId(), s);
 
@@ -1073,16 +1107,16 @@ public class XMLConfigReader {
 
     /**
      * loadFormats purpose.
-     *
+     * 
      * <p>
      * Converts a DOM tree into a Map of Formats.
      * </p>
-     *
+     * 
      * @param fmRoot
      *            a DOM tree to convert into a Map of Formats.
-     *
+     * 
      * @return A complete Map of Formats loaded from the DOM tree provided.
-     *
+     * 
      * @throws ConfigurationException
      *             When an error occurs.
      */
@@ -1090,7 +1124,7 @@ public class XMLConfigReader {
         Map formats = new HashMap();
 
         if (fmRoot == null) { // if there are no formats (they are using
-                              // v.1.4)
+            // v.1.4)
 
             return formats; // just return the empty list
         }
@@ -1108,7 +1142,7 @@ public class XMLConfigReader {
 
                 if (formats.containsKey(fmConfig.getId())) {
                     LOGGER.warning("Ignored duplicated format "
-                        + data.getNameSpaces().get(fmConfig.getNameSpaceId()));
+                            + data.getNameSpaces().get(fmConfig.getNameSpaceId()));
                 } else {
                     formats.put(fmConfig.getId(), fmConfig);
                 }
@@ -1122,22 +1156,21 @@ public class XMLConfigReader {
 
     /**
      * loadFormat purpose.
-     *
+     * 
      * <p>
      * Converts a DOM tree into a CoverageStoreInfo object.
      * </p>
-     *
+     * 
      * @param fmElem
      *            a DOM tree to convert into a CoverageStoreInfo object.
-     *
+     * 
      * @return A complete CoverageStoreInfo object loaded from the DOM tree
      *         provided.
-     *
+     * 
      * @throws ConfigurationException
      *             When an error occurs.
      */
-    protected CoverageStoreInfoDTO loadFormat(Element fmElem)
-        throws ConfigurationException {
+    protected CoverageStoreInfoDTO loadFormat(Element fmElem) throws ConfigurationException {
         CoverageStoreInfoDTO fm = new CoverageStoreInfoDTO();
 
         if (LOGGER.isLoggable(Level.FINER)) {
@@ -1153,7 +1186,7 @@ public class XMLConfigReader {
                 fm.setNameSpaceId(namespacePrefix);
             } else {
                 LOGGER.warning("Could not find namespace " + namespacePrefix + " defaulting to "
-                    + data.getDefaultNameSpacePrefix());
+                        + data.getDefaultNameSpacePrefix());
                 fm.setNameSpaceId(data.getDefaultNameSpacePrefix());
             }
 
@@ -1176,16 +1209,18 @@ public class XMLConfigReader {
 
     /**
      * loadDataStores purpose.
-     *
+     * 
      * <p>
      * Converts a DOM tree into a Map of DataStores.
      * </p>
-     *
-     * @param dsRoot a DOM tree to convert into a Map of DataStores.
-     *
+     * 
+     * @param dsRoot
+     *            a DOM tree to convert into a Map of DataStores.
+     * 
      * @return A complete Map of DataStores loaded from the DOM tree provided.
-     *
-     * @throws ConfigurationException When an error occurs.
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
      */
     protected Map loadDataStores(Element dsRoot) throws ConfigurationException {
         Map dataStores = new HashMap();
@@ -1216,20 +1251,21 @@ public class XMLConfigReader {
 
     /**
      * loadDataStore purpose.
-     *
+     * 
      * <p>
      * Converts a DOM tree into a DataStoreInfo object.
      * </p>
-     *
-     * @param dsElem a DOM tree to convert into a DataStoreInfo object.
-     *
+     * 
+     * @param dsElem
+     *            a DOM tree to convert into a DataStoreInfo object.
+     * 
      * @return A complete DataStoreInfo object loaded from the DOM tree
      *         provided.
-     *
-     * @throws ConfigurationException When an error occurs.
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
      */
-    protected DataStoreInfoDTO loadDataStore(Element dsElem)
-        throws ConfigurationException {
+    protected DataStoreInfoDTO loadDataStore(Element dsElem) throws ConfigurationException {
         DataStoreInfoDTO ds = new DataStoreInfoDTO();
 
         try {
@@ -1245,7 +1281,7 @@ public class XMLConfigReader {
                 ds.setNameSpaceId(namespacePrefix);
             } else {
                 LOGGER.warning("Could not find namespace " + namespacePrefix + " defaulting to "
-                    + data.getDefaultNameSpacePrefix());
+                        + data.getDefaultNameSpacePrefix());
                 ds.setNameSpaceId(data.getDefaultNameSpacePrefix());
             }
 
@@ -1254,12 +1290,12 @@ public class XMLConfigReader {
             ds.setAbstract(ReaderUtils.getChildText(dsElem, "description", false));
 
             if (LOGGER.isLoggable(Level.FINER)) {
-                LOGGER.finer(new StringBuffer("loading connection parameters for DataStoreDTO ").append(
-                        ds.getNameSpaceId()).toString());
+                LOGGER.finer(new StringBuffer("loading connection parameters for DataStoreDTO ")
+                        .append(ds.getNameSpaceId()).toString());
             }
 
             ds.setConnectionParams(loadConnectionParams(ReaderUtils.getChildElement(dsElem,
-                        "connectionParams", true)));
+                    "connectionParams", true)));
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }
@@ -1273,22 +1309,23 @@ public class XMLConfigReader {
 
     /**
      * loadConnectionParams purpose.
-     *
+     * 
      * <p>
      * Converts a DOM tree into a Map of Strings which represent connection
      * parameters.
      * </p>
-     *
-     * @param connElem a DOM tree to convert into a Map of Strings which
-     *        represent connection parameters.
-     *
+     * 
+     * @param connElem
+     *            a DOM tree to convert into a Map of Strings which represent
+     *            connection parameters.
+     * 
      * @return A complete Map of Strings which represent connection parameters
      *         loaded from the DOM tree provided.
-     *
-     * @throws ConfigurationException When an error occurs.
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
      */
-    protected Map loadConnectionParams(Element connElem)
-        throws ConfigurationException {
+    protected Map loadConnectionParams(Element connElem) throws ConfigurationException {
         Map connectionParams = new HashMap();
 
         if (connElem == null) {
@@ -1306,14 +1343,14 @@ public class XMLConfigReader {
                 param = (Element) paramElems.item(i);
                 paramKey = ReaderUtils.getAttribute(param, "name", true);
                 paramValue = ReaderUtils.getAttribute(param, "value", false);
-                if("shapefile url".equals(paramKey))
+                if ("shapefile url".equals(paramKey))
                     paramKey = "url";
                 connectionParams.put(paramKey, paramValue);
 
                 if (LOGGER.isLoggable(Level.FINER)) {
-                    LOGGER.finer(new StringBuffer("added parameter ").append(paramKey).append(": '")
-                                                                     .append(paramValue.replaceAll(
-                                "'", "\"")).append("'").toString());
+                    LOGGER.finer(new StringBuffer("added parameter ").append(paramKey)
+                            .append(": '").append(paramValue.replaceAll("'", "\"")).append("'")
+                            .toString());
                 }
             }
         } catch (Exception e) {
@@ -1325,48 +1362,40 @@ public class XMLConfigReader {
 
     /**
      * Load map of FeatureTypeDTO instances from a directory.
-     *
+     * 
      * <p>
      * Expected directory structure:
      * </p>
-     *
+     * 
      * <ul>
-     * <li>
-     * rootDir
-     * </li>
-     * <li>
-     * rootDir/featureType1/info.xml - required
-     * </li>
-     * <li>
-     * rootDir/featureType1/schema.xml - optional
-     * </li>
-     * <li>
-     * rootDir/featureType2/info.xml - required
-     * </li>
-     * <li>
-     * rootDir/featureType2/schema.xml - optional
-     * </li>
+     * <li> rootDir </li>
+     * <li> rootDir/featureType1/info.xml - required </li>
+     * <li> rootDir/featureType1/schema.xml - optional </li>
+     * <li> rootDir/featureType2/info.xml - required </li>
+     * <li> rootDir/featureType2/schema.xml - optional </li>
      * </ul>
-     *
+     * 
      * <p>
-     * If a schema.xml file is not used, the information may be generated from
-     * a FeatureType using DataTransferObjectFactory.
+     * If a schema.xml file is not used, the information may be generated from a
+     * FeatureType using DataTransferObjectFactory.
      * </p>
-     *
-     * @param featureTypeRoot Root FeatureType directory
-     *
+     * 
+     * @param featureTypeRoot
+     *            Root FeatureType directory
+     * 
      * @return Map of FeatureTypeInfoDTO by <code>dataStoreId:typeName</code>
-     *
-     * @throws ConfigurationException When an error occurs.
-     * @throws IllegalArgumentException DOCUMENT ME!
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
+     * @throws IllegalArgumentException
+     *             DOCUMENT ME!
      */
-    protected Map loadFeatureTypes(File featureTypeRoot)
-        throws ConfigurationException {
+    protected Map loadFeatureTypes(File featureTypeRoot) throws ConfigurationException {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest(new StringBuffer("examining: ").append(featureTypeRoot.getAbsolutePath())
-                                                         .toString());
+                    .toString());
             LOGGER.finest(new StringBuffer("is dir: ").append(featureTypeRoot.isDirectory())
-                                                      .toString());
+                    .toString());
         }
 
         if (!featureTypeRoot.isDirectory()) {
@@ -1374,10 +1403,10 @@ public class XMLConfigReader {
         }
 
         File[] directories = featureTypeRoot.listFiles(new FileFilter() {
-                    public boolean accept(File pathname) {
-                        return pathname.isDirectory();
-                    }
-                });
+            public boolean accept(File pathname) {
+                return pathname.isDirectory();
+            }
+        });
 
         Map map = new HashMap();
 
@@ -1388,7 +1417,8 @@ public class XMLConfigReader {
                 if (LOGGER.isLoggable(Level.FINER)) {
                     LOGGER.finer(new StringBuffer("Info dir:").append(info).toString());
                 }
-                try { // Decode the URL of the FT. This is to catch colons used in filenames
+                try { // Decode the URL of the FT. This is to catch colons
+                        // used in filenames
 
                     FeatureTypeInfoDTO dto = loadFeature(info);
                     String ftName = null;
@@ -1398,14 +1428,16 @@ public class XMLConfigReader {
                     if (LOGGER.isLoggable(Level.FINE)) {
                         LOGGER.config("Decoding file name: " + ftName);
                     }
-                    
+
                     map.put(ftName, dto);
                 } catch (UnsupportedEncodingException e) {
-                    //throw new ConfigurationException(e);
-                    LOGGER.severe("unable to load featuretype from file " + info + ".  Skipping that featuretype.  Error was: " + e);
+                    // throw new ConfigurationException(e);
+                    LOGGER.severe("unable to load featuretype from file " + info
+                            + ".  Skipping that featuretype.  Error was: " + e);
                     continue;
                 } catch (ConfigurationException ce) {
-                    LOGGER.severe("unable to load featuretype from file " + info + ".  Skipping that featuretype.  Error was: " + ce);
+                    LOGGER.severe("unable to load featuretype from file " + info
+                            + ".  Skipping that featuretype.  Error was: " + ce);
                     continue;
                 }
             }
@@ -1416,38 +1448,35 @@ public class XMLConfigReader {
 
     /**
      * Load FeatureTypeInfoDTO from a directory.
-     *
+     * 
      * <p>
      * Expected directory structure:
      * </p>
-     *
+     * 
      * <ul>
-     * <li>
-     * info.xml - required
-     * </li>
-     * <li>
-     * schema.xml - optional
-     * </li>
+     * <li> info.xml - required </li>
+     * <li> schema.xml - optional </li>
      * </ul>
-     *
+     * 
      * <p>
-     * If a schema.xml file is not used, the information may be generated from
-     * a FeatureType using DataTransferObjectFactory.
+     * If a schema.xml file is not used, the information may be generated from a
+     * FeatureType using DataTransferObjectFactory.
      * </p>
-     *
-     * @param infoFile a File to convert into a FeatureTypeInfo object.
-     *        (info.xml)
-     *
+     * 
+     * @param infoFile
+     *            a File to convert into a FeatureTypeInfo object. (info.xml)
+     * 
      * @return A complete FeatureTypeInfo object loaded from the File handle
      *         provided.
-     *
-     * @throws ConfigurationException When an error occurs.
-     * @throws IllegalArgumentException DOCUMENT ME!
-     *
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
+     * @throws IllegalArgumentException
+     *             DOCUMENT ME!
+     * 
      * @see loadFeaturePt2(Element)
      */
-    protected FeatureTypeInfoDTO loadFeature(File infoFile)
-        throws ConfigurationException {
+    protected FeatureTypeInfoDTO loadFeature(File infoFile) throws ConfigurationException {
         if (!infoFile.exists()) {
             throw new IllegalArgumentException("Info File not found:" + infoFile);
         }
@@ -1465,7 +1494,7 @@ public class XMLConfigReader {
         try {
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.config(new StringBuffer("Loading configuration file: ").append(infoFile)
-                                                                              .toString());
+                        .toString());
             }
 
             Reader reader = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(infoFile));
@@ -1512,27 +1541,31 @@ public class XMLConfigReader {
 
     /**
      * loadFeaturePt2 purpose.
-     *
+     * 
      * <p>
      * Converts a DOM tree into a FeatureTypeInfo object.
      * </p>
-     *
-     * @param fTypeRoot a DOM tree to convert into a FeatureTypeInfo object.
-     *
+     * 
+     * @param fTypeRoot
+     *            a DOM tree to convert into a FeatureTypeInfo object.
+     * 
      * @return A complete FeatureTypeInfo object loaded from the DOM tree
      *         provided.
-     *
-     * @throws ConfigurationException When an error occurs.
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
      */
-    protected FeatureTypeInfoDTO loadFeaturePt2(Element fTypeRoot)
-        throws ConfigurationException {
+    protected FeatureTypeInfoDTO loadFeaturePt2(Element fTypeRoot) throws ConfigurationException {
         FeatureTypeInfoDTO ft = new FeatureTypeInfoDTO();
 
         try {
             ft.setName(ReaderUtils.getChildText(fTypeRoot, "name", true));
             ft.setTitle(ReaderUtils.getChildText(fTypeRoot, "title", true));
             ft.setAbstract(ReaderUtils.getChildText(fTypeRoot, "abstract"));
-            ft.setWmsPath(ReaderUtils.getChildText(fTypeRoot, "wmspath" /* , true */));
+            ft.setWmsPath(ReaderUtils.getChildText(fTypeRoot, "wmspath" /*
+                                                                         * ,
+                                                                         * true
+                                                                         */));
 
             String keywords = ReaderUtils.getChildText(fTypeRoot, "keywords");
 
@@ -1563,8 +1596,9 @@ public class XMLConfigReader {
             ft.setSRS(Integer.parseInt(ReaderUtils.getChildText(fTypeRoot, "SRS", true)));
             try {
                 String srsHandling = ReaderUtils.getChildText(fTypeRoot, "SRSHandling", false);
-                ft.setSRSHandling(srsHandling != null ? Integer.parseInt(srsHandling) : FeatureTypeInfo.FORCE);
-            } catch(Exception e) {
+                ft.setSRSHandling(srsHandling != null ? Integer.parseInt(srsHandling)
+                        : FeatureTypeInfo.FORCE);
+            } catch (Exception e) {
                 ft.setSRSHandling(FeatureTypeInfo.FORCE);
             }
 
@@ -1591,9 +1625,10 @@ public class XMLConfigReader {
             Element cacheInfo = ReaderUtils.getChildElement(fTypeRoot, "cacheinfo");
 
             if (cacheInfo != null) {
-                ft.setCacheMaxAge(ReaderUtils.getAttribute(cacheInfo, "maxage", false)); // not mandatory
+                ft.setCacheMaxAge(ReaderUtils.getAttribute(cacheInfo, "maxage", false)); // not
+                                                                                            // mandatory
                 ft.setCachingEnabled((new Boolean(ReaderUtils.getAttribute(cacheInfo, "enabled",
-                            true))).booleanValue());
+                        true))).booleanValue());
             }
 
             // Modif C. Kolbowicz - 06/10/2004
@@ -1601,17 +1636,19 @@ public class XMLConfigReader {
 
             if (legendURL != null) {
                 LegendURLDTO legend = new LegendURLDTO();
-                legend.setWidth(Integer.parseInt(ReaderUtils.getAttribute(legendURL, "width", true)));
-                legend.setHeight(Integer.parseInt(ReaderUtils.getAttribute(legendURL, "height", true)));
+                legend.setWidth(Integer
+                        .parseInt(ReaderUtils.getAttribute(legendURL, "width", true)));
+                legend.setHeight(Integer.parseInt(ReaderUtils.getAttribute(legendURL, "height",
+                        true)));
                 legend.setFormat(ReaderUtils.getChildText(legendURL, "Format", true));
                 legend.setOnlineResource(ReaderUtils.getAttribute(ReaderUtils.getChildElement(
-                            legendURL, "OnlineResource", true), "xlink:href", true));
+                        legendURL, "OnlineResource", true), "xlink:href", true));
                 ft.setLegendURL(legend);
             }
 
             Envelope latLonBBox = loadBBox(ReaderUtils.getChildElement(fTypeRoot,
-                        "latLonBoundingBox"));
-            //-- Modif C. Kolbowicz - 06/10/2004
+                    "latLonBoundingBox"));
+            // -- Modif C. Kolbowicz - 06/10/2004
             ft.setLatLongBBox(latLonBBox);
 
             Envelope nativeBBox = loadBBox(ReaderUtils.getChildElement(fTypeRoot, "nativeBBox"));
@@ -1634,7 +1671,7 @@ public class XMLConfigReader {
     /**
      * This method loads all the coverages present under the geoserver data
      * directory in a Map by using their respective DTOs.
-     *
+     * 
      * @see XMLConfigReader#loadCoverage(File)
      * @param coverageRoot
      * @return
@@ -1643,12 +1680,13 @@ public class XMLConfigReader {
     protected Map loadCoverages(File coverageRoot) throws ConfigurationException {
         if (LOGGER.isLoggable(Level.FINEST) && (coverageRoot != null)) {
             LOGGER.finest(new StringBuffer("examining: ").append(coverageRoot.getAbsolutePath())
-                                                         .toString());
-            LOGGER.finest(new StringBuffer("is dir: ").append(coverageRoot.isDirectory()).toString());
+                    .toString());
+            LOGGER.finest(new StringBuffer("is dir: ").append(coverageRoot.isDirectory())
+                    .toString());
         }
 
         if (coverageRoot == null) { // no coverages have been specified by the
-                                    // user (that is ok)
+            // user (that is ok)
 
             return Collections.EMPTY_MAP;
         }
@@ -1658,10 +1696,10 @@ public class XMLConfigReader {
         }
 
         File[] directories = coverageRoot.listFiles(new FileFilter() {
-                    public boolean accept(File pathname) {
-                        return pathname.isDirectory();
-                    }
-                });
+            public boolean accept(File pathname) {
+                return pathname.isDirectory();
+            }
+        });
 
         Map map = new HashMap();
         File info;
@@ -1680,7 +1718,9 @@ public class XMLConfigReader {
                     dto = loadCoverage(info);
                     map.put(dto.getKey(), dto);
                 } catch (ConfigurationException e) {
-                    LOGGER.log(Level.WARNING, "Skipped misconfigured coverage " + info.getPath(), e);
+                    LOGGER
+                            .log(Level.WARNING, "Skipped misconfigured coverage " + info.getPath(),
+                                    e);
                 }
             }
         }
@@ -1691,13 +1731,12 @@ public class XMLConfigReader {
     /**
      * This method loads the coverage information DTO from an info.xml file on
      * the disk.
-     *
+     * 
      * @param infoFile
      * @return
      * @throws ConfigurationException
      */
-    protected CoverageInfoDTO loadCoverage(File infoFile)
-        throws ConfigurationException {
+    protected CoverageInfoDTO loadCoverage(File infoFile) throws ConfigurationException {
         if (!infoFile.exists()) {
             throw new IllegalArgumentException("Info File not found:" + infoFile);
         }
@@ -1737,13 +1776,13 @@ public class XMLConfigReader {
 
     /**
      * Creation of a DTo cfron an info.xml file for a coverage.
-     *
+     * 
      * @param coverageRoot
      * @return
      * @throws ConfigurationException
      */
     protected CoverageInfoDTO loadCoverageDTOFromXML(Element coverageRoot)
-        throws ConfigurationException {
+            throws ConfigurationException {
         final CoverageInfoDTO cv = new CoverageInfoDTO();
 
         try {
@@ -1758,7 +1797,10 @@ public class XMLConfigReader {
             // /////////////////////////////////////////////////////////////////////
             cv.setFormatId(ReaderUtils.getAttribute(coverageRoot, "format", true));
             cv.setName(ReaderUtils.getChildText(coverageRoot, "name", true));
-            cv.setWmsPath(ReaderUtils.getChildText(coverageRoot, "wmspath" /* , true */));
+            cv.setWmsPath(ReaderUtils.getChildText(coverageRoot, "wmspath" /*
+                                                                             * ,
+                                                                             * true
+                                                                             */));
             cv.setLabel(ReaderUtils.getChildText(coverageRoot, "label", true));
             cv.setDescription(ReaderUtils.getChildText(coverageRoot, "description"));
 
@@ -1781,7 +1823,7 @@ public class XMLConfigReader {
             }
 
             cv.setMetadataLink(loadMetaDataLink(ReaderUtils.getChildElement(coverageRoot,
-                        "metadataLink")));
+                    "metadataLink")));
 
             // /////////////////////////////////////////////////////////////////////
             //
@@ -1819,8 +1861,8 @@ public class XMLConfigReader {
             final CoordinateReferenceSystem crs;
 
             try {
-                crs = CRS.parseWKT(ReaderUtils.getAttribute(envelope, "crs", false)
-                                              .replaceAll("'", "\""));
+                crs = CRS.parseWKT(ReaderUtils.getAttribute(envelope, "crs", false).replaceAll("'",
+                        "\""));
             } catch (FactoryException e) {
                 throw new ConfigurationException(e);
             } catch (ConfigurationException e) {
@@ -1875,7 +1917,8 @@ public class XMLConfigReader {
             // SUPPORTED/REQUEST CRS
             //
             // /////////////////////////////////////////////////////////////////////
-            final Element supportedCRSs = ReaderUtils.getChildElement(coverageRoot, "supportedCRSs");
+            final Element supportedCRSs = ReaderUtils
+                    .getChildElement(coverageRoot, "supportedCRSs");
             final String requestCRSs = ReaderUtils.getChildText(supportedCRSs, "requestCRSs");
 
             if (requestCRSs != null) {
@@ -1955,7 +1998,7 @@ public class XMLConfigReader {
             //
             // /////////////////////////////////////////////////////////////////////
             cv.setParameters(loadConnectionParams(ReaderUtils.getChildElement(coverageRoot,
-                        "parameters", false)));
+                    "parameters", false)));
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }
@@ -1965,14 +2008,14 @@ public class XMLConfigReader {
 
     /**
      * Loading the envelope for this coverage from the info.xml file.
-     *
+     * 
      * @todo Remve usage of JTS and use GeneralEnvelope instead.
      * @param envelopeElem
      * @return
      * @throws ConfigurationException
      */
     protected GeneralEnvelope loadEnvelope(Element envelopeElem, CoordinateReferenceSystem crs)
-        throws ConfigurationException {
+            throws ConfigurationException {
         if (envelopeElem == null) {
             return new GeneralEnvelope(crs);
         }
@@ -2008,7 +2051,7 @@ public class XMLConfigReader {
     /**
      * This method is in charge for loading the grid geometry for this
      * coverage's info.xml file.
-     *
+     * 
      * @param gridElem
      * @param envelope
      * @param crs
@@ -2016,19 +2059,18 @@ public class XMLConfigReader {
      * @throws ConfigurationException
      */
     protected GridGeometry loadGrid(Element gridElem, GeneralEnvelope envelope,
-        CoordinateReferenceSystem crs) throws ConfigurationException {
-        final GeneralEnvelope gcEnvelope = new GeneralEnvelope(new GeneralDirectPosition(
-                    envelope.getLowerCorner().getOrdinate(0),
-                    envelope.getLowerCorner().getOrdinate(1)),
-                new GeneralDirectPosition(envelope.getUpperCorner().getOrdinate(0),
-                    envelope.getUpperCorner().getOrdinate(1)));
+            CoordinateReferenceSystem crs) throws ConfigurationException {
+        final GeneralEnvelope gcEnvelope = new GeneralEnvelope(new GeneralDirectPosition(envelope
+                .getLowerCorner().getOrdinate(0), envelope.getLowerCorner().getOrdinate(1)),
+                new GeneralDirectPosition(envelope.getUpperCorner().getOrdinate(0), envelope
+                        .getUpperCorner().getOrdinate(1)));
 
         gcEnvelope.setCoordinateReferenceSystem(crs);
 
         if (gridElem == null) {
             // new grid range
-            GeneralGridRange newGridrange = new GeneralGridRange(new int[] { 0, 0 },
-                    new int[] { 1, 1 });
+            GeneralGridRange newGridrange = new GeneralGridRange(new int[] { 0, 0 }, new int[] { 1,
+                    1 });
             GridGeometry2D newGridGeometry = new GridGeometry2D(newGridrange, gcEnvelope);
 
             return newGridGeometry;
@@ -2071,13 +2113,13 @@ public class XMLConfigReader {
     }
 
     /**
-     *
+     * 
      * @param gridElem
      * @return
      * @throws ConfigurationException
      */
     protected InternationalString[] loadDimensionNames(Element gridElem)
-        throws ConfigurationException {
+            throws ConfigurationException {
         if (gridElem == null) {
             return null;
         }
@@ -2096,8 +2138,7 @@ public class XMLConfigReader {
         return dimNames;
     }
 
-    protected CoverageDimension[] loadDimensions(NodeList dimElems)
-        throws ConfigurationException {
+    protected CoverageDimension[] loadDimensions(NodeList dimElems) throws ConfigurationException {
         CoverageDimension[] dimensions = null;
 
         if ((dimElems != null) && (dimElems.getLength() > 0)) {
@@ -2105,23 +2146,23 @@ public class XMLConfigReader {
 
             for (int dim = 0; dim < dimElems.getLength(); dim++) {
                 dimensions[dim] = new CoverageDimension();
-                dimensions[dim].setName(ReaderUtils.getElementText(
-                        (Element) ((Element) dimElems.item(dim)).getElementsByTagName("name").item(0)));
-                dimensions[dim].setDescription(ReaderUtils.getElementText(
-                        (Element) ((Element) dimElems.item(dim)).getElementsByTagName("description")
-                                   .item(0)));
+                dimensions[dim].setName(ReaderUtils.getElementText((Element) ((Element) dimElems
+                        .item(dim)).getElementsByTagName("name").item(0)));
+                dimensions[dim].setDescription(ReaderUtils
+                        .getElementText((Element) ((Element) dimElems.item(dim))
+                                .getElementsByTagName("description").item(0)));
 
                 NodeList interval = ((Element) dimElems.item(dim)).getElementsByTagName("interval");
-                double min = Double.parseDouble(ReaderUtils.getElementText(
-                            (Element) ((Element) interval.item(0)).getElementsByTagName("min")
-                                       .item(0)));
-                double max = Double.parseDouble(ReaderUtils.getElementText(
-                            (Element) ((Element) interval.item(0)).getElementsByTagName("max")
-                                       .item(0)));
+                double min = Double.parseDouble(ReaderUtils
+                        .getElementText((Element) ((Element) interval.item(0))
+                                .getElementsByTagName("min").item(0)));
+                double max = Double.parseDouble(ReaderUtils
+                        .getElementText((Element) ((Element) interval.item(0))
+                                .getElementsByTagName("max").item(0)));
                 dimensions[dim].setRange(new NumberRange(min, max));
 
-                NodeList nullValues = ((Element) dimElems.item(dim)).getElementsByTagName(
-                        "nullValues");
+                NodeList nullValues = ((Element) dimElems.item(dim))
+                        .getElementsByTagName("nullValues");
 
                 if ((nullValues != null) && (nullValues.getLength() > 0)) {
                     NodeList values = ((Element) nullValues.item(0)).getElementsByTagName("value");
@@ -2130,12 +2171,12 @@ public class XMLConfigReader {
                         Vector nulls = new Vector();
 
                         for (int nl = 0; nl < values.getLength(); nl++) {
-                            nulls.add(new Double(ReaderUtils.getElementText(
-                                        (Element) values.item(nl))));
+                            nulls.add(new Double(ReaderUtils.getElementText((Element) values
+                                    .item(nl))));
                         }
 
-                        dimensions[dim].setNullValues((Double[]) nulls.toArray(
-                                new Double[nulls.size()]));
+                        dimensions[dim].setNullValues((Double[]) nulls.toArray(new Double[nulls
+                                .size()]));
                     }
                 }
             }
@@ -2161,14 +2202,15 @@ public class XMLConfigReader {
 
     /**
      * getKeyWords purpose.
-     *
+     * 
      * <p>
      * Converts a DOM tree into a List of Strings representing keywords.
      * </p>
-     *
-     * @param keywordsElem a DOM tree to convert into a List of Strings
-     *        representing keywords.
-     *
+     * 
+     * @param keywordsElem
+     *            a DOM tree to convert into a List of Strings representing
+     *            keywords.
+     * 
      * @return A complete List of Strings representing keywords loaded from the
      *         DOM tree provided.
      */
@@ -2193,16 +2235,18 @@ public class XMLConfigReader {
 
     /**
      * loadLatLongBBox purpose.
-     *
+     * 
      * <p>
      * Converts a DOM tree into a Envelope object.
      * </p>
-     *
-     * @param bboxElem a DOM tree to convert into a Envelope object.
-     *
+     * 
+     * @param bboxElem
+     *            a DOM tree to convert into a Envelope object.
+     * 
      * @return A complete Envelope object loaded from the DOM tree provided.
-     *
-     * @throws ConfigurationException When an error occurs.
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
      */
     protected Envelope loadBBox(Element bboxElem) throws ConfigurationException {
         if (bboxElem == null) {
@@ -2229,19 +2273,20 @@ public class XMLConfigReader {
 
     /**
      * loadDefinitionQuery purpose.
-     *
+     * 
      * <p>
      * Converts a DOM tree into a Filter object.
      * </p>
-     *
-     * @param typeRoot a DOM tree to convert into a Filter object.
-     *
+     * 
+     * @param typeRoot
+     *            a DOM tree to convert into a Filter object.
+     * 
      * @return A complete Filter object loaded from the DOM tree provided.
-     *
-     * @throws ConfigurationException When an error occurs.
+     * 
+     * @throws ConfigurationException
+     *             When an error occurs.
      */
-    protected Filter loadDefinitionQuery(Element typeRoot)
-        throws ConfigurationException {
+    protected Filter loadDefinitionQuery(Element typeRoot) throws ConfigurationException {
         try {
             Element defQNode = ReaderUtils.getChildElement(typeRoot, "definitionQuery", false);
             Filter filter = null;
@@ -2269,13 +2314,14 @@ public class XMLConfigReader {
 
     /**
      * isInfoFile purpose.
-     *
+     * 
      * <p>
      * Used to perform safety checks on info.xml file handles.
      * </p>
-     *
-     * @param testFile The file to test.
-     *
+     * 
+     * @param testFile
+     *            The file to test.
+     * 
      * @return true if the file is an info.xml file.
      */
     protected static boolean isInfoFile(File testFile) {
@@ -2289,22 +2335,24 @@ public class XMLConfigReader {
 
     /**
      * Process schema File for a list of AttributeTypeInfoDTO.
-     *
+     * 
      * <p>
      * The provided FeatureTypeInfoDTO will be updated with the schemaBase.
      * </p>
-     *
-     * @param schemaFile File containing schema definition
-     * @param dto Schema DOM element
-     *
+     * 
+     * @param schemaFile
+     *            File containing schema definition
+     * @param dto
+     *            Schema DOM element
+     * 
      * @throws ConfigurationException
      */
     protected void loadSchema(File schemaFile, FeatureTypeInfoDTO dto)
-        throws ConfigurationException {
+            throws ConfigurationException {
         try {
             schemaFile = ReaderUtils.checkFile(schemaFile, false);
-        } catch (Exception e) {
-            throw new ConfigurationException(e);
+        } catch (FileNotFoundException e) {
+            throw new ConfigurationException("Can't access " + schemaFile.getAbsolutePath(), e);
         }
 
         Element elem = null;
@@ -2319,10 +2367,11 @@ public class XMLConfigReader {
         try {
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.config(new StringBuffer("Loading configuration file: ").append(schemaFile)
-                                                                              .toString());
+                        .toString());
             }
 
-            Reader reader = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(schemaFile));
+            Reader reader = XmlCharsetDetector
+                    .getCharsetAwareReader(new FileInputStream(schemaFile));
             elem = ReaderUtils.parse(reader);
             reader.close();
         } catch (FileNotFoundException e) {
@@ -2339,24 +2388,25 @@ public class XMLConfigReader {
             processSchema(elem, dto);
         } catch (ConfigurationException e) {
             throw new ConfigurationException("Error occured in " + schemaFile + "\n"
-                + e.getMessage(), e);
+                    + e.getMessage(), e);
         }
     }
 
     /**
      * Process schema DOM for a list of AttributeTypeInfoDTO.
-     *
+     * 
      * <p>
      * The provided FeatureTypeInfoDTO will be updated with the schemaBase.
      * </p>
-     *
-     * @param elem Schema DOM element
+     * 
+     * @param elem
+     *            Schema DOM element
      * @param featureTypeInfoDTO
-     *
+     * 
      * @throws ConfigurationException
      */
     public static void processSchema(Element elem, FeatureTypeInfoDTO featureTypeInfoDTO)
-        throws ConfigurationException {
+            throws ConfigurationException {
         ArrayList list = new ArrayList();
 
         try {
@@ -2366,7 +2416,7 @@ public class XMLConfigReader {
             elem = ReaderUtils.getChildElement(elem, "xs:extension");
 
             NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance()
-                                                                .getNameSpaceTranslator("gml");
+                    .getNameSpaceTranslator("gml");
             NameSpaceElement nse = gml.getElement(ReaderUtils.getAttribute(elem, "base", true));
             featureTypeInfoDTO.setSchemaBase(nse.getQualifiedTypeDefName());
             elem = ReaderUtils.getChildElement(elem, "xs:sequence");
@@ -2383,9 +2433,9 @@ public class XMLConfigReader {
                 String type = ReaderUtils.getAttribute(elem, "type", false);
 
                 NameSpaceTranslator nst1 = NameSpaceTranslatorFactory.getInstance()
-                                                                     .getNameSpaceTranslator("xs");
+                        .getNameSpaceTranslator("xs");
                 NameSpaceTranslator nst2 = NameSpaceTranslatorFactory.getInstance()
-                                                                     .getNameSpaceTranslator("gml");
+                        .getNameSpaceTranslator("gml");
 
                 if ((ref != null) && (ref != "")) {
                     ati.setComplex(false);
@@ -2397,7 +2447,8 @@ public class XMLConfigReader {
 
                     String tmp = nse.getTypeRefName();
 
-                    //tmp = Character.toLowerCase(tmp.charAt(0)) + tmp.substring(1);
+                    // tmp = Character.toLowerCase(tmp.charAt(0)) +
+                    // tmp.substring(1);
                     ati.setType(tmp);
                     ati.setName(tmp);
                 } else {
@@ -2451,11 +2502,11 @@ public class XMLConfigReader {
 
     /**
      * getData purpose.
-     *
+     * 
      * <p>
      * Description ...
      * </p>
-     *
+     * 
      * @return
      */
     public DataDTO getData() {
@@ -2464,11 +2515,11 @@ public class XMLConfigReader {
 
     /**
      * getGeoServer purpose.
-     *
+     * 
      * <p>
      * Description ...
      * </p>
-     *
+     * 
      * @return
      */
     public GeoServerDTO getGeoServer() {
@@ -2477,11 +2528,11 @@ public class XMLConfigReader {
 
     /**
      * getWcs purpose.
-     *
+     * 
      * <p>
      * Description ...
      * </p>
-     *
+     * 
      * @return
      */
     public WCSDTO getWcs() {
@@ -2490,11 +2541,11 @@ public class XMLConfigReader {
 
     /**
      * getWfs purpose.
-     *
+     * 
      * <p>
      * Description ...
      * </p>
-     *
+     * 
      * @return
      */
     public WFSDTO getWfs() {
@@ -2503,11 +2554,11 @@ public class XMLConfigReader {
 
     /**
      * getWms purpose.
-     *
+     * 
      * <p>
      * Description ...
      * </p>
-     *
+     * 
      * @return
      */
     public WMSDTO getWms() {
@@ -2516,18 +2567,18 @@ public class XMLConfigReader {
 
     /**
      * getMetaDataLink purpose.
-     *
+     * 
      * <p>
      * Used to help with XML manipulations. Returns a metedataLink Attribute
      * </p>
-     *
-     * @param metadataElem The root element to look for children in.
-     *
+     * 
+     * @param metadataElem
+     *            The root element to look for children in.
+     * 
      * @return The MetaDataLink that was found.
      * @throws Exception
      */
-    public static MetaDataLink getMetaDataLink(Element metadataElem)
-        throws Exception {
+    public static MetaDataLink getMetaDataLink(Element metadataElem) throws Exception {
         MetaDataLink mdl = new MetaDataLink();
         String tmp;
 

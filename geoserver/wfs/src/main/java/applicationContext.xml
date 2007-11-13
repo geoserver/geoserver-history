@@ -30,7 +30,10 @@
 	<bean id="filterFactory" class="org.geotools.filter.FilterFactoryImpl"/>
 
 	<!-- wfs configuration bean -->
-	<bean id="wfs" class="org.geoserver.wfs.WFS">
+	<bean id="wfs" class="org.geoserver.wfs.WFS" depends-on="config">
+        <!-- the depends-on attribute ensures config was initialized before
+          trying to instantiate this bean.
+         -->
 		<constructor-arg ref="config"/>
 		<constructor-arg ref="catalog"/>
 		<constructor-arg ref="geoServer"/>
