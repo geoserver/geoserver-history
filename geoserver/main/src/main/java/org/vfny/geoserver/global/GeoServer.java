@@ -6,6 +6,7 @@ package org.vfny.geoserver.global;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -777,7 +778,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         LOGGER.fine("FINISHED CONFIGURING GEOSERVER LOGGING -------------------------");
     }
 
-    private static void copyResourceToFile(String resource, File target) {
+    private static void copyResourceToFile(String resource, File target) throws ConfigurationException {
         InputStream is = null; 
         OutputStream os = null;
         byte[] buffer = new byte[4096];
@@ -787,12 +788,19 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             os = new FileOutputStream(target);
             while((read = is.read(buffer)) > 0)
                 os.write(buffer, 0, read);
-        } catch (Exception e) {
+        } catch (FileNotFoundException targetException) {
+            throw new ConfigurationException("Can't write to file " + target.getAbsolutePath() + 
+                    ". Check write permissions on target folder for user " + System.getProperty("user.name"));
+        } catch (IOException e) {
             LOGGER.log(Level.WARNING, "Error trying to copy logging configuration file", e);
         } finally {
             try {
-                is.close();
-                os.close();
+                if(is != null){
+                    is.close();
+                }
+                if(os != null){
+                    os.close();
+                }
             } catch(IOException e) {
                 // we tried...
             }
