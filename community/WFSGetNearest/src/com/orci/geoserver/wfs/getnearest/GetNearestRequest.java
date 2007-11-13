@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  */
 public class GetNearestRequest extends WFSRequest {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests");
 
     /** Specifies the output format */
     protected String outputFormat = "GML2";

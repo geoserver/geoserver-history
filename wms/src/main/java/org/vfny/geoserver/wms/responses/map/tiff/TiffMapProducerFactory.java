@@ -37,8 +37,7 @@ public final class TiffMapProducerFactory implements GetMapProducerFactorySpi {
 	}
 
 	/** Logger */
-	private static final Logger LOGGER = Logger
-			.getLogger("org.vfny.geoserver.wms.responses.map.tiff");
+	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.wms.responses.map.tiff");
 
 	/**
 	 * Default constructor.

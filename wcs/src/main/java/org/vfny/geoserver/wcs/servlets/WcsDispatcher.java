@@ -59,7 +59,7 @@ public class WcsDispatcher extends Dispatcher {
     private static final long serialVersionUID = 3977857384599203894L;
 
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets.wcs");
+    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.servlets.wcs");
     private static int sequence = 123;
     private static final String DEFAULT_ENCODING = "UTF-8";
     private static final String ENCODING_HEADER_ARG = "Content-Type";

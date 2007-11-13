@@ -31,7 +31,7 @@ import javax.imageio.stream.ImageOutputStream;
  */
 public final class JAISupport {
     /** shared package's logger */
-    private static final Logger LOGGER = Logger.getLogger(JAISupport.class.getPackage().getName());
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(JAISupport.class.getPackage().getName());
 
     /**
      *  Array of mime types that have been tested to work.

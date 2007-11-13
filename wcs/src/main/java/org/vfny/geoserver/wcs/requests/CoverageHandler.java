@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.wcs");
+    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.wcs");
 
     /** Service handling the request */
     private WCService service = null;

@@ -89,11 +89,6 @@
 		</span>
       </td>
 	  <td class="datum">
-	  <% if (!org.vfny.geoserver.global.GeoServer.isGeoserverControllingLogging()) { %>
-	  	<select disabled="true">
-	  		<option>GeoServer Logging Disabled</option>
-	  	</select>
-	  <% } else { %>
 		<html:select property="log4jConfigFile">
 			<html:option value="VERBOSE_LOGGING.properties"/>
 			<html:option value="GEOSERVER_DEVELOPER_LOGGING.properties"/>
@@ -101,7 +96,6 @@
 			<html:option value="DEFAULT_LOGGING.properties"/>
 			<html:option value="PRODUCTION_LOGGING.properties"/>
 		</html:select>
-	  <% } %>
 	  </td>
     </tr>	
     
@@ -112,11 +106,7 @@
 		</span>
       </td>
 	  <td class="datum">
-	  <% if (!org.vfny.geoserver.global.GeoServer.isGeoserverControllingLogging()) { %>
-	  	<html:checkbox disabled="true" property="suppressStdOutLogging"/>
-	  <% } else { %>
 	  	<html:checkbox property="suppressStdOutLogging"/>
-	  <% } %>
 	  </td>
 	 </tr> 
 	 
@@ -127,16 +117,12 @@
 			</span>
 		</td>
 		<td class="datum">
-		<% if (!org.vfny.geoserver.global.GeoServer.isGeoserverControllingLogging()) { %>
-	  		<html:text property="logLocation" size="60" value="" disabled="true"/>
-	  	<% } else { %>
 		  	<logic:empty name="geoServerConfigurationForm" property="logLocation">
 				<html:text property="logLocation" size="60" value="logs/geoserver.log"/>		
 			</logic:empty>
 			<logic:notEmpty name="geoServerConfigurationForm" property="logLocation">
 				<html:text property="logLocation" size="60"/>		
 			</logic:notEmpty>
-	  	<% } %>
 		</td>
     </tr>	
 

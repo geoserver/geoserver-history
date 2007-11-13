@@ -31,8 +31,7 @@ import com.sun.media.imageioimpl.plugins.tiff.TIFFImageWriterSpi;
  */
 public final class TiffMapProducer extends DefaultRasterMapProducer {
 	/** A logger for this class. */
-	private static final Logger LOGGER = Logger
-			.getLogger("org.vfny.geoserver.responses.wms.map");
+	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
 
 	private final static ImageWriterSpi writerSPI = new TIFFImageWriterSpi();
 

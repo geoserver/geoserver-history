@@ -42,7 +42,7 @@ import javax.servlet.ServletContext;
  *          Exp $
  */
 public final class CoverageStoreUtils {
-    private final static Logger LOGGER = Logger.getLogger(CoverageStoreUtils.class.toString());
+    private final static Logger LOGGER = org.geotools.util.logging.Logging.getLogger(CoverageStoreUtils.class.toString());
     public final static Format[] formats = GridFormatFinder.getFormatArray();
 
     private CoverageStoreUtils() {

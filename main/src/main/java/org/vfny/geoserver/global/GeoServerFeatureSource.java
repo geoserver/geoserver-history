@@ -51,7 +51,7 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class GeoServerFeatureSource implements FeatureSource {
     /** Shared package logger */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.global");
 
     /** FeatureSource being served up */
     protected FeatureSource source;

@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 public class CoverageUtils {
     private final static BufferedCoordinateOperationFactory operationFactory = new BufferedCoordinateOperationFactory(new Hints(
                 Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
-    private final static Logger LOGGER = Logger.getLogger(CoverageUtils.class.toString());
+    private final static Logger LOGGER = org.geotools.util.logging.Logging.getLogger(CoverageUtils.class.toString());
     public static final int TRANSPARENT = 0;
     public static final int OPAQUE = 1;
 

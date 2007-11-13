@@ -64,7 +64,7 @@ import com.vividsolutions.jts.geom.Polygon;
  */
 public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate {
     /** A logger for this class. */
-    protected static final Logger LOGGER = Logger.getLogger(
+    protected static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(
             "org.vfny.geoserver.responses.wms.featureinfo");
 
     /** The formats supported by this map delegate. */

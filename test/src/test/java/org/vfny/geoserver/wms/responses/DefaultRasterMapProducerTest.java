@@ -36,8 +36,7 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
 	/** DOCUMENT ME! */
-	private static final Logger LOGGER = Logger
-			.getLogger(DefaultRasterMapProducerTest.class.getPackage()
+	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(DefaultRasterMapProducerTest.class.getPackage()
 					.getName());
 
 	/** DOCUMENT ME! */

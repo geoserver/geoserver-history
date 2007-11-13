@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  */
 public class GeoserverUserDao implements UserDetailsService {
     /** logger */
-    static Logger LOGGER = Logger.getLogger("org.geoserver.security");
+    static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.security");
     private UserMap userMap;
     private PropertyFileWatcher userDefinitionsFile;
     private GeoServer geoServer;

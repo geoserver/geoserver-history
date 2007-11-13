@@ -100,7 +100,7 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.global");
 
     /** The root directory from which the configuration is loaded. */
     private File root;

@@ -49,7 +49,7 @@ public class LockFeature {
     /**
      * The logger
      */
-    static Logger LOGGER = Logger.getLogger("org.geoserver.wfs");
+    static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfs");
 
     /**
      * Web Feature Service configuration

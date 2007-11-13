@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class WcsException extends ServiceException {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.wcs");
+    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.wcs");
 
     /**
          * The fixed MIME type of a WCS exception.

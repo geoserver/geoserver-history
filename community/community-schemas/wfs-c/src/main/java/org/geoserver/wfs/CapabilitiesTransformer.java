@@ -54,7 +54,7 @@ import java.util.logging.Logger;
  */
 public abstract class CapabilitiesTransformer extends TransformerBase {
     /** logger */
-    private static final Logger LOGGER = Logger.getLogger(CapabilitiesTransformer.class.getPackage()
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(CapabilitiesTransformer.class.getPackage()
                                                                                        .getName());
 
     /** identifer of a http get + post request */

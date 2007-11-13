@@ -26,7 +26,7 @@ import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
  */
 public class PNGMapProducer extends DefaultRasterMapProducer {
     /** Logger */
-    private static final Logger LOGGER = Logger.getLogger(
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(
             "org.vfny.geoserver.wms.responses.map.png");
 
     /** PNG Native Acceleration Mode * */

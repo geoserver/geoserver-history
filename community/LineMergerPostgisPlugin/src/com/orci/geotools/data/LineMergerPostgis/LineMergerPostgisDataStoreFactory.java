@@ -17,7 +17,7 @@ import org.geotools.data.postgis.PostgisDataStoreFactory;
  * Copyright (c) 2005, Open Roads Consulting, Inc.
  */
 public class LineMergerPostgisDataStoreFactory extends PostgisDataStoreFactory {
-    private static final Logger LOG = Logger.getLogger(LineMergerPostgisDataStoreFactory.class.getName());
+    private static final Logger LOG = org.geotools.util.logging.Logging.getLogger(LineMergerPostgisDataStoreFactory.class.getName());
 
     /** Param, package visibiity for JUnit tests. */
     static final Param HOST = new Param("host", String.class,

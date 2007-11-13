@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  *
  */
 public class GetKMLReflectKvpReader extends GetMapKvpReader {
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers.wms");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.readers.wms");
 
     public GetKMLReflectKvpReader(Map kvpPairs, WMService service) {
         super(kvpPairs, service);

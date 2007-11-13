@@ -20,7 +20,7 @@ import org.geoserver.wfs.xml.v1_1_0.WFS;
 
 public class CapabilitiesTransformerTest extends WFSTestSupport {
 
-    static Logger logger = Logger.getLogger("org.geoserver.wfs.test");
+    static Logger logger = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfs.test");
 
     GetCapabilitiesType request() {
         GetCapabilitiesType type = WfsFactory.eINSTANCE.createGetCapabilitiesType();

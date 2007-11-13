@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  *
  */
 public class FeatureDiffCollection extends AbstractCollection {
-    static Logger LOGGER = Logger.getLogger("org.geoserver.wfs");
+    static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfs");
     private FeatureDiffReader reader;
 
     public FeatureDiffCollection(FeatureDiffReader reader) {

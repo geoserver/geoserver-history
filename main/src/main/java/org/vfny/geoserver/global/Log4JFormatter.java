@@ -213,7 +213,7 @@ public class Log4JFormatter extends Formatter {
     public static void init(final String base, Level filterLevel) {
         Formatter log4j = null;
 
-        final Logger logger = Logger.getLogger(base);
+        final Logger logger = org.geotools.util.logging.Logging.getLogger(base);
 
         //This little routine may be a bit buggy, but it's the best I've got
         //to make the levels change as we reload the dto's.  Feel free to 

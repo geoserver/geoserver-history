@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  *
  */
 public class Start {
-    private static final Logger log = Logger.getLogger(Start.class.getName());
+    private static final Logger log = org.geotools.util.logging.Logging.getLogger(Start.class.getName());
 
     public static void main(String[] args) {
         Server jettyServer = null;

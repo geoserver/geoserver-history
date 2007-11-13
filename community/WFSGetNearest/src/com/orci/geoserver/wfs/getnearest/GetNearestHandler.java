@@ -30,7 +30,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
  */
 public class GetNearestHandler extends XMLFilterImpl implements ContentHandler, FilterHandler {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.wfs");
+    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.wfs");
 
     /** Service handling the request */
     private WFService service;

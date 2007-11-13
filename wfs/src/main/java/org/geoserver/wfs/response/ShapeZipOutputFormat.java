@@ -39,7 +39,7 @@ import javax.xml.namespace.QName;
  *
  */
 public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
-    private final Logger LOGGER = Logger.getLogger(this.getClass().toString());
+    private final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(this.getClass().toString());
     private String outputFileName;
 
     public ShapeZipOutputFormat() {

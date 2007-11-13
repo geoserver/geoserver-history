@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class FreefsLog extends HttpServlet {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.servlets");
 
     /** Default name for configuration directory */
     private static final String CONFIG_DIR = "data/";

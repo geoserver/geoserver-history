@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletRequest;
  * @version
  */
 public class DemoRequestForm extends ActionForm {
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.form");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.form");
     private String action;
     private String url;
     private String body;

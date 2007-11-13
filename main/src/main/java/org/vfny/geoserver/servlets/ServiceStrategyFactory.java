@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ServiceStrategyFactory implements OutputStrategyFactory, ApplicationContextAware {
     /** Class logger */
-    static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets");
+    static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.servlets");
 
     /**
      * GeoServer configuratoin

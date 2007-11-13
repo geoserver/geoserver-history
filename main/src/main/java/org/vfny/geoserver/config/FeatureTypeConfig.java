@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * @version $Id$
  */
 public class FeatureTypeConfig {
-    protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.config");
+    protected static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.config");
 
     /** The Id of the datastore which should be used to get this featuretype. */
     private String dataStoreId;

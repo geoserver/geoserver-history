@@ -22,7 +22,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
     /**
      * logger
      */
-    static Logger LOGGER = Logger.getLogger("org.geoserver.kml");
+    static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.kml");
 
     /**
      * the world bounds

@@ -59,7 +59,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 
 public class PutStyles extends AbstractService {
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.sld.servlets");
+    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.sld.servlets");
     public final String success_mime_type = "application/vnd.ogc.success+xml";
     private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
 

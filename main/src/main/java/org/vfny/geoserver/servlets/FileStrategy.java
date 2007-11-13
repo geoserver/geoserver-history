@@ -36,7 +36,7 @@ public class FileStrategy implements ServiceStrategy {
     static int sequence = 0;
 
     /** Class logger */
-    protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets");
+    protected static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.servlets");
 
     /** OutputStream provided to writeTo method */
     private OutputStream safe;

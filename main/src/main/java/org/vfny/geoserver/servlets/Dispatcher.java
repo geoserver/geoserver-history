@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 //JD: kill this class
 public class Dispatcher extends HttpServlet {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets");
+    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.servlets");
 
     /** Map metadata request type */
     public static String META_REQUEST = "GetMeta";

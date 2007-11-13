@@ -95,7 +95,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
     /**
      * logger
      */
-    static Logger LOGGER = Logger.getLogger("org.geoserver.kml");
+    static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.kml");
 
     /**
      * Tolerance used to compare doubles for equality

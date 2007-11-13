@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  */
 public class KMLReflector extends WMService {
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.wms.servlets");
+    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.wms.servlets");
     final String KML_MIME_TYPE = "application/vnd.google-earth.kml+xml";
     final String KMZ_MIME_TYPE = "application/vnd.google-earth.kmz+xml";
 

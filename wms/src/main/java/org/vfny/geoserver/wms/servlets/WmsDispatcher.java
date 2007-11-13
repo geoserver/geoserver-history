@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 //JD: kill this class
 public class WmsDispatcher extends Dispatcher {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets.wms");
+    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.servlets.wms");
 
     /**
      * Passes the Post method to the Get method, with no modifications.

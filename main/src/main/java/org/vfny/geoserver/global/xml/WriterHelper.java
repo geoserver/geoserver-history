@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  */
 public class WriterHelper {
     /** Used internally to create log information to detect errors. */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.global");
 
     /** The output writer. */
     protected Writer writer;

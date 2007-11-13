@@ -52,7 +52,7 @@ import javax.media.jai.GraphicsJAI;
  */
 public class EncodeKML {
     /** Standard Logger */
-    private static final Logger LOGGER = Logger.getLogger(
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(
             "org.vfny.geoserver.responses.wms.map.kml");
 
     /** Filter factory for creating bounding box filters */

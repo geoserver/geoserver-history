@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  *         modification)
  */
 public class DescribeResponse implements Response {
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses");
     private static final String CURR_VER = "\"1.0.0\"";
     private static final String WCS_URL = "http://www.opengis.net/wcs";
     private static final String WCS_NAMESPACE = new StringBuffer("\n  xmlns=\"").append(WCS_URL)

@@ -60,7 +60,7 @@ public class KvpRequestReader {
     /**
      * logging instance
      */
-    protected static Logger LOGGER = Logger.getLogger("org.geoserver.ows");
+    protected static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.ows");
 
     /**
      * The class of the request bean

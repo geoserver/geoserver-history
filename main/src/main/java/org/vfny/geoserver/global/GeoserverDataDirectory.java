@@ -50,7 +50,7 @@ public class GeoserverDataDirectory {
     private static GeoServerResourceLoader loader;
     private static Data catalog;
     private static ApplicationContext appContext;
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.global");
     private static boolean isTrueDataDir = false;
 
     /**

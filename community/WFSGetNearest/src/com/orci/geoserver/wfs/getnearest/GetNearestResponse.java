@@ -68,7 +68,7 @@ import com.vividsolutions.jts.operation.distance.DistanceOp;
  */
 public class GetNearestResponse implements Response {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses");
     GetNearestResponseDelegate delegate;
     String featureTypeName;
 

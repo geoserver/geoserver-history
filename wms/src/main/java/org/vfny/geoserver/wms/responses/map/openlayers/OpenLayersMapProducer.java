@@ -39,8 +39,7 @@ import freemarker.template.TemplateException;
 public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 		GetMapProducer {
 	/** A logger for this class. */
-	private static final Logger LOGGER = Logger
-			.getLogger("org.vfny.geoserver.responses.wms.map.openlayers");
+	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map.openlayers");
 
 	/**
 	 * Set of parameters that we can ignore, since they are not part of the

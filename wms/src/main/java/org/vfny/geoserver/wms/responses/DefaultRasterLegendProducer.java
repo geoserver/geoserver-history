@@ -88,7 +88,7 @@ import com.vividsolutions.jts.geom.Polygon;
  */
 public abstract class DefaultRasterLegendProducer implements GetLegendGraphicProducer {
     /** shared package's logger */
-    private static final Logger LOGGER = Logger.getLogger(DefaultRasterLegendProducer.class.getPackage()
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(DefaultRasterLegendProducer.class.getPackage()
                                                                                            .getName());
 
     /** Factory that will resolve symbolizers into rendered styles */

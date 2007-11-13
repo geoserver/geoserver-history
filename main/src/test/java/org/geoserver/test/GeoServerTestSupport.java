@@ -61,7 +61,7 @@ public class GeoServerTestSupport extends TestCase {
     /**
      * Common logger for test cases
      */
-    protected static final Logger LOGGER = Logger.getLogger("org.geoserver.test"); 
+    protected static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.test"); 
     
     /**
      * mock GeoServer data directory

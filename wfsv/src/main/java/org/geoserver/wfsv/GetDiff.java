@@ -38,7 +38,7 @@ public class GetDiff {
     /**
      * logger
      */
-    static Logger LOGGER = Logger.getLogger("org.geoserver.wfsv");
+    static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfsv");
 
     /**
      * WFS configuration

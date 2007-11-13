@@ -37,7 +37,7 @@ import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
  * @version $Id$
  */
 public class ImageUtils {
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
 
     /**
      * Forces the use of the class as a pure utility methods one by declaring a

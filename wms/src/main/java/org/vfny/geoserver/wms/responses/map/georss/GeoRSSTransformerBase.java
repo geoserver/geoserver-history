@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 
 public abstract class GeoRSSTransformerBase extends TransformerBase {
     /** logger */
-    protected static Logger LOGGER = Logger.getLogger("org.geoserver.georss");
+    protected static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.georss");
 
     /**
      * Enumeration for geometry encoding.

@@ -43,8 +43,7 @@ import com.vividsolutions.jts.geom.Envelope;
 class PDFMapProducer extends AbstractRasterMapProducer implements
 		RasterMapProducer {
 	/** A logger for this class. */
-	private static final Logger LOGGER = Logger
-			.getLogger("org.vfny.geoserver.responses.wms.map.pdf");
+	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map.pdf");
 
 	/** Which format to encode the image in if one is not supplied */
 	private static final String DEFAULT_MAP_FORMAT = "application/pdf";

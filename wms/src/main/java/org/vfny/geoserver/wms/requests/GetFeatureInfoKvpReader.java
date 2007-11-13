@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers.wms");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.readers.wms");
 
     /** the request wich will be built by getRequest method */
     private GetFeatureInfoRequest request;

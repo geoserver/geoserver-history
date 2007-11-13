@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  */
 public class OperationDefinitionSource implements ObjectDefinitionSource {
     /** logger */
-    static Logger LOGGER = Logger.getLogger("org.geoserver.security");
+    static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.security");
     Map definitions;
     PropertyFileWatcher operationDefinitionFile;
 

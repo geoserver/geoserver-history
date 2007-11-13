@@ -28,7 +28,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
  * @version $Id: GetFeatureResults.java,v 1.1 2004/03/10 23:39:06 groldan Exp $
  */
 public class GetNearestResults {
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses");
 
     /**
      * the GetFeature or GetFeatureWithLock request who's processing

@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  */
 public class EncodeSVG {
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
     private static final String DOCTYPE = "<!DOCTYPE svg \n\tPUBLIC \"-//W3C//DTD SVG 20001102//EN\" \n\t\"http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd\">\n";
 
     /** the XML and SVG header */

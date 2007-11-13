@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  */
 public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
+    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests");
 
     /** Stores internal request type */
     private int requestType = Dispatcher.UNKNOWN;

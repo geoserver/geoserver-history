@@ -17,7 +17,7 @@ public class WFSLogger implements MethodInterceptor {
     /**
      * Logging instance
      */
-    Logger logger = Logger.getLogger("org.geoserver.wfs");
+    Logger logger = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfs");
 
     public Object invoke(MethodInvocation invocation) throws Throwable {
         StringBuffer log = new StringBuffer();

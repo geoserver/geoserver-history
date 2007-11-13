@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
+    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests");
 
     /** Internal Capabilities request for construction. */
     private CapabilitiesRequest request = null;

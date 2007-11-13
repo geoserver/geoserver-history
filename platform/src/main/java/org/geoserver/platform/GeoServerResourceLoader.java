@@ -43,7 +43,7 @@ import java.util.logging.Logger;
  *
  */
 public class GeoServerResourceLoader extends DefaultResourceLoader {
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.global");
 
     /** "path" for resource lookups */
     Set searchLocations;

@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  */
 public class GetLegendGraphicResponse implements Response {
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger(GetLegendGraphicResponse.class.getPackage()
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(GetLegendGraphicResponse.class.getPackage()
                                                                                         .getName());
 
     /**

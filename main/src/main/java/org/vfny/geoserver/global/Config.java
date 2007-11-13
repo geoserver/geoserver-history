@@ -32,7 +32,7 @@ import org.vfny.geoserver.global.xml.XMLConfigReader;
  *
  */
 public class Config implements ApplicationContextAware {
-    protected static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+    protected static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.global");
     WebApplicationContext context;
     XMLConfigReader reader;
 
