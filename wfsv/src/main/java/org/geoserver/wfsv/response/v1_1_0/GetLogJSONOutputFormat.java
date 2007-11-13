@@ -10,12 +10,13 @@ import net.opengis.wfsv.GetLogType;
 
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
+import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.response.GeoJSONOutputFormat;
 
 public class GetLogJSONOutputFormat extends GeoJSONOutputFormat{
 	
-	public GetLogJSONOutputFormat(){
-	    super();
+	public GetLogJSONOutputFormat(WFS wfs){
+	    super(wfs);
 	}
 
 	public boolean canHandle(Operation operation) {
