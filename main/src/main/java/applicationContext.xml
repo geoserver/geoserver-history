@@ -17,7 +17,7 @@
 	 
 	<!-- configuration module -->
 	<bean id="config"
-		class="org.vfny.geoserver.global.Config"/>
+		class="org.vfny.geoserver.global.Config" />
 		
 	<!-- geoserver module -->
 	<bean id="geoServer"

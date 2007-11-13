@@ -4,24 +4,17 @@
  */
 package org.geoserver.util;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.helpers.DefaultHandler;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.naming.ConfigurationException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.SAXParser;
@@ -30,6 +23,14 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.helpers.DefaultHandler;
 
 
 /**
@@ -109,17 +110,19 @@ public class ReaderUtils {
      *         the type specified.
      */
     public static File checkFile(File file, boolean isDir)
-        throws Exception {
+        throws FileNotFoundException {
         if (!file.exists()) {
-            throw new Exception("File does not exist: " + file);
+            throw new FileNotFoundException((isDir ? "Folder" : "File") + " does not exist: "
+                    + file);
         }
 
         if (isDir && !file.isDirectory()) {
-            throw new Exception("File is not a directory:" + file);
+            throw new FileNotFoundException("File exists but is not a directory:" + file);
         }
 
         if (!isDir && !file.isFile()) {
-            throw new Exception("File is not valid:" + file);
+            //may it be some sort of OS special file (e.g. /dev/tty1)
+            throw new FileNotFoundException("File exists but is not a regular file:" + file);
         }
 
         if (LOGGER.isLoggable(Level.FINER)) {

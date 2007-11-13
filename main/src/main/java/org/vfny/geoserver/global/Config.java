@@ -5,10 +5,12 @@
 package org.vfny.geoserver.global;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 
+import org.geoserver.util.ReaderUtils;
 import org.geotools.factory.Hints;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
@@ -44,6 +46,7 @@ public class Config implements ApplicationContextAware {
 
     public void setApplicationContext(ApplicationContext context)
         throws BeansException {
+        
         this.context = (WebApplicationContext) context;
 
         // if the server admin did not set it up otherwise, force X/Y axis ordering
@@ -76,10 +79,36 @@ public class Config implements ApplicationContextAware {
 
         try {
             GeoserverDataDirectory.init(this.context);
+            //before proceeding perform some configuration sanity checks
+            try {
+                doConfigSanityCheck();
+            } catch (ConfigurationException ce) {
+                LOGGER.severe(ce.getMessage());
+                throw new BeanInitializationException(ce.getMessage());
+            }
+            
             reader = new XMLConfigReader(dataDirectory(), sc);
         } catch (ConfigurationException e) {
             String msg = "Error creating xml config reader";
             throw new BeanInitializationException(msg, e);
+        }
+    }
+
+    /**
+     * Performs a sanity check on the configuration files to allow for
+     * the early failure of the bean initialization and providing
+     * a meaningful failure message.
+     * <p>
+     * For the time being, it only ensures that the data dir exists.
+     * </p>
+     */
+    private void doConfigSanityCheck() throws ConfigurationException {
+        File dataDirectory = dataDirectory();
+        try {
+            ReaderUtils.checkFile(dataDirectory, true);
+        } catch (FileNotFoundException e) {
+            throw new ConfigurationException("Can't access the configuration directory. Reason: "
+                    + e.getMessage());
         }
     }
 
