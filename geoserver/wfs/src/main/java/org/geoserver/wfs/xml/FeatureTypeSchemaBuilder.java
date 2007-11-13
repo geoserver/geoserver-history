@@ -52,7 +52,7 @@ import java.util.logging.Logger;
  */
 public abstract class FeatureTypeSchemaBuilder {
     /** logging instance */
-    static Logger logger = Logger.getLogger("org.geoserver.wfs");
+    static Logger logger = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfs");
 
     /** wfs configuration */
     WFS wfs;

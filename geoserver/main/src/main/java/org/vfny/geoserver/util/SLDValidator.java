@@ -27,7 +27,7 @@ import javax.servlet.ServletContext;
 
 
 public class SLDValidator {
-    static Logger LOGGER = Logger.getLogger("org.vfny.geoserver");
+    static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver");
 
     public SLDValidator() {
     }

@@ -92,7 +92,7 @@ import freemarker.template.TemplateException;
  * @deprecated use {@link KMLTransformer}.
  */
 public class KMLWriter extends OutputStreamWriter {
-	private static final Logger LOGGER = Logger.getLogger(KMLWriter.class
+	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(KMLWriter.class
 			.getPackage().getName());
 
 	/**

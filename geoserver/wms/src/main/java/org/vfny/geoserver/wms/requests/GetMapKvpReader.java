@@ -145,8 +145,7 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class GetMapKvpReader extends WmsKvpRequestReader {
 	/** DOCUMENT ME! */
-	private static final Logger LOGGER = Logger
-			.getLogger("org.vfny.geoserver.requests.readers.wms");
+	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.readers.wms");
 
 	/** Used to parse SLD documents from SLD and SLD_BODY parameters */
 	private static final StyleFactory styleFactory = CommonFactoryFinder

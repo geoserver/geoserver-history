@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  */
 public class GetFeatureInfoResponse implements Response {
     /** package logger   */
-    private static final Logger LOGGER = Logger.getLogger(GetMapResponse.class.getPackage().getName());
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(GetMapResponse.class.getPackage().getName());
 
     /** list of output format specialists */
     private static final List delegates = new LinkedList();

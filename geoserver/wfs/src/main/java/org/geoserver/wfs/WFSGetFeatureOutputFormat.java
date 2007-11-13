@@ -37,7 +37,7 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
     /**
      * logger
      */
-    protected static Logger LOGGER = Logger.getLogger("org.geoserver.wfs");
+    protected static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfs");
     /**
      * Constructor which sets the outputFormat.
      *

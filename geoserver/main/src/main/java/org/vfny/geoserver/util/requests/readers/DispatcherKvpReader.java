@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class DispatcherKvpReader {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
+    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.readers");
     private String queryString;
     private Map requestParams;
 

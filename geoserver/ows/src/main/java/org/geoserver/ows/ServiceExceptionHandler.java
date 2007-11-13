@@ -42,7 +42,7 @@ public abstract class ServiceExceptionHandler {
     /**
      * Logger
      */
-    protected static Logger LOGGER = Logger.getLogger("org.geoserver.ows");
+    protected static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.ows");
 
     /**
      * The services this handler handles exceptions for.

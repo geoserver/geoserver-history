@@ -36,7 +36,7 @@ import javax.xml.transform.TransformerException;
  */
 public class DescribeLayerResponse implements Response {
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger(DescribeLayerResponse.class.getPackage()
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(DescribeLayerResponse.class.getPackage()
                                                                                      .getName());
     public static final String DESCLAYER_MIME_TYPE = "application/vnd.ogc.wms_xml";
 

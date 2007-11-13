@@ -68,7 +68,7 @@ import javax.xml.parsers.SAXParserFactory;
  */
 abstract public class KvpRequestReader {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
+    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.readers");
 
     /** Delimeter for KVPs in the raw string */
     private static final String KEYWORD_DELIMITER = "&";

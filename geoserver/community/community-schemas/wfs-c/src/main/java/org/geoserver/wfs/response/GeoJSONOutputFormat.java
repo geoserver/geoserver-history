@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 
 
 public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
-    private final Logger LOGGER = Logger.getLogger(this.getClass().toString());
+    private final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(this.getClass().toString());
     public static final String FORMAT = "json";
 
     public GeoJSONOutputFormat() {

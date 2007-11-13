@@ -41,7 +41,7 @@ import java.util.logging.Logger;
  * @version $Id$
  */
 public class SVGWriter extends OutputStreamWriter {
-    private static final Logger LOGGER = Logger.getLogger(SVGWriter.class.getPackage().getName());
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(SVGWriter.class.getPackage().getName());
 
     /**
      * a number formatter setted up to write SVG legible numbers ('.' as

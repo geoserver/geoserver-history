@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class GeoServerAction extends ActionSupport {
     /** Class logger */
-    protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.action");
+    protected static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.action");
 
     //    /**
     //     * Logs the user out from the current Session.

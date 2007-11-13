@@ -26,7 +26,7 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
     /**
      * logger
      */
-    static Logger LOGGER = Logger.getLogger("org.geoserver.kml");
+    static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.kml");
     
     /**
      * flag controlling wether the network link should be a super overlay.

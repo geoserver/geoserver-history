@@ -59,7 +59,7 @@ import javax.xml.parsers.FactoryConfigurationError;
  */
 public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger(GetLegendGraphicKvpReader.class
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(GetLegendGraphicKvpReader.class
             .getPackage().getName());
 
     /**

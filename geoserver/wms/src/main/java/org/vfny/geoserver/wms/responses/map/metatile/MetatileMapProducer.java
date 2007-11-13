@@ -37,8 +37,7 @@ import org.vfny.geoserver.wms.responses.map.metatile.QuickTileCache.MetaTileKey;
 public final class MetatileMapProducer extends AbstractGetMapProducer implements
 		GetMapProducer {
 	/** A logger for this class. */
-	private static final Logger LOGGER = Logger
-			.getLogger("org.vfny.geoserver.responses.wms.map.metatile");
+	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map.metatile");
 
 	/** Small number for double equality comparison */
 	public static final double EPS = 1E-6;

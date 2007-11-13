@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class GetCoverageKvpReader extends KvpRequestReader {
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.readers");
 
     public GetCoverageKvpReader(Map kvPairs, WCService service) {
         super(kvPairs, service);

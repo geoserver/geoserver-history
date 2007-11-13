@@ -31,7 +31,7 @@ import javax.xml.namespace.QName;
  *
  */
 public class WFSHandlerFactory implements HandlerFactory {
-    static Logger logger = Logger.getLogger("org.geoserver.wfs");
+    static Logger logger = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfs");
 
     /**
      * Catalog reference

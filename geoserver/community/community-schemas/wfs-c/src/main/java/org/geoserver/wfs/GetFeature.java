@@ -250,7 +250,7 @@ public class GetFeature {
     }
 
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests");
 
     /** The catalog */
     protected Data catalog;

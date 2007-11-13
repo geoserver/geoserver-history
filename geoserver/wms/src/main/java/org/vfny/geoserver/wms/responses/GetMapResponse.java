@@ -66,7 +66,7 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class GetMapResponse implements Response {
 	/** DOCUMENT ME! */
-	private static final Logger LOGGER = Logger.getLogger(GetMapResponse.class
+	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(GetMapResponse.class
 			.getPackage().getName());
 
 	/**

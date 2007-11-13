@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  */
 public class WCSCapsTransformer extends TransformerBase {
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger(WCSCapsTransformer.class.getPackage()
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(WCSCapsTransformer.class.getPackage()
                                                                                   .getName());
     protected static final String WCS_URI = "http://www.opengis.net/wcs";
 

@@ -46,7 +46,7 @@ import java.util.logging.Logger;
  */
 public abstract class AbstractCiteDataTest extends TestCase {
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger(AbstractCiteDataTest.class.getPackage()
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(AbstractCiteDataTest.class.getPackage()
                                                                                     .getName());
 
     /** featuretype name for CITE BasicPolygons features */

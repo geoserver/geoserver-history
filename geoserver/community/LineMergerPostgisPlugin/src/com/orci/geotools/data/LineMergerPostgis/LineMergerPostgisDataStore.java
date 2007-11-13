@@ -19,7 +19,7 @@ import org.geotools.filter.Filter;
  * Copyright (c) 2005, Open Roads Consulting, Inc.
  */
 public class LineMergerPostgisDataStore extends PostgisDataStore {
-    private static final Logger LOG = Logger.getLogger(LineMergerPostgisDataStore.class.getName());
+    private static final Logger LOG = org.geotools.util.logging.Logging.getLogger(LineMergerPostgisDataStore.class.getName());
     
     private String featureUniqueKey;
 

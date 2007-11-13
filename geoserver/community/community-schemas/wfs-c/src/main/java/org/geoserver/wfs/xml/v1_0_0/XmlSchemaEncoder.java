@@ -31,7 +31,7 @@ import javax.xml.transform.TransformerException;
 
 public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses");
 
     // Initialize some generic GML information
     // ABSTRACT OUTSIDE CLASS, IF POSSIBLE

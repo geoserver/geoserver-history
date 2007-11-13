@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public abstract class XmlRequestReader {
     /** Class logger */
-    protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
+    protected static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.readers");
 
     /** The service handling the request **/
     private AbstractService service;

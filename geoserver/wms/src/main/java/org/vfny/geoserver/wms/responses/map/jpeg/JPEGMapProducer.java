@@ -30,7 +30,7 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
         return super.prepareImage(width, height, palette, transparent);
     }
     /** Logger. */
-    private final static Logger LOGGER = Logger.getLogger(JPEGMapProducer.class.toString());
+    private final static Logger LOGGER = org.geotools.util.logging.Logging.getLogger(JPEGMapProducer.class.toString());
 
     /** JPEG Native Acceleration Mode * */
     private Boolean JPEGNativeAcc;

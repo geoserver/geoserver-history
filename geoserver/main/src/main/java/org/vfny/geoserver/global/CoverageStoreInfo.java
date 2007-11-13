@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  */
 public final class CoverageStoreInfo extends GlobalLayerSupertype {
     /** for logging */
-    private static final Logger LOGGER = Logger.getLogger(CoverageStoreInfo.class.toString());
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(CoverageStoreInfo.class.toString());
 
     /**
      * CoverageStoreInfo we are representing

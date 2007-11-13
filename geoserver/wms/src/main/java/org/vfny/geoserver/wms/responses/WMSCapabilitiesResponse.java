@@ -34,7 +34,7 @@ import javax.xml.transform.TransformerException;
  */
 public class WMSCapabilitiesResponse implements Response {
     /** package's logger */
-    private static final Logger LOGGER = Logger.getLogger(WMSCapabilitiesResponse.class.getPackage()
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(WMSCapabilitiesResponse.class.getPackage()
                                                                                        .getName());
 
     /**

@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  */
 public class CoverageRequest extends WCSRequest {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests");
 
     /**
      *

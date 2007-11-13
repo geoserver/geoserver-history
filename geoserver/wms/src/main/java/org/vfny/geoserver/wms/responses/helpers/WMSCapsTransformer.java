@@ -147,7 +147,7 @@ public class WMSCapsTransformer extends TransformerBase {
      */
     private static class CapabilitiesTranslator extends TranslatorSupport {
         /** DOCUMENT ME! */
-        private static final Logger LOGGER = Logger.getLogger(CapabilitiesTranslator.class.getPackage()
+        private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(CapabilitiesTranslator.class.getPackage()
                                                                                           .getName());
 
         /** DOCUMENT ME! */

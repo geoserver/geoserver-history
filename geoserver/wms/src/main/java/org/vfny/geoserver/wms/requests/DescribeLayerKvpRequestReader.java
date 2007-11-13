@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
     /** package's logger  */
-    private static final Logger LOGGER = Logger.getLogger(DescribeLayerKvpRequestReader.class.getPackage()
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(DescribeLayerKvpRequestReader.class.getPackage()
                                                                                              .getName());
 
     /**

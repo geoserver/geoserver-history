@@ -75,7 +75,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class ServiceException extends org.geoserver.platform.ServiceException {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
+    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses");
 
     /** message inserted by GeoServer as to what it thinks happened */
     protected String preMessage = new String();

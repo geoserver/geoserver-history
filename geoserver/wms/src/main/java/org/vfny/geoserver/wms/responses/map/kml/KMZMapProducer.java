@@ -37,8 +37,7 @@ import org.vfny.geoserver.wms.responses.map.png.PNGMapProducer;
  */
 class KMZMapProducer extends AbstractGetMapProducer implements GetMapProducer {
 	/** standard logger */
-	private static final Logger LOGGER = Logger
-			.getLogger("org.vfny.geoserver.responses.wms.kmz");
+	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.kmz");
 
 	/**
 	 * delegating producer for rendering.

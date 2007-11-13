@@ -60,7 +60,7 @@ import javax.xml.transform.TransformerException;
  */
 public class XMLConfigWriter {
     /** Used internally to create log information to detect errors. */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.global");
 
     /**
      * XMLConfigWriter constructor.

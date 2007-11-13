@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
  * this charset and can correctly decode document's data.
  */
 public class XmlCharsetDetector {
-    protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
+    protected static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests");
 
     /**
      * In current context naming this "GT", "GREATER_THAN" or like

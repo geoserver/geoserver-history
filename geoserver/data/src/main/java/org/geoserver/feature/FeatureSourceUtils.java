@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  *
  */
 public class FeatureSourceUtils {
-    protected static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.feature");
+    protected static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.feature");
 
     /**
      * Retreives the bounds for a feature source.

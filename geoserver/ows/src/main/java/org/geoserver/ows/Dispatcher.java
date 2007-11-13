@@ -107,7 +107,7 @@ public class Dispatcher extends AbstractController {
     /**
      * Logging instance
      */
-    static Logger logger = Logger.getLogger("org.geoserver.ows");
+    static Logger logger = org.geotools.util.logging.Logging.getLogger("org.geoserver.ows");
 
     /** flag to control wether the dispatcher is cite compliant */
     boolean citeCompliant = false;

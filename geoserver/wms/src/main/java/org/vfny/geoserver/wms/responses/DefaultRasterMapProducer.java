@@ -106,8 +106,7 @@ public abstract class DefaultRasterMapProducer extends
 	private WMS wms;
 
 	/** A logger for this class. */
-	private static final Logger LOGGER = Logger
-			.getLogger("org.vfny.geoserver.responses.wms.map");
+	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
 
 	/** Which format to encode the image in if one is not supplied */
 	private static final String DEFAULT_MAP_FORMAT = "image/png";

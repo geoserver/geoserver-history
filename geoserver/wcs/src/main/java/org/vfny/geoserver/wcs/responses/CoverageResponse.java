@@ -55,7 +55,7 @@ import javax.media.jai.Interpolation;
  */
 public class CoverageResponse implements Response {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses");
     private final static Hints LENIENT_HINT = new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
     private final static Hints IGNORE_OVERVIEWS = new Hints(Hints.IGNORE_COVERAGE_OVERVIEW,
             Boolean.TRUE);

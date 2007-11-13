@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.wcs");
+    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.wcs");
 
     /**
      * Internal GetCapabilities request for construction.

@@ -85,7 +85,7 @@ public class GeoValidator extends ValidationProcessor {
                 plugIns = new HashMap();
             }
         } catch (Exception e) {
-            Logger.getLogger("org.vfny.geoserver.global").log(Level.WARNING, "loading plugins", e);
+            org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.global").log(Level.WARNING, "loading plugins", e);
 
             testSuites = new HashMap();
             plugIns = new HashMap();

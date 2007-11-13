@@ -30,7 +30,7 @@ import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
  * 
  */
 public class PaletteManager {
-    private static final Logger LOG = Logger.getLogger("PaletteManager");
+    private static final Logger LOG = org.geotools.util.logging.Logging.getLogger("PaletteManager");
 
     /**
      * Safe palette, a 6x6x6 color cube, followed by a 39 elements gray scale,

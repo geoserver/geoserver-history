@@ -56,7 +56,7 @@ public class TestValidationResults implements ValidationResults {
 
     public void error(Feature f, String s) {
         String message = toMessage(s);
-        Logger logger = Logger.getLogger("org.vfny.geoserver");
+        Logger logger = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver");
 
         if (logger.getLevel().equals(Level.FINEST)) {
             logger.warning(message);

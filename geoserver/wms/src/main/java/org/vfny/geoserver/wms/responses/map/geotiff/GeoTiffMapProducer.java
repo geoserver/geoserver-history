@@ -34,7 +34,7 @@ import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 public class GeoTiffMapProducer extends DefaultRasterMapProducer {
 
     /** A logger for this class. */
-    private static final Logger LOGGER = Logger.getLogger(
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(
             "org.vfny.geoserver.responses.wms.map.geotiff");
 
     /** GridCoverageFactory. */

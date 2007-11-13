@@ -45,7 +45,7 @@ public class OpenPlansAuthenticationProvider implements AuthenticationProvider {
 	
     private Map roles;
 
-    static Logger LOGGER = Logger.getLogger("org.geoserver.community");
+    static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.community");
   
   private void loadRoles() {
     Map tempRoles = new HashMap();

@@ -31,7 +31,7 @@ import org.vfny.geoserver.wfs.servlets.WFService;
  */
 public class GetNearestKvpReader extends WfsKvpRequestReader {
     /** Class logger */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.readers");
 
     /**
              * Constructor with raw request string.  Calls parent.

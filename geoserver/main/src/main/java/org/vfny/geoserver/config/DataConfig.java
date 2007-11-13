@@ -56,7 +56,7 @@ public class DataConfig {
     public static final String SELECTED_FEATURE_TYPE = "selectedFeatureType";
     public static final String SELECTED_ATTRIBUTE_TYPE = "selectedAttributeType";
     public static final String SELECTED_COVERAGE = "selectedCoverage";
-    private Logger LOGGER = Logger.getLogger(this.getClass().toString());
+    private Logger LOGGER = org.geotools.util.logging.Logging.getLogger(this.getClass().toString());
 
     /**
      * A set of dataFormatConfig by dataFormatId.

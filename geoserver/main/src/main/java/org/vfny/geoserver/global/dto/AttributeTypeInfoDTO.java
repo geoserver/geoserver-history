@@ -48,7 +48,7 @@ import java.util.logging.Logger;
  */
 public class AttributeTypeInfoDTO implements DataTransferObject {
     /** For debugging */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global.dto");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.global.dto");
 
     /** attribute name */
     private String name;

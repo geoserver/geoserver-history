@@ -4,53 +4,30 @@
  */
 package org.geoserver.logging;
 
-import org.geotools.util.Logging;
-
-import java.util.Enumeration;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.geotools.util.logging.Log4JLoggerFactory;
+import org.geotools.util.logging.Logging;
 
+/**
+ * Listens for GeoServer startup and tries to configure logging redirection to LOG4J
+ *
+ */
 public class LoggingStartupContextListener implements ServletContextListener {
+    private static final Logger LOGGER = Logging.getLogger("org.geoserver.logging");
+
     public void contextDestroyed(ServletContextEvent arg0) {
     }
 
     public void contextInitialized(ServletContextEvent context) {
-        Logger LOGGER = Logger.getLogger(this.getClass().toString());
-
-        if (!Logging.GEOTOOLS.redirectToCommonsLogging()) {
-            LOGGER.warning("Tried to send 'org.geotools' logging to the "
-                + "commons-logging subsystem, but commons-logging is set"
-                + " up to log to java logging.  Leaving default logging behavior alone.");
+        try {
+            Logging.ALL.setLoggerFactory(Log4JLoggerFactory.getInstance());
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Could not configure log4j logging redirection", e);
         }
-
-        Logging gsLogging = new Logging("org.geoserver");
-
-        if (!gsLogging.redirectToCommonsLogging()) {
-            LOGGER.warning("Tried to send 'org.geoserver' logging to the "
-                + "commons-logging subsystem, but commons-logging is set"
-                + " up to log to java logging.  Leaving default logging behavior alone.");
-        }
-
-        gsLogging = new Logging("org.vfny");
-
-        if (!gsLogging.redirectToCommonsLogging()) {
-            LOGGER.warning("Tried to send 'org.vfny' logging to the "
-                + "commons-logging subsystem, but commons-logging is set"
-                + " up to log to java logging.  Leaving default logging behavior alone.");
-        }
-        
-        //we should alert people that the default commons-logging configuration is in-place
-        //until geoserver is fully loaded.  By default geoserver's commons-logging config
-        //is set to log via log4j using the default classpath-loaded log4j.properties file.
-        //The "real" logging setup (if a different profile is specified by the UI) will
-        //get loaded when the geoserver config is loaded.
-        LOGGER.config("Default commons-logging configuration in-use.  Geoserver will"
-                + " load the stored logging configuration once geoserver has finished"
-                + " reading its config files.");
-        
     }
 }

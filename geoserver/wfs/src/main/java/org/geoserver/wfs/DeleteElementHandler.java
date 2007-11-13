@@ -42,7 +42,7 @@ public class DeleteElementHandler implements TransactionElementHandler {
     /**
      * logger
      */
-    static Logger LOGGER = Logger.getLogger("org.geoserver.wfs");
+    static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfs");
     private WFS wfs;
 
     public DeleteElementHandler(WFS wfs) {

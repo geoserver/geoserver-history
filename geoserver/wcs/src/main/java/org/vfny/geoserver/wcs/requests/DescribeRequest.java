@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class DescribeRequest extends WCSRequest {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.wcs");
+    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.wcs");
 
     /** Flags whether or not all coverages were requested */
     protected boolean allRequested = true;

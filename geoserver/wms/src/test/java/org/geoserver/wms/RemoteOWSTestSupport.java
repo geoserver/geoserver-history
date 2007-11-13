@@ -20,7 +20,7 @@ import org.geotools.data.wfs.WFSDataStoreFactory;
  * @author Andrea Aime - TOPP
  */
 public class RemoteOWSTestSupport {
-    static final Logger LOGGER = Logger.getLogger("org.geoserver.test"); 
+    static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.test"); 
     
     // support for remote OWS layers
     public static final String TOPP_STATES = "topp:states";

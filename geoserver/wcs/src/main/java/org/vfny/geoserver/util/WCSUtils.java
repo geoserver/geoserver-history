@@ -40,7 +40,7 @@ import javax.media.jai.InterpolationNearest;
  */
 public class WCSUtils {
     private final static Hints LENIENT_HINT = new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.util");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.util");
     private final static SelectSampleDimension bandSelectFactory = new SelectSampleDimension();
     private final static Crop cropFactory = new Crop();
     private final static Interpolate interpolateFactory = new Interpolate();

@@ -101,7 +101,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public abstract class AbstractService extends HttpServlet implements ApplicationContextAware {
     /** Class logger */
-    protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets");
+    protected static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.servlets");
 
     /**
      * Servivce group (maps to 'SERVICE' parameter in OGC service urls)

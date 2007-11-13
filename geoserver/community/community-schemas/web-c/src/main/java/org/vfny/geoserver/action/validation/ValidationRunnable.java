@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class ValidationRunnable implements Runnable {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses");
     private Map testSuites;
     private Map plugins;
     private DataConfig dataConfig;

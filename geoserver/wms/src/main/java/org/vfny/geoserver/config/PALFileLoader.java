@@ -44,8 +44,7 @@ import java.util.logging.Logger;
  * 
  */
 public class PALFileLoader {
-	protected static final Logger LOGGER = Logger
-			.getLogger("it.geosolutions.inversecolormap.PALFileLoader");
+	protected static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("it.geosolutions.inversecolormap.PALFileLoader");
 
 	/** Size of the color map we'll use. */
 	protected int mapsize;

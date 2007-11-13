@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  */
 public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger(DefaultRasterLegendProducerTest.class.getPackage()
+    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(DefaultRasterLegendProducerTest.class.getPackage()
                                                                                                .getName());
 
     /** DOCUMENT ME! */

@@ -21,7 +21,7 @@ import com.vividsolutions.jts.operation.linemerge.LineMerger;
  * Copyright (c) 2005, Open Roads Consulting, Inc.
  */
 public class LineMergerFeatureReader implements FeatureReader {
-    private static final Logger LOG = Logger.getLogger(LineMergerFeatureReader.class.getName());
+    private static final Logger LOG = org.geotools.util.logging.Logging.getLogger(LineMergerFeatureReader.class.getName());
     
     protected FeatureReader baseFeatureReader;
     protected String featureUniqueKey;

@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  */
 public class KvpUtils {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
+    private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests.readers");
 
     /**
      * Defines how to tokenize a string by using some sort of delimiter.
