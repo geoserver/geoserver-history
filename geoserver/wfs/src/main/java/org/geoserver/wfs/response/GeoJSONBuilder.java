@@ -6,6 +6,7 @@
 package org.geoserver.wfs.response;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.LineString;
@@ -130,6 +131,20 @@ public class GeoJSONBuilder extends JSONBuilder {
         this.value(coord.y);
 
         return this.endArray();
+    }
+    /**
+     * Turns an envelope into an array [minX,minY,maxX,maxY]
+     * @param env envelope representing bounding box
+     * @return this
+     */
+    protected JSONBuilder writeBoundingBox(Envelope env) {
+    	this.key("bbox");
+    	this.array();
+    	this.value(env.getMinX());
+    	this.value(env.getMinY());
+    	this.value(env.getMaxX());
+    	this.value(env.getMaxY());
+    	return this.endArray();
     }
 
     /**
