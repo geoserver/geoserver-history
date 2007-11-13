@@ -1506,6 +1506,16 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	}
 
 	/**
+	 * Parses a list of layers in a layer grouping.
+	 * 
+	 * @param layerGroup The layer group.
+	 * 
+	 * @return List of String.
+	 */
+	public static List parseLayerGroup( String layerGroup ) {
+	    return readFlat( layerGroup, INNER_DELIMETER );
+	}
+	/**
 	 * Parses the requested layers given by the LAYERS request parameter and
 	 * looks up their corresponding FeatureTypeInfo objects in the server.
 	 * 
@@ -1529,8 +1539,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 				String layerGroup = (String) wms.getBaseMapLayers().get(
 						layerNames.get(i));
 				if (layerGroup != null) {
-					List layerGroupExpanded = readFlat(layerGroup,
-							INNER_DELIMETER);
+					List layerGroupExpanded = parseLayerGroup(layerGroup);
 					layerNames.remove(i);
 					layerNames.addAll(i, layerGroupExpanded);
 				}

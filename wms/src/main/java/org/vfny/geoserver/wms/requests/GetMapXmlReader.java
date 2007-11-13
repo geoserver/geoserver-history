@@ -47,6 +47,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -316,20 +317,45 @@ public class GetMapXmlReader extends XmlRequestReader {
 
             // TODO: add support for remote WFS here
             //handle the InLineFeature stuff
+            boolean isBaseMap = false;
             if ((sl instanceof UserLayer)
                     && ((((UserLayer) sl)).getInlineFeatureDatastore() != null)) {
                 //SPECIAL CASE - we make the temporary version
                 UserLayer ul = ((UserLayer) sl);
                 GetMapKvpReader.initializeInlineFeatureLayer(getMapRequest, ul, currLayer);
             } else {
-                try {
-                    currLayer.setFeature(GetMapKvpReader.findFeatureLayer(getMapRequest, layerName));
-                } catch (Exception e) {
-                    currLayer.setCoverage(GetMapKvpReader.findCoverageLayer(getMapRequest, layerName));
+                
+                //look for a base map layer
+                String layerGroup = (String) getMapRequest.getWMS().getBaseMapLayers().get( layerName );
+                if ( layerGroup != null ) {
+                    isBaseMap = true;
+                    List layerGroupExpanded = GetMapKvpReader.parseLayerGroup(layerGroup);
+                    for (Iterator it = layerGroupExpanded.iterator(); it.hasNext();) {
+                        layerName = (String) it.next();
+                        currLayer = new MapLayerInfo();
+                        try {
+                            currLayer.setFeature(GetMapKvpReader.findFeatureLayer(getMapRequest, layerName));    
+                        }
+                        catch( Exception e ) {
+                            currLayer.setCoverage(GetMapKvpReader.findCoverageLayer(getMapRequest, layerName));
+                        }
+                        
+                        GetMapKvpReader.addStyles(getMapRequest, currLayer, styledLayers[i], layers, styles);
+                    }
+                }
+                else {
+                    try {
+                        currLayer.setFeature(GetMapKvpReader.findFeatureLayer(getMapRequest, layerName));    
+                    }
+                    catch( Exception e ) {
+                        currLayer.setCoverage(GetMapKvpReader.findCoverageLayer(getMapRequest, layerName));
+                    }
                 }
             }
 
-            GetMapKvpReader.addStyles(getMapRequest, currLayer, styledLayers[i], layers, styles);
+            if (!isBaseMap) {
+                GetMapKvpReader.addStyles(getMapRequest, currLayer, styledLayers[i], layers, styles);    
+            }
         }
 
         getMapRequest.setLayers((MapLayerInfo[]) layers.toArray(new MapLayerInfo[layers.size()]));
