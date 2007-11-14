@@ -86,7 +86,9 @@ public class WrappingController extends AbstractController {
       (EditableUserDAO)getApplicationContext()
       .getBean("userDetailsService");
     // router.attach("/roles", new UserRestlet("Role Management Page"));
+    router.attach("/user.{type}", new UserFinder(router.getContext(), eud));
     router.attach("/user", new UserFinder(router.getContext(), eud));
+    router.attach("/user/{name}.{type}", new UserFinder(router.getContext(), eud));
     router.attach("/user/{name}", new UserFinder(router.getContext(), eud));
     router.attach("/dummy/{name}", new DummyRestlet(getApplicationContext()));
     // router.attach("/geoserver/users/{user}/roles", new
