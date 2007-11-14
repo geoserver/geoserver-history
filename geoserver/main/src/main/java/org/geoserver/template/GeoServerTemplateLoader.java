@@ -14,6 +14,7 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
 
@@ -102,15 +103,22 @@ public class GeoServerTemplateLoader implements TemplateLoader {
         File template = null;
 
         //first check relative to set feature type
-        if (featureType != null) {
-            String dirName = GeoserverDataDirectory.findFeatureTypeDirName(featureType);
-            template = (File) fileTemplateLoader.findTemplateSource("featureTypes" + File.separator
-                    + dirName + File.separator + path);
-
-            if (template != null) {
-                return template;
-            }
+        try {
+            if (featureType != null) {
+                String dirName = GeoserverDataDirectory.findFeatureTypeDirName(featureType);
+                template = (File) fileTemplateLoader.findTemplateSource("featureTypes" + File.separator
+                        + dirName + File.separator + path);
+    
+                if (template != null) {
+                    return template;
+                }
+            } 
+        } catch(NoSuchElementException e) {
+            // this one is thrown if the feature type is not found, and happens whenever
+            // the feature type is a remote one
+            // No problem, we just go on, there won't be any specific template for it
         }
+    
 
         // next, try relative to feature types
         template = (File) fileTemplateLoader.findTemplateSource("featureTypes" + File.separator
