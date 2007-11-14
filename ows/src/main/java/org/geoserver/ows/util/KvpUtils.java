@@ -64,7 +64,7 @@ public class KvpUtils {
                 return Collections.EMPTY_LIST;
             }
             String []split = rawList.split(getRegExp());
-            return Arrays.asList(split);
+            return new ArrayList(Arrays.asList(split));
         }
     }
     /** Delimeter for KVPs in the raw string */
