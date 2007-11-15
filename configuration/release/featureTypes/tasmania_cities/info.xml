@@ -4,11 +4,12 @@
     native wich EPGS code for the FeatureTypeInfoDTO
   -->
   <SRS>4326</SRS>
+  <SRSHandling>0</SRSHandling>
   <title>tasmania_cities_Type</title>
   <abstract>Generated from tasmania_cities_shapefile</abstract>
   <numDecimals value = "8" />
   <keywords>Tasmania Roads</keywords>
-  <latLonBoundingBox dynamic = "false" maxx = "148.27298000000002" maxy = "-40.852802" minx = "145.19754" miny = "-43.423512" />
+  <latLonBoundingBox dynamic = "false" miny = "-43.423512" maxy = "-40.852802" maxx = "148.27298000000002" minx = "145.19754" />
   <nativeBBox dynamic = "true" />
   <!--
     the default style this FeatureTypeInfoDTO can be represented by.

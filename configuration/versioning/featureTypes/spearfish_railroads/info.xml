@@ -1,19 +1,21 @@
 <featureType datastore = "spearfish" >
-<name>railroads</name>
-<!--
-native wich EPGS code for the FeatureTypeInfoDTO
--->
-<SRS>26713</SRS>
-<title>railroads_Type</title>
-<abstract>Generated from spearfish</abstract>
-<wmspath>/</wmspath>
-<numDecimals value = "8" />
-<keywords>spearfish railroads</keywords>
-<latLonBoundingBox dynamic = "false" miny = "43.998284471010905" maxy = "44.50149037708702" maxx = "-103.49781552548171" minx = "-103.81018108511714"  />
-<!--
-the default style this FeatureTypeInfoDTO can be represented by.
-at least must contain the "default" attribute 
--->
-<styles default = "line"  />
-<cacheinfo enabled = "false" maxage = ""  />
+  <name>railroads</name>
+  <!--
+    native wich EPGS code for the FeatureTypeInfoDTO
+  -->
+  <SRS>26713</SRS>
+  <SRSHandling>0</SRSHandling>
+  <title>railroads_Type</title>
+  <abstract>Generated from spearfish</abstract>
+  <wmspath>/</wmspath>
+  <numDecimals value = "8" />
+  <keywords>spearfish railroads</keywords>
+  <latLonBoundingBox dynamic = "false" maxx = "-103.49781552548171" maxy = "44.50149037708702" minx = "-103.81018108511714" miny = "43.998284471010905" />
+  <nativeBBox dynamic = "true" />
+  <!--
+    the default style this FeatureTypeInfoDTO can be represented by.
+    at least must contain the "default" attribute
+  -->
+  <styles default = "line" />
+  <cacheinfo enabled = "false" maxage = "" />
 </featureType>

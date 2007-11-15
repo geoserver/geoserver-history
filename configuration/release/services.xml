@@ -45,19 +45,9 @@
       is used.
     -->
     <charSet value = "UTF-8" />
-    <!--
-      Defines the user name of the administrator for log in
-      to the web based administration tool.
-    -->
-    <adminUserName>admin</adminUserName>
-    <!--
-      Defines the password of the administrator for log in
-      to the web based administration tool.
-    -->
-    <adminPassword>geoserver</adminPassword>
     <ContactInformation >
       <ContactPersonPrimary >
-        <ContactPerson></ContactPerson>
+        <ContactPerson>Andrea Aime</ContactPerson>
         <ContactOrganization></ContactOrganization>
       </ContactPersonPrimary>
       <ContactPosition></ContactPosition>
@@ -76,7 +66,7 @@
     </ContactInformation>
   </global>
   <services >
-    <service enabled = "true" type = "WCS" >
+    <service type = "WCS" enabled = "true" >
       <!--
         ServiceDTO elements, needed for the capabilities document
         Title and OnlineResource are the two required
@@ -86,7 +76,7 @@
       <abstract>
 This is a description of your Web Coverage Server.
      </abstract>
-      <metadataLink about = "http://geoserver.sourceforge.net/html/index.php" type = "undef" metadataType = "other" >
+      <metadataLink about = "http://geoserver.sourceforge.net/html/index.php" metadataType = "other" type = "undef" >
 	NONE
       </metadataLink>
       <keywords >
@@ -100,7 +90,7 @@ This is a description of your Web Coverage Server.
       <srsXmlStyle value = "false" />
       <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
     </service>
-    <service enabled = "true" type = "WFS" >
+    <service type = "WFS" enabled = "true" >
       <!--
         ServiceDTO elements, needed for the capabilities document
         Title and OnlineResource are the two required
@@ -128,7 +118,7 @@ data.
       <citeConformanceHacks>false</citeConformanceHacks>
       <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
     </service>
-    <service enabled = "true" type = "WMS" >
+    <service type = "WMS" enabled = "true" >
       <!--
         ServiceDTO elements, needed for the capabilities document
         Title and OnlineResource are the two required
@@ -158,20 +148,20 @@ This is a description of your Web Map Server.
             <pos>-73.907005 40.882078</pos>
           </baseMapEnvelope>
         </BaseMapGroup>
-        <BaseMapGroup baseMapTitle = "tasmania" >
-          <baseMapLayers>topp:tasmania_state_boundaries,topp:tasmania_water_bodies,topp:tasmania_roads,topp:tasmania_cities</baseMapLayers>
-          <baseMapStyles></baseMapStyles>
-          <baseMapEnvelope srsName = "EPSG:4326" >
-            <pos>143.83482400000003 -43.648056</pos>
-            <pos>148.47914100000003 -39.573891</pos>
-          </baseMapEnvelope>
-        </BaseMapGroup>
         <BaseMapGroup baseMapTitle = "spearfish" >
           <baseMapLayers>sf:dem,sf:streams,sf:roads,sf:restricted,sf:archsites,sf:bugsites</baseMapLayers>
           <baseMapStyles></baseMapStyles>
           <baseMapEnvelope srsName = "EPSG:26713" >
             <pos>589425.9342365642 4913959.224611808</pos>
             <pos>609518.6719560538 4928082.949945881</pos>
+          </baseMapEnvelope>
+        </BaseMapGroup>
+        <BaseMapGroup baseMapTitle = "tasmania" >
+          <baseMapLayers>topp:tasmania_state_boundaries,topp:tasmania_water_bodies,topp:tasmania_roads,topp:tasmania_cities</baseMapLayers>
+          <baseMapStyles></baseMapStyles>
+          <baseMapEnvelope srsName = "EPSG:4326" >
+            <pos>143.83482400000003 -43.648056</pos>
+            <pos>148.47914100000003 -39.573891</pos>
           </baseMapEnvelope>
         </BaseMapGroup>
       </BaseMapGroups>

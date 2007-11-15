@@ -4,11 +4,12 @@
     native wich EPGS code for the FeatureTypeInfoDTO
   -->
   <SRS>4326</SRS>
+  <SRSHandling>0</SRSHandling>
   <title>poly_landmarks_Type</title>
   <abstract>Generated from DS_poly_landmarks</abstract>
   <numDecimals value = "8" />
   <keywords>DS_poly_landmarks poly_landmarks</keywords>
-  <latLonBoundingBox dynamic = "false" maxx = "-73.90782" maxy = "40.882078" minx = "-74.047185" miny = "40.679648" />
+  <latLonBoundingBox dynamic = "false" miny = "40.679648" maxy = "40.882078" maxx = "-73.90782" minx = "-74.047185" />
   <nativeBBox dynamic = "true" />
   <!--
     the default style this FeatureTypeInfoDTO can be represented by.

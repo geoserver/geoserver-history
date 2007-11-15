@@ -4,13 +4,14 @@
     native wich EPGS code for the FeatureTypeInfoDTO
   -->
   <SRS>26713</SRS>
+  <SRSHandling>0</SRSHandling>
   <title>roads_Type</title>
   <abstract>Generated from sfRoads</abstract>
   <wmspath>/</wmspath>
   <numDecimals value = "8" />
   <keywords>sfRoads roads</keywords>
-  <latLonBoundingBox dynamic = "false" maxx = "-103.62231404880659" maxy = "44.50015918338962" minx = "-103.87741691493184" miny = "44.37087275281798" />
-  <nativeBBox dynamic = "false" maxx = "609527.2102150217" maxy = "4928063.398014731" minx = "589434.8564686741" miny = "4914006.337837095" />
+  <latLonBoundingBox dynamic = "false" miny = "44.37087275281798" maxy = "44.50015918338962" maxx = "-103.62231404880659" minx = "-103.87741691493184" />
+  <nativeBBox dynamic = "false" miny = "4914006.337837095" maxy = "4928063.398014731" maxx = "609527.2102150217" minx = "589434.8564686741" />
   <!--
     the default style this FeatureTypeInfoDTO can be represented by.
     at least must contain the "default" attribute
