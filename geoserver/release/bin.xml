@@ -30,21 +30,6 @@
 		</fileSet>
 		<fileSet>
 			<directory>web/target/geoserver/data</directory>
-			<outputDirectory>geoserver/webapps/geoserver/conf</outputDirectory>
-			<includes>
-				<include>demo/**/*</include>
-				<include>mbdemos/**/*</include>
-				<include>plugIns/**/*</include>
-				<include>styles/**/*</include>
-				<include>images/**/*</include>
-				<include>coverages/**/*</include>
-				<include>featureTypes/**/*</include>
-				<include>validation/**/*</include>
-				<include>wfs-t_demo/**/*</include>
-			</includes>
-		</fileSet>
-		<fileSet>
-			<directory>web/target/geoserver/data</directory>
 			<outputDirectory>geoserver/webapps/geoserver/conf/data</outputDirectory>
 			<includes>
 				<include>nyc/**/*</include>
