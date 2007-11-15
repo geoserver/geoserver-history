@@ -79,17 +79,15 @@ public class GeoValidator extends ValidationProcessor {
                 if (validationDir != null && validationDir.exists()) {
                     testSuites = XMLReader.loadValidations(validationDir, plugIns);
                 }
-
-                testSuites = new HashMap();
-            } else {
-                plugIns = new HashMap();
-            }
+            } 
         } catch (Exception e) {
             org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.global").log(Level.WARNING, "loading plugins", e);
-
-            testSuites = new HashMap();
-            plugIns = new HashMap();
         }
+        
+        if(testSuites == null)
+            testSuites = new HashMap();
+        if(plugIns == null)
+            plugIns = new HashMap();
 
         load(testSuites, plugIns);
     }
