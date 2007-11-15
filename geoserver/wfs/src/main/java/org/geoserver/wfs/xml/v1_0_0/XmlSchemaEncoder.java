@@ -150,7 +150,12 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
             while (prefixIter.hasNext()) {
                 //iterate through prefixes, and add the types that have that prefix.
                 String prefix = prefixIter.next().toString();
-                tempResponse.append(getNSImport(prefix, infos, proxifiedBaseUrl));
+                String wfsBaseUrl;
+                if(proxifiedBaseUrl.endsWith("/"))
+                    wfsBaseUrl = proxifiedBaseUrl + request.getService().toLowerCase();
+                else
+                    wfsBaseUrl = proxifiedBaseUrl + "/" + request.getService().toLowerCase();
+                tempResponse.append(getNSImport(prefix, infos, wfsBaseUrl));
             }
         }
 
