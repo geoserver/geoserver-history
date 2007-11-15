@@ -1,3 +1,27 @@
+GeoServer 1.6-rc1
+---------------------
+
+The main focus of this release is bug fixing, bringing us very close to a final release.
+Notable changes:
+* more reprojection support in wfs (to handle requests with geometries expressed in a
+  SRS other than the feature type native one)
+* wfs 1.1 is now usable and conforms to the specification even with lon/lat oriented
+  data sources (the default output is lat/lon thought, as the spec mandates)
+* some external graphics related issues were fixed, as well as some layer labelling order issues
+* component WMS is now supported, so it's possible to direct a wms call to a remote wfs
+  source without configuring the wfs layer into GeoServer
+* sld library  mode does not conform to the SLD 1.0 specification (this will break some
+  client that used the old non conformant behaviour, we'll restore it as a fallback in rc2)
+* problems with connection pool exhaustion during GeoServer configuration tshould be gone
+* issues in migration from GeoServer 1.5.0/1.5.1/1.5.2 data directory should be fixed
+* logging configuration issues should be gone, GeoServer fully uses log4j now
+ 
+
+For a full change log see:
+http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&styleName=Html&version=13631
+
+This release is based on GeoTools 2.4-SNAPSHOT, tag geoserver-1.6-rc1, revision 27907
+
 GeoServer 1.6-beta4
 ---------------------
 
