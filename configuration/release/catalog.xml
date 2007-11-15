@@ -257,7 +257,6 @@
     <style filename = "simple_streams.sld" id = "simple_streams" />
     <style filename = "restricted.sld" id = "restricted" />
     <style filename = "tiger_roads.sld" id = "tiger_roads" />
-    <style filename = "symbol2.sld" id = "svgSymbol" />
     <style filename = "poly_landmarks.sld" id = "poly_landmarks" />
     <style filename = "green.sld" id = "green" />
     <style filename = "simpleRoads.sld" id = "simple_roads" />
