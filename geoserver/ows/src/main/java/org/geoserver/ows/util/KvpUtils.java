@@ -63,7 +63,8 @@ public class KvpUtils {
                 // handles explicit unconstrained case
                 return Collections.EMPTY_LIST;
             }
-            String []split = rawList.split(getRegExp());
+            // -1 keeps trailing empty strings in the pack
+            String []split = rawList.split(getRegExp(), -1);
             return new ArrayList(Arrays.asList(split));
         }
     }
