@@ -57,14 +57,14 @@ public class KvpUtils {
         }
         
         public List readFlat(final String rawList){
-            if ((rawList == null)) {
+            if ((rawList == null || rawList.trim().equals(""))) {
                 return Collections.EMPTY_LIST;
             } else if (rawList.equals("*")) {
                 // handles explicit unconstrained case
                 return Collections.EMPTY_LIST;
             }
             // -1 keeps trailing empty strings in the pack
-            String []split = rawList.split(getRegExp(), -1);
+            String[] split = rawList.split(getRegExp(), -1);
             return new ArrayList(Arrays.asList(split));
         }
     }
