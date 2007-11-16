@@ -12,9 +12,9 @@ import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.property.PropertyDataStore;
-import org.geotools.feature.FeatureType;
 import org.geotools.feature.SchemaException;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
@@ -504,8 +504,8 @@ public class MockUtils {
          * @throws DataSourceException
          *             DOCUMENT ME!
          */
-        public FeatureType getSchema(String typeName) throws IOException {
-            FeatureType schema = super.getSchema(typeName);
+        public SimpleFeatureType getSchema(String typeName) throws IOException {
+            SimpleFeatureType schema = super.getSchema(typeName);
 
             try {
                 return DataUtilities.createSubType(schema, null, DefaultGeographicCRS.WGS84);

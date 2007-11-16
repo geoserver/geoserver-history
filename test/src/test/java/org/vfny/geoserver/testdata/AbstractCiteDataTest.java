@@ -9,13 +9,13 @@ import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.property.PropertyDataStore;
-import org.geotools.feature.FeatureType;
 import org.geotools.feature.SchemaException;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import java.awt.Color;
 import java.awt.Frame;
@@ -417,8 +417,8 @@ public abstract class AbstractCiteDataTest extends TestCase {
          * @throws IOException DOCUMENT ME!
          * @throws DataSourceException DOCUMENT ME!
          */
-        public FeatureType getSchema(String typeName) throws IOException {
-            FeatureType schema = super.getSchema(typeName);
+        public SimpleFeatureType getSchema(String typeName) throws IOException {
+            SimpleFeatureType schema = super.getSchema(typeName);
 
             try {
                 return DataUtilities.createSubType(schema, null, FORCED_WGS84);

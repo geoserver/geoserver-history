@@ -13,11 +13,11 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.memory.MemoryDataStore;
-import org.geotools.feature.AttributeTypeFactory;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.FeatureTypeFactory;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.styling.Style;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.responses.map.svg.SVGMapProducer;
@@ -38,20 +38,18 @@ public class SVGMapProducerTest extends AbstractCiteDataTest {
                         new Coordinate(200, 0), new Coordinate(0, 0)
                     }), null);
 
-        AttributeTypeFactory atf = AttributeTypeFactory.defaultInstance();
-        FeatureTypeFactory ff = FeatureTypeFactory.newInstance("test");
+                SimpleFeatureTypeBuilder b = new SimpleFeatureTypeBuilder();
+        b.setName( "test" );
+        b.add("geom",Geometry.class);
+        SimpleFeatureType type = b.buildFeatureType();
 
-        ff.addType(atf.newAttributeType("geom", Geometry.class));
-
-        FeatureType type = ff.getFeatureType();
-
-        Feature f1 = type.create(new Object[] { point });
-        Feature f2 = type.create(new Object[] { line });
-        Feature f3 = type.create(new Object[] { polygon });
+        SimpleFeature f1 = SimpleFeatureBuilder.build(type, new Object[] { point },null);
+        SimpleFeature f2 = SimpleFeatureBuilder.build(type, new Object[] { line },null);
+        SimpleFeature f3 = SimpleFeatureBuilder.build(type, new Object[] { polygon },null);
 
         MemoryDataStore ds = new MemoryDataStore();
         ds.createSchema(type);
-        ds.addFeatures(new Feature[] { f1, f2, f3 });
+        ds.addFeatures(new SimpleFeature[] { f1, f2, f3 });
 
         FeatureSource fs = ds.getFeatureSource("test");
 
