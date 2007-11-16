@@ -5,10 +5,9 @@
 package org.geoserver.wfsv.xml.v1_1_0;
 
 import net.opengis.wfsv.WfsvFactory;
-import org.eclipse.xsd.util.XSDSchemaLocationResolver;
+
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
-import org.geotools.xml.BindingConfiguration;
 import org.picocontainer.MutablePicoContainer;
 import org.vfny.geoserver.global.Data;
 
@@ -24,37 +23,25 @@ public class WFSVConfiguration extends WFSConfiguration {
      *
      * @generated
      */
-    public WFSVConfiguration(Data catalog, FeatureTypeSchemaBuilder schemaBuilder) {
-        super(catalog, schemaBuilder);
+    public WFSVConfiguration(Data catalog, FeatureTypeSchemaBuilder schemaBuilder, WFSV wfsv) {
+        super(catalog, schemaBuilder, wfsv);
     }
 
-    /**
-     * @return the schema namespace uri: http://www.opengis.net/wfsv.
-     * @generated
-     */
-    public String getNamespaceURI() {
-        return WFSV.NAMESPACE;
+    protected void registerBindings(MutablePicoContainer container) {
+        super.registerBindings(container);
+        
+        //Types
+        container.registerComponentImplementation(WFSV.DifferenceQueryType,
+            DifferenceQueryTypeBinding.class);
+        container.registerComponentImplementation(WFSV.GetDiffType, GetDiffTypeBinding.class);
+        container.registerComponentImplementation(WFSV.GetLogType, GetLogTypeBinding.class);
+        container.registerComponentImplementation(WFSV.RollbackType, RollbackTypeBinding.class);
+        container.registerComponentImplementation(WFSV.VersionedDeleteElementType,
+            VersionedDeleteElementTypeBinding.class);
+        container.registerComponentImplementation(WFSV.VersionedUpdateElementType,
+            VersionedUpdateElementTypeBinding.class);
     }
-
-    /**
-     * @return the uri to the the wfsv.xsd .
-     * @generated
-     */
-    public String getSchemaFileURL() {
-        return getSchemaLocationResolver().resolveSchemaLocation(null, getNamespaceURI(), "wfsv.xsd");
-    }
-
-    public XSDSchemaLocationResolver getSchemaLocationResolver() {
-        return new WFSVSchemaLocationResolver();
-    }
-
-    /**
-     * @return new instanceof {@link WFSVBindingConfiguration}.
-     */
-    public BindingConfiguration getBindingConfiguration() {
-        return new WFSVBindingConfiguration();
-    }
-
+    
     public void configureContext(MutablePicoContainer context) {
         super.configureContext(context);
         //        context.registerComponentInstance(OwsFactory.eINSTANCE);

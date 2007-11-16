@@ -74,10 +74,14 @@
     <constructor-arg ref="gml2SchemaBuilder" />
   </bean>
   --> 
+  <bean id="wfsvXsd-1.1" class="org.geoserver.wfsv.xml.v1_1_0.WFSV">
+    <constructor-arg ref="gml3SchemaBuilder"/>
+  </bean>
   <bean id="wfsvXmlConfiguration-1.1"
     class="org.geoserver.wfsv.xml.v1_1_0.WFSVConfiguration">
     <constructor-arg ref="catalog" />
     <constructor-arg ref="gml3SchemaBuilder" />
+    <constructor-arg ref="wfsvXsd-1.1"/>
   </bean>
   
   <!-- Transaction element handlers -->

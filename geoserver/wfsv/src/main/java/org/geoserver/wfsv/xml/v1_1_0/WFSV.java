@@ -6,6 +6,9 @@ package org.geoserver.wfsv.xml.v1_1_0;
 
 import javax.xml.namespace.QName;
 
+import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
+import org.geoserver.wfs.xml.v1_1_0.WFS;
+
 
 /**
  * This interface contains the qualified names of all the types,elements, and
@@ -13,7 +16,7 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public interface WFSV {
+public class WFSV extends WFS {
     /** @generated */
     public static final String NAMESPACE = "http://www.opengis.net/wfsv";
 
@@ -62,4 +65,17 @@ public interface WFSV {
             "VersionedUpdate");
 
     /* Attributes */
+    
+    public WFSV(FeatureTypeSchemaBuilder schemaBuilder) {
+        super(schemaBuilder);
+    }
+    
+    public String getNamespaceURI() {
+        return NAMESPACE;
+    }
+    
+    public String getSchemaLocation() {
+        return getClass().getResource("wfsv.xsd").toString();
+    }
+
 }

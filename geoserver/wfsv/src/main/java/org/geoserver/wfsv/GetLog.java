@@ -14,10 +14,11 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.VersioningFeatureSource;
 import org.geotools.data.store.MaxFeaturesFeatureCollection;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
+
 import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
 import org.geotools.xml.EMFUtils;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.ExpressionVisitor;
@@ -126,7 +127,7 @@ public class GetLog {
 
                 //  make sure filters are sane
                 if (filter != null) {
-                    final FeatureType featureType = source.getSchema();
+                    final SimpleFeatureType featureType = source.getSchema();
                     ExpressionVisitor visitor = new AbstractExpressionVisitor() {
                             public Object visit(PropertyName name, Object data) {
                                 // case of multiple geometries being returned
