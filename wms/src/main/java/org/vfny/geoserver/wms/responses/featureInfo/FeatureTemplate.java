@@ -9,8 +9,9 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.geoserver.template.FeatureWrapper;
 import org.geoserver.template.GeoServerTemplateLoader;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureType;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -112,7 +113,7 @@ public class FeatureTemplate {
      *
      * @throws IOException Any errors that occur during execution of the template.
      */
-    public void title(Feature feature, OutputStream output)
+    public void title(SimpleFeature feature, OutputStream output)
         throws IOException {
         title(feature, new OutputStreamWriter(output, Charset.forName("UTF-8")));
     }
@@ -132,7 +133,7 @@ public class FeatureTemplate {
      *
      * @throws IOException Any errors that occur during execution of the template.
      */
-    public void description(Feature feature, OutputStream output)
+    public void description(SimpleFeature feature, OutputStream output)
         throws IOException {
         description(feature, new OutputStreamWriter(output, Charset.forName("UTF-8")));
     }
@@ -146,7 +147,7 @@ public class FeatureTemplate {
      *
      * @throws IOException Any errors that occur during execution of the template.
      */
-    public void title(Feature feature, Writer writer) throws IOException {
+    public void title(SimpleFeature feature, Writer writer) throws IOException {
         execute(feature, feature.getFeatureType(), writer, "title.ftl",null);
     }
 
@@ -159,7 +160,7 @@ public class FeatureTemplate {
      *
      * @throws IOException Any errors that occur during execution of the template.
      */
-    public void description(Feature feature, Writer writer)
+    public void description(SimpleFeature feature, Writer writer)
         throws IOException {
         execute(feature, feature.getFeatureType(), writer, "description.ftl",null);
     }
@@ -172,7 +173,7 @@ public class FeatureTemplate {
      *
      * @throws IOException Any errors that occur during execution of the template.
      */
-    public String title(Feature feature) throws IOException {
+    public String title(SimpleFeature feature) throws IOException {
         caw.reset();
         title(feature, caw);
 
@@ -187,7 +188,7 @@ public class FeatureTemplate {
      *
      * @throws IOException Any errors that occur during execution of the template.
      */
-    public String description(Feature feature) throws IOException {
+    public String description(SimpleFeature feature) throws IOException {
         caw.reset();
         description(feature, caw);
 
@@ -208,7 +209,7 @@ public class FeatureTemplate {
      * @param lookup The class to lookup the template relative to.
      * 
      */
-    public void template(Feature feature, Writer writer, String template, Class lookup)
+    public void template(SimpleFeature feature, Writer writer, String template, Class lookup)
         throws IOException {
         execute(feature,feature.getFeatureType(),writer,template,lookup);
     }
@@ -227,7 +228,7 @@ public class FeatureTemplate {
      * @param lookup The class to lookup the template relative to.
      * 
      */
-    public void template(Feature feature, OutputStream output, String template, Class lookup)
+    public void template(SimpleFeature feature, OutputStream output, String template, Class lookup)
         throws IOException {
         template( feature, new OutputStreamWriter( output ), template, lookup );
     }
@@ -245,7 +246,7 @@ public class FeatureTemplate {
      * @param lookup The class to lookup the template relative to.
      * 
      */
-    public String template(Feature feature, String template, Class lookup) throws IOException {
+    public String template(SimpleFeature feature, String template, Class lookup) throws IOException {
         caw.reset();
         template(feature,caw,template,lookup);
         return caw.toString();
@@ -255,7 +256,7 @@ public class FeatureTemplate {
      * Internal helper method to exceute the template against feature or
      * feature collection.
      */
-    private void execute(Object feature, FeatureType featureType, Writer writer, String template,Class lookup)
+    private void execute(Object feature, SimpleFeatureType featureType, Writer writer, String template,Class lookup)
         throws IOException {
         Template t = null;
         
@@ -274,7 +275,7 @@ public class FeatureTemplate {
      * expensive, so we cache templates by feture type and template.
      *
      */
-    private Template lookupTemplate(FeatureType featureType, String template, Class lookup) throws IOException {
+    private Template lookupTemplate(SimpleFeatureType featureType, String template, Class lookup) throws IOException {
         Template t;
         
         // lookup the cache first
@@ -299,9 +300,9 @@ public class FeatureTemplate {
     }
     
     private static class TemplateKey {
-        FeatureType type;
+        SimpleFeatureType type;
         String template;
-        public TemplateKey(FeatureType type, String template) {
+        public TemplateKey(SimpleFeatureType type, String template) {
             super();
             this.type = type;
             this.template = template;

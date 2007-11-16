@@ -6,18 +6,21 @@ package org.vfny.geoserver.wms.responses.featureInfo;
 
 import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.data.FeatureReader;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.Name;
+
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 
 
@@ -83,10 +86,10 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
         try {
             final int size = results.size();
             FeatureCollection fr;
-            Feature f;
+            SimpleFeature f;
 
-            FeatureType schema;
-            AttributeType[] types;
+            SimpleFeatureType schema;
+            List<AttributeDescriptor> types;
 
             for (int i = 0; i < size; i++) // for each layer queried
              {
@@ -102,16 +105,14 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
                 while (reader.hasNext()) {
                     f = reader.next();
                     schema = f.getFeatureType();
-                    types = schema.getAttributeTypes();
+                    types = schema.getAttributes();
 
                     if (featuresPrinted < maxfeatures) {
                         writer.println("--------------------------------------------");
 
-                        for (int j = 0; j < types.length; j++) // for each
-                                                               // column in the
-                                                               // featuretype
-                         {
-                            if (Geometry.class.isAssignableFrom(types[j].getType())) {
+                        for(AttributeDescriptor descriptor : types) {
+                            final Name name = descriptor.getName();
+                            if (Geometry.class.isAssignableFrom(descriptor.getType().getBinding())) {
                                 // writer.println(types[j].getName() + " =
                                 // [GEOMETRY]");
 
@@ -125,13 +126,13 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
                                 // DJB: decided that all the geometry info was
                                 // too much - they should use GML version if
                                 // they want those details
-                                Geometry g = (Geometry) f.getAttribute(types[j].getName());
-                                writer.println(types[j].getName() + " = [GEOMETRY ("
+                                Geometry g = (Geometry) f.getAttribute(name);
+                                writer.println(name + " = [GEOMETRY ("
                                     + g.getGeometryType() + ") with " + g.getNumPoints()
                                     + " points]");
                             } else {
-                                writer.println(types[j].getName() + " = "
-                                    + f.getAttribute(types[j].getName()));
+                                writer.println(name + " = "
+                                    + f.getAttribute(name));
                             }
                         }
 

@@ -4,29 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureSource;
-import org.geotools.data.Query;
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.factory.GeoTools;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.GeometryAttributeType;
-import org.geotools.filter.IllegalFilterException;
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.image.ImageWorker;
-import org.geotools.map.MapContext;
-import org.geotools.map.MapLayer;
-import org.geotools.referencing.CRS;
-import org.geotools.renderer.lite.RendererUtilities;
-import org.geotools.renderer.lite.StreamingRenderer;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.wms.WMSMapContext;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -44,7 +21,33 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
 import javax.media.jai.GraphicsJAI;
+
+import org.geotools.data.DataUtilities;
+import org.geotools.data.DefaultQuery;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.GeoTools;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.filter.IllegalFilterException;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.image.ImageWorker;
+import org.geotools.map.MapContext;
+import org.geotools.map.MapLayer;
+import org.geotools.referencing.CRS;
+import org.geotools.renderer.lite.RendererUtilities;
+import org.geotools.renderer.lite.StreamingRenderer;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.GeometryDescriptor;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.vfny.geoserver.wms.WMSMapContext;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -280,7 +283,7 @@ public class EncodeKML {
 
             //FeatureReader featureReader = null;
             FeatureSource fSource = layer.getFeatureSource();
-            FeatureType schema = fSource.getSchema();
+            SimpleFeatureType schema = fSource.getSchema();
 
             //GeometryAttributeType geometryAttribute = schema.getDefaultGeometry();
             //CoordinateReferenceSystem sourceCrs = geometryAttribute.getCoordinateSystem();
@@ -303,12 +306,12 @@ public class EncodeKML {
             String[] attributes;
             boolean isRaster = false;
 
-            AttributeType[] ats = schema.getAttributeTypes();
-            final int length = ats.length;
+            List<AttributeDescriptor> ats = schema.getAttributes();
+            final int length = ats.size();
             attributes = new String[length];
 
             for (int t = 0; t < length; t++) {
-                attributes[t] = ats[t].getName();
+                attributes[t] = ats.get(i).getName().getLocalPart();
 
                 if (attributes[t].equals("grid")) {
                     isRaster = true;
@@ -317,7 +320,7 @@ public class EncodeKML {
 
             try {
                 CoordinateReferenceSystem sourceCrs = schema.getDefaultGeometry()
-                                                            .getCoordinateSystem();
+                                                            .getCRS();
                 writer.setSourceCrs(sourceCrs); // it seems to work better getting it from the schema, here
 
                 Envelope envelope = mapContext.getAreaOfInterest();
@@ -328,8 +331,8 @@ public class EncodeKML {
 
                 //ReferencedEnvelope aoi = mapContext.getAreaOfInterest();
                 if (!CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(),
-                            schema.getDefaultGeometry().getCoordinateSystem())) {
-                    aoi = aoi.transform(schema.getDefaultGeometry().getCoordinateSystem(), true);
+                            schema.getDefaultGeometry().getCRS())) {
+                    aoi = aoi.transform(schema.getDefaultGeometry().getCRS(), true);
                 }
 
                 filter = createBBoxFilters(schema, attributes, aoi);
@@ -353,7 +356,7 @@ public class EncodeKML {
                 }
 
                 q.setCoordinateSystem(layer.getFeatureSource().getSchema().getDefaultGeometry()
-                                           .getCoordinateSystem());
+                                           .getCRS());
 
                 FeatureCollection fc = fSource.getFeatures(q);
 
@@ -540,15 +543,15 @@ public class EncodeKML {
      *         its corresponding <code>GeometryFilter</code>.
      * @throws IllegalFilterException if something goes wrong creating the filter
      */
-    private Filter createBBoxFilters(FeatureType schema, String[] attributes, Envelope bbox)
+    private Filter createBBoxFilters(SimpleFeatureType schema, String[] attributes, Envelope bbox)
         throws IllegalFilterException {
         List filters = new ArrayList();
         final int length = attributes.length;
         for (int j = 0; j < length; j++) {
-            AttributeType attType = schema.getAttributeType(attributes[j]);
+            AttributeDescriptor ad = schema.getAttribute(attributes[j]);
 
             //DJB: added this for better error messages!
-            if (attType == null) {
+            if (ad == null) {
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.fine(new StringBuffer("Could not find '").append(attributes[j])
                                                                     .append("' in the FeatureType (")
@@ -561,8 +564,8 @@ public class EncodeKML {
                                                                                      .toString());
             }
 
-            if (attType instanceof GeometryAttributeType) {
-                Filter gfilter = filterFactory.bbox(attType.getLocalName(), bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), null);
+            if (ad instanceof GeometryDescriptor) {
+                Filter gfilter = filterFactory.bbox(ad.getLocalName(), bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), null);
                 filters.add(gfilter);
             }
         }

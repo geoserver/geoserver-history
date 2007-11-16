@@ -36,7 +36,7 @@ import org.geotools.data.memory.MemoryDataStore;
 import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.feature.FeatureType;
+import org.geotools.feature.FeatureTypes;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.FeatureTypeConstraint;
@@ -50,6 +50,7 @@ import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -718,11 +719,9 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 					boolean matches;
 
 					try {
-						matches = currLayer.getFeature().getFeatureType()
-								.isDescendedFrom(null, ftc_name)
-								|| currLayer.getFeature().getFeatureType()
-										.getTypeName().equalsIgnoreCase(
-												ftc_name);
+						final SimpleFeatureType featureType = currLayer.getFeature().getFeatureType();
+                        matches = FeatureTypes.isDecendedFrom(featureType, null, ftc_name)  
+								|| featureType.getTypeName().equalsIgnoreCase(ftc_name);
 					} catch (Exception e) {
 						matches = false; // bad news
 					}
@@ -905,13 +904,13 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 		Set attributes = new HashSet();
 		if(layer.getType() == MapLayerInfo.TYPE_VECTOR || layer.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
             try {
-                final FeatureType type;
+                final SimpleFeatureType type;
                 if(layer.getType() == MapLayerInfo.TYPE_VECTOR)
                     type = layer.getFeature().getFeatureType();
                 else
                     type = layer.getRemoteFeatureSource().getSchema();
                 for(int i = 0; i < type.getAttributeCount(); i++) {
-                    attributes.add(type.getAttributeType(i).getLocalName());
+                    attributes.add(type.getAttribute(i).getLocalName());
                 }
             } catch (IOException ioe) {
                 throw new RuntimeException(
@@ -959,11 +958,11 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 		// output SRS of the
 		// request they're making.
 		if (ul.getInlineFeatureType().getDefaultGeometry()
-				.getCoordinateSystem() == null) {
+				.getCRS() == null) {
 			LOGGER
 					.warning("No CRS set on inline features default geometry.  Assuming the requestor has their inlinefeatures in the boundingbox CRS.");
 
-			FeatureType currFt = ul.getInlineFeatureType();
+			SimpleFeatureType currFt = ul.getInlineFeatureType();
 			Query q = new DefaultQuery(currFt.getTypeName(), Filter.INCLUDE);
 			FeatureReader ilReader = ul.getInlineFeatureDatastore()
 					.getFeatureReader(q, Transaction.AUTO_COMMIT);

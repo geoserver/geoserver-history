@@ -29,11 +29,9 @@ import org.geoserver.template.FeatureWrapper;
 import org.geoserver.template.GeoServerTemplateLoader;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.DataSourceException;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.GeometryAttributeType;
+import org.geotools.feature.FeatureTypes;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.gml.producer.GeometryTransformer;
@@ -56,6 +54,9 @@ import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.expression.Expression;
 import org.opengis.geometry.MismatchedDimensionException;
@@ -261,7 +262,7 @@ public class KMLWriter extends OutputStreamWriter {
 		Style style = layer.getStyle();
 
 		try {
-			FeatureType featureType = features.getSchema();
+			SimpleFeatureType featureType = features.getSchema();
 
 			setUpWriterHandler(featureType);
 
@@ -280,7 +281,7 @@ public class KMLWriter extends OutputStreamWriter {
 		Style style = layer.getStyle();
 
 		try {
-			FeatureType featureType = features.getSchema();
+		    SimpleFeatureType featureType = features.getSchema();
 
 			setUpWriterHandler(featureType);
 
@@ -299,7 +300,7 @@ public class KMLWriter extends OutputStreamWriter {
 		Style style = layer.getStyle();
 
 		try {
-			FeatureType featureType = features.getSchema();
+		    SimpleFeatureType featureType = features.getSchema();
 
 			setUpWriterHandler(featureType);
 
@@ -402,7 +403,7 @@ public class KMLWriter extends OutputStreamWriter {
 	 * 
 	 * @TODO: support writing of 'Schema' tags based on featureType
 	 */
-	private void setUpWriterHandler(FeatureType featureType) throws IOException {
+	private void setUpWriterHandler(SimpleFeatureType featureType) throws IOException {
 		String typeName = featureType.getTypeName();
 
 		/*
@@ -498,9 +499,8 @@ public class KMLWriter extends OutputStreamWriter {
 			final String typeName = features.getSchema().getTypeName();
 
 			if ((typeName != null)
-					&& (features.getSchema().isDescendedFrom(null,
-							fts.getFeatureTypeName()) || typeName
-							.equalsIgnoreCase(fts.getFeatureTypeName()))) {
+					&& (FeatureTypes.isDecendedFrom(features.getSchema(), null, fts.getFeatureTypeName())
+					        || typeName.equalsIgnoreCase(fts.getFeatureTypeName()))) {
 				// get applicable rules at the current scale
 				Rule[] rules = fts.getRules();
 				List ruleList = new ArrayList();
@@ -526,7 +526,7 @@ public class KMLWriter extends OutputStreamWriter {
 
 						boolean doElse = true;
 
-						Feature feature = reader.next();
+						SimpleFeature feature = reader.next();
 						StringBuffer featureLabel = new StringBuffer(""); // this
 																			// gets
 																			// filled
@@ -596,7 +596,7 @@ public class KMLWriter extends OutputStreamWriter {
 																				// for
 																				// ampersands
 
-						final FeatureType schema = features.getSchema();
+						final SimpleFeatureType schema = features.getSchema();
 
 						// if there are supposed to be detailed descriptions,
 						// write them out
@@ -656,9 +656,8 @@ public class KMLWriter extends OutputStreamWriter {
 			String typeName = features.getSchema().getTypeName();
 
 			if ((typeName != null)
-					&& (features.getSchema().isDescendedFrom(null,
-							fts.getFeatureTypeName()) || typeName
-							.equalsIgnoreCase(fts.getFeatureTypeName()))) {
+					&& (FeatureTypes.isDecendedFrom(features.getSchema(), null, fts.getFeatureTypeName())
+					        || typeName.equalsIgnoreCase(fts.getFeatureTypeName()))) {
 				// get applicable rules at the current scale
 				Rule[] rules = fts.getRules();
 				List ruleList = new ArrayList();
@@ -680,7 +679,7 @@ public class KMLWriter extends OutputStreamWriter {
 					}
 
 					boolean doElse = true;
-					Feature feature = reader.next();
+					SimpleFeature feature = reader.next();
 
 					// applicable rules
 					for (Iterator it = ruleList.iterator(); it.hasNext();) {
@@ -756,9 +755,8 @@ public class KMLWriter extends OutputStreamWriter {
 			String typeName = features.getSchema().getTypeName();
 
 			if ((typeName != null)
-					&& (features.getSchema().isDescendedFrom(null,
-							fts.getFeatureTypeName()) || typeName
-							.equalsIgnoreCase(fts.getFeatureTypeName()))) {
+					&& (FeatureTypes.isDecendedFrom(features.getSchema(), null, fts.getFeatureTypeName())
+					        || typeName.equalsIgnoreCase(fts.getFeatureTypeName()))) {
 				// get applicable rules at the current scale
 				Rule[] rules = fts.getRules();
 				List ruleList = new ArrayList();
@@ -780,7 +778,7 @@ public class KMLWriter extends OutputStreamWriter {
 					}
 
 					boolean doElse = true;
-					Feature feature = reader.next();
+					SimpleFeature feature = reader.next();
 
 					// applicable rules
 					for (Iterator it = ruleList.iterator(); it.hasNext();) {
@@ -871,7 +869,7 @@ public class KMLWriter extends OutputStreamWriter {
 		}
 	}
 
-	private void writeDescription(Feature feature, final FeatureType schema)
+	private void writeDescription(SimpleFeature feature, final SimpleFeatureType schema)
 			throws IOException {
 		if (mapContext.getRequest().getKMattr()) {
 			// descriptions are "templatable" by users, so see if there is a
@@ -898,7 +896,7 @@ public class KMLWriter extends OutputStreamWriter {
 		}
 	}
 
-	private void processVectorSymbolizers(final Feature feature,
+	private void processVectorSymbolizers(final SimpleFeature feature,
 			final Symbolizer[] symbolizers, Range scaleRange,
 			StringBuffer featureLabel) throws IOException, TransformerException {
 		final int length = symbolizers.length;
@@ -943,7 +941,7 @@ public class KMLWriter extends OutputStreamWriter {
 	 * @throws IOException
 	 * @throws TransformerException
 	 */
-	private void processRasterSymbolizers(final Feature feature,
+	private void processRasterSymbolizers(final SimpleFeature feature,
 			final Symbolizer[] symbolizers, final int order)
 			throws IOException, TransformerException {
 		if (symbolizers.length < 1) {
@@ -982,7 +980,7 @@ public class KMLWriter extends OutputStreamWriter {
 	 * @throws IOException
 	 * @throws TransformerException
 	 */
-	private void processRasterSymbolizersForCoverage(final Feature feature,
+	private void processRasterSymbolizersForCoverage(final SimpleFeature feature,
 			final Symbolizer[] symbolizers, final MapLayer layer)
 			throws IOException, TransformerException {
 		if (symbolizers.length < 1) {
@@ -1059,7 +1057,7 @@ public class KMLWriter extends OutputStreamWriter {
 	 *            the style factory happy
 	 */
 	private boolean processSymbolizers(final FeatureCollection features,
-			final Feature feature, final Symbolizer[] symbolizers,
+			final SimpleFeature feature, final Symbolizer[] symbolizers,
 			Range scaleRange, final MapLayer layer, final int order,
 			final int layerCounter, StringBuffer title, boolean vectorResult)
 			throws IOException, TransformerException {
@@ -1470,7 +1468,7 @@ public class KMLWriter extends OutputStreamWriter {
 	 * @return The geometry requested in the symbolizer, or the default geometry
 	 *         if none is specified
 	 */
-	private com.vividsolutions.jts.geom.Geometry findGeometry(Feature f,
+	private com.vividsolutions.jts.geom.Geometry findGeometry(SimpleFeature f,
 			Symbolizer s) {
 		String geomName = getGeometryPropertyName(s);
 
@@ -1478,7 +1476,7 @@ public class KMLWriter extends OutputStreamWriter {
 		Geometry geom;
 
 		if (geomName == null) {
-			geom = f.getDefaultGeometry();
+			geom = (Geometry) f.getDefaultGeometry();
 		} else {
 			geom = (com.vividsolutions.jts.geom.Geometry) f
 					.getAttribute(geomName);
@@ -1502,9 +1500,9 @@ public class KMLWriter extends OutputStreamWriter {
 	 *            feature to find the geometry in
 	 * @return
 	 */
-	private com.vividsolutions.jts.geom.Geometry findGeometry(Feature f) {
+	private com.vividsolutions.jts.geom.Geometry findGeometry(SimpleFeature f) {
 		// get the geometry
-		Geometry geom = f.getDefaultGeometry();
+		Geometry geom = (Geometry) f.getDefaultGeometry();
 
 		// CoordinateReferenceSystem sourceCRS =
 		// f.getFeatureType().getDefaultGeometry().getCoordinateSystem();
@@ -1561,15 +1559,15 @@ public class KMLWriter extends OutputStreamWriter {
 	 *         if none is specified
 	 */
 	private org.opengis.referencing.crs.CoordinateReferenceSystem findGeometryCS(
-			Feature f, Symbolizer s) {
+	        SimpleFeature f, Symbolizer s) {
 		String geomName = getGeometryPropertyName(s);
 
 		if (geomName != null) {
-			return ((GeometryAttributeType) f.getFeatureType()
-					.getAttributeType(geomName)).getCoordinateSystem();
+			return ((GeometryDescriptor) f.getFeatureType()
+					.getAttribute(geomName)).getCRS();
 		} else {
-			return ((GeometryAttributeType) f.getFeatureType()
-					.getDefaultGeometry()).getCoordinateSystem();
+			return ((GeometryDescriptor) f.getFeatureType()
+					.getDefaultGeometry()).getCRS();
 		}
 	}
 

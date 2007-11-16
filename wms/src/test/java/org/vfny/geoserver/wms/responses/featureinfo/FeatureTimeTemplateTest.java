@@ -3,14 +3,14 @@ package org.vfny.geoserver.wms.responses.featureinfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.opengis.feature.simple.SimpleFeature;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTimeTemplate;
 
 public class FeatureTimeTemplateTest extends WMSTestSupport {
 
-    Feature feature;
+    SimpleFeature feature;
     
     protected void setUp() throws Exception {
         super.setUp();
@@ -19,7 +19,7 @@ public class FeatureTimeTemplateTest extends WMSTestSupport {
         FeatureCollection features = source.getFeatures();
         FeatureIterator iterator = features.features();
         while( iterator.hasNext() ) {
-            Feature f = iterator.next();
+            SimpleFeature f = iterator.next();
             if ( f.getAttribute("dateProperty") != null ) {
                 feature = f;
                 break;

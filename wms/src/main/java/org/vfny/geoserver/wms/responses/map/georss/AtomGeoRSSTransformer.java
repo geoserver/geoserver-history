@@ -10,10 +10,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.xml.transform.Translator;
+import org.opengis.feature.simple.SimpleFeature;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
@@ -70,7 +70,7 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
                     iterator = features.features();
 
                     while (iterator.hasNext()) {
-                        Feature feature = iterator.next();
+                        SimpleFeature feature = iterator.next();
                         try {
                             encodeEntry(feature);
                         }
@@ -89,7 +89,7 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
             
         }
 
-        void encodeEntry(Feature feature) {
+        void encodeEntry(SimpleFeature feature) {
             start("entry");
 
             //title

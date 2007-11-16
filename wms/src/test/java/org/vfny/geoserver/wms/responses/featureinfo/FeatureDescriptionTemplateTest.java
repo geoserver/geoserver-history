@@ -11,13 +11,13 @@ import freemarker.template.Template;
 import junit.framework.TestCase;
 import org.geoserver.template.FeatureWrapper;
 import org.geotools.data.DataUtilities;
-import org.geotools.feature.DefaultFeature;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollections;
-import org.geotools.feature.DefaultFeatureType;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
-import org.geotools.feature.FeatureType;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 import org.w3c.dom.Document;
 import java.io.ByteArrayInputStream;
@@ -38,14 +38,12 @@ public class FeatureDescriptionTemplateTest extends TestCase {
 
         //create some data
         GeometryFactory gf = new GeometryFactory();
-        FeatureType featureType = DataUtilities.createType("testType",
+        SimpleFeatureType featureType = DataUtilities.createType("testType",
                 "string:String,int:Integer,double:Double,geom:Point");
 
-        DefaultFeature f = new DefaultFeature((DefaultFeatureType) featureType,
-                new Object[] {
+        SimpleFeature f = SimpleFeatureBuilder.build(featureType, new Object[] {
                     "three", new Integer(3), new Double(3.3), gf.createPoint(new Coordinate(3, 3))
-                }, "fid.3") {
-            };
+                }, "fid.3");
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         template.process(f, new OutputStreamWriter(output));

@@ -15,7 +15,7 @@ import java.util.Iterator;
 import org.geoserver.template.FeatureWrapper;
 import org.geoserver.template.GeoServerTemplateLoader;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
+import org.opengis.feature.simple.SimpleFeatureType;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -83,7 +83,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         
         // if there is only one feature type loaded, we allow for header/footer customization,
         // otherwise we stick with the generic ones
-        FeatureType templateFeatureType = null;
+        SimpleFeatureType templateFeatureType = null;
         if(results.size() == 1) {
             templateFeatureType = ((FeatureCollection) results.get(0)).getSchema();
         }
@@ -96,7 +96,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
             for (Iterator it = results.iterator(); it.hasNext();) {
                 FeatureCollection fc = (FeatureCollection) it.next();
                 if(fc.size() > 0) {
-                    FeatureType ft = fc.getSchema();
+                    SimpleFeatureType ft = fc.getSchema();
                     Template content = getTemplate(ft, "content.ftl", charSet);
                     content.process(fc, osw);
                 }
@@ -114,7 +114,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         return null;
     }
     
-    Template getTemplate(FeatureType featureType, String templateFileName, Charset charset) throws IOException {
+    Template getTemplate(SimpleFeatureType featureType, String templateFileName, Charset charset) throws IOException {
         // setup template subsystem
         if(templateLoader == null) {
             templateLoader = new GeoServerTemplateLoader(getClass());

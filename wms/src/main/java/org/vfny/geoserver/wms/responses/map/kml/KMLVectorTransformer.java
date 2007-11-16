@@ -4,26 +4,28 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.LineSegment;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
+import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.geoserver.ows.util.RequestUtils;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.FeatureType;
+import org.geotools.feature.FeatureTypes;
 import org.geotools.feature.type.DateUtil;
-import org.geotools.geometry.jts.JTS;
 import org.geotools.map.MapLayer;
-import org.geotools.referencing.CRS;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.renderer.style.LineStyle2D;
 import org.geotools.renderer.style.MarkStyle2D;
 import org.geotools.renderer.style.PolygonStyle2D;
@@ -41,42 +43,29 @@ import org.geotools.styling.SLD;
 import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
-import org.geotools.util.Converters;
 import org.geotools.util.NumberRange;
-import org.geotools.xml.SimpleBinding;
-import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
-import org.geotools.xs.bindings.XSDateBinding;
 import org.geotools.xs.bindings.XSDateTimeBinding;
-import org.geotools.xs.bindings.XSTimeBinding;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.expression.Expression;
-import org.opengis.geometry.MismatchedDimensionException;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTimeTemplate;
-import org.vfny.geoserver.wms.responses.map.kml.KMLGeometryTransformer.KMLGeometryTranslator;
 import org.xml.sax.ContentHandler;
-import java.awt.Color;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.LineSegment;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 
 /**
@@ -220,7 +209,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
         public void encode(Object o) throws IllegalArgumentException {
             FeatureCollection features = (FeatureCollection) o;
-            FeatureType featureType = features.getSchema();
+            SimpleFeatureType featureType = features.getSchema();
 
             if (isStandAlone()) {
                 start( "kml" );
@@ -263,7 +252,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
             try {
                 while (reader.hasNext()) {
-                    Feature feature = (Feature) reader.next();
+                    SimpleFeature feature = (SimpleFeature) reader.next();
 
                     try {
                         encode(feature, styles);
@@ -279,7 +268,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             }
         }
 
-        protected void encode(Feature feature, FeatureTypeStyle[] styles) {
+        protected void encode(SimpleFeature feature, FeatureTypeStyle[] styles) {
             //get the feature id
             String featureId = featureId(feature);
 
@@ -302,7 +291,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes the provided set of rules as KML styles.
          */
-        protected boolean encodeStyle(Feature feature, FeatureTypeStyle[] styles) {
+        protected boolean encodeStyle(SimpleFeature feature, FeatureTypeStyle[] styles) {
            
             //encode hte Line/Poly styles
             List symbolizerList = new ArrayList();
@@ -341,7 +330,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes an IconStyle for a feature.
          */
-        protected void encodeIconStyle(Feature feature, FeatureTypeStyle[] styles ) {
+        protected void encodeIconStyle(SimpleFeature feature, FeatureTypeStyle[] styles ) {
             //encode the style for the icon
             //start IconStyle
             start("IconStyle");
@@ -392,7 +381,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes the provided set of symbolizers as KML styles.
          */
-        protected void encodeStyle(Feature feature, Symbolizer[] symbolizers) {
+        protected void encodeStyle(SimpleFeature feature, Symbolizer[] symbolizers) {
             // look for line symbolizers, if there is any, we should tell the
             // polygon style to have an outline
             boolean forceOutline = false;
@@ -617,7 +606,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML Placemark from a feature and optional name.
          */
-        protected void encodePlacemark(Feature feature, FeatureTypeStyle[] styles) {
+        protected void encodePlacemark(SimpleFeature feature, FeatureTypeStyle[] styles) {
             Geometry geometry = featureGeometry(feature);
             Coordinate centroid = geometryCentroid(geometry);
 
@@ -671,7 +660,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          * Encodes kml 2.2 extended data section
          * @param feature
          */
-        protected void encodeExtendedData(Feature feature) {
+        protected void encodeExtendedData(SimpleFeature feature) {
             // code at the moment is in KML3VectorTransfomer
         }
 
@@ -679,7 +668,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          * Encodes a KML Placemark name from a feature by processing a
          * template.
          */
-        protected void encodePlacemarkName(Feature feature, FeatureTypeStyle[] styles )
+        protected void encodePlacemarkName(SimpleFeature feature, FeatureTypeStyle[] styles )
                 throws IOException {
                 
             //order to use when figuring out what the name / label of a 
@@ -741,7 +730,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          * Encodes a KML Placemark description from a feature by processing a
          * template.
          */
-        protected void encodePlacemarkDescription(Feature feature)
+        protected void encodePlacemarkDescription(SimpleFeature feature)
             throws IOException {
         
            String description = template.description( feature );
@@ -771,7 +760,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML TimePrimitive geometry from a feature.
          */
-        protected void encodePlacemarkTime(Feature feature) throws IOException {
+        protected void encodePlacemarkTime(SimpleFeature feature) throws IOException {
             try {
                 String[] time = new FeatureTimeTemplate(template).execute(feature);
                 if ( time.length == 0 ) {
@@ -952,7 +941,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          * Returns the id of the feature removing special characters like
          * '&','>','<','%'.
          */
-        String featureId(Feature feature) {
+        String featureId(SimpleFeature feature) {
             String id = feature.getID();
             id = id.replaceAll("&", "");
             id = id.replaceAll(">", "");
@@ -965,9 +954,9 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Rreturns the geometry for the feature reprojecting if necessary.
          */
-        Geometry featureGeometry(Feature f) {
+        Geometry featureGeometry(SimpleFeature f) {
             // get the geometry
-            Geometry geom = f.getDefaultGeometry();
+            Geometry geom = (Geometry) f.getDefaultGeometry();
 
             //rprojection done in KMLTransformer
 //            if (!CRS.equalsIgnoreMetadata(sourceCrs, mapContext.getCoordinateReferenceSystem())) {
@@ -1101,7 +1090,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          * @param featureType The feature type being filtered against.
          *
          */
-        protected FeatureTypeStyle[] filterFeatureTypeStyles(Style style, FeatureType featureType) {
+        protected FeatureTypeStyle[] filterFeatureTypeStyles(Style style, SimpleFeatureType featureType) {
             FeatureTypeStyle[] featureTypeStyles = style.getFeatureTypeStyles();
 
             if ((featureTypeStyles == null) || (featureTypeStyles.length == 0)) {
@@ -1121,7 +1110,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
                 //does this style apply to the feature collection
                 if (featureType.getTypeName().equalsIgnoreCase(featureTypeName)
-                        || featureType.isDescendedFrom(null, featureTypeName)) {
+                        || FeatureTypes.isDecendedFrom(featureType, null, featureTypeName)) {
                     filtered.add(featureTypeStyle);
                 }
             }
@@ -1146,7 +1135,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          * @param feature The feature being filtered against.
          *
          */
-        Rule[] filterRules(FeatureTypeStyle featureTypeStyle, Feature feature) {
+        Rule[] filterRules(FeatureTypeStyle featureTypeStyle, SimpleFeature feature) {
             Rule[] rules = featureTypeStyle.getRules();
 
             if ((rules == null) || (rules.length == 0)) {

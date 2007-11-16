@@ -12,14 +12,14 @@ import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.GeometryAttributeType;
 import org.geotools.filter.Expression;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.FilterType;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.map.MapLayer;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.vfny.geoserver.wms.WMSMapContext;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -144,9 +144,9 @@ public class EncodeSVG {
      *
      * @throws IOException DOCUMENT ME!
      */
-    private void writeDefs(FeatureType layer) throws IOException {
-        GeometryAttributeType gtype = layer.getDefaultGeometry();
-        Class geometryClass = gtype.getType();
+    private void writeDefs(SimpleFeatureType layer) throws IOException {
+        GeometryDescriptor gtype = layer.getDefaultGeometry();
+        Class geometryClass = gtype.getType().getBinding();
 
         if ((geometryClass == MultiPoint.class) || (geometryClass == Point.class)) {
             writePointDefs();
@@ -184,13 +184,13 @@ public class EncodeSVG {
             MapLayer layer = layers[i];
             FeatureIterator featureReader = null;
             FeatureSource fSource = layer.getFeatureSource();
-            FeatureType schema = fSource.getSchema();
+            SimpleFeatureType schema = fSource.getSchema();
 
             try {
                 Expression bboxExpression = fFac.createBBoxExpression(mapContext.getAreaOfInterest());
                 GeometryFilter bboxFilter = fFac.createGeometryFilter(FilterType.GEOMETRY_INTERSECTS);
                 bboxFilter.addLeftGeometry(fFac.createAttributeExpression(schema,
-                        schema.getDefaultGeometry().getName()));
+                        schema.getDefaultGeometry().getName().getLocalPart()));
                 bboxFilter.addRightGeometry(bboxExpression);
 
                 Query bboxQuery = new DefaultQuery(schema.getTypeName(), bboxFilter);

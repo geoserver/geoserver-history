@@ -217,7 +217,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                 FeatureTypeInfo finfo = requestedLayers[i];
 
                 CoordinateReferenceSystem dataCRS = finfo.getFeatureType().getDefaultGeometry()
-                                                         .getCoordinateSystem();
+                                                         .getCRS();
 
                 // reproject the bounding box
                 if ((requestedCRS != null) && !CRS.equalsIgnoreMetadata(dataCRS, requestedCRS)) {

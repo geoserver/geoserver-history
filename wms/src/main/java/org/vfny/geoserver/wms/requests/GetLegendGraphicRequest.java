@@ -6,9 +6,9 @@ package org.vfny.geoserver.wms.requests;
 
 import java.util.Map;
 
-import org.geotools.feature.FeatureType;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.servlets.WMService;
 
 
@@ -77,7 +77,7 @@ public class GetLegendGraphicRequest extends WMSRequest {
     public static final String DEFAULT_FORMAT = "image/png";
 
     /** The featuretype of the requested LAYER */
-    private FeatureType layer;
+    private SimpleFeatureType layer;
 
     /**
      * The Style object for styling the legend graphic, or layer's default if
@@ -220,7 +220,7 @@ public class GetLegendGraphicRequest extends WMSRequest {
      *
      * @return DOCUMENT ME!
      */
-    public FeatureType getLayer() {
+    public SimpleFeatureType getLayer() {
         return layer;
     }
 
@@ -229,7 +229,7 @@ public class GetLegendGraphicRequest extends WMSRequest {
      *
      * @param layer DOCUMENT ME!
      */
-    public void setLayer(FeatureType layer) {
+    public void setLayer(SimpleFeatureType layer) {
         this.layer = layer;
     }
 
