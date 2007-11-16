@@ -6,9 +6,10 @@
  */
 package org.vfny.geoserver.action.validation;
 
-import org.geotools.feature.Feature;
 import org.geotools.validation.Validation;
 import org.geotools.validation.ValidationResults;
+import org.opengis.feature.simple.SimpleFeature;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -54,7 +55,7 @@ public class TestValidationResults implements ValidationResults {
         return errors;
     }
 
-    public void error(Feature f, String s) {
+    public void error(SimpleFeature f, String s) {
         String message = toMessage(s);
         Logger logger = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver");
 
@@ -71,7 +72,7 @@ public class TestValidationResults implements ValidationResults {
         return warning;
     }
 
-    public void warning(Feature f, String s) {
+    public void warning(SimpleFeature f, String s) {
         String message = toMessage(s);
         Logger logger = Logger.getLogger("org.vfny.geoserver");
 
