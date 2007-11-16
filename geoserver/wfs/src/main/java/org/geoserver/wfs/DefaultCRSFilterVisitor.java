@@ -4,9 +4,9 @@
  */
 package org.geoserver.wfs;
 
-import org.geotools.feature.FeatureType;
 import org.geotools.filter.visitor.DuplicatingFilterVisitor;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.expression.Literal;
 import org.opengis.filter.spatial.BBOX;
@@ -22,10 +22,10 @@ import com.vividsolutions.jts.geom.Geometry;
  * 
  */
 public class DefaultCRSFilterVisitor extends DuplicatingFilterVisitor {
-    FeatureType featureType;
+    SimpleFeatureType featureType;
     private CoordinateReferenceSystem defaultCrs;
 
-    public DefaultCRSFilterVisitor(FilterFactory2 factory, FeatureType featureType, 
+    public DefaultCRSFilterVisitor(FilterFactory2 factory, SimpleFeatureType featureType, 
             CoordinateReferenceSystem defaultCrs) {
         super(factory);
         this.featureType = featureType;

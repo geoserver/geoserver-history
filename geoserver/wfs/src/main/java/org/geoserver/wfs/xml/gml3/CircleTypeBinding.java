@@ -5,7 +5,7 @@
 package org.geoserver.wfs.xml.gml3;
 
 import org.geoserver.wfs.WFSException;
-import org.geotools.gml3.bindings.GML;
+import org.geotools.gml3.GML;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;

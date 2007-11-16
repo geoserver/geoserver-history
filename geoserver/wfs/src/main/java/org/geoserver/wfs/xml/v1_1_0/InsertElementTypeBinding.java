@@ -9,13 +9,14 @@ import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.WfsFactory;
 
 import org.geoserver.wfs.WFSException;
-import org.geotools.feature.Feature;
+
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml2.bindings.GML2ParsingUtils;
-import org.geotools.gml3.bindings.GML;
+import org.geotools.gml3.GML;
 import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
 
@@ -177,8 +178,8 @@ public class InsertElementTypeBinding extends AbstractComplexEMFBinding {
         if (node.hasChild(FeatureCollection.class)) {
             FeatureCollection fc = (FeatureCollection) node.getChildValue(FeatureCollection.class);
             insertElement.getFeature().addAll(fc);
-        } else if (node.hasChild(Feature.class)) {
-            insertElement.getFeature().addAll(node.getChildValues(Feature.class));
+        } else if (node.hasChild(SimpleFeature.class)) {
+            insertElement.getFeature().addAll(node.getChildValues(SimpleFeature.class));
         }
 
         //&lt;xsd:attribute default="GenerateNew" name="idgen"

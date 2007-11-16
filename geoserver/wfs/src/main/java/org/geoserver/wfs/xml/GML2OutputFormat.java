@@ -16,11 +16,12 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
+
 import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -132,10 +133,9 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         for (int i = 0; i < results.getFeature().size(); i++) {
             //FeatureResults features = (FeatureResults) f.next();
             FeatureCollection features = (FeatureCollection) results.getFeature().get(i);
-            FeatureType featureType = features.getSchema();
+            SimpleFeatureType featureType = features.getSchema();
 
-            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getTypeName(),
-                    featureType.getNamespace().toString());
+            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getName());
 
             String prefix = meta.getNameSpace().getPrefix();
             String uri = meta.getNameSpace().getURI();

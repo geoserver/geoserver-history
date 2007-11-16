@@ -8,10 +8,11 @@ import com.vividsolutions.jts.geom.Envelope;
 import net.opengis.wfs.QueryType;
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.wfs.WFSException;
-import org.geotools.feature.FeatureType;
+
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.xml.EMFUtils;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.identity.FeatureId;
@@ -209,10 +210,10 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 
     BBOX bboxFilter(QName typeName, Envelope bbox) throws Exception {
         FeatureTypeInfo featureTypeInfo = catalog.getFeatureTypeInfo(typeName);
-        FeatureType featureType = featureTypeInfo.getFeatureType();
+        SimpleFeatureType featureType = featureTypeInfo.getFeatureType();
 
         //TODO: should this be applied to all geometries?
-        String name = featureType.getDefaultGeometry().getName();
+        String name = featureType.getDefaultGeometry().getLocalName();
         
         //get the epsg code
         String epsgCode = null;

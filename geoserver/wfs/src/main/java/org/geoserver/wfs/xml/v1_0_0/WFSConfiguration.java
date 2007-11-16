@@ -14,16 +14,16 @@ import org.eclipse.xsd.util.XSDSchemaLocationResolver;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
 import org.geoserver.wfs.xml.gml3.AbstractGeometryTypeBinding;
-import org.geotools.feature.FeatureType;
+
 import org.geotools.filter.v1_0.OGCBBOXTypeBinding;
 import org.geotools.filter.v1_0.OGCConfiguration;
 import org.geotools.filter.v1_1.OGC;
 import org.geotools.gml2.FeatureTypeCache;
+import org.geotools.gml2.GML;
 import org.geotools.gml2.GMLConfiguration;
-import org.geotools.gml2.bindings.GML;
-import org.geotools.xml.BindingConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.OptionalComponentParameter;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Parameter;
@@ -43,8 +43,8 @@ public class WFSConfiguration extends Configuration {
     Data catalog;
     FeatureTypeSchemaBuilder schemaBuilder;
 
-    public WFSConfiguration(Data catalog, FeatureTypeSchemaBuilder schemaBuilder) {
-        super();
+    public WFSConfiguration(Data catalog, FeatureTypeSchemaBuilder schemaBuilder, final WFS wfs) {
+        super( wfs );
 
         this.catalog = catalog;
         this.schemaBuilder = schemaBuilder;
@@ -53,7 +53,7 @@ public class WFSConfiguration extends Configuration {
             new GeoServer.Listener() {
     
               public void changed() {
-                  flush();
+                  wfs.flush();
               }
             }
           );
@@ -62,23 +62,46 @@ public class WFSConfiguration extends Configuration {
         addDependency(new GMLConfiguration());
     }
 
-    public String getNamespaceURI() {
-        return WFS.NAMESPACE;
+    protected void registerBindings(MutablePicoContainer container) {
+      //Types
+        container.registerComponentImplementation(WFS.ALLSOMETYPE, AllSomeTypeBinding.class);
+        container.registerComponentImplementation(WFS.DELETEELEMENTTYPE,
+            DeleteElementTypeBinding.class);
+        container.registerComponentImplementation(WFS.DESCRIBEFEATURETYPETYPE,
+            DescribeFeatureTypeTypeBinding.class);
+        container.registerComponentImplementation(WFS.EMPTYTYPE, EmptyTypeBinding.class);
+        container.registerComponentImplementation(WFS.FEATURECOLLECTIONTYPE,
+            FeatureCollectionTypeBinding.class);
+        container.registerComponentImplementation(WFS.FEATURESLOCKEDTYPE,
+            FeaturesLockedTypeBinding.class);
+        container.registerComponentImplementation(WFS.FEATURESNOTLOCKEDTYPE,
+            FeaturesNotLockedTypeBinding.class);
+        container.registerComponentImplementation(WFS.GETCAPABILITIESTYPE,
+            GetCapabilitiesTypeBinding.class);
+        container.registerComponentImplementation(WFS.GETFEATURETYPE, GetFeatureTypeBinding.class);
+        container.registerComponentImplementation(WFS.GETFEATUREWITHLOCKTYPE,
+            GetFeatureWithLockTypeBinding.class);
+        container.registerComponentImplementation(WFS.INSERTELEMENTTYPE,
+            InsertElementTypeBinding.class);
+        container.registerComponentImplementation(WFS.INSERTRESULTTYPE,
+            InsertResultTypeBinding.class);
+        container.registerComponentImplementation(WFS.LOCKFEATURETYPE, LockFeatureTypeBinding.class);
+        container.registerComponentImplementation(WFS.LOCKTYPE, LockTypeBinding.class);
+        container.registerComponentImplementation(WFS.NATIVETYPE, NativeTypeBinding.class);
+        container.registerComponentImplementation(WFS.PROPERTYTYPE, PropertyTypeBinding.class);
+        container.registerComponentImplementation(WFS.QUERYTYPE, QueryTypeBinding.class);
+        container.registerComponentImplementation(WFS.STATUSTYPE, StatusTypeBinding.class);
+        container.registerComponentImplementation(WFS.TRANSACTIONRESULTTYPE,
+            TransactionResultTypeBinding.class);
+        container.registerComponentImplementation(WFS.TRANSACTIONTYPE, TransactionTypeBinding.class);
+        container.registerComponentImplementation(WFS.UPDATEELEMENTTYPE,
+            UpdateElementTypeBinding.class);
+        container.registerComponentImplementation(WFS.WFS_LOCKFEATURERESPONSETYPE,
+            WFS_LockFeatureResponseTypeBinding.class);
+        container.registerComponentImplementation(WFS.WFS_TRANSACTIONRESPONSETYPE,
+            WFS_TransactionResponseTypeBinding.class);
     }
-
-    public String getSchemaFileURL() {
-        return getSchemaLocationResolver()
-                   .resolveSchemaLocation(null, WFS.NAMESPACE, "WFS-transaction.xsd");
-    }
-
-    public BindingConfiguration getBindingConfiguration() {
-        return new WFSBindingConfiguration();
-    }
-
-    public XSDSchemaLocationResolver getSchemaLocationResolver() {
-        return new WFSSchemaLocationResolver();
-    }
-
+    
     public void configureContext(MutablePicoContainer context) {
         super.configureContext(context);
 
@@ -97,7 +120,7 @@ public class WFSConfiguration extends Configuration {
 
             for (Iterator f = featureTypes.iterator(); f.hasNext();) {
                 FeatureTypeInfo meta = (FeatureTypeInfo) f.next();
-                FeatureType featureType = meta.getFeatureType();
+                SimpleFeatureType featureType = meta.getFeatureType();
 
                 featureTypeCache.put(featureType);
             }

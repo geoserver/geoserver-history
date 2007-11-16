@@ -6,7 +6,7 @@ package org.geoserver.wfs.xml.filter.v1_1;
 
 import org.geoserver.wfs.WFSException;
 import org.geotools.filter.v1_0.OGCPropertyNameTypeBinding;
-import org.geotools.gml3.bindings.GML;
+import org.geotools.gml3.GML;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.filter.FilterFactory;

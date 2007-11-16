@@ -4,10 +4,10 @@
  */
 package org.geoserver.wfs.xml;
 
-import org.geotools.feature.Feature;
 import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.GeometryTransformer.GeometryTranslator;
-import org.geotools.gml3.bindings.GML;
+import org.geotools.gml3.GML;
+import org.opengis.feature.simple.SimpleFeature;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
@@ -46,7 +46,7 @@ public class GML3FeatureTransformer extends FeatureTransformer {
             return new GML3GeometryTranslator(handler, numDecimals, useDummyZ);
         }
 
-        protected Attributes encodeFeatureId(Feature f) {
+        protected Attributes encodeFeatureId(SimpleFeature f) {
             AttributesImpl atts = new AttributesImpl();
 
             if (f.getID() != null) {

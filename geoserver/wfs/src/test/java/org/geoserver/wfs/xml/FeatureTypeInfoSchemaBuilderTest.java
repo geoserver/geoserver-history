@@ -9,7 +9,7 @@ import org.eclipse.xsd.XSDTypeDefinition;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.wfs.WFSTestSupport;
-import org.geotools.gml2.bindings.GML;
+import org.geotools.gml2.GML;
 import org.geotools.xml.Schemas;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 

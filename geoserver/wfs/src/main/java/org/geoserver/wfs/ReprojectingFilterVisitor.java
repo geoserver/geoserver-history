@@ -4,13 +4,13 @@
  */
 package org.geoserver.wfs;
 
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.GeometryAttributeType;
 import org.geotools.filter.visitor.DuplicatingFilterVisitor;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.BinaryComparisonOperator;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.PropertyIsEqualTo;
@@ -45,9 +45,9 @@ import com.vividsolutions.jts.geom.Geometry;
  * 
  */
 public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
-    FeatureType featureType;
+    SimpleFeatureType featureType;
 
-    public ReprojectingFilterVisitor(FilterFactory2 factory, FeatureType featureType) {
+    public ReprojectingFilterVisitor(FilterFactory2 factory, SimpleFeatureType featureType) {
         super(factory);
         this.featureType = featureType;
     }
@@ -60,10 +60,10 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
      * @return
      */
     private CoordinateReferenceSystem findPropertyCRS(PropertyName propertyName) {
-        AttributeType at = (AttributeType) propertyName.evaluate(featureType);
-        if (at instanceof GeometryAttributeType) {
-            GeometryAttributeType gat = (GeometryAttributeType) at;
-            return gat.getCoordinateSystem();
+        AttributeDescriptor at = (AttributeDescriptor) propertyName.evaluate(featureType);
+        if (at instanceof GeometryDescriptor) {
+            GeometryDescriptor gat = (GeometryDescriptor) at;
+            return gat.getCRS();
         } else {
             return null;
         }

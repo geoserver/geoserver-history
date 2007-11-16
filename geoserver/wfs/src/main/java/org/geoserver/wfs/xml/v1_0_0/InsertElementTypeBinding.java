@@ -10,11 +10,11 @@ import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.WfsFactory;
 
 import org.geoserver.wfs.WFSException;
-import org.geotools.feature.Feature;
 import org.geotools.gml2.bindings.GML2ParsingUtils;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
 
@@ -91,7 +91,7 @@ public class InsertElementTypeBinding extends AbstractComplexBinding {
         InsertElementType insertElement = wfsfactory.createInsertElementType();
 
         //features
-        insertElement.getFeature().addAll(node.getChildValues(Feature.class));
+        insertElement.getFeature().addAll(node.getChildValues(SimpleFeature.class));
 
         //handle
         if (node.hasAttribute("handle")) {

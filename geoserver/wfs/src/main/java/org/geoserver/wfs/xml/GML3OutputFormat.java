@@ -17,8 +17,8 @@ import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
 import org.geotools.xml.Encoder;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.xml.sax.SAXException;
@@ -63,10 +63,10 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
 
         for (Iterator fc = featureCollections.iterator(); fc.hasNext();) {
             FeatureCollection features = (FeatureCollection) fc.next();
-            FeatureType featureType = features.getSchema();
+            SimpleFeatureType featureType = features.getSchema();
 
             //load the metadata for the feature type
-            String namespaceURI = featureType.getNamespace().toString();
+            String namespaceURI = featureType.getName().getNamespaceURI();
             FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getTypeName(),
                     namespaceURI);
             

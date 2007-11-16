@@ -8,7 +8,7 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.WfsFactory;
 import org.geoserver.feature.CompositeFeatureCollection;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.gml3.bindings.GML;
+import org.geotools.gml3.GML;
 import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;

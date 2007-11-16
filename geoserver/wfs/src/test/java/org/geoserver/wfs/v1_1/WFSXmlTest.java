@@ -2,14 +2,18 @@ package org.geoserver.wfs.v1_1;
 
 import org.geoserver.wfs.WFSTestSupport;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
+import org.geoserver.wfs.xml.v1_1_0.WFS;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.xml.Parser;
+import org.vfny.geoserver.global.Data;
 
 public class WFSXmlTest extends WFSTestSupport {
 
     WFSConfiguration configuration() {
-        return new WFSConfiguration(getCatalog(),
-            new FeatureTypeSchemaBuilder.GML3(getWFS(), getCatalog(), getResourceLoader()));
+        Data catalog = getCatalog();
+        FeatureTypeSchemaBuilder sb = 
+            new FeatureTypeSchemaBuilder.GML3(getWFS(), catalog, getResourceLoader());
+        return new WFSConfiguration(catalog,sb,new WFS(sb));
     }
 
     public void testValid() throws Exception {
