@@ -201,7 +201,10 @@
 	<bean id="resultTypeKvpParser" class="org.geoserver.wfs.kvp.ResultTypeKvpParser"/>
 	<bean id="acceptVersionsKvpParser" class="org.geoserver.wfs.kvp.AcceptVersionsKvpParser"/>
 	<bean id="acceptFormatsKvpParser" class="org.geoserver.wfs.kvp.AcceptFormatsKvpParser"/>
-
+    <bean id="strictKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
+        <constructor-arg value="strict"/>
+    </bean>
+    
 	<!-- kvp request readers -->
 	<bean id="wfsGetCapabilitiesKvpReader"  
 		class="org.geoserver.wfs.kvp.GetCapabilitiesKvpRequestReader"/>

@@ -12,6 +12,8 @@ import org.geotools.xml.Parser;
 import org.xml.sax.InputSource;
 import java.io.Reader;
 import java.util.Iterator;
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 
 
@@ -26,7 +28,7 @@ public class WfsvXmlReader extends XmlRequestReader {
         this.configuration = configuration;
     }
 
-    public Object read(Object request, Reader reader) throws Exception {
+    public Object read(Object request, Reader reader, Map kvp) throws Exception {
         // TODO: make this configurable?
         configuration.getProperties().add(Parser.Properties.PARSE_UNKNOWN_ELEMENTS);
 
