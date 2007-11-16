@@ -9,7 +9,7 @@ import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 
-import org.geotools.feature.FeatureType;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +68,7 @@ public class GeoServerTemplateLoader implements TemplateLoader {
     /**
      * Feature type directory to load template against
      */
-    FeatureType featureType;
+    SimpleFeatureType featureType;
 
     /**
      * Constructs the template loader.
@@ -95,7 +95,7 @@ public class GeoServerTemplateLoader implements TemplateLoader {
      * </p>
      * @param featureType
      */
-    public void setFeatureType(FeatureType featureType) {
+    public void setFeatureType(SimpleFeatureType featureType) {
         this.featureType = featureType;
     }
 

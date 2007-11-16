@@ -7,8 +7,8 @@ package org.vfny.geoserver.global;
 import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
-import org.geotools.feature.FeatureType;
 import org.geotools.styling.Style;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.w3c.dom.Element;
@@ -149,11 +149,11 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
         throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
-    public FeatureType getFeatureType() throws IOException {
+    public SimpleFeatureType getFeatureType() throws IOException {
         throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
-    private FeatureType getFeatureType(FeatureSource fs)
+    private SimpleFeatureType getFeatureType(FeatureSource fs)
         throws IOException {
         throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }

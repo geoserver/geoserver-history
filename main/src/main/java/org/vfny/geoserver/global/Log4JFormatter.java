@@ -6,6 +6,8 @@ package org.vfny.geoserver.global;
 
 import org.geotools.io.LineWriter;
 import org.geotools.resources.Utilities;
+import org.geotools.util.logging.Logging;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -301,7 +303,7 @@ public class Log4JFormatter extends Formatter {
      * @param e the error that occured.
      */
     private static void unexpectedException(final Exception e) {
-        Utilities.unexpectedException("org.geotools.resources", "GeotoolsHandler", "init", e);
+        Logging.unexpectedException("org.geotools.resources", Log4JFormatter.class, "init", e);
     }
 
     /**

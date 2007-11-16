@@ -5,7 +5,7 @@
 package org.vfny.geoserver.global;
 
 import org.geoserver.platform.GeoServerResourceLoader;
-import org.geotools.feature.FeatureType;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -78,13 +78,13 @@ public class GeoserverDataDirectory {
      *
      * @throws NoSuchElementException
      */
-    static public String findFeatureTypeDirName(FeatureType featureType) {
+    static public String findFeatureTypeDirName(SimpleFeatureType featureType) {
         String name = featureType.getTypeName();
-        URI namespace = featureType.getNamespace();
+        String namespace = featureType.getName().getNamespaceURI();
         FeatureTypeInfo ftInfo = null;
         Data data = getCatalog();
         if(namespace != null) {
-            NameSpaceInfo nsInfo = data.getNameSpaceFromURI(namespace.toString());
+            NameSpaceInfo nsInfo = data.getNameSpaceFromURI(namespace);
             if(nsInfo != null)
                 ftInfo = data.getFeatureTypeInfo(nsInfo.getPrefix() + ":" + name);
         }

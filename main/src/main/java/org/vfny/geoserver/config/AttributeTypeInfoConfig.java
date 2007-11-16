@@ -9,7 +9,7 @@
  */
 package org.vfny.geoserver.config;
 
-import org.geotools.feature.AttributeType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.xml.NameSpaceElement;
 import org.vfny.geoserver.global.xml.NameSpaceTranslator;
@@ -161,15 +161,15 @@ public class AttributeTypeInfoConfig {
      * Set up AttributeTypeInfo based on attributeType.
      *
      * <p>
-     * Set up is determined by the AttributeTypeInfoDTO( AttributeType )
+     * Set up is determined by the AttributeTypeInfoDTO( AttributeDescriptor )
      * constructor. This allows all Schema generation to be acomplished in the
      * same palce.
      * </p>
      *
      * @param attributeType GeoTools2 attributeType used for configuration
      */
-    public AttributeTypeInfoConfig(AttributeType attributeType) {
-        name = attributeType.getName();
+    public AttributeTypeInfoConfig(AttributeDescriptor attributeType) {
+        name = attributeType.getLocalName();
         minOccurs = 1;
         maxOccurs = 1;
 
@@ -178,7 +178,7 @@ public class AttributeTypeInfoConfig {
         NameSpaceElement nse = nst.getElement(name);
 
         if (nse == null) {
-            nse = nst.getDefaultElement(attributeType.getType());
+            nse = nst.getDefaultElement(attributeType.getType().getBinding());
         }
 
         if (nse == null) {
@@ -186,7 +186,7 @@ public class AttributeTypeInfoConfig {
             nse = nst.getElement(name);
 
             if (nse == null) {
-                nse = nst.getDefaultElement(attributeType.getType());
+                nse = nst.getDefaultElement(attributeType.getType().getBinding());
             }
         }
 

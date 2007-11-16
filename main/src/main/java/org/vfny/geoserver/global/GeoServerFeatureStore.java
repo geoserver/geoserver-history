@@ -8,9 +8,9 @@ import org.geoserver.feature.RetypingFeatureCollection;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
-import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Fea
      * @param declaredCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
      * @param srsHandling
      */
-    GeoServerFeatureStore(FeatureStore store, FeatureType schema, Filter definitionQuery,
+    GeoServerFeatureStore(FeatureStore store, SimpleFeatureType schema, Filter definitionQuery,
         CoordinateReferenceSystem declaredCRS, int srsHandling) {
         super(store, schema, definitionQuery, declaredCRS, srsHandling);
     }
@@ -101,7 +101,7 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Fea
      * @task REVISIT: should we check that non exposed attributes are requiered
      *       in <code>type</code>?
      */
-    public void modifyFeatures(AttributeType[] type, Object[] value, Filter filter)
+    public void modifyFeatures(AttributeDescriptor[] type, Object[] value, Filter filter)
         throws IOException {
         filter = makeDefinitionFilter(filter);
 
@@ -117,7 +117,7 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Fea
      *
      * @throws IOException DOCUMENT ME!
      */
-    public void modifyFeatures(AttributeType type, Object value, Filter filter)
+    public void modifyFeatures(AttributeDescriptor type, Object value, Filter filter)
         throws IOException {
         filter = makeDefinitionFilter(filter);
 

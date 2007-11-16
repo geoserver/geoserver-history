@@ -26,12 +26,13 @@ import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.LockingManager;
 import org.geotools.data.Transaction;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.FeatureType;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.Name;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
@@ -422,7 +423,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
      * configuration system). That is because this is the actual runtime, in
      * which we access FeatureTypes by namespace. The configuration system uses
      * dataStoreId which is assumed to be more stable across changes (one can
-     * reassing a FeatureType to a different namespace, but not a different
+     * reassing a SimpleFeatureType to a different namespace, but not a different
      * dataStore).
      * </p>
      *
@@ -489,7 +490,7 @@ SCHEMA:
             LOGGER.info("Loading feature type '" + key + "' (layer " + curLayerNum + "/" + totalLayers + ")");
 
             if (LOGGER.isLoggable(Level.FINER)) {
-                LOGGER.finer(new StringBuffer("FeatureType ").append(key)
+                LOGGER.finer(new StringBuffer("SimpleFeatureType ").append(key)
                                                              .append(": loading feature type info dto:")
                                                              .append(featureTypeDTO).toString());
             }
@@ -497,7 +498,7 @@ SCHEMA:
             dataStoreId = featureTypeDTO.getDataStoreId();
 
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(new StringBuffer("FeatureType ").append(key).append(" looking up :")
+                LOGGER.finest(new StringBuffer("SimpleFeatureType ").append(key).append(" looking up :")
                                                               .append(dataStoreId).toString());
             }
 
@@ -552,7 +553,7 @@ SCHEMA:
 
             try {
                 DataStore dataStore = dataStoreInfo.getDataStore();
-                FeatureType featureType = dataStore.getSchema(typeName);
+                SimpleFeatureType featureType = dataStore.getSchema(typeName);
 
                 Set attributeNames = new HashSet();
                 Set ATTRIBUTENames = new HashSet();
@@ -567,7 +568,7 @@ SCHEMA:
                 // then used by anyone. So I fixed the null and made it so it
                 // creates
                 // AttributeTypeInfoDTO's (once again, I hate these) from the
-                // FeatureType
+                // SimpleFeatureType
                 // of the real datastore.
                 // boolean createAttrDTO =
                 // (featureTypeDTO.getSchemaAttributes().size() == 0);
@@ -594,9 +595,9 @@ SCHEMA:
                     }
                 } else {
                     for (int index = 0; index < featureType.getAttributeCount(); index++) {
-                        AttributeType attrib = featureType.getAttributeType(index);
-                        attributeNames.add(attrib.getName());
-                        ATTRIBUTENames.add(attrib.getName().toUpperCase());
+                        AttributeDescriptor attrib = featureType.getAttribute(index);
+                        attributeNames.add(attrib.getLocalName());
+                        ATTRIBUTENames.add(attrib.getLocalName().toUpperCase());
                     }
 
                     if (featureTypeDTO.getSchemaAttributes() != null) {
@@ -689,7 +690,7 @@ SCHEMA:
                         new StringBuffer("FeatureTypeInfo ").append(key)
                                                             .append(" ignored - as DataStore ")
                                                             .append(dataStoreId)
-                                                            .append(" can't find FeatureType '"
+                                                            .append(" can't find SimpleFeatureType '"
                             + typeName + "'.  Error was:\n").append(nse).toString());
                 }
 
@@ -721,7 +722,7 @@ SCHEMA:
             String prefix = dataStoreInfo.getNamesSpacePrefix();
 
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(new StringBuffer("FeatureType ").append(key)
+                LOGGER.finest(new StringBuffer("SimpleFeatureType ").append(key)
                                                               .append(" creating FeatureTypeInfo for ")
                                                               .append(prefix).append(":")
                                                               .append(typeName).toString());
@@ -786,12 +787,12 @@ SCHEMA:
         return map;
     }
 
-    private List createAttrDTOsFromSchema(FeatureType featureType) {
+    private List createAttrDTOsFromSchema(SimpleFeatureType featureType) {
         List attrList = DataTransferObjectFactory.generateAttributes(featureType);
 
         /*
          * new ArrayList(featureType.getAttributeCount()); for (int index = 0;
-         * index < featureType.getAttributeCount(); index++) { AttributeType
+         * index < featureType.getAttributeCount(); index++) { AttributeDescriptor
          * attrib = featureType.getAttributeType(index); attrList.add(new
          * AttributeTypeInfoDTO(attrib)); }
          */
@@ -1243,6 +1244,13 @@ SCHEMA:
         return getFeatureTypeInfo(name.getLocalPart(), name.getNamespaceURI());
     }
 
+    /**
+     * Gets a FeatureTypeINfo from a qualfieid type name.
+     * 
+     */
+    public synchronized FeatureTypeInfo getFeatureTypeInfo( Name name ) {
+        return getFeatureTypeInfo(  name.getLocalPart(), name.getNamespaceURI() );
+    }
     /**
      * Gets a FeatureTypeInfo from a local type name (ie unprefixed), and a uri.
      *
@@ -1872,9 +1880,9 @@ SCHEMA:
      * </p>
      *
      * @param prefix
-     *            Namespace prefix in which the FeatureType available
+     *            Namespace prefix in which the SimpleFeatureType available
      * @param typeName
-     *            typeNamed used to identify FeatureType
+     *            typeNamed used to identify SimpleFeatureType
      *
      * @return
      *

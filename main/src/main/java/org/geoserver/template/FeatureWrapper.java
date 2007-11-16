@@ -10,11 +10,11 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.GeometryAttributeType;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.GeometryDescriptor;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -28,8 +28,8 @@ import freemarker.template.TemplateModelException;
 
 
 /**
- * Wraps a {@link Feature} in the freemarker {@link BeansWrapper} interface
- * allowing a template to be directly applied to a {@link Feature} or
+ * Wraps a {@link SimpleFeature} in the freemarker {@link BeansWrapper} interface
+ * allowing a template to be directly applied to a {@link SimpleFeature} or
  * {@link FeatureCollection}.
  * <p>
  * When a {@link FeatureCollection} is being processed by the template, it is
@@ -125,19 +125,19 @@ public class FeatureWrapper extends BeansWrapper {
             map.put("type", wrap(((FeatureCollection) object).getSchema()));
 
             return map;
-        } else if (object instanceof FeatureType) {
-            FeatureType ft = (FeatureType) object;
+        } else if (object instanceof SimpleFeatureType) {
+            SimpleFeatureType ft = (SimpleFeatureType) object;
             
             // create a variable "attributes" which his a list of all the 
             // attributes, but at the same time, is a map keyed by name
             Map attributeMap = new LinkedHashMap();
             for (int i = 0; i < ft.getAttributeCount(); i++) {
-                AttributeType type = ft.getAttributeType(i);
+                AttributeDescriptor type = ft.getAttribute(i);
 
                 Map attribute = new HashMap();
                 attribute.put("name", type.getLocalName());
-                attribute.put("type", type.getBinding().getName());
-                attribute.put("isGeometry", Boolean.valueOf(type instanceof GeometryAttributeType));
+                attribute.put("type", type.getType().getBinding().getName());
+                attribute.put("isGeometry", Boolean.valueOf(type instanceof GeometryDescriptor));
 
                 attributeMap.put(type.getLocalName(), attribute);
             }
@@ -147,8 +147,8 @@ public class FeatureWrapper extends BeansWrapper {
             map.put("attributes", new SequenceMapModel(attributeMap, this));
             map.put("name", ft.getTypeName());
             return map;
-        } else if (object instanceof Feature) {
-            Feature feature = (Feature) object;
+        } else if (object instanceof SimpleFeature) {
+            SimpleFeature feature = (SimpleFeature) object;
 
             //create the model
             SimpleHash map = new SimpleHash();
@@ -161,8 +161,8 @@ public class FeatureWrapper extends BeansWrapper {
             SimpleSequence attributes = new SimpleSequence();
             Map attributeMap = new LinkedHashMap();
 
-            for (int i = 0; i < feature.getNumberOfAttributes(); i++) {
-                AttributeType type = feature.getFeatureType().getAttributeType(i);
+            for (int i = 0; i < feature.getAttributeCount(); i++) {
+                AttributeDescriptor type = feature.getFeatureType().getAttribute(i);
 
                 Map attribute = new HashMap();
                 Object value = feature.getAttribute(i);
@@ -170,7 +170,7 @@ public class FeatureWrapper extends BeansWrapper {
                 if ( value == null ) {
                     //some special case checks
                     attribute.put("rawValue", "");
-                    attribute.put("isGeometry", Boolean.valueOf(Geometry.class.isAssignableFrom(type.getBinding())));
+                    attribute.put("isGeometry", Boolean.valueOf(Geometry.class.isAssignableFrom(type.getType().getBinding())));
                 } else {
                     attribute.put("rawValue", value);
                     attribute.put("isGeometry", Boolean.valueOf(value instanceof Geometry));
@@ -179,7 +179,7 @@ public class FeatureWrapper extends BeansWrapper {
                 attribute.put("name", type.getName());
                 attribute.put("type", type.getType().getName());
 
-                map.put(type.getName(), attribute);
+                map.put(type.getLocalName(), attribute);
                 attributeMap.put(type.getName(), attribute);
                 attributes.add(attribute);
             }

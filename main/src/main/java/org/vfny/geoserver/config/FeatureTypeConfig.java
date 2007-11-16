@@ -8,12 +8,10 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.GeometryAttributeType;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -32,7 +30,7 @@ import java.util.logging.Logger;
 
 
 /**
- * User interface FeatureType staging area.
+ * User interface SimpleFeatureType staging area.
  *
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id$
@@ -186,16 +184,16 @@ public class FeatureTypeConfig {
      * Creates a FeatureTypeInfo to represent an instance with default data.
      *
      * @param dataStoreId ID for data store in catalog
-     * @param schema Geotools2 FeatureType
+     * @param schema Geotools2 SimpleFeatureType
      * @param generate True to generate entries for all attribtues
      */
-    public FeatureTypeConfig(String dataStoreId, FeatureType schema, boolean generate) {
+    public FeatureTypeConfig(String dataStoreId, SimpleFeatureType schema, boolean generate) {
         if ((dataStoreId == null) || (dataStoreId.length() == 0)) {
             throw new IllegalArgumentException("dataStoreId is required for FeatureTypeConfig");
         }
 
         if (schema == null) {
-            throw new IllegalArgumentException("FeatureType is required for FeatureTypeConfig");
+            throw new IllegalArgumentException("SimpleFeatureType is required for FeatureTypeConfig");
         }
 
         this.dataStoreId = dataStoreId;
@@ -207,7 +205,7 @@ public class FeatureTypeConfig {
             this.schemaAttributes = new ArrayList();
 
             for (int i = 0; i < schema.getAttributeCount(); i++) {
-                AttributeType attrib = schema.getAttributeType(i);
+                AttributeDescriptor attrib = schema.getAttribute(i);
                 this.schemaAttributes.add(new AttributeTypeInfoConfig(attrib));
             }
         } else {
@@ -240,7 +238,7 @@ public class FeatureTypeConfig {
      * @param defaultGeometry
      * @return
      */
-    private int lookupSRS(GeometryAttributeType defaultGeometry) {
+    private int lookupSRS(GeometryDescriptor defaultGeometry) {
         // NPE avoidance
         if (defaultGeometry == null) {
             return -1;
@@ -427,7 +425,7 @@ public class FeatureTypeConfig {
      * Convience method for dataStoreId.typeName.
      *
      * <p>
-     * This key may be used to store this FeatureType in a Map for later.
+     * This key may be used to store this SimpleFeatureType in a Map for later.
      * </p>
      *
      * @return dataStoreId.typeName
