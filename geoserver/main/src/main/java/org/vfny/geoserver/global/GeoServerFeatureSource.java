@@ -22,8 +22,9 @@ import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
 import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -64,7 +65,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      * that GeoServer requires attributes to be returned in?
      * </p>
      */
-    private FeatureType schema;
+    private SimpleFeatureType schema;
 
     /** Used to constrain the Feature made available to GeoServer. */
     private Filter definitionQuery = Filter.INCLUDE;
@@ -79,11 +80,11 @@ public class GeoServerFeatureSource implements FeatureSource {
      * Creates a new GeoServerFeatureSource object.
      *
      * @param source GeoTools2 FeatureSource
-     * @param schema FeatureType returned by this FeatureSource
+     * @param schema SimpleFeatureType returned by this FeatureSource
      * @param definitionQuery Filter used to limit results
      * @param declaredCRS Geometries will be forced or projected to this CRS
      */
-    GeoServerFeatureSource(FeatureSource source, FeatureType schema, Filter definitionQuery,
+    GeoServerFeatureSource(FeatureSource source, SimpleFeatureType schema, Filter definitionQuery,
         CoordinateReferenceSystem declaredCRS, int srsHandling) {
         this.source = source;
         this.schema = schema;
@@ -112,7 +113,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      *
      * @return
      */
-    public static GeoServerFeatureSource create(FeatureSource featureSource, FeatureType schema,
+    public static GeoServerFeatureSource create(FeatureSource featureSource, SimpleFeatureType schema,
         Filter definitionQuery, CoordinateReferenceSystem declaredCRS, int srsHandling) {
         if (featureSource instanceof FeatureLocking) {
             return new GeoServerFeatureLocking((FeatureLocking) featureSource, schema,
@@ -188,7 +189,7 @@ public class GeoServerFeatureSource implements FeatureSource {
             propNames = new String[schema.getAttributeCount()];
 
             for (int i = 0; i < schema.getAttributeCount(); i++) {
-                propNames[i] = schema.getAttributeType(i).getName();
+                propNames[i] = schema.getAttribute(i).getLocalName();
             }
         } else {
             String[] queriedAtts = query.getPropertyNames();
@@ -196,7 +197,7 @@ public class GeoServerFeatureSource implements FeatureSource {
             List allowedAtts = new LinkedList();
 
             for (int i = 0; i < queriedAttCount; i++) {
-                if (schema.getAttributeType(queriedAtts[i]) != null) {
+                if (schema.getAttribute(queriedAtts[i]) != null) {
                     allowedAtts.add(queriedAtts[i]);
                 } else {
                     LOGGER.info("queried a not allowed property: " + queriedAtts[i]
@@ -337,7 +338,7 @@ public class GeoServerFeatureSource implements FeatureSource {
                 // reprojection and crs forcing do not make sense, bail out
                 return fc;
             } 
-            CoordinateReferenceSystem nativeCRS = fc.getSchema().getDefaultGeometry().getCoordinateSystem();
+            CoordinateReferenceSystem nativeCRS = fc.getSchema().getCRS();
             
             if (srsHandling == FeatureTypeInfo.LEAVE && nativeCRS != null) {
                 //do nothing
@@ -397,7 +398,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      *
      * @see org.geotools.data.FeatureSource#getSchema()
      */
-    public FeatureType getSchema() {
+    public SimpleFeatureType getSchema() {
         return schema;
     }
 
@@ -413,7 +414,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      *
      * @throws IOException If bounds of definitionQuery
      */
-    public Envelope getBounds() throws IOException {
+    public ReferencedEnvelope getBounds() throws IOException {
         // since CRS is at most forced, we don't need to change this code
         if (definitionQuery == Filter.INCLUDE) {
             return source.getBounds();
@@ -445,7 +446,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      *
      * @throws IOException If a problem is encountered with source
      */
-    public Envelope getBounds(Query query) throws IOException {
+    public ReferencedEnvelope getBounds(Query query) throws IOException {
         // since CRS is at most forced, we don't need to change this code
         try {
             query = makeDefinitionQuery(query);

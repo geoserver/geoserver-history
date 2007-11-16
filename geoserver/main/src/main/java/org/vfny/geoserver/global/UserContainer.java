@@ -6,9 +6,9 @@ package org.vfny.geoserver.global;
 
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.DataStore;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.FeatureType;
 import org.opengis.coverage.grid.*;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.CoverageStoreConfig;
@@ -133,7 +133,7 @@ public class UserContainer implements HttpSessionBindingListener {
     *
     * <p></p>
     */
-    private FeatureType featureType;
+    private SimpleFeatureType featureType;
 
     /**
      *
@@ -141,7 +141,7 @@ public class UserContainer implements HttpSessionBindingListener {
     private GridCoverage2D coverage;
 
     /**
-    * Selected AttributeType being worked on.
+    * Selected AttributeDescriptor being worked on.
     *
     * <p>
     * Pending: Make change over to User Container.
@@ -152,7 +152,7 @@ public class UserContainer implements HttpSessionBindingListener {
     private AttributeTypeInfoConfig attributeTypeConfig;
 
     /**
-     * Cached AttributeType being worked on.
+     * Cached AttributeDescriptor being worked on.
      *
      * <p>
      * This should agree with the value of attributeTypeConfig.
@@ -160,7 +160,7 @@ public class UserContainer implements HttpSessionBindingListener {
      *
      * <p></p>
      */
-    private AttributeType attributeType;
+    private AttributeDescriptor attributeType;
 
     /**
      * New DataStore info before it is added to DataConfig.
@@ -244,7 +244,7 @@ public class UserContainer implements HttpSessionBindingListener {
      *
      * @return Returns the attributeType.
      */
-    public AttributeType getAttributeType() {
+    public AttributeDescriptor getAttributeType() {
         return attributeType;
     }
 
@@ -253,7 +253,7 @@ public class UserContainer implements HttpSessionBindingListener {
      *
      * @param attributeType The attributeType to set.
      */
-    public void setAttributeType(AttributeType attributeType) {
+    public void setAttributeType(AttributeDescriptor attributeType) {
         this.attributeType = attributeType;
     }
 
@@ -325,7 +325,7 @@ public class UserContainer implements HttpSessionBindingListener {
      *
      * @return Returns the featureType.
      */
-    public FeatureType getFeatureType() {
+    public SimpleFeatureType getFeatureType() {
         return featureType;
     }
 
@@ -388,7 +388,7 @@ public class UserContainer implements HttpSessionBindingListener {
      *
      * @param featureType The featureType to set.
      */
-    public void setFeatureType(FeatureType featureType) {
+    public void setFeatureType(SimpleFeatureType featureType) {
         this.featureType = featureType;
     }
 

@@ -11,12 +11,12 @@ import freemarker.template.SimpleObjectWrapper;
 import freemarker.template.Template;
 import junit.framework.TestCase;
 import org.geotools.data.DataUtilities;
-import org.geotools.feature.DefaultFeature;
+
 import org.geotools.feature.DefaultFeatureCollection;
-import org.geotools.feature.DefaultFeatureType;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.opengis.feature.simple.SimpleFeatureType;
+
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -31,27 +31,25 @@ public class FeatureWrapperTest extends TestCase {
 
         //create some data
         GeometryFactory gf = new GeometryFactory();
-        FeatureType featureType = DataUtilities.createType("testType",
+        SimpleFeatureType featureType = DataUtilities.createType("testType",
                 "string:String,int:Integer,double:Double,geom:Point");
 
-        features = new DefaultFeatureCollection(null, null) {
-                };
-        features.add(new DefaultFeature((DefaultFeatureType) featureType,
-                new Object[] {
-                    "one", new Integer(1), new Double(1.1), gf.createPoint(new Coordinate(1, 1))
-                }, "fid.1") {
-            });
-        features.add(new DefaultFeature((DefaultFeatureType) featureType,
-                new Object[] {
-                    "two", new Integer(2), new Double(2.2), gf.createPoint(new Coordinate(2, 2))
-                }, "fid.2") {
-            });
-        features.add(new DefaultFeature((DefaultFeatureType) featureType,
-                new Object[] {
-                    "three", new Integer(3), new Double(3.3), gf.createPoint(new Coordinate(3, 3))
-                }, "fid.3") {
-            });
-
+        features = new DefaultFeatureCollection(null, null) {};
+        features.add(
+            SimpleFeatureBuilder.build(featureType, new Object[] {
+                "one", new Integer(1), new Double(1.1), gf.createPoint(new Coordinate(1, 1))
+            }, "fid.1")
+        );
+        features.add(
+            SimpleFeatureBuilder.build(featureType, new Object[] {
+                "two", new Integer(2), new Double(2.2), gf.createPoint(new Coordinate(2, 2))
+            }, "fid.2")
+        );
+        features.add(
+            SimpleFeatureBuilder.build(featureType, new Object[] {
+                "three", new Integer(3), new Double(3.3), gf.createPoint(new Coordinate(3, 3))
+            }, "fid.3")
+        );
         cfg = new Configuration();
         cfg.setClassForTemplateLoading(getClass(), "");
         cfg.setObjectWrapper(new FeatureWrapper());

@@ -5,8 +5,9 @@
 package org.vfny.geoserver.global.dto;
 
 import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.FeatureType;
+
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.vfny.geoserver.global.xml.NameSpaceElement;
 import org.vfny.geoserver.global.xml.NameSpaceTranslator;
 import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
@@ -26,7 +27,7 @@ import java.util.Set;
  * <p>
  * This class is used to isolate the DTO from the details of generating them.
  * This allows DTO objects to be safely used as a wire protocol with out
- * unrequired dependencies on such things as AttributeType and FeatureType.
+ * unrequired dependencies on such things as AttributeDescriptor and SimpleFeatureType.
  * </p>
  *
  * <p>
@@ -39,22 +40,22 @@ import java.util.Set;
  */
 public class DataTransferObjectFactory {
     /**
-     * Construct DTO based on provided AttributeType.
+     * Construct DTO based on provided AttributeDescriptor.
      *
      * <p>
      * GMLUtils is used to provide the mapping from
      * attributeType.getName/attributeType.getType() to an XML type/fragement.
      * </p>
      *
-     * @param attributeType Real geotools2 AttributeType
+     * @param attributeType Real geotools2 AttributeDescriptor
      *
      * @return Data Transfer Object for provided attributeType
      */
-    public static AttributeTypeInfoDTO create(String schemaBase, AttributeType attributeType) {
+    public static AttributeTypeInfoDTO create(String schemaBase, AttributeDescriptor attributeType) {
         AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
-        dto.setName(attributeType.getName());
+        dto.setName(attributeType.getLocalName());
 
-        if (isManditory(schemaBase, attributeType.getName()) || (attributeType.getMinOccurs() > 0)) {
+        if (isManditory(schemaBase, attributeType.getLocalName()) || (attributeType.getMinOccurs() > 0)) {
             dto.setMinOccurs(1);
         } else {
             dto.setMinOccurs(0);
@@ -69,10 +70,10 @@ public class DataTransferObjectFactory {
                                                             .getNameSpaceTranslator("gml");
         NameSpaceElement element;
 
-        element = xs.getElement(attributeType.getType(), attributeType.getName());
+        element = xs.getElement(attributeType.getType().getBinding(), attributeType.getLocalName());
 
         if (element == null) {
-            element = gml.getElement(attributeType.getType(), attributeType.getName());
+            element = gml.getElement(attributeType.getType().getBinding(), attributeType.getLocalName());
         }
 
         if (element == null) {
@@ -140,11 +141,11 @@ public class DataTransferObjectFactory {
      * </p>
      *
      * @param dataStoreId Used as a backpointer to locate dataStore
-     * @param schema Real geotools2 FeatureType
+     * @param schema Real geotools2 SimpleFeatureType
      *
      * @return Data Transfer Object for provided schema
      */
-    public static FeatureTypeInfoDTO create(String dataStoreId, FeatureType schema) {
+    public static FeatureTypeInfoDTO create(String dataStoreId, SimpleFeatureType schema) {
         FeatureTypeInfoDTO dto = new FeatureTypeInfoDTO();
         dto.setAbstract(null);
         dto.setDataStoreId(dataStoreId);
@@ -166,7 +167,7 @@ public class DataTransferObjectFactory {
         dto.setSchemaName(dataStoreId.toUpperCase() + "_" + schema.getTypeName().toUpperCase()
             + "_TYPE");
         dto.setSRS(schema.getDefaultGeometry().getGeometryFactory().getSRID());
-        dto.setTitle(schema.getNamespace() + " " + schema.getTypeName());
+        dto.setTitle(schema.getName().getNamespaceURI() + " " + schema.getTypeName());
 
         return dto;
     }
@@ -177,12 +178,13 @@ public class DataTransferObjectFactory {
      * @param schema
      * @return
      */
-    public static List generateAttributes(FeatureType schema) {
-        AttributeType[] attributes = schema.getAttributeTypes();
-        List list = new ArrayList(attributes.length);
+    public static List generateAttributes(SimpleFeatureType schema) {
+        List attributes = schema.getAttributes();
+        
+        List list = new ArrayList(attributes.size());
 
-        for (int i = 0; i < attributes.length; i++) {
-            list.add(create("AbstractFeatureType", attributes[i]));
+        for (int i = 0; i < attributes.size(); i++) {
+            list.add(create("AbstractFeatureType", (AttributeDescriptor)attributes.get(i)));
         }
 
         return list;
@@ -193,13 +195,13 @@ public class DataTransferObjectFactory {
      * <p>
      * Please note this is currently only used for display by TypesForm,
      * TypeInfo simply makes use of getRequiredBaseAttributes to select
-     * AttributeTypes from the FeatureType schema.
+     * AttributeTypes from the SimpleFeatureType schema.
      * </p>
      * <p>
      * More specifically the values of isNillable, minOccurs and maxOccurs
      * provided by the DataStore may not agree with the results of this
      * function. TypeInfo opperatates on the assumption minOccurs=1, maxOccurs=1
-     * and AttributeType.isNillable() is correct.
+     * and AttributeDescriptor.isNillable() is correct.
      * </p>
      * @param schemaBase SchemaBase
      * @return List of AttributeTypeInfoDTO representative of schemaBase required

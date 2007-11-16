@@ -11,16 +11,17 @@ import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.FactoryConfigurationError;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.FeatureTypeFactory;
-import org.geotools.feature.GeometryAttributeType;
+import org.geotools.feature.AttributeTypeBuilder;
 import org.geotools.feature.SchemaException;
-import org.geotools.feature.type.GeometricAttributeType;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
@@ -85,13 +86,13 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     private String dataStoreId;
 
     /**
-     * Bounding box in Lat Long of the extent of this FeatureType.<p>Note
+     * Bounding box in Lat Long of the extent of this SimpleFeatureType.<p>Note
      * reprojection may be required to derive this value.</p>
      */
     private Envelope latLongBBox;
 
     /**
-     * Bounding box in this FeatureType's native (or user declared) CRS.<p>Note
+     * Bounding box in this SimpleFeatureType's native (or user declared) CRS.<p>Note
      * reprojection may be required to derive this value.</p>
      */
     private Envelope nativeBBox;
@@ -107,7 +108,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     /**
      * List of AttributeTypeInfo representing the schema.xml information.
      * <p>
-     * Used to define the order and manditoryness of FeatureType attributes
+     * Used to define the order and manditoryness of SimpleFeatureType attributes
      * during query (re)construction.
      * </p>
      */
@@ -135,7 +136,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     private String dirName;
 
     /**
-     * Abstract used to describe FeatureType
+     * Abstract used to describe SimpleFeatureType
      */
     private String _abstract;
 
@@ -155,12 +156,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     private int numDecimals;
 
     /**
-     * Magic query used to limit scope of this FeatureType.
+     * Magic query used to limit scope of this SimpleFeatureType.
      */
     private Filter definitionQuery = null;
 
     /**
-     * Default style used to render this FeatureType with WMS
+     * Default style used to render this SimpleFeatureType with WMS
      */
     private String defaultStyle;
 
@@ -170,7 +171,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     private ArrayList styles;
 
     /**
-     * Title of this FeatureType as presented to End-Users.
+     * Title of this SimpleFeatureType as presented to End-Users.
      * <p>
      * Think of this as the display name on the off chance that typeName
      * is considered ugly.
@@ -209,7 +210,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * This will be lazily created so use the accessors
      * </p>
      */
-    private FeatureType ft;
+    private SimpleFeatureType ft;
 
     // Modif C. Kolbowicz - 07/10/2004
     /**
@@ -391,9 +392,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * By now just return the default style to be able to declare it in
      * WMS capabilities, but all this stuff needs to be revisited since it seems
      * currently there is no way of retrieving all the styles declared for
-     * a given FeatureType.
+     * a given SimpleFeatureType.
      *
-     * @return the default Style for the FeatureType
+     * @return the default Style for the SimpleFeatureType
      */
     public Style getDefaultStyle() {
         return data.getStyle(defaultStyle);
@@ -426,7 +427,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * Returns the XML prefix used for GML output of this FeatureType.
+     * Returns the XML prefix used for GML output of this SimpleFeatureType.
      *
      * <p>
      * Returns the namespace prefix for this FeatureTypeInfo.
@@ -461,7 +462,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * Complete xml name (namespace:element> for this FeatureType.
+     * Complete xml name (namespace:element> for this SimpleFeatureType.
      *
      * This is the full type name with namespace prefix.
      *
@@ -522,7 +523,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     Method m = clazz.getMethod("create",
                             new Class[] {
                                 Class.forName("org.geotools.data.VersioningFeatureSource"),
-                                FeatureType.class, Filter.class, CoordinateReferenceSystem.class, int.class
+                                SimpleFeatureType.class, Filter.class, CoordinateReferenceSystem.class, int.class
                             });
 
                     return (FeatureSource) m.invoke(null,
@@ -570,11 +571,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
     /*public static FeatureSource reTypeSource(FeatureSource source,
        FeatureTypeInfoDTO ftc) throws SchemaException {
-       AttributeType[] attributes = new AttributeType[ftc.getSchemaAttributes()
+       AttributeDescriptor[] attributes = new AttributeDescriptor[ftc.getSchemaAttributes()
                                                          .size()];
        List attributeDefinitions = ftc.getSchemaAttributes();
        int index = 0;
-       FeatureType ft = source.getSchema();
+       SimpleFeatureType ft = source.getSchema();
        for (int i = 0; i < attributes.length; i++) {
            AttributeTypeInfoDTO attributeDTO = (AttributeTypeInfoDTO) ftc.getSchemaAttributes()
                                                                          .get(i);
@@ -583,17 +584,17 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
            if (attributes[i] == null) {
                throw new NullPointerException("Error finding " + xpath
                    + " specified in you schema.xml file for " + ftc.getName()
-                   + "FeatureType.");
+                   + "SimpleFeatureType.");
            }
        }
-       FeatureType myType = FeatureTypeFactory.newFeatureType(attributes,
+       SimpleFeatureType myType = FeatureTypeFactory.newFeatureType(attributes,
                ftc.getName());
        return GeoServerFeatureLocking.create(source, myType,
            ftc.getDefinitionQuery());
        }*/
 
     /**
-     * Returns the FeatureType's envelope in its native CRS (or user
+     * Returns the SimpleFeatureType's envelope in its native CRS (or user
      * declared CRS, if any).
      * <p>
      * Note the Envelope is cached in order to avoid a potential
@@ -638,9 +639,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         Envelope bbox = FeatureSourceUtils.getBoundingBoxEnvelope(realSource);
 
         // check if the original CRS is not the declared one
-        GeometryAttributeType defaultGeometry = realSource.getSchema().getDefaultGeometry();
-        CoordinateReferenceSystem originalCRS = defaultGeometry.getCoordinateSystem();
-
+        CoordinateReferenceSystem originalCRS = realSource.getSchema().getCRS();
         try {
             if (targetCrs != null && !CRS.equalsIgnoreMetadata(originalCRS, targetCrs)) {
                 MathTransform xform = CRS.findMathTransform(originalCRS, targetCrs, true);
@@ -717,13 +716,13 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
 
     public CoordinateReferenceSystem getNativeCRS() throws IOException {
-        GeometryAttributeType dg = getDefaultGeometry();
+        GeometryDescriptor dg = getDefaultGeometry();
 
         if (dg == null) {
             return null;
         }
 
-        return dg.getCoordinateSystem();
+        return dg.getCRS();
     }
 
     /**
@@ -731,7 +730,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * @return
      * @throws IOException if the layer is not properly configured
      */
-    GeometryAttributeType getDefaultGeometry() throws IOException {
+    GeometryDescriptor getDefaultGeometry() throws IOException {
         if (getDataStoreInfo().getDataStore() == null) {
             throw new IOException("featureType: " + getName()
                 + " does not have a properly configured " + "datastore");
@@ -753,7 +752,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * Get XMLSchema for this FeatureType.
+     * Get XMLSchema for this SimpleFeatureType.
      *
      * <p>
      * Note this may require connection to the real geotools2 DataStore and as
@@ -851,7 +850,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         return value;
     }
 
-    /*private FeatureType getSchema(String schema) throws ConfigurationException{
+    /*private SimpleFeatureType getSchema(String schema) throws ConfigurationException{
        try{
                return getSchema(loadConfig(new StringReader(schema)));
        }catch(IOException e){
@@ -926,16 +925,16 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * Get abstract (description) of FeatureType.
+     * Get abstract (description) of SimpleFeatureType.
      *
-     * @return Short description of FeatureType
+     * @return Short description of SimpleFeatureType
      */
     public String getAbstract() {
         return _abstract;
     }
 
     /**
-     * Keywords describing content of FeatureType.
+     * Keywords describing content of SimpleFeatureType.
      *
      * <p>
      * Keywords are often used by Search engines or Catalog services.
@@ -970,7 +969,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * A valid schema name for this FeatureType.
+     * A valid schema name for this SimpleFeatureType.
      *
      * @return schemaName if provided or typeName+"_Type"
      */
@@ -1025,7 +1024,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     // FeatureTypeMetaData Interface
     //
     /**
-     * Access the name of this FeatureType.
+     * Access the name of this SimpleFeatureType.
      * <p>
      * This is the typeName as provided by the real gt2 DataStore.
      * </p>
@@ -1038,7 +1037,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * Access real geotools2 FeatureType.
+     * Access real geotools2 SimpleFeatureType.
      *
      * @return Schema information.
      *
@@ -1046,7 +1045,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      *
      * @see org.geotools.data.FeatureTypeMetaData#getFeatureType()
      */
-    public FeatureType getFeatureType() throws IOException {
+    public SimpleFeatureType getFeatureType() throws IOException {
         return getFeatureType(getFeatureSource());
     }
 
@@ -1054,22 +1053,24 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * Fixes the data store feature type so that it has the right CRS (only in case they are missing)
      * and the requiered base attributes
      */
-    private FeatureType getFeatureType(FeatureSource fs)
+    private SimpleFeatureType getFeatureType(FeatureSource fs)
         throws IOException {
         if (ft == null) {
             int count = 0;
             ft = fs.getSchema();
-
-            URI namespace = ft.getNamespace(); //DJB:: change to #getNamespace() due to API change
-
+            
+            SimpleFeatureTypeBuilder tb = new SimpleFeatureTypeBuilder();
+            tb.setName( typeName );
+            tb.setNamespaceURI(ft.getName().getNamespaceURI());
+            
             String[] baseNames = DataTransferObjectFactory.getRequiredBaseAttributes(schemaBase);
-            AttributeType[] attributes = new AttributeType[schema.size() + baseNames.length];
+            AttributeDescriptor[] attributes = new AttributeDescriptor[schema.size() + baseNames.length];
 
             if (attributes.length > 0) {
                 int errors = 0;
 
                 for (; count < baseNames.length; count++) {
-                    attributes[count - errors] = ft.getAttributeType(baseNames[count]);
+                    attributes[count - errors] = ft.getAttribute(baseNames[count]);
 
                     if (attributes[count - errors] == null) {
                         // desired base attr is not availiable
@@ -1079,7 +1080,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
                 if (errors != 0) {
                     //resize array;
-                    AttributeType[] tmp = new AttributeType[attributes.length - errors];
+                    AttributeDescriptor[] tmp = new AttributeDescriptor[attributes.length - errors];
                     count = count - errors;
 
                     for (int i = 0; i < count; i++) {
@@ -1092,19 +1093,23 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 for (Iterator i = schema.iterator(); i.hasNext();) {
                     AttributeTypeInfo ati = (AttributeTypeInfo) i.next();
                     String attName = ati.getName();
-                    attributes[count] = ft.getAttributeType(attName);
+                    attributes[count] = ft.getAttribute(attName);
 
                     // force the user specified CRS if the data has no CRS, or reproject it 
                     // if necessary
-                    if (Geometry.class.isAssignableFrom(attributes[count].getType())) {
-                        GeometricAttributeType old = (GeometricAttributeType) attributes[count];
+                    if (Geometry.class.isAssignableFrom(attributes[count].getType().getBinding())) {
+                        GeometryDescriptor old = (GeometryDescriptor) attributes[count];
 
                         try {
-                            if (old.getCoordinateSystem() == null) {
-                                attributes[count] = new GeometricAttributeType(old, getSRS(SRS));
+                            AttributeTypeBuilder b = new AttributeTypeBuilder();
+                            b.init(old);
+                            b.setCRS(getSRS(SRS));
+                            
+                            if (old.getCRS() == null) {
+                                attributes[count] = b.buildDescriptor(old.getLocalName());    
                                 srsHandling = FORCE;
                             } else if(srsHandling == REPROJECT || srsHandling == FORCE) {
-                                attributes[count] = new GeometricAttributeType(old, getSRS(SRS));
+                                attributes[count] = b.buildDescriptor(old.getLocalName());    
                             }
                         } catch (Exception e) {
                             e.printStackTrace(); //DJB: this is okay to ignore since (a) it should never happen (b) we'll use the default one (crs=null)
@@ -1112,7 +1117,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     }
 
                     if (attributes[count] == null) {
-                        throw new IOException("the FeatureType " + getName()
+                        throw new IOException("the SimpleFeatureType " + getName()
                             + " does not contains the configured attribute " + attName
                             + ". Check your schema configuration");
                     }
@@ -1121,8 +1126,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 }
 
                 try {
-                    ft = FeatureTypeFactory.newFeatureType(attributes, typeName, namespace);
-                } catch (SchemaException ex) {
+                    tb.addAll(attributes);
+                    ft = tb.buildFeatureType();
                 } catch (FactoryConfigurationError ex) {
                 }
             }
@@ -1143,7 +1148,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     }
 
     /**
-     * FeatureType attributes names as a List.
+     * SimpleFeatureType attributes names as a List.
      *
      * <p>
      * Convience method for accessing attribute names as a Collection. You may
@@ -1179,12 +1184,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         List list = new ArrayList();
 
         try {
-            FeatureType ftype = getFeatureType();
-            AttributeType[] types = ftype.getAttributeTypes();
-            list = new ArrayList(types.length);
+            SimpleFeatureType ftype = getFeatureType();
+            List types = ftype.getAttributes();
+            list = new ArrayList(types.size());
 
-            for (int i = 0; i < types.length; i++) {
-                list.add(types[i].getName());
+            for (int i = 0; i < types.size(); i++) {
+                list.add(((AttributeDescriptor)types.get(i)).getLocalName());
             }
         } catch (IOException e) {
         }
@@ -1194,7 +1199,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
     /**
      * Returns a list of the attributeTypeInfo objects that make up this
-     * FeatureType.
+     * SimpleFeatureType.
      *
      * @return list of attributeTypeInfo objects.
      */
@@ -1227,8 +1232,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
 
             try {
-                FeatureType ftype = dataStore.getSchema(typeName);
-                info.sync(ftype.getAttributeType(attributeName));
+                SimpleFeatureType ftype = dataStore.getSchema(typeName);
+                info.sync(ftype.getAttribute(attributeName));
             } catch (IOException e) {
             }
         } else {
@@ -1236,8 +1241,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
 
             try {
-                FeatureType ftype = dataStore.getSchema(typeName);
-                info = new AttributeTypeInfo(ftype.getAttributeType(attributeName));
+                SimpleFeatureType ftype = dataStore.getSchema(typeName);
+                info = new AttributeTypeInfo(ftype.getAttribute(attributeName));
             } catch (IOException e) {
             }
         }
@@ -1302,7 +1307,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     //-- Modif C. Kolbowicz - 07/10/2004
 
     /**
-     * Gets the schema.xml file associated with this FeatureType.  This is set
+     * Gets the schema.xml file associated with this SimpleFeatureType.  This is set
      * during the reading of configuration, it is not persisted as an element
      * of the FeatureTypeInfoDTO, since it is just whether the schema.xml file
      * was persisted, and its location.  If there is no schema.xml file then

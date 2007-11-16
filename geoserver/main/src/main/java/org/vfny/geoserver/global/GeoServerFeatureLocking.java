@@ -8,8 +8,7 @@ import org.geotools.data.DataSourceException;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.Query;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureType;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import java.io.IOException;
@@ -43,7 +42,7 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore implements Fe
      * @param declaredCRS 
      * @param srsHandling see {@link FeatureTypeInfo#FORCE} & co.
      */
-    GeoServerFeatureLocking(FeatureLocking locking, FeatureType schema, Filter definitionQuery,
+    GeoServerFeatureLocking(FeatureLocking locking, SimpleFeatureType schema, Filter definitionQuery,
         CoordinateReferenceSystem declaredCRS, int srsHandling) {
         super(locking, schema, definitionQuery, declaredCRS, srsHandling);
     }

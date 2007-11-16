@@ -9,7 +9,7 @@
  */
 package org.vfny.geoserver.global;
 
-import org.geotools.feature.AttributeType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +19,7 @@ import java.util.Map;
  * AttributeTypeInfo represents AttributeTypeMetaData for GeoServer.
  *
  * <p>
- * Holds information about AttributeType such as min/max occurs.
+ * Holds information about AttributeDescriptor such as min/max occurs.
  * </p>
  *
  * @author jgarnett, Refractions Research, Inc.
@@ -34,8 +34,8 @@ public class AttributeTypeInfo {
     private String typeName;
     private boolean isComplex;
 
-    /** Readl GeoTools2 AttributeType */
-    private AttributeType type;
+    /** Readl GeoTools2 AttributeDescriptor */
+    private AttributeDescriptor type;
     private Map meta;
 
     public AttributeTypeInfo(AttributeTypeInfoDTO dto) {
@@ -49,7 +49,7 @@ public class AttributeTypeInfo {
         typeName = dto.getType();
     }
 
-    public AttributeTypeInfo(AttributeType type) {
+    public AttributeTypeInfo(AttributeDescriptor type) {
         this.type = type;
         meta = new HashMap();
     }
@@ -65,16 +65,16 @@ public class AttributeTypeInfo {
      *
      * @see org.geotools.data.AttributeTypeMetaData#getAttributeType()
      */
-    public AttributeType getAttributeType() {
+    public AttributeDescriptor getAttributeType() {
         return type;
     }
 
     /**
-     * Allows AttributeType to be lazy about syncing with Schema
+     * Allows AttributeDescriptor to be lazy about syncing with Schema
      *
      * @param type DOCUMENT ME!
      */
-    public void sync(AttributeType type) {
+    public void sync(AttributeDescriptor type) {
         this.type = type;
     }
 
@@ -89,7 +89,7 @@ public class AttributeTypeInfo {
         String r = typeName;
 
         if ((r == null) && (type != null)) {
-            r = type.getName();
+            r = type.getLocalName();
         }
 
         return r;
