@@ -6,7 +6,7 @@
  <groupId>org.geoserver</groupId>
  <artifactId>geoserver</artifactId>
  <packaging>pom</packaging>
- <version>1.6.0-RC1</version>
+ <version>1.7.0-SNAPSHOT</version>
  <name>GeoServer</name>
 
  <scm>
@@ -140,8 +140,8 @@
   <dependencies>
    <dependency>
     <groupId>org.opengis</groupId>
-    <artifactId>geoapi-nogenerics</artifactId>
-    <version>2.1-M7</version>
+    <artifactId>geoapi</artifactId>
+    <version>2.1-SNAPSHOT</version>
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
@@ -230,7 +230,7 @@
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-    <artifactId>gt2-xml-xsd</artifactId>
+    <artifactId>gt2-xml-core</artifactId>
     <version>${gt.version}</version>
    </dependency>
    <dependency>
@@ -780,7 +780,7 @@
       <descriptor>release/ext-arcsde.xml</descriptor>
       <descriptor>release/ext-pyramid.xml</descriptor>
      </descriptors>
-     <finalName>geoserver-1.6.0-RC1</finalName>
+     <finalName>geoserver-1.7.0-SNAPSHOT</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
     </configuration>
    </plugin>
@@ -969,8 +969,8 @@
  </modules>
 
  <properties>
-  <gs.version>1.6.0-RC1</gs.version>
-  <gt.version>2.4-SNAPSHOT</gt.version>
+  <gs.version>1.7.0-SNAPSHOT</gs.version>
+  <gt.version>2.5-SNAPSHOT</gt.version>
   <java.awt.headless>true</java.awt.headless>
   <jalopy.phase>disabled</jalopy.phase>
   <jalopy.srcExcludesPattern>disabled</jalopy.srcExcludesPattern>

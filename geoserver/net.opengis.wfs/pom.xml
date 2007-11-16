@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver</artifactId>
-		<version>1.6.0-RC1</version>
+		<version>1.7.0-SNAPSHOT</version>
 	</parent>
 
   <groupId>org.geoserver</groupId>
@@ -19,7 +19,7 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>net.opengis.ows</artifactId>
-			<version>1.6.0-RC1</version>
+			<version>1.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>
@@ -31,7 +31,7 @@
     </dependency>
     <dependency>
       <groupId>org.opengis</groupId>
-      <artifactId>geoapi-nogenerics</artifactId>
+      <artifactId>geoapi</artifactId>
     </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
