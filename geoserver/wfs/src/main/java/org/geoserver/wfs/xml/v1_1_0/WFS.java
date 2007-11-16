@@ -27,7 +27,7 @@ import org.geotools.xml.XSD;
  * </p>
  *
  */
-public final class WFS extends XSD {
+public class WFS extends XSD {
     
     /** @generated */
     public static final String NAMESPACE = "http://www.opengis.net/wfs";
