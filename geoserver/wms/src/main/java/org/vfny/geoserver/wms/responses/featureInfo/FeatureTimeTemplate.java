@@ -2,7 +2,8 @@ package org.vfny.geoserver.wms.responses.featureInfo;
 
 import java.io.IOException;
 
-import org.geotools.feature.Feature;
+import org.opengis.feature.simple.SimpleFeature;
+
 
 /**
  * Template which supports timestamps and timespans for features.
@@ -38,7 +39,7 @@ public class FeatureTimeTemplate {
      * </p>
      * @param feature The feature to execute against.
      */
-    public String[] execute(Feature feature) throws IOException {
+    public String[] execute(SimpleFeature feature) throws IOException {
         String output = delegate.template(feature, "time.ftl", getClass() );
     
         if ( output != null ) {

@@ -4,32 +4,22 @@
  */
 package org.vfny.geoserver.wms.responses.map.georss;
 
-import org.geoserver.feature.ReprojectingFeatureCollection;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
+
 import org.geoserver.wms.util.WMSRequests;
-import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureSource;
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.factory.GeoTools;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.GeometryAttributeType;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
-import org.geotools.referencing.CRS;
 import org.geotools.xml.transform.Translator;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.feature.simple.SimpleFeature;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Level;
 
 
 /**
@@ -97,7 +87,7 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
                     iterator = features.features();
 
                     while (iterator.hasNext()) {
-                        Feature feature = iterator.next();
+                        SimpleFeature feature = iterator.next();
                         try {
                             encodeItem(feature, map);    
                         }
@@ -116,7 +106,7 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
             }
         }
 
-        void encodeItem(Feature feature, WMSMapContext map)
+        void encodeItem(SimpleFeature feature, WMSMapContext map)
             throws IOException {
             start("item");
 

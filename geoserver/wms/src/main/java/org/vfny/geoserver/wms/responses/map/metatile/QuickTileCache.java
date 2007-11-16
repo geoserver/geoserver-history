@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.geotools.util.CanonicalSet;
 import org.geotools.util.SoftValueHashMap;
 import org.geotools.util.WeakHashSet;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
@@ -50,7 +51,7 @@ public class QuickTileCache {
 	 * Canonicalizer used to return the same object when two threads ask for the
 	 * same meta-tile
 	 */
-	private WeakHashSet metaTileKeys = new WeakHashSet();
+	private CanonicalSet<MetaTileKey> metaTileKeys = CanonicalSet.newInstance(MetaTileKey.class);
 
 	private SoftValueHashMap tileCache = new SoftValueHashMap(0);
 
@@ -77,7 +78,7 @@ public class QuickTileCache {
 		// since this will be used for thread synchronization, we have to make
 		// sure two thread asking for the same meta tile will get the same key
 		// object
-		return (MetaTileKey) metaTileKeys.canonicalize(key);
+		return (MetaTileKey) metaTileKeys.unique(key);
 	}
 
 	/**

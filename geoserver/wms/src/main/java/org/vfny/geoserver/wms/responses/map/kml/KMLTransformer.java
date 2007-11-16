@@ -4,32 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureSource;
-import org.geotools.data.Query;
-import org.geotools.data.crs.ReprojectFeatureResults;
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.GeometryAttributeType;
-import org.geotools.filter.BBoxExpression;
-import org.geotools.filter.IllegalFilterException;
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.map.MapLayer;
-import org.geotools.referencing.CRS;
-import org.geotools.renderer.lite.RendererUtilities;
-import org.geotools.xml.transform.TransformerBase;
-import org.geotools.xml.transform.Translator;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.xml.sax.ContentHandler;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
@@ -37,7 +11,32 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.transform.Transformer;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.DefaultQuery;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
+import org.geotools.data.crs.ReprojectFeatureResults;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.filter.IllegalFilterException;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.map.MapLayer;
+import org.geotools.referencing.CRS;
+import org.geotools.renderer.lite.RendererUtilities;
+import org.geotools.xml.transform.TransformerBase;
+import org.geotools.xml.transform.Translator;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.GeometryDescriptor;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.xml.sax.ContentHandler;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 public class KMLTransformer extends TransformerBase {
@@ -321,12 +320,12 @@ public class KMLTransformer extends TransformerBase {
 
         FeatureCollection loadFeatureCollection(FeatureSource featureSource, MapLayer layer,
             WMSMapContext mapContext) throws Exception {
-            FeatureType schema = featureSource.getSchema();
+            SimpleFeatureType schema = featureSource.getSchema();
 
             Envelope envelope = mapContext.getAreaOfInterest();
             ReferencedEnvelope aoi = new ReferencedEnvelope(envelope,
                     mapContext.getCoordinateReferenceSystem());
-            CoordinateReferenceSystem sourceCrs = schema.getDefaultGeometry().getCoordinateSystem();
+            CoordinateReferenceSystem sourceCrs = schema.getDefaultGeometry().getCRS();
 
             boolean reprojectBBox = (sourceCrs != null)
                 && !CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(), sourceCrs); 
@@ -372,13 +371,13 @@ public class KMLTransformer extends TransformerBase {
          *         its corresponding <code>GeometryFilter</code>.
          * @throws IllegalFilterException if something goes wrong creating the filter
          */
-        Filter createBBoxFilter(FeatureType schema, Envelope bbox)
+        Filter createBBoxFilter(SimpleFeatureType schema, Envelope bbox)
             throws IllegalFilterException {
             List filters = new ArrayList();
             for (int j = 0; j < schema.getAttributeCount(); j++) {
-                AttributeType attType = schema.getAttributeType(j);
+                AttributeDescriptor attType = schema.getAttribute(j);
 
-                if (attType instanceof GeometryAttributeType) {
+                if (attType instanceof GeometryDescriptor) {
                     Filter gfilter = filterFactory.bbox(attType.getLocalName(), bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), null);
                     filters.add(gfilter);
                 }

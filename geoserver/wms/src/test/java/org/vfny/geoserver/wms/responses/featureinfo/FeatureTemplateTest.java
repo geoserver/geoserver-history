@@ -5,8 +5,8 @@ import java.util.Iterator;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
+import org.opengis.feature.simple.SimpleFeature;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 import org.vfny.geoserver.wms.responses.featureinfo.dummy.Dummy;
 
@@ -18,7 +18,7 @@ public class FeatureTemplateTest extends WMSTestSupport {
         FeatureCollection fc = source.getFeatures();
         Iterator i = fc.iterator();
         try {
-            Feature f = (Feature) i.next();
+            SimpleFeature f = (SimpleFeature) i.next();
             
             FeatureTemplate template = new FeatureTemplate();
             try {
@@ -39,7 +39,7 @@ public class FeatureTemplateTest extends WMSTestSupport {
         FeatureCollection fc = source.getFeatures();
         Iterator i = fc.iterator();
         try {
-            Feature f = (Feature) i.next();
+            SimpleFeature f = (SimpleFeature) i.next();
 
             FeatureTemplate template = new FeatureTemplate();
             try {
@@ -59,7 +59,7 @@ public class FeatureTemplateTest extends WMSTestSupport {
         FeatureCollection fc = source.getFeatures();
         Iterator i = fc.iterator();
         try {
-            Feature f = (Feature) i.next();
+            SimpleFeature f = (SimpleFeature) i.next();
             
             FeatureTemplate template = new FeatureTemplate();
             template.description( f );
@@ -85,7 +85,7 @@ public class FeatureTemplateTest extends WMSTestSupport {
         
         FeatureSource source = getFeatureSource( MockData.PRIMITIVEGEOFEATURE );
         FeatureCollection fc = source.getFeatures();
-        Feature f = fc.features().next();
+        SimpleFeature f = fc.features().next();
         
         FeatureTemplate template = new FeatureTemplate();
         String result = template.template(f, "dummy.ftl", Dummy.class );

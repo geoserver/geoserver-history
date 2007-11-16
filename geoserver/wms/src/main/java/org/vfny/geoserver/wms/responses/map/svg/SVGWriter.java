@@ -4,23 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.map.svg;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-import org.geotools.data.DataSourceException;
-import org.geotools.data.FeatureReader;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.IllegalAttributeException;
-import org.vfny.geoserver.wms.WMSMapContext;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -32,6 +15,23 @@ import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
+
+import org.geotools.data.DataSourceException;
+import org.geotools.feature.FeatureIterator;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.vfny.geoserver.wms.WMSMapContext;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 
 /**
@@ -303,12 +303,12 @@ public class SVGWriter extends OutputStreamWriter {
         super.write('\n');
     }
 
-    public void writeFeatures(FeatureType featureType, FeatureIterator reader, String style)
+    public void writeFeatures(SimpleFeatureType featureType, FeatureIterator reader, String style)
         throws IOException, AbortedException {
-        Feature ft;
+        SimpleFeature ft;
 
         try {
-            Class gtype = featureType.getDefaultGeometry().getType();
+            Class gtype = featureType.getDefaultGeometry().getType().getBinding();
 
             boolean doCollect = false;
             /*
@@ -352,7 +352,7 @@ public class SVGWriter extends OutputStreamWriter {
         }
     }
 
-    private void setUpWriterHandler(FeatureType featureType, boolean doCollect)
+    private void setUpWriterHandler(SimpleFeatureType featureType, boolean doCollect)
         throws IOException {
         if (doCollect) {
             this.writerHandler = new CollectSVGHandler(featureWriter);
@@ -395,7 +395,7 @@ public class SVGWriter extends OutputStreamWriter {
      *
      * @throws IOException si algo ocurre escribiendo a <code>out</code>
      */
-    public void writeFeature(Feature ft) throws IOException {
+    public void writeFeature(SimpleFeature ft) throws IOException {
         writerHandler.startFeature(featureWriter, ft);
         writerHandler.startGeometry(featureWriter, ft);
         writerHandler.writeGeometry(featureWriter, ft);
@@ -418,7 +418,7 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        public void startFeature(SVGFeatureWriter featureWriter, Feature ft)
+        public void startFeature(SVGFeatureWriter featureWriter, SimpleFeature ft)
             throws IOException {
             featureWriter.startElement(ft);
         }
@@ -431,7 +431,7 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        public void endFeature(SVGFeatureWriter featureWriter, Feature ft)
+        public void endFeature(SVGFeatureWriter featureWriter, SimpleFeature ft)
             throws IOException {
             featureWriter.endElement(ft);
         }
@@ -444,9 +444,9 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        public void startGeometry(SVGFeatureWriter featureWriter, Feature ft)
+        public void startGeometry(SVGFeatureWriter featureWriter, SimpleFeature ft)
             throws IOException {
-            featureWriter.startGeometry(ft.getDefaultGeometry());
+            featureWriter.startGeometry((Geometry) ft.getDefaultGeometry());
         }
 
         /**
@@ -457,9 +457,9 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        public void writeGeometry(SVGFeatureWriter featureWriter, Feature ft)
+        public void writeGeometry(SVGFeatureWriter featureWriter, SimpleFeature ft)
             throws IOException {
-            featureWriter.writeGeometry(ft.getDefaultGeometry());
+            featureWriter.writeGeometry((Geometry) ft.getDefaultGeometry());
         }
 
         /**
@@ -470,9 +470,9 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        public void endGeometry(SVGFeatureWriter featureWriter, Feature ft)
+        public void endGeometry(SVGFeatureWriter featureWriter, SimpleFeature ft)
             throws IOException {
-            featureWriter.endGeometry(ft.getDefaultGeometry());
+            featureWriter.endGeometry((Geometry) ft.getDefaultGeometry());
         }
     }
 
@@ -502,8 +502,8 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        public void writeFeature(Feature ft) throws IOException {
-            featureWriter.writeGeometry(ft.getDefaultGeometry());
+        public void writeFeature(SimpleFeature ft) throws IOException {
+            featureWriter.writeGeometry((Geometry) ft.getDefaultGeometry());
             write('\n');
         }
     }
@@ -532,7 +532,7 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        public void startFeature(SVGFeatureWriter featureWriter, Feature ft)
+        public void startFeature(SVGFeatureWriter featureWriter, SimpleFeature ft)
             throws IOException {
             handler.startFeature(featureWriter, ft);
             write(" id=\"");
@@ -572,11 +572,11 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        public void startFeature(SVGFeatureWriter featureWriter, Feature ft)
+        public void startFeature(SVGFeatureWriter featureWriter, SimpleFeature ft)
             throws IOException {
             handler.startFeature(featureWriter, ft);
 
-            Geometry geom = ft.getDefaultGeometry();
+            Geometry geom = (Geometry) ft.getDefaultGeometry();
             Envelope env = geom.getEnvelopeInternal();
             write(" bounds=\"");
             write(env.getMinX());
@@ -614,11 +614,11 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        public void startFeature(SVGFeatureWriter featureWriter, Feature ft)
+        public void startFeature(SVGFeatureWriter featureWriter, SimpleFeature ft)
             throws IOException {
             handler.startFeature(featureWriter, ft);
 
-            FeatureType type = ft.getFeatureType();
+            SimpleFeatureType type = ft.getFeatureType();
             int numAtts = type.getAttributeCount();
             String name;
             Object value;
@@ -628,7 +628,7 @@ public class SVGWriter extends OutputStreamWriter {
 
                 if ((value != null) && !(value instanceof Geometry)) {
                     write(' ');
-                    write(type.getAttributeType(i).getName());
+                    write(type.getAttribute(i).getName().getLocalPart());
                     write("=\"");
                     encodeAttribute(String.valueOf(value));
                     write('\"');
@@ -713,7 +713,7 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        protected abstract void startElement(Feature feature)
+        protected abstract void startElement(SimpleFeature feature)
             throws IOException;
 
         /**
@@ -751,7 +751,7 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        protected void endElement(Feature feature) throws IOException {
+        protected void endElement(SimpleFeature feature) throws IOException {
             write("/>\n");
         }
 
@@ -834,7 +834,7 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        protected void startElement(Feature feature) throws IOException {
+        protected void startElement(SimpleFeature feature) throws IOException {
             write(pointsAsCircles ? "<circle r='0.25%' fill='blue'" : "<use");
         }
 
@@ -920,7 +920,7 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        protected void startElement(Feature feature) throws IOException {
+        protected void startElement(SimpleFeature feature) throws IOException {
             write("<g ");
         }
 
@@ -956,7 +956,7 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        protected void endElement(Feature feature) throws IOException {
+        protected void endElement(SimpleFeature feature) throws IOException {
             write("</g>\n");
         }
     }
@@ -972,8 +972,8 @@ public class SVGWriter extends OutputStreamWriter {
     private class GeometryWriter extends SVGFeatureWriter {
         SVGFeatureWriter delegate;
 
-        protected void startElement(Feature feature) throws IOException {
-            Geometry g = feature.getDefaultGeometry();
+        protected void startElement(SimpleFeature feature) throws IOException {
+            Geometry g = (Geometry) feature.getDefaultGeometry();
             delegate = null;
 
             if (g != null) {
@@ -1011,7 +1011,7 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        protected void startElement(Feature feature) throws IOException {
+        protected void startElement(SimpleFeature feature) throws IOException {
             write("<path");
         }
 
@@ -1077,7 +1077,7 @@ public class SVGWriter extends OutputStreamWriter {
          *
          * @throws IOException DOCUMENT ME!
          */
-        protected void startElement(Feature feature) throws IOException {
+        protected void startElement(SimpleFeature feature) throws IOException {
             write("<path");
         }
 

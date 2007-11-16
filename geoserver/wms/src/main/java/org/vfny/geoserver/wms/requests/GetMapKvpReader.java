@@ -34,7 +34,7 @@ import org.geotools.data.Transaction;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureReader;
 import org.geotools.data.memory.MemoryDataStore;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.feature.FeatureType;
+import org.geotools.feature.FeatureTypes;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.FeatureTypeConstraint;
@@ -47,6 +47,7 @@ import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyledLayer;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
@@ -553,7 +554,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 
 		// fill byFeatureTypes with the split of its raw attributes requested
 		// separated by commas, and check for the validity of each att name
-		FeatureType schema;
+		SimpleFeatureType schema;
 		List atts;
 		String attName;
 
@@ -589,7 +590,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 							continue;
 						}
 
-						if (schema.getAttributeType(attName) == null) {
+						if (schema.getAttribute(attName) == null) {
 							throw new WmsException("Attribute '" + attName
 									+ "' requested for layer "
 									+ schema.getTypeName() + " does not exists");
@@ -781,11 +782,11 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 		// output SRS of the
 		// request they're making.
 		if (ul.getInlineFeatureType().getDefaultGeometry()
-				.getCoordinateSystem() == null) {
+				.getCRS() == null) {
 			LOGGER
 					.warning("No CRS set on inline features default geometry.  Assuming the requestor has their inlinefeatures in the boundingbox CRS.");
 
-			FeatureType currFt = ul.getInlineFeatureType();
+			SimpleFeatureType currFt = ul.getInlineFeatureType();
 			Query q = new DefaultQuery(currFt.getTypeName(), Filter.INCLUDE);
 			FeatureReader ilReader = ul.getInlineFeatureDatastore()
 					.getFeatureReader(q, Transaction.AUTO_COMMIT);
@@ -808,7 +809,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	 * @throws WmsException
 	 *             DOCUMENT ME!
 	 */
-	private void checkStyle(Style style, FeatureType fType) throws WmsException {
+	private void checkStyle(Style style, SimpleFeatureType fType) throws WmsException {
 		StyleAttributeExtractor sae = new StyleAttributeExtractor();
 		sae.visit(style);
 
@@ -819,7 +820,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 		for (int i = 0; i < length; i++) {
 			attName = styleAttributes[i];
 
-			if (fType.getAttributeType(attName) == null) {
+			if (fType.getAttribute(attName) == null) {
 				throw new WmsException(
 						"The requested Style can not be used with "
 								+ "this featureType.  The style specifies an attribute of "
@@ -1374,11 +1375,9 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 					boolean matches;
 
 					try {
-						matches = currLayer.getFeature().getFeatureType()
-								.isDescendedFrom(null, ftc_name)
-								|| currLayer.getFeature().getFeatureType()
-										.getTypeName().equalsIgnoreCase(
-												ftc_name);
+						final SimpleFeatureType currSchema = currLayer.getFeature().getFeatureType();
+                        matches = currSchema.getTypeName().equalsIgnoreCase(ftc_name) ||
+								  FeatureTypes.isDecendedFrom(currSchema, null, ftc_name);
 					} catch (Exception e) {
 						matches = false; // bad news
 					}
@@ -1491,7 +1490,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 			style = layer.getDefaultStyle();
 		}
 
-		FeatureType type;
+		SimpleFeatureType type;
 
 		try {
 			type = layer.getFeatureType();

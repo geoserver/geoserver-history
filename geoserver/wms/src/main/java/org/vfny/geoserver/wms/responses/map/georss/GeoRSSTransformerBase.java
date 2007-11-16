@@ -4,39 +4,36 @@
  */
 package org.vfny.geoserver.wms.responses.map.georss;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.GeometryAttributeType;
-
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.xml.transform.TransformerBase;
-import org.geotools.xml.transform.Translator;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 
 public abstract class GeoRSSTransformerBase extends TransformerBase {
@@ -183,9 +180,9 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
          * Encodes the geometry of a feature.
          *
          */
-        protected void encodeGeometry(Feature feature) {
+        protected void encodeGeometry(SimpleFeature feature) {
             if (feature.getDefaultGeometry() != null) {
-                Geometry g = feature.getDefaultGeometry();
+                Geometry g = (Geometry) feature.getDefaultGeometry();
 
                 //handle case of multi geometry with a single geometry in it
                 if (g instanceof GeometryCollection) {
@@ -229,15 +226,15 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
                 try {
                     FeatureSource source = layer.getFeatureSource();
                     
-                    GeometryAttributeType at = source.getSchema().getDefaultGeometry();
-                    if(at == null) {
+                    GeometryDescriptor gd = source.getSchema().getDefaultGeometry();
+                    if(gd == null) {
                         // geometryless layers...
                         features = source.getFeatures(query);
                     } else {
                         // make sure we are querying the source with the bbox in the right CRS, if
                         // not, reproject the bbox
                         ReferencedEnvelope env = new ReferencedEnvelope(mapArea);
-                        CoordinateReferenceSystem sourceCRS = at.getCoordinateSystem();
+                        CoordinateReferenceSystem sourceCRS = gd.getCRS();
                         if(sourceCRS != null && 
                             !CRS.equalsIgnoreMetadata(mapArea.getCoordinateReferenceSystem(), sourceCRS)) {
                             env = env.transform(sourceCRS, true);
@@ -245,7 +242,7 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
                         
                         // build the mixed query
                         Filter original = query.getFilter();
-                        Filter bbox = ff.bbox(at.getLocalName(), env.getMinX(), env.getMinY(), env.getMaxX(), env.getMaxY(), null);
+                        Filter bbox = ff.bbox(gd.getLocalName(), env.getMinX(), env.getMinY(), env.getMaxX(), env.getMaxY(), null);
                         query.setFilter(ff.and(original, bbox));
 
                         // query and eventually reproject

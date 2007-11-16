@@ -27,10 +27,8 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureType;
 import org.geotools.feature.IllegalAttributeException;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.geometry.jts.LiteShape2;
 import org.geotools.renderer.lite.StyledShapePainter;
 import org.geotools.renderer.style.SLDStyleFactory;
@@ -45,6 +43,9 @@ import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.NumberRange;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
@@ -180,7 +181,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
      */
     public void produceLegendGraphic(GetLegendGraphicRequest request)
         throws WmsException {
-        final Feature sampleFeature = createSampleFeature(request.getLayer());
+        final SimpleFeature sampleFeature = createSampleFeature(request.getLayer());
 
         final Style gt2Style = request.getStyle();
         final FeatureTypeStyle[] ftStyles = gt2Style.getFeatureTypeStyles();
@@ -666,18 +667,12 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
      *
      * @throws WmsException
      */
-    private Feature createSampleFeature(FeatureType schema)
+    private SimpleFeature createSampleFeature(SimpleFeatureType schema)
         throws WmsException {
-        Feature sampleFeature;
+        SimpleFeature sampleFeature;
 
         try {
-            AttributeType[] atts = schema.getAttributeTypes();
-            Object[] attributes = new Object[atts.length];
-
-            for (int i = 0; i < atts.length; i++)
-                attributes[i] = atts[i].createDefaultValue();
-
-            sampleFeature = schema.create(attributes);
+            sampleFeature = SimpleFeatureBuilder.template(schema, null); 
         } catch (IllegalAttributeException e) {
             e.printStackTrace();
             throw new WmsException(e);
