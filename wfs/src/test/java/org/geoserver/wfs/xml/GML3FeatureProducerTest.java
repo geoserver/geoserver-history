@@ -14,6 +14,7 @@ import org.geoserver.data.test.MockData;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
 import org.geoserver.wfs.WFSTestSupport;
+import org.geoserver.wfs.xml.v1_1_0.WFS;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureCollection;
@@ -23,9 +24,10 @@ import org.w3c.dom.Document;
 public class GML3FeatureProducerTest extends WFSTestSupport {
 
     GML3OutputFormat producer() {
+        FeatureTypeSchemaBuilder sb = new FeatureTypeSchemaBuilder.GML3(getWFS(), getCatalog(),
+                getResourceLoader()); 
         WFSConfiguration configuration = new WFSConfiguration(getCatalog(),
-                new FeatureTypeSchemaBuilder.GML3(getWFS(), getCatalog(),
-                        getResourceLoader()));
+                sb, new WFS(sb));
         return new GML3OutputFormat(getWFS(), getCatalog(), configuration);
     }
     

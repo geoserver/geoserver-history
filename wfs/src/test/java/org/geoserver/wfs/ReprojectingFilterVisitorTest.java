@@ -7,8 +7,8 @@ import junit.framework.TestCase;
 import org.geotools.data.DataUtilities;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
-import org.geotools.feature.FeatureType;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.expression.Literal;
@@ -21,7 +21,7 @@ import com.vividsolutions.jts.geom.LineString;
 
 public class ReprojectingFilterVisitorTest extends TestCase {
 
-    FeatureType ft;
+    SimpleFeatureType ft;
     FilterFactory2 ff;
     ReprojectingFilterVisitor reprojector;
 

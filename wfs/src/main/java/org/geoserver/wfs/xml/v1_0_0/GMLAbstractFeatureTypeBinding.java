@@ -9,12 +9,12 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.FeatureType;
 import org.geotools.gml2.FeatureTypeCache;
 import org.geotools.xml.BindingWalkerFactory;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 
@@ -37,14 +37,14 @@ public final class GMLAbstractFeatureTypeBinding extends org.geotools.gml2.bindi
                 instance.getNamespace());
 
         if (meta != null) {
-            FeatureType featureType = meta.getFeatureType();
+            SimpleFeatureType featureType = meta.getFeatureType();
 
             //go through each attribute, performing various hacks to make make sure things 
             // cocher
             for (int i = 0; i < featureType.getAttributeCount(); i++) {
-                AttributeType attributeType = featureType.getAttributeType(i);
-                String name = attributeType.getName();
-                Class type = attributeType.getType();
+                AttributeDescriptor attributeType = featureType.getAttribute(i);
+                String name = attributeType.getLocalName();
+                Class type = attributeType.getType().getBinding();
 
                 if ("boundedBy".equals(name)) {
                     Node boundedByNode = node.getChild("boundedBy");

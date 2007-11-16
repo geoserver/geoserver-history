@@ -20,14 +20,14 @@ import org.geotools.data.FeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.GeometryAttributeType;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.factory.GeotoolsFactory;
 import org.geotools.xml.EMFUtils;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.FilterFactory2;
@@ -215,7 +215,7 @@ public class GetFeature {
                         // if we need to force feature bounds computation, we have to load 
                         // all of the geometries, but we'll have to remove them in the 
                         // returned feature type
-                        if(wfs.isFeatureBounding() && meta.getFeatureType().getAttributeType(ati.getName()) instanceof GeometryAttributeType
+                        if(wfs.isFeatureBounding() && meta.getFeatureType().getAttribute(ati.getName()) instanceof GeometryDescriptor
                                 && !properties.contains(ati.getName())) {
                             properties.add(ati.getName());
                             extraGeometries.add(ati.getName());
@@ -229,7 +229,7 @@ public class GetFeature {
 
                 //make sure filters are sane
                 if (query.getFilter() != null) {
-                    final FeatureType featureType = source.getSchema();
+                    final SimpleFeatureType featureType = source.getSchema();
                     ExpressionVisitor visitor = new AbstractExpressionVisitor() {
                             public Object visit(PropertyName name, Object data) {
                                 // case of multiple geometries being returned
@@ -259,7 +259,7 @@ public class GetFeature {
                     List residualProperties = new ArrayList(properties);
                     residualProperties.removeAll(extraGeometries);
                     String[] residualNames = (String[]) residualProperties.toArray(new String[residualProperties.size()]);
-                    FeatureType targetType = DataUtilities.createSubType(features.getSchema(), residualNames);
+                    SimpleFeatureType targetType = DataUtilities.createSubType(features.getSchema(), residualNames);
                     features = new FeatureBoundsFeatureCollection(features, targetType);
                 }
 
@@ -356,9 +356,8 @@ public class GetFeature {
         }
         
         //figure out the crs the data is in
-        CoordinateReferenceSystem crs = (source.getSchema().getDefaultGeometry() != null)
-            ? source.getSchema().getDefaultGeometry().getCoordinateSystem() : null;
-
+        CoordinateReferenceSystem crs = source.getSchema().getCRS();
+            
         // gather declared CRS
         CoordinateReferenceSystem declaredCRS = WFSReprojectionUtil.getDeclaredCrs(crs, wfsVersion);
         

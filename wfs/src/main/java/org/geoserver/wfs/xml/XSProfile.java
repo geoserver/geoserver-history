@@ -4,12 +4,14 @@
  */
 package org.geoserver.wfs.xml;
 
-import org.geotools.feature.AttributeTypeFactory;
-import org.geotools.feature.Name;
+import org.geotools.feature.AttributeTypeBuilder;
+
 import org.geotools.feature.type.ProfileImpl;
 import org.geotools.feature.type.SchemaImpl;
+import org.geotools.xs.XS;
 import org.geotools.xs.XSSchema;
-import org.geotools.xs.bindings.XS;
+
+import org.opengis.feature.type.Name;
 import org.opengis.feature.type.Schema;
 
 import java.util.Collections;
@@ -50,14 +52,18 @@ public class XSProfile extends TypeMappingProfile {
         // we create a custom schema which also contains a mapping for 
         // java.util.Date
         Schema additional = new SchemaImpl(XS.NAMESPACE);
-        additional.put(name(XS.DATETIME), AttributeTypeFactory.newAttributeType("date", Date.class ));
+        AttributeTypeBuilder ab = new AttributeTypeBuilder();
+        ab.setName("date");
+        ab.setBinding(Date.class);
+        
+        additional.put(name(XS.DATETIME), ab.buildType() );
         profiles.add( new ProfileImpl( additional, Collections.singleton( name( XS.DATETIME))));
         
         //profile.add(name(XS.ANYTYPE)); //Map.class
     }
 
     static Name name(QName qName) {
-        return new Name(qName.getNamespaceURI(), qName.getLocalPart());
+        return new org.geotools.feature.Name(qName.getNamespaceURI(), qName.getLocalPart());
     }
 
     public XSProfile() {

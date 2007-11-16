@@ -6,9 +6,9 @@ package org.geoserver.wfs;
 
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
-import org.geotools.feature.FeatureType;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -51,9 +51,9 @@ class WFSReprojectionUtil {
      * @param wfsVersion
      * @return
      */
-    public static CoordinateReferenceSystem getDeclaredCrs(FeatureType schema, String wfsVersion) {
+    public static CoordinateReferenceSystem getDeclaredCrs(SimpleFeatureType schema, String wfsVersion) {
         CoordinateReferenceSystem crs = (schema.getDefaultGeometry() != null) ? schema
-                .getDefaultGeometry().getCoordinateSystem() : null;
+                .getDefaultGeometry().getCRS() : null;
 
         if (schema == null)
             return null;
@@ -68,7 +68,7 @@ class WFSReprojectionUtil {
      * @param wfsVersion
      * @return
      */
-    public static Filter applyDefaultCRS(Filter filter, FeatureType schema,
+    public static Filter applyDefaultCRS(Filter filter, SimpleFeatureType schema,
             CoordinateReferenceSystem defaultCRS) {
         DefaultCRSFilterVisitor defaultVisitor = new DefaultCRSFilterVisitor(ff, schema, defaultCRS);
         return (Filter) filter.accept(defaultVisitor, null);
@@ -82,21 +82,21 @@ class WFSReprojectionUtil {
      * @param schema
      * @return
      */
-    public static Filter reprojectFilter(Filter filter, FeatureType schema) {
+    public static Filter reprojectFilter(Filter filter, SimpleFeatureType schema) {
         ReprojectingFilterVisitor visitor = new ReprojectingFilterVisitor(ff, schema);
         return (Filter) filter.accept(visitor, null);
     }
 
     /**
      * Convenience method, same as calling {@link #applyDefaultCRS} and then
-     * {@link #reprojectFilter(Filter, FeatureType)} in a row
+     * {@link #reprojectFilter(Filter, SimpleFeatureType)} in a row
      * 
      * @param filter
      * @param schema
      * @param defaultCRS
      * @return
      */
-    public static Filter normalizeFilterCRS(Filter filter, FeatureType schema,
+    public static Filter normalizeFilterCRS(Filter filter, SimpleFeatureType schema,
             CoordinateReferenceSystem defaultCRS) {
         Filter defaulted = applyDefaultCRS(filter, schema, defaultCRS);
         return reprojectFilter(defaulted, schema);

@@ -21,8 +21,8 @@ import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.FilterFactory2;
@@ -178,7 +178,7 @@ public class LockFeature {
 
                 try {
                     for (reader = features.iterator(); reader.hasNext();) {
-                        Feature feature = (Feature) reader.next();
+                        SimpleFeature feature = (SimpleFeature) reader.next();
 
                         FeatureId fid = fid(feature.getID());
                         Id fidFilter = fidFilter(fid);

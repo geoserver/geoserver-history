@@ -13,8 +13,8 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSDescribeFeatureTypeOutputFormat;
 import org.geoserver.wfs.WFSException;
-import org.geotools.feature.FeatureType;
 import org.geotools.gml.producer.FeatureTypeTransformer;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import java.io.File;
@@ -258,7 +258,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
                     if ((schemaFile != null) && schemaFile.exists() && schemaFile.canRead()) {
                         generatedType = writeFile(schemaFile);
                     } else {
-                        FeatureType ft2 = ftInfo.getFeatureType();
+                        SimpleFeatureType ft2 = ftInfo.getFeatureType();
                         String gType2 = generateFromSchema(ft2);
 
                         if ((gType2 != null) && (gType2 != "")) {
@@ -299,7 +299,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
      *  @task REVISIT: when this class changes to writing directly to out this
      *       can just take a writer and write directly to it.
      */
-    private String generateFromSchema(FeatureType schema)
+    private String generateFromSchema(SimpleFeatureType schema)
         throws IOException {
         try {
             StringWriter writer = new StringWriter();

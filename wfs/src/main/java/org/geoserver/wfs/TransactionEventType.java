@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class TransactionEventType extends SimpleEnumerationType {
+public class TransactionEventType extends SimpleEnumerationType<TransactionEventType> {
     private static final long serialVersionUID = -4218786755116808448L;
     private static final List VALUES = new ArrayList(5);
 

@@ -6,7 +6,7 @@ import junit.textui.TestRunner;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.wfs.WFSTestSupport;
-import org.geotools.gml3.bindings.GML;
+import org.geotools.gml3.GML;
 import org.geotools.referencing.CRS;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

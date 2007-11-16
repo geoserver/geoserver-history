@@ -15,7 +15,7 @@ import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
-import org.geotools.xs.bindings.XS;
+import org.geotools.xs.XS;
 import org.opengis.feature.type.Name;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

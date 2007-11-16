@@ -15,15 +15,15 @@ import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.type.GeometricAttributeType;
 import org.geotools.geometry.jts.GeometryCoordinateSequenceTransformer;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.projection.PointOutsideEnvelopeException;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.FilterFactory2;
@@ -77,7 +77,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
 
         try {
             FeatureTypeInfo meta = (FeatureTypeInfo) typeInfos.values().iterator().next();
-            FeatureType featureType = meta.getFeatureType();
+            SimpleFeatureType featureType = meta.getFeatureType();
 
             for (Iterator prop = update.getProperty().iterator(); prop.hasNext();) {
                 PropertyType property = (PropertyType) prop.next();
@@ -85,7 +85,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
                 //check that valus that are non-nillable exist
                 if (property.getValue() == null) {
                     String propertyName = property.getName().getLocalPart();
-                    AttributeType attributeType = featureType.getAttributeType(propertyName);
+                    AttributeDescriptor attributeType = featureType.getAttribute(propertyName);
 
                     if ((attributeType != null) && (attributeType.getMinOccurs() > 0)) {
                         String msg = "Property '" + attributeType.getLocalName()
@@ -143,12 +143,12 @@ public class UpdateElementHandler implements TransactionElementHandler {
             filter = WFSReprojectionUtil.normalizeFilterCRS(filter, store.getSchema(), declaredCRS);
 
 
-            AttributeType[] types = new AttributeType[update.getProperty().size()];
+            AttributeDescriptor[] types = new AttributeDescriptor[update.getProperty().size()];
             Object[] values = new Object[update.getProperty().size()];
 
             for (int j = 0; j < update.getProperty().size(); j++) {
                 PropertyType property = (PropertyType) update.getProperty().get(j);
-                types[j] = store.getSchema().getAttributeType(property.getName().getLocalPart());
+                types[j] = store.getSchema().getAttribute(property.getName().getLocalPart());
                 values[j] = property.getValue();
                 
                 // if geometry, it may be necessary to reproject it to the native CRS before
@@ -168,8 +168,8 @@ public class UpdateElementHandler implements TransactionElementHandler {
                     
                     // see if the geometry has a CRS other than the default one
                     CoordinateReferenceSystem target = null;
-                    if (types[j] instanceof GeometricAttributeType) {
-                        target = ((GeometricAttributeType)types[j]).getCoordinateSystem();
+                    if (types[j] instanceof GeometryDescriptor) {
+                        target = ((GeometryDescriptor)types[j]).getCRS();
                     }
                     
                     if(wfs.getCiteConformanceHacks())
@@ -211,7 +211,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
 
             try {
                 while (preprocess.hasNext()) {
-                    Feature feature = (Feature) preprocess.next();
+                    SimpleFeature feature = (SimpleFeature) preprocess.next();
                     fids.add(feature.getID());
                 }
             } catch (NoSuchElementException e) {

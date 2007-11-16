@@ -3,14 +3,17 @@ package org.geoserver.wfs;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.geotools.feature.Feature;
+import org.geotools.feature.DecoratingFeature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.GeometryAttributeType;
+
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.collection.AbstractFeatureCollection;
+import org.geotools.feature.collection.AbstractResourceCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -20,7 +23,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * A feature collection wrapping a base collection, returning features that do 
  * conform to the specified type (which has have a subset of the attributes in the
  * original schema), and that do use the wrapped features to compute their bounds (so that
- * the Feature bounds can be computed even if the visible attributes do not include geometries) 
+ * the SimpleFeature bounds can be computed even if the visible attributes do not include geometries) 
  * @author Andrea Aime - TOPP
  *
  */
@@ -32,21 +35,23 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
      * @param wrapped the wrapped feature collection
      * @param targetSchema the target schema
      */
-    public FeatureBoundsFeatureCollection(FeatureCollection wrapped, FeatureType targetSchema) {
-        super(targetSchema);
+    public FeatureBoundsFeatureCollection(final FeatureCollection wrapped, final SimpleFeatureType targetSchema) {
+        super(targetSchema, 
+            new AbstractResourceCollection() {
+                protected Iterator openIterator() {
+                    return  new BoundsIterator(wrapped.features(), targetSchema);
+                }
+    
+                protected void closeIterator(Iterator close) {
+                    ((BoundsIterator) close).close();
+                }
+    
+                public int size() {
+                    return wrapped.size();
+                }
+            }
+        );
         this.wrapped = wrapped;
-    }
-
-    protected void closeIterator(Iterator close) {
-        ((BoundsIterator) close).close();
-    }
-
-    protected Iterator openIterator() {
-        return  new BoundsIterator(wrapped.features(), getSchema());
-    }
-
-    public int size() {
-        return wrapped.size();
     }
 
     /**
@@ -56,9 +61,9 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
      */
     private static class BoundsIterator implements Iterator {
         FeatureIterator wrapped;
-        FeatureType targetSchema;
+        SimpleFeatureType targetSchema;
 
-        public BoundsIterator(FeatureIterator wrapped, FeatureType targetSchema) {
+        public BoundsIterator(FeatureIterator wrapped, SimpleFeatureType targetSchema) {
             this.wrapped = wrapped;
             this.targetSchema = targetSchema;
         }
@@ -72,7 +77,7 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
         }
 
         public Object next() throws NoSuchElementException {
-            Feature base = wrapped.next();
+            SimpleFeature base = wrapped.next();
             return new BoundedFeature(base, targetSchema);
         }
 
@@ -82,35 +87,35 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
     }
 
     /**
-     * Wraps a Feature shaving off all attributes not included in the original type, but 
+     * Wraps a SimpleFeature shaving off all attributes not included in the original type, but 
      * delegates bounds computation to the original feature.
      * @author Andrea Aime - TOPP
      *
      */
-    private static class BoundedFeature implements Feature {
-        private Feature wrapped;
-
-        private FeatureType type;
+    private static class BoundedFeature extends DecoratingFeature {
         
-        public BoundedFeature(Feature wrapped, FeatureType type) {
-            this.wrapped = wrapped;
+        private SimpleFeatureType type;
+        
+        public BoundedFeature(SimpleFeature wrapped, SimpleFeatureType type) {
+            super( wrapped );
+            
             this.type = type;
         }
 
         public Object getAttribute(int index) {
-            return wrapped.getAttribute(type.getAttributeType(index).getName());
+            return delegate.getAttribute(type.getAttribute(index).getName());
         }
 
         public Object getAttribute(String path) {
-            if (type.getAttributeType(path) == null)
+            if (type.getAttribute(path) == null)
                 return null;
-            return wrapped.getAttribute(path);
+            return delegate.getAttribute(path);
         }
 
         public Object[] getAttributes(Object[] attributes) {
             Object[] retval = attributes != null ? attributes : new Object[type.getAttributeCount()];
             for (int i = 0; i < retval.length; i++) {
-                retval[i] = wrapped.getAttribute(type.getAttributeType(i).getName());
+                retval[i] = delegate.getAttribute(type.getAttribute(i).getName());
             }
             return retval;
         }
@@ -118,31 +123,25 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
         public ReferencedEnvelope getBounds() {
             // we may not have the default geometry around in the reduced feature type,
             // so let's output a referenced envelope if possible
-            if(wrapped.getFeatureType().getDefaultGeometry() != null) {
-                CoordinateReferenceSystem crs = wrapped.getFeatureType().getDefaultGeometry().getCoordinateSystem();
-                if(crs != null) {
-                    return new ReferencedEnvelope(wrapped.getBounds(), crs);
-                }
-            }
-            return  wrapped.getBounds();
+            return  new ReferencedEnvelope( delegate.getBounds() );
         }
 
         public Geometry getDefaultGeometry() {
            return getPrimaryGeometry();
         }
         public Geometry getPrimaryGeometry() {
-        	 GeometryAttributeType defaultGeometry = type.getDefaultGeometry();
+        	 GeometryDescriptor defaultGeometry = type.getDefaultGeometry();
              if(defaultGeometry == null)
                  return null;
-             return (Geometry) wrapped.getAttribute(defaultGeometry.getName());
+             return (Geometry) delegate.getAttribute(defaultGeometry.getName());
         }
 
-        public FeatureType getFeatureType() {
+        public SimpleFeatureType getFeatureType() {
             return type;
         }
 
         public String getID() {
-            return wrapped.getID();
+            return delegate.getID();
         }
 
         public int getNumberOfAttributes() {

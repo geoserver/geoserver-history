@@ -14,7 +14,8 @@ import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
+import org.opengis.feature.simple.SimpleFeatureType;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -201,7 +202,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
      * @param tempDir the temp directory into which it should be written
      */
     private void writeCollectionToShapefile(FeatureCollection c, File tempDir) {
-        FeatureType schema = c.getSchema();
+        SimpleFeatureType schema = c.getSchema();
 
         try {
             File file = new File(tempDir, schema.getTypeName() + ".shp");
@@ -220,8 +221,8 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat {
             FeatureStore store = (FeatureStore) sfds.getFeatureSource(schema.getTypeName());
             store.addFeatures(c);
             try {
-                if(schema.getDefaultGeometry().getCoordinateSystem() != null)
-                    sfds.forceSchemaCRS(schema.getDefaultGeometry().getCoordinateSystem());
+                if(schema.getCRS() != null)
+                    sfds.forceSchemaCRS(schema.getCRS());
             } catch(Exception e) {
                 LOGGER.log(Level.WARNING, "Could not properly create the .prj file", e);
             }

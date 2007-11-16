@@ -4,16 +4,31 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import java.io.IOException;
+import java.util.Set;
+
 import javax.xml.namespace.QName;
+
+import org.eclipse.xsd.XSDSchema;
+import org.geoserver.ows.xml.v1_0.OWS;
+import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
+import org.geotools.filter.v1_1.OGC;
+import org.geotools.gml3.GML;
+import org.geotools.xml.XSD;
 
 
 /**
- * This interface contains the qualified names of all the types,elements, and
- * attributes in the http://www.opengis.net/wfs schema.
+ * XSD object for GeoServer WFS 1.1.
+ * <p>
+ * This object is not a singleton in the conventional java sense as the other XSD
+ * subclasses (GML,OGC,OWS,etc..) are. It is a singleton, but managed as such by 
+ * the spring container. The reason being that it requires the catalog to operate
+ * and build the underlying schema. 
+ * </p>
  *
- * @generated
  */
-public interface WFS {
+public final class WFS extends XSD {
+    
     /** @generated */
     public static final String NAMESPACE = "http://www.opengis.net/wfs";
 
@@ -250,4 +265,54 @@ public interface WFS {
             "XlinkPropertyName");
 
     /* Attributes */
+    
+    /** schema type builder */
+    FeatureTypeSchemaBuilder schemaBuilder;
+    
+    public WFS(FeatureTypeSchemaBuilder schemaBuilder) {
+        this.schemaBuilder = schemaBuilder;
+    }
+    
+    protected void addDependencies(Set dependencies) {
+        super.addDependencies(dependencies);
+        
+        dependencies.add( OGC.getInstance() );
+        dependencies.add( GML.getInstance() );
+        dependencies.add( OWS.getInstance() );
+    }
+    
+    /**
+     * Returns 'http://www.opengis.net/wfs'
+     */
+    public String getNamespaceURI() {
+        return NAMESPACE;
+    }
+    
+    /**
+     * Returns the location of 'wfs.xsd'
+     */
+    public String getSchemaLocation() {
+        return getClass().getResource( "wfs.xsd" ).toString();
+    }
+    
+    /**
+     * Suplements the schema built by the parent by adding hte aplication schema
+     * feature typs defined in GeoServer.
+     */
+    protected XSDSchema buildSchema() throws IOException {
+        XSDSchema wfsSchema = super.buildSchema();
+        wfsSchema = schemaBuilder.addApplicationTypes(wfsSchema);
+        return wfsSchema;
+    }
+    
+    /**
+     * "Flushes" the build schema.
+     * <p>
+     * This method is provided to allow the schema to rebuilt after a new type 
+     * is added.
+     * </p>
+     */
+    public void flush() {
+        schema = null;
+    }
 }

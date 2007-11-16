@@ -12,15 +12,16 @@ import net.opengis.wfs.WfsFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geotools.data.FeatureStore;
-import org.geotools.feature.AttributeType;
+
 import org.geotools.feature.DefaultFeatureCollection;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.GeometryAttributeType;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.operation.projection.PointOutsideEnvelopeException;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -76,11 +77,11 @@ public class InsertElementHandler implements TransactionElementHandler {
 
         try {
             // group features by their schema
-            HashMap /* <FeatureType,FeatureCollection> */ schema2features = new HashMap();
+            HashMap /* <SimpleFeatureType,FeatureCollection> */ schema2features = new HashMap();
 
             for (Iterator f = insert.getFeature().iterator(); f.hasNext();) {
-                Feature feature = (Feature) f.next();
-                FeatureType schema = feature.getFeatureType();
+                SimpleFeature feature = (SimpleFeature) f.next();
+                SimpleFeatureType schema = feature.getFeatureType();
                 FeatureCollection collection = (FeatureCollection) schema2features.get(schema);
 
                 if (collection == null) {
@@ -101,9 +102,9 @@ public class InsertElementHandler implements TransactionElementHandler {
 
             for (Iterator c = schema2features.values().iterator(); c.hasNext();) {
                 FeatureCollection collection = (FeatureCollection) c.next();
-                FeatureType schema = collection.getSchema();
+                SimpleFeatureType schema = collection.getSchema();
 
-                QName elementName = new QName(schema.getNamespace().toString(), schema.getTypeName());
+                QName elementName = new QName(schema.getName().getNamespaceURI(), schema.getTypeName());
                 FeatureStore store = (FeatureStore) featureStores.get(elementName);
 
                 if (store == null) {
@@ -119,10 +120,9 @@ public class InsertElementHandler implements TransactionElementHandler {
                     }
                     
                     // reprojection
-                    final GeometryAttributeType defaultGeometry = store.getSchema().getDefaultGeometry();
+                    final GeometryDescriptor defaultGeometry = store.getSchema().getDefaultGeometry();
                     if(defaultGeometry != null) {
-                        CoordinateReferenceSystem target = defaultGeometry
-                                                             .getCoordinateSystem();
+                        CoordinateReferenceSystem target = defaultGeometry.getCRS();
                         if (target != null) {
                             collection = new ReprojectingFeatureCollection(collection, target);
                         }
@@ -170,8 +170,8 @@ public class InsertElementHandler implements TransactionElementHandler {
             InsertedFeatureType insertedFeature = null;
 
             for (Iterator f = insert.getFeature().iterator(); f.hasNext();) {
-                Feature feature = (Feature) f.next();
-                FeatureType schema = feature.getFeatureType();
+                SimpleFeature feature = (SimpleFeature) f.next();
+                SimpleFeatureType schema = feature.getFeatureType();
 
                 // get the next fid
                 LinkedList fids = (LinkedList) schema2fids.get(schema.getTypeName());
@@ -203,18 +203,18 @@ public class InsertElementHandler implements TransactionElementHandler {
      */
     void checkFeatureCoordinatesRange(FeatureCollection collection)
             throws PointOutsideEnvelopeException {
-        AttributeType[] types = collection.getSchema().getAttributeTypes();
+        List types = collection.getSchema().getAttributes();
         FeatureIterator fi = collection.features();
         try {
             while(fi.hasNext()) {
-                Feature f = fi.next();
-                for (int i = 0; i < types.length; i++) {
-                    if(types[i] instanceof GeometryAttributeType) {
-                        GeometryAttributeType gat = (GeometryAttributeType) types[i];
-                        if(gat.getCoordinateSystem() != null) {
+                SimpleFeature f = fi.next();
+                for (int i = 0; i < types.size(); i++) {
+                    if(types.get(i) instanceof GeometryDescriptor) {
+                        GeometryDescriptor gat = (GeometryDescriptor) types.get(i);
+                        if(gat.getCRS() != null) {
                             Geometry geom = (Geometry) f.getAttribute(i);
                             if(geom != null)
-                                JTS.checkCoordinatesRange(geom, gat.getCoordinateSystem());
+                                JTS.checkCoordinatesRange(geom, gat.getCRS());
                         }
                     }
                 }
@@ -234,14 +234,10 @@ public class InsertElementHandler implements TransactionElementHandler {
 
         if (!insert.getFeature().isEmpty()) {
             for (Iterator f = insert.getFeature().iterator(); f.hasNext();) {
-                Feature feature = (Feature) f.next();
+                SimpleFeature feature = (SimpleFeature) f.next();
 
                 String name = feature.getFeatureType().getTypeName();
-                String namespaceURI = null;
-
-                if (feature.getFeatureType().getNamespace() != null) {
-                    namespaceURI = feature.getFeatureType().getNamespace().toString();
-                }
+                String namespaceURI = feature.getFeatureType().getName().getNamespaceURI();
 
                 typeNames.add(new QName(namespaceURI, name));
             }

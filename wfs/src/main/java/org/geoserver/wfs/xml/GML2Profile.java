@@ -7,7 +7,7 @@ package org.geoserver.wfs.xml;
 import org.geotools.feature.Name;
 import org.geotools.feature.type.ProfileImpl;
 import org.geotools.gml2.GMLSchema;
-import org.geotools.gml2.bindings.GML;
+import org.geotools.gml2.GML;
 import java.util.HashSet;
 import java.util.Set;
 

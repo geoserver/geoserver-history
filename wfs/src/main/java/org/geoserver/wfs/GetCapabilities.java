@@ -122,12 +122,12 @@ public class GetCapabilities {
             }
 
             //if highest accepted less then lowest provided, send lowest
-            if (((Version) accepted.last()).compareTo(provided.first()) < 0) {
+            if (((Version) accepted.last()).compareTo((Version)provided.first()) < 0) {
                 version = ((Version) provided.first()).toString();
             }
 
             //if lowest accepted is greater then highest provided, send highest
-            if (((Version) accepted.first()).compareTo(provided.last()) > 0) {
+            if (((Version) accepted.first()).compareTo((Version)provided.last()) > 0) {
                 version = ((Version) provided.last()).toString();
             }
 
@@ -140,7 +140,7 @@ public class GetCapabilities {
                 for (; v.hasNext();) {
                     Version current = (Version) v.next();
 
-                    if (current.compareTo(accepted.last()) > 0) {
+                    if (current.compareTo((Version)accepted.last()) > 0) {
                         break;
                     }
 

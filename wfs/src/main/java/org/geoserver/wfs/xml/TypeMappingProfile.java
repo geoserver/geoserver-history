@@ -4,8 +4,8 @@
  */
 package org.geoserver.wfs.xml;
 
-import org.geotools.feature.AttributeType;
 import org.geotools.feature.type.ProfileImpl;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.Name;
 import org.opengis.feature.type.Schema;
 import java.util.ArrayList;
@@ -39,26 +39,26 @@ public class TypeMappingProfile /*extends ProfileImpl*/ {
     }
     
     /**
-     * Obtains the {@link AttributeType} mapped to a particular class.
+     * Obtains the {@link AttributeDescriptor} mapped to a particular class.
      * <p>
      * If an exact match cannot be made, then those types which are supertypes
      * of clazz are examined.
      * </p>
      * @param clazz The class.
      *
-     * @return The AttributeType, or <code>null</code> if no atttribute
+     * @return The AttributeDescriptor, or <code>null</code> if no atttribute
      * type mapped to <code>clazz</code>
      */
-    public AttributeType type(Class clazz) {
+    public AttributeDescriptor type(Class clazz) {
         ArrayList assignable = new ArrayList();
 
         for (Iterator p = profiles.iterator(); p.hasNext(); ) {
             ProfileImpl profile = (ProfileImpl) p.next();
             
             for (Iterator i = profile.values().iterator(); i.hasNext();) {
-                AttributeType type = (AttributeType) i.next();
+                AttributeDescriptor type = (AttributeDescriptor) i.next();
     
-                if (type.getType().isAssignableFrom(clazz)) {
+                if (type.getType().getBinding().isAssignableFrom(clazz)) {
                     assignable.add(type);
                 }
     
@@ -73,19 +73,22 @@ public class TypeMappingProfile /*extends ProfileImpl*/ {
         }
 
         if (assignable.size() == 1) {
-            return (AttributeType) assignable.get(0);
+            return (AttributeDescriptor) assignable.get(0);
         } else {
             //sort
             Comparator comparator = new Comparator() {
                     public int compare(Object o1, Object o2) {
-                        AttributeType a1 = (AttributeType) o1;
-                        AttributeType a2 = (AttributeType) o2;
+                        AttributeDescriptor a1 = (AttributeDescriptor) o1;
+                        AttributeDescriptor a2 = (AttributeDescriptor) o2;
 
-                        if (a1.getType().equals(a2.getType())) {
+                        Class c1 = a1.getType().getBinding();
+                        Class c2 = a2.getType().getBinding();
+                        
+                        if (c1.equals(c2)) {
                             return 0;
                         }
 
-                        if (a1.getType().isAssignableFrom(a2.getType())) {
+                        if (c1.isAssignableFrom(c2)) {
                             return 1;
                         }
 
@@ -96,7 +99,7 @@ public class TypeMappingProfile /*extends ProfileImpl*/ {
             Collections.sort(assignable, comparator);
 
             if (!assignable.get(0).equals(assignable.get(1))) {
-                return (AttributeType) assignable.get(0);
+                return (AttributeDescriptor) assignable.get(0);
             }
         }
 
@@ -104,7 +107,7 @@ public class TypeMappingProfile /*extends ProfileImpl*/ {
     }
 
     /**
-     * Obtains the {@link Name} of the {@link AttributeType} mapped
+     * Obtains the {@link Name} of the {@link AttributeDescriptor} mapped
      * to a particular class.
      *
      * @param clazz The class.
@@ -120,9 +123,9 @@ public class TypeMappingProfile /*extends ProfileImpl*/ {
             
             for (Iterator i = profile.entrySet().iterator(); i.hasNext();) {
                 Map.Entry entry = (Map.Entry) i.next();
-                AttributeType type = (AttributeType) entry.getValue();
+                AttributeDescriptor type = (AttributeDescriptor) entry.getValue();
         
-                if (type.getType().isAssignableFrom(clazz)) {
+                if (type.getType().getBinding().isAssignableFrom(clazz)) {
                     assignable.add(entry);
                 }
         
@@ -145,14 +148,17 @@ public class TypeMappingProfile /*extends ProfileImpl*/ {
                         Map.Entry e1 = (Map.Entry) o1;
                         Map.Entry e2 = (Map.Entry) o2;
 
-                        AttributeType a1 = (AttributeType) e1.getValue();
-                        AttributeType a2 = (AttributeType) e2.getValue();
+                        AttributeDescriptor a1 = (AttributeDescriptor) e1.getValue();
+                        AttributeDescriptor a2 = (AttributeDescriptor) e2.getValue();
 
-                        if (a1.getType().equals(a2.getType())) {
+                        Class c1 = a1.getType().getBinding();
+                        Class c2 = a2.getType().getBinding();
+                        
+                        if (c1.equals(c2)) {
                             return 0;
                         }
 
-                        if (a1.getType().isAssignableFrom(a2.getType())) {
+                        if (c1.isAssignableFrom(c2)) {
                             return 1;
                         }
 
@@ -164,8 +170,8 @@ public class TypeMappingProfile /*extends ProfileImpl*/ {
 
             Map.Entry e1 = (Map.Entry) assignable.get(0);
             Map.Entry e2 = (Map.Entry) assignable.get(1);
-            AttributeType a1 = (AttributeType) e1.getValue();
-            AttributeType a2 = (AttributeType) e2.getValue();
+            AttributeDescriptor a1 = (AttributeDescriptor) e1.getValue();
+            AttributeDescriptor a2 = (AttributeDescriptor) e2.getValue();
 
             if (!a1.getType().equals(a2.getType())) {
                 return (Name) e1.getKey();
