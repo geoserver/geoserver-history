@@ -17,7 +17,8 @@ import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -55,13 +56,13 @@ public class RetypingFeatureSource implements FeatureSource {
         }
     }
 
-    public Envelope getBounds() throws IOException {
+    public ReferencedEnvelope getBounds() throws IOException {
         // not fully correct if we use this to shave attributes too, but this is
         // not in the scope now
         return wrapped.getBounds();
     }
 
-    public Envelope getBounds(Query query) throws IOException {
+    public ReferencedEnvelope getBounds(Query query) throws IOException {
         // not fully correct if we use this to shave attributes too, but this is
         // not in the scope now
         return wrapped.getBounds(retypeQuery(query));
@@ -88,7 +89,7 @@ public class RetypingFeatureSource implements FeatureSource {
         return getFeatures(new DefaultQuery(typeMap.getName(), filter));
     }
 
-    public FeatureType getSchema() {
+    public SimpleFeatureType getSchema() {
         return typeMap.getFeatureType();
     }
 

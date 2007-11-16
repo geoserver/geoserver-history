@@ -4,7 +4,7 @@
  */
 package org.geoserver.feature.retype;
 
-import org.geotools.feature.FeatureType;
+import org.opengis.feature.simple.SimpleFeatureType;
 
 /**
  * A support class containing the old feature type name, the new one, the old
@@ -17,9 +17,9 @@ class FeatureTypeMap {
 
     String name;
 
-    FeatureType originalFeatureType;
+    SimpleFeatureType originalFeatureType;
 
-    FeatureType featureType;
+    SimpleFeatureType featureType;
 
     public FeatureTypeMap(String originalName, String name) {
         this.originalName = originalName;
@@ -34,11 +34,11 @@ class FeatureTypeMap {
         return name;
     }
 
-    public FeatureType getOriginalFeatureType() {
+    public SimpleFeatureType getOriginalFeatureType() {
         return originalFeatureType;
     }
 
-    public FeatureType getFeatureType() {
+    public SimpleFeatureType getFeatureType() {
         return featureType;
     }
 
@@ -46,7 +46,7 @@ class FeatureTypeMap {
         return originalName.equals(name);
     }
 
-    public void setFeatureTypes(FeatureType original, FeatureType transformed) {
+    public void setFeatureTypes(SimpleFeatureType original, SimpleFeatureType transformed) {
         this.originalFeatureType = original;
         this.featureType = transformed;
     }

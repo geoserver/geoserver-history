@@ -20,9 +20,9 @@ import org.geotools.data.LockingManager;
 import org.geotools.data.Query;
 import org.geotools.data.ReTypeFeatureReader;
 import org.geotools.data.Transaction;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.FeatureTypeBuilder;
 import org.geotools.feature.SchemaException;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 
 /**
@@ -43,12 +43,12 @@ public class RetypingDataStore implements DataStore {
         getTypeNames();
     }
 
-    public void createSchema(FeatureType featureType) throws IOException {
+    public void createSchema(SimpleFeatureType featureType) throws IOException {
         throw new UnsupportedOperationException(
                 "GeoServer does not support schema creation at the moment");
     }
 
-    public void updateSchema(String typeName, FeatureType featureType) throws IOException {
+    public void updateSchema(String typeName, SimpleFeatureType featureType) throws IOException {
         throw new UnsupportedOperationException(
                 "GeoServer does not support schema updates at the moment");
     }
@@ -83,7 +83,7 @@ public class RetypingDataStore implements DataStore {
         return new RetypingFeatureCollection.RetypingFeatureWriter(writer, map.getFeatureType());
     }
 
-    public FeatureType getSchema(String typeName) throws IOException {
+    public SimpleFeatureType getSchema(String typeName) throws IOException {
         FeatureTypeMap map = getTypeMapBackwards(typeName);
         updateMap(map, true);
         return map.getFeatureType();
@@ -174,8 +174,8 @@ public class RetypingDataStore implements DataStore {
     void updateMap(FeatureTypeMap map, boolean forceUpdate) throws IOException {
         try {
             if (map.getFeatureType() == null || forceUpdate) {
-                FeatureType original = wrapped.getSchema(map.getOriginalName());
-                FeatureType transformed = transformFeatureType(original);
+                SimpleFeatureType original = wrapped.getSchema(map.getOriginalName());
+                SimpleFeatureType transformed = transformFeatureType(original);
                 map.setFeatureTypes(original, transformed);
             }
         } catch (IOException e) {
@@ -195,15 +195,16 @@ public class RetypingDataStore implements DataStore {
      * @return
      * @throws IOException
      */
-    protected FeatureType transformFeatureType(FeatureType original) throws IOException {
+    protected SimpleFeatureType transformFeatureType(SimpleFeatureType original) throws IOException {
         String transfomedName = transformFeatureTypeName(original.getTypeName());
         if (transfomedName.equals(original.getTypeName()))
             return original;
 
         try {
-            return FeatureTypeBuilder.newFeatureType(original.getAttributeTypes(), transfomedName,
-                    original.getNamespace(), false, original.getAncestors(), original
-                            .getDefaultGeometry());
+            SimpleFeatureTypeBuilder b = new SimpleFeatureTypeBuilder();
+            b.init(original);
+            b.setName(transfomedName);
+            return b.buildFeatureType();
         } catch (Exception e) {
             throw new DataSourceException("Could not build the renamed feature type.", e);
         }

@@ -6,13 +6,17 @@ package org.geoserver.feature;
 
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureWriter;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.Feature;
+
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.FeatureType;
+
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.collection.DelegateFeatureIterator;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -25,14 +29,14 @@ import java.util.NoSuchElementException;
  *
  */
 public class RetypingFeatureCollection extends DecoratingFeatureCollection {
-    FeatureType target;
+   SimpleFeatureType target;
 
-    public RetypingFeatureCollection(FeatureCollection delegate, FeatureType target) {
+    public RetypingFeatureCollection(FeatureCollection delegate, SimpleFeatureType target) {
         super(delegate);
         this.target = target;
     }
 
-    public FeatureType getSchema() {
+    public SimpleFeatureType getSchema() {
         return target;
     }
 
@@ -54,29 +58,29 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
         delegate.close();
     }
 
-    static Feature retype(Feature source, FeatureType target)
+    static SimpleFeature retype(SimpleFeature source, SimpleFeatureType target)
         throws IllegalAttributeException {
         Object[] attributes = new Object[target.getAttributeCount()];
 
         for (int i = 0; i < target.getAttributeCount(); i++) {
-            AttributeType attributeType = target.getAttributeType(i);
+            AttributeDescriptor attributeType = target.getAttribute(i);
             Object value = null;
 
-            if (source.getFeatureType().getAttributeType(attributeType.getName()) != null) {
+            if (source.getFeatureType().getAttribute(attributeType.getName()) != null) {
                 value = source.getAttribute(attributeType.getName());
             }
 
             attributes[i] = value;
         }
 
-        return target.create(attributes, source.getID());
+        return SimpleFeatureBuilder.build(target, attributes, source.getID());
     }
 
     public static class RetypingIterator implements Iterator {
-        FeatureType target;
+        SimpleFeatureType target;
         Iterator delegate;
 
-        public RetypingIterator(Iterator delegate, FeatureType target) {
+        public RetypingIterator(Iterator delegate, SimpleFeatureType target) {
             this.delegate = delegate;
             this.target = target;
         }
@@ -87,7 +91,7 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
 
         public Object next() {
             try {
-                return RetypingFeatureCollection.retype((Feature) delegate.next(), target);
+                return RetypingFeatureCollection.retype((SimpleFeature) delegate.next(), target);
             } catch (IllegalAttributeException e) {
                 throw new RuntimeException(e);
             }
@@ -100,9 +104,9 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
 
     public static class RetypingFeatureReader implements FeatureReader {
         FeatureReader delegate;
-        FeatureType target;
+        SimpleFeatureType target;
 
-        public RetypingFeatureReader(FeatureReader delegate, FeatureType target) {
+        public RetypingFeatureReader(FeatureReader delegate, SimpleFeatureType target) {
             this.delegate = delegate;
             this.target = target;
         }
@@ -113,7 +117,7 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
             target = null;
         }
 
-        public FeatureType getFeatureType() {
+        public SimpleFeatureType getFeatureType() {
             return target;
         }
 
@@ -121,18 +125,18 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
             return delegate.hasNext();
         }
 
-        public Feature next() throws IOException, IllegalAttributeException, NoSuchElementException {
+        public SimpleFeature next() throws IOException, IllegalAttributeException, NoSuchElementException {
             return RetypingFeatureCollection.retype(delegate.next(), target);
         }
     }
     
     public static class RetypingFeatureWriter implements FeatureWriter {
         FeatureWriter delegate;
-        FeatureType target;
-        private Feature current;
-        private Feature retyped;
+        SimpleFeatureType target;
+        private SimpleFeature current;
+        private SimpleFeature retyped;
 
-        public RetypingFeatureWriter(FeatureWriter delegate, FeatureType target) {
+        public RetypingFeatureWriter(FeatureWriter delegate, SimpleFeatureType target) {
             this.delegate = delegate;
             this.target = target;
         }
@@ -143,7 +147,7 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
             target = null;
         }
 
-        public FeatureType getFeatureType() {
+        public SimpleFeatureType getFeatureType() {
             return target;
         }
 
@@ -151,7 +155,7 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
             return delegate.hasNext();
         }
 
-        public Feature next() throws IOException {
+        public SimpleFeature next() throws IOException {
             try {
                 current = delegate.next();
                 retyped = RetypingFeatureCollection.retype(current, target);
@@ -168,7 +172,7 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
         public void write() throws IOException {
             try {
                 for (int i = 0; i < target.getAttributeCount(); i++) {
-                    AttributeType at = target.getAttributeType(i);
+                    AttributeDescriptor at = target.getAttribute(i);
                     Object value = retyped.getAttribute(i);
                     current.setAttribute(at.getLocalName(), value);
                 }
