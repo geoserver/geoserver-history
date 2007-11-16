@@ -109,7 +109,7 @@ public class GetDiffTransactionOutputFormat extends Response {
             // create a single insert element, a single delete element, and as
             // many update elements as needed
             final SimpleFeatureType schema = diffReader.getSchema();
-            final QName typeName = new QName(schema.getNamespace().getAuthority(),
+            final QName typeName = new QName(schema.getName().getNamespaceURI(),
                     schema.getTypeName());
             final Set deletedIds = new HashSet();
             final InsertElementType insert = WfsFactory.eINSTANCE.createInsertElementType();
