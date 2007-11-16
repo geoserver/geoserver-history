@@ -1,6 +1,7 @@
 package org.geoserver.wms.xml;
 
 import java.io.Reader;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -30,7 +31,7 @@ public class SLDXmlRequestReader extends XmlRequestReader {
     }
     
    
-    public Object read(Object request, Reader reader) throws Exception {
+    public Object read(Object request, Reader reader, Map kvp) throws Exception {
         if ( request == null ) {
             throw new IllegalArgumentException( "request must be not null" );
         }

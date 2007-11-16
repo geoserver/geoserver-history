@@ -35,7 +35,7 @@ public class XmlRequestReaderAdapter extends org.geoserver.ows.XmlRequestReader
         this.httpRequest = request;
     }
 
-    public Object read(Object request, Reader reader) throws Exception {
+    public Object read(Object request, Reader reader, Map kvp) throws Exception {
         //look for a constructor, may have to walk up teh class hierachy
         Class clazz = service.getClass();
         Constructor constructor = null;

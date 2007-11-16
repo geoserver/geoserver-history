@@ -8,6 +8,7 @@ import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
@@ -99,6 +100,9 @@ public abstract class ServiceExceptionHandler {
             Throwable cause = ex.getCause();
             if(e.getMessage() != null && !"".equals(e.getMessage())) {
                 s.append(ResponseUtils.encodeXML(e.getMessage()));
+                for ( Iterator t = e.getExceptionText().iterator(); t.hasNext(); ) {
+                    s.append("\n").append( t.next() );
+                }
                 if(cause != null)
                     s.append("\n");
             }

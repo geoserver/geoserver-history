@@ -13,6 +13,8 @@ import org.vfny.geoserver.global.Data;
 import org.xml.sax.InputSource;
 import java.io.Reader;
 import java.util.Iterator;
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 
 
@@ -34,25 +36,30 @@ public class WfsXmlReader extends XmlRequestReader {
         this.configuration = configuration;
     }
 
-    public Object read(Object request, Reader reader) throws Exception {
+    public Object read(Object request, Reader reader, Map kvp) throws Exception {
+        //check the strict flag to determine if we should validate or not
+        Boolean strict = (Boolean) kvp.get("strict");
+        if ( strict == null ) {
+            strict = Boolean.FALSE;
+        }
+        
+        //check for cite compliance, we always validate for cite
+        if ( wfs.getCiteConformanceHacks() ) {
+            strict = Boolean.TRUE;
+        }
+        
         //TODO: make this configurable?
         configuration.getProperties().add(Parser.Properties.PARSE_UNKNOWN_ELEMENTS);
 
         Parser parser = new Parser(configuration);
-
-        //only validate for cite
-        //TODO: should we make validation a seperate parameter
-        if (wfs.getCiteConformanceHacks()) {
-            parser.setValidating(true);
-        }
-
+        parser.setValidating(strict.booleanValue());
+       
         //set the input source with the correct encoding
         InputSource source = new InputSource(reader);
         source.setEncoding(wfs.getCharSet().name());
 
         Object parsed = parser.parse(source);
 
-        //valid request? this should definitley be a configuration option
         //TODO: HACK, disabling validation for transaction
         if (!"Transaction".equalsIgnoreCase(getElement().getLocalPart())) {
             if (!parser.getValidationErrors().isEmpty()) {
