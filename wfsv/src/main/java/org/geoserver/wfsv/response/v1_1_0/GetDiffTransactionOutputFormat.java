@@ -23,9 +23,9 @@ import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.data.postgis.FeatureDiff;
 import org.geotools.data.postgis.FeatureDiffReader;
-import org.geotools.feature.Feature;
-import org.geotools.feature.FeatureType;
 import org.geotools.xml.Encoder;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.identity.FeatureId;
@@ -108,7 +108,7 @@ public class GetDiffTransactionOutputFormat extends Response {
 
             // create a single insert element, a single delete element, and as
             // many update elements as needed
-            final FeatureType schema = diffReader.getSchema();
+            final SimpleFeatureType schema = diffReader.getSchema();
             final QName typeName = new QName(schema.getNamespace().getAuthority(),
                     schema.getTypeName());
             final Set deletedIds = new HashSet();
@@ -133,7 +133,7 @@ public class GetDiffTransactionOutputFormat extends Response {
                     final UpdateElementType update = WfsFactory.eINSTANCE.createUpdateElementType();
                     final EList properties = update.getProperty();
 
-                    Feature f = diff.getFeature();
+                    SimpleFeature f = diff.getFeature();
 
                     for (Iterator it = diff.getChangedAttributes().iterator(); it.hasNext();) {
                         final PropertyType property = WfsFactory.eINSTANCE.createPropertyType();
@@ -183,11 +183,11 @@ public class GetDiffTransactionOutputFormat extends Response {
 
         for (int i = 0; i < diffReaders.length; i++) {
             final FeatureDiffReader diffReader = diffReaders[i];
-            final FeatureType featureType = diffReader.getSchema();
+            final SimpleFeatureType featureType = diffReader.getSchema();
 
             // load the metadata for the feature type
-            String namespaceURI = featureType.getNamespace().toString();
-            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getTypeName(),
+            String namespaceURI = featureType.getName().getNamespaceURI();
+            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getName().getLocalPart(),
                     namespaceURI);
 
             // add it to the map

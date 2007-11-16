@@ -9,7 +9,7 @@ import org.geotools.data.VersioningFeatureSource;
 import org.geotools.data.VersioningFeatureStore;
 import org.geotools.data.postgis.FeatureDiffReader;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 public class GeoServerVersioningFeatureLocking extends GeoServerFeatureLocking
     implements VersioningFeatureLocking {
-    GeoServerVersioningFeatureLocking(VersioningFeatureLocking locking, FeatureType schema,
+    GeoServerVersioningFeatureLocking(VersioningFeatureLocking locking, SimpleFeatureType schema,
         Filter definitionQuery, CoordinateReferenceSystem declaredCRS, int srsHandling) {
         super(locking, schema, definitionQuery, declaredCRS, srsHandling);
     }
