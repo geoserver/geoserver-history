@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>geoserver</artifactId>
-    <version>1.6.0-RC1</version>
+    <version>1.7.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -19,12 +19,12 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.6.0-RC1</version>
+      <version>1.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>net.opengis.wcs</artifactId>
-      <version>1.6.0-RC1</version>
+      <version>1.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
@@ -34,14 +34,14 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.6.0-RC1</version>
+      <version>1.7.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.6.0-RC1</version>
+      <version>1.7.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
