@@ -13,8 +13,8 @@ import org.geotools.data.DataStore;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
-import org.geotools.feature.AttributeType;
 import org.geotools.feature.FeatureCollection;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 
 /**
@@ -38,7 +38,7 @@ public class RetypingFeatureStore extends RetypingFeatureSource implements Featu
         featureStore().setTransaction(transaction);
     }
 
-    public void modifyFeatures(AttributeType type, Object value, Filter filter) throws IOException {
+    public void modifyFeatures(AttributeDescriptor type, Object value, Filter filter) throws IOException {
         featureStore().modifyFeatures(type, value, filter);
     }
 
@@ -46,7 +46,7 @@ public class RetypingFeatureStore extends RetypingFeatureSource implements Featu
         featureStore().removeFeatures(filter);
     }
 
-    public void modifyFeatures(AttributeType[] type, Object[] value, Filter filter)
+    public void modifyFeatures(AttributeDescriptor[] type, Object[] value, Filter filter)
             throws IOException {
         featureStore().modifyFeatures(type, value, filter);
     }

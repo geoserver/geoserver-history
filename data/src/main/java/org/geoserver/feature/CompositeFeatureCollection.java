@@ -8,8 +8,8 @@ import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.store.DataFeatureCollection;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.opengis.feature.simple.SimpleFeatureType;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -36,7 +36,7 @@ public class CompositeFeatureCollection extends DataFeatureCollection {
         return new CompositeIterator();
     }
 
-    public FeatureType getSchema() {
+    public SimpleFeatureType getSchema() {
         return null;
     }
 
