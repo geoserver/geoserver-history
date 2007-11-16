@@ -11,7 +11,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
-import org.geotools.feature.FeatureType;
+
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
@@ -60,7 +61,7 @@ public final class CalculateBoundingBoxAction extends ConfigAction {
         DataStore dataStore = null;
         try {
             dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
-            FeatureType featureType = dataStore.getSchema(ftConfig.getName());
+            SimpleFeatureType featureType = dataStore.getSchema(ftConfig.getName());
             FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
     
             ftConfig.setLatLongBBox(DataStoreUtils.getBoundingBoxEnvelope(fs));

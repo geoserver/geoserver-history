@@ -12,6 +12,7 @@ import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Repository;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
 import org.geotools.validation.Validator;
@@ -130,8 +131,8 @@ public class ValidationRunnable implements Runnable {
         /** run INTEGRITY validations */
 
         // this is stupid
-        Envelope env = new Envelope(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE,
-                Integer.MAX_VALUE);
+        ReferencedEnvelope env = new ReferencedEnvelope(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE,
+                Integer.MAX_VALUE,null);
 
         // a map of typeref -> DataSource
         try {
@@ -188,8 +189,8 @@ public class ValidationRunnable implements Runnable {
                     e.printStackTrace();
                 }
     
-                Envelope env = new Envelope(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE,
-                        Integer.MAX_VALUE);
+                ReferencedEnvelope env = new ReferencedEnvelope(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE,
+                        Integer.MAX_VALUE, null);
     
                 try {
                     v.runIntegrityTests(sources.keySet(), sources, env, (ValidationResults) vr);

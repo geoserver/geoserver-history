@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.form.data;
 
-import org.geotools.feature.AttributeType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
@@ -24,9 +24,9 @@ public class AttributeForm {
     private String maxOccurs;
     private String type;
     private String fragment;
-    private AttributeType attributeType;
+    private AttributeDescriptor attributeType;
 
-    public AttributeForm(AttributeTypeInfoConfig config, AttributeType attribute) {
+    public AttributeForm(AttributeTypeInfoConfig config, AttributeDescriptor attribute) {
         name = config.getName();
         nillable = config.isNillable();
 
@@ -145,11 +145,11 @@ public class AttributeForm {
     }
 
     /**
-     * AttributeType used to limit getType.
+     * AttributeDescriptor used to limit getType.
      *
-     * @return AttributeType
+     * @return AttributeDescriptor
      */
-    public AttributeType getAttributeType() {
+    public AttributeDescriptor getAttributeType() {
         return attributeType;
     }
 
@@ -160,7 +160,7 @@ public class AttributeForm {
      * </p>
      */
     public List getTypes() {
-        List elements = DataTransferObjectFactory.getElements(name, attributeType.getType());
+        List elements = DataTransferObjectFactory.getElements(name, attributeType.getType().getBinding());
         List list = new ArrayList(elements.size());
 
         for (Iterator i = elements.iterator(); i.hasNext();) {

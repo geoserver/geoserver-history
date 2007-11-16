@@ -27,10 +27,10 @@ import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.FeatureType;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -53,7 +53,7 @@ import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
- * These Action handles all the buttons for the FeatureType Editor.
+ * These Action handles all the buttons for the SimpleFeatureType Editor.
  *
  * <p>
  * This one is more complicated then usual since not all the actions require
@@ -173,10 +173,10 @@ public class TypesEditorAction extends ConfigAction {
         DataStore dataStore = null;
         try {
             dsConfig.findDataStore(request.getSession().getServletContext());
-            FeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
+            SimpleFeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
             FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
 
-            CoordinateReferenceSystem crs = fs.getSchema().getDefaultGeometry().getCoordinateSystem();
+            CoordinateReferenceSystem crs = fs.getSchema().getCRS();
             String s = CRS.lookupIdentifier(crs, true);
 
             if (s == null) {
@@ -217,7 +217,7 @@ public class TypesEditorAction extends ConfigAction {
         DataStore dataStore = null;
         try {
             dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
-            FeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
+            SimpleFeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
             FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
     
             if (LOGGER.isLoggable(Level.FINE)) {
@@ -229,7 +229,7 @@ public class TypesEditorAction extends ConfigAction {
             if (envelope.isNull()) // there's no data in the featuretype!!
              {
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine(new StringBuffer("FeatureType '").append(featureType.getTypeName())
+                    LOGGER.fine(new StringBuffer("SimpleFeatureType '").append(featureType.getTypeName())
                                                                  .append("' has a null bounding box")
                                                                  .toString());
                 }
@@ -255,7 +255,7 @@ public class TypesEditorAction extends ConfigAction {
             CoordinateReferenceSystem original = null;
 
             if (featureType.getDefaultGeometry() != null) {
-                original = featureType.getDefaultGeometry().getCoordinateSystem();
+                original = featureType.getCRS();
             }
 
             if (original == null) {
@@ -407,16 +407,16 @@ public class TypesEditorAction extends ConfigAction {
                 List createList = form.getCreateableAttributes();
                 System.out.println("schemaAtts null, createList: " + createList);
 
-                FeatureType fType = getFeatureType(form, request);
+                SimpleFeatureType fType = getFeatureType(form, request);
 
                 for (int i = 0; i < fType.getAttributeCount(); i++) {
-                    AttributeType attType = fType.getAttributeType(i);
+                    AttributeDescriptor attType = fType.getAttribute(i);
                     AttributeTypeInfoConfig attributeConfig = new AttributeTypeInfoConfig(attType);
                     schemaAttributes.add(attributeConfig);
 
                     //new ArrayList();
                     //DataStoreConfig dsConfig = config.
-                    //FeatureType featureType = config.get
+                    //SimpleFeatureType featureType = config.get
                 }
 
                 config.setSchemaAttributes(schemaAttributes);
@@ -435,21 +435,21 @@ public class TypesEditorAction extends ConfigAction {
         HttpServletRequest request) {
         String attributeName = form.getNewAttribute();
 
-        FeatureType fType = getFeatureType(form, request);
+        SimpleFeatureType fType = getFeatureType(form, request);
         AttributeForm newAttribute = newAttributeForm(attributeName, fType);
         form.getAttributes().add(newAttribute);
     }
 
-    private AttributeForm newAttributeForm(String attributeName, FeatureType featureType) {
-        AttributeType attributeType = featureType.getAttributeType(attributeName);
+    private AttributeForm newAttributeForm(String attributeName, SimpleFeatureType featureType) {
+        AttributeDescriptor attributeType = featureType.getAttribute(attributeName);
         AttributeTypeInfoConfig attributeConfig = new AttributeTypeInfoConfig(attributeType);
         AttributeForm newAttribute = new AttributeForm(attributeConfig, attributeType);
 
         return newAttribute;
     }
 
-    private FeatureType getFeatureType(TypesEditorForm form, HttpServletRequest request) {
-        FeatureType featureType = null;
+    private SimpleFeatureType getFeatureType(TypesEditorForm form, HttpServletRequest request) {
+        SimpleFeatureType featureType = null;
 
         DataStore dataStore = null; 
         try {
@@ -582,7 +582,7 @@ public class TypesEditorAction extends ConfigAction {
         return DataStoreUtils.getDataStore(params);
     }
 
-    FeatureType getSchema(String dataStoreID, String typeName)
+    SimpleFeatureType getSchema(String dataStoreID, String typeName)
         throws IOException {
         DataStore dataStore = null;
         try {

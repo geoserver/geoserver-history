@@ -11,7 +11,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
-import org.geotools.feature.FeatureType;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.metadata.Identifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.action.ConfigAction;
@@ -81,7 +81,7 @@ public class DataFeatureTypesNewAction extends ConfigAction {
         // report back nicely to app
         try {
             dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
-            FeatureType featureType = dataStore.getSchema(featureTypeName);
+            SimpleFeatureType featureType = dataStore.getSchema(featureTypeName);
 
             ftConfig = new FeatureTypeConfig(dataStoreID, featureType, false);
 
@@ -101,8 +101,7 @@ public class DataFeatureTypesNewAction extends ConfigAction {
 
             // attempt to get a better SRS
             try {
-                CoordinateReferenceSystem crs = featureType.getDefaultGeometry()
-                                                           .getCoordinateSystem();
+                CoordinateReferenceSystem crs = featureType.getCRS();
 
                 if (crs != null) {
                     Set idents = crs.getIdentifiers();

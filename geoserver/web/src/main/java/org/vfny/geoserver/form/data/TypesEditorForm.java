@@ -12,9 +12,9 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.geotools.data.DataStore;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.GeometryAttributeType;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.action.HTMLEncoder;
@@ -281,11 +281,11 @@ public class TypesEditorForm extends ActionForm {
             DataConfig dataConfig =  (DataConfig) servletContext.getAttribute(DataConfig.CONFIG_KEY);
             DataStoreConfig dsConfig = dataConfig.getDataStore(type.getDataStoreId());
             dataStore = dsConfig.findDataStore(servletContext);
-            FeatureType featureType = dataStore.getSchema(type.getName());
-            GeometryAttributeType dg = featureType.getDefaultGeometry();
-            if(dg != null && dg.getCoordinateSystem() != null) {
-                nativeCRS = dg.getCoordinateSystem();
-                nativeSRSWKT = dg.getCoordinateSystem().toString();
+            SimpleFeatureType featureType = dataStore.getSchema(type.getName());
+            GeometryDescriptor dg = featureType.getDefaultGeometry();
+            if(dg != null && dg.getCRS() != null) {
+                nativeCRS = dg.getCRS();
+                nativeSRSWKT = dg.getCRS().toString();
             }
         } catch(Exception e) {
             // never mind
@@ -310,7 +310,7 @@ public class TypesEditorForm extends ActionForm {
         // Generate ReadOnly list of Attributes
         //
         DataStoreConfig dataStoreConfig = config.getDataStore(dataStoreId);
-        FeatureType featureType = null;
+        SimpleFeatureType featureType = null;
 
         try {
             dataStore = dataStoreConfig.findDataStore(servletContext);
@@ -348,7 +348,7 @@ public class TypesEditorForm extends ActionForm {
             addList = new ArrayList(featureType.getAttributeCount());
 
             for (int i = 0; i < featureType.getAttributeCount(); i++) {
-                String attributeName = featureType.getAttributeType(i).getName();
+                String attributeName = featureType.getAttribute(i).getLocalName();
 
                 if (lookUpAttribute(attributeName) == null) {
                     addList.add(attributeName);
@@ -459,12 +459,12 @@ public class TypesEditorForm extends ActionForm {
      *
      * @return
      */
-    private List attributesFormList(List dtoList, FeatureType schema) {
+    private List attributesFormList(List dtoList, SimpleFeatureType schema) {
         List list = new ArrayList();
 
         for (Iterator i = dtoList.iterator(); i.hasNext();) {
             AttributeTypeInfoConfig config = (AttributeTypeInfoConfig) i.next();
-            list.add(new AttributeForm(config, schema.getAttributeType(config.getName())));
+            list.add(new AttributeForm(config, schema.getAttribute(config.getName())));
         }
 
         return list;

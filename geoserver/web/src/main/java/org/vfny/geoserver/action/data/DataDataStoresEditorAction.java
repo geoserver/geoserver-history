@@ -12,7 +12,8 @@ import org.apache.struts.action.ActionMapping;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFactorySpi.Param;
-import org.geotools.feature.FeatureType;
+
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
@@ -126,7 +127,7 @@ public class DataDataStoresEditorAction extends ConfigAction {
             return mapping.findForward("config.data.store.editor");
         }
 
-        FeatureType singleFeatureType = null;
+        SimpleFeatureType singleFeatureType = null;
 
         DataStore victim = null;
         try {
