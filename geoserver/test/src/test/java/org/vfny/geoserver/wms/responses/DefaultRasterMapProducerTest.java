@@ -257,7 +257,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
 
 		RenderedImage image = this.rasterMapProducer.getImage();
 
-		String typeName = fSource.getSchema().getTypeName();
+		String typeName = fSource.getSchema().getName().getLocalPart();
 		assertNotBlank("testDefaultStyle " + typeName, this.rasterMapProducer);
 	}
 

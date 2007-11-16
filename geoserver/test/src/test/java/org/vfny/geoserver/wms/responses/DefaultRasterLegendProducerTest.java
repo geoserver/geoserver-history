@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import org.geotools.feature.FeatureType;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.styling.FeatureTypeStyle;
@@ -14,6 +13,7 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
 import org.geotools.styling.Symbolizer;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
@@ -207,7 +207,7 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
      */
     private BufferedImage testProduceLegendGraphic(String citeTypeName, int ruleCount)
         throws Exception {
-        FeatureType layer = getCiteDataStore().getSchema(citeTypeName);
+        SimpleFeatureType layer = getCiteDataStore().getSchema(citeTypeName);
         GetLegendGraphicRequest req = new GetLegendGraphicRequest(service);
         req.setLayer(layer);
         req.setStyle(getDefaultStyle(citeTypeName));
