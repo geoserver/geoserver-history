@@ -4,7 +4,12 @@
  */
 package org.geoserver.ows.xml.v1_0;
 
+import java.util.Set;
+
 import javax.xml.namespace.QName;
+
+import org.geotools.xlink.XLINK;
+import org.geotools.xml.XSD;
 
 
 /**
@@ -13,7 +18,17 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public interface OWS {
+public class OWS extends XSD {
+    /** singleton instance */
+    private static OWS instance = new OWS();
+    
+    /**
+     * Returns the singleton instance.
+     */
+    public static OWS getInstance() {
+        return instance;
+    }
+    
     /** @generated */
     public static final String NAMESPACE = "http://www.opengis.net/ows";
 
@@ -219,4 +234,33 @@ public interface OWS {
             "WGS84BoundingBox");
 
     /* Attributes */
+    
+    /**
+     * Private constructor.
+     */
+    private OWS() {}
+    
+    /**
+     * Adds a dependency on the xlink schema.
+     */
+    protected void addDependencies(Set dependencies) {
+        super.addDependencies(dependencies);
+        
+        dependencies.add(XLINK.getInstance());
+    }
+    
+    /**
+     * Returns 'http://www.opengis.net/ows'
+     */
+    public String getNamespaceURI() {
+        return NAMESPACE;
+    }
+    
+    /**
+     * Returns the location of 'owsAll.xsd'
+     */
+    public String getSchemaLocation() {
+        return getClass().getResource("owsAll.xsd").toString();
+    }
+    
 }
