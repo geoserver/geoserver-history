@@ -120,7 +120,7 @@
 	
 	<!-- xml configuration -->
 	<bean id="wfsXsd-1.0" class="org.geoserver.wfs.xml.v1_0_0.WFS">
-	    <constructor arg ref="gml2SchemaBuilder"/>
+	    <constructor-arg ref="gml2SchemaBuilder"/>
 	</bean>
 	<bean id="xmlConfiguration-1.0" class="org.geoserver.wfs.xml.v1_0_0.WFSConfiguration">
 		<constructor-arg ref="catalog"/>
@@ -128,7 +128,7 @@
 		<constructor-arg ref="wfsXsd-1.0"/>
 	</bean>
 	<bean id="wfsXsd-1.1" class="org.geoserver.wfs.xml.v1_1_0.WFS">
-        <constructor arg ref="gml3SchemaBuilder"/>
+        <constructor-arg ref="gml3SchemaBuilder"/>
     </bean>
 	<bean id="xmlConfiguration-1.1" class="org.geoserver.wfs.xml.v1_1_0.WFSConfiguration">
 		<constructor-arg ref="catalog"/>
