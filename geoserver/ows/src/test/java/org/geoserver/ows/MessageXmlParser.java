@@ -8,6 +8,8 @@ import org.geotools.util.Version;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import java.io.Reader;
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,7 +20,7 @@ public class MessageXmlParser extends XmlRequestReader {
         super(new QName(null, "Hello"), new Version("1.0.0"), "hello");
     }
 
-    public Object read(Object request, Reader reader) throws Exception {
+    public Object read(Object request, Reader reader, Map kvp) throws Exception {
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
         Document doc = builder.parse(new InputSource(reader));

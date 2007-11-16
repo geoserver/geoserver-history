@@ -921,8 +921,8 @@ public class Dispatcher extends AbstractController {
         Map kvp = request.getParameterMap();
 
         if (kvp == null || kvp.isEmpty()) {
-            //req.kvp = Collections.EMPTY_MAP;
-            req.kvp = null;
+            req.kvp = Collections.EMPTY_MAP;
+            //req.kvp = null;
             return;
         }
 
@@ -1048,7 +1048,7 @@ public class Dispatcher extends AbstractController {
         }
 
         //return xmlReader.read(input);
-        return xmlReader.read( requestBean, input );
+        return xmlReader.read( requestBean, input, request.kvp );
     }
 
     Map readOpContext(HttpServletRequest request) {

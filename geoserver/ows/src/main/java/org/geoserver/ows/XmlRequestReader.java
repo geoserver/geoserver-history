@@ -8,6 +8,8 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.geotools.util.Version;
 import java.io.Reader;
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 
 
@@ -119,9 +121,13 @@ public abstract class XmlRequestReader {
      * request reader may chose to modify and return <tt>request</tt>, or create
      * a new request object and return it.
      * </p>
+     * <p>
+     * The <tt>kvp</tt> is used to support mixed style reading of the request 
+     * object from xml and from a set of key value pairs. This map is often empty. 
+     * </p>
      */
-    public abstract Object read(Object request, Reader reader) throws Exception;
-
+    public abstract Object read(Object request, Reader reader, Map kvp) throws Exception;
+    
     /**
      * Two XmlReaders considered equal if namespace,element, and version properties
      * are the same.

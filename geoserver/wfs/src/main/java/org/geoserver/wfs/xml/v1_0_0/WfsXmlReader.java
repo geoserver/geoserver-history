@@ -5,9 +5,13 @@
 package org.geoserver.wfs.xml.v1_0_0;
 
 import org.geoserver.ows.XmlRequestReader;
+import org.geoserver.wfs.WFSException;
 import org.geotools.util.Version;
 import org.geotools.xml.Parser;
 import java.io.Reader;
+import java.util.Iterator;
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 
 
@@ -22,9 +26,34 @@ public class WfsXmlReader extends XmlRequestReader {
         this.configuration = configuration;
     }
 
-    public Object read(Object request, Reader reader) throws Exception {
+    public Object read(Object request, Reader reader, Map kvp) throws Exception {
+        //check the strict flag to determine if we should validate or not
+        Boolean strict = (Boolean) kvp.get("strict");
+        if ( strict == null ) {
+            strict = Boolean.FALSE;
+        }
+        
+        //create the parser instance
         Parser parser = new Parser(configuration);
+        
+        //set validation based on strict or not
+        parser.setValidating(strict.booleanValue());
+        
+        //parse
+        Object parsed = parser.parse(reader); 
+        
+        //if strict was set, check for validation errors and throw an exception 
+        if (strict.booleanValue() && !parser.getValidationErrors().isEmpty()) {
+            WFSException exception = new WFSException("Invalid request", "InvalidParameterValue");
 
-        return parser.parse(reader);
+            for (Iterator e = parser.getValidationErrors().iterator(); e.hasNext();) {
+                Exception error = (Exception) e.next();
+                exception.getExceptionText().add(error.getLocalizedMessage());
+            }
+
+            throw exception;
+        }
+        
+        return parsed;
     }
 }
