@@ -3,15 +3,14 @@ package org.geoserver.wfs.v1_1;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.opengis.wfs.GetCapabilitiesType;
-import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.WfsFactory;
 
-import org.geoserver.platform.Operation;
-import org.geoserver.platform.Service;
 import org.geoserver.util.ErrorHandler;
 import org.geoserver.util.ReaderUtils;
 import org.geoserver.wfs.CapabilitiesTransformer;
@@ -41,6 +40,16 @@ public class CapabilitiesTransformerTest extends WFSTestSupport {
         ReaderUtils.validate(reader, handler, WFS.NAMESPACE,
                 "http://schemas.opengis.net/wfs/1.1.0/wfs.xsd");
 
-        assertTrue(handler.errors.isEmpty());
+        //only check for no errors if online
+        try {
+        
+            URLConnection c = new URL("http://schemas.opengis.net/wfs/1.1.0/wfs.xsd").openConnection();
+            c.getInputStream().read();
+            
+            assertTrue(handler.errors.isEmpty());
+        }
+        catch( Exception e  ) {
+        }
+        
     }
 }
