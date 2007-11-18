@@ -998,21 +998,6 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * </p>
      */
     public void destroy() throws Exception {
-        final Data catalog = (Data) config.getApplictionContext().getBean("data");
-        final Set dataStores = catalog.getDataStores();
-        LOGGER.info("Disposing DataStores at GeoServer shutdown...");
-        for (Iterator it = dataStores.iterator(); it.hasNext();) {
-            DataStoreInfo dataStoreInfo = (DataStoreInfo) it.next();
-            LOGGER.fine("Disposing " + dataStoreInfo.getId());
-            try {
-                dataStoreInfo.dispose();
-            } catch (RuntimeException e) {
-                LOGGER.log(Level.WARNING, "Caught exception while disposing datastore "
-                        + dataStoreInfo.getId(), e);
-            }
-        }
-        LOGGER.info("Done disposing datastores.");
-        
         /*
          *  HACK: we must get a standard API way for releasing resources...
          *  UPDATE: now we do have a standard API to release resources, though ArcSDE does not
