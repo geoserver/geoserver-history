@@ -166,7 +166,8 @@ public class DataTransferObjectFactory {
 
         dto.setSchemaName(dataStoreId.toUpperCase() + "_" + schema.getTypeName().toUpperCase()
             + "_TYPE");
-        dto.setSRS(schema.getDefaultGeometry().getGeometryFactory().getSRID());
+        //dto.setSRS(schema.getDefaultGeometry().getGeometryFactory().getSRID());
+        dto.setSRS(0);
         dto.setTitle(schema.getName().getNamespaceURI() + " " + schema.getTypeName());
 
         return dto;
