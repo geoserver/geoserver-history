@@ -33,6 +33,7 @@ import org.geotools.styling.StyleFactoryFinder;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.Name;
+import org.springframework.beans.factory.DisposableBean;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
@@ -67,7 +68,7 @@ import org.vfny.geoserver.global.dto.StyleDTO;
  *         modification)
  * @version $Id$
  */
-public class Data extends GlobalLayerSupertype /* implements Repository */ {
+public class Data extends GlobalLayerSupertype /* implements Repository */implements DisposableBean {
     public static final String WEB_CONTAINER_KEY = "DATA";
     public static final Integer TYPE_VECTOR = new Integer(0);
     public static final Integer TYPE_RASTER = new Integer(1);
@@ -1948,5 +1949,22 @@ SCHEMA:
      */
     public Set getLayerNames() {
         return Collections.unmodifiableSet(layerNames.keySet());
+    }
+    
+    public void destroy() throws Exception {
+        final Data catalog = this;
+        final Set dataStores = catalog.getDataStores();
+        LOGGER.info("Disposing DataStores at GeoServer shutdown...");
+        for (Iterator it = dataStores.iterator(); it.hasNext();) {
+            DataStoreInfo dataStoreInfo = (DataStoreInfo) it.next();
+            LOGGER.fine("Disposing " + dataStoreInfo.getId());
+            try {
+                dataStoreInfo.dispose();
+            } catch (RuntimeException e) {
+                LOGGER.log(Level.WARNING, "Caught exception while disposing datastore "
+                        + dataStoreInfo.getId(), e);
+            }
+        }
+        LOGGER.info("Done disposing datastores.");
     }
 }
