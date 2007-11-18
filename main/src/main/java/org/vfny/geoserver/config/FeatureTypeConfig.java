@@ -246,7 +246,8 @@ public class FeatureTypeConfig {
 
         // try the (deprecated) geometry factory, we don't want to break data stores that
         // do correctly set it
-        GeometryFactory geometryFactory = defaultGeometry.getGeometryFactory();
+        //GeometryFactory geometryFactory = defaultGeometry.getGeometryFactory();
+        GeometryFactory geometryFactory = null;
 
         if ((geometryFactory != null) && (geometryFactory.getSRID() != 0)) {
             return geometryFactory.getSRID();
