@@ -4,17 +4,22 @@
  */
 package org.vfny.geoserver.global;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.geoserver.feature.FeatureSourceUtils;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
-import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.AttributeTypeBuilder;
-import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -33,16 +38,9 @@ import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.LegendURLDTO;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
@@ -1125,11 +1123,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                     count++;
                 }
 
-                try {
-                    tb.addAll(attributes);
-                    ft = tb.buildFeatureType();
-                } catch (FactoryConfigurationError ex) {
-                }
+                tb.addAll(attributes);
+                ft = tb.buildFeatureType();
+                
             }
         }
 

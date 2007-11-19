@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,7 +20,6 @@ import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
-import org.geotools.factory.FactoryConfigurationError;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
 import org.geotools.map.DefaultMapLayer;
@@ -29,7 +27,6 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.Style;
 import org.opengis.filter.Filter;
-import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
@@ -44,7 +41,6 @@ import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.CoverageUtils;
-import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import org.vfny.geoserver.wms.RasterMapProducer;
@@ -451,9 +447,6 @@ public class GetMapResponse implements Response {
 			throw new WmsException(e, new StringBuffer("Internal error : ")
 					.append(e.getMessage()).toString(), "");
 		} catch (TransformException e) {
-			throw new WmsException(e, new StringBuffer("Internal error : ")
-					.append(e.getMessage()).toString(), "");
-		} catch (FactoryConfigurationError e) {
 			throw new WmsException(e, new StringBuffer("Internal error : ")
 					.append(e.getMessage()).toString(), "");
 		} catch (SchemaException e) {
