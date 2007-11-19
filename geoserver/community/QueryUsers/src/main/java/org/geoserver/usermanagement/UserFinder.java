@@ -18,14 +18,18 @@ import org.geoserver.security.EditableUserDAO;
  */
 public class UserFinder extends Finder {
 
-  private EditableUserDAO myUserService;
+    private EditableUserDAO myUserService;
 
-  public UserFinder(Context context, EditableUserDAO eud){
-    super(context);
-    myUserService = eud;
-  }
+    public UserFinder(Context context, EditableUserDAO eud){
+	super(context);
+	myUserService = eud;
+    }
 
-  public Resource findTarget(Request request, Response response) {
-    return new UserResource(getContext(), request, response, myUserService);
-  }
+    public Resource findTarget(Request request, Response response) {
+	if (request.getAttributes().containsKey("name")){
+	    return new UserResource(getContext(), request, response, myUserService);
+	} else {
+	    return new UserListResource(getContext(), request, response, myUserService);
+	}
+    }
 }

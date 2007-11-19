@@ -18,30 +18,31 @@ import org.springframework.context.ApplicationContext;
  * @author David Winslow <dwinslow@openplans.org>
  */
 public class DummyRestlet extends Restlet {
-  /**
-   * Store the Spring application context so that we can test Spring APIs as well.
-   */
-  ApplicationContext spring;
+    /**
+     * Store the Spring application context so that we can test Spring APIs as well.
+     */
+    ApplicationContext spring;
 
-  /**
-   * Create a DummyRestlet that's aware of a Spring ApplicationContext.
-   * @param sc the ApplicationContext for the restlet
-   */
-  public DummyRestlet(ApplicationContext sc) {
-    spring = sc;
-  }
+    /**
+     * Create a DummyRestlet that's aware of a Spring ApplicationContext.
+     * @param sc the ApplicationContext for the restlet
+     */
+    public DummyRestlet(ApplicationContext sc) {
+	spring = sc;
+    }
 
-  public void handle(Request request, Response response) {
-    String message = "<html><head><title>hello</title></head><body>";
+    public void handle(Request request, Response response) {
+	String message = "<html><head><title>hello</title></head><body>";
 
 
-    message += "Base ref: " + request.getResourceRef().getBaseRef()
-      + "<br>";
+	message += "Base ref: " + request.getResourceRef().getBaseRef()
+	    + "<br>";
 
-    message += request.getMethod().getName();
 
-    message += "</body></html>";
-    response.setEntity(new StringRepresentation(message,
-	  MediaType.TEXT_HTML));
-  }
+	message += request.getMethod().getName();
+
+	message += "</body></html>";
+	response.setEntity(new StringRepresentation(message,
+		    MediaType.TEXT_HTML));
+    }
 }

@@ -78,6 +78,7 @@ public class WrappingController extends AbstractController {
 
   /**
    * Create the Restlet that will handle the requests after they are translated.
+   * @return the Restlet to handle requests
    */
   public Restlet createRoot() {
     Router router = new Router();

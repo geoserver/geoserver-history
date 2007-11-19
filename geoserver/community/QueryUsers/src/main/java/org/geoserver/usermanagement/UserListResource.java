@@ -43,28 +43,26 @@ import net.sf.json.JSONNull;
 import net.sf.json.util.JSONUtils;
 
 /**
- * First stab at representing user accounts as Restlet Resource objects.
+ * Resource for the user list.   
  * 
  * @author David Winslow <dwinslow@openplans.org>
  */
-public class UserResource extends MapResource {
+public class UserListResource extends MapResource {
 
     private EditableUserDAO myUserService;
-    private String myUserName;
 
-    public UserResource(Context context,
+    public UserListResource(Context context,
 	    Request request,
 	    Response response,
 	    EditableUserDAO eud){
 	super(context, request, response);
-	myUserName = (String)request.getAttributes().get("name");
 	myUserService = eud;
     }
 
     public Map getSupportedFormats(){
 	Map theMap = new HashMap();
 	theMap.put("json", new JSONFormat());
-	theMap.put("html", new HTMLFormat("HTMLTemplates/user.ftl"));
+	theMap.put("html", new HTMLFormat("HTMLTemplates/users.ftl"));
 	theMap.put("xml", new XMLFormat());
 	theMap.put(null, theMap.get("html"));
 	return theMap;
@@ -75,75 +73,31 @@ public class UserResource extends MapResource {
     }
 
     public Map getMap(){
-	return getUserInfo(myUserName);
+	Map theMap = new HashMap();
+	theMap.put("users", getAllUserInfo());
+	theMap.put("currentURL", getRequest().getResourceRef().getBaseRef());
+	
+	Iterator it = theMap.entrySet().iterator();
+
+	while (it.hasNext()){
+	    Map.Entry entry = (Map.Entry)it.next();
+	}
+
+	return theMap;
     }
     
 
     public boolean allowPut() {
-	return true;
-    }
-
-    protected void putMap(Map details) throws Exception {
-	UserAttribute attr = new UserAttribute();
-	attr.setPassword(details.get("password").toString());
-	attr.setEnabled(true);
-	attr.setAuthoritiesAsString((List)details.get("roles"));
-
-	myUserService.setUserDetails(myUserName, attr);
+	return false;
     }
 
     public boolean allowDelete() {
-	return true;	
-    }
-
-    public void handleDelete(){
-	UserDetails details = myUserService.loadUserByUsername(myUserName);
-	if (details != null) {
-	    try {
-		myUserService.deleteUser(myUserName);
-		getResponse().setEntity(
-			new StringRepresentation(
-			    myUserName + " deleted",
-			    MediaType.TEXT_PLAIN)
-			);
-	    } catch (Exception e) {
-		e.printStackTrace();
-		getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
-	    }
-	} else {
-	    getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-	    getResponse().setEntity("Couldn't find requested resource", MediaType.TEXT_PLAIN);
-
-	}
+	return false;	
     }
 
     /**
-     * TODO: Actually document this.
-     * @author David Winslow
-     */
-    private Map getUserInfo(String name){
-	Map info = new HashMap();
-
-	UserDetails user = myUserService.loadUserByUsername(name);
-	if (user == null) return null;
-	// info.put("name", name);
-	info.put("password", user.getPassword());
-
-	List roles = new ArrayList();
-	GrantedAuthority[] auths = user.getAuthorities();
-
-	for (int i = 0; i < auths.length; i++){
-	    roles.add(auths[i].toString());
-	}
-
-	info.put("roles", roles);
-
-
-	return info;
-    }
-
-    /**
-     * TODO: Actually document this.
+     * Build a list of the names of all users.
+     *
      * @author David Winslow
      */
     private List getAllUserInfo(){
@@ -151,7 +105,7 @@ public class UserResource extends MapResource {
 
 	Iterator it = myUserService.getNameSet().iterator();
 	while (it.hasNext()){
-	    users.add(getUserInfo(it.next().toString()));
+	    users.add((it.next().toString()));
 	}
 
 	return users;
