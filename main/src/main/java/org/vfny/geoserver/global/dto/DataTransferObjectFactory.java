@@ -6,6 +6,7 @@ package org.vfny.geoserver.global.dto;
 
 import com.vividsolutions.jts.geom.Envelope;
 
+import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.vfny.geoserver.global.xml.NameSpaceElement;
@@ -166,8 +167,13 @@ public class DataTransferObjectFactory {
 
         dto.setSchemaName(dataStoreId.toUpperCase() + "_" + schema.getTypeName().toUpperCase()
             + "_TYPE");
-        //dto.setSRS(schema.getDefaultGeometry().getGeometryFactory().getSRID());
-        dto.setSRS(0);
+        Integer epsgCode = CRS.getEPSGCode( schema.getCRS() );
+        if ( epsgCode != null ) {
+            dto.setSRS(epsgCode.intValue());    
+        }
+        else {
+            dto.setSRS(0);
+        }
         dto.setTitle(schema.getName().getNamespaceURI() + " " + schema.getTypeName());
 
         return dto;
