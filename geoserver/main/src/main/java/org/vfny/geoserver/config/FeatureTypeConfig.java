@@ -247,12 +247,11 @@ public class FeatureTypeConfig {
         // try the (deprecated) geometry factory, we don't want to break data stores that
         // do correctly set it
         //GeometryFactory geometryFactory = defaultGeometry.getGeometryFactory();
-        GeometryFactory geometryFactory = null;
-
-        if ((geometryFactory != null) && (geometryFactory.getSRID() != 0)) {
-            return geometryFactory.getSRID();
+        Integer epsgCode = CRS.getEPSGCode(defaultGeometry.getCRS());
+        if ( epsgCode != null ) {
+            return epsgCode.intValue();
         }
-
+        
         return 0;
 
         //        // try to reverse engineer the SRID from the coordinate system
