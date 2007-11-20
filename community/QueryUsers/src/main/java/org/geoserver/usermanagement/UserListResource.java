@@ -75,7 +75,6 @@ public class UserListResource extends MapResource {
     public Map getMap(){
 	Map theMap = new HashMap();
 	theMap.put("users", getAllUserInfo());
-	theMap.put("currentURL", getRequest().getResourceRef().getBaseRef());
 	
 	Iterator it = theMap.entrySet().iterator();
 
