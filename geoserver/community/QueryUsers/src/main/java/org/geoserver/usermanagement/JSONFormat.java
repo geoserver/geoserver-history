@@ -30,14 +30,14 @@ public class JSONFormat implements DataFormat{
 	    public void write(OutputStream os){
 		try{
 		    Writer outWriter = new BufferedWriter(new OutputStreamWriter(os));
-		    Object obj = toJSONObject(map);
-		    JSONObject json = null;
-		    if (obj instanceof JSONObject){
+		    JSONObject json = new JSONObject();
+		    json.accumulateAll(map);
+	/*	    if (obj instanceof JSONObject){
 			json = (JSONObject)obj;
 		    } else {
 			json = new JSONObject();
 			json.put("context", obj);
-		    }
+		    } */
 		    json.write(outWriter);
 		    outWriter.flush();
 		} catch (Exception ioe){
@@ -45,7 +45,7 @@ public class JSONFormat implements DataFormat{
 		}
 	    }
 
-	    public Object toJSONObject(Object obj){
+	    /* public Object toJSONObject(Object obj){
 		if (obj instanceof Map){
 		    Map m = (Map) obj;
 		    JSONObject json = new JSONObject();
@@ -66,13 +66,15 @@ public class JSONFormat implements DataFormat{
 		} else {
 		    return obj.toString();
 		}
-	    }
+	    } */
 	};
     }
 
     public Map readRepresentation(Representation rep){
-	try{
-	    JSONObject obj = new JSONObject(rep.getText()); 
+	 try{
+	    JSONObject obj = JSONObject.fromObject(rep.getText()); 
+	    return obj;
+	    /*
 	    Object maybeMap = toMap(obj);
 	    if (maybeMap instanceof Map){
 		return (Map) maybeMap;
@@ -82,12 +84,12 @@ public class JSONFormat implements DataFormat{
 	    Map map = new HashMap();
 	    map.put("context", maybeMap); 
 
-	    return map; 
+	    return map; */
 	} catch (IOException ioe){
 	    return new HashMap();
 	}
     }
-
+/*
     protected Object toMap(Object json){
 	if (json instanceof JSONObject){
 	    Map m = new HashMap();
@@ -108,5 +110,5 @@ public class JSONFormat implements DataFormat{
 	} else {
 	    return json;
 	}
-    }
+    } */
 }

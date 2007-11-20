@@ -27,54 +27,54 @@ import org.vfny.geoserver.config.FeatureTypeConfig;
  */
 class StyleResource extends Resource {
     private DataConfig myDC;
-    
+
     public StyleResource(Context context, Request request, Response response, DataConfig myDataConfig) {
-	super(context, request, response);
-	myDC = myDataConfig;
-	}
-    
+        super(context, request, response);
+        myDC = myDataConfig;
+    }
+
     public boolean allowGet() {
         return true;
     }
 
     public void handleGet() {
-		MediaType mt = null;
-		Request req = getRequest();
+        MediaType mt = null;
+        Request req = getRequest();
 
-		// Determine desired output format
-		if (req.getResourceRef().getQueryAsForm().contains("format")) {
-			mt = MediaType.valueOf(req.getResourceRef().getQueryAsForm()
-					.getFirstValue("format"));
-		} else {
-			mt = MediaType.TEXT_HTML;
-		}
-                
-                String styleName = (String)req.getAttributes().get("style");
-                if (styleName == null){
-               	Map styles = myDC.getStyles();
-                Map templateContext = new HashMap();
-		List styleList = new ArrayList();
-                
-		Iterator it = styles.entrySet().iterator();
-		while (it.hasNext()){
-		  Map.Entry entry = (Map.Entry)it.next();
-		  styleList.add(entry.getKey().toString());
-		}
+        // Determine desired output format
+        if (req.getResourceRef().getQueryAsForm().contains("format")) {
+            mt = MediaType.valueOf(req.getResourceRef().getQueryAsForm()
+                    .getFirstValue("format"));
+        } else {
+            mt = MediaType.TEXT_HTML;
+        }
 
-		templateContext.put("styles", styleList);
+        String styleName = (String)req.getAttributes().get("style");
+        if (styleName == null){
+            Map styles = myDC.getStyles();
+            Map templateContext = new HashMap();
+            List styleList = new ArrayList();
 
-		templateContext.put("requestURL", req.getResourceRef().getBaseRef());
+            Iterator it = styles.entrySet().iterator();
+            while (it.hasNext()){
+                Map.Entry entry = (Map.Entry)it.next();
+                styleList.add(entry.getKey().toString());
+            }
 
-                getResponse().setEntity(
-                               HTMLTemplate.getHtmlRepresentation("HTMLTemplates/styles.ftl", templateContext)); 
-                } else {
-                  StyleConfig sc =(StyleConfig) myDC.getStyles().get(styleName);
-                  if (sc != null){
-                  getResponse().setEntity(new FileRepresentation(sc.getFilename(), MediaType.APPLICATION_XML, 10));
-                  } else {
-                  getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-                  getResponse().setEntity(new StringRepresentation("Error - Couldn't find the requested resource", MediaType.TEXT_PLAIN));
-                  }
-               } 
-	}
+            templateContext.put("styles", styleList);
+
+            templateContext.put("requestURL", req.getResourceRef().getBaseRef());
+
+            getResponse().setEntity(
+                    HTMLTemplate.getHtmlRepresentation("HTMLTemplates/styles.ftl", templateContext)); 
+        } else {
+            StyleConfig sc =(StyleConfig) myDC.getStyles().get(styleName);
+            if (sc != null){
+                getResponse().setEntity(new FileRepresentation(sc.getFilename(), MediaType.APPLICATION_XML, 10));
+            } else {
+                getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+                getResponse().setEntity(new StringRepresentation("Error - Couldn't find the requested resource", MediaType.TEXT_PLAIN));
+            }
+        } 
+    }
 }
