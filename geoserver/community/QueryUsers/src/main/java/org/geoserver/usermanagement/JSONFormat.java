@@ -30,6 +30,9 @@ public class JSONFormat implements DataFormat{
 	    public void write(OutputStream os){
 		try{
 		    Writer outWriter = new BufferedWriter(new OutputStreamWriter(os));
+                    map.remove("page");
+
+		    outWriter.flush();
 		    JSONObject json = new JSONObject();
 		    json.accumulateAll(map);
 	/*	    if (obj instanceof JSONObject){
@@ -40,8 +43,11 @@ public class JSONFormat implements DataFormat{
 		    } */
 		    json.write(outWriter);
 		    outWriter.flush();
-		} catch (Exception ioe){
+		} catch (Exception e){
+		    try{
 		    // how to handle?
+		    os.write(("Couldn't write json because of " + e.toString()).getBytes());
+		    } catch (IOException ioe){}
 		}
 	    }
 

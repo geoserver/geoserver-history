@@ -79,6 +79,8 @@ public abstract class MapResource extends Resource {
 	}
 	
 	if (details != null){		
+	    Map page = getPageDetails();
+	    details.put("page", page);
 	    getResponse().setEntity(myRequestFormat.makeRepresentation(details));
 	}
     }
@@ -86,6 +88,21 @@ public abstract class MapResource extends Resource {
     public Map getMap(){
 	// nothing to do, this should be overridden by subclasses
 	return new HashMap();
+    }
+
+
+    public Map getPageDetails(){
+	Map map = new HashMap();
+	String currentURL = getRequest().getResourceRef().getBaseRef().toString();
+	String formatName = (String)getRequest().getAttributes().get("type");
+	if (formatName != null){
+	    currentURL = currentURL.substring(0, currentURL.length() - formatName.length() - 1);
+	}
+
+	System.out.println(currentURL);
+
+	map.put("currentURL", currentURL); 
+	return map;
     }
 
     public void handlePut(){
