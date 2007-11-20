@@ -67,6 +67,27 @@
       <artifactId>json-lib</artifactId>
       <classifier>jdk13</classifier>
     </dependency>
+    <dependency>
+      <groupId>jaxen</groupId>
+      <artifactId>jaxen</artifactId>
+      <version>1.1-beta-8</version>
+    </dependency>
+      <dependency>
+        <groupId>jdom</groupId>
+        <artifactId>jdom</artifactId>
+        <version>1.0</version>
+	 <exclusions>
+	   <exclusion>
+	       <groupId>xerces</groupId>
+	       <artifactId>xerces</artifactId>
+	   </exclusion>
+        </exclusions>
+     </dependency>
+     <dependency>
+        <groupId>commons-jxpath</groupId>
+	<artifactId>commons-jxpath</artifactId>
+	<version>1.2</version>
+    </dependency>
   </dependencies>
 
   
