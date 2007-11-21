@@ -4,18 +4,62 @@
  */
 package org.geoserver.usermanagement;
 
+import org.geoserver.restconfig.XMLTemplate;
+
 import org.restlet.resource.Representation;
 import org.restlet.resource.StringRepresentation;
 import org.restlet.data.MediaType;
+
+import org.jdom.Document;
+import org.jdom.input.SAXBuilder;
+import org.jdom.Element;
+import org.jdom.Attribute;
+import org.jdom.JDOMException;
+import org.jdom.xpath.XPath;
+
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class XMLFormat implements DataFormat{
 
-    public Representation makeRepresentation(Map map){
-	return new StringRepresentation("XML not implemented", MediaType.TEXT_PLAIN);
+    String myTemplate;
+
+    public XMLFormat(String templ){
+	myTemplate = templ;
     }
+
+    public Representation makeRepresentation(Map map){
+	return XMLTemplate.getXmlRepresentation(myTemplate, map);
+	// return new StringRepresentation("XML not implemented", MediaType.TEXT_PLAIN);
+    }
+
     public Map readRepresentation(Representation rep){
-	return new HashMap();
+	try{
+	    SAXBuilder builder = new SAXBuilder();
+	    Document doc = builder.build(rep.getStream());
+	    Map map = new HashMap();
+	    XPath passwordPath = XPath.newInstance("/user/password");
+	    XPath rolePath = XPath.newInstance("/user/roles/role/@name");
+	    Element passwordObj = (Element)passwordPath.selectSingleNode(doc);
+	    List roleObjs = rolePath.selectNodes(doc);
+	    List roles = new ArrayList();
+
+	    Iterator it = roleObjs.iterator();
+	    while (it.hasNext()){
+		Attribute att = (Attribute)it.next();
+		roles.add(att.getValue());
+	    }
+
+	    map.put("password", passwordObj.getText());
+	    map.put("roles", roles);
+
+	    return map; 
+	} catch (Exception e){
+	    e.printStackTrace();
+	    return new HashMap();
+	}
     }
 }
