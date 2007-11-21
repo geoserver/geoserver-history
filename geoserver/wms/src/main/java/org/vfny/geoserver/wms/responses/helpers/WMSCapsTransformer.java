@@ -998,7 +998,7 @@ public class WMSCapsTransformer extends TransformerBase {
                     llBounds = bounds;
                 } else {
                     final MathTransform srcCRStoWGS84 = CRS.findMathTransform(bounds
-                            .getCoordinateReferenceSystem(), wgs84);
+                            .getCoordinateReferenceSystem(), wgs84, true);
                     final GeneralEnvelope latLonEnvelope = CRSUtilities.transform(srcCRStoWGS84,
                             bounds);
                     latLonEnvelope.setCoordinateReferenceSystem(wgs84);

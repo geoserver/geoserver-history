@@ -181,7 +181,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
                         try {
                             //TODO: this code should be shared with the code
                             // from ReprojectingFeatureCollection --JD
-                            MathTransform tx = CRS.findMathTransform(source, target);
+                            MathTransform tx = CRS.findMathTransform(source, target, true);
                             GeometryCoordinateSequenceTransformer gtx = 
                                 new GeometryCoordinateSequenceTransformer();
                             gtx.setMathTransform(tx);
