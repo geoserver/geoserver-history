@@ -9,6 +9,7 @@ import com.vividsolutions.jts.geom.Envelope;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.referencing.FactoryException;
 import org.vfny.geoserver.global.xml.NameSpaceElement;
 import org.vfny.geoserver.global.xml.NameSpaceTranslator;
 import org.vfny.geoserver.global.xml.NameSpaceTranslatorFactory;
@@ -167,7 +168,13 @@ public class DataTransferObjectFactory {
 
         dto.setSchemaName(dataStoreId.toUpperCase() + "_" + schema.getTypeName().toUpperCase()
             + "_TYPE");
-        Integer epsgCode = CRS.getEPSGCode( schema.getCRS() );
+        Integer epsgCode = null;
+        try {
+            CRS.lookupEpsgCode( schema.getCRS(), true );
+        }
+        catch( FactoryException e ) {
+            // log this?
+        }
         if ( epsgCode != null ) {
             dto.setSRS(epsgCode.intValue());    
         }
