@@ -99,8 +99,6 @@ public abstract class MapResource extends Resource {
 	    currentURL = currentURL.substring(0, currentURL.length() - formatName.length() - 1);
 	}
 
-	System.out.println(currentURL);
-
 	map.put("currentURL", currentURL); 
 	return map;
     }
