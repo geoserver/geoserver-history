@@ -32,33 +32,6 @@ public class HTMLFormat implements DataFormat{
     }
 
     public Map readRepresentation(Representation rep){
-	try{
-	    SAXBuilder builder = new SAXBuilder();
-	    Document doc = builder.build(rep.getStream());
-	    Map map = new HashMap();
-
-	    XPath passwordPath = XPath.newInstance("/html/body/ul/li/span");
-	    XPath rolePath = XPath.newInstance("/html/body/ul/li/ul/li");
-	    Element passwordObj = (Element)passwordPath.selectSingleNode(doc);
-	    List roleObjs = rolePath.selectNodes(doc);
-	    List roles = new ArrayList();
-
-	    map.put("password", passwordObj.getText());
-	    
-	    Iterator it = roleObjs.iterator();
-	    while (it.hasNext()){
-		Element elt = (Element)it.next();
-		roles.add(elt.getText());
-	    }
-	    map.put("roles", roles);
-
-	    return map; 
-	} catch (JDOMException jde){
-	    // TODO: handle exception gracefully
-	} catch (IOException ioe){
-	    // TODO: handle exception gracefully
-	}
-
 	return new HashMap();
     }
 }

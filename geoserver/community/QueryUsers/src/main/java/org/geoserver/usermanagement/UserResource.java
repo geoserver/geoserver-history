@@ -64,8 +64,8 @@ public class UserResource extends MapResource {
     public Map getSupportedFormats(){
 	Map theMap = new HashMap();
 	theMap.put("json", new JSONFormat());
-	theMap.put("html", new HTMLFormat("HTMLTemplates/user.ftl"));
-	theMap.put("xml", new XMLFormat("XMLTemplates/user.ftl"));
+	theMap.put("html", new UserHTMLFormat("HTMLTemplates/user.ftl"));
+	theMap.put("xml", new UserXMLFormat("XMLTemplates/user.ftl"));
 	theMap.put(null, theMap.get("html"));
 	return theMap;
     }
