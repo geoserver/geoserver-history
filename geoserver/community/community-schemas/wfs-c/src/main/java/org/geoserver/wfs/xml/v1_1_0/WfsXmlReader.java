@@ -13,6 +13,8 @@ import org.vfny.geoserver.global.Data;
 import org.xml.sax.InputSource;
 import java.io.Reader;
 import java.util.Iterator;
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 
 
@@ -69,4 +71,10 @@ public class WfsXmlReader extends XmlRequestReader {
 
         return parsed;
     }
+    
+	@Override
+	public Object read(Object request, Reader reader, Map arg2) throws Exception {
+		// TODO Auto-generated method stub
+		return read(request,reader);
+	}
 }
