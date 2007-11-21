@@ -86,6 +86,7 @@ public class UserResource extends MapResource {
     protected void putMap(Map details) throws Exception {
 	UserAttribute attr = new UserAttribute();
 	attr.setPassword(details.get("password").toString());
+	System.out.println("Password is: " + details.get("password"));
 	attr.setEnabled(true);
 	attr.setAuthoritiesAsString((List)details.get("roles"));
 

@@ -29,6 +29,12 @@ public class JSONFormat implements DataFormat{
 	return new OutputRepresentation(MediaType.APPLICATION_JSON){
 	    public void write(OutputStream os){
 		try{
+		    Iterator it = map.entrySet().iterator();
+		    while (it.hasNext()){
+			Map.Entry entry = (Map.Entry)it.next();
+			System.out.println(entry.getKey() + " : " + entry.getValue());
+		    }
+
 		    Writer outWriter = new BufferedWriter(new OutputStreamWriter(os));
                     map.remove("page");
 
