@@ -13,6 +13,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
@@ -247,7 +248,12 @@ public class FeatureTypeConfig {
         // try the (deprecated) geometry factory, we don't want to break data stores that
         // do correctly set it
         //GeometryFactory geometryFactory = defaultGeometry.getGeometryFactory();
-        Integer epsgCode = CRS.getEPSGCode(defaultGeometry.getCRS());
+        Integer epsgCode = null;
+        try {
+            epsgCode = CRS.lookupEpsgCode(defaultGeometry.getCRS(),true);
+        } catch (FactoryException e) {
+            //log this?
+        }
         if ( epsgCode != null ) {
             return epsgCode.intValue();
         }

@@ -251,7 +251,11 @@ public class MapPreviewAction extends GeoServerAction {
             Envelope bbox = new Envelope(bmBbox.getMinimum(0), bmBbox.getMaximum(0), bmBbox.getMinimum(1), bmBbox.getMaximum(1));
             bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
                     + bbox.getMaxY());
-            srsList.add(CRS.lookupIdentifier(bmBbox.getCoordinateReferenceSystem(), null, false) );
+            try {
+                srsList.add(CRS.lookupEpsgCode(bmBbox.getCoordinateReferenceSystem(), false) );
+            } catch (FactoryException e) {
+                throw (IOException) new IOException().initCause(e);
+            }
             int[] imageBox = getMapWidthHeight(bbox);
             widthList.add(String.valueOf(imageBox[0]));
             heightList.add(String.valueOf(imageBox[1]));
