@@ -20,7 +20,11 @@ import org.geotools.filter.IllegalFilterException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
+import org.geotools.renderer.lite.LiteFeatureTypeStyle;
 import org.geotools.renderer.lite.RendererUtilities;
+import org.geotools.styling.FeatureTypeStyle;
+import org.geotools.styling.Rule;
+import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.opengis.filter.Filter;
@@ -31,8 +35,12 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.ContentHandler;
 import java.awt.Rectangle;
+import java.awt.Transparency;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -83,7 +91,17 @@ public class KMLTransformer extends TransformerBase {
     }
 
     protected class KMLTranslator extends TranslatorSupport {
-        public KMLTranslator(ContentHandler handler) {
+    	/**
+         * Tolerance used to compare doubles for equality
+         */
+        static final double TOLERANCE = 1e-6;
+        
+        static final int RULES = 0;
+        static final int ELSE_RULES = 1;
+    	
+        private double scaleDenominator;
+
+		public KMLTranslator(ContentHandler handler) {
             super(handler, null, null);
         }
 
@@ -93,6 +111,17 @@ public class KMLTransformer extends TransformerBase {
             WMSMapContext mapContext = (WMSMapContext) o;
             GetMapRequest request = mapContext.getRequest();
             MapLayer[] layers = mapContext.getLayers();
+            
+            //calculate scale denominator
+            scaleDenominator = 1; 
+            try {
+               scaleDenominator = 
+                       RendererUtilities.calculateScale(mapContext.getAreaOfInterest(), mapContext.getMapWidth(), mapContext.getMapHeight(), null);
+            } 
+            catch( Exception e ) {
+               LOGGER.log( Level.WARNING, "Error calculating scale denominator", e );
+            }
+            LOGGER.fine( "scale denominator = " + scaleDenominator );
 
             //if we have more than one layer ( or a legend was requested ),
             //use the name "GeoServer" to group them
@@ -158,22 +187,11 @@ public class KMLTransformer extends TransformerBase {
 
             try {
                 features = loadFeatureCollection(featureSource, layer, mapContext);
+                if(features == null)
+                	return;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-
-            //calculate scale denominator
-            // we do not actually know what the size of the image will be so 
-            // our best guess is 800x600
-            double scaleDenominator = 1; 
-            try {
-               scaleDenominator = 
-                       RendererUtilities.calculateScale(mapContext.getAreaOfInterest(), 800, 600, null);
-            } 
-            catch( Exception e ) {
-               LOGGER.log( Level.WARNING, "Error calculating scale denominator", e );
-            }
-            LOGGER.fine( "scale denominator = " + scaleDenominator );
 
             //was kmz requested?
             if (kmz) {
@@ -357,8 +375,97 @@ public class KMLTransformer extends TransformerBase {
             if (sourceCrs != null && !CRS.equalsIgnoreMetadata(WGS84, sourceCrs)) {
                 return new ReprojectFeatureResults( featureSource.getFeatures(q), WGS84 );
             }
+            
+            // extract the actual rules that are going to be applied to this layer, 
+            // - if none applies (scale denominator rules) then nothing to render
+            // - if there are else rules, we have to load everything
+            // - if there are no else rules, we can try to limit the features read by summarizing
+            //   the direct filter rules
+            List[] rules = getLayerRules(featureSource.getSchema(), layer.getStyle());
+            if(rules[RULES].size() == 0 && rules[ELSE_RULES].size() == 0)
+            	return null;
+            if(rules[ELSE_RULES].size() == 0) {
+            	Filter newFilter = summarizeRuleFilters(rules[RULES], q.getFilter());
+            	q.setFilter(newFilter);
+            }
 
             return featureSource.getFeatures(q);
+        }
+        
+        private List[] getLayerRules(FeatureType ftype, Style style) {
+    		List[] result = new List[] {new ArrayList(), new ArrayList()};
+
+    		final String typeName = ftype.getTypeName();
+    		FeatureTypeStyle[] featureStyles = style.getFeatureTypeStyles();
+			final int length = featureStyles.length;
+    		for (int i = 0; i < length; i++)
+    		{
+    			// getting feature styles
+    			FeatureTypeStyle fts = featureStyles[i];
+
+    			// check if this FTS is compatible with this FT.
+    			if ((typeName != null)
+    					&& (ftype.isDescendedFrom(null, fts.getFeatureTypeName()) || typeName
+    							.equalsIgnoreCase(fts.getFeatureTypeName()))) {
+
+    				// get applicable rules at the current scale
+    				Rule[] ftsRules = fts.getRules();
+    				for (int j = 0; j < ftsRules.length; j++) {
+    					// getting rule
+    					Rule r = ftsRules[j];
+
+    					if (isWithInScale(r)) {
+    						if (r.hasElseFilter()) {
+    							result[ELSE_RULES].add(r);
+    						} else {
+    							result[RULES].add(r);
+    						}
+    					}
+    				}
+    			}
+    		}
+
+    		return result;
+        }
+        
+        /**
+         * Tries to build a more restrictive filter by creating a summary of filters that
+         * apply to each rule (or returns simply the original filter, if there is at least one
+         * rule that applies to all features)
+         * @param rules
+         * @param originalFiter
+         * @return
+         */
+        private Filter summarizeRuleFilters(List rules, Filter originalFiter) {
+        	List filters = new ArrayList();
+        	for (Iterator it = rules.iterator(); it.hasNext();) {
+				Rule rule = (Rule) it.next();
+				// if there is a single rule asking for all filters, we have to 
+				// return everything that the original filter returned already
+				if(rule.getFilter() == null || Filter.INCLUDE.equals(rule.getFilter()))
+					return originalFiter;
+				else
+					filters.add(rule.getFilter());
+			}
+        	
+        	org.opengis.filter.FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
+        	Filter summary = ff.or(filters);
+        	if(originalFiter != null && !Filter.INCLUDE.equals(originalFiter))
+        		return ff.and(originalFiter, summary);
+        	else
+        		return summary;
+        }
+        
+        /**
+         * Checks if a rule can be triggered at the current scale level
+         * 
+         * @param r
+         *            The rule
+         * @return true if the scale is compatible with the rule settings
+         */
+         boolean isWithInScale(Rule r) {
+                return ((r.getMinScaleDenominator() - TOLERANCE) <= scaleDenominator)
+                    && ((r.getMaxScaleDenominator() + TOLERANCE) > scaleDenominator);
         }
 
         /** Creates the bounding box filters (one for each geometric attribute) needed to query a

@@ -1191,6 +1191,11 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 //loop through again and apply all the else rules
                 for (int i = 0; i < rules.length; i++) {
                     Rule rule = rules[i];
+                    
+                    //is this rule within scale?
+                    if ( !isWithInScale(rule)) {
+                            continue;
+                    }
 
                     if (rule.hasElseFilter()) {
                         filtered.add(rule);
