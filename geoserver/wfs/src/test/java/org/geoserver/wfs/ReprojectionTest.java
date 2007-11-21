@@ -10,10 +10,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class ReprojectionTest extends WFSTestSupport {
-    /**
-     * TODO: replace this back to 900913 when bug GEOT-1563 is solved
-     */
-    private static final String TARGET_CRS_CODE = "EPSG:3395";
+    private static final String TARGET_CRS_CODE = "EPSG:900913";
     MathTransform tx;
     
     protected void setUp() throws Exception {
