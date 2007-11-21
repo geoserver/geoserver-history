@@ -63,7 +63,7 @@ public class UserListResource extends MapResource {
 	Map theMap = new HashMap();
 	theMap.put("json", new JSONFormat());
 	theMap.put("html", new HTMLFormat("HTMLTemplates/users.ftl"));
-	theMap.put("xml", new XMLFormat());
+	theMap.put("xml", new XMLFormat("XMLTemplates/users.ftl"));
 	theMap.put(null, theMap.get("html"));
 	return theMap;
     }
