@@ -35,7 +35,10 @@ import org.restlet.resource.StringRepresentation;
 import org.springframework.dao.DataAccessException;
 
 import org.geoserver.security.EditableUserDAO;
-import org.geoserver.restconfig.HTMLTemplate;
+import org.geoserver.restconfig.MapResource;
+import org.geoserver.restconfig.HTMLFormat;
+import org.geoserver.restconfig.XMLFormat;
+import org.geoserver.restconfig.JSONFormat;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONArray;

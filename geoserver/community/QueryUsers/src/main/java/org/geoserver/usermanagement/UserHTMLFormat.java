@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 import org.restlet.resource.Representation;
-import org.geoserver.restconfig.HTMLTemplate;
+import org.geoserver.restconfig.HTMLFormat;
 
 import org.jdom.input.SAXBuilder;
 import org.jdom.Document;
