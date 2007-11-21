@@ -6,7 +6,7 @@
 <h2> User List </h2> 
 <ul>
 <#list users as user>
-<li> <a href="${page.currentURL}/${user}"> ${user} </a> </li>
+<li> <a href="${page.currentURL}/${user}">${user}</a> </li>
 </#list>
 </ul>
 </body>
