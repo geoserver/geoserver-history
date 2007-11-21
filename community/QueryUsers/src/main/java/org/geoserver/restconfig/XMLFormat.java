@@ -2,9 +2,9 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.usermanagement;
+package org.geoserver.restconfig;
 
-import org.geoserver.restconfig.XMLFormat;
+import org.geoserver.restconfig.XMLTemplate;
 
 import org.restlet.resource.Representation;
 import org.restlet.resource.StringRepresentation;
@@ -23,10 +23,17 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class UserXMLFormat extends XMLFormat{
+public class XMLFormat implements DataFormat{
 
-    public UserXMLFormat(String templ){
-	super(templ);
+    String myTemplate;
+
+    public XMLFormat(String templ){
+	myTemplate = templ;
+    }
+
+    public Representation makeRepresentation(Map map){
+	return XMLTemplate.getXmlRepresentation(myTemplate, map);
+	// return new StringRepresentation("XML not implemented", MediaType.TEXT_PLAIN);
     }
 
     public Map readRepresentation(Representation rep){
