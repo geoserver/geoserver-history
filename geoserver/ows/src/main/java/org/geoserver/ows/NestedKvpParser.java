@@ -53,7 +53,7 @@ public class NestedKvpParser extends KvpParser {
      * Tokenizes the value and delegates to {@link #parseToken(String)} to
      * parse each token.
      */
-    public final Object parse(String value) throws Exception {
+    public Object parse(String value) throws Exception {
         List tokenSets = KvpUtils.readNested(value);
 
         for (int i = 0; i < tokenSets.size(); i++) {
