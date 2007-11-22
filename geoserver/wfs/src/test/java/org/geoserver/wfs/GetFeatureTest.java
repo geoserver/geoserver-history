@@ -7,7 +7,19 @@ import org.w3c.dom.NodeList;
 public class GetFeatureTest extends WFSTestSupport {
     
     public void testGet() throws Exception {
-        Document doc = getAsDOM("wfs?request=GetFeature&typename=cdf:Fifteen&version=1.0.0&service=wfs");
+    	testGetFifteenAll("wfs?request=GetFeature&typename=cdf:Fifteen&version=1.0.0&service=wfs");
+    }
+    
+    public void testGetPropertyNameEmpty() throws Exception {
+    	testGetFifteenAll("wfs?request=GetFeature&typename=cdf:Fifteen&version=1.0.0&service=wfs&propertyname=");
+    }
+    
+    public void testGetPropertyNameStar() throws Exception {
+    	testGetFifteenAll("wfs?request=GetFeature&typename=cdf:Fifteen&version=1.0.0&service=wfs&propertyname=*");
+    }
+    
+    private void testGetFifteenAll(String request) throws Exception {
+        Document doc = getAsDOM(request);
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
                 .getNodeName());
 
