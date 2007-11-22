@@ -10,8 +10,8 @@
  <name>GeoServer 1.6.x</name>
 
  <scm>
-  <connection>scm:svn:http://svn.codehaus.org/geoserver/trunk/geoserver</connection>
-  <url>http://svn.codehaus.org/geoserver/trunk/geoserver</url>
+  <connection>scm:svn:http://svn.codehaus.org/geoserver/branches/1.6.x/geoserver</connection>
+  <url>http://svn.codehaus.org/geoserver/branches/1.6.x/geoserver</url>
  </scm>
 
  <organization>
