@@ -6,13 +6,13 @@ import java.util.Date;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.geotools.feature.AttributeType;
-import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
-import org.geotools.feature.GeometryAttributeType;
 import org.geotools.map.MapLayer;
 import org.geotools.xml.transform.Translator;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.responses.map.kml.OWS5GeometryTransformer.KML3GeometryTranslator;
 import org.xml.sax.Attributes;
@@ -67,7 +67,7 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
 
         public void encodeSchemas(FeatureCollection collection) {
             // TODO: consider turning this into a Freemarker template
-            final FeatureType schema = collection.getSchema();
+            final SimpleFeatureType schema = collection.getSchema();
             final String[] atts = new String[] { "name", schema.getTypeName(), "id", schemaId };
             start("Schema", KMLUtils.attributes(atts));
 
@@ -77,8 +77,8 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
             // displayed? a PROPERTY=x,y,z like in GetFeature would be beneficial 
             // to GetFeatureInfo as well
             for (int i = 0; i < schema.getAttributeCount(); i++) {
-                AttributeType at = schema.getAttributeType(i);
-                if (at instanceof GeometryAttributeType)
+                AttributeDescriptor at = schema.getAttribute(i);
+                if (at instanceof AttributeDescriptor)
                     continue;
 
                 final String[] atAttributes = new String[] { "type", getType(at), "name",
@@ -91,36 +91,36 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
             end("Schema");
         }
 
-        protected String getType(AttributeType at) {
+        protected String getType(AttributeDescriptor at) {
             // see
             // http://code.google.com/apis/kml/documentation/kml_tags_beta1.html#simplefield
             // Eventually see if we need to support uint/ushort as well (do we
             // have any standard filter for positive numbers?) and clarify
             // what's the range of int and short
-            if (Short.class.equals(at.getBinding()))
+            if (Short.class.equals(at.getType().getBinding()))
                 return "short";
-            else if (Integer.class.equals(at.getBinding()))
+            else if (Integer.class.equals(at.getType().getBinding()))
                 return "int";
-            else if (Float.class.equals(at.getBinding()))
+            else if (Float.class.equals(at.getType().getBinding()))
                 return "float";
-            else if (Double.class.equals(at.getBinding()))
+            else if (Double.class.equals(at.getType().getBinding()))
                 return "double";
-            else if (Boolean.class.equals(at.getBinding()))
+            else if (Boolean.class.equals(at.getType().getBinding()))
                 return "bool";
             else
                 return "string";
         }
 
-        protected void encodeExtendedData(Feature feature) {
+        protected void encodeExtendedData(SimpleFeature feature) {
             // TODO: consider turning this into a Freemarker template
             start("ExtendedData");
             start("SchemaData", KMLUtils.attributes(new String[] { "schemaUrl", "#" + schemaId }));
 
-            final int count = feature.getNumberOfAttributes();
-            final FeatureType schema = feature.getFeatureType();
+            final int count = feature.getAttributeCount();
+            final SimpleFeatureType schema = feature.getFeatureType();
             for (int i = 0; i < count; i++) {
-                final AttributeType at = schema.getAttributeType(i);
-                if(at instanceof GeometryAttributeType)
+                final AttributeDescriptor at = schema.getAttribute(i);
+                if(at instanceof GeometryDescriptor)
                     continue;
                 
                 final Attributes atts = KMLUtils.attributes(new String[] { "name",
