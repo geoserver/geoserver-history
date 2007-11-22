@@ -222,6 +222,7 @@ public class KvpUtils {
                 LOGGER.finest("found implicit all requested");
             }
 
+            kvpList.add(Collections.EMPTY_LIST);
             return kvpList;
 
             // handles explicit unconstrained case
@@ -230,6 +231,7 @@ public class KvpUtils {
                 LOGGER.finest("found explicit all requested");
             }
 
+            kvpList.add(Collections.EMPTY_LIST);
             return kvpList;
 
             // handles explicit, constrained element lists

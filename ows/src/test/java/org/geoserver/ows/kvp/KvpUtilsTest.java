@@ -5,6 +5,7 @@
 package org.geoserver.ows.kvp;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.geoserver.ows.util.KvpUtils;
 
@@ -17,5 +18,17 @@ public class KvpUtilsTest extends TestCase {
     
     public void testTrailingEmtpyStrings() {
         assertEquals(Arrays.asList(new String[] {"x", "", "x", "", ""}), KvpUtils.readFlat("x,,x,,"));
+    }
+    
+    public void testEmtpyNestedString() {
+    	List result = KvpUtils.readNested("");
+    	assertEquals(1, result.size());
+    	assertEquals(0, ((List) result.get(0)).size());
+    }
+    
+    public void testStarNestedString() {
+    	List result = KvpUtils.readNested("*");
+    	assertEquals(1, result.size());
+    	assertEquals(0, ((List) result.get(0)).size());
     }
 }
