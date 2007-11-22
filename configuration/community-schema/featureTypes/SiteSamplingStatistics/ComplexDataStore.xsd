@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://www.geotools.org/complex"
+  xmlns:c="http://www.geotools.org/complex" xmlns:ogc="http://www.opengis.net/ogc"
+  xmlns:gml="http://www.opengis.net/gml">
+
+  <import namespace="http://www.opengis.net/ogc" schemaLocation="http://schemas.opengis.net/filter/1.1.0/expr.xsd" />
+  <import namespace="http://www.opengis.net/gml" 
+  schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/feature.xsd" />
+
+  <element name="ComplexDataStore" type="c:ComplexDataStoreType" />
+
+  <complexType name="ComplexDataStoreType">
+    <sequence>
+      <element name="sourceDataStores" type="c:sourceDataStoresPropertyType" />
+      <element name="targetTypes" type="c:targetTypesPropertyType" />
+      <element name="typeMappings" type="c:typeMappingsPropertyType" />
+    </sequence>
+  </complexType>
+
+  <complexType name="sourceDataStoresPropertyType">
+    <sequence>
+      <element name="DataStore" minOccurs="0" maxOccurs="unbounded">
+        <complexType>
+          <sequence>
+            <element name="id" type="string" />
+            <element name="parameters">
+              <complexType>
+                <sequence>
+                  <element name="Parameter" minOccurs="0" maxOccurs="unbounded">
+                    <complexType>
+                      <sequence>
+                        <element name="name" type="string" />
+                        <element name="value" type="string" />
+                      </sequence>
+                    </complexType>
+                  </element>
+                </sequence>
+              </complexType>
+            </element>
+          </sequence>
+          <attribute name="id" type="ID" />
+        </complexType>
+      </element>
+    </sequence>
+  </complexType>
+
+  <complexType name="targetTypesPropertyType">
+    <sequence>
+      <element name="FeatureType" minOccurs="0" maxOccurs="1">
+        <complexType>
+          <sequence>
+            <element name="schemaUri" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+    </sequence>
+  </complexType>
+
+  <complexType name="typeMappingsPropertyType">
+    <sequence>
+      <element name="FeatureTypeMapping" minOccurs="0" maxOccurs="unbounded">
+        <complexType>
+          <sequence>
+            <element name="sourceDataStore" type="string" />
+            <element name="sourceType" type="string" />
+            <element name="targetType" type="string" />
+            <element name="groupBy" minOccurs="0" maxOccurs="1">
+              <complexType>
+                <sequence>
+                  <element name="GroupByAttribute" type="string" minOccurs="0" maxOccurs="unbounded" />
+                </sequence>
+              </complexType>
+            </element>
+            <element name="fidMappings" minOccurs="0">
+              <complexType>
+                <sequence>
+                  <element name="FidMapping" minOccurs="0" maxOccurs="unbounded" type="c:SingleMappingType" />
+                </sequence>
+              </complexType>
+            </element>
+            <element name="attributeMappings" minOccurs="0">
+              <complexType>
+                <sequence>
+                  <element name="AttributeMapping" minOccurs="0" maxOccurs="unbounded" type="c:SingleMappingType" />
+                </sequence>
+              </complexType>
+            </element>
+          </sequence>
+        </complexType>
+      </element>
+    </sequence>
+  </complexType>
+
+  <complexType name="SingleMappingType">
+    <sequence>
+      <element name="isMultiple" type="boolean" minOccurs="0"/>
+      <element name="targetAttribute" type="string" />
+      <element name="sourceExpression">
+        <complexType>
+          <choice>
+            <element name="OCQL" type="string" />
+            <element name="Expression">
+              <complexType>
+                <sequence>
+                  <element ref="ogc:expression" />
+                </sequence>
+              </complexType>
+            </element>
+          </choice>
+        </complexType>
+      </element>
+    </sequence>
+  </complexType>
+
+</schema>

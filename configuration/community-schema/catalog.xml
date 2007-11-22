@@ -11,14 +11,21 @@
         <parameter value="file:featureTypes/MappedFeatureTest/MappedFeature.xml" name="url" />
       </connectionParams>
     </datastore-->
-    <datastore namespace="xmml" enabled="true" id="borehole">
+    <datastore namespace="xmml" enabled="false" id="borehole">
       <connectionParams>
         <parameter value="complex" name="dbtype" />
         <parameter value="file:featureTypes/Borehole/BoreholeTest_properties.xml" name="url" />
       </connectionParams>
     </datastore>
 
-    <datastore namespace="aw" enabled="true" id="timeseries">
+    <datastore namespace="aw" enabled="true" id="sampling_stats">
+      <connectionParams>
+        <parameter value="complex" name="dbtype" />
+        <parameter value="file:featureTypes/SiteSamplingStatistics/schema_mappings.xml" name="url" />
+      </connectionParams>
+    </datastore>
+    
+    <datastore namespace="aw" enabled="false" id="timeseries">
       <connectionParams>
         <parameter value="complex" name="dbtype" />
         <parameter value="file:featureTypes/SiteSinglePhenomTimeSeries/TimeSeriesTest_properties.xml" name="url" />

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Example request "give me a collection of instantaneous observations 
+                   for a single determinand at a single site for a particular time period" 
+
+Assumes query by station ID
+-->
+<wfs:GetFeature service="WFS" version="1.1.0" xmlns:ogc="http://www.opengis.net/ogc"
+	xmlns:swe="http://www.opengis.net/swe/1.0.1" xmlns:om="http://www.opengis.net/om/1.0.0"
+	xmlns:wfs="http://www.opengis.net/wfs" xmlns:sa="http://www.opengis.net/sampling/1.0.0"
+	xmlns:cv="http://www.opengis.net/cv/0.2" xmlns:aw="http://www.water.gov.au/awdip"
+	xmlns:ows="http://www.opengis.net/ows" xmlns:gml="http://www.opengis.net/gml"
+	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.opengis.net/wfs ../../wfs/1.1.0/wfs.xsd" maxFeatures="2">
+	<wfs:Query typeName="aw:SiteSamplingStatistics">
+		<ogc:Filter>
+			<ogc:And>
+				<ogc:PropertyIsEqualTo>
+					<ogc:PropertyName>gml:name</ogc:PropertyName>
+					<ogc:Literal>111101d</ogc:Literal>
+				</ogc:PropertyIsEqualTo>
+				<!--<ogc:PropertyIsEqualTo>
+					<ogc:PropertyName>aw:sampledPhenomenon/aw:SummaryStatistics/aw:definition/aw:phenomenonDef/aw:baseDef/aw:phenomenonDef/aw:name</ogc:PropertyName>
+					<ogc:Literal>flowrate</ogc:Literal>
+				</ogc:PropertyIsEqualTo>
+				<ogc:PropertyIsEqualTo>
+					<ogc:PropertyName>aw:sampledPhenomenon/aw:SummaryStatistics/aw:definition/aw:phenomenonDef/aw:timePeriod</ogc:PropertyName>
+					<ogc:Literal>day</ogc:Literal>
+				</ogc:PropertyIsEqualTo>-->
+			</ogc:And>
+		</ogc:Filter>
+	</wfs:Query>
+</wfs:GetFeature>

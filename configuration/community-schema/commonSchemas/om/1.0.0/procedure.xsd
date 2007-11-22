@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns:om="http://www.opengis.net/om/1.0" xmlns:swe="http://www.opengis.net/swe/1.0"
+        xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml"
+        xmlns:xlink="http://www.w3.org/1999/xlink" targetNamespace="http://www.opengis.net/om/1.0"
+        elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.0">
+	<annotation>
+		<documentation>procedure.xsd
+
+Top level Process schema, per Annex C in OandM specification. 
+
+Copyright (c) 2007 Open Geospatial Consortium - see http://www.opengeospatial.org/about/?page=ipr</documentation>
+	</annotation>
+	<!-- ====================================================================== -->
+	<!-- bring in other schemas -->
+	<import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
+	<import namespace="http://www.opengis.net/swe/1.0" schemaLocation="../../sweCommon/current/swe.xsd"/>
+	<!-- ====================================================================== -->
+	<!-- ====================================================================== -->
+	<!-- =========================================================== -->
+	<complexType name="TimeObjectPropertyType">
+		<annotation>
+			<documentation>Property type for TM_Object not provided by GML</documentation>
+		</annotation>
+		<sequence minOccurs="0">
+			<element ref="gml:_TimeObject"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<!-- =========================================================== -->
+	<!-- ====================================================================== -->
+	<complexType name="ProcessType">
+		<annotation>
+			<documentation>Generic process. 
+			Abstract root class acting as head of substitution hierarchy for both generic procedures and events. 
+			</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="gml:AbstractFeatureType"/>
+		</complexContent>
+	</complexType>
+	<!-- ...................... -->
+	<element name="Process" type="om:ProcessType" abstract="true" substitutionGroup="gml:_Feature">
+		<annotation>
+			<documentation>Generic process. 
+			Abstract root class acting as head of substitution hierarchy for both generic procedures and events. </documentation>
+		</annotation>
+	</element>
+	<!-- ...................... -->
+	<complexType name="ProcessPropertyType">
+		<sequence minOccurs="0">
+			<element ref="om:Process"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<!-- ====================================================================== -->
+	<!-- === Generic Procedure type === -->
+	<!-- ====================================================================== -->
+	<complexType name="ProcessModelType">
+		<annotation>
+			<documentation>Atomic process. 
+			Head of substitution group for specialized procedures, including instruments, sensors, algorithms and simulators. 
+			Use gml:description element to describe the procedure or link to a definitive description.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="om:ProcessType"/>
+		</complexContent>
+	</complexType>
+	<!-- ...................... -->
+	<element name="ProcessModel" type="om:ProcessModelType" abstract="true" substitutionGroup="om:Process">
+		<annotation>
+			<documentation>Atomic process. 
+			Head of substitution group for specialized procedures, including instruments, sensors, algorithms and simulaors. 
+			Use gml:description element to describe the procedure or link to a definitive description.</documentation>
+		</annotation>
+	</element>
+	<!-- ...................... -->
+	<complexType name="ProcessModelPropertyType">
+		<sequence minOccurs="0">
+			<element ref="om:ProcessModel"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<!-- ====================================================================== -->
+	<complexType name="ProcessSystemType">
+		<annotation>
+			<documentation>Specialized procedure defined as a set of elements which operate concurrently or in parallel, or consecutively or in series.</documentation>
+		</annotation>
+		<complexContent>
+			<extension base="om:ProcessType">
+				<sequence>
+					<element name="component" type="om:ProcessPropertyType" maxOccurs="unbounded"/>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- ...................... -->
+	<element name="ProcessSystem" type="om:ProcessSystemType" substitutionGroup="om:Process">
+		<annotation>
+			<documentation>Specialized procedure defined as a set of elements which operate concurrently or in parallel, or consecutively or in series.</documentation>
+		</annotation>
+	</element>
+	<!-- ...................... -->
+	<complexType name="ProcessSystemPropertyType">
+		<sequence minOccurs="0">
+			<element ref="om:ProcessSystem"/>
+		</sequence>
+		<attributeGroup ref="gml:AssociationAttributeGroup"/>
+	</complexType>
+	<!-- ====================================================================== -->
+</schema>
