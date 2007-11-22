@@ -62,19 +62,19 @@ public class OWS5GeometryTransformer extends TransformerBase {
             QName name = null;
             if(o instanceof GeometryCollection) {
                 if(o instanceof MultiPoint)
-                    name = org.geotools.gml3.bindings.GML.MultiPoint;
+                    name = org.geotools.gml3.GML.MultiPoint;
                 else if(o instanceof MultiLineString)
-                    name = org.geotools.gml3.bindings.GML.MultiLineString;
+                    name = org.geotools.gml3.GML.MultiLineString;
                 else if(o instanceof MultiPolygon)
-                    name = org.geotools.gml3.bindings.GML.MultiSurface;
+                    name = org.geotools.gml3.GML.MultiSurface;
                 else
-                    name = org.geotools.gml3.bindings.GML.MultiGeometry;
+                    name = org.geotools.gml3.GML.MultiGeometry;
             } else if(o instanceof Point)
-                name = org.geotools.gml3.bindings.GML.Point;
+                name = org.geotools.gml3.GML.Point;
             else if(o instanceof LineString)
-                name = org.geotools.gml3.bindings.GML.LineString;
+                name = org.geotools.gml3.GML.LineString;
             else if(o instanceof Polygon)
-                name = org.geotools.gml3.bindings.GML.Polygon;
+                name = org.geotools.gml3.GML.Polygon;
             else
                 throw new IllegalArgumentException("Cannot handle geometries of type " + o.getClass());
             
