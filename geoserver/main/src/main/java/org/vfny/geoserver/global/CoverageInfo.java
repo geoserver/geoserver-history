@@ -7,6 +7,7 @@ package org.vfny.geoserver.global;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.CRS;
 import org.geotools.resources.CRSUtilities;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.GridCoverage;
@@ -531,13 +532,13 @@ public final class CoverageInfo extends GlobalLayerSupertype {
             final CoordinateReferenceSystem sourceCRS = envelope.getCoordinateReferenceSystem();
             final CoordinateReferenceSystem destCRS = crs;
 
-            if (!CRSUtilities.equalsIgnoreMetadata(sourceCRS, destCRS)) {
+            if (!CRS.equalsIgnoreMetadata(sourceCRS, destCRS)) {
                 // get a math transform
                 final MathTransform transform = CoverageUtils.getMathTransform(sourceCRS, destCRS);
 
                 // transform the envelope
                 if (!transform.isIdentity()) {
-                    envelope = CRSUtilities.transform(transform, envelope);
+                    envelope = CRS.transform(transform, envelope);
                 }
             }
 
