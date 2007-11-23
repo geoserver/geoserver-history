@@ -36,6 +36,13 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
+          <xsd:element name="relatedFeature" type="gml:ReferenceType" minOccurs="0">
+            <xsd:annotation>
+              <xsd:appinfo source="urn:x-gml:targetElement">sf:PrimitiveGeoFeature</xsd:appinfo>
+              <xsd:documentation xml:lang="en">A (simple) XLink element that refers to a sf:PrimitiveGeoFeature instance.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
