@@ -252,7 +252,10 @@ public class MapPreviewAction extends GeoServerAction {
             bboxList.add(bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + ","
                     + bbox.getMaxY());
             try {
-                srsList.add(CRS.lookupEpsgCode(bmBbox.getCoordinateReferenceSystem(), false) );
+                Integer epsgCode = CRS.lookupEpsgCode(bmBbox.getCoordinateReferenceSystem(), false) ; 
+                if ( epsgCode != null ) {
+                    srsList.add( "EPSG:" + epsgCode );
+                }
             } catch (FactoryException e) {
                 throw (IOException) new IOException().initCause(e);
             }
