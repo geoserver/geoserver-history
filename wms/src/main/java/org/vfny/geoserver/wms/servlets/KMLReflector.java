@@ -269,6 +269,15 @@ public class KMLReflector extends WMService {
             else {
                 filter = "";
             }
+            
+            //Envelope le = (layers[i].getFeature() == null ? layers[i].getBoundingBox() : layers[i].getFeature().getLatLongBoundingBox());
+            Envelope le = layers[i].getLatLongBoundingBox();
+            if (layerbbox == null){
+              layerbbox = new Envelope(le);
+            } else {
+              layerbbox.expandToInclude(le);
+            }
+
             if (serviceRequest.getSuperOverlay()) {
                 Envelope bbox = serviceRequest.getBbox();
 
@@ -301,15 +310,6 @@ public class KMLReflector extends WMService {
                 sb.append("</NetworkLink>\n");
             } else {
 
-//               Envelope le = (layers[i].getFeature() == null ? layers[i].getBoundingBox() : layers[i].getFeature().getLatLongBoundingBox());
-
-              Envelope le = layers[i].getLatLongBoundingBox();
-              if (layerbbox == null){
-                layerbbox = new Envelope(le);
-              } else {
-                layerbbox.expandToInclude(le);
-              }
-              
                 sb.append("<NetworkLink>\n");
                 sb.append(getLookAt(le));
                 sb.append("<name>" + layers[i].getName() + "</name>\n");
