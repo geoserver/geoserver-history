@@ -6,10 +6,9 @@ package org.geoserver.wfsv.xml.v1_1_0;
 
 import net.opengis.wfsv.WfsvFactory;
 
-import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
+import org.geotools.xml.Configuration;
 import org.picocontainer.MutablePicoContainer;
-import org.vfny.geoserver.global.Data;
 
 
 /**
@@ -17,19 +16,19 @@ import org.vfny.geoserver.global.Data;
  *
  * @generated
  */
-public class WFSVConfiguration extends WFSConfiguration {
+public class WFSVConfiguration extends Configuration {
     /**
      * Creates a new configuration.
      *
      * @generated
      */
-    public WFSVConfiguration(Data catalog, FeatureTypeSchemaBuilder schemaBuilder, WFSV wfsv) {
-        super(catalog, schemaBuilder, wfsv);
+    public WFSVConfiguration(WFSConfiguration wfsConfiguration, WFSV wfsv) {
+        super(wfsv);
+        
+        addDependency(wfsConfiguration);
     }
 
     protected void registerBindings(MutablePicoContainer container) {
-        super.registerBindings(container);
-        
         //Types
         container.registerComponentImplementation(WFSV.DifferenceQueryType,
             DifferenceQueryTypeBinding.class);
