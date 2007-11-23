@@ -28,23 +28,26 @@ public class RemoteOWSTestSupport {
     static Boolean remoteStatesAvailable;
     
     public static boolean isRemoteStatesAvailable() {
-        if(remoteStatesAvailable == null) {
-            // let's check if the remote WFS tests are runnable
-            try {
-                WFSDataStoreFactory factory = new WFSDataStoreFactory();
-                Map params = new HashMap(factory.getImplementationHints());
-                URL url = new URL(WFS_SERVER_URL + "service=WFS&request=GetCapabilities");
-                params.put(WFSDataStoreFactory.URL.key, url);
-                params.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.TRUE);
-                DataStore remoteStore = factory.createDataStore(params);
-                remoteStore.getFeatureSource(TOPP_STATES);
-                remoteStatesAvailable = Boolean.TRUE;
-            } catch(IOException e) {
-                LOGGER.log(Level.WARNING, "Skipping remote OWS test, either sigma " +
-                        "is down or the topp:states layer is not there", e);
-                remoteStatesAvailable = Boolean.FALSE;
-            }
-        } 
-        return remoteStatesAvailable.booleanValue();
+    	// todo: re-enable when http://jira.codehaus.org/browse/GEOS-1547 is fixed
+    	return false;
+//        if(remoteStatesAvailable == null) {
+//            // let's check if the remote WFS tests are runnable
+//            try {
+//                WFSDataStoreFactory factory = new WFSDataStoreFactory();
+//                Map params = new HashMap(factory.getImplementationHints());
+//                URL url = new URL(WFS_SERVER_URL + "service=WFS&request=GetCapabilities");
+//                params.put(WFSDataStoreFactory.URL.key, url);
+//                params.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.TRUE);
+//                DataStore remoteStore = factory.createDataStore(params);
+//                remoteStore.getFeatureSource(TOPP_STATES);
+//                remoteStatesAvailable = Boolean.TRUE;
+//            } catch(IOException e) {
+//                LOGGER.log(Level.WARNING, "Skipping remote OWS test, either sigma " +
+//                        "is down or the topp:states layer is not there", e);
+//                remoteStatesAvailable = Boolean.FALSE;
+//            }
+//        } 
+//        return remoteStatesAvailable.booleanValue();
+        // see GEOS-
     }
 }
