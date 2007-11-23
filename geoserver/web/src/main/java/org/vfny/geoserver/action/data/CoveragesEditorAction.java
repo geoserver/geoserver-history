@@ -192,14 +192,14 @@ public final class CoveragesEditorAction extends ConfigAction {
                         try {
                             nativeCRS = "EPSG:" + Integer.decode(nativeCRS);
                             transform = CRS.findMathTransform(sourceCRS, CRS.decode(nativeCRS), true);
-                            envelope = CRSUtilities.transform(transform, envelope);
+                            envelope = CRS.transform(transform, envelope);
                             coverageForm.setSrsName(nativeCRS);
                         } catch (NumberFormatException e) {
                             coverageForm.setSrsName("UNKNOWN");
                         }
                     } else {
                         transform = CRS.findMathTransform(sourceCRS, CRS.decode(nativeCRS), true);
-                        envelope = CRSUtilities.transform(transform, envelope);
+                        envelope = CRS.transform(transform, envelope);
                     }
                 } else {
                     coverageForm.setSrsName("UNKNOWN");
