@@ -1,7 +1,43 @@
 CITE Testing Instructions
 ------------------------
 
-A. Building the Test Engine
+A. Get Engine Sources
+
+Create a directory called 'engine', and check the out the teamengine sources
+into it.
+
+  'mkdir engine'
+  'svn co http://teamengine.svn.sourceforge.net/svnroot/teamengine/trunk
+engine'
+  
+*Notes* : 
+
+  1. At this time, revision 255 is the latest version that is known to work.
+     It is recommended that you check out that version.
+
+     'svn co -r 255 http://teamengine.svn... engine'
+  
+  2. Due to a bug at this revision the engine sources must be patched. Patch
+     the file 'engine/apps/engine/src/java/com/occamlab/te/TECore.java' with 
+     the patch 'TECore.java.patch' provided in this directory.
+
+     'patch engine/apps/engine/src/java/com/occamlab/te/TECore.java
+TECore.java.patch'
+
+
+B. Get Test Sources
+
+Create a directory called 'tests', and check out the cite test sources into
+it.
+
+  'mkdir tests'
+  'svn co https://svn.opengeospatial.org:8443/ogc-projects/cite/trunk'
+
+*Note* : You will need a user name and password for the cite subversion
+ repository. If you have a cite portal account, that will work.
+
+
+C. Build the Test Engine
 
 The test engine is built with the following command: 
 
@@ -21,7 +57,7 @@ Examples:
   'mvn clean install -P wms-1.1.1'
   'mvn clean install -P wcs-1.0.0'
 
-B. Running the Test Suite
+D. Run the Test Suite
 
 Running a test suite is done with the command:
 
@@ -33,7 +69,7 @@ Examples:
 
   'run.sh wfs-1.0.0'
 
-C. Viewing the Test Logs
+E. View the Test Logs
 
 Viewing the entire log of a test run is done with the command:
 
@@ -47,7 +83,7 @@ Where testid is the identifer for the test. For example:
 
   'log.sh wfs-1.0.0 wfs-1.0.0/w24aac25b3b9d185b1_1'
 
-D. Note for Windows Users
+F. Note for Windows Users
 
 At this time, run.sh and log.sh have yet to ported to batch files. Windows
 users must use the batch files included with the test engine. 
