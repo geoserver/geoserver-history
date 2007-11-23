@@ -4,6 +4,18 @@
  */
 package org.vfny.geoserver.wcs.responses;
 
+import java.awt.Rectangle;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.media.jai.Interpolation;
+
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
@@ -12,7 +24,6 @@ import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
-import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
@@ -33,16 +44,6 @@ import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.CoverageRequest;
-import java.awt.Rectangle;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.media.jai.Interpolation;
 
 
 /**
@@ -353,7 +354,7 @@ public class CoverageResponse implements Response {
 
         // this is the destination envelope in the coverage crs
         final GeneralEnvelope destinationEnvelopeInSourceCRS = (!deviceCRSToGCCRSTransform
-            .isIdentity()) ? CRSUtilities.transform(deviceCRSToGCCRSTransform, destinationEnvelope)
+            .isIdentity()) ? CRS.transform(deviceCRSToGCCRSTransform, destinationEnvelope)
                            : new GeneralEnvelope(destinationEnvelope);
         destinationEnvelopeInSourceCRS.setCoordinateReferenceSystem(cvCRS);
 
