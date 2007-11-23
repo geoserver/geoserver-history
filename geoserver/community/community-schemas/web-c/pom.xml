@@ -15,6 +15,25 @@
   <name>Web Application Module</name>
 
   <dependencies>
+    
+    <!-- plugin in jdbc driveres -->
+    <dependency>
+      <groupId>net.sourceforge.jtds</groupId>
+      <artifactId>jtds</artifactId>
+      <version>1.2.2</version>
+    </dependency>
+    
+    
+    <dependency>
+      <groupId>oracle</groupId>
+      <artifactId>ojdbc</artifactId>
+      <version>14</version>
+    </dependency>
+    
+    
+    
+      
+
     <!--dependency>
       <groupId>it.geosolutions</groupId>
       <artifactId>streams</artifactId>
@@ -40,6 +59,7 @@
       <artifactId>data</artifactId>
       <version>1.6.0-RC1</version>
     </dependency>
+    
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
@@ -194,6 +214,27 @@
       <scope>test</scope>
       </dependency-->
 
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>main</artifactId>
+      <version>1.6.0-RC1</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>data</artifactId>
+      <version>1.6.0-RC1</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.mockrunner</groupId>
+      <artifactId>mockrunner</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
     <!--  Jetty starter dependencies -->
     <dependency>
       <groupId>commons-el</groupId>
