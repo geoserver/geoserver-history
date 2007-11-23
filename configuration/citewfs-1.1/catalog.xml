@@ -18,6 +18,16 @@ parameters repository for all featuretypes it holds.
 <parameter value = "postgis" name = "dbtype"  />
 </connectionParams>
 </datastore>
+
+<!-- uncomment this , and comment out the above to use h2 instead of postgis -->
+<!--datastore namespace = "sf" enabled = "true" id = "sf" >
+<connectionParams>
+<parameter value = "http://cite.opengeospatial.org/gmlsf" name = "namespace"  />
+<parameter value = "cite" name = "Database"  />
+<parameter value = "h2" name = "Type"  />
+<parameter value = "true" name = "Foreign Keys" />
+</connectionParams>
+</datastore-->
 </datastores>
 
 <formats>
