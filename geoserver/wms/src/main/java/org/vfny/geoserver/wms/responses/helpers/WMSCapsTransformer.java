@@ -994,12 +994,12 @@ public class WMSCapsTransformer extends TransformerBase {
 
                 element("SRS", authority);
 
-                if (CRSUtilities.equalsIgnoreMetadata(wgs84, bounds.getCoordinateReferenceSystem())) {
+                if (CRS.equalsIgnoreMetadata(wgs84, bounds.getCoordinateReferenceSystem())) {
                     llBounds = bounds;
                 } else {
                     final MathTransform srcCRStoWGS84 = CRS.findMathTransform(bounds
                             .getCoordinateReferenceSystem(), wgs84, true);
-                    final GeneralEnvelope latLonEnvelope = CRSUtilities.transform(srcCRStoWGS84,
+                    final GeneralEnvelope latLonEnvelope = CRS.transform(srcCRStoWGS84,
                             bounds);
                     latLonEnvelope.setCoordinateReferenceSystem(wgs84);
                     llBounds = latLonEnvelope;
