@@ -75,6 +75,11 @@ public final class CoveragesEditorForm extends ActionForm {
     private String name;
 
     /**
+    *
+    */
+    private String real_name;
+
+    /**
      *
      */
     private String wmsPath;
@@ -232,6 +237,7 @@ public final class CoveragesEditorForm extends ActionForm {
         //
         // //
         name = cvConfig.getName();
+        real_name = cvConfig.getRealName();
         wmsPath = cvConfig.getWmsPath();
         label = cvConfig.getLabel();
         description = cvConfig.getDescription();
@@ -1035,4 +1041,12 @@ public final class CoveragesEditorForm extends ActionForm {
     public SortedSet getTypeStyles() {
         return typeStyles;
     }
+
+	public String getRealName() {
+		return real_name;
+	}
+
+	public void setRealName(String real_name) {
+		this.real_name = real_name;
+	}
 }

@@ -9,6 +9,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.coverage.grid.io.AbstractGridCoverageNDReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.parameter.DefaultParameterDescriptor;
 import org.opengis.coverage.grid.Format;
@@ -88,25 +89,45 @@ public class DataCoveragesNewAction extends ConfigAction {
                     catalog);
         }
 
-        CoverageConfig coverageConfig = newCoverageConfig(cvStoreInfo, formatID, request);
+        CoverageConfig[] coverageConfigs = newCoverageConfig(cvStoreInfo, formatID, request);
 
-        user.setCoverageConfig(coverageConfig);
+        if (coverageConfigs.length == 1) {
+            user.setCoverageConfig(coverageConfigs[0]);
 
-        return mapping.findForward("config.data.coverage.editor");
+            return mapping.findForward("config.data.coverage.editor");
+        } else if (coverageConfigs.length > 1) {
+            final DataConfig dataConfig = (DataConfig) getDataConfig();
+
+        	for (int ci=0; ci<coverageConfigs.length; ci++) {
+        		final CoverageConfig config = coverageConfigs[ci];
+                final StringBuffer coverage = new StringBuffer(config.getFormatId());
+                dataConfig.addCoverage(coverage.append(":").append(config.getName()).toString(), config);
+        	}
+        	
+            // Don't think reset is needed (as me have moved on to new page)
+            // form.reset(mapping, request);
+            getApplicationState().notifyConfigChanged();
+
+            // Coverage no longer selected
+            user.setCoverageConfig(null);
+
+            return mapping.findForward("config.data.coverage");
+        }
+        
+        return mapping.getInputForward();
     }
 
     /**
      * Static method so that the CoverageStore editor can do the same thing that the new one
      * does.*/
-    public static CoverageConfig newCoverageConfig(CoverageStoreInfo cvStoreInfo, String formatID,
+    public static CoverageConfig[] newCoverageConfig(CoverageStoreInfo cvStoreInfo, String formatID,
         HttpServletRequest request) throws ConfigurationException {
         //GridCoverage gc = null;
         final Format format = cvStoreInfo.getFormat();
-        AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cvStoreInfo.getReader();
+        GridCoverageReader reader = cvStoreInfo.getReader();
 
         if (reader == null) {
-            reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(GeoserverDataDirectory
-                    .findDataFile(cvStoreInfo.getUrl()));
+            reader = ((AbstractGridFormat) format).getReader(GeoserverDataDirectory.findDataFile(cvStoreInfo.getUrl()));
         }
 
         if (reader == null) {
@@ -114,11 +135,22 @@ public class DataCoveragesNewAction extends ConfigAction {
                 "Could not obtain a reader for the CoverageDataSet. Please check the CoverageDataSet configuration!");
         }
 
-        CoverageConfig coverageConfig = new CoverageConfig(formatID, format, reader, request);
+        
+        CoverageConfig[] coverageConfigs = null;
+        
+        if (reader instanceof AbstractGridCoverage2DReader) {
+        	coverageConfigs    = new CoverageConfig[1];
+        	coverageConfigs[0] = new CoverageConfig(formatID, format, (AbstractGridCoverage2DReader) reader, request);
+        } else if (reader instanceof AbstractGridCoverageNDReader) {
+        	final String[] listSubnames = ((AbstractGridCoverageNDReader) reader).listSubNames();
+        	coverageConfigs       		= new CoverageConfig[listSubnames.length];
+        	for (int c=0; c<coverageConfigs.length; c++)
+        		coverageConfigs[c] = new CoverageConfig(formatID, format, (AbstractGridCoverageNDReader) reader, listSubnames[c], request);
+        }
 
         request.setAttribute(NEW_COVERAGE_KEY, "true");
-        request.getSession().setAttribute(DataConfig.SELECTED_COVERAGE, coverageConfig);
+        request.getSession().setAttribute(DataConfig.SELECTED_COVERAGE, coverageConfigs[0]);
 
-        return coverageConfig;
+        return coverageConfigs;
     }
 }

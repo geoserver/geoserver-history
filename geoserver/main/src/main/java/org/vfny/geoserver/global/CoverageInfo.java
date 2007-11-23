@@ -52,6 +52,11 @@ public final class CoverageInfo extends GlobalLayerSupertype {
     private String name;
 
     /**
+    *
+    */
+    private String real_name;
+
+    /**
      *
      */
     private String wmsPath;
@@ -181,6 +186,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         this.data = data;
         formatId = dto.getFormatId();
         name = dto.getName();
+        real_name = dto.getRealName();
         wmsPath = dto.getWmsPath();
         label = dto.getLabel();
         description = dto.getDescription();
@@ -211,6 +217,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
 
         dto.setFormatId(formatId);
         dto.setName(name);
+        dto.setRealName(real_name);
         dto.setWmsPath(wmsPath);
         dto.setLabel(label);
         dto.setDescription(description);
@@ -590,4 +597,8 @@ public final class CoverageInfo extends GlobalLayerSupertype {
 
         return gc;
     }
+
+	public String getRealName() {
+		return real_name;
+	}
 }

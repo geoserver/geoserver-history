@@ -37,6 +37,11 @@ public final class CoverageInfoDTO implements DataTransferObject {
     private String name;
 
     /**
+    *
+    */
+    private String real_name;
+    
+    /**
      *
      */
     private String wmsPath;
@@ -159,6 +164,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
         formatId = dto.getFormatId();
         name = dto.getName();
+        real_name = dto.getRealName();
         wmsPath = dto.getWmsPath();
         label = dto.getLabel();
         description = dto.getDescription();
@@ -236,6 +242,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
         r = r && (srsWKT == f.getSrsWKT());
         r = r && (crs == f.getCrs());
         r = r && (name == f.getName());
+        r = r && (real_name == f.getRealName());
         r = r && (wmsPath == f.getWmsPath());
         r = r && (description == f.getDescription());
         r = r && (label == f.getLabel());
@@ -263,6 +270,10 @@ public final class CoverageInfoDTO implements DataTransferObject {
             r *= name.hashCode();
         }
 
+        if (real_name != null) {
+            r *= real_name.hashCode();
+        }
+        
         if (formatId != null) {
             r *= formatId.hashCode();
         }
@@ -817,4 +828,12 @@ public final class CoverageInfoDTO implements DataTransferObject {
     public synchronized void setParameters(Map parameters) {
         this.parameters = parameters;
     }
+
+	public String getRealName() {
+		return real_name;
+	}
+
+	public void setRealName(String real_name) {
+		this.real_name = real_name;
+	}
 }

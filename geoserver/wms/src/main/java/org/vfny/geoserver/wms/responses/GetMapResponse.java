@@ -4,32 +4,46 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.coverage.grid.io.AbstractGridCoverageNDReader;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.FactoryConfigurationError;
+import org.geotools.feature.AttributeType;
+import org.geotools.feature.AttributeTypeFactory;
+import org.geotools.feature.DefaultFeatureType;
+import org.geotools.feature.Feature;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureCollections;
+import org.geotools.feature.FeatureTypeBuilder;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
+import org.geotools.feature.type.GeometricAttributeType;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.resources.CRSUtilities;
 import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.Style;
+import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.filter.Filter;
-import org.opengis.parameter.ParameterDescriptor;
+import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
@@ -44,7 +58,6 @@ import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.CoverageUtils;
-import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
 import org.vfny.geoserver.wms.RasterMapProducer;
@@ -53,7 +66,12 @@ import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
 /**
  * A GetMapResponse object is responsible of generating a map based on a GetMap
@@ -343,8 +361,7 @@ public class GetMapResponse implements Response {
 					// Adding a coverage layer
 					//
 					// /////////////////////////////////////////////////////////
-					AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) layers[i]
-							.getCoverage().getReader();
+					GridCoverageReader reader = layers[i].getCoverage().getReader();
 					if (reader != null) {
 						// /////////////////////////////////////////////////////////
 						//
@@ -359,10 +376,18 @@ public class GetMapResponse implements Response {
                          * exception is thrown, we have nothing to do.
                          */
                         try {
+                        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
                             ParameterValue time = reader.getFormat().getReadParameters().parameter(
-                                    "TIME");
+                                    "Times");
                             if (time != null && request.getTime() != null) {
-                                time.setValue(request.getTime());
+                            	List times = request.getTime();
+                            	String[] timePositions = new String[times.size()];
+                            	for (int t=0; t<times.size(); t++)
+                            		timePositions[t] = sdf.format(times.get(t));
+                                time.setValue(timePositions);
+                                layers[i]
+			                              .getCoverage()
+			                              .getParameters().put("Times", timePositions);
                             }
                         } catch (ParameterNotFoundException p) {
                         }
@@ -379,25 +404,46 @@ public class GetMapResponse implements Response {
 
                         try {
                             ParameterValue elevation = reader.getFormat().getReadParameters()
-                                    .parameter("ELEVATION");
+                                    .parameter("Elevations");
                             if (elevation != null && request.getElevation() != null) {
                                 elevation.setValue(request.getElevation().intValue());
+                                layers[i]
+			                              .getCoverage()
+			                              .getParameters().put("Elevations", request.getElevation());
                             }
                         } catch (ParameterNotFoundException p) {
                         }
 
+                        // TODO: BANDS PARAMETERS
 						try {
 							final ParameterValueGroup params = reader.getFormat().getReadParameters();
-
-							layer = new DefaultMapLayer(FeatureUtilities
-									.wrapGridCoverageReader(reader, CoverageUtils
-											.getParameters(params, layers[i]
-													.getCoverage()
-													.getParameters())), style);
 							
-							layer.setTitle(layers[i].getName());
-							layer.setQuery(Query.ALL);
-							map.addLayer(layer);
+							if (reader instanceof AbstractGridCoverage2DReader) {
+								layer = new DefaultMapLayer(
+										wrapGridCoverageReader((AbstractGridCoverage2DReader)reader, CoverageUtils
+												.getParameters(params, layers[i]
+												                              .getCoverage()
+												                              .getParameters())), style);
+
+								layer.setTitle(layers[i].getName());
+								layer.setQuery(Query.ALL);
+								map.addLayer(layer);
+							} else if (reader instanceof AbstractGridCoverageNDReader) {
+								layers[i]
+			                              .getCoverage()
+			                              .getParameters().put("Coverage", layers[i].getCoverage().getRealName());
+								layer = new DefaultMapLayer(
+										wrapGridCoverageReader((AbstractGridCoverageNDReader)reader,
+												layers[i].getCoverage().getRealName(), CoverageUtils
+												.getParameters(params, layers[i]
+												                              .getCoverage()
+												                              .getParameters())), style);
+
+								layer.setTitle(layers[i].getName());
+								layer.setQuery(Query.ALL);
+								map.addLayer(layer);
+							}
+
 						} catch (IllegalArgumentException e) {
 							if (LOGGER.isLoggable(Level.SEVERE)) {
 								LOGGER.log(Level.SEVERE, new StringBuffer(
@@ -645,4 +691,114 @@ public class GetMapResponse implements Response {
 	public String getContentDisposition() {
 		return headerContentDisposition;
 	}
+	
+	// ////////////////////////////////////////////////////////////////////////
+	//
+	// TEMPORARY TO BE MOVED ON gt2-FeatureUtilities
+	//
+	// ////////////////////////////////////////////////////////////////////////
+	/**
+     * Wraps a grid coverage into a Feature. Code lifted from ArcGridDataSource
+     * (temporary).
+     *
+     * @param  reader the grid coverage reader.
+     * @return a feature with the grid coverage envelope as the geometry and the
+     *         grid coverage itself in the "grid" attribute.
+     */
+    public static FeatureCollection wrapGridCoverageReader(final AbstractGridCoverage2DReader gridCoverageReader,
+			GeneralParameterValue[] params) throws TransformException,
+			FactoryConfigurationError, SchemaException,
+			IllegalAttributeException {
+
+		// create surrounding polygon
+		final PrecisionModel pm = new PrecisionModel();
+		final GeometryFactory gf = new GeometryFactory(pm, 0);
+		final Rectangle2D rect = gridCoverageReader.getOriginalEnvelope()
+				.toRectangle2D();
+		final CoordinateReferenceSystem sourceCrs = CRSUtilities
+				.getCRS2D(gridCoverageReader.getCrs());
+
+		final Coordinate[] coord = new Coordinate[5];
+		coord[0] = new Coordinate(rect.getMinX(), rect.getMinY());
+		coord[1] = new Coordinate(rect.getMaxX(), rect.getMinY());
+		coord[2] = new Coordinate(rect.getMaxX(), rect.getMaxY());
+		coord[3] = new Coordinate(rect.getMinX(), rect.getMaxY());
+		coord[4] = new Coordinate(rect.getMinX(), rect.getMinY());
+
+		// }
+		final LinearRing ring = gf.createLinearRing(coord);
+		final Polygon bounds = new Polygon(ring, null, gf);
+
+		// create the feature type
+		final GeometricAttributeType geom = new GeometricAttributeType("geom",
+				Polygon.class, true, 1, 1, null, sourceCrs, null);
+		final AttributeType grid = AttributeTypeFactory.newAttributeType(
+				"grid", AbstractGridCoverage2DReader.class);
+		final AttributeType paramsAttr = AttributeTypeFactory.newAttributeType(
+				"params", GeneralParameterValue[].class);
+
+		final AttributeType[] attTypes = { geom, grid, paramsAttr };
+		// Fix the schema name
+		final String typeName = "GridCoverage";
+		final DefaultFeatureType schema = (DefaultFeatureType) FeatureTypeBuilder
+				.newFeatureType(attTypes, typeName);
+
+		// create the feature
+		Feature feature = schema.create(new Object[] { bounds,
+				gridCoverageReader,params });
+
+		final FeatureCollection collection = FeatureCollections.newCollection();
+		collection.add(feature);
+
+		return collection;
+	}
+
+    public static FeatureCollection wrapGridCoverageReader(final AbstractGridCoverageNDReader gridCoverageReader,
+    		String coverageName, GeneralParameterValue[] params) throws TransformException,
+			FactoryConfigurationError, SchemaException,
+			IllegalAttributeException {
+
+		// create surrounding polygon
+		final PrecisionModel pm = new PrecisionModel();
+		final GeometryFactory gf = new GeometryFactory(pm, 0);
+		final Rectangle2D rect = gridCoverageReader.getOriginalEnvelope(coverageName)
+				.toRectangle2D();
+		final CoordinateReferenceSystem sourceCrs = CRSUtilities
+				.getCRS2D(gridCoverageReader.getCrs(coverageName));
+
+		final Coordinate[] coord = new Coordinate[5];
+		coord[0] = new Coordinate(rect.getMinX(), rect.getMinY());
+		coord[1] = new Coordinate(rect.getMaxX(), rect.getMinY());
+		coord[2] = new Coordinate(rect.getMaxX(), rect.getMaxY());
+		coord[3] = new Coordinate(rect.getMinX(), rect.getMaxY());
+		coord[4] = new Coordinate(rect.getMinX(), rect.getMinY());
+
+		// }
+		final LinearRing ring = gf.createLinearRing(coord);
+		final Polygon bounds = new Polygon(ring, null, gf);
+
+		// create the feature type
+		final GeometricAttributeType geom = new GeometricAttributeType("geom",
+				Polygon.class, true, 1, 1, null, sourceCrs, null);
+		final AttributeType grid = AttributeTypeFactory.newAttributeType(
+				"grid", AbstractGridCoverageNDReader.class);
+		final AttributeType paramsAttr = AttributeTypeFactory.newAttributeType(
+				"params", GeneralParameterValue[].class);
+
+		final AttributeType[] attTypes = { geom, grid, paramsAttr };
+		// Fix the schema name
+		final String typeName = "GridCoverage";
+		final DefaultFeatureType schema = (DefaultFeatureType) FeatureTypeBuilder
+				.newFeatureType(attTypes, typeName);
+
+		// create the feature
+		Feature feature = schema.create(new Object[] { bounds,
+				gridCoverageReader,params });
+
+		final FeatureCollection collection = FeatureCollections.newCollection();
+		collection.add(feature);
+
+		return collection;
+	}
+
 }

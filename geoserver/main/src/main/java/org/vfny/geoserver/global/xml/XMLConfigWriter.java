@@ -1329,7 +1329,11 @@ public class XMLConfigWriter {
             if ((cv.getName() != null) && (cv.getName() != "")) {
                 cw.textTag("name", cv.getName());
             }
-
+            
+            if ((cv.getRealName() != null) && (cv.getRealName() != "")) {
+                cw.textTag("realName", cv.getRealName());
+            }
+            
             if ((cv.getLabel() != null) && (cv.getLabel() != "")) {
                 cw.textTag("label", cv.getLabel());
             }

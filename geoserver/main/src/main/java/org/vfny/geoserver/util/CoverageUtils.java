@@ -153,12 +153,13 @@ public class CoverageUtils {
                              _key.equalsIgnoreCase("DIM_RANGE")) {
                             continue;
                         }
-                        parameters.add(new DefaultParameterDescriptor(_key, value.getClass(), null,
+                        parameters.add(new DefaultParameterDescriptor(_key, descr.getValueClass(), null,
                                 value).createValue());
                     }
                 }
             }
 
+            // TODO: ???
             addToParameters("TIME", values, parameters);
             addToParameters("ELEVATION", values, parameters);
             return (!parameters.isEmpty())

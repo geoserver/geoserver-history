@@ -252,6 +252,7 @@ function generateColorPicker(colorFieldName, fieldValue)
       <td class="datum">
 		<bean:write name="coveragesEditorForm" property="name"/>
 		<html:hidden property="name"/>
+		<html:hidden property="realName"/>
 		<html:hidden property="newCoverage" value="false"/>
       </td>
     </tr>

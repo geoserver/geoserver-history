@@ -28,6 +28,12 @@
 			<groupId>org.geotools</groupId>
 			<artifactId>gt2-referencing</artifactId>
 		</dependency>
+		<!-- nD plugins - START -->
+		<dependency>
+		    <groupId>org.geotools</groupId>
+		    <artifactId>gt2-grib1</artifactId>
+		</dependency>
+	    <!-- nD plugins - END -->   
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt2-arcgrid</artifactId>

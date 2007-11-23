@@ -4,37 +4,6 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureReader;
-import org.geotools.data.Query;
-import org.geotools.data.Transaction;
-import org.geotools.data.crs.ForceCoordinateSystemFeatureReader;
-import org.geotools.data.memory.MemoryDataStore;
-import org.geotools.feature.FeatureType;
-import org.geotools.filter.ExpressionDOMParser;
-import org.geotools.referencing.CRS;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.geotools.styling.SLDParser;
-import org.geotools.styling.StyleFactory;
-import org.geotools.styling.StyleFactoryFinder;
-import org.geotools.styling.StyledLayer;
-import org.geotools.styling.StyledLayerDescriptor;
-import org.geotools.styling.UserLayer;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.Request;
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.global.TemporaryFeatureTypeInfo;
-import org.vfny.geoserver.util.GETMAPValidator;
-import org.vfny.geoserver.util.SLDValidator;
-import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.servlets.WMService;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXParseException;
 import java.awt.Color;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -50,7 +19,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.filter.ExpressionDOMParser;
+import org.geotools.referencing.CRS;
+import org.geotools.styling.SLDParser;
+import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyledLayer;
+import org.geotools.styling.StyledLayerDescriptor;
+import org.geotools.styling.UserLayer;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.util.GETMAPValidator;
+import org.vfny.geoserver.util.SLDValidator;
+import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.servlets.WMService;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXParseException;
+
+import com.vividsolutions.jts.geom.Coordinate;
 
 
 /**
@@ -61,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * @version $Id$
  */
 public class GetMapXmlReader extends XmlRequestReader {
-    private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
+    private static final StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
 
     /**
      * Creates a new GetMapXmlReader object.

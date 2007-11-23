@@ -4,18 +4,31 @@
  */
 package org.vfny.geoserver.action.data;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.logging.Level;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.coverage.grid.io.AbstractGridCoverageNDReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.factory.FactoryRegistryException;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.NamedIdentifier;
-import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.grid.Format;
+import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
@@ -34,19 +47,6 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -169,16 +169,23 @@ public final class CoveragesEditorAction extends ConfigAction {
         }
 
         final Format format = cvStoreInfo.getFormat();
-        AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cvStoreInfo.getReader();
+        GridCoverageReader reader = cvStoreInfo.getReader();
 
         if (reader == null) {
-            reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(GeoserverDataDirectory
-                    .findDataFile(cvStoreInfo.getUrl()));
+            reader = ((AbstractGridFormat) format).getReader(GeoserverDataDirectory.findDataFile(cvStoreInfo.getUrl()));
         }
 
         try {
-            final CoordinateReferenceSystem sourceCRS = reader.getCrs();
-            final GeneralEnvelope gEnvelope = reader.getOriginalEnvelope();
+            final CoordinateReferenceSystem sourceCRS = 
+            	(reader instanceof AbstractGridCoverage2DReader ? 
+                		((AbstractGridCoverage2DReader)reader).getCrs() : 
+                		((AbstractGridCoverageNDReader)reader).getCrs(coverageForm.getRealName()) 
+                );
+            final GeneralEnvelope gEnvelope = 
+            	(reader instanceof AbstractGridCoverage2DReader ? 
+                		((AbstractGridCoverage2DReader)reader).getOriginalEnvelope() : 
+                		((AbstractGridCoverageNDReader)reader).getOriginalEnvelope(coverageForm.getRealName()) 
+                );
             final GeneralEnvelope targetEnvelope = gEnvelope;
             GeneralEnvelope envelope = targetEnvelope;
 
@@ -192,14 +199,14 @@ public final class CoveragesEditorAction extends ConfigAction {
                         try {
                             nativeCRS = "EPSG:" + Integer.decode(nativeCRS);
                             transform = CRS.findMathTransform(sourceCRS, CRS.decode(nativeCRS), true);
-                            envelope = CRSUtilities.transform(transform, envelope);
+                            envelope = CRS.transform(transform, envelope);
                             coverageForm.setSrsName(nativeCRS);
                         } catch (NumberFormatException e) {
                             coverageForm.setSrsName("UNKNOWN");
                         }
                     } else {
                         transform = CRS.findMathTransform(sourceCRS, CRS.decode(nativeCRS), true);
-                        envelope = CRSUtilities.transform(transform, envelope);
+                        envelope = CRS.transform(transform, envelope);
                     }
                 } else {
                     coverageForm.setSrsName("UNKNOWN");
@@ -283,6 +290,7 @@ public final class CoveragesEditorAction extends ConfigAction {
         }
 
         config.setName(form.getName());
+        config.setRealName(form.getRealName());
         config.setWmsPath(form.getWmsPath());
 
         final StringBuffer temp = new StringBuffer(config.getFormatId());
@@ -420,16 +428,24 @@ public final class CoveragesEditorAction extends ConfigAction {
         }
 
         final Format format = cvStoreInfo.getFormat();
-        AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cvStoreInfo.getReader();
+        GridCoverageReader reader = cvStoreInfo.getReader();
 
         if (reader == null) {
-            reader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) format).getReader(GeoserverDataDirectory
-                    .findDataFile(cvStoreInfo.getUrl()));
+            reader = ((AbstractGridFormat) format).getReader(GeoserverDataDirectory.findDataFile(cvStoreInfo.getUrl()));
         }
 
         try {
-            final CoordinateReferenceSystem sourceCRS = reader.getCrs();
-            final GeneralEnvelope gEnvelope = reader.getOriginalEnvelope();
+            final CoordinateReferenceSystem sourceCRS = 
+            	(reader instanceof AbstractGridCoverage2DReader ? 
+            		((AbstractGridCoverage2DReader)reader).getCrs() : 
+            		((AbstractGridCoverageNDReader)reader).getCrs(coverageForm.getRealName()) 
+            	);
+            final GeneralEnvelope gEnvelope =
+            	(reader instanceof AbstractGridCoverage2DReader ? 
+                		((AbstractGridCoverage2DReader)reader).getOriginalEnvelope() : 
+                		((AbstractGridCoverageNDReader)reader).getOriginalEnvelope(coverageForm.getRealName()) 
+                );
+
             final GeneralEnvelope targetEnvelope = gEnvelope;
             GeneralEnvelope envelope = targetEnvelope;
             String s = CRS.lookupIdentifier(sourceCRS, true);

@@ -63,6 +63,12 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
     private String name;
 
     /**
+    *
+    * @uml.property name="name" multiplicity="(0 1)"
+    */
+    private String real_name;
+
+    /**
      *
      * @uml.property name="label" multiplicity="(0 1)"
      */
@@ -104,6 +110,7 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
     public MapLayerInfo(CoverageInfoDTO dto, Data data)
         throws ConfigurationException {
         name = dto.getName();
+        real_name = dto.getRealName();
         label = dto.getLabel();
         description = dto.getDescription();
         dirName = dto.getDirName();
@@ -381,5 +388,13 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
     public void setRemoteFeatureSource(FeatureSource remoteFeatureSource) {
         this.remoteFeatureSource = remoteFeatureSource;
     }
+
+	public String getRealName() {
+		return real_name;
+	}
+
+	public void setRealName(String real_name) {
+		this.real_name = real_name;
+	}
 
 }

@@ -140,6 +140,13 @@
     <artifactId>gt2</artifactId>
     <version>${gt.version}</version>
    </dependency>
+   <!-- nD plugins - START -->
+   <dependency>
+    <groupId>org.geotools</groupId>
+    <artifactId>gt2-grib1</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <!-- nD plugins - END -->   
    <dependency>
     <groupId>org.geotools</groupId>
     <artifactId>gt2-arcgrid</artifactId>

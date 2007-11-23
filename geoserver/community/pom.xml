@@ -23,9 +23,10 @@
 	</dependencies>
 
 	<modules>
-		<module>hello</module>
+		<module>catalog</module>
+		<!-- module>hello</module>
 		<module>preferences</module>
 		<module>community-schemas</module>
-		<module>kml3</module>
+		<module>kml3</module -->
 	</modules>
 </project>

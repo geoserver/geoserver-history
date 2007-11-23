@@ -4,8 +4,31 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletContext;
+
 import org.apache.xml.serialize.LineSeparator;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -51,29 +74,9 @@ import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.ServletContext;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -708,7 +711,6 @@ public class XMLConfigReader {
         }
 
         Element elem;
-        NodeList nodeList;
         elem = ReaderUtils.getChildElement(contactInfoElement, "ContactPersonPrimary");
 
         if (elem != null) {
@@ -1287,7 +1289,7 @@ public class XMLConfigReader {
      *
      * @throws ConfigurationException When an error occurs.
      */
-    protected Map loadConnectionParams(Element connElem)
+    public static Map loadConnectionParams(Element connElem)
         throws ConfigurationException {
         Map connectionParams = new HashMap();
 
@@ -1480,7 +1482,7 @@ public class XMLConfigReader {
         File parentDir = infoFile.getParentFile();
         dto.setDirName(parentDir.getName());
 
-        List attributeList;
+        List attributeList = null;
 
         File schemaFile = new File(parentDir, "schema.xml");
 
@@ -1756,6 +1758,7 @@ public class XMLConfigReader {
             // /////////////////////////////////////////////////////////////////////
             cv.setFormatId(ReaderUtils.getAttribute(coverageRoot, "format", true));
             cv.setName(ReaderUtils.getChildText(coverageRoot, "name", true));
+            cv.setRealName(ReaderUtils.getChildText(coverageRoot, "realName"/*, true*/));
             cv.setWmsPath(ReaderUtils.getChildText(coverageRoot, "wmspath" /* , true */));
             cv.setLabel(ReaderUtils.getChildText(coverageRoot, "label", true));
             cv.setDescription(ReaderUtils.getChildText(coverageRoot, "description"));
@@ -1969,7 +1972,7 @@ public class XMLConfigReader {
      * @return
      * @throws ConfigurationException
      */
-    protected GeneralEnvelope loadEnvelope(Element envelopeElem, CoordinateReferenceSystem crs)
+    public static GeneralEnvelope loadEnvelope(Element envelopeElem, CoordinateReferenceSystem crs)
         throws ConfigurationException {
         if (envelopeElem == null) {
             return new GeneralEnvelope(crs);
@@ -2013,7 +2016,7 @@ public class XMLConfigReader {
      * @return
      * @throws ConfigurationException
      */
-    protected GridGeometry loadGrid(Element gridElem, GeneralEnvelope envelope,
+    public static GridGeometry loadGrid(Element gridElem, GeneralEnvelope envelope,
         CoordinateReferenceSystem crs) throws ConfigurationException {
         final GeneralEnvelope gcEnvelope = new GeneralEnvelope(new GeneralDirectPosition(
                     envelope.getLowerCorner().getOrdinate(0),
@@ -2074,7 +2077,7 @@ public class XMLConfigReader {
      * @return
      * @throws ConfigurationException
      */
-    protected InternationalString[] loadDimensionNames(Element gridElem)
+    public static InternationalString[] loadDimensionNames(Element gridElem)
         throws ConfigurationException {
         if (gridElem == null) {
             return null;
@@ -2094,7 +2097,7 @@ public class XMLConfigReader {
         return dimNames;
     }
 
-    protected CoverageDimension[] loadDimensions(NodeList dimElems)
+    public static CoverageDimension[] loadDimensions(NodeList dimElems)
         throws ConfigurationException {
         CoverageDimension[] dimensions = null;
 
@@ -2142,7 +2145,7 @@ public class XMLConfigReader {
         return dimensions;
     }
 
-    protected MetaDataLink loadMetaDataLink(Element metalinkRoot) {
+    public static MetaDataLink loadMetaDataLink(Element metalinkRoot) {
         MetaDataLink ml = new MetaDataLink();
 
         try {

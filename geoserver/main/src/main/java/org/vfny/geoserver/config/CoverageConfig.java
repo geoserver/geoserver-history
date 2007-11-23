@@ -9,8 +9,10 @@ import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.coverage.grid.io.AbstractGridCoverageNDReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.util.SimpleInternationalString;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.metadata.Identifier;
@@ -57,6 +59,11 @@ public class CoverageConfig {
      *
      */
     private String name;
+
+    /**
+    *
+    */
+    private String real_name;
 
     /**
      *
@@ -187,6 +194,181 @@ public class CoverageConfig {
      * @param gc
      * @throws ConfigurationException
      */
+    public CoverageConfig(String formatId, Format format, AbstractGridCoverageNDReader reader,
+            String coverageName, HttpServletRequest request) throws ConfigurationException {
+        if ((formatId == null) || (formatId.length() == 0)) {
+            throw new IllegalArgumentException("formatId is required for CoverageConfig");
+        }
+
+        if (format == null) {
+            throw new ConfigurationException(new StringBuffer("Cannot handle format: ").append(
+                    formatId).toString());
+        }
+
+        this.formatId = formatId;
+
+        final DataConfig dataConfig = getDataConfig(request);
+        final CoverageStoreConfig cvConfig = dataConfig.getDataFormat(formatId);
+
+        if (cvConfig == null) {
+            // something is horribly wrong no FormatID selected!
+            // The JSP needs to not include us if there is no
+            // selected Format
+            //
+            throw new RuntimeException("selectedCoverageSetId required in Session");
+        }
+
+        crs = reader.getCrs(coverageName);
+        srsName = (((crs != null) && !crs.getIdentifiers().isEmpty())
+            ? crs.getIdentifiers().toArray()[0].toString() : "UNKNOWN");
+        srsWKT = ((crs != null) ? crs.toWKT() : "UNKNOWN");
+        envelope = reader.getOriginalEnvelope(coverageName);
+
+        try {
+            lonLatWGS84Envelope = CoverageStoreUtils.getWGS84LonLatEnvelope(envelope);
+        } catch (IndexOutOfBoundsException e) {
+            final ConfigurationException newEx = new ConfigurationException(new StringBuffer(
+                        "Converting Envelope to Lat-Lon WGS84: ").append(e.toString()).toString());
+            newEx.initCause(e);
+            throw newEx;
+        } catch (FactoryException e) {
+            final ConfigurationException newEx = new ConfigurationException(new StringBuffer(
+                        "Converting Envelope to Lat-Lon WGS84: ").append(e.toString()).toString());
+            newEx.initCause(e);
+            throw newEx;
+        } catch (TransformException e) {
+            final ConfigurationException newEx = new ConfigurationException(new StringBuffer(
+                        "Converting Envelope to Lat-Lon WGS84: ").append(e.toString()).toString());
+            newEx.initCause(e);
+            throw newEx;
+        }
+
+        grid = new GridGeometry2D(reader.getOriginalGridRange(coverageName), reader.getOriginalEnvelope(coverageName));
+
+        final String[] bandKeys = reader.getMetadataValue("band_keys", coverageName).split(", ");
+        final int numBands = bandKeys.length; 
+        dimentionNames = new InternationalString[numBands];
+        
+        for (int b=0; b<numBands; b++)
+        	dimentionNames[b] = SimpleInternationalString.wrap(bandKeys[b]);
+
+        final DataConfig config = ConfigRequests.getDataConfig(request);
+        StringBuffer cvName = new StringBuffer(coverageName);
+        int count = 0;
+        StringBuffer key;
+        Map coverages;
+        Set cvKeySet;
+        boolean key_exists;
+        String cvKey;
+        Iterator it;
+
+        while (true) {
+            key = new StringBuffer(coverageName.toString());
+
+            if (count > 0) {
+                key.append("_").append(count) /*.append("]")*/;
+            }
+
+            coverages = config.getCoverages();
+            cvKeySet = coverages.keySet();
+            key_exists = false;
+
+            for (it = cvKeySet.iterator(); it.hasNext();) {
+                cvKey = ((String) it.next()).toLowerCase();
+
+                if (cvKey.endsWith(key.toString().toLowerCase())) {
+                    key_exists = true;
+                }
+            }
+
+            if (!key_exists) {
+                cvName = key;
+
+                break;
+            } else {
+                count++;
+            }
+        }
+
+        name = cvName.toString();
+        real_name = coverageName;
+        wmsPath = "/";
+        label = reader.getMetadataValue("description", coverageName);
+        description = new StringBuffer(name).append(" [").append(label).append("] has been generated from ").append(formatId).toString();
+        metadataLink = new MetaDataLink();
+        metadataLink.setAbout(format.getDocURL());
+        metadataLink.setMetadataType("other");
+        keywords = new ArrayList(10);
+        keywords.add("WCS");
+        keywords.add(formatId);
+        keywords.add(name);
+        nativeFormat = format.getName();
+        dirName = new StringBuffer(formatId).append("_").append(name).toString();
+        requestCRSs = new ArrayList(10);
+
+        if ((reader.getCrs(coverageName).getIdentifiers() != null)
+                && !reader.getCrs(coverageName).getIdentifiers().isEmpty()) {
+            requestCRSs.add(((Identifier) reader.getCrs(coverageName).getIdentifiers()
+                                            .toArray()[0]).toString());
+        }
+
+        responseCRSs = new ArrayList(10);
+
+        if ((reader.getCrs(coverageName).getIdentifiers() != null)
+                && !reader.getCrs(coverageName).getIdentifiers().isEmpty()) {
+            responseCRSs.add(((Identifier) reader.getCrs(coverageName).getIdentifiers()
+                                             .toArray()[0]).toString());
+        }
+
+        supportedFormats = new ArrayList(10);
+
+        final List formats = CoverageStoreUtils.listDataFormats();
+        String fName;
+        Format fTmp;
+
+        for (Iterator i = formats.iterator(); i.hasNext();) {
+            fTmp = (Format) i.next();
+            fName = fTmp.getName();
+
+            if (fName.equalsIgnoreCase("WorldImage")) {
+                /*
+                 * final String[] formatNames = ImageIO.getReaderFormatNames();
+                 * final int length = formatNames.length; for (int f=0; f<length;
+                 * f++) { // TODO check if coverage can encode Format
+                 * supportedFormats.add(formatNames[f]); }
+                 */
+
+                // TODO check if coverage can encode Format
+                supportedFormats.add("GIF");
+                supportedFormats.add("PNG");
+                supportedFormats.add("JPEG");
+                supportedFormats.add("TIFF");
+            } else if (fName.toLowerCase().startsWith("geotiff")) {
+                // TODO check if coverage can encode Format
+                supportedFormats.add("GeoTIFF");
+            } else {
+                // TODO check if coverage can encode Format
+                supportedFormats.add(fName);
+            }
+        }
+
+        defaultInterpolationMethod = "nearest neighbor"; // TODO make me
+                                                         // parametric
+
+        interpolationMethods = new ArrayList(10);
+        interpolationMethods.add("nearest neighbor");
+        interpolationMethods.add("bilinear");
+        interpolationMethods.add("bicubic");
+        //interpolationMethods.add("bicubic_2");
+        defaultStyle = "raster";
+        styles = new ArrayList();
+
+        /**
+         * ReadParameters ...
+         */
+        parameters = CoverageUtils.getParametersKVP(format.getReadParameters());
+    }
+    
     public CoverageConfig(String formatId, Format format, AbstractGridCoverage2DReader reader,
         HttpServletRequest request) throws ConfigurationException {
         if ((formatId == null) || (formatId.length() == 0)) {
@@ -320,6 +502,7 @@ public class CoverageConfig {
         }
 
         name = cvName.toString();
+        real_name = gc.getName().toString();
         wmsPath = "/";
         label = new StringBuffer(name).append(" is a ").append(format.getDescription()).toString();
         description = new StringBuffer("Generated from ").append(formatId).toString();
@@ -482,6 +665,7 @@ public class CoverageConfig {
 
         formatId = dto.getFormatId();
         name = dto.getName();
+        real_name = dto.getRealName();
         wmsPath = dto.getWmsPath();
         label = dto.getLabel();
         description = dto.getDescription();
@@ -511,6 +695,7 @@ public class CoverageConfig {
         CoverageInfoDTO c = new CoverageInfoDTO();
         c.setFormatId(formatId);
         c.setName(name);
+        c.setRealName(real_name);
         c.setWmsPath(wmsPath);
         c.setLabel(label);
         c.setDescription(description);
@@ -960,4 +1145,12 @@ public class CoverageConfig {
     public synchronized void setParameters(Map parameters) {
         this.parameters = parameters;
     }
+
+	public String getRealName() {
+		return real_name;
+	}
+
+	public void setRealName(String real_name) {
+		this.real_name = real_name;
+	}
 }
