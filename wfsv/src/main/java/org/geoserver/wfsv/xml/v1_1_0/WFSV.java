@@ -4,10 +4,12 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
+import java.util.Set;
+
 import javax.xml.namespace.QName;
 
-import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.v1_1_0.WFS;
+import org.geotools.xml.XSD;
 
 
 /**
@@ -16,7 +18,8 @@ import org.geoserver.wfs.xml.v1_1_0.WFS;
  *
  * @generated
  */
-public class WFSV extends WFS {
+public class WFSV extends XSD {
+    
     /** @generated */
     public static final String NAMESPACE = "http://www.opengis.net/wfsv";
 
@@ -66,8 +69,17 @@ public class WFSV extends WFS {
 
     /* Attributes */
     
-    public WFSV(FeatureTypeSchemaBuilder schemaBuilder) {
-        super(schemaBuilder);
+    /** wfs dependency */
+    WFS wfs;
+    
+    public WFSV(WFS wfs) {
+        this.wfs = wfs;
+    }
+    
+    protected void addDependencies(Set dependencies) {
+        super.addDependencies(dependencies);
+        
+        dependencies.add( wfs );
     }
     
     public String getNamespaceURI() {
