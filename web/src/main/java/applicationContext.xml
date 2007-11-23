@@ -35,7 +35,11 @@
         <prop key="/www/**">filePublisher</prop>
       </props>
     </property>
-
+  </bean>
+  
+  <!-- h2 datastore -->
+  <bean id="h2DataStoreFactory" class="org.geoserver.data.H2DataStoreFactory">
+    <constructor-arg ref="resourceLoader"/>
   </bean>
  	
 </beans>
