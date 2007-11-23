@@ -82,7 +82,7 @@
       <element name="availableTo" type="dateTime"/>
       <element minOccurs="0" name="maxValue" type="double"/>
       <element minOccurs="0" name="count" type="integer"/>
-      <element maxOccurs="unbounded" minOccurs="0" name="sampledPhenomenon" type="aw:phenomenonDefPropertyType"/>
+      <element maxOccurs="unbounded" minOccurs="0" name="definition" type="aw:phenomenonDefPropertyType"/>
     </sequence>
   </complexType>
   <complexType name="SummaryStatisticsPropertyType">

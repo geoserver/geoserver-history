@@ -147,7 +147,7 @@
           </sourceExpression>
         </AttributeMapping>
         <AttributeMapping>
-          <targetAttribute>aw:sampledPhenomenon/aw:SummaryStatistics/aw:sampledPhenomenon/aw:phenomenonDef/aw:units</targetAttribute>
+          <targetAttribute>aw:sampledPhenomenon/aw:SummaryStatistics/aw:definition/aw:phenomenonDef/aw:units</targetAttribute>
           <sourceExpression>
             <OCQL>units</OCQL>
           </sourceExpression>
