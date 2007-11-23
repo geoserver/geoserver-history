@@ -4,20 +4,6 @@
  */
 package org.vfny.geoserver.util;
 
-import org.geotools.coverage.grid.io.GridFormatFactorySpi;
-import org.geotools.coverage.grid.io.GridFormatFinder;
-import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.referencing.CRS;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.geotools.resources.CRSUtilities;
-import org.opengis.coverage.grid.Format;
-import org.opengis.parameter.ParameterDescriptor;
-import org.opengis.parameter.ParameterValue;
-import org.opengis.parameter.ParameterValueGroup;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +12,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletContext;
+
+import org.geotools.coverage.grid.io.GridFormatFactorySpi;
+import org.geotools.coverage.grid.io.GridFormatFinder;
+import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.opengis.coverage.grid.Format;
+import org.opengis.parameter.ParameterDescriptor;
+import org.opengis.parameter.ParameterValue;
+import org.opengis.parameter.ParameterValueGroup;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 
 
 /**
@@ -307,7 +308,7 @@ public final class CoverageStoreUtils {
         // Do we need to transform?
         //
         ////
-        if (CRSUtilities.equalsIgnoreMetadata(sourceCRS, DefaultGeographicCRS.WGS84)) {
+        if (CRS.equalsIgnoreMetadata(sourceCRS, DefaultGeographicCRS.WGS84)) {
             return new GeneralEnvelope(envelope);
         }
 
