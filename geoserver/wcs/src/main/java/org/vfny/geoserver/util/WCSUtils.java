@@ -4,6 +4,16 @@
  */
 package org.vfny.geoserver.util;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import javax.media.jai.BorderExtender;
+import javax.media.jai.Interpolation;
+import javax.media.jai.InterpolationNearest;
+
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.processing.DefaultProcessor;
@@ -15,21 +25,13 @@ import org.geotools.coverage.processing.operation.Scale;
 import org.geotools.coverage.processing.operation.SelectSampleDimension;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.resources.CRSUtilities;
+import org.geotools.referencing.CRS;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridRange;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.wcs.WcsException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.logging.Logger;
-import javax.media.jai.BorderExtender;
-import javax.media.jai.Interpolation;
-import javax.media.jai.InterpolationNearest;
 
 
 /**
@@ -100,7 +102,7 @@ public class WCSUtils {
         //
         //
         // ///////////////////////////////////////////////////////////////////
-        if (!CRSUtilities.equalsIgnoreMetadata(sourceCRS, targetCRS)) {
+        if (!CRS.equalsIgnoreMetadata(sourceCRS, targetCRS)) {
             /*
              * Operations.DEFAULT.resample( coverage, targetCRS, null,
              * Interpolation.getInstance(Interpolation.INTERP_NEAREST))
