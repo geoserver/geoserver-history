@@ -1193,8 +1193,9 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 keywords(featureType.getKeywords());
 
                 //default srs
-                element("DefaultSRS", "urn:x-ogc:def:crs:EPSG:6.11.2:" + featureType.getSRS());
-
+                //element("DefaultSRS", "urn:x-ogc:def:crs:EPSG:6.11.2:" + featureType.getSRS());
+                element("DefaultSRS", "urn:x-ogc:def:crs:EPSG:" + featureType.getSRS());
+                
                 //TODO: other srs's
                 start("OutputFormats");
 
