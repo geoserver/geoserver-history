@@ -4,6 +4,16 @@
  */
 package org.geoserver.wfs;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
@@ -17,20 +27,17 @@ import net.opengis.wfs.WfsFactory;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.factory.GeoTools;
+import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.factory.GeotoolsFactory;
 import org.geotools.xml.EMFUtils;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
-import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.expression.ExpressionVisitor;
 import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.sort.SortBy;
@@ -38,16 +45,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.AttributeTypeInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.namespace.QName;
 
 
 /**
@@ -247,7 +244,8 @@ public class GetFeature {
                     query.getFilter().accept(new AbstractFilterVisitor(visitor), null);
                 }
 
-                org.geotools.data.Query gtQuery = toDataQuery(query, maxFeatures - count, source, request.getVersion());
+                org.geotools.data.Query gtQuery = toDataQuery(query, maxFeatures - count, source, request);
+                
                 LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery);
 
                 FeatureCollection features = source.getFeatures(gtQuery);
@@ -333,7 +331,10 @@ public class GetFeature {
      *
      */
     public org.geotools.data.Query toDataQuery(QueryType query, int maxFeatures,
-        FeatureSource source, String wfsVersion) throws WFSException {
+        FeatureSource source, GetFeatureType request) throws WFSException {
+        
+        String wfsVersion = request.getVersion();
+        
         if (maxFeatures <= 0) {
             maxFeatures = DefaultQuery.DEFAULT_MAX;
         }
@@ -410,6 +411,16 @@ public class GetFeature {
             dataQuery.setVersion(query.getFeatureVersion());
         }
 
+        //handle xlink traversal depth
+        if (request.getTraverseXlinkDepth() != null) {
+            //TODO: make this an integer in the model
+            Integer traverseXlinkDepth = new Integer( request.getTraverseXlinkDepth() );
+            
+            //set the depth as a hint on the query
+            Hints hints = new Hints(Hints.ASSOCIATION_TRAVERSAL_DEPTH, traverseXlinkDepth);
+            dataQuery.setHints(hints);
+        }
+        
         return dataQuery;
     }
 
