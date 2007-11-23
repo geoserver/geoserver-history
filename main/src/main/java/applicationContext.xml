@@ -11,6 +11,10 @@
 	<!-- extensions -->
 	<bean id="extensions" class="org.geoserver.platform.GeoServerExtensions"/>
 	
+	<!-- geotools factory iterator provider -->
+	<bean id="factoryIteratorProvider" depends-on="extensions" 
+	   class="org.geoserver.platform.GeoServerFactoryIteratorProvider"/>
+	   
 	<!-- 
 		core modules
 	 -->
@@ -31,7 +35,7 @@
 	
 	<!-- data module -->
 	<bean id="data"
-		class="org.vfny.geoserver.global.Data">
+		class="org.vfny.geoserver.global.Data" depends-on="factoryIteratorProvider">
 		<constructor-arg ref="config"/>
 		<constructor-arg ref="geoServer"/>
 	</bean>
