@@ -8,7 +8,8 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
-import org.vfny.geoserver.util.CoverageStoreUtils;
+import org.geoserver.data.util.CoverageStoreUtils;
+
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;

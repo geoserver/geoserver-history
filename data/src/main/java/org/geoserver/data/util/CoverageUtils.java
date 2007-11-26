@@ -2,9 +2,13 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.util;
+package org.geoserver.data.util;
 
+import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GeneralGridGeometry;
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
@@ -21,6 +25,7 @@ import org.opengis.referencing.operation.CoordinateOperation;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.OperationNotFoundException;
 import java.awt.Color;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -405,5 +410,37 @@ public class CoverageUtils {
         }
 
         return null;
+    }
+    
+    /**
+     * Returns the grid sample dimensions out of a reader by reading a sample of the coverage
+     * @param reader
+     * @return
+     */
+    public static GridSampleDimension[] readCoverageDimensions(AbstractGridCoverage2DReader reader) 
+        throws IOException {
+        /**
+         * Now reading a fake small GridCoverage just to retrieve meta information:
+         * - calculating a new envelope which is 1/20 of the original one
+         * - reading the GridCoverage subset
+         */
+
+        final ParameterValueGroup readParams = reader.getFormat().getReadParameters();
+        final Map parameters = getParametersKVP(readParams);
+
+        final GeneralEnvelope envelope = reader.getOriginalEnvelope();
+        double[] minCP = envelope.getLowerCorner().getCoordinates();
+        double[] maxCP = new double[] {
+                minCP[0] + (envelope.getLength(0) / 20.0),
+                minCP[1] + (envelope.getLength(1) / 20.0)
+            };
+        final GeneralEnvelope subEnvelope = new GeneralEnvelope(minCP, maxCP);
+        subEnvelope.setCoordinateReferenceSystem(reader.getCrs());
+
+        parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),
+            new GridGeometry2D(reader.getOriginalGridRange(), subEnvelope));
+        GridCoverage2D gc = (GridCoverage2D) reader.read(getParameters(readParams, parameters,
+                    true));
+        return gc.getSampleDimensions();
     }
 }

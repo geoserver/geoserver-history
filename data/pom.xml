@@ -28,6 +28,10 @@
   </dependency>
   <dependency>
    <groupId>org.geotools</groupId>
+   <artifactId>gt2-coverage</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.geotools</groupId>
    <artifactId>gt2-h2</artifactId>
   </dependency>
   <dependency>
@@ -37,6 +41,7 @@
   <dependency>
    <groupId>junit</groupId>
    <artifactId>junit</artifactId>
+   <scope>test</scope>
   </dependency>
   <dependency>
    <groupId>xml-apis</groupId>

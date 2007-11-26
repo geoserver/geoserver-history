@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geoserver.data.util.CoverageStoreUtils;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.opengis.coverage.grid.Format;
@@ -11,7 +12,6 @@ import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.parameter.InvalidParameterValueException;
 import org.opengis.parameter.ParameterNotFoundException;
 import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
-import org.vfny.geoserver.util.CoverageStoreUtils;
 import java.io.File;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;

@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geoserver.data.util.CoverageStoreUtils;
+import org.geoserver.data.util.CoverageUtils;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
@@ -21,8 +23,6 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
-import org.vfny.geoserver.util.CoverageStoreUtils;
-import org.vfny.geoserver.util.CoverageUtils;
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.net.MalformedURLException;

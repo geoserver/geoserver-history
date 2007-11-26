@@ -4,9 +4,9 @@
  */
 package org.vfny.geoserver.config;
 
+import org.geoserver.data.util.CoverageStoreUtils;
 import org.opengis.coverage.grid.Format;
 import org.vfny.geoserver.global.dto.CoverageStoreInfoDTO;
-import org.vfny.geoserver.util.CoverageStoreUtils;
 import java.io.IOException;
 import javax.servlet.ServletContext;
 
@@ -289,7 +289,7 @@ public class CoverageStoreConfig {
      *             If Format could not be aquired
      */
     public Format findDataFormat(ServletContext sc) throws IOException {
-        return CoverageStoreUtils.acquireFormat(type, sc);
+        return CoverageStoreUtils.acquireFormat(type);
     }
 
     /**

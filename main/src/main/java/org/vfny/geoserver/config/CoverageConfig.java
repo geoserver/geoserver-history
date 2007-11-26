@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.config;
 
+import org.geoserver.data.util.CoverageStoreUtils;
+import org.geoserver.data.util.CoverageUtils;
 import org.geotools.coverage.Category;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -23,8 +25,6 @@ import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
-import org.vfny.geoserver.util.CoverageStoreUtils;
-import org.vfny.geoserver.util.CoverageUtils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
