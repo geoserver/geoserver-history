@@ -4,11 +4,18 @@
  */
 package org.geoserver.wfs;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TreeSet;
+
 import net.opengis.wfs.GetCapabilitiesType;
+
+import org.geoserver.ows.util.CapabilitiesUtils;
+import org.geoserver.platform.ServiceException;
 import org.geotools.util.Version;
 import org.vfny.geoserver.global.Data;
-import java.util.Iterator;
-import java.util.TreeSet;
+
 
 
 /**
@@ -69,87 +76,13 @@ public class GetCapabilities {
         }
 
         //do the version negotiation dance
-
-        //any accepted versions
-        if ((request.getAcceptVersions() == null)
-                || request.getAcceptVersions().getVersion().isEmpty()) {
-            //no, respond with highest
-            return new CapabilitiesTransformer.WFS1_1(wfs, catalog);
-        }
-
-        //first check the format of each of the version numbers
-        for (Iterator i = request.getAcceptVersions().getVersion().iterator(); i.hasNext();) {
-            String version = (String) i.next();
-
-            if (!version.matches("[0-99]\\.[0-99]\\.[0-99]")) {
-                String msg = version + " is an invalid version numver";
-                throw new WFSException(msg, "VersionNegotiationFailed");
-            }
-        }
-
-        //first figure out which versions are provided
-        //TODO: use an extension point?
-        TreeSet provided = new TreeSet();
-        provided.add(new Version("1.0.0"));
-        provided.add(new Version("1.1.0"));
-
-        //next figure out what the client accepts
-        TreeSet accepted = new TreeSet();
-
-        for (Iterator v = request.getAcceptVersions().getVersion().iterator(); v.hasNext();) {
-            accepted.add(new Version((String) v.next()));
-        }
-
-        //prune out those not provided
-        for (Iterator v = accepted.iterator(); v.hasNext();) {
-            Version version = (Version) v.next();
-
-            if (!provided.contains(version)) {
-                v.remove();
-            }
-        }
-
-        String version = null;
-
-        if (!accepted.isEmpty()) {
-            //return the highest version provided
-            version = ((Version) accepted.last()).toString();
-        } else {
-            accepted = new TreeSet();
-
-            for (Iterator v = request.getAcceptVersions().getVersion().iterator(); v.hasNext();) {
-                accepted.add(new Version((String) v.next()));
-            }
-
-            //if highest accepted less then lowest provided, send lowest
-            if (((Version) accepted.last()).compareTo((Version)provided.first()) < 0) {
-                version = ((Version) provided.first()).toString();
-            }
-
-            //if lowest accepted is greater then highest provided, send highest
-            if (((Version) accepted.first()).compareTo((Version)provided.last()) > 0) {
-                version = ((Version) provided.last()).toString();
-            }
-
-            if (version == null) {
-                //go through from lowest to highest, and return highest provided 
-                // that is less than the highest accepted
-                Iterator v = provided.iterator();
-                Version last = (Version) v.next();
-
-                for (; v.hasNext();) {
-                    Version current = (Version) v.next();
-
-                    if (current.compareTo((Version)accepted.last()) > 0) {
-                        break;
-                    }
-
-                    last = current;
-                }
-
-                version = last.toString();
-            }
-        }
+        List<String> provided = new ArrayList<String>();
+        provided.add("1.0.0");
+        provided.add("1.1.0");
+        List<String> accepted = null;
+        if(request.getAcceptVersions() != null)
+            accepted = request.getAcceptVersions().getVersion();
+        String version = CapabilitiesUtils.getVersion(provided, accepted);
 
         if ("1.0.0".equals(version)) {
             return new CapabilitiesTransformer.WFS1_0(wfs, catalog);
@@ -161,4 +94,6 @@ public class GetCapabilities {
 
         throw new WFSException("Could not understand version:" + version);
     }
+    
+    
 }
