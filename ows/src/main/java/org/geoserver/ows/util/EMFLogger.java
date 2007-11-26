@@ -49,7 +49,7 @@ public class EMFLogger implements MethodInterceptor {
         }
 
         Object result = invocation.proceed();
-        logger.info("Request " + invocation.getMethod().getName() + " processing succeeded, moving to encoding");
+        logger.info(log.toString());
 
         return result;
     }
