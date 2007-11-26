@@ -417,7 +417,7 @@ public class CoverageUtils {
      * @param reader
      * @return
      */
-    public static GridSampleDimension[] readCoverageDimensions(AbstractGridCoverage2DReader reader) 
+    public static GridSampleDimension[] getCoverageDimensions(AbstractGridCoverage2DReader reader) 
         throws IOException {
         /**
          * Now reading a fake small GridCoverage just to retrieve meta information:
