@@ -13,12 +13,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 
 import org.geoserver.data.CatalogWriter;
 import org.geoserver.data.util.CoverageStoreUtils;
+import org.geoserver.data.util.CoverageUtils;
+import org.geotools.coverage.Category;
+import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
@@ -220,7 +224,7 @@ public class MockData {
      * @throws IOException
      */
     public MockData() throws IOException {
-        data = File.createTempFile("mock", "data");
+        data = File.createTempFile("mock", "data", new File("./target"));
     }
 
     /**
@@ -574,7 +578,8 @@ public class MockData {
         CoordinateReferenceSystem crs = reader.getCrs();
         GeneralEnvelope envelope = reader.getOriginalEnvelope();
         GeneralEnvelope wgs84envelope = CoverageStoreUtils.getWGS84LonLatEnvelope(envelope);
-        writer.write("<envelope srsName=\"" + CRS.lookupIdentifier(crs, false) + "\">");
+        final String nativeCrsName = CRS.lookupIdentifier(crs, false);
+        writer.write("<envelope srsName=\"" + nativeCrsName + "\">");
         writer.write("<pos>" + wgs84envelope.getMinimum(0) + " " + wgs84envelope.getMinimum(1) + "</pos>");
         writer.write("<pos>" + wgs84envelope.getMaximum(0) + " " + wgs84envelope.getMaximum(1) + "</pos>");
         writer.write("</envelope>");
@@ -598,9 +603,49 @@ public class MockData {
         writer.write("</grid>");
         
         // coverage dimensions
+        GridSampleDimension[] sampleDimensions = CoverageUtils.getCoverageDimensions(reader);
         writer.write("<CoverageDimension>");
-//        reader.re
-//        writer.write("</CoverageDimension>");
+        for (int i = 0; i < sampleDimensions.length; i++) {
+            writer.write("<CoverageDimension>");
+            writer.write("<name>" + sampleDimensions[i].getDescription().toString() + "</name>");
+            writer.write("<interval>");
+            writer.write("<min>" + sampleDimensions[i].getMinimumValue() + "</min>");
+            writer.write("<max>" + sampleDimensions[i].getMinimumValue() + "</max>");
+            writer.write("</interval>");
+            writer.write("<nullValues>");
+            for (Iterator it = sampleDimensions[i].getCategories().iterator(); it.hasNext();) {
+                Category cat = (Category) it.next();
+
+                if ((cat != null) && cat.getName().toString().equalsIgnoreCase("no data")) {
+                    double min = cat.getRange().getMinimum();
+                    double max = cat.getRange().getMaximum();
+                    writer.write("<value>" + min + "</value>");
+                    if(min != max)
+                        writer.write("<value>" + max + "</value>");
+                }
+            }
+            writer.write("</nullValues>");
+            writer.write("</CoverageDimension>");
+        }
+        
+        // supported crs
+        writer.write("<SupportedCRSs>");
+        writer.write("<requestCRSs>" + nativeCrsName + "</requestCRSs>");
+        writer.write("<responseCRSs>" + nativeCrsName + "</responseCRSs>");
+        writer.write("</SupportedCRSs>");
+        
+        // supported formats
+        writer.write("<supportedFormats nativeFormat = \"" + format.getName() + "\">");
+        writer.write("<formats>ARCGRID,ARCGRID-GZIP,GEOTIFF,PNG,GIF,TIFF</format>");
+        writer.write("</supportedFormats>");
+        
+        // supported interpolations
+        writer.write("supportedInterpolations default = \"nearest neighbor\" ");
+        writer.write("<interpolationMethods>nearest neighbor</interpolationMethods>");
+        writer.write("</supportedInterpolations>");
+        
+        // the end
+        writer.write("</coverage>");
     }
 
     /**
@@ -629,7 +674,8 @@ public class MockData {
             if (files[i].isDirectory()) {
                 delete(files[i]);
             } else {
-                files[i].delete();
+                if(!files[i].delete())
+                    System.out.println("Could not delete " + files[i].getAbsolutePath());
             }
         }
 
