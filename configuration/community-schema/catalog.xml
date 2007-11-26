@@ -139,14 +139,14 @@
     this ones to validate type names used in queries, and currently
     there are no mechanism to directly ask the application schema itself
      -->
-    <namespace uri="http://brs.gov.au/awdip/0.2" prefix="aw"/>
+    <namespace uri="http://www.water.gov.au/awdip" prefix="aw"/>
     <namespace uri="http://www.opengis.net/xmml" prefix="xmml" />
-    <namespace uri="http://www.opengis.net/sampling" prefix="sa"/>
-    <namespace uri="http://www.seegrid.csiro.au/xml/geometry" prefix="geo"/>
-    <namespace uri="http://www.opengis.net/swe" prefix="swe"/>
-    <namespace uri="http://www.opengis.net/cv/0.0" prefix="cv"/>
-    <namespace uri="http://www.opengis.net/om" prefix="om"/>
-    <namespace uri="http://www.isotc211.org/2005/gco" prefix="gco"/>
+    <namespace uri="http://www.opengis.net/sampling/1.0.0" prefix="sa"/>
+    
+    <namespace uri="http://www.opengis.net/swe/1.0.1" prefix="swe"/>
+    <namespace uri="http://www.opengis.net/cv/0.2" prefix="cv"/>
+    <namespace uri="http://www.opengis.net/om/1.0.0" prefix="om"/>
+    
     <namespace uri="http://www.cgi-iugs.org/xml/GeoSciML/2" prefix="gsml"/>
   </namespaces>
   <styles>
