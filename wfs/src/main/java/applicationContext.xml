@@ -52,7 +52,9 @@
 		<property name="filterFactory" ref="filterFactory"/>
 	</bean>
 
-	<bean id="wfsLogger" class="org.geoserver.wfs.WFSLogger"/>
+    <bean id="wfsLogger" class="org.geoserver.ows.util.EMFLogger">
+      <constructor-arg type="java.lang.String" value="org.geoserver.wfs"/>
+    </bean>
 	<bean id="wfsService" class="org.springframework.aop.framework.ProxyFactoryBean">
 	  <property name="proxyInterfaces">
 	  	<value>org.geoserver.wfs.WebFeatureService</value>

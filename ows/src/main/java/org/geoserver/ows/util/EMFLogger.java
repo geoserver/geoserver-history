@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wfs;
+package org.geoserver.ows.util;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -12,12 +12,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-
-public class WFSLogger implements MethodInterceptor {
+/**
+ * A generic service object invocation logger based on EMF reflection
+ * @author Justin DeOliveira, TOPP
+ */
+public class EMFLogger implements MethodInterceptor {
     /**
      * Logging instance
      */
-    Logger logger = org.geotools.util.logging.Logging.getLogger("org.geoserver.wfs");
+    Logger logger;
+    
+    public EMFLogger(String logPackage) {
+        logger = org.geotools.util.logging.Logging.getLogger(logPackage);
+    }
 
     public Object invoke(MethodInvocation invocation) throws Throwable {
         StringBuffer log = new StringBuffer();
@@ -42,14 +49,7 @@ public class WFSLogger implements MethodInterceptor {
         }
 
         Object result = invocation.proceed();
-        log.append("\n\nResult:");
-
-        //        if (result instanceof EObject) {
-        //            log((EObject) result, 1, log);
-        //        } else {
-        //            log.append("\t" + result);
-        //        }
-        logger.info(log.toString());
+        logger.info("Request " + invocation.getMethod().getName() + " processing succeeded, moving to encoding");
 
         return result;
     }
