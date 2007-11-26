@@ -4,11 +4,6 @@
  */
 package org.geoserver.data.test;
 
-import org.geoserver.data.CatalogWriter;
-import org.geotools.data.property.PropertyDataStoreFactory;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,6 +16,19 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.namespace.QName;
+
+import org.geoserver.data.CatalogWriter;
+import org.geoserver.data.util.CoverageStoreUtils;
+import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.coverage.grid.io.GridFormatFinder;
+import org.geotools.data.property.PropertyDataStoreFactory;
+import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.CRS;
+import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.cs.CoordinateSystem;
 
 
 /**
@@ -189,6 +197,9 @@ public class MockData {
 
     /** the 'featureTypes' directory, under 'data' */
     File featureTypes;
+    
+    /** the 'coverages' directory, under 'data' */
+    File coverages;
 
     /** the 'styles' directory, under 'data' */
     File styles;
@@ -224,6 +235,13 @@ public class MockData {
      */
     public File getFeatureTypesDirectory() {
         return featureTypes;
+    }
+    
+    /**
+     * @return the "coverages" directory under the root
+     */
+    public File getCoveragesirectory() {
+        return coverages;
     }
     
     /**
@@ -310,6 +328,34 @@ public class MockData {
         
     }
     
+    /**
+     * Adds a new coverage.
+     *<p>
+     * Note that callers of this code should call <code>applicationContext.refresh()</code>
+     * in order to force the catalog to reload.
+     * </p>
+     * <p>
+     * The <tt>coverage</tt> parameter is an input stream containing a single uncompressed
+     * file that's supposed to be a coverage (e.g., a GeoTiff).
+     * </p>
+
+     * @param name
+     * @param coverage
+     */
+    public void addCoverage(QName name, InputStream coverage, String extension) throws Exception {
+        File directory = new File(data, name.getPrefix());
+        if ( !directory.exists() ) {
+            directory.mkdir();    
+        }
+        
+        //create the properties file
+        File f = new File(directory, name.getLocalPart() + "." + extension);
+        
+        //copy over the contents
+        copy( coverage, f );
+        coverageInfo(name, f);
+    }
+    
     public void setUp() throws IOException {
         setUp(TYPENAMES);
     }
@@ -326,6 +372,10 @@ public class MockData {
         // create a featureTypes directory
         featureTypes = new File(data, "featureTypes");
         featureTypes.mkdir();
+        
+        // create a coverages directory
+        coverages = new File(data, "coverages");
+        coverages.mkdir();
 
         // create the styles directory
         styles = new File(data, "styles");
@@ -496,6 +546,62 @@ public class MockData {
         File to = new File(styles, type + ".sld");
         copy(from, to);
     }
+    
+    void coverageInfo(QName name, File coverageFile) throws Exception {
+        String coverage = name.getLocalPart();
+        String prefix = name.getPrefix();
+
+        File coverageDir = new File(coverages, prefix);
+        coverageDir.mkdir();
+
+        File info = new File(coverageDir, "info.xml");
+        info.createNewFile();
+        
+        // let's grab the necessary metadata
+        AbstractGridFormat format = (AbstractGridFormat) GridFormatFinder.findFormat(coverageFile);
+        AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) format.getReader(coverageFile);
+
+        // basic info
+        FileWriter writer = new FileWriter(info);
+        writer.write("<coverage format=\"" + prefix + "\">");
+        writer.write("<name>" + coverage + "</name>");
+        writer.write("<description>" + coverage + " description</description>");
+        // TODO: need to add metadata links?
+        writer.write("<keywords>WCS," + coverage + " </keywords>");
+        writer.write("<styles default=\"raster\"/>");
+        
+        // envelope
+        CoordinateReferenceSystem crs = reader.getCrs();
+        GeneralEnvelope envelope = reader.getOriginalEnvelope();
+        GeneralEnvelope wgs84envelope = CoverageStoreUtils.getWGS84LonLatEnvelope(envelope);
+        writer.write("<envelope srsName=\"" + CRS.lookupIdentifier(crs, false) + "\">");
+        writer.write("<pos>" + wgs84envelope.getMinimum(0) + " " + wgs84envelope.getMinimum(1) + "</pos>");
+        writer.write("<pos>" + wgs84envelope.getMaximum(0) + " " + wgs84envelope.getMaximum(1) + "</pos>");
+        writer.write("</envelope>");
+        
+        // grid geometry
+        GridGeometry geometry = new GridGeometry2D(reader.getOriginalGridRange(), reader.getOriginalEnvelope());
+        final int dimensions = geometry.getGridRange().getDimension();
+        String lower = "";
+        String upper = "";
+        for(int i = 0; i < dimensions; i++) {
+            lower = lower + geometry.getGridRange().getLower(i) + " "; 
+            upper = upper + geometry.getGridRange().getUpper(i) + " ";
+        }
+        writer.write("<grid dimension = \"" + dimensions + "\"");
+        writer.write("<low>" + lower + "</low>");
+        writer.write("<high>" + upper + "</high>");
+        final CoordinateSystem cs = crs.getCoordinateSystem();
+        for (int i=0; i < cs.getDimension(); i++) {
+            writer.write("<axisName>" + cs.getAxis(i).getName().getCode() + "</axisName>");
+        }
+        writer.write("</grid>");
+        
+        // coverage dimensions
+        writer.write("<CoverageDimension>");
+//        reader.re
+//        writer.write("</CoverageDimension>");
+    }
 
     /**
      * Kills the data directory, deleting all the files.
@@ -508,6 +614,7 @@ public class MockData {
         delete(plugIns);
         delete(styles);
         delete(featureTypes);
+        delete(coverages);
         delete(data);
 
         styles = null;

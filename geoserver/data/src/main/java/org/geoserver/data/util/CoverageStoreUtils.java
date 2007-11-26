@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.util;
+package org.geoserver.data.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,8 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import javax.servlet.ServletContext;
 
 import org.geotools.coverage.grid.io.GridFormatFactorySpi;
 import org.geotools.coverage.grid.io.GridFormatFinder;
@@ -49,7 +47,7 @@ public final class CoverageStoreUtils {
     private CoverageStoreUtils() {
     }
 
-    public static Format acquireFormat(String type, ServletContext sc)
+    public static Format acquireFormat(String type)
         throws IOException {
         Format[] formats = GridFormatFinder.getFormatArray();
         Format format = null;

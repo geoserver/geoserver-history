@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 import javax.media.jai.Interpolation;
 
+import org.geoserver.data.util.CoverageUtils;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
@@ -40,7 +41,6 @@ import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
-import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.CoverageRequest;
