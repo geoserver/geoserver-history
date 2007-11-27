@@ -103,6 +103,13 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 	 * The data catalog
 	 */
 	Data catalog;
+	
+	/**
+	 * This flags allows the kvp reader to go beyond the SLD library mode specification
+	 * and match the first style that can be applied to a given layer. This is for
+	 * backwards compatibility
+	 */
+	boolean laxStyleMatchAllowed = true;
 
 	public GetMapKvpRequestReader(GetMap getMap, WMS wms) {
 		super(GetMapRequest.class);
@@ -859,7 +866,41 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 				break;
 			}
 		}
+		
+		// fallback on the old GeoServer behaviour, if the style is not found find
+		// the first style that matches the type name
+		// TODO: would be nice to have a switch to turn this off since it's out of the spec
+		if(style == null && laxStyleMatchAllowed) {
+			for (int i = 0; i < styledLayers.length; i++) {
+				sl = styledLayers[i];
 
+				if (layerName.equals(sl.getName())) {
+					if (sl instanceof UserLayer) {
+						Style[] styles = ((UserLayer) sl).getUserStyles();
+
+						if ((null != styles) && (0 < styles.length)) {
+							style = styles[0];
+						}
+					} else if (sl instanceof NamedLayer) {
+						Style[] styles = ((NamedLayer) sl).getStyles();
+
+						if ((null != styles) && (0 < styles.length)) {
+							style = styles[0];
+						}
+
+						if (style instanceof NamedStyle) {
+							style = findStyle(request, style.getName());
+						}
+					} else {
+						throw new RuntimeException("Unknown layer type: " + sl);
+					}
+
+					break;
+				}
+			}
+		}
+
+		// still not found? Fall back on the server default ones
 		if (style == null) {
 		    if(styleName == null || "".equals(styleName)) {
 		        style = layer.getDefaultStyle();
@@ -1139,4 +1180,17 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
             }
 	        return styles;
 	    }
+
+	    /**
+		 * This flags allows the kvp reader to go beyond the SLD library mode specification
+		 * and match the first style that can be applied to a given layer. This is for
+		 * backwards compatibility
+		 */
+		public boolean isLaxStyleMatchAllowed() {
+			return laxStyleMatchAllowed;
+		}
+
+		public void setLaxStyleMatchAllowed(boolean laxStyleMatchAllowed) {
+			this.laxStyleMatchAllowed = laxStyleMatchAllowed;
+		}
 }

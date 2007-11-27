@@ -181,6 +181,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         kvp.put("layers", MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
+        reader.setLaxStyleMatchAllowed(false);
         request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
 
         assertNotNull(request.getSld());
@@ -235,6 +236,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
         try {
+        	reader.setLaxStyleMatchAllowed(false);
             request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
             fail("The style looked up, 'ThisStyleDoesNotExists', should not have been found");
         } catch(WmsException e) {
