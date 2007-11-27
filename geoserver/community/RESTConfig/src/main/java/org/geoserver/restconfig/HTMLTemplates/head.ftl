@@ -5,3 +5,5 @@
     <title>GeoTools spatial reference browser</title>
 </head>
 <body>
+
+<#setting number_format="#0.0#">

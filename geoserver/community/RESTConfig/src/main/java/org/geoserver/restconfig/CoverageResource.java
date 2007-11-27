@@ -19,6 +19,7 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.geotools.geometry.GeneralEnvelope;
 
 /**
  * Restlet for Style resources
@@ -52,13 +53,28 @@ public class CoverageResource extends MapResource {
 
     private Map getCoverageConfigMap(CoverageConfig cc){
 	Map m = new HashMap();
-	m.put("coverageName", cc.getName());
-	m.put("CRSDescription", cc.getCrs().getName());
-	m.put("CRSFull", cc.getCrs().toString());
+	m.put("WMSPath", cc.getWmsPath());
+	m.put("CRS", cc.getCrs().getName());
+	GeneralEnvelope env = cc.getEnvelope();
+	List envPoints = new ArrayList();
+	envPoints.add(env.getLowerCorner().getOrdinate(0));
+	envPoints.add(env.getLowerCorner().getOrdinate(1));
+	envPoints.add(env.getUpperCorner().getOrdinate(0));
+	envPoints.add(env.getUpperCorner().getOrdinate(1));
+	m.put("Envelope", envPoints);
+	//m.put("CRSFull", cc.getCrs().toString());
 	m.put("DefaultStyle", cc.getDefaultStyle());
+	m.put("SupplementaryStyles", cc.getStyles());// TODO: does this return a list of strings or something else?
 	m.put("Label", cc.getLabel());
 	m.put("Description", cc.getDescription());
+	m.put("OnlineResource", cc.getMetadataLink().getContent()); // TODO: get the actual URL, this may take some digging
 	m.put("Keywords", cc.getKeywords());
+	m.put("SupportedRequestCRSs", cc.getRequestCRSs());
+	m.put("SupportedResponseCRSs", cc.getResponseCRSs());
+	m.put("NativeFormat", cc.getNativeFormat());
+	m.put("SupportedFormats", cc.getSupportedFormats());
+	m.put("DefaultInterpolationMethod", cc.getDefaultInterpolationMethod());
+	m.put("InterpolationMethods", cc.getInterpolationMethods());
 	return m;
     }
 }
