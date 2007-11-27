@@ -207,7 +207,7 @@ public class DataDataStoresEditorForm extends ActionForm {
                         //check for special case of file
                         try {
                             if (GeoserverDataDirectory.findDataFile(value).exists()) {
-                                new URL("file://" + value);
+                                url = new URL("file://" + value);
                                 setParamValues(i, "file://" + value);
                             }
                         } catch (MalformedURLException e1) {
@@ -215,7 +215,7 @@ public class DataDataStoresEditorForm extends ActionForm {
                         }
                     }
                     
-                    if(url.getProtocol() == null || url.getProtocol() == "file") {
+                    if(url != null && url.getProtocol() == null || url.getProtocol() == "file") {
 	                    //do a check to see if the shapefile url is valid, report 
 	                    // an error if it does not 
 	                    File file = GeoserverDataDirectory.findDataFile(value);
