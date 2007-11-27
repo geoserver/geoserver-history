@@ -25,19 +25,41 @@ import org.vfny.geoserver.config.FeatureTypeConfig;
  * 
  * @author David Winslow <dwinslow@openplans.org> , The Open Planning Project
  */
-class StyleResource extends Resource {
+class StyleResource extends MapResource {
     private DataConfig myDC;
 
-    public StyleResource(Context context, Request request, Response response, DataConfig myDataConfig) {
+    public StyleResource(Context context,
+	    Request request,
+	    Response response, 
+	    DataConfig myDataConfig) {
         super(context, request, response);
         myDC = myDataConfig;
     }
 
-    public boolean allowGet() {
-        return true;
+    public Map getMap(){
+	Map styles = myDC.getStyles();
+	Map templateContext = new HashMap();
+	List styleList = new ArrayList();
+
+	Iterator it = styles.entrySet().iterator();
+	while (it.hasNext()){
+	    Map.Entry entry = (Map.Entry)it.next();
+	    styleList.add(entry.getKey().toString());
+	}
+
+	templateContext.put("styles", styleList);
+	return templateContext;
     }
 
-    public void handleGet() {
+    public Map getSupportedFormats(){
+	Map m = new HashMap();
+	m.put("html", new HTMLFormat("HTMLTemplates/styles.ftl"));
+	m.put("json", new JSONFormat());
+	m.put(null, m.get("html"));
+	return m;
+    }
+
+    public void donthandleGet() {
         MediaType mt = null;
         Request req = getRequest();
 

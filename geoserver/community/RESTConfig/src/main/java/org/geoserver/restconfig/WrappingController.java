@@ -55,18 +55,27 @@ public class WrappingController extends AbstractController {
 
 		DataConfig dc = (DataConfig) getApplicationContext().getBean("dataConfig");
 		WMSConfig wmsc = (WMSConfig) getApplicationContext().getBean("wmsConfig");
-		router.attach("/datastores", new ResourceFinder(ResourceFinder.RESOURCE_DATASTORE, router.getContext(), dc, wmsc));
-		router.attach("/datastores/{datastore}", new ResourceFinder(ResourceFinder.RESOURCE_DATASTORE, router.getContext(), dc, wmsc));
+
+		router.attach("", new ResourceFinder(ResourceFinder.RESOURCE_INDEX, router.getContext(), dc, wmsc, router));
+		router.attach("/datastores.{type}", new ResourceFinder(ResourceFinder.RESOURCE_DATASTORE, router.getContext(), dc, wmsc, router));
+		router.attach("/datastores", new ResourceFinder(ResourceFinder.RESOURCE_DATASTORE, router.getContext(), dc, wmsc, router));
+		router.attach("/datastores/{datastore}.{type}", new ResourceFinder(ResourceFinder.RESOURCE_DATASTORE, router.getContext(), dc, wmsc, router));
+		router.attach("/datastores/{datastore}", new ResourceFinder(ResourceFinder.RESOURCE_DATASTORE, router.getContext(), dc, wmsc, router));
 		// This rule messes everything up: router.attach("/datastores/{datastore}/featuretypes", new ResourceFinder(ResourceFinder.RESOURCE_DATASTORE, router.getContext(), dc));
-		router.attach("/datastores/{datastore}/featuretypes/{featuretype}", new ResourceFinder(ResourceFinder.RESOURCE_FEATURETYPE, router.getContext(), dc, wmsc));
-                router.attach("/styles/{style}", new ResourceFinder(ResourceFinder.RESOURCE_STYLE, router.getContext(), dc, wmsc));
-                router.attach("/styles", new ResourceFinder(ResourceFinder.RESOURCE_STYLE, router.getContext(), dc, wmsc));
-                router.attach("/coverages", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), dc, wmsc));
-                router.attach("/coverages/{coverage}", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), dc, wmsc));
+		router.attach("/datastores/{datastore}/featuretypes/{featuretype}.{type}", new ResourceFinder(ResourceFinder.RESOURCE_FEATURETYPE, router.getContext(), dc, wmsc, router));
+		router.attach("/datastores/{datastore}/featuretypes/{featuretype}", new ResourceFinder(ResourceFinder.RESOURCE_FEATURETYPE, router.getContext(), dc, wmsc, router));
+                router.attach("/styles/{style}.{type}", new ResourceFinder(ResourceFinder.RESOURCE_STYLE, router.getContext(), dc, wmsc, router));
+                router.attach("/styles/{style}", new ResourceFinder(ResourceFinder.RESOURCE_STYLE, router.getContext(), dc, wmsc, router));
+                router.attach("/styles.{type}", new ResourceFinder(ResourceFinder.RESOURCE_STYLE, router.getContext(), dc, wmsc, router));
+                router.attach("/styles", new ResourceFinder(ResourceFinder.RESOURCE_STYLE, router.getContext(), dc, wmsc, router));
+                router.attach("/coverages.{type}", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), dc, wmsc, router));
+                router.attach("/coverages", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), dc, wmsc, router));
+                router.attach("/coverages/{coverage}.{type}", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), dc, wmsc, router));
+                router.attach("/coverages/{coverage}", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), dc, wmsc, router));
                 router.attach("/dummy/{name}", new DummyRestlet(getApplicationContext()));
-		router.attach("/layergroups", new ResourceFinder(ResourceFinder.RESOURCE_LAYERGROUP, router.getContext(), dc, wmsc));
-		router.attach("/layergroups/{group}", new ResourceFinder(ResourceFinder.RESOURCE_LAYERGROUP, router.getContext(), dc, wmsc));
-		router.attach("/projections/", new DummyRestlet(getApplicationContext()));
+		router.attach("/layergroups.{type}", new ResourceFinder(ResourceFinder.RESOURCE_LAYERGROUP, router.getContext(), dc, wmsc, router));
+		router.attach("/layergroups", new ResourceFinder(ResourceFinder.RESOURCE_LAYERGROUP, router.getContext(), dc, wmsc, router));
+		router.attach("/projections", new DummyRestlet(getApplicationContext()));
 		router.attach("/projections/{projection}", new DummyRestlet(getApplicationContext()));
 		
 		return router;

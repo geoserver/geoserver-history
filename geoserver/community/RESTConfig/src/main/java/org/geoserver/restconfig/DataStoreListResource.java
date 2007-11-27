@@ -22,17 +22,25 @@ import org.vfny.geoserver.config.FeatureTypeConfig;
  * 
  * @author Arne Kepp <ak@openplans.org> , The Open Planning Project
  */
-public class DataStoreResource extends MapResource {
+public class DataStoreListResource extends MapResource {
     private DataConfig myDC;
     private DataStoreConfig myDSC;
 
-    public DataStoreResource(Context context,
+    public DataStoreListResource(Context context,
 	    Request request,
 	    Response response,
 	    DataConfig dc){
 	super(context, request, response);
 	myDC  = dc;
 	myDSC = findMyDataStore();
+    }
+
+    public Map getSupportedFormats(){
+	Map m = new HashMap();
+	m.put("html", new HTMLFormat("HTMLTemplates/datastores.ftl"));
+	m.put("json", new JSONFormat());
+	m.put(null, m.get("html"));
+	return m;
     }
 
     private DataStoreConfig findMyDataStore() {
@@ -44,51 +52,8 @@ public class DataStoreResource extends MapResource {
 	return null;
     }
 
-    public Map getSupportedFormats(){
-	Map m = new HashMap();
-	m.put("html", new HTMLFormat("HTMLTemplates/datastore.ftl"));
-	m.put("json", new JSONFormat());
-	m.put(null, m.get("html"));
-	return m;
-    }
-
     public Map getMap(){
-	List ftcList = getFeatureTypes(myDSC.getId());
-	Map map = makeFeatureTypeMap(ftcList);
-	map.put("datastoreid", myDSC.getId());
-	return map; 
-    }
-
-    /**
-     * Create an index showing all the datastores
-     * @param mt the media type (HTML, JSON, XML, ...)
-     */
-    public void getIndex(MediaType mt) {		
-	//Get the data
-	HashMap map = makeDataStoreMap();
-	map.put("currentURL", getRequest().getResourceRef().getBaseRef());
-	//Do the output formatting
-	if(mt.equals(MediaType.APPLICATION_XML)) {
-	    getResponse().setEntity(getIndexXML(map));
-	} else if(mt.equals(MediaType.APPLICATION_JSON)) {
-	    getResponse().setEntity(getIndexJSON(map));
-	} else {
-	    //implying mt.equals(MediaType.TEXT_HTML))
-	    getResponse().setEntity(getIndexHTML(map));
-	}
-    }
-
-    private TemplateRepresentation getIndexXML(HashMap map) {
-	return XMLTemplate.getXmlRepresentation("XMLTemplates/datastores.ftl", map);
-    }
-
-    private TemplateRepresentation getIndexJSON(HashMap map) {
-	// ToDo
-	return null;
-    }
-
-    private TemplateRepresentation getIndexHTML(HashMap map) {
-	return HTMLTemplate.getHtmlRepresentation("HTMLTemplates/datastores.ftl", map);
+	return makeDataStoreMap();
     }
 
     /**
@@ -171,35 +136,4 @@ public class DataStoreResource extends MapResource {
 	map.put("datastores", datastores);
 	return map;
     }
-
-    /**
-     * Create a page with information about a given datastore,
-     * determined from the request attribute "name", in the given
-     * data format.
-     * 
-     * @param mt the media type (HTML, JSON, XML, ...)
-    private void getDataStore(MediaType mt) {
-	// We can end up where with an invalid datastore name
-	if(myDSC == null) {
-	    //Return a 404
-	    getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-	    getResponse().setEntity("404 - Couldn't find requested resource", MediaType.TEXT_PLAIN);
-
-	} else {
-	    List ftcs = getFeatureTypes(myDSC.getId());
-	    HashMap map = makeFeatureTypeMap(ftcs);
-	    map.put("datastoreid", myDSC.getId());
-	    map.put("currentURL", getRequest().getResourceRef().getBaseRef());
-
-	    //Do the output formatting
-	    if(mt.equals(MediaType.APPLICATION_XML)) {
-		getResponse().setEntity(getDataStoreXML(map));
-	    } else if(mt.equals(MediaType.APPLICATION_JSON)) {
-		getResponse().setEntity(getDataStoreJSON(map));
-	    } else {
-		//implying mt.equals(MediaType.TEXT_HTML))
-		getResponse().setEntity(getDataStoreHTML(map));
-	    }
-	}
-    } */
 }

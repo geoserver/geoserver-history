@@ -25,29 +25,38 @@ import org.vfny.geoserver.config.FeatureTypeConfig;
  * 
  * @author David Winslow <dwinslow@openplans.org> , The Open Planning Project
  */
-public class CoverageResource extends MapResource {
+public class CoverageListResource extends MapResource {
     private DataConfig myDC;
 
     public Map getSupportedFormats(){
 	Map m = new HashMap();
-	m.put("html", new HTMLFormat("HTMLTemplates/coverage.ftl"));
+	
+	m.put("html", new HTMLFormat("HTMLTemplates/coverages.ftl"));
 	m.put("json", new JSONFormat());
 	m.put(null, m.get("html"));
+
 	return m;
     }
 
-    public CoverageResource(Context context,
-	    Request request,
-	    Response response,
-	    DataConfig myDataConfig) {
+    public CoverageListResource(Context context, Request request, Response response,
+	                    DataConfig myDataConfig) {
 	super(context, request, response);
 	myDC = myDataConfig;
     }
 
     public Map getMap(){
+	Map m = new HashMap();
 	String coverageName = (String)getRequest().getAttributes().get("coverage");
-	CoverageConfig cc = (CoverageConfig)myDC.getCoverages().get(coverageName);
-	return getCoverageConfigMap(cc);
+	Map coverages = myDC.getCoverages();
+	List coverageList = new ArrayList();
+
+	Iterator it = coverages.entrySet().iterator();
+	while (it.hasNext()){
+	    coverageList.add(((Map.Entry)it.next()).getKey().toString());
+	}
+
+	m.put("coverages", coverageList);
+	return m;
     }
 
     private Map getCoverageConfigMap(CoverageConfig cc){

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
 
 import org.restlet.Context;
 import org.restlet.data.MediaType;
@@ -26,48 +27,57 @@ import org.vfny.geoserver.config.WMSConfig;
  * 
  * @author David Winslow <dwinslow@openplans.org> , The Open Planning Project
  */
-class LayerGroupResource extends Resource {
+class LayerGroupResource extends MapResource {
     private WMSConfig myWMSConfig;
-    
-    public LayerGroupResource(Context context, Request request, Response response, WMSConfig wmsConfig) {
+
+    public LayerGroupResource(Context context,
+	    Request request, 
+	    Response response, 
+	    WMSConfig wmsConfig) {
 	super(context, request, response);
 	myWMSConfig = wmsConfig;
-	}
-    
-    public boolean allowGet() {
-        return true;
     }
 
-    public void handleGet() {
-		MediaType mt = null;
-		Request req = getRequest();
+    public Map getSupportedFormats(){
+	Map m = new HashMap();
+	m.put("html", new HTMLFormat("HTMLTemplates/layergroups.ftl"));
+	m.put("json", new JSONFormat());
+	m.put(null, m.get("html"));
+	return m;
+    }
 
-		// Determine desired output format
-		if (req.getResourceRef().getQueryAsForm().contains("format")) {
-			mt = MediaType.valueOf(req.getResourceRef().getQueryAsForm()
-					.getFirstValue("format"));
-		} else {
-			mt = MediaType.TEXT_HTML;
-		}
-                
-		Map context = new HashMap();
-		Map layerGroups = myWMSConfig.getBaseMapLayers();
-		List layerNames = new ArrayList();
+    public Map getMap(){
+	Map context = new HashMap();
+	Map layerGroups = myWMSConfig.getBaseMapLayers();
+	List layerNames = new ArrayList();
 
-		if (layerGroups != null){
+	if (layerGroups != null){
 
-		Iterator it  = layerGroups.entrySet().iterator();
-		while (it.hasNext()){
-		  Map.Entry entry = (Map.Entry)it.next();
-		  Map addition = new HashMap();
-		  addition.put("name", entry.getKey());
-		  addition.put("members", entry.getValue().toString().split(","));
-		  layerNames.add(addition);
-		}
-		context.put("layers", layerNames);
-                //String styleName = (String)req.getAttributes().get("group");
-		getResponse().setEntity(HTMLTemplate.getHtmlRepresentation("HTMLTemplates/layergroups.ftl", context));
-
+	    Iterator it  = layerGroups.entrySet().iterator();
+	    while (it.hasNext()){
+		Map.Entry entry = (Map.Entry)it.next();
+		Map addition = new HashMap();
+		addition.put("name", entry.getKey());
+		addition.put("members", Arrays.asList(entry.getValue().toString().split(",")));
+		layerNames.add(addition);
+	    }
+	    context.put("layers", layerNames);
 	}
+
+	return context; 
+    }
+
+
+    public void donthandleGet() {
+	MediaType mt = null;
+	Request req = getRequest();
+
+	// Determine desired output format
+	if (req.getResourceRef().getQueryAsForm().contains("format")) {
+	    mt = MediaType.valueOf(req.getResourceRef().getQueryAsForm()
+		    .getFirstValue("format"));
+	} else {
+	    mt = MediaType.TEXT_HTML;
 	}
+    }
 }

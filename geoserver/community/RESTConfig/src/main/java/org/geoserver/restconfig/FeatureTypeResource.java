@@ -23,7 +23,7 @@ import org.vfny.geoserver.config.AttributeTypeInfoConfig;
  * 
  * @author Arne Kepp <ak@openplans.org> , The Open Planning Project
  */
-public class FeatureTypeResource extends Resource {
+public class FeatureTypeResource extends MapResource {
 	private DataConfig myDC;
 	private DataStoreConfig myDSC = null;
 	private FeatureTypeConfig myFTC = null;
@@ -35,6 +35,20 @@ public class FeatureTypeResource extends Resource {
 		super(context, request, response);
 		myDC  = dc;
 		myFTC = findMyFeatureTypeConfig();
+	}
+
+	public Map getSupportedFormats(){
+	    Map m = new HashMap();
+
+	    m.put("html", new HTMLFormat("HTMLTemplates/featuretype.ftl"));
+	    m.put("json", new JSONFormat());
+	    m.put(null, m.get("html"));
+
+	    return m;
+	}
+
+	public Map getMap(){
+	    return makeFeatureTypeMap();
 	}
 	
 	private FeatureTypeConfig findMyFeatureTypeConfig() {
@@ -59,7 +73,7 @@ public class FeatureTypeResource extends Resource {
 		return true;
 	}
 
-	public void handleGet() {	
+	public void donthandleGet() {	
 		MediaType mt = null;
 		Request req = getRequest();
 		

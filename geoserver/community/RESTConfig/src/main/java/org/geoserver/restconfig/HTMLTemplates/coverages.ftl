@@ -3,7 +3,7 @@
 All known coverages:
 <ul>
 <#list coverages as coverage>
-  <li><a href="${requestURL}/${coverage}">${coverage}</a>
+  <li><a href="${page.currentURL}/${coverage}">${coverage}</a>
   </li>
 </#list>
 </ul>
