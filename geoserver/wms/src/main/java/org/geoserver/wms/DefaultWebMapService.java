@@ -236,7 +236,7 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
         			// Do nothing
         		}
         		if(i == 0) {
-        			layerbbox = curbbox;
+        			layerbbox = new Envelope(curbbox);
         		} else {
         			layerbbox.expandToInclude(curbbox);
         		}
