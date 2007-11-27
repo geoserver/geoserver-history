@@ -7,7 +7,7 @@ All known datastores:
 	<ul>
   	<#if datastore.featuretypes??>
 		<#list datastore.featuretypes as ft>
-		<li><a href="${page.currentURL}/${datastore.id}/featuretypes/${ft.name}">${ft.name}</a></li>
+		<li><a href="${page.currentURL}/${datastore.id}/featuretypes/${ft}">${ft}</a></li>
 		</#list>
 	<#else>
 		<li>no feature types</li>

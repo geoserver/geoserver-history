@@ -103,7 +103,7 @@ public class DataStoreResource extends MapResource {
 	    List ftcs = (ArrayList) map.get(ftc.getDataStoreId());
 	    if(ftcs == null)
 		ftcs = new ArrayList();
-	    ftcs.add(ftc);
+	    ftcs.add(ftc.getName());
 	    map.put(ftc.getDataStoreId(), ftcs);
 	}
 	return map;
