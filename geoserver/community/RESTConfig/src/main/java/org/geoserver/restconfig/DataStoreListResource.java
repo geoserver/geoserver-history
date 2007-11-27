@@ -16,6 +16,7 @@ import org.restlet.resource.Resource;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.geotools.data.DataStoreFactorySpi;
 
 /**
  * Restlet for DataStore resources
@@ -68,7 +69,7 @@ public class DataStoreListResource extends MapResource {
 	    List ftcs = (ArrayList) map.get(ftc.getDataStoreId());
 	    if(ftcs == null)
 		ftcs = new ArrayList();
-	    ftcs.add(ftc);
+	    ftcs.add(ftc.getName());
 	    map.put(ftc.getDataStoreId(), ftcs);
 	}
 	return map;
@@ -128,7 +129,12 @@ public class DataStoreListResource extends MapResource {
 	    HashMap am = new HashMap();
 	    DataStoreConfig dsc = (DataStoreConfig) it.next();
 	    am.put("id", dsc.getId());
-	    am.put("type", dsc.getFactory().getDisplayName());
+	    DataStoreFactorySpi factory = dsc.getFactory();
+	    if (factory != null){
+		am.put("type", dsc.getFactory().getDisplayName());
+	    } else {
+		am.put("type", "null");// TODO: find a better way to deal with this
+	    }
 	    if(sortedFeatureTypes.containsKey(dsc.getId()))
 		am.put("featuretypes", sortedFeatureTypes.get(dsc.getId()));
 	    datastores.add(am);
