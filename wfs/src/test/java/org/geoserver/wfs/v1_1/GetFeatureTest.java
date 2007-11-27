@@ -7,12 +7,23 @@ import junit.textui.TestRunner;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.gml3.GML;
-import org.geotools.referencing.CRS;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class GetFeatureTest extends WFSTestSupport {
+    
+    @Override
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        super.populateDataDirectory(dataDirectory);
+        
+        // add extra types
+        dataDirectory.addPropertiesType( 
+                new QName( MockData.SF_URI, "WithGMLProperties", MockData.SF_PREFIX ), 
+                getClass().getResource("WithGMLProperties.properties"),
+                null
+             );
+    }
 
     public void testGet() throws Exception {
     	testGetFifteenAll("wfs?request=GetFeature&typename=cdf:Fifteen&version=1.1.0&service=wfs");
@@ -320,11 +331,11 @@ public class GetFeatureTest extends WFSTestSupport {
         Document dom = getAsDOM( "wfs?request=getfeature&service=wfs&version=1.1.0&typename=sf:new");
         assertEquals( "ExceptionReport", dom.getDocumentElement().getLocalName() );
         
-        //add a feature type
-        dataDirectory.addFeatureType( 
-            new QName( MockData.SF_URI, "new", MockData.SF_PREFIX ), 
-            getClass().getResourceAsStream("new.properties")
-        );
+        dataDirectory.addPropertiesType( 
+                new QName( MockData.SF_URI, "new", MockData.SF_PREFIX ), 
+                getClass().getResource("new.properties"), 
+                null
+            );
         applicationContext.refresh();
         
         dom = getAsDOM( "wfs?request=getfeature&service=wfs&version=1.1.0&typename=sf:new");
@@ -332,13 +343,6 @@ public class GetFeatureTest extends WFSTestSupport {
     }
     
     public void testWithGMLProperties() throws Exception {
-        
-        dataDirectory.addFeatureType( 
-           new QName( MockData.SF_URI, "WithGMLProperties", MockData.SF_PREFIX ), 
-           getClass().getResourceAsStream("WithGMLProperties.properties") 
-        );
-        applicationContext.refresh();
-        
         Document dom = getAsDOM( "wfs?request=getfeature&service=wfs&version=1.1.0&typename=sf:WithGMLProperties");
         
         assertEquals( "FeatureCollection", dom.getDocumentElement().getLocalName() );

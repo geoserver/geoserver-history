@@ -4,22 +4,21 @@ import javax.xml.namespace.QName;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.wfs.WFSTestSupport;
-import org.geoserver.wfs.kvp.SrsNameKvpParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class TransactionTest extends WFSTestSupport {
 
-    protected void setUp() throws Exception {
-        super.setUp();
-    
-        dataDirectory.addFeatureType( 
-            new QName( MockData.SF_URI, "WithGMLProperties", MockData.SF_PREFIX ), 
-            getClass().getResourceAsStream("WithGMLProperties.properties") 
-         );
-         applicationContext.refresh();
-         
+    @Override
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        super.populateDataDirectory(dataDirectory);
+        
+        dataDirectory.addPropertiesType( 
+                new QName( MockData.SF_URI, "WithGMLProperties", MockData.SF_PREFIX ), 
+                getClass().getResource("WithGMLProperties.properties"),
+                null
+             );
     }
     
     public void testInsert1() throws Exception {

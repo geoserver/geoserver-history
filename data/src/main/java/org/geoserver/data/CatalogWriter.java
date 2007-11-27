@@ -8,6 +8,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -55,6 +56,16 @@ public class CatalogWriter {
      * Root catalog element.
      */
     Element catalog;
+
+    /**
+     * The coverage type key (aka format name)
+     */    
+    public static final String COVERAGE_TYPE_KEY = "coverageType";
+
+    /**
+     * The coverage url key (the actual coverage data location)
+     */
+    public static final String COVERAGE_URL_KEY = "coverageUrl";
 
     public CatalogWriter() {
         try {
@@ -119,6 +130,39 @@ public class CatalogWriter {
             }
         }
     }
+    
+    /**
+     * Writers the "formats" element of the catalog.xml file 
+     * @param coverageStores
+     * @param coverageStoresNamespaces
+     */
+    public void coverageStores(HashMap coverageStores, HashMap namespaces) {
+        Element formatsElement = document.createElement("formats");
+        catalog.appendChild(formatsElement);
+        
+        for (Iterator d = coverageStores.entrySet().iterator(); d.hasNext();) {
+            Map.Entry dataStore = (Map.Entry) d.next();
+            String id = (String) dataStore.getKey();
+            Map params = (Map) dataStore.getValue();
+
+            Element formatElement = document.createElement("format");
+            formatsElement.appendChild(formatElement);
+
+            // set the datastore id
+            formatElement.setAttribute("id", id);
+
+            //set the namespace
+            formatElement.setAttribute("namespace", (String) namespaces.get(id));
+
+            // encode type and url
+            Element typeElement = document.createElement("type");
+            formatElement.appendChild(typeElement);
+            typeElement.setTextContent((String) params.get(COVERAGE_TYPE_KEY));
+            Element urlElement = document.createElement("url");
+            formatElement.appendChild(urlElement);
+            urlElement.setTextContent((String) params.get(COVERAGE_URL_KEY));
+        }
+    }
 
     /**
      * Writes "namespace" elements to the catalog.xml file.
@@ -178,6 +222,8 @@ public class CatalogWriter {
             styleElement.setAttribute("filename", filename);
         }
     }
+    
+    
 
     /**
      * WRites the catalog.xml file.
@@ -204,4 +250,6 @@ public class CatalogWriter {
             throw (IOException) new IOException(msg).initCause(e);
         }
     }
+
+    
 }

@@ -7,9 +7,14 @@ import javax.servlet.ServletResponse;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.RemoteOWSTestSupport;
 import org.geoserver.wms.WMSTestSupport;
-import org.geoserver.wms.kvp.GetMapKvpRequestReader;
 
 public class GetMapTest extends WMSTestSupport {
+    
+    @Override
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        super.populateDataDirectory(dataDirectory);
+        dataDirectory.addStyle("Population", GetMapTest.class.getResource("Population.sld"));
+    }
 
     public void testRemoteOWSGet() throws Exception {
         if(!RemoteOWSTestSupport.isRemoteStatesAvailable())
