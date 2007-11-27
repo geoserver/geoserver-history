@@ -28,6 +28,7 @@ import javax.servlet.ServletContext;
 import org.apache.log4j.Appender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.helpers.LogLog;
 import org.geotools.data.DataStoreFactorySpi;
 import org.springframework.beans.factory.DisposableBean;
 import org.vfny.geoserver.global.dto.ContactDTO;
@@ -110,6 +111,9 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
 
     private List listeners;
     private Config config;
+    
+    /** Used by tests to use programmatic configuration of the logging level */
+    private static boolean suppressLoggingConfiguration;
     
     /**
      * Default constructor only to facilitate unit testing mock ups; real
@@ -473,7 +477,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             suppressStdOutLogging = dto.getSuppressStdOutLogging();
             logLocation = dto.getLogLocation();
             try {
-                configureGeoServerLogging(log4jConfigFile, suppressStdOutLogging, logLocation);
+                if(!suppressLoggingConfiguration)
+                    configureGeoServerLogging(log4jConfigFile, suppressStdOutLogging, logLocation);
             } catch (IOException ioe) {
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.log(Level.FINE,"",ioe);
@@ -625,44 +630,54 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             log4jConfigFile = GeoserverDataDirectory.findConfigFile("logs" + File.separator + "DEFAULT_LOGGING.properties");
         }
 
-        if (log4jConfigFile == null) {
+        if (log4jConfigFile == null || !log4jConfigFile.exists()) {
             throw new ConfigurationException("Unable to load logging configuration '" + log4jConfigFileStr + "'.  In addition, an attempt " +
                     "was made to create the 'logs' directory in your data dir, and to use the DEFAULT_LOGGING configuration, but" +
                     "this failed as well.  Is your data dir writeable?");
         }
-
-        // reconfiguring log4j logger levels by resetting and loading a new set of configuration properties
+        
+		// reconfiguring log4j logger levels by resetting and loading a new set of configuration properties
         InputStream loggingConfigStream = new FileInputStream(log4jConfigFile);
         if (loggingConfigStream == null) {
-            LOGGER.warning("Couldn't find Log4J configuration file '" + log4jConfigFileStr + "' in the 'loggingConfigs' directory.");
+            LOGGER.warning("Couldn't open Log4J configuration file '" + log4jConfigFile.getAbsolutePath());
             return;
         } else {
             LOGGER.fine("GeoServer logging profile '" + log4jConfigFile.getName() + "' enabled.");
         }
 
+        configureGeoServerLogging(loggingConfigStream, suppressStdOutLogging, false, 
+				logFileName);
+    }
+
+	public static void configureGeoServerLogging(InputStream loggingConfigStream, boolean suppressStdOutLogging, boolean suppressFileLogging, String logFileName) throws FileNotFoundException, IOException,
+			ConfigurationException {
         Properties lprops = new Properties();
         lprops.load(loggingConfigStream);
         LogManager.resetConfiguration();
+//        LogLog.setQuietMode(true);
         PropertyConfigurator.configure(lprops);
+//        LogLog.setQuietMode(false);
         
         // configuring the log4j file logger
-        Appender gslf = org.apache.log4j.Logger.getRootLogger().getAppender("geoserverlogfile");
-        if (gslf instanceof org.apache.log4j.RollingFileAppender) {
-            if (logFileName == null ) {
-                logFileName = new File(GeoserverDataDirectory.findCreateConfigDir("logs"),  "geoserver.log").getAbsolutePath();
-            } else { 
-                if (!new File(logFileName).isAbsolute()) {
-                    logFileName = new File(GeoserverDataDirectory.getGeoserverDataDirectory(), logFileName).getAbsolutePath();
-                    LOGGER.fine("Non-absolute pathname detected for logfile.  Setting logfile relative to data dir.");
-                }
-            }
-            lprops.setProperty("log4j.appender.geoserverlogfile.File", logFileName);
-            PropertyConfigurator.configure(lprops);
-            LOGGER.fine("Logging output to file '" + logFileName + "'");
-        } else if (gslf != null) {
-            LOGGER.warning("'log4j.appender.geoserverlogfile' appender is defined, but isn't a RollingFileAppender.  GeoServer won't control the file-based logging.");
-        } else {
-            LOGGER.warning("'log4j.appender.geoserverlogfile' appender isn't defined.  GeoServer won't control the file-based logging.");
+        if(!suppressFileLogging) {
+	        Appender gslf = org.apache.log4j.Logger.getRootLogger().getAppender("geoserverlogfile");
+	        if (gslf instanceof org.apache.log4j.RollingFileAppender) {
+	            if (logFileName == null ) {
+	                logFileName = new File(GeoserverDataDirectory.findCreateConfigDir("logs"),  "geoserver.log").getAbsolutePath();
+	            } else { 
+	                if (!new File(logFileName).isAbsolute()) {
+	                    logFileName = new File(GeoserverDataDirectory.getGeoserverDataDirectory(), logFileName).getAbsolutePath();
+	                    LOGGER.fine("Non-absolute pathname detected for logfile.  Setting logfile relative to data dir.");
+	                }
+	            }
+	            lprops.setProperty("log4j.appender.geoserverlogfile.File", logFileName);
+	            PropertyConfigurator.configure(lprops);
+	            LOGGER.fine("Logging output to file '" + logFileName + "'");
+	        } else if (gslf != null) {
+	            LOGGER.warning("'log4j.appender.geoserverlogfile' appender is defined, but isn't a RollingFileAppender.  GeoServer won't control the file-based logging.");
+	        } else {
+	            LOGGER.warning("'log4j.appender.geoserverlogfile' appender isn't defined.  GeoServer won't control the file-based logging.");
+	        }
         }
         
         // ... and the std output logging too
@@ -676,11 +691,9 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
                     org.apache.log4j.Logger.getRootLogger().removeAppender(curApp);
                 }
             }
-        } else {
-            LOGGER.info("StdOut logging enabled.  Log file also output to '" + logFileName + "'");
-        }
+        } 
         LOGGER.fine("FINISHED CONFIGURING GEOSERVER LOGGING -------------------------");
-    }
+	}
 
     private static void copyResourceToFile(String resource, File target) throws ConfigurationException {
         InputStream is = null; 
@@ -1023,5 +1036,14 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+    
+    /**
+     * Call this method if you want GeoServer not to configure the logging subsystem as instructed
+     * in the configuration file. To be used mainly in unit testing where we want to control
+     * logging programmatically.
+     */
+    public static void suppressLoggingConfiguration() {
+        suppressLoggingConfiguration = true;
     }
 }

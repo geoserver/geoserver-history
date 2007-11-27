@@ -45,7 +45,7 @@ public class WFSReprojectionTest extends WFSTestSupport {
         + "</wfs:Query> " + "</wfs:GetFeature>";
         
         Document dom1 = postAsDOM("wfs", xml);
-        print(dom1);
+//        print(dom1);
         
         xml = "<wfs:GetFeature " + "service=\"WFS\" "
         + "version=\"1.0.0\" "
@@ -57,7 +57,7 @@ public class WFSReprojectionTest extends WFSTestSupport {
         + "<wfs:PropertyName>cgf:polygonProperty</wfs:PropertyName> "
         + "</wfs:Query> " + "</wfs:GetFeature>";
         Document dom2 = postAsDOM("wfs", xml);
-        print(dom2);
+//        print(dom2);
         
         runTest(dom1, dom2);
     }
@@ -66,7 +66,7 @@ public class WFSReprojectionTest extends WFSTestSupport {
         String q = "wfs?request=getfeature&service=wfs&version=1.1&typeName=" + 
             MockData.POLYGONS.getLocalPart();
         Document dom = getAsDOM( q );
-        print(dom);
+//        print(dom);
         Element envelope = getFirstElementByTagName(dom, "gml:Envelope" );
         String lc = getFirstElementByTagName(envelope, "gml:lowerCorner" )
             .getFirstChild().getNodeValue();
@@ -128,7 +128,7 @@ public class WFSReprojectionTest extends WFSTestSupport {
         String q = "wfs?request=getfeature&service=wfs&version=1.1&typeName=" + 
             MockData.POLYGONS.getLocalPart();
         Document dom = getAsDOM( q );
-        print(dom);
+//        print(dom);
         assertEquals( 1, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
         
         Element polygonProperty = getFirstElementByTagName(dom, "cgf:polygonProperty");
@@ -166,7 +166,7 @@ public class WFSReprojectionTest extends WFSTestSupport {
         postAsDOM( "wfs", xml );
         
         dom = getAsDOM( q );
-        print(dom);
+//        print(dom);
         assertEquals( 2, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
         
     }
@@ -221,7 +221,7 @@ public class WFSReprojectionTest extends WFSTestSupport {
         MockData.POLYGONS.getLocalPart();
         
         Document dom = getAsDOM( q );
-        print(dom);
+//        print(dom);
         
         Element polygonProperty = getFirstElementByTagName(dom, "cgf:polygonProperty");
         Element posList = getFirstElementByTagName( polygonProperty, "gml:posList");
@@ -392,7 +392,7 @@ public class WFSReprojectionTest extends WFSTestSupport {
                 + "</ogc:Filter>"
                 + "</wfs:Lock>"
                 + "</wfs:LockFeature>";
-        System.out.println(xml);
+//        System.out.println(xml);
         
         Document dom = postAsDOM( "wfs", xml );
         assertEquals( "wfs:LockFeatureResponse", dom.getDocumentElement().getNodeName() );

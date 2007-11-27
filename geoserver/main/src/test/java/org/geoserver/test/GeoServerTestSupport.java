@@ -13,6 +13,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -26,12 +27,15 @@ import javax.xml.transform.stream.StreamResult;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.LogManager;
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.data.FeatureSource;
+import org.geotools.util.logging.Log4JLoggerFactory;
+import org.geotools.util.logging.Logging;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
@@ -85,8 +89,18 @@ public class GeoServerTestSupport extends TestCase {
         populateDataDirectory(dataDirectory);
         dataDirectory.setUpCatalog();
         dataDirectory.copyTo(getServicesFile().openStream(), "services.xml");
+                 
+        // setup quiet logging (we need to to this here because Data
+        // is loaded before GoeServer has a chance to setup logging for good)
+        try {
+            Logging.ALL.setLoggerFactory(Log4JLoggerFactory.getInstance());
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Could not configure log4j logging redirection", e);
+        }
+        GeoServer.suppressLoggingConfiguration();
+        setupLogging(getClass().getResourceAsStream(getDefaultLogConfiguration()));
 
-        //set up a mock servlet context
+        // set up a mock servlet context
         MockServletContext servletContext = new MockServletContext();
         servletContext.setInitParameter("GEOSERVER_DATA_DIR",
             dataDirectory.getDataDirectoryRoot().getAbsolutePath());
@@ -97,6 +111,14 @@ public class GeoServerTestSupport extends TestCase {
                 }, servletContext);
 
         applicationContext.refresh();
+    }
+
+	protected String getDefaultLogConfiguration() {
+		return "/TEST_LOGGING.properties";
+	}
+    
+    protected void setupLogging(InputStream loggingConfigStream) throws Exception {
+    	GeoServer.configureGeoServerLogging(loggingConfigStream, false, true, null);
     }
 
     /**
