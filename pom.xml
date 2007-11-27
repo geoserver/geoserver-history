@@ -715,6 +715,7 @@
      <include>**/*.properties</include>
      <include>**/*.serialized</include>
      <include>**/*.ftl</include>
+     <include>**/*.tiff</include>
     </includes>
     <excludes>
      <exclude>**/doc-files/**</exclude>
