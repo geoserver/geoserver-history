@@ -13,7 +13,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 import org.geoserver.ows.KvpParser;
+import org.joda.time.Instant;
+import org.joda.time.Interval;
 
 
 /**
@@ -83,29 +86,31 @@ public class TimeKvpParser extends KvpParser {
         if (value.indexOf(',') >= 0) {
             String[] listDates = value.split(",");
             for (int i=0; i<listDates.length; i++) {
-                dates.add(getDate(listDates[i].trim()));
+                dates.add(new Instant(getDate(listDates[i].trim()).getTime()));
             }
             return dates;
         }
+        
         String[] period = value.split("/");
         // Only one date given.
         if (period.length == 1) {
-            dates.add(getDate(value));
+            dates.add(new Instant(getDate(value).getTime()));
             return dates;
         }
         // Period like : yyyy-MM-ddTHH:mm:ssZ/yyyy-MM-ddTHH:mm:ssZ/P1D
         if (period.length == 3) {
             final Date begin = getDate(period[0]);
             final Date end   = getDate(period[1]);
-            final long millisIncrement = parsePeriod(period[2]);
+            //final long millisIncrement = parsePeriod(period[2]);
             final long startTime = begin.getTime();
             final long endTime = end.getTime();
-            long time;
+            /*long time;
             int j = 0;
             while ((time = j * millisIncrement + startTime) <= endTime) {
                 dates.add(new Date(time));
                 j++;
-            }
+            }*/
+            dates.add(new Interval(new Instant(startTime), new Instant(endTime)));
             return dates;
         }
         throw new ParseException("Invalid time parameter: " + value, 0);

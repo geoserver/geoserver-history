@@ -8,7 +8,6 @@ import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,7 +38,6 @@ import org.geotools.feature.type.GeometricAttributeType;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.resources.CRSUtilities;
-import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.filter.Filter;
@@ -376,14 +374,15 @@ public class GetMapResponse implements Response {
                          * exception is thrown, we have nothing to do.
                          */
                         try {
-                        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+                        	//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
                             ParameterValue time = reader.getFormat().getReadParameters().parameter(
                                     "Times");
                             if (time != null && request.getTime() != null) {
                             	List times = request.getTime();
-                            	String[] timePositions = new String[times.size()];
+                            	Object[] timePositions = new Object[times.size()];
                             	for (int t=0; t<times.size(); t++)
-                            		timePositions[t] = sdf.format(times.get(t));
+                            		//timePositions[t] = sdf.format(times.get(t));
+                            		timePositions[t] = times.get(t);
                                 time.setValue(timePositions);
                                 layers[i]
 			                              .getCoverage()

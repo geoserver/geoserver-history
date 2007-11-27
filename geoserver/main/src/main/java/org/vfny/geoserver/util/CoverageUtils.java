@@ -396,10 +396,10 @@ public class CoverageUtils {
                     Object[] inArray = { params.get(key) };
                     value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
                 }
-            } else if (key.equalsIgnoreCase("time")) {
+            } else if (key.equalsIgnoreCase("times")) {
                 value = params.get(key);
-            } else if (key.equalsIgnoreCase("elevation")) {
-                value = params.get(key);
+            } else if (key.equalsIgnoreCase("elevations")) {
+                value = params.get(key) != null && params.get(key) instanceof String[] ? params.get(key) : null;
             } else {
                 Class[] clArray = { String.class };
                 Object[] inArray = { params.get(key) };
