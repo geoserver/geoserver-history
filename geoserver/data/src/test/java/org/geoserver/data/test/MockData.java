@@ -11,10 +11,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -216,6 +218,24 @@ public class MockData {
 
     /** the 'templates' director under 'data' */
     File templates;
+    
+    /** The datastore definition map */
+    HashMap dataStores = new HashMap();
+    
+    /** The datastore to namespace map */
+    private HashMap dataStoreNamepaces = new HashMap();
+    
+    /** The namespaces map */
+    private HashMap namespaces = new HashMap();
+    
+    /** The styles map */
+    private HashMap layerStyles = new HashMap();
+    
+    /** The coverage store map */
+    private HashMap coverageStores = new HashMap();
+    
+    /** The coverage store id to namespace map */
+    private HashMap coverageStoresNamespaces = new HashMap();
 
     /**
      * @param base
@@ -224,7 +244,41 @@ public class MockData {
      * @throws IOException
      */
     public MockData() throws IOException {
+        // setup the root
         data = File.createTempFile("mock", "data", new File("./target"));
+        data.delete();
+        data.mkdir();
+
+        // create a featureTypes directory
+        featureTypes = new File(data, "featureTypes");
+        featureTypes.mkdir();
+        
+        // create a coverages directory
+        coverages = new File(data, "coverages");
+        coverages.mkdir();
+
+        // create the styles directory
+        styles = new File(data, "styles");
+        styles.mkdir();
+        //copy over the minimal style
+        copy(MockData.class.getResourceAsStream("Default.sld"), new File(styles, "Default.sld"));
+
+        //plugins
+        plugIns = new File(data, "plugIns");
+        plugIns.mkdir();
+
+        //validation
+        validation = new File(data, "validation");
+        validation.mkdir();
+
+        //templates
+        templates = new File(data, "templates");
+        templates.mkdir();
+        
+        // setup basic map information
+        namespaces.put(DEFAULT_PREFIX, DEFAULT_URI);
+        namespaces.put("", DEFAULT_URI);
+        layerStyles.put("Default", "Default.sld");
     }
 
     /**
@@ -288,48 +342,85 @@ public class MockData {
     }
     
     /**
-     * Adds a new feature type.
-     * <p>
-     * Note that callers of this code should call <code>applicationContext.refresh()</code>
-     * in order to force the catalog to reload.
-     * </p>
-     * <p>
-     * The feature type is "empty", in that it has no attributes and no data.
-     * Use {@link #addFeatureType(QName, InputStream)} to add a feature type 
-     * with data.
-     * </p>
+     * Adds the list of well known types to the data directory. Well known types
+     * are listed as constants in the MockData class header, and are organized
+     * as arrays based on the cite test they do come from
      * 
+     * @param names
+     * @throws IOException
      */
-    public void addFeatureType( QName name ) throws IOException {
-        
-        addFeatureType( name, new ByteArrayInputStream( "-=".getBytes() ) );
+    public void addWellKnownTypes(QName[] names) throws IOException {
+        for (int i = 0; i < names.length; i++) {
+            QName name = names[i];
+            
+            URL properties = MockData.class.getResource(name.getLocalPart() + ".properties");
+            URL style = MockData.class.getResource(name.getLocalPart() + ".sld");
+            String styleName = null;
+            if(style != null) {
+                styleName = name.getLocalPart();
+                addStyle(styleName, style);
+            }
+            addPropertiesType(name, properties, styleName);
+        }
     }
     
     /**
-     * Adds a new feature type.
-     * <p>
-     * Note that callers of this code should call <code>applicationContext.refresh()</code>
-     * in order to force the catalog to reload.
-     * </p>
-     * <p>
-     * The <tt>properties</tt> parameter is an input stream containing the feature
-     * type info and data to be used by property datastore.
-     * </p>
-     * 
+     * Adds the specified style to the data directory
+     * @param styleId the style id
+     * @param style an URL pointing to an SLD file to be copied into the data directory
+     * @throws IOException
      */
-    public void addFeatureType( QName name, InputStream properties ) throws IOException {
+    public void addStyle(String styleId, URL style) throws IOException {
+        layerStyles.put(styleId, styleId + ".sld");
+        InputStream styleContents = style.openStream();
+        File to = new File(styles, styleId + ".sld");
+        copy(styleContents, to);
+    }
+
+    /**
+     * Adds a property file as a feature type in a property datastore.
+     * 
+     * @param name
+     *            the fully qualified name of the feature type. The prefix and
+     *            namespace URI will be used to create a namespace, the prefix
+     *            will be used as the datastore name, the local name will become
+     *            the feature type name
+     * @param properties
+     *            a URL to the property file backing the feature type. If null,
+     *            an emtpy property file will be used
+     * @param style
+     *            a URL to the style that will be associated to the feature
+     *            type, or null to use a default one
+     * @throws IOException
+     */
+    public void addPropertiesType(QName name, URL properties, String styleName) throws IOException {
+        // setup the type directory if needed
         File directory = new File(data, name.getPrefix());
         if ( !directory.exists() ) {
             directory.mkdir();    
         }
         
-        //create the properties file
+        // create the properties file
         File f = new File(directory, name.getLocalPart() + ".properties");
         
-        //copy over the contents
-        copy( properties, f );
-        info( name );
+        // copy over the contents
+        InputStream propertiesContents;
+        if(properties == null)
+            propertiesContents = new ByteArrayInputStream( "-=".getBytes() );
+        else
+            propertiesContents = properties.openStream();
+        copy( propertiesContents, f );
         
+        // write the info file
+        info(name, styleName);
+        
+        // setup the meta information to be written in the catalog 
+        namespaces.put(name.getPrefix(), name.getNamespaceURI());
+        dataStoreNamepaces.put(name.getPrefix(), name.getPrefix());
+        Map params = new HashMap();
+        params.put(PropertyDataStoreFactory.DIRECTORY.key, directory);
+        params.put(PropertyDataStoreFactory.NAMESPACE.key, name.getNamespaceURI());
+        dataStores.put(name.getPrefix(), params);
     }
     
     /**
@@ -346,132 +437,42 @@ public class MockData {
      * @param name
      * @param coverage
      */
-    public void addCoverage(QName name, InputStream coverage, String extension) throws Exception {
+    public void addCoverage(QName name, URL coverage, String extension, String styleName) throws Exception {
         File directory = new File(data, name.getPrefix());
         if ( !directory.exists() ) {
             directory.mkdir();    
         }
         
-        //create the properties file
+        // create the properties file
         File f = new File(directory, name.getLocalPart() + "." + extension);
         
-        //copy over the contents
-        copy( coverage, f );
-        coverageInfo(name, f);
+        // copy over the contents
+        copy( coverage.openStream(), f );
+        coverageInfo(name, f, styleName);
+        
+        // setup the meta information to be written in the catalog 
+        AbstractGridFormat format = (AbstractGridFormat) GridFormatFinder.findFormat(f);
+        namespaces.put(name.getPrefix(), name.getNamespaceURI());
+        coverageStoresNamespaces.put(name.getLocalPart(), name.getPrefix());
+        Map params = new HashMap();
+        params.put(CatalogWriter.COVERAGE_TYPE_KEY, f.getName());
+        params.put(CatalogWriter.COVERAGE_URL_KEY, "file:/data/" + name.getPrefix() + "/" + name.getLocalPart() + "." + extension);
+        coverageStores.put(name.getLocalPart(), params);
     }
     
-    public void setUp() throws IOException {
-        setUp(TYPENAMES);
-    }
-
     /**
      * Sets up the data directory, creating all the necessary files.
      *
      * @throws IOException
      */
-    public void setUp(QName[] typeNames) throws IOException {
-        data.delete();
-        data.mkdir();
-
-        // create a featureTypes directory
-        featureTypes = new File(data, "featureTypes");
-        featureTypes.mkdir();
-        
-        // create a coverages directory
-        coverages = new File(data, "coverages");
-        coverages.mkdir();
-
-        // create the styles directory
-        styles = new File(data, "styles");
-        styles.mkdir();
-        //copy over the minimal style and population
-        copy(MockData.class.getResourceAsStream("Default.sld"), new File(styles, "Default.sld"));
-        copy(MockData.class.getResourceAsStream("Population.sld"), new File(styles, "Population.sld"));
-
-        //plugins
-        plugIns = new File(data, "plugIns");
-        plugIns.mkdir();
-
-        //validation
-        validation = new File(data, "validation");
-        validation.mkdir();
-
-        //templates
-        templates = new File(data, "templates");
-        templates.mkdir();
-
-        //set up the types
-        for (int i = 0; i < typeNames.length; i++) {
-            setup(typeNames[i]);
-        }
-
+    public void setUpCatalog() throws IOException {
         // create the catalog.xml
         CatalogWriter writer = new CatalogWriter();
-
-        // set up the datastores
-        HashMap dataStores = new HashMap();
-
-        HashMap params = new HashMap();
-        params.put(PropertyDataStoreFactory.DIRECTORY.key, new File(data, CITE_PREFIX));
-        params.put(PropertyDataStoreFactory.NAMESPACE.key, CITE_URI);
-        dataStores.put(CITE_PREFIX, params);
-
-        params = new HashMap();
-        params.put(PropertyDataStoreFactory.DIRECTORY.key, new File(data, CDF_PREFIX));
-        params.put(PropertyDataStoreFactory.NAMESPACE.key, CDF_URI);
-        dataStores.put(CDF_PREFIX, params);
-
-        params = new HashMap();
-        params.put(PropertyDataStoreFactory.DIRECTORY.key, new File(data, CGF_PREFIX));
-        params.put(PropertyDataStoreFactory.NAMESPACE.key, CGF_URI);
-        dataStores.put(CGF_PREFIX, params);
-
-        params = new HashMap();
-        params.put(PropertyDataStoreFactory.DIRECTORY.key, new File(data, SF_PREFIX));
-        params.put(PropertyDataStoreFactory.NAMESPACE.key, SF_URI);
-        dataStores.put(SF_PREFIX, params);
-
-        HashMap dataStoreNamepaces = new HashMap();
-        dataStoreNamepaces.put(CITE_PREFIX, CITE_PREFIX);
-        dataStoreNamepaces.put(CDF_PREFIX, CDF_PREFIX);
-        dataStoreNamepaces.put(CGF_PREFIX, CGF_PREFIX);
-        dataStoreNamepaces.put(SF_PREFIX, SF_PREFIX);
-
         writer.dataStores(dataStores, dataStoreNamepaces);
-
-        // setup the namespaces
-        HashMap namespaces = new HashMap();
-        namespaces.put(CITE_PREFIX, CITE_URI);
-        namespaces.put(CDF_PREFIX, CDF_URI);
-        namespaces.put(CGF_PREFIX, CGF_URI);
-        namespaces.put(SF_PREFIX, SF_URI);
-        namespaces.put(DEFAULT_PREFIX, DEFAULT_URI);
-        namespaces.put("", DEFAULT_URI);
-
+        writer.coverageStores(coverageStores, coverageStoresNamespaces);
         writer.namespaces(namespaces);
-
-        // styles
-        HashMap styles = new HashMap();
-
-        List typeList = Arrays.asList(typeNames);
-        for (int i = 0; i < WMS_TYPENAMES.length; i++) {
-            if(typeList.contains(WMS_TYPENAMES[i])) {
-                QName type = WMS_TYPENAMES[i];
-                styles.put(type.getLocalPart(), type.getLocalPart() + ".sld");
-            }
-        }
-        styles.put("Population", "Population.sld");
-        styles.put("Default", "Default.sld");
-
-        writer.styles(styles);
-
+        writer.styles(layerStyles);
         writer.write(new File(data, "catalog.xml"));
-    }
-
-    void setup(QName type) throws IOException {
-        properties(type);
-        info(type);
-        style(type);
     }
 
     void properties(QName name) throws IOException {
@@ -498,7 +499,7 @@ public class MockData {
         out.close();
     }
 
-    void info(QName name) throws IOException {
+    void info(QName name, String styleName) throws IOException {
         String type = name.getLocalPart();
         String prefix = name.getPrefix();
 
@@ -523,11 +524,9 @@ public class MockData {
         writer.write(
             "<latLonBoundingBox dynamic=\"false\" minx=\"-180\" miny=\"-90\" maxx=\"180\" maxy=\"90\"/>");
 
-        if (MockData.class.getResource(type + ".sld") != null) {
-            writer.write("<styles default=\"" + type + "\"/>");
-        } else {
-            writer.write("<styles default=\"Default\"/>");
-        }
+        if(styleName == null)
+            styleName = "Default";
+        writer.write("<styles default=\"" + styleName + "\"/>");
 
         writer.write("</featureType>");
 
@@ -535,27 +534,11 @@ public class MockData {
         writer.close();
     }
 
-    void style(QName name) throws IOException {
-        String type = name.getLocalPart();
-
-        //if there is not  astyle named "type".sld, use minimal
-        InputStream from = null;
-
-        if (MockData.class.getResource(type + ".sld") != null) {
-            from = MockData.class.getResourceAsStream(type + ".sld");
-        } else {
-            from = MockData.class.getResourceAsStream("Default.sld");
-        }
-
-        File to = new File(styles, type + ".sld");
-        copy(from, to);
-    }
     
-    void coverageInfo(QName name, File coverageFile) throws Exception {
+    void coverageInfo(QName name, File coverageFile, String styleName) throws Exception {
         String coverage = name.getLocalPart();
-        String prefix = name.getPrefix();
 
-        File coverageDir = new File(coverages, prefix);
+        File coverageDir = new File(coverages, coverage);
         coverageDir.mkdir();
 
         File info = new File(coverageDir, "info.xml");
@@ -567,19 +550,22 @@ public class MockData {
 
         // basic info
         FileWriter writer = new FileWriter(info);
-        writer.write("<coverage format=\"" + prefix + "\">");
+        writer.write("<coverage format=\"" + coverage + "\">");
         writer.write("<name>" + coverage + "</name>");
+        writer.write("<label>" + coverage + "</label>");
         writer.write("<description>" + coverage + " description</description>");
         // TODO: need to add metadata links?
         writer.write("<keywords>WCS," + coverage + " </keywords>");
-        writer.write("<styles default=\"raster\"/>");
+        if(styleName == null)
+            styleName = "raster";
+        writer.write("<styles default=\"" + styleName + "\"/>");
         
         // envelope
         CoordinateReferenceSystem crs = reader.getCrs();
         GeneralEnvelope envelope = reader.getOriginalEnvelope();
         GeneralEnvelope wgs84envelope = CoverageStoreUtils.getWGS84LonLatEnvelope(envelope);
         final String nativeCrsName = CRS.lookupIdentifier(crs, false);
-        writer.write("<envelope srsName=\"" + nativeCrsName + "\">");
+        writer.write("<envelope crs=\"" + crs.toString().replaceAll("\"", "'") + "\" srsName=\"" + nativeCrsName + "\">");
         writer.write("<pos>" + wgs84envelope.getMinimum(0) + " " + wgs84envelope.getMinimum(1) + "</pos>");
         writer.write("<pos>" + wgs84envelope.getMaximum(0) + " " + wgs84envelope.getMaximum(1) + "</pos>");
         writer.write("</envelope>");
@@ -593,7 +579,7 @@ public class MockData {
             lower = lower + geometry.getGridRange().getLower(i) + " "; 
             upper = upper + geometry.getGridRange().getUpper(i) + " ";
         }
-        writer.write("<grid dimension = \"" + dimensions + "\"");
+        writer.write("<grid dimension = \"" + dimensions + "\">");
         writer.write("<low>" + lower + "</low>");
         writer.write("<high>" + upper + "</high>");
         final CoordinateSystem cs = crs.getCoordinateSystem();
@@ -604,7 +590,6 @@ public class MockData {
         
         // coverage dimensions
         GridSampleDimension[] sampleDimensions = CoverageUtils.getCoverageDimensions(reader);
-        writer.write("<CoverageDimension>");
         for (int i = 0; i < sampleDimensions.length; i++) {
             writer.write("<CoverageDimension>");
             writer.write("<name>" + sampleDimensions[i].getDescription().toString() + "</name>");
@@ -636,16 +621,18 @@ public class MockData {
         
         // supported formats
         writer.write("<supportedFormats nativeFormat = \"" + format.getName() + "\">");
-        writer.write("<formats>ARCGRID,ARCGRID-GZIP,GEOTIFF,PNG,GIF,TIFF</format>");
+        writer.write("<formats>ARCGRID,ARCGRID-GZIP,GEOTIFF,PNG,GIF,TIFF</formats>");
         writer.write("</supportedFormats>");
         
         // supported interpolations
-        writer.write("supportedInterpolations default = \"nearest neighbor\" ");
+        writer.write("<supportedInterpolations default = \"nearest neighbor\">");
         writer.write("<interpolationMethods>nearest neighbor</interpolationMethods>");
         writer.write("</supportedInterpolations>");
         
         // the end
         writer.write("</coverage>");
+        writer.flush();
+        writer.close();
     }
 
     /**

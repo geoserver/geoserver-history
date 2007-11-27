@@ -9,6 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -79,13 +80,11 @@ public class GeoServerTestSupport extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        //set up the data directory
+        // create the data directory
         dataDirectory = new MockData();
-        dataDirectory.setUp();
-
-        //copy the service configuration to the data directory
-        dataDirectory.copyTo(GeoServerTestSupport.class.getResourceAsStream("services.xml"),
-            "services.xml");
+        populateDataDirectory(dataDirectory);
+        dataDirectory.setUpCatalog();
+        dataDirectory.copyTo(getServicesFile().openStream(), "services.xml");
 
         //set up a mock servlet context
         MockServletContext servletContext = new MockServletContext();
@@ -98,6 +97,27 @@ public class GeoServerTestSupport extends TestCase {
                 }, servletContext);
 
         applicationContext.refresh();
+    }
+
+    /**
+     * Returns a default services.xml file with WMS, WFS and WCS enabled. Subclasses may
+     * need to override this in order to test extra services or specific configurations
+     * @return
+     */
+    protected URL getServicesFile() {
+        return GeoServerTestSupport.class.getResource("services.xml");
+    }
+
+    /** 
+     * Adds the desired type and coverages to the data directory. This method adds all well known
+     * data types, subclasses may add their extra ones or decide to avoid the standar ones and 
+     * build a custom list calling {@link MockData#addPropertiesType(QName, java.net.URL, java.net.URL)}
+     * and {@link MockData#addCoverage(QName, InputStream, String)}
+     * @throws IOException
+     */
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        //set up the data directory
+        dataDirectory.addWellKnownTypes(MockData.TYPENAMES);
     }
 
     /**

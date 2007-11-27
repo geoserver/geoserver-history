@@ -53,15 +53,7 @@ public class WCSCapsTransformer extends TransformerBase {
     /** DOCUMENT ME! */
     protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @uml.property name="request"
-     * @uml.associationEnd multiplicity="(0 1)"
-     */
-    protected WCSRequest request;
-
-    /**
+     /**
      * Creates a new WFSCapsTransformer object.
      */
     public WCSCapsTransformer() {
