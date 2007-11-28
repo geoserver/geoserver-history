@@ -142,6 +142,10 @@ public final class CoverageInfoDTO implements DataTransferObject {
     private CoordinateReferenceSystem crs;
 
     /**
+     * 
+     */
+    private boolean nDimensionalCoverage;
+    /**
      * Default style used to render this Coverage with WMS
      */
     private String defaultStyle;
@@ -183,6 +187,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
         envelope = dto.getEnvelope();
         lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
         grid = dto.getGrid();
+        nDimensionalCoverage = dto.isNDimensionalCoverage();
         dimensions = dto.getDimensions();
         dimensionNames = dto.getDimensionNames();
 
@@ -835,5 +840,13 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
 	public void setRealName(String real_name) {
 		this.real_name = real_name;
+	}
+
+	public boolean isNDimensionalCoverage() {
+		return nDimensionalCoverage;
+	}
+
+	public void setNDimensionalCoverage(boolean dimensionalCoverage) {
+		nDimensionalCoverage = dimensionalCoverage;
 	}
 }

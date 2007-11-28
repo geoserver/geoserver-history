@@ -1867,8 +1867,9 @@ public class XMLConfigReader {
             //
             // /////////////////////////////////////////////////////////////////////
             cv.setDimensionNames(loadDimensionNames(grid));
-
+            
             final NodeList dims = coverageRoot.getElementsByTagName("CoverageDimension");
+            cv.setNDimensionalCoverage(ReaderUtils.getChildElement(coverageRoot, "CoverageDimension").hasAttribute("nd"));
             cv.setDimensions(loadDimensions(dims));
 
             // /////////////////////////////////////////////////////////////////////

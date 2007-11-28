@@ -181,6 +181,8 @@ public final class CoverageInfo extends GlobalLayerSupertype {
          */
     private Map parameters;
 
+	private boolean NDimensionalCoverage;
+
     public CoverageInfo(CoverageInfoDTO dto, Data data)
         throws ConfigurationException {
         this.data = data;
@@ -199,6 +201,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         envelope = dto.getEnvelope();
         lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
         grid = dto.getGrid();
+        NDimensionalCoverage = dto.isNDimensionalCoverage();
         dimensions = dto.getDimensions();
         dimensionNames = dto.getDimensionNames();
         requestCRSs = dto.getRequestCRSs();
@@ -230,6 +233,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         dto.setEnvelope(envelope);
         dto.setLonLatWGS84Envelope(lonLatWGS84Envelope);
         dto.setGrid(grid);
+        dto.setNDimensionalCoverage(NDimensionalCoverage);
         dto.setDimensions(dimensions);
         dto.setDimensionNames(dimensionNames);
         dto.setRequestCRSs(requestCRSs);
@@ -600,5 +604,9 @@ public final class CoverageInfo extends GlobalLayerSupertype {
 
 	public String getRealName() {
 		return real_name;
+	}
+
+	public boolean isNDimensionalCoverage() {
+		return NDimensionalCoverage;
 	}
 }

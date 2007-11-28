@@ -141,11 +141,11 @@
     <version>${gt.version}</version>
    </dependency>
    <!-- nD plugins - START -->
-   <dependency>
+   <!-- dependency>
     <groupId>org.geotools</groupId>
     <artifactId>gt2-grib1</artifactId>
     <version>${gt.version}</version>
-   </dependency>
+   </dependency -->
    <!-- nD plugins - END -->   
    <dependency>
     <groupId>org.geotools</groupId>
@@ -626,6 +626,11 @@
      <version>1.1</version> 
      <classifier>jdk13</classifier>
    </dependency>
+   <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>1.5</version>
+    </dependency>
   </dependencies>
  </dependencyManagement>
 

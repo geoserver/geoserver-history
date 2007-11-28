@@ -4,9 +4,18 @@
  */
 package org.vfny.geoserver.wcs.responses;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeSet;
+import java.util.logging.Logger;
+
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.ReferencingFactoryFinder;
+import org.geotools.util.NumberRange;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
@@ -24,13 +33,6 @@ import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.DescribeRequest;
 import org.vfny.geoserver.wcs.requests.WCSRequest;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeSet;
-import java.util.logging.Logger;
 
 
 /**
@@ -389,23 +391,48 @@ public class DescribeResponse implements Response {
                 tempResponse.append("\n    <name>" + cv.getName() + "</name>");
                 tempResponse.append("\n    <label>" + cv.getLabel() + "</label>");
                 tempResponse.append("\n      <axisDescription>");
-                tempResponse.append("\n        <AxisDescription>");
-                tempResponse.append("\n          <name>Band</name>");
-                tempResponse.append("\n          <label>Band</label>");
-                tempResponse.append("\n          <values>");
+                
+                if (!cv.isNDimensionalCoverage()) {
+                	tempResponse.append("\n        <AxisDescription>");
+                    tempResponse.append("\n          <name>Band</name>");
+                    tempResponse.append("\n          <label>Band</label>");
+                    tempResponse.append("\n          <values>");
 
-                if (numSampleDimensions == 1) {
-                    tempResponse.append("\n            <singleValue>").append("1")
-                                .append("</singleValue>");
+                    if (numSampleDimensions == 1) {
+                        tempResponse.append("\n            <singleValue>").append("1")
+                                    .append("</singleValue>");
+                    } else {
+                        tempResponse.append("\n            <interval>");
+                        tempResponse.append("\n              <min>1</min>");
+                        tempResponse.append("\n              <max>" + numSampleDimensions + "</max>");
+                        tempResponse.append("\n            </interval>");
+                    }
+
+                    tempResponse.append("\n          </values>");
+                    tempResponse.append("\n        </AxisDescription>");
                 } else {
-                    tempResponse.append("\n            <interval>");
-                    tempResponse.append("\n              <min>1</min>");
-                    tempResponse.append("\n              <max>" + numSampleDimensions + "</max>");
-                    tempResponse.append("\n            </interval>");
-                }
+                	for (CoverageDimension dimension : dims) {
+                		tempResponse.append("\n        <AxisDescription>");
+                        tempResponse.append("\n          <name>").append(dimension.getName()).append("</name>");
+                        tempResponse.append("\n          <label>").append(dimension.getDescription()).append("</label>");
+                        tempResponse.append("\n          <values>");
 
-                tempResponse.append("\n          </values>");
-                tempResponse.append("\n        </AxisDescription>");
+                        final NumberRange dimRange = dimension.getRange();
+                        if (dimRange.isEmpty() || dimRange.getMinimum() == dimRange.getMaximum()) {
+                            tempResponse.append("\n            <singleValue>").append(dimRange.getMinimum())
+                                        .append("</singleValue>");
+                        } else {
+                            tempResponse.append("\n            <interval>");
+                            tempResponse.append("\n              <min>").append(dimRange.getMinimum()).append("</min>");
+                            tempResponse.append("\n              <max>").append(dimRange.getMaximum()).append("</max>");
+                            tempResponse.append("\n            </interval>");
+                        }
+
+                        tempResponse.append("\n          </values>");
+                        tempResponse.append("\n        </AxisDescription>");
+					}
+                }
+                
                 tempResponse.append("\n      </axisDescription>");
 
                 for (int sample = 0; sample < numSampleDimensions; sample++) {

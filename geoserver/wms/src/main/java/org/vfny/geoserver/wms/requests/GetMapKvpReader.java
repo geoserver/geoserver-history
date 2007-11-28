@@ -423,7 +423,7 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 		String elev = getValue("ELEVATION");
 
 		if (elev != null) {
-			request.setElevation(Integer.valueOf(elev));
+			request.setElevation(elev);
 
 			if (LOGGER.isLoggable(Level.FINE)) {
 				LOGGER.fine("Set ELEVATION: " + elev);

@@ -315,7 +315,7 @@ public class GetMapRequest extends WMSRequest {
     /**
      * @return The elevation request parameter.
      */
-    public Integer getElevation() {
+    public String getElevation() {
         return this.optionalParams.elevation;
     }
 
@@ -608,7 +608,7 @@ public class GetMapRequest extends WMSRequest {
     /**
      * Sets the elevation request parameter.
      */
-    public void setElevation(Integer elevation) {
+    public void setElevation(String elevation) {
         this.optionalParams.elevation = elevation;
     }
 
@@ -746,7 +746,7 @@ public class GetMapRequest extends WMSRequest {
         /**
          * Elevation parameter in the default metric units.
          */
-        Integer elevation;
+        String elevation;
 
         /** 
          * The dim_range parameter, which could be used to select a range for color palette.

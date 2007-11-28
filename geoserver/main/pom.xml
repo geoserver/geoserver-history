@@ -87,10 +87,10 @@
 			<artifactId>gt2-coverage</artifactId>
 		</dependency>
 		<!-- nD plugins - START -->
-		<dependency>
+		<!-- dependency>
 		    <groupId>org.geotools</groupId>
 		    <artifactId>gt2-grib1</artifactId>
-		</dependency>
+		</dependency -->
 	    <!-- nD plugins - END -->   
 		<dependency>
 			<groupId>org.geotools</groupId>

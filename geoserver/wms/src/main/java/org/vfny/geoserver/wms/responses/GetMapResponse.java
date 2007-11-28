@@ -8,6 +8,7 @@ import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,6 +52,7 @@ import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.Service;
@@ -367,7 +369,7 @@ public class GetMapResponse implements Response {
 						//
 						// /////////////////////////////////////////////////////////
 
-                       /*
+                        /*
                          * Test if the parameter "TIME" is present in the WMS
                          * request, and by the way in the reading parameters. If
                          * it is the case, one can adds it to the request. If an
@@ -391,7 +393,11 @@ public class GetMapResponse implements Response {
                         } catch (ParameterNotFoundException p) {
                         }
 
-
+                        // //
+                        //
+                        // ???
+                        //
+                        // //
                         try {
                             ParameterValue dimRange = reader.getFormat().getReadParameters()
                                     .parameter("DIM_RANGE");
@@ -401,19 +407,59 @@ public class GetMapResponse implements Response {
                         } catch (ParameterNotFoundException p) {
                         }
 
+                        // //
+                        //
+                        // Parsing Bands and putting values into the Coverage read parameters
+                        //
+                        // //
                         try {
-                            ParameterValue elevation = reader.getFormat().getReadParameters()
-                                    .parameter("Elevations");
-                            if (elevation != null && request.getElevation() != null) {
-                                elevation.setValue(request.getElevation().intValue());
+                            ParameterValue bands = reader.getFormat().getReadParameters()
+                                    .parameter("Bands");
+                            
+                            if (bands != null) {
+                                final CoverageDimension[] dimensions = layers[i].getCoverage().getDimensions();
+                                final List<String> requestedBands = new ArrayList<String>();
+                                for (CoverageDimension coverageDimension : dimensions) {
+                                	final String bandName = coverageDimension.getName();
+									if (request.getRawKvp().containsKey(bandName)) {
+										requestedBands.add(bandName);
+									}
+								}
                                 layers[i]
 			                              .getCoverage()
-			                              .getParameters().put("Elevations", request.getElevation());
+			                              .getParameters().put("Bands", requestedBands.toArray(new String[1]));
                             }
                         } catch (ParameterNotFoundException p) {
                         }
 
-                        // TODO: BANDS PARAMETERS
+                        // //
+                        //
+                        // Parsing Elevations and putting values into the Coverage read parameters
+                        //
+                        // //
+                        try {
+                            ParameterValue elevation = reader.getFormat().getReadParameters()
+                                    .parameter("Elevations");
+                            if (elevation != null && request.getElevation() != null) {
+                            	String[] elevations = request.getElevation().split(",");
+                            	int numZ = 0;
+                            	for (String zeta : elevations) {
+									elevations[numZ++] = zeta.trim();
+								}
+                                elevation.setValue(elevations);
+                                layers[i]
+			                              .getCoverage()
+			                              .getParameters().put("Elevations", elevations);
+                            }
+                        } catch (ParameterNotFoundException p) {
+                        }
+                        
+                        // //
+                        //
+                        // Finally building up WMS layer by wrapping the Coverage Reader into a FeatureCollection
+                        // along with all the Coverage read parameters collected until now.
+                        //
+                        // //
 						try {
 							final ParameterValueGroup params = reader.getFormat().getReadParameters();
 							
@@ -428,9 +474,17 @@ public class GetMapResponse implements Response {
 								layer.setQuery(Query.ALL);
 								map.addLayer(layer);
 							} else if (reader instanceof AbstractGridCoverageNDReader) {
+								final String coverageName = layers[i].getCoverage().getRealName();
+								
+		                        // //
+		                        //
+		                        // Real coverage name has to be present into the ND-Reader read params also
+		                        //
+		                        // //
 								layers[i]
 			                              .getCoverage()
-			                              .getParameters().put("Coverage", layers[i].getCoverage().getRealName());
+			                              .getParameters().put("Coverage", coverageName);
+								
 								layer = new DefaultMapLayer(
 										wrapGridCoverageReader((AbstractGridCoverageNDReader)reader,
 												layers[i].getCoverage().getRealName(), CoverageUtils

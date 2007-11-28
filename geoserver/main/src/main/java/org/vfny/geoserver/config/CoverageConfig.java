@@ -4,29 +4,6 @@
  */
 package org.vfny.geoserver.config;
 
-import org.geotools.coverage.Category;
-import org.geotools.coverage.GridSampleDimension;
-import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.coverage.grid.GridGeometry2D;
-import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
-import org.geotools.coverage.grid.io.AbstractGridCoverageNDReader;
-import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.util.SimpleInternationalString;
-import org.opengis.coverage.grid.Format;
-import org.opengis.coverage.grid.GridGeometry;
-import org.opengis.metadata.Identifier;
-import org.opengis.parameter.ParameterValueGroup;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
-import org.opengis.util.InternationalString;
-import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.CoverageDimension;
-import org.vfny.geoserver.global.MetaDataLink;
-import org.vfny.geoserver.global.dto.CoverageInfoDTO;
-import org.vfny.geoserver.util.CoverageStoreUtils;
-import org.vfny.geoserver.util.CoverageUtils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -35,8 +12,36 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.units.Unit;
+
+import org.geotools.coverage.Category;
+import org.geotools.coverage.GridSampleDimension;
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.coverage.grid.io.AbstractGridCoverageNDReader;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.resources.XArray;
+import org.geotools.util.NumberRange;
+import org.geotools.util.SimpleInternationalString;
+import org.opengis.coverage.grid.Format;
+import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.metadata.Identifier;
+import org.opengis.parameter.ParameterValueGroup;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.cs.CoordinateSystem;
+import org.opengis.referencing.operation.TransformException;
+import org.opengis.util.InternationalString;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.CoverageDimension;
+import org.vfny.geoserver.global.MetaDataLink;
+import org.vfny.geoserver.global.dto.CoverageInfoDTO;
+import org.vfny.geoserver.util.CoverageStoreUtils;
+import org.vfny.geoserver.util.CoverageUtils;
 
 
 /**
@@ -50,7 +55,13 @@ import javax.units.Unit;
  * @version $Id$
  */
 public class CoverageConfig {
-    /**
+
+	/**
+     * The set of default axis name.
+     */
+    private static final String[] DIMENSION_NAMES = { "x", "y", "z", "t" };
+    
+	/**
      *
      */
     private String formatId;
@@ -181,6 +192,11 @@ public class CoverageConfig {
     private Map parameters;
 
     /**
+     * is a Multidim Coverage?
+     */
+	private boolean nDimensionalCoverage = false;
+
+    /**
      * Package visible constructor for test cases
      */
     CoverageConfig() {
@@ -245,12 +261,43 @@ public class CoverageConfig {
 
         grid = new GridGeometry2D(reader.getOriginalGridRange(coverageName), reader.getOriginalEnvelope(coverageName));
 
+        // //
+        // BANDS (RangeSet)
+        // //
         final String[] bandKeys = reader.getMetadataValue("band_keys", coverageName).split(", ");
-        final int numBands = bandKeys.length; 
-        dimentionNames = new InternationalString[numBands];
+        final int numBands = bandKeys.length;
+        nDimensionalCoverage = true;
+        dimensions = new CoverageDimension[numBands];
         
-        for (int b=0; b<numBands; b++)
-        	dimentionNames[b] = SimpleInternationalString.wrap(bandKeys[b]);
+        int b = 0;
+        for (CoverageDimension dimension : dimensions) {
+        	dimension = new CoverageDimension();
+			dimension.setName(bandKeys[b]);
+			dimension.setDescription(bandKeys[b]);
+        	// //
+        	// TODO: Add real Range and NullValues as soon they will be available from ImageMetadata (still on development right now)
+        	// //
+			dimension.setRange(new NumberRange(1.0, 1.0));
+			dimension.setNullValues(new Double[0]);
+			
+			dimensions[b++] = dimension;
+		}
+
+        // //
+        // Axis names
+        // //
+        if (crs != null) {
+        	final CoordinateSystem cs = crs.getCoordinateSystem();
+        	dimentionNames = new InternationalString[cs.getDimension()];
+        	for (int i=0; i<dimentionNames.length; i++) {
+        		dimentionNames[i] = new SimpleInternationalString(cs.getAxis(i).getName().getCode());
+        	}
+        } else {
+        	dimentionNames = (InternationalString[]) XArray.resize(DIMENSION_NAMES, crs.getCoordinateSystem().getDimension());
+        	for (int i=DIMENSION_NAMES.length; i<dimentionNames.length; i++) {
+        		dimentionNames[i] = new SimpleInternationalString("dim" + (i + 1));
+        	}
+        }
 
         final DataConfig config = ConfigRequests.getDataConfig(request);
         StringBuffer cvName = new StringBuffer(coverageName);
@@ -677,6 +724,7 @@ public class CoverageConfig {
         envelope = dto.getEnvelope();
         lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
         grid = dto.getGrid();
+        nDimensionalCoverage = dto.isNDimensionalCoverage();
         dimensions = dto.getDimensions();
         dimentionNames = dto.getDimensionNames();
         nativeFormat = dto.getNativeFormat();
@@ -707,6 +755,7 @@ public class CoverageConfig {
         c.setEnvelope(envelope);
         c.setLonLatWGS84Envelope(lonLatWGS84Envelope);
         c.setGrid(grid);
+        c.setNDimensionalCoverage(nDimensionalCoverage);
         c.setDimensions(dimensions);
         c.setDimensionNames(dimentionNames);
         c.setNativeFormat(nativeFormat);
@@ -1152,5 +1201,13 @@ public class CoverageConfig {
 
 	public void setRealName(String real_name) {
 		this.real_name = real_name;
+	}
+
+	public boolean isNDimensionalCoverage() {
+		return nDimensionalCoverage;
+	}
+
+	public void setNDimensionalCoverage(boolean dimensionalCoverage) {
+		nDimensionalCoverage = dimensionalCoverage;
 	}
 }

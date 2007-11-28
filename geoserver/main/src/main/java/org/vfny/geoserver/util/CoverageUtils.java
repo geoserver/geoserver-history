@@ -397,8 +397,10 @@ public class CoverageUtils {
                     value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
                 }
             } else if (key.equalsIgnoreCase("times")) {
-                value = params.get(key);
+                value = params.get(key) != null && params.get(key) instanceof Object[] ? params.get(key) : null;
             } else if (key.equalsIgnoreCase("elevations")) {
+                value = params.get(key) != null && params.get(key) instanceof String[] ? params.get(key) : null;
+            } else if (key.equalsIgnoreCase("bands")) {
                 value = params.get(key) != null && params.get(key) instanceof String[] ? params.get(key) : null;
             } else {
                 Class[] clArray = { String.class };

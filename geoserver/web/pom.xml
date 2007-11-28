@@ -16,10 +16,10 @@
   <name>Web Application Module</name>
 
   <dependencies>
-    <!--dependency>
+    <!-- dependency>
       <groupId>it.geosolutions</groupId>
       <artifactId>streams</artifactId>
-      </dependency-->
+      </dependency -->
 
     <dependency>
       <groupId>javax.servlet</groupId>

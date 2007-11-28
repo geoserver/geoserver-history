@@ -122,7 +122,7 @@ public class UserContainer implements HttpSessionBindingListener {
     /**
      *
      */
-    private CoverageConfig coverageConfig;
+    private CoverageConfig[] coverageConfig;
 
     /**
     * Cached FeatureType being worked on.
@@ -508,7 +508,7 @@ public class UserContainer implements HttpSessionBindingListener {
      *
      */
     public CoverageConfig getCoverageConfig() {
-        return coverageConfig;
+        return coverageConfig[0];
     }
 
     /**
@@ -516,7 +516,8 @@ public class UserContainer implements HttpSessionBindingListener {
      *
      */
     public void setCoverageConfig(CoverageConfig coverageConfig) {
-        this.coverageConfig = coverageConfig;
+    	this.coverageConfig = new CoverageConfig[1];
+        this.coverageConfig[0] = coverageConfig;
     }
 
     /**
