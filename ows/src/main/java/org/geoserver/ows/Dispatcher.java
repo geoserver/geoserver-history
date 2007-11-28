@@ -1118,7 +1118,7 @@ public class Dispatcher extends AbstractController {
     }
 
     void exception(Throwable t, Service service, Request request) {
-        logger.log(Level.WARNING, "", t);
+        logger.log(Level.SEVERE, "", t);
 
         //wrap in service exception if necessary
         ServiceException se = null;
