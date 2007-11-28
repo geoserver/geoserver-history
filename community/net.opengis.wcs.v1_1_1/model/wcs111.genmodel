@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/net.opengis.wcs.v1_1_0/src"
+    modelPluginID="net.opengis.wcs.v1_1_0" modelName="Wcs11" importerID="org.eclipse.xsd.ecore.importer"
+    copyrightFields="false" usedGenPackages="../../net.opengis.ows.v1_1_0/model/ows11.genmodel#//v1_1_0 platform:/plugin/org.eclipse.emf.ecore/model/XMLNamespace.genmodel#//namespace">
+  <foreignModel>../schema/wcs/1.1.1/wcsAll.xsd</foreignModel>
+  <genPackages prefix="Wcs111" basePackage="net.opengis.wcs" disposableProviderFactory="true"
+      ecorePackage="_11.ecore#/">
+    <genDataTypes ecoreDataType="_11.ecore#//IdentifierType"/>
+    <genDataTypes ecoreDataType="_11.ecore#//InterpolationMethodBaseTypeBase"/>
+    <genDataTypes ecoreDataType="_11.ecore#//TimeDurationType"/>
+    <genClasses ecoreClass="_11.ecore#//AvailableKeysType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//AvailableKeysType/key"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//AxisSubsetType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//AxisSubsetType/identifier"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//AxisSubsetType/key"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//AxisType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//AxisType/availableKeys"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//AxisType/meaning"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//AxisType/dataType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//AxisType/uOM"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//AxisType/referenceSystem"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//AxisType/metadata"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//AxisType/identifier"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//CapabilitiesType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//CapabilitiesType/contents"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//ContentsType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//ContentsType/coverageSummary"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//ContentsType/supportedCRS"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//ContentsType/supportedFormat"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//ContentsType/otherSource"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//CoverageDescriptionsType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//CoverageDescriptionsType/coverageDescription"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//CoverageDescriptionType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//CoverageDescriptionType/identifier"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//CoverageDescriptionType/metadata"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//CoverageDescriptionType/domain"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//CoverageDescriptionType/range"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//CoverageDescriptionType/supportedCRS"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//CoverageDescriptionType/supportedFormat"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//CoverageDomainType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//CoverageDomainType/spatialDomain"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//CoverageDomainType/temporalDomain"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//CoveragesType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//CoveragesType/coverage"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//CoverageSummaryType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//CoverageSummaryType/metadata"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//CoverageSummaryType/wGS84BoundingBox"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//CoverageSummaryType/supportedCRS"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//CoverageSummaryType/supportedFormat"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//CoverageSummaryType/coverageSummary"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//CoverageSummaryType/identifier"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//CoverageSummaryType/identifier1"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//DescribeCoverageType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//DescribeCoverageType/identifier"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//DocumentRoot">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//DocumentRoot/mixed"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference _11.ecore#//DocumentRoot/xMLNSPrefixMap"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference _11.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//DocumentRoot/availableKeys"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//DocumentRoot/axisSubset"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//DocumentRoot/capabilities"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//DocumentRoot/contents"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//DocumentRoot/coverage"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//DocumentRoot/coverageDescriptions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//DocumentRoot/coverages"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//DocumentRoot/coverageSummary"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//DocumentRoot/describeCoverage"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//DocumentRoot/getCapabilities"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//DocumentRoot/getCoverage"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//DocumentRoot/gridBaseCRS"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//DocumentRoot/gridCRS"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//DocumentRoot/gridCS"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//DocumentRoot/gridOffsets"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//DocumentRoot/gridOrigin"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//DocumentRoot/gridType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//DocumentRoot/identifier"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//DocumentRoot/interpolationMethods"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//DocumentRoot/temporalDomain"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//DocumentRoot/temporalSubset"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//DomainSubsetType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute _11.ecore#//DomainSubsetType/boundingBoxGroup"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference _11.ecore#//DomainSubsetType/boundingBox"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//DomainSubsetType/temporalSubset"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//FieldSubsetType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//FieldSubsetType/identifier"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//FieldSubsetType/interpolationType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//FieldSubsetType/axisSubset"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//FieldType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//FieldType/identifier"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//FieldType/definition"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//FieldType/nullValue"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//FieldType/interpolationMethods"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//FieldType/axis"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//GetCapabilitiesType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//GetCapabilitiesType/service"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//GetCoverageType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//GetCoverageType/identifier"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//GetCoverageType/domainSubset"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//GetCoverageType/rangeSubset"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//GetCoverageType/output"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//GridCrsType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//GridCrsType/srsName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//GridCrsType/gridBaseCRS"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//GridCrsType/gridType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//GridCrsType/gridOrigin"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//GridCrsType/gridOffsets"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//GridCrsType/gridCS"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//GridCrsType/id"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//ImageCRSRefType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//ImageCRSRefType/imageCRS"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//InterpolationMethodBaseType"/>
+    <genClasses ecoreClass="_11.ecore#//InterpolationMethodsType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//InterpolationMethodsType/interpolationMethod"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//InterpolationMethodsType/default"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//InterpolationMethodType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//InterpolationMethodType/nullResistance"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//OutputType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//OutputType/gridCRS"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//OutputType/format"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//OutputType/store"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//RangeSubsetType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//RangeSubsetType/fieldSubset"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//RangeType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//RangeType/field"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//RequestBaseType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//RequestBaseType/service"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//RequestBaseType/version"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//SpatialDomainType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute _11.ecore#//SpatialDomainType/boundingBoxGroup"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference _11.ecore#//SpatialDomainType/boundingBox"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//SpatialDomainType/gridCRS"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//SpatialDomainType/transformation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference _11.ecore#//SpatialDomainType/imageCRS"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//SpatialDomainType/polygon"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//TimePeriodType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//TimePeriodType/beginPosition"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//TimePeriodType/endPosition"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//TimePeriodType/timeResolution"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//TimePeriodType/frame"/>
+    </genClasses>
+    <genClasses ecoreClass="_11.ecore#//TimeSequenceType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute _11.ecore#//TimeSequenceType/group"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute _11.ecore#//TimeSequenceType/timePosition"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference _11.ecore#//TimeSequenceType/timePeriod"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
