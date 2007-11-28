@@ -54,12 +54,12 @@ public abstract class MapResource extends Resource {
     private DataFormat myRequestFormat;
 
     public MapResource(Context context,
-	    Request request,
-	    Response response
-	    ){
-	super(context, request, response);
-	myFormatMap = getSupportedFormats();
-	myRequestFormat = (DataFormat)myFormatMap.get(request.getAttributes().get("type"));
+            Request request,
+            Response response
+            ){
+        super(context, request, response);
+        myFormatMap = getSupportedFormats();
+        myRequestFormat = (DataFormat)myFormatMap.get(request.getAttributes().get("type"));
     }
 
     public abstract Map getSupportedFormats();
@@ -67,66 +67,66 @@ public abstract class MapResource extends Resource {
     public void handleGet() {
         Map details = getMap();
 
-	if (myRequestFormat == null | details == null){
-	    getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-	    getResponse().setEntity(
-		    new StringRepresentation(
-			"Could not find requested resource; format was "
-			+ getRequest().getAttributes().get("type"),
-			MediaType.TEXT_PLAIN)
-		    );
-	    return;
-	}
-	
-	if (details != null){		
-	    Map page = getPageDetails();
-	    details.put("page", page);
-	    getResponse().setEntity(myRequestFormat.makeRepresentation(details));
-	}
+        if (myRequestFormat == null | details == null){
+            getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+            getResponse().setEntity(
+                    new StringRepresentation(
+                        "Could not find requested resource; format was "
+                        + getRequest().getAttributes().get("type"),
+                        MediaType.TEXT_PLAIN)
+                    );
+            return;
+        }
+
+        if (details != null){		
+            Map page = getPageDetails();
+            details.put("page", page);
+            getResponse().setEntity(myRequestFormat.makeRepresentation(details));
+        }
     }
 
     public Map getMap(){
-	// nothing to do, this should be overridden by subclasses
-	return new HashMap();
+        // nothing to do, this should be overridden by subclasses
+        return new HashMap();
     }
 
 
     public Map getPageDetails(){
-	Map map = new HashMap();
-	String currentURL = getRequest().getResourceRef().getBaseRef().toString();
-	String formatName = (String)getRequest().getAttributes().get("type");
-	if (formatName != null){
-	    currentURL = currentURL.substring(0, currentURL.length() - formatName.length() - 1);
-	}
+        Map map = new HashMap();
+        String currentURL = getRequest().getResourceRef().getBaseRef().toString();
+        String formatName = (String)getRequest().getAttributes().get("type");
+        if (formatName != null){
+            currentURL = currentURL.substring(0, currentURL.length() - formatName.length() - 1);
+        }
 
-	map.put("currentURL", currentURL); 
-	return map;
+        map.put("currentURL", currentURL); 
+        return map;
     }
 
     public void handlePut(){
-	Map details = myRequestFormat.readRepresentation(getRequest().getEntity());
+        Map details = myRequestFormat.readRepresentation(getRequest().getEntity());
 
-	if (myRequestFormat == null || details == null){
-	    getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-	    getResponse().setEntity(
-		    new StringRepresentation("Could not find  requested resource",
-			MediaType.TEXT_PLAIN)
-		    );
-	    return;
-	}
+        if (myRequestFormat == null || details == null){
+            getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+            getResponse().setEntity(
+                    new StringRepresentation("Could not find  requested resource",
+                        MediaType.TEXT_PLAIN)
+                    );
+            return;
+        }
 
-	try{
-	    putMap(details);
-	    getResponse().setStatus(Status.REDIRECTION_FOUND);
-	    getResponse().setRedirectRef(this.generateRef(""));
-	} catch (Exception e){
-	    e.printStackTrace();
-	    getResponse().setEntity(e.toString(), MediaType.TEXT_PLAIN);
-	    getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
-	}
+        try{
+            putMap(details);
+            getResponse().setStatus(Status.REDIRECTION_FOUND);
+            getResponse().setRedirectRef(this.generateRef(""));
+        } catch (Exception e){
+            e.printStackTrace();
+            getResponse().setEntity(e.toString(), MediaType.TEXT_PLAIN);
+            getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+        }
     }
 
     protected void putMap(Map details) throws Exception {
-	// nothing to do; this should be overridden by subclasses
+        // nothing to do; this should be overridden by subclasses
     }
 }

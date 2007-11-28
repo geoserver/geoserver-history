@@ -56,68 +56,68 @@ public class UserResource extends MapResource {
     private String myUserName;
 
     public UserResource(Context context,
-	    Request request,
-	    Response response,
-	    EditableUserDAO eud){
-	super(context, request, response);
-	myUserName = (String)request.getAttributes().get("name");
-	myUserService = eud;
+            Request request,
+            Response response,
+            EditableUserDAO eud){
+        super(context, request, response);
+        myUserName = (String)request.getAttributes().get("name");
+        myUserService = eud;
     }
 
     public Map getSupportedFormats(){
-	Map theMap = new HashMap();
-	theMap.put("json", new JSONFormat());
-	theMap.put("html", new UserHTMLFormat("HTMLTemplates/user.ftl"));
-	theMap.put("xml", new UserXMLFormat("XMLTemplates/user.ftl"));
-	theMap.put(null, theMap.get("html"));
-	return theMap;
+        Map theMap = new HashMap();
+        theMap.put("json", new JSONFormat());
+        theMap.put("html", new UserHTMLFormat("HTMLTemplates/user.ftl"));
+        theMap.put("xml", new UserXMLFormat("XMLTemplates/user.ftl"));
+        theMap.put(null, theMap.get("html"));
+        return theMap;
     }
 
     public boolean allowGet() {
-	return true;
+        return true;
     }
 
     public Map getMap(){
-	return getUserInfo(myUserName);
+        return getUserInfo(myUserName);
     }
-    
+
 
     public boolean allowPut() {
-	return true;
+        return true;
     }
 
     protected void putMap(Map details) throws Exception {
-	UserAttribute attr = new UserAttribute();
-	attr.setPassword(details.get("password").toString());
-	attr.setEnabled(true);
-	attr.setAuthoritiesAsString((List)details.get("roles"));
+        UserAttribute attr = new UserAttribute();
+        attr.setPassword(details.get("password").toString());
+        attr.setEnabled(true);
+        attr.setAuthoritiesAsString((List)details.get("roles"));
 
-	myUserService.setUserDetails(myUserName, attr);
+        myUserService.setUserDetails(myUserName, attr);
     }
 
     public boolean allowDelete() {
-	return true;	
+        return true;	
     }
 
     public void handleDelete(){
-	UserDetails details = myUserService.loadUserByUsername(myUserName);
-	if (details != null) {
-	    try {
-		myUserService.deleteUser(myUserName);
-		getResponse().setEntity(
-			new StringRepresentation(
-			    myUserName + " deleted",
-			    MediaType.TEXT_PLAIN)
-			);
-	    } catch (Exception e) {
-		e.printStackTrace();
-		getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
-	    }
-	} else {
-	    getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-	    getResponse().setEntity("Couldn't find requested resource", MediaType.TEXT_PLAIN);
+        UserDetails details = myUserService.loadUserByUsername(myUserName);
+        if (details != null) {
+            try {
+                myUserService.deleteUser(myUserName);
+                getResponse().setEntity(
+                        new StringRepresentation(
+                            myUserName + " deleted",
+                            MediaType.TEXT_PLAIN)
+                        );
+            } catch (Exception e) {
+                e.printStackTrace();
+                getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+            }
+        } else {
+            getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+            getResponse().setEntity("Couldn't find requested resource", MediaType.TEXT_PLAIN);
 
-	}
+        }
     }
 
     /**
@@ -125,24 +125,24 @@ public class UserResource extends MapResource {
      * @author David Winslow
      */
     private Map getUserInfo(String name){
-	Map info = new HashMap();
+        Map info = new HashMap();
 
-	UserDetails user = myUserService.loadUserByUsername(name);
-	if (user == null) return null;
-	// info.put("name", name);
-	info.put("password", user.getPassword());
+        UserDetails user = myUserService.loadUserByUsername(name);
+        if (user == null) return null;
+        // info.put("name", name);
+        info.put("password", user.getPassword());
 
-	List roles = new ArrayList();
-	GrantedAuthority[] auths = user.getAuthorities();
+        List roles = new ArrayList();
+        GrantedAuthority[] auths = user.getAuthorities();
 
-	for (int i = 0; i < auths.length; i++){
-	    roles.add(auths[i].toString());
-	}
+        for (int i = 0; i < auths.length; i++){
+            roles.add(auths[i].toString());
+        }
 
-	info.put("roles", roles);
+        info.put("roles", roles);
 
 
-	return info;
+        return info;
     }
 
     /**
@@ -150,14 +150,14 @@ public class UserResource extends MapResource {
      * @author David Winslow
      */
     private List getAllUserInfo(){
-	List users = new ArrayList();
+        List users = new ArrayList();
 
-	Iterator it = myUserService.getNameSet().iterator();
-	while (it.hasNext()){
-	    users.add(getUserInfo(it.next().toString()));
-	}
+        Iterator it = myUserService.getNameSet().iterator();
+        while (it.hasNext()){
+            users.add(getUserInfo(it.next().toString()));
+        }
 
-	return users;
+        return users;
     }
 
 }
