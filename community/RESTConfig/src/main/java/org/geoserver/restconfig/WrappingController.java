@@ -68,10 +68,12 @@ public class WrappingController extends AbstractController {
                 router.attach("/styles/{style}", new ResourceFinder(ResourceFinder.RESOURCE_STYLE, router.getContext(), dc, wmsc, router));
                 router.attach("/styles.{type}", new ResourceFinder(ResourceFinder.RESOURCE_STYLE, router.getContext(), dc, wmsc, router));
                 router.attach("/styles", new ResourceFinder(ResourceFinder.RESOURCE_STYLE, router.getContext(), dc, wmsc, router));
-                router.attach("/coverages.{type}", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), dc, wmsc, router));
-                router.attach("/coverages", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), dc, wmsc, router));
-                router.attach("/coverages/{coverage}.{type}", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), dc, wmsc, router));
-                router.attach("/coverages/{coverage}", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), dc, wmsc, router));
+                router.attach("/coveragestores.{type}", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGESTORE, router.getContext(), dc, wmsc, router));
+                router.attach("/coveragestores", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGESTORE, router.getContext(), dc, wmsc, router));
+                router.attach("/coveragestores/{coveragestore}.{type}", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGESTORE, router.getContext(), dc, wmsc, router));
+                router.attach("/coveragestores/{coveragestore}", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGESTORE, router.getContext(), dc, wmsc, router));
+                router.attach("/coveragestores/{coveragestore}/coverages/{coverage}.{type}", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), dc, wmsc, router));
+                router.attach("/coveragestores/{coveragestore}/coverages/{coverage}", new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), dc, wmsc, router));
                 router.attach("/dummy/{name}", new DummyRestlet(getApplicationContext()));
 		router.attach("/layergroups.{type}", new ResourceFinder(ResourceFinder.RESOURCE_LAYERGROUP, router.getContext(), dc, wmsc, router));
 		router.attach("/layergroups", new ResourceFinder(ResourceFinder.RESOURCE_LAYERGROUP, router.getContext(), dc, wmsc, router));
