@@ -72,6 +72,8 @@ public class JSONFormat implements DataFormat{
 			json.add(toJSONObject(it.next()));
 		    }
 		    return json;
+		} else if (obj instanceof Number) {
+		    return obj;
 		} else {
 		    return obj.toString();
 		}
