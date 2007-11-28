@@ -1,0 +1,41 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
+package org.geoserver.wcs.kvp;
+
+import java.util.Map;
+
+import net.opengis.ows.v1_1_0.AcceptVersionsType;
+import net.opengis.ows.v1_1_0.Ows11Factory;
+import net.opengis.wcs.v1_1_1.GetCapabilitiesType;
+import net.opengis.wcs.v1_1_1.Wcs111Factory;
+
+import org.geoserver.ows.kvp.EMFKvpRequestReader;
+
+/**
+ * Parses a GetCapabilities request for WCS into the correspondent model object
+ * 
+ * @author Andrea Aime - TOPP
+ * 
+ */
+public class WcsGetCapabilitiesRequestReader extends EMFKvpRequestReader {
+    public WcsGetCapabilitiesRequestReader() {
+        super(GetCapabilitiesType.class, Wcs111Factory.eINSTANCE);
+    }
+
+    public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
+        request = super.read(request, kvp, rawKvp);
+
+        // set the version attribute on the request
+        if (kvp.containsKey("version")) {
+            AcceptVersionsType acceptVersions = Ows11Factory.eINSTANCE.createAcceptVersionsType();
+            acceptVersions.getVersion().add(kvp.get("version"));
+
+            GetCapabilitiesType getCapabilities = (GetCapabilitiesType) request;
+            getCapabilities.setAcceptVersions(acceptVersions);
+        }
+
+        return request;
+    }
+}
