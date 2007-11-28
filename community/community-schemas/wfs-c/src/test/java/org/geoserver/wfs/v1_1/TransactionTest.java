@@ -101,7 +101,7 @@ public class TransactionTest extends WFSTestSupport {
 
         // do another get feature
         dom = postAsDOM("wfs", getFeature);
-        print(dom);
+//        print(dom);
         assertEquals(n + 1, dom.getElementsByTagName("cgf:Points").getLength());
     }
 
@@ -114,7 +114,7 @@ public class TransactionTest extends WFSTestSupport {
             + "<wfs:Query typeName=\"cgf:Points\"/> " + "</wfs:GetFeature>";
 
         Document dom = postAsDOM("wfs", getFeature);
-        print(dom);
+//        print(dom);
 
         int n = dom.getElementsByTagName("cgf:Points").getLength();
 
@@ -143,7 +143,7 @@ public class TransactionTest extends WFSTestSupport {
             + "xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> "
             + "<wfs:Query typeName=\"cgf:Points\"> " + "</wfs:Query> " + "</wfs:GetFeature>";
         dom = postAsDOM("wfs", getFeature);
-        print(dom);
+//        print(dom);
 
         NodeList pointsList = dom.getElementsByTagName("cgf:Points");
         assertEquals(n + 1, pointsList.getLength());
@@ -237,7 +237,7 @@ public class TransactionTest extends WFSTestSupport {
 
         dom = getAsDOM(
                 "wfs?request=getfeature&service=wfs&version=1.1.0&typename=sf:WithGMLProperties");
-        print(dom);
+//        print(dom);
 
         NodeList features = dom.getElementsByTagName("sf:WithGMLProperties");
         assertEquals(1, features.getLength());

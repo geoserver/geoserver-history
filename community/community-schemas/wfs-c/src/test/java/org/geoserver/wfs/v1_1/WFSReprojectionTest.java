@@ -64,7 +64,7 @@ public class WFSReprojectionTest extends WFSTestSupport {
         String q = "wfs?request=getfeature&service=wfs&version=1.1&typeName="
             + MockData.POLYGONS.getLocalPart();
         Document dom = getAsDOM(q);
-        print(dom);
+//        print(dom);
 
         Element envelope = getFirstElementByTagName(dom, "gml:Envelope");
         String lc = getFirstElementByTagName(envelope, "gml:lowerCorner").getFirstChild()
@@ -203,7 +203,7 @@ public class WFSReprojectionTest extends WFSTestSupport {
             + MockData.POLYGONS.getLocalPart();
 
         Document dom = getAsDOM(q);
-        print(dom);
+//        print(dom);
 
         Element polygonProperty = getFirstElementByTagName(dom, "cgf:polygonProperty");
         Element posList = getFirstElementByTagName(polygonProperty, "gml:posList");
