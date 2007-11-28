@@ -62,6 +62,8 @@ import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTimeTemplate;
 import org.vfny.geoserver.wms.responses.map.kml.KMLGeometryTransformer.KMLGeometryTranslator;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
@@ -267,11 +269,14 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
                     try {
                         encode(feature, styles);
-                    } catch (Throwable t) {
-                        //TODO: perhaps rethrow hte exception
-                        String msg = "Failure tranforming feature to KML:" + feature.getID();
-                        LOGGER.log(Level.WARNING, msg, t);
-                    }
+                    } catch (RuntimeException t) {
+                        // if the stream has been closed by the client don't keep on going forward, this is not
+                        // a feature local issue
+                        if(t.getCause() instanceof SAXException)
+                            throw t;
+                        else
+                            LOGGER.log(Level.WARNING, "Failure tranforming feature to KML:" + feature.getID(), t);
+                    } 
                 }
             } finally {
                 //make sure we always close

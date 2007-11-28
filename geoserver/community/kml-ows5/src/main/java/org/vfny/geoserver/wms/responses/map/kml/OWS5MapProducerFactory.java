@@ -18,7 +18,7 @@ public class OWS5MapProducerFactory implements GetMapProducerFactorySpi {
      * escape the '+' sign in "kml+xml", which is decoded as a space
      * character at server side.
      */
-    private static final String PRODUCE_TYPE = "kml3";
+    private static final String PRODUCE_TYPE = "kmlows5";
     
     /** Official KML mime type
      * @TODO add KMZ support
