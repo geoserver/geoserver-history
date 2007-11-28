@@ -35,6 +35,7 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
     }
 
     protected class KML3Translator extends KMLTranslator {
+        private boolean kml22DataStyle = false;
         protected String schemaId;
 
         public KML3Translator(ContentHandler contentHandler) {
@@ -112,6 +113,13 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
         }
 
         protected void encodeExtendedData(SimpleFeature feature) {
+            if(kml22DataStyle)
+                encodeKML22ExtendedData(feature);
+            else 
+                encodeKMLOWS5ExtendedData(feature);
+        }
+
+        private void encodeKML22ExtendedData(Feature feature) {
             // TODO: consider turning this into a Freemarker template
             start("ExtendedData");
             start("SchemaData", KMLUtils.attributes(new String[] { "schemaUrl", "#" + schemaId }));
@@ -129,6 +137,25 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
             }
 
             end("SchemaData");
+            end("ExtendedData");
+        }
+        
+        private void encodeKMLOWS5ExtendedData(Feature feature) {
+            // TODO: consider turning this into a Freemarker template
+            start("ExtendedData", KMLUtils.attributes(new String[] { "schemaUrl", "#" + schemaId }));
+
+            final int count = feature.getNumberOfAttributes();
+            final FeatureType schema = feature.getFeatureType();
+            for (int i = 0; i < count; i++) {
+                final AttributeType at = schema.getAttributeType(i);
+                if(at instanceof GeometryAttributeType)
+                    continue;
+                
+                final Attributes atts = KMLUtils.attributes(new String[] { "name",
+                        at.getLocalName() });
+                element("Data", encodeValue(feature.getAttribute(i)), atts);
+            }
+
             end("ExtendedData");
         }
 
