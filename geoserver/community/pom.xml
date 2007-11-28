@@ -27,5 +27,8 @@
 		<module>preferences</module>
 		<module>community-schemas</module>
 		<module>kml-ows5</module>
+		<module>net.opengis.ows.v1_1_0</module>
+		<module>net.opengis.wcs.v1_1_1</module>
+		<module>wcs11</module>
 	</modules>
 </project>
