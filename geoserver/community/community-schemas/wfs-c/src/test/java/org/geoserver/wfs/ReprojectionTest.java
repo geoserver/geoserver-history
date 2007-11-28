@@ -31,8 +31,8 @@ public class ReprojectionTest extends WFSTestSupport {
         Document dom2 = getAsDOM("wfs?request=getfeature&service=wfs&version=1.0.0&typename="
                 + MockData.POLYGONS.getLocalPart() + "&srsName=epsg:900913");
 
-        print(dom1);
-        print(dom2);
+//        print(dom1);
+//        print(dom2);
 
         runTest(dom1, dom2);
     }
