@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import javax.xml.namespace.QName;
 
+import org.apache.xml.serialize.OutputFormat;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Encoder;
 import org.geotools.xml.transform.TransformerBase;
@@ -47,8 +48,12 @@ public class OWS5GeometryTransformer extends TransformerBase {
         public KML3GeometryTranslator(ContentHandler handler) {
             this.handler = handler;
             org.geotools.xml.Configuration configuration = new GMLConfiguration();
-            this.encoder = new Encoder(configuration);
-            this.encoder.setNamespaceAware(false);
+            encoder = new Encoder(configuration);
+            encoder.setNamespaceAware(false);
+            encoder.setEncodeFullDocument(false);
+            OutputFormat of = new OutputFormat();
+            of.setOmitXMLDeclaration(true);
+            encoder.setOutputFormat(of);
         }
 
         public void abort() {

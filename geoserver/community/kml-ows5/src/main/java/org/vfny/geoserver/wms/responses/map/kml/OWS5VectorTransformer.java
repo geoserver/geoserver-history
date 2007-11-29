@@ -1,8 +1,11 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -12,6 +15,9 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.feature.GeometryAttributeType;
 import org.geotools.map.MapLayer;
+import org.geotools.styling.FeatureTypeStyle;
+import org.geotools.styling.Rule;
+import org.geotools.styling.Symbolizer;
 import org.geotools.xml.transform.Translator;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.responses.map.kml.OWS5GeometryTransformer.KML3GeometryTranslator;
@@ -26,8 +32,14 @@ import com.vividsolutions.jts.geom.Point;
 
 public class OWS5VectorTransformer extends KMLVectorTransformer {
 
-    public OWS5VectorTransformer(WMSMapContext mapContext, MapLayer mapLayer) {
+    private boolean extendedDataModule;
+    private boolean styleModule;
+
+    public OWS5VectorTransformer(WMSMapContext mapContext, MapLayer mapLayer, 
+            boolean extendedDataModule, boolean styleModule) {
         super(mapContext, mapLayer);
+        this.extendedDataModule = extendedDataModule;
+        this.styleModule = styleModule;
     }
 
     public Translator createTranslator(ContentHandler handler) {
@@ -67,6 +79,10 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
         }
 
         public void encodeSchemas(FeatureCollection collection) {
+         // if the extended data module is not active, don't encode schema and extended data
+            if(!extendedDataModule)
+                return;
+            
             // TODO: consider turning this into a Freemarker template
             final FeatureType schema = collection.getSchema();
             final String[] atts = new String[] { "name", schema.getTypeName(), "id", schemaId };
@@ -113,6 +129,10 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
         }
 
         protected void encodeExtendedData(Feature feature) {
+            // if the extended data module is not active, don't encode schema and extended data
+            if(!extendedDataModule)
+                return;
+            
             if(kml22DataStyle)
                 encodeKML22ExtendedData(feature);
             else 
@@ -227,6 +247,49 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
                 end("MultiGeometry");
             }
             
+        }
+        
+        
+        /**
+         * Encodes the provided set of rules as KML styles. Override that handles
+         * the style definition and encodes it only if the style module is enabled
+         */
+        protected boolean encodeStyle(Feature feature, FeatureTypeStyle[] styles) {
+           
+            //encode hte Line/Poly styles
+            List symbolizerList = new ArrayList();
+            for ( int j = 0; j < styles.length ; j++ ) {
+               Rule[] rules = filterRules(styles[j], feature);
+                
+                for (int i = 0; i < rules.length; i++) {
+                    symbolizerList.addAll(Arrays.asList(rules[i].getSymbolizers()));
+                }
+            }
+            
+            if ( !symbolizerList.isEmpty() ) {
+                if(styleModule) {
+                    //start the style
+                    start("Style",
+                        KMLUtils.attributes(new String[] { "id", "GeoServerStyle" + feature.getID() }));
+    
+                    //encode the icon
+                    encodeIconStyle(feature, styles);
+    
+                    Symbolizer[] symbolizers = (Symbolizer[]) symbolizerList.toArray(new Symbolizer[symbolizerList.size()]);
+                    encodeStyle(feature, symbolizers);
+                    
+                    //end the style
+                    end("Style");
+                }
+                
+                // we return true anyways because otherwise the geometry won't be encoded
+                return true;
+            }
+            else {
+                //dont encode
+                return false;
+            }
+
         }
 
 
