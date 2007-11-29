@@ -1,13 +1,19 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
 import org.geotools.feature.FeatureCollection;
 import org.geotools.map.MapLayer;
+import org.geotools.styling.FeatureTypeStyle;
+import org.geotools.styling.Rule;
+import org.geotools.styling.Symbolizer;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -26,8 +32,14 @@ import com.vividsolutions.jts.geom.Point;
 
 public class OWS5VectorTransformer extends KMLVectorTransformer {
 
-    public OWS5VectorTransformer(WMSMapContext mapContext, MapLayer mapLayer) {
+    private boolean extendedDataModule;
+    private boolean styleModule;
+
+    public OWS5VectorTransformer(WMSMapContext mapContext, MapLayer mapLayer, 
+            boolean extendedDataModule, boolean styleModule) {
         super(mapContext, mapLayer);
+        this.extendedDataModule = extendedDataModule;
+        this.styleModule = styleModule;
     }
 
     public Translator createTranslator(ContentHandler handler) {
@@ -67,6 +79,10 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
         }
 
         public void encodeSchemas(FeatureCollection collection) {
+            // if the extended data module is not active, don't encode schema and extended data
+            if(!extendedDataModule)
+                return;
+            
             // TODO: consider turning this into a Freemarker template
             final SimpleFeatureType schema = collection.getSchema();
             final String[] atts = new String[] { "name", schema.getTypeName(), "id", schemaId };
@@ -79,7 +95,7 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
             // to GetFeatureInfo as well
             for (int i = 0; i < schema.getAttributeCount(); i++) {
                 AttributeDescriptor at = schema.getAttribute(i);
-                if (at instanceof AttributeDescriptor)
+                if (at instanceof GeometryDescriptor)
                     continue;
 
                 final String[] atAttributes = new String[] { "type", getType(at), "name",
@@ -113,13 +129,17 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
         }
 
         protected void encodeExtendedData(SimpleFeature feature) {
+            // if the extended data module is not active, don't encode schema and extended data
+            if(!extendedDataModule)
+                return;
+            
             if(kml22DataStyle)
                 encodeKML22ExtendedData(feature);
             else 
                 encodeKMLOWS5ExtendedData(feature);
         }
 
-        private void encodeKML22ExtendedData(Feature feature) {
+        private void encodeKML22ExtendedData(SimpleFeature feature) {
             // TODO: consider turning this into a Freemarker template
             start("ExtendedData");
             start("SchemaData", KMLUtils.attributes(new String[] { "schemaUrl", "#" + schemaId }));
@@ -140,15 +160,15 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
             end("ExtendedData");
         }
         
-        private void encodeKMLOWS5ExtendedData(Feature feature) {
+        private void encodeKMLOWS5ExtendedData(SimpleFeature feature) {
             // TODO: consider turning this into a Freemarker template
             start("ExtendedData", KMLUtils.attributes(new String[] { "schemaUrl", "#" + schemaId }));
 
-            final int count = feature.getNumberOfAttributes();
-            final FeatureType schema = feature.getFeatureType();
+            final int count = feature.getAttributeCount();
+            final SimpleFeatureType schema = feature.getFeatureType();
             for (int i = 0; i < count; i++) {
-                final AttributeType at = schema.getAttributeType(i);
-                if(at instanceof GeometryAttributeType)
+                final AttributeDescriptor at = schema.getAttribute(i);
+                if(at instanceof GeometryDescriptor)
                     continue;
                 
                 final Attributes atts = KMLUtils.attributes(new String[] { "name",
@@ -227,6 +247,49 @@ public class OWS5VectorTransformer extends KMLVectorTransformer {
                 end("MultiGeometry");
             }
             
+        }
+        
+        
+        /**
+         * Encodes the provided set of rules as KML styles. Override that handles
+         * the style definition and encodes it only if the style module is enabled
+         */
+        protected boolean encodeStyle(SimpleFeature feature, FeatureTypeStyle[] styles) {
+           
+            //encode hte Line/Poly styles
+            List symbolizerList = new ArrayList();
+            for ( int j = 0; j < styles.length ; j++ ) {
+               Rule[] rules = filterRules(styles[j], feature);
+                
+                for (int i = 0; i < rules.length; i++) {
+                    symbolizerList.addAll(Arrays.asList(rules[i].getSymbolizers()));
+                }
+            }
+            
+            if ( !symbolizerList.isEmpty() ) {
+                if(styleModule) {
+                    //start the style
+                    start("Style",
+                        KMLUtils.attributes(new String[] { "id", "GeoServerStyle" + feature.getID() }));
+    
+                    //encode the icon
+                    encodeIconStyle(feature, styles);
+    
+                    Symbolizer[] symbolizers = (Symbolizer[]) symbolizerList.toArray(new Symbolizer[symbolizerList.size()]);
+                    encodeStyle(feature, symbolizers);
+                    
+                    //end the style
+                    end("Style");
+                }
+                
+                // we return true anyways because otherwise the geometry won't be encoded
+                return true;
+            }
+            else {
+                //dont encode
+                return false;
+            }
+
         }
 
 
