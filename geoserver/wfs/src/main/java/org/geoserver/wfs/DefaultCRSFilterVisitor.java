@@ -69,6 +69,6 @@ public class DefaultCRSFilterVisitor extends DuplicatingFilterVisitor {
         clone.setUserData(defaultCrs);
 
         // clone
-        return factory.literal(clone);
+        return ff.literal(clone);
     }
 }
