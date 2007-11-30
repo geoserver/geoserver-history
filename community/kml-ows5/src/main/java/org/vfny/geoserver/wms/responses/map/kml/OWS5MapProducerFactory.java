@@ -31,7 +31,7 @@ public class OWS5MapProducerFactory implements GetMapProducerFactorySpi {
 
     public boolean canProduce(String mapFormat) {
         return PRODUCE_TYPE.equals(mapFormat) || MIME_TYPE.equals(mapFormat)
-	|| MIME_TYPE.startsWith("application/kml");
+        || mapFormat.startsWith("application/kml");
     }
 
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
