@@ -61,9 +61,26 @@ public class WMSTestSupport extends GeoServerTestSupport {
      */
     protected MapLayer createMapLayer(QName layerName)
         throws IOException {
+        return createMapLayer(layerName, null);
+    }
+    
+    /**
+     * Convenience method for subclasses to create a map layer from a layer name and a style name.
+     * <p>
+     * The map layer is created with the default style for the layer.
+     * </p>
+     * @param layerName The name of the layer.
+     * @param a style in the catalog (or null if you want to use the default style)
+     *
+     * @return A new map layer.
+     */
+    protected MapLayer createMapLayer(QName layerName, String styleName)
+        throws IOException {
         //TODO: support coverages
         FeatureTypeInfo info = getCatalog().getFeatureTypeInfo(layerName);
         Style style = info.getDefaultStyle();
+        if(styleName != null)
+            style = getWMS().getData().getStyle(styleName);
 
         DefaultMapLayer layer = new DefaultMapLayer(info.getFeatureSource(), style);
         layer.setTitle( info.getTypeName() );
