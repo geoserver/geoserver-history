@@ -4,10 +4,19 @@
  */
 package org.vfny.geoserver.wcs.responses;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
 import org.geoserver.ows.util.RequestUtils;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.joda.time.Interval;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.CoverageInfoLabelComparator;
 import org.vfny.geoserver.global.MetaDataLink;
@@ -18,13 +27,6 @@ import org.vfny.geoserver.wcs.requests.WCSRequest;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Logger;
 
 
 /**
@@ -453,20 +455,75 @@ public class WCSCapsTransformer extends TransformerBase {
         private void handleVendorSpecifics(WCS config) {
         }
 
+        /**
+         * 
+         * @param envelope
+         * @deprecated use {@link #handleEnvelope(GeneralEnvelope, Map, Map)} instead
+         */
         private void handleEnvelope(GeneralEnvelope envelope) {
+        	handleEnvelope(envelope, null, null);
+        }
+
+		private void handleEnvelope(GeneralEnvelope lonLatEnvelope, Map verticalExtent, Map temporalExtent) {
             AttributesImpl attributes = new AttributesImpl();
 
             attributes.addAttribute("", "srsName", "srsName", "", /*"urn:ogc:def:crs:OGC:1.3:CRS84"*/
                 "WGS84(DD)");
             start("lonLatEnvelope", attributes);
-            element("gml:pos",
-                new StringBuffer(Double.toString(envelope.getLowerCorner().getOrdinate(0))).append(
-                    " ").append(envelope.getLowerCorner().getOrdinate(1)).toString());
-            element("gml:pos",
-                new StringBuffer(Double.toString(envelope.getUpperCorner().getOrdinate(0))).append(
-                    " ").append(envelope.getUpperCorner().getOrdinate(1)).toString());
+            if (verticalExtent != null && !verticalExtent.isEmpty()) {
+            	final List values = (LinkedList) verticalExtent.get("values");
+            	double firstPosition = 0.0;
+            	double lastPosition  = 0.0;
+            	
+            	try {
+            		firstPosition = Double.parseDouble((String) ((LinkedList) values).getFirst());
+            	} catch(NumberFormatException e) {
+            		//TODO: table of possible values
+            	}
+
+            	try {
+            		lastPosition = Double.parseDouble((String) ((LinkedList) values).getLast());
+            	} catch(NumberFormatException e) {
+            		//TODO: table of possible values
+            	}
+
+            	element("gml:pos",
+            			new StringBuffer(Double.toString(lonLatEnvelope.getLowerCorner().getOrdinate(0)))
+            				.append(" ")
+            				.append(lonLatEnvelope.getLowerCorner().getOrdinate(1))
+							.append(" ")
+							.append(firstPosition).toString());
+            	element("gml:pos",
+            			new StringBuffer(Double.toString(lonLatEnvelope.getUpperCorner().getOrdinate(0)))
+            				.append(" ")
+            				.append(lonLatEnvelope.getUpperCorner().getOrdinate(1))
+							.append(" ")
+            				.append(lastPosition).toString());
+            } else {
+            	element("gml:pos",
+            			new StringBuffer(Double.toString(lonLatEnvelope.getLowerCorner().getOrdinate(0)))
+            				.append(" ")
+            				.append(lonLatEnvelope.getLowerCorner().getOrdinate(1)).toString());
+            	element("gml:pos",
+            			new StringBuffer(Double.toString(lonLatEnvelope.getUpperCorner().getOrdinate(0)))
+            				.append(" ")
+            				.append(lonLatEnvelope.getUpperCorner().getOrdinate(1)).toString());
+            }
+
+            if (temporalExtent != null && !temporalExtent.isEmpty()) {
+            	if (temporalExtent.containsKey("timePeriod")) {
+            		final Interval period = (Interval) temporalExtent.get("timePeriod");
+                    element("gml:timePosition", period.getStart().toString());
+                    element("gml:timePosition", period.getEnd().toString());
+            	} else if (temporalExtent.containsKey("timePositions")) {
+            		final List positions = (LinkedList) temporalExtent.get("timePositions");
+                    element("gml:timePosition", ((LinkedList) positions).getFirst().toString());
+                    element("gml:timePosition", ((LinkedList) positions).getLast().toString());
+            	}
+
+            }
             end("lonLatEnvelope");
-        }
+		}
 
         /**
          * DOCUMENT ME!
@@ -543,7 +600,7 @@ public class WCSCapsTransformer extends TransformerBase {
                     element("label", tmp);
                 }
 
-                handleEnvelope(cv.getWGS84LonLatEnvelope());
+                handleEnvelope(cv.getWGS84LonLatEnvelope(), cv.getVerticalExtent(), cv.getTemporalExtent());
                 handleKeywords(cv.getKeywords());
 
                 end("CoverageOfferingBrief");

@@ -192,9 +192,20 @@ public class CoverageConfig {
     private Map parameters;
 
     /**
-     * is a Multidim Coverage?
+     * is it a Multidim Coverage?
      */
 	private boolean nDimensionalCoverage = false;
+
+	/**
+	 * Storing here all the available zeta values for this Coverage
+	 */
+	private Map verticalExtent;
+
+	/**
+	 * Storing here all the valid time positions or time period
+	 * for this Coverage
+	 */
+	private Map temporalExtent;
 
     /**
      * Package visible constructor for test cases
@@ -239,6 +250,8 @@ public class CoverageConfig {
             ? crs.getIdentifiers().toArray()[0].toString() : "UNKNOWN");
         srsWKT = ((crs != null) ? crs.toWKT() : "UNKNOWN");
         envelope = reader.getOriginalEnvelope(coverageName);
+        verticalExtent = reader.getVerticalExtent(coverageName);
+        temporalExtent = reader.getTemporalExtent(coverageName);
 
         try {
             lonLatWGS84Envelope = CoverageStoreUtils.getWGS84LonLatEnvelope(envelope);
@@ -722,6 +735,8 @@ public class CoverageConfig {
         srsName = dto.getSrsName();
         srsWKT = dto.getSrsWKT();
         envelope = dto.getEnvelope();
+        verticalExtent = dto.getVerticalExtent();
+        temporalExtent = dto.getTemporalExtent();
         lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
         grid = dto.getGrid();
         nDimensionalCoverage = dto.isNDimensionalCoverage();
@@ -753,6 +768,8 @@ public class CoverageConfig {
         c.setSrsName(srsName);
         c.setSrsWKT(srsWKT);
         c.setEnvelope(envelope);
+        c.setVerticalExtent(verticalExtent);
+        c.setTemporalExtent(temporalExtent);
         c.setLonLatWGS84Envelope(lonLatWGS84Envelope);
         c.setGrid(grid);
         c.setNDimensionalCoverage(nDimensionalCoverage);
@@ -1209,5 +1226,21 @@ public class CoverageConfig {
 
 	public void setNDimensionalCoverage(boolean dimensionalCoverage) {
 		nDimensionalCoverage = dimensionalCoverage;
+	}
+
+	public Map getTemporalExtent() {
+		return temporalExtent;
+	}
+
+	public void setTemporalExtent(Map temporalExtent) {
+		this.temporalExtent = temporalExtent;
+	}
+
+	public Map getVerticalExtent() {
+		return verticalExtent;
+	}
+
+	public void setVerticalExtent(Map verticatlExtent) {
+		this.verticalExtent = verticatlExtent;
 	}
 }

@@ -4,14 +4,31 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.awt.Color;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.transform.TransformerException;
+
 import org.geotools.filter.FilterTransformer;
 import org.geotools.geometry.GeneralEnvelope;
+import org.joda.time.Interval;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageDimension;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
 import org.vfny.geoserver.global.dto.ContactDTO;
@@ -27,22 +44,8 @@ import org.vfny.geoserver.global.dto.StyleDTO;
 import org.vfny.geoserver.global.dto.WCSDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
-import java.awt.Color;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.transform.TransformerException;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -1415,6 +1418,48 @@ public class XMLConfigWriter {
                 }
             }
 
+            // //
+            // storing vertical extent
+            // //
+            if (cv.getVerticalExtent() != null && !cv.getVerticalExtent().isEmpty()) {
+            	final List values = (List) cv.getVerticalExtent().get("values");
+            	if (values != null && !values.isEmpty()) {
+                	cw.openTag("verticalExtent");
+                	
+                	for (Iterator zIT = values.iterator(); zIT.hasNext();) {
+                		cw.textTag("value", zIT.next().toString());
+                	}
+                	
+                	cw.closeTag("verticalExtent");
+            	}
+            }
+            
+            // //
+            // storing temporal extent
+            // //
+            if (cv.getTemporalExtent() != null && !cv.getTemporalExtent().isEmpty()) {
+            	if (cv.getTemporalExtent().containsKey("timePositions")) {
+                	final List values = (List) cv.getTemporalExtent().get("timePositions");
+                	if (values != null && !values.isEmpty()) {
+                    	cw.openTag("temporalExtent");
+                    	
+                    	for (Iterator zIT = values.iterator(); zIT.hasNext();) {
+                    		cw.textTag("timePosition", zIT.next().toString());
+                    	}
+                    	
+                    	cw.closeTag("temporalExtent");
+                	}
+            	} else if (cv.getTemporalExtent().containsKey("timePeriod")) {
+            		final Interval period = (Interval) cv.getTemporalExtent().get("timePeriod");
+                	if (period != null) {
+                    	cw.openTag("temporalExtent");
+                    		cw.textTag("beginTime", String.valueOf(period.getStartMillis()));
+                    		cw.textTag("endTime",   String.valueOf(period.getEndMillis()));
+                    	cw.closeTag("temporalExtent");
+                	}
+            	}
+            }
+            
             if (cv.getGrid() != null) {
                 GridGeometry g = cv.getGrid();
                 InternationalString[] dimNames = cv.getDimensionNames();

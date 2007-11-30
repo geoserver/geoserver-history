@@ -8,7 +8,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
@@ -16,6 +19,7 @@ import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.ReferencingFactoryFinder;
 import org.geotools.util.NumberRange;
+import org.joda.time.Interval;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
@@ -307,22 +311,65 @@ public class DescribeResponse implements Response {
         // .getLocalizedMessage(), e);
         //		}
         tempResponse.append("\n  <domainSet>");
+        // ////////////////////////////////////////////////////////////////////
+        //
+        // SPATIAL DOMAIN
+        //
+        // ////////////////////////////////////////////////////////////////////
         tempResponse.append("\n   <spatialDomain>");
         // Envelope
         tempResponse.append("\n    <gml:Envelope")
-                    .append((((cv.getSrsName() != null) && (cv.getSrsName() != ""))
-            ? new StringBuffer(" srsName=\"").append(cv.getSrsName()).append("\"").toString() : ""))
-                    .append(">");
-        tempResponse.append("\n       <gml:pos>")
-                    .append((cvEnvelope != null)
-            ? new StringBuffer(Double.toString(cvEnvelope.getLowerCorner().getOrdinate(0))).append(
-                " ").append(cvEnvelope.getLowerCorner().getOrdinate(1)).toString() : "")
-                    .append("</gml:pos>");
-        tempResponse.append("\n       <gml:pos>")
-                    .append((cvEnvelope != null)
-            ? new StringBuffer(Double.toString(cvEnvelope.getUpperCorner().getOrdinate(0))).append(
-                " ").append(cvEnvelope.getUpperCorner().getOrdinate(1)).toString() : "")
-                    .append("</gml:pos>");
+        		.append((((cv.getSrsName() != null) && (cv.getSrsName() != ""))
+        				? new StringBuffer(" srsName=\"").append(cv.getSrsName()).append("\"").toString() : ""))
+        		.append(">");
+        if (cv.getVerticalExtent() != null && !cv.getVerticalExtent().isEmpty()) {
+        	final Map verticalExtent = cv.getVerticalExtent();
+        	final List values = (LinkedList) verticalExtent.get("values");
+        	double firstPosition = 0.0;
+        	double lastPosition  = 0.0;
+        	
+        	try {
+        		firstPosition = Double.parseDouble((String) ((LinkedList) values).getFirst());
+        	} catch(NumberFormatException e) {
+        		//TODO: table of possible values
+        	}
+
+        	try {
+        		lastPosition = Double.parseDouble((String) ((LinkedList) values).getLast());
+        	} catch(NumberFormatException e) {
+        		//TODO: table of possible values
+        	}
+
+            tempResponse.append("\n       <gml:pos>").append(
+					(cvEnvelope != null) ? new StringBuffer(Double
+							.toString(cvEnvelope.getLowerCorner()
+									.getOrdinate(0))).append(" ").append(
+							cvEnvelope.getLowerCorner().getOrdinate(1))
+							.toString() : "")
+							.append(" ").append(firstPosition)
+							.append("</gml:pos>");
+			tempResponse.append("\n       <gml:pos>").append(
+					(cvEnvelope != null) ? new StringBuffer(Double
+							.toString(cvEnvelope.getUpperCorner()
+									.getOrdinate(0))).append(" ").append(
+							cvEnvelope.getUpperCorner().getOrdinate(1))
+							.toString() : "")
+							.append(" ").append(lastPosition)
+							.append("</gml:pos>");
+        } else {
+			tempResponse.append("\n       <gml:pos>").append(
+					(cvEnvelope != null) ? new StringBuffer(Double
+							.toString(cvEnvelope.getLowerCorner()
+									.getOrdinate(0))).append(" ").append(
+							cvEnvelope.getLowerCorner().getOrdinate(1))
+							.toString() : "").append("</gml:pos>");
+			tempResponse.append("\n       <gml:pos>").append(
+					(cvEnvelope != null) ? new StringBuffer(Double
+							.toString(cvEnvelope.getUpperCorner()
+									.getOrdinate(0))).append(" ").append(
+							cvEnvelope.getUpperCorner().getOrdinate(1))
+							.toString() : "").append("</gml:pos>");
+		}
         tempResponse.append("\n    </gml:Envelope>");
 
         // Grid
@@ -376,6 +423,38 @@ public class DescribeResponse implements Response {
             - g.getGridRange().getLower(1))) : (-0.0)) + "</gml:offsetVector>");
         tempResponse.append("\n    </gml:RectifiedGrid>");
         tempResponse.append("\n   </spatialDomain>");
+
+        // ////////////////////////////////////////////////////////////////////
+        //
+        // TEMPORAL DOMAIN
+        //
+        // ////////////////////////////////////////////////////////////////////
+        if (cv.getTemporalExtent() != null && !cv.getTemporalExtent().isEmpty()) {
+        	final Map temporalExtent = cv.getTemporalExtent();
+            tempResponse.append("\n   <temporalDomain>");
+            
+        	if (temporalExtent.containsKey("timePeriod")) {
+        		final Interval period = (Interval) temporalExtent.get("timePeriod");
+        		tempResponse.append("\n     <gml:timePeriod>");
+        		tempResponse.append("\n       <gml:beginPosition>");
+        		tempResponse.append(period.getStart().toString());
+        		tempResponse.append("\n       </gml:beginPosition>");
+        		tempResponse.append("\n       <gml:endPosition>");
+        		tempResponse.append(period.getEnd().toString());
+        		tempResponse.append("\n       </gml:endPosition>");
+        		tempResponse.append("\n     </gml:timePeriod>");
+        	} else if (temporalExtent.containsKey("timePositions")) {
+        		final List positions = (LinkedList) temporalExtent.get("timePositions");
+        		for (Iterator tIT=positions.iterator(); tIT.hasNext();) {
+            		tempResponse.append("\n     <gml:timePosition>");
+            		tempResponse.append(tIT.next().toString());
+            		tempResponse.append("\n     </gml:timePosition>");
+        		}
+        	}
+            
+            tempResponse.append("\n   </temporalDomain>");
+        }
+        
         tempResponse.append("\n  </domainSet>");
 
         // rangeSet

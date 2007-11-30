@@ -42,6 +42,8 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.util.NameFactory;
 import org.geotools.util.NumberRange;
+import org.joda.time.Instant;
+import org.joda.time.Interval;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.filter.Filter;
 import org.opengis.geometry.MismatchedDimensionException;
@@ -1855,6 +1857,26 @@ public class XMLConfigReader {
 
             // /////////////////////////////////////////////////////////////////////
             //
+            // VERTICAL EXTENT
+            //
+            // /////////////////////////////////////////////////////////////////////
+            final Element verticalExtent = ReaderUtils.getChildElement(coverageRoot, "verticalExtent", false);
+            if (verticalExtent != null) {
+            	cv.setVerticalExtent(loadVerticalExtent(verticalExtent));
+            }
+
+            // /////////////////////////////////////////////////////////////////////
+            //
+            // TEMPORAL EXTENT
+            //
+            // /////////////////////////////////////////////////////////////////////
+            final Element temporalExtent = ReaderUtils.getChildElement(coverageRoot, "temporalExtent", false);
+            if (temporalExtent != null) {
+            	cv.setTemporalExtent(loadTemporalExtent(temporalExtent));
+            }
+
+            // /////////////////////////////////////////////////////////////////////
+            //
             // GRID GEOMETRY
             //
             // /////////////////////////////////////////////////////////////////////
@@ -2007,6 +2029,76 @@ public class XMLConfigReader {
         return envelope;
     }
 
+    /**
+     * Loading the vertical extent for this coverage from the info.xml file.
+     *
+     * @param verticalExtentElem
+     * @return
+     * @throws ConfigurationException
+     */
+    public static Map loadVerticalExtent(Element verticalExtent)
+        throws ConfigurationException {
+        if (verticalExtent == null) {
+            return null;
+        }
+
+        final NodeList values = verticalExtent.getElementsByTagName("value");
+        final int numZeta = values.getLength();
+        final List zetaValues = new LinkedList();
+
+        for (int i = 0; i < numZeta; i++) {
+        	zetaValues.add(ReaderUtils.getElementText((Element) values.item(i)));
+        }
+
+        Map elevations = new HashMap();
+        elevations.put("values", zetaValues);
+        return elevations;
+    }
+
+    /**
+     * Loading the temporal extent for this coverage from the info.xml file.
+     *
+     * @param temporalExtentElem
+     * @return
+     * @throws ConfigurationException
+     */
+    public static Map loadTemporalExtent(Element temporalExtent)
+        throws ConfigurationException {
+        if (temporalExtent == null) {
+            return null;
+        }
+
+        final NodeList timePositions = temporalExtent.getElementsByTagName("timePosition");
+        if (timePositions != null && timePositions.getLength() > 0) {
+            final int numTimePositions = timePositions.getLength();
+            final List times = new LinkedList();
+
+            for (int i = 0; i < numTimePositions; i++) {
+            	times.add(ReaderUtils.getElementText((Element) timePositions.item(i)));
+            }
+
+            Map tempExtent = new HashMap();
+            tempExtent.put("timePositions", times);
+            return tempExtent;
+        } else {
+            final NodeList beginTime    = temporalExtent.getElementsByTagName("beginTime");
+            final NodeList endTime      = temporalExtent.getElementsByTagName("endTime");
+        	
+            if (beginTime != null && endTime != null) {
+            	final Interval timePeriod = new Interval(
+            			new Instant(Long.parseLong(ReaderUtils.getElementText((Element) beginTime.item(0)))),
+            			new Instant(Long.parseLong(ReaderUtils.getElementText((Element) endTime.item(0))))
+            	);
+                
+            	Map tempExtent = new HashMap();
+                tempExtent.put("timePeriod", timePeriod);
+                return tempExtent;
+            }
+        }
+        
+        return null;
+    }
+    
     /**
      * This method is in charge for loading the grid geometry for this
      * coverage's info.xml file.

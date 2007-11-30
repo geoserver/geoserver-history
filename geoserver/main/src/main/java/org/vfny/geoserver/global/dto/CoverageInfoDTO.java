@@ -4,6 +4,11 @@
  */
 package org.vfny.geoserver.global.dto;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -11,10 +16,6 @@ import org.opengis.util.InternationalString;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.MetaDataLink;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -145,6 +146,18 @@ public final class CoverageInfoDTO implements DataTransferObject {
      * 
      */
     private boolean nDimensionalCoverage;
+    
+	/**
+	 * Storing here all the available zeta values for this Coverage
+	 */
+	private Map verticalExtent;
+
+	/**
+	 * Storing here all the valid time positions or time period
+	 * for this Coverage
+	 */
+	private Map temporalExtent;
+
     /**
      * Default style used to render this Coverage with WMS
      */
@@ -154,8 +167,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
     private ArrayList styles = new ArrayList();
 
     /**
-         * String representation of connection parameter values
-         */
+     * String representation of connection parameter values
+     */
     private Map parameters;
 
     public CoverageInfoDTO() {
@@ -185,6 +198,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
         srsName = dto.getSrsName();
         srsWKT = dto.getSrsWKT();
         envelope = dto.getEnvelope();
+        verticalExtent = dto.getVerticalExtent();
+        temporalExtent = dto.getTemporalExtent();
         lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
         grid = dto.getGrid();
         nDimensionalCoverage = dto.isNDimensionalCoverage();
@@ -848,5 +863,21 @@ public final class CoverageInfoDTO implements DataTransferObject {
 
 	public void setNDimensionalCoverage(boolean dimensionalCoverage) {
 		nDimensionalCoverage = dimensionalCoverage;
+	}
+
+	public Map getTemporalExtent() {
+		return temporalExtent;
+	}
+
+	public void setTemporalExtent(Map temporalExtent) {
+		this.temporalExtent = temporalExtent;
+	}
+
+	public Map getVerticalExtent() {
+		return verticalExtent;
+	}
+
+	public void setVerticalExtent(Map verticalExtent) {
+		this.verticalExtent = verticalExtent;
 	}
 }
