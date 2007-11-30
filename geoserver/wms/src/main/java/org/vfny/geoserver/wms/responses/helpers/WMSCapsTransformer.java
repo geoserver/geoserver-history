@@ -46,6 +46,7 @@ import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
+import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
 import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
@@ -997,12 +998,16 @@ public class WMSCapsTransformer extends TransformerBase {
                 if (CRSUtilities.equalsIgnoreMetadata(wgs84, bounds.getCoordinateReferenceSystem())) {
                     llBounds = bounds;
                 } else {
-                    final MathTransform srcCRStoWGS84 = CRS.findMathTransform(bounds
-                            .getCoordinateReferenceSystem(), wgs84, true);
-                    final GeneralEnvelope latLonEnvelope = CRSUtilities.transform(srcCRStoWGS84,
-                            bounds);
-                    latLonEnvelope.setCoordinateReferenceSystem(wgs84);
-                    llBounds = latLonEnvelope;
+                    try {
+                        final MathTransform srcCRStoWGS84 = CRS.findMathTransform(bounds
+                                .getCoordinateReferenceSystem(), wgs84, true);
+                        final GeneralEnvelope latLonEnvelope = CRS.transform(srcCRStoWGS84,
+                                bounds);
+                        latLonEnvelope.setCoordinateReferenceSystem(wgs84);
+                        llBounds = latLonEnvelope;
+                    } catch(TransformException e) {
+                        throw new WmsException("Cannot transform envelope to WGS84 for layer group " + layerName, "TransformException", e);
+                    }
                 }
 
                 final Envelope bbox = new Envelope(bounds.getLowerCorner().getOrdinate(0),
