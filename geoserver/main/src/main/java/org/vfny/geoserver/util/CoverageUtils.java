@@ -83,7 +83,7 @@ public class CoverageUtils {
 
                     Object value = val.getValue();
 
-                    parameters.add(new DefaultParameterDescriptor(_key, value.getClass(), null,
+                    parameters.add(new DefaultParameterDescriptor(_key, descr.getValueClass(), null,
                             value).createValue());
                 }
             }

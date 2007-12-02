@@ -4,10 +4,24 @@
  */
 package org.vfny.geoserver.wcs.responses;
 
+import java.awt.Rectangle;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.media.jai.Interpolation;
+
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.coverage.grid.io.AbstractGridCoverageNDReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
@@ -16,6 +30,7 @@ import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
+import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -33,16 +48,6 @@ import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.CoverageRequest;
-import java.awt.Rectangle;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.media.jai.Interpolation;
 
 
 /**
@@ -211,7 +216,13 @@ public class CoverageResponse implements Response {
         try {
             meta = catalog.getCoverageInfo(request.getCoverage());
 
-            if (!meta.getSupportedFormats().contains(outputFormat.toUpperCase())) {
+            boolean isFormatSupported = false;
+            for (Object formatName : meta.getSupportedFormats()) {
+            	isFormatSupported = ((String)formatName).equalsIgnoreCase(outputFormat);
+            	if (isFormatSupported) break;
+			}
+            
+            if (!isFormatSupported) {
                 WcsException newEx = new WcsException(new StringBuffer("output format: ").append(
                             outputFormat).append(" not ")
                                                                                          .append("supported by geoserver for this Coverage")
@@ -220,8 +231,7 @@ public class CoverageResponse implements Response {
             }
 
             final Format format = meta.getFormatInfo().getFormat();
-            final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta
-                .createReader(hints);
+            final GridCoverageReader reader = meta.createReader(hints);
 
             // /////////////////////////////////////////////////////////
             //
@@ -230,8 +240,21 @@ public class CoverageResponse implements Response {
             // /////////////////////////////////////////////////////////
             final ParameterValueGroup params = reader.getFormat().getReadParameters();
 
-            final GridCoverage2D finalCoverage = getFinalCoverage(request, meta, reader,
-                    CoverageUtils.getParametersKVP(params));
+            if (params.parameter("Coverage")!=null)
+            	params.parameter("Coverage").setValue(meta.getRealName());
+            if (params.parameter("Times")!=null && request.getTime()!=null) {
+            	List times = request.getTime();
+            	Object[] timePositions = new Object[times.size()];
+            	for (int t=0; t<times.size(); t++)
+            		timePositions[t] = times.get(t);
+            	params.parameter("Times").setValue(timePositions);
+            }
+            if (params.parameter("Bands")!=null && request.getParameters()!=null && !request.getParameters().isEmpty())
+            	params.parameter("Bands").setValue(request.getParameters().keySet().toArray(new String[1]));
+            if (params.parameter("Elevations")!=null && request.getElevations()!=null)
+            	params.parameter("Elevations").setValue(request.getElevations());
+            
+            final GridCoverage2D finalCoverage = getFinalCoverage(request, meta, reader, params);
             delegate.prepare(outputFormat, finalCoverage);
         } catch (IOException e) {
             final WcsException newEx = new WcsException(e, "problem with CoverageResults",
@@ -287,7 +310,7 @@ public class CoverageResponse implements Response {
      *
      * @param request CoverageRequest
      * @param meta CoverageInfo
-     * @param parameters
+     * @param params
      * @param coverage GridCoverage
      * @return GridCoverage2D
      * @throws WcsException
@@ -297,7 +320,7 @@ public class CoverageResponse implements Response {
      * @throws TransformException
      */
     private static GridCoverage2D getFinalCoverage(CoverageRequest request, CoverageInfo meta,
-        AbstractGridCoverage2DReader coverageReader /*GridCoverage coverage*/, Map parameters)
+        GridCoverageReader coverageReader /*GridCoverage coverage*/, ParameterValueGroup params)
         throws WcsException, IOException, IndexOutOfBoundsException, FactoryException,
             TransformException {
         // This is the final Response CRS
@@ -325,8 +348,10 @@ public class CoverageResponse implements Response {
         final CoordinateReferenceSystem sourceCRS = CRS.decode(requestCRS);
 
         // This is the CRS of the Coverage Envelope
-        final CoordinateReferenceSystem cvCRS = ((GeneralEnvelope) coverageReader
-            .getOriginalEnvelope()).getCoordinateReferenceSystem();
+        final CoordinateReferenceSystem cvCRS = (coverageReader instanceof AbstractGridCoverage2DReader ? 
+        		((GeneralEnvelope) ((AbstractGridCoverage2DReader) coverageReader).getOriginalEnvelope()).getCoordinateReferenceSystem()
+        		:
+        		((AbstractGridCoverageNDReader) coverageReader).getCrs(meta.getRealName()));
         final MathTransform GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform = CRS
             .findMathTransform(cvCRS, sourceCRS, true);
         final MathTransform GCCRSTodeviceCRSTransform = CRS.findMathTransform(cvCRS, targetCRS, true);
@@ -409,11 +434,10 @@ public class CoverageResponse implements Response {
         // Reading the coverage
         //
         // /////////////////////////////////////////////////////////
-        parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),
-            new GridGeometry2D(new GeneralGridRange(destinationSize), destinationEnvelopeInSourceCRS));
+        if (params.parameter(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString()) != null)
+        	params.parameter(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString()).setValue(new GridGeometry2D(new GeneralGridRange(destinationSize), destinationEnvelopeInSourceCRS));
 
-        final GridCoverage coverage = coverageReader.read(CoverageUtils.getParameters(
-                    coverageReader.getFormat().getReadParameters(), parameters, true));
+        final GridCoverage coverage = coverageReader.read(CoverageUtils.getParameters(params));
 
         if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
             throw new IOException("The requested coverage could not be found.");
@@ -421,6 +445,8 @@ public class CoverageResponse implements Response {
 
         /**
          * Band Select
+         * 
+         * TODO: better refactoring for ND-Coverages
          */
         Coverage bandSelectedCoverage = null;
 

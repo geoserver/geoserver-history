@@ -6,6 +6,9 @@ package org.vfny.geoserver.wcs.requests;
 
 import com.vividsolutions.jts.geom.Envelope;
 import org.vfny.geoserver.wcs.servlets.WCService;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -80,6 +83,10 @@ public class CoverageRequest extends WCSRequest {
      */
     private Double[] gridOrigin;
     private Map parameters;
+
+	private List time;
+
+	private String[] elevations;
 
     public CoverageRequest(WCService service) {
         super("GetCoverage", service);
@@ -247,6 +254,16 @@ public class CoverageRequest extends WCSRequest {
             double arg3 = Double.parseDouble(coords[3]);
 
             this.envelope = new Envelope(arg0, arg2, arg1, arg3);
+            
+            if (coords.length > 4) {
+            	final List zetas = new ArrayList();
+            	for (int c=4; c<coords.length; c++) {
+            		if (!zetas.contains(coords[c]))
+            			zetas.add(coords[c]);
+            	}
+            	
+            	this.elevations = (String[]) zetas.toArray(new String[1]);
+            }
         } catch (NumberFormatException e) {
             this.envelope = null;
         }
@@ -412,4 +429,20 @@ public class CoverageRequest extends WCSRequest {
     public Map getParameters() {
         return parameters;
     }
+
+	public void setTime(List time) {
+		this.time = time;
+	}
+
+	public List getTime() {
+		return time;
+	}
+
+	public String[] getElevations() {
+		return elevations;
+	}
+
+	public void setElevations(String[] elevations) {
+		this.elevations = elevations;
+	}
 }

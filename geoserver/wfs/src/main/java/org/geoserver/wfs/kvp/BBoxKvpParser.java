@@ -61,7 +61,11 @@ public class BBoxKvpParser extends KvpParser {
         CoordinateReferenceSystem crs = null;
 
         if (unparsed.size() > 4) {
-            crs = CRS.decode((String) unparsed.get(4));
+        	try {
+                crs = CRS.decode((String) unparsed.get(4));
+        	} catch (Exception e) {
+        		//TODO: use the default crs of the system
+        	}
         } else {
             //TODO: use the default crs of the system
         }

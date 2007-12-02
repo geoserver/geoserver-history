@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.geoserver.ows.KvpParser;
 import org.joda.time.Instant;
@@ -127,7 +128,8 @@ public class TimeKvpParser extends KvpParser {
     private Date getDate(final String value) throws ParseException {
         for (int i=0; i<formats.length; i++) {
             if (formats[i] == null) {
-                formats[i] = new SimpleDateFormat(PATTERNS[i], Locale.CANADA);
+                formats[i] = new SimpleDateFormat(PATTERNS[i]);
+                formats[i].setTimeZone(TimeZone.getTimeZone("GMT"));
             }
             /* We do not use the standard method DateFormat.parse(String), because if the parsing
              * stops before the end of the string, the remaining characters are just ignored and
