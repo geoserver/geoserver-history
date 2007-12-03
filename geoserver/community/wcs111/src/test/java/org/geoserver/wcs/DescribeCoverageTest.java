@@ -74,7 +74,7 @@ public class DescribeCoverageTest extends WCSTestSupport {
         Document dom = getAsDOM(BASEPATH
                 + "?request=DescribeCoverage&service=WCS&version=1.1.1&identifiers="
                 + layerId(WCSTestSupport.TASMANIA_BM), errors);
-        print(dom);
+//        print(dom);
         checkValidationErrors(errors);
         // check the basics, the output is a single coverage description with the expected id
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescriptions").getLength());
