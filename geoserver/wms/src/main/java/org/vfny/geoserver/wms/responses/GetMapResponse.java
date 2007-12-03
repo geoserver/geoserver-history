@@ -389,6 +389,10 @@ public class GetMapResponse implements Response {
                                 layers[i]
 			                              .getCoverage()
 			                              .getParameters().put("Times", timePositions);
+                            } else {
+                                layers[i]
+			                              .getCoverage()
+			                              .getParameters().put("Times", null);
                             }
                         } catch (ParameterNotFoundException p) {
                         }
@@ -450,6 +454,10 @@ public class GetMapResponse implements Response {
                                 layers[i]
 			                              .getCoverage()
 			                              .getParameters().put("Elevations", elevations);
+                            } else {
+                            	layers[i]
+			                              .getCoverage()
+			                              .getParameters().put("Elevations", null);
                             }
                         } catch (ParameterNotFoundException p) {
                         }
@@ -461,7 +469,7 @@ public class GetMapResponse implements Response {
                         //
                         // //
 						try {
-							final ParameterValueGroup params = reader.getFormat().getReadParameters();
+							final ParameterValueGroup params = (ParameterValueGroup) reader.getFormat().getReadParameters().clone();
 							
 							if (reader instanceof AbstractGridCoverage2DReader) {
 								layer = new DefaultMapLayer(

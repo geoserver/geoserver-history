@@ -238,7 +238,7 @@ public class CoverageResponse implements Response {
             // Setting coverage reading params.
             //
             // /////////////////////////////////////////////////////////
-            final ParameterValueGroup params = reader.getFormat().getReadParameters();
+            final ParameterValueGroup params = (ParameterValueGroup) reader.getFormat().getReadParameters().clone();
 
             if (params.parameter("Coverage")!=null)
             	params.parameter("Coverage").setValue(meta.getRealName());
