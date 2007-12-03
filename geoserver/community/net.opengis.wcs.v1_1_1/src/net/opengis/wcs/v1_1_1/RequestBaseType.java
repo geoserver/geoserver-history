@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link net.opengis.wcs.v1_1_1.RequestBaseType#getService <em>Service</em>}</li>
  *   <li>{@link net.opengis.wcs.v1_1_1.RequestBaseType#getVersion <em>Version</em>}</li>
+ *   <li>{@link net.opengis.wcs.v1_1_1.RequestBaseType#getBaseUrl <em>Base Url</em>}</li>
  * </ul>
  * </p>
  *
@@ -137,5 +138,31 @@ public interface RequestBaseType extends EObject {
      * @generated
      */
     boolean isSetVersion();
+
+    /**
+     * Returns the value of the '<em><b>Base Url</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Base Url</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Base Url</em>' attribute.
+     * @see #setBaseUrl(String)
+     * @see net.opengis.wcs.v1_1_1.Wcs111Package#getRequestBaseType_BaseUrl()
+     * @model dataType="org.eclipse.emf.ecore.xml.type.String"
+     * @generated
+     */
+    String getBaseUrl();
+
+    /**
+     * Sets the value of the '{@link net.opengis.wcs.v1_1_1.RequestBaseType#getBaseUrl <em>Base Url</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Base Url</em>' attribute.
+     * @see #getBaseUrl()
+     * @generated
+     */
+    void setBaseUrl(String value);
 
 } // RequestBaseType

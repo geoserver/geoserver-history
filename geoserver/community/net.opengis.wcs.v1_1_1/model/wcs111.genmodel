@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <genmodel:GenModel xmi:version="2.0"
     xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
-    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/net.opengis.wcs.v1_1_0/src"
-    modelPluginID="net.opengis.wcs.v1_1_0" modelName="Wcs11" importerID="org.eclipse.xsd.ecore.importer"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/net.opengis.wcs.v1_1_1/src"
+    modelPluginID="net.opengis.wcs.v1_1_1" modelName="Wcs11" importerID="org.eclipse.xsd.ecore.importer"
     copyrightFields="false" usedGenPackages="../../net.opengis.ows.v1_1_0/model/ows11.genmodel#//v1_1_0 platform:/plugin/org.eclipse.emf.ecore/model/XMLNamespace.genmodel#//namespace">
   <foreignModel>../schema/wcs/1.1.1/wcsAll.xsd</foreignModel>
   <genPackages prefix="Wcs111" basePackage="net.opengis.wcs" disposableProviderFactory="true"

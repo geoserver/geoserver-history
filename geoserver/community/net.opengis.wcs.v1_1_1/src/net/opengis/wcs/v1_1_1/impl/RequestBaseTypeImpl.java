@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <ul>
  *   <li>{@link net.opengis.wcs.v1_1_1.impl.RequestBaseTypeImpl#getService <em>Service</em>}</li>
  *   <li>{@link net.opengis.wcs.v1_1_1.impl.RequestBaseTypeImpl#getVersion <em>Version</em>}</li>
+ *   <li>{@link net.opengis.wcs.v1_1_1.impl.RequestBaseTypeImpl#getBaseUrl <em>Base Url</em>}</li>
  * </ul>
  * </p>
  *
@@ -88,6 +89,26 @@ public class RequestBaseTypeImpl extends EObjectImpl implements RequestBaseType 
      * @ordered
      */
     protected boolean versionESet;
+
+    /**
+     * The default value of the '{@link #getBaseUrl() <em>Base Url</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getBaseUrl()
+     * @generated
+     * @ordered
+     */
+    protected static final String BASE_URL_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getBaseUrl() <em>Base Url</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getBaseUrl()
+     * @generated
+     * @ordered
+     */
+    protected String baseUrl = BASE_URL_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -204,12 +225,35 @@ public class RequestBaseTypeImpl extends EObjectImpl implements RequestBaseType 
      * <!-- end-user-doc -->
      * @generated
      */
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setBaseUrl(String newBaseUrl) {
+        String oldBaseUrl = baseUrl;
+        baseUrl = newBaseUrl;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, Wcs111Package.REQUEST_BASE_TYPE__BASE_URL, oldBaseUrl, baseUrl));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
             case Wcs111Package.REQUEST_BASE_TYPE__SERVICE:
                 return getService();
             case Wcs111Package.REQUEST_BASE_TYPE__VERSION:
                 return getVersion();
+            case Wcs111Package.REQUEST_BASE_TYPE__BASE_URL:
+                return getBaseUrl();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -226,6 +270,9 @@ public class RequestBaseTypeImpl extends EObjectImpl implements RequestBaseType 
                 return;
             case Wcs111Package.REQUEST_BASE_TYPE__VERSION:
                 setVersion((String)newValue);
+                return;
+            case Wcs111Package.REQUEST_BASE_TYPE__BASE_URL:
+                setBaseUrl((String)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -244,6 +291,9 @@ public class RequestBaseTypeImpl extends EObjectImpl implements RequestBaseType 
             case Wcs111Package.REQUEST_BASE_TYPE__VERSION:
                 unsetVersion();
                 return;
+            case Wcs111Package.REQUEST_BASE_TYPE__BASE_URL:
+                setBaseUrl(BASE_URL_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -259,6 +309,8 @@ public class RequestBaseTypeImpl extends EObjectImpl implements RequestBaseType 
                 return isSetService();
             case Wcs111Package.REQUEST_BASE_TYPE__VERSION:
                 return isSetVersion();
+            case Wcs111Package.REQUEST_BASE_TYPE__BASE_URL:
+                return BASE_URL_EDEFAULT == null ? baseUrl != null : !BASE_URL_EDEFAULT.equals(baseUrl);
         }
         return super.eIsSet(featureID);
     }
@@ -276,6 +328,8 @@ public class RequestBaseTypeImpl extends EObjectImpl implements RequestBaseType 
         if (serviceESet) result.append(service); else result.append("<unset>");
         result.append(", version: ");
         if (versionESet) result.append(version); else result.append("<unset>");
+        result.append(", baseUrl: ");
+        result.append(baseUrl);
         result.append(')');
         return result.toString();
     }

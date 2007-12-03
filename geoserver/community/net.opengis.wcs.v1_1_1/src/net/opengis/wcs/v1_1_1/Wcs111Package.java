@@ -814,13 +814,22 @@ public interface Wcs111Package extends EPackage {
     int REQUEST_BASE_TYPE__VERSION = 1;
 
     /**
+     * The feature id for the '<em><b>Base Url</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int REQUEST_BASE_TYPE__BASE_URL = 2;
+
+    /**
      * The number of structural features of the '<em>Request Base Type</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int REQUEST_BASE_TYPE_FEATURE_COUNT = 2;
+    int REQUEST_BASE_TYPE_FEATURE_COUNT = 3;
 
     /**
      * The meta object id for the '{@link net.opengis.wcs.v1_1_1.impl.DescribeCoverageTypeImpl <em>Describe Coverage Type</em>}' class.
@@ -849,6 +858,15 @@ public interface Wcs111Package extends EPackage {
      * @ordered
      */
     int DESCRIBE_COVERAGE_TYPE__VERSION = REQUEST_BASE_TYPE__VERSION;
+
+    /**
+     * The feature id for the '<em><b>Base Url</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DESCRIBE_COVERAGE_TYPE__BASE_URL = REQUEST_BASE_TYPE__BASE_URL;
 
     /**
      * The feature id for the '<em><b>Identifier</b></em>' attribute list.
@@ -1333,6 +1351,15 @@ public interface Wcs111Package extends EPackage {
     int GET_CAPABILITIES_TYPE__UPDATE_SEQUENCE = Ows11Package.GET_CAPABILITIES_TYPE__UPDATE_SEQUENCE;
 
     /**
+     * The feature id for the '<em><b>Base Url</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GET_CAPABILITIES_TYPE__BASE_URL = Ows11Package.GET_CAPABILITIES_TYPE__BASE_URL;
+
+    /**
      * The feature id for the '<em><b>Service</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1377,6 +1404,15 @@ public interface Wcs111Package extends EPackage {
      * @ordered
      */
     int GET_COVERAGE_TYPE__VERSION = REQUEST_BASE_TYPE__VERSION;
+
+    /**
+     * The feature id for the '<em><b>Base Url</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GET_COVERAGE_TYPE__BASE_URL = REQUEST_BASE_TYPE__BASE_URL;
 
     /**
      * The feature id for the '<em><b>Identifier</b></em>' containment reference.
@@ -3222,6 +3258,17 @@ public interface Wcs111Package extends EPackage {
     EAttribute getRequestBaseType_Version();
 
     /**
+     * Returns the meta object for the attribute '{@link net.opengis.wcs.v1_1_1.RequestBaseType#getBaseUrl <em>Base Url</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Base Url</em>'.
+     * @see net.opengis.wcs.v1_1_1.RequestBaseType#getBaseUrl()
+     * @see #getRequestBaseType()
+     * @generated
+     */
+    EAttribute getRequestBaseType_BaseUrl();
+
+    /**
      * Returns the meta object for class '{@link net.opengis.wcs.v1_1_1.SpatialDomainType <em>Spatial Domain Type</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -4439,6 +4486,14 @@ public interface Wcs111Package extends EPackage {
          * @generated
          */
         EAttribute REQUEST_BASE_TYPE__VERSION = eINSTANCE.getRequestBaseType_Version();
+
+        /**
+         * The meta object literal for the '<em><b>Base Url</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute REQUEST_BASE_TYPE__BASE_URL = eINSTANCE.getRequestBaseType_BaseUrl();
 
         /**
          * The meta object literal for the '{@link net.opengis.wcs.v1_1_1.impl.SpatialDomainTypeImpl <em>Spatial Domain Type</em>}' class.
