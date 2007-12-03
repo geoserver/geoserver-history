@@ -614,10 +614,10 @@ public class MockData {
         }
         
         // supported crs
-        writer.write("<SupportedCRSs>");
+        writer.write("<supportedCRSs>");
         writer.write("<requestCRSs>" + nativeCrsName + "</requestCRSs>");
         writer.write("<responseCRSs>" + nativeCrsName + "</responseCRSs>");
-        writer.write("</SupportedCRSs>");
+        writer.write("</supportedCRSs>");
         
         // supported formats
         writer.write("<supportedFormats nativeFormat = \"" + format.getName() + "\">");
