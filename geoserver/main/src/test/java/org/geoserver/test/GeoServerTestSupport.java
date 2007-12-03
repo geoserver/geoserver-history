@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,6 +20,7 @@ import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -43,6 +45,9 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
@@ -188,6 +193,19 @@ public class GeoServerTestSupport extends TestCase {
         throws IOException {
         return getCatalog().getFeatureSource(typeName.getPrefix(), typeName.getLocalPart());
     }
+    
+    /**
+     * Given a qualified layer name returns a string in the form "prefix:localPart" if prefix
+     * is available, "localPart" if prefix is null
+     * @param layerName
+     * @return
+     */
+    public String layerId(QName layerName) {
+        if(layerName.getPrefix() != null)
+            return layerName.getPrefix() + ":" + layerName.getLocalPart();
+        else
+            return layerName.getLocalPart();
+    }
 
     /**
      * Convenience method for subclasses to create mock http servlet requests.
@@ -304,7 +322,7 @@ public class GeoServerTestSupport extends TestCase {
      * Executes an ows request using the GET method and returns the result as an 
      * xml document.
      * 
-     * @param path The porition of the request after hte context, 
+     * @param path The portion of the request after the context, 
      *      example: 'wms?request=GetMap&version=1.1.1&..."
      * 
      * @return A result of the request parsed into a dom.
@@ -312,7 +330,43 @@ public class GeoServerTestSupport extends TestCase {
      * @throws Exception
      */
     protected Document getAsDOM( String path ) throws Exception {
-        return dom( get( path ) );
+        return getAsDOM(path, null);
+    }
+    
+    /**
+     * Executes an ows request using the GET method and returns the result as an 
+     * xml document.
+     * 
+     * @param path The portion of the request after the context, 
+     *      example: 'wms?request=GetMap&version=1.1.1&..."
+     * @param the list of validation errors encountered during document parsing (validation
+     *        will be activated only if this list is non null)
+     * 
+     * @return A result of the request parsed into a dom.
+     * 
+     * @throws Exception
+     */
+    protected Document getAsDOM(final String path, List<Exception> validationErrors)
+            throws Exception {
+        return dom(get(path), validationErrors);
+    }
+
+    
+    /**
+     * Executes an ows request using the POST method with key value pairs 
+     * form encoded, returning the result as a dom.
+     *
+     * @param path The porition of the request after hte context, 
+     *      example: 'wms?request=GetMap&version=1.1.1&..."
+     * @param the list of validation errors encountered during document parsing (validation
+     *        will be activated only if this list is non null)     
+     * 
+     * @return An input stream which is the result of the request.
+     * 
+     * @throws Exception
+     */
+    protected Document postAsDOM( String path ) throws Exception {
+        return postAsDOM(path, (List<Exception>) null);
     }
     
     /**
@@ -326,8 +380,8 @@ public class GeoServerTestSupport extends TestCase {
      * 
      * @throws Exception
      */
-    protected Document postAsDOM( String path ) throws Exception {
-        return dom( post( path ) );
+    protected Document postAsDOM( String path, List<Exception> validationErrors ) throws Exception {
+        return dom( post( path ), validationErrors );
     }
     
     /**
@@ -344,7 +398,24 @@ public class GeoServerTestSupport extends TestCase {
      * @throws Exception
      */
     protected Document postAsDOM( String path, String xml ) throws Exception {
-            return dom( post( path, xml ) );
+            return postAsDOM(path, xml, null);
+    }
+    
+    /**
+     * Executes an ows request using the POST method and returns the result as an
+     * xml document.
+     * <p>
+     * 
+     * </p>
+     * @param path The porition of the request after the context ( no query string ), 
+     *      example: 'wms'. 
+     * 
+     * @return An input stream which is the result of the request.
+     * 
+     * @throws Exception
+     */
+    protected Document postAsDOM( String path, String xml, List<Exception> validationErrors ) throws Exception {
+            return dom( post( path, xml ), validationErrors );
     }
     
     protected String getAsString(String path) throws Exception {
@@ -355,15 +426,59 @@ public class GeoServerTestSupport extends TestCase {
      * Parses a stream into a dom.
      */
     protected Document dom( InputStream input ) throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); 
-        factory.setNamespaceAware( true );
-        //factory.setValidating( true );
-        
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document dom = builder.parse( input );
-
-        return dom;
+        return dom(input, null);
     }
+    
+    /**
+     * Parses a stream into a dom. If the validationErrors collection is provided (not null) then
+     * schema validation is activated and the validation errors will be added to it.
+     */
+    private Document dom(InputStream is, final List<Exception> validationErrors)
+            throws ParserConfigurationException, SAXException, IOException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        if (validationErrors != null) {
+            factory.setValidating(true);
+            factory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage",
+                    "http://www.w3.org/2001/XMLSchema");
+        }
+
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        if (validationErrors != null) {
+            builder.setErrorHandler(new ErrorHandler() {
+
+                public void warning(SAXParseException exception) throws SAXException {
+                    System.out.println(exception.getMessage());
+                }
+
+                public void fatalError(SAXParseException exception) throws SAXException {
+                    validationErrors.add(exception);
+                }
+
+                public void error(SAXParseException exception) throws SAXException {
+                    validationErrors.add(exception);
+                }
+
+            });
+        }
+        return builder.parse(is);
+    }
+
+    /**
+     * Given a list of validation exceptions, checks it's empty, or fails the test with a list
+     * of the validation errors instead
+     * @param validationErrors
+     */
+    protected void checkValidationErrors(List<Exception> validationErrors) {
+        if (validationErrors != null && validationErrors.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            for (Exception ve : validationErrors) {
+                sb.append(ve.getMessage()).append("\n");
+            }
+            fail(sb.toString());
+        }
+    }
+        
     
     /**
      * Parses a stream into a String
