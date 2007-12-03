@@ -88,13 +88,7 @@ public class GeoServerTestSupport extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-
-        // create the data directory
-        dataDirectory = new MockData();
-        populateDataDirectory(dataDirectory);
-        dataDirectory.setUpCatalog();
-        dataDirectory.copyTo(getServicesFile().openStream(), "services.xml");
-                 
+        
         // setup quiet logging (we need to to this here because Data
         // is loaded before GoeServer has a chance to setup logging for good)
         try {
@@ -105,6 +99,12 @@ public class GeoServerTestSupport extends TestCase {
         GeoServer.suppressLoggingConfiguration();
         setupLogging(getClass().getResourceAsStream(getDefaultLogConfiguration()));
 
+        // create the data directory
+        dataDirectory = new MockData();
+        populateDataDirectory(dataDirectory);
+        dataDirectory.setUpCatalog();
+        dataDirectory.copyTo(getServicesFile().openStream(), "services.xml");
+                 
         // set up a mock servlet context
         MockServletContext servletContext = new MockServletContext();
         servletContext.setInitParameter("GEOSERVER_DATA_DIR",
