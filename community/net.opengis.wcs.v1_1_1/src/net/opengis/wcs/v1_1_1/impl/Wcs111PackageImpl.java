@@ -1426,6 +1426,15 @@ public class Wcs111PackageImpl extends EPackageImpl implements Wcs111Package {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EAttribute getRequestBaseType_BaseUrl() {
+        return (EAttribute)requestBaseTypeEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getSpatialDomainType() {
         return spatialDomainTypeEClass;
     }
@@ -1762,6 +1771,7 @@ public class Wcs111PackageImpl extends EPackageImpl implements Wcs111Package {
         requestBaseTypeEClass = createEClass(REQUEST_BASE_TYPE);
         createEAttribute(requestBaseTypeEClass, REQUEST_BASE_TYPE__SERVICE);
         createEAttribute(requestBaseTypeEClass, REQUEST_BASE_TYPE__VERSION);
+        createEAttribute(requestBaseTypeEClass, REQUEST_BASE_TYPE__BASE_URL);
 
         spatialDomainTypeEClass = createEClass(SPATIAL_DOMAIN_TYPE);
         createEAttribute(spatialDomainTypeEClass, SPATIAL_DOMAIN_TYPE__BOUNDING_BOX_GROUP);
@@ -1970,6 +1980,7 @@ public class Wcs111PackageImpl extends EPackageImpl implements Wcs111Package {
         initEClass(requestBaseTypeEClass, RequestBaseType.class, "RequestBaseType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getRequestBaseType_Service(), theXMLTypePackage.getString(), "service", "WCS", 1, 1, RequestBaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getRequestBaseType_Version(), theXMLTypePackage.getString(), "version", "1.1.1", 1, 1, RequestBaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getRequestBaseType_BaseUrl(), theXMLTypePackage.getString(), "baseUrl", null, 0, 1, RequestBaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(spatialDomainTypeEClass, SpatialDomainType.class, "SpatialDomainType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getSpatialDomainType_BoundingBoxGroup(), ecorePackage.getEFeatureMapEntry(), "boundingBoxGroup", null, 1, -1, SpatialDomainType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

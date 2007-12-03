@@ -18,4 +18,6 @@ public interface RequestBaseTypeValidator {
 
     boolean validateService(String value);
     boolean validateVersion(String value);
+
+    boolean validateBaseUrl(String value);
 }
