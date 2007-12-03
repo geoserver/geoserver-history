@@ -51,7 +51,15 @@
   <bean id="wcs111GetCapabilitiesKvpReader"
     class="org.geoserver.wcs.kvp.WcsGetCapabilitiesRequestReader" />
     
+  <bean id="wcs111DescribeCoverageKvpReader"
+    class="org.geoserver.wcs.kvp.DescribeCoverageKvpRequestReader" >
+    <constructor-arg index="0" ref="catalog" />
+  </bean>
+    
   <!-- responses -->
   <bean id="wcs111GetCapabilitiesResponse"
     class="org.geoserver.wcs.response.GetCapabilitiesResponse" singleton="false"/>
+    
+  <bean id="wcs111DescribeCoverageResponse"
+    class="org.geoserver.wcs.response.DescribeCoverageResponse" singleton="false"/>
 </beans>

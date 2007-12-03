@@ -4,14 +4,13 @@
  */
 package org.geoserver.wcs;
 
-import org.geotools.xml.transform.TransformerBase;
-import org.vfny.geoserver.wcs.responses.CoverageResponse;
-
-import net.opengis.wcs.v1_1_1.CapabilitiesType;
-import net.opengis.wcs.v1_1_1.CoverageDescriptionsType;
 import net.opengis.wcs.v1_1_1.DescribeCoverageType;
 import net.opengis.wcs.v1_1_1.GetCapabilitiesType;
 import net.opengis.wcs.v1_1_1.GetCoverageType;
+
+import org.geoserver.wcs.response.DescribeCoverageTransformer;
+import org.geoserver.wcs.response.WCSCapsTransformer;
+import org.vfny.geoserver.wcs.responses.CoverageResponse;
 
 
 
@@ -29,12 +28,12 @@ public interface WebCoverageService111 {
     /**
     * GetCapabilities operation.
     */
-    TransformerBase getCapabilities(GetCapabilitiesType request);
+    WCSCapsTransformer getCapabilities(GetCapabilitiesType request);
 
     /**
      * DescribeCoverage oeration.
      */
-    CoverageDescriptionsType describeCoverage(DescribeCoverageType request);
+    DescribeCoverageTransformer describeCoverage(DescribeCoverageType request);
 
     /**
      * GetCoverage operation.
