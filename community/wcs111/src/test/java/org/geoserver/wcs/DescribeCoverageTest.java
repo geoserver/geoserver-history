@@ -1,7 +1,7 @@
 package org.geoserver.wcs;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.xpath.XPathAPI;
@@ -66,6 +66,38 @@ public class DescribeCoverageTest extends WCSTestSupport {
         assertEquals(1, dom.getElementsByTagName("wcs:Field").getLength());
         assertEquals(1, dom.getElementsByTagName("wcs:Axis").getLength());
         assertEquals(1, dom.getElementsByTagName("wcs:Key").getLength());
+    }
+    
+    public void testDescribeRotatedCoverage() throws Exception {
+        List<Exception> errors = new ArrayList<Exception>();
+        Document dom = getAsDOM(BASEPATH
+                + "?request=DescribeCoverage&service=WCS&version=1.1.1&identifiers="
+                + layerId(WCSTestSupport.ROTATED_CAD), errors);
+//        print(dom);
+        checkValidationErrors(errors);
+        // check the basics, the output is a single coverage description with the expected id
+        assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescriptions").getLength());
+        assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescription").getLength());
+        Node identifier = XPathAPI.selectSingleNode(dom, "/wcs:CoverageDescriptions/wcs:CoverageDescription/wcs:Identifier");
+        assertEquals(layerId(WCSTestSupport.ROTATED_CAD), identifier.getTextContent());
+        // check there is no rotation
+        Node gridOffsets = XPathAPI.selectSingleNode(dom, "/wcs:CoverageDescriptions/wcs:CoverageDescription/" +
+                "wcs:Domain/wcs:SpatialDomain/wcs:GridCRS/wcs:GridOffsets");
+        String[] offsetStrs = gridOffsets.getTextContent().split(" ");
+        assertEquals(4, offsetStrs.length);
+        double[] offsets = new double[4];
+        for (int i = 0; i < offsetStrs.length; i++) {
+            offsets[i] = Double.parseDouble(offsetStrs[i]);
+        }
+        System.out.println(Arrays.toString(offsets));
+        assertTrue(offsets[0] < 0);
+        assertTrue(offsets[1] > 0);
+        assertTrue(offsets[2] > 0);
+        assertTrue(offsets[3] > 0);
+        // check there is one field, one axis, one key (this one is a dem, just one band)
+        assertEquals(1, dom.getElementsByTagName("wcs:Field").getLength());
+        assertEquals(1, dom.getElementsByTagName("wcs:Axis").getLength());
+        assertEquals(1, dom.getElementsByTagName("wcs:Key").getLength());
 
     }
     
@@ -83,7 +115,7 @@ public class DescribeCoverageTest extends WCSTestSupport {
         assertEquals(layerId(WCSTestSupport.TASMANIA_BM), identifier.getTextContent());
         // check there is no rotation
         Node gridOffsets = XPathAPI.selectSingleNode(dom, "/wcs:CoverageDescriptions/wcs:CoverageDescription/" +
-        		"wcs:Domain/wcs:SpatialDomain/wcs:GridCRS/wcs:GridOffsets");
+                "wcs:Domain/wcs:SpatialDomain/wcs:GridCRS/wcs:GridOffsets");
         String[] offsetStrs = gridOffsets.getTextContent().split(" ");
         assertEquals(4, offsetStrs.length);
         double[] offsets = new double[4];
@@ -100,7 +132,4 @@ public class DescribeCoverageTest extends WCSTestSupport {
         assertEquals(3, dom.getElementsByTagName("wcs:Key").getLength());
     }
     
-    public void testDescribeRotatedCoverage() throws Exception {
-//        fail("Remember to write this one using a world image");
-    }
 }
