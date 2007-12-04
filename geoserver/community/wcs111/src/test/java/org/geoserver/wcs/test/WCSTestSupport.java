@@ -4,25 +4,11 @@
  */
 package org.geoserver.wcs.test;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
 import org.vfny.geoserver.global.WCS;
-import org.w3c.dom.Document;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
-import com.mockrunner.mock.web.MockHttpServletResponse;
 
 /**
  * Base support class for wcs tests.
@@ -42,6 +28,8 @@ public class WCSTestSupport extends GeoServerTestSupport {
     public static QName TASMANIA_DEM = new QName(WCS_URI, "DEM", WCS_PREFIX);
 
     public static QName TASMANIA_BM = new QName(WCS_URI, "BlueMarble", WCS_PREFIX);
+    
+    public static QName ROTATED_CAD = new QName(WCS_URI, "RotatedCad", WCS_PREFIX);
 
     /**
      * @return The global wfs instance from the application context.
@@ -61,6 +49,9 @@ public class WCSTestSupport extends GeoServerTestSupport {
         dataDirectory.addCoverage(TASMANIA_DEM, WCSTestSupport.class.getResource("tazdem.tiff"),
                 TIFF, null);
         dataDirectory.addCoverage(TASMANIA_BM, WCSTestSupport.class.getResource("tazbm.tiff"),
+                TIFF, null);
+        // hum, the tiff reader does not seem to be able to load this one
+        dataDirectory.addCoverage(ROTATED_CAD, WCSTestSupport.class.getResource("rotated.tiff"),
                 TIFF, null);
     }
 }
