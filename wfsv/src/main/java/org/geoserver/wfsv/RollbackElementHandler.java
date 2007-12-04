@@ -86,8 +86,8 @@ public class RollbackElementHandler implements TransactionElementHandler {
             TransactionResponseType response, TransactionListener listener)
             throws WFSTransactionException {
         RollbackType rollback = (RollbackType) element;
-        VersioningFeatureStore vstore = (VersioningFeatureStore) featureStores.get(rollback
-                .getTypeName());
+        final QName layerName = rollback.getTypeName();
+        VersioningFeatureStore vstore = (VersioningFeatureStore) featureStores.get(layerName);
         long inserted = response.getTransactionSummary().getTotalInserted().longValue();
         long updated = response.getTransactionSummary().getTotalUpdated().longValue();
         long deleted = response.getTransactionSummary().getTotalDeleted().longValue();
@@ -141,10 +141,10 @@ public class RollbackElementHandler implements TransactionElementHandler {
             Filter deletedFilter = filterFactory.id(deletedIds);
 
             // notify pre-update and pre-delete
-            listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_UPDATE, vstore
-                    .getFeatures(updatedFilter)));
-            listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_DELETE, vstore
-                    .getFeatures(deletedFilter)));
+            listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_UPDATE, layerName,
+                    vstore.getFeatures(updatedFilter)));
+            listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_DELETE, layerName, 
+                    vstore.getFeatures(deletedFilter)));
 
             // now do the actual rollback
             try {
@@ -155,10 +155,10 @@ public class RollbackElementHandler implements TransactionElementHandler {
             }
 
             // notify post update and post insert
-            listener.dataStoreChange(new TransactionEvent(TransactionEventType.POST_INSERT, vstore
-                    .getFeatures(insertedFilter)));
-            listener.dataStoreChange(new TransactionEvent(TransactionEventType.POST_UPDATE, vstore
-                    .getFeatures(updatedFilter)));
+            listener.dataStoreChange(new TransactionEvent(TransactionEventType.POST_INSERT, layerName,
+                    vstore.getFeatures(insertedFilter)));
+            listener.dataStoreChange(new TransactionEvent(TransactionEventType.POST_UPDATE, layerName,
+                    vstore.getFeatures(updatedFilter)));
 
             // update summary information
             response.getTransactionSummary().setTotalInserted(BigInteger.valueOf(inserted));

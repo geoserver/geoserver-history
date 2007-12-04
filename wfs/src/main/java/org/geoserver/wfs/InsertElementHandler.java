@@ -104,7 +104,7 @@ public class InsertElementHandler implements TransactionElementHandler {
                 FeatureCollection collection = (FeatureCollection) c.next();
                 SimpleFeatureType schema = collection.getSchema();
 
-                QName elementName = new QName(schema.getName().getNamespaceURI(), schema.getTypeName());
+                final QName elementName = new QName(schema.getName().getNamespaceURI(), schema.getTypeName());
                 FeatureStore store = (FeatureStore) featureStores.get(elementName);
 
                 if (store == null) {
@@ -160,7 +160,7 @@ public class InsertElementHandler implements TransactionElementHandler {
                     }
 
                     listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_INSERT,
-                            collection));
+                            elementName, collection));
                     fids.addAll(store.addFeatures(collection));
                 }
             }
