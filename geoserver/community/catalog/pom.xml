@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.geoserver</groupId>
+		<artifactId>community</artifactId>
+		<version>1.6-beta4</version>
+	</parent>
+
+	<groupId>org.geoserver</groupId>
+  	<artifactId>catalog</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0</version>
+  	<name>Catalog Service Module</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.geoserver</groupId>
+			<artifactId>main</artifactId>
+			<version>1.6-beta4</version>
+		</dependency>
+	</dependencies>
+	
+  <!-- =========================================================== -->
+  <!--     Build Configuration                                     -->
+  <!-- =========================================================== -->
+  <!-- build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jalopy-maven-plugin</artifactId>
+ 				<configuration>
+          <srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
+          <testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>format</goal>
+            </goals>
+            <phase>install</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build -->
+
+</project>

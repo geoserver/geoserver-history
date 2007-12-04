@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- the catalog service. -->
+	<bean id="catalogService"
+		class="org.vfny.geoserver.global.CATALOG">
+		<constructor-arg ref="config"/>
+		<constructor-arg ref="data"/>
+		<constructor-arg ref="geoServer"/>
+	</bean>
+	
+	<!-- the catalog service config -->
+	<bean id="catalogConfig"
+		class="org.vfny.geoserver.config.CATALOGConfig">
+		<constructor-arg ref="catalogService"/>
+	</bean>
+	
+	<!-- this registers the above beans with the servlet context
+	 it is around to keep the struts app happy as we move away from 
+	 servlets  -->
+	<bean id="catalogRegisterar"
+		class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
+		
+		<constructor-arg type="java.lang.String" value="CATALOG"/>
+ 		<constructor-arg ref="catalogService"/>
+ 	</bean>
+ 	
+ 	<bean id="catalogConfigRegisterar"
+		class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
+		
+		<constructor-arg type="java.lang.String" value="Config.CATALOG"/>
+ 		<constructor-arg ref="catalogConfig"/>
+ 	</bean>
+ 	
+		
+	<!-- 
+		servlets for handling incoming requests 
+	-->
+	
+	<!-- the abstract base bean -->
+	<bean id="catalogAbstractService" abstract="true"
+		class="org.vfny.geoserver.servlets.AbstractService">
+		<!--  reference to geoserver bean defined in the 'main' context -->
+		<property name="geoServer" ref="geoServer"/>
+		<property name="catalog" ref="data"/>
+	</bean>
+
+	<!-- the abstract catalog specific bean  -->
+	<bean id="catalogServiceInstance" abstract="true"
+		class="org.vfny.geoserver.catalog.servlets.CATALOGService"
+		parent="catalogAbstractService">	
+		<!-- reference to catalog bean in this context -->
+		<constructor-arg ref="catalogService"/>
+	</bean>
+		
+	<bean id="catalogUpdateCatalog" 
+		class="org.vfny.geoserver.catalog.servlets.Update"
+		parent="catalogServiceInstance">
+	</bean>
+	
+	<bean id="catalogAddFeatureType" 
+		class="org.vfny.geoserver.catalog.servlets.AddFeatureType"
+		parent="catalogServiceInstance">
+	</bean>
+	
+	<bean id="catalogDeleteFeatureType" 
+		class="org.vfny.geoserver.catalog.servlets.DeleteFeatureType"
+		parent="catalogServiceInstance">
+	</bean>
+	
+	<bean id="catalogAddCoverage" 
+		class="org.vfny.geoserver.catalog.servlets.AddCoverage"
+		parent="catalogServiceInstance">
+	</bean>
+
+
+
+	<!-- catalog service + descriptor -->
+ 	<bean id="catalogService2" class="org.vfny.geoserver.catalog.DefaultCatalogService"/>
+ 	<bean id="catalogServiceDescriptor" class="org.geoserver.platform.Service">
+		<constructor-arg index="0" value="catalog"/>
+		<constructor-arg index="1" ref="catalogService2"/>
+		<constructor-arg index="2" value="1.0.0"/>
+ 	</bean>
+ 	<!-- service exception handler -->
+	<bean id="wcsExceptionHandler" class="org.geoserver.ows.LegacyServiceExceptionHandler">
+		<constructor-arg ref="catalogServiceDescriptor"/>
+		<constructor-arg ref="catalogService"/>
+        <constructor-arg ref="geoServer"/>
+		<property name="contentType" value="application/vnd.ogc.se_xml"/>
+		<property name="schemaLocation" value="catalog/1.0.0/OGC-exception.xsd"/>
+	</bean>
+ 	
+ 	<!-- kvp request readers -->
+ 	<bean id="catalogAddCoverageKvpReader" 
+ 		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
+		<constructor-arg index="0" value="org.vfny.geoserver.catalog.requests.AddCoverageRequest" />
+      	<constructor-arg index="1" value="org.vfny.geoserver.catalog.requests.readers.AddCoverageKvpReader" />
+      	<constructor-arg index="2" ref="catalogAddCoverage" />
+	</bean>
+
+	<bean id="catalogAddFeatureTypeKvpReader"
+		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
+		<constructor-arg index="0" value="org.vfny.geoserver.catalog.requests.AddFeatureTypeRequest" />
+      	<constructor-arg index="1" value="org.vfny.geoserver.catalog.requests.readers.AddFeatureTypeKvpReader" />
+      	<constructor-arg index="2" ref="catalogAddFeatureType" />
+	</bean>
+	
+	<bean id="catalogDeleteFeatureTypeKvpReader"
+		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
+		<constructor-arg index="0" value="org.vfny.geoserver.catalog.requests.DeleteFeatureTypeRequest" />
+      	<constructor-arg index="1" value="org.vfny.geoserver.catalog.requests.readers.DeleteFeatureTypeKvpReader" />
+      	<constructor-arg index="2" ref="catalogDeleteFeatureType" />
+	</bean>
+
+	<bean id="catalogUpdateCatalogKvpReader"
+		class="org.geoserver.ows.adapters.KvpRequestReaderAdapter">
+		<constructor-arg index="0" value="org.vfny.geoserver.catalog.requests.UpdateRequest" />
+      	<constructor-arg index="1" value="org.vfny.geoserver.catalog.requests.readers.UpdateKvpReader" />
+      	<constructor-arg index="2" ref="catalogUpdateCatalog" />
+	</bean>
+	
+	<!--  xml request readers -->
+	<bean id="catalogXmlReader" class="org.geoserver.ows.adapters.XmlRequestReaderAdapter"
+		abstract="true">
+		<constructor-arg index="0" value="http://www.opengis.net/catalog"/>
+		<constructor-arg index="2" ref="catalogAddCoverage"/>
+	</bean>
+	
+	<bean id="catalogAddCoverageXmlReader" parent="catalogXmlReader">
+		<constructor-arg index="1" value="AddCoverage"/>
+		<constructor-arg index="3" 
+			value="org.vfny.geoserver.catalog.requests.readers.AddCoverageXmlReader"/>
+	</bean>
+
+	<bean id="catalogAddFeatureTypeXmlReader" parent="catalogXmlReader">
+		<constructor-arg index="1" value="AddFeatureType"/>
+		<constructor-arg index="3" 
+			value="org.vfny.geoserver.catalog.requests.readers.AddFeatureTypeXmlReader"/>
+	</bean>
+
+	<bean id="catalogDeleteFeatureTypeXmlReader" parent="catalogXmlReader">
+		<constructor-arg index="1" value="DeleteFeatureType"/>
+		<constructor-arg index="3" 
+			value="org.vfny.geoserver.catalog.requests.readers.DeleteFeatureTypeXmlReader"/>
+	</bean>
+
+	<bean id="catalogUpdateCatalogXmlReader" parent="catalogXmlReader">
+		<constructor-arg index="1" value="UpdateCatalog"/>
+		<constructor-arg index="3" 
+			value="org.vfny.geoserver.catalog.requests.readers.UpdateXmlReader"/>
+	</bean>
+		
+	<!--  responses -->
+	<bean id="catalogAddCoverageResponse"
+		class="org.geoserver.ows.adapters.ResponseAdapter">
+		<constructor-arg value="org.vfny.geoserver.catalog.responses.AddCoverageResponse"/>
+		<constructor-arg ref="geoServer"/>
+	</bean>	
+	<bean id="catalogAddFeatureTypeResponse"
+		class="org.geoserver.ows.adapters.ResponseAdapter">
+		<constructor-arg value="org.vfny.geoserver.catalog.responses.AddFeatureTypeResponse"/>
+		<constructor-arg ref="geoServer"/>
+	</bean>	
+	<bean id="catalogDeleteFeatureTypeResponse"
+		class="org.geoserver.ows.adapters.ResponseAdapter">
+		<constructor-arg value="org.vfny.geoserver.catalog.responses.DeleteFeatureTypeResponse"/>
+		<constructor-arg ref="geoServer"/>
+	</bean>	
+	<bean id="catalogUpdateCatalogResponse"
+		class="org.geoserver.ows.adapters.ResponseAdapter">
+		<constructor-arg value="org.vfny.geoserver.catalog.responses.UpdateResponse"/>
+		<constructor-arg ref="geoServer"/>
+	</bean>	
+	
+	
+	<!-- http url mapping -->
+	<bean id="catalogURLMapping" 
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="alwaysUseFullPath" value="true"/>
+		<property name="mappings">
+			<props>
+				<prop key="/catalog">dispatcher</prop>
+        		<prop key="/catalog/*">dispatcher</prop>
+			</props>
+		</property>
+	</bean>	
+	
+</beans>
