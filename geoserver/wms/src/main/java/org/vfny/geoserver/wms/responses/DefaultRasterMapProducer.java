@@ -255,7 +255,7 @@ public abstract class DefaultRasterMapProducer extends
 		renderer.setContext(mapContext);
 		renderer.setJava2DHints(hints);
 		// shapefile renderer won't log rendering errors, sigh, we have to do it manually
-		if(renderer instanceof ShapefileRenderer) {
+		if(renderer instanceof ShapefileRenderer && LOGGER.isLoggable(Level.FINE)) {
 		    renderer.addRenderListener(new RenderListener() {
             
                 public void featureRenderer(SimpleFeature feature) {
