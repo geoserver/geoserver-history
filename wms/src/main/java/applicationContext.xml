@@ -339,4 +339,9 @@
  	<bean id="kmscoreKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
 		<constructor-arg value="kmscore"/>
  	</bean>
+  
+    <!-- the meta tile cache, registered here because it's also a WFS transaction listener -->
+    <bean id="metaTileCache" class="org.vfny.geoserver.wms.responses.map.metatile.QuickTileCache">
+      <constructor-arg ref="geoServer"/>
+    </bean>
 </beans>

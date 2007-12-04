@@ -15,14 +15,17 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.geoserver.wfs.TransactionEvent;
+import org.geoserver.wfs.TransactionListener;
+import org.geoserver.wfs.WFSException;
 import org.geotools.util.CanonicalSet;
 import org.geotools.util.SoftValueHashMap;
-import org.geotools.util.WeakHashSet;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-public class QuickTileCache {
+public class QuickTileCache implements TransactionListener {
 	/**
 	 * Set of parameters that we can ignore, since they do not define a map, are
 	 * either unrelated, or define the tiling instead
@@ -42,18 +45,28 @@ public class QuickTileCache {
 	}
 
 	/**
-	 * The time to live for the tiles in cache, in milliseconds. When this time
-	 * expires, the tiles in the cache will be considered stale
-	 */
-	public static final long TIME_TO_LIVE = 5000;
-
-	/**
 	 * Canonicalizer used to return the same object when two threads ask for the
 	 * same meta-tile
 	 */
 	private CanonicalSet<MetaTileKey> metaTileKeys = CanonicalSet.newInstance(MetaTileKey.class);
 
 	private SoftValueHashMap tileCache = new SoftValueHashMap(0);
+	
+	public QuickTileCache(GeoServer geoServer) {
+	    geoServer.addListener(new GeoServer.Listener() {
+        
+            public void changed() {
+                tileCache.clear();
+            }
+        
+        });
+	}
+	
+	/**
+	 * For testing only
+	 */
+	QuickTileCache() {
+    }
 
 	/**
 	 * Given a tiled request, builds a key that can be used to access the cache
@@ -280,12 +293,6 @@ public class QuickTileCache {
 			return null;
 		}
 
-		if (ce.isExpired()) {
-			tileCache.remove(key);
-
-			return null;
-		}
-
 		return getTile(key, request, ce.tiles);
 	}
 
@@ -322,15 +329,16 @@ public class QuickTileCache {
 	class CacheElement {
 		RenderedImage[] tiles;
 
-		long timeCached;
-
 		public CacheElement(RenderedImage[] tiles) {
 			this.tiles = tiles;
-			this.timeCached = System.currentTimeMillis();
-		}
-
-		public boolean isExpired() {
-			return (System.currentTimeMillis() - timeCached) > TIME_TO_LIVE;
 		}
 	}
+
+    public void dataStoreChange(TransactionEvent event) throws WFSException {
+        // if anything changes we just wipe out the cache. the mapkey
+        // contains a string with part of the map request where the layer
+        // name is included, but we would have to parse it and consider
+        // also that the namespace may be missing in the getmap request
+        tileCache.clear();
+    }
 }
