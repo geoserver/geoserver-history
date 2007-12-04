@@ -120,7 +120,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
         TransactionResponseType response, TransactionListener listener)
         throws WFSTransactionException {
         UpdateElementType update = (UpdateElementType) element;
-        QName elementName = update.getTypeName();
+        final QName elementName = update.getTypeName();
         String handle = update.getHandle();
         long updated = response.getTransactionSummary().getTotalUpdated().longValue();
 
@@ -205,7 +205,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
             LOGGER.finer("Preprocess to remember modification as a set of fids");
             
             FeatureCollection features = store.getFeatures(filter);
-            listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_UPDATE, features));
+            listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_UPDATE, elementName, features));
 
             Iterator preprocess = features.iterator();
 
@@ -250,7 +250,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
 
                 FeatureCollection changed = store.getFeatures(modified);
                 listener.dataStoreChange(new TransactionEvent(TransactionEventType.POST_UPDATE,
-                        changed));
+                        elementName, changed));
             }
 
             // update the update counter

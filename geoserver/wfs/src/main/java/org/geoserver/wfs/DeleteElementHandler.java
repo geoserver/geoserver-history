@@ -100,7 +100,7 @@ public class DeleteElementHandler implements TransactionElementHandler {
             
             // notify listeners
             listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_DELETE,
-                    store.getFeatures(filter)));
+                    elementName, store.getFeatures(filter)));
 
             // compute damaged area
             Envelope damaged = store.getBounds(new DefaultQuery(

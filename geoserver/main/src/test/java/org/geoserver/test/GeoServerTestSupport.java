@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -110,12 +112,21 @@ public class GeoServerTestSupport extends TestCase {
         servletContext.setInitParameter("GEOSERVER_DATA_DIR",
             dataDirectory.getDataDirectoryRoot().getAbsolutePath());
 
-        applicationContext = new GeoServerTestApplicationContext(new String[] {
-                    "classpath*:/applicationContext.xml",
-                    "classpath*:/applicationSecurityContext.xml"
-                }, servletContext);
+        applicationContext = new GeoServerTestApplicationContext(getSpringContextLocations(), servletContext);
 
         applicationContext.refresh();
+    }
+    
+    /**
+     * Returns the spring context locations to be used in order to build the GeoServer Spring
+     * context. Subclasses might want to provide extra locations in order to test extension points.
+     * @return
+     */
+    protected String[] getSpringContextLocations() {
+        return new String[] {
+                "classpath*:/applicationContext.xml",
+                "classpath*:/applicationSecurityContext.xml"
+            };
     }
 
 	protected String getDefaultLogConfiguration() {
