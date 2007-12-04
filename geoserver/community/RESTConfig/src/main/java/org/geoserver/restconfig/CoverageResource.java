@@ -16,11 +16,22 @@ import org.restlet.ext.freemarker.TemplateRepresentation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.FileRepresentation;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.CoverageStoreInfo;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.geotools.geometry.GeneralEnvelope;
+
+import org.opengis.coverage.grid.Format;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+
+import org.springframework.context.ApplicationContext;
 
 import org.jdom.input.SAXBuilder;
 import org.jdom.Document;
@@ -35,6 +46,7 @@ import org.jdom.Element;
  */
 public class CoverageResource extends MapResource {
     private DataConfig myDC;
+    private Data myData;
 
     public Map getSupportedFormats(){
         Map m = new HashMap();
@@ -111,12 +123,14 @@ public class CoverageResource extends MapResource {
     public CoverageResource(Context context,
             Request request,
             Response response,
-            DataConfig myDataConfig) {
+            ApplicationContext appCon) {
         super(context, request, response);
-        myDC = myDataConfig;
+        myDC = (DataConfig)appCon.getBean("dataConfig");
+        myData = (Data) appCon.getBean("data"); 
     }
 
     public Map getMap(){
+        System.out.println("GETting with a CoverageResource");
         String coverageStore = (String)getRequest().getAttributes().get("coveragestore");
         String coverageName = (String)getRequest().getAttributes().get("coverage");
         String qualified = coverageStore + ":" + coverageName;
@@ -124,10 +138,103 @@ public class CoverageResource extends MapResource {
         return getCoverageConfigMap(cc);
     }
 
-    public boolean allowPut(){return true;}
+    public boolean allowPut(){
+        System.out.println("CoverageResource allows PUTs");
+        return true;
+    }
 
-    protected void putMap(Map details) throws Exception{
+    public void putMap(Map details) throws Exception{
         //TODO: create the coverage
+        String coverageStore = (String)getRequest().getAttributes().get("coveragestore");
+        String coverageName  = (String)getRequest().getAttributes().get("coverage");
+        String qualified = coverageStore + ":" + coverageName;
+        CoverageConfig cc= null;
+        cc = (CoverageConfig)myDC.getCoverages().get(qualified);
+
+        if (cc == null){
+            CoverageStoreInfo csi = myData.getFormatInfo(coverageStore);
+            Format format = csi.getFormat();
+            AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader)csi.getReader(); // TODO acquire an instance somehow
+
+            cc = new CoverageConfig(coverageStore, format, reader, myDC);
+        }
+
+        if (details.get("WMSPath") != null)
+            cc.setWmsPath((String)details.get("WMSPath"));
+
+        if (details.get("CRS") != null){
+            CoordinateReferenceSystem crs = makeCRS((String)details.get("CRS"));
+            if (crs != null) cc.setCrs(crs);
+        }
+
+        if (details.get("Envelope") != null){
+            GeneralEnvelope env = makeEnvelope((List)details.get("Envelope"));
+            if (env != null) cc.setEnvelope(env);
+        }
+         
+        if (details.get("DefaultStyle") != null){
+            cc.setDefaultStyle((String)details.get("DefaultStyle"));
+        }
+
+        if (details.get("SupplementaryStyles") != null){
+            ArrayList styles = new ArrayList();
+            styles.addAll((List)details.get("SupplementaryStyles"));
+            cc.setStyles(styles);
+        }
+
+        if (details.get("Label") != null){
+            cc.setLabel((String)details.get("Label"));
+        }
+
+        if (details.get("Description") != null) {
+            cc.setDescription((String)details.get("Description"));
+        }
+
+        if (details.get("OnlineResource") != null) {
+            cc.setMetadataLink(makeLink((String)details.get("OnlineResource")));
+        }
+
+        if (details.get("Keywords") != null){
+            cc.setKeywords((List)details.get("Keywords"));
+        }
+
+        if (details.get("SupportedRequestCRSs") != null){
+            cc.setRequestCRSs((List)details.get("SupportedRequestCRSs"));
+        }
+
+        if (details.get("SupportedResponseCRSs") != null){
+            cc.setResponseCRSs((List)details.get("SupportedResponseCRSs"));
+        }
+
+        if (details.get("NativeFormat") != null){
+            cc.setNativeFormat((String)details.get("NativeFormat"));
+        }
+
+        if (details.get("SupportedFormats") != null){
+            cc.setSupportedFormats((List)details.get("SupportedFormats"));
+        }
+
+        if (details.get("DefaultInterpolationMethod") != null){
+            cc.setDefaultInterpolationMethod((String)details.get("DefaultInterpolationMethod"));
+        }
+
+        if (details.get("InterpolationMethods") != null){
+            cc.setInterpolationMethods((List)details.get("InterpolationMethods"));
+        }
+
+        myDC.addCoverage(qualified, cc);
+    }
+
+    private MetaDataLink makeLink(String s){
+        return null;
+    }
+    
+    private GeneralEnvelope makeEnvelope(List points){
+        return null;
+    }
+
+    private CoordinateReferenceSystem makeCRS(String crs){
+        return null;
     }
 
     private Map getCoverageConfigMap(CoverageConfig cc){
