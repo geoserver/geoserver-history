@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javax.media.jai.JAI;
 import javax.media.jai.operator.CropDescriptor;
 
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.wms.GetMapProducer;
@@ -48,7 +49,7 @@ public final class MetatileMapProducer extends AbstractGetMapProducer implements
 
 	private RenderedImage tile;
 
-	private static QuickTileCache tileCache = new QuickTileCache();
+	private static QuickTileCache tileCache;
 
 	/**
 	 * True if the request has the tiled hint, is 256x256 image, and the raw
@@ -69,6 +70,9 @@ public final class MetatileMapProducer extends AbstractGetMapProducer implements
 	}
 
 	public MetatileMapProducer(GetMapRequest request, RasterMapProducer delegate) {
+	    if(tileCache == null) {
+	        tileCache = (QuickTileCache) GeoServerExtensions.bean("metaTileCache");
+	    }
 		this.request = request;
 		this.delegate = delegate;
 	}
