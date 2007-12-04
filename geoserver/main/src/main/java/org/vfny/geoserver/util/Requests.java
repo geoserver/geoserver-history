@@ -250,18 +250,13 @@ public final class Requests {
                 
                 //JD: for some reason there is sometimes a string here. doing
                 // an instanceof check ... although i am not sure why this occurs.
-                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                if(auth == null) {
-                    user.setUsername("admin");
-                } else {
-                    Object o = auth.getPrincipal();
-                    if ( o instanceof UserDetails ) {
-                        UserDetails ud = (UserDetails) o;
-                        user.setUsername(ud.getUsername());        
-                    }
-                    else if ( o instanceof String ) {
-                        user.setUsername((String)o);
-                    }
+                Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                if ( o instanceof UserDetails ) {
+                    UserDetails ud = (UserDetails) o;
+                    user.setUsername(ud.getUsername());        
+                }
+                else if ( o instanceof String ) {
+                    user.setUsername((String)o);
                 }
                 request.getSession().setAttribute(UserContainer.SESSION_KEY, user);
             }
