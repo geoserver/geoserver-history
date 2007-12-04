@@ -12,7 +12,7 @@
 	<groupId>org.geoserver</groupId>
   	<artifactId>catalog</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0</version>
+	<version>1.0.6b4</version>
   	<name>Catalog Service Module</name>
 
 	<dependencies>

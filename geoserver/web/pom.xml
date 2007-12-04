@@ -33,6 +33,12 @@
 
     <dependency>
       <groupId>org.geoserver</groupId>
+      <artifactId>catalog</artifactId>
+      <version>1.0.6b4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.geoserver</groupId>
       <artifactId>platform</artifactId>
       <version>1.6-beta4</version>
     </dependency>

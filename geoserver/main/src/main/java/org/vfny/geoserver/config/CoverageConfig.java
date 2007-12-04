@@ -478,8 +478,6 @@ public class CoverageConfig {
             throw newEx;
         }
 
-        grid = new GridGeometry2D(reader.getOriginalGridRange(), reader.getOriginalEnvelope());
-
         /**
          * Now reading a fake small GridCoverage just to retrieve meta information:
          * - calculating a new envelope which is 1/20 of the original one
@@ -503,6 +501,7 @@ public class CoverageConfig {
                 new GridGeometry2D(reader.getOriginalGridRange(), subEnvelope));
             gc = (GridCoverage2D) reader.read(CoverageUtils.getParameters(readParams, parameters,
                         true));
+            grid = gc.getGridGeometry();
             dimensions = parseCoverageDimesions(gc.getSampleDimensions());
         } catch (UnsupportedEncodingException e) {
             final ConfigurationException newEx = new ConfigurationException(new StringBuffer(

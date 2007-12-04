@@ -5,6 +5,7 @@
 package org.vfny.geoserver.global.xml;
 
 import java.awt.Color;
+import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,8 +25,11 @@ import javax.xml.transform.TransformerException;
 
 import org.geotools.filter.FilterTransformer;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.operation.LinearTransform;
 import org.joda.time.Interval;
 import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.Matrix;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageDimension;
@@ -1398,6 +1402,9 @@ public class XMLConfigWriter {
                 }
             }
 
+            // //
+            // storing the envelope
+            // //
             if (cv.getEnvelope() != null) {
                 GeneralEnvelope e = cv.getEnvelope();
                 m = new HashMap();
@@ -1460,8 +1467,13 @@ public class XMLConfigWriter {
             	}
             }
             
+            // //
+            // storing the grid-geometry
+            // //
             if (cv.getGrid() != null) {
                 GridGeometry g = cv.getGrid();
+                MathTransform tx = g.getGridToCRS();
+
                 InternationalString[] dimNames = cv.getDimensionNames();
                 m = new HashMap();
 
@@ -1484,6 +1496,21 @@ public class XMLConfigWriter {
                         cw.textTag("axisName", dimNames[dn].toString());
                 }
 
+                // //
+                // storing geo-transform
+                // //
+                if (tx instanceof AffineTransform) {
+                	AffineTransform aTX = (AffineTransform) tx;
+                    cw.openTag("geoTransform");
+	                    cw.textTag("scaleX", 		String.valueOf(aTX.getScaleX()));
+	                    cw.textTag("scaleY", 		String.valueOf(aTX.getScaleY()));
+	                    cw.textTag("shearX", 		String.valueOf(aTX.getShearX()));
+	                    cw.textTag("shearY", 		String.valueOf(aTX.getShearY()));
+	                    cw.textTag("translateX", 	String.valueOf(aTX.getTranslateX()));
+	                    cw.textTag("translateY", 	String.valueOf(aTX.getTranslateY()));
+	                cw.closeTag("geoTransform");                	
+                }
+                
                 cw.closeTag("grid");
             }
 
@@ -1650,9 +1677,11 @@ public class XMLConfigWriter {
                         temp.put("name", key);
                         temp.put("value", text);
                     } else {
-                        temp.put("name", key);
-                        temp.put("value",
-                            cv.getParameters().get(key).toString().replaceAll("\"", "'"));
+                    	if (cv.getParameters().get(key) != null) {
+                    		temp.put("name", key);
+                    		temp.put("value",
+                    				cv.getParameters().get(key).toString().replaceAll("\"", "'"));
+                    	}
                     }
 
                     cw.attrTag("parameter", temp);
