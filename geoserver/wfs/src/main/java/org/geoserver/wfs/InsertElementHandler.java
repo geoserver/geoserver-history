@@ -160,7 +160,7 @@ public class InsertElementHandler implements TransactionElementHandler {
                     }
 
                     listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_INSERT,
-                            collection));
+                            elementName, collection));
                     fids.addAll(store.addFeatures(collection));
                 }
             }
