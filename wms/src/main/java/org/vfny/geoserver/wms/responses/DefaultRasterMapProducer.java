@@ -8,10 +8,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Transparency;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
 import java.io.OutputStream;
@@ -32,16 +29,16 @@ import javax.media.jai.LookupTableJAI;
 import javax.media.jai.operator.LookupDescriptor;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.image.ImageWorker;
 import org.geotools.map.MapLayer;
+import org.geotools.renderer.RenderListener;
 import org.geotools.renderer.shape.ShapefileRenderer;
+import org.opengis.feature.simple.SimpleFeature;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
-import org.vfny.geoserver.wms.responses.palette.CustomPaletteBuilder;
 import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 
 /**
@@ -257,6 +254,19 @@ public abstract class DefaultRasterMapProducer extends
 		renderer = new ShapefileRenderer();
 		renderer.setContext(mapContext);
 		renderer.setJava2DHints(hints);
+		// shapefile renderer won't log rendering errors, sigh, we have to do it manually
+		if(renderer instanceof ShapefileRenderer) {
+		    renderer.addRenderListener(new RenderListener() {
+            
+                public void featureRenderer(SimpleFeature feature) {
+                }
+            
+                public void errorOccurred(Exception e) {
+                    LOGGER.log(Level.FINE, "Rendering error occurred", e);
+                }
+            
+            });
+		}
 
 		// setup the renderer hints
 		Map rendererParams = new HashMap();
