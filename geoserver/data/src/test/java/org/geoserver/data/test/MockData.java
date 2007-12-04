@@ -443,7 +443,7 @@ public class MockData {
             directory.mkdir();    
         }
         
-        // create the properties file
+        // create the coverage file
         File f = new File(directory, name.getLocalPart() + "." + extension);
         
         // copy over the contents
@@ -455,8 +455,8 @@ public class MockData {
         namespaces.put(name.getPrefix(), name.getNamespaceURI());
         coverageStoresNamespaces.put(name.getLocalPart(), name.getPrefix());
         Map params = new HashMap();
-        params.put(CatalogWriter.COVERAGE_TYPE_KEY, f.getName());
-        params.put(CatalogWriter.COVERAGE_URL_KEY, "file:/data/" + name.getPrefix() + "/" + name.getLocalPart() + "." + extension);
+        params.put(CatalogWriter.COVERAGE_TYPE_KEY, format.getName());
+        params.put(CatalogWriter.COVERAGE_URL_KEY, "file:" + name.getPrefix() + "/" + name.getLocalPart() + "." + extension);
         coverageStores.put(name.getLocalPart(), params);
     }
     
