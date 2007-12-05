@@ -40,9 +40,6 @@
               <bean:message key="geoserver.logo"/>
             </a>
           </span>
-          <span class="license">
-            <a href="<bean:message key="link.license"/>">&copy;</a>
-          </span>
 		</td>
         <td style="width: 1em">
         </td>
