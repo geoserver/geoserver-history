@@ -366,7 +366,7 @@ public class Dispatcher extends AbstractController {
                 //check for a request object
                 Object requestBean = null;
 
-                if (req.kvp != null) {
+                if (req.kvp != null && req.kvp.size() > 0) {
                     //use the kvp reader mechanism
                     requestBean = parseRequestKVP(parameterType, req);
                 }
