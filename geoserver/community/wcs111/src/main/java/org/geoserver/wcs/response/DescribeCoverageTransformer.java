@@ -208,7 +208,7 @@ public class DescribeCoverageTransformer extends TransformerBase {
             element("wcs:GridBaseCRS", urnIdentifier(ci.getCrs()));
             element("wcs:GridType", "urn:ogc:def:method:WCS:1.1:2dGridin2dCrs");
             // TODO: go back to using the metadata once they can be trusted
-            final LinearTransform tx = (LinearTransform) ci.getCoverage().getGridGeometry().getGridToCRS();
+            final LinearTransform tx = (LinearTransform) ci.getGrid().getGridToCRS();
             final Matrix matrix = tx.getMatrix();
             // origin
             StringBuffer origins = new StringBuffer();
