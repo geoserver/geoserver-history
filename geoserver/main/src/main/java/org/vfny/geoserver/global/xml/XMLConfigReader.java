@@ -40,6 +40,8 @@ import org.geotools.filter.FilterDOMParser;
 import org.geotools.geometry.GeneralDirectPosition;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.operation.DefaultMathTransformFactory;
+import org.geotools.referencing.operation.matrix.GeneralMatrix;
 import org.geotools.util.NameFactory;
 import org.geotools.util.NumberRange;
 import org.opengis.coverage.grid.GridGeometry;
@@ -48,6 +50,9 @@ import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.MathTransformFactory;
+import org.opengis.referencing.operation.Matrix;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
@@ -2058,20 +2063,24 @@ public class XMLConfigReader {
      * @return
      * @throws ConfigurationException
      */
-    protected GridGeometry loadGrid(Element gridElem, GeneralEnvelope envelope,
-            CoordinateReferenceSystem crs) throws ConfigurationException {
-        final GeneralEnvelope gcEnvelope = new GeneralEnvelope(new GeneralDirectPosition(envelope
-                .getLowerCorner().getOrdinate(0), envelope.getLowerCorner().getOrdinate(1)),
-                new GeneralDirectPosition(envelope.getUpperCorner().getOrdinate(0), envelope
+    protected GridGeometry loadGrid(Element gridElem,
+			GeneralEnvelope envelope, CoordinateReferenceSystem crs)
+            throws ConfigurationException, FactoryException {
+        final GeneralEnvelope gcEnvelope = new GeneralEnvelope(
+                new GeneralDirectPosition(envelope.getLowerCorner()
+                        .getOrdinate(0), envelope.getLowerCorner().getOrdinate(
+                        1)), new GeneralDirectPosition(envelope
+                        .getUpperCorner().getOrdinate(0), envelope
                         .getUpperCorner().getOrdinate(1)));
 
         gcEnvelope.setCoordinateReferenceSystem(crs);
 
         if (gridElem == null) {
             // new grid range
-            GeneralGridRange newGridrange = new GeneralGridRange(new int[] { 0, 0 }, new int[] { 1,
-                    1 });
-            GridGeometry2D newGridGeometry = new GridGeometry2D(newGridrange, gcEnvelope);
+            GeneralGridRange newGridrange = new GeneralGridRange(new int[] { 0,
+                    0 }, new int[] { 1, 1 });
+            GridGeometry2D newGridGeometry = new GridGeometry2D(newGridrange,
+                    gcEnvelope);
 
             return newGridGeometry;
         }
@@ -2107,9 +2116,68 @@ public class XMLConfigReader {
 
         // new grid range
         GeneralGridRange newGridrange = new GeneralGridRange(lowers, upers);
-        GridGeometry2D newGridGeometry = new GridGeometry2D(newGridrange, gcEnvelope);
 
-        return newGridGeometry;
+        Element geoTransform = ReaderUtils.getChildElement(gridElem,
+                "geoTransform");
+        if (geoTransform != null) {
+            double[] flatMatrix = new double[3 * 3];
+
+            Element scaleX = ReaderUtils
+                    .getChildElement(geoTransform, "scaleX");
+            Element scaleY = ReaderUtils
+                    .getChildElement(geoTransform, "scaleY");
+            Element shearX = ReaderUtils
+                    .getChildElement(geoTransform, "shearX");
+            Element shearY = ReaderUtils
+                    .getChildElement(geoTransform, "shearY");
+            Element translateX = ReaderUtils.getChildElement(geoTransform,
+                    "translateX");
+            Element translateY = ReaderUtils.getChildElement(geoTransform,
+                    "translateY");
+
+            if (scaleX != null) {
+                flatMatrix[0] = Double.parseDouble(ReaderUtils
+                        .getElementText(scaleX));
+            }
+            if (shearX != null) {
+                flatMatrix[1] = Double.parseDouble(ReaderUtils
+                        .getElementText(shearX));
+            }
+            if (translateX != null) {
+                flatMatrix[2] = Double.parseDouble(ReaderUtils
+                        .getElementText(translateX));
+            }
+
+            if (shearY != null) {
+                flatMatrix[3] = Double.parseDouble(ReaderUtils
+                        .getElementText(shearY));
+            }
+            if (scaleY != null) {
+                flatMatrix[4] = Double.parseDouble(ReaderUtils
+                        .getElementText(scaleY));
+            }
+            if (translateY != null) {
+                flatMatrix[5] = Double.parseDouble(ReaderUtils
+                        .getElementText(translateY));
+            }
+
+            flatMatrix[8] = 1.0;
+
+            /**
+             *  scaleX		shearX		translateX
+             *  shearY		scaleY		translateY
+             *  0.0		0.		1.0
+             */
+            Matrix matrix = new GeneralMatrix(3, 3, flatMatrix);
+            final MathTransformFactory factory = new DefaultMathTransformFactory();
+            MathTransform gridToCRS = factory.createAffineTransform(matrix);
+
+            return new GridGeometry2D(newGridrange, gridToCRS, gcEnvelope
+                    .getCoordinateReferenceSystem());
+        } else {
+            return new GridGeometry2D(newGridrange, gcEnvelope);
+        }
+
     }
 
     /**
