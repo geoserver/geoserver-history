@@ -62,6 +62,12 @@
 	  </context-param> 
    -->
    
+   <!-- logging initializer, should be first thing to execute -->
+  <listener>
+    <listener-class>org.geoserver.logging.LoggingStartupContextListener</listener-class>
+  </listener>
+
+   
    <filter>
      <filter-name>Acegi Filter Chain Proxy</filter-name>
      <filter-class>org.acegisecurity.util.FilterToBeanProxy</filter-class>
@@ -70,6 +76,7 @@
        <param-value>org.acegisecurity.util.FilterChainProxy</param-value>
      </init-param>
    </filter>
+
 
    <filter>
     <filter-name>Set Character Encoding</filter-name>
@@ -90,11 +97,6 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-  <!-- logging initializer, should be first thing to execute -->
-  <listener>
-    <listener-class>org.geoserver.logging.LoggingStartupContextListener</listener-class>
-  </listener>
-  
   <!--  spring context loader -->
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
