@@ -517,8 +517,8 @@ public class ReaderUtils {
         } else {
             throw new Exception("Argument element can't be null");
         }
-
-        return value;
+        
+        return unescape(value);
     }
 
     /**
@@ -704,4 +704,23 @@ public class ReaderUtils {
                         throw new RuntimeException ( msg, e );
             }
         }
+    
+    
+    /**
+     * Unescapes the provided text with XML entities, 
+     * see (http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references#Character_entities_in_XML)
+     * @param text
+     * @return
+     */
+    private static String unescape(String text) {
+    	String s = text;
+    	if(s.matches(".*&(.*);.*")) {
+			s = s.replaceAll("&quot;","\"");
+			s = s.replaceAll("&amp;","&");
+			s = s.replaceAll("&apos;","'");
+			s = s.replaceAll("&lt;","<");
+			s = s.replaceAll("&gt;",">");
+		}
+    	return s;
+    }
 }
