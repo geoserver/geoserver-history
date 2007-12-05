@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,6 +47,7 @@ import org.geotools.util.NumberRange;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
@@ -228,16 +230,16 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
                     BufferedImage imgShape;
 
                     try {
-                        imgShape = ImageIO.read(new URL(request.getHttpServletRequest()
-                                                               .getRequestURL()
-                                    + "/../data/images/rasterLegend.png"));
-                    } catch (MalformedURLException e) {
+                        File styles = GeoserverDataDirectory.findCreateConfigDir("styles");
+                        File rasterLegend = new File(styles, "rasterLegend.png");
+                        if(rasterLegend.exists())
+                            imgShape = ImageIO.read(rasterLegend);
+                        else
+                            imgShape = ImageIO.read(DefaultRasterLegendProducer.class.getResource("rasterLegend.png"));
+                    } catch (Exception e) {
                         LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
                         throw new WmsException(e);
-                    } catch (IOException e) {
-                        LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-                        throw new WmsException(e);
-                    }
+                    } 
 
                     graphics.drawImage(imgShape, 0, 0, w, h, null);
                 } else {
