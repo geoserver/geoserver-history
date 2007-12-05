@@ -4,6 +4,7 @@
  */
 package org.geoserver.data.test;
 
+import java.awt.geom.AffineTransform;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,10 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -25,6 +24,7 @@ import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.data.util.CoverageUtils;
 import org.geotools.coverage.Category;
 import org.geotools.coverage.GridSampleDimension;
+import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
@@ -33,6 +33,7 @@ import org.geotools.data.property.PropertyDataStoreFactory;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.coverage.grid.GridGeometry;
+import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.CoordinateSystem;
 
@@ -570,8 +571,29 @@ public class MockData {
         writer.write("<pos>" + wgs84envelope.getMaximum(0) + " " + wgs84envelope.getMaximum(1) + "</pos>");
         writer.write("</envelope>");
         
+        /**
+         * Now reading a fake small GridCoverage just to retrieve meta information:
+         * - calculating a new envelope which is 1/20 of the original one
+         * - reading the GridCoverage subset
+         */
+
+        final ParameterValueGroup readParams = reader.getFormat().getReadParameters();
+        final Map parameters = CoverageUtils.getParametersKVP(readParams);
+        double[] minCP = envelope.getLowerCorner().getCoordinates();
+        double[] maxCP = new double[] {
+                minCP[0] + (envelope.getLength(0) / 20.0),
+                minCP[1] + (envelope.getLength(1) / 20.0)
+            };
+        final GeneralEnvelope subEnvelope = new GeneralEnvelope(minCP, maxCP);
+        subEnvelope.setCoordinateReferenceSystem(reader.getCrs());
+
+        parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),
+            new GridGeometry2D(reader.getOriginalGridRange(), subEnvelope));
+        GridCoverage2D gc = (GridCoverage2D) reader.read(CoverageUtils.getParameters(readParams, parameters,
+                    true));
+        
         // grid geometry
-        GridGeometry geometry = new GridGeometry2D(reader.getOriginalGridRange(), reader.getOriginalEnvelope());
+        final GridGeometry geometry = gc.getGridGeometry();
         final int dimensions = geometry.getGridRange().getDimension();
         String lower = "";
         String upper = "";
@@ -586,19 +608,30 @@ public class MockData {
         for (int i=0; i < cs.getDimension(); i++) {
             writer.write("<axisName>" + cs.getAxis(i).getName().getCode() + "</axisName>");
         }
+        if(geometry.getGridToCRS() instanceof AffineTransform) {
+            AffineTransform aTX = (AffineTransform) geometry.getGridToCRS();
+            writer.write("<geoTransform>");
+                writer.write("<scaleX>" + aTX.getScaleX() + "</scaleX>");
+                writer.write("<scaleY>" + aTX.getScaleY() + "</scaleY>");
+                writer.write("<shearX>" + aTX.getShearX() + "</shearX>");
+                writer.write("<shearY>" + aTX.getShearY() + "</shearY>");
+                writer.write("<translateX>" + aTX.getTranslateX() + "</translateX>");
+                writer.write("<translateY>" + aTX.getTranslateY() + "</translateY>");
+            writer.write("</geoTransform>");                    
+        }
         writer.write("</grid>");
         
         // coverage dimensions
-        GridSampleDimension[] sampleDimensions = CoverageUtils.getCoverageDimensions(reader);
-        for (int i = 0; i < sampleDimensions.length; i++) {
+        final GridSampleDimension[] sd = gc.getSampleDimensions();
+        for (int i = 0; i < sd.length; i++) {
             writer.write("<CoverageDimension>");
-            writer.write("<name>" + sampleDimensions[i].getDescription().toString() + "</name>");
+            writer.write("<name>" + sd[i].getDescription().toString() + "</name>");
             writer.write("<interval>");
-            writer.write("<min>" + sampleDimensions[i].getMinimumValue() + "</min>");
-            writer.write("<max>" + sampleDimensions[i].getMinimumValue() + "</max>");
+            writer.write("<min>" + sd[i].getMinimumValue() + "</min>");
+            writer.write("<max>" + sd[i].getMinimumValue() + "</max>");
             writer.write("</interval>");
             writer.write("<nullValues>");
-            for (Iterator it = sampleDimensions[i].getCategories().iterator(); it.hasNext();) {
+            for (Iterator it = sd[i].getCategories().iterator(); it.hasNext();) {
                 Category cat = (Category) it.next();
 
                 if ((cat != null) && cat.getName().toString().equalsIgnoreCase("no data")) {
