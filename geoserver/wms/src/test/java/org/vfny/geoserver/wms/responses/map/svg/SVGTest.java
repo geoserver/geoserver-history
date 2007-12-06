@@ -17,7 +17,7 @@ public class SVGTest extends WMSTestSupport {
                 "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +  
                 "&featureid=BasicPolygons.1107531493643"
             );
-            print(doc);
+//            print(doc);
             
             assertEquals( 1, doc.getElementsByTagName("svg").getLength());
             assertEquals( 1, doc.getElementsByTagName("g").getLength());
@@ -33,7 +33,7 @@ public class SVGTest extends WMSTestSupport {
             "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +  
             "&featureid=BasicPolygons.1107531493643"
         );
-        print(doc);
+//        print(doc);
         
         assertEquals( 1, doc.getElementsByTagName("svg").getLength());
         assertTrue(doc.getElementsByTagName("g").getLength() > 1);
