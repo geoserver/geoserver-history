@@ -24,16 +24,9 @@ import java.util.logging.Logger;
  *
  */
 public final class JPEGMapProducer extends DefaultRasterMapProducer {
-    protected RenderedImage prepareImage(int width, int height, IndexColorModel palette, boolean transparent) {
-        if (palette != null) {
-            return super.prepareImage(width, height, palette, transparent);
-        }
-
-        //there is no transparency in JPEG anyway :-)
-        return new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
-    }
     /** Logger. */
-    private final static Logger LOGGER = Logger.getLogger(JPEGMapProducer.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(JPEGMapProducer.class
+            .toString());
 
     /** JPEG Native Acceleration Mode * */
     private Boolean JPEGNativeAcc;
@@ -46,13 +39,24 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
         this.JPEGNativeAcc = wms.getGeoServer().getJPEGNativeAcceleration();
     }
 
-    public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
-        throws IOException {
+    protected RenderedImage prepareImage(int width, int height,
+        IndexColorModel palette, boolean transparent) {
+        if (palette != null) {
+            return super.prepareImage(width, height, palette, transparent);
+        }
+
+        //there is no transparency in JPEG anyway :-)
+        return new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+    }
+
+    public void formatImageOutputStream(RenderedImage image,
+        OutputStream outStream) throws IOException {
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("About to write a JPEG image.");
         }
 
-        new ImageWorker(image).writeJPEG(outStream, "JPEG", 0.75f, JPEGNativeAcc.booleanValue());
+        new ImageWorker(image).writeJPEG(outStream, "JPEG", 0.75f,
+            JPEGNativeAcc.booleanValue());
 
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Writing a JPEG done!!!");

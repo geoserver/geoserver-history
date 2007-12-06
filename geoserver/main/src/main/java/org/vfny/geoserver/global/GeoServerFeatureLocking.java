@@ -33,18 +33,20 @@ import java.io.IOException;
  * @author Gabriel Rold�n
  * @version $Id$
  */
-public class GeoServerFeatureLocking extends GeoServerFeatureStore implements FeatureLocking {
+public class GeoServerFeatureLocking extends GeoServerFeatureStore
+    implements FeatureLocking {
     /**
      * Creates a new DEFQueryFeatureLocking object.
      *
      * @param locking GeoTools2 FeatureSource
      * @param schema DOCUMENT ME!
      * @param definitionQuery DOCUMENT ME!
-     * @param declaredCRS 
+     * @param declaredCRS
      * @param srsHandling see {@link FeatureTypeInfo#FORCE} & co.
      */
-    GeoServerFeatureLocking(FeatureLocking locking, FeatureType schema, Filter definitionQuery,
-        CoordinateReferenceSystem declaredCRS, int srsHandling) {
+    GeoServerFeatureLocking(FeatureLocking locking, FeatureType schema,
+        Filter definitionQuery, CoordinateReferenceSystem declaredCRS,
+        int srsHandling) {
         super(locking, schema, definitionQuery, declaredCRS, srsHandling);
     }
 
@@ -67,7 +69,8 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore implements Fe
         if (source instanceof FeatureLocking) {
             ((FeatureLocking) source).setFeatureLock(lock);
         } else {
-            throw new UnsupportedOperationException("FeatureTypeConfig does not supports locking");
+            throw new UnsupportedOperationException(
+                "FeatureTypeConfig does not supports locking");
         }
     }
 
@@ -85,7 +88,8 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore implements Fe
         if (source instanceof FeatureLocking) {
             return ((FeatureLocking) source).lockFeatures(query);
         } else {
-            throw new DataSourceException("FeatureTypeConfig does not supports locking");
+            throw new DataSourceException(
+                "FeatureTypeConfig does not supports locking");
         }
     }
 

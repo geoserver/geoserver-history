@@ -6,7 +6,6 @@ package org.vfny.geoserver.wcs.requests;
 
 import com.vividsolutions.jts.geom.Envelope;
 import org.vfny.geoserver.wcs.servlets.WCService;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,8 @@ import java.util.logging.Logger;
  */
 public class CoverageRequest extends WCSRequest {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.requests");
 
     /**
      *
@@ -83,10 +83,8 @@ public class CoverageRequest extends WCSRequest {
      */
     private Double[] gridOrigin;
     private Map parameters;
-
-	private List time;
-
-	private String[] elevations;
+    private List time;
+    private String[] elevations;
 
     public CoverageRequest(WCService service) {
         super("GetCoverage", service);
@@ -186,7 +184,8 @@ public class CoverageRequest extends WCSRequest {
 
         if ((this.outputFormat == null) && (request.getOutputFormat() == null)) {
             isEqual = isEqual && true;
-        } else if ((this.outputFormat == null) || (request.getOutputFormat() == null)) {
+        } else if ((this.outputFormat == null)
+                || (request.getOutputFormat() == null)) {
             isEqual = false;
         } else if (request.getOutputFormat().equals(outputFormat)) {
             isEqual = isEqual && true;
@@ -204,9 +203,11 @@ public class CoverageRequest extends WCSRequest {
             isEqual = false;
         }
 
-        if ((this.interpolation == null) && (request.getInterpolation() == null)) {
+        if ((this.interpolation == null)
+                && (request.getInterpolation() == null)) {
             isEqual = isEqual && true;
-        } else if ((this.interpolation == null) || (request.getInterpolation() == null)) {
+        } else if ((this.interpolation == null)
+                || (request.getInterpolation() == null)) {
             isEqual = false;
         } else if (request.getInterpolation().equals(interpolation)) {
             isEqual = isEqual && true;
@@ -254,15 +255,17 @@ public class CoverageRequest extends WCSRequest {
             double arg3 = Double.parseDouble(coords[3]);
 
             this.envelope = new Envelope(arg0, arg2, arg1, arg3);
-            
+
             if (coords.length > 4) {
-            	final List zetas = new ArrayList();
-            	for (int c=4; c<coords.length; c++) {
-            		if (!zetas.contains(coords[c]))
-            			zetas.add(coords[c]);
-            	}
-            	
-            	this.elevations = (String[]) zetas.toArray(new String[1]);
+                final List zetas = new ArrayList();
+
+                for (int c = 4; c < coords.length; c++) {
+                    if (!zetas.contains(coords[c])) {
+                        zetas.add(coords[c]);
+                    }
+                }
+
+                this.elevations = (String[]) zetas.toArray(new String[1]);
             }
         } catch (NumberFormatException e) {
             this.envelope = null;
@@ -339,10 +342,13 @@ public class CoverageRequest extends WCSRequest {
      */
     public void setOffsetVector(Double[] offsetVector) {
         if (this.envelope != null) {
-            final double envWidth = Math.abs(envelope.getMaxX() - envelope.getMinX());
-            final double envHeight = Math.abs(envelope.getMaxY() - envelope.getMinY());
+            final double envWidth = Math.abs(envelope.getMaxX()
+                    - envelope.getMinX());
+            final double envHeight = Math.abs(envelope.getMaxY()
+                    - envelope.getMinY());
             final double width = envWidth / Math.abs(offsetVector[0].doubleValue());
-            final double height = envHeight / Math.abs(offsetVector[1].doubleValue());
+            final double height = envHeight / Math.abs(offsetVector[1]
+                    .doubleValue());
             setGridOrigin(new Double[] { new Double(0.0), new Double(0.0) });
             setGridLow(new Double[] { new Double(0.0), new Double(0.0) });
             setGridHigh(new Double[] { new Double(width), new Double(height) });
@@ -430,19 +436,19 @@ public class CoverageRequest extends WCSRequest {
         return parameters;
     }
 
-	public void setTime(List time) {
-		this.time = time;
-	}
+    public void setTime(List time) {
+        this.time = time;
+    }
 
-	public List getTime() {
-		return time;
-	}
+    public List getTime() {
+        return time;
+    }
 
-	public String[] getElevations() {
-		return elevations;
-	}
+    public String[] getElevations() {
+        return elevations;
+    }
 
-	public void setElevations(String[] elevations) {
-		this.elevations = elevations;
-	}
+    public void setElevations(String[] elevations) {
+        this.elevations = elevations;
+    }
 }

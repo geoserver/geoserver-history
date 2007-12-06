@@ -13,7 +13,8 @@ public class DescribeFeatureTypeKvpRequestReader extends WFSKvpRequestReader {
         super(DescribeFeatureTypeType.class);
     }
 
-    public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
+    public Object read(Object request, Map kvp, Map rawKvp)
+        throws Exception {
         //let super do its thing
         request = super.read(request, kvp, rawKvp);
 
@@ -24,7 +25,8 @@ public class DescribeFeatureTypeKvpRequestReader extends WFSKvpRequestReader {
         if (!describeFeatureType.isSetOutputFormat()) {
             if (describeFeatureType.getVersion().startsWith("1.1")) {
                 //set 1.1 default
-                describeFeatureType.setOutputFormat("text/xml; subtype=gml/3.1.1");
+                describeFeatureType.setOutputFormat(
+                    "text/xml; subtype=gml/3.1.1");
             } else {
                 //set 1.0 default
                 describeFeatureType.setOutputFormat("XMLSCHEMA");

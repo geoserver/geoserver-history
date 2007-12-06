@@ -5,9 +5,7 @@
 package org.geoserver.wfs;
 
 import com.vividsolutions.jts.geom.Envelope;
-
 import net.opengis.wfs.GetCapabilitiesType;
-
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.ows.xml.v1_0.OWS;
@@ -108,15 +106,17 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
         class CapabilitiesTranslator1_0 extends TranslatorSupport {
             GetCapabilitiesType request;
-            
+
             public CapabilitiesTranslator1_0(ContentHandler handler) {
                 super(handler, null, null);
             }
 
             public void encode(Object object) throws IllegalArgumentException {
-                request = (GetCapabilitiesType)object;
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
-                
+                request = (GetCapabilitiesType) object;
+
+                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request
+                        .getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+
                 AttributesImpl attributes = new AttributesImpl();
                 attributes.addAttribute("", "version", "version", "", "1.0.0");
                 attributes.addAttribute("", "xmlns", "xmlns", "", WFS_URI);
@@ -137,18 +137,19 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 }
 
                 //filter
-                attributes.addAttribute("", "xmlns:" + OGC_PREFIX, "xmlns:" + OGC_PREFIX, "",
-                    OGC_URI);
+                attributes.addAttribute("", "xmlns:" + OGC_PREFIX,
+                    "xmlns:" + OGC_PREFIX, "", OGC_URI);
 
                 //xml schema
-                attributes.addAttribute("", "xmlns:" + XSI_PREFIX, "xmlns:" + XSI_PREFIX, "",
-                    XSI_URI);
+                attributes.addAttribute("", "xmlns:" + XSI_PREFIX,
+                    "xmlns:" + XSI_PREFIX, "", XSI_URI);
 
                 String locationAtt = XSI_PREFIX + ":schemaLocation";
                 String locationDef = WFS_URI + " "
                     + ResponseUtils.appendPath(proxifiedBaseUrl,
                         "schemas/wfs/1.0.0/WFS-capabilities.xsd");
-                attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
+                attributes.addAttribute("", locationAtt, locationAtt, "",
+                    locationDef);
 
                 start("WFS_Capabilities", attributes);
 
@@ -161,24 +162,24 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             }
 
             /**
-            * Encodes the wfs:Service element.
-            *
-            *         <pre>
-            * &lt;xsd:complexType name="ServiceType"&gt;
-            *         &lt;xsd:sequence&gt;
-            *                 &lt;xsd:element name="Name" type="xsd:string"/&gt;
-            *                 &lt;xsd:element ref="wfs:Title"/&gt;
-            *                 &lt;xsd:element ref="wfs:Abstract" minOccurs="0"/&gt;
-            *                 &lt;xsd:element ref="wfs:Keywords" minOccurs="0"/&gt;
-            *                 &lt;xsd:element ref="wfs:OnlineResource"/&gt;
-            *                 &lt;xsd:element ref="wfs:Fees" minOccurs="0"/&gt;
-            *                 &lt;xsd:element ref="wfs:AccessConstraints" minOccurs="0"/&gt;
-            *          &lt;/xsd:sequence&gt;
-            * &lt;/xsd:complexType&gt;
-            *
-            *         </pre>
-            *
-            */
+             * Encodes the wfs:Service element.
+             *
+             *         <pre>
+             * &lt;xsd:complexType name="ServiceType"&gt;
+             *         &lt;xsd:sequence&gt;
+             *                 &lt;xsd:element name="Name" type="xsd:string"/&gt;
+             *                 &lt;xsd:element ref="wfs:Title"/&gt;
+             *                 &lt;xsd:element ref="wfs:Abstract" minOccurs="0"/&gt;
+             *                 &lt;xsd:element ref="wfs:Keywords" minOccurs="0"/&gt;
+             *                 &lt;xsd:element ref="wfs:OnlineResource"/&gt;
+             *                 &lt;xsd:element ref="wfs:Fees" minOccurs="0"/&gt;
+             *                 &lt;xsd:element ref="wfs:AccessConstraints" minOccurs="0"/&gt;
+             *          &lt;/xsd:sequence&gt;
+             * &lt;/xsd:complexType&gt;
+             *
+             *         </pre>
+             *
+             */
             private void handleService() {
                 start("Service");
                 element("Name", wfs.getName());
@@ -187,9 +188,11 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                 handleKeywords(wfs.getKeywords());
 
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
-                
-                element("OnlineResource", ResponseUtils.appendPath(proxifiedBaseUrl, "wfs"));
+                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request
+                        .getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+
+                element("OnlineResource",
+                    ResponseUtils.appendPath(proxifiedBaseUrl, "wfs"));
                 element("Fees", wfs.getFees());
                 element("AccessConstraints", wfs.getAccessConstraints());
                 end("Service");
@@ -361,11 +364,16 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                     Collection featureProducers = GeoServerExtensions.extensions(WFSGetFeatureOutputFormat.class);
 
                     Map dupes = new HashMap();
+
                     for (Iterator i = featureProducers.iterator(); i.hasNext();) {
-                        WFSGetFeatureOutputFormat format = (WFSGetFeatureOutputFormat) i.next();
-                        if (!dupes.containsKey(format.getCapabilitiesElementName())) {
+                        WFSGetFeatureOutputFormat format = (WFSGetFeatureOutputFormat) i
+                            .next();
+
+                        if (!dupes.containsKey(
+                                    format.getCapabilitiesElementName())) {
                             element(format.getCapabilitiesElementName(), null);
-                            dupes.put(format.getCapabilitiesElementName(), new Object());
+                            dupes.put(format.getCapabilitiesElementName(),
+                                new Object());
                         }
                     }
                 }
@@ -386,8 +394,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
              *                &lt;xsd:element name="DCPType" type="wfs:DCPTypeType" maxOccurs="unbounded"/&gt;
              *          &lt;/xsd:sequence&gt;
              *  &lt;/xsd:complexType&gt;
-                            * </pre>
-                            * </p>
+             * </pre>
+             * </p>
              */
             private void handleTransaction() {
                 String capName = "Transaction";
@@ -459,23 +467,28 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
              *        requests
              */
             private void handleDcpType(String capabilityName, String httpMethod) {
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request
+                        .getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
 
                 if (proxifiedBaseUrl.endsWith("?")) {
-                    proxifiedBaseUrl = proxifiedBaseUrl.substring(0, proxifiedBaseUrl.length() - 1);
+                    proxifiedBaseUrl = proxifiedBaseUrl.substring(0,
+                            proxifiedBaseUrl.length() - 1);
                 }
 
                 if (HTTP_GET.equals(httpMethod)) {
-                    proxifiedBaseUrl = ResponseUtils.appendPath(proxifiedBaseUrl, "wfs?request=" + capabilityName);
+                    proxifiedBaseUrl = ResponseUtils.appendPath(proxifiedBaseUrl,
+                            "wfs?request=" + capabilityName);
                 } else if (HTTP_POST.equals(httpMethod)) {
-                    proxifiedBaseUrl = ResponseUtils.appendPath(proxifiedBaseUrl, "wfs?");
+                    proxifiedBaseUrl = ResponseUtils.appendPath(proxifiedBaseUrl,
+                            "wfs?");
                 }
 
                 start("DCPType");
                 start("HTTP");
 
                 AttributesImpl atts = new AttributesImpl();
-                atts.addAttribute("", "onlineResource", "onlineResource", "", proxifiedBaseUrl);
+                atts.addAttribute("", "onlineResource", "onlineResource", "",
+                    proxifiedBaseUrl);
                 element(httpMethod, null, atts);
 
                 end("HTTP");
@@ -527,8 +540,11 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                 end("Operations");
 
-                List featureTypes = new ArrayList(catalog.getFeatureTypeInfos().values());
-                Collections.sort(featureTypes, new FeatureTypeInfoTitleComparator());
+                List featureTypes = new ArrayList(catalog.getFeatureTypeInfos()
+                                                         .values());
+                Collections.sort(featureTypes,
+                    new FeatureTypeInfoTitleComparator());
+
                 for (Iterator it = featureTypes.iterator(); it.hasNext();) {
                     FeatureTypeInfo ftype = (FeatureTypeInfo) it.next();
 
@@ -580,7 +596,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 try {
                     bbox = info.getLatLongBoundingBox();
                 } catch (IOException e) {
-                    String msg = "Could not calculate bbox for: " + info.getName();
+                    String msg = "Could not calculate bbox for: "
+                        + info.getName();
                     LOGGER.log(Level.SEVERE, msg, e);
 
                     return;
@@ -692,7 +709,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                                     .getName();
                                 String n2 = ((Function) o2).getName();
 
-                                return n1.toLowerCase().compareTo(n2.toLowerCase());
+                                return n1.toLowerCase()
+                                         .compareTo(n2.toLowerCase());
                             }
                         });
 
@@ -715,7 +733,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                         int funNArgs = ((FunctionExpression) fe).getArgCount();
 
                         AttributesImpl atts = new AttributesImpl();
-                        atts.addAttribute("", "nArgs", "nArgs", "", funNArgs + "");
+                        atts.addAttribute("", "nArgs", "nArgs", "",
+                            funNArgs + "");
 
                         element(prefix + "Function_Name", funName, atts);
                     }
@@ -744,23 +763,27 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
         class CapabilitiesTranslator1_1 extends TranslatorSupport {
             GetCapabilitiesType request;
-            
+
             public CapabilitiesTranslator1_1(ContentHandler handler) {
                 super(handler, null, null);
             }
 
             public void encode(Object object) throws IllegalArgumentException {
-                request = (GetCapabilitiesType)object;
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
-                
+                request = (GetCapabilitiesType) object;
+
+                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request
+                        .getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+
                 AttributesImpl attributes = attributes(new String[] {
-                            "version", "1.1.0", "xmlns:xsi", XSI_URI, "xmlns", WFS_URI, "xmlns:wfs",
-                            WFS_URI, "xmlns:ows", OWS.NAMESPACE, "xmlns:gml", GML.NAMESPACE,
-                            "xmlns:ogc", OGC.NAMESPACE, "xmlns:xlink", XLINK.NAMESPACE,
-                            "xsi:schemaLocation",
+                            "version", "1.1.0", "xmlns:xsi", XSI_URI, "xmlns",
+                            WFS_URI, "xmlns:wfs", WFS_URI, "xmlns:ows",
+                            OWS.NAMESPACE, "xmlns:gml", GML.NAMESPACE,
+                            "xmlns:ogc", OGC.NAMESPACE, "xmlns:xlink",
+                            XLINK.NAMESPACE, "xsi:schemaLocation",
                             
                         org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE + " "
-                            + ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd")
+                            + ResponseUtils.appendPath(proxifiedBaseUrl,
+                                "schemas/wfs/1.1.0/wfs.xsd")
                         });
 
                 NameSpaceInfo[] namespaces = catalog.getNameSpaces();
@@ -857,34 +880,34 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             }
 
             /**
-                 * Encodes the ows:ServiceProvider element.
-                 * <p>
-                 * <pre>
-                 * &lt;complexType&gt;
-                 *        &lt;sequence&gt;
-                 *           &lt;element name="ProviderName" type="string"&gt;
-                 *           &lt;annotation&gt;
-                 *        &lt;documentation&gt;A unique identifier for the service provider organization. &lt;/documentation&gt;
-                 *     &lt;/annotation&gt;
-                     *     &lt;/element&gt;
-                     *           &lt;element name="ProviderSite" type="ows:OnlineResourceType" minOccurs="0"&gt;
-                     *     &lt;annotation&gt;
-                     *        &lt;documentation&gt;Reference to the most relevant web site of the service provider. &lt;/documentation&gt;
-                     *     &lt;/annotation&gt;
-                     *     &lt;/element&gt;
-                     *     &lt;element name="ServiceContact" type="ows:ResponsiblePartySubsetType"&gt;
-                     *     &lt;annotation&gt;
-                     *        &lt;documentation&gt;Information for contacting the service provider. The
-                     *        OnlineResource element within this ServiceContact element should not be used
-                     *        to reference a web site of the service provider. &lt;/documentation&gt;
-                     *     &lt;/annotation&gt;
-                     *     &lt;/element&gt;
-                     *  &lt;/sequence&gt;
-                     *&lt;/complexType&gt;
-                 * </pre>
-                 * </p>
-                 *
-                 */
+             * Encodes the ows:ServiceProvider element.
+             * <p>
+             * <pre>
+             * &lt;complexType&gt;
+             *        &lt;sequence&gt;
+             *           &lt;element name="ProviderName" type="string"&gt;
+             *           &lt;annotation&gt;
+             *        &lt;documentation&gt;A unique identifier for the service provider organization. &lt;/documentation&gt;
+             *     &lt;/annotation&gt;
+             *     &lt;/element&gt;
+             *           &lt;element name="ProviderSite" type="ows:OnlineResourceType" minOccurs="0"&gt;
+             *     &lt;annotation&gt;
+             *        &lt;documentation&gt;Reference to the most relevant web site of the service provider. &lt;/documentation&gt;
+             *     &lt;/annotation&gt;
+             *     &lt;/element&gt;
+             *     &lt;element name="ServiceContact" type="ows:ResponsiblePartySubsetType"&gt;
+             *     &lt;annotation&gt;
+             *        &lt;documentation&gt;Information for contacting the service provider. The
+             *        OnlineResource element within this ServiceContact element should not be used
+             *        to reference a web site of the service provider. &lt;/documentation&gt;
+             *     &lt;/annotation&gt;
+             *     &lt;/element&gt;
+             *  &lt;/sequence&gt;
+             *&lt;/complexType&gt;
+             * </pre>
+             * </p>
+             *
+             */
             void serviceProvider() {
                 start("ows:ServiceProvider");
 
@@ -896,42 +919,42 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             }
 
             /**
-                 * Encodes the ows:OperationsMetadata element.
-                 * <p>
-                 * <pre>
-                 * &lt;complexType&gt;
-                 *        &lt;sequence&gt;
-                 *                &lt;element ref="ows:Operation" minOccurs="2" maxOccurs="unbounded"&gt;
-                 *                &lt;annotation&gt;
-                 *                &lt;documentation&gt;Metadata for unordered list of all the (requests for) operations
-                 *                that this server interface implements. The list of required and optional
-                 *                operations implemented shall be specified in the Implementation Specification
-                 *                for this service. &lt;/documentation&gt;
-                 *                &lt;/annotation&gt;
-                 *                &lt;/element&gt;
-                 *                &lt;element name="Parameter" type="ows:DomainType" minOccurs="0" maxOccurs="unbounded"&gt;
-                 *                &lt;annotation&gt;
-                 *                        &lt;documentation&gt;Optional unordered list of parameter valid domains that each
-                 *                        apply to one or more operations which this server interface implements. The
-                 *                        list of required and optional parameter domain limitations shall be specified
-                 *                        in the Implementation Specification for this service. &lt;/documentation&gt;
-                 *                &lt;/annotation&gt;
-                 *                &lt;/element&gt;
-                 *                &lt;element name="Constraint" type="ows:DomainType" minOccurs="0" maxOccurs="unbounded"&gt;
-                 *                &lt;annotation&gt;
-                 *                        &lt;documentation&gt;Optional unordered list of valid domain constraints on
-                 *                        non-parameter quantities that each apply to this server. The list of
-                 *                        required and optional constraints shall be specified in the Implementation
-                 *                        Specification for this service. &lt;/documentation&gt;
-                 *                &lt;/annotation&gt;
-                 *                &lt;/element&gt;
-                 *                &lt;element ref="ows:ExtendedCapabilities" minOccurs="0"/&gt;
-                 *        &lt;/sequence&gt;
-                 *&lt;/complexType&gt;
-                 * </pre>
-                 * </p>
-                 *
-                 */
+             * Encodes the ows:OperationsMetadata element.
+             * <p>
+             * <pre>
+             * &lt;complexType&gt;
+             *        &lt;sequence&gt;
+             *                &lt;element ref="ows:Operation" minOccurs="2" maxOccurs="unbounded"&gt;
+             *                &lt;annotation&gt;
+             *                &lt;documentation&gt;Metadata for unordered list of all the (requests for) operations
+             *                that this server interface implements. The list of required and optional
+             *                operations implemented shall be specified in the Implementation Specification
+             *                for this service. &lt;/documentation&gt;
+             *                &lt;/annotation&gt;
+             *                &lt;/element&gt;
+             *                &lt;element name="Parameter" type="ows:DomainType" minOccurs="0" maxOccurs="unbounded"&gt;
+             *                &lt;annotation&gt;
+             *                        &lt;documentation&gt;Optional unordered list of parameter valid domains that each
+             *                        apply to one or more operations which this server interface implements. The
+             *                        list of required and optional parameter domain limitations shall be specified
+             *                        in the Implementation Specification for this service. &lt;/documentation&gt;
+             *                &lt;/annotation&gt;
+             *                &lt;/element&gt;
+             *                &lt;element name="Constraint" type="ows:DomainType" minOccurs="0" maxOccurs="unbounded"&gt;
+             *                &lt;annotation&gt;
+             *                        &lt;documentation&gt;Optional unordered list of valid domain constraints on
+             *                        non-parameter quantities that each apply to this server. The list of
+             *                        required and optional constraints shall be specified in the Implementation
+             *                        Specification for this service. &lt;/documentation&gt;
+             *                &lt;/annotation&gt;
+             *                &lt;/element&gt;
+             *                &lt;element ref="ows:ExtendedCapabilities" minOccurs="0"/&gt;
+             *        &lt;/sequence&gt;
+             *&lt;/complexType&gt;
+             * </pre>
+             * </p>
+             *
+             */
             void operationsMetadata() {
                 start("ows:OperationsMetadata");
 
@@ -952,12 +975,13 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             }
 
             /**
-                 * Encodes the GetCapabilities ows:Operation element.
-                 *
-                 */
+             * Encodes the GetCapabilities ows:Operation element.
+             *
+             */
             void getCapabilities() {
                 Map.Entry[] parameters = new Map.Entry[] {
-                        parameter("AcceptVersions", new String[] { "1.0.0", "1.1.0" }),
+                        parameter("AcceptVersions",
+                            new String[] { "1.0.0", "1.1.0" }),
                         parameter("AcceptFormats", new String[] { "text/xml" })
                     //    				parameter( 
                     //    					"Sections", 
@@ -972,88 +996,98 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             }
 
             /**
-                 * Encodes the DescribeFeatureType ows:Operation element.
-                 */
+             * Encodes the DescribeFeatureType ows:Operation element.
+             */
             void describeFeatureType() {
                 //TODO: process extension point
                 Map.Entry[] parameters = new Map.Entry[] {
-                        parameter("outputFormat", new String[] { "text/gml; subtype=gml/3.1.1" })
+                        parameter("outputFormat",
+                            new String[] { "text/gml; subtype=gml/3.1.1" })
                     };
 
                 operation("DescribeFeatureType", parameters, true, true);
             }
 
             /**
-                 * Encodes the GetFeature ows:Operation element.
-                 */
+             * Encodes the GetFeature ows:Operation element.
+             */
             void getFeature() {
                 Map.Entry[] parameters = new Map.Entry[] {
-                        parameter("resultType", new String[] { "results", "hits" }),
-                        parameter("outputFormat", new String[] { "text/gml; subtype=gml/3.1.1" })
+                        parameter("resultType",
+                            new String[] { "results", "hits" }),
+                        parameter("outputFormat",
+                            new String[] { "text/gml; subtype=gml/3.1.1" })
                     };
 
                 operation("GetFeature", parameters, true, true);
             }
 
             /**
-                 * Encodes the GetFeatureWithLock ows:Operation element.
-                 */
+             * Encodes the GetFeatureWithLock ows:Operation element.
+             */
             void getFeatureWithLock() {
                 Map.Entry[] parameters = new Map.Entry[] {
-                        parameter("resultType", new String[] { "results", "hits" }),
-                        parameter("outputFormat", new String[] { "text/gml; subtype=gml/3.1.1" })
+                        parameter("resultType",
+                            new String[] { "results", "hits" }),
+                        parameter("outputFormat",
+                            new String[] { "text/gml; subtype=gml/3.1.1" })
                     };
 
                 operation("GetFeatureWithLock", parameters, true, true);
             }
 
             /**
-                 * Encodes the LockFeature ows:Operation element.
-                 */
+             * Encodes the LockFeature ows:Operation element.
+             */
             void lockFeature() {
                 Map.Entry[] parameters = new Map.Entry[] {
-                        parameter("releaseAction", new String[] { "ALL", "SOME" })
+                        parameter("releaseAction",
+                            new String[] { "ALL", "SOME" })
                     };
 
                 operation("LockFeature", parameters, true, true);
             }
 
             /**
-                 * Encodes the Transaction ows:Operation element.
-                 */
+             * Encodes the Transaction ows:Operation element.
+             */
             void transaction() {
                 Map.Entry[] parameters = new Map.Entry[] {
-                        parameter("inputFormat", new String[] { "text/gml; subtype=gml/3.1.1" }),
+                        parameter("inputFormat",
+                            new String[] { "text/gml; subtype=gml/3.1.1" }),
                         parameter("idgen",
-                            new String[] { "GenerateNew", "UseExisting", "ReplaceDuplicate" }),
-                        parameter("releaseAction", new String[] { "ALL", "SOME" })
+                            new String[] {
+                                "GenerateNew", "UseExisting", "ReplaceDuplicate"
+                            }),
+                        parameter("releaseAction",
+                            new String[] { "ALL", "SOME" })
                     };
 
                 operation("Transaction", parameters, true, true);
             }
 
             /**
-                 * Encdoes the wfs:FeatureTypeList element.
-                 *<p>
-                 *<pre>
-                 * &lt;xsd:complexType name="FeatureTypeListType"&gt;
-                 *      &lt;xsd:annotation&gt;
-                 *         &lt;xsd:documentation&gt;
-                 *            A list of feature types available from  this server.
-                 *         &lt;/xsd:documentation&gt;
-                 *      &lt;/xsd:annotation&gt;
-                 *      &lt;xsd:sequence&gt;
-                 *         &lt;xsd:element name="Operations"
-                 *                      type="wfs:OperationsType"
-                 *                      minOccurs="0"/&gt;
-                 *         &lt;xsd:element name="FeatureType"
-                 *                      type="wfs:FeatureTypeType"
-                 *                      maxOccurs="unbounded"/&gt;
-                 *      &lt;/xsd:sequence&gt;
-                 *   &lt;/xsd:complexType&gt;
-                 *</pre>
-                 *</p>
-                 */
+             * Encdoes the wfs:FeatureTypeList element.
+             *<p>
+             *<pre>
+             * &lt;xsd:complexType name="FeatureTypeListType"&gt;
+             *      &lt;xsd:annotation&gt;
+             *         &lt;xsd:documentation&gt;
+             *            A list of feature types available from  this server.
+             *         &lt;/xsd:documentation&gt;
+             *      &lt;/xsd:annotation&gt;
+             *      &lt;xsd:sequence&gt;
+             *         &lt;xsd:element name="Operations"
+             *                      type="wfs:OperationsType"
+             *                      minOccurs="0"/&gt;
+             *         &lt;xsd:element name="FeatureType"
+             *                      type="wfs:FeatureTypeType"
+             *                      maxOccurs="unbounded"/&gt;
+             *      &lt;/xsd:sequence&gt;
+             *   &lt;/xsd:complexType&gt;
+             *</pre>
+             *</p>
+             */
             void featureTypeList() {
                 start("FeatureTypeList");
 
@@ -1081,8 +1115,11 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                 end("Operations");
 
-                List featureTypes = new ArrayList(catalog.getFeatureTypeInfos().values());
-                Collections.sort(featureTypes, new FeatureTypeInfoTitleComparator());
+                List featureTypes = new ArrayList(catalog.getFeatureTypeInfos()
+                                                         .values());
+                Collections.sort(featureTypes,
+                    new FeatureTypeInfoTitleComparator());
+
                 for (Iterator i = featureTypes.iterator(); i.hasNext();) {
                     FeatureTypeInfo featureType = (FeatureTypeInfo) i.next();
                     featureType(featureType);
@@ -1092,100 +1129,101 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             }
 
             /**
-                 * Encodes the wfs:FeatureType element.
-                 * <p>
-                 *         <pre>
-                 * &lt;xsd:complexType name="FeatureTypeType"&gt;
-                 *      &lt;xsd:annotation&gt;
-                 *         &lt;xsd:documentation&gt;
-                 *            An element of this type that describes a feature in an application
-                 *            namespace shall have an xml xmlns specifier, e.g.
-                 *            xmlns:bo="http://www.BlueOx.org/BlueOx"
-                 *         &lt;/xsd:documentation&gt;
-                 *      &lt;/xsd:annotation&gt;
-                 *      &lt;xsd:sequence&gt;
-                 *         &lt;xsd:element name="Name" type="xsd:QName"&gt;
-                 *            &lt;xsd:annotation&gt;
-                 *               &lt;xsd:documentation&gt;
-                 *                  Name of this feature type, including any namespace prefix
-                 *               &lt;/xsd:documentation&gt;
-                 *            &lt;/xsd:annotation&gt;
-                 *         &lt;/xsd:element&gt;
-                 *         &lt;xsd:element name="Title" type="xsd:string"&gt;
-                 *            &lt;xsd:annotation&gt;
-                 *               &lt;xsd:documentation&gt;
-                 *                  Title of this feature type, normally used for display
-                 *                  to a human.
-                 *               &lt;/xsd:documentation&gt;
-                 *            &lt;/xsd:annotation&gt;
-                 *         &lt;/xsd:element&gt;
-                 *         &lt;xsd:element name="Abstract" type="xsd:string" minOccurs="0"&gt;*            &lt;xsd:annotation&gt;
-                 *               &lt;xsd:documentation&gt;
-                 *                  Brief narrative description of this feature type, normally*                  used for display to a human.
-                 *               &lt;/xsd:documentation&gt;
-                 *            &lt;/xsd:annotation&gt;
-                 *         &lt;/xsd:element&gt;
-                 *         &lt;xsd:element ref="ows:Keywords" minOccurs="0" maxOccurs="unbounded"/&gt;
-                 *         &lt;xsd:choice&gt;
-                 *            &lt;xsd:sequence&gt;
-                 *               &lt;xsd:element name="DefaultSRS"
-                 *                            type="xsd:anyURI"&gt;
-                 *                  &lt;xsd:annotation&gt;
-                 *                     &lt;xsd:documentation&gt;
-                 *                        The DefaultSRS element indicated which spatial
-                 *                        reference system shall be used by a WFS to
-                 *                        express the state of a spatial feature if not
-                 *                        otherwise explicitly identified within a query
-                 *                        or transaction request.  The SRS may be indicated
-                 *                        using either the EPSG form (EPSG:posc code) or
-                 *                        the URL form defined in subclause 4.3.2 of
-                 *                        refernce[2].
-                 *                     &lt;/xsd:documentation&gt;
-                 *                  &lt;/xsd:annotation&gt;
-                 *               &lt;/xsd:element&gt;
-                 *               &lt;xsd:element name="OtherSRS"
-                 *                            type="xsd:anyURI"
-                 *                            minOccurs="0" maxOccurs="unbounded"&gt;
-                 *                  &lt;xsd:annotation&gt;
-                 *                     &lt;xsd:documentation&gt;
-                 *                        The OtherSRS element is used to indicate other
-                 *                        supported SRSs within query and transaction
-                 *                        operations.  A supported SRS means that the
-                 *                        WFS supports the transformation of spatial
-                 *                        properties between the OtherSRS and the internal
-                 *                        storage SRS.  The effects of such transformations
-                 *                        must be considered when determining and declaring
-                 *                        the guaranteed data accuracy.
-                 *                     &lt;/xsd:documentation&gt;
-                 *                  &lt;/xsd:annotation&gt;
-                 *               &lt;/xsd:element&gt;
-                 *            &lt;/xsd:sequence&gt;
-                 *            &lt;xsd:element name="NoSRS"&gt;
-                 *              &lt;xsd:complexType/&gt;
-                 *            &lt;/xsd:element&gt;
-                 *         &lt;/xsd:choice&gt;
-                 *         &lt;xsd:element name="Operations"
-                 *                      type="wfs:OperationsType"
-                 *                      minOccurs="0"/&gt;
-                 *         &lt;xsd:element name="OutputFormats"
-                 *                      type="wfs:OutputFormatListType"
-                 *                      minOccurs="0"/&gt;
-                 *         &lt;xsd:element ref="ows:WGS84BoundingBox"
-                 *                      minOccurs="1" maxOccurs="unbounded"/&gt;
-                 *         &lt;xsd:element name="MetadataURL"
-                 *                      type="wfs:MetadataURLType"
-                 *                      minOccurs="0" maxOccurs="unbounded"/&gt;
-                 *      &lt;/xsd:sequence&gt;
-                 *   &lt;/xsd:complexType&gt;
-                 *         </pre>
-                 * </p>
-                 * @param featureType
-                 */
+             * Encodes the wfs:FeatureType element.
+             * <p>
+             *         <pre>
+             * &lt;xsd:complexType name="FeatureTypeType"&gt;
+             *      &lt;xsd:annotation&gt;
+             *         &lt;xsd:documentation&gt;
+             *            An element of this type that describes a feature in an application
+             *            namespace shall have an xml xmlns specifier, e.g.
+             *            xmlns:bo="http://www.BlueOx.org/BlueOx"
+             *         &lt;/xsd:documentation&gt;
+             *      &lt;/xsd:annotation&gt;
+             *      &lt;xsd:sequence&gt;
+             *         &lt;xsd:element name="Name" type="xsd:QName"&gt;
+             *            &lt;xsd:annotation&gt;
+             *               &lt;xsd:documentation&gt;
+             *                  Name of this feature type, including any namespace prefix
+             *               &lt;/xsd:documentation&gt;
+             *            &lt;/xsd:annotation&gt;
+             *         &lt;/xsd:element&gt;
+             *         &lt;xsd:element name="Title" type="xsd:string"&gt;
+             *            &lt;xsd:annotation&gt;
+             *               &lt;xsd:documentation&gt;
+             *                  Title of this feature type, normally used for display
+             *                  to a human.
+             *               &lt;/xsd:documentation&gt;
+             *            &lt;/xsd:annotation&gt;
+             *         &lt;/xsd:element&gt;
+             *         &lt;xsd:element name="Abstract" type="xsd:string" minOccurs="0"&gt;*            &lt;xsd:annotation&gt;
+             *               &lt;xsd:documentation&gt;
+             *                  Brief narrative description of this feature type, normally*                  used for display to a human.
+             *               &lt;/xsd:documentation&gt;
+             *            &lt;/xsd:annotation&gt;
+             *         &lt;/xsd:element&gt;
+             *         &lt;xsd:element ref="ows:Keywords" minOccurs="0" maxOccurs="unbounded"/&gt;
+             *         &lt;xsd:choice&gt;
+             *            &lt;xsd:sequence&gt;
+             *               &lt;xsd:element name="DefaultSRS"
+             *                            type="xsd:anyURI"&gt;
+             *                  &lt;xsd:annotation&gt;
+             *                     &lt;xsd:documentation&gt;
+             *                        The DefaultSRS element indicated which spatial
+             *                        reference system shall be used by a WFS to
+             *                        express the state of a spatial feature if not
+             *                        otherwise explicitly identified within a query
+             *                        or transaction request.  The SRS may be indicated
+             *                        using either the EPSG form (EPSG:posc code) or
+             *                        the URL form defined in subclause 4.3.2 of
+             *                        refernce[2].
+             *                     &lt;/xsd:documentation&gt;
+             *                  &lt;/xsd:annotation&gt;
+             *               &lt;/xsd:element&gt;
+             *               &lt;xsd:element name="OtherSRS"
+             *                            type="xsd:anyURI"
+             *                            minOccurs="0" maxOccurs="unbounded"&gt;
+             *                  &lt;xsd:annotation&gt;
+             *                     &lt;xsd:documentation&gt;
+             *                        The OtherSRS element is used to indicate other
+             *                        supported SRSs within query and transaction
+             *                        operations.  A supported SRS means that the
+             *                        WFS supports the transformation of spatial
+             *                        properties between the OtherSRS and the internal
+             *                        storage SRS.  The effects of such transformations
+             *                        must be considered when determining and declaring
+             *                        the guaranteed data accuracy.
+             *                     &lt;/xsd:documentation&gt;
+             *                  &lt;/xsd:annotation&gt;
+             *               &lt;/xsd:element&gt;
+             *            &lt;/xsd:sequence&gt;
+             *            &lt;xsd:element name="NoSRS"&gt;
+             *              &lt;xsd:complexType/&gt;
+             *            &lt;/xsd:element&gt;
+             *         &lt;/xsd:choice&gt;
+             *         &lt;xsd:element name="Operations"
+             *                      type="wfs:OperationsType"
+             *                      minOccurs="0"/&gt;
+             *         &lt;xsd:element name="OutputFormats"
+             *                      type="wfs:OutputFormatListType"
+             *                      minOccurs="0"/&gt;
+             *         &lt;xsd:element ref="ows:WGS84BoundingBox"
+             *                      minOccurs="1" maxOccurs="unbounded"/&gt;
+             *         &lt;xsd:element name="MetadataURL"
+             *                      type="wfs:MetadataURLType"
+             *                      minOccurs="0" maxOccurs="unbounded"/&gt;
+             *      &lt;/xsd:sequence&gt;
+             *   &lt;/xsd:complexType&gt;
+             *         </pre>
+             * </p>
+             * @param featureType
+             */
             void featureType(FeatureTypeInfo featureType) {
                 String prefix = featureType.getNameSpace().getPrefix();
                 String uri = featureType.getNameSpace().getURI();
 
-                start("FeatureType", attributes(new String[] { "xmlns:" + prefix, uri }));
+                start("FeatureType",
+                    attributes(new String[] { "xmlns:" + prefix, uri }));
 
                 element("Name", featureType.getName());
                 element("Title", featureType.getTitle());
@@ -1193,19 +1231,24 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 keywords(featureType.getKeywords());
 
                 //default srs
-                element("DefaultSRS", "urn:x-ogc:def:crs:EPSG:6.11.2:" + featureType.getSRS());
+                element("DefaultSRS",
+                    "urn:x-ogc:def:crs:EPSG:6.11.2:" + featureType.getSRS());
 
                 //TODO: other srs's
                 start("OutputFormats");
 
                 Collection featureProducers = GeoServerExtensions.extensions(WFSGetFeatureOutputFormat.class);
+
                 for (Iterator i = featureProducers.iterator(); i.hasNext();) {
-                    WFSGetFeatureOutputFormat format = (WFSGetFeatureOutputFormat) i.next();
-                    for ( Iterator f = format.getOutputFormats().iterator(); f.hasNext(); ) {
-                        element( "Format", f.next().toString() );
+                    WFSGetFeatureOutputFormat format = (WFSGetFeatureOutputFormat) i
+                        .next();
+
+                    for (Iterator f = format.getOutputFormats().iterator();
+                            f.hasNext();) {
+                        element("Format", f.next().toString());
                     }
                 }
-                    
+
                 end("OutputFormats");
 
                 Envelope bbox = null;
@@ -1218,8 +1261,10 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                 start("ows:WGS84BoundingBox");
 
-                element("ows:LowerCorner", bbox.getMinX() + " " + bbox.getMinY());
-                element("ows:UpperCorner", bbox.getMaxX() + " " + bbox.getMaxY());
+                element("ows:LowerCorner", bbox.getMinX() + " "
+                    + bbox.getMinY());
+                element("ows:UpperCorner", bbox.getMaxX() + " "
+                    + bbox.getMaxY());
 
                 end("ows:WGS84BoundingBox");
 
@@ -1227,48 +1272,48 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             }
 
             /**
-                 * Encodes the wfs:SupportsGMLObjectTypeList element.
-                 *        <p>
-                 *        <pre>
-                 *&lt;xsd:complexType name="GMLObjectTypeListType"&gt;
-                 *        &lt;xsd:sequence&gt;
-                 *             &lt;xsd:element name="GMLObjectType" type="wfs:GMLObjectTypeType"
-                 *               maxOccurs="unbounded"&gt;
-                 *                &lt;xsd:annotation&gt;
-                 *                   &lt;xsd:documentation&gt;
-                 *                      Name of this GML object type, including any namespace prefix
-                 *                   &lt;/xsd:documentation&gt;
-                 *                &lt;/xsd:annotation&gt;
-                 *             &lt;/xsd:element&gt;
-                 *          &lt;/xsd:sequence&gt;
-                 * &lt;/xsd:complexType&gt;
-                 *        </pre>
-                 *        </p>
-                 */
+             * Encodes the wfs:SupportsGMLObjectTypeList element.
+             *        <p>
+             *        <pre>
+             *&lt;xsd:complexType name="GMLObjectTypeListType"&gt;
+             *        &lt;xsd:sequence&gt;
+             *             &lt;xsd:element name="GMLObjectType" type="wfs:GMLObjectTypeType"
+             *               maxOccurs="unbounded"&gt;
+             *                &lt;xsd:annotation&gt;
+             *                   &lt;xsd:documentation&gt;
+             *                      Name of this GML object type, including any namespace prefix
+             *                   &lt;/xsd:documentation&gt;
+             *                &lt;/xsd:annotation&gt;
+             *             &lt;/xsd:element&gt;
+             *          &lt;/xsd:sequence&gt;
+             * &lt;/xsd:complexType&gt;
+             *        </pre>
+             *        </p>
+             */
             void supportsGMLObjectTypeList() {
                 element("SupportsGMLObjectTypeList", null);
             }
 
             /**
-                 * Encodes the ogc:Filter_Capabilities element.
-                 * <p>
-                 * <pre>
-                 * *&lt;xsd:element name="Filter_Capabilities"&gt;
-                 *      &lt;xsd:complexType&gt;
-                 *         &lt;xsd:sequence&gt;
-                 *            &lt;xsd:element name="Spatial_Capabilities"
-                 *                         type="ogc:Spatial_CapabilitiesType"/&gt;
-                 *            &lt;xsd:element name="Scalar_Capabilities"
-                 *                         type="ogc:Scalar_CapabilitiesType"/&gt;
-                 *            &lt;xsd:element name="Id_Capabilities"
-                 *                         type="ogc:Id_CapabilitiesType"/&gt;
-                 *         &lt;/xsd:sequence&gt;
-                 *      &lt;/xsd:complexType&gt;
-                 *   &lt;/xsd:element&gt;
-                 * </pre>
-                 * </p>
-                 *
-                 */
+             * Encodes the ogc:Filter_Capabilities element.
+             * <p>
+             * <pre>
+             * *&lt;xsd:element name="Filter_Capabilities"&gt;
+             *      &lt;xsd:complexType&gt;
+             *         &lt;xsd:sequence&gt;
+             *            &lt;xsd:element name="Spatial_Capabilities"
+             *                         type="ogc:Spatial_CapabilitiesType"/&gt;
+             *            &lt;xsd:element name="Scalar_Capabilities"
+             *                         type="ogc:Scalar_CapabilitiesType"/&gt;
+             *            &lt;xsd:element name="Id_Capabilities"
+             *                         type="ogc:Id_CapabilitiesType"/&gt;
+             *         &lt;/xsd:sequence&gt;
+             *      &lt;/xsd:complexType&gt;
+             *   &lt;/xsd:element&gt;
+             * </pre>
+             * </p>
+             *
+             */
             void filterCapabilities() {
                 start("ogc:Filter_Capabilities");
 
@@ -1282,17 +1327,26 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 end("ogc:GeometryOperands");
 
                 start("ogc:SpatialOperators");
-                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "Disjoint" }));
-                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "Equals" }));
-                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "DWithin" }));
-                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "Beyond" }));
+                element("ogc:SpatialOperator", null,
+                    attributes(new String[] { "name", "Disjoint" }));
+                element("ogc:SpatialOperator", null,
+                    attributes(new String[] { "name", "Equals" }));
+                element("ogc:SpatialOperator", null,
+                    attributes(new String[] { "name", "DWithin" }));
+                element("ogc:SpatialOperator", null,
+                    attributes(new String[] { "name", "Beyond" }));
                 element("ogc:SpatialOperator", null,
                     attributes(new String[] { "name", "Intersects" }));
-                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "Touches" }));
-                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "Crosses" }));
-                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "Contains" }));
-                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "Overlaps" }));
-                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "BBOX" }));
+                element("ogc:SpatialOperator", null,
+                    attributes(new String[] { "name", "Touches" }));
+                element("ogc:SpatialOperator", null,
+                    attributes(new String[] { "name", "Crosses" }));
+                element("ogc:SpatialOperator", null,
+                    attributes(new String[] { "name", "Contains" }));
+                element("ogc:SpatialOperator", null,
+                    attributes(new String[] { "name", "Overlaps" }));
+                element("ogc:SpatialOperator", null,
+                    attributes(new String[] { "name", "BBOX" }));
                 end("ogc:SpatialOperators");
 
                 end("ogc:Spatial_Capabilities");
@@ -1343,7 +1397,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                                     String n1 = ((Function) o1).getName();
                                     String n2 = ((Function) o2).getName();
 
-                                    return n1.toLowerCase().compareTo(n2.toLowerCase());
+                                    return n1.toLowerCase()
+                                             .compareTo(n2.toLowerCase());
                                 }
                             });
 
@@ -1370,23 +1425,23 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             }
 
             /**
-                 * Encodes the ows:Keywords element.
-                 * <p>
-                 * <pre>
-                 * &lt;complexType name="KeywordsType"&gt;
-                 *     &lt;annotation&gt;
-                 *          &lt;documentation&gt;Unordered list of one or more commonly used or formalised word(s) or phrase(s) used to describe the subject. When needed, the optional "type" can name the type of the associated list of keywords that shall all have the same type. Also when needed, the codeSpace attribute of that "type" can reference the type name authority and/or thesaurus. &lt;/documentation&gt;
-                 *          &lt;documentation&gt;For OWS use, the optional thesaurusName element was omitted as being complex information that could be referenced by the codeSpace attribute of the Type element. &lt;/documentation&gt;
-                 *     &lt;/annotation&gt;
-                 *     &lt;sequence&gt;
-                 *          &lt;element name="Keyword" type="string" maxOccurs="unbounded"/&gt;
-                 *          &lt;element name="Type" type="ows:CodeType" minOccurs="0"/&gt;
-                 *     &lt;/sequence&gt;
-                 * &lt;/complexType&gt;
-                 * </pre>
-                 * </p>
-                 * @param keywords
-                 */
+             * Encodes the ows:Keywords element.
+             * <p>
+             * <pre>
+             * &lt;complexType name="KeywordsType"&gt;
+             *     &lt;annotation&gt;
+             *          &lt;documentation&gt;Unordered list of one or more commonly used or formalised word(s) or phrase(s) used to describe the subject. When needed, the optional "type" can name the type of the associated list of keywords that shall all have the same type. Also when needed, the codeSpace attribute of that "type" can reference the type name authority and/or thesaurus. &lt;/documentation&gt;
+             *          &lt;documentation&gt;For OWS use, the optional thesaurusName element was omitted as being complex information that could be referenced by the codeSpace attribute of the Type element. &lt;/documentation&gt;
+             *     &lt;/annotation&gt;
+             *     &lt;sequence&gt;
+             *          &lt;element name="Keyword" type="string" maxOccurs="unbounded"/&gt;
+             *          &lt;element name="Type" type="ows:CodeType" minOccurs="0"/&gt;
+             *     &lt;/sequence&gt;
+             * &lt;/complexType&gt;
+             * </pre>
+             * </p>
+             * @param keywords
+             */
             void keywords(String[] keywords) {
                 if ((keywords == null) || (keywords.length == 0)) {
                     return;
@@ -1402,73 +1457,90 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             }
 
             void keywords(List keywords) {
-                keywords((String[]) keywords.toArray(new String[keywords.size()]));
+                keywords((String[]) keywords.toArray(
+                        new String[keywords.size()]));
             }
 
             /**
-                 * Encodes the ows:Operation element.
-                 * <p>
-                 * <pre>
-                 * &lt;complexType&gt;
-                 *      &lt;sequence&gt;
-                 *        &lt;element ref="ows:DCP" maxOccurs="unbounded"&gt;
-                 *          &lt;annotation&gt;
-                 *            &lt;documentation&gt;Unordered list of Distributed Computing Platforms (DCPs) supported for this operation. At present, only the HTTP DCP is defined, so this element will appear only once. &lt;/documentation&gt;
-                 *          &lt;/annotation&gt;
-                 *        &lt;/element&gt;
-                 *        &lt;element name="Parameter" type="ows:DomainType" minOccurs="0" maxOccurs="unbounded"&gt;
-                 *          &lt;annotation&gt;
-                 *            &lt;documentation&gt;Optional unordered list of parameter domains that each apply to this operation which this server implements. If one of these Parameter elements has the same "name" attribute as a Parameter element in the OperationsMetadata element, this Parameter element shall override the other one for this operation. The list of required and optional parameter domain limitations for this operation shall be specified in the Implementation Specification for this service. &lt;/documentation&gt;
-                 *          &lt;/annotation&gt;
-                 *        &lt;/element&gt;
-                 *        &lt;element name="Constraint" type="ows:DomainType" minOccurs="0" maxOccurs="unbounded"&gt;
-                 *          &lt;annotation&gt;
-                 *            &lt;documentation&gt;Optional unordered list of valid domain constraints on non-parameter quantities that each apply to this operation. If one of these Constraint elements has the same "name" attribute as a Constraint element in the OperationsMetadata element, this Constraint element shall override the other one for this operation. The list of required and optional constraints for this operation shall be specified in the Implementation Specification for this service. &lt;/documentation&gt;
-                 *          &lt;/annotation&gt;
-                 *        &lt;/element&gt;
-                 *        &lt;element ref="ows:Metadata" minOccurs="0" maxOccurs="unbounded"&gt;
-                 *          &lt;annotation&gt;
-                 *            &lt;documentation&gt;Optional unordered list of additional metadata about this operation and its' implementation. A list of required and optional metadata elements for this operation should be specified in the Implementation Specification for this service. (Informative: This metadata might specify the operation request parameters or provide the XML Schemas for the operation request.) &lt;/documentation&gt;
-                 *          &lt;/annotation&gt;
-                 *        &lt;/element&gt;
-                 *      &lt;/sequence&gt;
-                 *      &lt;attribute name="name" type="string" use="required"&gt;
-                 *        &lt;annotation&gt;
-                 *          &lt;documentation&gt;Name or identifier of this operation (request) (for example, GetCapabilities). The list of required and optional operations implemented shall be specified in the Implementation Specification for this service. &lt;/documentation&gt;
-                 *        &lt;/annotation&gt;
-                 *      &lt;/attribute&gt;
-                 *    &lt;/complexType&gt;
-                 * </pre>
-                 * </p>
-                 *
-                 * @param name
-                 * @param parameters
-                 * @param get
-                 * @param post
-                 */
-            void operation(String name, Map.Entry[] parameters, boolean get, boolean post) {
+             * Encodes the ows:Operation element.
+             * <p>
+             * <pre>
+             * &lt;complexType&gt;
+             *      &lt;sequence&gt;
+             *        &lt;element ref="ows:DCP" maxOccurs="unbounded"&gt;
+             *          &lt;annotation&gt;
+             *            &lt;documentation&gt;Unordered list of Distributed Computing Platforms (DCPs) supported for this operation. At present, only the HTTP DCP is defined, so this element will appear only once. &lt;/documentation&gt;
+             *          &lt;/annotation&gt;
+             *        &lt;/element&gt;
+             *        &lt;element name="Parameter" type="ows:DomainType" minOccurs="0" maxOccurs="unbounded"&gt;
+             *          &lt;annotation&gt;
+             *            &lt;documentation&gt;Optional unordered list of parameter domains that each apply to this operation which this server implements. If one of these Parameter elements has the same "name" attribute as a Parameter element in the OperationsMetadata element, this Parameter element shall override the other one for this operation. The list of required and optional parameter domain limitations for this operation shall be specified in the Implementation Specification for this service. &lt;/documentation&gt;
+             *          &lt;/annotation&gt;
+             *        &lt;/element&gt;
+             *        &lt;element name="Constraint" type="ows:DomainType" minOccurs="0" maxOccurs="unbounded"&gt;
+             *          &lt;annotation&gt;
+             *            &lt;documentation&gt;Optional unordered list of valid domain constraints on non-parameter quantities that each apply to this operation. If one of these Constraint elements has the same "name" attribute as a Constraint element in the OperationsMetadata element, this Constraint element shall override the other one for this operation. The list of required and optional constraints for this operation shall be specified in the Implementation Specification for this service. &lt;/documentation&gt;
+             *          &lt;/annotation&gt;
+             *        &lt;/element&gt;
+             *        &lt;element ref="ows:Metadata" minOccurs="0" maxOccurs="unbounded"&gt;
+             *          &lt;annotation&gt;
+             *            &lt;documentation&gt;Optional unordered list of additional metadata about this operation and its' implementation. A list of required and optional metadata elements for this operation should be specified in the Implementation Specification for this service. (Informative: This metadata might specify the operation request parameters or provide the XML Schemas for the operation request.) &lt;/documentation&gt;
+             *          &lt;/annotation&gt;
+             *        &lt;/element&gt;
+             *      &lt;/sequence&gt;
+             *      &lt;attribute name="name" type="string" use="required"&gt;
+             *        &lt;annotation&gt;
+             *          &lt;documentation&gt;Name or identifier of this operation (request) (for example, GetCapabilities). The list of required and optional operations implemented shall be specified in the Implementation Specification for this service. &lt;/documentation&gt;
+             *        &lt;/annotation&gt;
+             *      &lt;/attribute&gt;
+             *    &lt;/complexType&gt;
+             * </pre>
+             * </p>
+             *
+             * @param name
+             * @param parameters
+             * @param get
+             * @param post
+             */
+            void operation(String name, Map.Entry[] parameters, boolean get,
+                boolean post) {
                 start("ows:Operation", attributes(new String[] { "name", name }));
 
                 //dcp
                 start("ows:DCP");
                 start("ows:HTTP");
 
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request
+                        .getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
 
                 if (proxifiedBaseUrl.endsWith("?")) {
-                    proxifiedBaseUrl = proxifiedBaseUrl.substring(0, proxifiedBaseUrl.length() - 1);
+                    proxifiedBaseUrl = proxifiedBaseUrl.substring(0,
+                            proxifiedBaseUrl.length() - 1);
                 }
 
                 if (proxifiedBaseUrl.indexOf('?') != -1) {
-                    proxifiedBaseUrl = proxifiedBaseUrl.substring(0, proxifiedBaseUrl.indexOf('?'));
+                    proxifiedBaseUrl = proxifiedBaseUrl.substring(0,
+                            proxifiedBaseUrl.indexOf('?'));
                 }
 
                 if (get) {
-                    element("ows:Get", null, attributes(new String[] { "xlink:href", ResponseUtils.appendPath(proxifiedBaseUrl, "wfs?") }));
+                    element("ows:Get", null,
+                        attributes(
+                            new String[] {
+                                "xlink:href",
+                                ResponseUtils.appendPath(proxifiedBaseUrl,
+                                    "wfs?")
+                            }));
                 }
 
                 if (post) {
-                    element("ows:Post", null, attributes(new String[] { "xlink:href", ResponseUtils.appendPath(proxifiedBaseUrl, "wfs?") }));
+                    element("ows:Post", null,
+                        attributes(
+                            new String[] {
+                                "xlink:href",
+                                ResponseUtils.appendPath(proxifiedBaseUrl,
+                                    "wfs?")
+                            }));
                 }
 
                 end("ows:HTTP");
@@ -1479,7 +1551,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                     String pname = (String) parameters[i].getKey();
                     String[] pvalues = (String[]) parameters[i].getValue();
 
-                    start("ows:Parameter", attributes(new String[] { "name", pname }));
+                    start("ows:Parameter",
+                        attributes(new String[] { "name", pname }));
 
                     for (int j = 0; j < pvalues.length; j++) {
                         element("ows:Value", pvalues[j]);

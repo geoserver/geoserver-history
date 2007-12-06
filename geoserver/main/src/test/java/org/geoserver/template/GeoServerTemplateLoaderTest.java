@@ -66,7 +66,8 @@ public class GeoServerTemplateLoaderTest extends TestCase {
             // actual.getCanonicalPath());
 
             //test loading relative to class
-            Object source = templateLoader.findTemplateSource("FeatureSimple.ftl");
+            Object source = templateLoader.findTemplateSource(
+                    "FeatureSimple.ftl");
             assertNotNull(source);
             assertFalse(source instanceof File);
             templateLoader.getReader(source, "UTF-8");

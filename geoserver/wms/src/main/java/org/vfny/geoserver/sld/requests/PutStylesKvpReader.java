@@ -46,10 +46,12 @@ public class PutStylesKvpReader extends KvpRequestReader {
         String mode = getValue("MODE");
 
         if ((mode != null) && !mode.equals("")) {
-            if (mode.equalsIgnoreCase("InsertAndReplace") || mode.equalsIgnoreCase("ReplaceAll")) {
+            if (mode.equalsIgnoreCase("InsertAndReplace")
+                    || mode.equalsIgnoreCase("ReplaceAll")) {
                 request.setMode(mode);
             } else {
-                throw new SldException("Parameter must be 'InsertAndReplace' or 'ReplaceAll'.");
+                throw new SldException(
+                    "Parameter must be 'InsertAndReplace' or 'ReplaceAll'.");
             }
         }
     }

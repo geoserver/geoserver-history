@@ -27,12 +27,13 @@ public class CapabilitiesRequest extends Request {
     }
 
     /**
-      * Returns a string representation of this CapabilitiesRequest.
-      *
-      * @return a string of with the service and version.
-      */
+     * Returns a string representation of this CapabilitiesRequest.
+     *
+     * @return a string of with the service and version.
+     */
     public String toString() {
-        return "GetCapabilities [service: " + service + ", version: " + version + "]";
+        return "GetCapabilities [service: " + service + ", version: " + version
+        + "]";
     }
 
     /**

@@ -47,10 +47,13 @@ public class GeoserverUserDao implements UserDetailsService {
      * @throws DataAccessResourceFailureException
      */
     private void checkUserMap() throws DataAccessResourceFailureException {
-        if ((userMap == null) || ((userDefinitionsFile != null) && userDefinitionsFile.isStale())) {
+        if ((userMap == null)
+                || ((userDefinitionsFile != null)
+                && userDefinitionsFile.isStale())) {
             try {
                 if (userDefinitionsFile == null) {
-                    File securityDir = GeoserverDataDirectory.findCreateConfigDir("security");
+                    File securityDir = GeoserverDataDirectory
+                        .findCreateConfigDir("security");
                     File propFile = new File(securityDir, "users.properties");
 
                     if (!propFile.exists()) {
@@ -59,10 +62,13 @@ public class GeoserverUserDao implements UserDetailsService {
                         // chaning the username and password if possible
                         Properties p = new Properties();
 
-                        if ((geoServer != null) && (geoServer.getAdminUserName() != null)
-                                && !geoServer.getAdminUserName().trim().equals("")) {
+                        if ((geoServer != null)
+                                && (geoServer.getAdminUserName() != null)
+                                && !geoServer.getAdminUserName().trim()
+                                                 .equals("")) {
                             p.put(geoServer.getAdminUserName(),
-                                geoServer.getAdminPassword() + ",ROLE_ADMINISTRATOR");
+                                geoServer.getAdminPassword()
+                                + ",ROLE_ADMINISTRATOR");
                         } else {
                             p.put("admin", "geoserver,ROLE_ADMINISTRATOR");
                         }
@@ -76,9 +82,11 @@ public class GeoserverUserDao implements UserDetailsService {
                 }
 
                 userMap = new UserMap();
-                UserMapEditor.addUsersFromProperties(userMap, userDefinitionsFile.getProperties());
+                UserMapEditor.addUsersFromProperties(userMap,
+                    userDefinitionsFile.getProperties());
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "An error occurred loading user definitions", e);
+                LOGGER.log(Level.SEVERE,
+                    "An error occurred loading user definitions", e);
             }
         }
     }

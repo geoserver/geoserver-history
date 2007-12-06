@@ -75,7 +75,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class ServiceException extends org.geoserver.platform.ServiceException {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
+    private static Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.responses");
 
     /** message inserted by GeoServer as to what it thinks happened */
     protected String preMessage = new String();
@@ -245,12 +246,13 @@ public class ServiceException extends org.geoserver.platform.ServiceException {
      *       validate right (reference our own schema), and to put the correct
      *       mime type here.
      */
-    public String getXmlResponse(boolean printStackTrace, HttpServletRequest request,
-        GeoServer geoserver) {
+    public String getXmlResponse(boolean printStackTrace,
+        HttpServletRequest request, GeoServer geoserver) {
         //Perhaps not the best place to do this, but it's by far the best place to ensure
         //that all logged errors get recorded in the same way, as there all must return
         //xml responses.
-        LOGGER.warning("encountered error: " + getMessage() + "\nStackTrace: " + createStackTrace());
+        LOGGER.warning("encountered error: " + getMessage() + "\nStackTrace: "
+            + createStackTrace());
 
         String indent = "   ";
 
@@ -262,7 +264,8 @@ public class ServiceException extends org.geoserver.platform.ServiceException {
 
         returnXml.append(indent + "xmlns=\"http://www.opengis.net/ogc\"\n");
 
-        returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/" + "XMLSchema-instance\"\n");
+        returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/"
+            + "XMLSchema-instance\"\n");
 
         returnXml.append(indent);
 

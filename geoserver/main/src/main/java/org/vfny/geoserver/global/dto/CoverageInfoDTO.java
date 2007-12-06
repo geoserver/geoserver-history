@@ -4,11 +4,6 @@
  */
 package org.vfny.geoserver.global.dto;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -16,6 +11,10 @@ import org.opengis.util.InternationalString;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.MetaDataLink;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -38,10 +37,10 @@ public final class CoverageInfoDTO implements DataTransferObject {
     private String name;
 
     /**
-    *
-    */
+     *
+     */
     private String real_name;
-    
+
     /**
      *
      */
@@ -143,20 +142,20 @@ public final class CoverageInfoDTO implements DataTransferObject {
     private CoordinateReferenceSystem crs;
 
     /**
-     * 
+     *
      */
     private boolean nDimensionalCoverage;
-    
-	/**
-	 * Storing here all the available zeta values for this Coverage
-	 */
-	private Map verticalExtent;
 
-	/**
-	 * Storing here all the valid time positions or time period
-	 * for this Coverage
-	 */
-	private Map temporalExtent;
+    /**
+     * Storing here all the available zeta values for this Coverage
+     */
+    private Map verticalExtent;
+
+    /**
+     * Storing here all the valid time positions or time period
+     * for this Coverage
+     */
+    private Map temporalExtent;
 
     /**
      * Default style used to render this Coverage with WMS
@@ -229,7 +228,8 @@ public final class CoverageInfoDTO implements DataTransferObject {
         defaultInterpolationMethod = dto.getDefaultInterpolationMethod();
 
         try {
-            interpolationMethods = CloneLibrary.clone(dto.getInterpolationMethods());
+            interpolationMethods = CloneLibrary.clone(dto
+                    .getInterpolationMethods());
         } catch (CloneNotSupportedException e4) {
             interpolationMethods = new LinkedList();
         }
@@ -293,7 +293,7 @@ public final class CoverageInfoDTO implements DataTransferObject {
         if (real_name != null) {
             r *= real_name.hashCode();
         }
-        
+
         if (formatId != null) {
             r *= formatId.hashCode();
         }
@@ -455,9 +455,9 @@ public final class CoverageInfoDTO implements DataTransferObject {
     }
 
     public String toString() {
-        return "[CoverageInfoDTO: " + name + ", formatId: " + formatId + ", envelope: " + envelope
-        + "\n  SRS: " + srsName + ", dirName: " + dirName + ", label: " + label
-        + "\n  description: " + description;
+        return "[CoverageInfoDTO: " + name + ", formatId: " + formatId
+        + ", envelope: " + envelope + "\n  SRS: " + srsName + ", dirName: "
+        + dirName + ", label: " + label + "\n  description: " + description;
     }
 
     /**
@@ -849,35 +849,35 @@ public final class CoverageInfoDTO implements DataTransferObject {
         this.parameters = parameters;
     }
 
-	public String getRealName() {
-		return real_name;
-	}
+    public String getRealName() {
+        return real_name;
+    }
 
-	public void setRealName(String real_name) {
-		this.real_name = real_name;
-	}
+    public void setRealName(String real_name) {
+        this.real_name = real_name;
+    }
 
-	public boolean isNDimensionalCoverage() {
-		return nDimensionalCoverage;
-	}
+    public boolean isNDimensionalCoverage() {
+        return nDimensionalCoverage;
+    }
 
-	public void setNDimensionalCoverage(boolean dimensionalCoverage) {
-		nDimensionalCoverage = dimensionalCoverage;
-	}
+    public void setNDimensionalCoverage(boolean dimensionalCoverage) {
+        nDimensionalCoverage = dimensionalCoverage;
+    }
 
-	public Map getTemporalExtent() {
-		return temporalExtent;
-	}
+    public Map getTemporalExtent() {
+        return temporalExtent;
+    }
 
-	public void setTemporalExtent(Map temporalExtent) {
-		this.temporalExtent = temporalExtent;
-	}
+    public void setTemporalExtent(Map temporalExtent) {
+        this.temporalExtent = temporalExtent;
+    }
 
-	public Map getVerticalExtent() {
-		return verticalExtent;
-	}
+    public Map getVerticalExtent() {
+        return verticalExtent;
+    }
 
-	public void setVerticalExtent(Map verticalExtent) {
-		this.verticalExtent = verticalExtent;
-	}
+    public void setVerticalExtent(Map verticalExtent) {
+        this.verticalExtent = verticalExtent;
+    }
 }

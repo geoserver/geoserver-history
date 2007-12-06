@@ -52,12 +52,13 @@ import javax.servlet.http.HttpSession;
  */
 public class CatalogDispatcher extends Dispatcher {
     /**
-         * Comment for <code>serialVersionUID</code>
-         */
+     * Comment for <code>serialVersionUID</code>
+     */
     private static final long serialVersionUID = -8409244945998729743L;
 
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets.catalog");
+    private static Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.servlets.catalog");
     private static int sequence = 123;
     private static final String DEFAULT_ENCODING = "UTF-8";
     private static final String ENCODING_HEADER_ARG = "Content-Type";
@@ -118,11 +119,12 @@ public class CatalogDispatcher extends Dispatcher {
             BufferedReader requestReader;
 
             try {
-                disReader = new BufferedReader(XmlCharsetDetector.getCharsetAwareReader(
-                            new FileInputStream(temp), encInfo));
+                disReader = new BufferedReader(XmlCharsetDetector
+                        .getCharsetAwareReader(new FileInputStream(temp),
+                            encInfo));
 
-                requestReader = new BufferedReader(XmlCharsetDetector.createReader(
-                            new FileInputStream(temp), encInfo));
+                requestReader = new BufferedReader(XmlCharsetDetector
+                        .createReader(new FileInputStream(temp), encInfo));
             } catch (Exception e) {
                 /*
                  * Any exception other than CatalogException will "hang up" the
@@ -218,11 +220,13 @@ public class CatalogDispatcher extends Dispatcher {
      * @throws IOException If anything goes wrong reading or writing.
      */
     protected void doResponse(Reader requestReader, HttpServletRequest request,
-        HttpServletResponse response, int req_type) throws ServletException, IOException {
+        HttpServletResponse response, int req_type)
+        throws ServletException, IOException {
         AbstractService dispatched;
 
         if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.info(new StringBuffer("req_type is ").append(req_type).toString());
+            LOGGER.info(new StringBuffer("req_type is ").append(req_type)
+                                                        .toString());
         }
     }
 }

@@ -52,8 +52,8 @@ public final class CoverageInfo extends GlobalLayerSupertype {
     private String name;
 
     /**
-    *
-    */
+     *
+     */
     private String real_name;
 
     /**
@@ -177,15 +177,12 @@ public final class CoverageInfo extends GlobalLayerSupertype {
     private ArrayList styles;
 
     /**
-         * String representation of connection parameter values
-         */
+     * String representation of connection parameter values
+     */
     private Map parameters;
-
-	private boolean NDimensionalCoverage;
-
-	private Map verticalExtent;
-
-	private Map temporalExtent;
+    private boolean NDimensionalCoverage;
+    private Map verticalExtent;
+    private Map temporalExtent;
 
     public CoverageInfo(CoverageInfoDTO dto, Data data)
         throws ConfigurationException {
@@ -485,7 +482,8 @@ public final class CoverageInfo extends GlobalLayerSupertype {
     public GeneralEnvelope getWGS84LonLatEnvelope() {
         if (this.lonLatWGS84Envelope == null) {
             try {
-                this.lonLatWGS84Envelope = CoverageStoreUtils.getWGS84LonLatEnvelope(this.envelope);
+                this.lonLatWGS84Envelope = CoverageStoreUtils
+                    .getWGS84LonLatEnvelope(this.envelope);
             } catch (IndexOutOfBoundsException e) {
                 return null;
             } catch (FactoryException e) {
@@ -547,12 +545,14 @@ public final class CoverageInfo extends GlobalLayerSupertype {
             // coverage we ask intersect it otherwise it is pointless to load it
             // since its reader might return null;
             // /////////////////////////////////////////////////////////
-            final CoordinateReferenceSystem sourceCRS = envelope.getCoordinateReferenceSystem();
+            final CoordinateReferenceSystem sourceCRS = envelope
+                .getCoordinateReferenceSystem();
             final CoordinateReferenceSystem destCRS = crs;
 
             if (!CRSUtilities.equalsIgnoreMetadata(sourceCRS, destCRS)) {
                 // get a math transform
-                final MathTransform transform = CoverageUtils.getMathTransform(sourceCRS, destCRS);
+                final MathTransform transform = CoverageUtils.getMathTransform(sourceCRS,
+                        destCRS);
 
                 // transform the envelope
                 if (!transform.isIdentity()) {
@@ -586,10 +586,12 @@ public final class CoverageInfo extends GlobalLayerSupertype {
             //
             // /////////////////////////////////////////////////////////
             gc = reader.read(CoverageUtils.getParameters(
-                        getReader().getFormat().getReadParameters(), getParameters()));
+                        getReader().getFormat().getReadParameters(),
+                        getParameters()));
 
             if ((gc == null) || !(gc instanceof GridCoverage2D)) {
-                throw new IOException("The requested coverage could not be found.");
+                throw new IOException(
+                    "The requested coverage could not be found.");
             }
         } catch (InvalidParameterValueException e) {
             LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
@@ -610,25 +612,25 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         return gc;
     }
 
-	public String getRealName() {
-		return real_name;
-	}
+    public String getRealName() {
+        return real_name;
+    }
 
-	public boolean isNDimensionalCoverage() {
-		return NDimensionalCoverage;
-	}
+    public boolean isNDimensionalCoverage() {
+        return NDimensionalCoverage;
+    }
 
-	/**
-	 * @return the temporalExtent
-	 */
-	public Map getTemporalExtent() {
-		return temporalExtent;
-	}
+    /**
+     * @return the temporalExtent
+     */
+    public Map getTemporalExtent() {
+        return temporalExtent;
+    }
 
-	/**
-	 * @return the verticalExtent
-	 */
-	public Map getVerticalExtent() {
-		return verticalExtent;
-	}
+    /**
+     * @return the verticalExtent
+     */
+    public Map getVerticalExtent() {
+        return verticalExtent;
+    }
 }

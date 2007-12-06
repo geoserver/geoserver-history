@@ -38,7 +38,8 @@ import java.util.logging.Logger;
  * @version $Id$
  */
 public class FeatureTypeConfig {
-    protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.config");
+    protected static Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.config");
 
     /** The Id of the datastore which should be used to get this featuretype. */
     private String dataStoreId;
@@ -51,8 +52,8 @@ public class FeatureTypeConfig {
 
     /** native wich EPGS code for the FeatureTypeInfo */
     private int SRS;
-    
-    /** 
+
+    /**
      * Either force declared or reproject from native to declared, see {@link FeatureTypeInfo#FORCE}
      * and {@link FeatureTypeInfo#REPROJECT}
      */
@@ -81,11 +82,11 @@ public class FeatureTypeConfig {
     private String wmsPath;
 
     /**
-    * The schema name.
-    * <p>
-    * Usually  name + "_Type"
-    * </p>
-    */
+     * The schema name.
+     * <p>
+     * Usually  name + "_Type"
+     * </p>
+     */
     private String schemaName;
 
     /**
@@ -189,13 +190,16 @@ public class FeatureTypeConfig {
      * @param schema Geotools2 FeatureType
      * @param generate True to generate entries for all attribtues
      */
-    public FeatureTypeConfig(String dataStoreId, FeatureType schema, boolean generate) {
+    public FeatureTypeConfig(String dataStoreId, FeatureType schema,
+        boolean generate) {
         if ((dataStoreId == null) || (dataStoreId.length() == 0)) {
-            throw new IllegalArgumentException("dataStoreId is required for FeatureTypeConfig");
+            throw new IllegalArgumentException(
+                "dataStoreId is required for FeatureTypeConfig");
         }
 
         if (schema == null) {
-            throw new IllegalArgumentException("FeatureType is required for FeatureTypeConfig");
+            throw new IllegalArgumentException(
+                "FeatureType is required for FeatureTypeConfig");
         }
 
         this.dataStoreId = dataStoreId;
@@ -235,6 +239,72 @@ public class FeatureTypeConfig {
     }
 
     /**
+     * FeatureTypeInfo constructor.
+     *
+     * <p>
+     * Creates a copy of the FeatureTypeInfoDTO provided. All the data
+     * structures are cloned.
+     * </p>
+     *
+     * @param dto The FeatureTypeInfoDTO to copy.
+     *
+     * @throws NullPointerException DOCUMENT ME!
+     */
+    public FeatureTypeConfig(FeatureTypeInfoDTO dto) {
+        if (dto == null) {
+            throw new NullPointerException(
+                "Non null FeatureTypeInfoDTO required");
+        }
+
+        dataStoreId = dto.getDataStoreId();
+        latLongBBox = new Envelope(dto.getLatLongBBox());
+        nativeBBox = new Envelope(dto.getNativeBBox());
+        SRS = dto.getSRS();
+        SRSHandling = dto.getSRSHandling();
+
+        if (dto.getSchemaAttributes() == null) {
+            schemaAttributes = null;
+        } else {
+            schemaAttributes = new LinkedList();
+
+            Iterator i = dto.getSchemaAttributes().iterator();
+
+            while (i.hasNext()) {
+                schemaAttributes.add(new AttributeTypeInfoConfig(
+                        (AttributeTypeInfoDTO) i.next()));
+            }
+        }
+
+        name = dto.getName();
+        wmsPath = dto.getWmsPath();
+        title = dto.getTitle();
+        _abstract = dto.getAbstract();
+        numDecimals = dto.getNumDecimals();
+        definitionQuery = dto.getDefinitionQuery();
+
+        try {
+            keywords = new HashSet(dto.getKeywords());
+        } catch (Exception e) {
+            keywords = new HashSet();
+        }
+
+        try {
+            metadataLinks = new HashSet(dto.getMetadataLinks());
+        } catch (Exception e) {
+            metadataLinks = new HashSet();
+        }
+
+        defaultStyle = dto.getDefaultStyle();
+        styles = dto.getStyles();
+        dirName = dto.getDirName();
+        schemaName = dto.getSchemaName();
+        schemaBase = dto.getSchemaBase();
+
+        cachingEnabled = dto.isCachingEnabled();
+        cacheMaxAge = dto.getCacheMaxAge();
+    }
+
+    /**
      * TODO: this method is duplicated with CoveragesEditorAction and should be replaced by
      * an equivalent method in CRS class. Once the methods is added, forward to the CRS class.
      * @param defaultGeometry
@@ -270,70 +340,6 @@ public class FeatureTypeConfig {
         //            LOGGER.severe("Could not parse EPSG code: " + code);
         //            return 0;
         //        }
-    }
-
-    /**
-     * FeatureTypeInfo constructor.
-     *
-     * <p>
-     * Creates a copy of the FeatureTypeInfoDTO provided. All the data
-     * structures are cloned.
-     * </p>
-     *
-     * @param dto The FeatureTypeInfoDTO to copy.
-     *
-     * @throws NullPointerException DOCUMENT ME!
-     */
-    public FeatureTypeConfig(FeatureTypeInfoDTO dto) {
-        if (dto == null) {
-            throw new NullPointerException("Non null FeatureTypeInfoDTO required");
-        }
-
-        dataStoreId = dto.getDataStoreId();
-        latLongBBox = new Envelope(dto.getLatLongBBox());
-        nativeBBox = new Envelope(dto.getNativeBBox());
-        SRS = dto.getSRS();
-        SRSHandling = dto.getSRSHandling();
-
-        if (dto.getSchemaAttributes() == null) {
-            schemaAttributes = null;
-        } else {
-            schemaAttributes = new LinkedList();
-
-            Iterator i = dto.getSchemaAttributes().iterator();
-
-            while (i.hasNext()) {
-                schemaAttributes.add(new AttributeTypeInfoConfig((AttributeTypeInfoDTO) i.next()));
-            }
-        }
-
-        name = dto.getName();
-        wmsPath = dto.getWmsPath();
-        title = dto.getTitle();
-        _abstract = dto.getAbstract();
-        numDecimals = dto.getNumDecimals();
-        definitionQuery = dto.getDefinitionQuery();
-
-        try {
-            keywords = new HashSet(dto.getKeywords());
-        } catch (Exception e) {
-            keywords = new HashSet();
-        }
-
-        try {
-            metadataLinks = new HashSet(dto.getMetadataLinks());
-        } catch (Exception e) {
-            metadataLinks = new HashSet();
-        }
-
-        defaultStyle = dto.getDefaultStyle();
-        styles = dto.getStyles();
-        dirName = dto.getDirName();
-        schemaName = dto.getSchemaName();
-        schemaBase = dto.getSchemaBase();
-
-        cachingEnabled = dto.isCachingEnabled();
-        cacheMaxAge = dto.getCacheMaxAge();
     }
 
     /**
@@ -409,11 +415,13 @@ public class FeatureTypeConfig {
      *
      * @return AttributeTypeInfoConfig from the schema, if found
      */
-    public AttributeTypeInfoConfig getAttributeFromSchema(String attributeTypeName) {
+    public AttributeTypeInfoConfig getAttributeFromSchema(
+        String attributeTypeName) {
         Iterator iter = schemaAttributes.iterator();
 
         while (iter.hasNext()) {
-            AttributeTypeInfoConfig atiConfig = (AttributeTypeInfoConfig) iter.next();
+            AttributeTypeInfoConfig atiConfig = (AttributeTypeInfoConfig) iter
+                .next();
 
             if (atiConfig.getName().equals(attributeTypeName)) {
                 return atiConfig;
@@ -710,8 +718,6 @@ public class FeatureTypeConfig {
     public int getSRS() {
         return SRS;
     }
-    
-    
 
     /**
      * Set sRS to srs.
@@ -721,11 +727,11 @@ public class FeatureTypeConfig {
     public void setSRS(int srs) {
         SRS = srs;
     }
-    
+
     public int getSRSHandling() {
         return SRSHandling;
     }
-    
+
     public void setSRSHandling(int srsHandling) {
         this.SRSHandling = srsHandling;
     }
@@ -749,8 +755,9 @@ public class FeatureTypeConfig {
     }
 
     public String toString() {
-        return "FeatureTypeConfig[name: " + name + " schemaName: " + schemaName + " SRS: " + SRS
-        + " schemaAttributes: " + schemaAttributes + " schemaBase " + schemaBase + "]";
+        return "FeatureTypeConfig[name: " + name + " schemaName: " + schemaName
+        + " SRS: " + SRS + " schemaAttributes: " + schemaAttributes
+        + " schemaBase " + schemaBase + "]";
     }
 
     public String getWmsPath() {

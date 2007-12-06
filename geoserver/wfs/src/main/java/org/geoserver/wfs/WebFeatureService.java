@@ -71,7 +71,7 @@ public interface WebFeatureService {
      *
      * @param request The get feature with lock request.
      *
-      * @return A feature collection type instance.
+     * @return A feature collection type instance.
      *
      * @throws WFSException Any service exceptions.
      */
@@ -101,7 +101,7 @@ public interface WebFeatureService {
      */
     TransactionResponseType transaction(TransactionType request)
         throws WFSException;
-    
+
     /**
      * Release lock operation.
      * <p>
@@ -110,5 +110,4 @@ public interface WebFeatureService {
      * @param lockId A prefiously held lock id.
      */
     void releaseLock(String lockId) throws WFSException;
-    
 }

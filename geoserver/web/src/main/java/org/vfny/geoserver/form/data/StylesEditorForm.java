@@ -108,17 +108,20 @@ public class StylesEditorForm extends ActionForm {
         defaultInitial = _default;
     }
 
-    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping,
+        HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         if ((styleID == null) || styleID.equals("")) {
-            errors.add("styleID", new ActionError("error.styleID.required", styleID));
+            errors.add("styleID",
+                new ActionError("error.styleID.required", styleID));
 
             return errors;
         }
 
         if (!Pattern.matches("^[-\\w.:]*$", styleID)) {
-            errors.add("styleID", new ActionError("error.styleID.invalid", styleID));
+            errors.add("styleID",
+                new ActionError("error.styleID.invalid", styleID));
 
             return errors;
         }
@@ -135,7 +138,8 @@ public class StylesEditorForm extends ActionForm {
                 size = cc.getMaxFileSize(); // struts-config : <controller maxFileSize="nK" />
             }
 
-            errors.add("styleID", new ActionError("error.file.maxLengthExceeded", size));
+            errors.add("styleID",
+                new ActionError("error.file.maxLengthExceeded", size));
 
             return errors;
         }
@@ -292,7 +296,8 @@ public class StylesEditorForm extends ActionForm {
         BufferedReader br = null;
 
         try {
-            File styleDir = new File(GeoserverDataDirectory.getGeoserverDataDirectory(), "styles");
+            File styleDir = new File(GeoserverDataDirectory
+                    .getGeoserverDataDirectory(), "styles");
             File styleFile = new File(styleDir, sldFileName);
             br = new BufferedReader(new FileReader(styleFile));
 

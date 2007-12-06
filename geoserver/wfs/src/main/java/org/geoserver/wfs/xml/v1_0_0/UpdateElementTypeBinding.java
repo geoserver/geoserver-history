@@ -81,10 +81,12 @@ public class UpdateElementTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        UpdateElementType updateElement = wfsfactory.createUpdateElementType();
+        UpdateElementType updateElement = wfsfactory
+            .createUpdateElementType();
 
         //&lt;xsd:element maxOccurs="unbounded" ref="wfs:Property"/&gt;
-        updateElement.getProperty().addAll(node.getChildValues(PropertyType.class));
+        updateElement.getProperty()
+                     .addAll(node.getChildValues(PropertyType.class));
 
         //&lt;xsd:element maxOccurs="1" minOccurs="0" ref="ogc:Filter"&gt;
         updateElement.setFilter((Filter) node.getChildValue(Filter.class));

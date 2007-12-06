@@ -21,14 +21,14 @@ import java.util.Map;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class Coverage extends WCService {
-    public Coverage(WCS wcs) {
-        super("GetCoverage", wcs);
-    }
-
     /**
      * Comment for <code>serialVersionUID</code>
      */
     private static final long serialVersionUID = 3257282552237797945L;
+
+    public Coverage(WCS wcs) {
+        super("GetCoverage", wcs);
+    }
 
     protected Response getResponseHandler() {
         return new CoverageResponse();

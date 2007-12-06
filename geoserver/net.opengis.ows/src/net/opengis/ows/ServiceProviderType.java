@@ -8,6 +8,7 @@ package net.opengis.ows;
 
 import org.eclipse.emf.ecore.EObject;
 
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Service Provider Type</b></em>'.
@@ -27,10 +28,10 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface ServiceProviderType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Provider Name</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * A unique identifier for the service provider organization.
      * <!-- end-model-doc -->
@@ -41,22 +42,22 @@ public interface ServiceProviderType extends EObject {
      *        extendedMetaData="kind='element' name='ProviderName' namespace='##targetNamespace'"
      * @generated
      */
-	String getProviderName();
+    String getProviderName();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ServiceProviderType#getProviderName <em>Provider Name</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Provider Name</em>' attribute.
      * @see #getProviderName()
      * @generated
      */
-	void setProviderName(String value);
+    void setProviderName(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Provider Site</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Reference to the most relevant web site of the service provider.
      * <!-- end-model-doc -->
@@ -67,22 +68,22 @@ public interface ServiceProviderType extends EObject {
      *        extendedMetaData="kind='element' name='ProviderSite' namespace='##targetNamespace'"
      * @generated
      */
-	OnlineResourceType getProviderSite();
+    OnlineResourceType getProviderSite();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ServiceProviderType#getProviderSite <em>Provider Site</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Provider Site</em>' containment reference.
      * @see #getProviderSite()
      * @generated
      */
-	void setProviderSite(OnlineResourceType value);
+    void setProviderSite(OnlineResourceType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Service Contact</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Information for contacting the service provider. The OnlineResource element within this ServiceContact element should not be used to reference a web site of the service provider.
      * <!-- end-model-doc -->
@@ -93,16 +94,15 @@ public interface ServiceProviderType extends EObject {
      *        extendedMetaData="kind='element' name='ServiceContact' namespace='##targetNamespace'"
      * @generated
      */
-	ResponsiblePartySubsetType getServiceContact();
+    ResponsiblePartySubsetType getServiceContact();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ServiceProviderType#getServiceContact <em>Service Contact</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Service Contact</em>' containment reference.
      * @see #getServiceContact()
      * @generated
      */
-	void setServiceContact(ResponsiblePartySubsetType value);
-
+    void setServiceContact(ResponsiblePartySubsetType value);
 } // ServiceProviderType

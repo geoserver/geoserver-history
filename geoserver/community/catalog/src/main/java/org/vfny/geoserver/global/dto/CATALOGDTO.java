@@ -92,16 +92,17 @@ public class CATALOGDTO implements DataTransferObject {
 
         CATALOGDTO dto = (CATALOGDTO) other;
 
-        return ((service == null)) ? (dto.getService() == null) : service.equals(dto.getService());
+        return ((service == null)) ? (dto.getService() == null)
+                                   : service.equals(dto.getService());
     }
 
     /**
-         * Implement hashCode.
-         *
-         * @return Service hashcode or 0
-         *
-         * @see java.lang.Object#hashCode()
-         */
+     * Implement hashCode.
+     *
+     * @return Service hashcode or 0
+     *
+     * @see java.lang.Object#hashCode()
+     */
     public int hashCode() {
         return ((service == null) ? 0 : service.hashCode());
     }

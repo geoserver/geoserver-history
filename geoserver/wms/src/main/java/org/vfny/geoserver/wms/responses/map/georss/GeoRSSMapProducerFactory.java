@@ -15,11 +15,11 @@ import java.util.Set;
 public class GeoRSSMapProducerFactory implements GetMapProducerFactorySpi {
     static Set formats = new HashSet();
     static Set aliases = new HashSet();
-    
+
     static {
         formats.add(AtomGeoRSSMapProducer.MIME_TYPE);
         formats.add(RSSGeoRSSMapProducer.MIME_TYPE);
-        
+
         aliases.addAll(AtomGeoRSSMapProducer.FORMATS);
         aliases.addAll(RSSGeoRSSMapProducer.FORMATS);
     }

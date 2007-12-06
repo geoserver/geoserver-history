@@ -57,8 +57,8 @@ public abstract class NameSpaceTranslator {
 
     /**
      * Retrive all elements that can be used with the provided type.
-    * <p>
-    * Looks for Elements who's Class objects, or the parents of the
+     * <p>
+     * Looks for Elements who's Class objects, or the parents of the
      * Class object are compatible with this class object.
      * </p>
      * @param type Class the class to attempt to find related elements for.
@@ -79,7 +79,8 @@ public abstract class NameSpaceTranslator {
             if (nse != null) {
                 Class cls = nse.getJavaClass();
 
-                if ((cls != null) && cls.isAssignableFrom(type) && !cls.equals(Object.class)) {
+                if ((cls != null) && cls.isAssignableFrom(type)
+                        && !cls.equals(Object.class)) {
                     r.add(nse);
                 }
             }
@@ -90,7 +91,7 @@ public abstract class NameSpaceTranslator {
 
     /**
      * Looks for Elements who's name is the same or a super set of this name.
-    * <p>
+     * <p>
      * (ie. name.indexOf(type)!=-1)
      * </p>
      * @param type String the class to attempt to find related elements for.
@@ -314,11 +315,11 @@ public abstract class NameSpaceTranslator {
     }
 
     /**
-    * Gets an element definition by name.
-    *
-    * @param name The name of the element definition
-    * @return NameSpaceElement
-    */
+     * Gets an element definition by name.
+     *
+     * @param name The name of the element definition
+     * @return NameSpaceElement
+     */
     public NameSpaceElement getElement(Class type, String name) {
         if (type == null) {
             return null;

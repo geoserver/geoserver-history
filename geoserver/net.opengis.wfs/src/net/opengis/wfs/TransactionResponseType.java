@@ -8,13 +8,14 @@ package net.opengis.wfs;
 
 import org.eclipse.emf.ecore.EObject;
 
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Transaction Response Type</b></em>'.
  * <!-- end-user-doc -->
  *
  * <!-- begin-model-doc -->
- * 
+ *
  *             The response for a transaction request that was successfully
  *             completed. If the transaction failed for any reason, an
  *             exception report is returned instead.
@@ -35,12 +36,12 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface TransactionResponseType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Transaction Summary</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *                   The TransactionSummary element is used to summarize
      *                   the number of feature instances affected by the
      *                   transaction.
@@ -52,24 +53,24 @@ public interface TransactionResponseType extends EObject {
      *        extendedMetaData="kind='element' name='TransactionSummary' namespace='##targetNamespace'"
      * @generated
      */
-	TransactionSummaryType getTransactionSummary();
+    TransactionSummaryType getTransactionSummary();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.TransactionResponseType#getTransactionSummary <em>Transaction Summary</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Transaction Summary</em>' containment reference.
      * @see #getTransactionSummary()
      * @generated
      */
-	void setTransactionSummary(TransactionSummaryType value);
+    void setTransactionSummary(TransactionSummaryType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Transaction Results</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *                   For systems that do not support atomic transactions,
      *                   the TransactionResults element may be used to report
      *                   exception codes and messages for all actions of a
@@ -82,24 +83,24 @@ public interface TransactionResponseType extends EObject {
      *        extendedMetaData="kind='element' name='TransactionResults' namespace='##targetNamespace'"
      * @generated
      */
-	TransactionResultsType getTransactionResults();
+    TransactionResultsType getTransactionResults();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.TransactionResponseType#getTransactionResults <em>Transaction Results</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Transaction Results</em>' containment reference.
      * @see #getTransactionResults()
      * @generated
      */
-	void setTransactionResults(TransactionResultsType value);
+    void setTransactionResults(TransactionResultsType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Insert Results</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *                   A transaction is a collection of Insert,Update and Delete
      *                   actions.  The Update and Delete actions modify features
      *                   that already exist.  The Insert action, however, creates
@@ -113,25 +114,25 @@ public interface TransactionResponseType extends EObject {
      *        extendedMetaData="kind='element' name='InsertResults' namespace='##targetNamespace'"
      * @generated
      */
-	InsertResultsType getInsertResults();
+    InsertResultsType getInsertResults();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.TransactionResponseType#getInsertResults <em>Insert Results</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Insert Results</em>' containment reference.
      * @see #getInsertResults()
      * @generated
      */
-	void setInsertResults(InsertResultsType value);
+    void setInsertResults(InsertResultsType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Version</b></em>' attribute.
      * The default value is <code>"1.1.0"</code>.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *                The version attribute contains the version of the request
      *                that generated this response.  So a V1.1.0 transaction
      *                request generates a V1.1.0 transaction response.
@@ -145,41 +146,40 @@ public interface TransactionResponseType extends EObject {
      *        extendedMetaData="kind='attribute' name='version'"
      * @generated
      */
-	String getVersion();
+    String getVersion();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.TransactionResponseType#getVersion <em>Version</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Version</em>' attribute.
      * @see #isSetVersion()
      * @see #unsetVersion()
      * @see #getVersion()
      * @generated
      */
-	void setVersion(String value);
+    void setVersion(String value);
 
-	/**
+    /**
      * Unsets the value of the '{@link net.opengis.wfs.TransactionResponseType#getVersion <em>Version</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @see #isSetVersion()
      * @see #getVersion()
      * @see #setVersion(String)
      * @generated
      */
-	void unsetVersion();
+    void unsetVersion();
 
-	/**
+    /**
      * Returns whether the value of the '{@link net.opengis.wfs.TransactionResponseType#getVersion <em>Version</em>}' attribute is set.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return whether the value of the '<em>Version</em>' attribute is set.
      * @see #unsetVersion()
      * @see #getVersion()
      * @see #setVersion(String)
      * @generated
      */
-	boolean isSetVersion();
-
+    boolean isSetVersion();
 } // TransactionResponseType

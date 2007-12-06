@@ -79,7 +79,8 @@ public class CatalogWriter {
      *
      *
      */
-    public void dataStores(Map /* <String,Map> */ dataStores, Map /*<String,String>*/ namespaces) {
+    public void dataStores(Map /* <String,Map> */ dataStores,
+        Map /*<String,String>*/ namespaces) {
         Element dataStoresElement = document.createElement("datastores");
         catalog.appendChild(dataStoresElement);
 
@@ -95,10 +96,12 @@ public class CatalogWriter {
             dataStoreElement.setAttribute("id", id);
 
             //set the namespace
-            dataStoreElement.setAttribute("namespace", (String) namespaces.get(id));
+            dataStoreElement.setAttribute("namespace",
+                (String) namespaces.get(id));
 
             // encode hte ocnnection paramters
-            Element connectionParamtersElement = document.createElement("connectionParams");
+            Element connectionParamtersElement = document.createElement(
+                    "connectionParams");
             dataStoreElement.appendChild(connectionParamtersElement);
 
             for (Iterator p = params.entrySet().iterator(); p.hasNext();) {
@@ -195,6 +198,7 @@ public class CatalogWriter {
         try {
             Transformer tx = TransformerFactory.newInstance().newTransformer();
             tx.setOutputProperty(OutputKeys.INDENT, "yes");
+
             DOMSource source = new DOMSource(document);
             StreamResult result = new StreamResult(file);
 

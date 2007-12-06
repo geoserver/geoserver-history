@@ -8,7 +8,6 @@ import org.geoserver.ows.FlatKvpParser;
 import org.geoserver.wfs.WFSException;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.NameSpaceInfo;
-
 import javax.xml.namespace.QName;
 
 
@@ -48,10 +47,14 @@ public class QNameKvpParser extends FlatKvpParser {
             String local = token.substring(i + 1);
 
             String uri = null;
-            if(prefix != null && !"".equals(prefix)) {
+
+            if ((prefix != null) && !"".equals(prefix)) {
                 final NameSpaceInfo namespace = catalog.getNameSpace(prefix);
-                if(namespace == null)
+
+                if (namespace == null) {
                     throw new WFSException("Unknown namespace [" + prefix + "]");
+                }
+
                 uri = namespace.getURI();
             }
 

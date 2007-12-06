@@ -50,10 +50,10 @@ abstract public class WMService extends AbstractService {
     }
 
     /**
-    * returns a Web Map ServiceConfig exception handler
-    *
-    * @return WmsExceptionHandler
-    */
+     * returns a Web Map ServiceConfig exception handler
+     *
+     * @return WmsExceptionHandler
+     */
     protected ExceptionHandler getExceptionHandler() {
         return WmsExceptionHandler.getInstance();
     }

@@ -7,8 +7,8 @@
 package net.opengis.wfsv;
 
 import net.opengis.wfs.DeleteElementType;
-
 import org.eclipse.emf.ecore.EObject;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -32,9 +32,9 @@ public interface VersionedDeleteElementType extends DeleteElementType {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *               See VersionedUpdateElementType featureVersion attribute.
-     *             
+     *
      * <!-- end-model-doc -->
      * @return the value of the '<em>Feature Version</em>' attribute.
      * @see #setFeatureVersion(String)
@@ -54,5 +54,4 @@ public interface VersionedDeleteElementType extends DeleteElementType {
      * @generated
      */
     void setFeatureVersion(String value);
-
 } // VersionedDeleteElementType

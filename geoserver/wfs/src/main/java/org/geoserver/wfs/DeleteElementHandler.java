@@ -62,24 +62,27 @@ public class DeleteElementHandler implements TransactionElementHandler {
         // check that a filter was specified
         DeleteElementType delete = (DeleteElementType) element;
 
-        if ((delete.getFilter() == null) || Filter.INCLUDE.equals(delete.getFilter())) {
+        if ((delete.getFilter() == null)
+                || Filter.INCLUDE.equals(delete.getFilter())) {
             throw new WFSTransactionException("Must specify filter for delete",
                 "MissingParameterValue");
         }
     }
 
-    public void execute(EObject element, TransactionType request, Map featureStores,
-        TransactionResponseType response, TransactionListener listener)
-        throws WFSTransactionException {
+    public void execute(EObject element, TransactionType request,
+        Map featureStores, TransactionResponseType response,
+        TransactionListener listener) throws WFSTransactionException {
         DeleteElementType delete = (DeleteElementType) element;
         QName elementName = delete.getTypeName();
         String handle = delete.getHandle();
-        long deleted = response.getTransactionSummary().getTotalDeleted().longValue();
+        long deleted = response.getTransactionSummary().getTotalDeleted()
+                               .longValue();
 
         FeatureStore store = (FeatureStore) featureStores.get(elementName);
 
         if (store == null) {
-            throw new WFSException("Could not locate FeatureStore for '" + elementName + "'");
+            throw new WFSException("Could not locate FeatureStore for '"
+                + elementName + "'");
         }
 
         String typeName = store.getSchema().getTypeName();
@@ -89,8 +92,8 @@ public class DeleteElementHandler implements TransactionElementHandler {
             Filter filter = (Filter) delete.getFilter();
 
             // notify listeners
-            listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_DELETE,
-                    store.getFeatures(filter)));
+            listener.dataStoreChange(new TransactionEvent(
+                    TransactionEventType.PRE_DELETE, store.getFeatures(filter)));
 
             // compute damaged area
             Envelope damaged = store.getBounds(new DefaultQuery(
@@ -100,7 +103,8 @@ public class DeleteElementHandler implements TransactionElementHandler {
                 damaged = store.getFeatures(filter).getBounds();
             }
 
-            if ((request.getLockId() != null) && store instanceof FeatureLocking
+            if ((request.getLockId() != null)
+                    && store instanceof FeatureLocking
                     && (request.getReleaseAction() == AllSomeType.SOME_LITERAL)) {
                 FeatureLocking locking = (FeatureLocking) store;
 
@@ -135,7 +139,8 @@ public class DeleteElementHandler implements TransactionElementHandler {
                     DataStore data = store.getDataStore();
                     FilterFactory factory = CommonFactoryFinder.getFilterFactory(null);
                     FeatureWriter writer;
-                    writer = data.getFeatureWriter(typeName, filter, store.getTransaction());
+                    writer = data.getFeatureWriter(typeName, filter,
+                            store.getTransaction());
 
                     try {
                         while (writer.hasNext()) {
@@ -157,23 +162,25 @@ public class DeleteElementHandler implements TransactionElementHandler {
                 deleted += store.getCount(new DefaultQuery(null, filter));
                 store.removeFeatures(filter);
 
-//                try {
-//                    while (writer.hasNext()) {
-//                        writer.next();
-//                        writer.remove();
-//                        deleted++;
-//                    }
-//                } finally {
-//                    writer.close();
-//                }
+                //                try {
+                //                    while (writer.hasNext()) {
+                //                        writer.next();
+                //                        writer.remove();
+                //                        deleted++;
+                //                    }
+                //                } finally {
+                //                    writer.close();
+                //                }
             }
         } catch (IOException e) {
             String msg = e.getMessage();
             String eHandle = (String) EMFUtils.get(element, "handle");
-            throw new WFSTransactionException(msg, (String) null, eHandle, handle);
+            throw new WFSTransactionException(msg, (String) null, eHandle,
+                handle);
         }
 
         // update deletion count
-        response.getTransactionSummary().setTotalDeleted(BigInteger.valueOf(deleted));
+        response.getTransactionSummary()
+                .setTotalDeleted(BigInteger.valueOf(deleted));
     }
 }

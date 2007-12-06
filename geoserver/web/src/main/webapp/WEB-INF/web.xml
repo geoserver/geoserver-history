@@ -180,6 +180,12 @@
     <servlet-name>dispatcher</servlet-name>
     <url-pattern>/kml/*</url-pattern>
   </servlet-mapping>
+  <!-- AlFa: IECatalog -->
+  <servlet-mapping>
+    <servlet-name>dispatcher</servlet-name>
+  	<url-pattern>/catalog/*</url-pattern>
+  </servlet-mapping> 
+  <!-- AlFa: IECatalog -->
   <servlet-mapping>
     <servlet-name>hider</servlet-name>
     <url-pattern>/data/services.xml</url-pattern>

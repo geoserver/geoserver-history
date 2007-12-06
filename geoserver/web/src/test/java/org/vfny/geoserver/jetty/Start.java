@@ -39,8 +39,11 @@ public class Start {
             SocketConnector conn = new SocketConnector();
             String portVariable = System.getProperty("jetty.port");
             int port = parsePort(portVariable);
-            if(port <= 0)
-            	port = 8080;
+
+            if (port <= 0) {
+                port = 8080;
+            }
+
             conn.setPort(port);
             conn.setThreadPool(tp);
             conn.setAcceptQueueSize(100);
@@ -59,26 +62,30 @@ public class Start {
             // jetty stop just after you started it...)
             // jettyServer.stop(); 
         } catch (Exception e) {
-            log.log(Level.SEVERE, "Could not start the Jetty server: " + e.getMessage(), e);
+            log.log(Level.SEVERE,
+                "Could not start the Jetty server: " + e.getMessage(), e);
 
             if (jettyServer != null) {
                 try {
                     jettyServer.stop();
                 } catch (Exception e1) {
                     log.log(Level.SEVERE,
-                        "Unable to stop the " + "Jetty server:" + e1.getMessage(), e1);
+                        "Unable to stop the " + "Jetty server:"
+                        + e1.getMessage(), e1);
                 }
             }
         }
     }
 
-	private static int parsePort(String portVariable) {
-		if(portVariable == null)
-			return -1;
-	    try {
-	    	return Integer.valueOf(portVariable).intValue();
-	    } catch(NumberFormatException e) {
-	    	return -1;
-	    }
-	}
+    private static int parsePort(String portVariable) {
+        if (portVariable == null) {
+            return -1;
+        }
+
+        try {
+            return Integer.valueOf(portVariable).intValue();
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
 }

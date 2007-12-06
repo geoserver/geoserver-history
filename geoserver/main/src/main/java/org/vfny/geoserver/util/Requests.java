@@ -54,7 +54,7 @@ public final class Requests {
      * GeoServer.java and be a normal config parameter, but the
      * overhead of making a new config param is just too high,
      * so we're allowing this to just be read from the web.xml
-     ( See GEOS-598 for more information
+       ( See GEOS-598 for more information
      */
     public static final String PROXY_PARAM = "PROXY_BASE_URL";
 
@@ -69,7 +69,8 @@ public final class Requests {
      * @param httpServletRequest
      * @return http://server:port/path-defined-context
      */
-    public static String getBaseUrl(HttpServletRequest httpServletRequest, GeoServer geoserver) {
+    public static String getBaseUrl(HttpServletRequest httpServletRequest,
+        GeoServer geoserver) {
         // try with the web interface configuration, if it fails, look into
         // web.xml just to keep compatibility (should be removed next version)
         // and finally, if nothing is found, give up and return the default base URL
@@ -86,8 +87,9 @@ public final class Requests {
             }
 
             if ((url == null) || (url.trim().length() == 0)) {
-                url = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName()
-                    + ":" + httpServletRequest.getServerPort()
+                url = httpServletRequest.getScheme() + "://"
+                    + httpServletRequest.getServerName() + ":"
+                    + httpServletRequest.getServerPort()
                     + httpServletRequest.getContextPath() + "/";
             } else {
                 url = appendContextPath(url, httpServletRequest.getContextPath());
@@ -102,7 +104,8 @@ public final class Requests {
         return url;
     }
 
-    public static String getBaseJspUrl(HttpServletRequest httpServletRequest, GeoServer geoserver) {
+    public static String getBaseJspUrl(HttpServletRequest httpServletRequest,
+        GeoServer geoserver) {
         // try with the web interface configuration, if it fails, look into
         // web.xml just to keep compatibility (should be removed next version)
         // and finally, if nothing is found, give up and return the default base URL
@@ -119,9 +122,10 @@ public final class Requests {
             }
 
             if ((url == null) || (url.trim().length() == 0)) {
-                url = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName()
-                    + ":" + httpServletRequest.getServerPort() + httpServletRequest.getRequestURI()
-                    + "/";
+                url = httpServletRequest.getScheme() + "://"
+                    + httpServletRequest.getServerName() + ":"
+                    + httpServletRequest.getServerPort()
+                    + httpServletRequest.getRequestURI() + "/";
             } else {
                 url = appendContextPath(url, httpServletRequest.getRequestURI());
             }
@@ -147,7 +151,8 @@ public final class Requests {
      * @return The url to the tile cache, or <code>null</code> if no tile
      * cache set.
      */
-    public static String getTileCacheBaseUrl(HttpServletRequest request, GeoServer geoServer) {
+    public static String getTileCacheBaseUrl(HttpServletRequest request,
+        GeoServer geoServer) {
         //first check if tile cache set
         String tileCacheBaseUrl = geoServer.getTileCache();
 
@@ -161,8 +166,8 @@ public final class Requests {
             } catch (MalformedURLException e1) {
                 //try relative to the same host as request
                 try {
-                    String url = appendContextPath(request.getScheme() + "://" + request.getServerName(),
-                            tileCacheBaseUrl);
+                    String url = appendContextPath(request.getScheme() + "://"
+                            + request.getServerName(), tileCacheBaseUrl);
                     new URL(url);
 
                     //cool return it
@@ -178,10 +183,10 @@ public final class Requests {
 
     /**
      * Appends a context path to a base url.
-     * 
+     *
      * @param url The base url.
      * @param contextPath The context path to be appended.
-     * 
+     *
      * @return A full url with the context path appended.
      */
     public static String appendContextPath(String url, String contextPath) {
@@ -195,7 +200,7 @@ public final class Requests {
 
         return url + "/" + contextPath;
     }
-    
+
     /**
      * Appends a query string to a url.
      * <p>
@@ -226,7 +231,8 @@ public final class Requests {
      * @param httpServletRequest
      * @return http://server:port/path-defined-context/data/capabilities
      */
-    public static String getSchemaBaseUrl(HttpServletRequest httpServletRequest, GeoServer geoserver) {
+    public static String getSchemaBaseUrl(
+        HttpServletRequest httpServletRequest, GeoServer geoserver) {
         return getBaseUrl(httpServletRequest, geoserver) + "schemas/";
     }
 
@@ -247,18 +253,21 @@ public final class Requests {
             // the information we need from it
             if (user == null) {
                 user = new UserContainer();
-                
+
                 //JD: for some reason there is sometimes a string here. doing
                 // an instanceof check ... although i am not sure why this occurs.
-                Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                if ( o instanceof UserDetails ) {
+                Object o = SecurityContextHolder.getContext().getAuthentication()
+                                                .getPrincipal();
+
+                if (o instanceof UserDetails) {
                     UserDetails ud = (UserDetails) o;
-                    user.setUsername(ud.getUsername());        
+                    user.setUsername(ud.getUsername());
+                } else if (o instanceof String) {
+                    user.setUsername((String) o);
                 }
-                else if ( o instanceof String ) {
-                    user.setUsername((String)o);
-                }
-                request.getSession().setAttribute(UserContainer.SESSION_KEY, user);
+
+                request.getSession()
+                       .setAttribute(UserContainer.SESSION_KEY, user);
             }
 
             return user;
@@ -282,7 +291,8 @@ public final class Requests {
      */
     public static boolean isLoggedIn(HttpServletRequest request) {
         // check the user is not the anonymous one
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext()
+                                                             .getAuthentication();
 
         return (authentication != null)
         && !(authentication instanceof AnonymousAuthenticationToken);
@@ -345,7 +355,8 @@ public final class Requests {
                 return new GZIPInputStream(conn.getInputStream());
             } else if (encoding.equalsIgnoreCase("deflate")) {
                 //If it is encoded as deflate, then select the inflater inputstream.
-                return new InflaterInputStream(conn.getInputStream(), new Inflater(true));
+                return new InflaterInputStream(conn.getInputStream(),
+                    new Inflater(true));
             } else {
                 //Else read the raw bytes
                 return conn.getInputStream();
@@ -355,41 +366,50 @@ public final class Requests {
             return conn.getInputStream();
         }
     }
-    
+
     /**
      * Parses an 'option-holding' parameters in the following form
      * FORMAT_OPTIONS=multiKey:val1,val2,val3;singleKey:val
-     * 
+     *
      * Useful for parsing out the FORMAT_OPTIONS and LEGEND_OPTIONS parameters
      */
-    public static Map parseOptionParameter(String rawOptionString) throws IllegalArgumentException {
+    public static Map parseOptionParameter(String rawOptionString)
+        throws IllegalArgumentException {
         HashMap map = new HashMap();
+
         if (rawOptionString == null) {
             return map;
         }
-        
-        StringTokenizer semiColonSplitter = new StringTokenizer(rawOptionString, ";");
+
+        StringTokenizer semiColonSplitter = new StringTokenizer(rawOptionString,
+                ";");
+
         while (semiColonSplitter.hasMoreElements()) {
             String curKVP = semiColonSplitter.nextToken();
-            
+
             final int cloc = curKVP.indexOf(":");
+
             if (cloc <= 0) {
-                throw new IllegalArgumentException("Key-value-pair: '" + curKVP + "' isn't properly formed.  It must be of the form 'Key:Value1,Value2...'");
+                throw new IllegalArgumentException("Key-value-pair: '" + curKVP
+                    + "' isn't properly formed.  It must be of the form 'Key:Value1,Value2...'");
             }
+
             String key = curKVP.substring(0, cloc);
             String values = curKVP.substring(cloc + 1, curKVP.length());
+
             if (values.indexOf(",") != -1) {
                 List valueList = new ArrayList();
                 StringTokenizer commaSplitter = new StringTokenizer(values, ",");
+
                 while (commaSplitter.hasMoreElements())
                     valueList.add(commaSplitter.nextToken());
-                
+
                 map.put(key, valueList);
             } else {
                 map.put(key, values);
             }
         }
-        
+
         return map;
     }
 }

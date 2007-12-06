@@ -25,10 +25,6 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Revision: 1.23 $
  */
 public class FileStrategy implements ServiceStrategy {
-    public String getId() {
-        return "FILE";
-    }
-
     /** Buffer size used to copy safe to response.getOutputStream() */
     private static int BUFF_SIZE = 4096;
 
@@ -36,13 +32,18 @@ public class FileStrategy implements ServiceStrategy {
     static int sequence = 0;
 
     /** Class logger */
-    protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets");
+    protected static Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.servlets");
 
     /** OutputStream provided to writeTo method */
     private OutputStream safe;
 
     /** Temporary file used by safe */
     private File temp;
+
+    public String getId() {
+        return "FILE";
+    }
 
     /**
      * Provides a outputs stream on a temporary file.
@@ -75,7 +76,8 @@ public class FileStrategy implements ServiceStrategy {
                 throw new IOException(errorMsg);
             }
         } catch (IOException e) {
-            String errorMsg = "Possible file permission problem. Root cause: \n" + e.toString();
+            String errorMsg = "Possible file permission problem. Root cause: \n"
+                + e.toString();
             IOException newE = new IOException(errorMsg);
             throw newE;
         }
@@ -93,10 +95,12 @@ public class FileStrategy implements ServiceStrategy {
      * @throws IllegalStateException if flush is called before getDestination
      */
     public void flush(HttpServletResponse response) throws IOException {
-        if ((temp == null) || (response == null) || (safe == null) || !temp.exists()) {
-            LOGGER.fine("temp is " + temp + ", response is " + response + " safe is " + safe
-                + ", temp exists " + temp.exists());
-            throw new IllegalStateException("flush should only be called after getDestination");
+        if ((temp == null) || (response == null) || (safe == null)
+                || !temp.exists()) {
+            LOGGER.fine("temp is " + temp + ", response is " + response
+                + " safe is " + safe + ", temp exists " + temp.exists());
+            throw new IllegalStateException(
+                "flush should only be called after getDestination");
         }
 
         InputStream copy = null;

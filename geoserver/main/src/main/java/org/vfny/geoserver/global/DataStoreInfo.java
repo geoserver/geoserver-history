@@ -8,7 +8,6 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.vfny.geoserver.global.dto.DataStoreInfoDTO;
 import org.vfny.geoserver.util.DataStoreUtils;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -155,7 +154,8 @@ public class DataStoreInfo extends GlobalLayerSupertype {
                 //TODO: this code is a pretty big hack, using the name to 
                 // determine if the key is a url, could be named something else
                 // and still be a url
-                if ((key != null) && key.matches(".* *url") && value instanceof String) {
+                if ((key != null) && key.matches(".* *url")
+                        && value instanceof String) {
                     String path = (String) value;
                     LOGGER.finer("in string url");
 
@@ -163,7 +163,8 @@ public class DataStoreInfo extends GlobalLayerSupertype {
                         File fixedPath = GeoserverDataDirectory.findDataFile(path);
                         entry.setValue(fixedPath.toURL().toExternalForm());
                     }
-                } else if (value instanceof URL && ((URL) value).getProtocol().equals("file")) {
+                } else if (value instanceof URL
+                        && ((URL) value).getProtocol().equals("file")) {
                     File fixedPath = GeoserverDataDirectory.findDataFile((URL) value);
                     entry.setValue(fixedPath.toURL());
                 }
@@ -203,12 +204,14 @@ public class DataStoreInfo extends GlobalLayerSupertype {
 
         if (dataStore == null) {
             Map m = getParams();
+
             try {
                 dataStore = DataStoreUtils.getDataStore(m);
                 LOGGER.fine("connection established by " + toString());
             } catch (Throwable ex) {
-                throw new IllegalStateException("can't create the datastore " + getId() + ": "
-                    + ex.getClass().getName() + ": " + ex.getMessage() + "\n" + ex.toString());
+                throw new IllegalStateException("can't create the datastore "
+                    + getId() + ": " + ex.getClass().getName() + ": "
+                    + ex.getMessage() + "\n" + ex.toString());
             }
 
             if (dataStore == null) {
@@ -216,8 +219,8 @@ public class DataStoreInfo extends GlobalLayerSupertype {
                 // (although no change in config).
                 enabled = false;
                 LOGGER.fine("failed to establish connection with " + toString());
-                throw new NoSuchElementException("No datastore found capable of managing "
-                    + toString());
+                throw new NoSuchElementException(
+                    "No datastore found capable of managing " + toString());
             }
         }
 
@@ -293,13 +296,15 @@ public class DataStoreInfo extends GlobalLayerSupertype {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return new StringBuffer("DataStoreConfig[namespace=").append(getNameSpace().getPrefix())
+        return new StringBuffer("DataStoreConfig[namespace=").append(getNameSpace()
+                                                                         .getPrefix())
                                                              .append(", enabled=")
                                                              .append(isEnabled())
                                                              .append(", abstract=")
                                                              .append(getAbstract())
                                                              .append(", connection parameters=")
-                                                             .append(getParams()).append("]")
+                                                             .append(getParams())
+                                                             .append("]")
                                                              .toString();
     }
 
@@ -341,9 +346,10 @@ public class DataStoreInfo extends GlobalLayerSupertype {
     public Object getMetaData(String key) {
         return meta.get(key);
     }
-    
+
     public void dispose() {
-        if(dataStore != null)
+        if (dataStore != null) {
             dataStore.dispose();
+        }
     }
 }

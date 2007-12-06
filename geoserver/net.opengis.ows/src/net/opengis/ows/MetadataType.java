@@ -7,8 +7,8 @@
 package net.opengis.ows;
 
 import org.eclipse.emf.ecore.EObject;
-
 import org.eclipse.emf.ecore.util.FeatureMap;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -33,43 +33,43 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * @generated
  */
 public interface MetadataType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Abstract Meta Data Group</b></em>' attribute list.
      * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Abstract Meta Data Group</em>' attribute list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Abstract Meta Data Group</em>' attribute list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Abstract Meta Data Group</em>' attribute list.
      * @see net.opengis.ows.OwsPackage#getMetadataType_AbstractMetaDataGroup()
      * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry" many="false"
      *        extendedMetaData="kind='group' name='AbstractMetaData:group' namespace='##targetNamespace'"
      * @generated
      */
-	FeatureMap getAbstractMetaDataGroup();
+    FeatureMap getAbstractMetaDataGroup();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Abstract Meta Data</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Abstract Meta Data</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Abstract Meta Data</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Abstract Meta Data</em>' containment reference.
      * @see net.opengis.ows.OwsPackage#getMetadataType_AbstractMetaData()
      * @model containment="true" transient="true" changeable="false" volatile="true" derived="true"
      *        extendedMetaData="kind='element' name='AbstractMetaData' namespace='##targetNamespace' group='AbstractMetaData:group'"
      * @generated
      */
-	EObject getAbstractMetaData();
+    EObject getAbstractMetaData();
 
-	/**
+    /**
      * Returns the value of the '<em><b>About</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Optional reference to the aspect of the element which includes this "metadata" element that this metadata provides more information about.
      * <!-- end-model-doc -->
@@ -80,16 +80,15 @@ public interface MetadataType extends EObject {
      *        extendedMetaData="kind='attribute' name='about'"
      * @generated
      */
-	String getAbout();
+    String getAbout();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.MetadataType#getAbout <em>About</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>About</em>' attribute.
      * @see #getAbout()
      * @generated
      */
-	void setAbout(String value);
-
+    void setAbout(String value);
 } // MetadataType

@@ -44,7 +44,8 @@ public class KvpRequestReaderAdapter extends org.geoserver.ows.KvpRequestReader
     AbstractService service;
     HttpServletRequest request;
 
-    public KvpRequestReaderAdapter(Class requestBean, Class delegateClass, AbstractService service) {
+    public KvpRequestReaderAdapter(Class requestBean, Class delegateClass,
+        AbstractService service) {
         super(requestBean);
         this.delegateClass = delegateClass;
         this.service = service;
@@ -60,7 +61,8 @@ public class KvpRequestReaderAdapter extends org.geoserver.ows.KvpRequestReader
         String paramName;
         String paramValue;
 
-        for (Enumeration pnames = request.getParameterNames(); pnames.hasMoreElements();) {
+        for (Enumeration pnames = request.getParameterNames();
+                pnames.hasMoreElements();) {
             paramName = (String) pnames.nextElement();
             paramValue = request.getParameter(paramName);
             kvp.put(paramName.toUpperCase(), paramValue);
@@ -72,7 +74,9 @@ public class KvpRequestReaderAdapter extends org.geoserver.ows.KvpRequestReader
 
         while (clazz != null) {
             try {
-                constructor = delegateClass.getConstructor(new Class[] { Map.class, clazz });
+                constructor = delegateClass.getConstructor(new Class[] {
+                            Map.class, clazz
+                        });
 
                 break;
             } catch (NoSuchMethodException e) {
@@ -93,7 +97,8 @@ public class KvpRequestReaderAdapter extends org.geoserver.ows.KvpRequestReader
         return delegate.getRequest(request);
     }
 
-    public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
+    public Object read(Object request, Map kvp, Map rawKvp)
+        throws Exception {
         //request object already initialized, just send it back
         return request;
     }

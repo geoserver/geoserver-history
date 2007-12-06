@@ -64,7 +64,8 @@ public class FeatureDiffCollection extends AbstractCollection {
             r.close();
             r = null;
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error closing diff reader wrapping iterator", e);
+            LOGGER.log(Level.SEVERE,
+                "Error closing diff reader wrapping iterator", e);
         }
     }
 
@@ -95,7 +96,8 @@ public class FeatureDiffCollection extends AbstractCollection {
                 reader.close();
                 reader = null;
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "Error closing diff reader wrapping iterator", e);
+                LOGGER.log(Level.SEVERE,
+                    "Error closing diff reader wrapping iterator", e);
             }
         }
 
@@ -109,7 +111,8 @@ public class FeatureDiffCollection extends AbstractCollection {
         }
 
         public void remove() {
-            throw new UnsupportedOperationException("Feature diffs are read only");
+            throw new UnsupportedOperationException(
+                "Feature diffs are read only");
         }
     }
 }

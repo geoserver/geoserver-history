@@ -22,7 +22,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
+    private static Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.requests");
 
     /** Internal Capabilities request for construction. */
     private CapabilitiesRequest request = null;
@@ -46,10 +47,10 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
     }
 
     /**
-    * Returns the GetCapabilities request.
-    *
-    * @return GetCapabilities request.
-    */
+     * Returns the GetCapabilities request.
+     *
+     * @return GetCapabilities request.
+     */
     public CapabilitiesRequest getRequest(HttpServletRequest req) {
         request.setHttpServletRequest(req);
 
@@ -71,8 +72,8 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
      *
      * @throws SAXException For any standard SAX errors.
      */
-    public void startElement(String namespaceURI, String localName, String rawName, Attributes atts)
-        throws SAXException {
+    public void startElement(String namespaceURI, String localName,
+        String rawName, Attributes atts) throws SAXException {
         if (localName.equals("GetCapabilities")) {
             LOGGER.finer("found capabilities start.");
 

@@ -3,13 +3,12 @@
  */
 package org.vfny.geoserver.wms.responses.map.geotiff;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.GetMapProducerFactorySpi;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -32,8 +31,9 @@ public class GeoTiffMapProducerFactory implements GetMapProducerFactorySpi {
         SUPPORTED_FORMATS.add("image/geotiff");
         SUPPORTED_FORMATS.add("image/geotiff8");
     }
+
     /**
-    /**
+       /**
      * Default constructor.
      */
     public GeoTiffMapProducerFactory() {
@@ -65,7 +65,8 @@ public class GeoTiffMapProducerFactory implements GetMapProducerFactorySpi {
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
         if (!canProduce(mapFormat)) {
-            throw new IllegalArgumentException(mapFormat + " not supported by this map producer");
+            throw new IllegalArgumentException(mapFormat
+                + " not supported by this map producer");
         }
 
         return new GeoTiffMapProducer(mapFormat, MIME_TYPE, wms);

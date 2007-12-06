@@ -106,13 +106,15 @@ public class GetLog {
             throw new WFSException(msg);
         }
 
-        FeatureCollectionType result = WfsFactory.eINSTANCE.createFeatureCollectionType();
-        int residual = request.getMaxFeatures() != null ? request.getMaxFeatures().intValue() : Integer.MAX_VALUE;
+        FeatureCollectionType result = WfsFactory.eINSTANCE
+            .createFeatureCollectionType();
+        int residual = (request.getMaxFeatures() != null)
+            ? request.getMaxFeatures().intValue() : Integer.MAX_VALUE;
 
         // for each difference query check the feature type is versioned, and
         // gather bounds
         try {
-            for (int i = 0; i < queries.size() && residual > 0; i++) {
+            for (int i = 0; (i < queries.size()) && (residual > 0); i++) {
                 DifferenceQueryType query = (DifferenceQueryType) queries.get(i);
                 FeatureTypeInfo meta = featureTypeInfo((QName) query.getTypeName());
                 FeatureSource source = meta.getFeatureSource();
@@ -132,8 +134,10 @@ public class GetLog {
                                 // case of multiple geometries being returned
                                 if (name.evaluate(featureType) == null) {
                                     // we want to throw wfs exception, but cant
-                                    throw new WFSException("Illegal property name: "
-                                        + name.getPropertyName(), "InvalidParameterValue");
+                                    throw new WFSException(
+                                        "Illegal property name: "
+                                        + name.getPropertyName(),
+                                        "InvalidParameterValue");
                                 }
 
                                 return name;
@@ -146,15 +150,17 @@ public class GetLog {
 
                 // extract collection
                 VersioningFeatureSource store = (VersioningFeatureSource) source;
-                FeatureCollection logs = store.getLog(query.getFromFeatureVersion(),
-                        query.getToFeatureVersion(), filter, null, residual);
+                FeatureCollection logs = store.getLog(query
+                        .getFromFeatureVersion(), query.getToFeatureVersion(),
+                        filter, null, residual);
                 residual -= logs.size();
 
                 // TODO: handle logs reprojection in another CRS
                 result.getFeature().add(logs);
             }
         } catch (IOException e) {
-            throw new WFSException("Error occurred getting features", e, request.getHandle());
+            throw new WFSException("Error occurred getting features", e,
+                request.getHandle());
         }
 
         result.setNumberOfFeatures(BigInteger.valueOf(residual));
@@ -163,7 +169,8 @@ public class GetLog {
         return result;
     }
 
-    FeatureTypeInfo featureTypeInfo(QName name) throws WFSException, IOException {
+    FeatureTypeInfo featureTypeInfo(QName name)
+        throws WFSException, IOException {
         FeatureTypeInfo meta = catalog.getFeatureTypeInfo(name.getLocalPart(),
                 name.getNamespaceURI());
 

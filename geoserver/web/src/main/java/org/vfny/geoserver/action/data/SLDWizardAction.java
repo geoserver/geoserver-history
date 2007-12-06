@@ -21,7 +21,9 @@ public class SLDWizardAction extends Action {
         HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         String typeName = "";
-        typeName = request.getSession().getAttribute(DataConfig.SELECTED_FEATURE_TYPE).toString();
+        typeName = request.getSession()
+                          .getAttribute(DataConfig.SELECTED_FEATURE_TYPE)
+                          .toString();
 
         DynaActionForm myForm = (DynaActionForm) form;
         myForm.set("typeName", typeName);

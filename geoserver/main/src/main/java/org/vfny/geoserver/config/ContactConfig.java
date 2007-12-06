@@ -131,7 +131,8 @@ public class ContactConfig {
      */
     public void update(ContactDTO dto) {
         if (dto == null) {
-            throw new NullPointerException("Contact Data Transfer Object required");
+            throw new NullPointerException(
+                "Contact Data Transfer Object required");
         }
 
         contactPerson = dto.getContactPerson();

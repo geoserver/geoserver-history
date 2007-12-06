@@ -205,7 +205,8 @@ public class ValidationConfig {
     }
 
     public Object removeTest(String testSuite, String name) {
-        return ((TestSuiteConfig) testSuites.get(testSuite)).getTests().remove(name);
+        return ((TestSuiteConfig) testSuites.get(testSuite)).getTests()
+                .remove(name);
     }
 
     /**
@@ -238,7 +239,8 @@ public class ValidationConfig {
         i = this.testSuites.keySet().iterator();
 
         while (i.hasNext()) {
-            TestSuiteDTO dto = ((TestSuiteConfig) this.testSuites.get(i.next())).toDTO(plugIns);
+            TestSuiteDTO dto = ((TestSuiteConfig) this.testSuites.get(i.next()))
+                .toDTO(plugIns);
             testSuites.put(dto.getName(), dto);
         }
 

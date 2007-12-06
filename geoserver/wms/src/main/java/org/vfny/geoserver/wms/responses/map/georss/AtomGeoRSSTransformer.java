@@ -4,12 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.map.georss;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Level;
-
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -17,6 +11,11 @@ import org.geotools.xml.transform.Translator;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
 
 
 public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
@@ -27,8 +26,8 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
     public class AtomGeoRSSTranslator extends GeoRSSTranslatorSupport {
         public AtomGeoRSSTranslator(ContentHandler contentHandler) {
             super(contentHandler, null, "http://www.w3.org/2005/Atom");
-            
-            nsSupport.declarePrefix("georss","http://www.georss.org/georss");
+
+            nsSupport.declarePrefix("georss", "http://www.georss.org/georss");
         }
 
         public void encode(Object o) throws IllegalArgumentException {
@@ -52,16 +51,16 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
             //entries
             try {
                 encodeEntries(map);
-            } 
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
             end("feed");
         }
 
-        void encodeEntries(WMSMapContext map) throws IOException{
+        void encodeEntries(WMSMapContext map) throws IOException {
             List featureCollections = loadFeatureCollections(map);
+
             for (Iterator f = featureCollections.iterator(); f.hasNext();) {
                 FeatureCollection features = (FeatureCollection) f.next();
                 FeatureIterator iterator = null;
@@ -71,14 +70,14 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
 
                     while (iterator.hasNext()) {
                         Feature feature = iterator.next();
+
                         try {
                             encodeEntry(feature);
+                        } catch (Exception e) {
+                            LOGGER.warning("Encoding failed for feature: "
+                                + feature.getID());
+                            LOGGER.log(Level.FINE, "", e);
                         }
-                        catch( Exception e ) {
-                            LOGGER.warning("Encoding failed for feature: " + feature.getID());
-                            LOGGER.log(Level.FINE, "", e );
-                        }
-                        
                     }
                 } finally {
                     if (iterator != null) {
@@ -86,7 +85,6 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
                     }
                 }
             }
-            
         }
 
         void encodeEntry(Feature feature) {

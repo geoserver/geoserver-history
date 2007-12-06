@@ -191,16 +191,21 @@ public class QueryTypeBinding extends AbstractComplexBinding {
         //&lt;xsd:element ref="wfs:PropertyName"&gt;
         if (node.hasChild("PropertyName")) {
             //HACK, stripping of namespace prefix
-            for (Iterator p = node.getChildValues("PropertyName").iterator(); p.hasNext();) {
+            for (Iterator p = node.getChildValues("PropertyName").iterator();
+                    p.hasNext();) {
                 Object property = p.next();
                 String propertyName;
-                if(property instanceof String)
+
+                if (property instanceof String) {
                     propertyName = (String) property;
-                else
-                    propertyName = (String) ((PropertyName) property).getPropertyName();
+                } else {
+                    propertyName = (String) ((PropertyName) property)
+                        .getPropertyName();
+                }
 
                 if (propertyName.indexOf(':') != -1) {
-                    propertyName = propertyName.substring(propertyName.indexOf(':') + 1);
+                    propertyName = propertyName.substring(propertyName.indexOf(
+                                ':') + 1);
                 }
 
                 query.getPropertyName().add(propertyName);
@@ -237,7 +242,8 @@ public class QueryTypeBinding extends AbstractComplexBinding {
 
         //&lt;xsd:attribute name="featureVersion" type="xsd:string" use="optional"&gt;
         if (node.hasAttribute("featureVersion")) {
-            query.setFeatureVersion((String) node.getAttributeValue("featureVersion"));
+            query.setFeatureVersion((String) node.getAttributeValue(
+                    "featureVersion"));
         }
 
         //&lt;xsd:attribute name="srsName" type="xsd:anyURI" use="optional"&gt;

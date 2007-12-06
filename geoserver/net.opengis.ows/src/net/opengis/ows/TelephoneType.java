@@ -7,8 +7,8 @@
 package net.opengis.ows;
 
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EObject;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -32,10 +32,10 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface TelephoneType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Voice</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Telephone number by which individuals can speak to the responsible organization or individual.
      * <!-- end-model-doc -->
@@ -46,22 +46,22 @@ public interface TelephoneType extends EObject {
      *        extendedMetaData="kind='element' name='Voice' namespace='##targetNamespace'"
      * @generated
      */
-	String getVoice();
+    String getVoice();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.TelephoneType#getVoice <em>Voice</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Voice</em>' attribute.
      * @see #getVoice()
      * @generated
      */
-	void setVoice(String value);
+    void setVoice(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Facsimile</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Telephone number of a facsimile machine for the responsible
      * organization or individual.
@@ -73,16 +73,15 @@ public interface TelephoneType extends EObject {
      *        extendedMetaData="kind='element' name='Facsimile' namespace='##targetNamespace'"
      * @generated
      */
-	String getFacsimile();
+    String getFacsimile();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.TelephoneType#getFacsimile <em>Facsimile</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Facsimile</em>' attribute.
      * @see #getFacsimile()
      * @generated
      */
-	void setFacsimile(String value);
-
+    void setFacsimile(String value);
 } // TelephoneType

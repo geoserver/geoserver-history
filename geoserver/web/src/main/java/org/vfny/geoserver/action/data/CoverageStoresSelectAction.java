@@ -34,8 +34,9 @@ import javax.servlet.http.HttpServletResponse;
  *          dmzwiers Exp $
  */
 public final class CoverageStoresSelectAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,
-        UserContainer user, HttpServletRequest request, HttpServletResponse response)
+    public ActionForward execute(ActionMapping mapping,
+        ActionForm incomingForm, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         CoverageStoresSelectForm form = (CoverageStoresSelectForm) incomingForm;
         String buttonAction = form.getButtonAction();
@@ -45,11 +46,14 @@ public final class CoverageStoresSelectAction extends ConfigAction {
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = getResources(request);
 
-        String editLabel = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
-        String deleteLabel = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
+        String editLabel = HTMLEncoder.decode(messages.getMessage(locale,
+                    "label.edit"));
+        String deleteLabel = HTMLEncoder.decode(messages.getMessage(locale,
+                    "label.delete"));
 
         if (editLabel.equals(buttonAction)) {
-            dfConfig = (CoverageStoreConfig) dataConfig.getDataFormat(form.getSelectedDataFormatId());
+            dfConfig = (CoverageStoreConfig) dataConfig.getDataFormat(form
+                    .getSelectedDataFormatId());
 
             getUserContainer(request).setDataFormatConfig(dfConfig);
 
@@ -63,10 +67,11 @@ public final class CoverageStoresSelectAction extends ConfigAction {
             return mapping.findForward("config.data.format");
         }
 
-        throw new ServletException(new StringBuffer("Action '").append(buttonAction)
-                                                               .append("'must be '")
-                                                               .append(editLabel).append("' or '")
-                                                               .append(deleteLabel).append("'")
+        throw new ServletException(new StringBuffer("Action '").append(
+                buttonAction).append("'must be '").append(editLabel)
+                                                               .append("' or '")
+                                                               .append(deleteLabel)
+                                                               .append("'")
                                                                .toString());
     }
 }

@@ -35,29 +35,31 @@ import org.vfny.geoserver.global.Data;
  *
  */
 public class AbstractGeometryTypeBinding extends org.geotools.gml3.bindings.AbstractGeometryTypeBinding {
-    
     CoordinateReferenceSystem crs;
-    
+
     public void setCRS(CoordinateReferenceSystem crs) {
         this.crs = crs;
     }
 
     public void initializeChildContext(ElementInstance childInstance,
-            Node node, MutablePicoContainer context) {
+        Node node, MutablePicoContainer context) {
         //if an srsName is set for this geometry, put it in the context for 
         // children, so they can use it as well
-        if ( node.hasAttribute("srsName") ) {
+        if (node.hasAttribute("srsName")) {
             try {
-                CoordinateReferenceSystem crs = GML2ParsingUtils.crs(node);
-                if ( crs != null ) {
-                    context.registerComponentInstance(CoordinateReferenceSystem.class, crs);
+                CoordinateReferenceSystem crs = GML2ParsingUtils
+                    .crs(node);
+
+                if (crs != null) {
+                    context.registerComponentInstance(CoordinateReferenceSystem.class,
+                        crs);
                 }
-            } catch(Exception e) {
+            } catch (Exception e) {
                 throw new WFSException(e, "InvalidParameterValue");
             }
         }
     }
-    
+
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
         try {
@@ -65,8 +67,8 @@ public class AbstractGeometryTypeBinding extends org.geotools.gml3.bindings.Abst
                 CRS.decode(node.getAttributeValue("srsName").toString());
             }
         } catch (NoSuchAuthorityCodeException e) {
-            throw new WFSException("Invalid Authority Code: " + e.getAuthorityCode(),
-                "InvalidParameterValue");
+            throw new WFSException("Invalid Authority Code: "
+                + e.getAuthorityCode(), "InvalidParameterValue");
         }
 
         Geometry geometry = (Geometry) super.parse(instance, node, value);
@@ -75,7 +77,7 @@ public class AbstractGeometryTypeBinding extends org.geotools.gml3.bindings.Abst
             //1. ensure a crs is set
             if (geometry.getUserData() == null) {
                 //no crs set for the geometry, did we inherit one from a parent?
-                if ( crs != null ) {
+                if (crs != null) {
                     geometry.setUserData(crs);
                 } else {
                     // for the moment we don't do anything since we miss the information
@@ -84,13 +86,16 @@ public class AbstractGeometryTypeBinding extends org.geotools.gml3.bindings.Abst
             }
 
             //2. ensure the coordinates of the geometry fall into valid space defined by crs
-            CoordinateReferenceSystem crs = (CoordinateReferenceSystem) geometry.getUserData();
-            if(crs != null)
+            CoordinateReferenceSystem crs = (CoordinateReferenceSystem) geometry
+                .getUserData();
+
+            if (crs != null) {
                 try {
                     JTS.checkCoordinatesRange(geometry, crs);
-                } catch(PointOutsideEnvelopeException e) {
+                } catch (PointOutsideEnvelopeException e) {
                     throw new WFSException(e, "InvalidParameterValue");
                 }
+            }
         }
 
         return geometry;

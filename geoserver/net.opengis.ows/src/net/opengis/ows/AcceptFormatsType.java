@@ -6,11 +6,10 @@
  */
 package net.opengis.ows;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import java.util.List;
 
-import org.eclipse.emf.common.util.EList;
-
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -33,19 +32,18 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface AcceptFormatsType extends EObject {
-	/**
-	 * Returns the value of the '<em><b>Output Format</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Output Format</em>' attribute list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Output Format</em>' attribute.
-	 * @see #setOutputFormat(String)
-	 * @see net.opengis.ows.OwsPackage#getAcceptFormatsType_OutputFormat()
-	 * @model type="java.lang.String"
-	 */
-	EList getOutputFormat();
-
+    /**
+     * Returns the value of the '<em><b>Output Format</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Output Format</em>' attribute list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Output Format</em>' attribute.
+     * @see #setOutputFormat(String)
+     * @see net.opengis.ows.OwsPackage#getAcceptFormatsType_OutputFormat()
+     * @model type="java.lang.String"
+     */
+    EList getOutputFormat();
 } // AcceptFormatsType

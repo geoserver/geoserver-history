@@ -40,10 +40,10 @@ public abstract class WmsKvpRequestReader extends KvpRequestReader {
     }
 
     /**
-    * DOCUMENT ME!
-    *
-    * @return DOCUMENT ME!
-    */
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     protected String getRequestVersion() {
         String version = getValue("VERSION");
 

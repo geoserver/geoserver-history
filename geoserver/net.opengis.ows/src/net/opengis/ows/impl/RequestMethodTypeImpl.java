@@ -6,21 +6,17 @@
  */
 package net.opengis.ows.impl;
 
-import java.util.Collection;
-
 import net.opengis.ows.DomainType;
 import net.opengis.ows.OwsPackage;
 import net.opengis.ows.RequestMethodType;
-
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
+import java.util.Collection;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -35,113 +31,123 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *
  * @generated
  */
-public class RequestMethodTypeImpl extends OnlineResourceTypeImpl implements RequestMethodType {
-	/**
+public class RequestMethodTypeImpl extends OnlineResourceTypeImpl
+    implements RequestMethodType {
+    /**
      * The cached value of the '{@link #getConstraint() <em>Constraint</em>}' containment reference list.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @see #getConstraint()
      * @generated
      * @ordered
      */
-	protected EList constraint;
+    protected EList constraint;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	protected RequestMethodTypeImpl() {
+    protected RequestMethodTypeImpl() {
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	protected EClass eStaticClass() {
+    protected EClass eStaticClass() {
         return OwsPackage.Literals.REQUEST_METHOD_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public EList getConstraint() {
+    public EList getConstraint() {
         if (constraint == null) {
-            constraint = new EObjectContainmentEList(DomainType.class, this, OwsPackage.REQUEST_METHOD_TYPE__CONSTRAINT);
+            constraint = new EObjectContainmentEList(DomainType.class, this,
+                    OwsPackage.REQUEST_METHOD_TYPE__CONSTRAINT);
         }
+
         return constraint;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd,
+        int featureID, NotificationChain msgs) {
         switch (featureID) {
-            case OwsPackage.REQUEST_METHOD_TYPE__CONSTRAINT:
-                return ((InternalEList)getConstraint()).basicRemove(otherEnd, msgs);
+        case OwsPackage.REQUEST_METHOD_TYPE__CONSTRAINT:
+            return ((InternalEList) getConstraint()).basicRemove(otherEnd, msgs);
         }
+
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+    public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-            case OwsPackage.REQUEST_METHOD_TYPE__CONSTRAINT:
-                return getConstraint();
+        case OwsPackage.REQUEST_METHOD_TYPE__CONSTRAINT:
+            return getConstraint();
         }
+
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public void eSet(int featureID, Object newValue) {
+    public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-            case OwsPackage.REQUEST_METHOD_TYPE__CONSTRAINT:
-                getConstraint().clear();
-                getConstraint().addAll((Collection)newValue);
-                return;
+        case OwsPackage.REQUEST_METHOD_TYPE__CONSTRAINT:
+            getConstraint().clear();
+            getConstraint().addAll((Collection) newValue);
+
+            return;
         }
+
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public void eUnset(int featureID) {
+    public void eUnset(int featureID) {
         switch (featureID) {
-            case OwsPackage.REQUEST_METHOD_TYPE__CONSTRAINT:
-                getConstraint().clear();
-                return;
+        case OwsPackage.REQUEST_METHOD_TYPE__CONSTRAINT:
+            getConstraint().clear();
+
+            return;
         }
+
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public boolean eIsSet(int featureID) {
+    public boolean eIsSet(int featureID) {
         switch (featureID) {
-            case OwsPackage.REQUEST_METHOD_TYPE__CONSTRAINT:
-                return constraint != null && !constraint.isEmpty();
+        case OwsPackage.REQUEST_METHOD_TYPE__CONSTRAINT:
+            return (constraint != null) && !constraint.isEmpty();
         }
+
         return super.eIsSet(featureID);
     }
-
 } //RequestMethodTypeImpl

@@ -79,10 +79,10 @@ public class KMLRasterTransformer extends KMLTransformerBase {
             MapLayer mapLayer = (MapLayer) o;
             int mapLayerOrder = mapContext.indexOf(mapLayer);
 
-            if ( isStandAlone() ) {
-                start( "kml" );
+            if (isStandAlone()) {
+                start("kml");
             }
-            
+
             //start("Document");
             //element("name", mapLayer.getTitle());
 
@@ -121,7 +121,7 @@ public class KMLRasterTransformer extends KMLTransformerBase {
 
             //end("Document");
             if (isStandAlone()) {
-                end( "kml" );
+                end("kml");
             }
         }
 

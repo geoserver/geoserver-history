@@ -7,10 +7,9 @@
 package net.opengis.wfs;
 
 import org.eclipse.emf.common.util.EMap;
-
 import org.eclipse.emf.ecore.EObject;
-
 import org.eclipse.emf.ecore.util.FeatureMap;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -54,65 +53,65 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * @generated
  */
 public interface DocumentRoot extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Mixed</b></em>' attribute list.
      * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Mixed</em>' attribute list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Mixed</em>' attribute list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Mixed</em>' attribute list.
      * @see net.opengis.wfs.WfsPackage#getDocumentRoot_Mixed()
      * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry" many="true"
      *        extendedMetaData="kind='elementWildcard' name=':mixed'"
      * @generated
      */
-	FeatureMap getMixed();
+    FeatureMap getMixed();
 
-	/**
+    /**
      * Returns the value of the '<em><b>XMLNS Prefix Map</b></em>' map.
      * The key is of type {@link java.lang.String},
      * and the value is of type {@link java.lang.String},
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>XMLNS Prefix Map</em>' map isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>XMLNS Prefix Map</em>' map isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>XMLNS Prefix Map</em>' map.
      * @see net.opengis.wfs.WfsPackage#getDocumentRoot_XMLNSPrefixMap()
      * @model mapType="org.eclipse.emf.ecore.EStringToStringMapEntry" keyType="java.lang.String" valueType="java.lang.String" transient="true"
      *        extendedMetaData="kind='attribute' name='xmlns:prefix'"
      * @generated
      */
-	EMap getXMLNSPrefixMap();
+    EMap getXMLNSPrefixMap();
 
-	/**
+    /**
      * Returns the value of the '<em><b>XSI Schema Location</b></em>' map.
      * The key is of type {@link java.lang.String},
      * and the value is of type {@link java.lang.String},
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>XSI Schema Location</em>' map isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>XSI Schema Location</em>' map isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>XSI Schema Location</em>' map.
      * @see net.opengis.wfs.WfsPackage#getDocumentRoot_XSISchemaLocation()
      * @model mapType="org.eclipse.emf.ecore.EStringToStringMapEntry" keyType="java.lang.String" valueType="java.lang.String" transient="true"
      *        extendedMetaData="kind='attribute' name='xsi:schemaLocation'"
      * @generated
      */
-	EMap getXSISchemaLocation();
+    EMap getXSISchemaLocation();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Delete</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             The Delete element is used to indicate that one or more
      *             feature instances should be removed from the feature
      *             repository.
@@ -124,24 +123,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='Delete' namespace='##targetNamespace'"
      * @generated
      */
-	DeleteElementType getDelete();
+    DeleteElementType getDelete();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getDelete <em>Delete</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Delete</em>' containment reference.
      * @see #getDelete()
      * @generated
      */
-	void setDelete(DeleteElementType value);
+    void setDelete(DeleteElementType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Describe Feature Type</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             The DescribeFeatureType element is used to request that a Web
      *             Feature Service generate a document describing one or more
      *             feature types.
@@ -153,24 +152,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='DescribeFeatureType' namespace='##targetNamespace'"
      * @generated
      */
-	DescribeFeatureTypeType getDescribeFeatureType();
+    DescribeFeatureTypeType getDescribeFeatureType();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getDescribeFeatureType <em>Describe Feature Type</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Describe Feature Type</em>' containment reference.
      * @see #getDescribeFeatureType()
      * @generated
      */
-	void setDescribeFeatureType(DescribeFeatureTypeType value);
+    void setDescribeFeatureType(DescribeFeatureTypeType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Feature Collection</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             This element is a container for the response to a GetFeature
      *             or GetFeatureWithLock (WFS-transaction.xsd) request.
      * <!-- end-model-doc -->
@@ -181,26 +180,26 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='FeatureCollection' namespace='##targetNamespace' affiliation='http://www.opengis.net/gml#_FeatureCollection'"
      * @generated
      */
-	FeatureCollectionType getFeatureCollection();
+    FeatureCollectionType getFeatureCollection();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getFeatureCollection <em>Feature Collection</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Feature Collection</em>' containment reference.
      * @see #getFeatureCollection()
      * @generated
      */
-	void setFeatureCollection(FeatureCollectionType value);
+    void setFeatureCollection(FeatureCollectionType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Feature Type List</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Feature Type List</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Feature Type List</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Feature Type List</em>' containment reference.
      * @see #setFeatureTypeList(FeatureTypeListType)
      * @see net.opengis.wfs.WfsPackage#getDocumentRoot_FeatureTypeList()
@@ -208,26 +207,26 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='FeatureTypeList' namespace='##targetNamespace'"
      * @generated
      */
-	FeatureTypeListType getFeatureTypeList();
+    FeatureTypeListType getFeatureTypeList();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getFeatureTypeList <em>Feature Type List</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Feature Type List</em>' containment reference.
      * @see #getFeatureTypeList()
      * @generated
      */
-	void setFeatureTypeList(FeatureTypeListType value);
+    void setFeatureTypeList(FeatureTypeListType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Get Capabilities</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Get Capabilities</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Get Capabilities</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Get Capabilities</em>' containment reference.
      * @see #setGetCapabilities(GetCapabilitiesType)
      * @see net.opengis.wfs.WfsPackage#getDocumentRoot_GetCapabilities()
@@ -235,24 +234,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='GetCapabilities' namespace='##targetNamespace'"
      * @generated
      */
-	GetCapabilitiesType getGetCapabilities();
+    GetCapabilitiesType getGetCapabilities();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getGetCapabilities <em>Get Capabilities</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Get Capabilities</em>' containment reference.
      * @see #getGetCapabilities()
      * @generated
      */
-	void setGetCapabilities(GetCapabilitiesType value);
+    void setGetCapabilities(GetCapabilitiesType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Get Feature</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             The GetFeature element is used to request that a Web Feature
      *             Service return feature type instances of one or more feature
      *             types.
@@ -264,24 +263,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='GetFeature' namespace='##targetNamespace'"
      * @generated
      */
-	GetFeatureType getGetFeature();
+    GetFeatureType getGetFeature();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getGetFeature <em>Get Feature</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Get Feature</em>' containment reference.
      * @see #getGetFeature()
      * @generated
      */
-	void setGetFeature(GetFeatureType value);
+    void setGetFeature(GetFeatureType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Get Feature With Lock</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             This is the root element for the GetFeatureWithLock request.
      *             The GetFeatureWithLock operation performs identically to a
      *             GetFeature request except that the GetFeatureWithLock request
@@ -298,24 +297,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='GetFeatureWithLock' namespace='##targetNamespace'"
      * @generated
      */
-	GetFeatureWithLockType getGetFeatureWithLock();
+    GetFeatureWithLockType getGetFeatureWithLock();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getGetFeatureWithLock <em>Get Feature With Lock</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Get Feature With Lock</em>' containment reference.
      * @see #getGetFeatureWithLock()
      * @generated
      */
-	void setGetFeatureWithLock(GetFeatureWithLockType value);
+    void setGetFeatureWithLock(GetFeatureWithLockType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Get Gml Object</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             The GetGmlObject element is used to request that a Web Feature
      *             Service return an element with a gml:id attribute value specified
      *             by an ogc:GmlObjectId.
@@ -327,24 +326,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='GetGmlObject' namespace='##targetNamespace'"
      * @generated
      */
-	GetGmlObjectType getGetGmlObject();
+    GetGmlObjectType getGetGmlObject();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getGetGmlObject <em>Get Gml Object</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Get Gml Object</em>' containment reference.
      * @see #getGetGmlObject()
      * @generated
      */
-	void setGetGmlObject(GetGmlObjectType value);
+    void setGetGmlObject(GetGmlObjectType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Insert</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             The Insert element is used to indicate that the Web Feature
      *             Service should create a new instance of a feature type.  The
      *             feature instance is specified using GML3 and one or more
@@ -358,24 +357,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='Insert' namespace='##targetNamespace'"
      * @generated
      */
-	InsertElementType getInsert();
+    InsertElementType getInsert();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getInsert <em>Insert</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Insert</em>' containment reference.
      * @see #getInsert()
      * @generated
      */
-	void setInsert(InsertElementType value);
+    void setInsert(InsertElementType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Lock Feature</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             This is the root element for a LockFeature request.
      *             The LockFeature request can be used to lock one or
      *             more feature instances.
@@ -387,24 +386,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='LockFeature' namespace='##targetNamespace'"
      * @generated
      */
-	LockFeatureType getLockFeature();
+    LockFeatureType getLockFeature();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getLockFeature <em>Lock Feature</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Lock Feature</em>' containment reference.
      * @see #getLockFeature()
      * @generated
      */
-	void setLockFeature(LockFeatureType value);
+    void setLockFeature(LockFeatureType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Lock Feature Response</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             The LockFeatureResponse element contains a report
      *             about the completion status of a LockFeature request.
      * <!-- end-model-doc -->
@@ -415,24 +414,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='LockFeatureResponse' namespace='##targetNamespace'"
      * @generated
      */
-	LockFeatureResponseType getLockFeatureResponse();
+    LockFeatureResponseType getLockFeatureResponse();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getLockFeatureResponse <em>Lock Feature Response</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Lock Feature Response</em>' containment reference.
      * @see #getLockFeatureResponse()
      * @generated
      */
-	void setLockFeatureResponse(LockFeatureResponseType value);
+    void setLockFeatureResponse(LockFeatureResponseType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Lock Id</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             The LockId element contains the value of the lock identifier
      *             obtained by a client application from a previous GetFeatureWithLock
      *             or LockFeature request.
@@ -444,24 +443,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='LockId' namespace='##targetNamespace'"
      * @generated
      */
-	String getLockId();
+    String getLockId();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getLockId <em>Lock Id</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Lock Id</em>' attribute.
      * @see #getLockId()
      * @generated
      */
-	void setLockId(String value);
+    void setLockId(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Native</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             Many times, a Web Feature Service interacts with a repository
      *             that may have special vendor specific capabilities.  The native
      *             element allows vendor specific command to be passed to the
@@ -474,24 +473,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='Native' namespace='##targetNamespace'"
      * @generated
      */
-	NativeType getNative();
+    NativeType getNative();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getNative <em>Native</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Native</em>' containment reference.
      * @see #getNative()
      * @generated
      */
-	void setNative(NativeType value);
+    void setNative(NativeType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Property</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             The Property element is used to specify the new
      *             value of a feature property inside an Update
      *             element.
@@ -503,28 +502,28 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='Property' namespace='##targetNamespace'"
      * @generated
      */
-	PropertyType getProperty();
+    PropertyType getProperty();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getProperty <em>Property</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Property</em>' containment reference.
      * @see #getProperty()
      * @generated
      */
-	void setProperty(PropertyType value);
+    void setProperty(PropertyType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Property Name</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             The Property element is used to specify one or more
      *             properties of a feature whose values are to be retrieved
      *             by a Web Feature Service.
-     * 
+     *
      *             While a Web Feature Service should endeavour to satisfy
      *             the exact request specified, in some instance this may
      *             not be possible.  Specifically, a Web Feature Service
@@ -536,7 +535,7 @@ public interface DocumentRoot extends EObject {
      *             may add them automatically to the Query before processing
      *             it.  Thus a client application should, in general, be
      *             prepared to receive more properties than it requested.
-     * 
+     *
      *             Of course, using the DescribeFeatureType request, a client
      *             application can determine which properties are mandatory
      *             and request them in the first place.
@@ -548,24 +547,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='PropertyName' namespace='##targetNamespace'"
      * @generated
      */
-	String getPropertyName();
+    String getPropertyName();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getPropertyName <em>Property Name</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Property Name</em>' attribute.
      * @see #getPropertyName()
      * @generated
      */
-	void setPropertyName(String value);
+    void setPropertyName(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Query</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             The Query element is used to describe a single query.
      *             One or more Query elements can be specified inside a
      *             GetFeature element so that multiple queries can be
@@ -580,24 +579,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='Query' namespace='##targetNamespace'"
      * @generated
      */
-	QueryType getQuery();
+    QueryType getQuery();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getQuery <em>Query</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Query</em>' containment reference.
      * @see #getQuery()
      * @generated
      */
-	void setQuery(QueryType value);
+    void setQuery(QueryType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Serves GML Object Type List</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             List of GML Object types available for GetGmlObject requests
      * <!-- end-model-doc -->
      * @return the value of the '<em>Serves GML Object Type List</em>' containment reference.
@@ -607,24 +606,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='ServesGMLObjectTypeList' namespace='##targetNamespace'"
      * @generated
      */
-	GMLObjectTypeListType getServesGMLObjectTypeList();
+    GMLObjectTypeListType getServesGMLObjectTypeList();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getServesGMLObjectTypeList <em>Serves GML Object Type List</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Serves GML Object Type List</em>' containment reference.
      * @see #getServesGMLObjectTypeList()
      * @generated
      */
-	void setServesGMLObjectTypeList(GMLObjectTypeListType value);
+    void setServesGMLObjectTypeList(GMLObjectTypeListType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Supports GML Object Type List</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             List of GML Object types that WFS is capable of serving, either
      *             directly, or as validly derived types defined in a GML application
      *             schema.
@@ -636,24 +635,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='SupportsGMLObjectTypeList' namespace='##targetNamespace'"
      * @generated
      */
-	GMLObjectTypeListType getSupportsGMLObjectTypeList();
+    GMLObjectTypeListType getSupportsGMLObjectTypeList();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getSupportsGMLObjectTypeList <em>Supports GML Object Type List</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Supports GML Object Type List</em>' containment reference.
      * @see #getSupportsGMLObjectTypeList()
      * @generated
      */
-	void setSupportsGMLObjectTypeList(GMLObjectTypeListType value);
+    void setSupportsGMLObjectTypeList(GMLObjectTypeListType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Transaction</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             This is the root element for a Transaction request.
      *             A transaction request allows insert, update and
      *             delete operations to be performed to create, change
@@ -666,24 +665,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='Transaction' namespace='##targetNamespace'"
      * @generated
      */
-	TransactionType getTransaction();
+    TransactionType getTransaction();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getTransaction <em>Transaction</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Transaction</em>' containment reference.
      * @see #getTransaction()
      * @generated
      */
-	void setTransaction(TransactionType value);
+    void setTransaction(TransactionType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Transaction Response</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             The TransactionResponse element contains a report
      *             about the completion status of a Transaction operation.
      * <!-- end-model-doc -->
@@ -694,24 +693,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='TransactionResponse' namespace='##targetNamespace'"
      * @generated
      */
-	TransactionResponseType getTransactionResponse();
+    TransactionResponseType getTransactionResponse();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getTransactionResponse <em>Transaction Response</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Transaction Response</em>' containment reference.
      * @see #getTransactionResponse()
      * @generated
      */
-	void setTransactionResponse(TransactionResponseType value);
+    void setTransactionResponse(TransactionResponseType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Update</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             One or more existing feature instances can be changed by
      *             using the Update element.
      * <!-- end-model-doc -->
@@ -722,26 +721,26 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='Update' namespace='##targetNamespace'"
      * @generated
      */
-	UpdateElementType getUpdate();
+    UpdateElementType getUpdate();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getUpdate <em>Update</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Update</em>' containment reference.
      * @see #getUpdate()
      * @generated
      */
-	void setUpdate(UpdateElementType value);
+    void setUpdate(UpdateElementType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Wfs Capabilities</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Wfs Capabilities</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Wfs Capabilities</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Wfs Capabilities</em>' containment reference.
      * @see #setWfsCapabilities(WFSCapabilitiesType)
      * @see net.opengis.wfs.WfsPackage#getDocumentRoot_WfsCapabilities()
@@ -749,24 +748,24 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='WFS_Capabilities' namespace='##targetNamespace'"
      * @generated
      */
-	WFSCapabilitiesType getWfsCapabilities();
+    WFSCapabilitiesType getWfsCapabilities();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getWfsCapabilities <em>Wfs Capabilities</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Wfs Capabilities</em>' containment reference.
      * @see #getWfsCapabilities()
      * @generated
      */
-	void setWfsCapabilities(WFSCapabilitiesType value);
+    void setWfsCapabilities(WFSCapabilitiesType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Xlink Property Name</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             This element may be used in place of an wfs:PropertyName element
      *             in a wfs:Query element in a wfs:GetFeature element to selectively
      *             request the traversal of nested XLinks in the returned element for
@@ -781,16 +780,15 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='XlinkPropertyName' namespace='##targetNamespace'"
      * @generated
      */
-	XlinkPropertyNameType getXlinkPropertyName();
+    XlinkPropertyNameType getXlinkPropertyName();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.DocumentRoot#getXlinkPropertyName <em>Xlink Property Name</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Xlink Property Name</em>' containment reference.
      * @see #getXlinkPropertyName()
      * @generated
      */
-	void setXlinkPropertyName(XlinkPropertyNameType value);
-
+    void setXlinkPropertyName(XlinkPropertyNameType value);
 } // DocumentRoot

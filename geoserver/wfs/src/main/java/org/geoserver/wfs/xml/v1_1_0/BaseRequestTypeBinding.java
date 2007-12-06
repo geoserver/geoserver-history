@@ -121,7 +121,8 @@ public class BaseRequestTypeBinding extends AbstractComplexBinding {
             String service = (String) node.getAttributeValue("service");
 
             if ((service != null) && !"".equals(service.trim())) {
-                EMFUtils.set(request, "service", node.getAttributeValue("service"));
+                EMFUtils.set(request, "service",
+                    node.getAttributeValue("service"));
             } else {
                 EMFUtils.set(request, "service", "WFS");
             }
@@ -134,7 +135,8 @@ public class BaseRequestTypeBinding extends AbstractComplexBinding {
             String version = (String) node.getAttributeValue("version");
 
             if ((version != null) && !"".equals(version.trim())) {
-                EMFUtils.set(request, "version", node.getAttributeValue("version"));
+                EMFUtils.set(request, "version",
+                    node.getAttributeValue("version"));
             } else {
                 EMFUtils.set(request, "version", "1.1.0");
             }

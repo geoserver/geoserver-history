@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wcs.responses;
 
+import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CRSFactory;
 import org.opengis.referencing.datum.DatumFactory;
 import org.opengis.referencing.operation.CoordinateOperationFactory;
+import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.MathTransformFactory;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.Request;
@@ -455,13 +457,14 @@ public class DescribeResponse implements Response {
 		tempResponse.append("\n    </gml:Envelope>");
 
 		// Grid
-		GridGeometry g = cv.getGrid();
+		GridGeometry  grid      = cv.getGrid();
+		MathTransform gridToCRS = grid.getGridToCRS();
 		InternationalString[] dimNames = cv.getDimensionNames();
-		final int gridDimension = g.getGridRange().getDimension();
+		final int gridDimension = gridToCRS != null ? gridToCRS.getSourceDimensions() : 0;
 
 		// RectifiedGrid
 		tempResponse.append("\n    <gml:RectifiedGrid").append(
-				(g != null) ? new StringBuffer(" dimension=\"").append(
+				(gridToCRS != null) ? new StringBuffer(" dimension=\"").append(
 						gridDimension).append("\"").toString() : "")
 				.append(">");
 
@@ -469,8 +472,8 @@ public class DescribeResponse implements Response {
 		String upers = "";
 
 		for (int r = 0; r < gridDimension; r++) {
-			lowers += (g.getGridRange().getLower(r) + " ");
-			upers += (g.getGridRange().getUpper(r) + " ");
+			lowers += (grid.getGridRange().getLower(r) + " ");
+			upers += (grid.getGridRange().getUpper(r) + " ");
 		}
 
 		tempResponse.append("\n       <gml:limits>");
@@ -490,22 +493,17 @@ public class DescribeResponse implements Response {
 
 		tempResponse.append("\n       <gml:origin>");
 		tempResponse.append("\n       <gml:pos>"
-				+ ((cvEnvelope != null) ? (cvEnvelope.getLowerCorner()
-						.getOrdinate(0)
-						+ " " + cvEnvelope.getUpperCorner().getOrdinate(1))
-						: "") + "</gml:pos>");
+				+ (gridToCRS != null ? ((AffineTransform) gridToCRS).getTranslateX() + " " + ((AffineTransform) gridToCRS).getTranslateY() 
+						: ((cvEnvelope != null) ? (cvEnvelope.getLowerCorner() .getOrdinate(0) + " " + cvEnvelope.getUpperCorner().getOrdinate(1)) : "")) 
+				+ "</gml:pos>");
 		tempResponse.append("\n       </gml:origin>");
 		tempResponse.append("\n       <gml:offsetVector>"
-				+ ((cvEnvelope != null) ? ((cvEnvelope.getUpperCorner()
-						.getOrdinate(0) - cvEnvelope.getLowerCorner()
-						.getOrdinate(0)) / (g.getGridRange().getUpper(0) - g
-						.getGridRange().getLower(0))) : 0.0)
-				+ " 0.0</gml:offsetVector>");
-		tempResponse.append("\n       <gml:offsetVector>0.0 "
-				+ ((cvEnvelope != null) ? ((cvEnvelope.getLowerCorner()
-						.getOrdinate(1) - cvEnvelope.getUpperCorner()
-						.getOrdinate(1)) / (g.getGridRange().getUpper(1) - g
-						.getGridRange().getLower(1))) : (-0.0))
+				+ (gridToCRS != null ? ((AffineTransform) gridToCRS).getScaleX() + " " + ((AffineTransform) gridToCRS).getShearX()
+						: ((cvEnvelope != null) ? ((cvEnvelope.getUpperCorner().getOrdinate(0) - cvEnvelope.getLowerCorner().getOrdinate(0)) / (grid.getGridRange().getUpper(0) - grid.getGridRange().getLower(0))) : 0.0) + " 0.0")
+				+ "</gml:offsetVector>");
+		tempResponse.append("\n       <gml:offsetVector>"
+				+ (gridToCRS != null ? ((AffineTransform) gridToCRS).getShearY() + " " + ((AffineTransform) gridToCRS).getScaleY()
+						: "0.0 " + ((cvEnvelope != null) ? ((cvEnvelope.getLowerCorner().getOrdinate(1) - cvEnvelope.getUpperCorner().getOrdinate(1)) / (grid.getGridRange().getUpper(1) - grid.getGridRange().getLower(1))) : -0.0))
 				+ "</gml:offsetVector>");
 		tempResponse.append("\n    </gml:RectifiedGrid>");
 		tempResponse.append("\n   </spatialDomain>");

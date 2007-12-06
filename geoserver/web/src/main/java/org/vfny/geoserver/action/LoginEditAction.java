@@ -29,8 +29,9 @@ import javax.servlet.http.HttpServletResponse;
  * @author rgould, Refractions Research, Inc.
  */
 public class LoginEditAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response) {
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        UserContainer user, HttpServletRequest request,
+        HttpServletResponse response) {
         LoginForm loginForm = (LoginForm) form;
         String username = loginForm.getUsername();
         String password = loginForm.getPassword();
@@ -42,16 +43,17 @@ public class LoginEditAction extends ConfigAction {
         //I think this is showing the weakness of both edit and non using Login
         //Form, instead of a LoginEditForm.
         /*if (confirm == null || !confirm.equals(password)){
-            ActionErrors errors = new ActionErrors();
-            errors.add(ActionErrors.GLOBAL_ERROR,
-                       new ActionError("error.password.mismatch"));
-            saveErrors(request, errors);
-            return mapping.getInputForward();//findForward("config.loginEditSubmit");
-            }*/
+           ActionErrors errors = new ActionErrors();
+           errors.add(ActionErrors.GLOBAL_ERROR,
+                      new ActionError("error.password.mismatch"));
+           saveErrors(request, errors);
+           return mapping.getInputForward();//findForward("config.loginEditSubmit");
+           }*/
         global.setAdminUserName(username);
         global.setAdminPassword(password);
         getApplicationState().notifyConfigChanged();
-        getServlet().getServletContext().setAttribute(GlobalConfig.CONFIG_KEY, global);
+        getServlet().getServletContext()
+            .setAttribute(GlobalConfig.CONFIG_KEY, global);
 
         String forward = (String) request.getAttribute("forward");
 

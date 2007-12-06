@@ -4,15 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.map.geotiff;
 
-import java.awt.image.RenderedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageOutputStream;
-
 import org.geotools.coverage.FactoryFinder;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
@@ -21,6 +12,13 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
+import java.awt.image.RenderedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
 
 
 /**
@@ -32,13 +30,13 @@ import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
  *
  */
 public class GeoTiffMapProducer extends DefaultRasterMapProducer {
-
     /** A logger for this class. */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses.wms.map.geotiff");
 
     /** GridCoverageFactory. */
-    private final static GridCoverageFactory factory = FactoryFinder.getGridCoverageFactory(null);
+    private final static GridCoverageFactory factory = FactoryFinder
+        .getGridCoverageFactory(null);
 
     /**
      * Constructo for a {@link GeoTiffMapProducer}.
@@ -54,8 +52,8 @@ public class GeoTiffMapProducer extends DefaultRasterMapProducer {
         super(oformat, mime_type, wms);
     }
 
-    public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
-        throws WmsException, IOException {
+    public void formatImageOutputStream(RenderedImage image,
+        OutputStream outStream) throws WmsException, IOException {
         // crating a grid coverage
         final GridCoverage2D gc = factory.create("geotiff", image,
                 new GeneralEnvelope(mapContext.getAreaOfInterest()));
@@ -66,7 +64,8 @@ public class GeoTiffMapProducer extends DefaultRasterMapProducer {
         }
 
         // do we want it to be 8 bits?
-        if (this.format.equalsIgnoreCase("image/tiff8") || (this.mapContext.getPaletteInverter() != null)) {
+        if (this.format.equalsIgnoreCase("image/tiff8")
+                || (this.mapContext.getPaletteInverter() != null)) {
             image = forceIndexed8Bitmask(image);
         }
 

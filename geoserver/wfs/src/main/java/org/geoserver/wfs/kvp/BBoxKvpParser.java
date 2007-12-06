@@ -11,7 +11,6 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.ServiceException;
-
 import java.util.List;
 
 
@@ -25,8 +24,10 @@ public class BBoxKvpParser extends KvpParser {
 
         // check to make sure that the bounding box has 4 coordinates
         if (unparsed.size() < 4) {
-            throw new IllegalArgumentException("Requested bounding box contains wrong"
-                + "number of coordinates (should have " + "4): " + unparsed.size());
+            throw new IllegalArgumentException(
+                "Requested bounding box contains wrong"
+                + "number of coordinates (should have " + "4): "
+                + unparsed.size());
         }
 
         //if it does, store them in an array of doubles
@@ -36,17 +37,17 @@ public class BBoxKvpParser extends KvpParser {
             try {
                 bbox[i] = Double.parseDouble((String) unparsed.get(i));
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Bounding box coordinate " + i
-                    + " is not parsable:" + unparsed.get(i));
+                throw new IllegalArgumentException("Bounding box coordinate "
+                    + i + " is not parsable:" + unparsed.get(i));
             }
         }
-        
+
         //ensure the values are sane
         double minx = bbox[0];
         double miny = bbox[1];
         double maxx = bbox[2];
         double maxy = bbox[3];
-        
+
         if (minx > maxx) {
             throw new ServiceException("illegal bbox, minX: " + minx + " is "
                 + "greater than maxX: " + maxx);
@@ -61,15 +62,15 @@ public class BBoxKvpParser extends KvpParser {
         CoordinateReferenceSystem crs = null;
 
         if (unparsed.size() > 4) {
-        	try {
+            try {
                 crs = CRS.decode((String) unparsed.get(4));
-        	} catch (Exception e) {
-        		//TODO: use the default crs of the system
-        	}
+            } catch (Exception e) {
+                //TODO: use the default crs of the system
+            }
         } else {
             //TODO: use the default crs of the system
         }
 
-        return new ReferencedEnvelope(minx,maxx,miny,maxy,crs);
+        return new ReferencedEnvelope(minx, maxx, miny, maxy, crs);
     }
 }

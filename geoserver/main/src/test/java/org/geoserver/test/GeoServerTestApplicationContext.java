@@ -19,17 +19,17 @@ import javax.servlet.ServletContext;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public class GeoServerTestApplicationContext extends ClassPathXmlApplicationContext
-    implements WebApplicationContext {
+public class GeoServerTestApplicationContext
+    extends ClassPathXmlApplicationContext implements WebApplicationContext {
     ServletContext servletContext;
 
-    public GeoServerTestApplicationContext(String configLocation, ServletContext servletContext)
-        throws BeansException {
+    public GeoServerTestApplicationContext(String configLocation,
+        ServletContext servletContext) throws BeansException {
         this(new String[] { configLocation }, servletContext);
     }
 
-    public GeoServerTestApplicationContext(String[] configLocation, ServletContext servletContext)
-        throws BeansException {
+    public GeoServerTestApplicationContext(String[] configLocation,
+        ServletContext servletContext) throws BeansException {
         super(configLocation, false);
         this.servletContext = servletContext;
     }

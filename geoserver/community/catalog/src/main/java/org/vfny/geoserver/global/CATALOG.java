@@ -4,12 +4,11 @@
  */
 package org.vfny.geoserver.global;
 
+import org.vfny.geoserver.global.dto.CATALOGDTO;
+import org.vfny.geoserver.global.dto.ServiceDTO;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-
-import org.vfny.geoserver.global.dto.CATALOGDTO;
-import org.vfny.geoserver.global.dto.ServiceDTO;
 
 
 /**
@@ -33,7 +32,6 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
 public final class CATALOG extends Service {
     /** CATALOG version spec implemented */
     private static final String CATALOG_VERSION = "1.0.0";
-
     public static final String WEB_CONTAINER_KEY = "CATALOG";
 
     /** list of WMS Exception Formats */
@@ -129,7 +127,7 @@ public final class CATALOG extends Service {
     public static String getVersion() {
         return CATALOG_VERSION;
     }
-    
+
     /**
      * getExceptionFormats purpose.
      *
@@ -155,6 +153,7 @@ public final class CATALOG extends Service {
         service.setName("Catalog Service");
         service.setTitle("Catalog Service");
         service.setEnabled(true);
+
         ArrayList keywords = new ArrayList();
         keywords.add("CATALOG");
         keywords.add("GEOSERVER");
@@ -168,7 +167,8 @@ public final class CATALOG extends Service {
         service.setMetadataLink(mdl);
         service.setFees("NONE");
         service.setAccessConstraints("NONE");
-        service.setMaintainer("http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311");
+        service.setMaintainer(
+            "http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311");
 
         try {
             service.setOnlineResource(new URL("http://geoserver.org"));

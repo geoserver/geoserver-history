@@ -6,11 +6,10 @@
  */
 package net.opengis.ows;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import java.util.List;
 
-import org.eclipse.emf.common.util.EList;
-
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -33,19 +32,18 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface SectionsType extends EObject {
-	/**
-	 * Returns the value of the '<em><b>Section</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Section</em>' attribute list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Section</em>' attribute.
-	 * @see #setSection(String)
-	 * @see net.opengis.ows.OwsPackage#getSectionsType_Section()
-	 * @model type="java.lang.String"
-	 */
-	EList getSection();
-	
+    /**
+     * Returns the value of the '<em><b>Section</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Section</em>' attribute list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Section</em>' attribute.
+     * @see #setSection(String)
+     * @see net.opengis.ows.OwsPackage#getSectionsType_Section()
+     * @model type="java.lang.String"
+     */
+    EList getSection();
 } // SectionsType

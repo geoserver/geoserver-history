@@ -42,7 +42,8 @@ import javax.servlet.ServletContext;
  *          Exp $
  */
 public final class CoverageStoreUtils {
-    private final static Logger LOGGER = Logger.getLogger(CoverageStoreUtils.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(CoverageStoreUtils.class
+            .toString());
     public final static Format[] formats = GridFormatFinder.getFormatArray();
 
     private CoverageStoreUtils() {
@@ -210,7 +211,8 @@ public final class CoverageStoreUtils {
     }
 
     public static Map defaultParams(String description) {
-        return Collections.synchronizedMap(defaultParams(aquireFactory(description)));
+        return Collections.synchronizedMap(defaultParams(aquireFactory(
+                    description)));
     }
 
     public static Map defaultParams(Format factory) {
@@ -271,7 +273,8 @@ public final class CoverageStoreUtils {
         throws IOException {
         final Map map = new HashMap(params.size());
 
-        final ParameterValueGroup info = factory.createFormat().getReadParameters();
+        final ParameterValueGroup info = factory.createFormat()
+                                                .getReadParameters();
         String key;
         Object value;
 
@@ -298,16 +301,19 @@ public final class CoverageStoreUtils {
      * @throws FactoryException
      * @throws TransformException
      */
-    public static GeneralEnvelope getWGS84LonLatEnvelope(GeneralEnvelope envelope)
+    public static GeneralEnvelope getWGS84LonLatEnvelope(
+        GeneralEnvelope envelope)
         throws IndexOutOfBoundsException, FactoryException, TransformException {
-        final CoordinateReferenceSystem sourceCRS = envelope.getCoordinateReferenceSystem();
+        final CoordinateReferenceSystem sourceCRS = envelope
+            .getCoordinateReferenceSystem();
 
         ////
         //
         // Do we need to transform?
         //
         ////
-        if (CRSUtilities.equalsIgnoreMetadata(sourceCRS, DefaultGeographicCRS.WGS84)) {
+        if (CRSUtilities.equalsIgnoreMetadata(sourceCRS,
+                    DefaultGeographicCRS.WGS84)) {
             return new GeneralEnvelope(envelope);
         }
 
@@ -317,7 +323,8 @@ public final class CoverageStoreUtils {
         //
         ////
         final CoordinateReferenceSystem targetCRS = DefaultGeographicCRS.WGS84;
-        final MathTransform mathTransform = CRS.findMathTransform(sourceCRS, targetCRS, true);
+        final MathTransform mathTransform = CRS.findMathTransform(sourceCRS,
+                targetCRS, true);
         final GeneralEnvelope targetEnvelope;
 
         if (!mathTransform.isIdentity()) {

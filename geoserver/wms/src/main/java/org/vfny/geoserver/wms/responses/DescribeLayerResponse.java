@@ -71,10 +71,12 @@ public class DescribeLayerResponse implements Response {
         this.request = (DescribeLayerRequest) request;
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine(new StringBuffer("executing request ").append(request).toString());
+            LOGGER.fine(new StringBuffer("executing request ").append(request)
+                                                              .toString());
         }
 
-        this.transformer = new DescribeLayerTransformer(this.request.getBaseUrl(), request.getServiceRef().getGeoServer());
+        this.transformer = new DescribeLayerTransformer(this.request.getBaseUrl(),
+                request.getServiceRef().getGeoServer());
         this.transformer.setNamespaceDeclarationEnabled(false);
         this.transformer.setEncoding(this.request.getGeoServer().getCharSet());
 
@@ -103,7 +105,8 @@ public class DescribeLayerResponse implements Response {
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         if (this.content == null) {
-            throw new IllegalStateException("execute() has not been called or does not succeed.");
+            throw new IllegalStateException(
+                "execute() has not been called or does not succeed.");
         }
 
         out.write(this.content);

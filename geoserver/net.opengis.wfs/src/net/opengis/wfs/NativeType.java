@@ -8,6 +8,7 @@ package net.opengis.wfs;
 
 import org.eclipse.emf.ecore.EObject;
 
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Native Type</b></em>'.
@@ -26,12 +27,12 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface NativeType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Safe To Ignore</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *                In the event that a Web Feature Service does not recognize
      *                the vendorId or does not recognize the vendor specific command,
      *                the safeToIgnore attribute is used to indicate whether the
@@ -50,49 +51,49 @@ public interface NativeType extends EObject {
      *        extendedMetaData="kind='attribute' name='safeToIgnore'"
      * @generated
      */
-	boolean isSafeToIgnore();
+    boolean isSafeToIgnore();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.NativeType#isSafeToIgnore <em>Safe To Ignore</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Safe To Ignore</em>' attribute.
      * @see #isSetSafeToIgnore()
      * @see #unsetSafeToIgnore()
      * @see #isSafeToIgnore()
      * @generated
      */
-	void setSafeToIgnore(boolean value);
+    void setSafeToIgnore(boolean value);
 
-	/**
+    /**
      * Unsets the value of the '{@link net.opengis.wfs.NativeType#isSafeToIgnore <em>Safe To Ignore</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @see #isSetSafeToIgnore()
      * @see #isSafeToIgnore()
      * @see #setSafeToIgnore(boolean)
      * @generated
      */
-	void unsetSafeToIgnore();
+    void unsetSafeToIgnore();
 
-	/**
+    /**
      * Returns whether the value of the '{@link net.opengis.wfs.NativeType#isSafeToIgnore <em>Safe To Ignore</em>}' attribute is set.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return whether the value of the '<em>Safe To Ignore</em>' attribute is set.
      * @see #unsetSafeToIgnore()
      * @see #isSafeToIgnore()
      * @see #setSafeToIgnore(boolean)
      * @generated
      */
-	boolean isSetSafeToIgnore();
+    boolean isSetSafeToIgnore();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Vendor Id</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *                The vendorId attribute is used to specify the name of
      *                vendor who's vendor specific command the client
      *                application wishes to execute.
@@ -104,16 +105,15 @@ public interface NativeType extends EObject {
      *        extendedMetaData="kind='attribute' name='vendorId'"
      * @generated
      */
-	String getVendorId();
+    String getVendorId();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.NativeType#getVendorId <em>Vendor Id</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Vendor Id</em>' attribute.
      * @see #getVendorId()
      * @generated
      */
-	void setVendorId(String value);
-
+    void setVendorId(String value);
 } // NativeType

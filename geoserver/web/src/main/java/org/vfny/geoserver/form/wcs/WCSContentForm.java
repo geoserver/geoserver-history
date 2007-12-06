@@ -23,8 +23,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class WCSContentForm extends ActionForm {
     /**
-         * Comment for <code>serialVersionUID</code>
-         */
+     * Comment for <code>serialVersionUID</code>
+     */
     private static final long serialVersionUID = 3977860674510534961L;
 
     /**
@@ -113,11 +113,13 @@ public class WCSContentForm extends ActionForm {
         }
     }
 
-    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping,
+        HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         if ((onlineResource == null) || onlineResource.equals("")) {
-            errors.add("onlineResource", new ActionError("error.wcs.onlineResource.required"));
+            errors.add("onlineResource",
+                new ActionError("error.wcs.onlineResource.required"));
         } else {
             try {
                 URL url = new URL(onlineResource);

@@ -66,7 +66,8 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
      * Factory to create styles from inline or remote SLD documents (aka, from
      * SLD_BODY or SLD parameters).
      */
-    private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
+    private static final StyleFactory styleFactory = StyleFactoryFinder
+        .createStyleFactory();
 
     /**
      * Creates a new GetLegendGraphicKvpReader object.
@@ -120,41 +121,48 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
             request.setLayer(mli.getFeature().getFeatureType());
         } catch (NoSuchElementException e) {
             try {
-                CoverageInfo cvi = request.getWMS().getData().getCoverageInfo(layer);
+                CoverageInfo cvi = request.getWMS().getData()
+                                          .getCoverageInfo(layer);
                 mli.setCoverage(cvi);
 
-                FeatureCollection feature = CoverageUtilities.wrapGc(cvi.getCoverage(null, null));
+                FeatureCollection feature = CoverageUtilities.wrapGc(cvi
+                        .getCoverage(null, null));
                 request.setLayer(feature.getFeatureType());
             } catch (NoSuchElementException ne) {
                 throw new WmsException(ne,
-                    new StringBuffer(layer).append(" layer does not exists.").toString(),
-                    ne.getLocalizedMessage());
+                    new StringBuffer(layer).append(" layer does not exists.")
+                                           .toString(), ne.getLocalizedMessage());
             } catch (TransformException te) {
-                throw new WmsException(te, "Can't obtain the schema for the required layer.",
+                throw new WmsException(te,
+                    "Can't obtain the schema for the required layer.",
                     te.getLocalizedMessage());
             } catch (FactoryConfigurationError fce) {
-                throw new WmsException(fce, "Can't obtain the schema for the required layer.",
+                throw new WmsException(fce,
+                    "Can't obtain the schema for the required layer.",
                     fce.getLocalizedMessage());
             } catch (SchemaException se) {
-                throw new WmsException(se, "Can't obtain the schema for the required layer.",
+                throw new WmsException(se,
+                    "Can't obtain the schema for the required layer.",
                     se.getLocalizedMessage());
             } catch (IllegalAttributeException iae) {
-                throw new WmsException(iae, "Can't obtain the schema for the required layer.",
+                throw new WmsException(iae,
+                    "Can't obtain the schema for the required layer.",
                     iae.getLocalizedMessage());
             }
         } catch (IOException e) {
-            throw new WmsException("Can't obtain the schema for the required layer.");
+            throw new WmsException(
+                "Can't obtain the schema for the required layer.");
         }
 
         String format = getValue("FORMAT");
 
         if (getServiceRef().getApplicationContext() == null) {
-            LOGGER.log(Level.SEVERE, "Application Context is null. No producer beans can be found!");
+            LOGGER.log(Level.SEVERE,
+                "Application Context is null. No producer beans can be found!");
         } else if (!GetLegendGraphicResponse.supportsFormat(format,
                     getServiceRef().getApplicationContext())) {
-            throw new WmsException(new StringBuffer("Invalid graphic format: ").append(format)
-                                                                               .toString(),
-                "InvalidFormat");
+            throw new WmsException(new StringBuffer("Invalid graphic format: ").append(
+                    format).toString(), "InvalidFormat");
         } else {
             request.setFormat(format);
         }
@@ -177,10 +185,9 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
      *
      * @task TODO: validate EXCEPTIONS parameter
      */
-    private void parseOptionalParameters(GetLegendGraphicRequest req, MapLayerInfo mli)
-        throws WmsException {
+    private void parseOptionalParameters(GetLegendGraphicRequest req,
+        MapLayerInfo mli) throws WmsException {
         parseStyleAndRule(req, mli);
-        
 
         // not used by now, since we don't support nested layers yet
         String featureType = getValue("FEATURETYPE");
@@ -211,9 +218,10 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
         if (exceptions != null) {
             req.setExceptionsFormat(exceptions);
         }
-        
+
         //the LEGEND_OPTIONS parameter gets parsed here.
-        req.setLegendOptions(Requests.parseOptionParameter(getValue("LEGEND_OPTIONS")));
+        req.setLegendOptions(Requests.parseOptionParameter(getValue(
+                    "LEGEND_OPTIONS")));
     }
 
     /**
@@ -238,14 +246,15 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
      *
      * @throws WmsException
      */
-    private void parseStyleAndRule(GetLegendGraphicRequest req, MapLayerInfo layer)
-        throws WmsException {
+    private void parseStyleAndRule(GetLegendGraphicRequest req,
+        MapLayerInfo layer) throws WmsException {
         String styleName = getValue("STYLE");
         String sldUrl = getValue("SLD");
         String sldBody = getValue("SLD_BODY");
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine(new StringBuffer("looking for style ").append(styleName).toString());
+            LOGGER.fine(new StringBuffer("looking for style ").append(styleName)
+                                                              .toString());
         }
 
         Style sldStyle = null;
@@ -302,20 +311,22 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
     private Style findStyle(String styleName, Style[] styles)
         throws NoSuchElementException {
         if ((styles == null) || (styles.length == 0)) {
-            throw new NoSuchElementException("No styles have been provided to search for "
-                + styleName);
+            throw new NoSuchElementException(
+                "No styles have been provided to search for " + styleName);
         }
 
         if (styleName == null) {
             if (LOGGER.isLoggable(Level.FINER)) {
-                LOGGER.finer("styleName is null, request in literal mode, returning first style");
+                LOGGER.finer(
+                    "styleName is null, request in literal mode, returning first style");
             }
 
             return styles[0];
         }
 
         if (LOGGER.isLoggable(Level.FINER)) {
-            LOGGER.finer(new StringBuffer("request in library mode, looking for style ").append(
+            LOGGER.finer(new StringBuffer(
+                    "request in library mode, looking for style ").append(
                     styleName).toString());
         }
 
@@ -333,8 +344,8 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
             }
         }
 
-        throw new NoSuchElementException(styleName + " not found. Provided style names: "
-            + noMatchNames);
+        throw new NoSuchElementException(styleName
+            + " not found. Provided style names: " + noMatchNames);
     }
 
     /**
@@ -356,10 +367,12 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
             URL url = new URL(sldUrl);
             in = url.openStream();
         } catch (MalformedURLException e) {
-            throw new WmsException(e, "Not a valid URL to an SLD document " + sldUrl,
+            throw new WmsException(e,
+                "Not a valid URL to an SLD document " + sldUrl,
                 "loadRemoteStyle");
         } catch (IOException e) {
-            throw new WmsException(e, "Can't open the SLD URL " + sldUrl, "loadRemoteStyle");
+            throw new WmsException(e, "Can't open the SLD URL " + sldUrl,
+                "loadRemoteStyle");
         }
 
         return parseSld(new InputStreamReader(in));
@@ -435,7 +448,8 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
                         sldRule = rules[r];
 
                         if (LOGGER.isLoggable(Level.FINE)) {
-                            LOGGER.fine(new StringBuffer("found requested rule: ").append(rule)
+                            LOGGER.fine(new StringBuffer(
+                                    "found requested rule: ").append(rule)
                                                                                   .toString());
                         }
 

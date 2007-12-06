@@ -8,7 +8,6 @@ import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.LockFeatureResponseType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.TransactionType;
-
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
@@ -34,7 +33,8 @@ public class LockFeatureTypeResponse extends Response {
     Data catalog;
     WFSConfiguration configuration;
 
-    public LockFeatureTypeResponse(WFS wfs, Data catalog, WFSConfiguration configuration) {
+    public LockFeatureTypeResponse(WFS wfs, Data catalog,
+        WFSConfiguration configuration) {
         super(LockFeatureResponseType.class);
         this.wfs = wfs;
         this.catalog = catalog;
@@ -57,26 +57,33 @@ public class LockFeatureTypeResponse extends Response {
         }
 
         String indent = wfs.isVerbose() ? "   " : "";
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                    output));
 
-        LockFeatureType lft = (LockFeatureType)operation.getParameters()[0];
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(lft.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
-        
+        LockFeatureType lft = (LockFeatureType) operation.getParameters()[0];
+        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(lft.getBaseUrl(),
+                wfs.getGeoServer().getProxyBaseUrl());
+
         //TODO: get rid of this hardcoding, and make a common utility to get all
         //these namespace imports, as everyone is using them, and changes should
         //go through to all the operations.
-        writer.write("<?xml version=\"1.0\" encoding=\"" + wfs.getCharSet().displayName() + "\"?>");
+        writer.write("<?xml version=\"1.0\" encoding=\""
+            + wfs.getCharSet().displayName() + "\"?>");
         writer.write("<WFS_LockFeatureResponse " + "\n");
         writer.write(indent + "xmlns=\"http://www.opengis.net/wfs\" " + "\n");
-        writer.write(indent + "xmlns:ogc=\"http://www.opengis.net/ogc\" " + "\n");
+        writer.write(indent + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
+            + "\n");
 
-        writer.write(indent + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " + "\n");
-        writer.write(indent + "xsi:schemaLocation=\"http://www.opengis.net/wfs ");
+        writer.write(indent
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " + "\n");
+        writer.write(indent
+            + "xsi:schemaLocation=\"http://www.opengis.net/wfs ");
         writer.write(ResponseUtils.appendPath(proxifiedBaseUrl,
                 "schemas/wfs/1.0.0/WFS-transaction.xsd"));
         writer.write("\">" + "\n");
 
-        writer.write(indent + "<LockId>" + lockResponse.getLockId() + "</LockId>" + "\n");
+        writer.write(indent + "<LockId>" + lockResponse.getLockId()
+            + "</LockId>" + "\n");
 
         List featuresLocked = null;
 
@@ -87,7 +94,8 @@ public class LockFeatureTypeResponse extends Response {
         List featuresNotLocked = null;
 
         if (lockResponse.getFeaturesNotLocked() != null) {
-            featuresNotLocked = lockResponse.getFeaturesNotLocked().getFeatureId();
+            featuresNotLocked = lockResponse.getFeaturesNotLocked()
+                                            .getFeatureId();
         }
 
         if ((featuresLocked != null) && !featuresLocked.isEmpty()) {
@@ -97,7 +105,8 @@ public class LockFeatureTypeResponse extends Response {
                 writer.write(indent + indent);
 
                 FeatureId featureId = (FeatureId) i.next();
-                writer.write("<ogc:FeatureId fid=\"" + featureId + "\"/>" + "\n");
+                writer.write("<ogc:FeatureId fid=\"" + featureId + "\"/>"
+                    + "\n");
             }
 
             writer.write(indent + "</FeaturesLocked>" + "\n");
@@ -110,7 +119,8 @@ public class LockFeatureTypeResponse extends Response {
                 writer.write(indent + indent);
 
                 FeatureId featureId = (FeatureId) i.next();
-                writer.write("<ogc:FeatureId fid=\"" + featureId + "\"/>" + "\n");
+                writer.write("<ogc:FeatureId fid=\"" + featureId + "\"/>"
+                    + "\n");
             }
 
             writer.write("</FeaturesNotLocked>" + "\n");
@@ -120,19 +130,21 @@ public class LockFeatureTypeResponse extends Response {
         writer.flush();
     }
 
-    void write1_1(LockFeatureResponseType lockResponse, OutputStream output, Operation operation)
-        throws IOException {
+    void write1_1(LockFeatureResponseType lockResponse, OutputStream output,
+        Operation operation) throws IOException {
         Encoder encoder = new Encoder(configuration, configuration.schema());
-        
-        LockFeatureType req = (LockFeatureType)operation.getParameters()[0];
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
-        
+
+        LockFeatureType req = (LockFeatureType) operation.getParameters()[0];
+        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(),
+                wfs.getGeoServer().getProxyBaseUrl());
+
         encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
-                ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd"));
+            ResponseUtils.appendPath(proxifiedBaseUrl,
+                "schemas/wfs/1.1.0/wfs.xsd"));
 
         try {
-            encoder.encode(lockResponse, org.geoserver.wfs.xml.v1_1_0.WFS.LOCKFEATURERESPONSE,
-                output);
+            encoder.encode(lockResponse,
+                org.geoserver.wfs.xml.v1_1_0.WFS.LOCKFEATURERESPONSE, output);
         } catch (SAXException e) {
             throw (IOException) new IOException().initCause(e);
         }

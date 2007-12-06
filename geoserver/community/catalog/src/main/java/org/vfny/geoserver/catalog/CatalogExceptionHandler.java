@@ -79,7 +79,8 @@ public class CatalogExceptionHandler implements ExceptionHandler {
      *
      * @return DOCUMENT ME!
      */
-    public ServiceException newServiceException(Throwable e, String preMessage, String locator) {
+    public ServiceException newServiceException(Throwable e, String preMessage,
+        String locator) {
         return new CatalogException(e, preMessage, locator);
     }
 }

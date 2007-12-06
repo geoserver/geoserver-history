@@ -40,7 +40,8 @@ public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
      * @param testName DOCUMENT ME!
      * @param producer DOCUMENT ME!
      */
-    protected void assertNotBlank(String testName, DefaultRasterMapProducer producer) {
+    protected void assertNotBlank(String testName,
+        DefaultRasterMapProducer producer) {
         RenderedImage image = producer.getImage();
 
         BufferedImage product = null;
@@ -56,8 +57,8 @@ public class GIFMapProducerTest extends DefaultRasterMapProducerTest {
             out.flush();
             out.close();
 
-            product = ImageWorker.loadPlanarImageImage(tmpGif.getAbsolutePath(), null, 0, true)
-                                 .getAsBufferedImage();
+            product = ImageWorker.loadPlanarImageImage(tmpGif.getAbsolutePath(),
+                    null, 0, true).getAsBufferedImage();
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());

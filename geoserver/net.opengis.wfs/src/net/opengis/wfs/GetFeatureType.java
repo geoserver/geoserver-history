@@ -6,9 +6,9 @@
  */
 package net.opengis.wfs;
 
+import org.eclipse.emf.common.util.EList;
 import java.math.BigInteger;
 
-import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -16,7 +16,7 @@ import org.eclipse.emf.common.util.EList;
  * <!-- end-user-doc -->
  *
  * <!-- begin-model-doc -->
- * 
+ *
  *             A GetFeature element contains one or more Query elements
  *             that describe a query operation on one feature type.  In
  *             response to a GetFeature request, a Web Feature Service
@@ -44,29 +44,29 @@ import org.eclipse.emf.common.util.EList;
  * @generated
  */
 public interface GetFeatureType extends BaseRequestType {
-	/**
+    /**
      * Returns the value of the '<em><b>Query</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.wfs.QueryType}.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Query</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Query</em>' containment reference list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Query</em>' containment reference list.
      * @see net.opengis.wfs.WfsPackage#getGetFeatureType_Query()
      * @model type="net.opengis.wfs.QueryType" containment="true" required="true"
      *        extendedMetaData="kind='element' name='Query' namespace='##targetNamespace'"
      * @generated
      */
-	EList getQuery();
+    EList getQuery();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Max Features</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *                      The maxFeatures attribute is used to specify the maximum
      *                      number of features that a GetFeature operation should
      *                      generate (regardless of the actual number of query hits).
@@ -78,25 +78,25 @@ public interface GetFeatureType extends BaseRequestType {
      *        extendedMetaData="kind='attribute' name='maxFeatures'"
      * @generated
      */
-	BigInteger getMaxFeatures();
+    BigInteger getMaxFeatures();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.GetFeatureType#getMaxFeatures <em>Max Features</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Max Features</em>' attribute.
      * @see #getMaxFeatures()
      * @generated
      */
-	void setMaxFeatures(BigInteger value);
+    void setMaxFeatures(BigInteger value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Output Format</b></em>' attribute.
      * The default value is <code>"text/xml; subtype=gml/3.1.1"</code>.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *                      The outputFormat attribute is used to specify the output
      *                      format that the Web Feature Service should generate in
      *                      response to a GetFeature or GetFeatureWithLock element.
@@ -121,51 +121,51 @@ public interface GetFeatureType extends BaseRequestType {
      *        extendedMetaData="kind='attribute' name='outputFormat'"
      * @generated
      */
-	String getOutputFormat();
+    String getOutputFormat();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.GetFeatureType#getOutputFormat <em>Output Format</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Output Format</em>' attribute.
      * @see #isSetOutputFormat()
      * @see #unsetOutputFormat()
      * @see #getOutputFormat()
      * @generated
      */
-	void setOutputFormat(String value);
+    void setOutputFormat(String value);
 
-	/**
+    /**
      * Unsets the value of the '{@link net.opengis.wfs.GetFeatureType#getOutputFormat <em>Output Format</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @see #isSetOutputFormat()
      * @see #getOutputFormat()
      * @see #setOutputFormat(String)
      * @generated
      */
-	void unsetOutputFormat();
+    void unsetOutputFormat();
 
-	/**
+    /**
      * Returns whether the value of the '{@link net.opengis.wfs.GetFeatureType#getOutputFormat <em>Output Format</em>}' attribute is set.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return whether the value of the '<em>Output Format</em>' attribute is set.
      * @see #unsetOutputFormat()
      * @see #getOutputFormat()
      * @see #setOutputFormat(String)
      * @generated
      */
-	boolean isSetOutputFormat();
+    boolean isSetOutputFormat();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Result Type</b></em>' attribute.
      * The default value is <code>"results"</code>.
      * The literals are from the enumeration {@link net.opengis.wfs.ResultTypeType}.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *                      The resultType attribute is used to indicate
      *                      what response a WFS should return to user once
      *                      a GetFeature request is processed.
@@ -190,12 +190,12 @@ public interface GetFeatureType extends BaseRequestType {
      *        extendedMetaData="kind='attribute' name='resultType'"
      * @generated
      */
-	ResultTypeType getResultType();
+    ResultTypeType getResultType();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.GetFeatureType#getResultType <em>Result Type</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Result Type</em>' attribute.
      * @see net.opengis.wfs.ResultTypeType
      * @see #isSetResultType()
@@ -203,37 +203,37 @@ public interface GetFeatureType extends BaseRequestType {
      * @see #getResultType()
      * @generated
      */
-	void setResultType(ResultTypeType value);
+    void setResultType(ResultTypeType value);
 
-	/**
+    /**
      * Unsets the value of the '{@link net.opengis.wfs.GetFeatureType#getResultType <em>Result Type</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @see #isSetResultType()
      * @see #getResultType()
      * @see #setResultType(ResultTypeType)
      * @generated
      */
-	void unsetResultType();
+    void unsetResultType();
 
-	/**
+    /**
      * Returns whether the value of the '{@link net.opengis.wfs.GetFeatureType#getResultType <em>Result Type</em>}' attribute is set.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return whether the value of the '<em>Result Type</em>' attribute is set.
      * @see #unsetResultType()
      * @see #getResultType()
      * @see #setResultType(ResultTypeType)
      * @generated
      */
-	boolean isSetResultType();
+    boolean isSetResultType();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Traverse Xlink Depth</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *                      This attribute indicates the depth to which nested property
      *                      XLink linking element locator attribute (href) XLinks are
      *                      traversed and resolved if possible.  A value of "1"
@@ -259,24 +259,24 @@ public interface GetFeatureType extends BaseRequestType {
      *        extendedMetaData="kind='attribute' name='traverseXlinkDepth'"
      * @generated
      */
-	String getTraverseXlinkDepth();
+    String getTraverseXlinkDepth();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.GetFeatureType#getTraverseXlinkDepth <em>Traverse Xlink Depth</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Traverse Xlink Depth</em>' attribute.
      * @see #getTraverseXlinkDepth()
      * @generated
      */
-	void setTraverseXlinkDepth(String value);
+    void setTraverseXlinkDepth(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Traverse Xlink Expiry</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *                      The traverseXlinkExpiry attribute value is specified in
      *                      minutes.  It indicates how long a Web Feature Service
      *                      should wait to receive a response to a nested GetGmlObject
@@ -291,16 +291,15 @@ public interface GetFeatureType extends BaseRequestType {
      *        extendedMetaData="kind='attribute' name='traverseXlinkExpiry'"
      * @generated
      */
-	BigInteger getTraverseXlinkExpiry();
+    BigInteger getTraverseXlinkExpiry();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.GetFeatureType#getTraverseXlinkExpiry <em>Traverse Xlink Expiry</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Traverse Xlink Expiry</em>' attribute.
      * @see #getTraverseXlinkExpiry()
      * @generated
      */
-	void setTraverseXlinkExpiry(BigInteger value);
-
+    void setTraverseXlinkExpiry(BigInteger value);
 } // GetFeatureType

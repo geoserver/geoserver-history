@@ -89,26 +89,29 @@ public class GetFeatureWithLockTypeBinding extends AbstractComplexBinding {
         WFSBindingUtils.outputFormat(getFeatureWithLock, node, "GML2");
 
         if (node.getAttributeValue("handle") != null) {
-            getFeatureWithLock.setHandle((String) node.getAttributeValue("handle"));
+            getFeatureWithLock.setHandle((String) node.getAttributeValue(
+                    "handle"));
         }
 
         //get the max features
-        BigInteger maxFeatures = WFSBindingUtils.asBigInteger((Number) node.getAttributeValue(
-                    "maxFeatures"));
+        BigInteger maxFeatures = WFSBindingUtils.asBigInteger((Number) node
+                .getAttributeValue("maxFeatures"));
 
         if (maxFeatures != null) {
             getFeatureWithLock.setMaxFeatures(maxFeatures);
         }
 
         //get the lock expiry
-        BigInteger expiry = WFSBindingUtils.asBigInteger((Number) node.getAttributeValue("expiry"));
+        BigInteger expiry = WFSBindingUtils.asBigInteger((Number) node
+                .getAttributeValue("expiry"));
 
         if (expiry != null) {
             getFeatureWithLock.setExpiry(expiry);
         }
 
         //queries
-        getFeatureWithLock.getQuery().addAll(node.getChildValues(QueryType.class));
+        getFeatureWithLock.getQuery()
+                          .addAll(node.getChildValues(QueryType.class));
 
         return getFeatureWithLock;
     }

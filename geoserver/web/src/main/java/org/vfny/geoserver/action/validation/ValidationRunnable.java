@@ -34,7 +34,9 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class ValidationRunnable implements Runnable {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.responses");
+    public final static String KEY = "validationTestDoItThread.key";
     private Map testSuites;
     private Map plugins;
     private DataConfig dataConfig;
@@ -44,7 +46,6 @@ public class ValidationRunnable implements Runnable {
     ValidationProcessor gv;
     public TestValidationResults results; // I get filled up with goodies
     Repository repository;
-    public final static String KEY = "validationTestDoItThread.key";
 
     //public ValidationRunnable(Map ts, Map plugins, DataConfig dataConfig, ServletContext context, HttpServletRequest request) throws Exception
     public ValidationRunnable(HttpServletRequest request) {
@@ -55,36 +56,33 @@ public class ValidationRunnable implements Runnable {
         this.request = request;
 
         /*
-                        LOGGER.finer("testSuites.size() = " + testSuites.size());
-                        LOGGER.finer("plugins.size() = " + plugins.size());
-                        LOGGER.finer("" + (TestSuiteDTO) testSuites.values().toArray()[0]);
-
-                        //DataConfig dataConfig = (DataConfig) getDataConfig();
-                        Map dataStoreConfigs = dataConfig.getDataStores();
-                        DefaultRepository dataRepository = new DefaultRepository();
-                        Iterator it = dataStoreConfigs.keySet().iterator();
-
-                        // get all the data stores and build up our dataRepository
-                        while (it.hasNext())
-                        {
-                                String dsKey = it.next().toString();
-                                DataStoreConfig dsc = (DataStoreConfig) dataStoreConfigs.get(dsKey);
-                                DataStore ds = null;
-                                try {
-                                        ds = dsc.findDataStore(context);
-                                        dataRepository.register(dsKey, ds);
-                                }
-                                catch (Exception e) {
-                                        e.printStackTrace();
-                                }
-                        }
-
-                        validator = new Validator(dataRepository, gv);
-                        */
+           LOGGER.finer("testSuites.size() = " + testSuites.size());
+           LOGGER.finer("plugins.size() = " + plugins.size());
+           LOGGER.finer("" + (TestSuiteDTO) testSuites.values().toArray()[0]);
+           //DataConfig dataConfig = (DataConfig) getDataConfig();
+           Map dataStoreConfigs = dataConfig.getDataStores();
+           DefaultRepository dataRepository = new DefaultRepository();
+           Iterator it = dataStoreConfigs.keySet().iterator();
+           // get all the data stores and build up our dataRepository
+           while (it.hasNext())
+           {
+                   String dsKey = it.next().toString();
+                   DataStoreConfig dsc = (DataStoreConfig) dataStoreConfigs.get(dsKey);
+                   DataStore ds = null;
+                   try {
+                           ds = dsc.findDataStore(context);
+                           dataRepository.register(dsKey, ds);
+                   }
+                   catch (Exception e) {
+                           e.printStackTrace();
+                   }
+           }
+           validator = new Validator(dataRepository, gv);
+         */
     }
 
-    public void setup(TestValidationResults vr, Repository repo, Map plugins, Map testSuites)
-        throws Exception {
+    public void setup(TestValidationResults vr, Repository repo, Map plugins,
+        Map testSuites) throws Exception {
         gv = new ValidationProcessor();
         gv.load(plugins, testSuites);
         results = vr;
@@ -99,7 +97,9 @@ public class ValidationRunnable implements Runnable {
         //GeoValidator gv = new GeoValidator(testSuites,plugins);
         //Map dataStores = dataConfig.getDataStores();
         //TestValidationResults vr = runTransactions(dataStores,gv,context);
-        request.getSession().setAttribute(TestValidationResults.CURRENTLY_SELECTED_KEY, results);
+        request.getSession()
+               .setAttribute(TestValidationResults.CURRENTLY_SELECTED_KEY,
+            results);
 
         Map dataStores = repository.getFeatureSources();
         Iterator it = dataStores.entrySet().iterator();
@@ -113,7 +113,8 @@ public class ValidationRunnable implements Runnable {
             String dataStoreId = typeRef.split(":")[0];
 
             try {
-                LOGGER.finer(dataStoreId + ": feature validation, " + featureSource);
+                LOGGER.finer(dataStoreId + ": feature validation, "
+                    + featureSource);
 
                 FeatureCollection features = featureSource.getFeatures();
                 validator.featureValidation(dataStoreId, features, results);
@@ -127,13 +128,14 @@ public class ValidationRunnable implements Runnable {
         /** run INTEGRITY validations */
 
         // this is stupid
-        Envelope env = new Envelope(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE,
-                Integer.MAX_VALUE);
+        Envelope env = new Envelope(Integer.MIN_VALUE, Integer.MIN_VALUE,
+                Integer.MAX_VALUE, Integer.MAX_VALUE);
 
         // a map of typeref -> DataSource
         try {
             Map featureSources = repository.getFeatureSources();
-            LOGGER.finer("integrity tests entry for " + featureSources.size() + " dataSources.");
+            LOGGER.finer("integrity tests entry for " + featureSources.size()
+                + " dataSources.");
             validator.integrityValidation(featureSources, env, results);
         } catch (Exception e) {
             e.printStackTrace();
@@ -142,7 +144,8 @@ public class ValidationRunnable implements Runnable {
         results.run = true;
     }
 
-    private TestValidationResults runTransactions(Map dsm, ValidationProcessor v, ServletContext sc) {
+    private TestValidationResults runTransactions(Map dsm,
+        ValidationProcessor v, ServletContext sc) {
         if ((dsm == null) || (dsm.size() == 0)) {
             System.out.println("No Datastores were defined.");
 
@@ -150,7 +153,8 @@ public class ValidationRunnable implements Runnable {
         }
 
         if (v == null) {
-            System.err.println("An error occured: Cannot run without a ValidationProcessor.");
+            System.err.println(
+                "An error occured: Cannot run without a ValidationProcessor.");
 
             return null;
         }
@@ -175,18 +179,20 @@ public class ValidationRunnable implements Runnable {
 
                     //v.runFeatureTests(dsc.getId(),fs.getSchema(),
                     //    fs.getFeatures().collection(), (ValidationResults) vr);
-                    System.out.println("Feature Test Results for " + key + ":" + ss[j]);
+                    System.out.println("Feature Test Results for " + key + ":"
+                        + ss[j]);
                     System.out.println(vr.toString());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            Envelope env = new Envelope(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE,
-                    Integer.MAX_VALUE);
+            Envelope env = new Envelope(Integer.MIN_VALUE, Integer.MIN_VALUE,
+                    Integer.MAX_VALUE, Integer.MAX_VALUE);
 
             try {
-                v.runIntegrityTests(sources.keySet(), sources, env, (ValidationResults) vr);
+                v.runIntegrityTests(sources.keySet(), sources, env,
+                    (ValidationResults) vr);
                 System.out.println("Feature Integrety Test Results");
                 System.out.println(vr.toString());
             } catch (Exception e) {

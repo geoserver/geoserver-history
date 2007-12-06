@@ -101,7 +101,8 @@ public class StyleConfig {
      */
     public void update(StyleDTO obj) {
         if (obj == null) {
-            throw new NullPointerException("Style Data Transfer Object required");
+            throw new NullPointerException(
+                "Style Data Transfer Object required");
         }
 
         StyleDTO sDto = (StyleDTO) obj;

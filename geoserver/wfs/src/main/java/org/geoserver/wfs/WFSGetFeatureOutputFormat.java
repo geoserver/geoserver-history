@@ -33,11 +33,11 @@ import java.util.logging.Logger;
  *
  */
 public abstract class WFSGetFeatureOutputFormat extends Response {
-
     /**
      * logger
      */
     protected static Logger LOGGER = Logger.getLogger("org.geoserver.wfs");
+
     /**
      * Constructor which sets the outputFormat.
      *
@@ -46,7 +46,7 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
     public WFSGetFeatureOutputFormat(String outputFormat) {
         super(FeatureCollectionType.class, outputFormat);
     }
-    
+
     /**
      * Constructor which sets the outputFormats.
      *
@@ -79,8 +79,8 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
         if ("GetFeature".equalsIgnoreCase(operation.getId())
                 || "GetFeatureWithLock".equalsIgnoreCase(operation.getId())) {
             //also check that the resultType is "results"
-            GetFeatureType request = (GetFeatureType) OwsUtils.parameter(operation.getParameters(),
-                    GetFeatureType.class);
+            GetFeatureType request = (GetFeatureType) OwsUtils.parameter(operation
+                    .getParameters(), GetFeatureType.class);
 
             if (request.getResultType() == ResultTypeType.RESULTS_LITERAL) {
                 //call subclass hook
@@ -90,26 +90,29 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
 
         return false;
     }
-    
+
     /**
      * capabilities output format string.  Something that's a valid XML element name.
      * This should be overriden in each outputformat subclass, and if it's not a warning will be
      * issued.
      */
     public /*abstract*/ String getCapabilitiesElementName() {
-        LOGGER.severe("ERROR IN " + this.getClass() + " IMPLEMENTATION.  getCapabilitiesElementName() should return a" + 
-                "valid XML element name string for use in the WFS 1.0.0 capabilities document.");
+        LOGGER.severe("ERROR IN " + this.getClass()
+            + " IMPLEMENTATION.  getCapabilitiesElementName() should return a"
+            + "valid XML element name string for use in the WFS 1.0.0 capabilities document.");
+
         String of = getOutputFormat();
-        
+
         //wfs 1.1 form is not a valid xml element, do a check
         if (of.matches("(\\w)+")) {
             return getOutputFormat();
         } else {
             String name = this.getClass().getName();
-            if ( name.indexOf('.') != -1 ) {
+
+            if (name.indexOf('.') != -1) {
                 name = name.substring(name.lastIndexOf('.') + 1);
             }
-            
+
             return name;
         }
     }
@@ -132,8 +135,8 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
     /**
      * Calls through to {@link #write(FeatureCollectionType, OutputStream, Operation)}.
      */
-    public final void write(Object value, OutputStream output, Operation operation)
-        throws IOException, ServiceException {
+    public final void write(Object value, OutputStream output,
+        Operation operation) throws IOException, ServiceException {
         write((FeatureCollectionType) value, output, operation);
     }
 
@@ -144,6 +147,7 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
      * @param output The output stream to serialize to.
      * @param getFeature The GetFeature operation descriptor.
      */
-    protected abstract void write(FeatureCollectionType featureCollection, OutputStream output,
-        Operation getFeature) throws IOException, ServiceException;
+    protected abstract void write(FeatureCollectionType featureCollection,
+        OutputStream output, Operation getFeature)
+        throws IOException, ServiceException;
 }

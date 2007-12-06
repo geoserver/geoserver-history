@@ -50,7 +50,8 @@ public class GeoserverDataDirectory {
     private static GeoServerResourceLoader loader;
     private static Data catalog;
     private static ApplicationContext appContext;
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.global");
     private static boolean isTrueDataDir = false;
 
     /**
@@ -67,13 +68,12 @@ public class GeoserverDataDirectory {
             return null;
         }
     }
-    
+
     /**
-     * Locate feature type directory name using the FeatureType as a key into the catalog 
-     * @see Data#getFeatureTypeInfo(String) 
+     * Locate feature type directory name using the FeatureType as a key into the catalog
+     * @see Data#getFeatureTypeInfo(String)
      * @param name
      *            String The FeatureTypeInfo Name
-
      * @return the feature type dir name, or null if not found (either the feature type or the directory)
      *
      * @throws NoSuchElementException
@@ -83,15 +83,24 @@ public class GeoserverDataDirectory {
         URI namespace = featureType.getNamespace();
         FeatureTypeInfo ftInfo = null;
         Data data = getCatalog();
-        if(namespace != null) {
+
+        if (namespace != null) {
             NameSpaceInfo nsInfo = data.getNameSpaceFromURI(namespace.toString());
-            if(nsInfo != null)
-                ftInfo = data.getFeatureTypeInfo(nsInfo.getPrefix() + ":" + name);
+
+            if (nsInfo != null) {
+                ftInfo = data.getFeatureTypeInfo(nsInfo.getPrefix() + ":"
+                        + name);
+            }
         }
-        if(ftInfo == null) 
+
+        if (ftInfo == null) {
             ftInfo = data.getFeatureTypeInfo(name);
-        if(ftInfo == null)
+        }
+
+        if (ftInfo == null) {
             return null;
+        }
+
         return ftInfo.getDirName();
     }
 
@@ -200,7 +209,8 @@ public class GeoserverDataDirectory {
      *
      * @return The file handle, or null.
      */
-    public static File findConfigFile(String file) throws ConfigurationException {
+    public static File findConfigFile(String file)
+        throws ConfigurationException {
         try {
             return loader.find(file);
         } catch (IOException e) {
@@ -214,7 +224,7 @@ public class GeoserverDataDirectory {
      */
     public static void init(WebApplicationContext context) {
         ServletContext servContext = context.getServletContext();
-        
+
         // Oh, this is really sad. We need a reference to Data in order to
         // resolve feature type dirs, but gathering it here triggers the loading
         // of Geoserver (on whose Catalog depends on), which depends on having 
@@ -250,14 +260,17 @@ public class GeoserverDataDirectory {
                     loader.addSearchLocation(new File(dataDir, "data"));
                     loader.addSearchLocation(new File(dataDir, "WEB-INF"));
 
-                    LOGGER.severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
-                        + dataDir.getAbsolutePath() + "\n----------------------------------");
+                    LOGGER.severe(
+                        "\n----------------------------------\n- GEOSERVER_DATA_DIR: "
+                        + dataDir.getAbsolutePath()
+                        + "\n----------------------------------");
 
                     return;
                 }
             } catch (SecurityException e) {
                 // gobble exception
-                LOGGER.fine("Security exception occurred. This is usually not a big deal.\n"
+                LOGGER.fine(
+                    "Security exception occurred. This is usually not a big deal.\n"
                     + e.getMessage());
             }
 
@@ -271,8 +284,10 @@ public class GeoserverDataDirectory {
                 loader.setBaseDirectory(dataDir);
                 loader.addSearchLocation(new File(dataDir, "data"));
                 loader.addSearchLocation(new File(dataDir, "WEB-INF"));
-                LOGGER.severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
-                    + dataDir.getAbsolutePath() + "\n----------------------------------");
+                LOGGER.severe(
+                    "\n----------------------------------\n- GEOSERVER_DATA_DIR: "
+                    + dataDir.getAbsolutePath()
+                    + "\n----------------------------------");
 
                 return;
             }
@@ -287,8 +302,10 @@ public class GeoserverDataDirectory {
             loader.setBaseDirectory(dataDir);
             loader.addSearchLocation(new File(dataDir, "data"));
             loader.addSearchLocation(new File(dataDir, "WEB-INF"));
-            LOGGER.severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
-                + dataDir.getAbsolutePath() + "\n----------------------------------");
+            LOGGER.severe(
+                "\n----------------------------------\n- GEOSERVER_DATA_DIR: "
+                + dataDir.getAbsolutePath()
+                + "\n----------------------------------");
             loader.addSearchLocation(new File(servContext.getRealPath("WEB-INF")));
             loader.addSearchLocation(new File(servContext.getRealPath("data")));
         }
@@ -304,11 +321,12 @@ public class GeoserverDataDirectory {
         loader = null;
         isTrueDataDir = false;
     }
-    
+
     private static Data getCatalog() {
-        if(catalog == null) {
+        if (catalog == null) {
             catalog = (Data) appContext.getBean("data");
         }
+
         return catalog;
     }
 }

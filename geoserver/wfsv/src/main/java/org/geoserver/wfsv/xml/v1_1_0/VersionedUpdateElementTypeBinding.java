@@ -74,7 +74,8 @@ public class VersionedUpdateElementTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        VersionedUpdateElementType update = wfsvFactory.createVersionedUpdateElementType();
+        VersionedUpdateElementType update = wfsvFactory
+            .createVersionedUpdateElementType();
 
         //&lt;xsd:element maxOccurs="unbounded" ref="wfs:Property"&gt;
         update.getProperty().addAll(node.getChildValues(PropertyType.class));
@@ -101,7 +102,8 @@ public class VersionedUpdateElementTypeBinding extends AbstractComplexBinding {
             update.setSrsName((URI) node.getAttributeValue("srsName"));
         }
 
-        update.setFeatureVersion((String) node.getAttributeValue("featureVersion"));
+        update.setFeatureVersion((String) node.getAttributeValue(
+                "featureVersion"));
 
         return update;
     }

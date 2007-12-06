@@ -25,7 +25,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.wcs");
+    private static Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.requests.wcs");
 
     /** Service handling the request */
     private WCService service = null;
@@ -68,8 +69,8 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
      * @param atts Element attributes.
      * @throws SAXException When the XML is not well formed.
      */
-    public void startElement(String namespaceURI, String localName, String rawName, Attributes atts)
-        throws SAXException {
+    public void startElement(String namespaceURI, String localName,
+        String rawName, Attributes atts) throws SAXException {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("at start element: " + localName);
         }
@@ -107,7 +108,8 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
                     }
                 }
             }
-        } else if (currentTag.equals("Grid") || currentTag.equals("RectifiedGrid")) {
+        } else if (currentTag.equals("Grid")
+                || currentTag.equals("RectifiedGrid")) {
             insideGrid = true;
 
             final int length = atts.getLength();
@@ -152,7 +154,8 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
 
         if (currentTag.equals("Envelope")) {
             insideEnvelope = false;
-        } else if (currentTag.equals("Grid") || currentTag.equals("RectifiedGrid")) {
+        } else if (currentTag.equals("Grid")
+                || currentTag.equals("RectifiedGrid")) {
             insideGrid = false;
         } else if (currentTag.equals("rangeSubset")) {
             insideRange = false;
@@ -177,19 +180,22 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
         // if inside a property element, add the element
         if (currentTag.equals("sourceCoverage")) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(new StringBuffer("found Coverage name: ").append(s).toString());
+                LOGGER.finest(new StringBuffer("found Coverage name: ").append(
+                        s).toString());
             }
 
             request.setCoverage(s);
         } else if (currentTag.equals("interpolationMethod")) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(new StringBuffer("found Interpolation Method: ").append(s).toString());
+                LOGGER.finest(new StringBuffer("found Interpolation Method: ").append(
+                        s).toString());
             }
 
             request.setInterpolation(s);
         } else if (currentTag.equals("crs")) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(new StringBuffer("found Output CRS: ").append(s).toString());
+                LOGGER.finest(new StringBuffer("found Output CRS: ").append(s)
+                                                                    .toString());
             }
 
             request.setCRS(s);
@@ -199,19 +205,22 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
             }
         } else if (currentTag.equals("responseCrs")) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(new StringBuffer("found Output CRS: ").append(s).toString());
+                LOGGER.finest(new StringBuffer("found Output CRS: ").append(s)
+                                                                    .toString());
             }
 
             request.setResponseCRS(s);
         } else if (currentTag.equals("format")) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(new StringBuffer("found Output Format: ").append(s).toString());
+                LOGGER.finest(new StringBuffer("found Output Format: ").append(
+                        s).toString());
             }
 
             request.setOutputFormat(s);
         } else if (currentTag.equals("pos") && insideEnvelope) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(new StringBuffer("found Envelope Coordinates: ").append(s).toString());
+                LOGGER.finest(new StringBuffer("found Envelope Coordinates: ").append(
+                        s).toString());
             }
 
             if (coordinates[0] == null) {
@@ -238,7 +247,8 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
                     coordinates[3] = new Double(arg1);
 
                     Envelope env = new Envelope(coordinates[0].doubleValue(),
-                            coordinates[2].doubleValue(), coordinates[1].doubleValue(),
+                            coordinates[2].doubleValue(),
+                            coordinates[1].doubleValue(),
                             coordinates[3].doubleValue());
                     request.setEnvelope(env);
                 } catch (NumberFormatException e) {
@@ -248,7 +258,8 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
             }
         } else if (currentTag.equals("low") && insideGrid) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(new StringBuffer("found Grid Lowers: ").append(s).toString());
+                LOGGER.finest(new StringBuffer("found Grid Lowers: ").append(s)
+                                                                     .toString());
             }
 
             String[] coords = s.split(" ");
@@ -267,7 +278,8 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
             }
         } else if (currentTag.equals("high") && insideGrid) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(new StringBuffer("found Grid Highers: ").append(s).toString());
+                LOGGER.finest(new StringBuffer("found Grid Highers: ").append(s)
+                                                                      .toString());
             }
 
             String[] coords = s.split(" ");
@@ -286,7 +298,8 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
             }
         } else if (currentTag.equals("pos") && insideGrid) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(new StringBuffer("found Grid Origin: ").append(s).toString());
+                LOGGER.finest(new StringBuffer("found Grid Origin: ").append(s)
+                                                                     .toString());
             }
 
             String[] coords = s.split(" ");
@@ -305,7 +318,8 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
             }
         } else if (currentTag.equals("offsetVector") && insideGrid) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(new StringBuffer("found Grid Offset-Vector: ").append(s).toString());
+                LOGGER.finest(new StringBuffer("found Grid Offset-Vector: ").append(
+                        s).toString());
             }
 
             String[] coords = s.split(" ");
@@ -327,8 +341,9 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
         } else if (currentTag.equals("singleValue") && insideRange
                 && (paramNum == (paramNames.size() - 1))) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(new StringBuffer("found axisSubset{" + paramNames.get(paramNum)
-                        + "} > singleValue: ").append(s).toString());
+                LOGGER.finest(new StringBuffer("found axisSubset{"
+                        + paramNames.get(paramNum) + "} > singleValue: ").append(
+                        s).toString());
             }
 
             final String key = (String) paramNames.get(paramNum);
@@ -336,17 +351,21 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
             if (params.get(key) == null) {
                 params.put(key, s);
             }
-        } else if (currentTag.equals("min") && insideRange && (paramNum == (paramNames.size() - 1))) {
+        } else if (currentTag.equals("min") && insideRange
+                && (paramNum == (paramNames.size() - 1))) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(new StringBuffer("found axisSubset{" + paramNames.get(paramNum)
-                        + "} > min: ").append(s).toString());
+                LOGGER.finest(new StringBuffer("found axisSubset{"
+                        + paramNames.get(paramNum) + "} > min: ").append(s)
+                                                                                                            .toString());
             }
 
             minTmp = (int) Math.round(Double.parseDouble(s));
-        } else if (currentTag.equals("max") && insideRange && (paramNum == (paramNames.size() - 1))) {
+        } else if (currentTag.equals("max") && insideRange
+                && (paramNum == (paramNames.size() - 1))) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(new StringBuffer("found axisSubset{" + paramNames.get(paramNum)
-                        + "} > max: ").append(s).toString());
+                LOGGER.finest(new StringBuffer("found axisSubset{"
+                        + paramNames.get(paramNum) + "} > max: ").append(s)
+                                                                                                            .toString());
             }
 
             final String key = (String) paramNames.get(paramNum);

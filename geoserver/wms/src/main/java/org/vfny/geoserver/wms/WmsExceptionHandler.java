@@ -74,7 +74,8 @@ public class WmsExceptionHandler implements ExceptionHandler {
      *
      * @return DOCUMENT ME!
      */
-    public ServiceException newServiceException(Throwable e, String preMessage, String locator) {
+    public ServiceException newServiceException(Throwable e, String preMessage,
+        String locator) {
         return new WmsException(e, preMessage, locator);
     }
 }

@@ -74,7 +74,8 @@ public class Main {
     static boolean _debug = System.getProperty("DEBUG", null) != null;
     private String _classname = null;
     private Classpath _classpath = new Classpath();
-    private String _config = System.getProperty("START", "org/mortbay/start/start.config");
+    private String _config = System.getProperty("START",
+            "org/mortbay/start/start.config");
     private ArrayList _xml = new ArrayList();
 
     public static void main(String[] args) {
@@ -120,9 +121,10 @@ public class Main {
         return false;
     }
 
-    public static void invokeMain(ClassLoader classloader, String classname, String[] args)
-        throws IllegalAccessException, InvocationTargetException, NoSuchMethodException,
-            ClassNotFoundException {
+    public static void invokeMain(ClassLoader classloader, String classname,
+        String[] args)
+        throws IllegalAccessException, InvocationTargetException,
+            NoSuchMethodException, ClassNotFoundException {
         Class invoked_class = null;
         invoked_class = classloader.loadClass(classname);
 
@@ -164,7 +166,8 @@ public class Main {
 
     /* ------------------------------------------------------------ */
     void configure(InputStream config, String[] args) throws Exception {
-        BufferedReader cfg = new BufferedReader(new InputStreamReader(config, "ISO-8859-1"));
+        BufferedReader cfg = new BufferedReader(new InputStreamReader(config,
+                    "ISO-8859-1"));
         Version java_version = new Version(System.getProperty("java.version"));
         Version ver = new Version();
 
@@ -175,7 +178,8 @@ public class Main {
         String classpath = System.getProperty("CLASSPATH");
 
         if (classpath != null) {
-            StringTokenizer tok = new StringTokenizer(classpath, File.pathSeparator);
+            StringTokenizer tok = new StringTokenizer(classpath,
+                    File.pathSeparator);
 
             while (tok.hasMoreTokens())
                 _classpath.addComponent(tok.nextToken());
@@ -234,7 +238,8 @@ public class Main {
 
                     if (condition.equals("true") || condition.equals("always")) {
                         eval = true;
-                    } else if (condition.equals("false") || condition.equals("never")) {
+                    } else if (condition.equals("false")
+                            || condition.equals("never")) {
                         eval = false;
                     } else if (condition.equals("available")) {
                         String class_to_check = st.nextToken();
@@ -254,27 +259,42 @@ public class Main {
                         String operator = st.nextToken();
                         String version = st.nextToken();
                         ver.parse(version);
-                        eval = (operator.equals("<") && (java_version.compare(ver) < 0))
-                            || (operator.equals(">") && (java_version.compare(ver) > 0))
-                            || (operator.equals("<=") && (java_version.compare(ver) <= 0))
-                            || (operator.equals("=<") && (java_version.compare(ver) <= 0))
-                            || (operator.equals("=>") && (java_version.compare(ver) >= 0))
-                            || (operator.equals(">=") && (java_version.compare(ver) >= 0))
-                            || (operator.equals("==") && (java_version.compare(ver) == 0))
-                            || (operator.equals("!=") && (java_version.compare(ver) != 0));
+                        eval = (operator.equals("<")
+                            && (java_version.compare(ver) < 0))
+                            || (operator.equals(">")
+                            && (java_version.compare(ver) > 0))
+                            || (operator.equals("<=")
+                            && (java_version.compare(ver) <= 0))
+                            || (operator.equals("=<")
+                            && (java_version.compare(ver) <= 0))
+                            || (operator.equals("=>")
+                            && (java_version.compare(ver) >= 0))
+                            || (operator.equals(">=")
+                            && (java_version.compare(ver) >= 0))
+                            || (operator.equals("==")
+                            && (java_version.compare(ver) == 0))
+                            || (operator.equals("!=")
+                            && (java_version.compare(ver) != 0));
                     } else if (condition.equals("nargs")) {
                         String operator = st.nextToken();
                         int number = Integer.parseInt(st.nextToken());
                         eval = (operator.equals("<") && (args.length < number))
                             || (operator.equals(">") && (args.length > number))
-                            || (operator.equals("<=") && (args.length <= number))
-                            || (operator.equals("=<") && (args.length <= number))
-                            || (operator.equals("=>") && (args.length >= number))
-                            || (operator.equals(">=") && (args.length >= number))
-                            || (operator.equals("==") && (args.length == number))
-                            || (operator.equals("!=") && (args.length != number));
+                            || (operator.equals("<=")
+                            && (args.length <= number))
+                            || (operator.equals("=<")
+                            && (args.length <= number))
+                            || (operator.equals("=>")
+                            && (args.length >= number))
+                            || (operator.equals(">=")
+                            && (args.length >= number))
+                            || (operator.equals("==")
+                            && (args.length == number))
+                            || (operator.equals("!=")
+                            && (args.length != number));
                     } else {
-                        System.err.println("ERROR: Unknown condition: " + condition);
+                        System.err.println("ERROR: Unknown condition: "
+                            + condition);
                         eval = false;
                     }
 
@@ -313,7 +333,8 @@ public class Main {
                                     String namelc = name
                                         .toLowerCase();
 
-                                    return namelc.endsWith(".jar") || name.endsWith(".zip");
+                                    return namelc.endsWith(".jar")
+                                    || name.endsWith(".zip");
                                 }
                             });
 
@@ -326,7 +347,8 @@ public class Main {
                             boolean added = _classpath.addComponent(jar);
 
                             if (_debug) {
-                                System.err.println((added ? "  CLASSPATH+=" : "  !") + jar);
+                                System.err.println((added ? "  CLASSPATH+="
+                                                          : "  !") + jar);
                             }
                         }
                     }
@@ -341,7 +363,8 @@ public class Main {
                         boolean added = _classpath.addComponent(d);
 
                         if (_debug) {
-                            System.err.println((added ? "  CLASSPATH+=" : "  !") + d);
+                            System.err.println((added ? "  CLASSPATH+=" : "  !")
+                                + d);
                         }
                     }
                 } else if (subject.toLowerCase().endsWith(".xml")) {
@@ -357,7 +380,8 @@ public class Main {
                     }
                 } else if (subject.toLowerCase().endsWith(".class")) {
                     // Class
-                    String cn = expand(subject.substring(0, subject.length() - 6));
+                    String cn = expand(subject.substring(0, subject.length()
+                                - 6));
 
                     if ((cn != null) && (cn.length() > 0)) {
                         if (_debug) {
@@ -380,10 +404,12 @@ public class Main {
                             added = _classpath.addClasspath(expand(subject));
 
                             if (_debug) {
-                                System.err.println((added ? "  CLASSPATH+=" : "  !") + d);
+                                System.err.println((added ? "  CLASSPATH+="
+                                                          : "  !") + d);
                             }
                         } else if (_debug) {
-                            System.err.println((added ? "  CLASSPATH+=" : "  !") + d);
+                            System.err.println((added ? "  CLASSPATH+=" : "  !")
+                                + d);
                         }
                     }
                 }
@@ -400,7 +426,8 @@ public class Main {
         try {
             Monitor.monitor();
 
-            InputStream cpcfg = getClass().getClassLoader().getResourceAsStream(_config);
+            InputStream cpcfg = getClass().getClassLoader()
+                                    .getResourceAsStream(_config);
 
             if (_debug) {
                 System.err.println("config=" + _config);
@@ -427,7 +454,8 @@ public class Main {
         ClassLoader cl = _classpath.getClassLoader();
 
         if (_debug) {
-            System.err.println("java.class.path=" + System.getProperty("java.class.path"));
+            System.err.println("java.class.path="
+                + System.getProperty("java.class.path"));
         }
 
         if (_debug) {
@@ -435,7 +463,8 @@ public class Main {
         }
 
         if (_debug) {
-            System.err.println("java.io.tmpdir=" + System.getProperty("java.io.tmpdir"));
+            System.err.println("java.io.tmpdir="
+                + System.getProperty("java.io.tmpdir"));
         }
 
         if (_debug) {

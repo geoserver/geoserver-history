@@ -150,8 +150,9 @@ public class Dispatcher extends AbstractController {
         request.setCharacterEncoding(charSet.name());
     }
 
-    protected ModelAndView handleRequestInternal(HttpServletRequest httpRequest,
-        HttpServletResponse httpResponse) throws Exception {
+    protected ModelAndView handleRequestInternal(
+        HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+        throws Exception {
         preprocessRequest(httpRequest);
 
         //create a new request instance
@@ -206,26 +207,31 @@ public class Dispatcher extends AbstractController {
 
         //figure out method
         request.get = "GET".equalsIgnoreCase(httpRequest.getMethod())
-            || "application/x-www-form-urlencoded".equals(httpRequest.getContentType());
+            || "application/x-www-form-urlencoded".equals(httpRequest
+                .getContentType());
 
         //create the kvp map
         parseKVP(request);
-        
-        if ( !request.get ) {
+
+        if (!request.get) {
             //wrap the input stream in a buffer input stream
             request.input = reader(httpRequest);
 
             //mark the input stream, support up to 2KB, TODO: make this configuratable
             request.input.mark(2048);
-            
+
             if (logger.isLoggable(Level.FINE)) {
                 char[] req = new char[1024];
                 int read = request.input.read(req, 0, 1024);
+
                 if (read < 1024) {
-                    logger.fine("Raw XML request starts with: " + new String(req));
+                    logger.fine("Raw XML request starts with: "
+                        + new String(req));
                 } else {
-                    logger.fine("Raw XML request starts with: " + new String(req) + "...");
+                    logger.fine("Raw XML request starts with: "
+                        + new String(req) + "...");
                 }
+
                 request.input.reset();
             }
         }
@@ -236,7 +242,8 @@ public class Dispatcher extends AbstractController {
     BufferedReader reader(HttpServletRequest httpRequest)
         throws IOException {
         //create a buffer so we can reset the input stream
-        BufferedInputStream input = new BufferedInputStream(httpRequest.getInputStream());
+        BufferedInputStream input = new BufferedInputStream(httpRequest
+                .getInputStream());
         input.mark(2048);
 
         //create object to hold encoding info
@@ -262,26 +269,30 @@ public class Dispatcher extends AbstractController {
     Service service(Request req) throws Exception {
         //check kvp
         if (req.kvp != null) {
-
             req.service = normalize((String) req.kvp.get("service"));
             req.version = normalize((String) req.kvp.get("version"));
             req.request = normalize((String) req.kvp.get("request"));
             req.outputFormat = normalize((String) req.kvp.get("outputFormat"));
-        } 
+        }
+
         //check the body
         if (req.input != null) {
             Map xml = readOpPost(req.input);
+
             if (req.service == null) {
-                req.service = normalize((String) xml.get("service"));    
+                req.service = normalize((String) xml.get("service"));
             }
+
             if (req.version == null) {
-                req.version = normalize((String) xml.get("version"));    
+                req.version = normalize((String) xml.get("version"));
             }
+
             if (req.request == null) {
-                req.request = normalize((String) xml.get("request"));    
+                req.request = normalize((String) xml.get("request"));
             }
+
             if (req.outputFormat == null) {
-                req.outputFormat = normalize((String) xml.get("outputFormat"));    
+                req.outputFormat = normalize((String) xml.get("outputFormat"));
             }
         }
 
@@ -309,8 +320,8 @@ public class Dispatcher extends AbstractController {
 
         if (service == null) {
             //give up 
-            throw new ServiceException("Could not determine service", "MissingParameterValue",
-                "service");
+            throw new ServiceException("Could not determine service",
+                "MissingParameterValue", "service");
         }
 
         //load from teh context
@@ -332,7 +343,8 @@ public class Dispatcher extends AbstractController {
     Operation dispatch(Request req, Service serviceDescriptor)
         throws Throwable {
         if (req.request == null) {
-            String msg = "Could not determine geoserver request from http request " + req.httpRequest;
+            String msg = "Could not determine geoserver request from http request "
+                + req.httpRequest;
             throw new ServiceException(msg, "MissingParameterValue", "request");
         }
 
@@ -370,15 +382,19 @@ public class Dispatcher extends AbstractController {
                     //use the kvp reader mechanism
                     requestBean = parseRequestKVP(parameterType, req);
                 }
+
                 if (req.input != null) {
                     //use the xml reader mechanism
-                    requestBean = parseRequestXML(requestBean,req.input, req);
+                    requestBean = parseRequestXML(requestBean, req.input, req);
                 }
-                
+
                 // GEOS-934  and GEOS-1288
-                Method setBaseUrl = OwsUtils.setter(requestBean.getClass(), "baseUrl", String.class);
+                Method setBaseUrl = OwsUtils.setter(requestBean.getClass(),
+                        "baseUrl", String.class);
+
                 if (setBaseUrl != null) {
-                    setBaseUrl.invoke(requestBean, new String[] { RequestUtils.baseURL(req.httpRequest)});
+                    setBaseUrl.invoke(requestBean,
+                        new String[] { RequestUtils.baseURL(req.httpRequest) });
                 }
 
                 // another couple of thos of those lovley cite things, version+service has to specified for 
@@ -388,16 +404,18 @@ public class Dispatcher extends AbstractController {
                 if (requestBean != null) {
                     //if we dont have a version thus far, check the request object
                     if (req.service == null) {
-                        req.service = lookupRequestBeanProperty(requestBean, "service", false);
+                        req.service = lookupRequestBeanProperty(requestBean,
+                                "service", false);
                     }
 
                     if (req.version == null) {
-                        req.version = lookupRequestBeanProperty(requestBean, "version", false);
+                        req.version = lookupRequestBeanProperty(requestBean,
+                                "version", false);
                     }
 
                     if (req.outputFormat == null) {
-                        req.outputFormat = lookupRequestBeanProperty(requestBean, "outputFormat",
-                                true);
+                        req.outputFormat = lookupRequestBeanProperty(requestBean,
+                                "outputFormat", true);
                     }
 
                     parameters[i] = requestBean;
@@ -417,8 +435,8 @@ public class Dispatcher extends AbstractController {
                 } else {
                     //version must be valid
                     if (!req.version.matches("[0-99].[0-99].[0-99]")) {
-                        throw new ServiceException("Invalid version: " + req.version,
-                            "InvalidParameterValue", "version");
+                        throw new ServiceException("Invalid version: "
+                            + req.version, "InvalidParameterValue", "version");
                     }
 
                     //make sure the versoin actually exists
@@ -436,8 +454,8 @@ public class Dispatcher extends AbstractController {
                     }
 
                     if (!found) {
-                        throw new ServiceException("Invalid version: " + req.version,
-                            "InvalidParameterValue", "version");
+                        throw new ServiceException("Invalid version: "
+                            + req.version, "InvalidParameterValue", "version");
                     }
                 }
 
@@ -449,11 +467,14 @@ public class Dispatcher extends AbstractController {
             }
         }
 
-        return new Operation(req.request, serviceDescriptor, operation, parameters);
+        return new Operation(req.request, serviceDescriptor, operation,
+            parameters);
     }
 
-    String lookupRequestBeanProperty(Object requestBean, String property, boolean allowDefaultValues) {
-        if (requestBean instanceof EObject && EMFUtils.has((EObject) requestBean, property)) {
+    String lookupRequestBeanProperty(Object requestBean, String property,
+        boolean allowDefaultValues) {
+        if (requestBean instanceof EObject
+                && EMFUtils.has((EObject) requestBean, property)) {
             //special case hack for eObject, we should move 
             // this out into an extension ppint
             EObject eObject = (EObject) requestBean;
@@ -463,7 +484,8 @@ public class Dispatcher extends AbstractController {
             }
         } else {
             //straight reflection
-            String version = (String) OwsUtils.property(requestBean, property, String.class);
+            String version = (String) OwsUtils.property(requestBean, property,
+                    String.class);
 
             if (version != null) {
                 return normalize(version);
@@ -485,7 +507,8 @@ public class Dispatcher extends AbstractController {
 
         try {
             if (securityInterceptor != null) {
-                result = securityInterceptor.invoke(opDescriptor, operation, serviceBean, parameters);
+                result = securityInterceptor.invoke(opDescriptor, operation,
+                        serviceBean, parameters);
             } else {
                 result = operation.invoke(serviceBean, parameters);
             }
@@ -505,8 +528,9 @@ public class Dispatcher extends AbstractController {
             //look up respones
             List responses = GeoServerExtensions.extensions(Response.class);
 
-            //first filter by binding, and canHandle
-         O: for (Iterator itr = responses.iterator(); itr.hasNext();) {
+//first filter by binding, and canHandle
+O: 
+            for (Iterator itr = responses.iterator(); itr.hasNext();) {
                 Response response = (Response) itr.next();
 
                 Class binding = response.getBinding();
@@ -523,15 +547,15 @@ public class Dispatcher extends AbstractController {
 
                 if ((req.outputFormat != null) && (!outputFormats.isEmpty())
                         && !outputFormats.contains(req.outputFormat)) {
-                    
                     //must do a case insensitive check
-                    for ( Iterator of = outputFormats.iterator(); of.hasNext(); ) {
+                    for (Iterator of = outputFormats.iterator(); of.hasNext();) {
                         String outputFormat = (String) of.next();
-                        if( req.outputFormat.equalsIgnoreCase( outputFormat ) ) {
+
+                        if (req.outputFormat.equalsIgnoreCase(outputFormat)) {
                             continue O;
                         }
                     }
-                    
+
                     itr.remove();
                 }
             }
@@ -577,7 +601,8 @@ public class Dispatcher extends AbstractController {
                 Response r2 = (Response) responses.get(1);
 
                 if (r1.getBinding().equals(r2.getBinding())) {
-                    String msg = "Multiple responses: (" + result.getClass() + ")";
+                    String msg = "Multiple responses: (" + result.getClass()
+                        + ")";
                     throw new RuntimeException(msg);
                 }
             }
@@ -592,7 +617,8 @@ public class Dispatcher extends AbstractController {
             }
 
             //set the mime type
-            req.httpResponse.setContentType(response.getMimeType(result, opDescriptor));
+            req.httpResponse.setContentType(response.getMimeType(result,
+                    opDescriptor));
 
             //set any extra headers, other than the mime-type
             if (response.getHeaders(result, opDescriptor) != null) {
@@ -602,7 +628,7 @@ public class Dispatcher extends AbstractController {
                     req.httpResponse.addHeader(headers[i][0], headers[i][1]);
                 }
             }
-            
+
             //TODO: initialize any header params (gzip,deflate,etc...)
             OutputStream output = outputStrategy.getDestination(req.httpResponse);
             response.write(result, output, opDescriptor);
@@ -732,7 +758,8 @@ public class Dispatcher extends AbstractController {
                         KvpRequestReader kvp1 = (KvpRequestReader) o1;
                         KvpRequestReader kvp2 = (KvpRequestReader) o2;
 
-                        if (kvp2.getRequestBean().isAssignableFrom(kvp1.getRequestBean())) {
+                        if (kvp2.getRequestBean()
+                                    .isAssignableFrom(kvp1.getRequestBean())) {
                             return -1;
                         }
 
@@ -757,7 +784,8 @@ public class Dispatcher extends AbstractController {
         return xmlReaders;
     }
 
-    XmlRequestReader findXmlReader(String namespace, String element, /*String serviceId,*/ String ver) {
+    XmlRequestReader findXmlReader(String namespace, String element, /*String serviceId,*/
+        String ver) {
         Collection xmlReaders = loadXmlReaders();
 
         //first just match on namespace, element
@@ -777,38 +805,43 @@ public class Dispatcher extends AbstractController {
         if (matches.isEmpty()) {
             //do a more lax serach, search only on the element name if the 
             // namespace was unspecified
-            if ( namespace == null || namespace.equals( "" ) ) {
+            if ((namespace == null) || namespace.equals("")) {
                 String msg = "No namespace specified in request, searching for "
                     + " xml reader by element name only";
-                logger.info( msg );
-                
-                for ( Iterator itr = xmlReaders.iterator(); itr.hasNext(); ) {
+                logger.info(msg);
+
+                for (Iterator itr = xmlReaders.iterator(); itr.hasNext();) {
                     XmlRequestReader xmlReader = (XmlRequestReader) itr.next();
-                    if ( xmlReader.getElement().getLocalPart().equals( element ) ) {
-                        matches.add( xmlReader );
+
+                    if (xmlReader.getElement().getLocalPart().equals(element)) {
+                        matches.add(xmlReader);
                     }
                 }
-                
-                if ( !matches.isEmpty() ) {
+
+                if (!matches.isEmpty()) {
                     //we found some matches, make sure they are all in the 
                     // same namespace
                     Iterator itr = matches.iterator();
                     XmlRequestReader first = (XmlRequestReader) itr.next();
-                    while( itr.hasNext() ) {
-                        XmlRequestReader xmlReader = (XmlRequestReader ) itr.next();
-                        if ( !first.getElement().equals( xmlReader.getElement() ) ) {
+
+                    while (itr.hasNext()) {
+                        XmlRequestReader xmlReader = (XmlRequestReader) itr.next();
+
+                        if (!first.getElement().equals(xmlReader.getElement())) {
                             //abort
                             matches.clear();
+
                             break;
                         }
                     }
                 }
             }
         }
-        
-        if ( matches.isEmpty() ) {
+
+        if (matches.isEmpty()) {
             String msg = "No xml reader: (" + namespace + "," + element + ")";
             logger.info(msg);
+
             return null;
         }
 
@@ -848,7 +881,8 @@ public class Dispatcher extends AbstractController {
                             XmlRequestReader r1 = (XmlRequestReader) o1;
                             XmlRequestReader r2 = (XmlRequestReader) o2;
 
-                            Version v1 = r1.getVersion();
+                            Version v1 = r1
+                                .getVersion();
                             Version v2 = r2.getVersion();
 
                             if ((v1 == null) && (v2 == null)) {
@@ -902,16 +936,21 @@ public class Dispatcher extends AbstractController {
 
     ServiceStrategy findOutputStrategy(HttpServletResponse response) {
         OutputStrategyFactory factory = null;
+
         try {
-            factory = (OutputStrategyFactory) GeoServerExtensions.bean("serviceStrategyFactory");
-        } catch(NoSuchBeanDefinitionException e) {
+            factory = (OutputStrategyFactory) GeoServerExtensions.bean(
+                    "serviceStrategyFactory");
+        } catch (NoSuchBeanDefinitionException e) {
             return null;
         }
+
         return factory.createOutputStrategy(response);
     }
 
     BufferedInputStream input(File cache) throws IOException {
-        return (cache == null) ? null : new BufferedInputStream(new FileInputStream(cache));
+        return (cache == null) ? null
+                               : new BufferedInputStream(new FileInputStream(
+                cache));
     }
 
     void parseKVP(Request req) throws ServiceException {
@@ -920,9 +959,10 @@ public class Dispatcher extends AbstractController {
         //unparsed kvp set
         Map kvp = request.getParameterMap();
 
-        if (kvp == null || kvp.isEmpty()) {
+        if ((kvp == null) || kvp.isEmpty()) {
             //req.kvp = Collections.EMPTY_MAP;
             req.kvp = null;
+
             return;
         }
 
@@ -930,7 +970,7 @@ public class Dispatcher extends AbstractController {
         Collection parsers = GeoServerExtensions.extensions(KvpParser.class);
         Map parsedKvp = new KvpMap();
         Map rawKvp = new KvpMap();
-        
+
         for (Iterator itr = kvp.entrySet().iterator(); itr.hasNext();) {
             Map.Entry entry = (Map.Entry) itr.next();
             String key = (String) entry.getKey();
@@ -944,10 +984,10 @@ public class Dispatcher extends AbstractController {
             }
 
             //trim the string
-            if ( value != null ) {
-                value = value.trim(); 
+            if (value != null) {
+                value = value.trim();
             }
-            
+
             //find the parser for this key value pair
             Object parsed = null;
 
@@ -972,7 +1012,7 @@ public class Dispatcher extends AbstractController {
 
             //convert key to lowercase 
             parsedKvp.put(key.toLowerCase(), parsed);
-            rawKvp.put(key.toLowerCase(), value );
+            rawKvp.put(key.toLowerCase(), value);
         }
 
         req.kvp = parsedKvp;
@@ -992,7 +1032,8 @@ public class Dispatcher extends AbstractController {
             Object requestBean = kvpReader.createRequest();
 
             if (requestBean != null) {
-                requestBean = kvpReader.read(requestBean, request.kvp, request.rawKvp);
+                requestBean = kvpReader.read(requestBean, request.kvp,
+                        request.rawKvp);
             }
 
             return requestBean;
@@ -1001,8 +1042,8 @@ public class Dispatcher extends AbstractController {
         return null;
     }
 
-    Object parseRequestXML(Object requestBean, BufferedReader input, Request request)
-        throws Exception {
+    Object parseRequestXML(Object requestBean, BufferedReader input,
+        Request request) throws Exception {
         //check for an empty input stream
         //if (input.available() == 0) {
         if (!input.ready()) {
@@ -1020,7 +1061,8 @@ public class Dispatcher extends AbstractController {
         parser.setInput(input);
         parser.nextTag();
 
-        String namespace = (parser.getNamespace() != null) ? parser.getNamespace() : "";
+        String namespace = (parser.getNamespace() != null)
+            ? parser.getNamespace() : "";
         String element = parser.getName();
         String version = null;
 
@@ -1038,7 +1080,8 @@ public class Dispatcher extends AbstractController {
         input.reset();
 
         XmlRequestReader xmlReader = findXmlReader(namespace, element, version);
-        if (xmlReader == null ) {
+
+        if (xmlReader == null) {
             //no xml reader, just return object passed in
             return requestBean;
         }
@@ -1048,7 +1091,7 @@ public class Dispatcher extends AbstractController {
         }
 
         //return xmlReader.read(input);
-        return xmlReader.read( requestBean, input );
+        return xmlReader.read(requestBean, input);
     }
 
     Map readOpContext(HttpServletRequest request) {
@@ -1132,7 +1175,8 @@ public class Dispatcher extends AbstractController {
             while (cause != null) {
                 if (cause instanceof ServiceException) {
                     ServiceException cse = (ServiceException) cause;
-                    se = new ServiceException(cse.getMessage(), t, cse.getCode(), cse.getLocator());
+                    se = new ServiceException(cse.getMessage(), t,
+                            cse.getCode(), cse.getLocator());
 
                     break;
                 }
@@ -1152,6 +1196,7 @@ public class Dispatcher extends AbstractController {
         if (service != null) {
             //look up the service exception handler
             Collection handlers = GeoServerExtensions.extensions(ServiceExceptionHandler.class);
+
             for (Iterator h = handlers.iterator(); h.hasNext();) {
                 ServiceExceptionHandler seh = (ServiceExceptionHandler) h.next();
 
@@ -1169,7 +1214,21 @@ public class Dispatcher extends AbstractController {
             handler = new DefaultServiceExceptionHandler();
         }
 
-        handler.handleServiceException(se, service, request.httpRequest, request.httpResponse);
+        handler.handleServiceException(se, service, request.httpRequest,
+            request.httpResponse);
+    }
+
+    /**
+     * Allows setting up a security interceptor that will allow security checks around
+     * service invocations
+     * @return
+     */
+    public OperationInterceptor getSecurityInterceptor() {
+        return securityInterceptor;
+    }
+
+    public void setSecurityInterceptor(OperationInterceptor interceptor) {
+        this.securityInterceptor = interceptor;
     }
 
     /**
@@ -1227,6 +1286,7 @@ public class Dispatcher extends AbstractController {
          * raw kvp parameters, unparsed
          */
         Map rawKvp;
+
         /**
          * buffered input stream, only non-null if get = false
          */
@@ -1252,18 +1312,5 @@ public class Dispatcher extends AbstractController {
         public String toString() {
             return service + " " + version + " " + request;
         }
-    }
-
-    /**
-     * Allows setting up a security interceptor that will allow security checks around
-     * service invocations
-     * @return
-     */
-    public OperationInterceptor getSecurityInterceptor() {
-        return securityInterceptor;
-    }
-
-    public void setSecurityInterceptor(OperationInterceptor interceptor) {
-        this.securityInterceptor = interceptor;
     }
 }

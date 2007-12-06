@@ -32,7 +32,6 @@ import javax.servlet.ServletContext;
  * @version $Id$
  */
 public abstract class DataStoreUtils {
-    
     /**
      * Uses the standard datastore factory mechanism, but first manipulates the
      * specified parameters so that data dir relative paths gets turned into
@@ -46,11 +45,12 @@ public abstract class DataStoreUtils {
         throws IOException {
         //DJB: changed this for geoserver_data_dir   	
         //String baseDir = sc.getRealPath("/");
-        File baseDir = GeoserverDataDirectory.getGeoserverDataDirectory();
+        File baseDir = GeoserverDataDirectory
+            .getGeoserverDataDirectory();
 
         return getDataStore(getParams(params, baseDir.getAbsolutePath()));
     }
-    
+
     /**
      * Looks up the datastore using the given params, verbatim, and then
      * eventually wraps it into a renaming wrapper so that feature type
@@ -60,14 +60,19 @@ public abstract class DataStoreUtils {
      */
     public static DataStore getDataStore(Map params) throws IOException {
         DataStore store = DataStoreFinder.getDataStore(params);
-        if(store == null)
+
+        if (store == null) {
             return null;
-        
-        String[] names = store.getTypeNames();
-        for (int i = 0; i < names.length; i++) {
-            if(names[i].indexOf(":") >= 0)
-                return new RetypingDataStore(store); 
         }
+
+        String[] names = store.getTypeNames();
+
+        for (int i = 0; i < names.length; i++) {
+            if (names[i].indexOf(":") >= 0) {
+                return new RetypingDataStore(store);
+            }
+        }
+
         return store;
     }
 
@@ -102,7 +107,8 @@ public abstract class DataStoreUtils {
      * @return
      */
     public static DataStoreFactorySpi aquireFactory(Map params) {
-        for (Iterator i = DataStoreFinder.getAvailableDataStores(); i.hasNext();) {
+        for (Iterator i = DataStoreFinder.getAvailableDataStores();
+                i.hasNext();) {
             DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
 
             if (factory.canProcess(params)) {
@@ -136,7 +142,8 @@ public abstract class DataStoreUtils {
      * @return
      */
     public static DataStoreFactorySpi aquireFactory(String displayName) {
-        for (Iterator i = DataStoreFinder.getAvailableDataStores(); i.hasNext();) {
+        for (Iterator i = DataStoreFinder.getAvailableDataStores();
+                i.hasNext();) {
             DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
 
             if (factory.getDisplayName().equals(displayName)) {
@@ -193,7 +200,8 @@ public abstract class DataStoreUtils {
     public static List listDataStoresDescriptions() {
         List list = new ArrayList();
 
-        for (Iterator i = DataStoreFinder.getAvailableDataStores(); i.hasNext();) {
+        for (Iterator i = DataStoreFinder.getAvailableDataStores();
+                i.hasNext();) {
             DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
             list.add(factory.getDisplayName());
         }

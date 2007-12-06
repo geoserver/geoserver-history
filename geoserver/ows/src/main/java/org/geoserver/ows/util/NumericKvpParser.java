@@ -29,7 +29,8 @@ public class NumericKvpParser extends KvpParser {
         super(key, binding);
 
         if (!Number.class.isAssignableFrom(binding)) {
-            throw new IllegalArgumentException("Number is not assignable from: " + binding);
+            throw new IllegalArgumentException(
+                "Number is not assignable from: " + binding);
         }
     }
 

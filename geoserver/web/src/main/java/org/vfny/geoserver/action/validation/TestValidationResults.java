@@ -31,6 +31,8 @@ public class TestValidationResults implements ValidationResults {
 
     //HACK for JODY cause he messed up and then whined alot.
     boolean run = false;
+    Map errors = new HashMap();
+    Map warning = new HashMap();
 
     public void setValidation(Validation v) {
         this.v = v;
@@ -48,8 +50,6 @@ public class TestValidationResults implements ValidationResults {
         return buf.toString();
     }
 
-    Map errors = new HashMap();
-
     public Map getErrors() {
         return errors;
     }
@@ -64,8 +64,6 @@ public class TestValidationResults implements ValidationResults {
 
         errors.put(f, message);
     }
-
-    Map warning = new HashMap();
 
     public Map getWarnings() {
         return warning;

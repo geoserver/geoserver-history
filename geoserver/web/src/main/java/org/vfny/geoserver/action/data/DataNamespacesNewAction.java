@@ -29,9 +29,9 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Id$
  */
 public class DataNamespacesNewAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
-        throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        UserContainer user, HttpServletRequest request,
+        HttpServletResponse response) throws IOException, ServletException {
         DataNamespacesNewForm namespacesForm = (DataNamespacesNewForm) form;
 
         String prefix = namespacesForm.getPrefix();

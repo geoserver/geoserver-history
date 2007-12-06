@@ -17,7 +17,8 @@ public class ReleaseLockKvpRequestReader extends KvpRequestReader {
         return new String();
     }
 
-    public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
+    public Object read(Object request, Map kvp, Map rawKvp)
+        throws Exception {
         return kvp.get("lockId");
     }
 }

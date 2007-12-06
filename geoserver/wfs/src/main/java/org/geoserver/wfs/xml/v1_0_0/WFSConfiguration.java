@@ -4,10 +4,6 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
-
 import net.opengis.ows.OwsFactory;
 import net.opengis.wfs.WfsFactory;
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;
@@ -29,6 +25,9 @@ import org.picocontainer.defaults.SetterInjectionComponentAdapter;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
 
 
 /**
@@ -47,15 +46,12 @@ public class WFSConfiguration extends Configuration {
         this.catalog = catalog;
         this.schemaBuilder = schemaBuilder;
 
-        catalog.getGeoServer().addListener(
-            new GeoServer.Listener() {
-    
-              public void changed() {
-                  flush();
-              }
-            }
-          );
-        
+        catalog.getGeoServer().addListener(new GeoServer.Listener() {
+                public void changed() {
+                    flush();
+                }
+            });
+
         addDependency(new OGCConfiguration());
         addDependency(new GMLConfiguration());
     }
@@ -66,7 +62,8 @@ public class WFSConfiguration extends Configuration {
 
     public String getSchemaFileURL() {
         return getSchemaLocationResolver()
-                   .resolveSchemaLocation(null, WFS.NAMESPACE, "WFS-transaction.xsd");
+                   .resolveSchemaLocation(null, WFS.NAMESPACE,
+            "WFS-transaction.xsd");
     }
 
     public BindingConfiguration getBindingConfiguration() {
@@ -82,9 +79,10 @@ public class WFSConfiguration extends Configuration {
 
         context.registerComponentInstance(OwsFactory.eINSTANCE);
         context.registerComponentInstance(WfsFactory.eINSTANCE);
-        context.registerComponentInstance(new WFSHandlerFactory(catalog, schemaBuilder));
+        context.registerComponentInstance(new WFSHandlerFactory(catalog,
+                schemaBuilder));
         context.registerComponentInstance(catalog);
-        
+
         //TODO: this code is copied from the 1.1 configuration, FACTOR IT OUT!!!
         //seed the cache with entries from the catalog
         FeatureTypeCache featureTypeCache = (FeatureTypeCache) context
@@ -110,18 +108,17 @@ public class WFSConfiguration extends Configuration {
         //override the GMLAbstractFeatureTypeBinding
         bindings.registerComponentImplementation(GML.AbstractFeatureType,
             GMLAbstractFeatureTypeBinding.class);
-        
+
         //use setter injection for AbstractGeometryType bindign to allow an 
         // optional crs to be set in teh binding context for parsing, this crs
         // is set by the binding of a parent element.
         // note: it is important that this component adapter is non-caching so 
         // that the setter property gets updated properly every time
-        bindings.registerComponent(
-            new SetterInjectionComponentAdapter( 
-                GML.AbstractGeometryType, AbstractGeometryTypeBinding.class, 
-                new Parameter[]{ new OptionalComponentParameter(CoordinateReferenceSystem.class)} 
-            )
-        );
-        
+        bindings.registerComponent(new SetterInjectionComponentAdapter(
+                GML.AbstractGeometryType, AbstractGeometryTypeBinding.class,
+                new Parameter[] {
+                    new OptionalComponentParameter(
+                        CoordinateReferenceSystem.class)
+                }));
     }
 }

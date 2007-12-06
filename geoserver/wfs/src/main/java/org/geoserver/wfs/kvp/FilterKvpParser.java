@@ -66,7 +66,8 @@ public class FilterKvpParser extends KvpParser {
                 String msg = "Unable to parse filter: " + string;
                 LOGGER.log(Level.WARNING, msg, e);
 
-                Filter filter = parseXMLFilterWithOldParser(new StringReader(string));
+                Filter filter = parseXMLFilterWithOldParser(new StringReader(
+                            string));
 
                 if (filter != null) {
                     filters.add(filter);
@@ -112,10 +113,12 @@ public class FilterKvpParser extends KvpParser {
             adapter.parse(requestSource);
             LOGGER.fine("just parsed: " + requestSource);
         } catch (SAXException e) {
-            throw new ServiceException(e, "XML getFeature request SAX parsing error",
+            throw new ServiceException(e,
+                "XML getFeature request SAX parsing error",
                 XmlRequestReader.class.getName());
         } catch (IOException e) {
-            throw new ServiceException(e, "XML get feature request input error",
+            throw new ServiceException(e,
+                "XML get feature request input error",
                 XmlRequestReader.class.getName());
         } catch (ParserConfigurationException e) {
             throw new ServiceException(e, "Some sort of issue creating parser",

@@ -16,7 +16,8 @@ import javax.servlet.http.HttpServletRequest;
  * @author Andrea Aime - TOPP
  *
  */
-public class GeoserverAuthenticationProcessingFilter extends AuthenticationProcessingFilter {
+public class GeoserverAuthenticationProcessingFilter
+    extends AuthenticationProcessingFilter {
     protected String obtainPassword(HttpServletRequest request) {
         return request.getParameter("password");
     }

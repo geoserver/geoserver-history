@@ -18,9 +18,11 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author $Author: Alessio Fabiani (GeoSolutions)
  */
-public class DeleteFeatureTypeHandler extends XMLFilterImpl implements ContentHandler {
+public class DeleteFeatureTypeHandler extends XMLFilterImpl
+    implements ContentHandler {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.catalog");
+    private static Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.requests.catalog");
 
     /**
      * Internal DeleteFeature request for construction.
@@ -60,8 +62,8 @@ public class DeleteFeatureTypeHandler extends XMLFilterImpl implements ContentHa
      *
      * @throws SAXException For standard SAX errors.
      */
-    public void startElement(String namespaceURI, String localName, String rawName, Attributes atts)
-        throws SAXException {
+    public void startElement(String namespaceURI, String localName,
+        String rawName, Attributes atts) throws SAXException {
         LOGGER.finest("found start element: " + localName);
         currentTag = localName;
 

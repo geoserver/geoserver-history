@@ -7,8 +7,8 @@
 package net.opengis.ows;
 
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EObject;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -33,10 +33,10 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface DomainType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Value</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Unordered list of all the valid values for this parameter or other quantity. For those parameters that contain a list or sequence of values, these values shall be for individual values in the list. The allowed set of values and the allowed server restrictions on that set of values shall be specified in the Implementation Specification for this service.
      * <!-- end-model-doc -->
@@ -47,23 +47,23 @@ public interface DomainType extends EObject {
      *        extendedMetaData="kind='element' name='Value' namespace='##targetNamespace'"
      * @generated
      */
-	String getValue();
+    String getValue();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DomainType#getValue <em>Value</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Value</em>' attribute.
      * @see #getValue()
      * @generated
      */
-	void setValue(String value);
+    void setValue(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Metadata</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.MetadataType}.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Optional unordered list of additional metadata about this parameter. A list of required and optional metadata elements for this domain should be specified in the Implementation Specification for this service. (Informative: This metadata might specify the meanings of the valid values.)
      * <!-- end-model-doc -->
@@ -73,12 +73,12 @@ public interface DomainType extends EObject {
      *        extendedMetaData="kind='element' name='Metadata' namespace='##targetNamespace'"
      * @generated
      */
-	EList getMetadata();
+    EList getMetadata();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Name or identifier of this parameter or other quantity.
      * <!-- end-model-doc -->
@@ -89,16 +89,15 @@ public interface DomainType extends EObject {
      *        extendedMetaData="kind='attribute' name='name'"
      * @generated
      */
-	String getName();
+    String getName();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DomainType#getName <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Name</em>' attribute.
      * @see #getName()
      * @generated
      */
-	void setName(String value);
-
+    void setName(String value);
 } // DomainType

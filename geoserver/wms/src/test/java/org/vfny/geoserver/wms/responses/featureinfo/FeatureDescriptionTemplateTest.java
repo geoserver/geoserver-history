@@ -43,7 +43,8 @@ public class FeatureDescriptionTemplateTest extends TestCase {
 
         DefaultFeature f = new DefaultFeature((DefaultFeatureType) featureType,
                 new Object[] {
-                    "three", new Integer(3), new Double(3.3), gf.createPoint(new Coordinate(3, 3))
+                    "three", new Integer(3), new Double(3.3),
+                    gf.createPoint(new Coordinate(3, 3))
                 }, "fid.3") {
             };
 
@@ -51,8 +52,10 @@ public class FeatureDescriptionTemplateTest extends TestCase {
         template.process(f, new OutputStreamWriter(output));
         template.process(f, new OutputStreamWriter(System.out));
 
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
+        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
+                                                           .newDocumentBuilder();
+        Document document = docBuilder.parse(new ByteArrayInputStream(
+                    output.toByteArray()));
 
         assertNotNull(document);
 

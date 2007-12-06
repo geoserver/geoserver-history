@@ -38,7 +38,8 @@ public class ValidationTestSuiteSelectForm extends ActionForm {
         buttonAction = "";
     }
 
-    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping,
+        HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         return errors;
@@ -46,10 +47,13 @@ public class ValidationTestSuiteSelectForm extends ActionForm {
 
     public SortedSet getTestSuites() {
         try {
-            ServletContext context = getServlet().getServletContext();
-            ValidationConfig validationConfig = (ValidationConfig) context.getAttribute(ValidationConfig.CONFIG_KEY);
+            ServletContext context = getServlet()
+                                         .getServletContext();
+            ValidationConfig validationConfig = (ValidationConfig) context
+                .getAttribute(ValidationConfig.CONFIG_KEY);
 
-            if ((validationConfig != null) && (validationConfig.getTestSuiteNames() != null)) {
+            if ((validationConfig != null)
+                    && (validationConfig.getTestSuiteNames() != null)) {
                 return new TreeSet(validationConfig.getTestSuiteNames());
             }
         } catch (Exception e) {

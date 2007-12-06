@@ -58,14 +58,14 @@ public class OWSConfiguration extends Configuration {
     }
 
     /**
-    * Configures the ows context.
-    * <p>
-    * The following factories are registered:
-    * <ul>
-    * <li>{@link OwsFactory}
-    * </ul>
-    * </p>
-    */
+     * Configures the ows context.
+     * <p>
+     * The following factories are registered:
+     * <ul>
+     * <li>{@link OwsFactory}
+     * </ul>
+     * </p>
+     */
     protected void configureContext(MutablePicoContainer container) {
         super.configureContext(container);
 

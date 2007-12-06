@@ -9,14 +9,12 @@ package net.opengis.ows.impl;
 import net.opengis.ows.CodeType;
 import net.opengis.ows.OwsPackage;
 import net.opengis.ows.ServiceIdentificationType;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -34,305 +32,377 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *
  * @generated
  */
-public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implements ServiceIdentificationType {
-	/**
+public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl
+    implements ServiceIdentificationType {
+    /**
+     * The default value of the '{@link #getServiceTypeVersion() <em>Service Type Version</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getServiceTypeVersion()
+     * @generated
+     * @ordered
+     */
+    protected static final String SERVICE_TYPE_VERSION_EDEFAULT = null;
+
+    /**
+     * The default value of the '{@link #getFees() <em>Fees</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getFees()
+     * @generated
+     * @ordered
+     */
+    protected static final String FEES_EDEFAULT = null;
+
+    /**
+     * The default value of the '{@link #getAccessConstraints() <em>Access Constraints</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getAccessConstraints()
+     * @generated
+     * @ordered
+     */
+    protected static final String ACCESS_CONSTRAINTS_EDEFAULT = null;
+
+    /**
      * The cached value of the '{@link #getServiceType() <em>Service Type</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @see #getServiceType()
      * @generated
      * @ordered
      */
-	protected CodeType serviceType;
+    protected CodeType serviceType;
 
-	/**
-     * The default value of the '{@link #getServiceTypeVersion() <em>Service Type Version</em>}' attribute.
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @see #getServiceTypeVersion()
-     * @generated
-     * @ordered
-     */
-	protected static final String SERVICE_TYPE_VERSION_EDEFAULT = null;
-
-	/**
+    /**
      * The cached value of the '{@link #getServiceTypeVersion() <em>Service Type Version</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @see #getServiceTypeVersion()
      * @generated
      * @ordered
      */
-	protected String serviceTypeVersion = SERVICE_TYPE_VERSION_EDEFAULT;
+    protected String serviceTypeVersion = SERVICE_TYPE_VERSION_EDEFAULT;
 
-	/**
-     * The default value of the '{@link #getFees() <em>Fees</em>}' attribute.
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @see #getFees()
-     * @generated
-     * @ordered
-     */
-	protected static final String FEES_EDEFAULT = null;
-
-	/**
+    /**
      * The cached value of the '{@link #getFees() <em>Fees</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @see #getFees()
      * @generated
      * @ordered
      */
-	protected String fees = FEES_EDEFAULT;
+    protected String fees = FEES_EDEFAULT;
 
-	/**
-     * The default value of the '{@link #getAccessConstraints() <em>Access Constraints</em>}' attribute.
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @see #getAccessConstraints()
-     * @generated
-     * @ordered
-     */
-	protected static final String ACCESS_CONSTRAINTS_EDEFAULT = null;
-
-	/**
+    /**
      * The cached value of the '{@link #getAccessConstraints() <em>Access Constraints</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @see #getAccessConstraints()
      * @generated
      * @ordered
      */
-	protected String accessConstraints = ACCESS_CONSTRAINTS_EDEFAULT;
+    protected String accessConstraints = ACCESS_CONSTRAINTS_EDEFAULT;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	protected ServiceIdentificationTypeImpl() {
+    protected ServiceIdentificationTypeImpl() {
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	protected EClass eStaticClass() {
+    protected EClass eStaticClass() {
         return OwsPackage.Literals.SERVICE_IDENTIFICATION_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public CodeType getServiceType() {
+    public CodeType getServiceType() {
         return serviceType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public NotificationChain basicSetServiceType(CodeType newServiceType, NotificationChain msgs) {
+    public NotificationChain basicSetServiceType(CodeType newServiceType,
+        NotificationChain msgs) {
         CodeType oldServiceType = serviceType;
         serviceType = newServiceType;
+
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE, oldServiceType, newServiceType);
-            if (msgs == null) msgs = notification; else msgs.add(notification);
+            ENotificationImpl notification = new ENotificationImpl(this,
+                    Notification.SET,
+                    OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE,
+                    oldServiceType, newServiceType);
+
+            if (msgs == null) {
+                msgs = notification;
+            } else {
+                msgs.add(notification);
+            }
         }
+
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public void setServiceType(CodeType newServiceType) {
+    public void setServiceType(CodeType newServiceType) {
         if (newServiceType != serviceType) {
             NotificationChain msgs = null;
-            if (serviceType != null)
-                msgs = ((InternalEObject)serviceType).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE, null, msgs);
-            if (newServiceType != null)
-                msgs = ((InternalEObject)newServiceType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE, null, msgs);
+
+            if (serviceType != null) {
+                msgs = ((InternalEObject) serviceType).eInverseRemove(this,
+                        EOPPOSITE_FEATURE_BASE
+                        - OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE,
+                        null, msgs);
+            }
+
+            if (newServiceType != null) {
+                msgs = ((InternalEObject) newServiceType).eInverseAdd(this,
+                        EOPPOSITE_FEATURE_BASE
+                        - OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE,
+                        null, msgs);
+            }
+
             msgs = basicSetServiceType(newServiceType, msgs);
-            if (msgs != null) msgs.dispatch();
+
+            if (msgs != null) {
+                msgs.dispatch();
+            }
+        } else if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE,
+                    newServiceType, newServiceType));
         }
-        else if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE, newServiceType, newServiceType));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public String getServiceTypeVersion() {
+    public String getServiceTypeVersion() {
         return serviceTypeVersion;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public void setServiceTypeVersion(String newServiceTypeVersion) {
+    public void setServiceTypeVersion(String newServiceTypeVersion) {
         String oldServiceTypeVersion = serviceTypeVersion;
         serviceTypeVersion = newServiceTypeVersion;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE_VERSION, oldServiceTypeVersion, serviceTypeVersion));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE_VERSION,
+                    oldServiceTypeVersion, serviceTypeVersion));
+        }
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public String getFees() {
+    public String getFees() {
         return fees;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public void setFees(String newFees) {
+    public void setFees(String newFees) {
         String oldFees = fees;
         fees = newFees;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.SERVICE_IDENTIFICATION_TYPE__FEES, oldFees, fees));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.SERVICE_IDENTIFICATION_TYPE__FEES, oldFees, fees));
+        }
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public String getAccessConstraints() {
+    public String getAccessConstraints() {
         return accessConstraints;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public void setAccessConstraints(String newAccessConstraints) {
+    public void setAccessConstraints(String newAccessConstraints) {
         String oldAccessConstraints = accessConstraints;
         accessConstraints = newAccessConstraints;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.SERVICE_IDENTIFICATION_TYPE__ACCESS_CONSTRAINTS, oldAccessConstraints, accessConstraints));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.SERVICE_IDENTIFICATION_TYPE__ACCESS_CONSTRAINTS,
+                    oldAccessConstraints, accessConstraints));
+        }
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd,
+        int featureID, NotificationChain msgs) {
         switch (featureID) {
-            case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE:
-                return basicSetServiceType(null, msgs);
+        case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE:
+            return basicSetServiceType(null, msgs);
         }
+
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+    public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-            case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE:
-                return getServiceType();
-            case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE_VERSION:
-                return getServiceTypeVersion();
-            case OwsPackage.SERVICE_IDENTIFICATION_TYPE__FEES:
-                return getFees();
-            case OwsPackage.SERVICE_IDENTIFICATION_TYPE__ACCESS_CONSTRAINTS:
-                return getAccessConstraints();
+        case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE:
+            return getServiceType();
+
+        case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE_VERSION:
+            return getServiceTypeVersion();
+
+        case OwsPackage.SERVICE_IDENTIFICATION_TYPE__FEES:
+            return getFees();
+
+        case OwsPackage.SERVICE_IDENTIFICATION_TYPE__ACCESS_CONSTRAINTS:
+            return getAccessConstraints();
         }
+
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public void eSet(int featureID, Object newValue) {
+    public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-            case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE:
-                setServiceType((CodeType)newValue);
-                return;
-            case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE_VERSION:
-                setServiceTypeVersion((String)newValue);
-                return;
-            case OwsPackage.SERVICE_IDENTIFICATION_TYPE__FEES:
-                setFees((String)newValue);
-                return;
-            case OwsPackage.SERVICE_IDENTIFICATION_TYPE__ACCESS_CONSTRAINTS:
-                setAccessConstraints((String)newValue);
-                return;
+        case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE:
+            setServiceType((CodeType) newValue);
+
+            return;
+
+        case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE_VERSION:
+            setServiceTypeVersion((String) newValue);
+
+            return;
+
+        case OwsPackage.SERVICE_IDENTIFICATION_TYPE__FEES:
+            setFees((String) newValue);
+
+            return;
+
+        case OwsPackage.SERVICE_IDENTIFICATION_TYPE__ACCESS_CONSTRAINTS:
+            setAccessConstraints((String) newValue);
+
+            return;
         }
+
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public void eUnset(int featureID) {
+    public void eUnset(int featureID) {
         switch (featureID) {
-            case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE:
-                setServiceType((CodeType)null);
-                return;
-            case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE_VERSION:
-                setServiceTypeVersion(SERVICE_TYPE_VERSION_EDEFAULT);
-                return;
-            case OwsPackage.SERVICE_IDENTIFICATION_TYPE__FEES:
-                setFees(FEES_EDEFAULT);
-                return;
-            case OwsPackage.SERVICE_IDENTIFICATION_TYPE__ACCESS_CONSTRAINTS:
-                setAccessConstraints(ACCESS_CONSTRAINTS_EDEFAULT);
-                return;
+        case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE:
+            setServiceType((CodeType) null);
+
+            return;
+
+        case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE_VERSION:
+            setServiceTypeVersion(SERVICE_TYPE_VERSION_EDEFAULT);
+
+            return;
+
+        case OwsPackage.SERVICE_IDENTIFICATION_TYPE__FEES:
+            setFees(FEES_EDEFAULT);
+
+            return;
+
+        case OwsPackage.SERVICE_IDENTIFICATION_TYPE__ACCESS_CONSTRAINTS:
+            setAccessConstraints(ACCESS_CONSTRAINTS_EDEFAULT);
+
+            return;
         }
+
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public boolean eIsSet(int featureID) {
+    public boolean eIsSet(int featureID) {
         switch (featureID) {
-            case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE:
-                return serviceType != null;
-            case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE_VERSION:
-                return SERVICE_TYPE_VERSION_EDEFAULT == null ? serviceTypeVersion != null : !SERVICE_TYPE_VERSION_EDEFAULT.equals(serviceTypeVersion);
-            case OwsPackage.SERVICE_IDENTIFICATION_TYPE__FEES:
-                return FEES_EDEFAULT == null ? fees != null : !FEES_EDEFAULT.equals(fees);
-            case OwsPackage.SERVICE_IDENTIFICATION_TYPE__ACCESS_CONSTRAINTS:
-                return ACCESS_CONSTRAINTS_EDEFAULT == null ? accessConstraints != null : !ACCESS_CONSTRAINTS_EDEFAULT.equals(accessConstraints);
+        case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE:
+            return serviceType != null;
+
+        case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE_VERSION:
+            return (SERVICE_TYPE_VERSION_EDEFAULT == null)
+            ? (serviceTypeVersion != null)
+            : (!SERVICE_TYPE_VERSION_EDEFAULT.equals(serviceTypeVersion));
+
+        case OwsPackage.SERVICE_IDENTIFICATION_TYPE__FEES:
+            return (FEES_EDEFAULT == null) ? (fees != null)
+                                           : (!FEES_EDEFAULT.equals(fees));
+
+        case OwsPackage.SERVICE_IDENTIFICATION_TYPE__ACCESS_CONSTRAINTS:
+            return (ACCESS_CONSTRAINTS_EDEFAULT == null)
+            ? (accessConstraints != null)
+            : (!ACCESS_CONSTRAINTS_EDEFAULT.equals(accessConstraints));
         }
+
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public String toString() {
-        if (eIsProxy()) return super.toString();
+    public String toString() {
+        if (eIsProxy()) {
+            return super.toString();
+        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (serviceTypeVersion: ");
@@ -342,7 +412,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
         result.append(", accessConstraints: ");
         result.append(accessConstraints);
         result.append(')');
+
         return result.toString();
     }
-
 } //ServiceIdentificationTypeImpl

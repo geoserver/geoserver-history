@@ -4,11 +4,7 @@
  */
 package org.geoserver.feature.retype;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geoserver.feature.RetypingFeatureCollection;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
@@ -19,23 +15,23 @@ import org.geotools.data.Query;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.opengis.filter.Filter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-import com.vividsolutions.jts.geom.Envelope;
 
 /**
- * Renaming wrapper for a {@link FeatureSource} instance, to be used along with {@link RetypingDataStore} 
+ * Renaming wrapper for a {@link FeatureSource} instance, to be used along with {@link RetypingDataStore}
  */
 public class RetypingFeatureSource implements FeatureSource {
-
     FeatureSource wrapped;
-
     FeatureTypeMap typeMap;
-
     DataStore ds;
-    
     Map listeners = new HashMap();
 
-    public RetypingFeatureSource(DataStore ds, FeatureSource wrapped, FeatureTypeMap typeMap) {
+    public RetypingFeatureSource(DataStore ds, FeatureSource wrapped,
+        FeatureTypeMap typeMap) {
         this.ds = ds;
         this.wrapped = wrapped;
         this.typeMap = typeMap;
@@ -49,7 +45,8 @@ public class RetypingFeatureSource implements FeatureSource {
 
     public void removeFeatureListener(FeatureListener listener) {
         FeatureListener wrapper = (FeatureListener) listeners.get(listener);
-        if(wrapper != null) {
+
+        if (wrapper != null) {
             wrapped.removeFeatureListener(listener);
             listeners.remove(listener);
         }
@@ -80,11 +77,12 @@ public class RetypingFeatureSource implements FeatureSource {
     }
 
     public FeatureCollection getFeatures(Query query) throws IOException {
-        return new RetypingFeatureCollection(wrapped.getFeatures(retypeQuery(query)), typeMap
-                .getFeatureType());
+        return new RetypingFeatureCollection(wrapped.getFeatures(retypeQuery(
+                    query)), typeMap.getFeatureType());
     }
 
-    public FeatureCollection getFeatures(Filter filter) throws IOException {
+    public FeatureCollection getFeatures(Filter filter)
+        throws IOException {
         return getFeatures(new DefaultQuery(typeMap.getName(), filter));
     }
 
@@ -99,7 +97,7 @@ public class RetypingFeatureSource implements FeatureSource {
     Query retypeQuery(Query q) {
         DefaultQuery modified = new DefaultQuery(q);
         modified.setTypeName(typeMap.getOriginalName());
+
         return modified;
     }
-
 }

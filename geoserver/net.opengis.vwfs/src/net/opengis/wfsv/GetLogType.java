@@ -6,14 +6,12 @@
  */
 package net.opengis.wfsv;
 
-import java.math.BigInteger;
-
 import net.opengis.wfs.BaseRequestType;
 import net.opengis.wfs.ResultTypeType;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EObject;
+import java.math.BigInteger;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -21,7 +19,7 @@ import org.eclipse.emf.ecore.EObject;
  * <!-- end-user-doc -->
  *
  * <!-- begin-model-doc -->
- * 
+ *
  *         A GetLog element contains one or more DifferenceQuery elements that describe a diffence
  *         query operation on one feature type. In response to a GetLog request, a Web Feature Service
  *         must be able to generate a list of logs entries for features matched by the DifferenceQuery
@@ -31,7 +29,7 @@ import org.eclipse.emf.ecore.EObject;
  *         the ChangeSets feature type. A Web Feature Service may support other possibly non-XML (and
  *         even binary) output formats as long as those formats are advertised in the capabilities
  *         document.
- *       
+ *
  * <!-- end-model-doc -->
  *
  * <p>
@@ -55,10 +53,10 @@ public interface GetLogType extends BaseRequestType {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *         The DifferenceFilter element is used to gather differences in features matched by a standard
      *         OGC filter at starting and ending featureVersion, and a filter used to match
-     *       
+     *
      * <!-- end-model-doc -->
      * @return the value of the '<em>Difference Query</em>' containment reference list.
      * @see net.opengis.wfsv.WfsvPackage#getGetLogType_DifferenceQuery()
@@ -73,10 +71,10 @@ public interface GetLogType extends BaseRequestType {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *               The maxFeatures attribute is used to specify the maximum number of features that a
      *               GetFeature operation should generate (regardless of the actual number of query hits).
-     *             
+     *
      * <!-- end-model-doc -->
      * @return the value of the '<em>Max Features</em>' attribute.
      * @see #setMaxFeatures(BigInteger)
@@ -103,7 +101,7 @@ public interface GetLogType extends BaseRequestType {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *               The outputFormat attribute is used to specify the output format that the Versioning
      *               Web Feature Service should generate in response to a GetLog element. The default value
      *               of 'text/xml; subtype=gml/3.1.1' indicates that the output is an XML document that
@@ -112,7 +110,7 @@ public interface GetLogType extends BaseRequestType {
      *               specific community of interest, other acceptable output format values may be used to
      *               specify other formats as long as those values are advertised in the capabilities
      *               document.
-     *             
+     *
      * <!-- end-model-doc -->
      * @return the value of the '<em>Output Format</em>' attribute.
      * @see #isSetOutputFormat()
@@ -167,14 +165,14 @@ public interface GetLogType extends BaseRequestType {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *               The resultType attribute is used to indicate what response a wfsv should return to
      *               user once a GetFeature request is processed. Possible values are: results - meaning
      *               that the full response set (i.e. all the feature instances) should be returned. hits -
      *               meaning that an empty response set should be returned (i.e. no feature instances
      *               should be returned) but the "numberOfFeatures" attribute should be set to the number
      *               of feature instances that would be returned.
-     *             
+     *
      * <!-- end-model-doc -->
      * @return the value of the '<em>Result Type</em>' attribute.
      * @see net.opengis.wfs.ResultTypeType
@@ -223,5 +221,4 @@ public interface GetLogType extends BaseRequestType {
      * @generated
      */
     boolean isSetResultType();
-
 } // GetLogType

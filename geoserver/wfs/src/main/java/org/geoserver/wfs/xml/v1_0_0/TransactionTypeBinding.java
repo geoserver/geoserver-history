@@ -126,7 +126,8 @@ public class TransactionTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        TransactionType transaction = wfsfactory.createTransactionType();
+        TransactionType transaction = wfsfactory
+            .createTransactionType();
 
         //lock id
         if (node.hasChild("LockId")) {
@@ -160,7 +161,8 @@ public class TransactionTypeBinding extends AbstractComplexBinding {
 
         //release action
         if (node.hasAttribute(AllSomeType.class)) {
-            transaction.setReleaseAction((AllSomeType) node.getAttributeValue(AllSomeType.class));
+            transaction.setReleaseAction((AllSomeType) node.getAttributeValue(
+                    AllSomeType.class));
         }
 
         return transaction;

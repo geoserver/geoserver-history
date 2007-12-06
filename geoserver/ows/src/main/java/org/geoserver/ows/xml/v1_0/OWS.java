@@ -27,7 +27,8 @@ public interface OWS {
             "AcceptVersionsType");
 
     /** @generated */
-    public static final QName ADDRESSTYPE = new QName("http://www.opengis.net/ows", "AddressType");
+    public static final QName ADDRESSTYPE = new QName("http://www.opengis.net/ows",
+            "AddressType");
 
     /** @generated */
     public static final QName BOUNDINGBOXTYPE = new QName("http://www.opengis.net/ows",
@@ -38,17 +39,20 @@ public interface OWS {
             "CapabilitiesBaseType");
 
     /** @generated */
-    public static final QName CODETYPE = new QName("http://www.opengis.net/ows", "CodeType");
+    public static final QName CODETYPE = new QName("http://www.opengis.net/ows",
+            "CodeType");
 
     /** @generated */
-    public static final QName CONTACTTYPE = new QName("http://www.opengis.net/ows", "ContactType");
+    public static final QName CONTACTTYPE = new QName("http://www.opengis.net/ows",
+            "ContactType");
 
     /** @generated */
     public static final QName DESCRIPTIONTYPE = new QName("http://www.opengis.net/ows",
             "DescriptionType");
 
     /** @generated */
-    public static final QName DOMAINTYPE = new QName("http://www.opengis.net/ows", "DomainType");
+    public static final QName DOMAINTYPE = new QName("http://www.opengis.net/ows",
+            "DomainType");
 
     /** @generated */
     public static final QName EXCEPTIONTYPE = new QName("http://www.opengis.net/ows",
@@ -63,20 +67,24 @@ public interface OWS {
             "IdentificationType");
 
     /** @generated */
-    public static final QName KEYWORDSTYPE = new QName("http://www.opengis.net/ows", "KeywordsType");
+    public static final QName KEYWORDSTYPE = new QName("http://www.opengis.net/ows",
+            "KeywordsType");
 
     /** @generated */
-    public static final QName METADATATYPE = new QName("http://www.opengis.net/ows", "MetadataType");
+    public static final QName METADATATYPE = new QName("http://www.opengis.net/ows",
+            "MetadataType");
 
     /** @generated */
-    public static final QName MIMETYPE = new QName("http://www.opengis.net/ows", "MimeType");
+    public static final QName MIMETYPE = new QName("http://www.opengis.net/ows",
+            "MimeType");
 
     /** @generated */
     public static final QName ONLINERESOURCETYPE = new QName("http://www.opengis.net/ows",
             "OnlineResourceType");
 
     /** @generated */
-    public static final QName POSITIONTYPE = new QName("http://www.opengis.net/ows", "PositionType");
+    public static final QName POSITIONTYPE = new QName("http://www.opengis.net/ows",
+            "PositionType");
 
     /** @generated */
     public static final QName POSITIONTYPE2D = new QName("http://www.opengis.net/ows",
@@ -95,10 +103,12 @@ public interface OWS {
             "ResponsiblePartyType");
 
     /** @generated */
-    public static final QName SECTIONSTYPE = new QName("http://www.opengis.net/ows", "SectionsType");
+    public static final QName SECTIONSTYPE = new QName("http://www.opengis.net/ows",
+            "SectionsType");
 
     /** @generated */
-    public static final QName SERVICETYPE = new QName("http://www.opengis.net/ows", "ServiceType");
+    public static final QName SERVICETYPE = new QName("http://www.opengis.net/ows",
+            "ServiceType");
 
     /** @generated */
     public static final QName TELEPHONETYPE = new QName("http://www.opengis.net/ows",
@@ -109,7 +119,8 @@ public interface OWS {
             "UpdateSequenceType");
 
     /** @generated */
-    public static final QName VERSIONTYPE = new QName("http://www.opengis.net/ows", "VersionType");
+    public static final QName VERSIONTYPE = new QName("http://www.opengis.net/ows",
+            "VersionType");
 
     /** @generated */
     public static final QName WGS84BOUNDINGBOXTYPE = new QName("http://www.opengis.net/ows",
@@ -117,7 +128,8 @@ public interface OWS {
 
     /* Elements */
     /** @generated */
-    public static final QName ABSTRACT = new QName("http://www.opengis.net/ows", "Abstract");
+    public static final QName ABSTRACT = new QName("http://www.opengis.net/ows",
+            "Abstract");
 
     /** @generated */
     public static final QName ABSTRACTMETADATA = new QName("http://www.opengis.net/ows",
@@ -128,19 +140,24 @@ public interface OWS {
             "AccessConstraints");
 
     /** @generated */
-    public static final QName AVAILABLECRS = new QName("http://www.opengis.net/ows", "AvailableCRS");
+    public static final QName AVAILABLECRS = new QName("http://www.opengis.net/ows",
+            "AvailableCRS");
 
     /** @generated */
-    public static final QName BOUNDINGBOX = new QName("http://www.opengis.net/ows", "BoundingBox");
+    public static final QName BOUNDINGBOX = new QName("http://www.opengis.net/ows",
+            "BoundingBox");
 
     /** @generated */
-    public static final QName CONTACTINFO = new QName("http://www.opengis.net/ows", "ContactInfo");
+    public static final QName CONTACTINFO = new QName("http://www.opengis.net/ows",
+            "ContactInfo");
 
     /** @generated */
-    public static final QName DCP = new QName("http://www.opengis.net/ows", "DCP");
+    public static final QName DCP = new QName("http://www.opengis.net/ows",
+            "DCP");
 
     /** @generated */
-    public static final QName EXCEPTION = new QName("http://www.opengis.net/ows", "Exception");
+    public static final QName EXCEPTION = new QName("http://www.opengis.net/ows",
+            "Exception");
 
     /** @generated */
     public static final QName EXCEPTIONREPORT = new QName("http://www.opengis.net/ows",
@@ -151,33 +168,40 @@ public interface OWS {
             "ExtendedCapabilities");
 
     /** @generated */
-    public static final QName FEES = new QName("http://www.opengis.net/ows", "Fees");
+    public static final QName FEES = new QName("http://www.opengis.net/ows",
+            "Fees");
 
     /** @generated */
     public static final QName GETCAPABILITIES = new QName("http://www.opengis.net/ows",
             "GetCapabilities");
 
     /** @generated */
-    public static final QName HTTP = new QName("http://www.opengis.net/ows", "HTTP");
+    public static final QName HTTP = new QName("http://www.opengis.net/ows",
+            "HTTP");
 
     /** @generated */
-    public static final QName IDENTIFIER = new QName("http://www.opengis.net/ows", "Identifier");
+    public static final QName IDENTIFIER = new QName("http://www.opengis.net/ows",
+            "Identifier");
 
     /** @generated */
     public static final QName INDIVIDUALNAME = new QName("http://www.opengis.net/ows",
             "IndividualName");
 
     /** @generated */
-    public static final QName KEYWORDS = new QName("http://www.opengis.net/ows", "Keywords");
+    public static final QName KEYWORDS = new QName("http://www.opengis.net/ows",
+            "Keywords");
 
     /** @generated */
-    public static final QName LANGUAGE = new QName("http://www.opengis.net/ows", "Language");
+    public static final QName LANGUAGE = new QName("http://www.opengis.net/ows",
+            "Language");
 
     /** @generated */
-    public static final QName METADATA = new QName("http://www.opengis.net/ows", "Metadata");
+    public static final QName METADATA = new QName("http://www.opengis.net/ows",
+            "Metadata");
 
     /** @generated */
-    public static final QName OPERATION = new QName("http://www.opengis.net/ows", "Operation");
+    public static final QName OPERATION = new QName("http://www.opengis.net/ows",
+            "Operation");
 
     /** @generated */
     public static final QName OPERATIONSMETADATA = new QName("http://www.opengis.net/ows",
@@ -188,17 +212,20 @@ public interface OWS {
             "OrganisationName");
 
     /** @generated */
-    public static final QName OUTPUTFORMAT = new QName("http://www.opengis.net/ows", "OutputFormat");
+    public static final QName OUTPUTFORMAT = new QName("http://www.opengis.net/ows",
+            "OutputFormat");
 
     /** @generated */
     public static final QName POINTOFCONTACT = new QName("http://www.opengis.net/ows",
             "PointOfContact");
 
     /** @generated */
-    public static final QName POSITIONNAME = new QName("http://www.opengis.net/ows", "PositionName");
+    public static final QName POSITIONNAME = new QName("http://www.opengis.net/ows",
+            "PositionName");
 
     /** @generated */
-    public static final QName ROLE = new QName("http://www.opengis.net/ows", "Role");
+    public static final QName ROLE = new QName("http://www.opengis.net/ows",
+            "Role");
 
     /** @generated */
     public static final QName SERVICEIDENTIFICATION = new QName("http://www.opengis.net/ows",
@@ -209,10 +236,12 @@ public interface OWS {
             "ServiceProvider");
 
     /** @generated */
-    public static final QName SUPPORTEDCRS = new QName("http://www.opengis.net/ows", "SupportedCRS");
+    public static final QName SUPPORTEDCRS = new QName("http://www.opengis.net/ows",
+            "SupportedCRS");
 
     /** @generated */
-    public static final QName TITLE = new QName("http://www.opengis.net/ows", "Title");
+    public static final QName TITLE = new QName("http://www.opengis.net/ows",
+            "Title");
 
     /** @generated */
     public static final QName WGS84BOUNDINGBOX = new QName("http://www.opengis.net/ows",

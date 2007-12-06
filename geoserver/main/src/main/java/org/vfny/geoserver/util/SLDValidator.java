@@ -48,17 +48,15 @@ public class SLDValidator {
         return validateSLD(new InputSource(xml), servContext);
 
         /*try {
-                     URL schemaFile = servContext.getResource("/schemas/sld/StyledLayerDescriptor.xsd");
-                     LOGGER.info("Validating SLD with " + schemaFile.toString());
-
-            return validateSLD(xml, schemaFile.toString());
-        } catch (Exception e) {
-                LOGGER.severe(e.getLocalizedMessage());
-                ArrayList al = new ArrayList();
-            al.add(new SAXException(e));
-
-            return al;
-        }*/
+           URL schemaFile = servContext.getResource("/schemas/sld/StyledLayerDescriptor.xsd");
+           LOGGER.info("Validating SLD with " + schemaFile.toString());
+           return validateSLD(xml, schemaFile.toString());
+           } catch (Exception e) {
+                   LOGGER.severe(e.getLocalizedMessage());
+                   ArrayList al = new ArrayList();
+               al.add(new SAXException(e));
+               return al;
+           }*/
     }
 
     public static String getErrorMessage(InputStream xml, List errors) {
@@ -99,7 +97,8 @@ public class SLDValidator {
                 SAXParseException sax = (SAXParseException) errors.get(0);
 
                 if (sax.getLineNumber() < 0) {
-                    result.append("   INVALID XML: " + sax.getLocalizedMessage() + "\n");
+                    result.append("   INVALID XML: "
+                        + sax.getLocalizedMessage() + "\n");
                     result.append(" \n");
                     exceptionNum = 1; // skip ahead (you only ever get one error in this case)
                 }
@@ -119,7 +118,8 @@ public class SLDValidator {
                         SAXParseException sax = (SAXParseException) errors.get(exceptionNum);
 
                         if (sax.getLineNumber() <= linenumber) {
-                            String head = "---------------------".substring(0, header.length() - 1);
+                            String head = "---------------------".substring(0,
+                                    header.length() - 1);
                             String body = "--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
 
                             int colNum = sax.getColumnNumber(); //protect against col 0 problems
@@ -136,9 +136,11 @@ public class SLDValidator {
                                 }
                             }
 
-                            result.append(head + body.substring(0, colNum - 1) + "^\n");
-                            result.append("       (line " + sax.getLineNumber() + ", column "
-                                + sax.getColumnNumber() + ")" + sax.getLocalizedMessage() + "\n");
+                            result.append(head + body.substring(0, colNum - 1)
+                                + "^\n");
+                            result.append("       (line " + sax.getLineNumber()
+                                + ", column " + sax.getColumnNumber() + ")"
+                                + sax.getLocalizedMessage() + "\n");
                             exceptionNum++;
                         } else {
                             keep_going = false; //report later (sax.getLineNumber() > linenumber)
@@ -154,8 +156,9 @@ public class SLDValidator {
 
             for (int t = exceptionNum; t < errors.size(); t++) {
                 SAXParseException sax = (SAXParseException) errors.get(t);
-                result.append("       (line " + sax.getLineNumber() + ", column "
-                    + sax.getColumnNumber() + ")" + sax.getLocalizedMessage() + "\n");
+                result.append("       (line " + sax.getLineNumber()
+                    + ", column " + sax.getColumnNumber() + ")"
+                    + sax.getLocalizedMessage() + "\n");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -173,22 +176,20 @@ public class SLDValidator {
     }
 
     /*public List validateSLD(InputStream xml, String SchemaUrl) {
-        return validateSLD(new InputSource(xml), SchemaUrl);
-    }*/
+       return validateSLD(new InputSource(xml), SchemaUrl);
+       }*/
 
     /*public List validateSLD(InputSource xml, ServletContext servContext) {
-        File schemaFile = new File(servContext.getRealPath("/"),
-        "/schemas/sld/StyledLayerDescriptor.xsd");
-
-        try {
-            return validateSLD(xml, schemaFile.toURL().toString());
-        } catch (Exception e) {
-            ArrayList al = new ArrayList();
-            al.add(new SAXException(e));
-
-            return al;
-        }
-    }*/
+       File schemaFile = new File(servContext.getRealPath("/"),
+       "/schemas/sld/StyledLayerDescriptor.xsd");
+       try {
+           return validateSLD(xml, schemaFile.toURL().toString());
+       } catch (Exception e) {
+           ArrayList al = new ArrayList();
+           al.add(new SAXException(e));
+           return al;
+       }
+       }*/
 
     /**
      * validate a .sld against the schema
@@ -204,11 +205,12 @@ public class SLDValidator {
 
         try {
             // this takes care of spaces in the path to the file
-            URL schemaFile = servContext.getResource("/schemas/sld/StyledLayerDescriptor.xsd");
+            URL schemaFile = servContext.getResource(
+                    "/schemas/sld/StyledLayerDescriptor.xsd");
 
             if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.info(new StringBuffer("Validating SLD with ").append(schemaFile.toString())
-                                                                    .toString());
+                LOGGER.info(new StringBuffer("Validating SLD with ").append(
+                        schemaFile.toString()).toString());
             }
 
             String schemaUrl = schemaFile.toString();
@@ -221,7 +223,8 @@ public class SLDValidator {
             //     4. tells the validator to 'override' the SLD schema that a user may
             //        			include with the one inside geoserver.
             parser.setFeature("http://xml.org/sax/features/validation", true);
-            parser.setFeature("http://apache.org/xml/features/validation/schema", true);
+            parser.setFeature("http://apache.org/xml/features/validation/schema",
+                true);
             parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking",
                 false);
 

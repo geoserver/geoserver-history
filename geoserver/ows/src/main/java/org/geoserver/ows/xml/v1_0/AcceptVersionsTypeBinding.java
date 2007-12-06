@@ -65,7 +65,8 @@ public class AcceptVersionsTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        AcceptVersionsType acceptVersions = owsfactory.createAcceptVersionsType();
+        AcceptVersionsType acceptVersions = owsfactory
+            .createAcceptVersionsType();
         acceptVersions.getVersion().addAll(node.getChildValues("Version"));
 
         return acceptVersions;

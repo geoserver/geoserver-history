@@ -103,8 +103,8 @@ public class WFS extends org.vfny.geoserver.global.Service {
      *
      * @throws ConfigurationException
      */
-    public WFS(Config config, Data data, GeoServer geoServer, GeoValidator validator)
-        throws ConfigurationException {
+    public WFS(Config config, Data data, GeoServer geoServer,
+        GeoValidator validator) throws ConfigurationException {
         this(config.getXMLReader().getWfs());
         setData(data);
         setGeoServer(geoServer);
@@ -170,11 +170,11 @@ public class WFS extends org.vfny.geoserver.global.Service {
     }
 
     /**
-    * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
-    * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
-    *
-    * @return <tt>true</tt> if the srs is reported with the xml style
-    */
+     * Whether the srs xml attribute should be in the EPSG:4326 (non-xml)
+     * style, or in the http://www.opengis.net/gml/srs/epsg.xml#4326 style.
+     *
+     * @return <tt>true</tt> if the srs is reported with the xml style
+     */
     public boolean isSrsXmlStyle() {
         return srsXmlStyle;
     }

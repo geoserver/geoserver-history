@@ -52,24 +52,24 @@ import javax.servlet.ServletException;
  * @author $Author: Alessio Fabiani (GeoSolutions)
  */
 public class UpdateResponse implements Response {
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.responses");
     private static final String CURR_VER = "\"1.0\"";
     private static final String CATALOG_URL = "http://www.geo-solutions.it/schemas/catalog";
-    private static final String CATALOG_NAMESPACE = new StringBuffer("\n  xmlns=\"").append(CATALOG_URL)
-                                                                                    .append("\"")
-                                                                                    .toString();
+    private static final String CATALOG_NAMESPACE = new StringBuffer(
+            "\n  xmlns=\"").append(CATALOG_URL).append("\"").toString();
     private static final String XLINK_URL = "\"http://www.w3.org/1999/xlink\"";
-    private static final String XLINK_NAMESPACE = new StringBuffer("\n  xmlns:xlink=").append(XLINK_URL)
-                                                                                      .toString();
+    private static final String XLINK_NAMESPACE = new StringBuffer(
+            "\n  xmlns:xlink=").append(XLINK_URL).toString();
     private static final String OGC_URL = "\"http://www.opengis.net/ogc\"";
-    private static final String OGC_NAMESPACE = new StringBuffer("\n  xmlns:ogc=").append(OGC_URL)
-                                                                                  .toString();
+    private static final String OGC_NAMESPACE = new StringBuffer(
+            "\n  xmlns:ogc=").append(OGC_URL).toString();
     private static final String GML_URL = "\"http://www.opengis.net/gml\"";
-    private static final String GML_NAMESPACE = new StringBuffer("\n  xmlns:gml=").append(GML_URL)
-                                                                                  .toString();
+    private static final String GML_NAMESPACE = new StringBuffer(
+            "\n  xmlns:gml=").append(GML_URL).toString();
     private static final String SCHEMA_URI = "\"http://www.w3.org/2001/XMLSchema-instance\"";
-    private static final String XSI_NAMESPACE = new StringBuffer("\n  xmlns:xsi=").append(SCHEMA_URI)
-                                                                                  .toString();
+    private static final String XSI_NAMESPACE = new StringBuffer(
+            "\n  xmlns:xsi=").append(SCHEMA_URI).toString();
 
     /** Fixed return footer information */
     private static final String FOOTER = "\n</UpdateCatalog>";
@@ -88,7 +88,8 @@ public class UpdateResponse implements Response {
      * The default transformations factory.
      */
     protected final static CoordinateOperationFactory opFactory = FactoryFinder
-        .getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
+        .getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT,
+                Boolean.TRUE));
 
     /** The root directory from which the configuration is loaded. */
     private File root;
@@ -115,7 +116,8 @@ public class UpdateResponse implements Response {
      * @uml.property name="mtFactory"
      * @uml.associationEnd multiplicity="(1 1)"
      */
-    protected final MathTransformFactory mtFactory = FactoryFinder.getMathTransformFactory(null);
+    protected final MathTransformFactory mtFactory = FactoryFinder
+        .getMathTransformFactory(null);
 
     /**
      * Returns any extra headers that this service might want to set in the HTTP
@@ -132,8 +134,8 @@ public class UpdateResponse implements Response {
 
         if (!(request instanceof UpdateRequest)) {
             throw new CatalogException(new StringBuffer(
-                    "illegal request type, expected DescribeRequest, got ").append(request)
-                                                                                                               .toString());
+                    "illegal request type, expected DescribeRequest, got ").append(
+                    request).toString());
         }
 
         UpdateRequest catalogRequest = (UpdateRequest) request;
@@ -162,19 +164,20 @@ public class UpdateResponse implements Response {
             // //
             // Loading Namespaces ...
             // //
-            Map namepsaces = loadNameSpaces(ReaderUtils.getChildElement(catalogElem, "namespaces",
-                        true));
+            Map namepsaces = loadNameSpaces(ReaderUtils.getChildElement(
+                        catalogElem, "namespaces", true));
 
             // //
             // Loading Styles ...
             // //
-            Map styles = loadStyles(ReaderUtils.getChildElement(catalogElem, "styles", false),
-                    styleDir);
+            Map styles = loadStyles(ReaderUtils.getChildElement(catalogElem,
+                        "styles", false), styleDir);
 
             // //
             // Loading DataStores ...
             // //
-            Element datastoresElem = ReaderUtils.getChildElement(catalogElem, "datastores", false);
+            Element datastoresElem = ReaderUtils.getChildElement(catalogElem,
+                    "datastores", false);
             Map datastores = new HashMap();
 
             if (datastoresElem != null) {
@@ -184,7 +187,8 @@ public class UpdateResponse implements Response {
             // //
             // Loading CoverageStores ...
             // //
-            Element coveragestoresElem = ReaderUtils.getChildElement(catalogElem, "formats", false);
+            Element coveragestoresElem = ReaderUtils.getChildElement(catalogElem,
+                    "formats", false);
             Map coveragestores = new HashMap();
 
             if (coveragestoresElem != null) {
@@ -208,7 +212,8 @@ public class UpdateResponse implements Response {
             File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
 
             try {
-                XMLConfigWriter.store((DataDTO) request.getCATALOG().getData().toDTO(), rootDir);
+                XMLConfigWriter.store((DataDTO) request.getCATALOG().getData()
+                                                       .toDTO(), rootDir);
             } catch (ConfigurationException e) {
                 e.printStackTrace();
                 throw new ServletException(e);
@@ -255,8 +260,10 @@ public class UpdateResponse implements Response {
         StringBuffer tempResponse = new StringBuffer();
 
         tempResponse.append("<?xml version=\"1.0\" encoding=\"")
-                    .append(catalogRequest.getGeoServer().getCharSet().displayName()).append("\"?>")
-                    .append("\n<UpdateCatalog version=").append(CURR_VER).append(" ").toString();
+                    .append(catalogRequest.getGeoServer().getCharSet()
+                                          .displayName()).append("\"?>")
+                    .append("\n<UpdateCatalog version=").append(CURR_VER)
+                    .append(" ").toString();
 
         tempResponse.append(CATALOG_NAMESPACE);
         tempResponse.append(XLINK_NAMESPACE);
@@ -269,7 +276,8 @@ public class UpdateResponse implements Response {
          * ").append(request.getSchemaBaseUrl()).append(
          * "catalog/1.0.0/describeCoverage.xsd\">\n\n");
          */
-        tempResponse.append(" xsi:schemaLocation=\"").append(CATALOG_URL).append(" ")
+        tempResponse.append(" xsi:schemaLocation=\"").append(CATALOG_URL)
+                    .append(" ")
                     .append("http://www.geo-solutions.it/catalog/1.0/")
                     .append("updateCatalog.xsd\">\n\n");
 
@@ -327,11 +335,12 @@ public class UpdateResponse implements Response {
                 NameSpaceInfoDTO ns = new NameSpaceInfoDTO();
                 ns.setUri(ReaderUtils.getAttribute(elem, "uri", true));
                 ns.setPrefix(ReaderUtils.getAttribute(elem, "prefix", true));
-                ns.setDefault(ReaderUtils.getBooleanAttribute(elem, "default", false, false)
-                    || (nsCount == 1));
+                ns.setDefault(ReaderUtils.getBooleanAttribute(elem, "default",
+                        false, false) || (nsCount == 1));
 
                 if (LOGGER.isLoggable(Level.CONFIG)) {
-                    LOGGER.config(new StringBuffer("added namespace ").append(ns).toString());
+                    LOGGER.config(new StringBuffer("added namespace ").append(
+                            ns).toString());
                 }
 
                 nameSpaces.put(ns.getPrefix(), new NameSpaceConfig(ns));
@@ -357,7 +366,8 @@ public class UpdateResponse implements Response {
      * @throws ConfigurationException
      *             When an error occurs.
      */
-    private Map loadCoverageStores(Element fmRoot) throws ConfigurationException {
+    private Map loadCoverageStores(Element fmRoot)
+        throws ConfigurationException {
         Map formats = new HashMap();
 
         if (fmRoot == null) { // if there are no formats (they are using
@@ -380,7 +390,8 @@ public class UpdateResponse implements Response {
                 if (formats.containsKey(fmConfig.getId())) {
                     LOGGER.warning("Ignored duplicated format.");
                 } else {
-                    formats.put(fmConfig.getId(), new CoverageStoreConfig(fmConfig));
+                    formats.put(fmConfig.getId(),
+                        new CoverageStoreConfig(fmConfig));
                 }
             } catch (ConfigurationException e) {
                 LOGGER.log(Level.WARNING, "Ignored a misconfigured coverage.", e);
@@ -416,25 +427,29 @@ public class UpdateResponse implements Response {
         try {
             fm.setId(ReaderUtils.getAttribute(fmElem, "id", true));
 
-            String namespacePrefix = ReaderUtils.getAttribute(fmElem, "namespace", true);
+            String namespacePrefix = ReaderUtils.getAttribute(fmElem,
+                    "namespace", true);
 
             if (dataConfig.getNameSpaces().containsKey(namespacePrefix)) {
                 fm.setNameSpaceId(namespacePrefix);
             } else {
-                LOGGER.warning("Could not find namespace " + namespacePrefix + " defaulting to "
+                LOGGER.warning("Could not find namespace " + namespacePrefix
+                    + " defaulting to "
                     + dataConfig.getDefaultNameSpace().getPrefix());
                 fm.setNameSpaceId(dataConfig.getDefaultNameSpace().getPrefix());
             }
 
             fm.setType(ReaderUtils.getChildText(fmElem, "type", true));
             fm.setUrl(ReaderUtils.getChildText(fmElem, "url", false));
-            fm.setEnabled(ReaderUtils.getBooleanAttribute(fmElem, "enabled", false, true));
+            fm.setEnabled(ReaderUtils.getBooleanAttribute(fmElem, "enabled",
+                    false, true));
             fm.setTitle(ReaderUtils.getChildText(fmElem, "title", false));
             fm.setAbstract(ReaderUtils.getChildText(fmElem, "description", false));
 
             if (LOGGER.isLoggable(Level.FINER)) {
-                LOGGER.finer(new StringBuffer("loading parameters for FormatDTO ").append(
-                        fm.getId()).toString());
+                LOGGER.finer(new StringBuffer(
+                        "loading parameters for FormatDTO ").append(fm.getId())
+                                                                                  .toString());
             }
         } catch (Exception e) {
             throw new ConfigurationException(e);
@@ -473,12 +488,15 @@ public class UpdateResponse implements Response {
                 dsConfig = loadDataStore(dsElem, namespaces);
 
                 if (dataStores.containsKey(dsConfig.getId())) {
-                    LOGGER.warning("Ignored duplicated datastore with id " + dsConfig.getId());
+                    LOGGER.warning("Ignored duplicated datastore with id "
+                        + dsConfig.getId());
                 } else {
-                    dataStores.put(dsConfig.getId(), new DataStoreConfig(dsConfig));
+                    dataStores.put(dsConfig.getId(),
+                        new DataStoreConfig(dsConfig));
                 }
             } catch (ConfigurationException e) {
-                LOGGER.log(Level.WARNING, "Ignored a misconfigured datastore.", e);
+                LOGGER.log(Level.WARNING, "Ignored a misconfigured datastore.",
+                    e);
             }
         }
 
@@ -511,33 +529,38 @@ public class UpdateResponse implements Response {
 
             ds.setId(ReaderUtils.getAttribute(dsElem, "id", true));
 
-            String namespacePrefix = ReaderUtils.getAttribute(dsElem, "namespace", true);
+            String namespacePrefix = ReaderUtils.getAttribute(dsElem,
+                    "namespace", true);
 
             if (namespaces.containsKey(namespacePrefix)) {
                 ds.setNameSpaceId(namespacePrefix);
             } else {
-                LOGGER.warning("Could not find namespace " + namespacePrefix + " defaulting to "
+                LOGGER.warning("Could not find namespace " + namespacePrefix
+                    + " defaulting to "
                     + dataConfig.getDefaultNameSpace().getPrefix());
                 ds.setNameSpaceId(dataConfig.getDefaultNameSpace().getPrefix());
             }
 
-            ds.setEnabled(ReaderUtils.getBooleanAttribute(dsElem, "enabled", false, true));
+            ds.setEnabled(ReaderUtils.getBooleanAttribute(dsElem, "enabled",
+                    false, true));
             ds.setTitle(ReaderUtils.getChildText(dsElem, "title", false));
             ds.setAbstract(ReaderUtils.getChildText(dsElem, "description", false));
 
             if (LOGGER.isLoggable(Level.FINER)) {
-                LOGGER.finer(new StringBuffer("loading connection parameters for DataStoreDTO ").append(
+                LOGGER.finer(new StringBuffer(
+                        "loading connection parameters for DataStoreDTO ").append(
                         ds.getNameSpaceId()).toString());
             }
 
-            ds.setConnectionParams(loadConnectionParams(ReaderUtils.getChildElement(dsElem,
-                        "connectionParams", true)));
+            ds.setConnectionParams(loadConnectionParams(
+                    ReaderUtils.getChildElement(dsElem, "connectionParams", true)));
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }
 
         if (LOGGER.isLoggable(Level.CONFIG)) {
-            LOGGER.config(new StringBuffer("Loaded datastore ").append(ds.getId()).toString());
+            LOGGER.config(new StringBuffer("Loaded datastore ").append(
+                    ds.getId()).toString());
         }
 
         return ds;
@@ -582,9 +605,10 @@ public class UpdateResponse implements Response {
                 connectionParams.put(paramKey, paramValue);
 
                 if (LOGGER.isLoggable(Level.FINER)) {
-                    LOGGER.finer(new StringBuffer("added parameter ").append(paramKey).append(": '")
-                                                                     .append(paramValue.replaceAll(
-                                "'", "\"")).append("'").toString());
+                    LOGGER.finer(new StringBuffer("added parameter ").append(
+                            paramKey).append(": '")
+                                                                     .append(paramValue
+                            .replaceAll("'", "\"")).append("'").toString());
                 }
             }
         } catch (Exception e) {
@@ -640,11 +664,13 @@ public class UpdateResponse implements Response {
                 s.setId(ReaderUtils.getAttribute(styleElem, "id", true));
                 s.setFilename(new File(baseDir,
                         ReaderUtils.getAttribute(styleElem, "filename", true)));
-                s.setDefault(ReaderUtils.getBooleanAttribute(styleElem, "default", false, false));
+                s.setDefault(ReaderUtils.getBooleanAttribute(styleElem,
+                        "default", false, false));
                 styles.put(s.getId(), new StyleConfig(s));
 
                 if (LOGGER.isLoggable(Level.CONFIG)) {
-                    LOGGER.config(new StringBuffer("Loaded style ").append(s.getId()).toString());
+                    LOGGER.config(new StringBuffer("Loaded style ").append(
+                            s.getId()).toString());
                 }
             } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "Ignored misconfigured style", e);

@@ -22,12 +22,12 @@ import javax.servlet.http.HttpServletResponse;
  * @author jgarnett
  */
 public class BufferStrategy implements ServiceStrategy {
+    /** DOCUMENT ME!  */
+    ByteArrayOutputStream buffer = null;
+
     public String getId() {
         return "BUFFER";
     }
-
-    /** DOCUMENT ME!  */
-    ByteArrayOutputStream buffer = null;
 
     /**
      * Provides a ByteArrayOutputStream for writeTo.

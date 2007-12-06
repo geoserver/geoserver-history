@@ -42,18 +42,19 @@ import javax.servlet.http.HttpServletResponse;
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class UpdateGSAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
-        throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        UserContainer user, HttpServletRequest request,
+        HttpServletResponse response) throws IOException, ServletException {
         ActionForward r1 = updateGeoserver(mapping, form, request, response);
         ActionForward r2 = updateValidation(mapping, form, request, response);
 
         getApplicationState().fireChange();
+
         return mapping.findForward("config");
     }
 
-    public ActionForward updateGeoserver(ActionMapping mapping, ActionForm form,
-        // UserContainer user,
+    public ActionForward updateGeoserver(ActionMapping mapping,
+        ActionForm form, // UserContainer user,
     HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         GeoServer gs;
@@ -86,8 +87,8 @@ public class UpdateGSAction extends ConfigAction {
         return mapping.findForward("config");
     }
 
-    public ActionForward updateValidation(ActionMapping mapping, ActionForm form,
-        // UserContainer user,
+    public ActionForward updateValidation(ActionMapping mapping,
+        ActionForm form, // UserContainer user,
     HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         GeoServer gs;

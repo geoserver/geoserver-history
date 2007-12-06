@@ -8,6 +8,7 @@ package net.opengis.ows;
 
 import org.eclipse.emf.ecore.EFactory;
 
+
 /**
  * <!-- begin-user-doc -->
  * The <b>Factory</b> for the model.
@@ -17,282 +18,281 @@ import org.eclipse.emf.ecore.EFactory;
  * @generated
  */
 public interface OwsFactory extends EFactory {
-	/**
+    /**
      * The singleton instance of the factory.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	OwsFactory eINSTANCE = net.opengis.ows.impl.OwsFactoryImpl.init();
+    OwsFactory eINSTANCE = net.opengis.ows.impl.OwsFactoryImpl.init();
 
-	/**
+    /**
      * Returns a new object of class '<em>Accept Formats Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Accept Formats Type</em>'.
      * @generated
      */
-	AcceptFormatsType createAcceptFormatsType();
+    AcceptFormatsType createAcceptFormatsType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Accept Versions Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Accept Versions Type</em>'.
      * @generated
      */
-	AcceptVersionsType createAcceptVersionsType();
+    AcceptVersionsType createAcceptVersionsType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Address Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Address Type</em>'.
      * @generated
      */
-	AddressType createAddressType();
+    AddressType createAddressType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Bounding Box Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Bounding Box Type</em>'.
      * @generated
      */
-	BoundingBoxType createBoundingBoxType();
+    BoundingBoxType createBoundingBoxType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Capabilities Base Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Capabilities Base Type</em>'.
      * @generated
      */
-	CapabilitiesBaseType createCapabilitiesBaseType();
+    CapabilitiesBaseType createCapabilitiesBaseType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Code Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Code Type</em>'.
      * @generated
      */
-	CodeType createCodeType();
+    CodeType createCodeType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Contact Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Contact Type</em>'.
      * @generated
      */
-	ContactType createContactType();
+    ContactType createContactType();
 
-	/**
+    /**
      * Returns a new object of class '<em>DCP Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>DCP Type</em>'.
      * @generated
      */
-	DCPType createDCPType();
+    DCPType createDCPType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Description Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Description Type</em>'.
      * @generated
      */
-	DescriptionType createDescriptionType();
+    DescriptionType createDescriptionType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Document Root</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Document Root</em>'.
      * @generated
      */
-	DocumentRoot createDocumentRoot();
+    DocumentRoot createDocumentRoot();
 
-	/**
+    /**
      * Returns a new object of class '<em>Domain Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Domain Type</em>'.
      * @generated
      */
-	DomainType createDomainType();
+    DomainType createDomainType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Exception Report Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Exception Report Type</em>'.
      * @generated
      */
-	ExceptionReportType createExceptionReportType();
+    ExceptionReportType createExceptionReportType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Exception Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Exception Type</em>'.
      * @generated
      */
-	ExceptionType createExceptionType();
+    ExceptionType createExceptionType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Get Capabilities Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Get Capabilities Type</em>'.
      * @generated
      */
-	GetCapabilitiesType createGetCapabilitiesType();
+    GetCapabilitiesType createGetCapabilitiesType();
 
-	/**
+    /**
      * Returns a new object of class '<em>HTTP Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>HTTP Type</em>'.
      * @generated
      */
-	HTTPType createHTTPType();
+    HTTPType createHTTPType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Identification Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Identification Type</em>'.
      * @generated
      */
-	IdentificationType createIdentificationType();
+    IdentificationType createIdentificationType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Keywords Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Keywords Type</em>'.
      * @generated
      */
-	KeywordsType createKeywordsType();
+    KeywordsType createKeywordsType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Metadata Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Metadata Type</em>'.
      * @generated
      */
-	MetadataType createMetadataType();
+    MetadataType createMetadataType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Online Resource Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Online Resource Type</em>'.
      * @generated
      */
-	OnlineResourceType createOnlineResourceType();
+    OnlineResourceType createOnlineResourceType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Operation Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Operation Type</em>'.
      * @generated
      */
-	OperationType createOperationType();
+    OperationType createOperationType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Operations Metadata Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Operations Metadata Type</em>'.
      * @generated
      */
-	OperationsMetadataType createOperationsMetadataType();
+    OperationsMetadataType createOperationsMetadataType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Request Method Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Request Method Type</em>'.
      * @generated
      */
-	RequestMethodType createRequestMethodType();
+    RequestMethodType createRequestMethodType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Responsible Party Subset Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Responsible Party Subset Type</em>'.
      * @generated
      */
-	ResponsiblePartySubsetType createResponsiblePartySubsetType();
+    ResponsiblePartySubsetType createResponsiblePartySubsetType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Responsible Party Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Responsible Party Type</em>'.
      * @generated
      */
-	ResponsiblePartyType createResponsiblePartyType();
+    ResponsiblePartyType createResponsiblePartyType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Sections Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Sections Type</em>'.
      * @generated
      */
-	SectionsType createSectionsType();
+    SectionsType createSectionsType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Service Identification Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Service Identification Type</em>'.
      * @generated
      */
-	ServiceIdentificationType createServiceIdentificationType();
+    ServiceIdentificationType createServiceIdentificationType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Service Provider Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Service Provider Type</em>'.
      * @generated
      */
-	ServiceProviderType createServiceProviderType();
+    ServiceProviderType createServiceProviderType();
 
-	/**
+    /**
      * Returns a new object of class '<em>Telephone Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Telephone Type</em>'.
      * @generated
      */
-	TelephoneType createTelephoneType();
+    TelephoneType createTelephoneType();
 
-	/**
+    /**
      * Returns a new object of class '<em>WGS84 Bounding Box Type</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>WGS84 Bounding Box Type</em>'.
      * @generated
      */
-	WGS84BoundingBoxType createWGS84BoundingBoxType();
+    WGS84BoundingBoxType createWGS84BoundingBoxType();
 
-	/**
+    /**
      * Returns the package supported by this factory.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return the package supported by this factory.
      * @generated
      */
-	OwsPackage getOwsPackage();
-
+    OwsPackage getOwsPackage();
 } //OwsFactory

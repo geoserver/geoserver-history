@@ -8,10 +8,9 @@ package net.opengis.wfs.impl;
 
 import net.opengis.wfs.NoSRSType;
 import net.opengis.wfs.WfsPackage;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -23,22 +22,21 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * @generated
  */
 public class NoSRSTypeImpl extends EObjectImpl implements NoSRSType {
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	protected NoSRSTypeImpl() {
+    protected NoSRSTypeImpl() {
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	protected EClass eStaticClass() {
+    protected EClass eStaticClass() {
         return WfsPackage.Literals.NO_SRS_TYPE;
     }
-
 } //NoSRSTypeImpl

@@ -299,7 +299,8 @@ public class NameSpaceInfo extends GlobalLayerSupertype {
     public Set getTypeNames() {
         Set set = new HashSet();
 
-        for (Iterator i = data.getFeatureTypeInfos().values().iterator(); i.hasNext();) {
+        for (Iterator i = data.getFeatureTypeInfos().values().iterator();
+                i.hasNext();) {
             FeatureTypeInfo type = (FeatureTypeInfo) i.next();
 
             if (type.getNameSpace() == this) {

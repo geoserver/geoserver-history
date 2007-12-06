@@ -141,10 +141,12 @@ public class UpdateElementTypeBinding extends AbstractComplexEMFBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        UpdateElementType updateElement = wfsfactory.createUpdateElementType();
+        UpdateElementType updateElement = wfsfactory
+            .createUpdateElementType();
 
         //&lt;xsd:element maxOccurs="unbounded" ref="wfs:Property"&gt;
-        updateElement.getProperty().addAll(node.getChildValues(PropertyType.class));
+        updateElement.getProperty()
+                     .addAll(node.getChildValues(PropertyType.class));
 
         //&lt;xsd:element maxOccurs="1" minOccurs="0" ref="ogc:Filter"&gt;
         updateElement.setFilter((Filter) node.getChildValue(Filter.class));
@@ -160,7 +162,8 @@ public class UpdateElementTypeBinding extends AbstractComplexEMFBinding {
         //&lt;xsd:attribute default="x-application/gml:3" name="inputFormat"
         //	type="xsd:string" use="optional"&gt;
         if (node.hasAttribute("inputFormat")) {
-            updateElement.setInputFormat((String) node.getAttributeValue("inputFormat"));
+            updateElement.setInputFormat((String) node.getAttributeValue(
+                    "inputFormat"));
         }
 
         //&lt;xsd:attribute name="srsName" type="xsd:anyURI" use="optional"&gt;

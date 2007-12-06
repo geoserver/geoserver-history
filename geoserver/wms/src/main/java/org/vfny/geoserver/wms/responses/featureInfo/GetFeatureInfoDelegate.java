@@ -4,8 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
-import java.util.List;
-
 import org.opengis.filter.Filter;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
@@ -14,6 +12,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
+import java.util.List;
 
 
 /**
@@ -143,10 +142,9 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *
      * @throws WmsException For any problems executing.
      */
-    protected abstract void execute(FeatureTypeInfo[] requestedLayers, Filter[] filters, int x,
-        int y) throws WmsException;
+    protected abstract void execute(FeatureTypeInfo[] requestedLayers,
+        Filter[] filters, int x, int y) throws WmsException;
 
-    
     /**
      * Gets the map request.  Used by delegate children to find out more
      * information about the request.

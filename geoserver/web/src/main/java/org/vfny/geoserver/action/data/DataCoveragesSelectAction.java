@@ -30,8 +30,9 @@ import javax.servlet.http.HttpServletResponse;
  *         modification)
  */
 public class DataCoveragesSelectAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,
-        UserContainer user, HttpServletRequest request, HttpServletResponse response)
+    public ActionForward execute(ActionMapping mapping,
+        ActionForm incomingForm, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         DataCoveragesSelectForm form = (DataCoveragesSelectForm) incomingForm;
 
@@ -45,11 +46,14 @@ public class DataCoveragesSelectAction extends ConfigAction {
 
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = getResources(request);
-        String edit = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
-        String delete = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
+        String edit = HTMLEncoder.decode(messages.getMessage(locale,
+                    "label.edit"));
+        String delete = HTMLEncoder.decode(messages.getMessage(locale,
+                    "label.delete"));
 
         if (edit.equals(buttonAction)) {
-            request.getSession().setAttribute(DataConfig.SELECTED_COVERAGE, cvConfig);
+            request.getSession()
+                   .setAttribute(DataConfig.SELECTED_COVERAGE, cvConfig);
             user.setCoverageConfig(cvConfig);
 
             return mapping.findForward("config.data.coverage.editor");

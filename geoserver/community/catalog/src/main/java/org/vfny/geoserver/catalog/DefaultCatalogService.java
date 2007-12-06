@@ -20,7 +20,9 @@ import org.vfny.geoserver.catalog.servlets.AddFeatureType;
 import org.vfny.geoserver.catalog.servlets.DeleteFeatureType;
 import org.vfny.geoserver.catalog.servlets.Update;
 
-public class DefaultCatalogService implements CatalogService, ApplicationContextAware {
+
+public class DefaultCatalogService implements CatalogService,
+    ApplicationContextAware {
     /**
      * Application context
      */
@@ -32,23 +34,27 @@ public class DefaultCatalogService implements CatalogService, ApplicationContext
     }
 
     public AddCoverageResponse addCoverage(AddCoverageRequest request) {
-        AddCoverage addCoverage = (AddCoverage) context.getBean("catalogAddCoverage");
+        AddCoverage addCoverage = (AddCoverage) context.getBean(
+                "catalogAddCoverage");
 
         return (AddCoverageResponse) addCoverage.getResponse();
     }
 
     public AddFeatureTypeResponse addFeatureType(AddFeatureTypeRequest request) {
-        AddFeatureType addFeatureType = (AddFeatureType) context.getBean("catalogAddFeatureType");
+        AddFeatureType addFeatureType = (AddFeatureType) context.getBean(
+                "catalogAddFeatureType");
 
         return (AddFeatureTypeResponse) addFeatureType.getResponse();
     }
 
-    public DeleteFeatureTypeResponse deleteFeatureType(DeleteFeatureTypeRequest request) {
-        DeleteFeatureType deleteFeatureType = (DeleteFeatureType) context.getBean("catalogDeleteFeatureType");
+    public DeleteFeatureTypeResponse deleteFeatureType(
+        DeleteFeatureTypeRequest request) {
+        DeleteFeatureType deleteFeatureType = (DeleteFeatureType) context
+            .getBean("catalogDeleteFeatureType");
 
         return (DeleteFeatureTypeResponse) deleteFeatureType.getResponse();
     }
-    
+
     public UpdateResponse updateCatalog(UpdateRequest request) {
         Update updateCatalog = (Update) context.getBean("catalogUpdateCatalog");
 

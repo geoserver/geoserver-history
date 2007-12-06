@@ -39,15 +39,15 @@ public class KMLUtils {
      * @return The full url for a getMap request.
      * @deprecated use {@link WMSRequests#getGetMapUrl(WMSMapContext, MapLayer, Envelope, String[])}
      */
-    public static String getMapUrl(WMSMapContext mapContext, MapLayer mapLayer, Envelope bbox,
-        String[] kvp, boolean tile) {
-       
-        if ( tile ) {
-            return WMSRequests.getTiledGetMapUrl( mapContext.getRequest(), mapLayer, bbox, kvp );
-
+    public static String getMapUrl(WMSMapContext mapContext, MapLayer mapLayer,
+        Envelope bbox, String[] kvp, boolean tile) {
+        if (tile) {
+            return WMSRequests.getTiledGetMapUrl(mapContext.getRequest(),
+                mapLayer, bbox, kvp);
         }
-        
-        return WMSRequests.getGetMapUrl( mapContext.getRequest(), mapLayer, bbox, kvp ); 
+
+        return WMSRequests.getGetMapUrl(mapContext.getRequest(), mapLayer,
+            bbox, kvp);
     }
 
     /**
@@ -64,8 +64,10 @@ public class KMLUtils {
      * @return The full url for a getMap request.
      * @deprecated use {@link WMSRequests#getGetMapUrl(WMSMapContext, MapLayer, Envelope, String[])}
      */
-    public static String getMapUrl(WMSMapContext mapContext, MapLayer mapLayer, boolean tile) {
-        return getMapUrl(mapContext, mapLayer, mapContext.getAreaOfInterest(), null, tile);
+    public static String getMapUrl(WMSMapContext mapContext, MapLayer mapLayer,
+        boolean tile) {
+        return getMapUrl(mapContext, mapLayer, mapContext.getAreaOfInterest(),
+            null, tile);
     }
 
     /**
@@ -78,9 +80,10 @@ public class KMLUtils {
      * @return A map containing all the key value pairs for a GetLegendGraphic request.
      * @deprecated use {@link WMSRequests#getGetLegendGraphicUrl(WMSMapContext, MapLayer, String[])
      */
-    public static String getLegendGraphicUrl(WMSMapContext mapContext, MapLayer mapLayer,
-        String[] kvp) {
-        return WMSRequests.getGetLegendGraphicUrl(mapContext.getRequest(), mapLayer, kvp);
+    public static String getLegendGraphicUrl(WMSMapContext mapContext,
+        MapLayer mapLayer, String[] kvp) {
+        return WMSRequests.getGetLegendGraphicUrl(mapContext.getRequest(),
+            mapLayer, kvp);
     }
 
     /**

@@ -6,8 +6,9 @@
  */
 package net.opengis.wfsv;
 
-import javax.xml.namespace.QName;
 import org.eclipse.emf.ecore.EObject;
+import javax.xml.namespace.QName;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -35,11 +36,11 @@ public interface DifferenceQueryType extends EObject {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *             The Filter element is used to define spatial and/or non-spatial constraints on query.
      *             Spatial constrains use GML3 to specify the constraining geometry. A full description of
      *             the Filter element can be found in the Filter Encoding Implementation Specification.
-     *           
+     *
      * <!-- end-model-doc -->
      * @return the value of the '<em>Filter</em>' attribute.
      * @see #setFilter(Object)
@@ -66,10 +67,10 @@ public interface DifferenceQueryType extends EObject {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *           Same as featureVersion in QueryType, but this indicates a starting feature version for a
      *           difference and log operations.
-     *         
+     *
      * <!-- end-model-doc -->
      * @return the value of the '<em>From Feature Version</em>' attribute.
      * @see #isSetFromFeatureVersion()
@@ -122,14 +123,14 @@ public interface DifferenceQueryType extends EObject {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *           This attribute is used to specify a specific WFS-supported SRS that should be used for
      *           returned feature geometries. The value may be the WFS StorageSRS value,
      *           DefaultRetrievalSRS value, or one of AdditionalSRS values. If no srsName value is
      *           supplied, then the features will be returned using either the DefaultRetrievalSRS, if
      *           specified, and StorageSRS otherwise. For feature types with no spatial properties, this
      *           attribute must not be specified or ignored if it is specified.
-     *         
+     *
      * <!-- end-model-doc -->
      * @return the value of the '<em>Srs Name</em>' attribute.
      * @see #setSrsName(String)
@@ -156,10 +157,10 @@ public interface DifferenceQueryType extends EObject {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *           Same as featureVersion in QueryType, indicates the second version to be used for
      *           performing a difference of log operation.
-     *         
+     *
      * <!-- end-model-doc -->
      * @return the value of the '<em>To Feature Version</em>' attribute.
      * @see #isSetToFeatureVersion()
@@ -212,11 +213,11 @@ public interface DifferenceQueryType extends EObject {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *           The typeName attribute is a single feature type name that indicates which type of feature
      *           instances should be included in the reponse set. The names must be a valid type that
      *           belong to this query's feature content as defined by the GML Application Schema.
-     *         
+     *
      * <!-- end-model-doc -->
      * @return the value of the '<em>Type Name</em>' attribute.
      * @see #setTypeName(QName)
@@ -236,5 +237,4 @@ public interface DifferenceQueryType extends EObject {
      * @generated
      */
     void setTypeName(QName value);
-
 } // DifferenceQueryType

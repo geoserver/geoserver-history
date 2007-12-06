@@ -4,9 +4,6 @@
  */
 package org.vfny.geoserver.action.data;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -24,6 +21,8 @@ import org.vfny.geoserver.global.CoverageStoreInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -61,8 +60,9 @@ import org.vfny.geoserver.global.UserContainer;
 public class DataCoveragesNewAction extends ConfigAction {
     public final static String NEW_COVERAGE_KEY = "newCoverage";
 
-    public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,
-        UserContainer user, HttpServletRequest request, HttpServletResponse response)
+    public ActionForward execute(ActionMapping mapping,
+        ActionForm incomingForm, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
         throws ConfigurationException {
         final DataCoveragesNewForm form = (DataCoveragesNewForm) incomingForm;
         final String formatID = form.getSelectedNewCoverage();
@@ -70,11 +70,13 @@ public class DataCoveragesNewAction extends ConfigAction {
         CoverageStoreInfo cvStoreInfo = catalog.getFormatInfo(formatID);
 
         if (cvStoreInfo == null) {
-            cvStoreInfo = new CoverageStoreInfo(getDataConfig().getDataFormat(formatID).toDTO(),
-                    catalog);
+            cvStoreInfo = new CoverageStoreInfo(getDataConfig()
+                                                    .getDataFormat(formatID)
+                                                    .toDTO(), catalog);
         }
 
-        CoverageConfig[] coverageConfigs = newCoverageConfig(cvStoreInfo, formatID, request);
+        CoverageConfig[] coverageConfigs = newCoverageConfig(cvStoreInfo,
+                formatID, request);
 
         if (coverageConfigs.length == 1) {
             user.setCoverageConfig(coverageConfigs[0]);
@@ -83,12 +85,15 @@ public class DataCoveragesNewAction extends ConfigAction {
         } else if (coverageConfigs.length > 1) {
             final DataConfig dataConfig = (DataConfig) getDataConfig();
 
-        	for (int ci=0; ci<coverageConfigs.length; ci++) {
-        		final CoverageConfig config = coverageConfigs[ci];
-                final StringBuffer coverage = new StringBuffer(config.getFormatId());
-                dataConfig.addCoverage(coverage.append(":").append(config.getName()).toString(), config);
-        	}
-        	
+            for (int ci = 0; ci < coverageConfigs.length; ci++) {
+                final CoverageConfig config = coverageConfigs[ci];
+                final StringBuffer coverage = new StringBuffer(config
+                        .getFormatId());
+                dataConfig.addCoverage(coverage.append(":")
+                                               .append(config.getName())
+                                               .toString(), config);
+            }
+
             // Don't think reset is needed (as me have moved on to new page)
             // form.reset(mapping, request);
             getApplicationState().notifyConfigChanged();
@@ -98,21 +103,23 @@ public class DataCoveragesNewAction extends ConfigAction {
 
             return mapping.findForward("config.data.coverage");
         }
-        
+
         return mapping.getInputForward();
     }
 
     /**
      * Static method so that the CoverageStore editor can do the same thing that the new one
      * does.*/
-    public static CoverageConfig[] newCoverageConfig(CoverageStoreInfo cvStoreInfo, String formatID,
+    public static CoverageConfig[] newCoverageConfig(
+        CoverageStoreInfo cvStoreInfo, String formatID,
         HttpServletRequest request) throws ConfigurationException {
         //GridCoverage gc = null;
         final Format format = cvStoreInfo.getFormat();
         GridCoverageReader reader = cvStoreInfo.getReader();
 
         if (reader == null) {
-            reader = ((AbstractGridFormat) format).getReader(GeoserverDataDirectory.findDataFile(cvStoreInfo.getUrl()));
+            reader = ((AbstractGridFormat) format).getReader(GeoserverDataDirectory
+                    .findDataFile(cvStoreInfo.getUrl()));
         }
 
         if (reader == null) {
@@ -120,21 +127,26 @@ public class DataCoveragesNewAction extends ConfigAction {
                 "Could not obtain a reader for the CoverageDataSet. Please check the CoverageDataSet configuration!");
         }
 
-        
         CoverageConfig[] coverageConfigs = null;
-        
+
         if (reader instanceof AbstractGridCoverage2DReader) {
-        	coverageConfigs    = new CoverageConfig[1];
-        	coverageConfigs[0] = new CoverageConfig(formatID, format, (AbstractGridCoverage2DReader) reader, request);
+            coverageConfigs = new CoverageConfig[1];
+            coverageConfigs[0] = new CoverageConfig(formatID, format,
+                    (AbstractGridCoverage2DReader) reader, request);
         } else if (reader instanceof AbstractGridCoverageNDReader) {
-        	final String[] listSubnames = ((AbstractGridCoverageNDReader) reader).listSubNames();
-        	coverageConfigs       		= new CoverageConfig[listSubnames.length];
-        	for (int c=0; c<coverageConfigs.length; c++)
-        		coverageConfigs[c] = new CoverageConfig(formatID, format, (AbstractGridCoverageNDReader) reader, listSubnames[c], request);
+            final String[] listSubnames = ((AbstractGridCoverageNDReader) reader)
+                .listSubNames();
+            coverageConfigs = new CoverageConfig[listSubnames.length];
+
+            for (int c = 0; c < coverageConfigs.length; c++)
+                coverageConfigs[c] = new CoverageConfig(formatID, format,
+                        (AbstractGridCoverageNDReader) reader, listSubnames[c],
+                        request);
         }
 
         request.setAttribute(NEW_COVERAGE_KEY, "true");
-        request.getSession().setAttribute(DataConfig.SELECTED_COVERAGE, coverageConfigs[0]);
+        request.getSession()
+               .setAttribute(DataConfig.SELECTED_COVERAGE, coverageConfigs[0]);
 
         return coverageConfigs;
     }

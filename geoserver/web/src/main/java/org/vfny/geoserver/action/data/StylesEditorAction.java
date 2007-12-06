@@ -60,9 +60,9 @@ import javax.servlet.http.HttpServletResponse;
  *       file in the style directory.
  */
 public class StylesEditorAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
-        throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        UserContainer user, HttpServletRequest request,
+        HttpServletResponse response) throws IOException, ServletException {
         DataConfig config = (DataConfig) getDataConfig();
         StylesEditorForm stylesForm = (StylesEditorForm) form;
         FormFile file = stylesForm.getSldFile();
@@ -78,7 +78,8 @@ public class StylesEditorAction extends ConfigAction {
         MessageResources messages = getResources(request);
 
         // final String SUBMIT = HTMLEncoder.decode(messages.getMessage(locale, "label.submit"));
-        final String UPLOAD = HTMLEncoder.decode(messages.getMessage(locale, "label.upload"));
+        final String UPLOAD = HTMLEncoder.decode(messages.getMessage(locale,
+                    "label.upload"));
 
         if (UPLOAD.equals(action)) {
             stylesForm.setSldContents(readSldContents(file));
@@ -113,7 +114,8 @@ public class StylesEditorAction extends ConfigAction {
             File styleDir;
 
             try {
-                styleDir = GeoserverDataDirectory.findConfigDir(rootDir, "styles");
+                styleDir = GeoserverDataDirectory.findConfigDir(rootDir,
+                        "styles");
             } catch (ConfigurationException cfe) {
                 LOGGER.warning("no style dir found, creating new one");
                 //if for some bizarre reason we don't fine the dir, make a new one.
@@ -141,7 +143,8 @@ public class StylesEditorAction extends ConfigAction {
 
             //here we do a check to see if the file we are trying to upload is
             //overwriting another style file. 
-            LOGGER.fine("new sld file is: " + newSldFile + ", exists: " + newSldFile.exists());
+            LOGGER.fine("new sld file is: " + newSldFile + ", exists: "
+                + newSldFile.exists());
 
             //When we have time we should put this in a temp file, to be safe, before
             //we do the validation, and only write to the real style directory when we
@@ -171,7 +174,8 @@ public class StylesEditorAction extends ConfigAction {
                     //sld matches the schema before we try to pass it to our
                     //crappy parser.
                     String message = "The xml was valid, but couldn't get a Style"
-                        + " from it.  Make sure your style validates against " + " the SLD schema";
+                        + " from it.  Make sure your style validates against "
+                        + " the SLD schema";
                     doStyleParseError(message, newSldFile, request);
 
                     return mapping.findForward("config.data.style.editor");
@@ -182,8 +186,9 @@ public class StylesEditorAction extends ConfigAction {
             } catch (Exception e) {
                 e.printStackTrace();
 
-                String message = (e.getCause() == null) ? e.getLocalizedMessage()
-                                                        : e.getCause().getLocalizedMessage();
+                String message = (e.getCause() == null)
+                    ? e.getLocalizedMessage() : e.getCause()
+                                                 .getLocalizedMessage();
                 doStyleParseError(message, newSldFile, request);
 
                 return mapping.findForward("config.data.style.editor");
@@ -209,7 +214,8 @@ public class StylesEditorAction extends ConfigAction {
         BufferedReader reader = null;
 
         try {
-            reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
+            reader = new BufferedReader(new InputStreamReader(
+                        file.getInputStream()));
 
             String line = null;
 
@@ -228,11 +234,12 @@ public class StylesEditorAction extends ConfigAction {
      *   its a listing of the original file (prefixed by line #)
      *   and any validation errors
      *
-         * @param l
-         * @param file
-         * @param stylesForm
-         */
-    private void handleValidationErrors(List errors, String sldContents, StylesEditorForm stylesForm) {
+     * @param l
+     * @param file
+     * @param stylesForm
+     */
+    private void handleValidationErrors(List errors, String sldContents,
+        StylesEditorForm stylesForm) {
         ArrayList lines = new ArrayList();
         BufferedReader reader = null;
 
@@ -268,7 +275,8 @@ public class StylesEditorAction extends ConfigAction {
                         SAXParseException sax = (SAXParseException) errors.get(exceptionNum);
 
                         if (sax.getLineNumber() <= linenumber) {
-                            String head = "---------------------".substring(0, header.length() - 1);
+                            String head = "---------------------".substring(0,
+                                    header.length() - 1);
                             String body = "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
                             int colNum = sax.getColumnNumber(); //protect against col 0 problems
 
@@ -276,7 +284,9 @@ public class StylesEditorAction extends ConfigAction {
                                 colNum = 1;
                             }
 
-                            lines.add(head + body.substring(0, sax.getColumnNumber() - 1) + "^");
+                            lines.add(head
+                                + body.substring(0, sax.getColumnNumber() - 1)
+                                + "^");
                             lines.add("       " + sax.getLocalizedMessage());
                             exceptionNum++;
                         } else {
@@ -311,19 +321,20 @@ public class StylesEditorAction extends ConfigAction {
     }
 
     /**
-    *   Check the .sld file and check to see if it passes the validation test!
-    *
+     *   Check the .sld file and check to see if it passes the validation test!
+     *
      * @param file
      * @return
      */
-    private List getSchemaExceptions(String sldContents, HttpServletRequest request) {
+    private List getSchemaExceptions(String sldContents,
+        HttpServletRequest request) {
         SLDValidator validator = new SLDValidator();
 
         ServletContext sc = request.getSession().getServletContext();
 
         try {
-            List l = validator.validateSLD(new ByteArrayInputStream(sldContents.getBytes("UTF-8")),
-                    sc);
+            List l = validator.validateSLD(new ByteArrayInputStream(
+                        sldContents.getBytes("UTF-8")), sc);
 
             return l;
         } catch (Exception e) {
@@ -335,16 +346,18 @@ public class StylesEditorAction extends ConfigAction {
     }
 
     /*
-    * Called when there is trouble parsing the file.  Note that we
-    * also delete the file here, so it doesn't stick on the system.
-    * Would be a bit better to write to a temp file before putting
-    * it in the style directory, but so it goes.
-    */
-    private void doStyleParseError(String message, File newSldFile, HttpServletRequest request) {
+     * Called when there is trouble parsing the file.  Note that we
+     * also delete the file here, so it doesn't stick on the system.
+     * Would be a bit better to write to a temp file before putting
+     * it in the style directory, but so it goes.
+     */
+    private void doStyleParseError(String message, File newSldFile,
+        HttpServletRequest request) {
         LOGGER.fine("parse error message is: " + message);
 
         ActionErrors errors = new ActionErrors();
-        errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.style.noParse", message));
+        errors.add(ActionErrors.GLOBAL_ERROR,
+            new ActionError("error.style.noParse", message));
         saveErrors(request, errors);
         newSldFile.delete();
     }

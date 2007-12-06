@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.xml.namespace.QName;
 
 
@@ -41,7 +40,8 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
      */
     FilterFactory filterFactory;
 
-    public GetFeatureKvpRequestReader(Class requestBean, Data catalog, FilterFactory filterFactory) {
+    public GetFeatureKvpRequestReader(Class requestBean, Data catalog,
+        FilterFactory filterFactory) {
         super(requestBean);
         this.catalog = catalog;
         this.filterFactory = filterFactory;
@@ -50,11 +50,13 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
     /**
      * Performs additinon GetFeature kvp parsing requirements
      */
-    public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
+    public Object read(Object request, Map kvp, Map rawKvp)
+        throws Exception {
         request = super.read(request, kvp, rawKvp);
 
         // make sure the filter is specified in just one way
-        ensureMutuallyExclusive(kvp, new String[] { "featureId", "filter", "bbox", "cql_filter" });
+        ensureMutuallyExclusive(kvp,
+            new String[] { "featureId", "filter", "bbox", "cql_filter" });
 
         //get feature has some additional parsing requirements
         EObject eObject = (EObject) request;
@@ -67,7 +69,8 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
             if ((version != null) && version.startsWith("1.0")) {
                 EMFUtils.set(eObject, "outputFormat", "GML2");
             } else {
-                EMFUtils.set(eObject, "outputFormat", "text/xml; subtype=gml/3.1.1");
+                EMFUtils.set(eObject, "outputFormat",
+                    "text/xml; subtype=gml/3.1.1");
             }
         }
 
@@ -127,8 +130,9 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
             for (Iterator i = featureIdList.iterator(); i.hasNext();) {
                 String fid = (String) i.next();
                 FeatureId featureId = filterFactory.featureId(fid);
-               ids.add(featureId);
+                ids.add(featureId);
             }
+
             // build a single feature id filter
             List filters = Collections.singletonList(filterFactory.id(ids));
 
@@ -176,7 +180,7 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 
         //srsName
         if (kvp.containsKey("srsName")) {
-            querySet(eObject, "srsName",(List)kvp.get("srsName"));
+            querySet(eObject, "srsName", (List) kvp.get("srsName"));
         }
 
         //featureversion
@@ -213,21 +217,25 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 
         //TODO: should this be applied to all geometries?
         String name = featureType.getDefaultGeometry().getName();
-        
+
         //get the epsg code
         String epsgCode = null;
-        if ( bbox instanceof ReferencedEnvelope ) {
-            CoordinateReferenceSystem crs = ((ReferencedEnvelope)bbox).getCoordinateReferenceSystem();
-            if ( crs != null ) {
+
+        if (bbox instanceof ReferencedEnvelope) {
+            CoordinateReferenceSystem crs = ((ReferencedEnvelope) bbox)
+                .getCoordinateReferenceSystem();
+
+            if (crs != null) {
                 epsgCode = GML2EncodingUtils.epsgCode(crs);
-                if ( epsgCode != null ) {
+
+                if (epsgCode != null) {
                     epsgCode = "EPSG:" + epsgCode;
                 }
             }
         }
-        
-        return filterFactory.bbox(name, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(),
-            bbox.getMaxY(), epsgCode);
+
+        return filterFactory.bbox(name, bbox.getMinX(), bbox.getMinY(),
+            bbox.getMaxX(), bbox.getMaxY(), epsgCode);
     }
 
     protected void querySet(EObject request, String property, List values)
@@ -267,7 +275,8 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
                 return;
             } else {
                 //illegal
-                String msg = "Specified " + m + " " + property + " for " + n + " queries.";
+                String msg = "Specified " + m + " " + property + " for " + n
+                    + " queries.";
                 throw new WFSException(msg);
             }
         }

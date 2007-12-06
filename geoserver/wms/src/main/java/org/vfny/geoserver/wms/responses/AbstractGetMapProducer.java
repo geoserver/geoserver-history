@@ -110,8 +110,8 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
     public void setOutputFormat(String outputFormat) {
         this.format = outputFormat;
     }
-    
-	public String getContentDisposition() {
-		return null;
-	}
+
+    public String getContentDisposition() {
+        return null;
+    }
 }

@@ -8,6 +8,7 @@ package net.opengis.ows;
 
 import org.eclipse.emf.ecore.EObject;
 
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Contact Type</b></em>'.
@@ -34,10 +35,10 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface ContactType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Phone</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Telephone numbers at which the organization or individual may be contacted.
      * <!-- end-model-doc -->
@@ -48,22 +49,22 @@ public interface ContactType extends EObject {
      *        extendedMetaData="kind='element' name='Phone' namespace='##targetNamespace'"
      * @generated
      */
-	TelephoneType getPhone();
+    TelephoneType getPhone();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ContactType#getPhone <em>Phone</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Phone</em>' containment reference.
      * @see #getPhone()
      * @generated
      */
-	void setPhone(TelephoneType value);
+    void setPhone(TelephoneType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Address</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Physical and email address at which the organization or individual may be contacted.
      * <!-- end-model-doc -->
@@ -74,22 +75,22 @@ public interface ContactType extends EObject {
      *        extendedMetaData="kind='element' name='Address' namespace='##targetNamespace'"
      * @generated
      */
-	AddressType getAddress();
+    AddressType getAddress();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ContactType#getAddress <em>Address</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Address</em>' containment reference.
      * @see #getAddress()
      * @generated
      */
-	void setAddress(AddressType value);
+    void setAddress(AddressType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Online Resource</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * On-line information that can be used to contact the individual or organization. OWS specifics: The xlink:href attribute in the xlink:simpleLink attribute group shall be used to reference this resource. Whenever practical, the xlink:href attribute with type anyURI should be a URL from which more contact information can be electronically retrieved. The xlink:title attribute with type "string" can be used to name this set of information. The other attributes in the xlink:simpleLink attribute group should not be used.
      * <!-- end-model-doc -->
@@ -100,22 +101,22 @@ public interface ContactType extends EObject {
      *        extendedMetaData="kind='element' name='OnlineResource' namespace='##targetNamespace'"
      * @generated
      */
-	OnlineResourceType getOnlineResource();
+    OnlineResourceType getOnlineResource();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ContactType#getOnlineResource <em>Online Resource</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Online Resource</em>' containment reference.
      * @see #getOnlineResource()
      * @generated
      */
-	void setOnlineResource(OnlineResourceType value);
+    void setOnlineResource(OnlineResourceType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Hours Of Service</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Time period (including time zone) when individuals can contact the organization or individual.
      * <!-- end-model-doc -->
@@ -126,22 +127,22 @@ public interface ContactType extends EObject {
      *        extendedMetaData="kind='element' name='HoursOfService' namespace='##targetNamespace'"
      * @generated
      */
-	String getHoursOfService();
+    String getHoursOfService();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ContactType#getHoursOfService <em>Hours Of Service</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Hours Of Service</em>' attribute.
      * @see #getHoursOfService()
      * @generated
      */
-	void setHoursOfService(String value);
+    void setHoursOfService(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Contact Instructions</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Supplemental instructions on how or when to contact the individual or organization.
      * <!-- end-model-doc -->
@@ -152,16 +153,15 @@ public interface ContactType extends EObject {
      *        extendedMetaData="kind='element' name='ContactInstructions' namespace='##targetNamespace'"
      * @generated
      */
-	String getContactInstructions();
+    String getContactInstructions();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ContactType#getContactInstructions <em>Contact Instructions</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Contact Instructions</em>' attribute.
      * @see #getContactInstructions()
      * @generated
      */
-	void setContactInstructions(String value);
-
+    void setContactInstructions(String value);
 } // ContactType

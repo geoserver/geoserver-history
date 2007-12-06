@@ -23,55 +23,6 @@ import javax.servlet.ServletContext;
  * @version $Id$
  */
 public final class GeoServerDTO implements DataTransferObject {
-    public static class Defaults {
-        /**
-         * The default MaxFeatures is 10000
-         *
-         * @see #getMaxFeatures(int)
-         */
-        public static final int MaxFeatures = 10000;
-
-        /**
-         * The default encoding for GeoServer it UTF-8.
-         *
-         * @see #getCharSet()
-         */
-        public static final Charset Encoding = Charset.forName("UTF-8");
-
-        /** The default verbosity is true, human readable. */
-        public static final boolean Verbose = true;
-
-        /** Default is four decimal places. */
-        public static final int NumDecimals = 4;
-
-        /** The default Administrator's user name (admin) */
-        public static final String AdminUserName = "admin";
-
-        /** The default Administrator's password (geoserver) */
-        public static final String AdminPassword = "geoserver";
-
-        /**
-         * The default verboseExceptions is false, so that by default the
-         * service exceptions don't look like someone 'kacked'.
-         */
-        public static final boolean VerboseExceptions = false;
-;
-        public static final long JaiMemoryCapacity = 200 * 1024 * 1024;
-        public static final double JaiMemoryThreshold = 0.75;
-        public static final int JaiTileThreads = 7;
-        public static final int JaiTilePriority = Thread.NORM_PRIORITY;
-        public static final Boolean JaiRecycling = Boolean.TRUE;
-        public static final Boolean ImageIOCache = Boolean.FALSE;
-        public static final Boolean JaiJPEGNative = Boolean.TRUE;
-        public static final Boolean JaiPNGNative = Boolean.TRUE;
-        public static final String BaseURL = null;
-        public static final String Log4jConfigFile = null;
-        /** Default of wether to log to StdOut as well **/
-        public static final boolean SuppressStdOutLogging = false;
-        /** Default logging location on disk **/
-        public static final String LogLocation = null;
-    }
-
     /** Sets the max number of Features returned by GetFeature */
     private int maxFeatures = Defaults.MaxFeatures;
 
@@ -163,7 +114,6 @@ public final class GeoServerDTO implements DataTransferObject {
      * </p>
      */
     private String log4jConfigFile = Defaults.Log4jConfigFile;
-    
     private boolean suppressStdOutLogging = Defaults.SuppressStdOutLogging;
     private String logLocation = Defaults.LogLocation;
 
@@ -178,7 +128,6 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /** Whether the exceptions returned to the client should contain full stack traces */
     private boolean verboseExceptions = Defaults.VerboseExceptions;
-
     private double jaiMemoryCapacity = Defaults.JaiMemoryCapacity;
     private double jaiMemoryThreshold = Defaults.JaiMemoryThreshold;
     private int jaiTileThreads = Defaults.JaiTileThreads;
@@ -628,12 +577,12 @@ public final class GeoServerDTO implements DataTransferObject {
     }
 
     /**
-          * Returns the location of where the server ouputs logs. Note that this may
-          * not reference an actual physical location on disk.
-          * Call {@link GeoServer#getLogLocation(String, ServletContext)} to map this
-          * string to a file on disk.
-          *
-          */
+     * Returns the location of where the server ouputs logs. Note that this may
+     * not reference an actual physical location on disk.
+     * Call {@link GeoServer#getLogLocation(String, ServletContext)} to map this
+     * string to a file on disk.
+     *
+     */
     public String getLogLocation() {
         return logLocation;
     }
@@ -754,5 +703,55 @@ public final class GeoServerDTO implements DataTransferObject {
 
     public void setTileCache(String tileCache) {
         this.tileCache = tileCache;
+    }
+
+    public static class Defaults {
+        /**
+         * The default MaxFeatures is 10000
+         *
+         * @see #getMaxFeatures(int)
+         */
+        public static final int MaxFeatures = 10000;
+
+        /**
+         * The default encoding for GeoServer it UTF-8.
+         *
+         * @see #getCharSet()
+         */
+        public static final Charset Encoding = Charset.forName("UTF-8");
+
+        /** The default verbosity is true, human readable. */
+        public static final boolean Verbose = true;
+
+        /** Default is four decimal places. */
+        public static final int NumDecimals = 4;
+
+        /** The default Administrator's user name (admin) */
+        public static final String AdminUserName = "admin";
+
+        /** The default Administrator's password (geoserver) */
+        public static final String AdminPassword = "geoserver";
+
+        /**
+         * The default verboseExceptions is false, so that by default the
+         * service exceptions don't look like someone 'kacked'.
+         */
+        public static final boolean VerboseExceptions = false;
+        public static final long JaiMemoryCapacity = 200 * 1024 * 1024;
+        public static final double JaiMemoryThreshold = 0.75;
+        public static final int JaiTileThreads = 7;
+        public static final int JaiTilePriority = Thread.NORM_PRIORITY;
+        public static final Boolean JaiRecycling = Boolean.TRUE;
+        public static final Boolean ImageIOCache = Boolean.FALSE;
+        public static final Boolean JaiJPEGNative = Boolean.TRUE;
+        public static final Boolean JaiPNGNative = Boolean.TRUE;
+        public static final String BaseURL = null;
+        public static final String Log4jConfigFile = null;
+
+        /** Default of wether to log to StdOut as well **/
+        public static final boolean SuppressStdOutLogging = false;
+
+        /** Default logging location on disk **/
+        public static final String LogLocation = null;
     }
 }

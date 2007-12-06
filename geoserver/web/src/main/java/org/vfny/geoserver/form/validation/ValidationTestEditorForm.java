@@ -55,11 +55,12 @@ public class ValidationTestEditorForm extends ActionForm {
         attributeKeys = new ArrayList();
         attributeHelps = new ArrayList();
         attributeValues = new ArrayList();
-        ArgumentConfig.loadPropertyLists(testConfig, request.getLocale(), attributeKeys,
-            attributeHelps, attributeValues);
+        ArgumentConfig.loadPropertyLists(testConfig, request.getLocale(),
+            attributeKeys, attributeHelps, attributeValues);
     }
 
-    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping,
+        HttpServletRequest request) {
         final TestConfig victim = (TestConfig) request.getSession()
                                                       .getAttribute(TestConfig.CURRENTLY_SELECTED_KEY);
 
@@ -73,7 +74,8 @@ public class ValidationTestEditorForm extends ActionForm {
 
             if ((text == null) || (text.length() == 0)) {
                 if (property.isPreferred()) {
-                    errors.add(key, new ActionError("validation.test.property.required", key));
+                    errors.add(key,
+                        new ActionError("validation.test.property.required", key));
                 } else {
                     // assume null is ok 
                 }
@@ -82,10 +84,14 @@ public class ValidationTestEditorForm extends ActionForm {
                     Object value = victim.createArg(key, text);
 
                     if ((value == null) && property.isPreferred()) {
-                        errors.add(key, new ActionError("validation.test.property.required", key));
+                        errors.add(key,
+                            new ActionError(
+                                "validation.test.property.required", key));
                     }
                 } catch (Throwable t) {
-                    errors.add(key, new ActionError("validation.test.property.invalid", key, t));
+                    errors.add(key,
+                        new ActionError("validation.test.property.invalid",
+                            key, t));
                 }
             }
         }
@@ -109,7 +115,8 @@ public class ValidationTestEditorForm extends ActionForm {
 
             if ((text == null) || (text.length() == 0)) {
                 if (property.isPreferred()) {
-                    throw new IllegalArgumentException("Required non empty value for " + key);
+                    throw new IllegalArgumentException(
+                        "Required non empty value for " + key);
                 }
             }
 
@@ -117,7 +124,8 @@ public class ValidationTestEditorForm extends ActionForm {
 
             if (value == null) {
                 if (property.isPreferred()) {
-                    throw new IllegalArgumentException("Required non empty value for " + key);
+                    throw new IllegalArgumentException(
+                        "Required non empty value for " + key);
                 }
             } else {
                 map.put(key, value);
@@ -215,7 +223,8 @@ public class ValidationTestEditorForm extends ActionForm {
     }
 
     public String getPlugInDescription() {
-        ValidationConfig validationConfig = (ValidationConfig) this.getServlet().getServletContext()
+        ValidationConfig validationConfig = (ValidationConfig) this.getServlet()
+                                                                   .getServletContext()
                                                                    .getAttribute(ValidationConfig.CONFIG_KEY);
         PlugInConfig config = validationConfig.getPlugIn(plugInName);
 

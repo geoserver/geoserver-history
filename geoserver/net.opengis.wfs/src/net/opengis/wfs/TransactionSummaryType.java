@@ -6,9 +6,9 @@
  */
 package net.opengis.wfs;
 
+import org.eclipse.emf.ecore.EObject;
 import java.math.BigInteger;
 
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * <!-- end-user-doc -->
  *
  * <!-- begin-model-doc -->
- * 
+ *
  *             Reports the total number of features affected by some kind
  *             of write action (i.e, insert, update, delete).
  * <!-- end-model-doc -->
@@ -35,14 +35,14 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface TransactionSummaryType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Total Inserted</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Total Inserted</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Total Inserted</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Total Inserted</em>' attribute.
      * @see #setTotalInserted(BigInteger)
      * @see net.opengis.wfs.WfsPackage#getTransactionSummaryType_TotalInserted()
@@ -50,26 +50,26 @@ public interface TransactionSummaryType extends EObject {
      *        extendedMetaData="kind='element' name='totalInserted' namespace='##targetNamespace'"
      * @generated
      */
-	BigInteger getTotalInserted();
+    BigInteger getTotalInserted();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.TransactionSummaryType#getTotalInserted <em>Total Inserted</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Total Inserted</em>' attribute.
      * @see #getTotalInserted()
      * @generated
      */
-	void setTotalInserted(BigInteger value);
+    void setTotalInserted(BigInteger value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Total Updated</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Total Updated</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Total Updated</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Total Updated</em>' attribute.
      * @see #setTotalUpdated(BigInteger)
      * @see net.opengis.wfs.WfsPackage#getTransactionSummaryType_TotalUpdated()
@@ -77,26 +77,26 @@ public interface TransactionSummaryType extends EObject {
      *        extendedMetaData="kind='element' name='totalUpdated' namespace='##targetNamespace'"
      * @generated
      */
-	BigInteger getTotalUpdated();
+    BigInteger getTotalUpdated();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.TransactionSummaryType#getTotalUpdated <em>Total Updated</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Total Updated</em>' attribute.
      * @see #getTotalUpdated()
      * @generated
      */
-	void setTotalUpdated(BigInteger value);
+    void setTotalUpdated(BigInteger value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Total Deleted</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Total Deleted</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Total Deleted</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Total Deleted</em>' attribute.
      * @see #setTotalDeleted(BigInteger)
      * @see net.opengis.wfs.WfsPackage#getTransactionSummaryType_TotalDeleted()
@@ -104,16 +104,15 @@ public interface TransactionSummaryType extends EObject {
      *        extendedMetaData="kind='element' name='totalDeleted' namespace='##targetNamespace'"
      * @generated
      */
-	BigInteger getTotalDeleted();
+    BigInteger getTotalDeleted();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.TransactionSummaryType#getTotalDeleted <em>Total Deleted</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Total Deleted</em>' attribute.
      * @see #getTotalDeleted()
      * @generated
      */
-	void setTotalDeleted(BigInteger value);
-
+    void setTotalDeleted(BigInteger value);
 } // TransactionSummaryType

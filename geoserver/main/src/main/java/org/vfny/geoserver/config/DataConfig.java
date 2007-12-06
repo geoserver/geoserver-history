@@ -252,7 +252,8 @@ public class DataConfig {
         while (i.hasNext()) {
             key = i.next();
             dataFormats.put(key,
-                new CoverageStoreConfig((CoverageStoreInfoDTO) data.getFormats().get(key)));
+                new CoverageStoreConfig(
+                    (CoverageStoreInfoDTO) data.getFormats().get(key)));
         }
 
         ////
@@ -266,7 +267,8 @@ public class DataConfig {
         while (i.hasNext()) {
             key = i.next();
             dataStores.put(key,
-                new DataStoreConfig((DataStoreInfoDTO) data.getDataStores().get(key)));
+                new DataStoreConfig(
+                    (DataStoreInfoDTO) data.getDataStores().get(key)));
         }
 
         ////
@@ -280,7 +282,8 @@ public class DataConfig {
         while (i.hasNext()) {
             key = i.next();
             nameSpaces.put(key,
-                new NameSpaceConfig((NameSpaceInfoDTO) data.getNameSpaces().get(key)));
+                new NameSpaceConfig(
+                    (NameSpaceInfoDTO) data.getNameSpaces().get(key)));
 
             if (((NameSpaceConfig) nameSpaces.get(key)).isDefault()) {
                 defaultNameSpace = (NameSpaceConfig) nameSpaces.get(key);
@@ -301,7 +304,8 @@ public class DataConfig {
             key = i.next();
 
             f = (FeatureTypeInfoDTO) data.getFeaturesTypes().get(key);
-            featuresTypes.put(f.getDataStoreId() + ":" + f.getName(), new FeatureTypeConfig(f));
+            featuresTypes.put(f.getDataStoreId() + ":" + f.getName(),
+                new FeatureTypeConfig(f));
         }
 
         ////
@@ -317,7 +321,8 @@ public class DataConfig {
         while (i.hasNext()) {
             key = i.next();
             c = (CoverageInfoDTO) data.getCoverages().get(key);
-            coverages.put(c.getFormatId() + ":" + c.getName(), new CoverageConfig(c));
+            coverages.put(c.getFormatId() + ":" + c.getName(),
+                new CoverageConfig(c));
         }
 
         ////
@@ -330,7 +335,8 @@ public class DataConfig {
 
         while (i.hasNext()) {
             key = i.next();
-            styles.put(key, new StyleConfig((StyleDTO) data.getStyles().get(key)));
+            styles.put(key,
+                new StyleConfig((StyleDTO) data.getStyles().get(key)));
         }
     }
 
@@ -393,7 +399,8 @@ public class DataConfig {
             tmp.put(key, ((NameSpaceConfig) nameSpaces.get(key)).toDTO());
 
             if (((NameSpaceInfoDTO) tmp.get(key)).isDefault()) {
-                dt.setDefaultNameSpacePrefix(((NameSpaceInfoDTO) tmp.get(key)).getPrefix());
+                dt.setDefaultNameSpacePrefix(((NameSpaceInfoDTO) tmp.get(key))
+                    .getPrefix());
             }
         }
 
@@ -417,7 +424,8 @@ public class DataConfig {
         if (featuresTypes.containsKey(key)) {
             return (FeatureTypeConfig) featuresTypes.get(key);
         } else {
-            throw new NoSuchElementException("Could not find FeatureTypeConfig '" + key + "'.");
+            throw new NoSuchElementException(
+                "Could not find FeatureTypeConfig '" + key + "'.");
         }
     }
 
@@ -950,7 +958,8 @@ public class DataConfig {
                 String[] typeNames = dataStore.getTypeNames();
 
                 for (int i = 0; i < typeNames.length; i++) {
-                    typeNames[i] = dataStoreConfig.getId() + SEPARATOR + typeNames[i];
+                    typeNames[i] = dataStoreConfig.getId() + SEPARATOR
+                        + typeNames[i];
                 }
 
                 List typeNamesList = Arrays.asList(typeNames);
@@ -972,7 +981,8 @@ public class DataConfig {
         TreeSet set = new TreeSet();
 
         for (Iterator iter = dataFormats.values().iterator(); iter.hasNext();) {
-            CoverageStoreConfig dataFormatConfig = (CoverageStoreConfig) iter.next();
+            CoverageStoreConfig dataFormatConfig = (CoverageStoreConfig) iter
+                .next();
 
             set.add(dataFormatConfig.getId());
         }
@@ -994,7 +1004,8 @@ public class DataConfig {
             Map.Entry entry = (Map.Entry) i.next();
             String dataStoreId = (String) entry.getKey();
             DataStoreConfig dataStoreConfig = (DataStoreConfig) entry.getValue();
-            repository.register(dataStoreId, dataStoreConfig.findDataStore(context));
+            repository.register(dataStoreId,
+                dataStoreConfig.findDataStore(context));
         }
 
         return repository;

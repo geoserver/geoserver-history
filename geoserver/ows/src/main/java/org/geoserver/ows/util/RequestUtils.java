@@ -6,7 +6,6 @@ package org.geoserver.ows.util;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -44,32 +43,40 @@ public class RequestUtils {
      *
      */
     public static String baseURL(HttpServletRequest req) {
-        String url = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort()
-            + req.getContextPath() + "/";
+        String url = req.getScheme() + "://" + req.getServerName() + ":"
+            + req.getServerPort() + req.getContextPath() + "/";
 
         return url;
     }
-    
+
     /**
      * Given a base URL and a proxy url (which may or may-not be null)
      * this method grafts the two together so that the proper 'proxified' or 'non-proxified' url is returned
-     * 
+     *
      */
     public static String proxifiedBaseURL(String baseUrl, String proxyBase) {
-        if (proxyBase == null || proxyBase.trim().length() == 0)
+        if ((proxyBase == null) || (proxyBase.trim().length() == 0)) {
             return baseUrl;
-        
+        }
+
         try {
             URI baseUri = new URI(baseUrl);
-            if (proxyBase.endsWith("/")) proxyBase = proxyBase.substring(0, proxyBase.length() -1);
-            
+
+            if (proxyBase.endsWith("/")) {
+                proxyBase = proxyBase.substring(0, proxyBase.length() - 1);
+            }
+
             String proxifiedBaseUrl = proxyBase + baseUri.getPath();
-            if (!proxifiedBaseUrl.endsWith("/")) proxifiedBaseUrl += "/";
-            
+
+            if (!proxifiedBaseUrl.endsWith("/")) {
+                proxifiedBaseUrl += "/";
+            }
+
             return proxifiedBaseUrl;
         } catch (URISyntaxException urise) {
             //hmm...guess the proxy base must be invalid
-            throw new RuntimeException("Invalid Proxy Base URL property is set in your GeoServer installation.",urise);
+            throw new RuntimeException("Invalid Proxy Base URL property is set in your GeoServer installation.",
+                urise);
         }
     }
 }

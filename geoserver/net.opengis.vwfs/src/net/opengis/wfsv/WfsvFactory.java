@@ -8,6 +8,7 @@ package net.opengis.wfsv;
 
 import org.eclipse.emf.ecore.EFactory;
 
+
 /**
  * <!-- begin-user-doc -->
  * The <b>Factory</b> for the model.
@@ -96,5 +97,4 @@ public interface WfsvFactory extends EFactory {
      * @generated
      */
     WfsvPackage getWfsvPackage();
-
 } //WfsvFactory

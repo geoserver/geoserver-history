@@ -136,7 +136,8 @@ public class RewindableInputStream extends InputStream {
      *
      * @param  initialSize  Initial size of the internal buffer array.
      */
-    public RewindableInputStream(InputStream is, boolean chunkedMode, int initialSize) {
+    public RewindableInputStream(InputStream is, boolean chunkedMode,
+        int initialSize) {
         if (0 >= initialSize) {
             initialSize = DEFAULT_XMLDECL_BUFFER_SIZE;
         }
@@ -286,7 +287,8 @@ public class RewindableInputStream extends InputStream {
             throw new NullPointerException("Destination byte array is null.");
         } else if (0 == len) {
             return 0;
-        } else if ((b.length < off) || (b.length < (off + len)) || (0 > off) || (0 > len)) {
+        } else if ((b.length < off) || (b.length < (off + len)) || (0 > off)
+                || (0 > len)) {
             throw new IndexOutOfBoundsException();
         }
 
@@ -336,12 +338,14 @@ public class RewindableInputStream extends InputStream {
             int readFromStream = 0;
 
             if (len > bytesLeft) {
-                readFromStream = fInputStream.read(b, off + bytesLeft, len - bytesLeft);
+                readFromStream = fInputStream.read(b, off + bytesLeft,
+                        len - bytesLeft);
             }
 
             fOffset += readFromBuffer;
 
-            return readFromBuffer + ((-1 == readFromStream) ? 0 : readFromStream);
+            return readFromBuffer
+            + ((-1 == readFromStream) ? 0 : readFromStream);
         } else {
             //
             // This will prevent returning more bytes than the remainder of

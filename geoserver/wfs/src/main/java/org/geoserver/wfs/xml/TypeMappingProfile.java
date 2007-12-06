@@ -24,20 +24,18 @@ import java.util.Set;
  *
  */
 public class TypeMappingProfile /*extends ProfileImpl*/ {
-    
     /**
      * Set of profiles to do mappings from.
      */
-    Set/*<Profile>*/ profiles;
-    
-//    public TypeMappingProfile(Schema schema, Set profile) {
-//        super(schema, profile);
-//    }
+    Set /*<Profile>*/ profiles;
 
+    //    public TypeMappingProfile(Schema schema, Set profile) {
+    //        super(schema, profile);
+    //    }
     public TypeMappingProfile(Set profiles) {
         this.profiles = profiles;
     }
-    
+
     /**
      * Obtains the {@link AttributeType} mapped to a particular class.
      * <p>
@@ -52,16 +50,16 @@ public class TypeMappingProfile /*extends ProfileImpl*/ {
     public AttributeType type(Class clazz) {
         ArrayList assignable = new ArrayList();
 
-        for (Iterator p = profiles.iterator(); p.hasNext(); ) {
+        for (Iterator p = profiles.iterator(); p.hasNext();) {
             ProfileImpl profile = (ProfileImpl) p.next();
-            
+
             for (Iterator i = profile.values().iterator(); i.hasNext();) {
                 AttributeType type = (AttributeType) i.next();
-    
+
                 if (type.getType().isAssignableFrom(clazz)) {
                     assignable.add(type);
                 }
-    
+
                 if (clazz.equals(type.getType())) {
                     return type;
                 }
@@ -115,17 +113,17 @@ public class TypeMappingProfile /*extends ProfileImpl*/ {
     public Name name(Class clazz) {
         ArrayList assignable = new ArrayList();
 
-        for (Iterator p = profiles.iterator(); p.hasNext(); ) {
+        for (Iterator p = profiles.iterator(); p.hasNext();) {
             ProfileImpl profile = (ProfileImpl) p.next();
-            
+
             for (Iterator i = profile.entrySet().iterator(); i.hasNext();) {
                 Map.Entry entry = (Map.Entry) i.next();
                 AttributeType type = (AttributeType) entry.getValue();
-        
+
                 if (type.getType().isAssignableFrom(clazz)) {
                     assignable.add(entry);
                 }
-        
+
                 if (clazz.equals(type.getType())) {
                     return (Name) entry.getKey();
                 }
@@ -145,7 +143,8 @@ public class TypeMappingProfile /*extends ProfileImpl*/ {
                         Map.Entry e1 = (Map.Entry) o1;
                         Map.Entry e2 = (Map.Entry) o2;
 
-                        AttributeType a1 = (AttributeType) e1.getValue();
+                        AttributeType a1 = (AttributeType) e1
+                            .getValue();
                         AttributeType a2 = (AttributeType) e2.getValue();
 
                         if (a1.getType().equals(a2.getType())) {

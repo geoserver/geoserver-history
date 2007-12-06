@@ -4,24 +4,7 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import java.awt.Color;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.vividsolutions.jts.geom.Coordinate;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.ExpressionDOMParser;
 import org.geotools.referencing.CRS;
@@ -43,8 +26,22 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
-
-import com.vividsolutions.jts.geom.Coordinate;
+import java.awt.Color;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -55,7 +52,8 @@ import com.vividsolutions.jts.geom.Coordinate;
  * @version $Id$
  */
 public class GetMapXmlReader extends XmlRequestReader {
-    private static final StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
+    private static final StyleFactory styleFactory = CommonFactoryFinder
+        .getStyleFactory(null);
 
     /**
      * Creates a new GetMapXmlReader object.
@@ -99,11 +97,12 @@ public class GetMapXmlReader extends XmlRequestReader {
             //also see:
             //http://doctypechanger.sourceforge.net/
             //J+
-            throw new WmsException("unknown host - " + unh.getLocalizedMessage()
+            throw new WmsException("unknown host - "
+                + unh.getLocalizedMessage()
                 + " - if its in a !DOCTYPE, remove the !DOCTYPE tag.");
         } catch (SAXParseException se) {
-            throw new WmsException("line " + se.getLineNumber() + " column " + se.getColumnNumber()
-                + " -- " + se.getLocalizedMessage());
+            throw new WmsException("line " + se.getLineNumber() + " column "
+                + se.getColumnNumber() + " -- " + se.getLocalizedMessage());
         } catch (Exception e) {
             throw new WmsException(e);
         }
@@ -127,8 +126,8 @@ public class GetMapXmlReader extends XmlRequestReader {
      *
      * @throws Exception DOCUMENT ME!
      */
-    private void parseGetMapXML(Reader xml, GetMapRequest getMapRequest, boolean validateSchema)
-        throws Exception {
+    private void parseGetMapXML(Reader xml, GetMapRequest getMapRequest,
+        boolean validateSchema) throws Exception {
         File temp = null;
 
         if (validateSchema) //copy POST to a file
@@ -208,8 +207,8 @@ public class GetMapXmlReader extends XmlRequestReader {
             parseBBox(getMapRequest, nodeGetMap);
 
             // for SLD we already have it (from above) (which we'll handle as layers later)
-            StyledLayerDescriptor sld = sldParser.parseDescriptor(getNode(rootNode,
-                        "StyledLayerDescriptor"));
+            StyledLayerDescriptor sld = sldParser.parseDescriptor(getNode(
+                        rootNode, "StyledLayerDescriptor"));
             processStyles(getMapRequest, sld);
 
             //step c - "Output"
@@ -239,15 +238,16 @@ public class GetMapXmlReader extends XmlRequestReader {
      *
      * @throws Exception DOCUMENT ME!
      */
-    private void handlePostGet(Node rootNode, SLDParser sldParser, GetMapRequest getMapRequest)
-        throws Exception {
+    private void handlePostGet(Node rootNode, SLDParser sldParser,
+        GetMapRequest getMapRequest) throws Exception {
         //get the GET parmeters
         HttpServletRequest request = getMapRequest.getHttpServletRequest();
 
         String qString = request.getQueryString();
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine(new StringBuffer("reading request: ").append(qString).toString());
+            LOGGER.fine(new StringBuffer("reading request: ").append(qString)
+                                                             .toString());
         }
 
         //Map requestParams = KvpRequestReader.parseKvpSet(qString);
@@ -255,13 +255,15 @@ public class GetMapXmlReader extends XmlRequestReader {
         String paramName;
         String paramValue;
 
-        for (Enumeration pnames = request.getParameterNames(); pnames.hasMoreElements();) {
+        for (Enumeration pnames = request.getParameterNames();
+                pnames.hasMoreElements();) {
             paramName = (String) pnames.nextElement();
             paramValue = request.getParameter(paramName);
             requestParams.put(paramName.toUpperCase(), paramValue);
         }
 
-        GetMapKvpReader kvpReader = new GetMapKvpReader(requestParams, (WMService) getServiceRef());
+        GetMapKvpReader kvpReader = new GetMapKvpReader(requestParams,
+                (WMService) getServiceRef());
 
         String version = kvpReader.getRequestVersion();
         getMapRequest.setVersion(version);
@@ -283,8 +285,8 @@ public class GetMapXmlReader extends XmlRequestReader {
      * @throws Exception DOCUMENT ME!
      * @throws WmsException DOCUMENT ME!
      */
-    private void processStyles(GetMapRequest getMapRequest, StyledLayerDescriptor sld)
-        throws Exception {
+    private void processStyles(GetMapRequest getMapRequest,
+        StyledLayerDescriptor sld) throws Exception {
         final StyledLayer[] styledLayers = sld.getStyledLayers();
         final int slCount = styledLayers.length;
 
@@ -305,7 +307,8 @@ public class GetMapXmlReader extends XmlRequestReader {
             String layerName = sl.getName();
 
             if (null == layerName) {
-                throw new WmsException("A UserLayer without layer name was passed");
+                throw new WmsException(
+                    "A UserLayer without layer name was passed");
             }
 
             // TODO: add support for remote WFS here
@@ -314,19 +317,24 @@ public class GetMapXmlReader extends XmlRequestReader {
                     && ((((UserLayer) sl)).getInlineFeatureDatastore() != null)) {
                 //SPECIAL CASE - we make the temporary version
                 UserLayer ul = ((UserLayer) sl);
-                GetMapKvpReader.initializeInlineFeatureLayer(getMapRequest, ul, currLayer);
+                GetMapKvpReader.initializeInlineFeatureLayer(getMapRequest, ul,
+                    currLayer);
             } else {
                 try {
-                    currLayer.setFeature(GetMapKvpReader.findFeatureLayer(getMapRequest, layerName));
+                    currLayer.setFeature(GetMapKvpReader.findFeatureLayer(
+                            getMapRequest, layerName));
                 } catch (Exception e) {
-                    currLayer.setCoverage(GetMapKvpReader.findCoverageLayer(getMapRequest, layerName));
+                    currLayer.setCoverage(GetMapKvpReader.findCoverageLayer(
+                            getMapRequest, layerName));
                 }
             }
 
-            GetMapKvpReader.addStyles(getMapRequest, currLayer, styledLayers[i], layers, styles);
+            GetMapKvpReader.addStyles(getMapRequest, currLayer,
+                styledLayers[i], layers, styles);
         }
 
-        getMapRequest.setLayers((MapLayerInfo[]) layers.toArray(new MapLayerInfo[layers.size()]));
+        getMapRequest.setLayers((MapLayerInfo[]) layers.toArray(
+                new MapLayerInfo[layers.size()]));
         getMapRequest.setStyles(styles);
     }
 
@@ -343,7 +351,8 @@ public class GetMapXmlReader extends XmlRequestReader {
         Node bboxNode = getNode(nodeGetMap, "BoundingBox");
 
         if (bboxNode == null) {
-            throw new Exception("GetMap XML parser - couldnt find node 'BoundingBox' in GetMap tag");
+            throw new Exception(
+                "GetMap XML parser - couldnt find node 'BoundingBox' in GetMap tag");
         }
 
         List coordList = ExpressionDOMParser.parseCoords(bboxNode);
@@ -395,7 +404,7 @@ public class GetMapXmlReader extends XmlRequestReader {
      *                 <xs:element name="Height" type="xs:positiveInteger"/>
      *         </xs:sequence>
      *         </xs:complexType>
-    *  <xs:element name="Buffer" type="xs:integer" minOccurs="0"/>
+     *  <xs:element name="Buffer" type="xs:integer" minOccurs="0"/>
      * </xs:element><!--Size-->
      *
      * @param nodeGetMap
@@ -408,7 +417,8 @@ public class GetMapXmlReader extends XmlRequestReader {
         Node outputNode = getNode(nodeGetMap, "Output");
 
         if (outputNode == null) {
-            throw new Exception("GetMap XML parser - couldnt find node 'Output' in GetMap tag");
+            throw new Exception(
+                "GetMap XML parser - couldnt find node 'Output' in GetMap tag");
         }
 
         //Format
@@ -450,7 +460,8 @@ public class GetMapXmlReader extends XmlRequestReader {
         Node sizeNode = getNode(outputNode, "Size");
 
         if (sizeNode == null) {
-            throw new Exception("GetMap XML parser - couldnt find node 'Size' in GetMap/Output tag");
+            throw new Exception(
+                "GetMap XML parser - couldnt find node 'Size' in GetMap/Output tag");
         }
 
         //Size/Width
@@ -588,7 +599,8 @@ public class GetMapXmlReader extends XmlRequestReader {
             try {
                 in = new FileInputStream(f);
                 errors = validator.validateSLD(in,
-                        getMapRequest.getHttpServletRequest().getSession().getServletContext());
+                        getMapRequest.getHttpServletRequest().getSession()
+                                     .getServletContext());
             } finally {
                 if (in != null) {
                     in.close();
@@ -600,8 +612,8 @@ public class GetMapXmlReader extends XmlRequestReader {
                 throw new WmsException(SLDValidator.getErrorMessage(in, errors));
             }
         } catch (IOException e) {
-            String msg = new StringBuffer("Creating remote SLD url: ").append(e.getMessage())
-                                                                      .toString();
+            String msg = new StringBuffer("Creating remote SLD url: ").append(e
+                    .getMessage()).toString();
 
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.log(Level.WARNING, msg, e);
@@ -632,7 +644,8 @@ public class GetMapXmlReader extends XmlRequestReader {
             try {
                 in = new FileInputStream(f);
                 errors = validator.validateGETMAP(in,
-                        getMapRequest.getHttpServletRequest().getSession().getServletContext());
+                        getMapRequest.getHttpServletRequest().getSession()
+                                     .getServletContext());
             } finally {
                 if (in != null) {
                     in.close();
@@ -641,11 +654,12 @@ public class GetMapXmlReader extends XmlRequestReader {
 
             if (errors.size() != 0) {
                 in = new FileInputStream(f);
-                throw new WmsException(GETMAPValidator.getErrorMessage(in, errors));
+                throw new WmsException(GETMAPValidator.getErrorMessage(in,
+                        errors));
             }
         } catch (IOException e) {
-            String msg = new StringBuffer("Creating remote GETMAP url: ").append(e.getMessage())
-                                                                         .toString();
+            String msg = new StringBuffer("Creating remote GETMAP url: ").append(e
+                    .getMessage()).toString();
 
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.log(Level.WARNING, msg, e);

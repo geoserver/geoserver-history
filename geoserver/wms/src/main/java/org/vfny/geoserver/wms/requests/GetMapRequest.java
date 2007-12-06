@@ -4,14 +4,7 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import java.awt.Color;
-import java.awt.geom.Point2D;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.geoserver.ows.util.CaseInsensitiveMap;
 import org.geotools.styling.Style;
 import org.geotools.util.NumberRange;
@@ -20,8 +13,13 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 import org.vfny.geoserver.wms.servlets.WMService;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.awt.Color;
+import java.awt.geom.Point2D;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -50,7 +48,7 @@ public class GetMapRequest extends WMSRequest {
 
     /** raw kvp parameters non-parsed */
     private Map /*<String,String>*/ rawKvp;
-    
+
     /**
      * Creates a GetMapRequest request.
      *
@@ -236,9 +234,9 @@ public class GetMapRequest extends WMSRequest {
         return this.optionalParams.buffer;
     }
 
-	public InverseColorMapOp getPalette() {
-		return this.optionalParams.paletteInverter;
-	}
+    public InverseColorMapOp getPalette() {
+        return this.optionalParams.paletteInverter;
+    }
 
     /**
      * DOCUMENT ME!
@@ -333,7 +331,7 @@ public class GetMapRequest extends WMSRequest {
     public String getFeatureVersion() {
         return this.optionalParams.featureVersion;
     }
-    
+
     /**
      * Returns the remote OWS type
      * @return
@@ -356,7 +354,7 @@ public class GetMapRequest extends WMSRequest {
     public Map getRawKvp() {
         return rawKvp;
     }
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -444,7 +442,8 @@ public class GetMapRequest extends WMSRequest {
     }
 
     public void setLayers(List /*<MapLayerInfo>*/ layers) {
-        this.mandatoryParams.layers = (MapLayerInfo[]) layers.toArray(new MapLayerInfo[layers.size()]);
+        this.mandatoryParams.layers = (MapLayerInfo[]) layers.toArray(new MapLayerInfo[layers
+                .size()]);
     }
 
     /**
@@ -525,20 +524,21 @@ public class GetMapRequest extends WMSRequest {
     }
 
     public void setTransparent(Boolean transparent) {
-        this.optionalParams.transparent = (transparent != null) ? transparent.booleanValue() : false;
+        this.optionalParams.transparent = (transparent != null)
+            ? transparent.booleanValue() : false;
     }
 
     public void setBuffer(int buffer) {
         this.optionalParams.buffer = buffer;
     }
 
-	public void setPalette(InverseColorMapOp paletteInverter) {
-		this.optionalParams.paletteInverter = paletteInverter;
-	}
+    public void setPalette(InverseColorMapOp paletteInverter) {
+        this.optionalParams.paletteInverter = paletteInverter;
+    }
+
     public void setBuffer(Integer buffer) {
         this.optionalParams.buffer = (buffer != null) ? buffer.intValue() : 0;
     }
-
 
     public void setTiled(boolean tiled) {
         this.optionalParams.tiled = tiled;
@@ -619,7 +619,7 @@ public class GetMapRequest extends WMSRequest {
     public void setDimRange(NumberRange range) {
         this.optionalParams.dimRange = range;
     }
-    
+
     /**
      * Sets the feature version optional param
      * @param featureVersion
@@ -627,7 +627,7 @@ public class GetMapRequest extends WMSRequest {
     public void setFeatureVersion(String featureVersion) {
         this.optionalParams.featureVersion = featureVersion;
     }
-    
+
     public void setRemoteOwsType(String remoteOwsType) {
         this.optionalParams.remoteOwsType = remoteOwsType;
     }
@@ -639,10 +639,10 @@ public class GetMapRequest extends WMSRequest {
     /**
      * Sets the raw kvp parameters which were used to create the request.
      */
-    public void setRawKvp( Map rawKvp ) {
+    public void setRawKvp(Map rawKvp) {
         this.rawKvp = rawKvp;
     }
-    
+
     /**
      * decodes a color of the form <code>#FFFFFF</code> into a
      * <code>java.awt.Color</code> object
@@ -653,6 +653,43 @@ public class GetMapRequest extends WMSRequest {
      */
     private static final Color decodeColor(String hexColor) {
         return Color.decode(hexColor);
+    }
+
+    /**
+     * Standard override of toString()
+     *
+     * @return a String representation of this request.
+     */
+    public String toString() {
+        StringBuffer returnString = new StringBuffer("\nGetMap Request");
+        returnString.append("\n version: " + version);
+        returnString.append("\n output format: " + mandatoryParams.format);
+        returnString.append("\n width height: " + mandatoryParams.height + ","
+            + mandatoryParams.width);
+        returnString.append("\n bbox: " + mandatoryParams.bbox);
+        returnString.append("\n layers: ");
+
+        for (int i = 0; i < mandatoryParams.layers.length; i++) {
+            returnString.append(mandatoryParams.layers[i].getName());
+
+            if (i < (mandatoryParams.layers.length - 1)) {
+                returnString.append(",");
+            }
+        }
+
+        returnString.append("\n styles: ");
+
+        for (Iterator it = mandatoryParams.styles.iterator(); it.hasNext();) {
+            Style s = (Style) it.next();
+            returnString.append(s.getName());
+
+            if (it.hasNext()) {
+                returnString.append(",");
+            }
+        }
+
+        //returnString.append("\n inside: " + filter.toString());
+        return returnString.toString();
     }
 
     /**
@@ -734,12 +771,12 @@ public class GetMapRequest extends WMSRequest {
         /** the rendering buffer, in pixels **/
         int buffer;
 
-		/** The paletteInverter used for rendering, if any */
-		InverseColorMapOp paletteInverter;
+        /** The paletteInverter used for rendering, if any */
+        InverseColorMapOp paletteInverter;
 
-        /** 
+        /**
          * Time parameter, a list since many pattern setup can be possible, see
-         *  for example http://mapserver.gis.umn.edu/docs/howto/wms_time_support/#time-patterns 
+         *  for example http://mapserver.gis.umn.edu/docs/howto/wms_time_support/#time-patterns
          */
         List time;
 
@@ -748,11 +785,11 @@ public class GetMapRequest extends WMSRequest {
          */
         String elevation;
 
-        /** 
+        /**
          * The dim_range parameter, which could be used to select a range for color palette.
          */
         NumberRange dimRange;
-        
+
         /**
          * SLD parameter
          */
@@ -768,48 +805,11 @@ public class GetMapRequest extends WMSRequest {
 
         /** feature version (for versioned requests) */
         String featureVersion;
-        
+
         /** Remote OWS type */
         String remoteOwsType;
-        
+
         /** Remote OWS url */
         URL remoteOwsURL;
-    }
-
-    /**
-     * Standard override of toString()
-     *
-     * @return a String representation of this request.
-     */
-    public String toString() {
-        StringBuffer returnString = new StringBuffer("\nGetMap Request");
-        returnString.append("\n version: " + version);
-        returnString.append("\n output format: " + mandatoryParams.format);
-        returnString.append("\n width height: " + mandatoryParams.height + ","
-            + mandatoryParams.width);
-        returnString.append("\n bbox: " + mandatoryParams.bbox);
-        returnString.append("\n layers: ");
-
-        for (int i = 0; i < mandatoryParams.layers.length; i++) {
-            returnString.append(mandatoryParams.layers[i].getName());
-
-            if (i < (mandatoryParams.layers.length - 1)) {
-                returnString.append(",");
-            }
-        }
-
-        returnString.append("\n styles: ");
-
-        for (Iterator it = mandatoryParams.styles.iterator(); it.hasNext();) {
-            Style s = (Style) it.next();
-            returnString.append(s.getName());
-
-            if (it.hasNext()) {
-                returnString.append(",");
-            }
-        }
-
-        //returnString.append("\n inside: " + filter.toString());
-        return returnString.toString();
     }
 }

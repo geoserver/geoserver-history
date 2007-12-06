@@ -24,7 +24,8 @@ public class WFSVConfiguration extends WFSConfiguration {
      *
      * @generated
      */
-    public WFSVConfiguration(Data catalog, FeatureTypeSchemaBuilder schemaBuilder) {
+    public WFSVConfiguration(Data catalog,
+        FeatureTypeSchemaBuilder schemaBuilder) {
         super(catalog, schemaBuilder);
     }
 
@@ -41,7 +42,8 @@ public class WFSVConfiguration extends WFSConfiguration {
      * @generated
      */
     public String getSchemaFileURL() {
-        return getSchemaLocationResolver().resolveSchemaLocation(null, getNamespaceURI(), "wfsv.xsd");
+        return getSchemaLocationResolver()
+                   .resolveSchemaLocation(null, getNamespaceURI(), "wfsv.xsd");
     }
 
     public XSDSchemaLocationResolver getSchemaLocationResolver() {

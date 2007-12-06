@@ -175,8 +175,8 @@ public class DecoratingFeatureCollection implements FeatureCollection {
         return delegate.getDefaultGeometry();
     }
 
-    public void setDefaultGeometry(Geometry geometry) throws IllegalAttributeException {
+    public void setDefaultGeometry(Geometry geometry)
+        throws IllegalAttributeException {
         delegate.setDefaultGeometry(geometry);
     }
-    
 }

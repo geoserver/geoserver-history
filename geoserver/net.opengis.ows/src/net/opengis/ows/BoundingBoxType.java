@@ -6,11 +6,10 @@
  */
 package net.opengis.ows;
 
+import org.eclipse.emf.ecore.EObject;
 import java.math.BigInteger;
-
 import java.util.List;
 
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -37,10 +36,10 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface BoundingBoxType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Lower Corner</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Position of the bounding box corner at which the value of each coordinate normally is the algebraic minimum within this bounding box. In some cases, this position is normally displayed at the top, such as the top left for some image coordinates. For more information, see Subclauses 10.2.5 and C.13.
      * <!-- end-model-doc -->
@@ -51,22 +50,22 @@ public interface BoundingBoxType extends EObject {
      *        extendedMetaData="kind='element' name='LowerCorner' namespace='##targetNamespace'"
      * @generated
      */
-	List getLowerCorner();
+    List getLowerCorner();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.BoundingBoxType#getLowerCorner <em>Lower Corner</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Lower Corner</em>' attribute.
      * @see #getLowerCorner()
      * @generated
      */
-	void setLowerCorner(List value);
+    void setLowerCorner(List value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Upper Corner</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Position of the bounding box corner at which the value of each coordinate normally is the algebraic maximum within this bounding box. In some cases, this position is normally displayed at the bottom, such as the bottom right for some image coordinates. For more information, see Subclauses 10.2.5 and C.13.
      * <!-- end-model-doc -->
@@ -77,26 +76,26 @@ public interface BoundingBoxType extends EObject {
      *        extendedMetaData="kind='element' name='UpperCorner' namespace='##targetNamespace'"
      * @generated
      */
-	List getUpperCorner();
+    List getUpperCorner();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.BoundingBoxType#getUpperCorner <em>Upper Corner</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Upper Corner</em>' attribute.
      * @see #getUpperCorner()
      * @generated
      */
-	void setUpperCorner(List value);
+    void setUpperCorner(List value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Crs</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Usually references the definition of a CRS, as specified in [OGC Topic 2]. Such a CRS definition can be XML encoded using the gml:CoordinateReferenceSystemType in [GML 3.1]. For well known references, it is not required that a CRS definition exist at the location the URI points to. If no anyURI value is included, the applicable CRS must be either:
-     * a)	Specified outside the bounding box, but inside a data structure that includes this bounding box, as specified for a specific OWS use of this bounding box type.
-     * b)	Fixed and specified in the Implementation Specification for a specific OWS use of the bounding box type.
+     * a)        Specified outside the bounding box, but inside a data structure that includes this bounding box, as specified for a specific OWS use of this bounding box type.
+     * b)        Fixed and specified in the Implementation Specification for a specific OWS use of the bounding box type.
      * <!-- end-model-doc -->
      * @return the value of the '<em>Crs</em>' attribute.
      * @see #setCrs(String)
@@ -105,22 +104,22 @@ public interface BoundingBoxType extends EObject {
      *        extendedMetaData="kind='attribute' name='crs'"
      * @generated
      */
-	String getCrs();
+    String getCrs();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.BoundingBoxType#getCrs <em>Crs</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Crs</em>' attribute.
      * @see #getCrs()
      * @generated
      */
-	void setCrs(String value);
+    void setCrs(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Dimensions</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * The number of dimensions in this CRS (the length of a coordinate sequence in this use of the PositionType). This number is specified by the CRS definition, but can also be specified here.
      * <!-- end-model-doc -->
@@ -131,16 +130,15 @@ public interface BoundingBoxType extends EObject {
      *        extendedMetaData="kind='attribute' name='dimensions'"
      * @generated
      */
-	BigInteger getDimensions();
+    BigInteger getDimensions();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.BoundingBoxType#getDimensions <em>Dimensions</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Dimensions</em>' attribute.
      * @see #getDimensions()
      * @generated
      */
-	void setDimensions(BigInteger value);
-
+    void setDimensions(BigInteger value);
 } // BoundingBoxType

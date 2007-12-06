@@ -80,8 +80,8 @@ public class GTopo30CoverageResponseDelegate implements CoverageResponseDelegate
      * @return DOCUMENT ME!
      */
     public String getContentDisposition() {
-        return new StringBuffer("attachment;filename=").append(this.sourceCoverage.getName())
-                                                       .append(".zip").toString();
+        return new StringBuffer("attachment;filename=").append(this.sourceCoverage
+            .getName()).append(".zip").toString();
     }
 
     /*
@@ -89,7 +89,8 @@ public class GTopo30CoverageResponseDelegate implements CoverageResponseDelegate
      *
      * @see org.vfny.geoserver.wcs.responses.CoverageResponseDelegate#encode(java.io.OutputStream)
      */
-    public void encode(OutputStream output) throws ServiceException, IOException {
+    public void encode(OutputStream output)
+        throws ServiceException, IOException {
         // creating a zip outputstream
         final ZipOutputStream outZ = new ZipOutputStream(output);
         output = outZ;
@@ -101,7 +102,8 @@ public class GTopo30CoverageResponseDelegate implements CoverageResponseDelegate
         if (writer != null) {
             writer.write(sourceCoverage, null);
         } else {
-            throw new ServiceException("Could not create a writer for the format Gtopo30!");
+            throw new ServiceException(
+                "Could not create a writer for the format Gtopo30!");
         }
 
         // freeing everything

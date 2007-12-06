@@ -71,15 +71,18 @@ public class StylesSelectForm extends ActionForm {
         selectedStyle = "";
     }
 
-    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping,
+        HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         if ((selectedStyle == null) || selectedStyle.equals("")) {
-            errors.add("selectedStyle", new ActionError("error.style.required", selectedStyle));
+            errors.add("selectedStyle",
+                new ActionError("error.style.required", selectedStyle));
         }
 
         if (!styles.contains(selectedStyle)) {
-            errors.add("selectedStyle", new ActionError("error.style.invalid", selectedStyle));
+            errors.add("selectedStyle",
+                new ActionError("error.style.invalid", selectedStyle));
         }
 
         return errors;

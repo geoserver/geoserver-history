@@ -141,7 +141,8 @@ public class TransactionTypeBinding extends AbstractComplexEMFBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        TransactionType transaction = wfsfactory.createTransactionType();
+        TransactionType transaction = wfsfactory
+            .createTransactionType();
 
         //&lt;xsd:element minOccurs="0" ref="wfs:LockId"&gt;
         if (node.hasChild("LockId")) {
@@ -171,7 +172,8 @@ public class TransactionTypeBinding extends AbstractComplexEMFBinding {
 
         //&lt;xsd:attribute name="releaseAction" type="wfs:AllSomeType" use="optional"&gt;
         if (node.hasAttribute(AllSomeType.class)) {
-            transaction.setReleaseAction((AllSomeType) node.getAttributeValue(AllSomeType.class));
+            transaction.setReleaseAction((AllSomeType) node.getAttributeValue(
+                    AllSomeType.class));
         }
 
         return transaction;

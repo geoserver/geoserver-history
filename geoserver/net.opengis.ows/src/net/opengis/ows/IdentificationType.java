@@ -7,8 +7,8 @@
 package net.opengis.ows;
 
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.util.FeatureMap;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -37,10 +37,10 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * @generated
  */
 public interface IdentificationType extends DescriptionType {
-	/**
+    /**
      * Returns the value of the '<em><b>Identifier</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Optional unique identifier or name of this dataset.
      * <!-- end-model-doc -->
@@ -51,23 +51,23 @@ public interface IdentificationType extends DescriptionType {
      *        extendedMetaData="kind='element' name='Identifier' namespace='##targetNamespace'"
      * @generated
      */
-	CodeType getIdentifier();
+    CodeType getIdentifier();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.IdentificationType#getIdentifier <em>Identifier</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Identifier</em>' containment reference.
      * @see #getIdentifier()
      * @generated
      */
-	void setIdentifier(CodeType value);
+    void setIdentifier(CodeType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Bounding Box Group</b></em>' attribute list.
      * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Unordered list of zero or more bounding boxes whose union describes the extent of this dataset.
      * <!-- end-model-doc -->
@@ -77,13 +77,13 @@ public interface IdentificationType extends DescriptionType {
      *        extendedMetaData="kind='group' name='BoundingBox:group' namespace='##targetNamespace'"
      * @generated
      */
-	FeatureMap getBoundingBoxGroup();
+    FeatureMap getBoundingBoxGroup();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Bounding Box</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.BoundingBoxType}.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Unordered list of zero or more bounding boxes whose union describes the extent of this dataset.
      * <!-- end-model-doc -->
@@ -93,12 +93,12 @@ public interface IdentificationType extends DescriptionType {
      *        extendedMetaData="kind='element' name='BoundingBox' namespace='##targetNamespace' group='BoundingBox:group'"
      * @generated
      */
-	EList getBoundingBox();
+    EList getBoundingBox();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Output Format</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Unordered list of zero or more references to data formats supported for server outputs.
      * <!-- end-model-doc -->
@@ -109,23 +109,23 @@ public interface IdentificationType extends DescriptionType {
      *        extendedMetaData="kind='element' name='OutputFormat' namespace='##targetNamespace'"
      * @generated
      */
-	String getOutputFormat();
+    String getOutputFormat();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.IdentificationType#getOutputFormat <em>Output Format</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Output Format</em>' attribute.
      * @see #getOutputFormat()
      * @generated
      */
-	void setOutputFormat(String value);
+    void setOutputFormat(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Available CRS Group</b></em>' attribute list.
      * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Unordered list of zero or more available coordinate reference systems.
      * <!-- end-model-doc -->
@@ -135,12 +135,12 @@ public interface IdentificationType extends DescriptionType {
      *        extendedMetaData="kind='group' name='AvailableCRS:group' namespace='##targetNamespace'"
      * @generated
      */
-	FeatureMap getAvailableCRSGroup();
+    FeatureMap getAvailableCRSGroup();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Available CRS</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Unordered list of zero or more available coordinate reference systems.
      * <!-- end-model-doc -->
@@ -151,23 +151,23 @@ public interface IdentificationType extends DescriptionType {
      *        extendedMetaData="kind='element' name='AvailableCRS' namespace='##targetNamespace' group='AvailableCRS:group'"
      * @generated
      */
-	String getAvailableCRS();
+    String getAvailableCRS();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.IdentificationType#getAvailableCRS <em>Available CRS</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Available CRS</em>' attribute.
      * @see #getAvailableCRS()
      * @generated
      */
-	void setAvailableCRS(String value);
+    void setAvailableCRS(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Metadata</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.MetadataType}.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Optional unordered list of additional metadata about this data(set). A list of optional metadata elements for this data identification could be specified in the Implementation Specification for this service.
      * <!-- end-model-doc -->
@@ -177,6 +177,5 @@ public interface IdentificationType extends DescriptionType {
      *        extendedMetaData="kind='element' name='Metadata' namespace='##targetNamespace'"
      * @generated
      */
-	EList getMetadata();
-
+    EList getMetadata();
 } // IdentificationType

@@ -66,10 +66,14 @@ public class DataDataStoresNewForm extends ActionForm {
             return Collections.EMPTY_LIST;
         }
 
-        String enableVersioning = (String) getServlet().getServletContext().getInitParameter("enableVersioning");
-        if(enableVersioning == null ||  !"TRUE".equals(enableVersioning.toUpperCase())) {
+        String enableVersioning = (String) getServlet().getServletContext()
+                                               .getInitParameter("enableVersioning");
+
+        if ((enableVersioning == null)
+                || !"TRUE".equals(enableVersioning.toUpperCase())) {
             descriptions.remove("Versioning Postgis");
         }
+
         return descriptions;
     }
 
@@ -81,19 +85,22 @@ public class DataDataStoresNewForm extends ActionForm {
      *
      * @return DOCUMENT ME!
      */
-    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping,
+        HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         if (!getDescriptions().contains(getSelectedDescription())) {
             errors.add("selectedDescription",
-                new ActionError("error.dataStoreFactory.invalid", getSelectedDescription()));
+                new ActionError("error.dataStoreFactory.invalid",
+                    getSelectedDescription()));
         }
 
         if ((getDataStoreID() == null) || getDataStoreID().equals("")) {
             errors.add("dataStoreID",
                 new ActionError("error.dataStoreId.required", getDataStoreID()));
         } else if (!Pattern.matches("^[a-zA-Z](\\w|\\.)*$", getDataStoreID())) {
-            errors.add("dataStoreID", new ActionError("error.dataStoreId.invalid", getDataStoreID()));
+            errors.add("dataStoreID",
+                new ActionError("error.dataStoreId.invalid", getDataStoreID()));
         }
 
         return errors;

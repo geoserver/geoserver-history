@@ -64,11 +64,14 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
             adapter.parse(requestSource);
             LOGGER.fine("just parsed: " + requestSource);
         } catch (SAXException e) {
-            throw new WcsException(e, "XML capabilities request parsing error", getClass().getName());
+            throw new WcsException(e, "XML capabilities request parsing error",
+                getClass().getName());
         } catch (IOException e) {
-            throw new WcsException(e, "XML capabilities request input error", getClass().getName());
+            throw new WcsException(e, "XML capabilities request input error",
+                getClass().getName());
         } catch (ParserConfigurationException e) {
-            throw new WcsException(e, "Some sort of issue creating parser", getClass().getName());
+            throw new WcsException(e, "Some sort of issue creating parser",
+                getClass().getName());
         }
 
         Request r = currentRequest.getRequest(req);
@@ -94,13 +97,13 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
         }
 
         /*if (r.getRequest() != null) {
-                final String requestType = r.getRequest();
-                if (!requestType.equalsIgnoreCase("GetCapabilities") ) {
-                        throw new WcsException("REQUEST parameter is wrong.");
-                }
-        } else {
-                throw new WcsException("REQUEST parameter is mandatory.");
-        }*/
+           final String requestType = r.getRequest();
+           if (!requestType.equalsIgnoreCase("GetCapabilities") ) {
+                   throw new WcsException("REQUEST parameter is wrong.");
+           }
+           } else {
+                   throw new WcsException("REQUEST parameter is mandatory.");
+           }*/
         return r;
     }
 }

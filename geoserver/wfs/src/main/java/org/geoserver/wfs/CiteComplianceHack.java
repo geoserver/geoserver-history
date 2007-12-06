@@ -29,8 +29,8 @@ public class CiteComplianceHack implements HandlerInterceptor {
         this.wfs = wfs;
     }
 
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-        Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request,
+        HttpServletResponse response, Object handler) throws Exception {
         if (handler instanceof Dispatcher) {
             Dispatcher dispatcher = (Dispatcher) handler;
             dispatcher.setCiteCompliant(wfs.getCiteConformanceHacks());
@@ -39,13 +39,15 @@ public class CiteComplianceHack implements HandlerInterceptor {
         return true;
     }
 
-    public void postHandle(HttpServletRequest request, HttpServletResponse response,
-        Object handler, ModelAndView modelAndView) throws Exception {
+    public void postHandle(HttpServletRequest request,
+        HttpServletResponse response, Object handler, ModelAndView modelAndView)
+        throws Exception {
         // TODO Auto-generated method stub
     }
 
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-        Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request,
+        HttpServletResponse response, Object handler, Exception ex)
+        throws Exception {
         //do nothing
     }
 }

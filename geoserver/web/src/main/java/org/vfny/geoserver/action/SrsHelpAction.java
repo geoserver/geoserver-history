@@ -36,7 +36,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  */
 public class SrsHelpAction extends Action {
-    private final static Logger LOGGER = Logger.getLogger(SrsHelpAction.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(SrsHelpAction.class
+            .toString());
 
     /**
      *  This is a simple action - it reads in the GT2 supported EPSG codes.
@@ -56,14 +57,17 @@ public class SrsHelpAction extends Action {
 
         Set codes = CRS.getSupportedCodes("EPSG");
 
-        CRSAuthorityFactory customFactory = ReferencingFactoryFinder.getCRSAuthorityFactory("EPSG",
-                new Hints(Hints.CRS_AUTHORITY_FACTORY, GeoserverCustomWKTFactory.class));
+        CRSAuthorityFactory customFactory = ReferencingFactoryFinder
+            .getCRSAuthorityFactory("EPSG",
+                new Hints(Hints.CRS_AUTHORITY_FACTORY,
+                    GeoserverCustomWKTFactory.class));
         Set customCodes = new HashSet();
 
         try {
             customCodes = customFactory.getAuthorityCodes(CoordinateReferenceSystem.class);
         } catch (FactoryException e) {
-            LOGGER.log(Level.WARNING, "Error occurred while trying to gather custom CRS codes", e);
+            LOGGER.log(Level.WARNING,
+                "Error occurred while trying to gather custom CRS codes", e);
         }
 
         // make an array of each code (as an int)
@@ -98,10 +102,12 @@ public class SrsHelpAction extends Action {
             } catch (Exception e) {
                 if (customCodes.contains(id.toString())) {
                     if (LOGGER.isLoggable(Level.FINE)) {
-                        LOGGER.log(Level.FINE, "Issues converting EPSG:" + id + ".", e);
+                        LOGGER.log(Level.FINE,
+                            "Issues converting EPSG:" + id + ".", e);
                     } else {
                         LOGGER.log(Level.WARNING,
-                            "Issues converting EPSG:" + id + ". " + e.getLocalizedMessage()
+                            "Issues converting EPSG:" + id + ". "
+                            + e.getLocalizedMessage()
                             + " Stack trace included at FINE logging level");
                     }
                 } else if (LOGGER.isLoggable(Level.FINER)) {

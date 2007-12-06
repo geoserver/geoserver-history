@@ -25,11 +25,11 @@ public abstract class AbstractRasterMapProducer extends AbstractGetMapProducer
     }
 
     /**
-    * This is a package protected method with the sole purpose of facilitate
-    * unit testing. Do not use by any means for oher purposes.
-    *
-    * @return DOCUMENT ME!
-    */
+     * This is a package protected method with the sole purpose of facilitate
+     * unit testing. Do not use by any means for oher purposes.
+     *
+     * @return DOCUMENT ME!
+     */
     public RenderedImage getImage() {
         return this.image;
     }

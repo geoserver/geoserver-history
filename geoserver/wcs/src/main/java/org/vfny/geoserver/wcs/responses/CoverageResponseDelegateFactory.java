@@ -57,17 +57,20 @@ public class CoverageResponseDelegateFactory {
             if (encoder.canProduce(outputFormat)) {
                 try {
                     if (encoder != null) {
-                        return (CoverageResponseDelegate) encoder.getClass().newInstance();
+                        return (CoverageResponseDelegate) encoder.getClass()
+                                                                 .newInstance();
                     }
                 } catch (IllegalAccessException ex) {
                     final NoSuchElementException e = new NoSuchElementException(new StringBuffer(
-                                "Can't create the encoder ").append(encoder.getClass().getName())
+                                "Can't create the encoder ").append(encoder.getClass()
+                                                                           .getName())
                                                                                                                              .toString());
                     e.initCause(ex);
                     throw e;
                 } catch (InstantiationException ex) {
                     final NoSuchElementException e = new NoSuchElementException(new StringBuffer(
-                                "Can't create the encoder ").append(encoder.getClass().getName())
+                                "Can't create the encoder ").append(encoder.getClass()
+                                                                           .getName())
                                                                                                                              .toString());
                     e.initCause(ex);
                     throw e;
@@ -75,7 +78,8 @@ public class CoverageResponseDelegateFactory {
             }
         }
 
-        throw new NoSuchElementException(new StringBuffer("Can't create the encoder ").append(
-                encoder.getClass().getName()).toString());
+        throw new NoSuchElementException(new StringBuffer(
+                "Can't create the encoder ").append(encoder.getClass().getName())
+                                                                                      .toString());
     }
 }

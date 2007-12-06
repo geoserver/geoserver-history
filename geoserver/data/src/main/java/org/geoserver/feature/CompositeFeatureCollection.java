@@ -10,7 +10,6 @@ import org.geotools.data.store.DataFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -85,7 +84,8 @@ public class CompositeFeatureCollection extends DataFeatureCollection {
                 }
 
                 //grap next
-                iterator = ((FeatureCollection) collections.get(index++)).iterator();
+                iterator = ((FeatureCollection) collections.get(index++))
+                    .iterator();
 
                 if (iterator.hasNext()) {
                     return true;
@@ -95,7 +95,8 @@ public class CompositeFeatureCollection extends DataFeatureCollection {
             //no more
             if (iterator != null) {
                 //close the last iterator
-                ((FeatureCollection) collections.get(collections.size() - 1)).close(iterator);
+                ((FeatureCollection) collections.get(collections.size() - 1))
+                .close(iterator);
             }
 
             return false;

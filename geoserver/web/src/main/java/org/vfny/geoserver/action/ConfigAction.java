@@ -98,19 +98,20 @@ public class ConfigAction extends GeoServerAction {
         //
         //            return mapping.findForward("login");
         //        }
-        return execute(mapping, form, getUserContainer(request), request, response);
+        return execute(mapping, form, getUserContainer(request), request,
+            response);
     }
 
     /**
      * A "safe" execute method, only called after the user has logged in.
-    * <p>
-    * You may still override the normal execute method if you do not require
-    * this service.
-    * </p>
+     * <p>
+     * You may still override the normal execute method if you do not require
+     * this service.
+     * </p>
      */
-    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
-        throws Exception {
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        UserContainer user, HttpServletRequest request,
+        HttpServletResponse response) throws Exception {
         return null;
     }
 
@@ -125,7 +126,8 @@ public class ConfigAction extends GeoServerAction {
      * @return Configuration information for the Web Map Server
      */
     protected WMSConfig getWMSConfig() {
-        return (WMSConfig) getServlet().getServletContext().getAttribute(WMSConfig.CONFIG_KEY);
+        return (WMSConfig) getServlet().getServletContext()
+                               .getAttribute(WMSConfig.CONFIG_KEY);
     }
 
     /**
@@ -139,7 +141,8 @@ public class ConfigAction extends GeoServerAction {
      * @return Configuration information for Web Feature Server
      */
     protected WFSConfig getWFSConfig() {
-        return (WFSConfig) getServlet().getServletContext().getAttribute(WFSConfig.CONFIG_KEY);
+        return (WFSConfig) getServlet().getServletContext()
+                               .getAttribute(WFSConfig.CONFIG_KEY);
     }
 
     /**
@@ -153,7 +156,8 @@ public class ConfigAction extends GeoServerAction {
      * @return Configuration information for Web Coverage Server
      */
     protected WCSConfig getWCSConfig() {
-        return (WCSConfig) getServlet().getServletContext().getAttribute(WCSConfig.CONFIG_KEY);
+        return (WCSConfig) getServlet().getServletContext()
+                               .getAttribute(WCSConfig.CONFIG_KEY);
     }
 
     /**
@@ -162,7 +166,8 @@ public class ConfigAction extends GeoServerAction {
      * @return Configuration model for Global information.
      */
     protected GlobalConfig getGlobalConfig() {
-        return (GlobalConfig) getServlet().getServletContext().getAttribute(GlobalConfig.CONFIG_KEY);
+        return (GlobalConfig) getServlet().getServletContext()
+                                  .getAttribute(GlobalConfig.CONFIG_KEY);
     }
 
     /**
@@ -171,7 +176,8 @@ public class ConfigAction extends GeoServerAction {
      * @return Configuration model for Catalog information.
      */
     protected DataConfig getDataConfig() {
-        return (DataConfig) getServlet().getServletContext().getAttribute(DataConfig.CONFIG_KEY);
+        return (DataConfig) getServlet().getServletContext()
+                                .getAttribute(DataConfig.CONFIG_KEY);
     }
 
     /**
@@ -180,7 +186,8 @@ public class ConfigAction extends GeoServerAction {
      * @return Configuration model for Catalog information.
      */
     protected Data getData() {
-        return (Data) getServlet().getServletContext().getAttribute(Data.WEB_CONTAINER_KEY);
+        return (Data) getServlet().getServletContext()
+                          .getAttribute(Data.WEB_CONTAINER_KEY);
     }
 
     /**

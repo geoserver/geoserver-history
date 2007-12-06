@@ -44,7 +44,7 @@ public final class WMSDTO implements DataTransferObject {
     /** The interpolation rendering hint **/
     private Map baseMapLayers;
     private Map baseMapStyles;
-   private Map baseMapEnvelopes;
+    private Map baseMapEnvelopes;
 
     /** The interpolation rendering hint */
     private String allowInterpolation;
@@ -114,7 +114,8 @@ public final class WMSDTO implements DataTransferObject {
 
         WMSDTO dto = (WMSDTO) other;
 
-        boolean equals = (gmlPrefixing == dto.gmlPrefixing) && (svgAntiAlias == dto.svgAntiAlias)
+        boolean equals = (gmlPrefixing == dto.gmlPrefixing)
+            && (svgAntiAlias == dto.svgAntiAlias)
             && (allowInterpolation == dto.allowInterpolation);
 
         if (equals) {

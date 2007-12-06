@@ -2,16 +2,15 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-
 package org.geoserver.wfs.xml;
-
-import javax.xml.bind.DatatypeConverter;
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.namespace.QName;
 
 import org.geotools.xml.InstanceComponent;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.NameSpaceInfo;
+import javax.xml.bind.DatatypeConverter;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.namespace.QName;
+
 
 /**
  * Overrides the base class parsing code so that prefix can be resolved
@@ -19,14 +18,13 @@ import org.vfny.geoserver.global.NameSpaceInfo;
  * @author Andrea Aime - TOPP
  */
 public class XSQNameBinding extends org.geotools.xs.bindings.XSQNameBinding {
-
     Data data;
 
     public XSQNameBinding(NamespaceContext namespaceContext, Data data) {
         super(namespaceContext);
         this.data = data;
     }
-    
+
     /**
      * <!-- begin-user-doc -->
      * This binding returns objects of type {@link QName}.
@@ -36,7 +34,6 @@ public class XSQNameBinding extends org.geotools.xs.bindings.XSQNameBinding {
      */
     public Object parse(InstanceComponent instance, Object value)
         throws Exception {
-        
         QName qName = DatatypeConverter.parseQName((String) value,
                 namespaceContext);
 
@@ -56,13 +53,14 @@ public class XSQNameBinding extends org.geotools.xs.bindings.XSQNameBinding {
             String local = s.substring(i + 1);
             String namespaceURI = null;
             NameSpaceInfo nsInfo = data.getNameSpace(prefix);
-            if(nsInfo != null)
+
+            if (nsInfo != null) {
                 namespaceURI = nsInfo.getURI();
+            }
 
             return new QName(namespaceURI, local, prefix);
         }
 
         return new QName(null, s);
     }
-
 }

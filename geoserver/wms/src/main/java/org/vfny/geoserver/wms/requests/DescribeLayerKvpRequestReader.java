@@ -75,7 +75,8 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
         int layerCount = layers.size();
 
         if (layerCount == 0) {
-            throw new WmsException("No LAYERS has been requested", getClass().getName());
+            throw new WmsException("No LAYERS has been requested",
+                getClass().getName());
         }
 
         Data catalog = req.getWMS().getData();
@@ -91,7 +92,8 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
             layerName = (String) layers.get(i);
 
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.fine(new StringBuffer("Looking for layer ").append(layerName).toString());
+                LOGGER.fine(new StringBuffer("Looking for layer ").append(
+                        layerName).toString());
             }
 
             try {
@@ -115,21 +117,25 @@ public class DescribeLayerKvpRequestReader extends WmsKvpRequestReader {
                     req.addLayer(layer);
 
                     if (LOGGER.isLoggable(Level.FINE)) {
-                        LOGGER.fine(new StringBuffer(layerName).append(" found").toString());
+                        LOGGER.fine(new StringBuffer(layerName).append(" found")
+                                                               .toString());
                     }
                 } catch (NoSuchElementException cex) {
-                    throw new WmsException(cex, layerName + ": no such layer on this server",
+                    throw new WmsException(cex,
+                        layerName + ": no such layer on this server",
                         "LayerNotDefined");
                 }
 
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine(new StringBuffer(layerName).append(" found").toString());
+                    LOGGER.fine(new StringBuffer(layerName).append(" found")
+                                                           .toString());
                 }
             }
         }
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine(new StringBuffer("parsed request ").append(req).toString());
+            LOGGER.fine(new StringBuffer("parsed request ").append(req)
+                                                           .toString());
         }
 
         return req;

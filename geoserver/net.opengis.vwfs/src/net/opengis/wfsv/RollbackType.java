@@ -6,10 +6,10 @@
  */
 package net.opengis.wfsv;
 
-import javax.xml.namespace.QName;
 import net.opengis.wfs.NativeType;
-
 import org.eclipse.emf.ecore.EObject;
+import javax.xml.namespace.QName;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -37,12 +37,12 @@ public interface RollbackType extends NativeType {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *                 The Filter element is used to define spatial and/or non-spatial constraints on
      *                 query. Spatial constrains use GML3 to specify the constraining geometry. A full
      *                 description of the Filter element can be found in the Filter Encoding Implementation
      *                 Specification.
-     *               
+     *
      * <!-- end-model-doc -->
      * @return the value of the '<em>Filter</em>' attribute.
      * @see #setFilter(Object)
@@ -68,14 +68,14 @@ public interface RollbackType extends NativeType {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *               The handle attribute allows a client application to assign a client-generated request
      *               identifier to an Insert action. The handle is included to facilitate error reporting.
      *               If a Rollback action in a Transaction request fails, then a Versioning WFS may include
      *               the handle in an exception report to localize the error. If no handle is included of
      *               the offending Rollback element then a WFS may employee other means of localizing the
      *               error (e.g. line number).
-     *             
+     *
      * <!-- end-model-doc -->
      * @return the value of the '<em>Handle</em>' attribute.
      * @see #setHandle(String)
@@ -102,10 +102,10 @@ public interface RollbackType extends NativeType {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
-     *               Same as featureVersion in QueryType. Rollback will restore the "toFeatureVersion" 
+     *
+     *               Same as featureVersion in QueryType. Rollback will restore the "toFeatureVersion"
      *               feature state, removing all changes occurred between "toFeatureVersion" and current
-     *             
+     *
      * <!-- end-model-doc -->
      * @return the value of the '<em>To Feature Version</em>' attribute.
      * @see #isSetToFeatureVersion()
@@ -158,12 +158,12 @@ public interface RollbackType extends NativeType {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *               The typeName attribute is a single feature type name that indicates which type of
      *               feature instances should be included in the reponse set. The names must be a valid
      *               type that belong to this query's feature content as defined by the GML Application
      *               Schema.
-     *             
+     *
      * <!-- end-model-doc -->
      * @return the value of the '<em>Type Name</em>' attribute.
      * @see #setTypeName(QName)
@@ -190,11 +190,11 @@ public interface RollbackType extends NativeType {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *               User id to be used in addition to the filter in order to isolate the features to be
      *               rolled back. Only the features modified by the specified user between
      *               fromFeatureVersion and the current version will be subjected to roll back.
-     *             
+     *
      * <!-- end-model-doc -->
      * @return the value of the '<em>User</em>' attribute.
      * @see #isSetUser()
@@ -241,5 +241,4 @@ public interface RollbackType extends NativeType {
      * @generated
      */
     boolean isSetUser();
-
 } // RollbackType

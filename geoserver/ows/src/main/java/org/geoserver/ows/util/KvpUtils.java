@@ -28,7 +28,8 @@ import java.util.logging.Logger;
  */
 public class KvpUtils {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
+    private static Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.requests.readers");
 
     /** Delimeter for KVPs in the raw string */
     public static final String KEYWORD_DELIMITER = "&";
@@ -237,7 +238,8 @@ public class KvpUtils {
         Map kvps = new HashMap();
 
         // parses initial request sream into KVPs
-        StringTokenizer requestKeywords = new StringTokenizer(cleanRequest.trim(), KEYWORD_DELIMITER);
+        StringTokenizer requestKeywords = new StringTokenizer(cleanRequest.trim(),
+                KEYWORD_DELIMITER);
 
         // parses KVPs into values and keywords and puts them in a HashTable
         while (requestKeywords.hasMoreTokens()) {
@@ -259,7 +261,8 @@ public class KvpUtils {
             } else {
                 // handles all other standard cases by looking for the correct
                 //  delimeter and then sticking the KVPs into the hash table
-                StringTokenizer requestValues = new StringTokenizer(kvpPair, VALUE_DELIMITER);
+                StringTokenizer requestValues = new StringTokenizer(kvpPair,
+                        VALUE_DELIMITER);
 
                 // make sure that there is a key token
                 if (requestValues.hasMoreTokens()) {

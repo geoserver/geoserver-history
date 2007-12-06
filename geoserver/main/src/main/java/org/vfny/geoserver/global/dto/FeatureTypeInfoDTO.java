@@ -8,7 +8,6 @@ import com.vividsolutions.jts.geom.Envelope;
 import org.opengis.filter.Filter;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -51,7 +50,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /** native wich EPGS code for the FeatureTypeInfo */
     private int SRS;
-    
+
     /** either reproject or force, see {@link FeatureTypeInfo} */
     private int SRSHandling;
 
@@ -126,16 +125,6 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     private File schemaFile;
 
     /**
-     * FeatureTypeInfo constructor.
-     *
-     * <p>
-     * does nothing
-     * </p>
-     */
-    public FeatureTypeInfoDTO() {
-    }
-
-    /**
      * This value is added the headers of generated maps, marking them as being both
      * "cache-able" and designating the time for which they are to remain valid.
      *  The specific header added is "Cache-Control: max-age="
@@ -146,6 +135,16 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
      */
     private boolean cachingEnabled;
+
+    /**
+     * FeatureTypeInfo constructor.
+     *
+     * <p>
+     * does nothing
+     * </p>
+     */
+    public FeatureTypeInfoDTO() {
+    }
 
     /**
      * FeatureTypeInfo constructor.
@@ -162,7 +161,8 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      */
     public FeatureTypeInfoDTO(FeatureTypeInfoDTO dto) {
         if (dto == null) {
-            throw new NullPointerException("Non null FeatureTypeInfoDTO required");
+            throw new NullPointerException(
+                "Non null FeatureTypeInfoDTO required");
         }
 
         dataStoreId = dto.getDataStoreId();
@@ -252,7 +252,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         }
 
         r = r && (SRS == f.getSRS());
-        
+
         r = r && (SRSHandling == f.getSRSHandling());
 
         if (schema != null) {
@@ -300,7 +300,9 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         r = r && (schemaBase == f.getSchemaBase());
 
         r = r && (isCachingEnabled() == f.isCachingEnabled());
-        r = r && ((getCacheMaxAge() != null) && getCacheMaxAge().equals(f.getCacheMaxAge()));
+        r = r
+            && ((getCacheMaxAge() != null)
+            && getCacheMaxAge().equals(f.getCacheMaxAge()));
 
         return r;
     }
@@ -336,9 +338,9 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         if (SRS != 0) {
             r = SRS % r;
         }
-        
+
         r += SRSHandling;
-        
+
         if (cacheMaxAge != null) {
             r *= cacheMaxAge.hashCode();
         }
@@ -453,7 +455,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     public int getSRS() {
         return SRS;
     }
-    
+
     public int getSRSHandling() {
         return SRSHandling;
     }
@@ -587,7 +589,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     public void setSRS(int i) {
         SRS = i;
     }
-    
+
     public void setSRSHandling(int i) {
         SRSHandling = i;
     }
@@ -844,11 +846,12 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     //-- Modif C. Kolbowicz - 06/10/2004
     public String toString() {
-        return "[FeatureTypeInfoDTO: " + name + ", datastoreId: " + dataStoreId + ", latLongBBOX: "
-        + latLongBBox + "\n  SRS: " + SRS + ", schema:" + schema + ", schemaName: " + schemaName
-        + ", dirName: " + dirName + ", title: " + title + "\n  definitionQuery: " + definitionQuery
-        + ", defaultStyle: " + defaultStyle + ", legend icon: " + legendURL + ", caching?: "
-        + cachingEnabled + ", max-age: " + cacheMaxAge;
+        return "[FeatureTypeInfoDTO: " + name + ", datastoreId: " + dataStoreId
+        + ", latLongBBOX: " + latLongBBox + "\n  SRS: " + SRS + ", schema:"
+        + schema + ", schemaName: " + schemaName + ", dirName: " + dirName
+        + ", title: " + title + "\n  definitionQuery: " + definitionQuery
+        + ", defaultStyle: " + defaultStyle + ", legend icon: " + legendURL
+        + ", caching?: " + cachingEnabled + ", max-age: " + cacheMaxAge;
     }
 
     public String getWmsPath() {

@@ -37,9 +37,9 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Id$
  */
 public class DataNamespacesSelectAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
-        throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        UserContainer user, HttpServletRequest request,
+        HttpServletResponse response) throws IOException, ServletException {
         DataNamespacesSelectForm namespacesForm = (DataNamespacesSelectForm) form;
 
         String action = namespacesForm.getAction();
@@ -50,9 +50,12 @@ public class DataNamespacesSelectAction extends ConfigAction {
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = getResources(request);
 
-        String edit = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
-        String delete = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
-        String _default = HTMLEncoder.decode(messages.getMessage(locale, "label.default"));
+        String edit = HTMLEncoder.decode(messages.getMessage(locale,
+                    "label.edit"));
+        String delete = HTMLEncoder.decode(messages.getMessage(locale,
+                    "label.delete"));
+        String _default = HTMLEncoder.decode(messages.getMessage(locale,
+                    "label.default"));
 
         String nsSelected = namespacesForm.getSelectedNamespace();
 
@@ -95,7 +98,8 @@ public class DataNamespacesSelectAction extends ConfigAction {
 
         if (action.equals(_default)) {
             if (!nsSelected.equals(dataConfig.getDefaultNameSpace().getPrefix())) {
-                dataConfig.setDefaultNameSpace(dataConfig.getNameSpace(nsSelected));
+                dataConfig.setDefaultNameSpace(dataConfig.getNameSpace(
+                        nsSelected));
                 getApplicationState().notifyConfigChanged();
             }
 
@@ -126,7 +130,8 @@ public class DataNamespacesSelectAction extends ConfigAction {
      * @param nsSelected
      * @return
      */
-    private boolean dataStoresUseNamespace(DataConfig dataConfig, String nsSelected) {
+    private boolean dataStoresUseNamespace(DataConfig dataConfig,
+        String nsSelected) {
         List stores = dataConfig.getDataStoreIds();
 
         Iterator it = stores.iterator();

@@ -41,9 +41,9 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Id$
  */
 public class StylesSelectAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
-        throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        UserContainer user, HttpServletRequest request,
+        HttpServletResponse response) throws IOException, ServletException {
         final StylesSelectForm selectForm = (StylesSelectForm) form;
         final String action = selectForm.getAction();
         String styleId = selectForm.getSelectedStyle();
@@ -58,15 +58,19 @@ public class StylesSelectAction extends ConfigAction {
         MessageResources messages = getResources(request);
 
         // Need locale wording for edit and delete
-        final String EDIT = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
-        final String DELETE = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
-        final String DEFAULT = HTMLEncoder.decode(messages.getMessage(locale, "label.default"));
+        final String EDIT = HTMLEncoder.decode(messages.getMessage(locale,
+                    "label.edit"));
+        final String DELETE = HTMLEncoder.decode(messages.getMessage(locale,
+                    "label.delete"));
+        final String DEFAULT = HTMLEncoder.decode(messages.getMessage(locale,
+                    "label.default"));
 
         StyleConfig style = config.getStyle(styleId);
 
         if (style == null) {
             ActionErrors errors = new ActionErrors();
-            errors.add("selectedStyle", new ActionError("error.style.invalid", styleId));
+            errors.add("selectedStyle",
+                new ActionError("error.style.invalid", styleId));
             request.setAttribute(Globals.ERROR_KEY, errors);
 
             return mapping.findForward("config.data.style");
@@ -140,7 +144,8 @@ public class StylesSelectAction extends ConfigAction {
     private List getStyleUsers(DataConfig config, String styleId) {
         List results = new ArrayList();
 
-        for (Iterator it = config.getFeaturesTypes().values().iterator(); it.hasNext();) {
+        for (Iterator it = config.getFeaturesTypes().values().iterator();
+                it.hasNext();) {
             FeatureTypeConfig ft = (FeatureTypeConfig) it.next();
 
             if (styleId.equals(ft.getDefaultStyle())) {
@@ -155,7 +160,8 @@ public class StylesSelectAction extends ConfigAction {
             }
         }
 
-        for (Iterator it = config.getCoverages().values().iterator(); it.hasNext();) {
+        for (Iterator it = config.getCoverages().values().iterator();
+                it.hasNext();) {
             CoverageConfig cc = (CoverageConfig) it.next();
 
             if (styleId.equals(cc.getDefaultStyle())) {
@@ -170,7 +176,8 @@ public class StylesSelectAction extends ConfigAction {
     /*
      * reports an error for an attempt to upload an sld file that is already
      * in the system.*/
-    private void doFileExistsError(String styleId, List styleUsers, HttpServletRequest request) {
+    private void doFileExistsError(String styleId, List styleUsers,
+        HttpServletRequest request) {
         StringBuffer sb = new StringBuffer();
 
         for (Iterator it = styleUsers.iterator(); it.hasNext();) {
@@ -184,7 +191,8 @@ public class StylesSelectAction extends ConfigAction {
 
         ActionErrors errors = new ActionErrors();
         errors.add(ActionErrors.GLOBAL_ERROR,
-            new ActionError("error.style.sldInUse", new String[] { styleId, sb.toString() }));
+            new ActionError("error.style.sldInUse",
+                new String[] { styleId, sb.toString() }));
         saveErrors(request, errors);
     }
 }

@@ -27,9 +27,9 @@ import javax.servlet.http.HttpServletResponse;
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public final class WFSDescriptionAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
-        throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        UserContainer user, HttpServletRequest request,
+        HttpServletResponse response) throws IOException, ServletException {
         WFSDescriptionForm descriptionForm = (WFSDescriptionForm) form;
 
         String name = descriptionForm.getName();
@@ -49,7 +49,8 @@ public final class WFSDescriptionAction extends ConfigAction {
         config.setAbstract(_abstract);
 
         List array = (keywords != null)
-            ? Arrays.asList(keywords.split(System.getProperty("line.separator"))) : new ArrayList();
+            ? Arrays.asList(keywords.split(System.getProperty("line.separator")))
+            : new ArrayList();
 
         config.setKeywords(array);
         getApplicationState().notifyConfigChanged();

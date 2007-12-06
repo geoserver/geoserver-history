@@ -7,8 +7,8 @@
 package net.opengis.wfs;
 
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EObject;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * <!-- end-user-doc -->
  *
  * <!-- begin-model-doc -->
- * 
+ *
  *             The TransactionResults element may be used to report exception
  *             codes and messages for all actions of a transaction that failed
  *             to complete successfully.
@@ -35,38 +35,37 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface TransactionResultsType extends EObject {
-	
-	/**
-	 * The handle used for the request.
-	 * <p>
-	 * Adding this to help us maintain backward compatability with wfs 1.0.
-	 * </p>
-	 * @return The handle given to the transaction request.
-	 * 
-	 * @model
-	 * 
-	 * @see TransactionType
-	 * @see BaseRequestType#getHandle()
-	 */
-	String getHandle();
-	
-	/**
+    /**
+     * The handle used for the request.
+     * <p>
+     * Adding this to help us maintain backward compatability with wfs 1.0.
+     * </p>
+     * @return The handle given to the transaction request.
+     *
+     * @model
+     *
+     * @see TransactionType
+     * @see BaseRequestType#getHandle()
+     */
+    String getHandle();
+
+    /**
      * Sets the value of the '{@link net.opengis.wfs.TransactionResultsType#getHandle <em>Handle</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Handle</em>' attribute.
      * @see #getHandle()
      * @generated
      */
-	void setHandle(String value);
+    void setHandle(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Action</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.wfs.ActionType}.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *                   The Action element reports an exception code
      *                   and exception message indicating why the
      *                   corresponding action of a transaction request
@@ -78,6 +77,5 @@ public interface TransactionResultsType extends EObject {
      *        extendedMetaData="kind='element' name='Action' namespace='##targetNamespace'"
      * @generated
      */
-	EList getAction();
-
+    EList getAction();
 } // TransactionResultsType

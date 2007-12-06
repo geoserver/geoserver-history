@@ -20,7 +20,8 @@ import org.vfny.geoserver.global.Data;
  *
  */
 public class GetLogGML3OutputFormat extends GML3OutputFormat {
-    public GetLogGML3OutputFormat(WFS wfs, Data catalog, WFSConfiguration configuration) {
+    public GetLogGML3OutputFormat(WFS wfs, Data catalog,
+        WFSConfiguration configuration) {
         super(wfs, catalog, configuration);
     }
 
@@ -34,8 +35,8 @@ public class GetLogGML3OutputFormat extends GML3OutputFormat {
         //GetFeature operation?
         if ("GetLog".equalsIgnoreCase(operation.getId())) {
             //also check that the resultType is "results"
-            GetLogType request = (GetLogType) OwsUtils.parameter(operation.getParameters(),
-                    GetLogType.class);
+            GetLogType request = (GetLogType) OwsUtils.parameter(operation
+                    .getParameters(), GetLogType.class);
 
             return request.getResultType() == ResultTypeType.RESULTS_LITERAL;
         }

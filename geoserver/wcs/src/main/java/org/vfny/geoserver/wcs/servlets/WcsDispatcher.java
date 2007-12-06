@@ -54,12 +54,13 @@ import javax.servlet.http.HttpSession;
  */
 public class WcsDispatcher extends Dispatcher {
     /**
-         * Comment for <code>serialVersionUID</code>
-         */
+     * Comment for <code>serialVersionUID</code>
+     */
     private static final long serialVersionUID = 3977857384599203894L;
 
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets.wcs");
+    private static Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.servlets.wcs");
     private static int sequence = 123;
     private static final String DEFAULT_ENCODING = "UTF-8";
     private static final String ENCODING_HEADER_ARG = "Content-Type";
@@ -120,11 +121,12 @@ public class WcsDispatcher extends Dispatcher {
             BufferedReader requestReader;
 
             try {
-                disReader = new BufferedReader(XmlCharsetDetector.getCharsetAwareReader(
-                            new FileInputStream(temp), encInfo));
+                disReader = new BufferedReader(XmlCharsetDetector
+                        .getCharsetAwareReader(new FileInputStream(temp),
+                            encInfo));
 
-                requestReader = new BufferedReader(XmlCharsetDetector.createReader(
-                            new FileInputStream(temp), encInfo));
+                requestReader = new BufferedReader(XmlCharsetDetector
+                        .createReader(new FileInputStream(temp), encInfo));
             } catch (Exception e) {
                 /*
                  * Any exception other than WcsException will "hang up" the
@@ -167,8 +169,8 @@ public class WcsDispatcher extends Dispatcher {
             HttpSession session = request.getSession();
             ServletContext context = session.getServletContext();
             GeoServer geoServer = (GeoServer) context.getAttribute(GeoServer.WEB_CONTAINER_KEY);
-            String tempResponse = ((WcsException) wcs).getXmlResponse(geoServer.isVerboseExceptions(),
-                    request, geoServer);
+            String tempResponse = ((WcsException) wcs).getXmlResponse(geoServer
+                    .isVerboseExceptions(), request, geoServer);
 
             response.setContentType(geoServer.getCharSet().toString());
             response.getWriter().write(tempResponse);
@@ -230,11 +232,13 @@ public class WcsDispatcher extends Dispatcher {
      * @throws IOException If anything goes wrong reading or writing.
      */
     protected void doResponse(Reader requestReader, HttpServletRequest request,
-        HttpServletResponse response, int req_type) throws ServletException, IOException {
+        HttpServletResponse response, int req_type)
+        throws ServletException, IOException {
         AbstractService dispatched;
 
         if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.info(new StringBuffer("req_type is ").append(req_type).toString());
+            LOGGER.info(new StringBuffer("req_type is ").append(req_type)
+                                                        .toString());
         }
 
         //        switch (req_type) {

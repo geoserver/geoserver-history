@@ -153,8 +153,8 @@ public class MultipleDefinitionsFactory extends FactorySet {
      * @param properties Map containing all properties.
      * @throws FactoryNotFoundException Can't find factory configuration file.
      */
-    public MultipleDefinitionsFactory(ServletContext servletContext, Map properties)
-        throws DefinitionsFactoryException {
+    public MultipleDefinitionsFactory(ServletContext servletContext,
+        Map properties) throws DefinitionsFactoryException {
         initFactory(servletContext, properties);
     }
 
@@ -183,8 +183,8 @@ public class MultipleDefinitionsFactory extends FactorySet {
             try {
                 parserDetailLevel = Integer.valueOf(value).intValue();
             } catch (NumberFormatException ex) {
-                log.error("Bad format for parameter '" + PARSER_DETAILS_PARAMETER_NAME
-                    + "'. Integer expected.");
+                log.error("Bad format for parameter '"
+                    + PARSER_DETAILS_PARAMETER_NAME + "'. Integer expected.");
             }
         }
 
@@ -199,12 +199,14 @@ public class MultipleDefinitionsFactory extends FactorySet {
                 initFactory(servletContext, filename);
 
                 if (log.isDebugEnabled()) {
-                    log.debug("Factory initialized from file '" + filename + "'.");
+                    log.debug("Factory initialized from file '" + filename
+                        + "'.");
                 }
             } catch (FileNotFoundException ex) { // A filename is specified, throw appropriate error.
-                log.error(ex.getMessage() + " : Can't find file '" + filename + "'");
-                throw new FactoryNotFoundException(ex.getMessage() + " : Can't find file '"
-                    + filename + "'");
+                log.error(ex.getMessage() + " : Can't find file '" + filename
+                    + "'");
+                throw new FactoryNotFoundException(ex.getMessage()
+                    + " : Can't find file '" + filename + "'");
             }
         } else { // try each default file names
 
@@ -215,7 +217,8 @@ public class MultipleDefinitionsFactory extends FactorySet {
                     initFactory(servletContext, filename);
 
                     if (log.isInfoEnabled()) {
-                        log.info("Factory initialized from file '" + filename + "'.");
+                        log.info("Factory initialized from file '" + filename
+                            + "'.");
                     }
                 } catch (FileNotFoundException ex) {
                     // Do nothing
@@ -233,7 +236,8 @@ public class MultipleDefinitionsFactory extends FactorySet {
      * @param proposedFilename File names, comma separated, to use as  base file names.
      * @throws DefinitionsFactoryException An error occur during initialization.
      */
-    protected void initFactory(ServletContext servletContext, String proposedFilename)
+    protected void initFactory(ServletContext servletContext,
+        String proposedFilename)
         throws DefinitionsFactoryException, FileNotFoundException {
         // Init list of filenames
         StringTokenizer tokenizer = new StringTokenizer(proposedFilename, ",");
@@ -268,7 +272,8 @@ public class MultipleDefinitionsFactory extends FactorySet {
      * @throws DefinitionsFactoryException If an error occur while creating factory.
      * @throws FileNotFoundException if factory can't be loaded from filenames.
      */
-    protected DefinitionsFactory createDefaultFactory(ServletContext servletContext)
+    protected DefinitionsFactory createDefaultFactory(
+        ServletContext servletContext)
         throws DefinitionsFactoryException, FileNotFoundException {
         XmlDefinitionsSet rootXmlConfig = parseXmlFiles(servletContext, "", null);
 
@@ -298,8 +303,8 @@ public class MultipleDefinitionsFactory extends FactorySet {
      * @param servletContext Current servlet context.
      * @return the key or <code>null</code> if not found.
      */
-    protected Object getDefinitionsFactoryKey(String name, ServletRequest request,
-        ServletContext servletContext) {
+    protected Object getDefinitionsFactoryKey(String name,
+        ServletRequest request, ServletContext servletContext) {
         Locale locale = null;
 
         try {
@@ -325,8 +330,9 @@ public class MultipleDefinitionsFactory extends FactorySet {
      * @return Definition factory for specified key.
      * @throws DefinitionsFactoryException If an error occur while creating factory.
      */
-    protected DefinitionsFactory createFactory(Object key, ServletRequest request,
-        ServletContext servletContext) throws DefinitionsFactoryException {
+    protected DefinitionsFactory createFactory(Object key,
+        ServletRequest request, ServletContext servletContext)
+        throws DefinitionsFactoryException {
         if (key == null) {
             return getDefaultFactory();
         }
@@ -456,8 +462,9 @@ public class MultipleDefinitionsFactory extends FactorySet {
      * @return XmlDefinitionsSet The definitions set created or passed as parameter.
      * @throws DefinitionsFactoryException On errors parsing file.
      */
-    private XmlDefinitionsSet parseXmlFiles(ServletContext servletContext, String postfix,
-        XmlDefinitionsSet xmlDefinitions) throws DefinitionsFactoryException {
+    private XmlDefinitionsSet parseXmlFiles(ServletContext servletContext,
+        String postfix, XmlDefinitionsSet xmlDefinitions)
+        throws DefinitionsFactoryException {
         if ((postfix != null) && (postfix.length() == 0)) {
             postfix = null;
         }
@@ -467,7 +474,8 @@ public class MultipleDefinitionsFactory extends FactorySet {
 
         while (i.hasNext()) {
             String filename = concatPostfix((String) i.next(), postfix);
-            xmlDefinitions = parseXmlFile(servletContext, filename, xmlDefinitions);
+            xmlDefinitions = parseXmlFile(servletContext, filename,
+                    xmlDefinitions);
         }
 
         return xmlDefinitions;
@@ -485,8 +493,9 @@ public class MultipleDefinitionsFactory extends FactorySet {
      * @return XmlDefinitionsSet The definitions set created or passed as parameter.
      * @throws DefinitionsFactoryException On errors parsing file.
      */
-    private XmlDefinitionsSet parseXmlFile(ServletContext servletContext, String filename,
-        XmlDefinitionsSet xmlDefinitions) throws DefinitionsFactoryException {
+    private XmlDefinitionsSet parseXmlFile(ServletContext servletContext,
+        String filename, XmlDefinitionsSet xmlDefinitions)
+        throws DefinitionsFactoryException {
         try {
             /*InputStream input = servletContext.getResourceAsStream(filename);*/
             InputStream input = null;
@@ -511,7 +520,8 @@ public class MultipleDefinitionsFactory extends FactorySet {
                 // Patch proposed Houston, Stephen (LIT) on 5 Apr 2002
                 if (null == input) {
                     try {
-                        input = new java.io.FileInputStream(servletContext.getRealPath(filename));
+                        input = new java.io.FileInputStream(servletContext
+                                .getRealPath(filename));
                     } catch (Exception e) {
                     }
                 }
@@ -546,12 +556,13 @@ public class MultipleDefinitionsFactory extends FactorySet {
                 ex.printStackTrace();
             }
 
-            throw new DefinitionsFactoryException("Error while parsing file '" + filename + "'. "
-                + ex.getMessage(), ex);
+            throw new DefinitionsFactoryException("Error while parsing file '"
+                + filename + "'. " + ex.getMessage(), ex);
         } catch (IOException ex) {
             /*throw new DefinitionsFactoryException*/
             if (log.isDebugEnabled()) {
-                log.debug("IO Error while parsing file '" + filename + "'. " + ex.getMessage(), ex);
+                log.debug("IO Error while parsing file '" + filename + "'. "
+                    + ex.getMessage(), ex);
             }
         }
 

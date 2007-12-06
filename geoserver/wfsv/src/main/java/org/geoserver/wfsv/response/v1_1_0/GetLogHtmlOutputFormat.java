@@ -49,8 +49,8 @@ public class GetLogHtmlOutputFormat extends Response {
     public boolean canHandle(Operation operation) {
         if ("GetLog".equalsIgnoreCase(operation.getId())) {
             //also check that the resultType is "results"
-            GetLogType request = (GetLogType) OwsUtils.parameter(operation.getParameters(),
-                    GetLogType.class);
+            GetLogType request = (GetLogType) OwsUtils.parameter(operation
+                    .getParameters(), GetLogType.class);
 
             return request.getResultType() == ResultTypeType.RESULTS_LITERAL;
         }
@@ -76,7 +76,8 @@ public class GetLogHtmlOutputFormat extends Response {
 
         try {
             template.setOutputEncoding("UTF-8");
-            template.process(fc, new OutputStreamWriter(output, Charset.forName("UTF-8")));
+            template.process(fc,
+                new OutputStreamWriter(output, Charset.forName("UTF-8")));
         } catch (TemplateException e) {
             String msg = "Error occured processing template.";
             throw (IOException) new IOException(msg).initCause(e);

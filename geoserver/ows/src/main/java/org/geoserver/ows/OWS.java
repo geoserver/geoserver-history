@@ -130,12 +130,12 @@ public class OWS {
     }
 
     /**
-    * <p>
-    * Returns whether is service is enabled.
-    * </p>
-    *
-    * @return true when enabled.
-    */
+     * <p>
+     * Returns whether is service is enabled.
+     * </p>
+     *
+     * @return true when enabled.
+     */
     public boolean isEnabled() {
         return enabled;
     }

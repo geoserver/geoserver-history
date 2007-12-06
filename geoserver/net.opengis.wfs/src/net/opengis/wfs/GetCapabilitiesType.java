@@ -13,11 +13,11 @@ package net.opengis.wfs;
  * <!-- end-user-doc -->
  *
  * <!-- begin-model-doc -->
- * 
+ *
  *           Request to a WFS to perform the GetCapabilities operation.
  *           This operation allows a client to retrieve a Capabilities
  *           XML document providing metadata for the specific WFS server.
- * 
+ *
  *           The GetCapapbilities element is used to request that a Web Feature
  *           Service generate an XML document describing the organization
  *           providing the service, the WFS operations that the service
@@ -38,15 +38,15 @@ package net.opengis.wfs;
  * @generated
  */
 public interface GetCapabilitiesType extends net.opengis.ows.GetCapabilitiesType {
-	/**
+    /**
      * Returns the value of the '<em><b>Service</b></em>' attribute.
      * The default value is <code>"WFS"</code>.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Service</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Service</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Service</em>' attribute.
      * @see #isSetService()
      * @see #unsetService()
@@ -56,41 +56,40 @@ public interface GetCapabilitiesType extends net.opengis.ows.GetCapabilitiesType
      *        extendedMetaData="kind='attribute' name='service'"
      * @generated
      */
-	String getService();
+    String getService();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.GetCapabilitiesType#getService <em>Service</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Service</em>' attribute.
      * @see #isSetService()
      * @see #unsetService()
      * @see #getService()
      * @generated
      */
-	void setService(String value);
+    void setService(String value);
 
-	/**
+    /**
      * Unsets the value of the '{@link net.opengis.wfs.GetCapabilitiesType#getService <em>Service</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @see #isSetService()
      * @see #getService()
      * @see #setService(String)
      * @generated
      */
-	void unsetService();
+    void unsetService();
 
-	/**
+    /**
      * Returns whether the value of the '{@link net.opengis.wfs.GetCapabilitiesType#getService <em>Service</em>}' attribute is set.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return whether the value of the '<em>Service</em>' attribute is set.
      * @see #unsetService()
      * @see #getService()
      * @see #setService(String)
      * @generated
      */
-	boolean isSetService();
-
+    boolean isSetService();
 } // GetCapabilitiesType

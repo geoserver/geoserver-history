@@ -65,8 +65,10 @@ public class AcceptFormatsTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        AcceptFormatsType acceptFormats = owsfactory.createAcceptFormatsType();
-        acceptFormats.getOutputFormat().addAll(node.getChildValues("OutputFormat"));
+        AcceptFormatsType acceptFormats = owsfactory
+            .createAcceptFormatsType();
+        acceptFormats.getOutputFormat()
+                     .addAll(node.getChildValues("OutputFormat"));
 
         return acceptFormats;
     }

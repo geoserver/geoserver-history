@@ -8,6 +8,7 @@ package net.opengis.wfs;
 
 import org.eclipse.emf.ecore.EObject;
 
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Action Type</b></em>'.
@@ -27,12 +28,12 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface ActionType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Message</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *                   If an action fails, the message element may be used
      *                   to supply an exception message.
      * <!-- end-model-doc -->
@@ -43,24 +44,24 @@ public interface ActionType extends EObject {
      *        extendedMetaData="kind='element' name='Message' namespace='##targetNamespace'"
      * @generated
      */
-	String getMessage();
+    String getMessage();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.ActionType#getMessage <em>Message</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Message</em>' attribute.
      * @see #getMessage()
      * @generated
      */
-	void setMessage(String value);
+    void setMessage(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Code</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *                The code attribute may be used to specify an
      *                exception code indicating why an action failed.
      * <!-- end-model-doc -->
@@ -71,24 +72,24 @@ public interface ActionType extends EObject {
      *        extendedMetaData="kind='attribute' name='code'"
      * @generated
      */
-	String getCode();
+    String getCode();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.ActionType#getCode <em>Code</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Code</em>' attribute.
      * @see #getCode()
      * @generated
      */
-	void setCode(String value);
+    void setCode(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Locator</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *                The locator attribute is used to locate an action
      *                within a &lt;Transaction&gt; element.  The value
      *                of the locator attribute is either a string that
@@ -109,16 +110,15 @@ public interface ActionType extends EObject {
      *        extendedMetaData="kind='attribute' name='locator'"
      * @generated
      */
-	String getLocator();
+    String getLocator();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.ActionType#getLocator <em>Locator</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Locator</em>' attribute.
      * @see #getLocator()
      * @generated
      */
-	void setLocator(String value);
-
+    void setLocator(String value);
 } // ActionType

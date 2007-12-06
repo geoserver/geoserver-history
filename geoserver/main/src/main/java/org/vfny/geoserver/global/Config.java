@@ -24,7 +24,8 @@ import javax.servlet.ServletContext;
  *
  */
 public class Config implements ApplicationContextAware {
-    protected static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+    protected static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.global");
     WebApplicationContext context;
     XMLConfigReader reader;
 
@@ -48,7 +49,9 @@ public class Config implements ApplicationContextAware {
         if (System.getProperty("org.geotools.referencing.forceXY") == null) {
             System.setProperty("org.geotools.referencing.forceXY", "true");
         }
-        if (System.getProperty("org.geotools.referencing.forceXY").equalsIgnoreCase("true")) {
+
+        if (System.getProperty("org.geotools.referencing.forceXY")
+                      .equalsIgnoreCase("true")) {
             Hints.putSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING, "http");
         }
 
@@ -62,7 +65,8 @@ public class Config implements ApplicationContextAware {
         // the native codecs, unless the user forced the setting already
         if (System.getProperty("java.version").startsWith("1.4")
                 && (System.getProperty("com.sun.media.imageio.disableCodecLib") == null)) {
-            LOGGER.warning("Disabling mediaLib acceleration since this is a java 1.4 VM.\n"
+            LOGGER.warning(
+                "Disabling mediaLib acceleration since this is a java 1.4 VM.\n"
                 + "If you want to force its enabling, "
                 + "set -Dcom.sun.media.imageio.disableCodecLib=true in your virtual machine");
             System.setProperty("com.sun.media.imageio.disableCodecLib", "true");

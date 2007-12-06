@@ -40,7 +40,7 @@ import java.util.logging.Level;
  */
 public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
     FeatureTemplate template = new FeatureTemplate();
-        
+
     public Translator createTranslator(ContentHandler handler) {
         return new RSSGeoRSSTranslator(handler);
     }
@@ -65,15 +65,16 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
                 MapLayer layer = map.getLayer(i);
                 title.append(layer.getTitle()).append(",");
             }
-            title.setLength(title.length()-1);
-            
-            element( "title", title.toString() );
-            
-            start( "link" );
-            
-            cdata(WMSRequests.getGetMapUrl(map.getRequest(),null,null,null));
-            end( "link" );
-            
+
+            title.setLength(title.length() - 1);
+
+            element("title", title.toString());
+
+            start("link");
+
+            cdata(WMSRequests.getGetMapUrl(map.getRequest(), null, null, null));
+            end("link");
+
             //element( "description", "description" );
 
             //items
@@ -89,7 +90,8 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
 
         void encodeItems(WMSMapContext map) throws IOException {
             List featureCollections = loadFeatureCollections(map);
-            for (Iterator f = featureCollections.iterator(); f.hasNext(); ) {
+
+            for (Iterator f = featureCollections.iterator(); f.hasNext();) {
                 FeatureCollection features = (FeatureCollection) f.next();
                 FeatureIterator iterator = null;
 
@@ -98,21 +100,20 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
 
                     while (iterator.hasNext()) {
                         Feature feature = iterator.next();
+
                         try {
-                            encodeItem(feature, map);    
+                            encodeItem(feature, map);
+                        } catch (Exception e) {
+                            LOGGER.warning("Encoding failed for feature: "
+                                + feature.getID());
+                            LOGGER.log(Level.FINE, "", e);
                         }
-                        catch( Exception e ) {
-                            LOGGER.warning("Encoding failed for feature: " + feature.getID());
-                            LOGGER.log(Level.FINE, "", e );
-                        }
-                        
                     }
                 } finally {
                     if (iterator != null) {
                         features.close(iterator);
                     }
                 }
-                
             }
         }
 
@@ -122,16 +123,17 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
 
             try {
                 element("title", template.title(feature));
+            } catch (Exception e) {
+                String msg = "Error occured executing title template for: "
+                    + feature.getID();
+                LOGGER.log(Level.WARNING, msg, e);
             }
-            catch( Exception e ) {
-                String msg = "Error occured executing title template for: " + feature.getID();
-                LOGGER.log( Level.WARNING, msg, e );
-            }
-            
+
             //create the link as getFeature request with fid filter
             //TODO: throw this into a utility class
             //TODO: use an html based output format
-            String link = Requests.getBaseUrl(map.getRequest().getHttpServletRequest(),
+            String link = Requests.getBaseUrl(map.getRequest()
+                                                 .getHttpServletRequest(),
                     map.getRequest().getGeoServer());
             link += ("wfs?request=getfeature&service=wfs&version=1.0.0&featureid="
             + feature.getID());
@@ -146,12 +148,12 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
                 start("description");
                 cdata(description);
                 end("description");
+            } catch (Exception e) {
+                String msg = "Error occured executing description template for: "
+                    + feature.getID();
+                LOGGER.log(Level.WARNING, msg, e);
             }
-            catch( Exception e ) {
-                String msg = "Error occured executing description template for: " + feature.getID();
-                LOGGER.log( Level.WARNING, msg, e );
-            }
-            
+
             encodeGeometry(feature);
 
             end("item");

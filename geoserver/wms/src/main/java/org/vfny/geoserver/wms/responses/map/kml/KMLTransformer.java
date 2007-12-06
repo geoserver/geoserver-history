@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.xml.transform.Transformer;
 
 
@@ -45,11 +44,12 @@ public class KMLTransformer extends TransformerBase {
      * logger
      */
     static Logger LOGGER = Logger.getLogger("org.geoserver.kml");
-        
+
     /**
      * Factory used to create filter objects
      */
-    FilterFactory filterFactory = (FilterFactory) CommonFactoryFinder.getFilterFactory(null);
+    FilterFactory filterFactory = (FilterFactory) CommonFactoryFinder
+        .getFilterFactory(null);
 
     /**
      * Flag controlling wether kmz was requested.
@@ -90,13 +90,15 @@ public class KMLTransformer extends TransformerBase {
 
             if (group) {
                 StringBuffer sb = new StringBuffer();
-                for ( int i = 0; i < layers.length; i++ ) {
-                    sb.append( layers[i].getTitle() + "," );
+
+                for (int i = 0; i < layers.length; i++) {
+                    sb.append(layers[i].getTitle() + ",");
                 }
-                sb.setLength(sb.length()-1);
-               
+
+                sb.setLength(sb.length() - 1);
+
                 start("Document");
-                element("name", sb.toString() );
+                element("name", sb.toString());
             }
 
             //for every layer specified in the request
@@ -111,7 +113,8 @@ public class KMLTransformer extends TransformerBase {
                     encodeSuperOverlayLayer(mapContext, layer);
                 } else {
                     //figure out which type of layer this is, raster or vector
-                    if (layerInfo.getType() == MapLayerInfo.TYPE_VECTOR || layerInfo.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
+                    if ((layerInfo.getType() == MapLayerInfo.TYPE_VECTOR)
+                            || (layerInfo.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR)) {
                         //vector 
                         encodeVectorLayer(mapContext, layer);
                     } else {
@@ -141,13 +144,15 @@ public class KMLTransformer extends TransformerBase {
         /**
          * Encodes a vector layer as kml.
          */
-        protected void encodeVectorLayer(WMSMapContext mapContext, MapLayer layer) {
+        protected void encodeVectorLayer(WMSMapContext mapContext,
+            MapLayer layer) {
             //get the data
             FeatureSource featureSource = layer.getFeatureSource();
             FeatureCollection features = null;
 
             try {
-                features = loadFeatureCollection(featureSource, layer, mapContext);
+                features = loadFeatureCollection(featureSource, layer,
+                        mapContext);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -155,15 +160,17 @@ public class KMLTransformer extends TransformerBase {
             //calculate scale denominator
             // we do not actually know what the size of the image will be so 
             // our best guess is 800x600
-            double scaleDenominator = 1; 
+            double scaleDenominator = 1;
+
             try {
-               scaleDenominator = 
-                       RendererUtilities.calculateScale(mapContext.getAreaOfInterest(), 800, 600, null);
-            } 
-            catch( Exception e ) {
-               LOGGER.log( Level.WARNING, "Error calculating scale denominator", e );
+                scaleDenominator = RendererUtilities.calculateScale(mapContext
+                        .getAreaOfInterest(), 800, 600, null);
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING,
+                    "Error calculating scale denominator", e);
             }
-            LOGGER.fine( "scale denominator = " + scaleDenominator );
+
+            LOGGER.fine("scale denominator = " + scaleDenominator);
 
             //was kmz requested?
             if (kmz) {
@@ -174,14 +181,15 @@ public class KMLTransformer extends TransformerBase {
 
                 if (useVector) {
                     //encode
-                    KMLVectorTransformer tx = createVectorTransformer(mapContext, layer);
+                    KMLVectorTransformer tx = createVectorTransformer(mapContext,
+                            layer);
                     initTransformer(tx);
                     tx.setScaleDenominator(scaleDenominator);
                     tx.createTranslator(contentHandler).encode(features);
                 } else {
                     KMLRasterTransformer tx = createRasterTransfomer(mapContext);
                     initTransformer(tx);
-                    
+
                     //set inline to true to have the transformer reference images
                     // inline in the zip file
                     tx.setInline(true);
@@ -189,7 +197,8 @@ public class KMLTransformer extends TransformerBase {
                 }
             } else {
                 //kmz not selected, just do straight vector
-                KMLVectorTransformer tx = createVectorTransformer(mapContext, layer);
+                KMLVectorTransformer tx = createVectorTransformer(mapContext,
+                        layer);
                 initTransformer(tx);
                 tx.setScaleDenominator(scaleDenominator);
                 tx.createTranslator(contentHandler).encode(features);
@@ -201,7 +210,8 @@ public class KMLTransformer extends TransformerBase {
          * @param mapContext
          * @return
          */
-        protected KMLRasterTransformer createRasterTransfomer(WMSMapContext mapContext) {
+        protected KMLRasterTransformer createRasterTransfomer(
+            WMSMapContext mapContext) {
             return new KMLRasterTransformer(mapContext);
         }
 
@@ -210,18 +220,19 @@ public class KMLTransformer extends TransformerBase {
          * @param mapContext
          * @return
          */
-        protected KMLVectorTransformer createVectorTransformer(WMSMapContext mapContext,
-                MapLayer layer) {
+        protected KMLVectorTransformer createVectorTransformer(
+            WMSMapContext mapContext, MapLayer layer) {
             return new KMLVectorTransformer(mapContext, layer);
         }
 
         /**
          * Encodes a raster layer as kml.
          */
-        protected void encodeRasterLayer(WMSMapContext mapContext, MapLayer layer) {
+        protected void encodeRasterLayer(WMSMapContext mapContext,
+            MapLayer layer) {
             KMLRasterTransformer tx = createRasterTransfomer(mapContext);
             initTransformer(tx);
-            
+
             tx.setInline(kmz);
             tx.createTranslator(contentHandler).encode(layer);
         }
@@ -229,7 +240,8 @@ public class KMLTransformer extends TransformerBase {
         /**
          * Encodes a layer as a super overlay.
          */
-        protected void encodeSuperOverlayLayer(WMSMapContext mapContext, MapLayer layer) {
+        protected void encodeSuperOverlayLayer(WMSMapContext mapContext,
+            MapLayer layer) {
             KMLSuperOverlayTransformer tx = new KMLSuperOverlayTransformer(mapContext);
             initTransformer(tx);
             tx.createTranslator(contentHandler).encode(layer);
@@ -243,21 +255,25 @@ public class KMLTransformer extends TransformerBase {
             initTransformer(tx);
             tx.createTranslator(contentHandler).encode(layer);
         }
-        
+
         protected void initTransformer(KMLTransformerBase delegate) {
-            delegate.setIndentation( getIndentation() );
+            delegate.setIndentation(getIndentation());
             delegate.setStandAlone(false);
         }
 
         double computeScaleDenominator(MapLayer layer, WMSMapContext mapContext) {
-            Rectangle paintArea = new Rectangle(mapContext.getMapWidth(), mapContext.getMapHeight());
-            AffineTransform worldToScreen = RendererUtilities.worldToScreenTransform(mapContext
-                    .getAreaOfInterest(), paintArea);
+            Rectangle paintArea = new Rectangle(mapContext.getMapWidth(),
+                    mapContext.getMapHeight());
+            AffineTransform worldToScreen = RendererUtilities
+                .worldToScreenTransform(mapContext.getAreaOfInterest(),
+                    paintArea);
 
             try {
                 //90 = OGC standard DPI (see SLD spec page 37)
-                return RendererUtilities.calculateScale(mapContext.getAreaOfInterest(),
-                    mapContext.getCoordinateReferenceSystem(), paintArea.width, paintArea.height, 90);
+                return RendererUtilities.calculateScale(mapContext
+                    .getAreaOfInterest(),
+                    mapContext.getCoordinateReferenceSystem(), paintArea.width,
+                    paintArea.height, 90);
             } catch (Exception e) {
                 //probably either (1) no CRS (2) error xforming, revert to
                 // old method - the best we can do (DJB)
@@ -309,17 +325,20 @@ public class KMLTransformer extends TransformerBase {
             }
         }
 
-        FeatureCollection loadFeatureCollection(FeatureSource featureSource, MapLayer layer,
-            WMSMapContext mapContext) throws Exception {
+        FeatureCollection loadFeatureCollection(FeatureSource featureSource,
+            MapLayer layer, WMSMapContext mapContext) throws Exception {
             FeatureType schema = featureSource.getSchema();
 
             Envelope envelope = mapContext.getAreaOfInterest();
             ReferencedEnvelope aoi = new ReferencedEnvelope(envelope,
                     mapContext.getCoordinateReferenceSystem());
-            CoordinateReferenceSystem sourceCrs = schema.getDefaultGeometry().getCoordinateSystem();
+            CoordinateReferenceSystem sourceCrs = schema.getDefaultGeometry()
+                                                        .getCoordinateSystem();
 
             boolean reproject = (sourceCrs != null)
-                && !CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(), sourceCrs); 
+                && !CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(),
+                    sourceCrs);
+
             if (reproject) {
                 aoi = aoi.transform(sourceCrs, true);
             }
@@ -339,14 +358,18 @@ public class KMLTransformer extends TransformerBase {
                 if (q == Query.ALL) {
                     q = (DefaultQuery) definitionQuery;
                 } else {
-                    q = (DefaultQuery) DataUtilities.mixQueries(definitionQuery, q, "KMLEncoder");
+                    q = (DefaultQuery) DataUtilities.mixQueries(definitionQuery,
+                            q, "KMLEncoder");
                 }
             }
 
             //ensure reprojection occurs, do not trust query, use the wrapper 
-            q.setCoordinateSystemReproject(mapContext.getCoordinateReferenceSystem());
-            if ( reproject ) {
-                return new ReprojectFeatureResults( featureSource.getFeatures(q),mapContext.getCoordinateReferenceSystem() );
+            q.setCoordinateSystemReproject(mapContext
+                .getCoordinateReferenceSystem());
+
+            if (reproject) {
+                return new ReprojectFeatureResults(featureSource.getFeatures(q),
+                    mapContext.getCoordinateReferenceSystem());
             }
 
             return featureSource.getFeatures(q);
@@ -366,21 +389,25 @@ public class KMLTransformer extends TransformerBase {
         Filter createBBoxFilter(FeatureType schema, Envelope bbox)
             throws IllegalFilterException {
             List filters = new ArrayList();
+
             for (int j = 0; j < schema.getAttributeCount(); j++) {
                 AttributeType attType = schema.getAttributeType(j);
 
                 if (attType instanceof GeometryAttributeType) {
-                    Filter gfilter = filterFactory.bbox(attType.getLocalName(), bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), null);
+                    Filter gfilter = filterFactory.bbox(attType.getLocalName(),
+                            bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(),
+                            bbox.getMaxY(), null);
                     filters.add(gfilter);
                 }
             }
 
-            if(filters.size() == 0)
+            if (filters.size() == 0) {
                 return Filter.INCLUDE;
-            else if(filters.size() == 1)
+            } else if (filters.size() == 1) {
                 return (Filter) filters.get(0);
-            else
+            } else {
                 return filterFactory.or(filters);
+            }
         }
     }
 }

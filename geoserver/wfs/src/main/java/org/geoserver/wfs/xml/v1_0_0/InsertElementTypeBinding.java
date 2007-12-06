@@ -4,11 +4,8 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
-import java.net.URI;
-
 import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.WfsFactory;
-
 import org.geoserver.wfs.WFSException;
 import org.geotools.feature.Feature;
 import org.geotools.gml2.bindings.GML2ParsingUtils;
@@ -17,7 +14,7 @@ import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
-
+import java.net.URI;
 import javax.xml.namespace.QName;
 
 
@@ -65,21 +62,24 @@ public class InsertElementTypeBinding extends AbstractComplexBinding {
     }
 
     public void initializeChildContext(ElementInstance childInstance,
-            Node node, MutablePicoContainer context) {
+        Node node, MutablePicoContainer context) {
         //if an srsName is set for this geometry, put it in the context for 
         // children, so they can use it as well
-        if ( node.hasAttribute("srsName") ) {
+        if (node.hasAttribute("srsName")) {
             try {
-                CoordinateReferenceSystem crs = GML2ParsingUtils.crs(node);
-                if ( crs != null ) {
-                    context.registerComponentInstance(CoordinateReferenceSystem.class, crs);
+                CoordinateReferenceSystem crs = GML2ParsingUtils
+                    .crs(node);
+
+                if (crs != null) {
+                    context.registerComponentInstance(CoordinateReferenceSystem.class,
+                        crs);
                 }
-            } catch(Exception e) {
+            } catch (Exception e) {
                 throw new WFSException(e, "InvalidParameterValue");
             }
         }
     }
-    
+
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -106,6 +106,7 @@ public class InsertElementTypeBinding extends AbstractComplexBinding {
             String srsName = (String) node.getAttributeValue("srsName");
             insertElement.setSrsName(new URI(srsName));
         }
+
         return insertElement;
     }
 }

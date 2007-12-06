@@ -149,6 +149,22 @@
    <!-- nD plugins - END -->   
    <dependency>
     <groupId>org.geotools</groupId>
+    <artifactId>gt2-ecw</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geotools</groupId>
+    <artifactId>gt2-mrsid</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geotools</groupId>
+    <artifactId>gt2-hdf-aps</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   
+   <dependency>
+    <groupId>org.geotools</groupId>
     <artifactId>gt2-arcgrid</artifactId>
     <version>${gt.version}</version>
    </dependency>

@@ -8,6 +8,7 @@ package net.opengis.ows;
 
 import org.eclipse.emf.ecore.EObject;
 
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Code Type</b></em>'.
@@ -31,14 +32,14 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface CodeType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Value</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Value</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Value</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Value</em>' attribute.
      * @see #setValue(String)
      * @see net.opengis.ows.OwsPackage#getCodeType_Value()
@@ -46,26 +47,26 @@ public interface CodeType extends EObject {
      *        extendedMetaData="name=':0' kind='simple'"
      * @generated
      */
-	String getValue();
+    String getValue();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.CodeType#getValue <em>Value</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Value</em>' attribute.
      * @see #getValue()
      * @generated
      */
-	void setValue(String value);
+    void setValue(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Code Space</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Code Space</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Code Space</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Code Space</em>' attribute.
      * @see #setCodeSpace(String)
      * @see net.opengis.ows.OwsPackage#getCodeType_CodeSpace()
@@ -73,16 +74,15 @@ public interface CodeType extends EObject {
      *        extendedMetaData="kind='attribute' name='codeSpace'"
      * @generated
      */
-	String getCodeSpace();
+    String getCodeSpace();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.CodeType#getCodeSpace <em>Code Space</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Code Space</em>' attribute.
      * @see #getCodeSpace()
      * @generated
      */
-	void setCodeSpace(String value);
-
+    void setCodeSpace(String value);
 } // CodeType

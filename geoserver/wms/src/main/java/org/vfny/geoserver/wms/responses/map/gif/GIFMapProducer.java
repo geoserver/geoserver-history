@@ -21,7 +21,6 @@ import java.io.OutputStream;
  * @version $Id
  */
 public final class GIFMapProducer extends DefaultRasterMapProducer {
-   
     public GIFMapProducer(String format, WMS wms) {
         super(format, wms);
     }
@@ -39,20 +38,19 @@ public final class GIFMapProducer extends DefaultRasterMapProducer {
      * @throws IOException
      *             if encoding to <code>outStream</code> fails.
      */
-    public void formatImageOutputStream(RenderedImage originalImage, OutputStream outStream)
-        throws WmsException, IOException {
+    public void formatImageOutputStream(RenderedImage originalImage,
+        OutputStream outStream) throws WmsException, IOException {
         // /////////////////////////////////////////////////////////////////
         //
         // Now the magic
         //
         // /////////////////////////////////////////////////////////////////
-        new ImageWorker(super.forceIndexed8Bitmask(originalImage)).writeGIF(outStream, "LZW", 0.75f);
+        new ImageWorker(super.forceIndexed8Bitmask(originalImage)).writeGIF(outStream,
+            "LZW", 0.75f);
     }
 
     public String getContentDisposition() {
         // can be null
         return null;
     }
-
-
 }

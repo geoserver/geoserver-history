@@ -28,7 +28,8 @@ import java.util.logging.Logger;
  */
 public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
+    private static Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.requests");
 
     /** Stores internal request type */
     private int requestType = Dispatcher.UNKNOWN;
@@ -91,8 +92,8 @@ public class DispatcherHandler extends XMLFilterImpl implements ContentHandler {
      *
      * @throws SAXException DOCUMENT ME!
      */
-    public void startElement(String namespaceURI, String localName, String rawName, Attributes atts)
-        throws SAXException {
+    public void startElement(String namespaceURI, String localName,
+        String rawName, Attributes atts) throws SAXException {
         if (gotType) {
             return;
         }

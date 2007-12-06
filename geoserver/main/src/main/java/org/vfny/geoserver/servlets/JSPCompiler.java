@@ -47,8 +47,8 @@ public class JSPCompiler extends HttpServlet {
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request,
+        HttpServletResponse response) throws ServletException, IOException {
         if (spot < pages.length) {
             try {
                 String base = Requests.getBaseUrl(request, null);
@@ -82,21 +82,25 @@ public class JSPCompiler extends HttpServlet {
         ServletOutputStream os = response.getOutputStream();
         os.print("<html>\n");
         os.print("<head><title>GeoServer - Loading</title>\n");
-        os.print("  <meta content=\"text/css\" http-equiv=\"content-style-type\">\n");
+        os.print(
+            "  <meta content=\"text/css\" http-equiv=\"content-style-type\">\n");
         os.print("  <style type=\"text/css\">\n");
         os.print("    <!-- @import url(\"/geoserver/style.css\"); -->\n");
         os.print("  </style>\n");
-        os.print("  <link type=\"image/gif\" href=\"gs.gif\" rel=\"icon\"><!-- mozilla --> \n");
+        os.print(
+            "  <link type=\"image/gif\" href=\"gs.gif\" rel=\"icon\"><!-- mozilla --> \n");
         os.print("  <link href=\"gs.ico\" rel=\"SHORTCUT ICON\"><!-- ie -->\n");
         os.print("</head>\n");
-        os.print("<body onload=\"javascript:window.location.replace('welcome.do')\"><br><center>\n");
+        os.print(
+            "<body onload=\"javascript:window.location.replace('welcome.do')\"><br><center>\n");
         os.print("<table width=\"60%\" height=\"60%\"><tr><td>\n");
         os.print("<center>\n");
         os.print("  <span class=\"project\">\n");
         os.print("    <a href=\"http://geoserver.org/\">GeoServer</a>\n");
         os.print("  </span>\n");
         os.print("  <span class=\"license\">\n");
-        os.print("    <a href=\"http://docs.codehaus.org/display/GEOSDOC/License\">&copy;</a>\n");
+        os.print(
+            "    <a href=\"http://docs.codehaus.org/display/GEOSDOC/License\">&copy;</a>\n");
         os.print("  </span>\n");
         os.print("  <h1>LOADING ...</h1>\n");
         os.print("<center><br>\n");
@@ -115,7 +119,8 @@ public class JSPCompiler extends HttpServlet {
             con.connect();
 
             String s = con.getResponseMessage();
-            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                        con.getInputStream()));
 
             while (br.ready())
                 br.readLine();
@@ -131,11 +136,13 @@ public class JSPCompiler extends HttpServlet {
         ServletOutputStream os = response.getOutputStream();
         os.print("<html>\n");
         os.print("<head><title>GeoServer - Loading</title>\n");
-        os.print("  <meta content=\"text/css\" http-equiv=\"content-style-type\">\n");
+        os.print(
+            "  <meta content=\"text/css\" http-equiv=\"content-style-type\">\n");
         os.print("  <style type=\"text/css\">\n");
         os.print("    <!-- @import url(\"/geoserver/style.css\"); -->\n");
         os.print("  </style>\n");
-        os.print("  <link type=\"image/gif\" href=\"gs.gif\" rel=\"icon\"><!-- mozilla --> \n");
+        os.print(
+            "  <link type=\"image/gif\" href=\"gs.gif\" rel=\"icon\"><!-- mozilla --> \n");
         os.print("  <link href=\"gs.ico\" rel=\"SHORTCUT ICON\"><!-- ie -->\n");
         os.print("</head>\n");
         os.print(
@@ -146,12 +153,14 @@ public class JSPCompiler extends HttpServlet {
         os.print("    <a href=\"http://geoserver.org/\">GeoServer</a>\n");
         os.print("  </span>\n");
         os.print("  <span class=\"license\">\n");
-        os.print("    <a href=\"http://docs.codehaus.org/display/GEOSDOC/License\">&copy;</a>\n");
+        os.print(
+            "    <a href=\"http://docs.codehaus.org/display/GEOSDOC/License\">&copy;</a>\n");
         os.print("  </span>\n");
         os.print("  <h1>LOADING ...</h1>\n");
         os.print("<center><br>\n");
         os.print("<center><h2>Please Wait</h2><center>\n");
-        os.print("<center><h2>" + (int) ((100 * (spot * 1.0)) / (pages.length * 1.0))
+        os.print("<center><h2>"
+            + (int) ((100 * (spot * 1.0)) / (pages.length * 1.0))
             + "% Completed</h2><center>\n");
         os.print("</table></td></tr>\n");
         os.print("</center></body>\n");

@@ -27,20 +27,20 @@ import java.util.Map;
  * @version $Id$
  */
 public class Describe extends WCService {
-    public Describe(WCS wcs) {
-        super("DescribeCoverage", wcs);
-    }
-
     /**
      * Comment for <code>serialVersionUID</code>
      */
     private static final long serialVersionUID = 3257003241991714611L;
 
+    public Describe(WCS wcs) {
+        super("DescribeCoverage", wcs);
+    }
+
     /**
-    * DOCUMENT ME!
-    *
-    * @return DOCUMENT ME!
-    */
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     protected Response getResponseHandler() {
         return new DescribeResponse();
     }

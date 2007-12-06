@@ -50,7 +50,7 @@ public abstract class Response {
      * @param binding The class of object the response serializes.
      */
     public Response(Class binding) {
-        this(binding, (Set)null);
+        this(binding, (Set) null);
     }
 
     /**
@@ -62,7 +62,8 @@ public abstract class Response {
      *
      */
     public Response(Class binding, String outputFormat) {
-       this( binding, outputFormat == null ? null : Collections.singleton(outputFormat));
+        this(binding,
+            (outputFormat == null) ? null : Collections.singleton(outputFormat));
     }
 
     /**
@@ -76,11 +77,11 @@ public abstract class Response {
         if (binding == null) {
             throw new NullPointerException("binding may not be null");
         }
-        
-        if (outputFormats == null ) {
+
+        if (outputFormats == null) {
             outputFormats = Collections.EMPTY_SET;
         }
-        
+
         this.binding = binding;
         this.outputFormats = outputFormats;
     }
@@ -94,25 +95,25 @@ public abstract class Response {
 
     /**
      * @deprecated use {@link #getOutputFormats()}.
-     * 
+     *
      * @return A common or well-known name for the response, may be <code>null</code>.
      */
     public final String getOutputFormat() {
-        if ( outputFormats.isEmpty() ) {
+        if (outputFormats.isEmpty()) {
             return null;
         }
-        
+
         return (String) outputFormats.iterator().next();
     }
 
     /**
-     *  
+     *
      * @return Set of common or well-known name for the response, may be empty.
      */
-    public final Set getOutputFormats()  {
+    public final Set getOutputFormats() {
         return outputFormats;
     }
-    
+
     /**
      * Determines if the response can handle the operation being performed.
      * <p>
@@ -173,6 +174,6 @@ public abstract class Response {
      * @throws IOException Any I/O errors that occur
      * @throws ServiceException Any service errors that occur
      */
-    public abstract void write(Object value, OutputStream output, Operation operation)
-        throws IOException, ServiceException;
+    public abstract void write(Object value, OutputStream output,
+        Operation operation) throws IOException, ServiceException;
 }

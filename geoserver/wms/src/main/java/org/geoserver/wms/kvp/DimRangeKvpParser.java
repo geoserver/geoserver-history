@@ -4,10 +4,11 @@
  */
 package org.geoserver.wms.kvp;
 
-import java.text.ParseException;
 import org.geoserver.ows.KvpParser;
 import org.geotools.util.NumberRange;
 import org.vfny.geoserver.wms.WmsException;
+import java.text.ParseException;
+
 
 /**
  * Parses the "dim_range" parameter as a list of number values separated by a comma.
@@ -16,7 +17,7 @@ import org.vfny.geoserver.wms.WmsException;
  */
 public class DimRangeKvpParser extends KvpParser {
     /**
-     * 
+     *
      */
     public DimRangeKvpParser(String key) {
         super(key, NumberRange.class);
@@ -30,15 +31,21 @@ public class DimRangeKvpParser extends KvpParser {
      */
     public Object parse(final String value) throws ParseException {
         if (!value.contains(",")) {
-            throw new ParseException("The dim_range parameter does not contain any comma.", 0);
+            throw new ParseException("The dim_range parameter does not contain any comma.",
+                0);
         }
+
         String[] range = value.split(",");
-        if (range == null || range.length != 2) {
-            throw new ParseException("The dim_range parameter is not composed of two number values " +
-                    "separated by a comma.", 0);
+
+        if ((range == null) || (range.length != 2)) {
+            throw new ParseException(
+                "The dim_range parameter is not composed of two number values "
+                + "separated by a comma.", 0);
         }
+
         final double min = Double.parseDouble(range[0]);
         final double max = Double.parseDouble(range[1]);
+
         return new NumberRange(min, max);
     }
 }

@@ -60,6 +60,7 @@ public class GetLegendGraphic extends WMService {
      * @throws UnsupportedOperationException
      */
     protected XmlRequestReader getXmlRequestReader() {
-        throw new UnsupportedOperationException("request does not defines a POST encoding");
+        throw new UnsupportedOperationException(
+            "request does not defines a POST encoding");
     }
 }

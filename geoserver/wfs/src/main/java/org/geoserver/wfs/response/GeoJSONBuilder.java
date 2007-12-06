@@ -28,6 +28,27 @@ import java.io.Writer;
  *
  */
 public class GeoJSONBuilder extends JSONBuilder {
+    /** Internal representation of OGC SF Point */
+    protected static final int POINT = 1;
+
+    /** Internal representation of OGC SF LineString */
+    protected static final int LINESTRING = 2;
+
+    /** Internal representation of OGC SF Polygon */
+    protected static final int POLYGON = 3;
+
+    /** Internal representation of OGC SF MultiPoint */
+    protected static final int MULTIPOINT = 4;
+
+    /** Internal representation of OGC SF MultiLineString */
+    protected static final int MULTILINESTRING = 5;
+
+    /** Internal representation of OGC SF MultiPolygon */
+    protected static final int MULTIPOLYGON = 6;
+
+    /** Internal representation of OGC SF MultiGeometry */
+    protected static final int MULTIGEOMETRY = 7;
+
     public GeoJSONBuilder(Writer w) {
         super(w);
     }
@@ -148,27 +169,6 @@ public class GeoJSONBuilder extends JSONBuilder {
         this.endArray(); //end the linear ring
                          //this.endObject(); //end the 
     }
-
-    /** Internal representation of OGC SF Point */
-    protected static final int POINT = 1;
-
-    /** Internal representation of OGC SF LineString */
-    protected static final int LINESTRING = 2;
-
-    /** Internal representation of OGC SF Polygon */
-    protected static final int POLYGON = 3;
-
-    /** Internal representation of OGC SF MultiPoint */
-    protected static final int MULTIPOINT = 4;
-
-    /** Internal representation of OGC SF MultiLineString */
-    protected static final int MULTILINESTRING = 5;
-
-    /** Internal representation of OGC SF MultiPolygon */
-    protected static final int MULTIPOLYGON = 6;
-
-    /** Internal representation of OGC SF MultiGeometry */
-    protected static final int MULTIGEOMETRY = 7;
 
     public static String getGeometryName(Geometry geometry) {
         Class geomClass = geometry.getClass();

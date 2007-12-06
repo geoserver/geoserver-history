@@ -91,13 +91,22 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
         return new TestingMapProducer();
     }
 
+    /* (non-Javadoc)
+     * @see org.geotools.factory.Factory#getImplementationHints()
+     * This just returns java.util.Collections.EMPTY_MAP
+     */
+    public Map getImplementationHints() {
+        return java.util.Collections.EMPTY_MAP;
+    }
+
     /**
      * DOCUMENT ME!
      *
      * @author Gabriel Roldan, Axios Engineering
      * @version $Id$
      */
-    private class TestingMapProducer extends AbstractGetMapProducer implements GetMapProducer {
+    private class TestingMapProducer extends AbstractGetMapProducer
+        implements GetMapProducer {
         /**
          * DOCUMENT ME!
          *
@@ -116,7 +125,8 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
          * @throws ServiceException DOCUMENT ME!
          * @throws IOException DOCUMENT ME!
          */
-        public void writeTo(OutputStream out) throws ServiceException, IOException {
+        public void writeTo(OutputStream out)
+            throws ServiceException, IOException {
         }
 
         /**
@@ -140,13 +150,5 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
             // can be null
             return null;
         }
-    }
-
-    /* (non-Javadoc)
-     * @see org.geotools.factory.Factory#getImplementationHints()
-     * This just returns java.util.Collections.EMPTY_MAP
-     */
-    public Map getImplementationHints() {
-        return java.util.Collections.EMPTY_MAP;
     }
 }

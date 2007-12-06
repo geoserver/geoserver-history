@@ -4,18 +4,16 @@
  */
 package org.geoserver.ows;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.geoserver.ows.util.EncodingInfo;
 import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -66,7 +64,7 @@ public class FilePublisher extends AbstractController {
         if ((reqPath.length() > 1) && reqPath.startsWith("/")) {
             reqPath = reqPath.substring(1);
         }
-        
+
         // sigh, in order to serve the file we have to open it 2 times
         // 1) to determine its mime type
         // 2) to determine its encoding and really serve it
@@ -84,12 +82,14 @@ public class FilePublisher extends AbstractController {
         }
 
         String mime = getServletContext().getMimeType(file.getName());
+
         if (mime == null) {
             //return a 415: Unsupported Media Type
             response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 
             return null;
         }
+
         response.setContentType(mime);
 
         // Guessing the charset (and closing the stream)
@@ -98,28 +98,36 @@ public class FilePublisher extends AbstractController {
         OutputStream output = null;
         final byte[] b4 = new byte[4];
         int count = 0;
+
         try {
             // open the output
             input = new FileInputStream(file);
-           
+
             // Read the first four bytes, and determine charset encoding
             count = input.read(b4);
             encInfo = XmlCharsetDetector.getEncodingName(b4, count);
-            response.setCharacterEncoding(encInfo.getEncoding() != null ? encInfo.getEncoding() : "UTF-8");
-            
+            response.setCharacterEncoding((encInfo.getEncoding() != null)
+                ? encInfo.getEncoding() : "UTF-8");
+
             // send out the first four bytes read
             output = response.getOutputStream();
             output.write(b4, 0, count);
-        
+
             // copy the content to the output
             byte[] buffer = new byte[8192];
             int n = -1;
+
             while ((n = input.read(buffer)) != -1) {
                 output.write(buffer, 0, n);
             }
         } finally {
-            if(output != null) output.flush();
-            if(input != null) input.close();
+            if (output != null) {
+                output.flush();
+            }
+
+            if (input != null) {
+                input.close();
+            }
         }
 
         return null;

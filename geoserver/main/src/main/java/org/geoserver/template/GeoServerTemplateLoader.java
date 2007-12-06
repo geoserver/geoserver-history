@@ -8,7 +8,6 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
-
 import org.geotools.feature.FeatureType;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import java.io.File;
@@ -79,7 +78,8 @@ public class GeoServerTemplateLoader implements TemplateLoader {
      */
     public GeoServerTemplateLoader(Class caller) throws IOException {
         //create a file template loader to delegate to
-        fileTemplateLoader = new FileTemplateLoader(GeoserverDataDirectory.getGeoserverDataDirectory());
+        fileTemplateLoader = new FileTemplateLoader(GeoserverDataDirectory
+                .getGeoserverDataDirectory());
 
         //create a class template loader to delegate to
         if (caller != null) {
@@ -104,8 +104,9 @@ public class GeoServerTemplateLoader implements TemplateLoader {
         //first check relative to set feature type
         if (featureType != null) {
             String dirName = GeoserverDataDirectory.findFeatureTypeDirName(featureType);
-            template = (File) fileTemplateLoader.findTemplateSource("featureTypes" + File.separator
-                    + dirName + File.separator + path);
+            template = (File) fileTemplateLoader.findTemplateSource(
+                    "featureTypes" + File.separator + dirName + File.separator
+                    + path);
 
             if (template != null) {
                 return template;
@@ -113,15 +114,16 @@ public class GeoServerTemplateLoader implements TemplateLoader {
         }
 
         // next, try relative to feature types
-        template = (File) fileTemplateLoader.findTemplateSource("featureTypes" + File.separator
-                + path);
+        template = (File) fileTemplateLoader.findTemplateSource("featureTypes"
+                + File.separator + path);
 
         if (template != null) {
             return template;
         }
 
         //next, check the templates directory
-        template = (File) fileTemplateLoader.findTemplateSource("templates" + File.separator + path);
+        template = (File) fileTemplateLoader.findTemplateSource("templates"
+                + File.separator + path);
 
         if (template != null) {
             return template;

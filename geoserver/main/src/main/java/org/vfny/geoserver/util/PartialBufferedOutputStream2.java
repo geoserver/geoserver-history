@@ -74,22 +74,23 @@ public class PartialBufferedOutputStream2 extends OutputStream {
     private boolean closed = false;
 
     /**
-             * Constructor Defaults buffer size to 50KB
-             * @param response
-             */
+     * Constructor Defaults buffer size to 50KB
+     * @param response
+     */
     public PartialBufferedOutputStream2(HttpServletResponse response)
         throws IOException {
         this(response, DEFAULT_BUFFER_SIZE); // default to 50KB
     }
 
     /**
-             * @param response the response with its output stream to write to once the buffer is full
-             * @param kilobytes size, in kilobytes, of the buffer
-             */
-    public PartialBufferedOutputStream2(HttpServletResponse response, int kilobytes)
-        throws IOException {
+     * @param response the response with its output stream to write to once the buffer is full
+     * @param kilobytes size, in kilobytes, of the buffer
+     */
+    public PartialBufferedOutputStream2(HttpServletResponse response,
+        int kilobytes) throws IOException {
         if (kilobytes < 1) {
-            throw new IllegalArgumentException("Buffer size not greater than 0: " + kilobytes);
+            throw new IllegalArgumentException(
+                "Buffer size not greater than 0: " + kilobytes);
         }
 
         BUFFER_SIZE = KILOBYTE * kilobytes;
@@ -155,7 +156,8 @@ public class PartialBufferedOutputStream2 extends OutputStream {
     }
 
     private void checkBuffer(int extraBytes) throws IOException {
-        if ((currentStream == out_buffer) && ((out_buffer.size() + extraBytes) >= BUFFER_SIZE)) {
+        if ((currentStream == out_buffer)
+                && ((out_buffer.size() + extraBytes) >= BUFFER_SIZE)) {
             flushBuffer();
         }
     }

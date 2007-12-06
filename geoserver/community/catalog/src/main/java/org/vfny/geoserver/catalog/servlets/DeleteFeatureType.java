@@ -21,8 +21,8 @@ import java.util.Map;
  */
 public class DeleteFeatureType extends CATALOGService {
     /**
-    * Comment for <code>serialVersionUID</code>
-    */
+     * Comment for <code>serialVersionUID</code>
+     */
     private static final long serialVersionUID = 6041201281690024053L;
 
     public DeleteFeatureType(CATALOG catalog) {
@@ -30,10 +30,10 @@ public class DeleteFeatureType extends CATALOGService {
     }
 
     /**
-    * DOCUMENT ME!
-    *
-    * @return DOCUMENT ME!
-    */
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     protected Response getResponseHandler() {
         return new DeleteFeatureTypeResponse();
     }

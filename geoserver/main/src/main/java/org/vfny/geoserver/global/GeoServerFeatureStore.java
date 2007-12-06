@@ -35,7 +35,8 @@ import java.util.Set;
  * @author Gabriel Rold?n
  * @version $Id$
  */
-public class GeoServerFeatureStore extends GeoServerFeatureSource implements FeatureStore {
+public class GeoServerFeatureStore extends GeoServerFeatureSource
+    implements FeatureStore {
     /**
      * Creates a new DEFQueryFeatureLocking object.
      *
@@ -45,8 +46,9 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Fea
      * @param declaredCRS Geometries will be forced to this CRS (or null, if no forcing is needed)
      * @param srsHandling
      */
-    GeoServerFeatureStore(FeatureStore store, FeatureType schema, Filter definitionQuery,
-        CoordinateReferenceSystem declaredCRS, int srsHandling) {
+    GeoServerFeatureStore(FeatureStore store, FeatureType schema,
+        Filter definitionQuery, CoordinateReferenceSystem declaredCRS,
+        int srsHandling) {
         super(store, schema, definitionQuery, declaredCRS, srsHandling);
     }
 
@@ -101,8 +103,8 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Fea
      * @task REVISIT: should we check that non exposed attributes are requiered
      *       in <code>type</code>?
      */
-    public void modifyFeatures(AttributeType[] type, Object[] value, Filter filter)
-        throws IOException {
+    public void modifyFeatures(AttributeType[] type, Object[] value,
+        Filter filter) throws IOException {
         filter = makeDefinitionFilter(filter);
 
         store().modifyFeatures(type, value, filter);
@@ -136,7 +138,8 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Fea
 
         //check if the feature reader needs to be retyped
         if (!store.getSchema().equals(reader.getFeatureType())) {
-            reader = new RetypingFeatureCollection.RetypingFeatureReader(reader, store.getSchema());
+            reader = new RetypingFeatureCollection.RetypingFeatureReader(reader,
+                    store.getSchema());
         }
 
         store().setFeatures(reader);

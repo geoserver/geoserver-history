@@ -128,17 +128,16 @@ public class GlobalConfig {
      * controls logging, the jakarta commons logging system is used by struts,
      * these names seem taken from the jdk14 logging framework and GeoServer
      * seems to also use log4j.
-     * 
+     *
      * See http://docs.codehaus.org/display/GEOS/GSIP+13+-+Logging
      * for how this is now implemented.
      * </p>
      */
     private String log4jConfigFile = null;
     private boolean suppressStdOutLogging = false;
+
     /** custom log location **/
     private String logLocation = null;
-    
-    
     private String adminUserName;
     private String adminPassword;
 
@@ -147,7 +146,6 @@ public class GlobalConfig {
 
     /** The Server contact person and their contact information. */
     private ContactConfig contact = null;
-
     private double jaiMemoryCapacity;
     private double jaiMemoryThreshold;
     private int jaiTileThreads;
@@ -254,7 +252,8 @@ public class GlobalConfig {
      */
     public void update(GeoServerDTO g) {
         if (g == null) {
-            throw new NullPointerException("GeoServer Data Transfer Object required");
+            throw new NullPointerException(
+                "GeoServer Data Transfer Object required");
         }
 
         maxFeatures = g.getMaxFeatures();

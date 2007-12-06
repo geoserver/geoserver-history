@@ -28,8 +28,9 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Id$
  */
 public class DataDataStoresSelectAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,
-        UserContainer user, HttpServletRequest request, HttpServletResponse response)
+    public ActionForward execute(ActionMapping mapping,
+        ActionForm incomingForm, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         DataDataStoresSelectForm form = (DataDataStoresSelectForm) incomingForm;
 
@@ -47,7 +48,8 @@ public class DataDataStoresSelectAction extends ConfigAction {
         String deleteLabel = messages.getMessage(locale, "label.delete");
 
         if (editLabel.equals(buttonAction)) {
-            dsConfig = (DataStoreConfig) dataConfig.getDataStore(form.getSelectedDataStoreId());
+            dsConfig = (DataStoreConfig) dataConfig.getDataStore(form
+                    .getSelectedDataStoreId());
 
             getUserContainer(request).setDataStoreConfig(dsConfig);
 
@@ -61,7 +63,7 @@ public class DataDataStoresSelectAction extends ConfigAction {
             return mapping.findForward("config.data.store");
         }
 
-        throw new ServletException("Action '" + buttonAction + "'must be '" + editLabel + "' or '"
-            + deleteLabel + "'");
+        throw new ServletException("Action '" + buttonAction + "'must be '"
+            + editLabel + "' or '" + deleteLabel + "'");
     }
 }

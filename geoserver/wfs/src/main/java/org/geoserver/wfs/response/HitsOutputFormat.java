@@ -57,10 +57,11 @@ public class HitsOutputFormat extends Response {
      * Checks that the resultType is of type "hits".
      */
     public boolean canHandle(Operation operation) {
-        GetFeatureType request = (GetFeatureType) OwsUtils.parameter(operation.getParameters(),
-                GetFeatureType.class);
+        GetFeatureType request = (GetFeatureType) OwsUtils.parameter(operation
+                .getParameters(), GetFeatureType.class);
 
-        return (request != null) && (request.getResultType() == ResultTypeType.HITS_LITERAL);
+        return (request != null)
+        && (request.getResultType() == ResultTypeType.HITS_LITERAL);
     }
 
     public void write(Object value, OutputStream output, Operation operation)
@@ -68,7 +69,8 @@ public class HitsOutputFormat extends Response {
         FeatureCollectionType featureCollection = (FeatureCollectionType) value;
 
         //create a new feautre collcetion type with just the numbers
-        FeatureCollectionType hits = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        FeatureCollectionType hits = WfsFactory.eINSTANCE
+            .createFeatureCollectionType();
         hits.setNumberOfFeatures(featureCollection.getNumberOfFeatures());
         hits.setTimeStamp(featureCollection.getTimeStamp());
 
@@ -77,7 +79,8 @@ public class HitsOutputFormat extends Response {
             ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "wfs/1.1.0/wfs.xsd"));
 
         try {
-            encoder.encode(hits, org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output);
+            encoder.encode(hits,
+                org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output);
         } catch (SAXException e) {
             throw (IOException) new IOException("Encoding error ").initCause(e);
         }

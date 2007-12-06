@@ -29,8 +29,8 @@ import javax.xml.namespace.QName;
  */
 public class DescribeFeatureType {
     /**
-    * Catalog reference
-    */
+     * Catalog reference
+     */
     private Data catalog;
 
     /**
@@ -39,11 +39,11 @@ public class DescribeFeatureType {
     private WFS wfs;
 
     /**
-         * Creates a new wfs DescribeFeatureType operation.
-         *
-         * @param wfs The wfs configuration
-         * @param catalog The geoserver catalog.
-         */
+     * Creates a new wfs DescribeFeatureType operation.
+     *
+     * @param wfs The wfs configuration
+     * @param catalog The geoserver catalog.
+     */
     public DescribeFeatureType(WFS wfs, Data catalog) {
         this.catalog = catalog;
         this.wfs = wfs;
@@ -101,6 +101,7 @@ O:
             requested.addAll(infos);
         }
 
-        return (FeatureTypeInfo[]) requested.toArray(new FeatureTypeInfo[requested.size()]);
+        return (FeatureTypeInfo[]) requested.toArray(new FeatureTypeInfo[requested
+            .size()]);
     }
 }

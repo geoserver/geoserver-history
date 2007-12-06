@@ -42,7 +42,8 @@ public class GifLegendGraphicProducer extends DefaultRasterLegendProducer {
      */
     public void writeTo(OutputStream out) throws IOException, ServiceException {
         final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(out);
-        final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(super.getLegendGraphic());
+        final PlanarImage encodedImage = PlanarImage.wrapRenderedImage(super
+                .getLegendGraphic());
         final ImageWriter gifWriter = new GIFImageWriter(new GIFImageWriterSpi());
         gifWriter.setOutput(memOutStream);
         gifWriter.write(null, new IIOImage(encodedImage, null, null), null);

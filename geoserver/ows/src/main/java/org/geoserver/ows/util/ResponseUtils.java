@@ -111,7 +111,7 @@ public class ResponseUtils {
      * @param queryString The query string to be appended, should not contain the '?' character.
      *
      * @return A full url with the query string appended.
-     * 
+     *
      * TODO: remove this and replace with Requetss.appendQueryString
      */
     public static String appendQueryString(String url, String queryString) {

@@ -132,7 +132,8 @@ public class MetaDataLink extends GlobalLayerSupertype {
     }
 
     public String toString() {
-        return new ToStringBuilder(this).append(content).append(type).append(metadataType)
-                                        .append(about).toString();
+        return new ToStringBuilder(this).append(content).append(type)
+                                        .append(metadataType).append(about)
+                                        .toString();
     }
 }

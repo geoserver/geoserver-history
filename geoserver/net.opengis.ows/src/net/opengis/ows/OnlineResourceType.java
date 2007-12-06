@@ -8,6 +8,7 @@ package net.opengis.ows;
 
 import org.eclipse.emf.ecore.EObject;
 
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Online Resource Type</b></em>'.

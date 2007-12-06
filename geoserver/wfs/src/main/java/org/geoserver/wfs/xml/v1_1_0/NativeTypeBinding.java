@@ -88,7 +88,8 @@ public class NativeTypeBinding extends AbstractComplexBinding {
         nativ.setVendorId((String) node.getAttributeValue("vendorId"));
 
         //&lt;xsd:attribute name="safeToIgnore" type="xsd:boolean" use="required"&gt;
-        nativ.setSafeToIgnore(((Boolean) node.getAttributeValue("safeToIgnore")).booleanValue());
+        nativ.setSafeToIgnore(((Boolean) node.getAttributeValue("safeToIgnore"))
+            .booleanValue());
 
         return nativ;
     }

@@ -21,8 +21,8 @@ import java.util.Map;
  */
 public class AddCoverage extends CATALOGService {
     /**
-    * Comment for <code>serialVersionUID</code>
-    */
+     * Comment for <code>serialVersionUID</code>
+     */
     private static final long serialVersionUID = 318046797469240553L;
 
     public AddCoverage(CATALOG catalog) {
@@ -30,10 +30,10 @@ public class AddCoverage extends CATALOGService {
     }
 
     /**
-    * DOCUMENT ME!
-    *
-    * @return DOCUMENT ME!
-    */
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     protected Response getResponseHandler() {
         return new AddCoverageResponse();
     }

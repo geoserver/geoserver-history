@@ -31,9 +31,9 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Id$
  */
 public final class CoverageStoresNewAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
-        throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        UserContainer user, HttpServletRequest request,
+        HttpServletResponse response) throws IOException, ServletException {
         final CoverageStoresNewForm newForm = (CoverageStoresNewForm) form;
         final CoverageStoreConfig newFormatConfig;
         newFormatConfig = new CoverageStoreConfig(newForm.getDataFormatID(),

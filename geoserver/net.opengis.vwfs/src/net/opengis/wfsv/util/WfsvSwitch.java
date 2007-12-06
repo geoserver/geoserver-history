@@ -6,17 +6,15 @@
  */
 package net.opengis.wfsv.util;
 
-import java.util.List;
-
 import net.opengis.wfs.BaseRequestType;
 import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.NativeType;
 import net.opengis.wfs.UpdateElementType;
-
 import net.opengis.wfsv.*;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import java.util.List;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -73,13 +71,12 @@ public class WfsvSwitch {
     protected Object doSwitch(EClass theEClass, EObject theEObject) {
         if (theEClass.eContainer() == modelPackage) {
             return doSwitch(theEClass.getClassifierID(), theEObject);
-        }
-        else {
+        } else {
             List eSuperTypes = theEClass.getESuperTypes();
-            return
-                eSuperTypes.isEmpty() ?
-                    defaultCase(theEObject) :
-                    doSwitch((EClass)eSuperTypes.get(0), theEObject);
+
+            return eSuperTypes.isEmpty() ? defaultCase(theEObject)
+                                         : doSwitch((EClass) eSuperTypes.get(0),
+                theEObject);
         }
     }
 
@@ -92,54 +89,105 @@ public class WfsvSwitch {
      */
     protected Object doSwitch(int classifierID, EObject theEObject) {
         switch (classifierID) {
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE: {
-                DifferenceQueryType differenceQueryType = (DifferenceQueryType)theEObject;
-                Object result = caseDifferenceQueryType(differenceQueryType);
-                if (result == null) result = defaultCase(theEObject);
-                return result;
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE: {
+            DifferenceQueryType differenceQueryType = (DifferenceQueryType) theEObject;
+            Object result = caseDifferenceQueryType(differenceQueryType);
+
+            if (result == null) {
+                result = defaultCase(theEObject);
             }
-            case WfsvPackage.DOCUMENT_ROOT: {
-                DocumentRoot documentRoot = (DocumentRoot)theEObject;
-                Object result = caseDocumentRoot(documentRoot);
-                if (result == null) result = defaultCase(theEObject);
-                return result;
+
+            return result;
+        }
+
+        case WfsvPackage.DOCUMENT_ROOT: {
+            DocumentRoot documentRoot = (DocumentRoot) theEObject;
+            Object result = caseDocumentRoot(documentRoot);
+
+            if (result == null) {
+                result = defaultCase(theEObject);
             }
-            case WfsvPackage.GET_DIFF_TYPE: {
-                GetDiffType getDiffType = (GetDiffType)theEObject;
-                Object result = caseGetDiffType(getDiffType);
-                if (result == null) result = caseBaseRequestType(getDiffType);
-                if (result == null) result = defaultCase(theEObject);
-                return result;
+
+            return result;
+        }
+
+        case WfsvPackage.GET_DIFF_TYPE: {
+            GetDiffType getDiffType = (GetDiffType) theEObject;
+            Object result = caseGetDiffType(getDiffType);
+
+            if (result == null) {
+                result = caseBaseRequestType(getDiffType);
             }
-            case WfsvPackage.GET_LOG_TYPE: {
-                GetLogType getLogType = (GetLogType)theEObject;
-                Object result = caseGetLogType(getLogType);
-                if (result == null) result = caseBaseRequestType(getLogType);
-                if (result == null) result = defaultCase(theEObject);
-                return result;
+
+            if (result == null) {
+                result = defaultCase(theEObject);
             }
-            case WfsvPackage.ROLLBACK_TYPE: {
-                RollbackType rollbackType = (RollbackType)theEObject;
-                Object result = caseRollbackType(rollbackType);
-                if (result == null) result = caseNativeType(rollbackType);
-                if (result == null) result = defaultCase(theEObject);
-                return result;
+
+            return result;
+        }
+
+        case WfsvPackage.GET_LOG_TYPE: {
+            GetLogType getLogType = (GetLogType) theEObject;
+            Object result = caseGetLogType(getLogType);
+
+            if (result == null) {
+                result = caseBaseRequestType(getLogType);
             }
-            case WfsvPackage.VERSIONED_DELETE_ELEMENT_TYPE: {
-                VersionedDeleteElementType versionedDeleteElementType = (VersionedDeleteElementType)theEObject;
-                Object result = caseVersionedDeleteElementType(versionedDeleteElementType);
-                if (result == null) result = caseDeleteElementType(versionedDeleteElementType);
-                if (result == null) result = defaultCase(theEObject);
-                return result;
+
+            if (result == null) {
+                result = defaultCase(theEObject);
             }
-            case WfsvPackage.VERSIONED_UPDATE_ELEMENT_TYPE: {
-                VersionedUpdateElementType versionedUpdateElementType = (VersionedUpdateElementType)theEObject;
-                Object result = caseVersionedUpdateElementType(versionedUpdateElementType);
-                if (result == null) result = caseUpdateElementType(versionedUpdateElementType);
-                if (result == null) result = defaultCase(theEObject);
-                return result;
+
+            return result;
+        }
+
+        case WfsvPackage.ROLLBACK_TYPE: {
+            RollbackType rollbackType = (RollbackType) theEObject;
+            Object result = caseRollbackType(rollbackType);
+
+            if (result == null) {
+                result = caseNativeType(rollbackType);
             }
-            default: return defaultCase(theEObject);
+
+            if (result == null) {
+                result = defaultCase(theEObject);
+            }
+
+            return result;
+        }
+
+        case WfsvPackage.VERSIONED_DELETE_ELEMENT_TYPE: {
+            VersionedDeleteElementType versionedDeleteElementType = (VersionedDeleteElementType) theEObject;
+            Object result = caseVersionedDeleteElementType(versionedDeleteElementType);
+
+            if (result == null) {
+                result = caseDeleteElementType(versionedDeleteElementType);
+            }
+
+            if (result == null) {
+                result = defaultCase(theEObject);
+            }
+
+            return result;
+        }
+
+        case WfsvPackage.VERSIONED_UPDATE_ELEMENT_TYPE: {
+            VersionedUpdateElementType versionedUpdateElementType = (VersionedUpdateElementType) theEObject;
+            Object result = caseVersionedUpdateElementType(versionedUpdateElementType);
+
+            if (result == null) {
+                result = caseUpdateElementType(versionedUpdateElementType);
+            }
+
+            if (result == null) {
+                result = defaultCase(theEObject);
+            }
+
+            return result;
+        }
+
+        default:
+            return defaultCase(theEObject);
         }
     }
 
@@ -229,7 +277,8 @@ public class WfsvSwitch {
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-    public Object caseVersionedDeleteElementType(VersionedDeleteElementType object) {
+    public Object caseVersionedDeleteElementType(
+        VersionedDeleteElementType object) {
         return null;
     }
 
@@ -244,7 +293,8 @@ public class WfsvSwitch {
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-    public Object caseVersionedUpdateElementType(VersionedUpdateElementType object) {
+    public Object caseVersionedUpdateElementType(
+        VersionedUpdateElementType object) {
         return null;
     }
 
@@ -322,5 +372,4 @@ public class WfsvSwitch {
     public Object defaultCase(EObject object) {
         return null;
     }
-
 } //WfsvSwitch

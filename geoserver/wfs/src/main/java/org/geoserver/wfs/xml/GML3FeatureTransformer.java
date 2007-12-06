@@ -15,10 +15,11 @@ import java.util.Set;
 
 
 public class GML3FeatureTransformer extends FeatureTransformer {
-    protected FeatureTranslator createTranslator(ContentHandler handler, String prefix, String ns,
-        FeatureTypeNamespaces featureTypeNamespaces, SchemaLocationSupport schemaLocationSupport) {
-        return new GML3FeatureTranslator(handler, prefix, ns, featureTypeNamespaces,
-            schemaLocationSupport);
+    protected FeatureTranslator createTranslator(ContentHandler handler,
+        String prefix, String ns, FeatureTypeNamespaces featureTypeNamespaces,
+        SchemaLocationSupport schemaLocationSupport) {
+        return new GML3FeatureTranslator(handler, prefix, ns,
+            featureTypeNamespaces, schemaLocationSupport);
     }
 
     protected void loadGmlAttributes(Set set) {
@@ -27,22 +28,25 @@ public class GML3FeatureTransformer extends FeatureTransformer {
     }
 
     public static class GML3FeatureTranslator extends FeatureTranslator {
-        public GML3FeatureTranslator(ContentHandler handler, String prefix, String ns,
-            FeatureTypeNamespaces featureTypeNamespaces, SchemaLocationSupport schemaLocationSupport) {
-            super(handler, prefix, ns, featureTypeNamespaces, schemaLocationSupport);
+        public GML3FeatureTranslator(ContentHandler handler, String prefix,
+            String ns, FeatureTypeNamespaces featureTypeNamespaces,
+            SchemaLocationSupport schemaLocationSupport) {
+            super(handler, prefix, ns, featureTypeNamespaces,
+                schemaLocationSupport);
         }
 
-        protected GeometryTranslator createGeometryTranslator(ContentHandler handler) {
+        protected GeometryTranslator createGeometryTranslator(
+            ContentHandler handler) {
             return new GML3GeometryTranslator(handler);
         }
 
-        protected GeometryTranslator createGeometryTranslator(ContentHandler handler,
-            int numDecimals) {
+        protected GeometryTranslator createGeometryTranslator(
+            ContentHandler handler, int numDecimals) {
             return new GML3GeometryTranslator(handler, numDecimals);
         }
 
-        protected GeometryTranslator createGeometryTranslator(ContentHandler handler,
-            int numDecimals, boolean useDummyZ) {
+        protected GeometryTranslator createGeometryTranslator(
+            ContentHandler handler, int numDecimals, boolean useDummyZ) {
             return new GML3GeometryTranslator(handler, numDecimals, useDummyZ);
         }
 

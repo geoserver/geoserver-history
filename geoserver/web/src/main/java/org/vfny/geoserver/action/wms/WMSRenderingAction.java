@@ -18,9 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 
 
 public class WMSRenderingAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
-        throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        UserContainer user, HttpServletRequest request,
+        HttpServletResponse response) throws IOException, ServletException {
         WMSConfig config = getWMSConfig();
         WMSRenderingForm renderingForm = (WMSRenderingForm) form;
 

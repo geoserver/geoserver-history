@@ -23,11 +23,11 @@ import javax.servlet.http.HttpServletRequest;
  */
 abstract public class CATALOGService extends AbstractService {
     /**
-         * Constructor for CATALOG service.
-         *
-         * @param request The service request being made (UpdateCatalog,...)
-         * @param catalog The CATALOG service reference.
-         */
+     * Constructor for CATALOG service.
+     *
+     * @param request The service request being made (UpdateCatalog,...)
+     * @param catalog The CATALOG service reference.
+     */
     public CATALOGService(String request, CATALOG catalog) {
         super("CATALOG", request, catalog);
     }

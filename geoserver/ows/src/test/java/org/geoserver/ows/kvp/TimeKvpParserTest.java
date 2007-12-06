@@ -4,19 +4,17 @@
  */
 package org.geoserver.ows.kvp;
 
+import junit.framework.TestCase;
+import org.geoserver.ows.kvp.TimeKvpParser;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import org.geoserver.ows.kvp.TimeKvpParser;
 
-import junit.framework.TestCase;
-
-        
 /**
  * Test for the time parameter in a WMS request.
- * 
+ *
  * @author Cédric Briançon
  */
 public class TimeKvpParserTest extends TestCase {
@@ -24,11 +22,12 @@ public class TimeKvpParserTest extends TestCase {
      * A time period for testing.
      */
     private final static String PERIOD = "2007-01-01T12Z/2007-01-31T12Z/P1DT12H";
-    
+
     /**
      * Format of dates.
      */
-    private final static DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH'Z'");
+    private final static DateFormat format = new SimpleDateFormat(
+            "yyyy-MM-dd'T'HH'Z'");
 
     /**
      * Tests only the increment part of the time parameter.
@@ -37,12 +36,13 @@ public class TimeKvpParserTest extends TestCase {
      */
     public void testPeriod() throws ParseException {
         final long millisInDay = TimeKvpParser.MILLIS_IN_DAY;
-        assertEquals(               millisInDay,  TimeKvpParser.parsePeriod("P1D"));
-        assertEquals(             3*millisInDay,  TimeKvpParser.parsePeriod("P3D"));
-        assertEquals(            14*millisInDay,  TimeKvpParser.parsePeriod("P2W"));
-        assertEquals(             8*millisInDay,  TimeKvpParser.parsePeriod("P1W1D"));
-        assertEquals(               millisInDay,  TimeKvpParser.parsePeriod("PT24H"));
-        assertEquals(Math.round(1.5*millisInDay), TimeKvpParser.parsePeriod("P1.5D"));
+        assertEquals(millisInDay, TimeKvpParser.parsePeriod("P1D"));
+        assertEquals(3 * millisInDay, TimeKvpParser.parsePeriod("P3D"));
+        assertEquals(14 * millisInDay, TimeKvpParser.parsePeriod("P2W"));
+        assertEquals(8 * millisInDay, TimeKvpParser.parsePeriod("P1W1D"));
+        assertEquals(millisInDay, TimeKvpParser.parsePeriod("PT24H"));
+        assertEquals(Math.round(1.5 * millisInDay),
+            TimeKvpParser.parsePeriod("P1.5D"));
     }
 
     /**

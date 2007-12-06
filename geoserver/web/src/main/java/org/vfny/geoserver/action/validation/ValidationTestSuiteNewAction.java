@@ -45,8 +45,9 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Id$
  */
 public class ValidationTestSuiteNewAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,
-        UserContainer user, HttpServletRequest request, HttpServletResponse response) {
+    public ActionForward execute(ActionMapping mapping,
+        ActionForm incomingForm, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response) {
         ValidationTestSuiteNewForm form = (ValidationTestSuiteNewForm) incomingForm;
 
         String newName = form.getNewName();
@@ -55,10 +56,12 @@ public class ValidationTestSuiteNewAction extends ConfigAction {
         suiteConfig.setName(newName);
 
         ServletContext context = this.getServlet().getServletContext();
-        ValidationConfig validationConfig = (ValidationConfig) context.getAttribute(ValidationConfig.CONFIG_KEY);
+        ValidationConfig validationConfig = (ValidationConfig) context
+            .getAttribute(ValidationConfig.CONFIG_KEY);
         validationConfig.addTestSuite(suiteConfig);
 
-        request.getSession().setAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY, suiteConfig);
+        request.getSession()
+               .setAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY, suiteConfig);
 
         return mapping.findForward("validationTest");
     }

@@ -34,12 +34,13 @@ public class FreeJAIMemoryAction extends ConfigAction {
     /* (non-Javadoc)
      * @see org.vfny.geoserver.action.ConfigAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, org.vfny.geoserver.global.UserContainer, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
-        throws Exception {
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        UserContainer user, HttpServletRequest request,
+        HttpServletResponse response) throws Exception {
         ServletContext sc = request.getSession().getServletContext();
 
-        final JAI jaiDef = ((GeoServer) sc.getAttribute(GeoServer.WEB_CONTAINER_KEY)).getJAIDefault();
+        final JAI jaiDef = ((GeoServer) sc.getAttribute(GeoServer.WEB_CONTAINER_KEY))
+            .getJAIDefault();
         final SunTileCache jaiCache = ((GeoServer) sc.getAttribute(GeoServer.WEB_CONTAINER_KEY))
             .getJaiCache();
         final long capacityBefore = jaiCache.getMemoryCapacity();
@@ -61,7 +62,8 @@ public class FreeJAIMemoryAction extends ConfigAction {
         //
         final ActionErrors errors = new ActionErrors();
         errors.add(ActionErrors.GLOBAL_ERROR,
-            new ActionError("message.JAI.memory", new Long((usageBefore - usageAfter) / 1024)));
+            new ActionError("message.JAI.memory",
+                new Long((usageBefore - usageAfter) / 1024)));
         request.setAttribute(Globals.ERROR_KEY, errors);
 
         // return back to the admin screen

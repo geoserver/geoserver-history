@@ -25,9 +25,9 @@ import javax.servlet.http.HttpServletResponse;
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public final class WFSContentAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
-        throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        UserContainer user, HttpServletRequest request,
+        HttpServletResponse response) throws IOException, ServletException {
         WFSContentForm contentForm = (WFSContentForm) form;
 
         boolean enabled = contentForm.isEnabled();

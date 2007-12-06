@@ -31,7 +31,8 @@ import javax.imageio.stream.ImageOutputStream;
  */
 public final class JAISupport {
     /** shared package's logger */
-    private static final Logger LOGGER = Logger.getLogger(JAISupport.class.getPackage().getName());
+    private static final Logger LOGGER = Logger.getLogger(JAISupport.class.getPackage()
+                                                                          .getName());
 
     /**
      *  Array of mime types that have been tested to work.
@@ -49,7 +50,6 @@ public final class JAISupport {
 
         //testedFormats.add("image/png");
     }
-    ;
 
     /**
      * Set&lt;String&gt; of the MIME types the available JAI library supports,
@@ -98,9 +98,11 @@ public final class JAISupport {
                 }
 
                 if (LOGGER.isLoggable(Level.CONFIG)) {
-                    StringBuffer sb = new StringBuffer("Supported JAIMapResponse's MIME Types: [");
+                    StringBuffer sb = new StringBuffer(
+                            "Supported JAIMapResponse's MIME Types: [");
 
-                    for (Iterator it = supportedFormats.iterator(); it.hasNext();) {
+                    for (Iterator it = supportedFormats.iterator();
+                            it.hasNext();) {
                         sb.append(it.next());
 
                         if (it.hasNext()) {
@@ -144,8 +146,8 @@ public final class JAISupport {
      * @throws IllegalArgumentException if <code>format</code> is not a
      *         supported output format for the installed JAI library.
      */
-    public static void encode(String format, BufferedImage image, OutputStream outStream)
-        throws IOException {
+    public static void encode(String format, BufferedImage image,
+        OutputStream outStream) throws IOException {
         if (format.equalsIgnoreCase("jpeg")) {
             format = "image/jpeg";
         }
@@ -153,13 +155,15 @@ public final class JAISupport {
         Iterator it = ImageIO.getImageWritersByMIMEType(format);
 
         if (!it.hasNext()) {
-            throw new IllegalArgumentException("Format not supported: " + format);
+            throw new IllegalArgumentException("Format not supported: "
+                + format);
         }
 
         ImageWriter writer = (ImageWriter) it.next();
         ImageOutputStream ioutstream = null;
 
-        IIOMetadata meta = writer.getDefaultStreamMetadata(writer.getDefaultWriteParam());
+        IIOMetadata meta = writer.getDefaultStreamMetadata(writer
+                .getDefaultWriteParam());
         ImageWriteParam param = writer.getDefaultWriteParam();
 
         // DJB: jpeg does not support ARGB (alpha) colour
@@ -181,8 +185,8 @@ public final class JAISupport {
             //           DirectColorModel newCM = new DirectColorModel(cm.getPixelSize(), cm.getRedMask(), cm.getGreenMask(), cm.getBlueMask());
             //             now create the new buffer that is used ot write the image:
             // BufferedImage rgbBuffer = new BufferedImage(newCM, newRaster, false, null);
-            BufferedImage curImage = new BufferedImage(image.getWidth(), image.getHeight(),
-                    BufferedImage.TYPE_3BYTE_BGR);
+            BufferedImage curImage = new BufferedImage(image.getWidth(),
+                    image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
             Graphics2D g = (Graphics2D) curImage.createGraphics();
             g.drawImage(image, 0, 0, null);
 

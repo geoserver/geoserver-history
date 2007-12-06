@@ -23,7 +23,8 @@ public class WFSException extends ServiceException {
         super(message, code);
     }
 
-    public WFSException(String message, Throwable cause, String code, String locator) {
+    public WFSException(String message, Throwable cause, String code,
+        String locator) {
         super(message, cause, code, locator);
     }
 

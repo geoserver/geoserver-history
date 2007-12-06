@@ -75,7 +75,8 @@ public abstract class FeatureTypeSchemaBuilder {
     protected String gmlSchemaLocation;
     protected Configuration xmlConfiguration;
 
-    protected FeatureTypeSchemaBuilder(WFS wfs, Data catalog, GeoServerResourceLoader resourceLoader) {
+    protected FeatureTypeSchemaBuilder(WFS wfs, Data catalog,
+        GeoServerResourceLoader resourceLoader) {
         this.wfs = wfs;
         this.catalog = catalog;
         this.resourceLoader = resourceLoader;
@@ -94,7 +95,8 @@ public abstract class FeatureTypeSchemaBuilder {
         XSDFactory factory = XSDFactory.eINSTANCE;
         XSDSchema schema = factory.createXSDSchema();
         schema.setSchemaForSchemaQNamePrefix("xsd");
-        schema.getQNamePrefixToNamespaceMap().put("xsd", XSDConstants.SCHEMA_FOR_SCHEMA_URI_2001);
+        schema.getQNamePrefixToNamespaceMap()
+              .put("xsd", XSDConstants.SCHEMA_FOR_SCHEMA_URI_2001);
         schema.setElementFormDefault(XSDForm.get(XSDForm.QUALIFIED));
 
         //group the feature types by namespace
@@ -112,16 +114,17 @@ public abstract class FeatureTypeSchemaBuilder {
 
             ns2featureTypeInfos.put(prefix, l);
         }
-        
-        if (baseUrl == null)
-            baseUrl = wfs.getSchemaBaseURL(); 
+
+        if (baseUrl == null) {
+            baseUrl = wfs.getSchemaBaseURL();
+        }
 
         if (ns2featureTypeInfos.entrySet().size() == 1) {
             //import gml schema
             XSDImport imprt = factory.createXSDImport();
             imprt.setNamespace(gmlNamespace);
 
-            imprt.setSchemaLocation( ResponseUtils.appendPath(baseUrl,
+            imprt.setSchemaLocation(ResponseUtils.appendPath(baseUrl,
                     "schemas/" + gmlSchemaLocation));
 
             XSDSchema gmlSchema = gmlSchema();
@@ -129,12 +132,14 @@ public abstract class FeatureTypeSchemaBuilder {
 
             schema.getContents().add(imprt);
 
-            String targetPrefix = (String) ns2featureTypeInfos.keySet().iterator().next();
+            String targetPrefix = (String) ns2featureTypeInfos.keySet()
+                                                              .iterator().next();
             String targetNamespace = catalog.getNameSpace(targetPrefix).getURI();
 
             schema.setTargetNamespace(targetNamespace);
             //schema.getQNamePrefixToNamespaceMap().put( null, targetNamespace );
-            schema.getQNamePrefixToNamespaceMap().put(targetPrefix, targetNamespace);
+            schema.getQNamePrefixToNamespaceMap()
+                  .put(targetPrefix, targetNamespace);
             schema.getQNamePrefixToNamespaceMap().put("gml", gmlNamespace);
 
             //all types in same namespace, write out the schema
@@ -143,7 +148,8 @@ public abstract class FeatureTypeSchemaBuilder {
             }
         } else {
             //different namespaces, write out import statements
-            for (Iterator i = ns2featureTypeInfos.entrySet().iterator(); i.hasNext();) {
+            for (Iterator i = ns2featureTypeInfos.entrySet().iterator();
+                    i.hasNext();) {
                 Map.Entry entry = (Map.Entry) i.next();
                 String prefix = (String) entry.getKey();
                 List types = (List) entry.getValue();
@@ -176,8 +182,8 @@ public abstract class FeatureTypeSchemaBuilder {
         return schema;
     }
 
-    void buildSchemaContent(FeatureTypeInfo featureTypeMeta, XSDSchema schema, XSDFactory factory)
-        throws IOException {
+    void buildSchemaContent(FeatureTypeInfo featureTypeMeta, XSDSchema schema,
+        XSDFactory factory) throws IOException {
         //look if the schema for the type is already defined
         String prefix = featureTypeMeta.getNameSpace().getPrefix();
         String name = featureTypeMeta.getTypeName();
@@ -185,7 +191,8 @@ public abstract class FeatureTypeSchemaBuilder {
         File schemaFile = null;
 
         try {
-            schemaFile = resourceLoader.find("featureTypes/" + prefix + "_" + name + "/schema.xsd");
+            schemaFile = resourceLoader.find("featureTypes/" + prefix + "_"
+                    + name + "/schema.xsd");
         } catch (IOException e1) {
         }
 
@@ -195,7 +202,8 @@ public abstract class FeatureTypeSchemaBuilder {
             XSDSchema ftSchema = null;
 
             try {
-                ftSchema = Schemas.parse(schemaFile.getAbsolutePath(), null, resolvers);
+                ftSchema = Schemas.parse(schemaFile.getAbsolutePath(), null,
+                        resolvers);
             } catch (IOException e) {
                 logger.log(Level.WARNING,
                     "Unable to parse schema: " + schemaFile.getAbsolutePath(), e);
@@ -220,12 +228,13 @@ public abstract class FeatureTypeSchemaBuilder {
 
         //build the type manually
         FeatureType featureType = featureTypeMeta.getFeatureType();
-        XSDComplexTypeDefinition complexType = factory.createXSDComplexTypeDefinition();
+        XSDComplexTypeDefinition complexType = factory
+            .createXSDComplexTypeDefinition();
         complexType.setName(featureType.getTypeName() + "Type");
 
         complexType.setDerivationMethod(XSDDerivationMethod.EXTENSION_LITERAL);
-        complexType.setBaseTypeDefinition(schema.resolveComplexTypeDefinition(gmlNamespace,
-                "AbstractFeatureType"));
+        complexType.setBaseTypeDefinition(schema.resolveComplexTypeDefinition(
+                gmlNamespace, "AbstractFeatureType"));
 
         XSDModelGroup group = factory.createXSDModelGroup();
         group.setCompositor(XSDCompositor.SEQUENCE_LITERAL);
@@ -235,10 +244,10 @@ public abstract class FeatureTypeSchemaBuilder {
         for (int i = 0; i < attributes.length; i++) {
             AttributeType attribute = attributes[i];
 
-            if ( filterAttributeType( attribute ) ) {
+            if (filterAttributeType(attribute)) {
                 continue;
             }
-           
+
             XSDElementDeclaration element = factory.createXSDElementDeclaration();
             element.setName(attribute.getName());
             element.setNillable(attribute.isNillable());
@@ -247,12 +256,13 @@ public abstract class FeatureTypeSchemaBuilder {
             Name typeName = findTypeName(binding);
 
             if (typeName == null) {
-                throw new NullPointerException("Could not find a type for property: "
+                throw new NullPointerException(
+                    "Could not find a type for property: "
                     + attribute.getName() + " of type: " + binding.getName());
             }
 
-            XSDTypeDefinition type = schema.resolveTypeDefinition(typeName.getNamespaceURI(),
-                    typeName.getLocalPart());
+            XSDTypeDefinition type = schema.resolveTypeDefinition(typeName
+                    .getNamespaceURI(), typeName.getLocalPart());
             element.setTypeDefinition(type);
 
             XSDParticle particle = factory.createXSDParticle();
@@ -272,8 +282,8 @@ public abstract class FeatureTypeSchemaBuilder {
         XSDElementDeclaration element = factory.createXSDElementDeclaration();
         element.setName(name);
 
-        element.setSubstitutionGroupAffiliation(schema.resolveElementDeclaration(gmlNamespace,
-                "_Feature"));
+        element.setSubstitutionGroupAffiliation(schema.resolveElementDeclaration(
+                gmlNamespace, "_Feature"));
         element.setTypeDefinition(complexType);
 
         schema.getContents().add(element);
@@ -282,8 +292,6 @@ public abstract class FeatureTypeSchemaBuilder {
         schema.updateElement();
     }
 
-   
-    
     Name findTypeName(Class binding) {
         for (Iterator p = profiles.iterator(); p.hasNext();) {
             TypeMappingProfile profile = (TypeMappingProfile) p.next();
@@ -299,19 +307,20 @@ public abstract class FeatureTypeSchemaBuilder {
 
     protected abstract XSDSchema gmlSchema();
 
-    protected boolean filterAttributeType( AttributeType attribute ) {
-        return "name".equals( attribute.getName() ) 
-            || "description".equals( attribute.getName()) 
-            || "boundedBy".equals( attribute.getName());
+    protected boolean filterAttributeType(AttributeType attribute) {
+        return "name".equals(attribute.getName())
+        || "description".equals(attribute.getName())
+        || "boundedBy".equals(attribute.getName());
     }
-    
+
     public static final class GML2 extends FeatureTypeSchemaBuilder {
         /**
          * Cached gml2 schema
          */
         private static XSDSchema gml2Schema;
 
-        public GML2(WFS wfs, Data catalog, GeoServerResourceLoader resourceLoader) {
+        public GML2(WFS wfs, Data catalog,
+            GeoServerResourceLoader resourceLoader) {
             super(wfs, catalog, resourceLoader);
 
             profiles.add(new GML2Profile());
@@ -335,7 +344,8 @@ public abstract class FeatureTypeSchemaBuilder {
          */
         private static XSDSchema gml3Schema;
 
-        public GML3(WFS wfs, Data catalog, GeoServerResourceLoader resourceLoader) {
+        public GML3(WFS wfs, Data catalog,
+            GeoServerResourceLoader resourceLoader) {
             super(wfs, catalog, resourceLoader);
 
             profiles.add(new GML3Profile());
@@ -352,11 +362,11 @@ public abstract class FeatureTypeSchemaBuilder {
 
             return gml3Schema;
         }
-        
-        protected boolean filterAttributeType( AttributeType attribute ) {
-            return super.filterAttributeType( attribute ) || 
-                "metaDataProperty".equals( attribute.getName() ) || 
-                "location".equals( attribute.getName() );
+
+        protected boolean filterAttributeType(AttributeType attribute) {
+            return super.filterAttributeType(attribute)
+            || "metaDataProperty".equals(attribute.getName())
+            || "location".equals(attribute.getName());
         }
     }
 }

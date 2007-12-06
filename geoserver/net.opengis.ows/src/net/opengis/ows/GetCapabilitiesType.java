@@ -8,6 +8,7 @@ package net.opengis.ows;
 
 import org.eclipse.emf.ecore.EObject;
 
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Get Capabilities Type</b></em>'.
@@ -33,10 +34,10 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface GetCapabilitiesType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Accept Versions</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * When omitted, server shall return latest supported version.
      * <!-- end-model-doc -->
@@ -47,22 +48,22 @@ public interface GetCapabilitiesType extends EObject {
      *        extendedMetaData="kind='element' name='AcceptVersions' namespace='##targetNamespace'"
      * @generated
      */
-	AcceptVersionsType getAcceptVersions();
+    AcceptVersionsType getAcceptVersions();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.GetCapabilitiesType#getAcceptVersions <em>Accept Versions</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Accept Versions</em>' containment reference.
      * @see #getAcceptVersions()
      * @generated
      */
-	void setAcceptVersions(AcceptVersionsType value);
+    void setAcceptVersions(AcceptVersionsType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Sections</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * When omitted or not supported by server, server shall return complete service metadata (Capabilities) document.
      * <!-- end-model-doc -->
@@ -73,22 +74,22 @@ public interface GetCapabilitiesType extends EObject {
      *        extendedMetaData="kind='element' name='Sections' namespace='##targetNamespace'"
      * @generated
      */
-	SectionsType getSections();
+    SectionsType getSections();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.GetCapabilitiesType#getSections <em>Sections</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Sections</em>' containment reference.
      * @see #getSections()
      * @generated
      */
-	void setSections(SectionsType value);
+    void setSections(SectionsType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Accept Formats</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * When omitted or not supported by server, server shall return service metadata document using the MIME type "text/xml".
      * <!-- end-model-doc -->
@@ -99,22 +100,22 @@ public interface GetCapabilitiesType extends EObject {
      *        extendedMetaData="kind='element' name='AcceptFormats' namespace='##targetNamespace'"
      * @generated
      */
-	AcceptFormatsType getAcceptFormats();
+    AcceptFormatsType getAcceptFormats();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.GetCapabilitiesType#getAcceptFormats <em>Accept Formats</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Accept Formats</em>' containment reference.
      * @see #getAcceptFormats()
      * @generated
      */
-	void setAcceptFormats(AcceptFormatsType value);
+    void setAcceptFormats(AcceptFormatsType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Update Sequence</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * When omitted or not supported by server, server shall return latest complete service metadata document.
      * <!-- end-model-doc -->
@@ -125,17 +126,17 @@ public interface GetCapabilitiesType extends EObject {
      *        extendedMetaData="kind='attribute' name='updateSequence'"
      * @generated
      */
-	String getUpdateSequence();
+    String getUpdateSequence();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.GetCapabilitiesType#getUpdateSequence <em>Update Sequence</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Update Sequence</em>' attribute.
      * @see #getUpdateSequence()
      * @generated
      */
-	void setUpdateSequence(String value);
+    void setUpdateSequence(String value);
 
     /**
      * Returns the value of the '<em><b>Base Url</b></em>' attribute.
@@ -162,5 +163,4 @@ public interface GetCapabilitiesType extends EObject {
      * @generated
      */
     void setBaseUrl(String value);
-
 } // GetCapabilitiesType

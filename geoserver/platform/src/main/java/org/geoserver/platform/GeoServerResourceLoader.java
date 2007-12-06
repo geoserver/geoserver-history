@@ -43,7 +43,8 @@ import java.util.logging.Logger;
  *
  */
 public class GeoServerResourceLoader extends DefaultResourceLoader {
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.global");
 
     /** "path" for resource lookups */
     Set searchLocations;
@@ -144,7 +145,8 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
                         return file;
                     }
                 } catch (SecurityException e) {
-                    LOGGER.warning("Failed attemp to check existance of " + file.getAbsolutePath());
+                    LOGGER.warning("Failed attemp to check existance of "
+                        + file.getAbsolutePath());
                 }
             }
         }
@@ -194,7 +196,8 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
 
         //no base directory set, cannot create a relative path
         if (baseDirectory == null) {
-            String msg = "No base location set, could not create directory: " + location;
+            String msg = "No base location set, could not create directory: "
+                + location;
             throw new IOException(msg);
         }
 
@@ -242,7 +245,8 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
 
         //no base directory set, cannot create a relative path
         if (baseDirectory == null) {
-            String msg = "No base location set, could not create file: " + location;
+            String msg = "No base location set, could not create file: "
+                + location;
             throw new IOException(msg);
         }
 

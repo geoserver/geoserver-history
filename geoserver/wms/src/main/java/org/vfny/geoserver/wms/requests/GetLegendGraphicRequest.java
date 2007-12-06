@@ -4,13 +4,12 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import java.util.List;
-import java.util.Map;
-
 import org.geotools.feature.FeatureType;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.wms.servlets.WMService;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -124,10 +123,10 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /** mime type of the format in which to return exceptions information. */
     private String exceptionsFormat = GetMapRequest.SE_XML;
-    
+
     /** holds the geoserver-specific getLegendGraphic options for controlling
      * things like the label font, label font style, label font antialiasing, etc.
-     */ 
+     */
     private Map legendOptions;
 
     /**
@@ -299,11 +298,11 @@ public class GetLegendGraphicRequest extends WMSRequest {
     public void setWidth(int width) {
         this.width = width;
     }
-    
+
     public Map getLegendOptions() {
         return legendOptions;
     }
-    
+
     public void setLegendOptions(Map legendOptions) {
         this.legendOptions = legendOptions;
     }

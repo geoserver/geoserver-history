@@ -10,7 +10,6 @@ import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
-
 import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
@@ -20,7 +19,6 @@ import org.geotools.factory.GeoTools;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.GeometryAttributeType;
-
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
@@ -31,7 +29,6 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,26 +41,21 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
     protected static Logger LOGGER = Logger.getLogger("org.geoserver.georss");
 
     /**
+     * Geometry encoding to use.
+     */
+    protected GeometryEncoding geometryEncoding = GeometryEncoding.LATLONG;
+
+    public void setGeometryEncoding(GeometryEncoding geometryEncoding) {
+        this.geometryEncoding = geometryEncoding;
+    }
+
+    /**
      * Enumeration for geometry encoding.
      *
      * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
      *
      */
     public static class GeometryEncoding {
-        private GeometryEncoding() {
-        }
-
-        public String getPrefix() {
-            return null;
-        }
-
-        public String getNamespaceURI() {
-            return null;
-        }
-
-        public void encode(Geometry g, GeoRSSTranslatorSupport translator) {
-        }
-
         /**
          * "simple" encoding:
          *
@@ -91,7 +83,8 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
                         StringBuffer sb = new StringBuffer();
 
                         for (int i = 0; i < l.getNumPoints(); i++) {
-                            Coordinate c = l.getCoordinateN(i);
+                            Coordinate c = l
+                                .getCoordinateN(i);
                             sb.append(c.x).append(" ").append(c.y).append(" ");
                         }
 
@@ -160,23 +153,29 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
                     t.element("geo:long", "" + p.getX());
                 }
             };
-    }
-    ;
 
-    /**
-     * Geometry encoding to use.
-     */
-    protected GeometryEncoding geometryEncoding = GeometryEncoding.LATLONG;
+        private GeometryEncoding() {
+        }
 
-    public void setGeometryEncoding(GeometryEncoding geometryEncoding) {
-        this.geometryEncoding = geometryEncoding;
+        public String getPrefix() {
+            return null;
+        }
+
+        public String getNamespaceURI() {
+            return null;
+        }
+
+        public void encode(Geometry g, GeoRSSTranslatorSupport translator) {
+        }
     }
 
     abstract class GeoRSSTranslatorSupport extends TranslatorSupport {
-        public GeoRSSTranslatorSupport(ContentHandler contentHandler, String prefix, String nsURI) {
+        public GeoRSSTranslatorSupport(ContentHandler contentHandler,
+            String prefix, String nsURI) {
             super(contentHandler, prefix, nsURI);
 
-            nsSupport.declarePrefix(geometryEncoding.getPrefix(), geometryEncoding.getNamespaceURI());
+            nsSupport.declarePrefix(geometryEncoding.getPrefix(),
+                geometryEncoding.getNamespaceURI());
         }
 
         /**
@@ -208,59 +207,76 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
         public void element(String element, String content) {
             super.element(element, content);
         }
-        
-        protected List loadFeatureCollections(WMSMapContext map) throws IOException {
+
+        protected List loadFeatureCollections(WMSMapContext map)
+            throws IOException {
             ReferencedEnvelope mapArea = map.getAreaOfInterest();
             CoordinateReferenceSystem wgs84 = null;
-            FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());
+            FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools
+                    .getDefaultHints());
+
             try {
                 // this should never throw an exception, but we have to deal with it anyways
                 wgs84 = CRS.decode("EPSG:4326");
-            } catch(Exception e) {
-                throw (IOException) (new IOException("Unable to decode WGS84...").initCause(e));
+            } catch (Exception e) {
+                throw (IOException) (new IOException(
+                    "Unable to decode WGS84...").initCause(e));
             }
-            
+
             List featureCollections = new ArrayList();
+
             for (int i = 0; i < map.getLayerCount(); i++) {
                 MapLayer layer = map.getLayer(i);
                 DefaultQuery query = new DefaultQuery(layer.getQuery());
 
                 FeatureCollection features = null;
+
                 try {
                     FeatureSource source = layer.getFeatureSource();
-                    
-                    GeometryAttributeType at = source.getSchema().getDefaultGeometry();
-                    if(at == null) {
+
+                    GeometryAttributeType at = source.getSchema()
+                                                     .getDefaultGeometry();
+
+                    if (at == null) {
                         // geometryless layers...
                         features = source.getFeatures(query);
                     } else {
                         // make sure we are querying the source with the bbox in the right CRS, if
                         // not, reproject the bbox
                         ReferencedEnvelope env = new ReferencedEnvelope(mapArea);
-                        CoordinateReferenceSystem sourceCRS = at.getCoordinateSystem();
-                        if(sourceCRS != null && 
-                            !CRS.equalsIgnoreMetadata(mapArea.getCoordinateReferenceSystem(), sourceCRS)) {
+                        CoordinateReferenceSystem sourceCRS = at
+                            .getCoordinateSystem();
+
+                        if ((sourceCRS != null)
+                                && !CRS.equalsIgnoreMetadata(
+                                    mapArea.getCoordinateReferenceSystem(),
+                                    sourceCRS)) {
                             env = env.transform(sourceCRS, true);
                         }
-                        
+
                         // build the mixed query
                         Filter original = query.getFilter();
-                        Filter bbox = ff.bbox(at.getLocalName(), env.getMinX(), env.getMinY(), env.getMaxX(), env.getMaxY(), null);
+                        Filter bbox = ff.bbox(at.getLocalName(), env.getMinX(),
+                                env.getMinY(), env.getMaxX(), env.getMaxY(),
+                                null);
                         query.setFilter(ff.and(original, bbox));
 
                         // query and eventually reproject
                         features = source.getFeatures(query);
-                        if(sourceCRS != null && !CRS.equalsIgnoreMetadata(wgs84, sourceCRS)) { 
-                            ReprojectingFeatureCollection coll = new ReprojectingFeatureCollection(features, wgs84);
+
+                        if ((sourceCRS != null)
+                                && !CRS.equalsIgnoreMetadata(wgs84, sourceCRS)) {
+                            ReprojectingFeatureCollection coll = new ReprojectingFeatureCollection(features,
+                                    wgs84);
                             coll.setDefaultSource(sourceCRS);
                             features = coll;
                         }
-                        
-                        if (features == null) 
+
+                        if (features == null) {
                             throw new NullPointerException();
-                        
+                        }
+
                         featureCollections.add(features);
-                       
                     }
                 } catch (Exception e) {
                     String msg = "Unable to encode map layer: " + layer;
@@ -270,6 +286,5 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
 
             return featureCollections;
         }
-        
     }
 }

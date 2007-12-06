@@ -29,7 +29,6 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
     public static int TYPE_RASTER = Data.TYPE_RASTER.intValue();
     public static int TYPE_BASEMAP = Data.TYPE_RASTER.intValue() + 1;
     public static int TYPE_REMOTE_VECTOR = Data.TYPE_RASTER.intValue() + 2;
-    
 
     /**
      *
@@ -37,7 +36,7 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
      * @uml.associationEnd multiplicity="(0 1)"
      */
     private FeatureTypeInfo feature;
-    
+
     /**
      * The feature source for the remote WFS layer (see REMOVE_OWS_TYPE/URL in the SLD spec)
      */
@@ -63,9 +62,9 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
     private String name;
 
     /**
-    *
-    * @uml.property name="name" multiplicity="(0 1)"
-    */
+     *
+     * @uml.property name="name" multiplicity="(0 1)"
+     */
     private String real_name;
 
     /**
@@ -85,17 +84,17 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
      * @uml.property name="dirName" multiplicity="(0 1)"
      */
     private String dirName;
-    
+
     /**
      * List of sublayer for a grouped layer
      */
     private List subLayerInfo;
-    
+
     /**
      * List of styles for a grouped layer
      */
     private List styles;
-    
+
     public MapLayerInfo() {
         name = "";
         label = "";
@@ -138,7 +137,7 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
         description = "Remote WFS";
         dirName = null;
         this.remoteFeatureSource = remoteSource;
-        
+
         type = TYPE_REMOTE_VECTOR;
     }
 
@@ -174,10 +173,10 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
             }
         } else {
             // using referenced envelope (experiment)
-            return new ReferencedEnvelope(
-                coverage.getEnvelope().getMinimum(0),coverage.getEnvelope().getMaximum(0),
-                coverage.getEnvelope().getMinimum(1),coverage.getEnvelope().getMaximum(1),
-                coverage.getCrs());
+            return new ReferencedEnvelope(coverage.getEnvelope().getMinimum(0),
+                coverage.getEnvelope().getMaximum(0),
+                coverage.getEnvelope().getMinimum(1),
+                coverage.getEnvelope().getMaximum(1), coverage.getCrs());
         }
     }
 
@@ -200,8 +199,11 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
             }
         } else {
             // using referenced envelope (experiment)
-            org.geotools.geometry.GeneralEnvelope ge = coverage.getWGS84LonLatEnvelope();
-            return new Envelope(ge.getMinimum(0), ge.getMaximum(0), ge.getMinimum(1), ge.getMaximum(1));
+            org.geotools.geometry.GeneralEnvelope ge = coverage
+                .getWGS84LonLatEnvelope();
+
+            return new Envelope(ge.getMinimum(0), ge.getMaximum(0),
+                ge.getMinimum(1), ge.getMaximum(1));
         }
     }
 
@@ -226,7 +228,7 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
         this.feature = null;
         this.type = TYPE_RASTER;
     }
-    
+
     /**
      * Sets this up as a base layer
      * @param baseLayerName
@@ -239,7 +241,7 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
         this.subLayerInfo = subLayerInfo;
         this.styles = styles;
     }
-    
+
     /**
      * Returns the sub layers of a base layer, as a list of MapLayerInfo objects
      * @return
@@ -247,7 +249,7 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
     public List getSubLayers() {
         return subLayerInfo;
     }
-    
+
     /**
      * Returns the styles of a base layer
      * @return
@@ -389,12 +391,11 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
         this.remoteFeatureSource = remoteFeatureSource;
     }
 
-	public String getRealName() {
-		return real_name;
-	}
+    public String getRealName() {
+        return real_name;
+    }
 
-	public void setRealName(String real_name) {
-		this.real_name = real_name;
-	}
-
+    public void setRealName(String real_name) {
+        this.real_name = real_name;
+    }
 }

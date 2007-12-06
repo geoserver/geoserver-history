@@ -12,7 +12,6 @@ import org.geotools.xml.Node;
 import org.opengis.filter.Filter;
 import org.opengis.filter.expression.PropertyName;
 import org.xml.sax.helpers.NamespaceSupport;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -104,7 +103,8 @@ public class QueryTypeBinding extends AbstractComplexBinding {
      */
     NamespaceSupport namespaceSupport;
 
-    public QueryTypeBinding(WfsFactory wfsfactory, NamespaceSupport namespaceSupport) {
+    public QueryTypeBinding(WfsFactory wfsfactory,
+        NamespaceSupport namespaceSupport) {
         this.wfsfactory = wfsfactory;
         this.namespaceSupport = namespaceSupport;
     }
@@ -163,13 +163,15 @@ public class QueryTypeBinding extends AbstractComplexBinding {
         queryType.setTypeName(typeNameList);
 
         //<xsd:attribute name="featureVersion" type="xsd:string" use="optional">  
-        queryType.setFeatureVersion((String) node.getAttributeValue("featureVersion"));
+        queryType.setFeatureVersion((String) node.getAttributeValue(
+                "featureVersion"));
 
         //JD: even though reprojection is not supported in 1.0 we handle it 
         // anyways
         //&lt;xsd:attribute name="srsName" type="xsd:anyURI" use="optional"&gt;
         if (node.hasAttribute("srsName")) {
-            queryType.setSrsName(new URI((String)node.getAttributeValue("srsName")));
+            queryType.setSrsName(new URI(
+                    (String) node.getAttributeValue("srsName")));
         }
 
         return queryType;

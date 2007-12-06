@@ -4,78 +4,77 @@
  */
 package org.vfny.geoserver.wms.responses.map.georss;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashSet;
-
-import javax.xml.transform.TransformerException;
-
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashSet;
+import javax.xml.transform.TransformerException;
+
 
 public class AtomGeoRSSMapProducer implements GetMapProducer {
-	/** format names/aliases */
-	public static HashSet FORMATS = new HashSet();
-	static {
-		FORMATS.add("atom");
-		FORMATS.add("application/atom xml");
-	}
+    /** format names/aliases */
+    public static HashSet FORMATS = new HashSet();
 
-	/** mime type */
-	public static String MIME_TYPE = "application/atom+xml";
+    static {
+        FORMATS.add("atom");
+        FORMATS.add("application/atom xml");
+    }
 
-	/**
-	 * current map context
-	 */
-	WMSMapContext map;
+    /** mime type */
+    public static String MIME_TYPE = "application/atom+xml";
 
-	public String getContentType() throws IllegalStateException {
-		return MIME_TYPE;
-	}
+    /**
+     * current map context
+     */
+    WMSMapContext map;
 
-	public void setContentType(String mime) {
-		throw new UnsupportedOperationException();
-	}
+    public String getContentType() throws IllegalStateException {
+        return MIME_TYPE;
+    }
 
-	public void produceMap() throws WmsException {
-	}
+    public void setContentType(String mime) {
+        throw new UnsupportedOperationException();
+    }
 
-	public void writeTo(OutputStream out) throws ServiceException, IOException {
-		AtomGeoRSSTransformer tx = new AtomGeoRSSTransformer();
+    public void produceMap() throws WmsException {
+    }
 
-		try {
-			tx.transform(map, out);
-		} catch (TransformerException e) {
-			throw (IOException) new IOException().initCause(e);
-		}
+    public void writeTo(OutputStream out) throws ServiceException, IOException {
+        AtomGeoRSSTransformer tx = new AtomGeoRSSTransformer();
 
-		map = null;
-	}
+        try {
+            tx.transform(map, out);
+        } catch (TransformerException e) {
+            throw (IOException) new IOException().initCause(e);
+        }
 
-	public void abort() {
-		map = null;
-	}
+        map = null;
+    }
 
-	public String getContentDisposition() {
-		return null;
-	}
+    public void abort() {
+        map = null;
+    }
 
-	public WMSMapContext getMapContext() {
-		return map;
-	}
+    public String getContentDisposition() {
+        return null;
+    }
 
-	public void setMapContext(WMSMapContext mapContext) {
-		this.map = mapContext;
-	}
+    public WMSMapContext getMapContext() {
+        return map;
+    }
 
-	public String getOutputFormat() {
-		return MIME_TYPE;
-	}
+    public void setMapContext(WMSMapContext mapContext) {
+        this.map = mapContext;
+    }
 
-	public void setOutputFormat(String format) {
-		throw new UnsupportedOperationException();
-	}
+    public String getOutputFormat() {
+        return MIME_TYPE;
+    }
 
+    public void setOutputFormat(String format) {
+        throw new UnsupportedOperationException();
+    }
 }

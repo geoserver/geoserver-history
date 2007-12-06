@@ -15,7 +15,8 @@ import java.util.logging.Logger;
  */
 public class UpdateRequest extends CATALOGRequest {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.catalog");
+    private static Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.requests.catalog");
 
     /**
      * Catalog Data.
@@ -69,7 +70,8 @@ public class UpdateRequest extends CATALOGRequest {
      * @return A string of this request.
      */
     public String toString() {
-        StringBuffer returnString = new StringBuffer("UpdateCatalog Request [data: ").append(data);
+        StringBuffer returnString = new StringBuffer(
+                "UpdateCatalog Request [data: ").append(data);
 
         return returnString.toString();
     }

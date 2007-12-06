@@ -38,7 +38,8 @@ public class DataCoveragesNewForm extends ActionForm {
     HttpServletRequest request;
 
     public SortedSet getNewCoverages() {
-        DataConfig dataConfig = (DataConfig) request.getSession().getServletContext()
+        DataConfig dataConfig = (DataConfig) request.getSession()
+                                                    .getServletContext()
                                                     .getAttribute(DataConfig.CONFIG_KEY);
 
         TreeSet out = new TreeSet(dataConfig.getCoverageIdentifiers(
@@ -55,7 +56,8 @@ public class DataCoveragesNewForm extends ActionForm {
         selectedNewCoverage = "";
     }
 
-    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping,
+        HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         return errors;

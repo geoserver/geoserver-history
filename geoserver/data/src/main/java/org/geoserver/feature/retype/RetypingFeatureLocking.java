@@ -4,23 +4,24 @@
  */
 package org.geoserver.feature.retype;
 
-import java.io.IOException;
-
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.Query;
 import org.opengis.filter.Filter;
+import java.io.IOException;
+
 
 /**
- * Renaming wrapper for a {@link FeatureLocking} instance, to be used along with {@link RetypingDataStore} 
+ * Renaming wrapper for a {@link FeatureLocking} instance, to be used along with {@link RetypingDataStore}
  */
-class RetypingFeatureLocking extends RetypingFeatureStore implements FeatureLocking {
-
-    public RetypingFeatureLocking(DataStore ds, FeatureLocking wrapped, FeatureTypeMap typeMap) {
+class RetypingFeatureLocking extends RetypingFeatureStore
+    implements FeatureLocking {
+    public RetypingFeatureLocking(DataStore ds, FeatureLocking wrapped,
+        FeatureTypeMap typeMap) {
         super(ds, wrapped, typeMap);
     }
-    
+
     FeatureLocking featureLocking() {
         return (FeatureLocking) wrapped;
     }
@@ -52,5 +53,4 @@ class RetypingFeatureLocking extends RetypingFeatureStore implements FeatureLock
     public void unLockFeatures(Query query) throws IOException {
         featureLocking().unLockFeatures(retypeQuery(query));
     }
-
 }

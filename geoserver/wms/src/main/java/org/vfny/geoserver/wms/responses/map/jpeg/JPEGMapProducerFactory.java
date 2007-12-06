@@ -22,6 +22,10 @@ public final class JPEGMapProducerFactory implements GetMapProducerFactorySpi {
     /** the only MIME type this map producer supports */
     static final String MIME_TYPE = "image/jpeg";
 
+    public JPEGMapProducerFactory() {
+        super();
+    }
+
     public boolean canProduce(String mapFormat) {
         return MIME_TYPE.equalsIgnoreCase(mapFormat);
     }
@@ -36,10 +40,6 @@ public final class JPEGMapProducerFactory implements GetMapProducerFactorySpi {
         return new JPEGMapProducer(MIME_TYPE, wms);
     }
 
-    public JPEGMapProducerFactory() {
-        super();
-    }
-
     public String getName() {
         return "Joint Photographic Experts Group";
     }
@@ -50,7 +50,8 @@ public final class JPEGMapProducerFactory implements GetMapProducerFactorySpi {
 
     public boolean isAvailable() {
         try {
-            return (Class.forName("com.sun.media.imageioimpl.plugins.jpeg.CLibJPEGImageWriter") != null)
+            return (Class.forName(
+                "com.sun.media.imageioimpl.plugins.jpeg.CLibJPEGImageWriter") != null)
             || (Class.forName("com.sun.imageio.plugins.jpeg.JPEGImageWriter") != null);
         } catch (ClassNotFoundException e) {
             return false;

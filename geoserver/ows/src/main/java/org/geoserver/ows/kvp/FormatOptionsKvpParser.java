@@ -25,7 +25,8 @@ import java.util.logging.Level;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public class FormatOptionsKvpParser extends KvpParser implements ApplicationContextAware {
+public class FormatOptionsKvpParser extends KvpParser
+    implements ApplicationContextAware {
     /**
      * application context used to lookup KvpParsers
      */
@@ -41,7 +42,8 @@ public class FormatOptionsKvpParser extends KvpParser implements ApplicationCont
     }
 
     public Object parse(String value) throws Exception {
-        List parsers = GeoServerExtensions.extensions(KvpParser.class, applicationContext);
+        List parsers = GeoServerExtensions.extensions(KvpParser.class,
+                applicationContext);
         Map formatOptions = new CaseInsensitiveMap(new HashMap());
 
         //TODO: refactor some of this routine out into utility class since 
@@ -68,18 +70,22 @@ public class FormatOptionsKvpParser extends KvpParser implements ApplicationCont
 
             for (Iterator p = parsers.iterator(); p.hasNext();) {
                 KvpParser parser = (KvpParser) p.next();
-                if ( key.equalsIgnoreCase( parser.getKey() ) ) {
-                    parsed = parser.parse( raw );
-                    if ( parsed != null ) {
 
+                if (key.equalsIgnoreCase(parser.getKey())) {
+                    parsed = parser.parse(raw);
+
+                    if (parsed != null) {
                         break;
                     }
                 }
             }
 
             if (parsed == null) {
-                if(LOGGER.isLoggable(Level.FINER))
-                    LOGGER.finer( "Could not find kvp parser for: '" + key + "'. Storing as raw string.");
+                if (LOGGER.isLoggable(Level.FINER)) {
+                    LOGGER.finer("Could not find kvp parser for: '" + key
+                        + "'. Storing as raw string.");
+                }
+
                 parsed = raw;
             }
 

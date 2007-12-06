@@ -93,7 +93,8 @@ public class TestConfig {
                 String key = (String) i.next();
 
                 //TODO clone value.
-                args.put(key, new ArgumentConfig((ArgumentConfig) t.getArgs().get(key)));
+                args.put(key,
+                    new ArgumentConfig((ArgumentConfig) t.getArgs().get(key)));
             }
         }
     }
@@ -120,7 +121,8 @@ public class TestConfig {
                 String key = (String) i.next();
 
                 //TODO clone value.
-                args.put(key, new ArgumentConfig((ArgumentDTO) t.getArgs().get(key)));
+                args.put(key,
+                    new ArgumentConfig((ArgumentDTO) t.getArgs().get(key)));
             }
         }
     }
@@ -341,8 +343,8 @@ public class TestConfig {
             StringReader sr = new StringReader(value);
 
             try {
-                ac.setValue(ArgHelper.getArgumentInstance(ArgHelper.getArgumentType(ac.getValue()),
-                        value));
+                ac.setValue(ArgHelper.getArgumentInstance(
+                        ArgHelper.getArgumentType(ac.getValue()), value));
 
                 return true;
             } catch (Exception e) {
@@ -409,7 +411,8 @@ public class TestConfig {
 
         Class cl = pd.getPropertyType();
 
-        return ArgHelper.getArgumentInstance(ArgHelper.getArgumentType(cl), value);
+        return ArgHelper.getArgumentInstance(ArgHelper.getArgumentType(cl),
+            value);
     }
 
     /**
@@ -437,7 +440,8 @@ public class TestConfig {
         }
 
         if (ac.isFinal()) {
-            throw new IllegalArgumentException("Cannot include final arguments as part of a test.");
+            throw new IllegalArgumentException(
+                "Cannot include final arguments as part of a test.");
         }
 
         ac.setValue(value);
@@ -503,7 +507,8 @@ public class TestConfig {
      */
     public PropertyDescriptor getPropertyDescriptor(String name) {
         if (name == null) {
-            throw new NullPointerException("name must be defined to get a PropertyDescriptor.");
+            throw new NullPointerException(
+                "name must be defined to get a PropertyDescriptor.");
         }
 
         if (pds == null) {

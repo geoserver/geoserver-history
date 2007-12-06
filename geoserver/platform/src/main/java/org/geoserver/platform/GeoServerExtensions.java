@@ -11,7 +11,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,10 +30,10 @@ import java.util.List;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class GeoServerExtensions implements ApplicationContextAware, ApplicationListener {
-    
+public class GeoServerExtensions implements ApplicationContextAware,
+    ApplicationListener {
     static SoftValueHashMap extensionsCache = new SoftValueHashMap(40);
-    
+
     /**
      * A static application context
      */
@@ -66,12 +65,16 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
      *
      * @return A collection of the extensions, or an empty collection.
      */
-    public static final List extensions(Class extensionPoint, ApplicationContext context) {
+    public static final List extensions(Class extensionPoint,
+        ApplicationContext context) {
         List result = (List) extensionsCache.get(extensionPoint);
-        if(result == null) {
-            result = new ArrayList(context.getBeansOfType(extensionPoint).values());
+
+        if (result == null) {
+            result = new ArrayList(context.getBeansOfType(extensionPoint)
+                                          .values());
             extensionsCache.put(extensionPoint, result);
         }
+
         return new ArrayList(result);
     }
 
@@ -88,7 +91,7 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
     public static final List extensions(Class extensionPoint) {
         return extensions(extensionPoint, context);
     }
-    
+
     /**
      * Returns a specific bean given its name
      * @param name
@@ -99,7 +102,8 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
     }
 
     public void onApplicationEvent(ApplicationEvent event) {
-        if(event instanceof ContextRefreshedEvent)
+        if (event instanceof ContextRefreshedEvent) {
             extensionsCache.clear();
+        }
     }
 }

@@ -27,6 +27,7 @@ public class BooleanKvpParser extends KvpParser {
     }
 
     public Object parse(String value) throws Exception {
-        return Boolean.valueOf(DatatypeConverterImpl.theInstance.parseBoolean(value.toLowerCase()));
+        return Boolean.valueOf(DatatypeConverterImpl.theInstance.parseBoolean(
+                value.toLowerCase()));
     }
 }

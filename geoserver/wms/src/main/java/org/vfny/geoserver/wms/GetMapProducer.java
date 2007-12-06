@@ -54,15 +54,13 @@ public interface GetMapProducer {
      */
     void writeTo(OutputStream out) throws ServiceException, IOException;
 
-
     /**
      * asks the legend graphic producer to stop processing since it will be no
      * longer needed (for example, because the request was interrupted by the
      * user)
      */
     void abort();
-    
-    
+
     /**
      * Sets the {@link MapContext} for this MapProducer.
      *

@@ -6,7 +6,6 @@ package org.geoserver.ows;
 
 import org.geoserver.ows.util.OwsUtils;
 import org.geotools.util.Converters;
-
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
@@ -116,10 +115,11 @@ public class KvpRequestReader {
      * @param request The request instance.
      * @param kvp The kvp set, map of String,Object.
      * @param rawKvp The raw kvp set (unparsed), map of String,String
-     * 
+     *
      * @return A new request object, or the ori
      */
-    public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
+    public Object read(Object request, Map kvp, Map rawKvp)
+        throws Exception {
         for (Iterator e = kvp.entrySet().iterator(); e.hasNext();) {
             Map.Entry entry = (Map.Entry) e.next();
             String property = (String) entry.getKey();
@@ -129,24 +129,26 @@ public class KvpRequestReader {
                 continue;
             }
 
-            Method setter = OwsUtils.setter(request.getClass(), property, value.getClass());
+            Method setter = OwsUtils.setter(request.getClass(), property,
+                    value.getClass());
 
-            if ( setter == null ) {
+            if (setter == null) {
                 //no setter matching the object of teh type, try to convert
-                setter = OwsUtils.setter( request.getClass(), property, null );
-                if ( setter != null ) {
+                setter = OwsUtils.setter(request.getClass(), property, null);
+
+                if (setter != null) {
                     //convert
                     Class target = setter.getParameterTypes()[0];
-                    Object converted = Converters.convert( value, target );
-                    if ( converted != null ) {
+                    Object converted = Converters.convert(value, target);
+
+                    if (converted != null) {
                         value = converted;
-                    }
-                    else {
+                    } else {
                         setter = null;
                     }
                 }
             }
-            
+
             if (setter != null) {
                 setter.invoke(request, new Object[] { value });
             }

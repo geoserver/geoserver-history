@@ -50,8 +50,9 @@ public class Dispatcher extends AbstractController {
         this.geoServer = geoServer;
     }
 
-    protected ModelAndView handleRequestInternal(HttpServletRequest httpRequest,
-        HttpServletResponse httpResponse) throws Exception {
+    protected ModelAndView handleRequestInternal(
+        HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+        throws Exception {
         try {
             try {
                 dispatch(httpRequest, httpResponse);
@@ -61,8 +62,8 @@ public class Dispatcher extends AbstractController {
                 throw new ServiceException(e);
             }
         } catch (ServiceException se) {
-            String tempResponse = se.getXmlResponse(geoServer.isVerboseExceptions(), httpRequest,
-                    geoServer);
+            String tempResponse = se.getXmlResponse(geoServer
+                    .isVerboseExceptions(), httpRequest, geoServer);
 
             httpResponse.setContentType(geoServer.getCharSet().toString());
             httpResponse.getWriter().write(tempResponse);
@@ -74,20 +75,23 @@ public class Dispatcher extends AbstractController {
     AbstractService find(String service, String request)
         throws ServiceException {
         //map request parameters to a Request bean to handle it 
-        List requests =  GeoServerExtensions.extensions(AbstractService.class);
+        List requests = GeoServerExtensions.extensions(AbstractService.class);
 
         List matches = new ArrayList();
 
         for (Iterator itr = requests.iterator(); itr.hasNext();) {
             AbstractService bean = (AbstractService) itr.next();
+
             //we allow for a null service
             if (service == null) {
-                if (bean.getRequest().toLowerCase().startsWith(request.toLowerCase().trim())) {
+                if (bean.getRequest().toLowerCase()
+                            .startsWith(request.toLowerCase().trim())) {
                     //we have a winner
                     matches.add(bean);
                 }
             } else {
-                if (bean.getService().toLowerCase().startsWith(service.toLowerCase().trim())
+                if (bean.getService().toLowerCase()
+                            .startsWith(service.toLowerCase().trim())
                         && bean.getRequest().equalsIgnoreCase(request.trim())) {
                     //we have a winner
                     matches.add(bean);
@@ -100,27 +104,30 @@ public class Dispatcher extends AbstractController {
         }
 
         if (matches.size() > 1) {
-            String msg = "Multiple requests found capable of handling:" + " (" + service + ","
-                + request + ")";
+            String msg = "Multiple requests found capable of handling:" + " ("
+                + service + "," + request + ")";
             throw new ServiceException(msg);
         }
 
         return (AbstractService) matches.get(0);
     }
 
-    void dispatch(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+    void dispatch(HttpServletRequest httpRequest,
+        HttpServletResponse httpResponse)
         throws ServiceException, IOException, ServletException {
         //mark as get request if it is indeed a get request, or a post request with content type
         // == 'application/x-www-form-urlencoded'
         boolean isGet = "GET".equalsIgnoreCase(httpRequest.getMethod())
             || ((httpRequest.getContentType() != null)
-            && httpRequest.getContentType().startsWith("application/x-www-form-urlencoded"));
+            && httpRequest.getContentType()
+                          .startsWith("application/x-www-form-urlencoded"));
 
         String service = null;
         String request = null;
 
         //look up service / request in key value pairs
-        for (Enumeration e = httpRequest.getParameterNames(); e.hasMoreElements();) {
+        for (Enumeration e = httpRequest.getParameterNames();
+                e.hasMoreElements();) {
             String key = (String) e.nextElement();
 
             if ("service".equalsIgnoreCase(key)) {
@@ -195,7 +202,8 @@ public class Dispatcher extends AbstractController {
                 target.doPost(httpRequest, httpResponse);
             }
         } else {
-            String msg = "Could not locate service mapping to: (" + service + "," + request + ")";
+            String msg = "Could not locate service mapping to: (" + service
+                + "," + request + ")";
             throw new ServiceException(msg);
         }
     }
@@ -223,7 +231,8 @@ public class Dispatcher extends AbstractController {
                 throw new IOException(errorMsg);
             }
         } catch (IOException e) {
-            String errorMsg = "Possible file permission problem. Root cause: \n" + e.toString();
+            String errorMsg = "Possible file permission problem. Root cause: \n"
+                + e.toString();
             IOException newE = new IOException(errorMsg);
             throw newE;
         }
@@ -248,8 +257,8 @@ public class Dispatcher extends AbstractController {
         BufferedReader requestReader;
 
         try {
-            disReader = new BufferedReader(XmlCharsetDetector.getCharsetAwareReader(
-                        new FileInputStream(temp), encInfo));
+            disReader = new BufferedReader(XmlCharsetDetector
+                    .getCharsetAwareReader(new FileInputStream(temp), encInfo));
 
             requestReader = new BufferedReader(XmlCharsetDetector.createReader(
                         new FileInputStream(temp), encInfo));
@@ -273,12 +282,14 @@ public class Dispatcher extends AbstractController {
                 DispatcherXmlReader requestTypeAnalyzer = new DispatcherXmlReader();
                 requestTypeAnalyzer.read(disReader, httpRequest);
 
-                target = find(requestTypeAnalyzer.getService(), requestTypeAnalyzer.getRequest());
+                target = find(requestTypeAnalyzer.getService(),
+                        requestTypeAnalyzer.getRequest());
             } catch (ServiceException e) {
                 DispatcherKvpReader requestTypeAnalyzer = new DispatcherKvpReader();
                 requestTypeAnalyzer.read(requestReader, httpRequest);
 
-                target = find(requestTypeAnalyzer.getService(), requestTypeAnalyzer.getRequest());
+                target = find(requestTypeAnalyzer.getService(),
+                        requestTypeAnalyzer.getRequest());
                 target.setKvpString(requestTypeAnalyzer.getQueryString());
                 kvpRequestContent = true;
             }

@@ -4,6 +4,13 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import org.geoserver.template.FeatureWrapper;
+import org.geoserver.template.GeoServerTemplateLoader;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureType;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -11,15 +18,6 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-
-import org.geoserver.template.FeatureWrapper;
-import org.geoserver.template.GeoServerTemplateLoader;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureType;
-
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 
 
 /**
@@ -47,10 +45,9 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         templateConfig = new Configuration();
         templateConfig.setObjectWrapper(new FeatureWrapper());
     }
-    
+
     GeoServerTemplateLoader templateLoader;
-    
-    
+
     /**
      *
      */
@@ -80,51 +77,59 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         // setup the writer
         Charset charSet = getRequest().getGeoServer().getCharSet();
         OutputStreamWriter osw = new OutputStreamWriter(out, charSet);
-        
+
         // if there is only one feature type loaded, we allow for header/footer customization,
         // otherwise we stick with the generic ones
         FeatureType templateFeatureType = null;
-        if(results.size() == 1) {
+
+        if (results.size() == 1) {
             templateFeatureType = ((FeatureCollection) results.get(0)).getSchema();
         }
+
         Template header = getTemplate(templateFeatureType, "header.ftl", charSet);
         Template footer = getTemplate(templateFeatureType, "footer.ftl", charSet);
-        
+
         try {
             header.process(null, osw);
-            
+
             for (Iterator it = results.iterator(); it.hasNext();) {
                 FeatureCollection fc = (FeatureCollection) it.next();
-                if(fc.size() > 0) {
+
+                if (fc.size() > 0) {
                     FeatureType ft = fc.getSchema();
                     Template content = getTemplate(ft, "content.ftl", charSet);
                     content.process(fc, osw);
                 }
             }
-            
+
             footer.process(null, osw);
-        } catch(TemplateException e) {
+        } catch (TemplateException e) {
             String msg = "Error occured processing template.";
             throw (IOException) new IOException(msg).initCause(e);
         }
+
         osw.flush();
     }
 
     public String getContentDisposition() {
         return null;
     }
-    
-    Template getTemplate(FeatureType featureType, String templateFileName, Charset charset) throws IOException {
+
+    Template getTemplate(FeatureType featureType, String templateFileName,
+        Charset charset) throws IOException {
         // setup template subsystem
-        if(templateLoader == null) {
+        if (templateLoader == null) {
             templateLoader = new GeoServerTemplateLoader(getClass());
         }
+
         templateLoader.setFeatureType(featureType);
 
         synchronized (templateConfig) {
             templateConfig.setTemplateLoader(templateLoader);
+
             Template t = templateConfig.getTemplate(templateFileName);
             t.setEncoding(charset.name());
+
             return t;
         }
     }

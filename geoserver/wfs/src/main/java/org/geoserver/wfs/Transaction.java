@@ -10,7 +10,6 @@ import net.opengis.wfs.InsertedFeatureType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.WfsFactory;
-
 import org.acegisecurity.Authentication;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.userdetails.UserDetails;
@@ -78,9 +77,12 @@ public class Transaction {
         this.wfs = wfs;
         this.catalog = catalog;
         // register element handlers, listeners and plugins
-        transactionElementHandlers.addAll(GeoServerExtensions.extensions(TransactionElementHandler.class));
-        transactionListeners.addAll(GeoServerExtensions.extensions(TransactionListener.class));
-        transactionPlugins.addAll(GeoServerExtensions.extensions(TransactionPlugin.class));
+        transactionElementHandlers.addAll(GeoServerExtensions.extensions(
+                TransactionElementHandler.class));
+        transactionListeners.addAll(GeoServerExtensions.extensions(
+                TransactionListener.class));
+        transactionPlugins.addAll(GeoServerExtensions.extensions(
+                TransactionPlugin.class));
         // plugins are listeners too, but I want to make sure they are notified
         // of
         // changes in the same order as the other plugin callbacks
@@ -192,7 +194,8 @@ public class Transaction {
         for (Iterator it = elementHandlers.entrySet().iterator(); it.hasNext();) {
             Map.Entry entry = (Map.Entry) it.next();
             EObject element = (EObject) entry.getKey();
-            TransactionElementHandler handler = (TransactionElementHandler) entry.getValue();
+            TransactionElementHandler handler = (TransactionElementHandler) entry
+                .getValue();
             Map featureTypeInfos = new HashMap();
 
             QName[] typeNames = handler.getTypeNames(element);
@@ -208,9 +211,11 @@ public class Transaction {
                     namespaceURI = catalog.getDefaultNameSpace().getURI();
                 }
 
-                LOGGER.fine("Locating FeatureSource uri:'" + namespaceURI + "' name:'" + name + "'");
+                LOGGER.fine("Locating FeatureSource uri:'" + namespaceURI
+                    + "' name:'" + name + "'");
 
-                final FeatureTypeInfo meta = catalog.getFeatureTypeInfo(name, namespaceURI);
+                final FeatureTypeInfo meta = catalog.getFeatureTypeInfo(name,
+                        namespaceURI);
 
                 if (meta == null) {
                     String msg = name + " is not available: ";
@@ -226,9 +231,11 @@ public class Transaction {
 
             // go through all feature type infos data objects, and load feature
             // stores
-            for (Iterator m = featureTypeInfos.values().iterator(); m.hasNext();) {
+            for (Iterator m = featureTypeInfos.values().iterator();
+                    m.hasNext();) {
                 FeatureTypeInfo meta = (FeatureTypeInfo) m.next();
-                String typeRef = meta.getDataStoreInfo().getId() + ":" + meta.getTypeName();
+                String typeRef = meta.getDataStoreInfo().getId() + ":"
+                    + meta.getTypeName();
 
                 String URI = meta.getNameSpace().getURI();
                 QName elementName = new QName(URI, meta.getTypeName(),
@@ -239,8 +246,8 @@ public class Transaction {
                     elementNameDefault = new QName(meta.getTypeName());
                 }
 
-                LOGGER.fine("located FeatureType w/ typeRef '" + typeRef + "' and elementName '"
-                    + elementName + "'");
+                LOGGER.fine("located FeatureType w/ typeRef '" + typeRef
+                    + "' and elementName '" + elementName + "'");
 
                 if (stores.containsKey(elementName)) {
                     // typeName already loaded
@@ -264,7 +271,8 @@ public class Transaction {
                         String msg = elementName + " is read-only";
                         String handle = (String) EMFUtils.get(element, "handle");
 
-                        throw new WFSTransactionException(msg, (String) null, handle);
+                        throw new WFSTransactionException(msg, (String) null,
+                            handle);
                     }
                 } catch (IOException ioException) {
                     String msg = elementName + " is not available: "
@@ -297,16 +305,19 @@ public class Transaction {
             } catch (IOException ioException) {
                 // This is a real failure - not associated with a element
                 //
-                throw new WFSException("Authorization ID '" + authorizationID + "' not useable",
-                    ioException);
+                throw new WFSException("Authorization ID '" + authorizationID
+                    + "' not useable", ioException);
             }
         }
 
         // result
-        TransactionResponseType result = WfsFactory.eINSTANCE.createTransactionResponseType();
-        result.setTransactionResults(WfsFactory.eINSTANCE.createTransactionResultsType());
+        TransactionResponseType result = WfsFactory.eINSTANCE
+            .createTransactionResponseType();
+        result.setTransactionResults(WfsFactory.eINSTANCE
+            .createTransactionResultsType());
         result.getTransactionResults().setHandle(request.getHandle());
-        result.setTransactionSummary(WfsFactory.eINSTANCE.createTransactionSummaryType());
+        result.setTransactionSummary(WfsFactory.eINSTANCE
+            .createTransactionSummaryType());
         result.getTransactionSummary().setTotalInserted(BigInteger.valueOf(0));
         result.getTransactionSummary().setTotalUpdated(BigInteger.valueOf(0));
         result.getTransactionSummary().setTotalDeleted(BigInteger.valueOf(0));
@@ -320,10 +331,12 @@ public class Transaction {
         boolean exception = false;
 
         try {
-            for (Iterator it = elementHandlers.entrySet().iterator(); it.hasNext();) {
+            for (Iterator it = elementHandlers.entrySet().iterator();
+                    it.hasNext();) {
                 Map.Entry entry = (Map.Entry) it.next();
                 EObject element = (EObject) entry.getKey();
-                TransactionElementHandler handler = (TransactionElementHandler) entry.getValue();
+                TransactionElementHandler handler = (TransactionElementHandler) entry
+                    .getValue();
 
                 handler.execute(element, request, stores, result, multiplexer);
             }
@@ -428,7 +441,8 @@ public class Transaction {
         // "FeatureId" eliement, sp
         // we create an FeatureId with an empty fid
         if (result.getInsertResults().getFeature().isEmpty()) {
-            InsertedFeatureType insertedFeature = WfsFactory.eINSTANCE.createInsertedFeatureType();
+            InsertedFeatureType insertedFeature = WfsFactory.eINSTANCE
+                .createInsertedFeatureType();
             insertedFeature.getFeatureId().add(filterFactory.featureId("none"));
 
             result.getInsertResults().getFeature().add(insertedFeature);
@@ -474,7 +488,8 @@ public class Transaction {
         List matches = new ArrayList();
 
         for (Iterator it = transactionElementHandlers.iterator(); it.hasNext();) {
-            TransactionElementHandler handler = (TransactionElementHandler) it.next();
+            TransactionElementHandler handler = (TransactionElementHandler) it
+                .next();
 
             if (handler.getElementClass().isAssignableFrom(type)) {
                 matches.add(handler);
@@ -483,7 +498,8 @@ public class Transaction {
 
         if (matches.isEmpty()) {
             // try to instantiate one
-            String msg = "No transaction element handler for : ( " + type + " )";
+            String msg = "No transaction element handler for : ( " + type
+                + " )";
             throw new WFSTransactionException(msg);
         }
 
@@ -494,7 +510,8 @@ public class Transaction {
                         TransactionElementHandler h1 = (TransactionElementHandler) o1;
                         TransactionElementHandler h2 = (TransactionElementHandler) o2;
 
-                        if (h2.getElementClass().isAssignableFrom(h1.getElementClass())) {
+                        if (h2.getElementClass()
+                                  .isAssignableFrom(h1.getElementClass())) {
                             return -1;
                         }
 
@@ -513,24 +530,28 @@ public class Transaction {
      *
      * @return
      */
-    protected DefaultTransaction getDatastoreTransaction(TransactionType request)
-    throws IOException {
+    protected DefaultTransaction getDatastoreTransaction(
+        TransactionType request) throws IOException {
         DefaultTransaction transaction = new DefaultTransaction();
+
         // use handle as the log messages
         String username = "anonymous";
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication != null) {
+        Authentication authentication = SecurityContextHolder.getContext()
+                                                             .getAuthentication();
+
+        if (authentication != null) {
             Object principal = authentication.getPrincipal();
-            if(principal instanceof UserDetails) {
-                username = ((UserDetails) principal).getUsername(); 
+
+            if (principal instanceof UserDetails) {
+                username = ((UserDetails) principal).getUsername();
             }
         }
-        
+
         // Ok, this is a hack. We assume there is only one versioning datastore, the postgis one,
         // and that we can the following properties won't hurt transactio processing anyways...
         transaction.putProperty("PgVersionedCommitAuthor", username);
         transaction.putProperty("PgVersionedCommitMessage", request.getHandle());
-    
+
         return transaction;
     }
 
@@ -549,7 +570,8 @@ public class Transaction {
             transaction.close();
         } catch (IOException ioException) {
             // nothing we can do here
-            LOGGER.log(Level.SEVERE, "Failed trying to rollback a transaction:" + ioException);
+            LOGGER.log(Level.SEVERE,
+                "Failed trying to rollback a transaction:" + ioException);
         }
 
         if (request.getLockId() != null) {

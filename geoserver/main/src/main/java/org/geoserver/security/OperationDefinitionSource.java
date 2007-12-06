@@ -44,7 +44,8 @@ public class OperationDefinitionSource implements ObjectDefinitionSource {
         checkDefinitions();
 
         OperationKey key = new OperationKey(op.getService().getId(), op.getId());
-        ConfigAttributeDefinition result = (ConfigAttributeDefinition) definitions.get(key);
+        ConfigAttributeDefinition result = (ConfigAttributeDefinition) definitions
+            .get(key);
 
         if (result == null) {
             // try to fall back on some service definitions
@@ -71,14 +72,17 @@ public class OperationDefinitionSource implements ObjectDefinitionSource {
 
     void checkDefinitions() {
         if ((definitions == null)
-                || ((operationDefinitionFile != null) && operationDefinitionFile.isStale())) {
+                || ((operationDefinitionFile != null)
+                && operationDefinitionFile.isStale())) {
             try {
                 definitions = new HashMap();
 
                 if (operationDefinitionFile == null) {
                     File dd = GeoserverDataDirectory.getGeoserverDataDirectory();
-                    File securityDir = GeoserverDataDirectory.findConfigDir(dd, "security");
-                    File securityDefinitions = new File(securityDir, "service.properties");
+                    File securityDir = GeoserverDataDirectory.findConfigDir(dd,
+                            "security");
+                    File securityDefinitions = new File(securityDir,
+                            "service.properties");
                     operationDefinitionFile = new PropertyFileWatcher(securityDefinitions);
                 }
 
@@ -91,16 +95,18 @@ public class OperationDefinitionSource implements ObjectDefinitionSource {
                         OperationKey okey = new OperationKey(key);
                         editor.setAsText(p.getProperty(key));
 
-                        ConfigAttributeDefinition cad = (ConfigAttributeDefinition) editor.getValue();
+                        ConfigAttributeDefinition cad = (ConfigAttributeDefinition) editor
+                            .getValue();
                         definitions.put(okey, cad);
                     } catch (IllegalArgumentException e) {
                         LOGGER.log(Level.SEVERE,
-                            "Skipping invalid operation security configuration element", e);
+                            "Skipping invalid operation security configuration element",
+                            e);
                     }
                 }
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "An error occurred loading service security definitions ",
-                    e);
+                LOGGER.log(Level.SEVERE,
+                    "An error occurred loading service security definitions ", e);
             }
         }
     }
@@ -142,8 +148,10 @@ public class OperationDefinitionSource implements ObjectDefinitionSource {
         public int hashCode() {
             final int PRIME = 31;
             int result = 1;
-            result = (PRIME * result) + ((operation == null) ? 0 : operation.hashCode());
-            result = (PRIME * result) + ((service == null) ? 0 : service.hashCode());
+            result = (PRIME * result)
+                + ((operation == null) ? 0 : operation.hashCode());
+            result = (PRIME * result)
+                + ((service == null) ? 0 : service.hashCode());
 
             return result;
         }

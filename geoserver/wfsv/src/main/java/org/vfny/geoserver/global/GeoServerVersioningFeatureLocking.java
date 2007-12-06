@@ -24,8 +24,9 @@ import java.io.IOException;
  */
 public class GeoServerVersioningFeatureLocking extends GeoServerFeatureLocking
     implements VersioningFeatureLocking {
-    GeoServerVersioningFeatureLocking(VersioningFeatureLocking locking, FeatureType schema,
-        Filter definitionQuery, CoordinateReferenceSystem declaredCRS, int srsHandling) {
+    GeoServerVersioningFeatureLocking(VersioningFeatureLocking locking,
+        FeatureType schema, Filter definitionQuery,
+        CoordinateReferenceSystem declaredCRS, int srsHandling) {
         super(locking, schema, definitionQuery, declaredCRS, srsHandling);
     }
 
@@ -34,15 +35,19 @@ public class GeoServerVersioningFeatureLocking extends GeoServerFeatureLocking
         ((VersioningFeatureStore) source).rollback(toVersion, filter, users);
     }
 
-    public FeatureDiffReader getDifferences(String fromVersion, String toVersion, Filter filter, String[] users)
+    public FeatureDiffReader getDifferences(String fromVersion,
+        String toVersion, Filter filter, String[] users)
         throws IOException {
         // TODO: if we are bound to a smaller schema, we should remove the
         // hidden attributes from the differences
-        return ((VersioningFeatureSource) source).getDifferences(fromVersion, toVersion, filter, users);
+        return ((VersioningFeatureSource) source).getDifferences(fromVersion,
+            toVersion, filter, users);
     }
 
-    public FeatureCollection getLog(String fromVersion, String toVersion, Filter filter, String[] users, int maxFeatures)
+    public FeatureCollection getLog(String fromVersion, String toVersion,
+        Filter filter, String[] users, int maxFeatures)
         throws IOException {
-        return ((VersioningFeatureSource) source).getLog(fromVersion, toVersion, filter, users, maxFeatures);
+        return ((VersioningFeatureSource) source).getLog(fromVersion,
+            toVersion, filter, users, maxFeatures);
     }
 }

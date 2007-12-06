@@ -10,15 +10,12 @@ import net.opengis.wfs.BaseRequestType;
 import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.NativeType;
 import net.opengis.wfs.UpdateElementType;
-
 import net.opengis.wfsv.*;
-
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -36,6 +33,64 @@ public class WfsvAdapterFactory extends AdapterFactoryImpl {
      * @generated
      */
     protected static WfsvPackage modelPackage;
+
+    /**
+     * The switch the delegates to the <code>createXXX</code> methods.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    protected WfsvSwitch modelSwitch = new WfsvSwitch() {
+            public Object caseDifferenceQueryType(DifferenceQueryType object) {
+                return createDifferenceQueryTypeAdapter();
+            }
+
+            public Object caseDocumentRoot(DocumentRoot object) {
+                return createDocumentRootAdapter();
+            }
+
+            public Object caseGetDiffType(GetDiffType object) {
+                return createGetDiffTypeAdapter();
+            }
+
+            public Object caseGetLogType(GetLogType object) {
+                return createGetLogTypeAdapter();
+            }
+
+            public Object caseRollbackType(RollbackType object) {
+                return createRollbackTypeAdapter();
+            }
+
+            public Object caseVersionedDeleteElementType(
+                VersionedDeleteElementType object) {
+                return createVersionedDeleteElementTypeAdapter();
+            }
+
+            public Object caseVersionedUpdateElementType(
+                VersionedUpdateElementType object) {
+                return createVersionedUpdateElementTypeAdapter();
+            }
+
+            public Object caseBaseRequestType(BaseRequestType object) {
+                return createBaseRequestTypeAdapter();
+            }
+
+            public Object caseNativeType(NativeType object) {
+                return createNativeTypeAdapter();
+            }
+
+            public Object caseDeleteElementType(DeleteElementType object) {
+                return createDeleteElementTypeAdapter();
+            }
+
+            public Object caseUpdateElementType(UpdateElementType object) {
+                return createUpdateElementTypeAdapter();
+            }
+
+            public Object defaultCase(EObject object) {
+                return createEObjectAdapter();
+            }
+        };
 
     /**
      * Creates an instance of the adapter factory.
@@ -61,57 +116,13 @@ public class WfsvAdapterFactory extends AdapterFactoryImpl {
         if (object == modelPackage) {
             return true;
         }
+
         if (object instanceof EObject) {
-            return ((EObject)object).eClass().getEPackage() == modelPackage;
+            return ((EObject) object).eClass().getEPackage() == modelPackage;
         }
+
         return false;
     }
-
-    /**
-     * The switch the delegates to the <code>createXXX</code> methods.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    protected WfsvSwitch modelSwitch =
-        new WfsvSwitch() {
-            public Object caseDifferenceQueryType(DifferenceQueryType object) {
-                return createDifferenceQueryTypeAdapter();
-            }
-            public Object caseDocumentRoot(DocumentRoot object) {
-                return createDocumentRootAdapter();
-            }
-            public Object caseGetDiffType(GetDiffType object) {
-                return createGetDiffTypeAdapter();
-            }
-            public Object caseGetLogType(GetLogType object) {
-                return createGetLogTypeAdapter();
-            }
-            public Object caseRollbackType(RollbackType object) {
-                return createRollbackTypeAdapter();
-            }
-            public Object caseVersionedDeleteElementType(VersionedDeleteElementType object) {
-                return createVersionedDeleteElementTypeAdapter();
-            }
-            public Object caseVersionedUpdateElementType(VersionedUpdateElementType object) {
-                return createVersionedUpdateElementTypeAdapter();
-            }
-            public Object caseBaseRequestType(BaseRequestType object) {
-                return createBaseRequestTypeAdapter();
-            }
-            public Object caseNativeType(NativeType object) {
-                return createNativeTypeAdapter();
-            }
-            public Object caseDeleteElementType(DeleteElementType object) {
-                return createDeleteElementTypeAdapter();
-            }
-            public Object caseUpdateElementType(UpdateElementType object) {
-                return createUpdateElementTypeAdapter();
-            }
-            public Object defaultCase(EObject object) {
-                return createEObjectAdapter();
-            }
-        };
 
     /**
      * Creates an adapter for the <code>target</code>.
@@ -122,9 +133,8 @@ public class WfsvAdapterFactory extends AdapterFactoryImpl {
      * @generated
      */
     public Adapter createAdapter(Notifier target) {
-        return (Adapter)modelSwitch.doSwitch((EObject)target);
+        return (Adapter) modelSwitch.doSwitch((EObject) target);
     }
-
 
     /**
      * Creates a new adapter for an object of class '{@link net.opengis.wfsv.DifferenceQueryType <em>Difference Query Type</em>}'.
@@ -291,5 +301,4 @@ public class WfsvAdapterFactory extends AdapterFactoryImpl {
     public Adapter createEObjectAdapter() {
         return null;
     }
-
 } //WfsvAdapterFactory

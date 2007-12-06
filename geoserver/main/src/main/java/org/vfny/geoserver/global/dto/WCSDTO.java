@@ -97,9 +97,8 @@ public class WCSDTO implements DataTransferObject {
 
         WCSDTO dto = (WCSDTO) other;
 
-        return ((gmlPrefixing == dto.gmlPrefixing) && (service == null)) ? (dto.getService() == null)
-                                                                         : service.equals(dto
-            .getService());
+        return ((gmlPrefixing == dto.gmlPrefixing) && (service == null))
+        ? (dto.getService() == null) : service.equals(dto.getService());
     }
 
     /**
@@ -110,7 +109,8 @@ public class WCSDTO implements DataTransferObject {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return (gmlPrefixing ? 1 : 0) | ((service == null) ? 0 : service.hashCode());
+        return (gmlPrefixing ? 1 : 0)
+        | ((service == null) ? 0 : service.hashCode());
     }
 
     /**

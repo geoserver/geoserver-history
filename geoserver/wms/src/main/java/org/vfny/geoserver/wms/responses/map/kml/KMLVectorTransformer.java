@@ -82,9 +82,9 @@ import java.util.logging.Logger;
 /**
  * Transforms a feature collection to a kml document consisting of nested
  * "Style" and "Placemark" elements for each feature in the collection.
- * A new transfomer must be instantianted for each feature collection, 
+ * A new transfomer must be instantianted for each feature collection,
  * the feature collection provided to the translator is supposed to be
- * the one coming out of the MapLayer 
+ * the one coming out of the MapLayer
  * <p>
  * Usage:
  * </p>
@@ -101,6 +101,41 @@ public class KMLVectorTransformer extends KMLTransformerBase {
      * Tolerance used to compare doubles for equality
      */
     static final double TOLERANCE = 1e-6;
+
+    /**
+     * list of formats which correspond to the default formats in which
+     * freemarker outputs dates when a user calls the ?datetime(),?date(),?time()
+     * fuctions.
+     */
+    static List /*<SimpleDateFormat>*/ dtformats = new ArrayList();
+    static List /*<SimpleDateFormat>*/ dformats = new ArrayList();
+    static List /*<SimpleDateFormat>*/ tformats = new ArrayList();
+
+    static {
+        //add default freemarker ones first since they are likely to be used 
+        // first, the order of this list matters.
+        dtformats.add(FeatureTemplate.DATETIME_FORMAT);
+        addFormats(dtformats, "dd%MM%yy hh:mm:ss");
+        addFormats(dtformats, "MM%dd%yy hh:mm:ss");
+        //addFormats(formats,"yy%MM%dd hh:mm:ss" );
+        addFormats(dtformats, "dd%MMM%yy hh:mm:ss");
+        addFormats(dtformats, "MMM%dd%yy hh:mm:ss");
+        //addFormats(formats,"yy%MMM%dd hh:mm:ss" );
+        addFormats(dtformats, "dd%MM%yy hh:mm");
+        addFormats(dtformats, "MM%dd%yy hh:mm");
+        //addFormats(formats,"yy%MM%dd hh:mm" );
+        addFormats(dtformats, "dd%MMM%yy hh:mm");
+        addFormats(dtformats, "MMM%dd%yy hh:mm");
+        //addFormats(formats,"yy%MMM%dd hh:mm" );
+        dformats.add(FeatureTemplate.DATE_FORMAT);
+        addFormats(dformats, "dd%MM%yy");
+        addFormats(dformats, "MM%dd%yy");
+        //addFormats(formats,"yy%MM%dd" );
+        addFormats(dformats, "dd%MMM%yy");
+        addFormats(dformats, "MMM%dd%yy");
+        //addFormats(formats,"yy%MMM%dd" );
+        tformats.add(FeatureTemplate.TIME_FORMAT);
+    }
 
     /**
      * The map context
@@ -125,61 +160,12 @@ public class KMLVectorTransformer extends KMLTransformerBase {
      * used to create 2d style objects for features
      */
     SLDStyleFactory styleFactory = new SLDStyleFactory();
-    
+
     /**
      * Feature template, cached for performance reasons
      */
     FeatureTemplate template = new FeatureTemplate();
-    
-    /**
-     * list of formats which correspond to the default formats in which 
-     * freemarker outputs dates when a user calls the ?datetime(),?date(),?time()
-     * fuctions. 
-     */
-    static List/*<SimpleDateFormat>*/ dtformats = new ArrayList();
-    static List/*<SimpleDateFormat>*/ dformats = new ArrayList();
-    static List/*<SimpleDateFormat>*/ tformats = new ArrayList();
-    static {
-        
-        //add default freemarker ones first since they are likely to be used 
-        // first, the order of this list matters.
-        
-        dtformats.add( FeatureTemplate.DATETIME_FORMAT );
-        addFormats(dtformats,"dd%MM%yy hh:mm:ss" );
-        addFormats(dtformats,"MM%dd%yy hh:mm:ss" );
-        //addFormats(formats,"yy%MM%dd hh:mm:ss" );
-        addFormats(dtformats,"dd%MMM%yy hh:mm:ss" );
-        addFormats(dtformats,"MMM%dd%yy hh:mm:ss" );
-        //addFormats(formats,"yy%MMM%dd hh:mm:ss" );
-        
-        addFormats(dtformats,"dd%MM%yy hh:mm" );
-        addFormats(dtformats,"MM%dd%yy hh:mm" );
-        //addFormats(formats,"yy%MM%dd hh:mm" );
-        addFormats(dtformats,"dd%MMM%yy hh:mm" );
-        addFormats(dtformats,"MMM%dd%yy hh:mm" );
-        //addFormats(formats,"yy%MMM%dd hh:mm" );
-        
-        dformats.add( FeatureTemplate.DATE_FORMAT );
-        addFormats(dformats,"dd%MM%yy" );
-        addFormats(dformats,"MM%dd%yy" );
-        //addFormats(formats,"yy%MM%dd" );
-        addFormats(dformats,"dd%MMM%yy" );
-        addFormats(dformats,"MMM%dd%yy" );
-        //addFormats(formats,"yy%MMM%dd" );
-         
-        tformats.add( FeatureTemplate.TIME_FORMAT );
-    }
-    
-    static void addFormats( List formats, String pattern ) {
-        
-        formats.add( new SimpleDateFormat( pattern.replaceAll("%","-" ) ) );
-        formats.add( new SimpleDateFormat( pattern.replaceAll("%","/" ) ) );
-        formats.add( new SimpleDateFormat( pattern.replaceAll("%","." ) ) );
-        formats.add( new SimpleDateFormat( pattern.replaceAll("%"," " ) ) );
-        formats.add( new SimpleDateFormat( pattern.replaceAll("%","," ) ) );
-        
-    }
-    
+
     public KMLVectorTransformer(WMSMapContext mapContext, MapLayer mapLayer) {
         this.mapContext = mapContext;
         this.mapLayer = mapLayer;
@@ -187,7 +173,15 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         setNamespaceDeclarationEnabled(false);
     }
 
-   /**
+    static void addFormats(List formats, String pattern) {
+        formats.add(new SimpleDateFormat(pattern.replaceAll("%", "-")));
+        formats.add(new SimpleDateFormat(pattern.replaceAll("%", "/")));
+        formats.add(new SimpleDateFormat(pattern.replaceAll("%", ".")));
+        formats.add(new SimpleDateFormat(pattern.replaceAll("%", " ")));
+        formats.add(new SimpleDateFormat(pattern.replaceAll("%", ",")));
+    }
+
+    /**
      * Sets the scale denominator.
      */
     public void setScaleDenominator(double scaleDenominator) {
@@ -223,7 +217,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             FeatureType featureType = features.getSchema();
 
             if (isStandAlone()) {
-                start( "kml" );
+                start("kml");
             }
 
             //start the root document, name it the name of the layer
@@ -231,21 +225,21 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             element("name", mapLayer.getTitle());
 
             //get the styles for hte layer
-            FeatureTypeStyle[] featureTypeStyles = filterFeatureTypeStyles(mapLayer.getStyle(),
-                    featureType);
-            
+            FeatureTypeStyle[] featureTypeStyles = filterFeatureTypeStyles(mapLayer
+                    .getStyle(), featureType);
+
             // encode the schemas (kml 2.2)
             encodeSchemas(features);
 
             // encode the layers
             encode(features, featureTypeStyles);
-            
+
             //encode the legend
             //encodeLegendScreenOverlay();
             end("Document");
-            
-            if ( isStandAlone() ) {
-                end( "kml" );
+
+            if (isStandAlone()) {
+                end("kml");
             }
         }
 
@@ -257,8 +251,9 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             // the code is at the moment in KML3VectorTransformer
         }
 
-        protected void encode(FeatureCollection features, FeatureTypeStyle[] styles) {
-           //grab a feader and process
+        protected void encode(FeatureCollection features,
+            FeatureTypeStyle[] styles) {
+            //grab a feader and process
             FeatureIterator reader = features.features();
 
             try {
@@ -269,7 +264,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                         encode(feature, styles);
                     } catch (Throwable t) {
                         //TODO: perhaps rethrow hte exception
-                        String msg = "Failure tranforming feature to KML:" + feature.getID();
+                        String msg = "Failure tranforming feature to KML:"
+                            + feature.getID();
                         LOGGER.log(Level.WARNING, msg, t);
                     }
                 }
@@ -286,15 +282,14 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             //start the document
             //start("Document");
 
-//            element("name", featureId);
-//            element("title", mapLayer.getTitle());
+            //            element("name", featureId);
+            //            element("title", mapLayer.getTitle());
 
             //encode the styles, keep track of any labels provided by the 
             // styles
-            if ( encodeStyle(feature, styles) ) {
-                encodePlacemark(feature,styles);    
+            if (encodeStyle(feature, styles)) {
+                encodePlacemark(feature, styles);
             }
-            
 
             //end("Document");
         }
@@ -303,45 +298,47 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          * Encodes the provided set of rules as KML styles.
          */
         protected boolean encodeStyle(Feature feature, FeatureTypeStyle[] styles) {
-           
             //encode hte Line/Poly styles
             List symbolizerList = new ArrayList();
-            for ( int j = 0; j < styles.length ; j++ ) {
-               Rule[] rules = filterRules(styles[j], feature);
-            	
+
+            for (int j = 0; j < styles.length; j++) {
+                Rule[] rules = filterRules(styles[j], feature);
+
                 for (int i = 0; i < rules.length; i++) {
-                    symbolizerList.addAll(Arrays.asList(rules[i].getSymbolizers()));
+                    symbolizerList.addAll(Arrays.asList(
+                            rules[i].getSymbolizers()));
                 }
             }
-            
-            if ( !symbolizerList.isEmpty() ) {
+
+            if (!symbolizerList.isEmpty()) {
                 //start the style
                 start("Style",
-                    KMLUtils.attributes(new String[] { "id", "GeoServerStyle" + feature.getID() }));
+                    KMLUtils.attributes(
+                        new String[] { "id", "GeoServerStyle" + feature.getID() }));
 
                 //encode the icon
                 encodeIconStyle(feature, styles);
 
-                Symbolizer[] symbolizers = (Symbolizer[]) symbolizerList.toArray(new Symbolizer[symbolizerList.size()]);
+                Symbolizer[] symbolizers = (Symbolizer[]) symbolizerList.toArray(new Symbolizer[symbolizerList
+                        .size()]);
                 encodeStyle(feature, symbolizers);
-                
+
                 //end the style
                 end("Style");
-                
+
                 //return true to specify that the feature has a style
                 return true;
-            }
-            else {
+            } else {
                 //dont encode
                 return false;
             }
-
         }
 
         /**
          * Encodes an IconStyle for a feature.
          */
-        protected void encodeIconStyle(Feature feature, FeatureTypeStyle[] styles ) {
+        protected void encodeIconStyle(Feature feature,
+            FeatureTypeStyle[] styles) {
             //encode the style for the icon
             //start IconStyle
             start("IconStyle");
@@ -352,43 +349,46 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             }
 
             //figure out if line or polygon
-            boolean line = feature.getDefaultGeometry() != null && 
-                (feature.getDefaultGeometry() instanceof LineString
-                    || feature.getDefaultGeometry() instanceof MultiLineString);
-            boolean poly = feature.getDefaultGeometry() != null && 
-            	(feature.getDefaultGeometry() instanceof Polygon
-                    || feature.getDefaultGeometry() instanceof MultiPolygon);
-            
+            boolean line = (feature.getDefaultGeometry() != null)
+                && (feature.getDefaultGeometry() instanceof LineString
+                || feature.getDefaultGeometry() instanceof MultiLineString);
+            boolean poly = (feature.getDefaultGeometry() != null)
+                && (feature.getDefaultGeometry() instanceof Polygon
+                || feature.getDefaultGeometry() instanceof MultiPolygon);
+
             //if line or polygon scale the label
-            if ( line ) {
-            	element( "scale", "0.7");
-            } else if ( poly ) {
-                element( "scale", "1.4" );
+            if (line) {
+                element("scale", "0.7");
+            } else if (poly) {
+                element("scale", "1.4");
             }
+
             //start Icon
             start("Icon");
-            
-            if ( line || poly ) {
-            	String imageURL;
-            	try {
-            		URL requestURL = new URL(mapContext.getRequest().getBaseUrl());
-            		imageURL = requestURL.getProtocol() + "://" + requestURL.getHost() + ":" + requestURL.getPort();
-            		imageURL += "/geoserver/icon.png";
-            	} catch (MalformedURLException mue){
-            		imageURL = "http://maps.google.com/mapfiles/kml/pal3/icon61.png";
-            	}
-                element("href", imageURL); 
-            }
-            else {
+
+            if (line || poly) {
+                String imageURL;
+
+                try {
+                    URL requestURL = new URL(mapContext.getRequest().getBaseUrl());
+                    imageURL = requestURL.getProtocol() + "://"
+                        + requestURL.getHost() + ":" + requestURL.getPort();
+                    imageURL += "/geoserver/icon.png";
+                } catch (MalformedURLException mue) {
+                    imageURL = "http://maps.google.com/mapfiles/kml/pal3/icon61.png";
+                }
+
+                element("href", imageURL);
+            } else {
                 //do nothing, this is handled by encodePointStyle
             }
-            
+
             end("Icon");
 
             //end IconStyle
             end("IconStyle");
-            
         }
+
         /**
          * Encodes the provided set of symbolizers as KML styles.
          */
@@ -396,31 +396,38 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             // look for line symbolizers, if there is any, we should tell the
             // polygon style to have an outline
             boolean forceOutline = false;
+
             for (int i = 0; i < symbolizers.length; i++) {
                 if (symbolizers[i] instanceof LineSymbolizer) {
                     forceOutline = true;
+
                     break;
                 }
             }
 
             for (int i = 0; i < symbolizers.length; i++) {
                 Symbolizer symbolizer = symbolizers[i];
-                LOGGER.finer(new StringBuffer("Applying symbolizer ").append(symbolizer).toString());
+                LOGGER.finer(new StringBuffer("Applying symbolizer ").append(
+                        symbolizer).toString());
 
                 //create a 2-D style
-                Style2D style = styleFactory.createStyle(feature, symbolizer, scaleRange);
+                Style2D style = styleFactory.createStyle(feature, symbolizer,
+                        scaleRange);
 
                 //split out each type of symbolizer
                 if (symbolizer instanceof TextSymbolizer) {
-                    encodeTextStyle((TextStyle2D) style, (TextSymbolizer) symbolizer);
+                    encodeTextStyle((TextStyle2D) style,
+                        (TextSymbolizer) symbolizer);
                 }
 
                 if (symbolizer instanceof PolygonSymbolizer) {
-                    encodePolygonStyle((PolygonStyle2D) style, (PolygonSymbolizer) symbolizer, forceOutline);
+                    encodePolygonStyle((PolygonStyle2D) style,
+                        (PolygonSymbolizer) symbolizer, forceOutline);
                 }
 
                 if (symbolizer instanceof LineSymbolizer) {
-                    encodeLineStyle((LineStyle2D) style, (LineSymbolizer) symbolizer);
+                    encodeLineStyle((LineStyle2D) style,
+                        (LineSymbolizer) symbolizer);
                 }
 
                 if (symbolizer instanceof PointSymbolizer) {
@@ -432,7 +439,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML IconStyle + PolyStyle from a polygon style and symbolizer.
          */
-        protected void encodePolygonStyle(PolygonStyle2D style, PolygonSymbolizer symbolizer, boolean forceOutline) {
+        protected void encodePolygonStyle(PolygonStyle2D style,
+            PolygonSymbolizer symbolizer, boolean forceOutline) {
             //star the polygon style
             start("PolyStyle");
 
@@ -453,7 +461,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             }
 
             //outline
-            if (symbolizer.getStroke() != null || forceOutline) {
+            if ((symbolizer.getStroke() != null) || forceOutline) {
                 element("outline", "1");
             } else {
                 element("outline", "0");
@@ -489,7 +497,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML IconStyle + LineStyle from a polygon style and symbolizer.
          */
-        protected void encodeLineStyle(LineStyle2D style, LineSymbolizer symbolizer) {
+        protected void encodeLineStyle(LineStyle2D style,
+            LineSymbolizer symbolizer) {
             start("LineStyle");
 
             //stroke
@@ -522,7 +531,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML IconStyle from a point style and symbolizer.
          */
-        protected void encodePointStyle(Style2D style, PointSymbolizer symbolizer) {
+        protected void encodePointStyle(Style2D style,
+            PointSymbolizer symbolizer) {
             start("IconStyle");
 
             if (style instanceof MarkStyle2D) {
@@ -536,7 +546,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                         opacity = 1.0;
                     }
 
-                    if(mark.getFill() != null) {
+                    if (mark.getFill() != null) {
                         final Color color = SLD.color(mark.getFill());
                         encodeColor(color, opacity);
                     }
@@ -558,7 +568,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             if ((symbolizer.getGraphic() != null)
                     && (symbolizer.getGraphic().getExternalGraphics() != null)
                     && (symbolizer.getGraphic().getExternalGraphics().length > 0)) {
-                ExternalGraphic graphic = symbolizer.getGraphic().getExternalGraphics()[0];
+                ExternalGraphic graphic = symbolizer.getGraphic()
+                                                    .getExternalGraphics()[0];
 
                 try {
                     if ("file".equals(graphic.getLocation().getProtocol())) {
@@ -567,15 +578,15 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                         iconHref = RequestUtils.baseURL(mapContext.getRequest()
                                                                   .getHttpServletRequest())
                             + "styles/" + file.getName();
-                    } else if ( "http".equals(graphic.getLocation().getProtocol()) ) {
+                    } else if ("http".equals(graphic.getLocation().getProtocol())) {
                         iconHref = graphic.getLocation().toString();
                     } else {
                         // TODO: should we check for http:// and use it directly?
                         //other protocols?
-                     }
-
+                    }
                 } catch (Exception e) {
-                    LOGGER.log(Level.WARNING, "Error processing external graphic:" + graphic, e);
+                    LOGGER.log(Level.WARNING,
+                        "Error processing external graphic:" + graphic, e);
                 }
             }
 
@@ -594,7 +605,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML LabelStyle from a text style and symbolizer.
          */
-        protected void encodeTextStyle(TextStyle2D style, TextSymbolizer symbolizer) {
+        protected void encodeTextStyle(TextStyle2D style,
+            TextSymbolizer symbolizer) {
             start("LabelStyle");
 
             if (symbolizer.getFill() != null) {
@@ -617,47 +629,49 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML Placemark from a feature and optional name.
          */
-        protected void encodePlacemark(Feature feature, FeatureTypeStyle[] styles) {
+        protected void encodePlacemark(Feature feature,
+            FeatureTypeStyle[] styles) {
             Geometry geometry = featureGeometry(feature);
             Coordinate centroid = geometryCentroid(geometry);
 
-            start("Placemark", KMLUtils.attributes(new String[] { "id", feature.getID() }));
+            start("Placemark",
+                KMLUtils.attributes(new String[] { "id", feature.getID() }));
 
             //encode name + description only if kmattr was specified
             if (mapContext.getRequest().getKMattr()) {
                 //name
                 try {
-                        encodePlacemarkName( feature, styles );
+                    encodePlacemarkName(feature, styles);
+                } catch (Exception e) {
+                    String msg = "Error occured processing 'title' template.";
+                    LOGGER.log(Level.WARNING, msg, e);
                 }
-                catch( Exception e ) {
-                        String msg = "Error occured processing 'title' template.";
-                        LOGGER.log( Level.WARNING, msg, e );
-                }
-                
+
                 //description
                 try {
                     encodePlacemarkDescription(feature);
                 } catch (Exception e) {
-                        String msg = "Error occured processing 'description' template.";
-                        LOGGER.log( Level.WARNING, msg, e );
+                    String msg = "Error occured processing 'description' template.";
+                    LOGGER.log(Level.WARNING, msg, e);
                 }
             }
-            
+
             //look at
             encodePlacemarkLookAt(centroid);
-            
+
             //time
             try {
                 encodePlacemarkTime(feature);
             } catch (Exception e) {
-                String msg = "Error occured processing 'time' template: " +  e.getMessage();
-                LOGGER.log( Level.WARNING, msg );
-                LOGGER.log( Level.FINE, "", e );
+                String msg = "Error occured processing 'time' template: "
+                    + e.getMessage();
+                LOGGER.log(Level.WARNING, msg);
+                LOGGER.log(Level.FINE, "", e);
             }
-            
+
             //style reference
             element("styleUrl", "#GeoServerStyle" + feature.getID());
-            
+
             // encode extended data (kml 2.2)
             encodeExtendedData(feature);
 
@@ -679,73 +693,71 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          * Encodes a KML Placemark name from a feature by processing a
          * template.
          */
-        protected void encodePlacemarkName(Feature feature, FeatureTypeStyle[] styles )
-                throws IOException {
-                
+        protected void encodePlacemarkName(Feature feature,
+            FeatureTypeStyle[] styles) throws IOException {
             //order to use when figuring out what the name / label of a 
             // placemark should be:
             // 1. the title template for features
             // 2. a text sym with a label from teh sld
             // 3. nothing ( do not use fid )
+            String title = template.title(feature);
 
-            String title = template.title( feature );       
-            
             //ensure not empty and != fid
-            if ( title == null || "".equals( title ) || feature.getID().equals( title ) ) {
+            if ((title == null) || "".equals(title)
+                    || feature.getID().equals(title)) {
                 //try sld
                 StringBuffer label = new StringBuffer();
-                for ( int i = 0; i < styles.length; i++ ) {
-                        Rule[] rules = filterRules(styles[i], feature );
-                        for ( int j = 0; j < rules.length; j++ ) {
-                                Symbolizer[] syms = rules[j].getSymbolizers();
-                                for ( int k = 0; k < syms.length; k++) {
-                                        if ( syms[k] instanceof TextSymbolizer ) {
-                                                Expression e = SLD.textLabel((TextSymbolizer) syms[k]);
-                        Object object = e.evaluate(feature);
-                        String value = null;
 
-                        if (object instanceof String) {
-                            value = (String) object;
-                        } else {
-                            if (object != null) {
-                                value = object.toString();
+                for (int i = 0; i < styles.length; i++) {
+                    Rule[] rules = filterRules(styles[i], feature);
+
+                    for (int j = 0; j < rules.length; j++) {
+                        Symbolizer[] syms = rules[j].getSymbolizers();
+
+                        for (int k = 0; k < syms.length; k++) {
+                            if (syms[k] instanceof TextSymbolizer) {
+                                Expression e = SLD.textLabel((TextSymbolizer) syms[k]);
+                                Object object = e.evaluate(feature);
+                                String value = null;
+
+                                if (object instanceof String) {
+                                    value = (String) object;
+                                } else {
+                                    if (object != null) {
+                                        value = object.toString();
+                                    }
+                                }
+
+                                if ((value != null) && !"".equals(value.trim())) {
+                                    label.append(value);
+                                }
                             }
                         }
+                    }
+                }
 
-                        if ((value != null) && !"".equals(value.trim())) {
-                            label.append(value);
-                        }
-                                        }
-                                }
-                        }
+                if (label.length() > 0) {
+                    title = label.toString();
+                } else {
+                    title = null;
                 }
-                
-                if ( label.length() > 0 ) {
-                        title = label.toString();
-                }
-                else {
-                        title = null;
-                }
-            
             }
-            
-            if ( title != null ) {
+
+            if (title != null) {
                 start("name");
                 cdata(title);
-                end("name");    
+                end("name");
             }
-            
         }
-        
+
         /**
          * Encodes a KML Placemark description from a feature by processing a
          * template.
          */
         protected void encodePlacemarkDescription(Feature feature)
             throws IOException {
-        
-           String description = template.description( feature );
-         
+            String description = template.description(feature);
+
             if (description != null) {
                 start("description");
                 cdata(description);
@@ -767,40 +779,44 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
             end("LookAt");
         }
-        
+
         /**
          * Encodes a KML TimePrimitive geometry from a feature.
          */
-        protected void encodePlacemarkTime(Feature feature) throws IOException {
+        protected void encodePlacemarkTime(Feature feature)
+            throws IOException {
             try {
                 String[] time = new FeatureTimeTemplate(template).execute(feature);
-                if ( time.length == 0 ) {
+
+                if (time.length == 0) {
                     return;
                 }
-                
-                if ( time.length == 1 ) {
+
+                if (time.length == 1) {
                     String datetime = encodeDateTime(time[0]);
-                    if ( datetime != null ) {
+
+                    if (datetime != null) {
                         //timestamp case
                         start("TimeStamp");
-                        element("when", datetime );
-                        end("TimeStamp");    
+                        element("when", datetime);
+                        end("TimeStamp");
                     }
-                    
-                }
-                else {
+                } else {
                     //timespan case
                     String begin = encodeDateTime(time[0]);
                     String end = encodeDateTime(time[1]);
-                    
-                    if (!(begin == null && end == null)) {
-                        start("TimeSpan");    
-                        if ( begin != null ) {
+
+                    if (!((begin == null) && (end == null))) {
+                        start("TimeSpan");
+
+                        if (begin != null) {
                             element("begin", begin);
                         }
-                        if ( end != null ) {
+
+                        if (end != null) {
                             element("end", end);
-                        }    
+                        }
+
                         end("TimeSpan");
                     }
                 }
@@ -812,80 +828,87 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes a date as an xs:dateTime.
          */
-        protected String encodeDateTime( String date ) throws Exception {
-            
+        protected String encodeDateTime(String date) throws Exception {
             //first try as date time
-            Date d = parseDate( dtformats, date );
-            if ( d == null ) {
+            Date d = parseDate(dtformats, date);
+
+            if (d == null) {
                 //then try as date
-                d = parseDate( dformats, date );    
+                d = parseDate(dformats, date);
             }
-            if ( d == null ) {
+
+            if (d == null) {
                 //try as time
-                d = parseDate( tformats, date );
+                d = parseDate(tformats, date);
             }
-            
-            if ( d == null ) {
+
+            if (d == null) {
                 //last ditch effort, try to parse as xml dates
                 try {
                     //try as xml date time
-                    d = DateUtil.deserializeDateTime( date );
-                }
-                catch( Exception e1 ) {
+                    d = DateUtil.deserializeDateTime(date);
+                } catch (Exception e1) {
                     try {
                         //try as xml date
-                        d = DateUtil.deserializeDate( date );
+                        d = DateUtil.deserializeDate(date);
+                    } catch (Exception e2) {
                     }
-                    catch( Exception e2 ) {}
                 }
             }
-           
-            if ( d != null ) {
+
+            if (d != null) {
                 Calendar c = Calendar.getInstance();
                 c.setTime(d);
-                return new XSDateTimeBinding().encode(  c , null );
+
+                return new XSDateTimeBinding().encode(c, null);
             }
-            
+
             LOGGER.warning("Could not parse date: " + date);
+
             return null;
         }
-        
+
         /**
          * Parses a date as a string into a well-known format.
          */
-        protected Date parseDate( List formats, String date ) {
-            for ( Iterator f = formats.iterator(); f.hasNext(); ) {
+        protected Date parseDate(List formats, String date) {
+            for (Iterator f = formats.iterator(); f.hasNext();) {
                 SimpleDateFormat format = (SimpleDateFormat) f.next();
                 Date d = null;
+
                 try {
                     d = format.parse(date);
-                } catch (ParseException e) {}
-                
-                if ( d != null ) {
+                } catch (ParseException e) {
+                }
+
+                if (d != null) {
                     return d;
                 }
             }
-            
+
             return null;
         }
+
         /**
          * Encodes a KML Placemark geometry from a geometry + centroid.
          */
-        protected void encodePlacemarkGeometry(Geometry geometry, Coordinate centroid) {
+        protected void encodePlacemarkGeometry(Geometry geometry,
+            Coordinate centroid) {
             //if point, just encode a single point, otherwise encode the geometry
             // + centroid
-            if ( geometry instanceof Point || 
-                    (geometry instanceof MultiPoint) && ((MultiPoint)geometry).getNumPoints() == 1 ) {
-                encodeGeometry( geometry );
-            }
-            else {
+            if (geometry instanceof Point
+                    || ((geometry instanceof MultiPoint)
+                    && (((MultiPoint) geometry).getNumPoints() == 1))) {
+                encodeGeometry(geometry);
+            } else {
                 start("MultiGeometry");
 
                 //the centroid
                 start("Point");
 
                 if (!Double.isNaN(centroid.z)) {
-                    element("coordinates", centroid.x + "," + centroid.y + "," + centroid.z);
+                    element("coordinates",
+                        centroid.x + "," + centroid.y + "," + centroid.z);
                 } else {
                     element("coordinates", centroid.x + "," + centroid.y);
                 }
@@ -897,7 +920,6 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
                 end("MultiGeometry");
             }
-            
         }
 
         /**
@@ -936,17 +958,17 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             element("color", hex);
         }
 
-       /**
-        * Checks if a rule can be triggered at the current scale level
-        * 
-        * @param r
-        *            The rule
-        * @return true if the scale is compatible with the rule settings
-        */
+        /**
+         * Checks if a rule can be triggered at the current scale level
+         *
+         * @param r
+         *            The rule
+         * @return true if the scale is compatible with the rule settings
+         */
         boolean isWithInScale(Rule r) {
-               return ((r.getMinScaleDenominator() - TOLERANCE) <= scaleDenominator)
-                   && ((r.getMaxScaleDenominator() + TOLERANCE) > scaleDenominator);
-       }
+            return ((r.getMinScaleDenominator() - TOLERANCE) <= scaleDenominator)
+            && ((r.getMaxScaleDenominator() + TOLERANCE) > scaleDenominator);
+        }
 
         /**
          * Returns the id of the feature removing special characters like
@@ -970,20 +992,19 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             Geometry geom = f.getDefaultGeometry();
 
             //rprojection done in KMLTransformer
-//            if (!CRS.equalsIgnoreMetadata(sourceCrs, mapContext.getCoordinateReferenceSystem())) {
-//                try {
-//                    MathTransform transform = CRS.findMathTransform(sourceCrs,
-//                            mapContext.getCoordinateReferenceSystem(), true);
-//                    geom = JTS.transform(geom, transform);
-//                } catch (MismatchedDimensionException e) {
-//                    LOGGER.severe(e.getLocalizedMessage());
-//                } catch (TransformException e) {
-//                    LOGGER.severe(e.getLocalizedMessage());
-//                } catch (FactoryException e) {
-//                    LOGGER.severe(e.getLocalizedMessage());
-//                }
-//            }
-
+            //            if (!CRS.equalsIgnoreMetadata(sourceCrs, mapContext.getCoordinateReferenceSystem())) {
+            //                try {
+            //                    MathTransform transform = CRS.findMathTransform(sourceCrs,
+            //                            mapContext.getCoordinateReferenceSystem(), true);
+            //                    geom = JTS.transform(geom, transform);
+            //                } catch (MismatchedDimensionException e) {
+            //                    LOGGER.severe(e.getLocalizedMessage());
+            //                } catch (TransformException e) {
+            //                    LOGGER.severe(e.getLocalizedMessage());
+            //                } catch (FactoryException e) {
+            //                    LOGGER.severe(e.getLocalizedMessage());
+            //                }
+            //            }
             return geom;
         }
 
@@ -1000,13 +1021,12 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             // multi point?
             if (g instanceof GeometryCollection) {
                 GeometryCollection gc = (GeometryCollection) g;
-                
+
                 //check for case of single geometry
-                if ( gc.getNumGeometries() == 1 ) {
-                        g = gc.getGeometryN(0);
-                }
-                else {
-                        Coordinate[] pts = new Coordinate[gc.getNumGeometries()];
+                if (gc.getNumGeometries() == 1) {
+                    g = gc.getGeometryN(0);
+                } else {
+                    Coordinate[] pts = new Coordinate[gc.getNumGeometries()];
 
                     for (int t = 0; t < gc.getNumGeometries(); t++) {
                         pts[t] = gc.getGeometryN(t).getCentroid().getCoordinate();
@@ -1014,41 +1034,41 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
                     return g.getFactory().createMultiPoint(pts).getCoordinates()[0];
                 }
-            } 
-            
-            if ( g instanceof Point ) {
+            }
+
+            if (g instanceof Point) {
                 //thats easy
                 return g.getCoordinate();
-            }
-            else if ( g instanceof LineString ) {
+            } else if (g instanceof LineString) {
                 //make sure the point we return is actually on the line
                 double tol = 1E-6;
                 double mid = g.getLength() / 2d;
-                
+
                 Coordinate[] coords = g.getCoordinates();
-                
+
                 //walk along the linestring until we get to a point where we 
                 // have two coordinates that straddle the midpoint
                 double len = 0d;
-                for ( int i = 1; i < coords.length; i++) {
-                        LineSegment line = new LineSegment( coords[i-1],coords[i] );
-                        len += line.getLength();
-                        
-                        if ( Math.abs( len - mid ) < tol ) {
-                                //close enough
-                                return line.getCoordinate(1);
-                        }
-                        
-                        if ( len > mid ) {
-                                //we have gone past midpoint
-                                return line.pointAlong( 1 - ((len-mid)/line.getLength()) );
-                        }
+
+                for (int i = 1; i < coords.length; i++) {
+                    LineSegment line = new LineSegment(coords[i - 1], coords[i]);
+                    len += line.getLength();
+
+                    if (Math.abs(len - mid) < tol) {
+                        //close enough
+                        return line.getCoordinate(1);
+                    }
+
+                    if (len > mid) {
+                        //we have gone past midpoint
+                        return line.pointAlong(1
+                            - ((len - mid) / line.getLength()));
+                    }
                 }
-                
+
                 //should never get there
                 return g.getCentroid().getCoordinate();
-            }
-            else {
+            } else {
                 //return the actual centroid
                 return g.getCentroid().getCoordinate();
             }
@@ -1082,8 +1102,10 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          * @return A String of the form "#AABBGGRR".
          */
         String colorToHex(Color c, double opacity) {
-            return new StringBuffer().append(intToHex(new Float(255 * opacity).intValue()))
-                                     .append(intToHex(c.getBlue())).append(intToHex(c.getGreen()))
+            return new StringBuffer().append(intToHex(
+                    new Float(255 * opacity).intValue()))
+                                     .append(intToHex(c.getBlue()))
+                                     .append(intToHex(c.getGreen()))
                                      .append(intToHex(c.getRed())).toString();
         }
 
@@ -1101,7 +1123,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          * @param featureType The feature type being filtered against.
          *
          */
-        protected FeatureTypeStyle[] filterFeatureTypeStyles(Style style, FeatureType featureType) {
+        protected FeatureTypeStyle[] filterFeatureTypeStyles(Style style,
+            FeatureType featureType) {
             FeatureTypeStyle[] featureTypeStyles = style.getFeatureTypeStyles();
 
             if ((featureTypeStyles == null) || (featureTypeStyles.length == 0)) {
@@ -1115,8 +1138,9 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 String featureTypeName = featureTypeStyle.getFeatureTypeName();
 
                 //does this style have any rules
-                if (featureTypeStyle.getRules() == null || featureTypeStyle.getRules().length == 0 ) {
-                       continue;
+                if ((featureTypeStyle.getRules() == null)
+                        || (featureTypeStyle.getRules().length == 0)) {
+                    continue;
                 }
 
                 //does this style apply to the feature collection
@@ -1126,7 +1150,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 }
             }
 
-            return (FeatureTypeStyle[]) filtered.toArray(new FeatureTypeStyle[filtered.size()]);
+            return (FeatureTypeStyle[]) filtered.toArray(new FeatureTypeStyle[filtered
+                .size()]);
         }
 
         /**
@@ -1161,7 +1186,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
             for (int i = 0; i < rules.length; i++) {
                 Rule rule = rules[i];
-                LOGGER.finer(new StringBuffer("Applying rule: ").append(rule.toString()).toString());
+                LOGGER.finer(new StringBuffer("Applying rule: ").append(
+                        rule.toString()).toString());
 
                 //does this rule have an else filter
                 if (rule.hasElseFilter()) {
@@ -1169,10 +1195,10 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
                     continue;
                 }
-                
+
                 //is this rule within scale?
-                if ( !isWithInScale(rule)) {
-                        continue;
+                if (!isWithInScale(rule)) {
+                    continue;
                 }
 
                 //does this rule have a filter which applies to the feature

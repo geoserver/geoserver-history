@@ -8,6 +8,7 @@ package net.opengis.ows;
 
 import org.eclipse.emf.ecore.EObject;
 
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Capabilities Base Type</b></em>'.
@@ -33,14 +34,14 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface CapabilitiesBaseType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Service Identification</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Service Identification</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Service Identification</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Service Identification</em>' containment reference.
      * @see #setServiceIdentification(ServiceIdentificationType)
      * @see net.opengis.ows.OwsPackage#getCapabilitiesBaseType_ServiceIdentification()
@@ -48,26 +49,26 @@ public interface CapabilitiesBaseType extends EObject {
      *        extendedMetaData="kind='element' name='ServiceIdentification' namespace='##targetNamespace'"
      * @generated
      */
-	ServiceIdentificationType getServiceIdentification();
+    ServiceIdentificationType getServiceIdentification();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.CapabilitiesBaseType#getServiceIdentification <em>Service Identification</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Service Identification</em>' containment reference.
      * @see #getServiceIdentification()
      * @generated
      */
-	void setServiceIdentification(ServiceIdentificationType value);
+    void setServiceIdentification(ServiceIdentificationType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Service Provider</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Service Provider</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Service Provider</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Service Provider</em>' containment reference.
      * @see #setServiceProvider(ServiceProviderType)
      * @see net.opengis.ows.OwsPackage#getCapabilitiesBaseType_ServiceProvider()
@@ -75,26 +76,26 @@ public interface CapabilitiesBaseType extends EObject {
      *        extendedMetaData="kind='element' name='ServiceProvider' namespace='##targetNamespace'"
      * @generated
      */
-	ServiceProviderType getServiceProvider();
+    ServiceProviderType getServiceProvider();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.CapabilitiesBaseType#getServiceProvider <em>Service Provider</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Service Provider</em>' containment reference.
      * @see #getServiceProvider()
      * @generated
      */
-	void setServiceProvider(ServiceProviderType value);
+    void setServiceProvider(ServiceProviderType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Operations Metadata</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Operations Metadata</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Operations Metadata</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Operations Metadata</em>' containment reference.
      * @see #setOperationsMetadata(OperationsMetadataType)
      * @see net.opengis.ows.OwsPackage#getCapabilitiesBaseType_OperationsMetadata()
@@ -102,26 +103,26 @@ public interface CapabilitiesBaseType extends EObject {
      *        extendedMetaData="kind='element' name='OperationsMetadata' namespace='##targetNamespace'"
      * @generated
      */
-	OperationsMetadataType getOperationsMetadata();
+    OperationsMetadataType getOperationsMetadata();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.CapabilitiesBaseType#getOperationsMetadata <em>Operations Metadata</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Operations Metadata</em>' containment reference.
      * @see #getOperationsMetadata()
      * @generated
      */
-	void setOperationsMetadata(OperationsMetadataType value);
+    void setOperationsMetadata(OperationsMetadataType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Update Sequence</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Update Sequence</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Update Sequence</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Update Sequence</em>' attribute.
      * @see #setUpdateSequence(String)
      * @see net.opengis.ows.OwsPackage#getCapabilitiesBaseType_UpdateSequence()
@@ -129,26 +130,26 @@ public interface CapabilitiesBaseType extends EObject {
      *        extendedMetaData="kind='attribute' name='updateSequence'"
      * @generated
      */
-	String getUpdateSequence();
+    String getUpdateSequence();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.CapabilitiesBaseType#getUpdateSequence <em>Update Sequence</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Update Sequence</em>' attribute.
      * @see #getUpdateSequence()
      * @generated
      */
-	void setUpdateSequence(String value);
+    void setUpdateSequence(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Version</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Version</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Version</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Version</em>' attribute.
      * @see #setVersion(String)
      * @see net.opengis.ows.OwsPackage#getCapabilitiesBaseType_Version()
@@ -156,16 +157,15 @@ public interface CapabilitiesBaseType extends EObject {
      *        extendedMetaData="kind='attribute' name='version'"
      * @generated
      */
-	String getVersion();
+    String getVersion();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.CapabilitiesBaseType#getVersion <em>Version</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Version</em>' attribute.
      * @see #getVersion()
      * @generated
      */
-	void setVersion(String value);
-
+    void setVersion(String value);
 } // CapabilitiesBaseType

@@ -46,7 +46,8 @@ public final class Operation {
      * @param parameters The parameters of the operation, may be <code>null</code>
      *
      */
-    public Operation(String id, Service service, Method method, Object[] parameters) {
+    public Operation(String id, Service service, Method method,
+        Object[] parameters) {
         this.id = id;
         this.service = service;
         this.method = method;

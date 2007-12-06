@@ -106,21 +106,21 @@ public abstract class XmlRequestReader {
         return version;
     }
 
-
     /**
      * Reads the xml and initializes the request object.
      * <p>
      * The <tt>request</tt> parameter may be <code>null</code>, so in this case
-     * the request reader would be responsible for creating the request object, 
-     * or throwing an exception if this is not supported. 
+     * the request reader would be responsible for creating the request object,
+     * or throwing an exception if this is not supported.
      * </p>
      * <p>
-     * In the case of the <tt>request</tt> being non <code>null</code>, the 
+     * In the case of the <tt>request</tt> being non <code>null</code>, the
      * request reader may chose to modify and return <tt>request</tt>, or create
      * a new request object and return it.
      * </p>
      */
-    public abstract Object read(Object request, Reader reader) throws Exception;
+    public abstract Object read(Object request, Reader reader)
+        throws Exception;
 
     /**
      * Two XmlReaders considered equal if namespace,element, and version properties
@@ -133,7 +133,8 @@ public abstract class XmlRequestReader {
 
         XmlRequestReader other = (XmlRequestReader) obj;
 
-        return new EqualsBuilder().append(element, other.element).append(version, other.version)
+        return new EqualsBuilder().append(element, other.element)
+                                  .append(version, other.version)
                                   .append(serviceId, other.serviceId).isEquals();
     }
 
@@ -141,7 +142,8 @@ public abstract class XmlRequestReader {
      * Implementation of hashcode.
      */
     public int hashCode() {
-        return new HashCodeBuilder().append(element).append(version).append(serviceId).toHashCode();
+        return new HashCodeBuilder().append(element).append(version)
+                                    .append(serviceId).toHashCode();
     }
 
     public String getServiceId() {

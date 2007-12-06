@@ -23,13 +23,16 @@ public interface WFSV {
             "DifferenceQueryType");
 
     /** @generated */
-    public static final QName GetDiffType = new QName("http://www.opengis.net/wfsv", "GetDiffType");
+    public static final QName GetDiffType = new QName("http://www.opengis.net/wfsv",
+            "GetDiffType");
 
     /** @generated */
-    public static final QName GetLogType = new QName("http://www.opengis.net/wfsv", "GetLogType");
+    public static final QName GetLogType = new QName("http://www.opengis.net/wfsv",
+            "GetLogType");
 
     /** @generated */
-    public static final QName RollbackType = new QName("http://www.opengis.net/wfsv", "RollbackType");
+    public static final QName RollbackType = new QName("http://www.opengis.net/wfsv",
+            "RollbackType");
 
     /** @generated */
     public static final QName VersionedDeleteElementType = new QName("http://www.opengis.net/wfsv",
@@ -45,13 +48,16 @@ public interface WFSV {
             "DifferenceQuery");
 
     /** @generated */
-    public static final QName GetDiff = new QName("http://www.opengis.net/wfsv", "GetDiff");
+    public static final QName GetDiff = new QName("http://www.opengis.net/wfsv",
+            "GetDiff");
 
     /** @generated */
-    public static final QName GetLog = new QName("http://www.opengis.net/wfsv", "GetLog");
+    public static final QName GetLog = new QName("http://www.opengis.net/wfsv",
+            "GetLog");
 
     /** @generated */
-    public static final QName Rollback = new QName("http://www.opengis.net/wfsv", "Rollback");
+    public static final QName Rollback = new QName("http://www.opengis.net/wfsv",
+            "Rollback");
 
     /** @generated */
     public static final QName VersionedDelete = new QName("http://www.opengis.net/wfsv",

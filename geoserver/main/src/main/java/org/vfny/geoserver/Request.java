@@ -47,7 +47,7 @@ abstract public class Request {
 
     /** service reference */
     protected AbstractService serviceRef;
-    
+
     /** reference to the base Url that this request was called with.
      * Note that this is a complete duplicate of info in the above HttpServletRequest
      * object, and is mainly a forward-thinking field that's going to stick around when
@@ -56,25 +56,25 @@ abstract public class Request {
     protected String baseUrl;
 
     /**
-      * ServiceType,RequestType,ServiceRef constructor.
-      *
-      * @param serviceType Name of hte service (example, WFS)
-      * @param requestType Name of the request (example, GetCapabilties)
-      * @param serviceRef The servlet for the request.
-      */
-    protected Request(String serviceType, String requestType, AbstractService serviceRef) {
+     * ServiceType,RequestType,ServiceRef constructor.
+     *
+     * @param serviceType Name of hte service (example, WFS)
+     * @param requestType Name of the request (example, GetCapabilties)
+     * @param serviceRef The servlet for the request.
+     */
+    protected Request(String serviceType, String requestType,
+        AbstractService serviceRef) {
         this.service = serviceType;
         this.request = requestType;
         this.serviceRef = serviceRef;
     }
-    
+
     /**
      * Set the baseUrl that this request was called with.
      */
     public void setBaseUrl(String s) {
         baseUrl = s;
     }
-    
 
     /**
      * Gets the base url that made this request.  This is used to return the
@@ -167,11 +167,14 @@ abstract public class Request {
 
         Request req = (Request) o;
         boolean equals = true;
-        equals = ((request == null) ? (req.getRequest() == null) : request.equals(req.getRequest()))
+        equals = ((request == null) ? (req.getRequest() == null)
+                                    : request.equals(req.getRequest()))
             && equals;
-        equals = ((version == null) ? (req.getVersion() == null) : version.equals(req.getVersion()))
+        equals = ((version == null) ? (req.getVersion() == null)
+                                    : version.equals(req.getVersion()))
             && equals;
-        equals = ((service == null) ? (req.getService() == null) : service.equals(req.getService()))
+        equals = ((service == null) ? (req.getService() == null)
+                                    : service.equals(req.getService()))
             && equals;
 
         return equals;
@@ -194,17 +197,17 @@ abstract public class Request {
      * <p>
      * The ServletRequest is often used to:
      * </p>
-         * <ul>
-         * <li>Access the Sesssion and WebContainer by execute opperations
-         *     </li>
-         * <li>Of special importance is the use of the ServletRequest to locate the GeoServer Application
-         *     </li>
-         * </p>
-         * <p>
-         * This method is called by AbstractServlet during the processing of a Request.
-         * </p>
-         * @return The HttpServletRequest responsible for generating this SerivceRequest
-         */
+     * <ul>
+     * <li>Access the Sesssion and WebContainer by execute opperations
+     *     </li>
+     * <li>Of special importance is the use of the ServletRequest to locate the GeoServer Application
+     *     </li>
+     * </p>
+     * <p>
+     * This method is called by AbstractServlet during the processing of a Request.
+     * </p>
+     * @return The HttpServletRequest responsible for generating this SerivceRequest
+     */
     public HttpServletRequest getHttpServletRequest() throws ClassCastException {
         return httpServletRequest;
     }
@@ -235,7 +238,8 @@ abstract public class Request {
      * @return the base url of the schemas.  Will be getBaseUrl() + data/capabilities.
      */
     public String getSchemaBaseUrl() {
-        return Requests.getSchemaBaseUrl(getHttpServletRequest(), serviceRef.getGeoServer());
+        return Requests.getSchemaBaseUrl(getHttpServletRequest(),
+            serviceRef.getGeoServer());
     }
 
     /**
@@ -256,7 +260,8 @@ abstract public class Request {
         }
 
         // will happen if the dispatcher was called, as opposed to using the /wfs url.
-        if (uri.endsWith("/wcs") || uri.endsWith("/wfs") || uri.endsWith("/wms")) {
+        if (uri.endsWith("/wcs") || uri.endsWith("/wfs")
+                || uri.endsWith("/wms")) {
             return true;
         }
 

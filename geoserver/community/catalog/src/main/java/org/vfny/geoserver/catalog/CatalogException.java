@@ -20,16 +20,17 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CatalogException extends ServiceException {
     /**
-         *
-         */
+     *
+     */
     private static final long serialVersionUID = 2230658699347756667L;
 
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.catalog");
+    private static Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.catalog");
 
     /**
-         * The fixed MIME type of a CATALOG exception.
-         */
+     * The fixed MIME type of a CATALOG exception.
+     */
     private static final String SE_XML = "application/vnd.ogc.se_xml";
 
     /**
@@ -95,8 +96,8 @@ public class CatalogException extends ServiceException {
      *       validate right (reference our own schema), and to put the correct
      *       mime type here.
      */
-    public String getXmlResponse(boolean printStackTrace, HttpServletRequest request,
-        GeoServer geoserver) {
+    public String getXmlResponse(boolean printStackTrace,
+        HttpServletRequest request, GeoServer geoserver) {
         //Perhaps not the best place to do this, but it's by far the best place to ensure
         //that all logged errors get recorded in the same way, as there all must return
         //xml responses.
@@ -112,7 +113,8 @@ public class CatalogException extends ServiceException {
 
         returnXml.append(indent + "xmlns=\"http://www.opengis.net/ogc\"\n");
 
-        returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/" + "XMLSchema-instance\"\n");
+        returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/"
+            + "XMLSchema-instance\"\n");
 
         returnXml.append(indent);
 

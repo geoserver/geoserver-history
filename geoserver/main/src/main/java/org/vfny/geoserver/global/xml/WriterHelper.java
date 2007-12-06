@@ -27,7 +27,8 @@ import java.util.logging.Logger;
  */
 public class WriterHelper {
     /** Used internally to create log information to detect errors. */
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.global");
 
     /** The output writer. */
     protected Writer writer;
@@ -129,7 +130,8 @@ public class WriterHelper {
             String s = (String) i.next();
 
             if (attributes.get(s) != null) {
-                sb.append(s + " = " + "\"" + escape((attributes.get(s)).toString()) + "\" ");
+                sb.append(s + " = " + "\""
+                    + escape((attributes.get(s)).toString()) + "\" ");
             }
         }
 
@@ -197,7 +199,8 @@ public class WriterHelper {
             String s = (String) i.next();
 
             if (attributes.get(s) != null) {
-                sb.append(s + " = " + "\"" + escape((attributes.get(s)).toString()) + "\" ");
+                sb.append(s + " = " + "\""
+                    + escape((attributes.get(s)).toString()) + "\" ");
             }
         }
 
@@ -218,7 +221,8 @@ public class WriterHelper {
      *
      * @throws ConfigurationException When an IO exception occurs.
      */
-    public void textTag(String tagName, String data) throws ConfigurationException {
+    public void textTag(String tagName, String data)
+        throws ConfigurationException {
         textTag(tagName, Collections.EMPTY_MAP, data);
     }
 
@@ -247,11 +251,13 @@ public class WriterHelper {
             String s = (String) i.next();
 
             if (attributes.get(s) != null) {
-                sb.append(s + " = " + "\"" + escape((attributes.get(s)).toString()) + "\" ");
+                sb.append(s + " = " + "\""
+                    + escape((attributes.get(s)).toString()) + "\" ");
             }
         }
 
-        sb.append(">" + escape(((data != null) ? data : "")) + "</" + tagName + ">");
+        sb.append(">" + escape(((data != null) ? data : "")) + "</" + tagName
+            + ">");
         writeln(sb.toString());
     }
 
@@ -278,22 +284,24 @@ public class WriterHelper {
         decreaseIndent();
         writeln("-->");
     }
-    
+
     /**
-     * Escapes the provided text with XML entities, 
+     * Escapes the provided text with XML entities,
      * see (http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references#Character_entities_in_XML)
      * @param text
      * @return
      */
     private String escape(String text) {
-    	String s = text;
-    	if(s.matches(".*[\"&'<>].*")) {
-			s = s.replaceAll("\"", "&quot;");
-			s = s.replaceAll("&", "&amp;");
-			s = s.replaceAll("'", "&apos;");
-			s = s.replaceAll("<", "&lt;");
-			s = s.replaceAll(">", "&gt;");
-		}
-    	return s;
+        String s = text;
+
+        if (s.matches(".*[\"&'<>].*")) {
+            s = s.replaceAll("\"", "&quot;");
+            s = s.replaceAll("&", "&amp;");
+            s = s.replaceAll("'", "&apos;");
+            s = s.replaceAll("<", "&lt;");
+            s = s.replaceAll(">", "&gt;");
+        }
+
+        return s;
     }
 }

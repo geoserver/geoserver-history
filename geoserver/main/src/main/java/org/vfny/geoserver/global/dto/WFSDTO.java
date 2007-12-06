@@ -37,8 +37,8 @@ public final class WFSDTO implements DataTransferObject {
     public static final int BASIC = 1;
 
     /** ServiceLevel mask for transactional WFS conformance. */
-    public static final int TRANSACTIONAL = SERVICE_BASIC | SERVICE_INSERT | SERVICE_UPDATE
-        | SERVICE_DELETE;
+    public static final int TRANSACTIONAL = SERVICE_BASIC | SERVICE_INSERT
+        | SERVICE_UPDATE | SERVICE_DELETE;
 
     /** ServiceLevel mask equivilent to complete WFS conformance */
     public static final int COMPLETE = TRANSACTIONAL | SERVICE_LOCKING;

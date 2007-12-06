@@ -20,15 +20,16 @@ public class WfsXmlReader extends XmlRequestReader {
     private WFSVConfiguration configuration;
 
     public WfsXmlReader(String element, WFS wfs, WFSVConfiguration configuration) {
-        super(new QName(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE, element), new Version("1.1.0"),
-            "wfsv");
+        super(new QName(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE, element),
+            new Version("1.1.0"), "wfsv");
         this.wfs = wfs;
         this.configuration = configuration;
     }
 
     public Object read(Object request, Reader reader) throws Exception {
         // TODO: make this configurable?
-        configuration.getProperties().add(Parser.Properties.PARSE_UNKNOWN_ELEMENTS);
+        configuration.getProperties()
+                     .add(Parser.Properties.PARSE_UNKNOWN_ELEMENTS);
 
         Parser parser = new Parser(configuration);
 
@@ -42,9 +43,11 @@ public class WfsXmlReader extends XmlRequestReader {
         // TODO: HACK, disabling validation for transaction
         if (!"Transaction".equalsIgnoreCase(getElement().getLocalPart())) {
             if (!parser.getValidationErrors().isEmpty()) {
-                WFSException exception = new WFSException("Invalid request", "InvalidParameterValue");
+                WFSException exception = new WFSException("Invalid request",
+                        "InvalidParameterValue");
 
-                for (Iterator e = parser.getValidationErrors().iterator(); e.hasNext();) {
+                for (Iterator e = parser.getValidationErrors().iterator();
+                        e.hasNext();) {
                     Exception error = (Exception) e.next();
                     exception.getExceptionText().add(error.getLocalizedMessage());
                 }

@@ -26,23 +26,23 @@ import javax.xml.parsers.SAXParserFactory;
 
 public abstract class WmsXmlRequestReader extends XmlRequestReader {
     /**
-    * Constructs the new wfs xml reader.
-    *
-    * @param service Reference to the service handing a reuqest.
-    */
+     * Constructs the new wfs xml reader.
+     *
+     * @param service Reference to the service handing a reuqest.
+     */
     public WmsXmlRequestReader(AbstractService service) {
         super(service);
     }
 
     /**
-    * Reads the Filter XML request into a geotools Feature object.
-    *
-    * @param rawRequest The plain POST text from the client.
-    *
-    * @return The geotools filter constructed from rawRequest.
-    *
-    * @throws WfsException For any problems reading the request.
-    */
+     * Reads the Filter XML request into a geotools Feature object.
+     *
+     * @param rawRequest The plain POST text from the client.
+     *
+     * @return The geotools filter constructed from rawRequest.
+     *
+     * @throws WfsException For any problems reading the request.
+     */
     public static Filter readFilter(Reader rawRequest)
         throws Exception {
         // translate string into a proper SAX input source

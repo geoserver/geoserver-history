@@ -84,7 +84,8 @@ public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
         net.opengis.ows.GetCapabilitiesType owsGetCapabilities = (net.opengis.ows.GetCapabilitiesType) value;
-        GetCapabilitiesType getCapabilities = wfsfactory.createGetCapabilitiesType();
+        GetCapabilitiesType getCapabilities = wfsfactory
+            .createGetCapabilitiesType();
 
         getCapabilities.setAcceptFormats(owsGetCapabilities.getAcceptFormats());
         getCapabilities.setAcceptVersions(owsGetCapabilities.getAcceptVersions());
@@ -92,7 +93,8 @@ public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
         getCapabilities.setUpdateSequence(owsGetCapabilities.getUpdateSequence());
 
         if (node.hasAttribute("service")) {
-            getCapabilities.setService((String) node.getAttributeValue("service"));
+            getCapabilities.setService((String) node.getAttributeValue(
+                    "service"));
         }
 
         return getCapabilities;

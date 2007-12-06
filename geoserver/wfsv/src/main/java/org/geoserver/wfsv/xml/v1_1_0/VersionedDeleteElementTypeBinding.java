@@ -68,8 +68,10 @@ public class VersionedDeleteElementTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        VersionedDeleteElementType delete = wfsvFactory.createVersionedDeleteElementType();
-        delete.setFeatureVersion((String) node.getAttributeValue("featureVersion"));
+        VersionedDeleteElementType delete = wfsvFactory
+            .createVersionedDeleteElementType();
+        delete.setFeatureVersion((String) node.getAttributeValue(
+                "featureVersion"));
 
         return delete;
     }

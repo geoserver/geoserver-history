@@ -4,16 +4,6 @@
  */
 package org.vfny.geoserver.form.wms;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -24,6 +14,14 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.config.WMSConfig;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -43,9 +41,8 @@ public class WMSContentForm extends ActionForm {
     private HashMap minCPs = new HashMap();
     private HashMap maxCPs = new HashMap();
     private CoordinateReferenceSystem targetCRS = null;
-
     private int selectedLayer;
-    
+
     /*
      * Because of the way that STRUTS works, if the user does not check the enabled box,
      * or unchecks it, setEnabled() is never called, thus we must monitor setEnabled()
@@ -57,6 +54,11 @@ public class WMSContentForm extends ActionForm {
      * -rgould
      */
     private boolean enabledChecked = false;
+
+    /**
+     * Action requested by user
+     */
+    private String action;
 
     /**
      * DOCUMENT ME!
@@ -172,15 +174,15 @@ public class WMSContentForm extends ActionForm {
 
     public void setMinX(int index, double value) {
         /*GeneralEnvelope oldEnvelope = getBaseMapEnvelope(index);
-        GeneralEnvelope newEnvelope = null;
-        double[] minCP = new double[] { value, oldEnvelope.getLowerCorner().getOrdinate(1) };
-        double[] maxCP = new double[] {
-                oldEnvelope.getUpperCorner().getOrdinate(0),
-                oldEnvelope.getUpperCorner().getOrdinate(1)
-            };
-        newEnvelope = new GeneralEnvelope(minCP, maxCP);
-        newEnvelope.setCoordinateReferenceSystem(oldEnvelope.getCoordinateReferenceSystem());
-        setBaseMapEnvelope(index, newEnvelope);*/
+           GeneralEnvelope newEnvelope = null;
+           double[] minCP = new double[] { value, oldEnvelope.getLowerCorner().getOrdinate(1) };
+           double[] maxCP = new double[] {
+                   oldEnvelope.getUpperCorner().getOrdinate(0),
+                   oldEnvelope.getUpperCorner().getOrdinate(1)
+               };
+           newEnvelope = new GeneralEnvelope(minCP, maxCP);
+           newEnvelope.setCoordinateReferenceSystem(oldEnvelope.getCoordinateReferenceSystem());
+           setBaseMapEnvelope(index, newEnvelope);*/
         double[] minCP = (double[]) minCPs.get(new Integer(index));
 
         if (minCP == null) {
@@ -193,15 +195,15 @@ public class WMSContentForm extends ActionForm {
 
     public void setMinY(int index, double value) {
         /*GeneralEnvelope oldEnvelope = getBaseMapEnvelope(index);
-        GeneralEnvelope newEnvelope = null;
-        double[] minCP = new double[] { oldEnvelope.getLowerCorner().getOrdinate(0), value };
-        double[] maxCP = new double[] {
-                oldEnvelope.getUpperCorner().getOrdinate(0),
-                oldEnvelope.getUpperCorner().getOrdinate(1)
-            };
-        newEnvelope = new GeneralEnvelope(minCP, maxCP);
-        newEnvelope.setCoordinateReferenceSystem(oldEnvelope.getCoordinateReferenceSystem());
-        setBaseMapEnvelope(index, newEnvelope);*/
+           GeneralEnvelope newEnvelope = null;
+           double[] minCP = new double[] { oldEnvelope.getLowerCorner().getOrdinate(0), value };
+           double[] maxCP = new double[] {
+                   oldEnvelope.getUpperCorner().getOrdinate(0),
+                   oldEnvelope.getUpperCorner().getOrdinate(1)
+               };
+           newEnvelope = new GeneralEnvelope(minCP, maxCP);
+           newEnvelope.setCoordinateReferenceSystem(oldEnvelope.getCoordinateReferenceSystem());
+           setBaseMapEnvelope(index, newEnvelope);*/
         double[] minCP = (double[]) minCPs.get(new Integer(index));
 
         if (minCP == null) {
@@ -214,15 +216,15 @@ public class WMSContentForm extends ActionForm {
 
     public void setMaxX(int index, double value) {
         /*GeneralEnvelope oldEnvelope = getBaseMapEnvelope(index);
-        GeneralEnvelope newEnvelope = null;
-        double[] minCP = new double[] {
-                oldEnvelope.getLowerCorner().getOrdinate(0),
-                oldEnvelope.getLowerCorner().getOrdinate(1)
-            };
-        double[] maxCP = new double[] { value, oldEnvelope.getUpperCorner().getOrdinate(1) };
-        newEnvelope = new GeneralEnvelope(minCP, maxCP);
-        newEnvelope.setCoordinateReferenceSystem(oldEnvelope.getCoordinateReferenceSystem());
-        setBaseMapEnvelope(index, newEnvelope);*/
+           GeneralEnvelope newEnvelope = null;
+           double[] minCP = new double[] {
+                   oldEnvelope.getLowerCorner().getOrdinate(0),
+                   oldEnvelope.getLowerCorner().getOrdinate(1)
+               };
+           double[] maxCP = new double[] { value, oldEnvelope.getUpperCorner().getOrdinate(1) };
+           newEnvelope = new GeneralEnvelope(minCP, maxCP);
+           newEnvelope.setCoordinateReferenceSystem(oldEnvelope.getCoordinateReferenceSystem());
+           setBaseMapEnvelope(index, newEnvelope);*/
         double[] maxCP = (double[]) maxCPs.get(new Integer(index));
 
         if (maxCP == null) {
@@ -235,15 +237,15 @@ public class WMSContentForm extends ActionForm {
 
     public void setMaxY(int index, double value) {
         /*GeneralEnvelope oldEnvelope = getBaseMapEnvelope(index);
-        GeneralEnvelope newEnvelope = null;
-        double[] minCP = new double[] {
-                oldEnvelope.getLowerCorner().getOrdinate(0),
-                oldEnvelope.getLowerCorner().getOrdinate(1)
-            };
-        double[] maxCP = new double[] { oldEnvelope.getUpperCorner().getOrdinate(0), value };
-        newEnvelope = new GeneralEnvelope(minCP, maxCP);
-        newEnvelope.setCoordinateReferenceSystem(oldEnvelope.getCoordinateReferenceSystem());
-        setBaseMapEnvelope(index, newEnvelope);*/
+           GeneralEnvelope newEnvelope = null;
+           double[] minCP = new double[] {
+                   oldEnvelope.getLowerCorner().getOrdinate(0),
+                   oldEnvelope.getLowerCorner().getOrdinate(1)
+               };
+           double[] maxCP = new double[] { oldEnvelope.getUpperCorner().getOrdinate(0), value };
+           newEnvelope = new GeneralEnvelope(minCP, maxCP);
+           newEnvelope.setCoordinateReferenceSystem(oldEnvelope.getCoordinateReferenceSystem());
+           setBaseMapEnvelope(index, newEnvelope);*/
         double[] maxCP = (double[]) maxCPs.get(new Integer(index));
 
         if (maxCP == null) {
@@ -260,8 +262,10 @@ public class WMSContentForm extends ActionForm {
         if (envelope.getCoordinateReferenceSystem().getName().toString()
                         .equalsIgnoreCase("EPSG:WGS 84")) {
             return "EPSG:4326";
-        } else if (envelope.getCoordinateReferenceSystem().getIdentifiers().toArray().length > 0) {
-            return envelope.getCoordinateReferenceSystem().getIdentifiers().toArray()[0].toString();
+        } else if (envelope.getCoordinateReferenceSystem().getIdentifiers()
+                               .toArray().length > 0) {
+            return envelope.getCoordinateReferenceSystem().getIdentifiers()
+                           .toArray()[0].toString();
         } else {
             return "EPSG:4326";
         }
@@ -270,9 +274,10 @@ public class WMSContentForm extends ActionForm {
     public void setSrsName(int index, String value)
         throws NoSuchAuthorityCodeException, FactoryException {
         envIndex = index;
-        try {   
+
+        try {
             targetCRS = CRS.decode(value);
-        } catch(Exception e) {
+        } catch (Exception e) {
             targetCRS = null;
         }
     }
@@ -295,11 +300,6 @@ public class WMSContentForm extends ActionForm {
     public void setOnlineResource(String string) {
         onlineResource = string;
     }
-
-    /**
-     * Action requested by user
-     */
-    private String action;
 
     public void reset(ActionMapping arg0, HttpServletRequest arg1) {
         super.reset(arg0, arg1);
@@ -333,8 +333,10 @@ public class WMSContentForm extends ActionForm {
 
             while (it.hasNext()) {
                 baseMapTitle = (String) it.next();
-                baseMapLayerValues = (String) config.getBaseMapLayers().get(baseMapTitle);
-                baseMapStyleValues = (String) config.getBaseMapStyles().get(baseMapTitle);
+                baseMapLayerValues = (String) config.getBaseMapLayers()
+                                                    .get(baseMapTitle);
+                baseMapStyleValues = (String) config.getBaseMapStyles()
+                                                    .get(baseMapTitle);
                 baseMapEnvelopeValues = (GeneralEnvelope) config.getBaseMapEnvelopes()
                                                                 .get(baseMapTitle);
 
@@ -351,22 +353,25 @@ public class WMSContentForm extends ActionForm {
         }
     }
 
-    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping,
+        HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         if ((targetCRS == null) && (envIndex >= 0)) {
             errors.add("onlineResource",
-                new ActionError("error.wms.onlineResource.required", onlineResource));
+                new ActionError("error.wms.onlineResource.required",
+                    onlineResource));
         } else if (envIndex >= 0) {
             GeneralEnvelope envelope = getBaseMapEnvelope(envIndex);
 
             //CoordinateReferenceSystem sourceCRS  = envelope.getCoordinateReferenceSystem();
             /*final MathTransform srcCRSTodestCRS = CRS.findMathTransform(sourceCRS, targetCRS, true);
-                        envelope = CRSUtilities.transform(srcCRSTodestCRS, envelope);*/
+               envelope = CRSUtilities.transform(srcCRSTodestCRS, envelope);*/
 
             //GeneralEnvelope newEnvelope = new GeneralEnvelope(minCP, maxCP);
             //newEnvelope.setCoordinateReferenceSystem(sourceCRS);
-            envelope.setEnvelope(new GeneralEnvelope((double[]) minCPs.get(new Integer(envIndex)),
+            envelope.setEnvelope(new GeneralEnvelope(
+                    (double[]) minCPs.get(new Integer(envIndex)),
                     (double[]) maxCPs.get(new Integer(envIndex))));
             envelope.setCoordinateReferenceSystem(targetCRS);
             setBaseMapEnvelope(envIndex, envelope);
@@ -374,7 +379,8 @@ public class WMSContentForm extends ActionForm {
 
         if ((onlineResource == null) || "".equals(onlineResource)) {
             errors.add("onlineResource",
-                new ActionError("error.wms.onlineResource.required", onlineResource));
+                new ActionError("error.wms.onlineResource.required",
+                    onlineResource));
         } else {
             try {
                 URL url = new URL(onlineResource);
@@ -425,13 +431,13 @@ public class WMSContentForm extends ActionForm {
      * @return the selectedLayer
      */
     public int getSelectedLayer() {
-    	return selectedLayer;
+        return selectedLayer;
     }
-    
+
     /**
      * @param selectedLayer the selectedLayer to set
      */
     public void setSelectedLayer(int selectedLayer) {
-    	this.selectedLayer = selectedLayer;
+        this.selectedLayer = selectedLayer;
     }
 }

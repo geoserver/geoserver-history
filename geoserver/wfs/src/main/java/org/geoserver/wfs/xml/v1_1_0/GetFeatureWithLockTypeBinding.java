@@ -136,40 +136,45 @@ public class GetFeatureWithLockTypeBinding extends AbstractComplexBinding {
             .createGetFeatureWithLockType();
 
         //&lt;xsd:element maxOccurs="unbounded" ref="wfs:Query"/&gt;
-        getFeatureWithLock.getQuery().addAll(node.getChildValues(QueryType.class));
+        getFeatureWithLock.getQuery()
+                          .addAll(node.getChildValues(QueryType.class));
 
         //&lt;xsd:attribute default="5" name="expiry" type="xsd:positiveInteger" use="optional"&gt;
         if (node.hasAttribute("expiry")) {
-            getFeatureWithLock.setExpiry((BigInteger) node.getChildValue("expiry"));
+            getFeatureWithLock.setExpiry((BigInteger) node.getChildValue(
+                    "expiry"));
         }
 
         //&lt;xsd:attribute default="results" name="resultType" type="wfs:ResultTypeType" use="optional"&gt;
         if (node.hasAttribute("resultType")) {
-            getFeatureWithLock.setResultType((ResultTypeType) node.getAttributeValue("resultType"));
+            getFeatureWithLock.setResultType((ResultTypeType) node
+                .getAttributeValue("resultType"));
         }
 
         //&lt;xsd:attribute default="text/xml; subtype=gml/3.1.1"
         //		name="outputFormat" type="xsd:string" use="optional"&gt;
         if (node.hasAttribute("outputFormat")) {
-            getFeatureWithLock.setOutputFormat((String) node.getAttributeValue("outputFormat"));
+            getFeatureWithLock.setOutputFormat((String) node.getAttributeValue(
+                    "outputFormat"));
         }
 
         //&lt;xsd:attribute name="maxFeatures" type="xsd:positiveInteger" use="optional"&gt;
         if (node.hasAttribute("maxFeatures")) {
-            getFeatureWithLock.setMaxFeatures((BigInteger) node.getAttributeValue("maxFeatures"));
+            getFeatureWithLock.setMaxFeatures((BigInteger) node
+                .getAttributeValue("maxFeatures"));
         }
 
         //&lt;xsd:attribute name="traverseXlinkDepth" type="xsd:string" use="optional"&gt;
         if (node.hasAttribute("traverseXlinkDepth")) {
-            getFeatureWithLock.setTraverseXlinkDepth((String) node.getAttributeValue(
-                    "traverseXlinkDepth"));
+            getFeatureWithLock.setTraverseXlinkDepth((String) node
+                .getAttributeValue("traverseXlinkDepth"));
         }
 
         //&lt;xsd:attribute name="traverseXlinkExpiry"
         //		type="xsd:positiveInteger" use="optional"&gt;
         if (node.hasAttribute("traverseXlinkExpiry")) {
-            getFeatureWithLock.setTraverseXlinkExpiry((BigInteger) node.getAttributeValue(
-                    "traverseXlinkExpiry"));
+            getFeatureWithLock.setTraverseXlinkExpiry((BigInteger) node
+                .getAttributeValue("traverseXlinkExpiry"));
         }
 
         return getFeatureWithLock;

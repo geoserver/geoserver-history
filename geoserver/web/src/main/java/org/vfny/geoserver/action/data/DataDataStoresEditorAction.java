@@ -38,9 +38,9 @@ import javax.servlet.http.HttpServletResponse;
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class DataDataStoresEditorAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
-        throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        UserContainer user, HttpServletRequest request,
+        HttpServletResponse response) throws IOException, ServletException {
         DataDataStoresEditorForm dataStoresForm = (DataDataStoresEditorForm) form;
 
         String dataStoreID = dataStoresForm.getDataStoreId();
@@ -56,7 +56,8 @@ public class DataDataStoresEditorAction extends ConfigAction {
 
         if (config == null) {
             // we are creating a new one.
-            dataConfig.addDataStore(getUserContainer(request).getDataStoreConfig());
+            dataConfig.addDataStore(getUserContainer(request)
+                                        .getDataStoreConfig());
             config = (DataStoreConfig) dataConfig.getDataStore(dataStoreID);
             isNewDataStore = true;
         }
@@ -155,7 +156,8 @@ public class DataDataStoresEditorAction extends ConfigAction {
             dump("typeNames", typeNames);
         } catch (Throwable throwable) {
             LOGGER.log(Level.WARNING,
-                "Unable to fetch a list of FeatureType names from datastore.", throwable);
+                "Unable to fetch a list of FeatureType names from datastore.",
+                throwable);
 
             ActionErrors errors = new ActionErrors();
             errors.add(ActionErrors.GLOBAL_ERROR,
@@ -190,10 +192,13 @@ public class DataDataStoresEditorAction extends ConfigAction {
             //We only have one featureType, and this is the creation of a new datastore
             //so we should forward to the editor of this featureType, since this is what 
             //users will be next in the vast majority of the cases.
-            FeatureTypeConfig ftConfig = new FeatureTypeConfig(dataStoreID, singleFeatureType, false);
+            FeatureTypeConfig ftConfig = new FeatureTypeConfig(dataStoreID,
+                    singleFeatureType, false);
 
-            request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE, ftConfig);
-            request.getSession().removeAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
+            request.getSession()
+                   .setAttribute(DataConfig.SELECTED_FEATURE_TYPE, ftConfig);
+            request.getSession()
+                   .removeAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
 
             user.setFeatureTypeConfig(ftConfig);
 

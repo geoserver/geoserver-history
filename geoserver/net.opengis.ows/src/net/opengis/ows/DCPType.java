@@ -8,6 +8,7 @@ package net.opengis.ows;
 
 import org.eclipse.emf.ecore.EObject;
 
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>DCP Type</b></em>'.
@@ -25,14 +26,14 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface DCPType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>HTTP</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>HTTP</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>HTTP</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>HTTP</em>' containment reference.
      * @see #setHTTP(HTTPType)
      * @see net.opengis.ows.OwsPackage#getDCPType_HTTP()
@@ -40,16 +41,15 @@ public interface DCPType extends EObject {
      *        extendedMetaData="kind='element' name='HTTP' namespace='##targetNamespace'"
      * @generated
      */
-	HTTPType getHTTP();
+    HTTPType getHTTP();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DCPType#getHTTP <em>HTTP</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>HTTP</em>' containment reference.
      * @see #getHTTP()
      * @generated
      */
-	void setHTTP(HTTPType value);
-
+    void setHTTP(HTTPType value);
 } // DCPType

@@ -19,11 +19,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -32,18 +30,20 @@ import javax.xml.transform.TransformerException;
 
 
 public class RSSGeoRSSTransformerTest extends WMSTestSupport {
-    FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());
+    FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools
+            .getDefaultHints());
 
     protected void setUp() throws Exception {
         super.setUp();
-
     }
 
     public void testLatLong() throws Exception {
-        WMSMapContext map = new WMSMapContext(createGetMapRequest(MockData.BASIC_POLYGONS));
+        WMSMapContext map = new WMSMapContext(createGetMapRequest(
+                    MockData.BASIC_POLYGONS));
         map.addLayer(createMapLayer(MockData.BASIC_POLYGONS));
 
-        Document document = getRSSResponse(map, AtomGeoRSSTransformer.GeometryEncoding.LATLONG);
+        Document document = getRSSResponse(map,
+                AtomGeoRSSTransformer.GeometryEncoding.LATLONG);
 
         Element element = document.getDocumentElement();
         assertEquals("rss", element.getNodeName());
@@ -63,48 +63,56 @@ public class RSSGeoRSSTransformerTest extends WMSTestSupport {
 
     public void testFilter() throws Exception {
         // Set up a map context with a filtered layer
-        WMSMapContext map = new WMSMapContext(createGetMapRequest(MockData.BUILDINGS));
+        WMSMapContext map = new WMSMapContext(createGetMapRequest(
+                    MockData.BUILDINGS));
         MapLayer layer = createMapLayer(MockData.BUILDINGS);
-        Filter f = ff.equals(ff.property("ADDRESS"), ff.literal("215 Main Street"));
+        Filter f = ff.equals(ff.property("ADDRESS"),
+                ff.literal("215 Main Street"));
         layer.setQuery(new DefaultQuery(MockData.BUILDINGS.getLocalPart(), f));
         map.addLayer(layer);
-        
-        Document document = getRSSResponse(map, AtomGeoRSSTransformer.GeometryEncoding.LATLONG);
-        NodeList items = document.getDocumentElement().getElementsByTagName("item");
+
+        Document document = getRSSResponse(map,
+                AtomGeoRSSTransformer.GeometryEncoding.LATLONG);
+        NodeList items = document.getDocumentElement()
+                                 .getElementsByTagName("item");
         assertEquals(1, items.getLength());
     }
-    
+
     public void testReproject() throws Exception {
         // Set up a map context with a projected layer
-        WMSMapContext map = new WMSMapContext(createGetMapRequest(MockData.LINES));
+        WMSMapContext map = new WMSMapContext(createGetMapRequest(
+                    MockData.LINES));
         map.addLayer(createMapLayer(MockData.LINES));
-        
-        Document document = getRSSResponse(map, AtomGeoRSSTransformer.GeometryEncoding.LATLONG);
-        NodeList items = document.getDocumentElement().getElementsByTagName("item");
-        
+
+        Document document = getRSSResponse(map,
+                AtomGeoRSSTransformer.GeometryEncoding.LATLONG);
+        NodeList items = document.getDocumentElement()
+                                 .getElementsByTagName("item");
+
         // check all items are there
         assertEquals(1, items.getLength());
-        
+
         // check coordinates are in wgs84, originals aren't
         for (int i = 0; i < items.getLength(); i++) {
             Element item = (Element) items.item(i);
             double lat = Double.parseDouble(getOrdinate(item, "geo:lat"));
             double lon = Double.parseDouble(getOrdinate(item, "geo:long"));
-            assertTrue(lat >= -90 && lat <= 90);
-            assertTrue(lon >= -180 && lon <= 180);
+            assertTrue((lat >= -90) && (lat <= 90));
+            assertTrue((lon >= -180) && (lon <= 180));
         }
     }
 
     String getOrdinate(Element item, String ordinate) {
-        return item.getElementsByTagName(ordinate).item(0).getChildNodes().item(0).getNodeValue();
+        return item.getElementsByTagName(ordinate).item(0).getChildNodes()
+                   .item(0).getNodeValue();
     }
-    
+
     /**
      * Returns a DOM given a map context and a geometry encoder
      */
     Document getRSSResponse(WMSMapContext map, GeometryEncoding encoding)
-            throws TransformerException, ParserConfigurationException, FactoryConfigurationError,
-            SAXException, IOException {
+        throws TransformerException, ParserConfigurationException,
+            FactoryConfigurationError, SAXException, IOException {
         RSSGeoRSSTransformer tx = new RSSGeoRSSTransformer();
         tx.setGeometryEncoding(encoding);
         tx.setIndentation(2);
@@ -112,8 +120,11 @@ public class RSSGeoRSSTransformerTest extends WMSTestSupport {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         tx.transform(map, output);
 
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
+        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
+                                                           .newDocumentBuilder();
+        Document document = docBuilder.parse(new ByteArrayInputStream(
+                    output.toByteArray()));
+
         return document;
     }
 }

@@ -4,21 +4,6 @@
  */
 package org.vfny.geoserver.catalog.responses;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.ServletException;
-
 import org.geoserver.util.ReaderUtils;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
@@ -53,6 +38,19 @@ import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletException;
 
 
 /**
@@ -61,24 +59,24 @@ import org.w3c.dom.NodeList;
  * @author $Author: Alessio Fabiani (GeoSolutions)
  */
 public class AddCoverageResponse implements Response {
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.responses");
     private static final String CURR_VER = "\"1.0\"";
     private static final String CATALOG_URL = "http://www.geo-solutions.it/schemas/catalog";
-    private static final String CATALOG_NAMESPACE = new StringBuffer("\n  xmlns=\"").append(CATALOG_URL)
-                                                                                    .append("\"")
-                                                                                    .toString();
+    private static final String CATALOG_NAMESPACE = new StringBuffer(
+            "\n  xmlns=\"").append(CATALOG_URL).append("\"").toString();
     private static final String XLINK_URL = "\"http://www.w3.org/1999/xlink\"";
-    private static final String XLINK_NAMESPACE = new StringBuffer("\n  xmlns:xlink=").append(XLINK_URL)
-                                                                                      .toString();
+    private static final String XLINK_NAMESPACE = new StringBuffer(
+            "\n  xmlns:xlink=").append(XLINK_URL).toString();
     private static final String OGC_URL = "\"http://www.opengis.net/ogc\"";
-    private static final String OGC_NAMESPACE = new StringBuffer("\n  xmlns:ogc=").append(OGC_URL)
-                                                                                  .toString();
+    private static final String OGC_NAMESPACE = new StringBuffer(
+            "\n  xmlns:ogc=").append(OGC_URL).toString();
     private static final String GML_URL = "\"http://www.opengis.net/gml\"";
-    private static final String GML_NAMESPACE = new StringBuffer("\n  xmlns:gml=").append(GML_URL)
-                                                                                  .toString();
+    private static final String GML_NAMESPACE = new StringBuffer(
+            "\n  xmlns:gml=").append(GML_URL).toString();
     private static final String SCHEMA_URI = "\"http://www.w3.org/2001/XMLSchema-instance\"";
-    private static final String XSI_NAMESPACE = new StringBuffer("\n  xmlns:xsi=").append(SCHEMA_URI)
-                                                                                  .toString();
+    private static final String XSI_NAMESPACE = new StringBuffer(
+            "\n  xmlns:xsi=").append(SCHEMA_URI).toString();
 
     /** Fixed return footer information */
     private static final String FOOTER = "\n</AddCoverage>";
@@ -90,14 +88,16 @@ public class AddCoverageResponse implements Response {
     // protected final static CRSFactory crsFactory =
     // FactoryFinder.getCRSFactory(new
     // Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-    protected final static CRSFactory crsFactory = ReferencingFactoryFinder.getCRSFactory(new Hints(
-                Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
+    protected final static CRSFactory crsFactory = ReferencingFactoryFinder
+        .getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,
+                CRSAuthorityFactory.class));
 
     /**
      * The default transformations factory.
      */
     protected final static CoordinateOperationFactory opFactory = ReferencingFactoryFinder
-        .getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
+        .getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT,
+                Boolean.TRUE));
 
     /** The root directory from which the configuration is loaded. */
     private File root;
@@ -116,7 +116,8 @@ public class AddCoverageResponse implements Response {
      * @uml.property name="datumFactory"
      * @uml.associationEnd multiplicity="(1 1)"
      */
-    protected final DatumFactory datumFactory = ReferencingFactoryFinder.getDatumFactory(null);
+    protected final DatumFactory datumFactory = ReferencingFactoryFinder
+        .getDatumFactory(null);
 
     /**
      * The default math transform factory.
@@ -124,7 +125,8 @@ public class AddCoverageResponse implements Response {
      * @uml.property name="mtFactory"
      * @uml.associationEnd multiplicity="(1 1)"
      */
-    protected final MathTransformFactory mtFactory = ReferencingFactoryFinder.getMathTransformFactory(null);
+    protected final MathTransformFactory mtFactory = ReferencingFactoryFinder
+        .getMathTransformFactory(null);
 
     /**
      * Returns any extra headers that this service might want to set in the HTTP
@@ -141,8 +143,8 @@ public class AddCoverageResponse implements Response {
 
         if (!(request instanceof AddCoverageRequest)) {
             throw new CatalogException(new StringBuffer(
-                    "illegal request type, expected DescribeRequest, got ").append(request)
-                                                                                                               .toString());
+                    "illegal request type, expected DescribeRequest, got ").append(
+                    request).toString());
         }
 
         AddCoverageRequest catalogRequest = (AddCoverageRequest) request;
@@ -166,7 +168,8 @@ public class AddCoverageResponse implements Response {
             // Loading Coverages ...
             // //
             CoverageInfoDTO coverage = loadCoverage(sr);
-            coverage.setDirName(coverage.getFormatId() + "_" + coverage.getName());
+            coverage.setDirName(coverage.getFormatId() + "_"
+                + coverage.getName());
 
             // //
             // Updating the catalog.
@@ -185,7 +188,8 @@ public class AddCoverageResponse implements Response {
             // Adding the Coverage
             // //
             // update the data config
-            DataConfig dataConfig = ConfigRequests.getDataConfig(req.getHttpServletRequest());
+            DataConfig dataConfig = ConfigRequests.getDataConfig(req
+                    .getHttpServletRequest());
             dataConfig.getCoverages().put(cvName, new CoverageConfig(coverage));
 
             request.getCATALOG().getData().load(dataConfig.toDTO());
@@ -196,7 +200,8 @@ public class AddCoverageResponse implements Response {
             File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
 
             try {
-                XMLConfigWriter.store((DataDTO) request.getCATALOG().getData().toDTO(), rootDir);
+                XMLConfigWriter.store((DataDTO) request.getCATALOG().getData()
+                                                       .toDTO(), rootDir);
             } catch (ConfigurationException e) {
                 e.printStackTrace();
                 throw new ServletException(e);
@@ -243,8 +248,10 @@ public class AddCoverageResponse implements Response {
         StringBuffer tempResponse = new StringBuffer();
 
         tempResponse.append("<?xml version=\"1.0\" encoding=\"")
-                    .append(catalogRequest.getGeoServer().getCharSet().displayName()).append("\"?>")
-                    .append("\n<AddCoverage version=").append(CURR_VER).append(" ").toString();
+                    .append(catalogRequest.getGeoServer().getCharSet()
+                                          .displayName()).append("\"?>")
+                    .append("\n<AddCoverage version=").append(CURR_VER)
+                    .append(" ").toString();
 
         tempResponse.append(CATALOG_NAMESPACE);
         tempResponse.append(XLINK_NAMESPACE);
@@ -257,7 +264,8 @@ public class AddCoverageResponse implements Response {
          * ").append(request.getSchemaBaseUrl()).append(
          * "catalog/1.0.0/describeCoverage.xsd\">\n\n");
          */
-        tempResponse.append(" xsi:schemaLocation=\"").append(CATALOG_URL).append(" ")
+        tempResponse.append(" xsi:schemaLocation=\"").append(CATALOG_URL)
+                    .append(" ")
                     .append("http://www.geo-solutions.it/catalog/1.0/")
                     .append("addCoverage.xsd\">\n\n");
 
@@ -306,14 +314,15 @@ public class AddCoverageResponse implements Response {
 
         try {
             if (LOGGER.isLoggable(Level.CONFIG)) {
-                LOGGER.config(new StringBuffer("Loading configuration data: ").append(infoData)
-                                                                              .toString());
+                LOGGER.config(new StringBuffer("Loading configuration data: ").append(
+                        infoData).toString());
             }
 
             coverageElem = ReaderUtils.parse(infoData);
             infoData.close();
         } catch (Exception erk) {
-            throw new ConfigurationException("Could not parse info file:" + infoData, erk);
+            throw new ConfigurationException("Could not parse info file:"
+                + infoData, erk);
         }
 
         // loding the DTO.
@@ -324,7 +333,8 @@ public class AddCoverageResponse implements Response {
          * dto.setDirName(parentDir.getName());
          */
         if (LOGGER.isLoggable(Level.FINER)) {
-            LOGGER.finer(new StringBuffer("added coverageType ").append(dto.getName()).toString());
+            LOGGER.finer(new StringBuffer("added coverageType ").append(
+                    dto.getName()).toString());
         }
 
         return dto;
@@ -355,16 +365,19 @@ public class AddCoverageResponse implements Response {
             // /////////////////////////////////////////////////////////////////////
             cv.setFormatId(ReaderUtils.getAttribute(coverageRoot, "format", true));
             cv.setName(ReaderUtils.getChildText(coverageRoot, "name", true));
-            cv.setWmsPath(ReaderUtils.getChildText(coverageRoot, "wmspath" /* , true */));
+            cv.setWmsPath(ReaderUtils.getChildText(coverageRoot,
+                    "wmspath" /* , true */));
             cv.setLabel(ReaderUtils.getChildText(coverageRoot, "label", true));
-            cv.setDescription(ReaderUtils.getChildText(coverageRoot, "description"));
+            cv.setDescription(ReaderUtils.getChildText(coverageRoot,
+                    "description"));
 
             // /////////////////////////////////////////////////////////////////////
             //
             // METADATA AND KEYORDS
             //
             // /////////////////////////////////////////////////////////////////////
-            final String keywords = ReaderUtils.getChildText(coverageRoot, "keywords");
+            final String keywords = ReaderUtils.getChildText(coverageRoot,
+                    "keywords");
 
             if (keywords != null) {
                 l = new ArrayList(10);
@@ -377,18 +390,20 @@ public class AddCoverageResponse implements Response {
                 cv.setKeywords(l);
             }
 
-            cv.setMetadataLink(XMLConfigReader.loadMetaDataLink(ReaderUtils.getChildElement(
-                        coverageRoot, "metadataLink")));
+            cv.setMetadataLink(XMLConfigReader.loadMetaDataLink(
+                    ReaderUtils.getChildElement(coverageRoot, "metadataLink")));
 
             // /////////////////////////////////////////////////////////////////////
             //
             // DEAFULT STYLE
             //
             // /////////////////////////////////////////////////////////////////////
-            final Element tmp = ReaderUtils.getChildElement(coverageRoot, "styles");
+            final Element tmp = ReaderUtils.getChildElement(coverageRoot,
+                    "styles");
 
             if (tmp != null) {
-                cv.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default", false));
+                cv.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default",
+                        false));
 
                 final NodeList childrens = tmp.getChildNodes();
                 final int numChildNodes = childrens.getLength();
@@ -399,7 +414,8 @@ public class AddCoverageResponse implements Response {
 
                     if (child.getNodeType() == Node.ELEMENT_NODE) {
                         if (child.getNodeName().equals("style")) {
-                            cv.addStyle(ReaderUtils.getElementText((Element) child));
+                            cv.addStyle(ReaderUtils.getElementText(
+                                    (Element) child));
                         }
                     }
                 }
@@ -410,14 +426,15 @@ public class AddCoverageResponse implements Response {
             // CRS
             //
             // /////////////////////////////////////////////////////////////////////
-            final Element envelope = ReaderUtils.getChildElement(coverageRoot, "envelope");
+            final Element envelope = ReaderUtils.getChildElement(coverageRoot,
+                    "envelope");
             cv.setSrsName(ReaderUtils.getAttribute(envelope, "srsName", true));
 
             final CoordinateReferenceSystem crs;
 
             try {
-                crs = CRS.parseWKT(ReaderUtils.getAttribute(envelope, "crs", false)
-                                              .replaceAll("'", "\""));
+                crs = CRS.parseWKT(ReaderUtils.getAttribute(envelope, "crs",
+                            false).replaceAll("'", "\""));
             } catch (FactoryException e) {
                 throw new ConfigurationException(e);
             } catch (ConfigurationException e) {
@@ -432,11 +449,13 @@ public class AddCoverageResponse implements Response {
             // ENVELOPE
             //
             // /////////////////////////////////////////////////////////////////////
-            GeneralEnvelope gcEnvelope = XMLConfigReader.loadEnvelope(envelope, crs);
+            GeneralEnvelope gcEnvelope = XMLConfigReader.loadEnvelope(envelope,
+                    crs);
             cv.setEnvelope(gcEnvelope);
 
             try {
-                cv.setLonLatWGS84Envelope(CoverageStoreUtils.getWGS84LonLatEnvelope(gcEnvelope));
+                cv.setLonLatWGS84Envelope(CoverageStoreUtils
+                    .getWGS84LonLatEnvelope(gcEnvelope));
             } catch (IndexOutOfBoundsException e) {
                 throw new ConfigurationException(e);
             } catch (NoSuchAuthorityCodeException e) {
@@ -452,7 +471,8 @@ public class AddCoverageResponse implements Response {
             // GRID GEOMETRY
             //
             // /////////////////////////////////////////////////////////////////////
-            final Element grid = ReaderUtils.getChildElement(coverageRoot, "grid");
+            final Element grid = ReaderUtils.getChildElement(coverageRoot,
+                    "grid");
             cv.setGrid(XMLConfigReader.loadGrid(grid, gcEnvelope, crs));
 
             // /////////////////////////////////////////////////////////////////////
@@ -462,7 +482,8 @@ public class AddCoverageResponse implements Response {
             // /////////////////////////////////////////////////////////////////////
             cv.setDimensionNames(XMLConfigReader.loadDimensionNames(grid));
 
-            final NodeList dims = coverageRoot.getElementsByTagName("CoverageDimension");
+            final NodeList dims = coverageRoot.getElementsByTagName(
+                    "CoverageDimension");
             cv.setDimensions(XMLConfigReader.loadDimensions(dims));
 
             // /////////////////////////////////////////////////////////////////////
@@ -470,8 +491,10 @@ public class AddCoverageResponse implements Response {
             // SUPPORTED/REQUEST CRS
             //
             // /////////////////////////////////////////////////////////////////////
-            final Element supportedCRSs = ReaderUtils.getChildElement(coverageRoot, "supportedCRSs");
-            final String requestCRSs = ReaderUtils.getChildText(supportedCRSs, "requestCRSs");
+            final Element supportedCRSs = ReaderUtils.getChildElement(coverageRoot,
+                    "supportedCRSs");
+            final String requestCRSs = ReaderUtils.getChildText(supportedCRSs,
+                    "requestCRSs");
 
             if (requestCRSs != null) {
                 l = new LinkedList();
@@ -485,7 +508,8 @@ public class AddCoverageResponse implements Response {
                 cv.setRequestCRSs(l);
             }
 
-            final String responseCRSs = ReaderUtils.getChildText(supportedCRSs, "responseCRSs");
+            final String responseCRSs = ReaderUtils.getChildText(supportedCRSs,
+                    "responseCRSs");
 
             if (responseCRSs != null) {
                 l = new LinkedList();
@@ -505,9 +529,11 @@ public class AddCoverageResponse implements Response {
             // /////////////////////////////////////////////////////////////////////
             final Element supportedFormats = ReaderUtils.getChildElement(coverageRoot,
                     "supportedFormats");
-            cv.setNativeFormat(ReaderUtils.getAttribute(supportedFormats, "nativeFormat", true));
+            cv.setNativeFormat(ReaderUtils.getAttribute(supportedFormats,
+                    "nativeFormat", true));
 
-            final String formats = ReaderUtils.getChildText(supportedFormats, "formats");
+            final String formats = ReaderUtils.getChildText(supportedFormats,
+                    "formats");
 
             if (formats != null) {
                 l = new LinkedList();
@@ -527,8 +553,8 @@ public class AddCoverageResponse implements Response {
             // /////////////////////////////////////////////////////////////////////
             final Element supportedInterpolations = ReaderUtils.getChildElement(coverageRoot,
                     "supportedInterpolations");
-            cv.setDefaultInterpolationMethod(ReaderUtils.getAttribute(supportedInterpolations,
-                    "default", true));
+            cv.setDefaultInterpolationMethod(ReaderUtils.getAttribute(
+                    supportedInterpolations, "default", true));
 
             final String interpolations = ReaderUtils.getChildText(supportedInterpolations,
                     "interpolationMethods");
@@ -549,8 +575,9 @@ public class AddCoverageResponse implements Response {
             // READ PARAMETERS
             //
             // /////////////////////////////////////////////////////////////////////
-            cv.setParameters(XMLConfigReader.loadConnectionParams(ReaderUtils.getChildElement(
-                        coverageRoot, "parameters", false)));
+            cv.setParameters(XMLConfigReader.loadConnectionParams(
+                    ReaderUtils.getChildElement(coverageRoot, "parameters",
+                        false)));
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }

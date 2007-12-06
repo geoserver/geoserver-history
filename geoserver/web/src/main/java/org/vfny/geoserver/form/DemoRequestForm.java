@@ -33,7 +33,8 @@ import javax.servlet.http.HttpServletRequest;
  * @version
  */
 public class DemoRequestForm extends ActionForm {
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.form");
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.form");
     private String action;
     private String url;
     private String body;
@@ -96,7 +97,8 @@ public class DemoRequestForm extends ActionForm {
      * @param request
      * @return
      */
-    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping,
+        HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         return errors;

@@ -6,11 +6,10 @@
  */
 package net.opengis.ows;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import java.util.List;
 
-import org.eclipse.emf.common.util.EList;
-
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -35,29 +34,29 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface KeywordsType extends EObject {
-	/**
-	 * Returns the value of the '<em><b>Keyword</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Keyword</em>' attribute list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Keyword</em>' attribute.
-	 * @see #setKeyword(String)
-	 * @see net.opengis.ows.OwsPackage#getKeywordsType_Keyword()
-	 * @model type="java.lang.String"
-	 */
-	EList getKeyword();
+    /**
+     * Returns the value of the '<em><b>Keyword</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Keyword</em>' attribute list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Keyword</em>' attribute.
+     * @see #setKeyword(String)
+     * @see net.opengis.ows.OwsPackage#getKeywordsType_Keyword()
+     * @model type="java.lang.String"
+     */
+    EList getKeyword();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Type</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Type</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Type</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Type</em>' containment reference.
      * @see #setType(CodeType)
      * @see net.opengis.ows.OwsPackage#getKeywordsType_Type()
@@ -65,16 +64,15 @@ public interface KeywordsType extends EObject {
      *        extendedMetaData="kind='element' name='Type' namespace='##targetNamespace'"
      * @generated
      */
-	CodeType getType();
+    CodeType getType();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.KeywordsType#getType <em>Type</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Type</em>' containment reference.
      * @see #getType()
      * @generated
      */
-	void setType(CodeType value);
-
+    void setType(CodeType value);
 } // KeywordsType

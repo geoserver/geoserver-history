@@ -13,6 +13,7 @@ import org.vfny.geoserver.catalog.responses.AddFeatureTypeResponse;
 import org.vfny.geoserver.catalog.responses.DeleteFeatureTypeResponse;
 import org.vfny.geoserver.catalog.responses.UpdateResponse;
 
+
 /**
  * Web Map Service implementation.
  * <p>
@@ -20,29 +21,29 @@ import org.vfny.geoserver.catalog.responses.UpdateResponse;
  * the Web Coverage Specification. See
  * {@link http://www.opengeospatial.org/standards/wcs} for more details.
  * </p>
- * 
+ *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- * 
+ *
  */
 public interface CatalogService {
-	/**
-	 * AddCoverage operation.
-	 */
-	AddCoverageResponse addCoverage(AddCoverageRequest request);
+    /**
+     * AddCoverage operation.
+     */
+    AddCoverageResponse addCoverage(AddCoverageRequest request);
 
-	/**
-	 * AddFeatureType operation.
-	 */
-	AddFeatureTypeResponse addFeatureType(AddFeatureTypeRequest request);
+    /**
+     * AddFeatureType operation.
+     */
+    AddFeatureTypeResponse addFeatureType(AddFeatureTypeRequest request);
 
-	/**
-	 * DeleteFeatureType operation.
-	 */
-	DeleteFeatureTypeResponse deleteFeatureType(DeleteFeatureTypeRequest request);
+    /**
+     * DeleteFeatureType operation.
+     */
+    DeleteFeatureTypeResponse deleteFeatureType(
+        DeleteFeatureTypeRequest request);
 
-	/**
-	 * UpdateCatalog operation.
-	 */
-	UpdateResponse updateCatalog(UpdateRequest request);
-
+    /**
+     * UpdateCatalog operation.
+     */
+    UpdateResponse updateCatalog(UpdateRequest request);
 }

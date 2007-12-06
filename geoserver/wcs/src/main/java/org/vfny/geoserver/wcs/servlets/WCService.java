@@ -25,11 +25,11 @@ import javax.servlet.http.HttpServletRequest;
  */
 abstract public class WCService extends AbstractService {
     /**
-         * Constructor for WCS service.
-         *
-         * @param request The service request being made (GetCaps,GetCoverage,...)
-         * @param wcs The WCS service reference.
-         */
+     * Constructor for WCS service.
+     *
+     * @param request The service request being made (GetCaps,GetCoverage,...)
+     * @param wcs The WCS service reference.
+     */
     public WCService(String request, WCS wcs) {
         super("WCS", request, wcs);
     }

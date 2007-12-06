@@ -55,8 +55,8 @@ public class TestWfsPost extends HttpServlet {
      * @throws ServletException DOCUMENT ME!
      * @throws IOException DOCUMENT ME!
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request,
+        HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -69,8 +69,8 @@ public class TestWfsPost extends HttpServlet {
      * @throws ServletException DOCUMENT ME!
      * @throws IOException DOCUMENT ME!
      */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request,
+        HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -93,11 +93,12 @@ public class TestWfsPost extends HttpServlet {
      * @throws ServletException DOCUMENT ME!
      * @throws IOException DOCUMENT ME!
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request,
+        HttpServletResponse response) throws ServletException, IOException {
         String requestString = request.getParameter("body");
         String urlString = request.getParameter("url");
-        boolean doGet = (requestString == null) || requestString.trim().equals("");
+        boolean doGet = (requestString == null)
+            || requestString.trim().equals("");
 
         if ((urlString == null)) {
             PrintWriter out = response.getWriter();
@@ -110,7 +111,8 @@ public class TestWfsPost extends HttpServlet {
             String geoserverUrl = urlInfo.substring(0, urlInfo.indexOf("/", 8))
                 + request.getContextPath();
             response.setContentType("text/html");
-            out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">");
+            out.println(
+                "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">");
             out.println("<html>");
             out.println("<head>");
             out.println("<title>TestWfsPost</title>");
@@ -129,7 +131,8 @@ public class TestWfsPost extends HttpServlet {
             out.println("}");
             out.println("function checkURL() {");
             out.println("  if (document.frm.url.value==\"\") {");
-            out.println("    alert(\"Please give URL before you sumbit this form!\");");
+            out.println(
+                "    alert(\"Please give URL before you sumbit this form!\");");
             out.println("    return false;");
             out.println("  } else {");
             out.println("    return true;");
@@ -140,17 +143,21 @@ public class TestWfsPost extends HttpServlet {
             out.println("}");
             out.println("</script>");
             out.println("<body>");
-            out.println("<form name=\"frm\" action=\"JavaScript:doNothing()\" method=\"POST\">");
-            out.println("<table align=\"center\" cellspacing=\"2\" cellpadding=\"2\" border=\"0\">");
+            out.println(
+                "<form name=\"frm\" action=\"JavaScript:doNothing()\" method=\"POST\">");
+            out.println(
+                "<table align=\"center\" cellspacing=\"2\" cellpadding=\"2\" border=\"0\">");
             out.println("<tr>");
             out.println("<td><b>URL:</b></td>");
             out.print("<td><input name=\"url\" value=\"");
             out.print(geoserverUrl);
-            out.print("/wfs/GetFeature\" size=\"70\" MAXLENGTH=\"100\"/></td>\n");
+            out.print(
+                "/wfs/GetFeature\" size=\"70\" MAXLENGTH=\"100\"/></td>\n");
             out.println("</tr>");
             out.println("<tr>");
             out.println("<td><b>Request:</b></td>");
-            out.println("<td><textarea cols=\"60\" rows=\"24\" name=\"body\"></textarea></td>");
+            out.println(
+                "<td><textarea cols=\"60\" rows=\"24\" name=\"body\"></textarea></td>");
             out.println("</tr>");
             out.println("</table>");
             out.println("<table align=\"center\">");
@@ -176,7 +183,8 @@ public class TestWfsPost extends HttpServlet {
 
             try {
                 URL u = new URL(urlString);
-                java.net.HttpURLConnection acon = (java.net.HttpURLConnection) u.openConnection();
+                java.net.HttpURLConnection acon = (java.net.HttpURLConnection) u
+                    .openConnection();
                 acon.setAllowUserInteraction(false);
 
                 if (!doGet) {
@@ -225,7 +233,8 @@ public class TestWfsPost extends HttpServlet {
                     PrintWriter out = response.getWriter();
                     out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                     out.println("<servlet-exception>");
-                    out.println("HTTP response: " + acon.getResponseCode() + "\n"
+                    out.println("HTTP response: " + acon.getResponseCode()
+                        + "\n"
                         + URLDecoder.decode(acon.getResponseMessage(), "UTF-8"));
                     out.println("</servlet-exception>");
                     out.close();

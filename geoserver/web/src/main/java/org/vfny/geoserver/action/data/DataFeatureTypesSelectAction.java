@@ -28,8 +28,9 @@ import javax.servlet.http.HttpServletResponse;
  *         Window - Preferences - Java - Code Generation - Code and Comments
  */
 public class DataFeatureTypesSelectAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,
-        UserContainer user, HttpServletRequest request, HttpServletResponse response)
+    public ActionForward execute(ActionMapping mapping,
+        ActionForm incomingForm, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         DataFeatureTypesSelectForm form = (DataFeatureTypesSelectForm) incomingForm;
 
@@ -48,19 +49,22 @@ public class DataFeatureTypesSelectAction extends ConfigAction {
         String delete = messages.getMessage(locale, "label.delete");
 
         if (edit.equals(buttonAction)) {
-            request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE, ftConfig);
+            request.getSession()
+                   .setAttribute(DataConfig.SELECTED_FEATURE_TYPE, ftConfig);
 
             user.setFeatureTypeConfig(ftConfig);
 
             if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.info(new StringBuffer("setting session and user ftConfig to : ").append(
+                LOGGER.info(new StringBuffer(
+                        "setting session and user ftConfig to : ").append(
                         ftConfig).toString());
             }
 
             return mapping.findForward("config.data.type.editor");
         } else if (delete.equals(buttonAction)) {
             dataConfig.removeFeatureType(selectedFeatureType);
-            request.getSession().removeAttribute(DataConfig.SELECTED_FEATURE_TYPE);
+            request.getSession()
+                   .removeAttribute(DataConfig.SELECTED_FEATURE_TYPE);
             getApplicationState().notifyConfigChanged();
 
             return mapping.findForward("config.data.type");

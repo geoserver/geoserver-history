@@ -15,7 +15,8 @@ public class WFSTransactionException extends WFSException {
     /** handle of the transaction request */
     String handle;
 
-    public WFSTransactionException(String message, String code, String locator, String handle) {
+    public WFSTransactionException(String message, String code, String locator,
+        String handle) {
         super(message, code, locator);
         this.handle = handle;
     }
@@ -28,13 +29,14 @@ public class WFSTransactionException extends WFSException {
         super(message, code);
     }
 
-    public WFSTransactionException(String message, Throwable cause, String code, String locator,
-        String handle) {
+    public WFSTransactionException(String message, Throwable cause,
+        String code, String locator, String handle) {
         super(message, cause, code, locator);
         this.handle = handle;
     }
 
-    public WFSTransactionException(String message, Throwable cause, String code, String locator) {
+    public WFSTransactionException(String message, Throwable cause,
+        String code, String locator) {
         super(message, cause, code, locator);
     }
 
@@ -50,7 +52,8 @@ public class WFSTransactionException extends WFSException {
         super(message);
     }
 
-    public WFSTransactionException(Throwable cause, String code, String locator, String handle) {
+    public WFSTransactionException(Throwable cause, String code,
+        String locator, String handle) {
         super(cause, code, locator);
         this.handle = handle;
     }

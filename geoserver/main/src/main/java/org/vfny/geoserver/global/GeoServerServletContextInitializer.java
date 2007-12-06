@@ -20,7 +20,8 @@ import org.springframework.web.context.WebApplicationContext;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public class GeoServerServletContextInitializer implements ApplicationContextAware {
+public class GeoServerServletContextInitializer
+    implements ApplicationContextAware {
     /**
      * The key to register the object under.
      */

@@ -26,12 +26,12 @@ import javax.servlet.http.HttpServletResponse;
  * @author jgarnett
  */
 public class SpeedStrategy implements ServiceStrategy {
+    /** DOCUMENT ME!  */
+    private OutputStream out = null;
+
     public String getId() {
         return "SPEED";
     }
-
-    /** DOCUMENT ME!  */
-    private OutputStream out = null;
 
     /**
      * Works against the real output stream provided by the response.

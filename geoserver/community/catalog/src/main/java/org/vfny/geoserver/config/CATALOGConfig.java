@@ -75,7 +75,8 @@ public class CATALOGConfig extends ServiceConfig {
      */
     public void update(CATALOGDTO dto) {
         if (dto == null) {
-            throw new NullPointerException("CATALOG Data Transfer Object required");
+            throw new NullPointerException(
+                "CATALOG Data Transfer Object required");
         }
 
         super.update(dto.getService());

@@ -7,7 +7,6 @@ package org.vfny.geoserver.global;
 import org.geoserver.wfs.WFS;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
-
 import java.util.Collections;
 import java.util.Map;
 
@@ -98,32 +97,6 @@ public class WMS extends Service {
     }
 
     /**
-     * Quick hack to fix geot-770, need a full class rewrite otherwise and
-     * we are too near release to do that
-     * @return
-     */
-    public WFS getWFS() {
-        return wfs;
-    }
-
-    /**
-    * load purpose.
-    * <p>
-    * loads a new instance of data into this object.
-    * </p>
-    * @param config
-    */
-    public void load(WMSDTO config) {
-        super.load(config.getService());
-        svgRenderer = config.getSvgRenderer();
-        svgAntiAlias = config.getSvgAntiAlias();
-        allowInterpolation = config.getAllowInterpolation();
-        baseMapLayers = config.getBaseMapLayers();
-        baseMapStyles = config.getBaseMapStyles();
-        baseMapEnvelopes = config.getBaseMapEnvelopes();
-    }
-
-    /**
      * WMS constructor.
      *
      * <p>
@@ -135,6 +108,32 @@ public class WMS extends Service {
     WMS() {
         super(new ServiceDTO());
         setId("wms");
+    }
+
+    /**
+     * Quick hack to fix geot-770, need a full class rewrite otherwise and
+     * we are too near release to do that
+     * @return
+     */
+    public WFS getWFS() {
+        return wfs;
+    }
+
+    /**
+     * load purpose.
+     * <p>
+     * loads a new instance of data into this object.
+     * </p>
+     * @param config
+     */
+    public void load(WMSDTO config) {
+        super.load(config.getService());
+        svgRenderer = config.getSvgRenderer();
+        svgAntiAlias = config.getSvgAntiAlias();
+        allowInterpolation = config.getAllowInterpolation();
+        baseMapLayers = config.getBaseMapLayers();
+        baseMapStyles = config.getBaseMapStyles();
+        baseMapEnvelopes = config.getBaseMapEnvelopes();
     }
 
     /**
@@ -280,7 +279,7 @@ public class WMS extends Service {
     }
 
     public Map getBaseMapLayers() {
-        return baseMapLayers != null ? baseMapLayers : Collections.EMPTY_MAP;
+        return (baseMapLayers != null) ? baseMapLayers : Collections.EMPTY_MAP;
     }
 
     public void setBaseMapLayers(Map layers) {
@@ -288,7 +287,7 @@ public class WMS extends Service {
     }
 
     public Map getBaseMapStyles() {
-        return baseMapStyles != null ? baseMapStyles : Collections.EMPTY_MAP;
+        return (baseMapStyles != null) ? baseMapStyles : Collections.EMPTY_MAP;
     }
 
     public void setBaseMapStyles(Map styles) {
@@ -296,7 +295,8 @@ public class WMS extends Service {
     }
 
     public Map getBaseMapEnvelopes() {
-        return baseMapEnvelopes != null ? baseMapEnvelopes : Collections.EMPTY_MAP;
+        return (baseMapEnvelopes != null) ? baseMapEnvelopes
+                                          : Collections.EMPTY_MAP;
     }
 
     public void getBaseMapEnvelopes(Map envelopes) {

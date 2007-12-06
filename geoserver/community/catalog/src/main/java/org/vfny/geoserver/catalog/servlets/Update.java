@@ -21,8 +21,8 @@ import java.util.Map;
  */
 public class Update extends CATALOGService {
     /**
-    * Comment for <code>serialVersionUID</code>
-    */
+     * Comment for <code>serialVersionUID</code>
+     */
     private static final long serialVersionUID = -9101551100779632244L;
 
     public Update(CATALOG catalog) {
@@ -30,10 +30,10 @@ public class Update extends CATALOGService {
     }
 
     /**
-    * DOCUMENT ME!
-    *
-    * @return DOCUMENT ME!
-    */
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
     protected Response getResponseHandler() {
         return new UpdateResponse();
     }

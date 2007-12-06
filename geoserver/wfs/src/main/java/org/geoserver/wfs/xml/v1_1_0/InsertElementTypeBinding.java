@@ -7,7 +7,6 @@ package org.geoserver.wfs.xml.v1_1_0;
 import net.opengis.wfs.IdentifierGenerationOptionType;
 import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.WfsFactory;
-
 import org.geoserver.wfs.WFSException;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
@@ -18,7 +17,6 @@ import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
-
 import java.net.URI;
 import javax.xml.namespace.QName;
 
@@ -143,21 +141,25 @@ public class InsertElementTypeBinding extends AbstractComplexEMFBinding {
         return InsertElementType.class;
     }
 
-    public void initializeChildContext(ElementInstance childInstance, Node node, MutablePicoContainer context) {
+    public void initializeChildContext(ElementInstance childInstance,
+        Node node, MutablePicoContainer context) {
         //if an srsName is set for this geometry, put it in the context for 
         // children, so they can use it as well
-        if ( node.hasAttribute("srsName") ) {
+        if (node.hasAttribute("srsName")) {
             try {
-                CoordinateReferenceSystem crs = GML2ParsingUtils.crs(node);
-                if ( crs != null ) {
-                    context.registerComponentInstance(CoordinateReferenceSystem.class, crs);
+                CoordinateReferenceSystem crs = GML2ParsingUtils
+                    .crs(node);
+
+                if (crs != null) {
+                    context.registerComponentInstance(CoordinateReferenceSystem.class,
+                        crs);
                 }
-            } catch(Exception e) {
+            } catch (Exception e) {
                 throw new WFSException(e, "InvalidParameterValue");
             }
         }
     }
-    
+
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -184,7 +186,8 @@ public class InsertElementTypeBinding extends AbstractComplexEMFBinding {
         //&lt;xsd:attribute default="GenerateNew" name="idgen"
         //		type="wfs:IdentifierGenerationOptionType" use="optional"&gt;
         if (node.hasAttribute("idgen")) {
-            insertElement.setIdgen((IdentifierGenerationOptionType) node.getAttributeValue("idgen"));
+            insertElement.setIdgen((IdentifierGenerationOptionType) node
+                .getAttributeValue("idgen"));
         }
 
         //&lt;xsd:attribute name="handle" type="xsd:string" use="optional"&gt;
@@ -195,7 +198,8 @@ public class InsertElementTypeBinding extends AbstractComplexEMFBinding {
         //&lt;xsd:attribute default="text/xml; subtype=gml/3.1.1"
         //		 name="inputFormat" type="xsd:string" use="optional"&gt;
         if (node.hasAttribute("inputFormat")) {
-            insertElement.setInputFormat((String) node.getAttributeValue("inputFormat"));
+            insertElement.setInputFormat((String) node.getAttributeValue(
+                    "inputFormat"));
         }
 
         //&lt;xsd:attribute name="srsName" type="xsd:anyURI" use="optional"&gt;

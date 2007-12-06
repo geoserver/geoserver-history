@@ -27,8 +27,8 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
     /**
      * the world bounds
      */
-    final static ReferencedEnvelope world = new ReferencedEnvelope(-180, 180, -90, 90,
-            DefaultGeographicCRS.WGS84);
+    final static ReferencedEnvelope world = new ReferencedEnvelope(-180, 180,
+            -90, 90, DefaultGeographicCRS.WGS84);
 
     /**
      * resolutions
@@ -65,7 +65,8 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
             //calculate closest resolution
             ReferencedEnvelope extent = mapContext.getAreaOfInterest();
-            double resolution = Math.max(extent.getWidth() / 256d, extent.getHeight() / 256d);
+            double resolution = Math.max(extent.getWidth() / 256d,
+                    extent.getHeight() / 256d);
 
             //calculate the closest zoom level
             int i = 1;
@@ -107,8 +108,8 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
                     double tileoffsetlon = world.getMinX() + (col0 * tilelon);
                     double tileoffsetlat = world.getMinY() + (row0 * tilelat);
 
-                    top = new Envelope(tileoffsetlon, tileoffsetlon + tilelon, tileoffsetlat,
-                            tileoffsetlat + tilelat);
+                    top = new Envelope(tileoffsetlon, tileoffsetlon + tilelon,
+                            tileoffsetlat, tileoffsetlat + tilelat);
 
                     break;
                 } else {
@@ -125,9 +126,9 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
             //start document
             if (isStandAlone()) {
-                start( "kml" );
+                start("kml");
             }
-            
+
             start("Document");
 
             //encode top level region
@@ -136,20 +137,21 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             //encode the network links
             if (top != world) {
                 //top left
-                Envelope e00 = new Envelope(top.getMinX(), top.getMinX() + (top.getWidth() / 2d),
+                Envelope e00 = new Envelope(top.getMinX(),
+                        top.getMinX() + (top.getWidth() / 2d),
                         top.getMaxY() - (top.getHeight() / 2d), top.getMaxY());
 
                 //top right
-                Envelope e01 = new Envelope(e00.getMaxX(), top.getMaxX(), e00.getMinY(),
-                        e00.getMaxY());
+                Envelope e01 = new Envelope(e00.getMaxX(), top.getMaxX(),
+                        e00.getMinY(), e00.getMaxY());
 
                 //bottom left
-                Envelope e10 = new Envelope(e00.getMinX(), e00.getMaxX(), top.getMinY(),
-                        e00.getMinY());
+                Envelope e10 = new Envelope(e00.getMinX(), e00.getMaxX(),
+                        top.getMinY(), e00.getMinY());
 
                 //bottom right
-                Envelope e11 = new Envelope(e01.getMinX(), e01.getMaxX(), e10.getMinY(),
-                        e10.getMaxY());
+                Envelope e11 = new Envelope(e01.getMinX(), e01.getMaxX(),
+                        e10.getMinY(), e10.getMaxY());
 
                 encodeNetworkLink(e00, "00", mapLayer);
                 encodeNetworkLink(e01, "01", mapLayer);
@@ -157,9 +159,11 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
                 encodeNetworkLink(e11, "11", mapLayer);
             } else {
                 //divide up horizontally by two
-                Envelope e0 = new Envelope(top.getMinX(), top.getMinX() + (top.getWidth() / 2d),
+                Envelope e0 = new Envelope(top.getMinX(),
+                        top.getMinX() + (top.getWidth() / 2d), top.getMinY(),
+                        top.getMaxY());
+                Envelope e1 = new Envelope(e0.getMaxX(), top.getMaxX(),
                         top.getMinY(), top.getMaxY());
-                Envelope e1 = new Envelope(e0.getMaxX(), top.getMaxX(), top.getMinY(), top.getMaxY());
 
                 encodeNetworkLink(e0, "0", mapLayer);
                 encodeNetworkLink(e1, "1", mapLayer);
@@ -178,9 +182,9 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
             //end document
             end("Document");
-            
+
             if (isStandAlone()) {
-                end( "kml" );
+                end("kml");
             }
         }
 
@@ -226,8 +230,8 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
             String getMap = KMLUtils.getMapUrl(mapContext, mapLayer, box,
                     new String[] {
-                        "format", KMLMapProducerFactory.MIME_TYPE, "width", "256", "height", "256",
-                        "superoverlay", "true"
+                        "format", KMLMapProducerFactory.MIME_TYPE, "width",
+                        "256", "height", "256", "superoverlay", "true"
                     }, false);
 
             element("href", getMap);

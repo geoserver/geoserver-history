@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.wcs.servlets;
 
+import java.util.Map;
+
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
@@ -11,53 +13,54 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wcs.requests.readers.CapabilitiesKvpReader;
 import org.vfny.geoserver.wcs.requests.readers.CapabilitiesXmlReader;
 import org.vfny.geoserver.wcs.responses.WCSCapabilitiesResponse;
-import java.util.Map;
-
 
 /**
  * Implements the WCS GetCapabilities interface, which tells clients what the
  * server can do.
- *
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ * 
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
+ *         modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
+ *         modification)
  * @version $Id$
  */
 public class Capabilities extends WCService {
-    public Capabilities(WCS wcs) {
-        super("GetCapabilities", wcs);
-    }
+	/**
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = 3258129176207636277L;
 
-    /**
-     * Comment for <code>serialVersionUID</code>
-     */
-    private static final long serialVersionUID = 3258129176207636277L;
+	public Capabilities(WCS wcs) {
+		super("GetCapabilities", wcs);
+	}
 
-    /**
-    * DOCUMENT ME!
-    *
-    * @param params DOCUMENT ME!
-    *
-    * @return DOCUMENT ME!
-    */
-    protected KvpRequestReader getKvpReader(Map params) {
-        return new CapabilitiesKvpReader(params, this);
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @param params
+	 *            DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	protected KvpRequestReader getKvpReader(Map params) {
+		return new CapabilitiesKvpReader(params, this);
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    protected XmlRequestReader getXmlRequestReader() {
-        return new CapabilitiesXmlReader(this);
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	protected XmlRequestReader getXmlRequestReader() {
+		return new CapabilitiesXmlReader(this);
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    protected Response getResponseHandler() {
-        return new WCSCapabilitiesResponse();
-    }
+	/**
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
+	 */
+	protected Response getResponseHandler() {
+		return new WCSCapabilitiesResponse(getApplicationContext());
+	}
 }

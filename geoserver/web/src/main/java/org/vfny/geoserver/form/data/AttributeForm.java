@@ -160,7 +160,8 @@ public class AttributeForm {
      * </p>
      */
     public List getTypes() {
-        List elements = DataTransferObjectFactory.getElements(name, attributeType.getType());
+        List elements = DataTransferObjectFactory.getElements(name,
+                attributeType.getType());
         List list = new ArrayList(elements.size());
 
         for (Iterator i = elements.iterator(); i.hasNext();) {

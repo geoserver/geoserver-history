@@ -82,7 +82,8 @@ public class EncodeKML {
     private KMLWriter writer;
 
     /** Filter factory for creating bounding box filters */
-    private FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
+    private FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory2(GeoTools
+            .getDefaultHints());
 
     /** Flag to be monotored by writer loops */
     private boolean abortProcess;
@@ -128,7 +129,9 @@ public class EncodeKML {
 
             this.writer.flush();
             t = System.currentTimeMillis() - t;
-            LOGGER.fine(new StringBuffer("KML generated, it took").append(t).append(" ms").toString());
+            LOGGER.fine(new StringBuffer("KML generated, it took").append(t)
+                                                                  .append(" ms")
+                                                                  .toString());
         } catch (IOException ioe) {
             if (abortProcess) {
                 LOGGER.fine("KML encoding aborted");
@@ -172,7 +175,9 @@ public class EncodeKML {
             writeImages(out, layerRenderList);
 
             t = System.currentTimeMillis() - t;
-            LOGGER.fine(new StringBuffer("KMZ generated, it took").append(t).append(" ms").toString());
+            LOGGER.fine(new StringBuffer("KMZ generated, it took").append(t)
+                                                                  .append(" ms")
+                                                                  .toString());
         } catch (IOException ioe) {
             if (abortProcess) {
                 LOGGER.fine("KMZ encoding aborted");
@@ -231,10 +236,10 @@ public class EncodeKML {
     }
 
     /**
-    * writes out standard KML header
-    *
-    * @throws IOException
-    */
+     * writes out standard KML header
+     *
+     * @throws IOException
+     */
     private void writeHeader() throws IOException {
         writer.write(KML_HEADER);
     }
@@ -285,14 +290,16 @@ public class EncodeKML {
             //GeometryAttributeType geometryAttribute = schema.getDefaultGeometry();
             //CoordinateReferenceSystem sourceCrs = geometryAttribute.getCoordinateSystem();
             Rectangle paintArea = new Rectangle(imageWidth, imageHeight);
-            AffineTransform worldToScreen = RendererUtilities.worldToScreenTransform(mapContext
-                    .getAreaOfInterest(), paintArea);
+            AffineTransform worldToScreen = RendererUtilities
+                .worldToScreenTransform(mapContext.getAreaOfInterest(),
+                    paintArea);
             double scaleDenominator = 1;
 
             try {
-                scaleDenominator = RendererUtilities.calculateScale(mapContext.getAreaOfInterest(),
-                        mapContext.getCoordinateReferenceSystem(), paintArea.width,
-                        paintArea.height, 90); // 90 = OGC standard DPI (see SLD spec page 37)
+                scaleDenominator = RendererUtilities.calculateScale(mapContext
+                        .getAreaOfInterest(),
+                        mapContext.getCoordinateReferenceSystem(),
+                        paintArea.width, paintArea.height, 90); // 90 = OGC standard DPI (see SLD spec page 37)
             } catch (Exception e) // probably either (1) no CRS (2) error xforming
              {
                 scaleDenominator = 1 / worldToScreen.getScaleX(); //DJB old method - the best we can do
@@ -327,9 +334,11 @@ public class EncodeKML {
                 Filter filter = null;
 
                 //ReferencedEnvelope aoi = mapContext.getAreaOfInterest();
-                if (!CRS.equalsIgnoreMetadata(aoi.getCoordinateReferenceSystem(),
+                if (!CRS.equalsIgnoreMetadata(
+                            aoi.getCoordinateReferenceSystem(),
                             schema.getDefaultGeometry().getCoordinateSystem())) {
-                    aoi = aoi.transform(schema.getDefaultGeometry().getCoordinateSystem(), true);
+                    aoi = aoi.transform(schema.getDefaultGeometry()
+                                              .getCoordinateSystem(), true);
                 }
 
                 filter = createBBoxFilters(schema, attributes, aoi);
@@ -348,11 +357,13 @@ public class EncodeKML {
                     if (q == Query.ALL) {
                         q = (DefaultQuery) definitionQuery;
                     } else {
-                        q = (DefaultQuery) DataUtilities.mixQueries(definitionQuery, q, "KMLEncoder");
+                        q = (DefaultQuery) DataUtilities.mixQueries(definitionQuery,
+                                q, "KMLEncoder");
                     }
                 }
 
-                q.setCoordinateSystem(layer.getFeatureSource().getSchema().getDefaultGeometry()
+                q.setCoordinateSystem(layer.getFeatureSource().getSchema()
+                                           .getDefaultGeometry()
                                            .getCoordinateSystem());
 
                 FeatureCollection fc = fSource.getFeatures(q);
@@ -361,7 +372,8 @@ public class EncodeKML {
                 boolean useVector = useVectorOutput(kmscore, fc.size()); // kmscore = render vector/raster
 
                 if (useVector || !kmz) {
-                    LOGGER.info("Layer (" + layer.getTitle() + ") rendered with KML vector output.");
+                    LOGGER.info("Layer (" + layer.getTitle()
+                        + ") rendered with KML vector output.");
                     layerRenderList.add(new Integer(i)); // save layer number so it won't be rendered
 
                     if (!isRaster) {
@@ -371,7 +383,8 @@ public class EncodeKML {
                     }
                 } else {
                     // user requested KMZ and kmscore says render raster
-                    LOGGER.info("Layer (" + layer.getTitle() + ") rendered with KMZ raster output.");
+                    LOGGER.info("Layer (" + layer.getTitle()
+                        + ") rendered with KMZ raster output.");
                     // layer order is only needed for raster results. In the <GroundOverlay> tag 
                     // you need to point to a raster image, this image has the layer number as
                     // part of the name. The kml will then reference the image via the layer number
@@ -380,27 +393,30 @@ public class EncodeKML {
 
                 LOGGER.fine("finished writing");
             } catch (IOException ex) {
-                LOGGER.info(new StringBuffer("process failed: ").append(ex.getMessage()).toString());
+                LOGGER.info(new StringBuffer("process failed: ").append(
+                        ex.getMessage()).toString());
                 throw ex;
             } catch (AbortedException ae) {
-                LOGGER.info(new StringBuffer("process aborted: ").append(ae.getMessage()).toString());
+                LOGGER.info(new StringBuffer("process aborted: ").append(
+                        ae.getMessage()).toString());
                 throw ae;
             } catch (Throwable t) {
-                LOGGER.warning(new StringBuffer("UNCAUGHT exception: ").append(t.getMessage())
-                                                                       .toString());
+                LOGGER.warning(new StringBuffer("UNCAUGHT exception: ").append(
+                        t.getMessage()).toString());
 
-                IOException ioe = new IOException(new StringBuffer("UNCAUGHT exception: ").append(
-                            t.getMessage()).toString());
+                IOException ioe = new IOException(new StringBuffer(
+                            "UNCAUGHT exception: ").append(t.getMessage())
+                                                                                          .toString());
                 ioe.setStackTrace(t.getStackTrace());
                 throw ioe;
             } finally {
                 /*if (featureReader != null) {
-                    try{
-                        featureReader.close();
-                    }catch(IOException ioe){
-                        //featureReader was probably closed already.
-                    }
-                }*/
+                   try{
+                       featureReader.close();
+                   }catch(IOException ioe){
+                       //featureReader was probably closed already.
+                   }
+                   }*/
             }
 
             writer.endDocument();
@@ -418,8 +434,8 @@ public class EncodeKML {
      * @throws IOException
      * @throws AbortedException
      */
-    private void writeImages(final ZipOutputStream outZ, ArrayList layerRenderList)
-        throws IOException, AbortedException {
+    private void writeImages(final ZipOutputStream outZ,
+        ArrayList layerRenderList) throws IOException, AbortedException {
         MapLayer[] layers = this.mapContext.getLayers();
         int nLayers = layers.length;
 
@@ -442,14 +458,18 @@ public class EncodeKML {
             final int width = this.mapContext.getMapWidth();
             final int height = this.mapContext.getMapHeight();
 
-            LOGGER.fine(new StringBuffer("setting up ").append(width).append("x").append(height)
-                                                       .append(" image").toString());
+            LOGGER.fine(new StringBuffer("setting up ").append(width).append("x")
+                                                       .append(height)
+                                                       .append(" image")
+                                                       .toString());
 
             // simone: ARGB should be much better
-            BufferedImage curImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+            BufferedImage curImage = new BufferedImage(width, height,
+                    BufferedImage.TYPE_4BYTE_ABGR);
 
             // simboss: this should help out with coverages
-            final Graphics2D graphic = GraphicsJAI.createGraphicsJAI(curImage.createGraphics(), null);
+            final Graphics2D graphic = GraphicsJAI.createGraphicsJAI(curImage
+                    .createGraphics(), null);
 
             LOGGER.fine("setting to transparent");
 
@@ -481,11 +501,13 @@ public class EncodeKML {
             // if we set it to true then it does it all twice...
             Map rendererParams = new HashMap();
             rendererParams.put("optimizedDataLoadingEnabled", Boolean.TRUE);
-            rendererParams.put("renderingBuffer", new Integer(mapContext.getBuffer()));
+            rendererParams.put("renderingBuffer",
+                new Integer(mapContext.getBuffer()));
             renderer.setRendererHints(rendererParams);
 
             Envelope dataArea = map.getAreaOfInterest();
-            AffineTransform at = RendererUtilities.worldToScreenTransform(dataArea, paintArea);
+            AffineTransform at = RendererUtilities.worldToScreenTransform(dataArea,
+                    paintArea);
             renderer.paint(graphic, paintArea, dataArea, at);
             graphic.dispose();
 
@@ -496,21 +518,22 @@ public class EncodeKML {
             // /////////////////////////////////////////////////////////////////
             final ZipEntry e = new ZipEntry("layer_" + (i) + ".png");
             outZ.putNextEntry(e);
-            new ImageWorker(curImage).writePNG(outZ, "FILTERED", 0.75f, false, false);
+            new ImageWorker(curImage).writePNG(outZ, "FILTERED", 0.75f, false,
+                false);
             //final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(outZ);
             /*final PlanarImage encodedImage = PlanarImage
-                            .wrapRenderedImage(curImage);
-            //final PlanarImage finalImage = encodedImage.getColorModel() instanceof DirectColorModel?ImageUtilities
-            //                .reformatColorModel2ComponentColorModel(encodedImage):encodedImage;
-            final PlanarImage finalImage = encodedImage;
-            final Iterator it = ImageIO.getImageWritersByMIMEType("image/png");
-            ImageWriter imgWriter = null;
-            if (!it.hasNext()) {
-                    LOGGER.warning("No PNG ImageWriter found");
-                    throw new IllegalStateException("No PNG ImageWriter found");
-            } else
-                    imgWriter = (ImageWriter) it.next();
-            */
+               .wrapRenderedImage(curImage);
+               //final PlanarImage finalImage = encodedImage.getColorModel() instanceof DirectColorModel?ImageUtilities
+               //                .reformatColorModel2ComponentColorModel(encodedImage):encodedImage;
+               final PlanarImage finalImage = encodedImage;
+               final Iterator it = ImageIO.getImageWritersByMIMEType("image/png");
+               ImageWriter imgWriter = null;
+               if (!it.hasNext()) {
+                       LOGGER.warning("No PNG ImageWriter found");
+                       throw new IllegalStateException("No PNG ImageWriter found");
+               } else
+                       imgWriter = (ImageWriter) it.next();
+             */
 
             //---------------------- bo- new
             //			PngEncoderB png = new PngEncoderB(curImage, PngEncoder.ENCODE_ALPHA, 0, 1);
@@ -540,38 +563,44 @@ public class EncodeKML {
      *         its corresponding <code>GeometryFilter</code>.
      * @throws IllegalFilterException if something goes wrong creating the filter
      */
-    private Filter createBBoxFilters(FeatureType schema, String[] attributes, Envelope bbox)
-        throws IllegalFilterException {
+    private Filter createBBoxFilters(FeatureType schema, String[] attributes,
+        Envelope bbox) throws IllegalFilterException {
         List filters = new ArrayList();
         final int length = attributes.length;
+
         for (int j = 0; j < length; j++) {
             AttributeType attType = schema.getAttributeType(attributes[j]);
 
             //DJB: added this for better error messages!
             if (attType == null) {
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine(new StringBuffer("Could not find '").append(attributes[j])
-                                                                    .append("' in the FeatureType (")
-                                                                    .append(schema.getTypeName())
-                                                                    .append(")").toString());
+                    LOGGER.fine(new StringBuffer("Could not find '").append(
+                            attributes[j]).append("' in the FeatureType (")
+                                                                    .append(schema
+                            .getTypeName()).append(")").toString());
                 }
 
-                throw new IllegalFilterException(new StringBuffer("Could not find '").append(attributes[j]
-                        + "' in the FeatureType (").append(schema.getTypeName()).append(")")
+                throw new IllegalFilterException(new StringBuffer(
+                        "Could not find '").append(attributes[j]
+                        + "' in the FeatureType (").append(schema.getTypeName())
+                                                                                     .append(")")
                                                                                      .toString());
             }
 
             if (attType instanceof GeometryAttributeType) {
-                Filter gfilter = filterFactory.bbox(attType.getLocalName(), bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), null);
+                Filter gfilter = filterFactory.bbox(attType.getLocalName(),
+                        bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(),
+                        bbox.getMaxY(), null);
                 filters.add(gfilter);
             }
         }
 
-        if(filters.size() == 0)
+        if (filters.size() == 0) {
             return Filter.INCLUDE;
-        else if(filters.size() == 1)
+        } else if (filters.size() == 1) {
             return (Filter) filters.get(0);
-        else
+        } else {
             return filterFactory.or(filters);
+        }
     }
 }

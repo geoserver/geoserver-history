@@ -4,8 +4,6 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
-import java.math.BigInteger;
-
 import net.opengis.wfs.ResultTypeType;
 import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.GetLogType;
@@ -13,6 +11,7 @@ import net.opengis.wfsv.WfsvFactory;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import java.math.BigInteger;
 import javax.xml.namespace.QName;
 
 
@@ -136,20 +135,24 @@ public class GetLogTypeBinding extends AbstractComplexBinding {
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
         GetLogType result = wfsvFactory.createGetLogType();
-        result.getDifferenceQuery().addAll(node.getChildValues(DifferenceQueryType.class));
+        result.getDifferenceQuery()
+              .addAll(node.getChildValues(DifferenceQueryType.class));
 
         if (node.hasAttribute("resultType")) {
-            result.setResultType((ResultTypeType) node.getAttributeValue("resultType"));
+            result.setResultType((ResultTypeType) node.getAttributeValue(
+                    "resultType"));
         }
 
         if (node.hasAttribute("outputFormat")) {
-            result.setOutputFormat((String) node.getAttributeValue("outputFormat"));
+            result.setOutputFormat((String) node.getAttributeValue(
+                    "outputFormat"));
         } else {
-        	result.setOutputFormat("text/xml; subtype=gml/3.1.1");
+            result.setOutputFormat("text/xml; subtype=gml/3.1.1");
         }
-        
-        if(node.hasAttribute("maxFeatures")) {
-            result.setMaxFeatures((BigInteger) node.getAttributeValue("maxFeatures"));
+
+        if (node.hasAttribute("maxFeatures")) {
+            result.setMaxFeatures((BigInteger) node.getAttributeValue(
+                    "maxFeatures"));
         }
 
         return result;

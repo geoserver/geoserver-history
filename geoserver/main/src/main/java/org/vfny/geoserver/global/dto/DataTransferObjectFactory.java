@@ -38,6 +38,35 @@ import java.util.Set;
  * @version $Id$
  */
 public class DataTransferObjectFactory {
+    public static Map schemaBaseMap = new HashMap();
+
+    static {
+        schemaBaseMap.put("gml:AbstractFeatureType", new String[] {  }); //"description","name","boundedBy"} );
+                                                                         /*schemaBaseMap.put("AbstractFeatureCollectionBaseType",
+           new String[] {"description","name","boundedBy"} );
+           schemaBaseMap.put("GeometryPropertyType",
+           new String[] {"geometry"} );
+           schemaBaseMap.put("FeatureAssociationType",
+           new String[] {"feature"} );
+           schemaBaseMap.put("BoundingShapeType",
+           new String[] {"box"} );
+           schemaBaseMap.put("PointPropertyType",
+           new String[] {"point"} );
+           schemaBaseMap.put("PolygonPropertyType",
+           new String[] {"polygon"} );
+           schemaBaseMap.put("LineStringPropertyType",
+           new String[] {"lineString"} );
+           schemaBaseMap.put("MultiPointPropertyType",
+           new String[] {"multiPoint"} );
+           schemaBaseMap.put("MultiLineStringPropertyType",
+           new String[] {"multiLineString"} );
+           schemaBaseMap.put("MultiPolygonPropertyType",
+           new String[] {"multiPolygonString"} );
+           schemaBaseMap.put("MultiGeometryPropertyType",
+           new String[] {"multiGeometry"} );
+           schemaBaseMap.put("NullType", new String[] {} );*/
+    }
+
     /**
      * Construct DTO based on provided AttributeType.
      *
@@ -50,11 +79,13 @@ public class DataTransferObjectFactory {
      *
      * @return Data Transfer Object for provided attributeType
      */
-    public static AttributeTypeInfoDTO create(String schemaBase, AttributeType attributeType) {
+    public static AttributeTypeInfoDTO create(String schemaBase,
+        AttributeType attributeType) {
         AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
         dto.setName(attributeType.getName());
 
-        if (isManditory(schemaBase, attributeType.getName()) || (attributeType.getMinOccurs() > 0)) {
+        if (isManditory(schemaBase, attributeType.getName())
+                || (attributeType.getMinOccurs() > 0)) {
             dto.setMinOccurs(1);
         } else {
             dto.setMinOccurs(0);
@@ -72,7 +103,8 @@ public class DataTransferObjectFactory {
         element = xs.getElement(attributeType.getType(), attributeType.getName());
 
         if (element == null) {
-            element = gml.getElement(attributeType.getType(), attributeType.getName());
+            element = gml.getElement(attributeType.getType(),
+                    attributeType.getName());
         }
 
         if (element == null) {
@@ -102,7 +134,8 @@ public class DataTransferObjectFactory {
      * @param attributeName Name of attribute being described
      * @return DataTransferObject encapsulating attribute information.
      */
-    public static AttributeTypeInfoDTO create(String schemaBase, String attributeName) {
+    public static AttributeTypeInfoDTO create(String schemaBase,
+        String attributeName) {
         AttributeTypeInfoDTO dto = new AttributeTypeInfoDTO();
         dto.setName(attributeName);
         dto.setMinOccurs(isManditory(schemaBase, attributeName) ? 1 : 0);
@@ -144,7 +177,8 @@ public class DataTransferObjectFactory {
      *
      * @return Data Transfer Object for provided schema
      */
-    public static FeatureTypeInfoDTO create(String dataStoreId, FeatureType schema) {
+    public static FeatureTypeInfoDTO create(String dataStoreId,
+        FeatureType schema) {
         FeatureTypeInfoDTO dto = new FeatureTypeInfoDTO();
         dto.setAbstract(null);
         dto.setDataStoreId(dataStoreId);
@@ -160,11 +194,12 @@ public class DataTransferObjectFactory {
 
         NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance()
                                                             .getNameSpaceTranslator("gml");
-        String schemaBase = gml.getElement("AbstractFeatureType").getQualifiedTypeDefName();
+        String schemaBase = gml.getElement("AbstractFeatureType")
+                               .getQualifiedTypeDefName();
         dto.setSchemaBase(schemaBase);
 
-        dto.setSchemaName(dataStoreId.toUpperCase() + "_" + schema.getTypeName().toUpperCase()
-            + "_TYPE");
+        dto.setSchemaName(dataStoreId.toUpperCase() + "_"
+            + schema.getTypeName().toUpperCase() + "_TYPE");
         dto.setSRS(schema.getDefaultGeometry().getGeometryFactory().getSRID());
         dto.setTitle(schema.getNamespace() + " " + schema.getTypeName());
 
@@ -251,35 +286,6 @@ public class DataTransferObjectFactory {
         return new String[] {  };
     }
 
-    public static Map schemaBaseMap = new HashMap();
-
-    static {
-        schemaBaseMap.put("gml:AbstractFeatureType", new String[] {  }); //"description","name","boundedBy"} );
-                                                                         /*schemaBaseMap.put("AbstractFeatureCollectionBaseType",
-        new String[] {"description","name","boundedBy"} );
-        schemaBaseMap.put("GeometryPropertyType",
-        new String[] {"geometry"} );
-        schemaBaseMap.put("FeatureAssociationType",
-        new String[] {"feature"} );
-        schemaBaseMap.put("BoundingShapeType",
-        new String[] {"box"} );
-        schemaBaseMap.put("PointPropertyType",
-        new String[] {"point"} );
-        schemaBaseMap.put("PolygonPropertyType",
-        new String[] {"polygon"} );
-        schemaBaseMap.put("LineStringPropertyType",
-        new String[] {"lineString"} );
-        schemaBaseMap.put("MultiPointPropertyType",
-        new String[] {"multiPoint"} );
-        schemaBaseMap.put("MultiLineStringPropertyType",
-        new String[] {"multiLineString"} );
-        schemaBaseMap.put("MultiPolygonPropertyType",
-        new String[] {"multiPolygonString"} );
-        schemaBaseMap.put("MultiGeometryPropertyType",
-        new String[] {"multiGeometry"} );
-        schemaBaseMap.put("NullType", new String[] {} );*/
-    }
-
     /**
      * Mappings for name and type, or null if not found.
      * <p>
@@ -357,7 +363,8 @@ public class DataTransferObjectFactory {
                     } else if (name.equals(element.getQualifiedTypeDefName())) {
                         if (!result.contains(element)) {
                             result.add(element);
-                        } else if (name.equals(element.getQualifiedTypeRefName())) {
+                        } else if (name.equals(
+                                    element.getQualifiedTypeRefName())) {
                             if (!result.contains(element)) {
                                 result.add(element);
                             }
@@ -377,7 +384,8 @@ public class DataTransferObjectFactory {
                     NameSpaceElement element = (NameSpaceElement) i.next();
 
                     // 	add the rest afterwards
-                    if (element.getJavaClass().equals(cls) && !result.contains(element)) {
+                    if (element.getJavaClass().equals(cls)
+                            && !result.contains(element)) {
                         result.add(element);
                     }
                 }

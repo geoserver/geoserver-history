@@ -11,7 +11,6 @@ import org.geotools.feature.type.SchemaImpl;
 import org.geotools.xs.XSSchema;
 import org.geotools.xs.bindings.XS;
 import org.opengis.feature.type.Schema;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -37,30 +36,32 @@ public class XSProfile extends TypeMappingProfile {
         proper.add(name(XS.QNAME)); //Qname.class
         proper.add(name(XS.DATE)); //java.sql.Date.class
         proper.add(name(XS.DATETIME)); //java.sql.Timestamp.class
-        proper.add(name(XS.TIME));     //java.sql.Time.class
+        proper.add(name(XS.TIME)); //java.sql.Time.class
         proper.add(name(XS.BOOLEAN)); //Boolean.class
         proper.add(name(XS.DOUBLE)); //Double.class
         proper.add(name(XS.STRING)); //String.class
         proper.add(name(XS.INTEGER)); //BigInteger.class
         proper.add(name(XS.DECIMAL)); //BigDecimal.class
         proper.add(name(XS.ANYURI)); //URI.class
-        profiles.add( new ProfileImpl( new XSSchema(), proper ) );
-        
+        profiles.add(new ProfileImpl(new XSSchema(), proper));
+
         //date mappings between java and xml schema are kind of messed up, so 
         // we create a custom schema which also contains a mapping for 
         // java.util.Date
         Schema additional = new SchemaImpl(XS.NAMESPACE);
-        additional.put(name(XS.DATETIME), AttributeTypeFactory.newAttributeType("date", Date.class ));
-        profiles.add( new ProfileImpl( additional, Collections.singleton( name( XS.DATETIME))));
-        
+        additional.put(name(XS.DATETIME),
+            AttributeTypeFactory.newAttributeType("date", Date.class));
+        profiles.add(new ProfileImpl(additional,
+                Collections.singleton(name(XS.DATETIME))));
+
         //profile.add(name(XS.ANYTYPE)); //Map.class
+    }
+
+    public XSProfile() {
+        super(profiles);
     }
 
     static Name name(QName qName) {
         return new Name(qName.getNamespaceURI(), qName.getLocalPart());
-    }
-
-    public XSProfile() {
-        super( profiles );
     }
 }

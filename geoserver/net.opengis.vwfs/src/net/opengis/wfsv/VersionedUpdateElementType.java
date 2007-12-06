@@ -7,8 +7,8 @@
 package net.opengis.wfsv;
 
 import net.opengis.wfs.UpdateElementType;
-
 import org.eclipse.emf.ecore.EObject;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -32,11 +32,11 @@ public interface VersionedUpdateElementType extends UpdateElementType {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
-     * 
+     *
      *               The syntax and semantics is the same as featureVersion in Query. If specified, update
      *               will check that every updated feature is still at the specified version before
      *               executing, and will fail if a change occurred on the server in the meantime.
-     *             
+     *
      * <!-- end-model-doc -->
      * @return the value of the '<em>Feature Version</em>' attribute.
      * @see #setFeatureVersion(String)
@@ -56,5 +56,4 @@ public interface VersionedUpdateElementType extends UpdateElementType {
      * @generated
      */
     void setFeatureVersion(String value);
-
 } // VersionedUpdateElementType

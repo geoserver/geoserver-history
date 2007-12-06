@@ -8,6 +8,7 @@ package net.opengis.wfs;
 
 import org.eclipse.emf.ecore.EObject;
 
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>No SRS Type</b></em>'.

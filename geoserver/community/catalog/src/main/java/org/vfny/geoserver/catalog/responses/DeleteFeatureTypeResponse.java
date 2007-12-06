@@ -41,24 +41,24 @@ import javax.servlet.ServletException;
  * @author $Author: Alessio Fabiani (GeoSolutions)
  */
 public class DeleteFeatureTypeResponse implements Response {
-    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
+    private static final Logger LOGGER = Logger.getLogger(
+            "org.vfny.geoserver.responses");
     private static final String CURR_VER = "\"1.0\"";
     private static final String CATALOG_URL = "http://www.geo-solutions.it/schemas/catalog";
-    private static final String CATALOG_NAMESPACE = new StringBuffer("\n  xmlns=\"").append(CATALOG_URL)
-                                                                                    .append("\"")
-                                                                                    .toString();
+    private static final String CATALOG_NAMESPACE = new StringBuffer(
+            "\n  xmlns=\"").append(CATALOG_URL).append("\"").toString();
     private static final String XLINK_URL = "\"http://www.w3.org/1999/xlink\"";
-    private static final String XLINK_NAMESPACE = new StringBuffer("\n  xmlns:xlink=").append(XLINK_URL)
-                                                                                      .toString();
+    private static final String XLINK_NAMESPACE = new StringBuffer(
+            "\n  xmlns:xlink=").append(XLINK_URL).toString();
     private static final String OGC_URL = "\"http://www.opengis.net/ogc\"";
-    private static final String OGC_NAMESPACE = new StringBuffer("\n  xmlns:ogc=").append(OGC_URL)
-                                                                                  .toString();
+    private static final String OGC_NAMESPACE = new StringBuffer(
+            "\n  xmlns:ogc=").append(OGC_URL).toString();
     private static final String GML_URL = "\"http://www.opengis.net/gml\"";
-    private static final String GML_NAMESPACE = new StringBuffer("\n  xmlns:gml=").append(GML_URL)
-                                                                                  .toString();
+    private static final String GML_NAMESPACE = new StringBuffer(
+            "\n  xmlns:gml=").append(GML_URL).toString();
     private static final String SCHEMA_URI = "\"http://www.w3.org/2001/XMLSchema-instance\"";
-    private static final String XSI_NAMESPACE = new StringBuffer("\n  xmlns:xsi=").append(SCHEMA_URI)
-                                                                                  .toString();
+    private static final String XSI_NAMESPACE = new StringBuffer(
+            "\n  xmlns:xsi=").append(SCHEMA_URI).toString();
 
     /** Fixed return footer information */
     private static final String FOOTER = "\n</DeleteFeatureType>";
@@ -77,7 +77,8 @@ public class DeleteFeatureTypeResponse implements Response {
      * The default transformations factory.
      */
     protected final static CoordinateOperationFactory opFactory = FactoryFinder
-        .getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
+        .getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT,
+                Boolean.TRUE));
 
     /** The root directory from which the configuration is loaded. */
     private File root;
@@ -99,7 +100,8 @@ public class DeleteFeatureTypeResponse implements Response {
      * @uml.property name="mtFactory"
      * @uml.associationEnd multiplicity="(1 1)"
      */
-    protected final MathTransformFactory mtFactory = FactoryFinder.getMathTransformFactory(null);
+    protected final MathTransformFactory mtFactory = FactoryFinder
+        .getMathTransformFactory(null);
 
     /**
      * Returns any extra headers that this service might want to set in the HTTP
@@ -116,8 +118,8 @@ public class DeleteFeatureTypeResponse implements Response {
 
         if (!(request instanceof DeleteFeatureTypeRequest)) {
             throw new CatalogException(new StringBuffer(
-                    "illegal request type, expected DescribeRequest, got ").append(request)
-                                                                                                               .toString());
+                    "illegal request type, expected DescribeRequest, got ").append(
+                    request).toString());
         }
 
         DeleteFeatureTypeRequest catalogRequest = (DeleteFeatureTypeRequest) request;
@@ -137,7 +139,8 @@ public class DeleteFeatureTypeResponse implements Response {
             // Removing the FeatureType
             // //
             // update the data config
-            DataConfig dataConfig = ConfigRequests.getDataConfig(req.getHttpServletRequest());
+            DataConfig dataConfig = ConfigRequests.getDataConfig(req
+                    .getHttpServletRequest());
 
             // //
             // Retrieving FeatureType ...
@@ -146,7 +149,8 @@ public class DeleteFeatureTypeResponse implements Response {
                 LOGGER.config("Decoding featureType ID: " + featureTypeId);
             }
 
-            FeatureTypeInfoDTO featureType = dataConfig.getFeatureTypeConfig(featureTypeId).toDTO();
+            FeatureTypeInfoDTO featureType = dataConfig.getFeatureTypeConfig(featureTypeId)
+                                                       .toDTO();
 
             // //
             // Updating the catalog.
@@ -162,7 +166,8 @@ public class DeleteFeatureTypeResponse implements Response {
             File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
 
             try {
-                XMLConfigWriter.store((DataDTO) request.getCATALOG().getData().toDTO(), rootDir);
+                XMLConfigWriter.store((DataDTO) request.getCATALOG().getData()
+                                                       .toDTO(), rootDir);
             } catch (ConfigurationException e) {
                 e.printStackTrace();
                 throw new ServletException(e);
@@ -201,14 +206,16 @@ public class DeleteFeatureTypeResponse implements Response {
         }
     }
 
-    private final String generateResponse(DeleteFeatureTypeRequest catalogRequest)
-        throws CatalogException {
+    private final String generateResponse(
+        DeleteFeatureTypeRequest catalogRequest) throws CatalogException {
         // Initialize return information and intermediate return objects
         StringBuffer tempResponse = new StringBuffer();
 
         tempResponse.append("<?xml version=\"1.0\" encoding=\"")
-                    .append(catalogRequest.getGeoServer().getCharSet().displayName()).append("\"?>")
-                    .append("\n<DeleteFeatureType version=").append(CURR_VER).append(" ").toString();
+                    .append(catalogRequest.getGeoServer().getCharSet()
+                                          .displayName()).append("\"?>")
+                    .append("\n<DeleteFeatureType version=").append(CURR_VER)
+                    .append(" ").toString();
 
         tempResponse.append(CATALOG_NAMESPACE);
         tempResponse.append(XLINK_NAMESPACE);
@@ -221,7 +228,8 @@ public class DeleteFeatureTypeResponse implements Response {
          * ").append(request.getSchemaBaseUrl()).append(
          * "catalog/1.0.0/describeCoverage.xsd\">\n\n");
          */
-        tempResponse.append(" xsi:schemaLocation=\"").append(CATALOG_URL).append(" ")
+        tempResponse.append(" xsi:schemaLocation=\"").append(CATALOG_URL)
+                    .append(" ")
                     .append("http://www.geo-solutions.it/catalog/1.0/")
                     .append("deleteFeatureType.xsd\">\n\n");
 

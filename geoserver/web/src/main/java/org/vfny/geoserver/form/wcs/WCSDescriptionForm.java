@@ -21,8 +21,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public final class WCSDescriptionForm extends ActionForm {
     /**
-         * Comment for <code>serialVersionUID</code>
-         */
+     * Comment for <code>serialVersionUID</code>
+     */
     private static final long serialVersionUID = 3258692117605068857L;
 
     /**
@@ -208,13 +208,15 @@ public final class WCSDescriptionForm extends ActionForm {
         String out = "";
 
         for (int i = 0; i < config.getKeywords().size(); i++) {
-            out = out + config.getKeywords().get(i) + System.getProperty("line.separator");
+            out = out + config.getKeywords().get(i)
+                + System.getProperty("line.separator");
         }
 
         this.keywords = out;
     }
 
-    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping,
+        HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         if ((name == null) || (name.length() == 0)) {
@@ -230,11 +232,13 @@ public final class WCSDescriptionForm extends ActionForm {
         }
 
         if ((accessConstraints == null) || (accessConstraints.length() == 0)) {
-            errors.add("accessConstraints", new ActionError("error.accessConstraints.required"));
+            errors.add("accessConstraints",
+                new ActionError("error.accessConstraints.required"));
         }
 
         if ((maintainer == null) || (maintainer.length() == 0)) {
-            errors.add("maintainer", new ActionError("error.maintainer.required"));
+            errors.add("maintainer",
+                new ActionError("error.maintainer.required"));
         }
 
         if ((_abstract == null) || (_abstract.length() == 0)) {

@@ -4,20 +4,7 @@
  */
 package org.vfny.geoserver.action.data;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.vividsolutions.jts.geom.Envelope;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -48,8 +35,18 @@ import org.vfny.geoserver.form.data.TypesEditorForm;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.DataStoreUtils;
-
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -83,11 +80,12 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Jody Garnett
  */
 public class TypesEditorAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
-        throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
+        UserContainer user, HttpServletRequest request,
+        HttpServletResponse response) throws IOException, ServletException {
         if (LOGGER.isLoggable(Level.FINER)) {
-            LOGGER.finer(new StringBuffer("form bean:").append(form.getClass().getName()).toString());
+            LOGGER.finer(new StringBuffer("form bean:").append(
+                    form.getClass().getName()).toString());
         }
 
         TypesEditorForm typeForm = (TypesEditorForm) form;
@@ -95,17 +93,20 @@ public class TypesEditorAction extends ConfigAction {
         String action = typeForm.getAction();
 
         if (LOGGER.isLoggable(Level.FINER)) {
-            LOGGER.finer(new StringBuffer("TypesEditorAction is ").append(action).toString());
+            LOGGER.finer(new StringBuffer("TypesEditorAction is ").append(
+                    action).toString());
         }
 
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = getResources(request);
-        final String SUBMIT = HTMLEncoder.decode(messages.getMessage(locale, "label.submit"));
-        final String ADD = HTMLEncoder.decode(messages.getMessage(locale, "label.add"));
+        final String SUBMIT = HTMLEncoder.decode(messages.getMessage(locale,
+                    "label.submit"));
+        final String ADD = HTMLEncoder.decode(messages.getMessage(locale,
+                    "label.add"));
         final String BBOX = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.calculateBoundingBox.label"));
-        final String LOOKUP_SRS = HTMLEncoder.decode(messages.getMessage(locale,
-                    "config.data.lookupSRS.label"));
+        final String LOOKUP_SRS = HTMLEncoder.decode(messages.getMessage(
+                    locale, "config.data.lookupSRS.label"));
 
         if (LOGGER.isLoggable(Level.FINER)) {
             LOGGER.finer(new StringBuffer("BBOX: ").append(BBOX).toString());
@@ -115,7 +116,8 @@ public class TypesEditorAction extends ConfigAction {
                     "config.data.sldWizard.label"));
 
         if (typeForm.getAutoGenerateExtent().equals("true")) {
-            if ((typeForm.getSRS() == null) || typeForm.getSRS().trim().equals("0")) {
+            if ((typeForm.getSRS() == null)
+                    || typeForm.getSRS().trim().equals("0")) {
                 executeLookupSRS(mapping, typeForm, user, request);
             }
 
@@ -165,17 +167,20 @@ public class TypesEditorAction extends ConfigAction {
         return mapping.findForward("config.data.type.editor");
     }
 
-    private ActionForward executeLookupSRS(ActionMapping mapping, TypesEditorForm typeForm,
-        UserContainer user, HttpServletRequest request)
+    private ActionForward executeLookupSRS(ActionMapping mapping,
+        TypesEditorForm typeForm, UserContainer user, HttpServletRequest request)
         throws IOException, ServletException {
         DataConfig dataConfig = getDataConfig();
-        DataStoreConfig dsConfig = dataConfig.getDataStore(typeForm.getDataStoreId());
-        DataStore dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
+        DataStoreConfig dsConfig = dataConfig.getDataStore(typeForm
+                .getDataStoreId());
+        DataStore dataStore = dsConfig.findDataStore(request.getSession()
+                                                            .getServletContext());
         FeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
         FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
 
         try {
-            CoordinateReferenceSystem crs = fs.getSchema().getDefaultGeometry().getCoordinateSystem();
+            CoordinateReferenceSystem crs = fs.getSchema().getDefaultGeometry()
+                                              .getCoordinateSystem();
             String s = CRS.lookupIdentifier(crs, true);
 
             if (s == null) {
@@ -206,17 +211,20 @@ public class TypesEditorAction extends ConfigAction {
      * @throws IOException DOCUMENT ME!
      * @throws ServletException DOCUMENT ME!
      */
-    private ActionForward executeBBox(ActionMapping mapping, TypesEditorForm typeForm,
-        UserContainer user, HttpServletRequest request)
+    private ActionForward executeBBox(ActionMapping mapping,
+        TypesEditorForm typeForm, UserContainer user, HttpServletRequest request)
         throws IOException, ServletException {
         DataConfig dataConfig = getDataConfig();
-        DataStoreConfig dsConfig = dataConfig.getDataStore(typeForm.getDataStoreId());
-        DataStore dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
+        DataStoreConfig dsConfig = dataConfig.getDataStore(typeForm
+                .getDataStoreId());
+        DataStore dataStore = dsConfig.findDataStore(request.getSession()
+                                                            .getServletContext());
         FeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
         FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine(new StringBuffer("calculating bbox for their dataset").toString());
+            LOGGER.fine(new StringBuffer("calculating bbox for their dataset")
+                .toString());
         }
 
         Envelope envelope = DataStoreUtils.getBoundingBoxEnvelope(fs);
@@ -224,7 +232,8 @@ public class TypesEditorAction extends ConfigAction {
         if (envelope.isNull()) // there's no data in the featuretype!!
          {
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.fine(new StringBuffer("FeatureType '").append(featureType.getTypeName())
+                LOGGER.fine(new StringBuffer("FeatureType '").append(
+                        featureType.getTypeName())
                                                              .append("' has a null bounding box")
                                                              .toString());
             }
@@ -266,7 +275,8 @@ public class TypesEditorAction extends ConfigAction {
             Envelope declaredEnvelope = envelope;
 
             if (!CRS.equalsIgnoreMetadata(original, crsDeclared)) {
-                MathTransform xform = CRS.findMathTransform(original, crsDeclared, true);
+                MathTransform xform = CRS.findMathTransform(original,
+                        crsDeclared, true);
                 declaredEnvelope = JTS.transform(envelope, null, xform, 10); //convert data bbox to lat/long
             }
 
@@ -275,7 +285,8 @@ public class TypesEditorAction extends ConfigAction {
             typeForm.setDataMinY(Double.toString(declaredEnvelope.getMinY()));
             typeForm.setDataMaxY(Double.toString(declaredEnvelope.getMaxY()));
 
-            MathTransform xform = CRS.findMathTransform(original, crsLatLong, true);
+            MathTransform xform = CRS.findMathTransform(original, crsLatLong,
+                    true);
             Envelope xformed_envelope = JTS.transform(envelope, xform); //convert data bbox to lat/long
 
             typeForm.setMinX(Double.toString(xformed_envelope.getMinX()));
@@ -290,8 +301,8 @@ public class TypesEditorAction extends ConfigAction {
 
             ActionErrors errors = new ActionErrors();
             errors.add(ActionErrors.GLOBAL_ERROR,
-                new ActionError("error.data.couldNotFindSRSAuthority", e.getLocalizedMessage(),
-                    e.getAuthorityCode()));
+                new ActionError("error.data.couldNotFindSRSAuthority",
+                    e.getLocalizedMessage(), e.getAuthorityCode()));
             saveErrors(request, errors);
 
             return mapping.findForward("config.data.type.editor");
@@ -303,7 +314,8 @@ public class TypesEditorAction extends ConfigAction {
 
             ActionErrors errors = new ActionErrors();
             errors.add(ActionErrors.GLOBAL_ERROR,
-                new ActionError("error.data.factoryException", fe.getLocalizedMessage()));
+                new ActionError("error.data.factoryException",
+                    fe.getLocalizedMessage()));
             saveErrors(request, errors);
 
             return mapping.findForward("config.data.type.editor");
@@ -314,7 +326,8 @@ public class TypesEditorAction extends ConfigAction {
             }
 
             ActionErrors errors = new ActionErrors();
-            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.data.transformException"));
+            errors.add(ActionErrors.GLOBAL_ERROR,
+                new ActionError("error.data.transformException"));
             saveErrors(request, errors);
 
             return mapping.findForward("config.data.type.editor");
@@ -329,7 +342,8 @@ public class TypesEditorAction extends ConfigAction {
      * @param form
      * @param config
      */
-    private void sync(TypesEditorForm form, FeatureTypeConfig config, HttpServletRequest request) {
+    private void sync(TypesEditorForm form, FeatureTypeConfig config,
+        HttpServletRequest request) {
         config.setName(form.getTypeName());
         config.setAbstract(form.getAbstract());
         config.setDefaultStyle(form.getStyleId());
@@ -344,13 +358,16 @@ public class TypesEditorAction extends ConfigAction {
 
         config.setSRS(Integer.parseInt(form.getSRS()));
         config.setTitle(form.getTitle());
+
         Envelope latLonBbox = getBoundingBox(form);
+
         // if the lat/lon bbox did not change, don't try to update stuff, since we don't have
         // the native bbox calculated
-        if(!config.getLatLongBBox().equals(latLonBbox))  {
+        if (!config.getLatLongBBox().equals(latLonBbox)) {
             config.setLatLongBBox(latLonBbox);
             config.setNativeBBox(getNativeBBox(form));
         }
+
         config.setKeywords(keyWords(form));
         config.setMetadataLinks(metadataLinks(form));
         config.setWmsPath(form.getWmsPath());
@@ -364,7 +381,8 @@ public class TypesEditorAction extends ConfigAction {
 
         String schemaBase = form.getSchemaBase();
 
-        if ((schemaBase == null) || schemaBase.equals("") || schemaBase.equals("--")) {
+        if ((schemaBase == null) || schemaBase.equals("")
+                || schemaBase.equals("--")) {
             config.setSchemaBase(null);
             config.setSchemaName(null);
             config.setSchemaAttributes(null);
@@ -373,8 +391,8 @@ public class TypesEditorAction extends ConfigAction {
 
             String schemaName = config.getSchemaName();
             List schemaAttributes = config.getSchemaAttributes();
-            System.out.println("in non null sb, sname: " + schemaName + ", satts: "
-                + schemaAttributes);
+            System.out.println("in non null sb, sname: " + schemaName
+                + ", satts: " + schemaAttributes);
 
             if ((schemaName == null) || (schemaName.trim().length() == 0)) {
                 schemaName = form.getTypeName() + "_Type";
@@ -419,8 +437,8 @@ public class TypesEditorAction extends ConfigAction {
         //config.setSchemaAttributes(form.toSchemaAttributes());
     }
 
-    private void executeAdd(ActionMapping mapping, TypesEditorForm form, UserContainer user,
-        HttpServletRequest request) {
+    private void executeAdd(ActionMapping mapping, TypesEditorForm form,
+        UserContainer user, HttpServletRequest request) {
         String attributeName = form.getNewAttribute();
 
         FeatureType fType = getFeatureType(form, request);
@@ -428,21 +446,26 @@ public class TypesEditorAction extends ConfigAction {
         form.getAttributes().add(newAttribute);
     }
 
-    private AttributeForm newAttributeForm(String attributeName, FeatureType featureType) {
+    private AttributeForm newAttributeForm(String attributeName,
+        FeatureType featureType) {
         AttributeType attributeType = featureType.getAttributeType(attributeName);
         AttributeTypeInfoConfig attributeConfig = new AttributeTypeInfoConfig(attributeType);
-        AttributeForm newAttribute = new AttributeForm(attributeConfig, attributeType);
+        AttributeForm newAttribute = new AttributeForm(attributeConfig,
+                attributeType);
 
         return newAttribute;
     }
 
-    private FeatureType getFeatureType(TypesEditorForm form, HttpServletRequest request) {
+    private FeatureType getFeatureType(TypesEditorForm form,
+        HttpServletRequest request) {
         FeatureType featureType = null;
 
         try {
             DataConfig config = ConfigRequests.getDataConfig(request);
-            DataStoreConfig dataStoreConfig = config.getDataStore(form.getDataStoreId());
-            DataStore dataStore = dataStoreConfig.findDataStore(getServlet().getServletContext());
+            DataStoreConfig dataStoreConfig = config.getDataStore(form
+                    .getDataStoreId());
+            DataStore dataStore = dataStoreConfig.findDataStore(getServlet()
+                                                                    .getServletContext());
             featureType = dataStore.getSchema(form.getTypeName());
         } catch (IOException e) {
             // DataStore unavailable!
@@ -461,13 +484,14 @@ public class TypesEditorAction extends ConfigAction {
      *
      * @return
      */
-    private ActionForward executeSubmit(ActionMapping mapping, TypesEditorForm form,
-        UserContainer user, HttpServletRequest request) {
+    private ActionForward executeSubmit(ActionMapping mapping,
+        TypesEditorForm form, UserContainer user, HttpServletRequest request) {
         FeatureTypeConfig config = user.getFeatureTypeConfig();
         sync(form, config, request);
 
         DataConfig dataConfig = (DataConfig) getDataConfig();
-        dataConfig.addFeatureType(config.getDataStoreId() + ":" + config.getName(), config);
+        dataConfig.addFeatureType(config.getDataStoreId() + ":"
+            + config.getName(), config);
 
         // Don't think reset is needed (as me have moved on to new page)
         // form.reset(mapping, request);
@@ -488,7 +512,8 @@ public class TypesEditorAction extends ConfigAction {
      */
     private Envelope getBoundingBox(TypesEditorForm typeForm) {
         return new Envelope(Double.parseDouble(typeForm.getMinX()),
-            Double.parseDouble(typeForm.getMaxX()), Double.parseDouble(typeForm.getMinY()),
+            Double.parseDouble(typeForm.getMaxX()),
+            Double.parseDouble(typeForm.getMinY()),
             Double.parseDouble(typeForm.getMaxY()));
     }
 
@@ -504,9 +529,10 @@ public class TypesEditorAction extends ConfigAction {
         // user specified the bbox by hand, we have to resort to back-project the lat/lon one
         try {
             return new Envelope(Double.parseDouble(typeForm.getDataMinX()),
-                Double.parseDouble(typeForm.getDataMaxX()), Double.parseDouble(typeForm.getDataMinY()),
+                Double.parseDouble(typeForm.getDataMaxX()),
+                Double.parseDouble(typeForm.getDataMinY()),
                 Double.parseDouble(typeForm.getDataMaxY()));
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return null;
         }
     }
@@ -521,7 +547,8 @@ public class TypesEditorAction extends ConfigAction {
     private Set keyWords(TypesEditorForm typeForm) {
         HashSet keywords = new HashSet();
         String[] array = (typeForm.getKeywords() != null)
-            ? typeForm.getKeywords().split(System.getProperty("line.separator")) : new String[0];
+            ? typeForm.getKeywords().split(System.getProperty("line.separator"))
+            : new String[0];
 
         for (int i = 0; i < array.length; i++) {
             keywords.add(array[i]);

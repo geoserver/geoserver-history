@@ -37,7 +37,8 @@ public class GETMAPValidator {
      */
     public List validateGETMAP(InputStream xml, ServletContext servContext) {
         // File schemaFile = new File( GeoserverDataDirectory.getGeoserverDataDirectory(servContext),"/data/capabilities/sld/StyledLayerDescriptor.xsd");
-        File schemaFile = new File(GeoserverDataDirectory.getGeoserverDataDirectory(),
+        File schemaFile = new File(GeoserverDataDirectory
+                .getGeoserverDataDirectory(),
                 "/data/capabilities/sld/GetMap.xsd");
 
         try {
@@ -55,14 +56,14 @@ public class GETMAPValidator {
     }
 
     /**
-       *  returns a better formated error message - suitable for framing.
-       * There's a more complex version in StylesEditorAction.
-       *
-       * This will kick out a VERY LARGE errorMessage.
-       *
-       * @param xml
-       * @param errors
-       */
+     *  returns a better formated error message - suitable for framing.
+     * There's a more complex version in StylesEditorAction.
+     *
+     * This will kick out a VERY LARGE errorMessage.
+     *
+     * @param xml
+     * @param errors
+     */
     public static String getErrorMessage(Reader xml, List errors) {
         return SLDValidator.getErrorMessage(xml, errors);
     }
@@ -72,7 +73,8 @@ public class GETMAPValidator {
     }
 
     public List validateGETMAP(InputSource xml, ServletContext servContext) {
-        File schemaFile = new File(GeoserverDataDirectory.getGeoserverDataDirectory(),
+        File schemaFile = new File(GeoserverDataDirectory
+                .getGeoserverDataDirectory(),
                 "/data/capabilities/sld/GetMap.xsd");
 
         try {
@@ -97,7 +99,8 @@ public class GETMAPValidator {
 
         try {
             parser.setFeature("http://xml.org/sax/features/validation", true);
-            parser.setFeature("http://apache.org/xml/features/validation/schema", true);
+            parser.setFeature("http://apache.org/xml/features/validation/schema",
+                true);
             parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking",
                 false);
 

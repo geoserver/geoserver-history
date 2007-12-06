@@ -1,8 +1,11 @@
+/* Copyright (c) 2001, 2003 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 import org.geotools.feature.Feature;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -12,15 +15,15 @@ import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.collection.AbstractFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
 
 /**
- * A feature collection wrapping a base collection, returning features that do 
+ * A feature collection wrapping a base collection, returning features that do
  * conform to the specified type (which has have a subset of the attributes in the
  * original schema), and that do use the wrapped features to compute their bounds (so that
- * the Feature bounds can be computed even if the visible attributes do not include geometries) 
+ * the Feature bounds can be computed even if the visible attributes do not include geometries)
  * @author Andrea Aime - TOPP
  *
  */
@@ -32,7 +35,8 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
      * @param wrapped the wrapped feature collection
      * @param targetSchema the target schema
      */
-    public FeatureBoundsFeatureCollection(FeatureCollection wrapped, FeatureType targetSchema) {
+    public FeatureBoundsFeatureCollection(FeatureCollection wrapped,
+        FeatureType targetSchema) {
         super(targetSchema);
         this.wrapped = wrapped;
     }
@@ -42,7 +46,7 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
     }
 
     protected Iterator openIterator() {
-        return  new BoundsIterator(wrapped.features(), getSchema());
+        return new BoundsIterator(wrapped.features(), getSchema());
     }
 
     public int size() {
@@ -50,7 +54,7 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
     }
 
     /**
-     * 
+     *
      * @author Andrea Aime - TOPP
      *
      */
@@ -73,6 +77,7 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
 
         public Object next() throws NoSuchElementException {
             Feature base = wrapped.next();
+
             return new BoundedFeature(base, targetSchema);
         }
 
@@ -82,16 +87,15 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
     }
 
     /**
-     * Wraps a Feature shaving off all attributes not included in the original type, but 
+     * Wraps a Feature shaving off all attributes not included in the original type, but
      * delegates bounds computation to the original feature.
      * @author Andrea Aime - TOPP
      *
      */
     private static class BoundedFeature implements Feature {
         private Feature wrapped;
-
         private FeatureType type;
-        
+
         public BoundedFeature(Feature wrapped, FeatureType type) {
             this.wrapped = wrapped;
             this.type = type;
@@ -102,39 +106,54 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
         }
 
         public Object getAttribute(String path) {
-            if (type.getAttributeType(path) == null)
+            if (type.getAttributeType(path) == null) {
                 return null;
+            }
+
             return wrapped.getAttribute(path);
         }
 
         public Object[] getAttributes(Object[] attributes) {
-            Object[] retval = attributes != null ? attributes : new Object[type.getAttributeCount()];
+            Object[] retval = (attributes != null) ? attributes
+                                                   : new Object[type
+                .getAttributeCount()];
+
             for (int i = 0; i < retval.length; i++) {
-                retval[i] = wrapped.getAttribute(type.getAttributeType(i).getName());
+                retval[i] = wrapped.getAttribute(type.getAttributeType(i)
+                                                     .getName());
             }
+
             return retval;
         }
 
         public ReferencedEnvelope getBounds() {
             // we may not have the default geometry around in the reduced feature type,
             // so let's output a referenced envelope if possible
-            if(wrapped.getFeatureType().getDefaultGeometry() != null) {
-                CoordinateReferenceSystem crs = wrapped.getFeatureType().getDefaultGeometry().getCoordinateSystem();
-                if(crs != null) {
+            if (wrapped.getFeatureType().getDefaultGeometry() != null) {
+                CoordinateReferenceSystem crs = wrapped.getFeatureType()
+                                                       .getDefaultGeometry()
+                                                       .getCoordinateSystem();
+
+                if (crs != null) {
                     return new ReferencedEnvelope(wrapped.getBounds(), crs);
                 }
             }
-            return  wrapped.getBounds();
+
+            return wrapped.getBounds();
         }
 
         public Geometry getDefaultGeometry() {
-           return getPrimaryGeometry();
+            return getPrimaryGeometry();
         }
+
         public Geometry getPrimaryGeometry() {
-        	 GeometryAttributeType defaultGeometry = type.getDefaultGeometry();
-             if(defaultGeometry == null)
-                 return null;
-             return (Geometry) wrapped.getAttribute(defaultGeometry.getName());
+            GeometryAttributeType defaultGeometry = type.getDefaultGeometry();
+
+            if (defaultGeometry == null) {
+                return null;
+            }
+
+            return (Geometry) wrapped.getAttribute(defaultGeometry.getName());
         }
 
         public FeatureType getFeatureType() {
@@ -149,21 +168,27 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
             return type.getAttributeCount();
         }
 
-        public void setAttribute(int position, Object val) throws IllegalAttributeException,
-                ArrayIndexOutOfBoundsException {
-            throw new UnsupportedOperationException("This feature wrapper is read only");
+        public void setAttribute(int position, Object val)
+            throws IllegalAttributeException, ArrayIndexOutOfBoundsException {
+            throw new UnsupportedOperationException(
+                "This feature wrapper is read only");
         }
 
-        public void setAttribute(String path, Object attribute) throws IllegalAttributeException {
-            throw new UnsupportedOperationException("This feature wrapper is read only");
+        public void setAttribute(String path, Object attribute)
+            throws IllegalAttributeException {
+            throw new UnsupportedOperationException(
+                "This feature wrapper is read only");
         }
 
-        public void setDefaultGeometry(Geometry geometry) throws IllegalAttributeException {
+        public void setDefaultGeometry(Geometry geometry)
+            throws IllegalAttributeException {
             setPrimaryGeometry(geometry);
         }
-        public void setPrimaryGeometry(Geometry geometry) throws IllegalAttributeException  {
-            throw new UnsupportedOperationException("This feature wrapper is read only");
-        }
 
+        public void setPrimaryGeometry(Geometry geometry)
+            throws IllegalAttributeException {
+            throw new UnsupportedOperationException(
+                "This feature wrapper is read only");
+        }
     }
 }

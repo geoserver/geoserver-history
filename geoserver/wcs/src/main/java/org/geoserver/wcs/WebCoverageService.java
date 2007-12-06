@@ -24,8 +24,8 @@ import org.vfny.geoserver.wcs.responses.WCSCapabilitiesResponse;
  */
 public interface WebCoverageService {
     /**
-    * GetCapabilities operation.
-    */
+     * GetCapabilities operation.
+     */
     WCSCapabilitiesResponse getCapabilities(WCSCapabilitiesRequest request);
 
     /**

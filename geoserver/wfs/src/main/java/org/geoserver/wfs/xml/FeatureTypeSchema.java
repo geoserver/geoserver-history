@@ -44,8 +44,8 @@ public abstract class FeatureTypeSchema {
      */
     protected GeoServerResourceLoader loader;
 
-    protected FeatureTypeSchema(FeatureTypeInfo featureType, WFS wfs, Data catalog,
-        GeoServerResourceLoader loader) {
+    protected FeatureTypeSchema(FeatureTypeInfo featureType, WFS wfs,
+        Data catalog, GeoServerResourceLoader loader) {
         this.featureType = featureType;
         this.catalog = catalog;
         this.wfs = wfs;

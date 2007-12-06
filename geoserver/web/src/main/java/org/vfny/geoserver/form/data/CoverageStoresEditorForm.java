@@ -149,14 +149,16 @@ public final class CoverageStoresEditorForm extends ActionForm {
         //
         //
         // //
-        CoverageStoreConfig dfConfig = Requests.getUserContainer(request).getDataFormatConfig();
+        CoverageStoreConfig dfConfig = Requests.getUserContainer(request)
+                                               .getDataFormatConfig();
 
         if (dfConfig == null) {
             // something is horribly wrong no FormatID selected!
             // The JSP needs to not include us if there is no
             // selected Format
             //
-            throw new RuntimeException("selectedDataFormatId required in Session");
+            throw new RuntimeException(
+                "selectedDataFormatId required in Session");
         }
 
         // //
@@ -181,11 +183,13 @@ public final class CoverageStoresEditorForm extends ActionForm {
         //
         // //
         Format factory = dfConfig.getFactory();
-        type = (((dfConfig.getType() != null) && (dfConfig.getType().length() > 0))
-            ? dfConfig.getType() : factory.getName());
+        type = (((dfConfig.getType() != null)
+            && (dfConfig.getType().length() > 0)) ? dfConfig.getType()
+                                                  : factory.getName());
     }
 
-    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping,
+        HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         // Selected CoverageStoreConfig is in session
@@ -229,7 +233,8 @@ public final class CoverageStoresEditorForm extends ActionForm {
 
                 if (param == null) {
                     errors.add("paramValue[" + i + "]",
-                        new ActionError("error.dataFormatEditor.param.missing", key,
+                        new ActionError(
+                            "error.dataFormatEditor.param.missing", key,
                             factory.getDescription()));
 
                     continue;
@@ -249,7 +254,8 @@ public final class CoverageStoresEditorForm extends ActionForm {
                                                     // maxFileSize="nK" />
                     }
 
-                    errors.add("styleID", new ActionError("error.file.maxLengthExceeded", size));
+                    errors.add("styleID",
+                        new ActionError("error.file.maxLengthExceeded", size));
 
                     return errors;
                 }

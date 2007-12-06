@@ -17,7 +17,6 @@ import org.w3c.dom.Document;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -60,23 +59,23 @@ public class OpenLayersMapTemplateTest extends WMSTestSupport {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setValidating(false);
         dbf.setExpandEntityReferences(false);
-        
-        DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-        docBuilder.setEntityResolver(
-            new EntityResolver() {
 
+        DocumentBuilder docBuilder = dbf.newDocumentBuilder();
+        docBuilder.setEntityResolver(new EntityResolver() {
                 public InputSource resolveEntity(String publicId,
                     String systemId) throws SAXException, IOException {
-                    StringReader reader = new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                    StringReader reader = new StringReader(
+                            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                     InputSource source = new InputSource(reader);
-                    source.setPublicId(publicId); 
-                    source.setSystemId(systemId); 
+                    source.setPublicId(publicId);
+                    source.setSystemId(systemId);
+
                     return source;
                 }
-            }
-        );
+            });
 
-        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
+        Document document = docBuilder.parse(new ByteArrayInputStream(
+                    output.toByteArray()));
         assertNotNull(document);
 
         assertEquals("html", document.getDocumentElement().getNodeName());

@@ -7,10 +7,9 @@
 package net.opengis.ows;
 
 import org.eclipse.emf.common.util.EMap;
-
 import org.eclipse.emf.ecore.EObject;
-
 import org.eclipse.emf.ecore.util.FeatureMap;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -61,63 +60,63 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * @generated
  */
 public interface DocumentRoot extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Mixed</b></em>' attribute list.
      * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Mixed</em>' attribute list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Mixed</em>' attribute list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Mixed</em>' attribute list.
      * @see net.opengis.ows.OwsPackage#getDocumentRoot_Mixed()
      * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry" many="true"
      *        extendedMetaData="kind='elementWildcard' name=':mixed'"
      * @generated
      */
-	FeatureMap getMixed();
+    FeatureMap getMixed();
 
-	/**
+    /**
      * Returns the value of the '<em><b>XMLNS Prefix Map</b></em>' map.
      * The key is of type {@link java.lang.String},
      * and the value is of type {@link java.lang.String},
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>XMLNS Prefix Map</em>' map isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>XMLNS Prefix Map</em>' map isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>XMLNS Prefix Map</em>' map.
      * @see net.opengis.ows.OwsPackage#getDocumentRoot_XMLNSPrefixMap()
      * @model mapType="org.eclipse.emf.ecore.EStringToStringMapEntry" keyType="java.lang.String" valueType="java.lang.String" transient="true"
      *        extendedMetaData="kind='attribute' name='xmlns:prefix'"
      * @generated
      */
-	EMap getXMLNSPrefixMap();
+    EMap getXMLNSPrefixMap();
 
-	/**
+    /**
      * Returns the value of the '<em><b>XSI Schema Location</b></em>' map.
      * The key is of type {@link java.lang.String},
      * and the value is of type {@link java.lang.String},
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>XSI Schema Location</em>' map isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>XSI Schema Location</em>' map isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>XSI Schema Location</em>' map.
      * @see net.opengis.ows.OwsPackage#getDocumentRoot_XSISchemaLocation()
      * @model mapType="org.eclipse.emf.ecore.EStringToStringMapEntry" keyType="java.lang.String" valueType="java.lang.String" transient="true"
      *        extendedMetaData="kind='attribute' name='xsi:schemaLocation'"
      * @generated
      */
-	EMap getXSISchemaLocation();
+    EMap getXSISchemaLocation();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Abstract</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Brief narrative description of this resource, normally used for display to a human.
      * <!-- end-model-doc -->
@@ -128,22 +127,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='Abstract' namespace='##targetNamespace'"
      * @generated
      */
-	String getAbstract();
+    String getAbstract();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getAbstract <em>Abstract</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Abstract</em>' attribute.
      * @see #getAbstract()
      * @generated
      */
-	void setAbstract(String value);
+    void setAbstract(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Contact Info</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Address of the responsible party.
      * <!-- end-model-doc -->
@@ -154,22 +153,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='ContactInfo' namespace='##targetNamespace'"
      * @generated
      */
-	ContactType getContactInfo();
+    ContactType getContactInfo();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getContactInfo <em>Contact Info</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Contact Info</em>' containment reference.
      * @see #getContactInfo()
      * @generated
      */
-	void setContactInfo(ContactType value);
+    void setContactInfo(ContactType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Individual Name</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Name of the responsible person: surname, given name, title separated by a delimiter.
      * <!-- end-model-doc -->
@@ -180,26 +179,26 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='IndividualName' namespace='##targetNamespace'"
      * @generated
      */
-	String getIndividualName();
+    String getIndividualName();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getIndividualName <em>Individual Name</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Individual Name</em>' attribute.
      * @see #getIndividualName()
      * @generated
      */
-	void setIndividualName(String value);
+    void setIndividualName(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Keywords</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Keywords</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Keywords</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Keywords</em>' containment reference.
      * @see #setKeywords(KeywordsType)
      * @see net.opengis.ows.OwsPackage#getDocumentRoot_Keywords()
@@ -207,22 +206,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='Keywords' namespace='##targetNamespace'"
      * @generated
      */
-	KeywordsType getKeywords();
+    KeywordsType getKeywords();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getKeywords <em>Keywords</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Keywords</em>' containment reference.
      * @see #getKeywords()
      * @generated
      */
-	void setKeywords(KeywordsType value);
+    void setKeywords(KeywordsType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Organisation Name</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Name of the responsible organization.
      * <!-- end-model-doc -->
@@ -233,22 +232,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='OrganisationName' namespace='##targetNamespace'"
      * @generated
      */
-	String getOrganisationName();
+    String getOrganisationName();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getOrganisationName <em>Organisation Name</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Organisation Name</em>' attribute.
      * @see #getOrganisationName()
      * @generated
      */
-	void setOrganisationName(String value);
+    void setOrganisationName(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Point Of Contact</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Identification of, and means of communication with, person(s) responsible for the resource(s).
      * For OWS use in the ServiceProvider section of a service metadata document, the optional organizationName element was removed, since this type is always used with the ProviderName element which provides that information. The optional individualName element was made mandatory, since either the organizationName or individualName element is mandatory. The mandatory "role" element was changed to optional, since no clear use of this information is known in the ServiceProvider section.
@@ -260,22 +259,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='PointOfContact' namespace='##targetNamespace'"
      * @generated
      */
-	ResponsiblePartyType getPointOfContact();
+    ResponsiblePartyType getPointOfContact();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getPointOfContact <em>Point Of Contact</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Point Of Contact</em>' containment reference.
      * @see #getPointOfContact()
      * @generated
      */
-	void setPointOfContact(ResponsiblePartyType value);
+    void setPointOfContact(ResponsiblePartyType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Position Name</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Role or position of the responsible person.
      * <!-- end-model-doc -->
@@ -286,22 +285,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='PositionName' namespace='##targetNamespace'"
      * @generated
      */
-	String getPositionName();
+    String getPositionName();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getPositionName <em>Position Name</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Position Name</em>' attribute.
      * @see #getPositionName()
      * @generated
      */
-	void setPositionName(String value);
+    void setPositionName(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Role</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Function performed by the responsible party. Possible values of this Role shall include the values and the meanings listed in Subclause B.5.5 of ISO 19115:2003.
      * <!-- end-model-doc -->
@@ -312,22 +311,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='Role' namespace='##targetNamespace'"
      * @generated
      */
-	CodeType getRole();
+    CodeType getRole();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getRole <em>Role</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Role</em>' containment reference.
      * @see #getRole()
      * @generated
      */
-	void setRole(CodeType value);
+    void setRole(CodeType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Title</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Title of this resource, normally used for display to a human.
      * <!-- end-model-doc -->
@@ -338,22 +337,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='Title' namespace='##targetNamespace'"
      * @generated
      */
-	String getTitle();
+    String getTitle();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getTitle <em>Title</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Title</em>' attribute.
      * @see #getTitle()
      * @generated
      */
-	void setTitle(String value);
+    void setTitle(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Abstract Meta Data</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Abstract element containing more metadata about the element that includes the containing "metadata" element. A specific server implementation, or an Implementation Specification, can define concrete elements in the AbstractMetaData substitution group.
      * <!-- end-model-doc -->
@@ -363,12 +362,12 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='AbstractMetaData' namespace='##targetNamespace'"
      * @generated
      */
-	EObject getAbstractMetaData();
+    EObject getAbstractMetaData();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Access Constraints</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Access constraint applied to assure the protection of privacy or intellectual property, or any other restrictions on retrieving or using data from or otherwise using this server. The reserved value NONE (case insensitive) shall be used to mean no access constraints are imposed.
      * <!-- end-model-doc -->
@@ -379,26 +378,26 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='AccessConstraints' namespace='##targetNamespace'"
      * @generated
      */
-	String getAccessConstraints();
+    String getAccessConstraints();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getAccessConstraints <em>Access Constraints</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Access Constraints</em>' attribute.
      * @see #getAccessConstraints()
      * @generated
      */
-	void setAccessConstraints(String value);
+    void setAccessConstraints(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Available CRS</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Available CRS</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Available CRS</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Available CRS</em>' attribute.
      * @see #setAvailableCRS(String)
      * @see net.opengis.ows.OwsPackage#getDocumentRoot_AvailableCRS()
@@ -406,26 +405,26 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='AvailableCRS' namespace='##targetNamespace'"
      * @generated
      */
-	String getAvailableCRS();
+    String getAvailableCRS();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getAvailableCRS <em>Available CRS</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Available CRS</em>' attribute.
      * @see #getAvailableCRS()
      * @generated
      */
-	void setAvailableCRS(String value);
+    void setAvailableCRS(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Bounding Box</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Bounding Box</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Bounding Box</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Bounding Box</em>' containment reference.
      * @see #setBoundingBox(BoundingBoxType)
      * @see net.opengis.ows.OwsPackage#getDocumentRoot_BoundingBox()
@@ -433,22 +432,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='BoundingBox' namespace='##targetNamespace'"
      * @generated
      */
-	BoundingBoxType getBoundingBox();
+    BoundingBoxType getBoundingBox();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getBoundingBox <em>Bounding Box</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Bounding Box</em>' containment reference.
      * @see #getBoundingBox()
      * @generated
      */
-	void setBoundingBox(BoundingBoxType value);
+    void setBoundingBox(BoundingBoxType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Dcp</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Information for one distributed Computing Platform (DCP) supported for this operation. At present, only the HTTP DCP is defined, so this element only includes the HTTP element.
      * <!-- end-model-doc -->
@@ -459,26 +458,26 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='DCP' namespace='##targetNamespace'"
      * @generated
      */
-	DCPType getDcp();
+    DCPType getDcp();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getDcp <em>Dcp</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Dcp</em>' containment reference.
      * @see #getDcp()
      * @generated
      */
-	void setDcp(DCPType value);
+    void setDcp(DCPType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Exception</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Exception</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Exception</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Exception</em>' containment reference.
      * @see #setException(ExceptionType)
      * @see net.opengis.ows.OwsPackage#getDocumentRoot_Exception()
@@ -486,22 +485,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='Exception' namespace='##targetNamespace'"
      * @generated
      */
-	ExceptionType getException();
+    ExceptionType getException();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getException <em>Exception</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Exception</em>' containment reference.
      * @see #getException()
      * @generated
      */
-	void setException(ExceptionType value);
+    void setException(ExceptionType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Exception Report</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Report message returned to the client that requested any OWS operation when the server detects an error while processing that operation request.
      * <!-- end-model-doc -->
@@ -512,22 +511,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='ExceptionReport' namespace='##targetNamespace'"
      * @generated
      */
-	ExceptionReportType getExceptionReport();
+    ExceptionReportType getExceptionReport();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getExceptionReport <em>Exception Report</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Exception Report</em>' containment reference.
      * @see #getExceptionReport()
      * @generated
      */
-	void setExceptionReport(ExceptionReportType value);
+    void setExceptionReport(ExceptionReportType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Extended Capabilities</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Individual software vendors and servers can use this element to provide metadata about any additional server abilities.
      * <!-- end-model-doc -->
@@ -538,22 +537,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='ExtendedCapabilities' namespace='##targetNamespace'"
      * @generated
      */
-	EObject getExtendedCapabilities();
+    EObject getExtendedCapabilities();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getExtendedCapabilities <em>Extended Capabilities</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Extended Capabilities</em>' containment reference.
      * @see #getExtendedCapabilities()
      * @generated
      */
-	void setExtendedCapabilities(EObject value);
+    void setExtendedCapabilities(EObject value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Fees</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Fees and terms for retrieving data from or otherwise using this server, including the monetary units as specified in ISO 4217. The reserved value NONE (case insensitive) shall be used to mean no fees or terms.
      * <!-- end-model-doc -->
@@ -564,26 +563,26 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='Fees' namespace='##targetNamespace'"
      * @generated
      */
-	String getFees();
+    String getFees();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getFees <em>Fees</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Fees</em>' attribute.
      * @see #getFees()
      * @generated
      */
-	void setFees(String value);
+    void setFees(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Get Capabilities</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Get Capabilities</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Get Capabilities</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Get Capabilities</em>' containment reference.
      * @see #setGetCapabilities(GetCapabilitiesType)
      * @see net.opengis.ows.OwsPackage#getDocumentRoot_GetCapabilities()
@@ -591,22 +590,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='GetCapabilities' namespace='##targetNamespace'"
      * @generated
      */
-	GetCapabilitiesType getGetCapabilities();
+    GetCapabilitiesType getGetCapabilities();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getGetCapabilities <em>Get Capabilities</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Get Capabilities</em>' containment reference.
      * @see #getGetCapabilities()
      * @generated
      */
-	void setGetCapabilities(GetCapabilitiesType value);
+    void setGetCapabilities(GetCapabilitiesType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Http</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Connect point URLs for the HTTP Distributed Computing Platform (DCP). Normally, only one Get and/or one Post is included in this element. More than one Get and/or Post is allowed to support including alternative URLs for uses such as load balancing or backup.
      * <!-- end-model-doc -->
@@ -617,22 +616,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='HTTP' namespace='##targetNamespace'"
      * @generated
      */
-	HTTPType getHttp();
+    HTTPType getHttp();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getHttp <em>Http</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Http</em>' containment reference.
      * @see #getHttp()
      * @generated
      */
-	void setHttp(HTTPType value);
+    void setHttp(HTTPType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Identifier</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Unique identifier or name of this dataset.
      * <!-- end-model-doc -->
@@ -643,22 +642,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='Identifier' namespace='##targetNamespace'"
      * @generated
      */
-	CodeType getIdentifier();
+    CodeType getIdentifier();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getIdentifier <em>Identifier</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Identifier</em>' containment reference.
      * @see #getIdentifier()
      * @generated
      */
-	void setIdentifier(CodeType value);
+    void setIdentifier(CodeType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Language</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Identifier of a language used by the data(set) contents. This language identifier shall be as specified in IETF RFC 1766. When this element is omitted, the language used is not identified.
      * <!-- end-model-doc -->
@@ -669,26 +668,26 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='Language' namespace='##targetNamespace'"
      * @generated
      */
-	String getLanguage();
+    String getLanguage();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getLanguage <em>Language</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Language</em>' attribute.
      * @see #getLanguage()
      * @generated
      */
-	void setLanguage(String value);
+    void setLanguage(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Metadata</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Metadata</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Metadata</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Metadata</em>' containment reference.
      * @see #setMetadata(MetadataType)
      * @see net.opengis.ows.OwsPackage#getDocumentRoot_Metadata()
@@ -696,22 +695,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='Metadata' namespace='##targetNamespace'"
      * @generated
      */
-	MetadataType getMetadata();
+    MetadataType getMetadata();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getMetadata <em>Metadata</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Metadata</em>' containment reference.
      * @see #getMetadata()
      * @generated
      */
-	void setMetadata(MetadataType value);
+    void setMetadata(MetadataType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Operation</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Metadata for one operation that this server implements.
      * <!-- end-model-doc -->
@@ -722,22 +721,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='Operation' namespace='##targetNamespace'"
      * @generated
      */
-	OperationType getOperation();
+    OperationType getOperation();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getOperation <em>Operation</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Operation</em>' containment reference.
      * @see #getOperation()
      * @generated
      */
-	void setOperation(OperationType value);
+    void setOperation(OperationType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Operations Metadata</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Metadata about the operations and related abilities specified by this service and implemented by this server, including the URLs for operation requests. The basic contents of this section shall be the same for all OWS types, but individual services can add elements and/or change the optionality of optional elements.
      * <!-- end-model-doc -->
@@ -748,22 +747,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='OperationsMetadata' namespace='##targetNamespace'"
      * @generated
      */
-	OperationsMetadataType getOperationsMetadata();
+    OperationsMetadataType getOperationsMetadata();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getOperationsMetadata <em>Operations Metadata</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Operations Metadata</em>' containment reference.
      * @see #getOperationsMetadata()
      * @generated
      */
-	void setOperationsMetadata(OperationsMetadataType value);
+    void setOperationsMetadata(OperationsMetadataType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Output Format</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Reference to a format in which this data can be encoded and transferred. More specific parameter names should be used by specific OWS specifications wherever applicable. More than one such parameter can be included for different purposes.
      * <!-- end-model-doc -->
@@ -774,22 +773,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='OutputFormat' namespace='##targetNamespace'"
      * @generated
      */
-	String getOutputFormat();
+    String getOutputFormat();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getOutputFormat <em>Output Format</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Output Format</em>' attribute.
      * @see #getOutputFormat()
      * @generated
      */
-	void setOutputFormat(String value);
+    void setOutputFormat(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Service Identification</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * General metadata for this specific server. This XML Schema of this section shall be the same for all OWS.
      * <!-- end-model-doc -->
@@ -800,22 +799,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='ServiceIdentification' namespace='##targetNamespace'"
      * @generated
      */
-	ServiceIdentificationType getServiceIdentification();
+    ServiceIdentificationType getServiceIdentification();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getServiceIdentification <em>Service Identification</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Service Identification</em>' containment reference.
      * @see #getServiceIdentification()
      * @generated
      */
-	void setServiceIdentification(ServiceIdentificationType value);
+    void setServiceIdentification(ServiceIdentificationType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Service Provider</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Metadata about the organization that provides this specific service instance or server.
      * <!-- end-model-doc -->
@@ -826,22 +825,22 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='ServiceProvider' namespace='##targetNamespace'"
      * @generated
      */
-	ServiceProviderType getServiceProvider();
+    ServiceProviderType getServiceProvider();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getServiceProvider <em>Service Provider</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Service Provider</em>' containment reference.
      * @see #getServiceProvider()
      * @generated
      */
-	void setServiceProvider(ServiceProviderType value);
+    void setServiceProvider(ServiceProviderType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Supported CRS</b></em>' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * <!-- begin-model-doc -->
      * Coordinate reference system in which data from this data(set) or resource is available or supported. More specific parameter names should be used by specific OWS specifications wherever applicable. More than one such parameter can be included for different purposes.
      * <!-- end-model-doc -->
@@ -852,26 +851,26 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='SupportedCRS' namespace='##targetNamespace' affiliation='AvailableCRS'"
      * @generated
      */
-	String getSupportedCRS();
+    String getSupportedCRS();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getSupportedCRS <em>Supported CRS</em>}' attribute.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Supported CRS</em>' attribute.
      * @see #getSupportedCRS()
      * @generated
      */
-	void setSupportedCRS(String value);
+    void setSupportedCRS(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Wg S84 Bounding Box</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Wg S84 Bounding Box</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Wg S84 Bounding Box</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Wg S84 Bounding Box</em>' containment reference.
      * @see #setWgS84BoundingBox(WGS84BoundingBoxType)
      * @see net.opengis.ows.OwsPackage#getDocumentRoot_WgS84BoundingBox()
@@ -879,16 +878,15 @@ public interface DocumentRoot extends EObject {
      *        extendedMetaData="kind='element' name='WGS84BoundingBox' namespace='##targetNamespace' affiliation='BoundingBox'"
      * @generated
      */
-	WGS84BoundingBoxType getWgS84BoundingBox();
+    WGS84BoundingBoxType getWgS84BoundingBox();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getWgS84BoundingBox <em>Wg S84 Bounding Box</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Wg S84 Bounding Box</em>' containment reference.
      * @see #getWgS84BoundingBox()
      * @generated
      */
-	void setWgS84BoundingBox(WGS84BoundingBoxType value);
-
+    void setWgS84BoundingBox(WGS84BoundingBoxType value);
 } // DocumentRoot

@@ -26,24 +26,24 @@ public class WmsException extends ServiceException {
 
     /**
      * Enum of exception codes defined in Anex A.3 of WMS 1.1.1 spec
-    public static class ExceptionCodeEnum{
-            private String exceptionCode;
-            private ExceptionCodeEnum(String code){
-                    this.exceptionCode = code;
-            }
-            public String toString(){
-                    return exceptionCode;
-            }
-    }
-    public static final ExceptionCodeEnum InvalidFormat = new ExceptionCodeEnum("InvalidFormat");
-    public static final ExceptionCodeEnum InvalidSRS = new ExceptionCodeEnum("InvalidSRS");
-    public static final ExceptionCodeEnum LayerNotDefined = new ExceptionCodeEnum("LayerNotDefined");
-    public static final ExceptionCodeEnum StyleNotDefined = new ExceptionCodeEnum("StyleNotDefined");
-    public static final ExceptionCodeEnum LayerNotQueryable = new ExceptionCodeEnum("LayerNotQueryable");
-    public static final ExceptionCodeEnum CurrentUpdateSequence = new ExceptionCodeEnum("CurrentUpdateSequence");
-    public static final ExceptionCodeEnum InvalidUpdateSequence = new ExceptionCodeEnum("InvalidUpdateSequence");
-    public static final ExceptionCodeEnum MissingDimensionValue = new ExceptionCodeEnum("MissingDimensionValue");
-    public static final ExceptionCodeEnum InvalidDimensionValue = new ExceptionCodeEnum("InvalidDimensionValue");
+       public static class ExceptionCodeEnum{
+               private String exceptionCode;
+               private ExceptionCodeEnum(String code){
+                       this.exceptionCode = code;
+               }
+               public String toString(){
+                       return exceptionCode;
+               }
+       }
+       public static final ExceptionCodeEnum InvalidFormat = new ExceptionCodeEnum("InvalidFormat");
+       public static final ExceptionCodeEnum InvalidSRS = new ExceptionCodeEnum("InvalidSRS");
+       public static final ExceptionCodeEnum LayerNotDefined = new ExceptionCodeEnum("LayerNotDefined");
+       public static final ExceptionCodeEnum StyleNotDefined = new ExceptionCodeEnum("StyleNotDefined");
+       public static final ExceptionCodeEnum LayerNotQueryable = new ExceptionCodeEnum("LayerNotQueryable");
+       public static final ExceptionCodeEnum CurrentUpdateSequence = new ExceptionCodeEnum("CurrentUpdateSequence");
+       public static final ExceptionCodeEnum InvalidUpdateSequence = new ExceptionCodeEnum("InvalidUpdateSequence");
+       public static final ExceptionCodeEnum MissingDimensionValue = new ExceptionCodeEnum("MissingDimensionValue");
+       public static final ExceptionCodeEnum InvalidDimensionValue = new ExceptionCodeEnum("InvalidDimensionValue");
      */
 
     /**
@@ -85,7 +85,7 @@ public class WmsException extends ServiceException {
         super(message);
         setCode(code);
     }
-    
+
     /**
      * Empty constructor.
      *
@@ -108,7 +108,8 @@ public class WmsException extends ServiceException {
         super(e, preMessage, locator);
     }
 
-    public WmsException(Throwable e, String preMessage, String locator, String code) {
+    public WmsException(Throwable e, String preMessage, String locator,
+        String code) {
         this(e, preMessage, locator);
         setCode(code);
     }
@@ -122,20 +123,21 @@ public class WmsException extends ServiceException {
      *
      * @task REVISIT: adapt it to handle WMS too
      */
-    public String getXmlResponse(boolean printStackTrace, HttpServletRequest request,
-        GeoServer geoserver) {
+    public String getXmlResponse(boolean printStackTrace,
+        HttpServletRequest request, GeoServer geoserver) {
         StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\"");
         returnXml.append(" encoding=\"UTF-8\" standalone=\"no\" ?>");
 
         String dtdUrl = Requests.getSchemaBaseUrl(request, geoserver)
             + "/wms/1.1.1/WMS_exception_1_1_1.dtd";
-        returnXml.append("<!DOCTYPE ServiceExceptionReport SYSTEM \"" + dtdUrl + "\"> ");
+        returnXml.append("<!DOCTYPE ServiceExceptionReport SYSTEM \"" + dtdUrl
+            + "\"> ");
         returnXml.append("<ServiceExceptionReport version=\"1.1.1\">");
 
         // Write exception code
         returnXml.append("    <ServiceException"
-            + ((getCode() != null) ? (" code=\"" + getCode() + "\"") : "") + ">"
-            + getXmlMessage(printStackTrace) + "</ServiceException>");
+            + ((getCode() != null) ? (" code=\"" + getCode() + "\"") : "")
+            + ">" + getXmlMessage(printStackTrace) + "</ServiceException>");
 
         // Write footer
         returnXml.append("  </ServiceExceptionReport>");

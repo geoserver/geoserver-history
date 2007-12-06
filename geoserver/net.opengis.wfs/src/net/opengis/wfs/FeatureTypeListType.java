@@ -7,8 +7,8 @@
 package net.opengis.wfs;
 
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EObject;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * <!-- end-user-doc -->
  *
  * <!-- begin-model-doc -->
- * 
+ *
  *             A list of feature types available from  this server.
  * <!-- end-model-doc -->
  *
@@ -33,14 +33,14 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface FeatureTypeListType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Operations</b></em>' containment reference.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Operations</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Operations</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Operations</em>' containment reference.
      * @see #setOperations(OperationsType)
      * @see net.opengis.wfs.WfsPackage#getFeatureTypeListType_Operations()
@@ -48,33 +48,32 @@ public interface FeatureTypeListType extends EObject {
      *        extendedMetaData="kind='element' name='Operations' namespace='##targetNamespace'"
      * @generated
      */
-	OperationsType getOperations();
+    OperationsType getOperations();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.wfs.FeatureTypeListType#getOperations <em>Operations</em>}' containment reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @param value the new value of the '<em>Operations</em>' containment reference.
      * @see #getOperations()
      * @generated
      */
-	void setOperations(OperationsType value);
+    void setOperations(OperationsType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Feature Type</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.wfs.FeatureTypeType}.
      * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Feature Type</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Feature Type</em>' containment reference list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
      * @return the value of the '<em>Feature Type</em>' containment reference list.
      * @see net.opengis.wfs.WfsPackage#getFeatureTypeListType_FeatureType()
      * @model type="net.opengis.wfs.FeatureTypeType" containment="true" required="true"
      *        extendedMetaData="kind='element' name='FeatureType' namespace='##targetNamespace'"
      * @generated
      */
-	EList getFeatureType();
-
+    EList getFeatureType();
 } // FeatureTypeListType

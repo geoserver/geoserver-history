@@ -8,8 +8,8 @@ package net.opengis.ows.impl;
 
 import net.opengis.ows.OwsPackage;
 import net.opengis.ows.WGS84BoundingBoxType;
-
 import org.eclipse.emf.ecore.EClass;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -20,23 +20,23 @@ import org.eclipse.emf.ecore.EClass;
  *
  * @generated
  */
-public class WGS84BoundingBoxTypeImpl extends BoundingBoxTypeImpl implements WGS84BoundingBoxType {
-	/**
+public class WGS84BoundingBoxTypeImpl extends BoundingBoxTypeImpl
+    implements WGS84BoundingBoxType {
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	protected WGS84BoundingBoxTypeImpl() {
+    protected WGS84BoundingBoxTypeImpl() {
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	protected EClass eStaticClass() {
+    protected EClass eStaticClass() {
         return OwsPackage.Literals.WGS84_BOUNDING_BOX_TYPE;
     }
-
 } //WGS84BoundingBoxTypeImpl

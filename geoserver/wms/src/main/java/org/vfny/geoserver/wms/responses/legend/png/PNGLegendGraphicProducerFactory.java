@@ -18,7 +18,8 @@ import java.util.TreeSet;
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
  */
-public class PNGLegendGraphicProducerFactory implements GetLegendGraphicProducerSpi {
+public class PNGLegendGraphicProducerFactory
+    implements GetLegendGraphicProducerSpi {
     /**
      *
      */
@@ -63,16 +64,17 @@ public class PNGLegendGraphicProducerFactory implements GetLegendGraphicProducer
     public GetLegendGraphicProducer createLegendProducer(String format)
         throws IllegalArgumentException {
         if (!canProduce(format)) {
-            throw new IllegalArgumentException(format + " not supported by this legend producer");
+            throw new IllegalArgumentException(format
+                + " not supported by this legend producer");
         }
 
         return new PNGLegendGraphicProducer();
     }
 
     /* (non-Javadoc)
-         * @see org.geotools.factory.Factory#getImplementationHints()
-         * This just returns java.util.Collections.EMPTY_MAP
-         */
+     * @see org.geotools.factory.Factory#getImplementationHints()
+     * This just returns java.util.Collections.EMPTY_MAP
+     */
     public Map getImplementationHints() {
         return java.util.Collections.EMPTY_MAP;
     }

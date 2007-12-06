@@ -63,6 +63,7 @@ public class CircleTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        throw new WFSException("Circle is not supported", "InvalidParameterValue");
+        throw new WFSException("Circle is not supported",
+            "InvalidParameterValue");
     }
 }
