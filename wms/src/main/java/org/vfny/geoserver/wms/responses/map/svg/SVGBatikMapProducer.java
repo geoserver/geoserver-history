@@ -7,7 +7,6 @@ package org.vfny.geoserver.wms.responses.map.svg;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -24,7 +23,6 @@ import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.geotools.map.MapContext;
-import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.Service;
@@ -34,7 +32,6 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -133,12 +130,7 @@ public class SVGBatikMapProducer extends AbstractGetMapProducer implements
 
 			Rectangle r = new Rectangle(g.getSVGCanvasSize());
 
-			Envelope e = renderer.getContext().getAreaOfInterest();
-
-			// AffineTransform at = renderer.worldToScreenTransform(e,r);
-			AffineTransform at = RendererUtilities.worldToScreenTransform(e, r);
-
-			renderer.paint(g, r, at);
+      renderer.paint(g, r, renderer.getContext().getAreaOfInterest());
 
 			// This method of output does not output the DOCTYPE definiition
 			// TODO: make a config option that toggles wether doctype is
@@ -147,21 +139,16 @@ public class SVGBatikMapProducer extends AbstractGetMapProducer implements
 			XMLSerializer serializer = new XMLSerializer(
 					new OutputStreamWriter(out, "UTF-8"), format);
 
-			// fix the root element so it has the right namespace
-			// this way firefox will show it
-			Element root = g.getDOMTreeManager().getRoot();
-			root.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-			root.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+            // this method does output the DOCTYPE def
+             g.stream(new OutputStreamWriter(out,"UTF-8"));
+        } catch (Exception e) {
+            new IOException().initCause(e);
+        } finally {
+            // free up memory
+            renderer = null;
+        }
+    }
 
-			// this method does output the DOCTYPE def
-			// g.stream(new OutputStreamWriter(out,"UTF-8"));
-		} catch (Exception e) {
-			new IOException().initCause(e);
-		} finally {
-			// free up memory
-			renderer = null;
-		}
-	}
 
 	private SVGGeneratorContext setupContext()
 			throws FactoryConfigurationError, ParserConfigurationException {
