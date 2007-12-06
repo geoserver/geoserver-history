@@ -133,12 +133,7 @@ public class SVGBatikMapProducer extends AbstractGetMapProducer implements
 
             Rectangle r = new Rectangle(g.getSVGCanvasSize());
 
-            Envelope e = renderer.getContext().getAreaOfInterest();
-
-            // AffineTransform at = renderer.worldToScreenTransform(e,r);
-            AffineTransform at = RendererUtilities.worldToScreenTransform(e, r);
-
-            renderer.paint(g, r, at);
+            renderer.paint(g, r, renderer.getContext().getAreaOfInterest());
 
             // This method of output does not output the DOCTYPE definiition
             // TODO: make a config option that toggles wether doctype is
@@ -147,14 +142,8 @@ public class SVGBatikMapProducer extends AbstractGetMapProducer implements
             XMLSerializer serializer = new XMLSerializer(
                     new OutputStreamWriter(out, "UTF-8"), format);
 
-            // fix the root element so it has the right namespace
-            // this way firefox will show it
-            Element root = g.getDOMTreeManager().getRoot();
-            root.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-            root.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
-
             // this method does output the DOCTYPE def
-            // g.stream(new OutputStreamWriter(out,"UTF-8"));
+             g.stream(new OutputStreamWriter(out,"UTF-8"));
         } catch (Exception e) {
             new IOException().initCause(e);
         } finally {
