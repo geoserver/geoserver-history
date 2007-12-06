@@ -714,7 +714,7 @@ public class ReaderUtils {
      */
     private static String unescape(String text) {
     	String s = text;
-    	if(s.matches(".*&(.*);.*")) {
+    	if(s != null && s.matches(".*&(.*);.*")) {
 			s = s.replaceAll("&quot;","\"");
 			s = s.replaceAll("&amp;","&");
 			s = s.replaceAll("&apos;","'");
