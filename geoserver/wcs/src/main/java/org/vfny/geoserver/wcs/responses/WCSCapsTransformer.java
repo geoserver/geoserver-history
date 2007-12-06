@@ -5,11 +5,14 @@
 package org.vfny.geoserver.wcs.responses;
 
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.CoverageInfoLabelComparator;
+import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WCS;
@@ -25,6 +28,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 
 
 /**
@@ -53,9 +60,14 @@ public class WCSCapsTransformer extends TransformerBase {
     /** DOCUMENT ME! */
     protected static final String XSI_URI = "http://www.w3.org/2001/XMLSchema-instance";
 
+    /** DOCUMENT ME! */
+	private String baseUrl;
+
+    private ApplicationContext applicationContext;
+
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @uml.property name="request"
      * @uml.associationEnd multiplicity="(0 1)"
      */
@@ -64,9 +76,16 @@ public class WCSCapsTransformer extends TransformerBase {
     /**
      * Creates a new WFSCapsTransformer object.
      */
-    public WCSCapsTransformer() {
+    public WCSCapsTransformer(String baseUrl,
+            ApplicationContext applicationContext) {
         super();
-        setNamespaceDeclarationEnabled(false);
+        if (baseUrl == null) {
+            throw new NullPointerException();
+        }
+
+        this.baseUrl = baseUrl;
+        this.setNamespaceDeclarationEnabled(false);
+        this.applicationContext = applicationContext;
     }
 
     /**
@@ -78,9 +97,34 @@ public class WCSCapsTransformer extends TransformerBase {
      * @return DOCUMENT ME!
      */
     public Translator createTranslator(ContentHandler handler) {
-        return new WCSCapsTranslator(handler);
+    	return new WCSCapsTranslator(handler, applicationContext);
     }
 
+    /**
+	 * DOCUMENT ME!
+	 * 
+	 * @return a Transformer propoerly configured to produce DescribeLayer
+	 *         responses.
+	 * 
+	 * @throws TransformerException
+	 *             if it is thrown by <code>super.createTransformer()</code>
+	 */
+	public Transformer createTransformer() throws TransformerException {
+		Transformer transformer = super.createTransformer();
+		GeoServer gs = (GeoServer) GeoServerExtensions.extensions(
+				GeoServer.class, applicationContext).get(0);
+		String dtdUrl = RequestUtils.proxifiedBaseURL(this.baseUrl, gs
+				.getProxyBaseUrl())
+				+ "schemas/wcs/1.0.0/wcsCapabilities.xsd"; // DJB: fixed
+		// this to
+		// point to correct
+		// location
+
+		transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdUrl);
+
+		return transformer;
+	}
+	
     /**
      * DOCUMENT ME!
      *
@@ -88,23 +132,27 @@ public class WCSCapsTransformer extends TransformerBase {
      * @version $Id
      */
     private static class WCSCapsTranslator extends TranslatorSupport {
-        /**
-         * DOCUMENT ME!
-         *
-         * @uml.property name="request"
-         * @uml.associationEnd multiplicity="(0 1)"
-         */
-        private CapabilitiesRequest request;
+    	/**
+		 * DOCUMENT ME!
+		 * 
+		 * @uml.property name="request"
+		 * @uml.associationEnd multiplicity="(0 1)"
+		 */
+		private CapabilitiesRequest request;
 
-        /**
-         * Creates a new WFSCapsTranslator object.
-         *
-         * @param handler
-         *            DOCUMENT ME!
-         */
-        public WCSCapsTranslator(ContentHandler handler) {
-            super(handler, null, null);
-        }
+		private ApplicationContext applicationContext;
+
+		/**
+		 * Creates a new WFSCapsTranslator object.
+		 * 
+		 * @param handler
+		 *            DOCUMENT ME!
+		 */
+		public WCSCapsTranslator(ContentHandler handler,
+				ApplicationContext applicationContext) {
+			super(handler, null, null);
+			this.applicationContext = applicationContext;
+		}
 
         /**
          * Encode the object.
@@ -122,6 +170,7 @@ public class WCSCapsTransformer extends TransformerBase {
             }
 
             this.request = (CapabilitiesRequest) o;
+			final WCS wcs = (WCS) request.getServiceRef().getServiceRef();
 
             final AttributesImpl attributes = new AttributesImpl();
             attributes.addAttribute("", "version", "version", "", CUR_VERSION);
@@ -139,7 +188,8 @@ public class WCSCapsTransformer extends TransformerBase {
                                                                    .toString();
 
             final String locationDef = WCS_URI + " "
-                + RequestUtils.schemaBaseURL(request.getHttpServletRequest())
+                + RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wcs
+						.getGeoServer().getProxyBaseUrl())
                 + "wcs/1.0.0/wcsCapabilities.xsd";
 
             attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
@@ -236,7 +286,10 @@ public class WCSCapsTransformer extends TransformerBase {
             start("HTTP");
 
             String url = "";
-            String baseUrl = request.getBaseUrl() + "wcs";
+            String baseUrl = RequestUtils.proxifiedBaseURL(
+					request.getBaseUrl(), request.getServiceRef()
+							.getGeoServer().getProxyBaseUrl())
+					+ "wcs?SERVICE=WCS&";
 
             if (request.isDispatchedRequest()) {
                 url = new StringBuffer(baseUrl).append("?").toString();
