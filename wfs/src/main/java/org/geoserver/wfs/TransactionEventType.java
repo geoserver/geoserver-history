@@ -4,10 +4,10 @@
  */
 package org.geoserver.wfs;
 
-import org.opengis.util.CodeList;
-import org.opengis.util.SimpleEnumerationType;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.opengis.util.SimpleEnumerationType;
 
 
 public class TransactionEventType extends SimpleEnumerationType<TransactionEventType> {
@@ -55,7 +55,7 @@ public class TransactionEventType extends SimpleEnumerationType<TransactionEvent
         super(VALUES, name, description);
     }
 
-    public CodeList[] family() {
+    public TransactionEventType[] family() {
         synchronized (VALUES) {
             return (TransactionEventType[]) VALUES.toArray(new TransactionEventType[VALUES.size()]);
         }
