@@ -46,142 +46,142 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  */
 public class SVGBatikMapProducer extends AbstractGetMapProducer implements
-		GetMapProducer {
-	StreamingRenderer renderer;
+        GetMapProducer {
+    StreamingRenderer renderer;
 
-	WMS wms;
+    WMS wms;
 
-	public SVGBatikMapProducer(WMS wms) {
-		this.wms = wms;
-	}
+    public SVGBatikMapProducer(WMS wms) {
+        this.wms = wms;
+    }
 
-	public void abort() {
-		if (renderer != null) {
-			renderer.stopRendering();
-		}
-	}
+    public void abort() {
+        if (renderer != null) {
+            renderer.stopRendering();
+        }
+    }
 
-	public void abort(Service gs) {
-		if (renderer != null) {
-			renderer.stopRendering();
-		}
-	}
+    public void abort(Service gs) {
+        if (renderer != null) {
+            renderer.stopRendering();
+        }
+    }
 
-	public String getContentType() {
-		return SvgMapProducerFactory.MIME_TYPE;
-	}
+    public String getContentType() {
+        return SvgMapProducerFactory.MIME_TYPE;
+    }
 
-	public String getContentEncoding() {
-		return null;
-	}
+    public String getContentEncoding() {
+        return null;
+    }
 
-	public void produceMap() throws WmsException {
-		renderer = new StreamingRenderer();
+    public void produceMap() throws WmsException {
+        renderer = new StreamingRenderer();
 
-		// optimized data loading was not here, but yet it seems sensible to
-		// have it...
-		Map rendererParams = new HashMap();
-		rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
-		rendererParams.put("renderingBuffer", new Integer(mapContext
-				.getBuffer()));
-		renderer.setRendererHints(rendererParams);
-		renderer.setContext(mapContext);
-	}
+        // optimized data loading was not here, but yet it seems sensible to
+        // have it...
+        Map rendererParams = new HashMap();
+        rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
+        rendererParams.put("renderingBuffer", new Integer(mapContext
+                .getBuffer()));
+        renderer.setRendererHints(rendererParams);
+        renderer.setContext(mapContext);
+    }
 
-	public void writeTo(OutputStream out) throws ServiceException, IOException {
-		try {
-			MapContext map = renderer.getContext();
-			double width = -1;
-			double height = -1;
+    public void writeTo(OutputStream out) throws ServiceException, IOException {
+        try {
+            MapContext map = renderer.getContext();
+            double width = -1;
+            double height = -1;
 
-			if (map instanceof WMSMapContext) {
-				WMSMapContext wmsMap = (WMSMapContext) map;
-				width = wmsMap.getMapWidth();
-				height = wmsMap.getMapHeight();
-			} else {
-				// guess a width and height based on the envelope
-				Envelope area = map.getAreaOfInterest();
+            if (map instanceof WMSMapContext) {
+                WMSMapContext wmsMap = (WMSMapContext) map;
+                width = wmsMap.getMapWidth();
+                height = wmsMap.getMapHeight();
+            } else {
+                // guess a width and height based on the envelope
+                Envelope area = map.getAreaOfInterest();
 
-				if ((area.getHeight() > 0) && (area.getWidth() > 0)) {
-					if (area.getHeight() >= area.getWidth()) {
-						height = 600;
-						width = height * (area.getWidth() / area.getHeight());
-					} else {
-						width = 800;
-						height = width * (area.getHeight() / area.getWidth());
-					}
-				}
-			}
+                if ((area.getHeight() > 0) && (area.getWidth() > 0)) {
+                    if (area.getHeight() >= area.getWidth()) {
+                        height = 600;
+                        width = height * (area.getWidth() / area.getHeight());
+                    } else {
+                        width = 800;
+                        height = width * (area.getHeight() / area.getWidth());
+                    }
+                }
+            }
 
-			if ((height == -1) || (width == -1)) {
-				throw new IOException("Could not determine map dimensions");
-			}
+            if ((height == -1) || (width == -1)) {
+                throw new IOException("Could not determine map dimensions");
+            }
 
-			SVGGeneratorContext context = setupContext();
-			SVGGraphics2D g = new SVGGraphics2D(context, true);
+            SVGGeneratorContext context = setupContext();
+            SVGGraphics2D g = new SVGGraphics2D(context, true);
 
-			g.setSVGCanvasSize(new Dimension((int) width, (int) height));
+            g.setSVGCanvasSize(new Dimension((int) width, (int) height));
 
-			// turn off/on anti aliasing
-			if (wms.isSvgAntiAlias()) {
-				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-						RenderingHints.VALUE_ANTIALIAS_ON);
-			} else {
-				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-						RenderingHints.VALUE_ANTIALIAS_OFF);
-			}
+            // turn off/on anti aliasing
+            if (wms.isSvgAntiAlias()) {
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
+            } else {
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_OFF);
+            }
 
-			Rectangle r = new Rectangle(g.getSVGCanvasSize());
+            Rectangle r = new Rectangle(g.getSVGCanvasSize());
 
-			Envelope e = renderer.getContext().getAreaOfInterest();
+            Envelope e = renderer.getContext().getAreaOfInterest();
 
-			// AffineTransform at = renderer.worldToScreenTransform(e,r);
-			AffineTransform at = RendererUtilities.worldToScreenTransform(e, r);
+            // AffineTransform at = renderer.worldToScreenTransform(e,r);
+            AffineTransform at = RendererUtilities.worldToScreenTransform(e, r);
 
-			renderer.paint(g, r, at);
+            renderer.paint(g, r, at);
 
-			// This method of output does not output the DOCTYPE definiition
-			// TODO: make a config option that toggles wether doctype is
-			// written out.
-			OutputFormat format = new OutputFormat();
-			XMLSerializer serializer = new XMLSerializer(
-					new OutputStreamWriter(out, "UTF-8"), format);
+            // This method of output does not output the DOCTYPE definiition
+            // TODO: make a config option that toggles wether doctype is
+            // written out.
+            OutputFormat format = new OutputFormat();
+            XMLSerializer serializer = new XMLSerializer(
+                    new OutputStreamWriter(out, "UTF-8"), format);
 
-			// fix the root element so it has the right namespace
-			// this way firefox will show it
-			Element root = g.getDOMTreeManager().getRoot();
-			root.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-			root.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+            // fix the root element so it has the right namespace
+            // this way firefox will show it
+            Element root = g.getDOMTreeManager().getRoot();
+            root.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+            root.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
 
-			// this method does output the DOCTYPE def
-			// g.stream(new OutputStreamWriter(out,"UTF-8"));
-		} catch (Exception e) {
-			new IOException().initCause(e);
-		} finally {
-			// free up memory
-			renderer = null;
-		}
-	}
+            // this method does output the DOCTYPE def
+            // g.stream(new OutputStreamWriter(out,"UTF-8"));
+        } catch (Exception e) {
+            new IOException().initCause(e);
+        } finally {
+            // free up memory
+            renderer = null;
+        }
+    }
 
-	private SVGGeneratorContext setupContext()
-			throws FactoryConfigurationError, ParserConfigurationException {
-		Document document = null;
+    private SVGGeneratorContext setupContext()
+            throws FactoryConfigurationError, ParserConfigurationException {
+        Document document = null;
 
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
-		DocumentBuilder db = dbf.newDocumentBuilder();
+        DocumentBuilder db = dbf.newDocumentBuilder();
 
-		// Create an instance of org.w3c.dom.Document
-		String svgNamespaceURI = "http://www.w3.org/2000/svg";
-		document = db.getDOMImplementation().createDocument(svgNamespaceURI,
-				"svg", null);
+        // Create an instance of org.w3c.dom.Document
+        String svgNamespaceURI = "http://www.w3.org/2000/svg";
+        document = db.getDOMImplementation().createDocument(svgNamespaceURI,
+                "svg", null);
 
-		// Set up the context
-		return SVGGeneratorContext.createDefault(document);
-	}
+        // Set up the context
+        return SVGGeneratorContext.createDefault(document);
+    }
 
-	public String getContentDisposition() {
-		// can be null
-		return null;
-	}
+    public String getContentDisposition() {
+        // can be null
+        return null;
+    }
 }
