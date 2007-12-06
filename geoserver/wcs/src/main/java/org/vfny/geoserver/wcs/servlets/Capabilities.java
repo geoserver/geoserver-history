@@ -58,6 +58,6 @@ public class Capabilities extends WCService {
      * @return DOCUMENT ME!
      */
     protected Response getResponseHandler() {
-        return new WCSCapabilitiesResponse();
+        return new WCSCapabilitiesResponse(getApplicationContext());
     }
 }
