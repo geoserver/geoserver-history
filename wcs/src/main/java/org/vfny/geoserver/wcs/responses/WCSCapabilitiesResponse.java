@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wcs.responses;
 
+import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.ServiceException;
@@ -38,6 +39,12 @@ public class WCSCapabilitiesResponse implements Response {
      */
     private byte[] rawResponse;
 
+    private ApplicationContext applicationContext;
+
+	public WCSCapabilitiesResponse(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
+	
     /**
      * Returns any extra headers that this service might want to set in the HTTP response object.
      * @see org.vfny.geoserver.Response#getResponseHeaders()
@@ -64,9 +71,10 @@ public class WCSCapabilitiesResponse implements Response {
             throw new IllegalArgumentException("Not a GetCapabilities Request");
         }
 
-        WCSCapsTransformer transformer = new WCSCapsTransformer();
+        WCSCapsTransformer transformer = new WCSCapsTransformer(request
+				.getBaseUrl(), applicationContext);
 
-        //transformer.setIndentation(2);
+        transformer.setIndentation(2);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         try {
