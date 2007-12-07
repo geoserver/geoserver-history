@@ -291,7 +291,8 @@ public class CoverageConfig {
 
 		int b = 0;
 
-		for (CoverageDimension dimension : dimensions) {
+		for (int dim=0; dim < dimensions.length; dim++) {
+			CoverageDimension dimension = dimensions[dim];
 			dimension = new CoverageDimension();
 			dimension.setName(bandKeys[b]);
 			dimension.setDescription(bandKeys[b]);

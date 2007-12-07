@@ -578,7 +578,8 @@ public class DescribeResponse implements Response {
 					tempResponse.append("\n          </values>");
 					tempResponse.append("\n        </AxisDescription>");
 				} else {
-					for (CoverageDimension dimension : dims) {
+					for (int dim=0; dim<dims.length; dim++) {
+						CoverageDimension dimension = dims[dim];
 						tempResponse.append("\n        <AxisDescription>");
 						tempResponse.append("\n          <name>").append(
 								dimension.getName()).append("</name>");

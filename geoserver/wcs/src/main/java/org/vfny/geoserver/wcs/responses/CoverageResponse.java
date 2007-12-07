@@ -18,6 +18,7 @@ import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridCoverageReader;
+import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -220,9 +221,9 @@ public class CoverageResponse implements Response {
             meta = catalog.getCoverageInfo(request.getCoverage());
 
             boolean isFormatSupported = false;
-
-            for (Object formatName : meta.getSupportedFormats()) {
-                isFormatSupported = ((String) formatName).equalsIgnoreCase(outputFormat);
+            final List suppFormats = meta.getSupportedFormats();
+            for (Iterator formatName = suppFormats.iterator(); formatName.hasNext(); ) {
+                isFormatSupported = ((String) formatName.next()).equalsIgnoreCase(outputFormat);
 
                 if (isFormatSupported) {
                     break;
@@ -250,32 +251,44 @@ public class CoverageResponse implements Response {
                                                                            .getReadParameters()
                                                                            .clone();
 
-            if (params.parameter("Coverage") != null) {
-                params.parameter("Coverage").setValue(meta.getRealName());
+            try {
+                if (params.parameter("Coverage") != null) {
+                    params.parameter("Coverage").setValue(meta.getRealName());
+                }
+            } catch (ParameterNotFoundException e) {
             }
 
-            if ((params.parameter("Times") != null)
-                    && (request.getTime() != null)) {
-                List times = request.getTime();
-                Object[] timePositions = new Object[times.size()];
+            try {
+                if ((params.parameter("Times") != null)
+                        && (request.getTime() != null)) {
+                    List times = request.getTime();
+                    Object[] timePositions = new Object[times.size()];
 
-                for (int t = 0; t < times.size(); t++)
-                    timePositions[t] = times.get(t);
+                    for (int t = 0; t < times.size(); t++)
+                        timePositions[t] = times.get(t);
 
-                params.parameter("Times").setValue(timePositions);
+                    params.parameter("Times").setValue(timePositions);
+                }
+            } catch (ParameterNotFoundException e) {
             }
 
-            if ((params.parameter("Bands") != null)
-                    && (request.getParameters() != null)
-                    && !request.getParameters().isEmpty()) {
-                params.parameter("Bands")
-                      .setValue(request.getParameters().keySet()
-                                       .toArray(new String[1]));
+            try {
+                if ((params.parameter("Bands") != null)
+                        && (request.getParameters() != null)
+                        && !request.getParameters().isEmpty()) {
+                    params.parameter("Bands")
+                          .setValue(request.getParameters().keySet()
+                                           .toArray(new String[1]));
+                }
+            } catch (ParameterNotFoundException e) {
             }
 
-            if ((params.parameter("Elevations") != null)
-                    && (request.getElevations() != null)) {
-                params.parameter("Elevations").setValue(request.getElevations());
+            try {
+                if ((params.parameter("Elevations") != null)
+                        && (request.getElevations() != null)) {
+                    params.parameter("Elevations").setValue(request.getElevations());
+                }
+            } catch (ParameterNotFoundException e) {
             }
 
             final GridCoverage2D finalCoverage = getFinalCoverage(request,

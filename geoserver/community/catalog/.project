@@ -2,11 +2,11 @@
   <name>catalog</name>
   <comment/>
   <projects>
-    <project>main</project>
-    <project>platform</project>
-    <project>ows</project>
-    <project>net.opengis.ows</project>
     <project>data</project>
+    <project>platform</project>
+    <project>main</project>
+    <project>net.opengis.ows</project>
+    <project>ows</project>
   </projects>
   <buildSpec>
     <buildCommand>

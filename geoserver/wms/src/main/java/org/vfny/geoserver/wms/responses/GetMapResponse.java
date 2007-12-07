@@ -422,8 +422,9 @@ public class GetMapResponse implements Response {
                             
                             if (bands != null) {
                                 final CoverageDimension[] dimensions = layers[i].getCoverage().getDimensions();
-                                final List<String> requestedBands = new ArrayList<String>();
-                                for (CoverageDimension coverageDimension : dimensions) {
+                                final List requestedBands = new ArrayList();
+                                for (int dim=0; dim<dimensions.length; dim++) {
+                                	CoverageDimension coverageDimension = dimensions[dim];
                                 	final String bandName = coverageDimension.getName();
 									if (request.getRawKvp().containsKey(bandName)) {
 										requestedBands.add(bandName);
@@ -447,7 +448,8 @@ public class GetMapResponse implements Response {
                             if (elevation != null && request.getElevation() != null) {
                             	String[] elevations = request.getElevation().split(",");
                             	int numZ = 0;
-                            	for (String zeta : elevations) {
+                            	for (int e=0; e<elevations.length; e++) {
+                            		String zeta = elevations[e];
 									elevations[numZ++] = zeta.trim();
 								}
                                 elevation.setValue(elevations);

@@ -1634,7 +1634,7 @@ public class XMLConfigWriter {
 				for (int d = 0; d < dims.length; d++) {
 					Double[] nulls = dims[d].getNullValues();
 					Map atts = new HashMap();
-					atts.put("nd", true);
+					atts.put("nd", Boolean.TRUE);
 					cw.openTag("CoverageDimension", atts);
 					cw.textTag("name", dims[d].getName());
 					cw.textTag("description", dims[d].getDescription());
