@@ -1199,10 +1199,16 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 start("OutputFormats");
 
                 Collection featureProducers = GeoServerExtensions.extensions(WFSGetFeatureOutputFormat.class);
+                TreeSet displayed = new TreeSet();
+
                 for (Iterator i = featureProducers.iterator(); i.hasNext();) {
                     WFSGetFeatureOutputFormat format = (WFSGetFeatureOutputFormat) i.next();
                     for ( Iterator f = format.getOutputFormats().iterator(); f.hasNext(); ) {
-                        element( "Format", f.next().toString() );
+                        String formatName = f.next().toString();
+                        if (!displayed.contains(formatName)){
+                            element( "Format", formatName);
+                            displayed.add(formatName);
+                        }
                     }
                 }
                     
