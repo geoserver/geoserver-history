@@ -144,9 +144,9 @@ public class GetFeature {
         int maxFeatures = Math.min(request.getMaxFeatures().intValue(),
                 wfs.getGeoServer().getMaxFeatures());
 
-        FeatureCollectionType result = WfsFactory.eINSTANCE.createFeatureCollectionType();
         int count = 0; //should probably be long
 
+        List results = new ArrayList();
         try {
             for (int i = 0; (i < request.getQuery().size()) && (count <= maxFeatures); i++) {
                 QueryType query = (QueryType) request.getQuery().get(i);
@@ -250,7 +250,7 @@ public class GetFeature {
                 org.geotools.data.Query gtQuery = toDataQuery(query, maxFeatures - count, source, request.getVersion());
                 LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery);
 
-                FeatureCollection features = source.getFeatures(gtQuery);
+                FeatureCollection features = getFeatures(request, source, gtQuery);
                 count += features.size();
                 
                 // we may need to shave off geometries we did load only to make bounds
@@ -272,7 +272,7 @@ public class GetFeature {
                 //GR: I don't know if the featuresults should be added here for later
                 //encoding if it was a lock request. may be after ensuring the lock
                 //succeed?
-                result.getFeature().add(features);
+                results.add(features);
             }
         } catch (IOException e) {
             throw new WFSException("Error occurred getting features", e, request.getHandle());
@@ -281,6 +281,7 @@ public class GetFeature {
         }
 
         //locking
+        String lockId = null;
         if (request instanceof GetFeatureWithLockType) {
             GetFeatureWithLockType withLockRequest = (GetFeatureWithLockType) request;
 
@@ -305,13 +306,39 @@ public class GetFeature {
             lockFeature.setFilterFactory(filterFactory);
 
             LockFeatureResponseType response = lockFeature.lockFeature(lockRequest);
-            result.setLockId(response.getLockId());
+            lockId = response.getLockId();
         }
 
+        return buildResults(count, results, lockId);
+    }
+
+    /**
+     * Allows subclasses to alter the result generation
+     * @param count
+     * @param results
+     * @param lockId
+     * @return
+     */
+    protected FeatureCollectionType buildResults(int count, List results,
+            String lockId) {
+        FeatureCollectionType result = WfsFactory.eINSTANCE.createFeatureCollectionType();
         result.setNumberOfFeatures(BigInteger.valueOf(count));
         result.setTimeStamp(Calendar.getInstance());
-
+        result.setLockId(lockId);
+        result.getFeature().addAll(results);
         return result;
+    }
+
+    /**
+     * Allows subclasses to poke with the feature collection extraction
+     * @param source
+     * @param gtQuery
+     * @return
+     * @throws IOException
+     */
+    protected FeatureCollection getFeatures(GetFeatureType request, FeatureSource source,
+            org.geotools.data.Query gtQuery) throws IOException {
+        return source.getFeatures(gtQuery);
     }
 
     /**
