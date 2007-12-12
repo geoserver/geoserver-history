@@ -74,6 +74,10 @@ public abstract class FeatureTypeSchemaBuilder {
      */
     protected String gmlNamespace;
     protected String gmlSchemaLocation;
+    protected String baseType;
+    protected String substitutionGroup;
+    protected String describeFeatureTypeBase;
+    protected String gmlPrefix;
     protected Configuration xmlConfiguration;
 
     protected FeatureTypeSchemaBuilder(WFS wfs, Data catalog, GeoServerResourceLoader resourceLoader) {
@@ -140,7 +144,8 @@ public abstract class FeatureTypeSchemaBuilder {
             schema.setTargetNamespace(targetNamespace);
             //schema.getQNamePrefixToNamespaceMap().put( null, targetNamespace );
             schema.getQNamePrefixToNamespaceMap().put(targetPrefix, targetNamespace);
-            schema.getQNamePrefixToNamespaceMap().put("gml", gmlNamespace);
+            schema.getQNamePrefixToNamespaceMap().put(gmlPrefix, gmlNamespace);
+            schema.getQNamePrefixToNamespaceMap().put("gml", "http://www.opengis.net/gml");
 
             //all types in same namespace, write out the schema
             for (int i = 0; i < featureTypeInfos.length; i++) {
@@ -153,8 +158,7 @@ public abstract class FeatureTypeSchemaBuilder {
                 String prefix = (String) entry.getKey();
                 List types = (List) entry.getValue();
 
-                StringBuffer queryString = new StringBuffer(
-                        "service=wfs&request=DescribeFeatureType&version=1.1.0");
+                StringBuffer queryString = new StringBuffer(describeFeatureTypeBase);
                 queryString.append("&typeName=");
 
                 for (Iterator t = types.iterator(); t.hasNext();) {
@@ -261,7 +265,7 @@ public abstract class FeatureTypeSchemaBuilder {
 
         complexType.setDerivationMethod(XSDDerivationMethod.EXTENSION_LITERAL);
         complexType.setBaseTypeDefinition(schema.resolveComplexTypeDefinition(gmlNamespace,
-                "AbstractFeatureType"));
+                baseType));
 
         XSDModelGroup group = factory.createXSDModelGroup();
         group.setCompositor(XSDCompositor.SEQUENCE_LITERAL);
@@ -309,7 +313,7 @@ public abstract class FeatureTypeSchemaBuilder {
         element.setName(name);
 
         element.setSubstitutionGroupAffiliation(schema.resolveElementDeclaration(gmlNamespace,
-                "_Feature"));
+                substitutionGroup));
         element.setTypeDefinition(complexType);
 
         schema.getContents().add(element);
@@ -353,6 +357,10 @@ public abstract class FeatureTypeSchemaBuilder {
             profiles.add(new GML2Profile());
             gmlNamespace = org.geotools.gml2.GML.NAMESPACE;
             gmlSchemaLocation = "gml/2.1.2/feature.xsd";
+            baseType = "AbstractFeatureType";
+            substitutionGroup = "_Feature";
+            describeFeatureTypeBase = "request=DescribeFeatureType&version=1.1.0";
+            gmlPrefix = "gml";
             xmlConfiguration = new GMLConfiguration();
         }
 
@@ -378,6 +386,10 @@ public abstract class FeatureTypeSchemaBuilder {
 
             gmlNamespace = org.geotools.gml3.GML.NAMESPACE;
             gmlSchemaLocation = "gml/3.1.1/base/gml.xsd";
+            baseType = "AbstractFeatureType";
+            substitutionGroup = "_Feature";
+            describeFeatureTypeBase = "request=DescribeFeatureType&version=1.1.0";
+            gmlPrefix = "gml";
             xmlConfiguration = new org.geotools.gml3.GMLConfiguration();
         }
 
