@@ -375,6 +375,13 @@ public class Dispatcher extends AbstractController {
                     requestBean = parseRequestXML(requestBean,req.input, req);
                 }
                 
+                //if no reader found for the request, throw exception
+                //TODO: we may wish to make this configurable, as perhaps there
+                // might be cases when the service prefers that null be passed in?
+                if ( requestBean == null ) {
+                    throw new ServiceException( "Could not find request reader for: " + parameterType.getName() );
+                }
+                
                 // GEOS-934  and GEOS-1288
                 Method setBaseUrl = OwsUtils.setter(requestBean.getClass(), "baseUrl", String.class);
                 if (setBaseUrl != null) {
