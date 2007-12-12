@@ -221,7 +221,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
                 Symbolizer symbolizer = symbolizers[sIdx];
 
                 if (symbolizer instanceof RasterSymbolizer) {
-                    BufferedImage imgShape = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+                    BufferedImage imgShape = null;
 
                     try {
                         imgShape = ImageIO.read(new URL(request.getHttpServletRequest()
@@ -235,7 +235,12 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
                         throw new WmsException(e);
                     }
 
-                    graphics.drawImage(imgShape, 0, 0, w, h, null);
+                    image = new BufferedImage(imgShape.getWidth(), imgShape.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                    graphics = image.createGraphics();
+                    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    graphics.setColor(bgColor);
+                    graphics.fillRect(0, 0, imgShape.getWidth(), imgShape.getHeight());
+                    graphics.drawImage(imgShape, 0, 0, imgShape.getWidth(), imgShape.getHeight(), null);
                 } else {
                     Style2D style2d = styleFactory.createStyle(sampleFeature, symbolizer, scaleRange);
                     LiteShape2 shape = getSampleShape(symbolizer, w, h);
