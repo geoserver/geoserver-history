@@ -4,30 +4,36 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
-import org.geoserver.wfs.xml.v1_1_0.WFSBindingConfiguration;
-import org.picocontainer.MutablePicoContainer;
 
+import org.geotools.xml.BindingConfiguration;
+import org.picocontainer.MutablePicoContainer;
 
 /**
  * Binding configuration for the http://www.opengis.net/wfsv schema.
  *
+ * @generated
  */
-public final class WFSVBindingConfiguration extends WFSBindingConfiguration {
-    /**
-     * @generated modifiable
-     */
-    public void configure(MutablePicoContainer container) {
-        super.configure(container);
+public final class WFSVBindingConfiguration
+	implements BindingConfiguration {
 
-        //Types
-        container.registerComponentImplementation(WFSV.DifferenceQueryType,
-            DifferenceQueryTypeBinding.class);
-        container.registerComponentImplementation(WFSV.GetDiffType, GetDiffTypeBinding.class);
-        container.registerComponentImplementation(WFSV.GetLogType, GetLogTypeBinding.class);
-        container.registerComponentImplementation(WFSV.RollbackType, RollbackTypeBinding.class);
-        container.registerComponentImplementation(WFSV.VersionedDeleteElementType,
-            VersionedDeleteElementTypeBinding.class);
-        container.registerComponentImplementation(WFSV.VersionedUpdateElementType,
-            VersionedUpdateElementTypeBinding.class);
-    }
+
+	/**
+	 * @generated modifiable
+	 */
+	public void configure(MutablePicoContainer container) {
+	
+		//Types
+		container.registerComponentImplementation(WFSV.DifferenceQueryType,DifferenceQueryTypeBinding.class);
+		container.registerComponentImplementation(WFSV.DescribeVersionedFeatureTypeType,DescribeVersionedFeatureTypeTypeBinding.class);
+		container.registerComponentImplementation(WFSV.GetDiffType,GetDiffTypeBinding.class);
+		container.registerComponentImplementation(WFSV.GetLogType,GetLogTypeBinding.class);
+		container.registerComponentImplementation(WFSV.GetVersionedFeatureType,GetVersionedFeatureTypeBinding.class);
+		container.registerComponentImplementation(WFSV.RollbackType,RollbackTypeBinding.class);
+		container.registerComponentImplementation(WFSV.VersionedDeleteElementType,VersionedDeleteElementTypeBinding.class);
+		container.registerComponentImplementation(WFSV.VersionedFeatureCollectionType,VersionedFeatureCollectionTypeBinding.class);
+		container.registerComponentImplementation(WFSV.VersionedUpdateElementType,VersionedUpdateElementTypeBinding.class);
+
+
+	}
+
 }

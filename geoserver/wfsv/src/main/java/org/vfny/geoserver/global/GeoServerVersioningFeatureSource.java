@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geotools.data.Query;
 import org.geotools.data.VersioningFeatureLocking;
 import org.geotools.data.VersioningFeatureSource;
 import org.geotools.data.VersioningFeatureStore;
@@ -70,5 +71,17 @@ public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource
 
         return new GeoServerVersioningFeatureSource(featureSource, schema, definitionQuery,
             declaredCRS, srsHandling);
+    }
+    
+    public FeatureCollection getVersionedFeatures() throws IOException {
+        return ((VersioningFeatureSource) source).getVersionedFeatures();
+    }
+
+    public FeatureCollection getVersionedFeatures(Query q) throws IOException {
+        return ((VersioningFeatureSource) source).getVersionedFeatures(q);
+    }
+
+    public FeatureCollection getVersionedFeatures(Filter f) throws IOException {
+        return ((VersioningFeatureSource) source).getVersionedFeatures(f);
     }
 }

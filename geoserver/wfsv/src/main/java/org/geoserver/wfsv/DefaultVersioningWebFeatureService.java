@@ -5,15 +5,32 @@
 package org.geoserver.wfsv;
 
 import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.GetCapabilitiesType;
+import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.GetFeatureWithLockType;
+import net.opengis.wfs.LockFeatureResponseType;
+import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
+import net.opengis.wfsv.DescribeVersionedFeatureTypeType;
 import net.opengis.wfsv.GetDiffType;
 import net.opengis.wfsv.GetLogType;
-import org.geoserver.wfs.DefaultWebFeatureService;
+import net.opengis.wfsv.GetVersionedFeatureType;
+import net.opengis.wfsv.VersionedFeatureCollectionType;
+
+import org.geoserver.wfs.DescribeFeatureType;
+import org.geoserver.wfs.GetCapabilities;
+import org.geoserver.wfs.GetFeature;
+import org.geoserver.wfs.LockFeature;
 import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSException;
 import org.geotools.data.postgis.FeatureDiffReader;
+import org.geotools.xml.transform.TransformerBase;
+import org.opengis.filter.FilterFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.FeatureTypeInfo;
 
 
 /**
@@ -21,10 +38,117 @@ import org.vfny.geoserver.global.Data;
  *
  * @author aaime
  */
-public class DefaultVersioningWebFeatureService extends DefaultWebFeatureService
+public class DefaultVersioningWebFeatureService 
     implements VersionedWebFeatureService {
+    
+    /**
+     * WFS service configuration.
+     */
+    protected WFS wfs;
+
+    /**
+     * The catalog
+     */
+    protected Data catalog;
+
+    /**
+     * Filter factory
+     */
+    protected FilterFactory filterFactory;
+
+    /**
+     * The spring application context, used to look up transaction listeners, plugins and
+     * element handlers
+     */
+    protected ApplicationContext context;
+
     public DefaultVersioningWebFeatureService(WFS wfs, Data catalog) {
-        super(wfs, catalog);
+        this.wfs = wfs;
+        this.catalog = catalog;
+    }
+
+    /**
+     * Sets the fitler factory.
+     */
+    public void setFilterFactory(FilterFactory filterFactory) {
+        this.filterFactory = filterFactory;
+    }
+
+    /**
+     * WFS GetCapabilities operation.
+     *
+     * @param request The get capabilities request.
+     *
+     * @return A transformer instance capable of serializing a wfs capabilities
+     * document.
+     *
+     * @throws WFSException Any service exceptions.
+     */
+    public TransformerBase getCapabilities(GetCapabilitiesType request)
+        throws WFSException {
+        return new GetCapabilities(wfs, catalog).run(request);
+    }
+
+    /**
+     * WFS GetFeature operation.
+     *
+     * @param request The get feature request.
+     *
+     * @return A feature collection type instance.
+     *
+     * @throws WFSException Any service exceptions.
+     */
+    public FeatureCollectionType getFeature(GetFeatureType request)
+        throws WFSException {
+        GetFeature getFeature = new GetFeature(wfs, catalog);
+        getFeature.setFilterFactory(filterFactory);
+
+        return getFeature.run(request);
+    }
+
+    /**
+     * WFS GetFeatureWithLock operation.
+     *
+     * @param request The get feature with lock request.
+     *
+      * @return A feature collection type instance.
+     *
+     * @throws WFSException Any service exceptions.
+     */
+    public FeatureCollectionType getFeatureWithLock(GetFeatureWithLockType request)
+        throws WFSException {
+        return getFeature(request);
+    }
+
+    /**
+     * WFS LockFeatureType operation.
+     *
+     * @param request The lock feature request.
+     *
+     * @return A lock feture response type.
+     *
+     * @throws WFSException An service exceptions.
+     */
+    public LockFeatureResponseType lockFeature(LockFeatureType request)
+        throws WFSException {
+        LockFeature lockFeature = new LockFeature(wfs, catalog);
+        lockFeature.setFilterFactory(filterFactory);
+
+        return lockFeature.lockFeature(request);
+    }
+
+    //the following operations are not part of the spec
+    public void releaseLock(String lockId) throws WFSException {
+        new LockFeature(wfs, catalog).release(lockId);
+    }
+
+    public void releaseAllLocks() throws WFSException {
+        new LockFeature(wfs, catalog).releaseAll();
+    }
+
+    public void setApplicationContext(ApplicationContext context)
+        throws BeansException {
+        this.context = context;
     }
 
     public TransactionResponseType transaction(TransactionType request)
@@ -45,5 +169,22 @@ public class DefaultVersioningWebFeatureService extends DefaultWebFeatureService
         GetDiff diff = new GetDiff(wfs, catalog);
 
         return diff.run(request);
+    }
+
+    public VersionedFeatureCollectionType getVersionedFeature(
+            GetVersionedFeatureType request) {
+        VersionedGetFeature getFeature = new VersionedGetFeature(wfs, catalog);
+        getFeature.setFilterFactory(filterFactory);
+
+        return (VersionedFeatureCollectionType) getFeature.run(request);
+    }
+    
+    public FeatureTypeInfo[] describeFeatureType(net.opengis.wfs.DescribeFeatureTypeType request) {
+        return new DescribeFeatureType(wfs, catalog).run(request);
+    }
+    
+    public VersionedDescribeResults describeVersionedFeatureType(DescribeVersionedFeatureTypeType request) {
+        FeatureTypeInfo[] infos = new DescribeFeatureType(wfs, catalog).run(request);
+        return new VersionedDescribeResults(infos, request.isVersioned());
     }
 }
