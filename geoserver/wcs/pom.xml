@@ -34,7 +34,7 @@
 		    <artifactId>gt2-grib1</artifactId>
 		</dependency>
 	    <!-- nD plugins - END -->   
-	   <dependency>
+	   <!-- dependency>
 	    <groupId>org.geotools</groupId>
 	    <artifactId>gt2-ecw</artifactId>
 	   </dependency>
@@ -45,7 +45,7 @@
 	   <dependency>
 	    <groupId>org.geotools</groupId>
 	    <artifactId>gt2-hdf-aps</artifactId>
-	   </dependency>
+	   </dependency -->
 
    		<dependency>
 			<groupId>org.geotools</groupId>
