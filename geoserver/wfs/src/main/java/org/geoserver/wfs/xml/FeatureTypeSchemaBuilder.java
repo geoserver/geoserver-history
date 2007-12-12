@@ -116,6 +116,10 @@ public abstract class FeatureTypeSchemaBuilder {
         if (baseUrl == null)
             baseUrl = wfs.getSchemaBaseURL(); 
 
+        if (!baseUrl.endsWith("wfs") && !baseUrl.endsWith("wfs?")) {
+            baseUrl = ResponseUtils.appendPath(baseUrl, "wfs");
+        }
+                
         if (ns2featureTypeInfos.entrySet().size() == 1) {
             //import gml schema
             XSDImport imprt = factory.createXSDImport();
@@ -149,7 +153,7 @@ public abstract class FeatureTypeSchemaBuilder {
                 List types = (List) entry.getValue();
 
                 StringBuffer queryString = new StringBuffer(
-                        "request=DescribeFeatureType&version=1.1.0");
+                        "service=wfs&request=DescribeFeatureType&version=1.1.0");
                 queryString.append("&typeName=");
 
                 for (Iterator t = types.iterator(); t.hasNext();) {
