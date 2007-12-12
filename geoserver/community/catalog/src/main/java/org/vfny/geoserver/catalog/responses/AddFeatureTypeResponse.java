@@ -127,7 +127,7 @@ public class AddFeatureTypeResponse implements Response {
         return null;
     }
 
-    public void execute(Request req) throws CatalogException {
+    public synchronized void execute(Request req) throws CatalogException {
         CATALOGRequest request = (CATALOGRequest) req;
 
         if (!(request instanceof AddFeatureTypeRequest)) {

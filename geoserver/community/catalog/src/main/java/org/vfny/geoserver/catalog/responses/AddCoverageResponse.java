@@ -46,6 +46,7 @@ import java.io.StringReader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -138,7 +139,7 @@ public class AddCoverageResponse implements Response {
         return null;
     }
 
-    public void execute(Request req) throws CatalogException {
+    public synchronized void execute(Request req) throws CatalogException {
         CATALOGRequest request = (CATALOGRequest) req;
 
         if (!(request instanceof AddCoverageRequest)) {
@@ -176,7 +177,7 @@ public class AddCoverageResponse implements Response {
             // //
             String cvName = null;
 
-            // Decode the URL of the FT. This is to catch colons
+            // Decode the URL of the CV. This is to catch colons
             // used in filenames
             cvName = URLDecoder.decode(coverage.getKey(), "UTF-8");
 
@@ -190,15 +191,33 @@ public class AddCoverageResponse implements Response {
             // update the data config
             DataConfig dataConfig = ConfigRequests.getDataConfig(req
                     .getHttpServletRequest());
-            dataConfig.getCoverages().put(cvName, new CoverageConfig(coverage));
-
-            request.getCATALOG().getData().load(dataConfig.toDTO());
-
+            
             // //
             // Save the XML ...
             // //
             File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
 
+        	// //
+        	// Remove existing Coverages
+        	// //
+            for (Iterator keySetIterator = dataConfig.getCoverages().keySet().iterator(); keySetIterator.hasNext();) {
+            	String key = (String) keySetIterator.next();
+            	
+            	if (((CoverageConfig)dataConfig.getCoverages().get(key)).getName().equals(coverage.getName())) {
+                	dataConfig.getCoverages().put(key, null);
+                	dataConfig.getCoverages().remove(key);
+                	request.getCATALOG().getData().load(dataConfig.toDTO());
+                	break;
+            	}
+            }
+            
+            // //
+            // Adding the new Coverage...
+            // //
+            dataConfig.getCoverages().put(cvName, new CoverageConfig(coverage));
+
+            request.getCATALOG().getData().load(dataConfig.toDTO());
+            
             try {
                 XMLConfigWriter.store((DataDTO) request.getCATALOG().getData()
                                                        .toDTO(), rootDir);

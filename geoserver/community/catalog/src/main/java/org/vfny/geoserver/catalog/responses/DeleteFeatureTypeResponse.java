@@ -4,6 +4,15 @@
  */
 package org.vfny.geoserver.catalog.responses;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletException;
+
 import org.geoserver.util.ReaderUtils;
 import org.geotools.factory.Hints;
 import org.geotools.referencing.FactoryFinder;
@@ -26,13 +35,6 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.ServletException;
 
 
 /**
@@ -113,7 +115,7 @@ public class DeleteFeatureTypeResponse implements Response {
         return null;
     }
 
-    public void execute(Request req) throws CatalogException {
+    public synchronized void execute(Request req) throws CatalogException {
         CATALOGRequest request = (CATALOGRequest) req;
 
         if (!(request instanceof DeleteFeatureTypeRequest)) {
