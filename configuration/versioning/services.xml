@@ -44,16 +44,6 @@
       is used.
     -->
     <charSet value = "UTF-8" />
-    <!--
-      Defines the user name of the administrator for log in
-      to the web based administration tool.
-    -->
-    <adminUserName>admin</adminUserName>
-    <!--
-      Defines the password of the administrator for log in
-      to the web based administration tool.
-    -->
-    <adminPassword>geoserver</adminPassword>
     <ContactInformation >
       <ContactPersonPrimary >
         <ContactPerson>null</ContactPerson>
@@ -124,7 +114,7 @@ data.
       <accessConstraints>NONE</accessConstraints>
       <srsXmlStyle value = "true" />
       <serviceLevel value = "31" />
-      <citeConformanceHacks>false</citeConformanceHacks>
+      <citeConformanceHacks>true</citeConformanceHacks>
       <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
     </service>
     <service enabled = "true" type = "WMS" >

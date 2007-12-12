@@ -4,7 +4,9 @@
   <description>Generated from dem</description>
   <wmspath>/</wmspath>
   <metadataLink about = "http://www.remotesensing.org:16080/websites/geotiff/geotiff.html" metadataType = "other" >
+    
     null
+  
   </metadataLink>
   <keywords>WCS,dem,sfdem</keywords>
   <!--
@@ -23,7 +25,7 @@
     AXIS['Geodetic longitude', EAST], 
     AXIS['Geodetic latitude', NORTH], 
     AUTHORITY['EPSG','4267']], 
-  PROJECTION['Transverse Mercator', AUTHORITY['EPSG','9807']], 
+  PROJECTION['Transverse_Mercator'], 
   PARAMETER['central_meridian', -105.0], 
   PARAMETER['latitude_of_origin', 0.0], 
   PARAMETER['scale_factor', 0.9996], 
@@ -41,6 +43,14 @@
     <high>633 466 </high>
     <axisName>x</axisName>
     <axisName>y</axisName>
+    <geoTransform >
+      <scaleX>30.0</scaleX>
+      <scaleY>-30.0</scaleY>
+      <shearX>0.0</shearX>
+      <shearY>0.0</shearY>
+      <translateX>590025.0</translateX>
+      <translateY>4927985.0</translateY>
+    </geoTransform>
   </grid>
   <CoverageDimension >
     <name>Red band</name>
