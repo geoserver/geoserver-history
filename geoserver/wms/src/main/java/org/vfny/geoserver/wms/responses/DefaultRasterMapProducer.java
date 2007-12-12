@@ -338,6 +338,12 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
         // finally render the image
         final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
         renderer.paint(graphic, paintArea, dataArea);
+        
+        // //
+        // AlFa: Applying watermarking
+        // //
+        
+        
         graphic.dispose();
 
         if (!this.abortRequested) {
