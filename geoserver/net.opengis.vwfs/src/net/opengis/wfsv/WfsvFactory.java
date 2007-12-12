@@ -26,6 +26,15 @@ public interface WfsvFactory extends EFactory {
     WfsvFactory eINSTANCE = net.opengis.wfsv.impl.WfsvFactoryImpl.init();
 
     /**
+     * Returns a new object of class '<em>Describe Versioned Feature Type Type</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Describe Versioned Feature Type Type</em>'.
+     * @generated
+     */
+    DescribeVersionedFeatureTypeType createDescribeVersionedFeatureTypeType();
+
+    /**
      * Returns a new object of class '<em>Difference Query Type</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -62,6 +71,15 @@ public interface WfsvFactory extends EFactory {
     GetLogType createGetLogType();
 
     /**
+     * Returns a new object of class '<em>Get Versioned Feature Type</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Get Versioned Feature Type</em>'.
+     * @generated
+     */
+    GetVersionedFeatureType createGetVersionedFeatureType();
+
+    /**
      * Returns a new object of class '<em>Rollback Type</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -78,6 +96,15 @@ public interface WfsvFactory extends EFactory {
      * @generated
      */
     VersionedDeleteElementType createVersionedDeleteElementType();
+
+    /**
+     * Returns a new object of class '<em>Versioned Feature Collection Type</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Versioned Feature Collection Type</em>'.
+     * @generated
+     */
+    VersionedFeatureCollectionType createVersionedFeatureCollectionType();
 
     /**
      * Returns a new object of class '<em>Versioned Update Element Type</em>'.

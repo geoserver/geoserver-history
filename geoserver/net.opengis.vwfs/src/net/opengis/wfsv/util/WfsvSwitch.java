@@ -10,6 +10,9 @@ import java.util.List;
 
 import net.opengis.wfs.BaseRequestType;
 import net.opengis.wfs.DeleteElementType;
+import net.opengis.wfs.DescribeFeatureTypeType;
+import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.NativeType;
 import net.opengis.wfs.UpdateElementType;
 
@@ -92,6 +95,20 @@ public class WfsvSwitch {
      */
     protected Object doSwitch(int classifierID, EObject theEObject) {
         switch (classifierID) {
+            case WfsvPackage.ABSTRACT_VERSIONED_FEATURE_TYPE: {
+                AbstractVersionedFeatureType abstractVersionedFeatureType = (AbstractVersionedFeatureType)theEObject;
+                Object result = caseAbstractVersionedFeatureType(abstractVersionedFeatureType);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case WfsvPackage.DESCRIBE_VERSIONED_FEATURE_TYPE_TYPE: {
+                DescribeVersionedFeatureTypeType describeVersionedFeatureTypeType = (DescribeVersionedFeatureTypeType)theEObject;
+                Object result = caseDescribeVersionedFeatureTypeType(describeVersionedFeatureTypeType);
+                if (result == null) result = caseDescribeFeatureTypeType(describeVersionedFeatureTypeType);
+                if (result == null) result = caseBaseRequestType(describeVersionedFeatureTypeType);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
             case WfsvPackage.DIFFERENCE_QUERY_TYPE: {
                 DifferenceQueryType differenceQueryType = (DifferenceQueryType)theEObject;
                 Object result = caseDifferenceQueryType(differenceQueryType);
@@ -118,6 +135,14 @@ public class WfsvSwitch {
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
+            case WfsvPackage.GET_VERSIONED_FEATURE_TYPE: {
+                GetVersionedFeatureType getVersionedFeatureType = (GetVersionedFeatureType)theEObject;
+                Object result = caseGetVersionedFeatureType(getVersionedFeatureType);
+                if (result == null) result = caseGetFeatureType(getVersionedFeatureType);
+                if (result == null) result = caseBaseRequestType(getVersionedFeatureType);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
             case WfsvPackage.ROLLBACK_TYPE: {
                 RollbackType rollbackType = (RollbackType)theEObject;
                 Object result = caseRollbackType(rollbackType);
@@ -132,6 +157,13 @@ public class WfsvSwitch {
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
+            case WfsvPackage.VERSIONED_FEATURE_COLLECTION_TYPE: {
+                VersionedFeatureCollectionType versionedFeatureCollectionType = (VersionedFeatureCollectionType)theEObject;
+                Object result = caseVersionedFeatureCollectionType(versionedFeatureCollectionType);
+                if (result == null) result = caseFeatureCollectionType(versionedFeatureCollectionType);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
             case WfsvPackage.VERSIONED_UPDATE_ELEMENT_TYPE: {
                 VersionedUpdateElementType versionedUpdateElementType = (VersionedUpdateElementType)theEObject;
                 Object result = caseVersionedUpdateElementType(versionedUpdateElementType);
@@ -141,6 +173,36 @@ public class WfsvSwitch {
             }
             default: return defaultCase(theEObject);
         }
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Abstract Versioned Feature Type</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Abstract Versioned Feature Type</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public Object caseAbstractVersionedFeatureType(AbstractVersionedFeatureType object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Describe Versioned Feature Type Type</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Describe Versioned Feature Type Type</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public Object caseDescribeVersionedFeatureTypeType(DescribeVersionedFeatureTypeType object) {
+        return null;
     }
 
     /**
@@ -204,6 +266,21 @@ public class WfsvSwitch {
     }
 
     /**
+     * Returns the result of interpreting the object as an instance of '<em>Get Versioned Feature Type</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Get Versioned Feature Type</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public Object caseGetVersionedFeatureType(GetVersionedFeatureType object) {
+        return null;
+    }
+
+    /**
      * Returns the result of interpreting the object as an instance of '<em>Rollback Type</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
@@ -230,6 +307,21 @@ public class WfsvSwitch {
      * @generated
      */
     public Object caseVersionedDeleteElementType(VersionedDeleteElementType object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Versioned Feature Collection Type</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Versioned Feature Collection Type</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public Object caseVersionedFeatureCollectionType(VersionedFeatureCollectionType object) {
         return null;
     }
 
@@ -264,6 +356,36 @@ public class WfsvSwitch {
     }
 
     /**
+     * Returns the result of interpreting the object as an instance of '<em>Describe Feature Type Type</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Describe Feature Type Type</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public Object caseDescribeFeatureTypeType(DescribeFeatureTypeType object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Get Feature Type</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Get Feature Type</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public Object caseGetFeatureType(GetFeatureType object) {
+        return null;
+    }
+
+    /**
      * Returns the result of interpreting the object as an instance of '<em>Native Type</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
@@ -290,6 +412,21 @@ public class WfsvSwitch {
      * @generated
      */
     public Object caseDeleteElementType(DeleteElementType object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Feature Collection Type</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Feature Collection Type</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public Object caseFeatureCollectionType(FeatureCollectionType object) {
         return null;
     }
 

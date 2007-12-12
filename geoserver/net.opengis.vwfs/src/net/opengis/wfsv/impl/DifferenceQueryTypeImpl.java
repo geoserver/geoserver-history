@@ -7,6 +7,7 @@
 package net.opengis.wfsv.impl;
 
 import javax.xml.namespace.QName;
+
 import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.WfsvPackage;
 

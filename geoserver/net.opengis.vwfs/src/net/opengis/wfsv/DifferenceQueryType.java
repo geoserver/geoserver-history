@@ -7,6 +7,7 @@
 package net.opengis.wfsv;
 
 import javax.xml.namespace.QName;
+
 import org.eclipse.emf.ecore.EObject;
 
 /**

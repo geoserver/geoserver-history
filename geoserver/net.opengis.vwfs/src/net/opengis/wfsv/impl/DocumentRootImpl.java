@@ -10,8 +10,10 @@ import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.DocumentRoot;
 import net.opengis.wfsv.GetDiffType;
 import net.opengis.wfsv.GetLogType;
+import net.opengis.wfsv.GetVersionedFeatureType;
 import net.opengis.wfsv.RollbackType;
 import net.opengis.wfsv.VersionedDeleteElementType;
+import net.opengis.wfsv.VersionedFeatureCollectionType;
 import net.opengis.wfsv.VersionedUpdateElementType;
 import net.opengis.wfsv.WfsvPackage;
 
@@ -42,11 +44,14 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link net.opengis.wfsv.impl.DocumentRootImpl#getMixed <em>Mixed</em>}</li>
  *   <li>{@link net.opengis.wfsv.impl.DocumentRootImpl#getXMLNSPrefixMap <em>XMLNS Prefix Map</em>}</li>
  *   <li>{@link net.opengis.wfsv.impl.DocumentRootImpl#getXSISchemaLocation <em>XSI Schema Location</em>}</li>
+ *   <li>{@link net.opengis.wfsv.impl.DocumentRootImpl#getDescribeVersionedFeatureType <em>Describe Versioned Feature Type</em>}</li>
  *   <li>{@link net.opengis.wfsv.impl.DocumentRootImpl#getDifferenceQuery <em>Difference Query</em>}</li>
  *   <li>{@link net.opengis.wfsv.impl.DocumentRootImpl#getGetDiff <em>Get Diff</em>}</li>
  *   <li>{@link net.opengis.wfsv.impl.DocumentRootImpl#getGetLog <em>Get Log</em>}</li>
+ *   <li>{@link net.opengis.wfsv.impl.DocumentRootImpl#getGetVersionedFeature <em>Get Versioned Feature</em>}</li>
  *   <li>{@link net.opengis.wfsv.impl.DocumentRootImpl#getRollback <em>Rollback</em>}</li>
  *   <li>{@link net.opengis.wfsv.impl.DocumentRootImpl#getVersionedDelete <em>Versioned Delete</em>}</li>
+ *   <li>{@link net.opengis.wfsv.impl.DocumentRootImpl#getVersionedFeatureCollection <em>Versioned Feature Collection</em>}</li>
  *   <li>{@link net.opengis.wfsv.impl.DocumentRootImpl#getVersionedUpdate <em>Versioned Update</em>}</li>
  * </ul>
  * </p>
@@ -83,6 +88,16 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @ordered
      */
     protected EMap xSISchemaLocation;
+
+    /**
+     * The default value of the '{@link #getDescribeVersionedFeatureType() <em>Describe Versioned Feature Type</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getDescribeVersionedFeatureType()
+     * @generated
+     * @ordered
+     */
+    protected static final Object DESCRIBE_VERSIONED_FEATURE_TYPE_EDEFAULT = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -136,6 +151,24 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
             xSISchemaLocation = new EcoreEMap(EcorePackage.Literals.ESTRING_TO_STRING_MAP_ENTRY, EStringToStringMapEntryImpl.class, this, WfsvPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION);
         }
         return xSISchemaLocation;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Object getDescribeVersionedFeatureType() {
+        return getMixed().get(WfsvPackage.Literals.DOCUMENT_ROOT__DESCRIBE_VERSIONED_FEATURE_TYPE, true);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setDescribeVersionedFeatureType(Object newDescribeVersionedFeatureType) {
+        ((FeatureMap.Internal)getMixed()).set(WfsvPackage.Literals.DOCUMENT_ROOT__DESCRIBE_VERSIONED_FEATURE_TYPE, newDescribeVersionedFeatureType);
     }
 
     /**
@@ -224,6 +257,33 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
+    public GetVersionedFeatureType getGetVersionedFeature() {
+        return (GetVersionedFeatureType)getMixed().get(WfsvPackage.Literals.DOCUMENT_ROOT__GET_VERSIONED_FEATURE, true);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public NotificationChain basicSetGetVersionedFeature(GetVersionedFeatureType newGetVersionedFeature, NotificationChain msgs) {
+        return ((FeatureMap.Internal)getMixed()).basicAdd(WfsvPackage.Literals.DOCUMENT_ROOT__GET_VERSIONED_FEATURE, newGetVersionedFeature, msgs);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setGetVersionedFeature(GetVersionedFeatureType newGetVersionedFeature) {
+        ((FeatureMap.Internal)getMixed()).set(WfsvPackage.Literals.DOCUMENT_ROOT__GET_VERSIONED_FEATURE, newGetVersionedFeature);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public RollbackType getRollback() {
         return (RollbackType)getMixed().get(WfsvPackage.Literals.DOCUMENT_ROOT__ROLLBACK, true);
     }
@@ -278,6 +338,33 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
+    public VersionedFeatureCollectionType getVersionedFeatureCollection() {
+        return (VersionedFeatureCollectionType)getMixed().get(WfsvPackage.Literals.DOCUMENT_ROOT__VERSIONED_FEATURE_COLLECTION, true);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public NotificationChain basicSetVersionedFeatureCollection(VersionedFeatureCollectionType newVersionedFeatureCollection, NotificationChain msgs) {
+        return ((FeatureMap.Internal)getMixed()).basicAdd(WfsvPackage.Literals.DOCUMENT_ROOT__VERSIONED_FEATURE_COLLECTION, newVersionedFeatureCollection, msgs);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setVersionedFeatureCollection(VersionedFeatureCollectionType newVersionedFeatureCollection) {
+        ((FeatureMap.Internal)getMixed()).set(WfsvPackage.Literals.DOCUMENT_ROOT__VERSIONED_FEATURE_COLLECTION, newVersionedFeatureCollection);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public VersionedUpdateElementType getVersionedUpdate() {
         return (VersionedUpdateElementType)getMixed().get(WfsvPackage.Literals.DOCUMENT_ROOT__VERSIONED_UPDATE, true);
     }
@@ -319,10 +406,14 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
                 return basicSetGetDiff(null, msgs);
             case WfsvPackage.DOCUMENT_ROOT__GET_LOG:
                 return basicSetGetLog(null, msgs);
+            case WfsvPackage.DOCUMENT_ROOT__GET_VERSIONED_FEATURE:
+                return basicSetGetVersionedFeature(null, msgs);
             case WfsvPackage.DOCUMENT_ROOT__ROLLBACK:
                 return basicSetRollback(null, msgs);
             case WfsvPackage.DOCUMENT_ROOT__VERSIONED_DELETE:
                 return basicSetVersionedDelete(null, msgs);
+            case WfsvPackage.DOCUMENT_ROOT__VERSIONED_FEATURE_COLLECTION:
+                return basicSetVersionedFeatureCollection(null, msgs);
             case WfsvPackage.DOCUMENT_ROOT__VERSIONED_UPDATE:
                 return basicSetVersionedUpdate(null, msgs);
         }
@@ -345,16 +436,22 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
             case WfsvPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
                 if (coreType) return getXSISchemaLocation();
                 else return getXSISchemaLocation().map();
+            case WfsvPackage.DOCUMENT_ROOT__DESCRIBE_VERSIONED_FEATURE_TYPE:
+                return getDescribeVersionedFeatureType();
             case WfsvPackage.DOCUMENT_ROOT__DIFFERENCE_QUERY:
                 return getDifferenceQuery();
             case WfsvPackage.DOCUMENT_ROOT__GET_DIFF:
                 return getGetDiff();
             case WfsvPackage.DOCUMENT_ROOT__GET_LOG:
                 return getGetLog();
+            case WfsvPackage.DOCUMENT_ROOT__GET_VERSIONED_FEATURE:
+                return getGetVersionedFeature();
             case WfsvPackage.DOCUMENT_ROOT__ROLLBACK:
                 return getRollback();
             case WfsvPackage.DOCUMENT_ROOT__VERSIONED_DELETE:
                 return getVersionedDelete();
+            case WfsvPackage.DOCUMENT_ROOT__VERSIONED_FEATURE_COLLECTION:
+                return getVersionedFeatureCollection();
             case WfsvPackage.DOCUMENT_ROOT__VERSIONED_UPDATE:
                 return getVersionedUpdate();
         }
@@ -377,6 +474,9 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
             case WfsvPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
                 ((EStructuralFeature.Setting)getXSISchemaLocation()).set(newValue);
                 return;
+            case WfsvPackage.DOCUMENT_ROOT__DESCRIBE_VERSIONED_FEATURE_TYPE:
+                setDescribeVersionedFeatureType(newValue);
+                return;
             case WfsvPackage.DOCUMENT_ROOT__DIFFERENCE_QUERY:
                 setDifferenceQuery((DifferenceQueryType)newValue);
                 return;
@@ -386,11 +486,17 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
             case WfsvPackage.DOCUMENT_ROOT__GET_LOG:
                 setGetLog((GetLogType)newValue);
                 return;
+            case WfsvPackage.DOCUMENT_ROOT__GET_VERSIONED_FEATURE:
+                setGetVersionedFeature((GetVersionedFeatureType)newValue);
+                return;
             case WfsvPackage.DOCUMENT_ROOT__ROLLBACK:
                 setRollback((RollbackType)newValue);
                 return;
             case WfsvPackage.DOCUMENT_ROOT__VERSIONED_DELETE:
                 setVersionedDelete((VersionedDeleteElementType)newValue);
+                return;
+            case WfsvPackage.DOCUMENT_ROOT__VERSIONED_FEATURE_COLLECTION:
+                setVersionedFeatureCollection((VersionedFeatureCollectionType)newValue);
                 return;
             case WfsvPackage.DOCUMENT_ROOT__VERSIONED_UPDATE:
                 setVersionedUpdate((VersionedUpdateElementType)newValue);
@@ -415,6 +521,9 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
             case WfsvPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
                 getXSISchemaLocation().clear();
                 return;
+            case WfsvPackage.DOCUMENT_ROOT__DESCRIBE_VERSIONED_FEATURE_TYPE:
+                setDescribeVersionedFeatureType(DESCRIBE_VERSIONED_FEATURE_TYPE_EDEFAULT);
+                return;
             case WfsvPackage.DOCUMENT_ROOT__DIFFERENCE_QUERY:
                 setDifferenceQuery((DifferenceQueryType)null);
                 return;
@@ -424,11 +533,17 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
             case WfsvPackage.DOCUMENT_ROOT__GET_LOG:
                 setGetLog((GetLogType)null);
                 return;
+            case WfsvPackage.DOCUMENT_ROOT__GET_VERSIONED_FEATURE:
+                setGetVersionedFeature((GetVersionedFeatureType)null);
+                return;
             case WfsvPackage.DOCUMENT_ROOT__ROLLBACK:
                 setRollback((RollbackType)null);
                 return;
             case WfsvPackage.DOCUMENT_ROOT__VERSIONED_DELETE:
                 setVersionedDelete((VersionedDeleteElementType)null);
+                return;
+            case WfsvPackage.DOCUMENT_ROOT__VERSIONED_FEATURE_COLLECTION:
+                setVersionedFeatureCollection((VersionedFeatureCollectionType)null);
                 return;
             case WfsvPackage.DOCUMENT_ROOT__VERSIONED_UPDATE:
                 setVersionedUpdate((VersionedUpdateElementType)null);
@@ -450,16 +565,22 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
                 return xMLNSPrefixMap != null && !xMLNSPrefixMap.isEmpty();
             case WfsvPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
                 return xSISchemaLocation != null && !xSISchemaLocation.isEmpty();
+            case WfsvPackage.DOCUMENT_ROOT__DESCRIBE_VERSIONED_FEATURE_TYPE:
+                return DESCRIBE_VERSIONED_FEATURE_TYPE_EDEFAULT == null ? getDescribeVersionedFeatureType() != null : !DESCRIBE_VERSIONED_FEATURE_TYPE_EDEFAULT.equals(getDescribeVersionedFeatureType());
             case WfsvPackage.DOCUMENT_ROOT__DIFFERENCE_QUERY:
                 return getDifferenceQuery() != null;
             case WfsvPackage.DOCUMENT_ROOT__GET_DIFF:
                 return getGetDiff() != null;
             case WfsvPackage.DOCUMENT_ROOT__GET_LOG:
                 return getGetLog() != null;
+            case WfsvPackage.DOCUMENT_ROOT__GET_VERSIONED_FEATURE:
+                return getGetVersionedFeature() != null;
             case WfsvPackage.DOCUMENT_ROOT__ROLLBACK:
                 return getRollback() != null;
             case WfsvPackage.DOCUMENT_ROOT__VERSIONED_DELETE:
                 return getVersionedDelete() != null;
+            case WfsvPackage.DOCUMENT_ROOT__VERSIONED_FEATURE_COLLECTION:
+                return getVersionedFeatureCollection() != null;
             case WfsvPackage.DOCUMENT_ROOT__VERSIONED_UPDATE:
                 return getVersionedUpdate() != null;
         }
