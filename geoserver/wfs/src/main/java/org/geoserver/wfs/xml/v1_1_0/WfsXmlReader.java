@@ -10,6 +10,7 @@ import org.geoserver.wfs.WFSException;
 import org.geotools.util.Version;
 import org.geotools.xml.Parser;
 import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.NameSpaceInfo;
 import org.xml.sax.InputSource;
 import java.io.Reader;
 import java.util.Iterator;
@@ -17,7 +18,13 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-
+/**
+ * Xml reader for wfs 1.1.0 xml requests.
+ * 
+ * @author Justin Deoliveira, The Open Planning Project
+ *
+ * TODO: there is too much duplication with the 1.0.0 reader, factor it out.
+ */
 public class WfsXmlReader extends XmlRequestReader {
     /**
      * WFs configuration
@@ -53,6 +60,16 @@ public class WfsXmlReader extends XmlRequestReader {
 
         Parser parser = new Parser(configuration);
         parser.setValidating(strict.booleanValue());
+        
+        //"inject" namespace mappings
+        NameSpaceInfo[] namespaces = configuration.getCatalog().getNameSpaces();
+        for ( int i = 0; i < namespaces.length; i++) {
+            if ( namespaces[i].isDefault() ) 
+                continue;
+            
+            parser.getNamespaces().declarePrefix( 
+                namespaces[i].getPrefix(), namespaces[i].getURI());
+        }
        
         //set the input source with the correct encoding
         InputSource source = new InputSource(reader);

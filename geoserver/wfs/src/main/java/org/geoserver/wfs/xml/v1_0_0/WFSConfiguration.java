@@ -62,6 +62,10 @@ public class WFSConfiguration extends Configuration {
         addDependency(new GMLConfiguration());
     }
 
+    public Data getCatalog() {
+        return catalog;
+    }
+    
     public String getNamespaceURI() {
         return WFS.NAMESPACE;
     }

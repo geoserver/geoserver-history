@@ -75,6 +75,10 @@ public class WFSConfiguration extends Configuration {
         addDependency(new OWSConfiguration());
     }
 
+    public Data getCatalog() {
+        return catalog;
+    }
+    
     public void addDependency(Configuration dependency) {
         //override to make public
         super.addDependency(dependency);
