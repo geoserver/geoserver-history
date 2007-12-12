@@ -5,11 +5,14 @@
 package org.geoserver.wms;
 
 import com.vividsolutions.jts.geom.Envelope;
+
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -35,6 +38,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 
 
 public class DefaultWebMapService implements WebMapService, ApplicationContextAware {
@@ -167,11 +171,6 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
      * This method tries to automatically determine SRS, bounding box and output
      *  size based on the layers provided by the user and any other parameters.
      * 
-     * If all layers use the same SRS, and the user does not specify otherwise, 
-     * that SRS will be returned. If they differ, EPSG:4326 will be used. An 
-     * exception is thrown if the user specifies an SRS that is not shared by all
-     * layers and is not EPSG:4326.
-     * 
      * If bounds are not specified by the user, they are automatically se to the
      * union of the bounds of all layers. 
      * 
@@ -186,54 +185,49 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
     	// Get the layers
         MapLayerInfo[] layers = getMap.getLayers();
         
-   	 	// Determine the SRS first, to keep the code readable
+   	 	// Determine the SRS first
         String reqSRS = getMap.getSRS();
-        boolean specifiedSRS = (reqSRS != null);
-        boolean force4326 = (!specifiedSRS || reqSRS.equals("EPSG:4326"));
-        
-		for(int i=0; specifiedSRS && !force4326 && i<layers.length; i++) {
-			FeatureTypeInfo fti = layers[i].getFeature();
-			String curSRS = "EPSG:"+fti.getSRS();
-			
-			// Compare to the specified SRS
-			if(! reqSRS.equals(curSRS)) {
-		    	throw new RuntimeException(
-		    			"Cannot force SRS "+reqSRS+" when native is "+ curSRS
-		    			+", try not specifying the SRS.");
-			}
-		}
-		
-		if(force4326) {
-			getMap.setSRS("EPSG:4326");
+        CoordinateReferenceSystem reqCRS = getMap.getCrs();
+        boolean useNativeBounds = true;
+        if(getMap.getSRS() == null || reqSRS.equalsIgnoreCase("EPSG:4326")) {
+        	useNativeBounds = false;
+        	reqSRS = "EPSG:4326";
+        	getMap.setSRS(reqSRS);
 			try {
-				getMap.setCrs(CRS.decode("EPSG:4326"));
+				reqCRS = CRS.decode(reqSRS);
 			} catch (NoSuchAuthorityCodeException e) {
 				e.printStackTrace();
 			} catch (FactoryException e) {
 				e.printStackTrace();
 			}
-		} else {
-			//Already set getMap.setSRS(reqSRS);
-		}
-		
+			getMap.setCrs(reqCRS);
+        } else {
+        	for(int i=0; useNativeBounds && i<layers.length; i++) {        		
+        		useNativeBounds = layers[i].getFeature().getSRS().equalsIgnoreCase(reqSRS);	
+        	}
+        }
+        		
 		// Ready to determine the bounds based on the layers, if not specified
         Envelope layerbbox = null;
-
-        boolean specifiedBBOX = (getMap.getBbox() != null);
-        if(specifiedBBOX) {
-        	layerbbox = getMap.getBbox();		
+        
+        boolean specifiedBbox = (getMap.getBbox() != null);
+        
+        if(specifiedBbox) {
+        	layerbbox = getMap.getBbox();
         } else {
         	// Get the bounding box from the layers
         	for(int i=0; i<layers.length; i++) {
         		Envelope curbbox = null;
+        		
+        		FeatureTypeInfo curFTI = layers[i].getFeature();
         		try {
-        			if(force4326) {
-        				curbbox = layers[i].getFeature().getLatLongBoundingBox();
+        			if(useNativeBounds) {
+        				curbbox = curFTI.getLatLongBoundingBox();
         			} else {
-        				curbbox = layers[i].getFeature().getBoundingBox();
+        				curbbox = curFTI.getBoundingBox();
         			}
         		} catch(IOException e) {
-        			// Do nothing
+        			e.printStackTrace();
         		}
         		if(i == 0) {
         			layerbbox = new Envelope(curbbox);
@@ -241,6 +235,19 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
         			layerbbox.expandToInclude(curbbox);
         		}
         	}
+        	// Reproject if we have to
+       		if(! useNativeBounds) {
+       			try {
+        			ReferencedEnvelope ref = new ReferencedEnvelope(layerbbox, CRS.decode("EPSG:4326"));      	
+        			layerbbox = ref.transform(reqCRS, true);
+       			} catch (NoSuchAuthorityCodeException e) {
+       				e.printStackTrace();
+       			} catch (TransformException e) {
+       				e.printStackTrace();
+       			} catch (FactoryException e) {
+       				e.printStackTrace();
+				}
+       		}
         }
        
         // Just in case
@@ -250,16 +257,16 @@ public class DefaultWebMapService implements WebMapService, ApplicationContextAw
         double bbwidth = layerbbox.getWidth();
         double bbratio = bbwidth/bbheight;
         
-        if(!specifiedBBOX) {
-        	// Zoom out 5%, accomodates for reprojection etc
-        	layerbbox.expandBy(layerbbox.getWidth()/40,layerbbox.getHeight()/40);
+        if(!specifiedBbox) {
+        	// Zoom out 4%, accomodates for reprojection etc
+        	layerbbox.expandBy(layerbbox.getWidth()/50, layerbbox.getHeight()/50);
     	}
         
         
         double mheight = getMap.getHeight();
         double mwidth = getMap.getWidth();
         
-        if(mheight > 0.5 && mwidth > 0.5 && specifiedBBOX) {
+        if(mheight > 0.5 && mwidth > 0.5 && specifiedBbox) {
         	// This person really doesnt want our help
         } else {
         	if(mheight > 0.5 && mwidth > 0.5) {
