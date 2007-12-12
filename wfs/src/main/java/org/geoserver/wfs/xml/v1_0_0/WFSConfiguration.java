@@ -62,6 +62,10 @@ public class WFSConfiguration extends Configuration {
         addDependency(new GMLConfiguration());
     }
 
+    public Data getCatalog() {
+      return catalog;
+    }
+
     protected void registerBindings(MutablePicoContainer container) {
       //Types
         container.registerComponentImplementation(WFS.ALLSOMETYPE, AllSomeTypeBinding.class);

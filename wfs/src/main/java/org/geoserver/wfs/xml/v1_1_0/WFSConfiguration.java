@@ -142,6 +142,10 @@ public class WFSConfiguration extends Configuration {
             WFS_CapabilitiesTypeBinding.class);
     }
 
+    public Data getCatalog() {
+        return catalog;
+    }
+    
     public void addDependency(Configuration dependency) {
         //override to make public
         super.addDependency(dependency);
