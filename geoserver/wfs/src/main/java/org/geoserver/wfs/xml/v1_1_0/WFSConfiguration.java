@@ -31,9 +31,6 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Parameter;
-import org.picocontainer.defaults.BasicComponentParameter;
-import org.picocontainer.defaults.CachingComponentAdapter;
-import org.picocontainer.defaults.ComponentParameter;
 import org.picocontainer.defaults.SetterInjectionComponentAdapter;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -48,12 +45,12 @@ public class WFSConfiguration extends Configuration {
     /**
      * catalog
      */
-    Data catalog;
+    protected Data catalog;
 
     /**
      * Schema builder
      */
-    FeatureTypeSchemaBuilder schemaBuilder;
+    protected FeatureTypeSchemaBuilder schemaBuilder;
 
     public WFSConfiguration(Data catalog, FeatureTypeSchemaBuilder schemaBuilder, final WFS wfs) {
         super( wfs );
