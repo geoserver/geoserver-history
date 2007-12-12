@@ -251,14 +251,14 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
             if (n == 0) {
                 //make same size, with empty objects
                 for (int i = 0; i < m; i++) {
-                    query.add(wfsFactory.createQueryType());
+                    query.add(getWfsFactory().createQueryType());
                 }
             } else if (n == 1) {
                 //clone single object up to 
                 EObject q = (EObject) query.get(0);
 
                 for (int i = 1; i < m; i++) {
-                    query.add(EMFUtils.clone(q, wfsFactory));
+                    query.add(EMFUtils.clone(q, getWfsFactory()));
                 }
 
                 return;
