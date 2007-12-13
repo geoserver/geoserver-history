@@ -22,30 +22,27 @@ public class GZIPResponseWrapper extends HttpServletResponseWrapper {
     protected HttpServletResponse origResponse = null;
     protected ServletOutputStream stream = null;
     protected PrintWriter writer = null;
-    protected Set preCompressedFormats;
+    protected Set formatsToCompress;
     protected String requestedURL;
     protected Logger logger = org.geotools.util.logging.Logging.getLogger("org.geoserver.filters");
 
-    public GZIPResponseWrapper(HttpServletResponse response, String url) {
+    public GZIPResponseWrapper(HttpServletResponse response, Set toCompress, String url) {
         super(response);
         requestedURL = url;
         origResponse = response;
         // TODO: allow user-configured format list here
-        preCompressedFormats = new HashSet();
-        preCompressedFormats.add("application/pdf");
-        preCompressedFormats.add("image/png");
-        preCompressedFormats.add("image/gif");
+        formatsToCompress = toCompress;
     }
 
     public ServletOutputStream createOutputStream() throws IOException {
         String type = getContentType();
 
-        if (type != null && preCompressedFormats.contains(type)){
-            logger.info("Getting the plain writer for content type: " + type);
-            return origResponse.getOutputStream();
+        if (type != null && formatsToCompress.contains(type)){
+            logger.info("Getting a compressed writer for content type: " + type);
+            return new GZIPResponseStream(origResponse);
         }
-        logger.info("Getting a compressed writer for content type: " + type);
-        return new GZIPResponseStream(origResponse);
+        logger.info("Getting the plain writer for content type: " + type);
+        return origResponse.getOutputStream();
     }
 
     public void setContentType(String type){

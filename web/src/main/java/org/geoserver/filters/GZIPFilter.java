@@ -11,11 +11,22 @@
 
 package org.geoserver.filters;
 
-import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.IOException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.util.Set;
+import java.util.HashSet;
 
 public class GZIPFilter implements Filter {
+
+    private Set myCompressedTypes;
 
     public void doFilter(ServletRequest req, ServletResponse res,
             FilterChain chain) throws IOException, ServletException {
@@ -25,7 +36,7 @@ public class GZIPFilter implements Filter {
             String ae = request.getHeader("accept-encoding");
             if (ae != null && ae.indexOf("gzip") != -1) {
                 GZIPResponseWrapper wrappedResponse =
-                    new GZIPResponseWrapper(response, request.getRequestURL().toString());
+                    new GZIPResponseWrapper(response, myCompressedTypes, request.getRequestURL().toString());
                 chain.doFilter(req, wrappedResponse);
                 wrappedResponse.finishResponse();
                 return;
@@ -36,6 +47,18 @@ public class GZIPFilter implements Filter {
     }
 
     public void init(FilterConfig filterConfig) {
+        try {
+            String compressedTypes = filterConfig.getInitParameter("compressed-types");
+            String[] typeNames = 
+                (compressedTypes == null ? new String[0] : compressedTypes.split(",")); 
+            // TODO: Are commas allowed in mimetypes?
+            myCompressedTypes = new HashSet();
+            for (int i = 0; i < typeNames.length; i++){
+                myCompressedTypes.add(typeNames[i]);
+            }
+        } catch (Exception e){
+            System.out.println("Error while setting up GZIPFilter; " + e);
+        }
     }
 
     public void destroy() {
