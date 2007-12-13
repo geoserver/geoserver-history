@@ -49,7 +49,7 @@ public class GZIPResponseWrapper extends HttpServletResponseWrapper {
     public void setContentType(String type){
         if (stream != null){
             logger.warn("Setting mimetype after acquiring stream! was:" +
-                    getContentType() + "; set to: " + type + "; URL is : " + ); 
+                    getContentType() + "; set to: "); 
         }
         origResponse.setContentType(type);
     }
