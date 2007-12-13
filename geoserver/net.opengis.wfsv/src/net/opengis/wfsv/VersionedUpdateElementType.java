@@ -8,8 +8,6 @@ package net.opengis.wfsv;
 
 import net.opengis.wfs.UpdateElementType;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Versioned Update Element Type</b></em>'.

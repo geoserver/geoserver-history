@@ -33,6 +33,8 @@ public class WfsvXmlReader extends XmlRequestReader {
         configuration.getProperties().add(Parser.Properties.PARSE_UNKNOWN_ELEMENTS);
 
         Parser parser = new Parser(configuration);
+        if(wfs.getCiteConformanceHacks())
+            parser.setValidating(true);
 
         // set the input source with the correct encoding
         InputSource source = new InputSource(reader);

@@ -62,6 +62,134 @@ public interface WfsvPackage extends EPackage {
     WfsvPackage eINSTANCE = net.opengis.wfsv.impl.WfsvPackageImpl.init();
 
     /**
+     * The meta object id for the '{@link net.opengis.wfsv.impl.AbstractVersionedFeatureTypeImpl <em>Abstract Versioned Feature Type</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see net.opengis.wfsv.impl.AbstractVersionedFeatureTypeImpl
+     * @see net.opengis.wfsv.impl.WfsvPackageImpl#getAbstractVersionedFeatureType()
+     * @generated
+     */
+    int ABSTRACT_VERSIONED_FEATURE_TYPE = 0;
+
+    /**
+     * The feature id for the '<em><b>Version</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_VERSIONED_FEATURE_TYPE__VERSION = 0;
+
+    /**
+     * The feature id for the '<em><b>Author</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_VERSIONED_FEATURE_TYPE__AUTHOR = 1;
+
+    /**
+     * The feature id for the '<em><b>Date</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_VERSIONED_FEATURE_TYPE__DATE = 2;
+
+    /**
+     * The feature id for the '<em><b>Message</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_VERSIONED_FEATURE_TYPE__MESSAGE = 3;
+
+    /**
+     * The number of structural features of the '<em>Abstract Versioned Feature Type</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_VERSIONED_FEATURE_TYPE_FEATURE_COUNT = 4;
+
+    /**
+     * The meta object id for the '{@link net.opengis.wfsv.impl.DescribeVersionedFeatureTypeTypeImpl <em>Describe Versioned Feature Type Type</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see net.opengis.wfsv.impl.DescribeVersionedFeatureTypeTypeImpl
+     * @see net.opengis.wfsv.impl.WfsvPackageImpl#getDescribeVersionedFeatureTypeType()
+     * @generated
+     */
+    int DESCRIBE_VERSIONED_FEATURE_TYPE_TYPE = 1;
+
+    /**
+     * The feature id for the '<em><b>Handle</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DESCRIBE_VERSIONED_FEATURE_TYPE_TYPE__HANDLE = WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__HANDLE;
+
+    /**
+     * The feature id for the '<em><b>Service</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DESCRIBE_VERSIONED_FEATURE_TYPE_TYPE__SERVICE = WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__SERVICE;
+
+    /**
+     * The feature id for the '<em><b>Version</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DESCRIBE_VERSIONED_FEATURE_TYPE_TYPE__VERSION = WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__VERSION;
+
+    /**
+     * The feature id for the '<em><b>Type Name</b></em>' attribute list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DESCRIBE_VERSIONED_FEATURE_TYPE_TYPE__TYPE_NAME = WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME;
+
+    /**
+     * The feature id for the '<em><b>Output Format</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DESCRIBE_VERSIONED_FEATURE_TYPE_TYPE__OUTPUT_FORMAT = WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT;
+
+    /**
+     * The feature id for the '<em><b>Versioned</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DESCRIBE_VERSIONED_FEATURE_TYPE_TYPE__VERSIONED = WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of structural features of the '<em>Describe Versioned Feature Type Type</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DESCRIBE_VERSIONED_FEATURE_TYPE_TYPE_FEATURE_COUNT = WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE_FEATURE_COUNT + 1;
+
+    /**
      * The meta object id for the '{@link net.opengis.wfsv.impl.DifferenceQueryTypeImpl <em>Difference Query Type</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -69,7 +197,7 @@ public interface WfsvPackage extends EPackage {
      * @see net.opengis.wfsv.impl.WfsvPackageImpl#getDifferenceQueryType()
      * @generated
      */
-    int DIFFERENCE_QUERY_TYPE = 0;
+    int DIFFERENCE_QUERY_TYPE = 2;
 
     /**
      * The feature id for the '<em><b>Filter</b></em>' attribute.
@@ -133,7 +261,7 @@ public interface WfsvPackage extends EPackage {
      * @see net.opengis.wfsv.impl.WfsvPackageImpl#getDocumentRoot()
      * @generated
      */
-    int DOCUMENT_ROOT = 1;
+    int DOCUMENT_ROOT = 3;
 
     /**
      * The feature id for the '<em><b>Mixed</b></em>' attribute list.
@@ -163,13 +291,22 @@ public interface WfsvPackage extends EPackage {
     int DOCUMENT_ROOT__XSI_SCHEMA_LOCATION = 2;
 
     /**
+     * The feature id for the '<em><b>Describe Versioned Feature Type</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DOCUMENT_ROOT__DESCRIBE_VERSIONED_FEATURE_TYPE = 3;
+
+    /**
      * The feature id for the '<em><b>Difference Query</b></em>' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT__DIFFERENCE_QUERY = 3;
+    int DOCUMENT_ROOT__DIFFERENCE_QUERY = 4;
 
     /**
      * The feature id for the '<em><b>Get Diff</b></em>' containment reference.
@@ -178,7 +315,7 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT__GET_DIFF = 4;
+    int DOCUMENT_ROOT__GET_DIFF = 5;
 
     /**
      * The feature id for the '<em><b>Get Log</b></em>' containment reference.
@@ -187,7 +324,16 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT__GET_LOG = 5;
+    int DOCUMENT_ROOT__GET_LOG = 6;
+
+    /**
+     * The feature id for the '<em><b>Get Versioned Feature</b></em>' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DOCUMENT_ROOT__GET_VERSIONED_FEATURE = 7;
 
     /**
      * The feature id for the '<em><b>Rollback</b></em>' containment reference.
@@ -196,7 +342,7 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT__ROLLBACK = 6;
+    int DOCUMENT_ROOT__ROLLBACK = 8;
 
     /**
      * The feature id for the '<em><b>Versioned Delete</b></em>' containment reference.
@@ -205,7 +351,16 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT__VERSIONED_DELETE = 7;
+    int DOCUMENT_ROOT__VERSIONED_DELETE = 9;
+
+    /**
+     * The feature id for the '<em><b>Versioned Feature Collection</b></em>' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DOCUMENT_ROOT__VERSIONED_FEATURE_COLLECTION = 10;
 
     /**
      * The feature id for the '<em><b>Versioned Update</b></em>' containment reference.
@@ -214,7 +369,7 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT__VERSIONED_UPDATE = 8;
+    int DOCUMENT_ROOT__VERSIONED_UPDATE = 11;
 
     /**
      * The number of structural features of the '<em>Document Root</em>' class.
@@ -223,7 +378,7 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT_FEATURE_COUNT = 9;
+    int DOCUMENT_ROOT_FEATURE_COUNT = 12;
 
     /**
      * The meta object id for the '{@link net.opengis.wfsv.impl.GetDiffTypeImpl <em>Get Diff Type</em>}' class.
@@ -233,7 +388,7 @@ public interface WfsvPackage extends EPackage {
      * @see net.opengis.wfsv.impl.WfsvPackageImpl#getGetDiffType()
      * @generated
      */
-    int GET_DIFF_TYPE = 2;
+    int GET_DIFF_TYPE = 4;
 
     /**
      * The feature id for the '<em><b>Handle</b></em>' attribute.
@@ -297,7 +452,7 @@ public interface WfsvPackage extends EPackage {
      * @see net.opengis.wfsv.impl.WfsvPackageImpl#getGetLogType()
      * @generated
      */
-    int GET_LOG_TYPE = 3;
+    int GET_LOG_TYPE = 5;
 
     /**
      * The feature id for the '<em><b>Handle</b></em>' attribute.
@@ -372,6 +527,106 @@ public interface WfsvPackage extends EPackage {
     int GET_LOG_TYPE_FEATURE_COUNT = WfsPackage.BASE_REQUEST_TYPE_FEATURE_COUNT + 4;
 
     /**
+     * The meta object id for the '{@link net.opengis.wfsv.impl.GetVersionedFeatureTypeImpl <em>Get Versioned Feature Type</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see net.opengis.wfsv.impl.GetVersionedFeatureTypeImpl
+     * @see net.opengis.wfsv.impl.WfsvPackageImpl#getGetVersionedFeatureType()
+     * @generated
+     */
+    int GET_VERSIONED_FEATURE_TYPE = 6;
+
+    /**
+     * The feature id for the '<em><b>Handle</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GET_VERSIONED_FEATURE_TYPE__HANDLE = WfsPackage.GET_FEATURE_TYPE__HANDLE;
+
+    /**
+     * The feature id for the '<em><b>Service</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GET_VERSIONED_FEATURE_TYPE__SERVICE = WfsPackage.GET_FEATURE_TYPE__SERVICE;
+
+    /**
+     * The feature id for the '<em><b>Version</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GET_VERSIONED_FEATURE_TYPE__VERSION = WfsPackage.GET_FEATURE_TYPE__VERSION;
+
+    /**
+     * The feature id for the '<em><b>Query</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GET_VERSIONED_FEATURE_TYPE__QUERY = WfsPackage.GET_FEATURE_TYPE__QUERY;
+
+    /**
+     * The feature id for the '<em><b>Max Features</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GET_VERSIONED_FEATURE_TYPE__MAX_FEATURES = WfsPackage.GET_FEATURE_TYPE__MAX_FEATURES;
+
+    /**
+     * The feature id for the '<em><b>Output Format</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GET_VERSIONED_FEATURE_TYPE__OUTPUT_FORMAT = WfsPackage.GET_FEATURE_TYPE__OUTPUT_FORMAT;
+
+    /**
+     * The feature id for the '<em><b>Result Type</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GET_VERSIONED_FEATURE_TYPE__RESULT_TYPE = WfsPackage.GET_FEATURE_TYPE__RESULT_TYPE;
+
+    /**
+     * The feature id for the '<em><b>Traverse Xlink Depth</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GET_VERSIONED_FEATURE_TYPE__TRAVERSE_XLINK_DEPTH = WfsPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_DEPTH;
+
+    /**
+     * The feature id for the '<em><b>Traverse Xlink Expiry</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GET_VERSIONED_FEATURE_TYPE__TRAVERSE_XLINK_EXPIRY = WfsPackage.GET_FEATURE_TYPE__TRAVERSE_XLINK_EXPIRY;
+
+    /**
+     * The number of structural features of the '<em>Get Versioned Feature Type</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GET_VERSIONED_FEATURE_TYPE_FEATURE_COUNT = WfsPackage.GET_FEATURE_TYPE_FEATURE_COUNT + 0;
+
+    /**
      * The meta object id for the '{@link net.opengis.wfsv.impl.RollbackTypeImpl <em>Rollback Type</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -379,7 +634,7 @@ public interface WfsvPackage extends EPackage {
      * @see net.opengis.wfsv.impl.WfsvPackageImpl#getRollbackType()
      * @generated
      */
-    int ROLLBACK_TYPE = 4;
+    int ROLLBACK_TYPE = 7;
 
     /**
      * The feature id for the '<em><b>Safe To Ignore</b></em>' attribute.
@@ -461,7 +716,7 @@ public interface WfsvPackage extends EPackage {
      * @see net.opengis.wfsv.impl.WfsvPackageImpl#getVersionedDeleteElementType()
      * @generated
      */
-    int VERSIONED_DELETE_ELEMENT_TYPE = 5;
+    int VERSIONED_DELETE_ELEMENT_TYPE = 8;
 
     /**
      * The feature id for the '<em><b>Filter</b></em>' attribute.
@@ -509,6 +764,34 @@ public interface WfsvPackage extends EPackage {
     int VERSIONED_DELETE_ELEMENT_TYPE_FEATURE_COUNT = WfsPackage.DELETE_ELEMENT_TYPE_FEATURE_COUNT + 1;
 
     /**
+     * The meta object id for the '{@link net.opengis.wfsv.impl.VersionedFeatureCollectionTypeImpl <em>Versioned Feature Collection Type</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see net.opengis.wfsv.impl.VersionedFeatureCollectionTypeImpl
+     * @see net.opengis.wfsv.impl.WfsvPackageImpl#getVersionedFeatureCollectionType()
+     * @generated
+     */
+    int VERSIONED_FEATURE_COLLECTION_TYPE = 9;
+
+    /**
+     * The feature id for the '<em><b>Version</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int VERSIONED_FEATURE_COLLECTION_TYPE__VERSION = WfsPackage.FEATURE_COLLECTION_TYPE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of structural features of the '<em>Versioned Feature Collection Type</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int VERSIONED_FEATURE_COLLECTION_TYPE_FEATURE_COUNT = WfsPackage.FEATURE_COLLECTION_TYPE_FEATURE_COUNT + 1;
+
+    /**
      * The meta object id for the '{@link net.opengis.wfsv.impl.VersionedUpdateElementTypeImpl <em>Versioned Update Element Type</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -516,7 +799,7 @@ public interface WfsvPackage extends EPackage {
      * @see net.opengis.wfsv.impl.WfsvPackageImpl#getVersionedUpdateElementType()
      * @generated
      */
-    int VERSIONED_UPDATE_ELEMENT_TYPE = 6;
+    int VERSIONED_UPDATE_ELEMENT_TYPE = 10;
 
     /**
      * The feature id for the '<em><b>Property</b></em>' containment reference list.
@@ -590,6 +873,81 @@ public interface WfsvPackage extends EPackage {
      */
     int VERSIONED_UPDATE_ELEMENT_TYPE_FEATURE_COUNT = WfsPackage.UPDATE_ELEMENT_TYPE_FEATURE_COUNT + 1;
 
+
+    /**
+     * Returns the meta object for class '{@link net.opengis.wfsv.AbstractVersionedFeatureType <em>Abstract Versioned Feature Type</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Abstract Versioned Feature Type</em>'.
+     * @see net.opengis.wfsv.AbstractVersionedFeatureType
+     * @generated
+     */
+    EClass getAbstractVersionedFeatureType();
+
+    /**
+     * Returns the meta object for the attribute '{@link net.opengis.wfsv.AbstractVersionedFeatureType#getVersion <em>Version</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Version</em>'.
+     * @see net.opengis.wfsv.AbstractVersionedFeatureType#getVersion()
+     * @see #getAbstractVersionedFeatureType()
+     * @generated
+     */
+    EAttribute getAbstractVersionedFeatureType_Version();
+
+    /**
+     * Returns the meta object for the attribute '{@link net.opengis.wfsv.AbstractVersionedFeatureType#getAuthor <em>Author</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Author</em>'.
+     * @see net.opengis.wfsv.AbstractVersionedFeatureType#getAuthor()
+     * @see #getAbstractVersionedFeatureType()
+     * @generated
+     */
+    EAttribute getAbstractVersionedFeatureType_Author();
+
+    /**
+     * Returns the meta object for the attribute '{@link net.opengis.wfsv.AbstractVersionedFeatureType#getDate <em>Date</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Date</em>'.
+     * @see net.opengis.wfsv.AbstractVersionedFeatureType#getDate()
+     * @see #getAbstractVersionedFeatureType()
+     * @generated
+     */
+    EAttribute getAbstractVersionedFeatureType_Date();
+
+    /**
+     * Returns the meta object for the attribute '{@link net.opengis.wfsv.AbstractVersionedFeatureType#getMessage <em>Message</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Message</em>'.
+     * @see net.opengis.wfsv.AbstractVersionedFeatureType#getMessage()
+     * @see #getAbstractVersionedFeatureType()
+     * @generated
+     */
+    EAttribute getAbstractVersionedFeatureType_Message();
+
+    /**
+     * Returns the meta object for class '{@link net.opengis.wfsv.DescribeVersionedFeatureTypeType <em>Describe Versioned Feature Type Type</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Describe Versioned Feature Type Type</em>'.
+     * @see net.opengis.wfsv.DescribeVersionedFeatureTypeType
+     * @generated
+     */
+    EClass getDescribeVersionedFeatureTypeType();
+
+    /**
+     * Returns the meta object for the attribute '{@link net.opengis.wfsv.DescribeVersionedFeatureTypeType#isVersioned <em>Versioned</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Versioned</em>'.
+     * @see net.opengis.wfsv.DescribeVersionedFeatureTypeType#isVersioned()
+     * @see #getDescribeVersionedFeatureTypeType()
+     * @generated
+     */
+    EAttribute getDescribeVersionedFeatureTypeType_Versioned();
 
     /**
      * Returns the meta object for class '{@link net.opengis.wfsv.DifferenceQueryType <em>Difference Query Type</em>}'.
@@ -700,6 +1058,17 @@ public interface WfsvPackage extends EPackage {
     EReference getDocumentRoot_XSISchemaLocation();
 
     /**
+     * Returns the meta object for the attribute '{@link net.opengis.wfsv.DocumentRoot#getDescribeVersionedFeatureType <em>Describe Versioned Feature Type</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Describe Versioned Feature Type</em>'.
+     * @see net.opengis.wfsv.DocumentRoot#getDescribeVersionedFeatureType()
+     * @see #getDocumentRoot()
+     * @generated
+     */
+    EAttribute getDocumentRoot_DescribeVersionedFeatureType();
+
+    /**
      * Returns the meta object for the containment reference '{@link net.opengis.wfsv.DocumentRoot#getDifferenceQuery <em>Difference Query</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -733,6 +1102,17 @@ public interface WfsvPackage extends EPackage {
     EReference getDocumentRoot_GetLog();
 
     /**
+     * Returns the meta object for the containment reference '{@link net.opengis.wfsv.DocumentRoot#getGetVersionedFeature <em>Get Versioned Feature</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the containment reference '<em>Get Versioned Feature</em>'.
+     * @see net.opengis.wfsv.DocumentRoot#getGetVersionedFeature()
+     * @see #getDocumentRoot()
+     * @generated
+     */
+    EReference getDocumentRoot_GetVersionedFeature();
+
+    /**
      * Returns the meta object for the containment reference '{@link net.opengis.wfsv.DocumentRoot#getRollback <em>Rollback</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -753,6 +1133,17 @@ public interface WfsvPackage extends EPackage {
      * @generated
      */
     EReference getDocumentRoot_VersionedDelete();
+
+    /**
+     * Returns the meta object for the containment reference '{@link net.opengis.wfsv.DocumentRoot#getVersionedFeatureCollection <em>Versioned Feature Collection</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the containment reference '<em>Versioned Feature Collection</em>'.
+     * @see net.opengis.wfsv.DocumentRoot#getVersionedFeatureCollection()
+     * @see #getDocumentRoot()
+     * @generated
+     */
+    EReference getDocumentRoot_VersionedFeatureCollection();
 
     /**
      * Returns the meta object for the containment reference '{@link net.opengis.wfsv.DocumentRoot#getVersionedUpdate <em>Versioned Update</em>}'.
@@ -852,6 +1243,16 @@ public interface WfsvPackage extends EPackage {
     EAttribute getGetLogType_ResultType();
 
     /**
+     * Returns the meta object for class '{@link net.opengis.wfsv.GetVersionedFeatureType <em>Get Versioned Feature Type</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Get Versioned Feature Type</em>'.
+     * @see net.opengis.wfsv.GetVersionedFeatureType
+     * @generated
+     */
+    EClass getGetVersionedFeatureType();
+
+    /**
      * Returns the meta object for class '{@link net.opengis.wfsv.RollbackType <em>Rollback Type</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -938,6 +1339,27 @@ public interface WfsvPackage extends EPackage {
     EAttribute getVersionedDeleteElementType_FeatureVersion();
 
     /**
+     * Returns the meta object for class '{@link net.opengis.wfsv.VersionedFeatureCollectionType <em>Versioned Feature Collection Type</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Versioned Feature Collection Type</em>'.
+     * @see net.opengis.wfsv.VersionedFeatureCollectionType
+     * @generated
+     */
+    EClass getVersionedFeatureCollectionType();
+
+    /**
+     * Returns the meta object for the attribute '{@link net.opengis.wfsv.VersionedFeatureCollectionType#getVersion <em>Version</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Version</em>'.
+     * @see net.opengis.wfsv.VersionedFeatureCollectionType#getVersion()
+     * @see #getVersionedFeatureCollectionType()
+     * @generated
+     */
+    EAttribute getVersionedFeatureCollectionType_Version();
+
+    /**
      * Returns the meta object for class '{@link net.opengis.wfsv.VersionedUpdateElementType <em>Versioned Update Element Type</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -979,7 +1401,67 @@ public interface WfsvPackage extends EPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    interface Literals  {
+    interface Literals {
+        /**
+         * The meta object literal for the '{@link net.opengis.wfsv.impl.AbstractVersionedFeatureTypeImpl <em>Abstract Versioned Feature Type</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see net.opengis.wfsv.impl.AbstractVersionedFeatureTypeImpl
+         * @see net.opengis.wfsv.impl.WfsvPackageImpl#getAbstractVersionedFeatureType()
+         * @generated
+         */
+        EClass ABSTRACT_VERSIONED_FEATURE_TYPE = eINSTANCE.getAbstractVersionedFeatureType();
+
+        /**
+         * The meta object literal for the '<em><b>Version</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_VERSIONED_FEATURE_TYPE__VERSION = eINSTANCE.getAbstractVersionedFeatureType_Version();
+
+        /**
+         * The meta object literal for the '<em><b>Author</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_VERSIONED_FEATURE_TYPE__AUTHOR = eINSTANCE.getAbstractVersionedFeatureType_Author();
+
+        /**
+         * The meta object literal for the '<em><b>Date</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_VERSIONED_FEATURE_TYPE__DATE = eINSTANCE.getAbstractVersionedFeatureType_Date();
+
+        /**
+         * The meta object literal for the '<em><b>Message</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_VERSIONED_FEATURE_TYPE__MESSAGE = eINSTANCE.getAbstractVersionedFeatureType_Message();
+
+        /**
+         * The meta object literal for the '{@link net.opengis.wfsv.impl.DescribeVersionedFeatureTypeTypeImpl <em>Describe Versioned Feature Type Type</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see net.opengis.wfsv.impl.DescribeVersionedFeatureTypeTypeImpl
+         * @see net.opengis.wfsv.impl.WfsvPackageImpl#getDescribeVersionedFeatureTypeType()
+         * @generated
+         */
+        EClass DESCRIBE_VERSIONED_FEATURE_TYPE_TYPE = eINSTANCE.getDescribeVersionedFeatureTypeType();
+
+        /**
+         * The meta object literal for the '<em><b>Versioned</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute DESCRIBE_VERSIONED_FEATURE_TYPE_TYPE__VERSIONED = eINSTANCE.getDescribeVersionedFeatureTypeType_Versioned();
+
         /**
          * The meta object literal for the '{@link net.opengis.wfsv.impl.DifferenceQueryTypeImpl <em>Difference Query Type</em>}' class.
          * <!-- begin-user-doc -->
@@ -1065,6 +1547,14 @@ public interface WfsvPackage extends EPackage {
         EReference DOCUMENT_ROOT__XSI_SCHEMA_LOCATION = eINSTANCE.getDocumentRoot_XSISchemaLocation();
 
         /**
+         * The meta object literal for the '<em><b>Describe Versioned Feature Type</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute DOCUMENT_ROOT__DESCRIBE_VERSIONED_FEATURE_TYPE = eINSTANCE.getDocumentRoot_DescribeVersionedFeatureType();
+
+        /**
          * The meta object literal for the '<em><b>Difference Query</b></em>' containment reference feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -1089,6 +1579,14 @@ public interface WfsvPackage extends EPackage {
         EReference DOCUMENT_ROOT__GET_LOG = eINSTANCE.getDocumentRoot_GetLog();
 
         /**
+         * The meta object literal for the '<em><b>Get Versioned Feature</b></em>' containment reference feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference DOCUMENT_ROOT__GET_VERSIONED_FEATURE = eINSTANCE.getDocumentRoot_GetVersionedFeature();
+
+        /**
          * The meta object literal for the '<em><b>Rollback</b></em>' containment reference feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -1103,6 +1601,14 @@ public interface WfsvPackage extends EPackage {
          * @generated
          */
         EReference DOCUMENT_ROOT__VERSIONED_DELETE = eINSTANCE.getDocumentRoot_VersionedDelete();
+
+        /**
+         * The meta object literal for the '<em><b>Versioned Feature Collection</b></em>' containment reference feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference DOCUMENT_ROOT__VERSIONED_FEATURE_COLLECTION = eINSTANCE.getDocumentRoot_VersionedFeatureCollection();
 
         /**
          * The meta object literal for the '<em><b>Versioned Update</b></em>' containment reference feature.
@@ -1181,6 +1687,16 @@ public interface WfsvPackage extends EPackage {
         EAttribute GET_LOG_TYPE__RESULT_TYPE = eINSTANCE.getGetLogType_ResultType();
 
         /**
+         * The meta object literal for the '{@link net.opengis.wfsv.impl.GetVersionedFeatureTypeImpl <em>Get Versioned Feature Type</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see net.opengis.wfsv.impl.GetVersionedFeatureTypeImpl
+         * @see net.opengis.wfsv.impl.WfsvPackageImpl#getGetVersionedFeatureType()
+         * @generated
+         */
+        EClass GET_VERSIONED_FEATURE_TYPE = eINSTANCE.getGetVersionedFeatureType();
+
+        /**
          * The meta object literal for the '{@link net.opengis.wfsv.impl.RollbackTypeImpl <em>Rollback Type</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -1247,6 +1763,24 @@ public interface WfsvPackage extends EPackage {
          * @generated
          */
         EAttribute VERSIONED_DELETE_ELEMENT_TYPE__FEATURE_VERSION = eINSTANCE.getVersionedDeleteElementType_FeatureVersion();
+
+        /**
+         * The meta object literal for the '{@link net.opengis.wfsv.impl.VersionedFeatureCollectionTypeImpl <em>Versioned Feature Collection Type</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see net.opengis.wfsv.impl.VersionedFeatureCollectionTypeImpl
+         * @see net.opengis.wfsv.impl.WfsvPackageImpl#getVersionedFeatureCollectionType()
+         * @generated
+         */
+        EClass VERSIONED_FEATURE_COLLECTION_TYPE = eINSTANCE.getVersionedFeatureCollectionType();
+
+        /**
+         * The meta object literal for the '<em><b>Version</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute VERSIONED_FEATURE_COLLECTION_TYPE__VERSION = eINSTANCE.getVersionedFeatureCollectionType_Version();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfsv.impl.VersionedUpdateElementTypeImpl <em>Versioned Update Element Type</em>}' class.

@@ -77,10 +77,38 @@
   <bean id="wfsvXsd-1.1" class="org.geoserver.wfsv.xml.v1_1_0.WFSV">
     <constructor-arg ref="wfsXsd-1.1"/>
   </bean>
+  <!-- 
+  <bean id="versionedGml3SchemaBuilder" class="org.geoserver.wfsv.response.v1_1_0.VersionedSchemaBuilder">
+      <constructor-arg ref="wfs"/>
+      <constructor-arg ref="catalog"/>
+      <constructor-arg ref="resourceLoader"/>
+      <constructor-arg ref="wfsvXmlConfiguration-1.1"/>
+  </bean>
+   -->
+    
+    <!-- xml configuration
+    <bean id="xmlConfiguration-1.0" class="org.geoserver.wfs.xml.v1_0_0.WFSConfiguration">
+        <constructor-arg ref="catalog"/>
+        <constructor-arg ref="gml2SchemaBuilder"/>
+    </bean>
+     
+    <bean id="xmlConfiguration-1.1" class="org.geoserver.wfs.xml.v1_1_0.WFSConfiguration">
+        <constructor-arg ref="catalog"/>
+        <constructor-arg ref="gml3SchemaBuilder"/>
+    </bean>
+    -->
+    <!-- 
+    <bean id="xmlConfiguration-1.1-vfc" class="org.geoserver.wfs.xml.v1_1_0.WFSConfiguration">
+        <constructor-arg ref="catalog"/>
+        <constructor-arg ref="versionedGml3SchemaBuilder"/>
+    </bean>
+     -->
+  
   <bean id="wfsvXmlConfiguration-1.1"
     class="org.geoserver.wfsv.xml.v1_1_0.WFSVConfiguration">
     <constructor-arg ref="wfsXmlConfiguration-1.1" />
     <constructor-arg ref="wfsvXsd-1.1"/>
+    <constructor-arg ref="catalog"/>
   </bean>
   
   <!-- Transaction element handlers -->
@@ -88,11 +116,26 @@
       <constructor-arg ref="wfs"/>
       <constructor-arg ref="filterFactory"/>
     </bean>
+    
+  <!-- kvp parsers -->
+  <bean id="wfsvVersioned" class="org.geoserver.ows.kvp.BooleanKvpParser">
+    <constructor-arg value="versioned"/>
+  </bean>
+    
+  <!-- kvp request readers -->
+  <bean id="describeVersionedFeatureTypeKvpReader" 
+        class="org.geoserver.wfsv.kvp.DescribeVersionedFeatureTypeKvpRequestReader"/>
   
   <!-- 1.1 wfsv xml readers -->
   <bean id="wfsv-xmlReader-1.1.0" class="org.geoserver.wfsv.xml.v1_1_0.WfsvXmlReader" abstract="true">
     <constructor-arg ref="wfs"/>
     <constructor-arg ref="wfsvXmlConfiguration-1.1"/>
+  </bean>
+  <bean id="wfsvDescribeFeatureTypeXmlReader-1.1.0" parent="wfsv-xmlReader-1.1.0">
+    <constructor-arg value="DescribeVersionedFeatureType"/>
+  </bean>
+  <bean id="wfsvGetVersionedFeatureXmlReader-1.1.0" parent="wfsv-xmlReader-1.1.0">
+    <constructor-arg value="GetVersionedFeature"/>
   </bean>
   <bean id="wfsvGetLogXmlReader-1.1.0" parent="wfsv-xmlReader-1.1.0">
     <constructor-arg value="GetLog"/>
@@ -119,12 +162,32 @@
   </bean>
   
   <!-- Encoders / Output formats -->
+  <bean id="gml3VersionedFeatureTypeEncoder" class="org.geoserver.wfsv.response.v1_1_0.VersionedXmlSchemaEncoder">
+        <constructor-arg ref="wfs"/>
+        <constructor-arg ref="catalog"/>
+        <constructor-arg ref="resourceLoader"/>
+        <constructor-arg ref="wfsvXmlConfiguration-1.1"/>
+  </bean>
+  <bean id="gml2VersionedFeatureTypeEncoder" class="org.geoserver.wfsv.response.v1_0_0.VersionedXmlSchemaEncoder">
+        <constructor-arg ref="gml2FeatureTypeEncoder"/>
+  </bean>
+  <bean id="gml2VersionedOutputFormat" 
+      class="org.geoserver.wfsv.response.v1_0_0.VersionedGML2OutputFormat" singleton="false">
+      <constructor-arg ref="wfs"/>
+      <constructor-arg ref="geoServer"/>
+      <constructor-arg ref="catalog"/>
+  </bean>
   <bean id="transactionOutputFormat" class="org.geoserver.wfsv.response.v1_1_0.GetDiffTransactionOutputFormat">
     <constructor-arg ref="wfs"/>
     <constructor-arg ref="catalog"/>
     <constructor-arg ref="xmlConfiguration-1.1"/>
     <constructor-arg ref="filterFactory"/>
   </bean>
+  <bean id="versionedGml3OutputFormat" class="org.geoserver.wfsv.response.v1_1_0.VersionedGML3OutputFormat"> 
+        <constructor-arg ref="wfs"/>
+        <constructor-arg ref="catalog"/>
+        <constructor-arg ref="wfsvXmlConfiguration-1.1"/>
+    </bean>
   <bean id="getLogGml3OutputFormat" class="org.geoserver.wfsv.response.v1_1_0.GetLogGML3OutputFormat">
     <constructor-arg ref="wfs"/>
     <constructor-arg ref="catalog"/>

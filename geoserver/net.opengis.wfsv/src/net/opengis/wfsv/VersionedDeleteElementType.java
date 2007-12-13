@@ -8,8 +8,6 @@ package net.opengis.wfsv;
 
 import net.opengis.wfs.DeleteElementType;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Versioned Delete Element Type</b></em>'.

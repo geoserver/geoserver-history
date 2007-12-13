@@ -7,9 +7,8 @@
 package net.opengis.wfsv;
 
 import javax.xml.namespace.QName;
-import net.opengis.wfs.NativeType;
 
-import org.eclipse.emf.ecore.EObject;
+import net.opengis.wfs.NativeType;
 
 /**
  * <!-- begin-user-doc -->
