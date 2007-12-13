@@ -93,6 +93,11 @@
    <filter>
      <filter-name>GZIP Compression Filter</filter-name>
      <filter-class>org.geoserver.filters.GZIPFilter</filter-class>
+     <init-param>
+         <param-name>compressed-types</param-name>
+         <param-value>text/css,text/html,text/javascript</param-value>
+         <!-- TODO: Expand this list -->
+     </init-param>
    </filter>
 
   <filter-mapping>
