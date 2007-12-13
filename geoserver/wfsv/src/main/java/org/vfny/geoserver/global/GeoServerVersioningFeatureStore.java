@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geotools.data.Query;
 import org.geotools.data.VersioningFeatureSource;
 import org.geotools.data.VersioningFeatureStore;
 import org.geotools.data.postgis.FeatureDiffReader;
@@ -37,4 +38,19 @@ public class GeoServerVersioningFeatureStore extends GeoServerFeatureStore
         throws IOException {
         return ((VersioningFeatureSource) source).getLog(fromVersion, toVersion, filter, users, maxFeatures);
     }
+
+	public FeatureCollection getVersionedFeatures() throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public FeatureCollection getVersionedFeatures(Query q) throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public FeatureCollection getVersionedFeatures(Filter f) throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

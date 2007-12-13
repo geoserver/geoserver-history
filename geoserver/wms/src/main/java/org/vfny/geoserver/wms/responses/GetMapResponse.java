@@ -7,7 +7,6 @@ package org.vfny.geoserver.wms.responses;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -538,6 +537,8 @@ public class GetMapResponse implements Response {
 			// Producing the map in the requested format.
 			//
 			// /////////////////////////////////////////////////////////
+			if (this.delegate instanceof DefaultRasterMapProducer)
+				((DefaultRasterMapProducer)this.delegate).setWmPainter(new WatermarkPainter(request));
 			this.delegate.produceMap();
 
 			if (cachingPossible) {

@@ -12,6 +12,8 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
+import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
+import org.vfny.geoserver.wms.responses.WatermarkPainter;
 import org.vfny.geoserver.wms.responses.map.metatile.QuickTileCache.MetaTileKey;
 import java.awt.RenderingHints;
 import java.awt.image.RenderedImage;
@@ -46,9 +48,13 @@ public final class MetatileMapProducer extends AbstractGetMapProducer
     private RasterMapProducer delegate;
     private RenderedImage tile;
 
+    /** The Watermark Painter instance **/
+    private WatermarkPainter wmPainter;
+
     public MetatileMapProducer(GetMapRequest request, RasterMapProducer delegate) {
         this.request = request;
         this.delegate = delegate;
+        this.wmPainter = new WatermarkPainter(request);
     }
 
     /**
@@ -106,6 +112,7 @@ public final class MetatileMapProducer extends AbstractGetMapProducer
 
                 // generate, split and cache
                 delegate.setMapContext(mapContext);
+                ((DefaultRasterMapProducer)delegate).setWmPainter(wmPainter);
                 delegate.produceMap();
 
                 RenderedImage metaTile = delegate.getImage();
@@ -231,4 +238,5 @@ public final class MetatileMapProducer extends AbstractGetMapProducer
     public String getContentType() throws IllegalStateException {
         return delegate.getContentType();
     }
+    
 }

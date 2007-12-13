@@ -30,7 +30,9 @@ import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.VolatileImage;
 import java.awt.image.WritableRaster;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -103,6 +105,9 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
 
     /** WMS Service configuration * */
     private WMS wms;
+    
+    /** The Watermark Painter instance **/
+    private WatermarkPainter wmPainter;
 
     /**
      *
@@ -342,7 +347,16 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
         // //
         // AlFa: Applying watermarking
         // //
-        
+        if (this.wmPainter != null)
+			try {
+				this.wmPainter.paint(graphic, paintArea);
+			} catch (MalformedURLException e) {
+				LOGGER.severe("Could not Watermark map due to the following error: " + e.getLocalizedMessage());
+			} catch (ClassCastException e) {
+				LOGGER.severe("Could not Watermark map due to the following error: " + e.getLocalizedMessage());
+			} catch (IOException e) {
+				LOGGER.severe("Could not Watermark map due to the following error: " + e.getLocalizedMessage());
+			}
         
         graphic.dispose();
 
@@ -551,4 +565,13 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
 
         return LookupDescriptor.create(source, IDENTITY_TABLE, hints);
     }
+
+	/**
+	 * Set the Watermark Painter.
+	 * 
+	 * @param wmPainter the wmPainter to set
+	 */
+	public void setWmPainter(WatermarkPainter wmPainter) {
+		this.wmPainter = wmPainter;
+	}
 }
