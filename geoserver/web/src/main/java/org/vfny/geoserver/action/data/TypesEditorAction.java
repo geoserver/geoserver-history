@@ -172,7 +172,7 @@ public class TypesEditorAction extends ConfigAction {
         DataStoreConfig dsConfig = dataConfig.getDataStore(typeForm.getDataStoreId());
         DataStore dataStore = null;
         try {
-            dsConfig.findDataStore(request.getSession().getServletContext());
+            dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
             FeatureType featureType = dataStore.getSchema(typeForm.getTypeName());
             FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
 
@@ -187,6 +187,7 @@ public class TypesEditorAction extends ConfigAction {
                 typeForm.setSRS(s);
             }
         } catch (Exception e) {
+            LOGGER.log(Level.FINE, "Error occurred trying to lookup the SRS", e);
             typeForm.setSRS("UNKNOWN");
         } finally {
             if(dataStore != null) dataStore.dispose();
