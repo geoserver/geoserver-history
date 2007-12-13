@@ -174,12 +174,12 @@
   <bean id="gml2VersionedFeatureTypeEncoder" class="org.geoserver.wfsv.response.v1_0_0.VersionedXmlSchemaEncoder">
         <constructor-arg ref="gml2FeatureTypeEncoder"/>
   </bean>
-    <bean id="gml2OutputFormat" 
-        class="org.geoserver.wfsv.response.v1_0_0.VersionedGML2OutputFormat" singleton="false">
-        <constructor-arg ref="wfs"/>
-        <constructor-arg ref="geoServer"/>
-        <constructor-arg ref="catalog"/>
-    </bean>
+  <bean id="gml2VersionedOutputFormat" 
+      class="org.geoserver.wfsv.response.v1_0_0.VersionedGML2OutputFormat" singleton="false">
+      <constructor-arg ref="wfs"/>
+      <constructor-arg ref="geoServer"/>
+      <constructor-arg ref="catalog"/>
+  </bean>
   <bean id="transactionOutputFormat" class="org.geoserver.wfsv.response.v1_1_0.GetDiffTransactionOutputFormat">
     <constructor-arg ref="wfs"/>
     <constructor-arg ref="catalog"/>
