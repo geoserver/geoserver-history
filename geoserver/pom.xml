@@ -983,7 +983,7 @@
   <module>ows</module>
   <module>net.opengis.ows</module>
   <module>net.opengis.wfs</module>
-  <module>net.opengis.vwfs</module>
+  <module>net.opengis.wfsv</module>
  </modules>
 
  <properties>
