@@ -90,6 +90,17 @@
     </init-param>
   </filter>
 
+   <filter>
+     <filter-name>GZIP Compression Filter</filter-name>
+     <filter-class>org.geoserver.filters.GZIPFilter</filter-class>
+   </filter>
+
+  <filter-mapping>
+    <filter-name>GZIP Compression Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+
   <!-- 
     If you want to use your security system comment out this one too
   -->
