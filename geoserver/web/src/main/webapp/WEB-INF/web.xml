@@ -67,7 +67,10 @@
     <listener-class>org.geoserver.logging.LoggingStartupContextListener</listener-class>
   </listener>
 
-   
+   <!--  If you want to use your security system instead of the GeoServer one, comment out
+         this filter and the associated filter mapping below. Beware, when you do no 
+         user checking will be done for anything, not even for the admin console
+   -->
    <filter>
      <filter-name>Acegi Filter Chain Proxy</filter-name>
      <filter-class>org.acegisecurity.util.FilterToBeanProxy</filter-class>
@@ -87,15 +90,20 @@
     </init-param>
   </filter>
 
-  <filter-mapping>
-    <filter-name>Set Character Encoding</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-  
+  <!-- 
+    If you want to use your security system comment out this one too
+  -->
   <filter-mapping>
     <filter-name>Acegi Filter Chain Proxy</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+   
+  
+    <filter-mapping>
+    <filter-name>Set Character Encoding</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
 
   <!--  spring context loader -->
   <listener>
