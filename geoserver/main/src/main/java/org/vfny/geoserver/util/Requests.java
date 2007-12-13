@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
@@ -48,6 +49,8 @@ import javax.servlet.http.HttpSession;
  * @author Jody Garnett
  */
 public final class Requests {
+    static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver");
+    
     /*
      * This is the parameter used to get the proxy from the
      * web.xml file.  This is a bit hacky, it should be moved to
@@ -250,13 +253,19 @@ public final class Requests {
                 
                 //JD: for some reason there is sometimes a string here. doing
                 // an instanceof check ... although i am not sure why this occurs.
-                Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                if ( o instanceof UserDetails ) {
-                    UserDetails ud = (UserDetails) o;
-                    user.setUsername(ud.getUsername());        
-                }
-                else if ( o instanceof String ) {
-                    user.setUsername((String)o);
+                final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                if(authentication == null) {
+                    LOGGER.warning("Warning, Acegi security subsystem deactivated, no user checks will be made");
+                    user.setUsername("admin");
+                } else {
+                    Object o = authentication.getPrincipal();
+                    if ( o instanceof UserDetails ) {
+                        UserDetails ud = (UserDetails) o;
+                        user.setUsername(ud.getUsername());        
+                    }
+                    else if ( o instanceof String ) {
+                        user.setUsername((String)o);
+                    }
                 }
                 request.getSession().setAttribute(UserContainer.SESSION_KEY, user);
             }
