@@ -9,10 +9,11 @@
   		<includes>
                    <include>org.geoserver:main</include>
                    <include>org.geoserver:ows</include>
-                   <include>org.geoserver:net.opengis.wfs</include>
                    <include>org.geoserver:net.opengis.ows</include>
-                   <include>org.geoserver:net.opengis.vwfs</include>
+                   <include>org.geoserver:net.opengis.wfs</include>
+                   <include>org.geoserver:net.opengis.wfsv</include>
                    <include>org.geoserver:wfs</include>
+                   <include>org.geoserver:wfsv</include>
                    <include>org.geoserver:wms</include>
                    <include>org.geoserver:validation</include>
                    <include>org.geoserver:web</include>
@@ -21,7 +22,7 @@
                    <include>org.geoserver:platform</include>
                    <include>org.geoserver:test</include>
                    <include>org.geoserver:stress</include>
-                   <include>org.geoserver.maven:maven</include>
+                   <include>org.geoserver:maven</include>
   		</includes>
   		<sources>
  	  		<outputDirectory>geoserver/${artifactId}/</outputDirectory>
