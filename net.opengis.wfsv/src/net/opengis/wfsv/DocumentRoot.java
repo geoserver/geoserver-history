@@ -23,11 +23,14 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link net.opengis.wfsv.DocumentRoot#getMixed <em>Mixed</em>}</li>
  *   <li>{@link net.opengis.wfsv.DocumentRoot#getXMLNSPrefixMap <em>XMLNS Prefix Map</em>}</li>
  *   <li>{@link net.opengis.wfsv.DocumentRoot#getXSISchemaLocation <em>XSI Schema Location</em>}</li>
+ *   <li>{@link net.opengis.wfsv.DocumentRoot#getDescribeVersionedFeatureType <em>Describe Versioned Feature Type</em>}</li>
  *   <li>{@link net.opengis.wfsv.DocumentRoot#getDifferenceQuery <em>Difference Query</em>}</li>
  *   <li>{@link net.opengis.wfsv.DocumentRoot#getGetDiff <em>Get Diff</em>}</li>
  *   <li>{@link net.opengis.wfsv.DocumentRoot#getGetLog <em>Get Log</em>}</li>
+ *   <li>{@link net.opengis.wfsv.DocumentRoot#getGetVersionedFeature <em>Get Versioned Feature</em>}</li>
  *   <li>{@link net.opengis.wfsv.DocumentRoot#getRollback <em>Rollback</em>}</li>
  *   <li>{@link net.opengis.wfsv.DocumentRoot#getVersionedDelete <em>Versioned Delete</em>}</li>
+ *   <li>{@link net.opengis.wfsv.DocumentRoot#getVersionedFeatureCollection <em>Versioned Feature Collection</em>}</li>
  *   <li>{@link net.opengis.wfsv.DocumentRoot#getVersionedUpdate <em>Versioned Update</em>}</li>
  * </ul>
  * </p>
@@ -89,6 +92,35 @@ public interface DocumentRoot extends EObject {
      * @generated
      */
     EMap getXSISchemaLocation();
+
+    /**
+     * Returns the value of the '<em><b>Describe Versioned Feature Type</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * <!-- begin-model-doc -->
+     * 
+     *             Same as wfs:DescribeFeatureType, but with the option to output
+     *             a versioned feature type instead of a plain one
+     *          
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>Describe Versioned Feature Type</em>' attribute.
+     * @see #setDescribeVersionedFeatureType(Object)
+     * @see net.opengis.wfsv.WfsvPackage#getDocumentRoot_DescribeVersionedFeatureType()
+     * @model unique="false" dataType="org.eclipse.emf.ecore.xml.type.AnySimpleType" upper="-2" transient="true" volatile="true" derived="true"
+     *        extendedMetaData="kind='element' name='DescribeVersionedFeatureType' namespace='##targetNamespace' affiliation='http://www.opengis.net/wfs#DescribeFeatureType'"
+     * @generated
+     */
+    Object getDescribeVersionedFeatureType();
+
+    /**
+     * Sets the value of the '{@link net.opengis.wfsv.DocumentRoot#getDescribeVersionedFeatureType <em>Describe Versioned Feature Type</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Describe Versioned Feature Type</em>' attribute.
+     * @see #getDescribeVersionedFeatureType()
+     * @generated
+     */
+    void setDescribeVersionedFeatureType(Object value);
 
     /**
      * Returns the value of the '<em><b>Difference Query</b></em>' containment reference.
@@ -179,6 +211,36 @@ public interface DocumentRoot extends EObject {
     void setGetLog(GetLogType value);
 
     /**
+     * Returns the value of the '<em><b>Get Versioned Feature</b></em>' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * <!-- begin-model-doc -->
+     * 
+     *             The GetVersionedFeature element is used to request that a Versioning 
+     *             Web Feature Service return versioned feature type instances 
+     *             of one or more feature types.
+     *          
+     * <!-- end-model-doc -->
+     * @return the value of the '<em>Get Versioned Feature</em>' containment reference.
+     * @see #setGetVersionedFeature(GetVersionedFeatureType)
+     * @see net.opengis.wfsv.WfsvPackage#getDocumentRoot_GetVersionedFeature()
+     * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
+     *        extendedMetaData="kind='element' name='GetVersionedFeature' namespace='##targetNamespace' affiliation='http://www.opengis.net/wfs#GetFeature'"
+     * @generated
+     */
+    GetVersionedFeatureType getGetVersionedFeature();
+
+    /**
+     * Sets the value of the '{@link net.opengis.wfsv.DocumentRoot#getGetVersionedFeature <em>Get Versioned Feature</em>}' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Get Versioned Feature</em>' containment reference.
+     * @see #getGetVersionedFeature()
+     * @generated
+     */
+    void setGetVersionedFeature(GetVersionedFeatureType value);
+
+    /**
      * Returns the value of the '<em><b>Rollback</b></em>' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -233,6 +295,33 @@ public interface DocumentRoot extends EObject {
      * @generated
      */
     void setVersionedDelete(VersionedDeleteElementType value);
+
+    /**
+     * Returns the value of the '<em><b>Versioned Feature Collection</b></em>' containment reference.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Versioned Feature Collection</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Versioned Feature Collection</em>' containment reference.
+     * @see #setVersionedFeatureCollection(VersionedFeatureCollectionType)
+     * @see net.opengis.wfsv.WfsvPackage#getDocumentRoot_VersionedFeatureCollection()
+     * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
+     *        extendedMetaData="kind='element' name='VersionedFeatureCollection' namespace='##targetNamespace' affiliation='http://www.opengis.net/wfs#FeatureCollection'"
+     * @generated
+     */
+    VersionedFeatureCollectionType getVersionedFeatureCollection();
+
+    /**
+     * Sets the value of the '{@link net.opengis.wfsv.DocumentRoot#getVersionedFeatureCollection <em>Versioned Feature Collection</em>}' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Versioned Feature Collection</em>' containment reference.
+     * @see #getVersionedFeatureCollection()
+     * @generated
+     */
+    void setVersionedFeatureCollection(VersionedFeatureCollectionType value);
 
     /**
      * Returns the value of the '<em><b>Versioned Update</b></em>' containment reference.

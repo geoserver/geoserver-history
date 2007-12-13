@@ -8,6 +8,9 @@ package net.opengis.wfsv.util;
 
 import net.opengis.wfs.BaseRequestType;
 import net.opengis.wfs.DeleteElementType;
+import net.opengis.wfs.DescribeFeatureTypeType;
+import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.NativeType;
 import net.opengis.wfs.UpdateElementType;
 
@@ -75,6 +78,12 @@ public class WfsvAdapterFactory extends AdapterFactoryImpl {
      */
     protected WfsvSwitch modelSwitch =
         new WfsvSwitch() {
+            public Object caseAbstractVersionedFeatureType(AbstractVersionedFeatureType object) {
+                return createAbstractVersionedFeatureTypeAdapter();
+            }
+            public Object caseDescribeVersionedFeatureTypeType(DescribeVersionedFeatureTypeType object) {
+                return createDescribeVersionedFeatureTypeTypeAdapter();
+            }
             public Object caseDifferenceQueryType(DifferenceQueryType object) {
                 return createDifferenceQueryTypeAdapter();
             }
@@ -87,11 +96,17 @@ public class WfsvAdapterFactory extends AdapterFactoryImpl {
             public Object caseGetLogType(GetLogType object) {
                 return createGetLogTypeAdapter();
             }
+            public Object caseGetVersionedFeatureType(GetVersionedFeatureType object) {
+                return createGetVersionedFeatureTypeAdapter();
+            }
             public Object caseRollbackType(RollbackType object) {
                 return createRollbackTypeAdapter();
             }
             public Object caseVersionedDeleteElementType(VersionedDeleteElementType object) {
                 return createVersionedDeleteElementTypeAdapter();
+            }
+            public Object caseVersionedFeatureCollectionType(VersionedFeatureCollectionType object) {
+                return createVersionedFeatureCollectionTypeAdapter();
             }
             public Object caseVersionedUpdateElementType(VersionedUpdateElementType object) {
                 return createVersionedUpdateElementTypeAdapter();
@@ -99,11 +114,20 @@ public class WfsvAdapterFactory extends AdapterFactoryImpl {
             public Object caseBaseRequestType(BaseRequestType object) {
                 return createBaseRequestTypeAdapter();
             }
+            public Object caseDescribeFeatureTypeType(DescribeFeatureTypeType object) {
+                return createDescribeFeatureTypeTypeAdapter();
+            }
+            public Object caseGetFeatureType(GetFeatureType object) {
+                return createGetFeatureTypeAdapter();
+            }
             public Object caseNativeType(NativeType object) {
                 return createNativeTypeAdapter();
             }
             public Object caseDeleteElementType(DeleteElementType object) {
                 return createDeleteElementTypeAdapter();
+            }
+            public Object caseFeatureCollectionType(FeatureCollectionType object) {
+                return createFeatureCollectionTypeAdapter();
             }
             public Object caseUpdateElementType(UpdateElementType object) {
                 return createUpdateElementTypeAdapter();
@@ -125,6 +149,34 @@ public class WfsvAdapterFactory extends AdapterFactoryImpl {
         return (Adapter)modelSwitch.doSwitch((EObject)target);
     }
 
+
+    /**
+     * Creates a new adapter for an object of class '{@link net.opengis.wfsv.AbstractVersionedFeatureType <em>Abstract Versioned Feature Type</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see net.opengis.wfsv.AbstractVersionedFeatureType
+     * @generated
+     */
+    public Adapter createAbstractVersionedFeatureTypeAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link net.opengis.wfsv.DescribeVersionedFeatureTypeType <em>Describe Versioned Feature Type Type</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see net.opengis.wfsv.DescribeVersionedFeatureTypeType
+     * @generated
+     */
+    public Adapter createDescribeVersionedFeatureTypeTypeAdapter() {
+        return null;
+    }
 
     /**
      * Creates a new adapter for an object of class '{@link net.opengis.wfsv.DifferenceQueryType <em>Difference Query Type</em>}'.
@@ -183,6 +235,20 @@ public class WfsvAdapterFactory extends AdapterFactoryImpl {
     }
 
     /**
+     * Creates a new adapter for an object of class '{@link net.opengis.wfsv.GetVersionedFeatureType <em>Get Versioned Feature Type</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see net.opengis.wfsv.GetVersionedFeatureType
+     * @generated
+     */
+    public Adapter createGetVersionedFeatureTypeAdapter() {
+        return null;
+    }
+
+    /**
      * Creates a new adapter for an object of class '{@link net.opengis.wfsv.RollbackType <em>Rollback Type</em>}'.
      * <!-- begin-user-doc -->
      * This default implementation returns null so that we can easily ignore cases;
@@ -207,6 +273,20 @@ public class WfsvAdapterFactory extends AdapterFactoryImpl {
      * @generated
      */
     public Adapter createVersionedDeleteElementTypeAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link net.opengis.wfsv.VersionedFeatureCollectionType <em>Versioned Feature Collection Type</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see net.opengis.wfsv.VersionedFeatureCollectionType
+     * @generated
+     */
+    public Adapter createVersionedFeatureCollectionTypeAdapter() {
         return null;
     }
 
@@ -239,6 +319,34 @@ public class WfsvAdapterFactory extends AdapterFactoryImpl {
     }
 
     /**
+     * Creates a new adapter for an object of class '{@link net.opengis.wfs.DescribeFeatureTypeType <em>Describe Feature Type Type</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see net.opengis.wfs.DescribeFeatureTypeType
+     * @generated
+     */
+    public Adapter createDescribeFeatureTypeTypeAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link net.opengis.wfs.GetFeatureType <em>Get Feature Type</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see net.opengis.wfs.GetFeatureType
+     * @generated
+     */
+    public Adapter createGetFeatureTypeAdapter() {
+        return null;
+    }
+
+    /**
      * Creates a new adapter for an object of class '{@link net.opengis.wfs.NativeType <em>Native Type</em>}'.
      * <!-- begin-user-doc -->
      * This default implementation returns null so that we can easily ignore cases;
@@ -263,6 +371,20 @@ public class WfsvAdapterFactory extends AdapterFactoryImpl {
      * @generated
      */
     public Adapter createDeleteElementTypeAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link net.opengis.wfs.FeatureCollectionType <em>Feature Collection Type</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see net.opengis.wfs.FeatureCollectionType
+     * @generated
+     */
+    public Adapter createFeatureCollectionTypeAdapter() {
         return null;
     }
 

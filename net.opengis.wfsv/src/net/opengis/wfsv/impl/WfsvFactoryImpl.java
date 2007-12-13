@@ -59,16 +59,29 @@ public class WfsvFactoryImpl extends EFactoryImpl implements WfsvFactory {
      */
     public EObject create(EClass eClass) {
         switch (eClass.getClassifierID()) {
+            case WfsvPackage.DESCRIBE_VERSIONED_FEATURE_TYPE_TYPE: return createDescribeVersionedFeatureTypeType();
             case WfsvPackage.DIFFERENCE_QUERY_TYPE: return createDifferenceQueryType();
             case WfsvPackage.DOCUMENT_ROOT: return createDocumentRoot();
             case WfsvPackage.GET_DIFF_TYPE: return createGetDiffType();
             case WfsvPackage.GET_LOG_TYPE: return createGetLogType();
+            case WfsvPackage.GET_VERSIONED_FEATURE_TYPE: return createGetVersionedFeatureType();
             case WfsvPackage.ROLLBACK_TYPE: return createRollbackType();
             case WfsvPackage.VERSIONED_DELETE_ELEMENT_TYPE: return createVersionedDeleteElementType();
+            case WfsvPackage.VERSIONED_FEATURE_COLLECTION_TYPE: return createVersionedFeatureCollectionType();
             case WfsvPackage.VERSIONED_UPDATE_ELEMENT_TYPE: return createVersionedUpdateElementType();
             default:
                 throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
         }
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public DescribeVersionedFeatureTypeType createDescribeVersionedFeatureTypeType() {
+        DescribeVersionedFeatureTypeTypeImpl describeVersionedFeatureTypeType = new DescribeVersionedFeatureTypeTypeImpl();
+        return describeVersionedFeatureTypeType;
     }
 
     /**
@@ -116,6 +129,16 @@ public class WfsvFactoryImpl extends EFactoryImpl implements WfsvFactory {
      * <!-- end-user-doc -->
      * @generated
      */
+    public GetVersionedFeatureType createGetVersionedFeatureType() {
+        GetVersionedFeatureTypeImpl getVersionedFeatureType = new GetVersionedFeatureTypeImpl();
+        return getVersionedFeatureType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public RollbackType createRollbackType() {
         RollbackTypeImpl rollbackType = new RollbackTypeImpl();
         return rollbackType;
@@ -129,6 +152,16 @@ public class WfsvFactoryImpl extends EFactoryImpl implements WfsvFactory {
     public VersionedDeleteElementType createVersionedDeleteElementType() {
         VersionedDeleteElementTypeImpl versionedDeleteElementType = new VersionedDeleteElementTypeImpl();
         return versionedDeleteElementType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public VersionedFeatureCollectionType createVersionedFeatureCollectionType() {
+        VersionedFeatureCollectionTypeImpl versionedFeatureCollectionType = new VersionedFeatureCollectionTypeImpl();
+        return versionedFeatureCollectionType;
     }
 
     /**

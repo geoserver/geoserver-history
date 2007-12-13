@@ -63,7 +63,7 @@
         <configuration>
           <schemaLocation>wfsv.xsd</schemaLocation>
           <schemaSourceDirectory>
-            ${basedir}/../net.opengis.wfsv/schemas/wfs/1.1.0
+            ${basedir}/../net.opengis.vwfs/schemas/wfs/1.1.0
           </schemaSourceDirectory>
           <schemaLookupDirectories>
             <schemaLookupDirectory>

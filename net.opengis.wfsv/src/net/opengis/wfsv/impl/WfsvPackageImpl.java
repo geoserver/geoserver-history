@@ -10,12 +10,16 @@ import net.opengis.wfs.WfsPackage;
 
 import net.opengis.wfs.impl.WfsPackageImpl;
 
+import net.opengis.wfsv.AbstractVersionedFeatureType;
+import net.opengis.wfsv.DescribeVersionedFeatureTypeType;
 import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.DocumentRoot;
 import net.opengis.wfsv.GetDiffType;
 import net.opengis.wfsv.GetLogType;
+import net.opengis.wfsv.GetVersionedFeatureType;
 import net.opengis.wfsv.RollbackType;
 import net.opengis.wfsv.VersionedDeleteElementType;
+import net.opengis.wfsv.VersionedFeatureCollectionType;
 import net.opengis.wfsv.VersionedUpdateElementType;
 import net.opengis.wfsv.WfsvFactory;
 import net.opengis.wfsv.WfsvPackage;
@@ -36,6 +40,20 @@ import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
  * @generated
  */
 public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass abstractVersionedFeatureTypeEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass describeVersionedFeatureTypeTypeEClass = null;
+
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -69,6 +87,13 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    private EClass getVersionedFeatureTypeEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     private EClass rollbackTypeEClass = null;
 
     /**
@@ -77,6 +102,13 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
      * @generated
      */
     private EClass versionedDeleteElementTypeEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass versionedFeatureCollectionTypeEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -159,6 +191,69 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
         theWfsvPackage.freeze();
 
         return theWfsvPackage;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EClass getAbstractVersionedFeatureType() {
+        return abstractVersionedFeatureTypeEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getAbstractVersionedFeatureType_Version() {
+        return (EAttribute)abstractVersionedFeatureTypeEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getAbstractVersionedFeatureType_Author() {
+        return (EAttribute)abstractVersionedFeatureTypeEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getAbstractVersionedFeatureType_Date() {
+        return (EAttribute)abstractVersionedFeatureTypeEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getAbstractVersionedFeatureType_Message() {
+        return (EAttribute)abstractVersionedFeatureTypeEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EClass getDescribeVersionedFeatureTypeType() {
+        return describeVersionedFeatureTypeTypeEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getDescribeVersionedFeatureTypeType_Versioned() {
+        return (EAttribute)describeVersionedFeatureTypeTypeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -256,8 +351,8 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EReference getDocumentRoot_DifferenceQuery() {
-        return (EReference)documentRootEClass.getEStructuralFeatures().get(3);
+    public EAttribute getDocumentRoot_DescribeVersionedFeatureType() {
+        return (EAttribute)documentRootEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -265,7 +360,7 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EReference getDocumentRoot_GetDiff() {
+    public EReference getDocumentRoot_DifferenceQuery() {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(4);
     }
 
@@ -274,7 +369,7 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EReference getDocumentRoot_GetLog() {
+    public EReference getDocumentRoot_GetDiff() {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(5);
     }
 
@@ -283,7 +378,7 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EReference getDocumentRoot_Rollback() {
+    public EReference getDocumentRoot_GetLog() {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(6);
     }
 
@@ -292,7 +387,7 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EReference getDocumentRoot_VersionedDelete() {
+    public EReference getDocumentRoot_GetVersionedFeature() {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(7);
     }
 
@@ -301,8 +396,35 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EReference getDocumentRoot_VersionedUpdate() {
+    public EReference getDocumentRoot_Rollback() {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(8);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EReference getDocumentRoot_VersionedDelete() {
+        return (EReference)documentRootEClass.getEStructuralFeatures().get(9);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EReference getDocumentRoot_VersionedFeatureCollection() {
+        return (EReference)documentRootEClass.getEStructuralFeatures().get(10);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EReference getDocumentRoot_VersionedUpdate() {
+        return (EReference)documentRootEClass.getEStructuralFeatures().get(11);
     }
 
     /**
@@ -382,6 +504,15 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EClass getGetVersionedFeatureType() {
+        return getVersionedFeatureTypeEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getRollbackType() {
         return rollbackTypeEClass;
     }
@@ -454,6 +585,24 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EClass getVersionedFeatureCollectionType() {
+        return versionedFeatureCollectionTypeEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getVersionedFeatureCollectionType_Version() {
+        return (EAttribute)versionedFeatureCollectionTypeEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getVersionedUpdateElementType() {
         return versionedUpdateElementTypeEClass;
     }
@@ -495,6 +644,15 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
         isCreated = true;
 
         // Create classes and their features
+        abstractVersionedFeatureTypeEClass = createEClass(ABSTRACT_VERSIONED_FEATURE_TYPE);
+        createEAttribute(abstractVersionedFeatureTypeEClass, ABSTRACT_VERSIONED_FEATURE_TYPE__VERSION);
+        createEAttribute(abstractVersionedFeatureTypeEClass, ABSTRACT_VERSIONED_FEATURE_TYPE__AUTHOR);
+        createEAttribute(abstractVersionedFeatureTypeEClass, ABSTRACT_VERSIONED_FEATURE_TYPE__DATE);
+        createEAttribute(abstractVersionedFeatureTypeEClass, ABSTRACT_VERSIONED_FEATURE_TYPE__MESSAGE);
+
+        describeVersionedFeatureTypeTypeEClass = createEClass(DESCRIBE_VERSIONED_FEATURE_TYPE_TYPE);
+        createEAttribute(describeVersionedFeatureTypeTypeEClass, DESCRIBE_VERSIONED_FEATURE_TYPE_TYPE__VERSIONED);
+
         differenceQueryTypeEClass = createEClass(DIFFERENCE_QUERY_TYPE);
         createEAttribute(differenceQueryTypeEClass, DIFFERENCE_QUERY_TYPE__FILTER);
         createEAttribute(differenceQueryTypeEClass, DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION);
@@ -506,11 +664,14 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
         createEAttribute(documentRootEClass, DOCUMENT_ROOT__MIXED);
         createEReference(documentRootEClass, DOCUMENT_ROOT__XMLNS_PREFIX_MAP);
         createEReference(documentRootEClass, DOCUMENT_ROOT__XSI_SCHEMA_LOCATION);
+        createEAttribute(documentRootEClass, DOCUMENT_ROOT__DESCRIBE_VERSIONED_FEATURE_TYPE);
         createEReference(documentRootEClass, DOCUMENT_ROOT__DIFFERENCE_QUERY);
         createEReference(documentRootEClass, DOCUMENT_ROOT__GET_DIFF);
         createEReference(documentRootEClass, DOCUMENT_ROOT__GET_LOG);
+        createEReference(documentRootEClass, DOCUMENT_ROOT__GET_VERSIONED_FEATURE);
         createEReference(documentRootEClass, DOCUMENT_ROOT__ROLLBACK);
         createEReference(documentRootEClass, DOCUMENT_ROOT__VERSIONED_DELETE);
+        createEReference(documentRootEClass, DOCUMENT_ROOT__VERSIONED_FEATURE_COLLECTION);
         createEReference(documentRootEClass, DOCUMENT_ROOT__VERSIONED_UPDATE);
 
         getDiffTypeEClass = createEClass(GET_DIFF_TYPE);
@@ -523,6 +684,8 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
         createEAttribute(getLogTypeEClass, GET_LOG_TYPE__OUTPUT_FORMAT);
         createEAttribute(getLogTypeEClass, GET_LOG_TYPE__RESULT_TYPE);
 
+        getVersionedFeatureTypeEClass = createEClass(GET_VERSIONED_FEATURE_TYPE);
+
         rollbackTypeEClass = createEClass(ROLLBACK_TYPE);
         createEAttribute(rollbackTypeEClass, ROLLBACK_TYPE__FILTER);
         createEAttribute(rollbackTypeEClass, ROLLBACK_TYPE__HANDLE);
@@ -532,6 +695,9 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
 
         versionedDeleteElementTypeEClass = createEClass(VERSIONED_DELETE_ELEMENT_TYPE);
         createEAttribute(versionedDeleteElementTypeEClass, VERSIONED_DELETE_ELEMENT_TYPE__FEATURE_VERSION);
+
+        versionedFeatureCollectionTypeEClass = createEClass(VERSIONED_FEATURE_COLLECTION_TYPE);
+        createEAttribute(versionedFeatureCollectionTypeEClass, VERSIONED_FEATURE_COLLECTION_TYPE__VERSION);
 
         versionedUpdateElementTypeEClass = createEClass(VERSIONED_UPDATE_ELEMENT_TYPE);
         createEAttribute(versionedUpdateElementTypeEClass, VERSIONED_UPDATE_ELEMENT_TYPE__FEATURE_VERSION);
@@ -565,13 +731,25 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
         WfsPackage theWfsPackage = (WfsPackage)EPackage.Registry.INSTANCE.getEPackage(WfsPackage.eNS_URI);
 
         // Add supertypes to classes
+        describeVersionedFeatureTypeTypeEClass.getESuperTypes().add(theWfsPackage.getDescribeFeatureTypeType());
         getDiffTypeEClass.getESuperTypes().add(theWfsPackage.getBaseRequestType());
         getLogTypeEClass.getESuperTypes().add(theWfsPackage.getBaseRequestType());
+        getVersionedFeatureTypeEClass.getESuperTypes().add(theWfsPackage.getGetFeatureType());
         rollbackTypeEClass.getESuperTypes().add(theWfsPackage.getNativeType());
         versionedDeleteElementTypeEClass.getESuperTypes().add(theWfsPackage.getDeleteElementType());
+        versionedFeatureCollectionTypeEClass.getESuperTypes().add(theWfsPackage.getFeatureCollectionType());
         versionedUpdateElementTypeEClass.getESuperTypes().add(theWfsPackage.getUpdateElementType());
 
         // Initialize classes and features; add operations and parameters
+        initEClass(abstractVersionedFeatureTypeEClass, AbstractVersionedFeatureType.class, "AbstractVersionedFeatureType", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getAbstractVersionedFeatureType_Version(), theXMLTypePackage.getString(), "version", null, 1, 1, AbstractVersionedFeatureType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAbstractVersionedFeatureType_Author(), theXMLTypePackage.getString(), "author", null, 0, 1, AbstractVersionedFeatureType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAbstractVersionedFeatureType_Date(), theXMLTypePackage.getDateTime(), "date", null, 1, 1, AbstractVersionedFeatureType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAbstractVersionedFeatureType_Message(), theXMLTypePackage.getString(), "message", null, 0, 1, AbstractVersionedFeatureType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(describeVersionedFeatureTypeTypeEClass, DescribeVersionedFeatureTypeType.class, "DescribeVersionedFeatureTypeType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getDescribeVersionedFeatureTypeType_Versioned(), theXMLTypePackage.getBoolean(), "versioned", "true", 0, 1, DescribeVersionedFeatureTypeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
         initEClass(differenceQueryTypeEClass, DifferenceQueryType.class, "DifferenceQueryType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getDifferenceQueryType_Filter(), theXMLTypePackage.getAnySimpleType(), "filter", null, 0, 1, DifferenceQueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getDifferenceQueryType_FromFeatureVersion(), theXMLTypePackage.getString(), "fromFeatureVersion", "FIRST", 0, 1, DifferenceQueryType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -583,11 +761,14 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
         initEAttribute(getDocumentRoot_Mixed(), ecorePackage.getEFeatureMapEntry(), "mixed", null, 0, -1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getDocumentRoot_XMLNSPrefixMap(), ecorePackage.getEStringToStringMapEntry(), null, "xMLNSPrefixMap", null, 0, -1, null, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getDocumentRoot_XSISchemaLocation(), ecorePackage.getEStringToStringMapEntry(), null, "xSISchemaLocation", null, 0, -1, null, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getDocumentRoot_DescribeVersionedFeatureType(), theXMLTypePackage.getAnySimpleType(), "describeVersionedFeatureType", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
         initEReference(getDocumentRoot_DifferenceQuery(), this.getDifferenceQueryType(), null, "differenceQuery", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
         initEReference(getDocumentRoot_GetDiff(), this.getGetDiffType(), null, "getDiff", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
         initEReference(getDocumentRoot_GetLog(), this.getGetLogType(), null, "getLog", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_GetVersionedFeature(), this.getGetVersionedFeatureType(), null, "getVersionedFeature", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
         initEReference(getDocumentRoot_Rollback(), this.getRollbackType(), null, "rollback", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
         initEReference(getDocumentRoot_VersionedDelete(), this.getVersionedDeleteElementType(), null, "versionedDelete", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_VersionedFeatureCollection(), this.getVersionedFeatureCollectionType(), null, "versionedFeatureCollection", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
         initEReference(getDocumentRoot_VersionedUpdate(), this.getVersionedUpdateElementType(), null, "versionedUpdate", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
         initEClass(getDiffTypeEClass, GetDiffType.class, "GetDiffType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -600,6 +781,8 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
         initEAttribute(getGetLogType_OutputFormat(), theXMLTypePackage.getString(), "outputFormat", "text/xml; subtype=gml/3.1.1", 0, 1, GetLogType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getGetLogType_ResultType(), theWfsPackage.getResultTypeType(), "resultType", "results", 0, 1, GetLogType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+        initEClass(getVersionedFeatureTypeEClass, GetVersionedFeatureType.class, "GetVersionedFeatureType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
         initEClass(rollbackTypeEClass, RollbackType.class, "RollbackType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getRollbackType_Filter(), theXMLTypePackage.getAnySimpleType(), "filter", null, 0, 1, RollbackType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getRollbackType_Handle(), theXMLTypePackage.getString(), "handle", null, 0, 1, RollbackType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -609,6 +792,9 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
 
         initEClass(versionedDeleteElementTypeEClass, VersionedDeleteElementType.class, "VersionedDeleteElementType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getVersionedDeleteElementType_FeatureVersion(), theXMLTypePackage.getString(), "featureVersion", null, 1, 1, VersionedDeleteElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(versionedFeatureCollectionTypeEClass, VersionedFeatureCollectionType.class, "VersionedFeatureCollectionType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getVersionedFeatureCollectionType_Version(), theXMLTypePackage.getString(), "version", null, 1, 1, VersionedFeatureCollectionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(versionedUpdateElementTypeEClass, VersionedUpdateElementType.class, "VersionedUpdateElementType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getVersionedUpdateElementType_FeatureVersion(), theXMLTypePackage.getString(), "featureVersion", null, 1, 1, VersionedUpdateElementType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -629,6 +815,59 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
      */
     protected void createExtendedMetaDataAnnotations() {
         String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";		
+        addAnnotation
+          (abstractVersionedFeatureTypeEClass, 
+           source, 
+           new String[] {
+             "name", "AbstractVersionedFeatureType",
+             "kind", "elementOnly"
+           });		
+        addAnnotation
+          (getAbstractVersionedFeatureType_Version(), 
+           source, 
+           new String[] {
+             "kind", "element",
+             "name", "version",
+             "namespace", "##targetNamespace"
+           });		
+        addAnnotation
+          (getAbstractVersionedFeatureType_Author(), 
+           source, 
+           new String[] {
+             "kind", "element",
+             "name", "author",
+             "namespace", "##targetNamespace"
+           });		
+        addAnnotation
+          (getAbstractVersionedFeatureType_Date(), 
+           source, 
+           new String[] {
+             "kind", "element",
+             "name", "date",
+             "namespace", "##targetNamespace"
+           });		
+        addAnnotation
+          (getAbstractVersionedFeatureType_Message(), 
+           source, 
+           new String[] {
+             "kind", "element",
+             "name", "message",
+             "namespace", "##targetNamespace"
+           });			
+        addAnnotation
+          (describeVersionedFeatureTypeTypeEClass, 
+           source, 
+           new String[] {
+             "name", "DescribeVersionedFeatureTypeType",
+             "kind", "elementOnly"
+           });			
+        addAnnotation
+          (getDescribeVersionedFeatureTypeType_Versioned(), 
+           source, 
+           new String[] {
+             "kind", "attribute",
+             "name", "versioned"
+           });		
         addAnnotation
           (differenceQueryTypeEClass, 
            source, 
@@ -701,6 +940,15 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
              "name", "xsi:schemaLocation"
            });			
         addAnnotation
+          (getDocumentRoot_DescribeVersionedFeatureType(), 
+           source, 
+           new String[] {
+             "kind", "element",
+             "name", "DescribeVersionedFeatureType",
+             "namespace", "##targetNamespace",
+             "affiliation", "http://www.opengis.net/wfs#DescribeFeatureType"
+           });			
+        addAnnotation
           (getDocumentRoot_DifferenceQuery(), 
            source, 
            new String[] {
@@ -725,6 +973,15 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
              "namespace", "##targetNamespace"
            });			
         addAnnotation
+          (getDocumentRoot_GetVersionedFeature(), 
+           source, 
+           new String[] {
+             "kind", "element",
+             "name", "GetVersionedFeature",
+             "namespace", "##targetNamespace",
+             "affiliation", "http://www.opengis.net/wfs#GetFeature"
+           });			
+        addAnnotation
           (getDocumentRoot_Rollback(), 
            source, 
            new String[] {
@@ -741,6 +998,15 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
              "name", "VersionedDelete",
              "namespace", "##targetNamespace",
              "affiliation", "http://www.opengis.net/wfs#Delete"
+           });		
+        addAnnotation
+          (getDocumentRoot_VersionedFeatureCollection(), 
+           source, 
+           new String[] {
+             "kind", "element",
+             "name", "VersionedFeatureCollection",
+             "namespace", "##targetNamespace",
+             "affiliation", "http://www.opengis.net/wfs#FeatureCollection"
            });		
         addAnnotation
           (getDocumentRoot_VersionedUpdate(), 
@@ -808,6 +1074,13 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
            new String[] {
              "kind", "attribute",
              "name", "resultType"
+           });			
+        addAnnotation
+          (getVersionedFeatureTypeEClass, 
+           source, 
+           new String[] {
+             "name", "GetVersionedFeatureType",
+             "kind", "elementOnly"
            });		
         addAnnotation
           (rollbackTypeEClass, 
@@ -865,6 +1138,20 @@ public class WfsvPackageImpl extends EPackageImpl implements WfsvPackage {
            new String[] {
              "kind", "attribute",
              "name", "featureVersion"
+           });			
+        addAnnotation
+          (versionedFeatureCollectionTypeEClass, 
+           source, 
+           new String[] {
+             "name", "VersionedFeatureCollectionType",
+             "kind", "empty"
+           });		
+        addAnnotation
+          (getVersionedFeatureCollectionType_Version(), 
+           source, 
+           new String[] {
+             "kind", "attribute",
+             "name", "version"
            });		
         addAnnotation
           (versionedUpdateElementTypeEClass, 

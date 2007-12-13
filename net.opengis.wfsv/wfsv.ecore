@@ -3,6 +3,60 @@
     xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="wfsv"
     nsURI="http://www.opengis.net/wfsv" nsPrefix="wfsv">
+  <eClassifiers xsi:type="ecore:EClass" name="AbstractVersionedFeatureType" abstract="true">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="AbstractVersionedFeatureType"/>
+      <details key="kind" value="elementOnly"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="version"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="author" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="author"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="date" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//DateTime">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="date"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="message" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="message"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DescribeVersionedFeatureTypeType" eSuperTypes="wfs.ecore#//DescribeFeatureTypeType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="&#xD;&#xA;            Same as wfs:DescribeFeatureType, but with the option to output&#xD;&#xA;            a versioned feature type instead of a plain one&#xD;&#xA;         "/>
+    </eAnnotations>
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="DescribeVersionedFeatureTypeType"/>
+      <details key="kind" value="elementOnly"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="versioned" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean"
+        defaultValueLiteral="true" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;                     If false, the output is the same as wfs:DescribeFeatureType,&#xD;&#xA;                     if true on the contrary the generated feature type will descend&#xD;&#xA;                     form wfsv:AbstractVersionedFeatureType&#xD;&#xA;                  "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="versioned"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DifferenceQueryType">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="name" value="DifferenceQueryType"/>
@@ -86,6 +140,19 @@
         <details key="name" value="xsi:schemaLocation"/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="describeVersionedFeatureType"
+        unique="false" upperBound="-2" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//AnySimpleType"
+        volatile="true" transient="true" derived="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;            Same as wfs:DescribeFeatureType, but with the option to output&#xD;&#xA;            a versioned feature type instead of a plain one&#xD;&#xA;         "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="DescribeVersionedFeatureType"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="affiliation" value="http://www.opengis.net/wfs#DescribeFeatureType"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="differenceQuery" upperBound="-2"
         eType="#//DifferenceQueryType" volatile="true" transient="true" derived="true"
         containment="true" resolveProxies="false">
@@ -122,6 +189,19 @@
         <details key="namespace" value="##targetNamespace"/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="getVersionedFeature" upperBound="-2"
+        eType="#//GetVersionedFeatureType" volatile="true" transient="true" derived="true"
+        containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&#xD;&#xA;            The GetVersionedFeature element is used to request that a Versioning &#xD;&#xA;            Web Feature Service return versioned feature type instances &#xD;&#xA;            of one or more feature types.&#xD;&#xA;         "/>
+      </eAnnotations>
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="GetVersionedFeature"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="affiliation" value="http://www.opengis.net/wfs#GetFeature"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="rollback" upperBound="-2"
         eType="#//RollbackType" volatile="true" transient="true" derived="true" containment="true"
         resolveProxies="false">
@@ -143,6 +223,16 @@
         <details key="name" value="VersionedDelete"/>
         <details key="namespace" value="##targetNamespace"/>
         <details key="affiliation" value="http://www.opengis.net/wfs#Delete"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="versionedFeatureCollection"
+        upperBound="-2" eType="#//VersionedFeatureCollectionType" volatile="true"
+        transient="true" derived="true" containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="VersionedFeatureCollection"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="affiliation" value="http://www.opengis.net/wfs#FeatureCollection"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="versionedUpdate" upperBound="-2"
@@ -235,6 +325,15 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GetVersionedFeatureType" eSuperTypes="wfs.ecore#//GetFeatureType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="&#xD;&#xA;        The GetVersionedFeature extends GetFeature by returning a collection&#xD;&#xA;        of AbstractVersionedFeature, which do contain more information about&#xD;&#xA;        the last change occurred on each feature.&#xD;&#xA;      "/>
+    </eAnnotations>
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="GetVersionedFeatureType"/>
+      <details key="kind" value="elementOnly"/>
+    </eAnnotations>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RollbackType" eSuperTypes="wfs.ecore#//NativeType">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="name" value="RollbackType"/>
@@ -303,6 +402,22 @@
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
         <details key="name" value="featureVersion"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VersionedFeatureCollectionType" eSuperTypes="wfs.ecore#//FeatureCollectionType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A collection of versioned features"/>
+    </eAnnotations>
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="VersionedFeatureCollectionType"/>
+      <details key="kind" value="empty"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+        <details key="name" value="version"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

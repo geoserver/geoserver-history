@@ -7,20 +7,17 @@
 package net.opengis.wfsv.impl;
 
 import javax.xml.namespace.QName;
+
 import net.opengis.wfs.impl.NativeTypeImpl;
 
-import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.RollbackType;
 import net.opengis.wfsv.WfsvPackage;
 
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
  * <!-- begin-user-doc -->
