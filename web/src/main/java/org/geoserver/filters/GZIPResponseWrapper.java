@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 public class GZIPResponseWrapper extends HttpServletResponseWrapper {
     protected HttpServletResponse origResponse = null;
-    protected ServletOutputStream stream = null;
+    protected AlternativesResponseStream stream = null;
     protected PrintWriter writer = null;
     protected Set formatsToCompress;
     protected String requestedURL;
@@ -34,19 +34,12 @@ public class GZIPResponseWrapper extends HttpServletResponseWrapper {
         formatsToCompress = toCompress;
     }
 
-    public ServletOutputStream createOutputStream() throws IOException {
-        String type = getContentType();
-
-        if (type != null && formatsToCompress.contains(type)){
-            logger.info("Getting a compressed writer for content type: " + type);
-            return new GZIPResponseStream(origResponse);
-        }
-        logger.info("Getting the plain writer for content type: " + type);
-        return origResponse.getOutputStream();
+    protected AlternativesResponseStream createOutputStream() throws IOException {
+        return new AlternativesResponseStream(origResponse, formatsToCompress);
     }
 
     public void setContentType(String type){
-        if (stream != null){
+        if (stream != null && stream.isDirty()){
             logger.warning("Setting mimetype after acquiring stream! was:" +
                     getContentType() + "; set to: " + type + "; url was: " + requestedURL); 
         }

@@ -10,10 +10,12 @@
  */
 package org.geoserver.filters;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.util.zip.GZIPOutputStream;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
 
 public class GZIPResponseStream extends ServletOutputStream {
     protected ByteArrayOutputStream baos = null;

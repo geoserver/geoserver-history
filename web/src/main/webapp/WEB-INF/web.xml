@@ -95,7 +95,7 @@
      <filter-class>org.geoserver.filters.GZIPFilter</filter-class>
      <init-param>
          <param-name>compressed-types</param-name>
-         <param-value>text/css,text/html,text/javascript</param-value>
+         <param-value>text/css,text/html,text/javascript,image/svg+xml</param-value>
          <!-- TODO: Expand this list -->
      </init-param>
    </filter>
