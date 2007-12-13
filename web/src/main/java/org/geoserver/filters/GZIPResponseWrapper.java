@@ -23,10 +23,12 @@ public class GZIPResponseWrapper extends HttpServletResponseWrapper {
     protected ServletOutputStream stream = null;
     protected PrintWriter writer = null;
     protected Set preCompressedFormats;
+    protected String requestedURL;
     protected Logger logger = org.geotools.util.logging.Logging.getLogger("org.geoserver.filters");
 
-    public GZIPResponseWrapper(HttpServletResponse response) {
+    public GZIPResponseWrapper(HttpServletResponse response, String url) {
         super(response);
+        requestedURL = url;
         origResponse = response;
         // TODO: allow user-configured format list here
         preCompressedFormats = new HashSet();
@@ -49,7 +51,7 @@ public class GZIPResponseWrapper extends HttpServletResponseWrapper {
     public void setContentType(String type){
         if (stream != null){
             logger.warning("Setting mimetype after acquiring stream! was:" +
-                    getContentType() + "; set to: "); 
+                    getContentType() + "; set to: " + type + "; url was: " + requestedURL); 
         }
         origResponse.setContentType(type);
     }

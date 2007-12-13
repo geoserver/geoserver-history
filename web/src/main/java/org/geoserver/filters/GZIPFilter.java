@@ -25,7 +25,7 @@ public class GZIPFilter implements Filter {
             String ae = request.getHeader("accept-encoding");
             if (ae != null && ae.indexOf("gzip") != -1) {
                 GZIPResponseWrapper wrappedResponse =
-                    new GZIPResponseWrapper(response);
+                    new GZIPResponseWrapper(response, request.getRequestURL().toString());
                 chain.doFilter(req, wrappedResponse);
                 wrappedResponse.finishResponse();
                 return;
