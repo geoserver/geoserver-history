@@ -19,6 +19,7 @@ import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.AttributeTypeBuilder;
+import org.geotools.feature.FeatureTypes;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -511,31 +512,52 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             //(ftc.getDefinitionQuery() == null || ftc.getDefinitionQuery().equals( Query.ALL ))){
             return realSource;
         } else {
-            // support versioning only if it is in the classpath, use reflection to invoke
-            // methods so that we don't get a compile time dependency
+            CoordinateReferenceSystem resultCrs = null;
+            GeometryDescriptor gd = realSource.getSchema().getDefaultGeometry();
+            CoordinateReferenceSystem nativeCrs = gd != null ?  gd.getCRS() : null;
+            if(localSrsHandling == LEAVE && nativeCrs != null)
+                resultCrs = nativeCrs;
+            else
+                resultCrs = getSRS(SRS);
+            
+            // make sure we create the appropriate schema, with the right crs
+            SimpleFeatureType schema = getFeatureType(realSource);
             try {
-                if (implementsInterface(realSource.getClass(),
-                            "org.geotools.data.VersioningFeatureSource")) {
-                    Class clazz = Class.forName(
-                            "org.vfny.geoserver.global.GeoServerVersioningFeatureSource");
-                    Method m = clazz.getMethod("create",
-                            new Class[] {
-                                Class.forName("org.geotools.data.VersioningFeatureSource"),
-                                SimpleFeatureType.class, Filter.class, CoordinateReferenceSystem.class, int.class
-                            });
-
-                    return (FeatureSource) m.invoke(null,
-                        new Object[] {
-                            realSource, getFeatureType(realSource), getDefinitionQuery(),
-                            getSRS(SRS), new Integer(localSrsHandling)
-                        });
-                }
-            } catch (Exception e) {
-                throw new DataSourceException("Creation of a versioning wrapper failed", e);
+                if(schema.getDefaultGeometry() != null 
+                        && !CRS.equalsIgnoreMetadata(resultCrs, schema.getDefaultGeometry().getCRS()))
+                    schema = FeatureTypes.transform(schema, resultCrs);
+            } catch(Exception e) {
+                throw new DataSourceException("Problem forcing CRS onto feature type", e);
             }
+        
+            
+            if (!implementsInterface(realSource.getClass(),
+                        "org.geotools.data.VersioningFeatureSource")) {
+                return GeoServerFeatureLocking.create(realSource, schema,
+                        getDefinitionQuery(), resultCrs, localSrsHandling);
+            } else {
+                // support versioning only if it is in the classpath, use reflection to invoke
+                // methods so that we don't get a compile time dependency
+                try {
+                Class clazz = Class.forName(
+                        "org.vfny.geoserver.global.GeoServerVersioningFeatureSource");
+                Method m = clazz.getMethod("create",
+                        new Class[] {
+                            Class.forName("org.geotools.data.VersioningFeatureSource"),
+                            SimpleFeatureType.class, Filter.class, CoordinateReferenceSystem.class, int.class
+                        });
 
-            return GeoServerFeatureLocking.create(realSource, getFeatureType(realSource),
-                getDefinitionQuery(), getSRS(SRS), localSrsHandling);
+                return (FeatureSource) m.invoke(null,
+                    new Object[] {
+                        realSource, schema, getDefinitionQuery(),
+                        resultCrs, new Integer(localSrsHandling)
+                    });
+                } catch (Exception e) {
+                    throw new DataSourceException("Creation of a versioning wrapper failed", e);
+                }
+
+            } 
+            
         }
     }
 
