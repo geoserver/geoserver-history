@@ -391,25 +391,15 @@ public class GetFeature {
         
         // make sure every bbox and geometry that does not have an attached crs will use
         // the declared crs, and then reproject it to the native crs
-        Filter transformedFilter = WFSReprojectionUtil.normalizeFilterCRS(filter, 
-                source.getSchema(), declaredCRS);
+        Filter transformedFilter = filter;
+        if(declaredCRS != null)
+            transformedFilter = WFSReprojectionUtil.normalizeFilterCRS(filter, source.getSchema(), declaredCRS);
 
         //only handle non-joins for now
         QName typeName = (QName) query.getTypeName().get(0);
         DefaultQuery dataQuery = new DefaultQuery(typeName.getLocalPart(), transformedFilter, maxFeatures,
                 props, query.getHandle());
         
-        if (crs == null) {
-            //set to be the server default
-            try {
-                crs = CRS.decode("EPSG:4326");
-                dataQuery.setCoordinateSystem(crs);
-            } catch (Exception e) {
-                //should never happen
-                throw new RuntimeException(e);
-            }
-        }
-
         //handle reprojection
         CoordinateReferenceSystem target;
         if (query.getSrsName() != null) {
@@ -423,7 +413,7 @@ public class GetFeature {
             target = declaredCRS;
         }
         //if the crs are not equal, then reproject
-        if (target != null && !CRS.equalsIgnoreMetadata(crs, target)) {
+        if (target != null && declaredCRS != null && !CRS.equalsIgnoreMetadata(crs, target)) {
             dataQuery.setCoordinateSystemReproject(target);
         }
         

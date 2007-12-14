@@ -33,6 +33,9 @@ class WFSReprojectionUtil {
     public static CoordinateReferenceSystem getDeclaredCrs(CoordinateReferenceSystem nativeCRS,
             String wfsVersion) {
         try {
+            if(nativeCRS == null)
+                return null;
+            
             if (wfsVersion.equals("1.0.0")) {
                 return nativeCRS;
             } else {
