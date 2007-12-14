@@ -128,6 +128,12 @@
   <!-- kvp request readers -->
   <bean id="describeVersionedFeatureTypeKvpReader" 
         class="org.geoserver.wfsv.kvp.DescribeVersionedFeatureTypeKvpRequestReader"/>
+        
+  <bean id="getVersionedFeatureKvpRequestReader" 
+        class="org.geoserver.wfsv.kvp.GetVersionedFeatureRequestReader">
+    <constructor-arg ref="catalog"/>
+    <constructor-arg ref="filterFactory"/>
+  </bean>
   
   <!-- 1.1 wfsv xml readers -->
   <bean id="wfsv-xmlReader-1.1.0" class="org.geoserver.wfsv.xml.v1_1_0.WfsvXmlReader" abstract="true">
