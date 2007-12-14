@@ -11,6 +11,7 @@ import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
+import org.vfny.geoserver.wms.responses.WatermarkPainter;
 import org.vfny.geoserver.wms.responses.map.png.PNGMapProducer;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -48,6 +49,11 @@ class KMZMapProducer extends AbstractGetMapProducer implements GetMapProducer {
      * transformer for creating kml
      */
     KMLTransformer transformer;
+
+    /**
+     * WaterMark Painter instance
+     */
+	private WatermarkPainter wmPainter;
 
     public KMZMapProducer(String mapFormat, String mime_type, WMS wms) {
         super(mapFormat, mime_type);
@@ -158,7 +164,10 @@ class KMZMapProducer extends AbstractGetMapProducer implements GetMapProducer {
             mapContext.setTransparent(true);
 
             // render the map
+            if (wmPainter == null)
+            	wmPainter = new WatermarkPainter(this.mapContext.getRequest());
             mapProducer.setMapContext(mapContext);
+            mapProducer.setWmPainter(wmPainter);
             mapProducer.produceMap();
 
             // write it to the zip stream
