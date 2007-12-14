@@ -35,7 +35,7 @@ public class WFSKvpRequestReader extends EMFKvpRequestReader {
         super(requestBean, WfsFactory.eINSTANCE);
     }
     
-    WfsFactory getWfsFactory() {
+    protected WfsFactory getWfsFactory() {
         return (WfsFactory) factory;
     }
 }
