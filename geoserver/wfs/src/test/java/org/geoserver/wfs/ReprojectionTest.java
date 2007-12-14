@@ -2,6 +2,8 @@ package org.geoserver.wfs;
 
 import java.util.StringTokenizer;
 
+import javax.xml.namespace.QName;
+
 import org.geoserver.data.test.MockData;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -11,6 +13,7 @@ import org.w3c.dom.Element;
 
 public class ReprojectionTest extends WFSTestSupport {
     private static final String TARGET_CRS_CODE = "EPSG:900913";
+    public static QName NULL_GEOMETRIES = new QName(MockData.CITE_URI, "NullGeometries", MockData.CITE_PREFIX);
     MathTransform tx;
     
     protected void setUp() throws Exception {
@@ -20,6 +23,13 @@ public class ReprojectionTest extends WFSTestSupport {
         CoordinateReferenceSystem epsg32615 = CRS.decode("EPSG:32615");
         
         tx = CRS.findMathTransform(epsg32615, epsg4326);
+    }
+    
+    @Override
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        super.populateDataDirectory(dataDirectory);
+        dataDirectory.addPropertiesType(NULL_GEOMETRIES, 
+                ReprojectionTest.class.getResource("NullGeometries.properties"), null);
     }
     
     public void testGetFeatureGet() throws Exception {
@@ -60,6 +70,22 @@ public class ReprojectionTest extends WFSTestSupport {
         Document dom2 = postAsDOM("wfs", xml);
         
         runTest(dom1, dom2);
+    }
+    
+    public void testReprojectNullGeometries() throws Exception {
+        // see http://jira.codehaus.org/browse/GEOS-1612
+        String xml = "<wfs:GetFeature " + "service=\"WFS\" "
+        + "version=\"1.0.0\" "
+        + "xmlns:cdf=\"http://www.opengis.net/cite/data\" "
+        + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
+        + "xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> "
+        + "<wfs:Query srsName=\"" + TARGET_CRS_CODE + "\" typeName=\"" + 
+            NULL_GEOMETRIES.getPrefix() + ":" + NULL_GEOMETRIES.getLocalPart() + "\"> "
+        + "</wfs:Query> " + "</wfs:GetFeature>";
+
+        Document dom = postAsDOM("wfs", xml);
+//        print(dom);
+        assertEquals(1, dom.getElementsByTagName("wfs:FeatureCollection").getLength());
     }
     
     public void testGetFeatureWithProjectedBoxGet() throws Exception {
