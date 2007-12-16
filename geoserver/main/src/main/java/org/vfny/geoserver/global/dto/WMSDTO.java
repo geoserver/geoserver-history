@@ -49,6 +49,10 @@ public final class WMSDTO implements DataTransferObject {
     /** The interpolation rendering hint */
     private String allowInterpolation;
 
+	private boolean globalWatermarking;
+	
+	private String globalWatermarkingURL;
+
     /**
      * WMS constructor.  does nothing
      */
@@ -76,6 +80,8 @@ public final class WMSDTO implements DataTransferObject {
         gmlPrefixing = other.isGmlPrefixing();
         svgRenderer = other.getSvgRenderer();
         svgAntiAlias = other.getSvgAntiAlias();
+        globalWatermarking = other.getGlobalWatermarking();
+        globalWatermarkingURL = other.getGlobalWatermarkingURL();
         allowInterpolation = other.getAllowInterpolation();
         baseMapLayers = other.getBaseMapLayers();
         baseMapStyles = other.getBaseMapStyles();
@@ -116,6 +122,8 @@ public final class WMSDTO implements DataTransferObject {
 
         boolean equals = (gmlPrefixing == dto.gmlPrefixing)
             && (svgAntiAlias == dto.svgAntiAlias)
+            && (globalWatermarking == dto.getGlobalWatermarking())
+            && (globalWatermarkingURL == dto.getGlobalWatermarkingURL())
             && (allowInterpolation == dto.allowInterpolation);
 
         if (equals) {
@@ -169,7 +177,8 @@ public final class WMSDTO implements DataTransferObject {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return (gmlPrefixing ? 1 : 0) | (svgAntiAlias ? 1 : 0)
+        return (gmlPrefixing ? 1 : 0) | (svgAntiAlias ? 1 : 0) | (globalWatermarking ? 1 : 0)
+        | ((globalWatermarkingURL != null) ? 0 : globalWatermarkingURL.hashCode())
         | ((allowInterpolation != null) ? 0 : allowInterpolation.hashCode())
         | ((service == null) ? 0 : service.hashCode())
         | ((svgRenderer == null) ? 0 : svgRenderer.hashCode())
@@ -305,4 +314,20 @@ public final class WMSDTO implements DataTransferObject {
     public String getAllowInterpolation() {
         return allowInterpolation;
     }
+
+	public boolean getGlobalWatermarking() {
+		return globalWatermarking;
+	}
+
+	public void setGlobalWatermarking(boolean globalWatermarking) {
+		this.globalWatermarking = globalWatermarking;
+	}
+
+	public String getGlobalWatermarkingURL() {
+		return globalWatermarkingURL;
+	}
+
+	public void setGlobalWatermarkingURL(String globalWatermarkingURL) {
+		this.globalWatermarkingURL = globalWatermarkingURL;
+	}
 }

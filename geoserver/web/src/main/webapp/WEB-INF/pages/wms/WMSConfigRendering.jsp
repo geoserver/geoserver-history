@@ -42,6 +42,23 @@
 		<td colspan=2>
 			<html:radio name="wmsRenderingForm" property="allowInterpolation" value="Bicubic"><bean:message key="label.wms.allowInterpolation.bicubic"/></html:radio>
 		</td></tr>
+    <!-- Watermarking Options - START -->
+	<tr><td align="right">
+		<span class="help" title="<bean:message key="help.wms.allowWatermarking"/>">
+			<bean:message key="label.wms.allowWatermarking"/>:
+		</span>
+		</td>
+		<td colspan=2>
+			<html:checkbox name="wmsRenderingForm" property="globalWatermarking"><bean:message key="label.wms.globalWatermarking"/></html:checkbox> 
+		</td></tr>
+	<tr><td align="right">
+		<span class="help" title="<bean:message key="help.wms.globalWatermarkingURL"/>">
+			<bean:message key="label.wms.globalWatermarkingURL"/>:
+		</span>
+		</td><td>
+			<html:text property="globalWatermarkingURL" size="60"/>
+		</td></tr>
+    <!-- Watermarking Options - END -->
 
 	<tr><td align="right">&nbsp;</td><td>
 		<html:submit>

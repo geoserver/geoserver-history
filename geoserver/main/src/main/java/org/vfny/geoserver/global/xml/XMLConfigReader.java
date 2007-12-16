@@ -948,7 +948,10 @@ public class XMLConfigReader {
         wms.setSvgRenderer(ReaderUtils.getChildText(wmsElement, "svgRenderer"));
         wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(
                     wmsElement, "svgAntiAlias")));
-
+        wms.setGlobalWatermarking(!"false".equals(ReaderUtils.getChildText(
+                wmsElement, "globalWatermarking")));
+        wms.setGlobalWatermarkingURL(ReaderUtils.getChildText(
+                wmsElement, "globalWatermarkingURL"));
         try {
             wms.setAllowInterpolation(ReaderUtils.getChildText(wmsElement,
                     "allowInterpolation", true));

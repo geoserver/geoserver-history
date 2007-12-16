@@ -39,18 +39,15 @@ public class GeoServerVersioningFeatureStore extends GeoServerFeatureStore
         return ((VersioningFeatureSource) source).getLog(fromVersion, toVersion, filter, users, maxFeatures);
     }
 
-	public FeatureCollection getVersionedFeatures() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public FeatureCollection getVersionedFeatures() throws IOException {
+        return ((VersioningFeatureSource) source).getVersionedFeatures();
+    }
 
-	public FeatureCollection getVersionedFeatures(Query q) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public FeatureCollection getVersionedFeatures(Query q) throws IOException {
+        return ((VersioningFeatureSource) source).getVersionedFeatures(q);
+    }
 
-	public FeatureCollection getVersionedFeatures(Filter f) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public FeatureCollection getVersionedFeatures(Filter f) throws IOException {
+        return ((VersioningFeatureSource) source).getVersionedFeatures(f);
+    }
 }

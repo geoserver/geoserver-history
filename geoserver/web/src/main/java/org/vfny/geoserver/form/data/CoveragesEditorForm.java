@@ -4,6 +4,17 @@
  */
 package org.vfny.geoserver.form.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
@@ -29,15 +40,6 @@ import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.Requests;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -68,6 +70,19 @@ public final class CoveragesEditorForm extends ActionForm {
     private SortedSet panelStyleIds;
     private SortedSet typeStyles;
     private String[] otherSelectedStyles;
+    
+    private boolean allowWatermarking;
+    private boolean allowWatermarkingChecked = false;
+    private String watermarkingURL;
+    /*
+     * O -- O -- O      0 -- 1 -- 2
+     * |    |    |      |    |    |
+     * O -- O -- O  ==  3 -- 4 -- 5 
+     * |    |    |      |    |    |
+     * O -- O -- O      6 -- 7 -- 8
+     * 
+     */
+    private Integer watermarkingPosition;
 
     /**
      *
@@ -227,6 +242,13 @@ public final class CoveragesEditorForm extends ActionForm {
                                                     .getOrdinate(1));
         }
 
+        // //
+        // Watermarking options
+        // //
+        allowWatermarking = cvConfig.isAllow
+        watermarkingURL = cvConfig.getWater
+        watermarkingPosition = cvConfig.getWaterm
+        
         // //
         //
         //
@@ -1064,4 +1086,37 @@ public final class CoveragesEditorForm extends ActionForm {
     public void setRealName(String real_name) {
         this.real_name = real_name;
     }
+
+	public boolean isAllowWatermarking() {
+		return allowWatermarking;
+	}
+
+	public void setAllowWatermarking(boolean allowWatermarking) {
+		allowWatermarkingChecked = true;
+		this.allowWatermarking = allowWatermarking;
+	}
+
+	public String getWatermarkingURL() {
+		return watermarkingURL;
+	}
+
+	public void setWatermarkingURL(String watermarkingURL) {
+		this.watermarkingURL = watermarkingURL;
+	}
+
+	public Integer getWatermarkingPosition() {
+		return watermarkingPosition;
+	}
+
+	public void setWatermarkingPosition(Integer watermarkingPosition) {
+		this.watermarkingPosition = watermarkingPosition;
+	}
+
+	public boolean isAllowWatermarkingChecked() {
+		return allowWatermarkingChecked;
+	}
+
+	public void setAllowWatermarkingChecked(boolean allowWatermarkingChecked) {
+		this.allowWatermarkingChecked = allowWatermarkingChecked;
+	}
 }

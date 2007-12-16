@@ -418,6 +418,8 @@ public class XMLConfigWriter {
 		Map baseMapStyles = null;
 		Map baseMapEnvelopes = null;
 		boolean svgAntiAlias = false;
+		boolean globalWatermarking = false;
+		String globalWatermarkingURL = null;
 		String allowInterpolation = null;
 		boolean citeConformanceHacks = false;
 
@@ -442,6 +444,8 @@ public class XMLConfigWriter {
 			t = "WMS";
 			svgRenderer = w.getSvgRenderer();
 			svgAntiAlias = w.getSvgAntiAlias();
+			globalWatermarking = w.getGlobalWatermarking();
+			globalWatermarkingURL = w.getGlobalWatermarkingURL();
 			allowInterpolation = w.getAllowInterpolation();
 			baseMapLayers = w.getBaseMapLayers();
 			baseMapStyles = w.getBaseMapStyles();
@@ -570,7 +574,12 @@ public class XMLConfigWriter {
 
 		if (obj instanceof WMSDTO) {
 			cw.textTag("svgAntiAlias", svgAntiAlias + "");
+			cw.textTag("globalWatermarking", globalWatermarking + "");
 
+			if (globalWatermarkingURL != null) {
+				cw.textTag("globalWatermarkingURL", globalWatermarkingURL);
+			}
+			
 			if (allowInterpolation != null) {
 				cw.textTag("allowInterpolation", allowInterpolation);
 			}

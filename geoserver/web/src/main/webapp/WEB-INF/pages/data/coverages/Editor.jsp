@@ -277,7 +277,7 @@ function generateColorPicker(colorFieldName, fieldValue)
         	<html:options property="styles"/>
 		</html:select>
 	  </td>
-	</tr>   
+	</tr>
 	<tr>
 	  <td class="label">
 		<span class="help" title="<bean:message key="help.type.style"/>">
@@ -303,9 +303,47 @@ function generateColorPicker(colorFieldName, fieldValue)
         			</html:select>
         		</td>
         	</tr>
-        </table> 
+        </table>
       </td>
-    </tr> 
+    </tr>
+    
+    <!-- Watermarking Options - START -->
+	<tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.type.watermarking"/>">
+          <bean:message key="label.layerWatermarking"/>:
+        </span>
+	  </td>
+	  <td class="datum">
+		<html:checkbox property="allowWatermarking"/> 
+	  </td>
+	</tr>
+	<tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.type.watermarkingURL"/>">
+          <bean:message key="label.layerWatermarking.URL"/>:
+        </span>
+	  </td>
+	  <td class="datum">
+	  	<html:text property="watermarkingURL" size="60"/>
+	  </td>
+	</tr>
+	<tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.type.watermarkingPosition"/>">
+          <bean:message key="label.layerWatermarking.position"/>:
+        </span>
+	  </td>
+	  <td class="datum">
+	  	<html:radio property="watermarkingPosition" value="0"/> -- <html:radio property="watermarkingPosition" value="1"/> -- <html:radio property="watermarkingPosition" value="2"/><br/>
+     	<br/>
+     	<html:radio property="watermarkingPosition" value="3"/> -- <html:radio property="watermarkingPosition" value="4"/> -- <html:radio property="watermarkingPosition" value="5"/><br/>
+     	<br/>
+     	<html:radio property="watermarkingPosition" value="6"/> -- <html:radio property="watermarkingPosition" value="7"/> -- <html:radio property="watermarkingPosition" value="8"/><br/>
+	  </td>
+	</tr>
+    <!-- Watermarking Options - END -->
+    
 	<tr>
       <td class="label">
 		<span class="help" title="<bean:message key="help.coverage.srsName"/>">

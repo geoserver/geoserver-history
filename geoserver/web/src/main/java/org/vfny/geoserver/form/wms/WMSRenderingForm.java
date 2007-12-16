@@ -4,20 +4,24 @@
  */
 package org.vfny.geoserver.form.wms;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.config.WMSConfig;
-import java.util.ArrayList;
-import java.util.List;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 
 public class WMSRenderingForm extends ActionForm {
     List svgRenderers;
     String svgRenderer;
     boolean svgAntiAlias;
+    boolean globalWatermarking;
+    String globalWatermarkingURL;
     List intTypes;
     String allowInterpolation;
 
@@ -43,7 +47,8 @@ public class WMSRenderingForm extends ActionForm {
      * but it works just fine.
      */
     private boolean svgAntiAliasChecked = false;
-
+    private boolean globalWatermarkingChecked = false;
+    
     public WMSRenderingForm() {
         svgRenderers = new ArrayList();
         svgRenderers.add(WMSConfig.SVG_SIMPLE);
@@ -68,7 +73,9 @@ public class WMSRenderingForm extends ActionForm {
         }
 
         svgAntiAlias = config.getSvgAntiAlias();
-
+        globalWatermarking = config.getGlobalWatermarking();
+        globalWatermarkingURL = config.getGlobalWatermarkingURL();
+        
         allowInterpolation = config.getAllowInterpolation();
 
         if (allowInterpolation == null) {
@@ -145,4 +152,32 @@ public class WMSRenderingForm extends ActionForm {
     public void setEnabledChecked(boolean svgAntiAliasChecked) {
         this.svgAntiAliasChecked = svgAntiAliasChecked;
     }
+
+	public boolean isGlobalWatermarking() {
+		return globalWatermarking;
+	}
+
+	public void setGlobalWatermarking(boolean globalWatermarking) {
+		globalWatermarkingChecked = true;
+		this.globalWatermarking = globalWatermarking;
+	}
+
+	/**
+     * @return The value of the anti aliasing rendering hint.
+     */
+    public boolean getGlobalWatermarking() {
+        return globalWatermarking;
+    }
+    
+	public boolean isGlobalWatermarkingChecked() {
+		return globalWatermarkingChecked;
+	}
+
+	public String getGlobalWatermarkingURL() {
+		return globalWatermarkingURL;
+	}
+
+	public void setGlobalWatermarkingURL(String globalWatermarkingURL) {
+		this.globalWatermarkingURL = globalWatermarkingURL;
+	}
 }

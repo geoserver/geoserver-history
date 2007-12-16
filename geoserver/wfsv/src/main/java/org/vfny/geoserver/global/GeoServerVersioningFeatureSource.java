@@ -72,19 +72,16 @@ public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource
         return new GeoServerVersioningFeatureSource(featureSource, schema, definitionQuery,
             declaredCRS, srsHandling);
     }
+    
+    public FeatureCollection getVersionedFeatures() throws IOException {
+        return ((VersioningFeatureSource) source).getVersionedFeatures();
+    }
 
-	public FeatureCollection getVersionedFeatures() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public FeatureCollection getVersionedFeatures(Query q) throws IOException {
+        return ((VersioningFeatureSource) source).getVersionedFeatures(q);
+    }
 
-	public FeatureCollection getVersionedFeatures(Query q) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public FeatureCollection getVersionedFeatures(Filter f) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public FeatureCollection getVersionedFeatures(Filter f) throws IOException {
+        return ((VersioningFeatureSource) source).getVersionedFeatures(f);
+    }
 }

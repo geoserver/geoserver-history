@@ -50,6 +50,12 @@ public class WMS extends Service {
 
     /** svg anitalias or not **/
     private boolean svgAntiAlias;
+    
+    /** global Watermarking **/
+    private boolean globalWatermarking;
+
+    /** global Watermarking URL **/
+    private String globalWatermarkingURL;
 
     /** rendering interpolation or not **/
     private Map baseMapLayers;
@@ -73,6 +79,8 @@ public class WMS extends Service {
         setId("wms");
         svgRenderer = config.getSvgRenderer();
         svgAntiAlias = config.getSvgAntiAlias();
+        globalWatermarking = config.getGlobalWatermarking();
+        globalWatermarkingURL = config.getGlobalWatermarkingURL();
         allowInterpolation = config.getAllowInterpolation();
         baseMapLayers = config.getBaseMapLayers();
         baseMapStyles = config.getBaseMapStyles();
@@ -130,6 +138,8 @@ public class WMS extends Service {
         super.load(config.getService());
         svgRenderer = config.getSvgRenderer();
         svgAntiAlias = config.getSvgAntiAlias();
+        globalWatermarking = config.getGlobalWatermarking();
+        globalWatermarkingURL = config.getGlobalWatermarkingURL();
         allowInterpolation = config.getAllowInterpolation();
         baseMapLayers = config.getBaseMapLayers();
         baseMapStyles = config.getBaseMapStyles();
@@ -156,6 +166,8 @@ public class WMS extends Service {
         w.setService((ServiceDTO) super.toDTO());
         w.setSvgRenderer(svgRenderer);
         w.setSvgAntiAlias(svgAntiAlias);
+        w.setGlobalWatermarking(globalWatermarking);
+        w.setGlobalWatermarkingURL(globalWatermarkingURL);
         w.setAllowInterpolation(allowInterpolation);
         w.setBaseMapLayers(baseMapLayers);
         w.setBaseMapStyles(baseMapStyles);
@@ -302,4 +314,20 @@ public class WMS extends Service {
     public void getBaseMapEnvelopes(Map envelopes) {
         baseMapEnvelopes = envelopes;
     }
+
+	public boolean isGlobalWatermarking() {
+		return globalWatermarking;
+	}
+
+	public void setGlobalWatermarking(boolean globalWatermarking) {
+		this.globalWatermarking = globalWatermarking;
+	}
+
+	public String getGlobalWatermarkingURL() {
+		return globalWatermarkingURL;
+	}
+
+	public void setGlobalWatermarkingURL(String globalWatermarkingURL) {
+		this.globalWatermarkingURL = globalWatermarkingURL;
+	}
 }
