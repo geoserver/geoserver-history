@@ -481,6 +481,25 @@ public class GetMapResponse implements Response {
 
 								layer.setTitle(layers[i].getName());
 								layer.setQuery(Query.ALL);
+
+								// //
+								// Checking WaterMarking options
+								// //
+								final boolean wmEnabled = layers[i].getCoverage().isAllowWatermarking();
+								if (wmEnabled) {
+									String wmURL = layers[i].getCoverage().getWatermarkingURL();
+									Integer wmPos = layers[i].getCoverage().getWatermarkingPosition();
+									
+									if (wmURL != null && wmPos != null) {
+										if (!(wmURL.toLowerCase().startsWith("http://") || wmURL.toLowerCase().startsWith("file:/")))
+											wmURL = req.getHttpServletRequest().getRequestURL() + "/" + wmURL;
+										
+										layer.setWaterMarkVisible(wmEnabled);
+										layer.setWaterMarkURL(wmURL);
+										layer.setWaterMarkPosition(wmPos);
+									}
+								}
+								
 								map.addLayer(layer);
 							} else if (reader instanceof AbstractGridCoverageNDReader) {
 								final String coverageName = layers[i].getCoverage().getRealName();
@@ -503,6 +522,25 @@ public class GetMapResponse implements Response {
 
 								layer.setTitle(layers[i].getName());
 								layer.setQuery(Query.ALL);
+								
+								// //
+								// Checking WaterMarking options
+								// //
+								final boolean wmEnabled = layers[i].getCoverage().isAllowWatermarking();
+								if (wmEnabled) {
+									String wmURL = layers[i].getCoverage().getWatermarkingURL();
+									Integer wmPos = layers[i].getCoverage().getWatermarkingPosition();
+									
+									if (wmURL != null && wmPos != null) {
+										if (!(wmURL.toLowerCase().startsWith("http://") || wmURL.toLowerCase().startsWith("file:/")))
+											wmURL = req.getHttpServletRequest().getRequestURL() + "/" + wmURL;
+										
+										layer.setWaterMarkVisible(wmEnabled);
+										layer.setWaterMarkURL(wmURL);
+										layer.setWaterMarkPosition(wmPos);
+									}
+								}
+								
 								map.addLayer(layer);
 							}
 

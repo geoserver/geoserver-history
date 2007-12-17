@@ -1488,6 +1488,16 @@ public class XMLConfigWriter {
 				cw.textTag("keywords", s);
 			}
 
+			// //
+			// Watermarking options
+			// //
+			m = new HashMap();
+			m.put("enable", "" + cv.isAllowWatermarking());
+			cw.openTag("waterMarking", m);
+				cw.textTag("watermarkingURL", cv.getWatermarkingURL());
+				cw.textTag("watermarkingPosition", "" + cv.getWatermarkingPosition());
+			cw.closeTag("waterMarking");
+			
 			if ((cv.getDefaultStyle() != null) && (cv.getDefaultStyle() != "")) {
 				cw
 						.comment("the default style this CoverageInfoDTO can be represented by.\n"

@@ -49,7 +49,7 @@ public final class WMSDTO implements DataTransferObject {
     /** The interpolation rendering hint */
     private String allowInterpolation;
 
-	private boolean globalWatermarking;
+	private boolean globalWatermarking = false;
 	
 	private String globalWatermarkingURL;
 

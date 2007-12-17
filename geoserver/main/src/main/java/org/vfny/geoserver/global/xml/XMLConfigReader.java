@@ -1944,6 +1944,21 @@ public class XMLConfigReader {
             cv.setMetadataLink(loadMetaDataLink(ReaderUtils.getChildElement(
                         coverageRoot, "metadataLink")));
 
+			// //
+			// Watermarking options
+			// //
+            Element wmRoot = ReaderUtils.getChildElement(coverageRoot, "waterMarking");
+            if (wmRoot != null) {
+            	cv.setAllowWatermarking(Boolean.parseBoolean(ReaderUtils.getAttribute(wmRoot, "enable", true)));
+            	cv.setWatermarkingURL(ReaderUtils.getChildText(wmRoot, "watermarkingURL"));
+            	if (ReaderUtils.getChildText(wmRoot, "watermarkingPosition") != null)
+            		try {
+            			cv.setWatermarkingPosition(Integer.valueOf(ReaderUtils.getChildText(wmRoot, "watermarkingPosition")));
+            		} catch (NumberFormatException e) {
+            			cv.setWatermarkingPosition(null);
+            		}
+            }
+
             // /////////////////////////////////////////////////////////////////////
             //
             // DEAFULT STYLE

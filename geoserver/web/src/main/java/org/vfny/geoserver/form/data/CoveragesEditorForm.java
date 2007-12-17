@@ -75,11 +75,13 @@ public final class CoveragesEditorForm extends ActionForm {
     private boolean allowWatermarkingChecked = false;
     private String watermarkingURL;
     /*
+     * <pre>
      * O -- O -- O      0 -- 1 -- 2
      * |    |    |      |    |    |
      * O -- O -- O  ==  3 -- 4 -- 5 
      * |    |    |      |    |    |
      * O -- O -- O      6 -- 7 -- 8
+     * </pre>
      * 
      */
     private Integer watermarkingPosition;
@@ -245,9 +247,9 @@ public final class CoveragesEditorForm extends ActionForm {
         // //
         // Watermarking options
         // //
-        allowWatermarking = cvConfig.isAllow
-        watermarkingURL = cvConfig.getWater
-        watermarkingPosition = cvConfig.getWaterm
+        allowWatermarking = cvConfig.isAllowWatermarking();
+        watermarkingURL = cvConfig.getWatermarkingURL();
+        watermarkingPosition = cvConfig.getWatermarkingPosition();
         
         // //
         //

@@ -86,6 +86,23 @@ public final class CoverageInfo extends GlobalLayerSupertype {
      */
     private List keywords;
 
+	/**
+	 * Watermarking options
+	 */
+    private boolean allowWatermarking;
+    private String watermarkingURL;
+    /**
+     * <pre>
+     * O -- O -- O      0 -- 1 -- 2
+     * |    |    |      |    |    |
+     * O -- O -- O  ==  3 -- 4 -- 5 
+     * |    |    |      |    |    |
+     * O -- O -- O      6 -- 7 -- 8
+     * </pre>
+     * 
+     */
+    private Integer watermarkingPosition;
+
     /**
      *
      */
@@ -196,6 +213,9 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         metadataLink = dto.getMetadataLink();
         dirName = dto.getDirName();
         keywords = dto.getKeywords();
+        allowWatermarking = dto.isAllowWatermarking();
+        watermarkingURL = dto.getWatermarkingURL();
+        watermarkingPosition = dto.getWatermarkingPosition();
         crs = dto.getCrs();
         srsName = dto.getSrsName();
         srsWKT = dto.getSrsWKT();
@@ -230,6 +250,9 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         dto.setMetadataLink(metadataLink);
         dto.setDirName(dirName);
         dto.setKeywords(keywords);
+        dto.setAllowWatermarking(allowWatermarking);
+        dto.setWatermarkingURL(watermarkingURL);
+        dto.setWatermarkingPosition(watermarkingPosition);
         dto.setCrs(crs);
         dto.setSrsName(srsName);
         dto.setSrsWKT(srsWKT);
@@ -633,4 +656,25 @@ public final class CoverageInfo extends GlobalLayerSupertype {
     public Map getVerticalExtent() {
         return verticalExtent;
     }
+
+	/**
+	 * @return the allowWatermarking
+	 */
+	public boolean isAllowWatermarking() {
+		return allowWatermarking;
+	}
+
+	/**
+	 * @return the watermarkingPosition
+	 */
+	public Integer getWatermarkingPosition() {
+		return watermarkingPosition;
+	}
+
+	/**
+	 * @return the watermarkingURL
+	 */
+	public String getWatermarkingURL() {
+		return watermarkingURL;
+	}
 }

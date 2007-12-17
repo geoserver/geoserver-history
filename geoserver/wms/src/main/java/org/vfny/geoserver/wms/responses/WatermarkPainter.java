@@ -98,7 +98,7 @@ public class WatermarkPainter {
 			// underlying lib
 			//
 			// /////////////////////////////////////////////////////////////////////
-			LOGGER.info("Loading logo...");
+			LOGGER.fine("Loading logo...");
 			final BufferedImage logo = ImageIO.read(globalWatermarkingURL);
 			final int logoWidth = logo.getWidth();
 			final int logoHeight = logo.getHeight();

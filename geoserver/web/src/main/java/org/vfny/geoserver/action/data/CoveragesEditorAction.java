@@ -273,6 +273,11 @@ public final class CoveragesEditorAction extends ConfigAction {
         config.setDescription(form.getDescription());
         config.setInterpolationMethods(interpolationMethods(form));
         config.setKeywords(keyWords(form));
+        
+        config.setAllowWatermarking(form.isAllowWatermarkingChecked());
+        config.setWatermarkingURL(form.getWatermarkingURL());
+        config.setWatermarkingPosition(form.getWatermarkingPosition());
+        
         config.setLabel(form.getLabel());
         config.setMetadataLink(metadataLink(form));
         config.setNativeFormat(form.getNativeFormat());

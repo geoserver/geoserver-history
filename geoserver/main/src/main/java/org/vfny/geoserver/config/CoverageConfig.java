@@ -206,6 +206,23 @@ public class CoverageConfig {
 	private Map temporalExtent;
 
 	/**
+	 * Watermarking options
+	 */
+    private boolean allowWatermarking;
+    private String watermarkingURL;
+    /*
+     * <pre>
+     * O -- O -- O      0 -- 1 -- 2
+     * |    |    |      |    |    |
+     * O -- O -- O  ==  3 -- 4 -- 5 
+     * |    |    |      |    |    |
+     * O -- O -- O      6 -- 7 -- 8
+     * </pre>
+     * 
+     */
+    private Integer watermarkingPosition;
+    
+	/**
 	 * Package visible constructor for test cases
 	 */
 	CoverageConfig() {
@@ -685,6 +702,9 @@ public class CoverageConfig {
 		description = dto.getDescription();
 		metadataLink = dto.getMetadataLink();
 		keywords = dto.getKeywords();
+		allowWatermarking = dto.isAllowWatermarking();
+		watermarkingURL = dto.getWatermarkingURL();
+		watermarkingPosition = dto.getWatermarkingPosition();
 		crs = dto.getCrs();
 		srsName = dto.getSrsName();
 		srsWKT = dto.getSrsWKT();
@@ -799,6 +819,9 @@ public class CoverageConfig {
 		c.setDescription(description);
 		c.setMetadataLink(metadataLink);
 		c.setKeywords(keywords);
+		c.setAllowWatermarking(allowWatermarking);
+		c.setWatermarkingURL(watermarkingURL);
+		c.setWatermarkingPosition(watermarkingPosition);
 		c.setCrs(crs);
 		c.setSrsName(srsName);
 		c.setSrsWKT(srsWKT);
@@ -1277,5 +1300,47 @@ public class CoverageConfig {
 
 	public void setVerticalExtent(Map verticatlExtent) {
 		this.verticalExtent = verticatlExtent;
+	}
+
+	/**
+	 * @return the allowWatermarking
+	 */
+	public boolean isAllowWatermarking() {
+		return allowWatermarking;
+	}
+
+	/**
+	 * @param allowWatermarking the allowWatermarking to set
+	 */
+	public void setAllowWatermarking(boolean allowWatermarking) {
+		this.allowWatermarking = allowWatermarking;
+	}
+
+	/**
+	 * @return the watermarkingPosition
+	 */
+	public Integer getWatermarkingPosition() {
+		return watermarkingPosition;
+	}
+
+	/**
+	 * @param watermarkingPosition the watermarkingPosition to set
+	 */
+	public void setWatermarkingPosition(Integer watermarkingPosition) {
+		this.watermarkingPosition = watermarkingPosition;
+	}
+
+	/**
+	 * @return the watermarkingURL
+	 */
+	public String getWatermarkingURL() {
+		return watermarkingURL;
+	}
+
+	/**
+	 * @param watermarkingURL the watermarkingURL to set
+	 */
+	public void setWatermarkingURL(String watermarkingURL) {
+		this.watermarkingURL = watermarkingURL;
 	}
 }
