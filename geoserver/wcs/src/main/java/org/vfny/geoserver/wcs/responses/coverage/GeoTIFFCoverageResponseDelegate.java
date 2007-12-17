@@ -97,7 +97,7 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
 
         writer.dispose();
 
-        this.sourceCoverage.dispose();
+        this.sourceCoverage.dispose(false);
         this.sourceCoverage = null;
     }
 }

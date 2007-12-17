@@ -106,7 +106,7 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 
         // freeing everything
         writer.dispose();
-        this.sourceCoverage.dispose();
+        this.sourceCoverage.dispose(false);
         this.sourceCoverage = null;
     }
 }

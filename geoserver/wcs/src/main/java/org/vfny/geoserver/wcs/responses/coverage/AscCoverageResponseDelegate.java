@@ -100,7 +100,7 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
 
             // freeing everything
             writer.dispose();
-            this.sourceCoverage.dispose();
+            this.sourceCoverage.dispose(false);
             this.sourceCoverage = null;
         } catch (Exception e) {
             throw new WcsException(new StringBuffer("Problems Rendering Image").append(
