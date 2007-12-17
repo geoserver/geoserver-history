@@ -195,7 +195,7 @@ public class WCSCapsTransformer extends TransformerBase {
             final String locationDef = WCS_URI + " "
                 + RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wcs
 						.getGeoServer().getProxyBaseUrl())
-                + "wcs/1.0.0/wcsCapabilities.xsd";
+                + "schemas/wcs/1.0.0/wcsCapabilities.xsd";
 
             attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
             start("WCS_Capabilities", attributes);
