@@ -106,7 +106,7 @@ public class GTopo30CoverageResponseDelegate implements CoverageResponseDelegate
 
         // freeing everything
         writer.dispose();
-        this.sourceCoverage.dispose();
+        this.sourceCoverage.dispose(false);
         this.sourceCoverage = null;
     }
 }
