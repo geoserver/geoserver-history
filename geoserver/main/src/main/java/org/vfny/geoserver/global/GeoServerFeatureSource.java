@@ -23,10 +23,14 @@ import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureType;
+import org.geotools.feature.SchemaException;
 import org.geotools.referencing.CRS;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.OperationNotFoundException;
+import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -64,7 +68,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      * that GeoServer requires attributes to be returned in?
      * </p>
      */
-    private FeatureType schema;
+    protected FeatureType schema;
 
     /** Used to constrain the Feature made available to GeoServer. */
     private Filter definitionQuery = Filter.INCLUDE;
@@ -299,6 +303,79 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @see org.geotools.data.FeatureSource#getFeatures(org.geotools.data.Query)
      */
     public FeatureCollection getFeatures(Query query) throws IOException {
+        Query newQuery = adaptQuery(query);
+        
+        CoordinateReferenceSystem targetCRS = query.getCoordinateSystemReproject();
+        try {
+            //this is the raw "unprojected" feature collection
+            FeatureCollection fc = source.getFeatures(newQuery);
+
+            return reprojectFeatureCollection(targetCRS, fc);
+        } catch (Exception e) {
+            throw new DataSourceException(e);
+        }
+    }
+
+    /**
+     * Wraps feature collection as needed in order to respect srs handling and reprojection
+     * @param targetCRS
+     * @param fc
+     * @return
+     * @throws IOException
+     * @throws SchemaException
+     * @throws TransformException
+     * @throws OperationNotFoundException
+     * @throws FactoryException
+     */
+    protected FeatureCollection reprojectFeatureCollection(
+            CoordinateReferenceSystem targetCRS, FeatureCollection fc)
+            throws IOException, SchemaException, TransformException,
+            OperationNotFoundException, FactoryException {
+        if ( fc.getSchema().getDefaultGeometry() == null ) {
+            // reprojection and crs forcing do not make sense, bail out
+            return fc;
+        } 
+        CoordinateReferenceSystem nativeCRS = fc.getSchema().getDefaultGeometry().getCoordinateSystem();
+        
+        if(nativeCRS == null) {
+            fc =  new ForceCoordinateSystemFeatureResults(fc, declaredCRS);
+            nativeCRS = declaredCRS;
+        } else if(srsHandling == FeatureTypeInfo.FORCE && !nativeCRS.equals(declaredCRS)) {
+            fc =  new ForceCoordinateSystemFeatureResults(fc, declaredCRS);
+            nativeCRS = declaredCRS;
+        } else if(srsHandling == FeatureTypeInfo.REPROJECT && targetCRS == null
+                && !nativeCRS.equals(declaredCRS)) {
+            fc = new ReprojectFeatureResults(fc,declaredCRS);
+        }
+
+        
+        //was reproject specified as part of the query?
+        if (targetCRS != null ) {
+            //reprojection is occuring
+            if ( nativeCRS == null ) {
+                //we do not know what the native crs which means we can 
+                // not be sure if we should reproject or not... so we go 
+                // ahead and reproject regardless
+                fc = new ReprojectFeatureResults(fc,targetCRS);
+            }
+            else {
+                //only reproject if native != target
+                if (!CRS.equalsIgnoreMetadata(nativeCRS, targetCRS)) {
+                    fc = new ReprojectFeatureResults(fc,targetCRS);                        
+                }
+            }
+        }
+        return fc;
+    }
+
+    /**
+     * Transforms the query applying the definition query in this layer, removes reprojection
+     * since data stores cannot be trusted
+     * @param query
+     * @return
+     * @throws IOException
+     */
+    protected Query adaptQuery(Query query) throws IOException {
         Query newQuery = makeDefinitionQuery(query);
 
         // see if the CRS got xfered over
@@ -319,62 +396,15 @@ public class GeoServerFeatureSource implements FeatureSource {
 
             ((DefaultQuery) newQuery).setCoordinateSystem(query.getCoordinateSystem());
         }
-
-        try {
-            //JD: this is a huge hack... but its the only way to ensure that we 
-            // we get what we ask for ... which is not reprojection, since 
-            // datastores are unreliable in this aspect we dont know if they will
-            // reproject or not.
-            CoordinateReferenceSystem targetCRS = newQuery.getCoordinateSystemReproject();
-            if ( targetCRS != null ) {
-                ((DefaultQuery)newQuery).setCoordinateSystemReproject(null);
-            }
-            
-            //this is the raw "unprojected" feature collection
-            FeatureCollection fc = source.getFeatures(newQuery);
-
-            if ( fc.getSchema().getDefaultGeometry() == null ) {
-                // reprojection and crs forcing do not make sense, bail out
-                return fc;
-            } 
-            CoordinateReferenceSystem nativeCRS = fc.getSchema().getDefaultGeometry().getCoordinateSystem();
-            
-            if (srsHandling == FeatureTypeInfo.LEAVE && nativeCRS != null) {
-                //do nothing
-            }
-            else if (srsHandling == FeatureTypeInfo.FORCE || nativeCRS == null) {
-                //force the declared crs
-                fc =  new ForceCoordinateSystemFeatureResults(fc, declaredCRS);
-                nativeCRS = declaredCRS;
-            }
-            else {
-                //reproject to declared crs only if no reprojection has been
-                // specified in the query
-                if ( targetCRS == null ) {
-                    fc = new ReprojectFeatureResults(fc,declaredCRS);
-                }
-            }
-            
-            //was reproject specified as part of the query?
-            if (targetCRS != null ) {
-                //reprojection is occuring
-                if ( nativeCRS == null ) {
-                    //we do not know what the native crs which means we can 
-                    // not be sure if we should reproject or not... so we go 
-                    // ahead and reproject regardless
-                    fc = new ReprojectFeatureResults(fc,targetCRS);
-                }
-                else {
-                    //only reproject if native != target
-                    if (!CRS.equalsIgnoreMetadata(nativeCRS, targetCRS)) {
-                        fc = new ReprojectFeatureResults(fc,targetCRS);                        
-                    }
-                }
-            }
-            return fc;
-        } catch (Exception e) {
-            throw new DataSourceException(e);
+        
+        //JD: this is a huge hack... but its the only way to ensure that we 
+        // we get what we ask for ... which is not reprojection, since 
+        // datastores are unreliable in this aspect we dont know if they will
+        // reproject or not.
+        if ( newQuery.getCoordinateSystemReproject() != null ) {
+            ((DefaultQuery)newQuery).setCoordinateSystemReproject(null);
         }
+        return newQuery;
     }
 
     public FeatureCollection getFeatures(Filter filter)

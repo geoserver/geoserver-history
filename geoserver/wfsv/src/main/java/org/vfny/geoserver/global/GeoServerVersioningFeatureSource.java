@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.global;
 
+import org.geotools.data.DataSourceException;
+import org.geotools.data.DefaultQuery;
 import org.geotools.data.Query;
 import org.geotools.data.VersioningFeatureLocking;
 import org.geotools.data.VersioningFeatureSource;
@@ -73,15 +75,28 @@ public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource
             declaredCRS, srsHandling);
     }
     
+    
+
+    public FeatureCollection getVersionedFeatures(Query query) throws IOException {
+        Query newQuery = adaptQuery(query);
+        
+        CoordinateReferenceSystem targetCRS = newQuery.getCoordinateSystemReproject();
+        try {
+            //this is the raw "unprojected" feature collection
+            FeatureCollection fc = ((VersioningFeatureSource) source).getVersionedFeatures(newQuery);
+
+            return reprojectFeatureCollection(targetCRS, fc);
+        } catch (Exception e) {
+            throw new DataSourceException(e);
+        }
+    }
+
+    public FeatureCollection getVersionedFeatures(Filter filter)
+            throws IOException {
+        return getFeatures(new DefaultQuery(schema.getTypeName(), filter));
+    }
+
     public FeatureCollection getVersionedFeatures() throws IOException {
-        return ((VersioningFeatureSource) source).getVersionedFeatures();
-    }
-
-    public FeatureCollection getVersionedFeatures(Query q) throws IOException {
-        return ((VersioningFeatureSource) source).getVersionedFeatures(q);
-    }
-
-    public FeatureCollection getVersionedFeatures(Filter f) throws IOException {
-        return ((VersioningFeatureSource) source).getVersionedFeatures(f);
+        return getFeatures(Query.ALL);
     }
 }
