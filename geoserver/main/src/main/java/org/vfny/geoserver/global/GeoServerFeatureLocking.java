@@ -155,7 +155,7 @@ public class GeoServerFeatureLocking extends GeoServerFeatureStore implements Fe
     }
 
     public void unLockFeatures(Query query) throws IOException {
-        query = makeDefinitionQuery(query);
+        query = makeDefinitionQuery(query, schema);
 
         locking().lockFeatures(query);
     }

@@ -134,6 +134,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      * configured for a feature type.
      *
      * @param query Query against this DataStore
+     * @param schema TODO
      *
      * @return Query restricted to the limits of definitionQuery
      *
@@ -141,13 +142,13 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @throws DataSourceException If query could not meet the restrictions of
      *         definitionQuery
      */
-    protected Query makeDefinitionQuery(Query query) throws IOException {
+    protected Query makeDefinitionQuery(Query query, FeatureType schema) throws IOException {
         if ((query == Query.ALL) || query.equals(Query.ALL)) {
             return query;
         }
 
         try {
-            String[] propNames = extractAllowedAttributes(query);
+            String[] propNames = extractAllowedAttributes(query, schema);
             Filter filter = query.getFilter();
             filter = makeDefinitionFilter(filter);
 
@@ -182,10 +183,11 @@ public class GeoServerFeatureSource implements FeatureSource {
      * </p>
      *
      * @param query User's origional query
+     * @param schema TODO
      *
      * @return List of allowed attribute types
      */
-    private String[] extractAllowedAttributes(Query query) {
+    private String[] extractAllowedAttributes(Query query, FeatureType schema) {
         String[] propNames = null;
 
         if (query.retrieveAllProperties()) {
@@ -303,7 +305,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @see org.geotools.data.FeatureSource#getFeatures(org.geotools.data.Query)
      */
     public FeatureCollection getFeatures(Query query) throws IOException {
-        Query newQuery = adaptQuery(query);
+        Query newQuery = adaptQuery(query, schema);
         
         CoordinateReferenceSystem targetCRS = query.getCoordinateSystemReproject();
         try {
@@ -372,11 +374,12 @@ public class GeoServerFeatureSource implements FeatureSource {
      * Transforms the query applying the definition query in this layer, removes reprojection
      * since data stores cannot be trusted
      * @param query
+     * @param schema TODO
      * @return
      * @throws IOException
      */
-    protected Query adaptQuery(Query query) throws IOException {
-        Query newQuery = makeDefinitionQuery(query);
+    protected Query adaptQuery(Query query, FeatureType schema) throws IOException {
+        Query newQuery = makeDefinitionQuery(query, schema);
 
         // see if the CRS got xfered over
         // a. old had a CRS, new doesnt
@@ -478,7 +481,7 @@ public class GeoServerFeatureSource implements FeatureSource {
     public Envelope getBounds(Query query) throws IOException {
         // since CRS is at most forced, we don't need to change this code
         try {
-            query = makeDefinitionQuery(query);
+            query = makeDefinitionQuery(query, schema);
         } catch (IOException ex) {
             return null;
         }
@@ -507,7 +510,7 @@ public class GeoServerFeatureSource implements FeatureSource {
      */
     public int getCount(Query query) {
         try {
-            query = makeDefinitionQuery(query);
+            query = makeDefinitionQuery(query, schema);
         } catch (IOException ex) {
             return -1;
         }
