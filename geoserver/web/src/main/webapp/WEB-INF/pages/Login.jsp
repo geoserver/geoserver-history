@@ -6,7 +6,9 @@
 	import="org.acegisecurity.ui.webapp.AuthenticationProcessingFilter"%>
 <%@ page import="org.acegisecurity.AuthenticationException"%>
 
+<p> <bean:message key="admin.login.wikilink"/> </p>
 <form action="<c:url value='/j_acegi_security_check'/>" method="POST">
+
 <table class="info">
 	<tbody>
 		<tr>
