@@ -353,10 +353,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                     || feature.getDefaultGeometry() instanceof MultiPolygon);
             
             //if line or polygon scale the label
-            if ( line ) {
-            	element( "scale", "0.7");
-            } else if ( poly ) {
-                element( "scale", "1.4" );
+            if ( line || poly) {
+            	element( "scale", "0.4");
             }
             //start Icon
             start("Icon");
