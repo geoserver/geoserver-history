@@ -78,12 +78,14 @@ public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource
     
 
     public FeatureCollection getVersionedFeatures(Query query) throws IOException {
-        Query newQuery = adaptQuery(query);
+        final VersioningFeatureSource versioningSource = ((VersioningFeatureSource) source);
+        Query newQuery = adaptQuery(query, versioningSource.getVersionedFeatures().getSchema());
         
         CoordinateReferenceSystem targetCRS = newQuery.getCoordinateSystemReproject();
         try {
             //this is the raw "unprojected" feature collection
-            FeatureCollection fc = ((VersioningFeatureSource) source).getVersionedFeatures(newQuery);
+            
+            FeatureCollection fc = versioningSource.getVersionedFeatures(newQuery);
 
             return reprojectFeatureCollection(targetCRS, fc);
         } catch (Exception e) {
