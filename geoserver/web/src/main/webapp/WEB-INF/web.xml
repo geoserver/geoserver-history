@@ -55,10 +55,12 @@
 	 -->
 	
 
+   <!--
 	  <context-param>
 		   <param-name>GEOSERVER_DATA_DIR</param-name>
-		    <param-value>/home/dwinslow/geoserver-configuration/release/</param-value>
+		    <param-value>C:\eclipse\workspace\geoserver_trunk\cite\confCiteWFSPostGIS</param-value>
 	  </context-param> 
+   -->
    
    <!-- logging initializer, should be first thing to execute -->
   <listener>
