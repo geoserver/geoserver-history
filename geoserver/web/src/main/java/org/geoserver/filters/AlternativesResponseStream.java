@@ -83,14 +83,26 @@ public class AlternativesResponseStream extends ServletOutputStream {
     }
 
     protected boolean isCompressible(String mimetype){
+        String stripped = stripParams(mimetype);
+        
         Iterator it = myCompressibleTypes.iterator();
 
         while (it.hasNext()){
             Pattern pat = (Pattern)it.next();
-            Matcher matcher = pat.matcher(mimetype);
+            Matcher matcher = pat.matcher(stripped);
             if (matcher.matches()) return true;
         }
 
         return false;
+    }
+
+    protected String stripParams(String mimetype){
+        int firstSemicolon = mimetype.indexOf(";");
+
+        if (firstSemicolon != -1){
+            return mimetype.substring(0, firstSemicolon);
+        }
+
+        return mimetype;
     }
 }
