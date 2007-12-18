@@ -4,12 +4,12 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import org.geotools.feature.FeatureType;
+import java.util.Map;
+
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.servlets.WMService;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -76,7 +76,7 @@ public class GetLegendGraphicRequest extends WMSRequest {
     public static final String DEFAULT_FORMAT = "image/png";
 
     /** The featuretype of the requested LAYER */
-    private FeatureType layer;
+    private MapLayerInfo layer;
 
     /**
      * The Style object for styling the legend graphic, or layer's default if
@@ -214,17 +214,17 @@ public class GetLegendGraphicRequest extends WMSRequest {
      *
      * @return DOCUMENT ME!
      */
-    public FeatureType getLayer() {
+    public MapLayerInfo getLayer() {
         return layer;
     }
 
     /**
      * DOCUMENT ME!
      *
-     * @param layer DOCUMENT ME!
+     * @param mli DOCUMENT ME!
      */
-    public void setLayer(FeatureType layer) {
-        this.layer = layer;
+    public void setLayer(MapLayerInfo mli) {
+        this.layer = mli;
     }
 
     /**

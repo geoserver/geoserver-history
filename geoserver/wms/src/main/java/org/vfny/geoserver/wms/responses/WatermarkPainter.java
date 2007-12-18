@@ -69,50 +69,52 @@ public class WatermarkPainter {
 		// Global Watermarking enabled?
 		// //
 		final boolean globalWaterMarkingEnabled = this.request.getWMS().isGlobalWatermarking();
-		URL globalWatermarkingURL = null;
-		try {
-			String globalWatermarkingURLString = this.request.getWMS().getGlobalWatermarkingURL();
-			
-			if (   globalWatermarkingURLString.toLowerCase().startsWith("http://") 
-				|| globalWatermarkingURLString.toLowerCase().startsWith("file:/")
-			)
-				globalWatermarkingURL = new URL(globalWatermarkingURLString);
-			else {
-				globalWatermarkingURL = new URL(this.request.getHttpServletRequest().getRequestURL() + "/" + globalWatermarkingURLString);
+		if (globalWaterMarkingEnabled) {
+			URL globalWatermarkingURL = null;
+			try {
+				String globalWatermarkingURLString = this.request.getWMS().getGlobalWatermarkingURL();
+				
+				if (   globalWatermarkingURLString.toLowerCase().startsWith("http://") 
+					|| globalWatermarkingURLString.toLowerCase().startsWith("file:/")
+				)
+					globalWatermarkingURL = new URL(globalWatermarkingURLString);
+				else {
+					globalWatermarkingURL = new URL(this.request.getHttpServletRequest().getRequestURL() + "/" + globalWatermarkingURLString);
+				}
+			} catch (MalformedURLException e) {
+				globalWatermarkingURL = null;
 			}
-		} catch (MalformedURLException e) {
-			globalWatermarkingURL = null;
-		}
-		
-		// //
-		// rendered Map Layers
-		// //
-		//final MapLayerInfo[] mapLayers = this.request.getLayers();
+			
+			// //
+			// rendered Map Layers
+			// //
+			//final MapLayerInfo[] mapLayers = this.request.getLayers();
 
-		if (globalWaterMarkingEnabled && globalWatermarkingURL!=null) {
-			// /////////////////////////////////////////////////////////////////////
-			//
-			// Getting logo.
-			//
-			// I prefere to watermrk myself rather than relying too much on the
-			// underlying lib
-			//
-			// /////////////////////////////////////////////////////////////////////
-			LOGGER.fine("Loading logo...");
-			final BufferedImage logo = ImageIO.read(globalWatermarkingURL);
-			final int logoWidth = logo.getWidth();
-			final int logoHeight = logo.getHeight();
-			final int marginX = 5;
-			final int marginY = 5;
+			if (globalWaterMarkingEnabled && globalWatermarkingURL!=null) {
+				// /////////////////////////////////////////////////////////////////////
+				//
+				// Getting logo.
+				//
+				// I prefere to watermrk myself rather than relying too much on the
+				// underlying lib
+				//
+				// /////////////////////////////////////////////////////////////////////
+				LOGGER.fine("Loading logo...");
+				final BufferedImage logo = ImageIO.read(globalWatermarkingURL);
+				final int logoWidth = logo.getWidth();
+				final int logoHeight = logo.getHeight();
+				final int marginX = 5;
+				final int marginY = 5;
 
-			// /////////////////////////////////////////////////////////////////////
-			//
-			// Watermark the files
-			//
-			// /////////////////////////////////////////////////////////////////////
-			g2D.drawRenderedImage(logo, AffineTransform
-					.getTranslateInstance(paintArea.getWidth() - logoWidth - marginX,
-							paintArea.getHeight() - logoHeight - marginY));
+				// /////////////////////////////////////////////////////////////////////
+				//
+				// Watermark the files
+				//
+				// /////////////////////////////////////////////////////////////////////
+				g2D.drawRenderedImage(logo, AffineTransform
+						.getTranslateInstance(paintArea.getWidth() - logoWidth - marginX,
+								paintArea.getHeight() - logoHeight - marginY));
+			}
 		}
 	}
 }
