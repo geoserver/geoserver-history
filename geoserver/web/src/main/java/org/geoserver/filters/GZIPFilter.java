@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.regex.Pattern;
 
 public class GZIPFilter implements Filter {
 
@@ -54,7 +55,7 @@ public class GZIPFilter implements Filter {
             // TODO: Are commas allowed in mimetypes?
             myCompressedTypes = new HashSet();
             for (int i = 0; i < typeNames.length; i++){
-                myCompressedTypes.add(typeNames[i]);
+                myCompressedTypes.add(Pattern.compile(typeNames[i]));
             }
         } catch (Exception e){
             System.out.println("Error while setting up GZIPFilter; " + e);

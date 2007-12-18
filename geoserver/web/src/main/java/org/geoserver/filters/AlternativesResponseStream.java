@@ -8,8 +8,11 @@ import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 
 import java.util.Set;
+import java.util.Iterator;
 import java.util.zip.GZIPOutputStream;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -64,7 +67,7 @@ public class AlternativesResponseStream extends ServletOutputStream {
             logger.warning("Mime type was not set before first write!");
         }
 
-        if (myCompressibleTypes.contains(type)){
+        if (isCompressible(type)){
             logger.info("Compressing output for mimetype: " + type);
             myStream = new GZIPResponseStream(myResponse);
         } else {
@@ -77,5 +80,17 @@ public class AlternativesResponseStream extends ServletOutputStream {
 
     protected boolean isDirty(){
         return myStream != null;
+    }
+
+    protected boolean isCompressible(String mimetype){
+        Iterator it = myCompressibleTypes.iterator();
+
+        while (it.hasNext()){
+            Pattern pat = (Pattern)it.next();
+            Matcher matcher = pat.matcher(mimetype);
+            if (matcher.matches()) return true;
+        }
+
+        return false;
     }
 }
