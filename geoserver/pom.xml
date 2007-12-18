@@ -6,7 +6,7 @@
  <groupId>org.geoserver</groupId>
  <artifactId>geoserver</artifactId>
  <packaging>pom</packaging>
- <version>1.6.0-RC1</version>
+ <version>1.6.0-RC2</version>
  <name>GeoServer 1.6.x</name>
 
  <scm>
@@ -780,7 +780,7 @@
       <descriptor>release/ext-arcsde.xml</descriptor>
       <descriptor>release/ext-pyramid.xml</descriptor>
      </descriptors>
-     <finalName>geoserver-1.6.0-RC1</finalName>
+     <finalName>geoserver-1.6.0-RC2</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
     </configuration>
    </plugin>
@@ -969,7 +969,7 @@
  </modules>
 
  <properties>
-  <gs.version>1.6.0-RC1</gs.version>
+  <gs.version>1.6.0-RC2</gs.version>
   <gt.version>2.4-SNAPSHOT</gt.version>
   <java.awt.headless>true</java.awt.headless>
   <jalopy.phase>disabled</jalopy.phase>

@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>geoserver</artifactId>
-    <version>1.6.0-RC1</version>
+    <version>1.6.0-RC2</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -34,42 +34,42 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>platform</artifactId>
-      <version>1.6.0-RC1</version>
+      <version>1.6.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.6.0-RC1</version>
+      <version>1.6.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.6.0-RC1</version>
+      <version>1.6.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wcs</artifactId>
-      <version>1.6.0-RC1</version>
+      <version>1.6.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wfs</artifactId>
-      <version>1.6.0-RC1</version>
+      <version>1.6.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wms</artifactId>
-      <version>1.6.0-RC1</version>
+      <version>1.6.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>validation</artifactId>
-      <version>1.6.0-RC1</version>
+      <version>1.6.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wfsv</artifactId>
-      <version>1.6.0-RC1</version>
+      <version>1.6.0-RC2</version>
     </dependency>
 
     <dependency>
@@ -173,14 +173,14 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.6.0-RC1</version>
+      <version>1.6.0-RC2</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.6.0-RC1</version>
+      <version>1.6.0-RC2</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
