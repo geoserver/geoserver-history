@@ -94,9 +94,11 @@
      <filter-name>GZIP Compression Filter</filter-name>
      <filter-class>org.geoserver.filters.GZIPFilter</filter-class>
      <init-param>
+         <!-- The compressed-types parameter is a comma-separated list of regular expressions.
+              If a mime type matches any of the regular expressions then it will be compressed.
+              -->
          <param-name>compressed-types</param-name>
-         <param-value>text/css,text/html,text/javascript,image/svg+xml</param-value>
-         <!-- TODO: Expand this list -->
+         <param-value>text/.*,.*xml.*</param-value>
      </init-param>
    </filter>
 
