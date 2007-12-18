@@ -45,7 +45,7 @@ public class GeoServerVersioningFeatureStore extends GeoServerFeatureStore
         final VersioningFeatureSource versioningSource = ((VersioningFeatureSource) source);
         Query newQuery = adaptQuery(query, versioningSource.getVersionedFeatures().getSchema());
         
-        CoordinateReferenceSystem targetCRS = newQuery.getCoordinateSystemReproject();
+        CoordinateReferenceSystem targetCRS = query.getCoordinateSystemReproject();
         try {
             //this is the raw "unprojected" feature collection
             
