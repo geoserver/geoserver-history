@@ -1,3 +1,26 @@
+GeoServer 1.6.0-RC2
+-------------------
+
+This release is the second release candidate for 1.6.0. It includes some key
+bug fixes since RC1. Notable fixes since RC1 include:
+
+* KML / SLD rule processing
+* better error reporting for invalid XML requests
+* request parameter to enable XML validation
+* datastore fixes including PostGIS reprojection and Oracle permissions
+* SVG rendering improvements
+
+Also in this release are some notable improvements to the experimental
+Versioning WFS support, which includes the addition of
+VersionedFeatureCollection.
+
+The entire changelog can be found here:
+
+http://jira.codehaus.org/secure/ReleaseNote.jspa?version=13874&styleName=Text&projectId=10311
+
+This release is based on Geotools 2.4-SNAPSHOT, tag = geoserver-1.6.0-rc2,
+revision = 28406
+
 GeoServer 1.6-rc1
 ---------------------
 
