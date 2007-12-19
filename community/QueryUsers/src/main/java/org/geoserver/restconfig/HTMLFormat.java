@@ -4,35 +4,33 @@
  */
 package org.geoserver.restconfig;
 
-import java.util.Map;
-import java.util.HashMap;
+import org.geoserver.restconfig.HTMLTemplate;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.jdom.xpath.XPath;
+import org.restlet.resource.Representation;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Iterator;
-import org.restlet.resource.Representation;
-import org.geoserver.restconfig.HTMLTemplate;
+import java.util.List;
+import java.util.Map;
 
-import org.jdom.input.SAXBuilder;
-import org.jdom.Document;
-import org.jdom.JDOMException;
-import org.jdom.xpath.XPath;
-import org.jdom.Element;
 
-public class HTMLFormat implements DataFormat{
-
+public class HTMLFormat implements DataFormat {
     private String myTemplateName;
 
-    public HTMLFormat(String templateName){
-	myTemplateName = templateName;
+    public HTMLFormat(String templateName) {
+        myTemplateName = templateName;
     }
 
-    public Representation makeRepresentation(Map map){
-	return HTMLTemplate.getHtmlRepresentation(myTemplateName, map); 
+    public Representation makeRepresentation(Map map) {
+        return HTMLTemplate.getHtmlRepresentation(myTemplateName, map);
     }
 
-    public Map readRepresentation(Representation rep){
-	return new HashMap();
+    public Map readRepresentation(Representation rep) {
+        return new HashMap();
     }
 }
-
