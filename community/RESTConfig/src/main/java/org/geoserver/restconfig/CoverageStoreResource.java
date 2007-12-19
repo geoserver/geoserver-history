@@ -1,10 +1,8 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.restconfig;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Iterator;
 
 import org.geotools.geometry.GeneralEnvelope;
 import org.restlet.data.Request;
@@ -12,80 +10,91 @@ import org.restlet.data.Response;
 import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.config.DataConfig;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 
 public class CoverageStoreResource extends MapResource {
+    private DataConfig myDataConfig;
 
-	private DataConfig myDataConfig;
+    public CoverageStoreResource(org.restlet.Context context, Request request, Response response,
+        DataConfig config) {
+        super(context, request, response);
+        myDataConfig = config;
+    }
 
-	public CoverageStoreResource(org.restlet.Context context, Request request,
-			Response response, DataConfig config) {
-		super(context, request, response);
-		myDataConfig = config;
-	}
+    @Override
+    public Map getMap() {
+        String storeName = (String) getRequest().getAttributes().get("coveragestore");
+        Map coverages = myDataConfig.getCoverages();
+        Map m = new HashMap();
+        List coverageNames = new ArrayList();
+        Iterator it = coverages.keySet().iterator();
 
-	@Override
-	public Map getMap() {
-	    String storeName = (String)getRequest().getAttributes().get("coveragestore");
-	    Map coverages = myDataConfig.getCoverages();
-	    Map m = new HashMap();
-	    List coverageNames = new ArrayList();
-	    Iterator it = coverages.keySet().iterator();
-	    while (it.hasNext()){
-		String s = (String)it.next();
-		if (s.startsWith(storeName)){
-		   coverageNames.add(s.substring(storeName.length() + 1)); // , coverages.get(s)); 
-		}
-	    }
+        while (it.hasNext()) {
+            String s = (String) it.next();
 
-	    m.put("coverages", coverageNames);
+            if (s.startsWith(storeName)) {
+                coverageNames.add(s.substring(storeName.length() + 1)); // , coverages.get(s)); 
+            }
+        }
 
-	    return m; // coverages;
-	}
+        m.put("coverages", coverageNames);
 
-	@Override
-	public Map getSupportedFormats() {
-		Map m = new HashMap();
+        return m; // coverages;
+    }
 
-		m.put("html", new HTMLFormat("HTMLTemplates/coveragestore.ftl"));
-		m.put("json", new JSONFormat());
-		m.put(null, m.get("html"));
+    @Override
+    public Map getSupportedFormats() {
+        Map m = new HashMap();
 
-		return m;
-	}
+        m.put("html", new HTMLFormat("HTMLTemplates/coveragestore.ftl"));
+        m.put("json", new JSONFormat());
+        m.put(null, m.get("html"));
 
-	private Map getCoverageConfigMap(CoverageConfig cc) {
-		Map m = new HashMap();
-		m.put("WMSPath", cc.getWmsPath());
-		m.put("CRS", cc.getCrs().getName());
-		GeneralEnvelope env = cc.getEnvelope();
-		List envPoints = new ArrayList();
-		envPoints.add(env.getLowerCorner().getOrdinate(0));
-		envPoints.add(env.getLowerCorner().getOrdinate(1));
-		envPoints.add(env.getUpperCorner().getOrdinate(0));
-		envPoints.add(env.getUpperCorner().getOrdinate(1));
-		m.put("Envelope", envPoints);
-		// m.put("CRSFull", cc.getCrs().toString());
-		m.put("DefaultStyle", cc.getDefaultStyle());
-		m.put("SupplementaryStyles", cc.getStyles());// TODO: does this
-														// return a list of
-														// strings or something
-														// else?
-		m.put("Label", cc.getLabel());
-		m.put("Description", cc.getDescription());
-		m.put("OnlineResource", cc.getMetadataLink().getAbout()); // TODO: get
-																	// the
-																	// actual
-																	// URL, this
-																	// may take
-																	// some
-																	// digging
-		m.put("Keywords", cc.getKeywords());
-		m.put("SupportedRequestCRSs", cc.getRequestCRSs());
-		m.put("SupportedResponseCRSs", cc.getResponseCRSs());
-		m.put("NativeFormat", cc.getNativeFormat());
-		m.put("SupportedFormats", cc.getSupportedFormats());
-		m.put("DefaultInterpolationMethod", cc.getDefaultInterpolationMethod());
-		m.put("InterpolationMethods", cc.getInterpolationMethods());
-		return m;
-	}
+        return m;
+    }
+
+    private Map getCoverageConfigMap(CoverageConfig cc) {
+        Map m = new HashMap();
+        m.put("WMSPath", cc.getWmsPath());
+        m.put("CRS", cc.getCrs().getName());
+
+        GeneralEnvelope env = cc.getEnvelope();
+        List envPoints = new ArrayList();
+        envPoints.add(env.getLowerCorner().getOrdinate(0));
+        envPoints.add(env.getLowerCorner().getOrdinate(1));
+        envPoints.add(env.getUpperCorner().getOrdinate(0));
+        envPoints.add(env.getUpperCorner().getOrdinate(1));
+        m.put("Envelope", envPoints);
+        // m.put("CRSFull", cc.getCrs().toString());
+        m.put("DefaultStyle", cc.getDefaultStyle());
+        m.put("SupplementaryStyles", cc.getStyles()); // TODO: does this
+                                                      // return a list of
+                                                      // strings or something
+                                                      // else?
+
+        m.put("Label", cc.getLabel());
+        m.put("Description", cc.getDescription());
+        m.put("OnlineResource", cc.getMetadataLink().getAbout()); // TODO: get
+                                                                  // the
+                                                                  // actual
+                                                                  // URL, this
+                                                                  // may take
+                                                                  // some
+                                                                  // digging
+
+        m.put("Keywords", cc.getKeywords());
+        m.put("SupportedRequestCRSs", cc.getRequestCRSs());
+        m.put("SupportedResponseCRSs", cc.getResponseCRSs());
+        m.put("NativeFormat", cc.getNativeFormat());
+        m.put("SupportedFormats", cc.getSupportedFormats());
+        m.put("DefaultInterpolationMethod", cc.getDefaultInterpolationMethod());
+        m.put("InterpolationMethods", cc.getInterpolationMethods());
+
+        return m;
+    }
 }

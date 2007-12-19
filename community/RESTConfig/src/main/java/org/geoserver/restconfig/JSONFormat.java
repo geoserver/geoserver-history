@@ -4,102 +4,112 @@
  */
 package org.geoserver.restconfig;
 
-import org.restlet.resource.Representation;
-import org.restlet.resource.OutputRepresentation;
-import org.restlet.data.MediaType;
-
-import net.sf.json.JSONObject;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONNull;
-
-import java.util.Map;
+import net.sf.json.JSONObject;
+import org.restlet.data.MediaType;
+import org.restlet.resource.OutputRepresentation;
+import org.restlet.resource.Representation;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.io.Writer;
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
-import java.io.OutputStream;
-import java.io.IOException;
-public class JSONFormat implements DataFormat{
+import java.util.Map;
 
-    public Representation makeRepresentation(final Map map){
-	return new OutputRepresentation(MediaType.APPLICATION_JSON){
-	    public void write(OutputStream os){
-		try{
-		    Iterator it = map.entrySet().iterator();
 
-		    Writer outWriter = new BufferedWriter(new OutputStreamWriter(os));
-		    map.remove("page");
+public class JSONFormat implements DataFormat {
+    public Representation makeRepresentation(final Map map) {
+        return new OutputRepresentation(MediaType.APPLICATION_JSON) {
+                public void write(OutputStream os) {
+                    try {
+                        Iterator it = map.entrySet().iterator();
 
-		    outWriter.flush();
-		    JSONObject json = new JSONObject();
-		    Object obj = toJSONObject(map);
-		    if (obj instanceof JSONObject){
-			json = (JSONObject)obj;
-		    } else {
-			json = new JSONObject();
-			json.put("context", obj);
-		    }
-		    json.write(outWriter);
-		    outWriter.flush();
-		} catch (Exception e){
-		    try{
-			// how to handle?
-			os.write(("Couldn't write json because of " + e.toString()).getBytes());
-			e.printStackTrace();
-		    } catch (IOException ioe){}
-		}
-	    }
+                        Writer outWriter = new BufferedWriter(new OutputStreamWriter(os));
+                        map.remove("page");
 
-	    public Object toJSONObject(Object obj){
-		if (obj instanceof Map){
-		    Map m = (Map) obj;
-		    JSONObject json = new JSONObject();
-		    Iterator it = m.entrySet().iterator();
-		    while (it.hasNext()){
-			Map.Entry entry = (Map.Entry)it.next();
-			json.put((String)entry.getKey(), toJSONObject(entry.getValue()));
-		    }
-		    return json;
-		} else if (obj instanceof Collection){
-		    Collection col = (Collection)obj;
-		    JSONArray json = new JSONArray();
-		    Iterator it = col.iterator();
-		    while (it.hasNext()){
-			json.add(toJSONObject(it.next()));
-		    }
-		    return json;
-		} else if (obj instanceof Number) {
-		    return obj;
-		} else {
-		    return obj.toString();
-		}
-	    } 
-	};
+                        outWriter.flush();
+
+                        JSONObject json = new JSONObject();
+                        Object obj = toJSONObject(map);
+
+                        if (obj instanceof JSONObject) {
+                            json = (JSONObject) obj;
+                        } else {
+                            json = new JSONObject();
+                            json.put("context", obj);
+                        }
+
+                        json.write(outWriter);
+                        outWriter.flush();
+                    } catch (Exception e) {
+                        try {
+                            // how to handle?
+                            os.write(("Couldn't write json because of " + e.toString()).getBytes());
+                            e.printStackTrace();
+                        } catch (IOException ioe) {
+                        }
+                    }
+                }
+
+                public Object toJSONObject(Object obj) {
+                    if (obj instanceof Map) {
+                        Map m = (Map) obj;
+                        JSONObject json = new JSONObject();
+                        Iterator it = m.entrySet().iterator();
+
+                        while (it.hasNext()) {
+                            Map.Entry entry = (Map.Entry) it.next();
+                            json.put((String) entry.getKey(), toJSONObject(entry.getValue()));
+                        }
+
+                        return json;
+                    } else if (obj instanceof Collection) {
+                        Collection col = (Collection) obj;
+                        JSONArray json = new JSONArray();
+                        Iterator it = col.iterator();
+
+                        while (it.hasNext()) {
+                            json.add(toJSONObject(it.next()));
+                        }
+
+                        return json;
+                    } else if (obj instanceof Number) {
+                        return obj;
+                    } else {
+                        return obj.toString();
+                    }
+                }
+            };
     }
 
-    public Map readRepresentation(Representation rep){
-	try{
-	    JSONObject obj = JSONObject.fromObject(rep.getText()); 
-	    return obj;
-	    /*
-	       Object maybeMap = toMap(obj);
-	       if (maybeMap instanceof Map){
-	       return (Map) maybeMap;
-	       }
+    public Map readRepresentation(Representation rep) {
+        try {
+            JSONObject obj = JSONObject.fromObject(rep.getText());
 
-	    // TODO: figure out what to do rather than this kind of arbitrary thing
-	    Map map = new HashMap();
-	    map.put("context", maybeMap); 
+            return obj;
 
-	    return map; */
-	} catch (IOException ioe){
-	    return new HashMap();
-	}
+            /*
+               Object maybeMap = toMap(obj);
+               if (maybeMap instanceof Map){
+               return (Map) maybeMap;
+               }
+
+            // TODO: figure out what to do rather than this kind of arbitrary thing
+            Map map = new HashMap();
+            map.put("context", maybeMap);
+
+            return map; */
+        } catch (IOException ioe) {
+            return new HashMap();
+        }
     }
+
     /*
        protected Object toMap(Object json){
        if (json instanceof JSONObject){
