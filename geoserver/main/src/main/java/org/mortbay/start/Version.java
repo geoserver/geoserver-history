@@ -38,8 +38,7 @@ public class Version {
             int startpos = 0;
             int endpos = version_string.length();
 
-            while ((pos < endpos)
-                    && Character.isDigit(version_string.charAt(pos))) {
+            while ((pos < endpos) && Character.isDigit(version_string.charAt(pos))) {
                 pos++;
             }
 
@@ -48,25 +47,21 @@ public class Version {
             if ((pos < endpos) && (version_string.charAt(pos) == '.')) {
                 startpos = ++pos;
 
-                while ((pos < endpos)
-                        && Character.isDigit(version_string.charAt(pos))) {
+                while ((pos < endpos) && Character.isDigit(version_string.charAt(pos))) {
                     pos++;
                 }
 
-                _revision = Integer.parseInt(version_string.substring(
-                            startpos, pos));
+                _revision = Integer.parseInt(version_string.substring(startpos, pos));
             }
 
             if ((pos < endpos) && (version_string.charAt(pos) == '.')) {
                 startpos = ++pos;
 
-                while ((pos < endpos)
-                        && Character.isDigit(version_string.charAt(pos))) {
+                while ((pos < endpos) && Character.isDigit(version_string.charAt(pos))) {
                     pos++;
                 }
 
-                _subrevision = Integer.parseInt(version_string.substring(
-                            startpos, pos));
+                _subrevision = Integer.parseInt(version_string.substring(startpos, pos));
             }
 
             if (pos < endpos) {

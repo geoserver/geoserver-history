@@ -288,8 +288,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             Iterator i = tmp.iterator();
 
             while (i.hasNext())
-                schema.add(new AttributeTypeInfo(
-                        (AttributeTypeInfoDTO) i.next()));
+                schema.add(new AttributeTypeInfo((AttributeTypeInfoDTO) i.next()));
         }
 
         schemaBase = dto.getSchemaBase();
@@ -455,8 +454,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     public NameSpaceInfo getNameSpace() {
         if (!isEnabled()) {
-            throw new IllegalStateException("This featureType is not "
-                + "enabled");
+            throw new IllegalStateException("This featureType is not " + "enabled");
         }
 
         return getDataStoreInfo().getNameSpace();
@@ -526,27 +524,23 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                             "org.vfny.geoserver.global.GeoServerVersioningFeatureSource");
                     Method m = clazz.getMethod("create",
                             new Class[] {
-                                Class.forName(
-                                    "org.geotools.data.VersioningFeatureSource"),
-                                FeatureType.class, Filter.class,
-                                CoordinateReferenceSystem.class, int.class
+                                Class.forName("org.geotools.data.VersioningFeatureSource"),
+                                FeatureType.class, Filter.class, CoordinateReferenceSystem.class,
+                                int.class
                             });
 
                     return (FeatureSource) m.invoke(null,
                         new Object[] {
-                            realSource, getFeatureType(realSource),
-                            getDefinitionQuery(), getSRS(SRS),
-                            new Integer(localSrsHandling)
+                            realSource, getFeatureType(realSource), getDefinitionQuery(),
+                            getSRS(SRS), new Integer(localSrsHandling)
                         });
                 }
             } catch (Exception e) {
-                throw new DataSourceException("Creation of a versioning wrapper failed",
-                    e);
+                throw new DataSourceException("Creation of a versioning wrapper failed", e);
             }
 
-            return GeoServerFeatureLocking.create(realSource,
-                getFeatureType(realSource), getDefinitionQuery(), getSRS(SRS),
-                localSrsHandling);
+            return GeoServerFeatureLocking.create(realSource, getFeatureType(realSource),
+                getDefinitionQuery(), getSRS(SRS), localSrsHandling);
         }
     }
 
@@ -620,14 +614,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         CoordinateReferenceSystem nativeCRS = getNativeCRS();
 
         if ((nativeBBox == null) || nativeBBox.isNull()) {
-            CoordinateReferenceSystem crs = (srsHandling == LEAVE) ? nativeCRS
-                                                                   : declaredCRS;
+            CoordinateReferenceSystem crs = (srsHandling == LEAVE) ? nativeCRS : declaredCRS;
             nativeBBox = getBoundingBox(crs);
         }
 
         if (!(nativeBBox instanceof ReferencedEnvelope)) {
-            CoordinateReferenceSystem crs = (srsHandling == LEAVE) ? nativeCRS
-                                                                   : declaredCRS;
+            CoordinateReferenceSystem crs = (srsHandling == LEAVE) ? nativeCRS : declaredCRS;
             nativeBBox = new ReferencedEnvelope(nativeBBox, crs);
         }
 
@@ -651,24 +643,18 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         Envelope bbox = FeatureSourceUtils.getBoundingBoxEnvelope(realSource);
 
         // check if the original CRS is not the declared one
-        GeometryAttributeType defaultGeometry = realSource.getSchema()
-                                                          .getDefaultGeometry();
-        CoordinateReferenceSystem originalCRS = defaultGeometry
-            .getCoordinateSystem();
+        GeometryAttributeType defaultGeometry = realSource.getSchema().getDefaultGeometry();
+        CoordinateReferenceSystem originalCRS = defaultGeometry.getCoordinateSystem();
 
         try {
-            if ((targetCrs != null)
-                    && !CRS.equalsIgnoreMetadata(originalCRS, targetCrs)) {
-                MathTransform xform = CRS.findMathTransform(originalCRS,
-                        targetCrs, true);
+            if ((targetCrs != null) && !CRS.equalsIgnoreMetadata(originalCRS, targetCrs)) {
+                MathTransform xform = CRS.findMathTransform(originalCRS, targetCrs, true);
 
                 // bbox = JTS.transform(bbox, null, xform, 10);
                 if (bbox instanceof ReferencedEnvelope) {
-                    bbox = ((ReferencedEnvelope) bbox).transform(targetCrs,
-                            true, 10);
+                    bbox = ((ReferencedEnvelope) bbox).transform(targetCrs, true, 10);
                 } else {
-                    bbox = new ReferencedEnvelope(JTS.transform(bbox, null,
-                                xform, 10), targetCrs);
+                    bbox = new ReferencedEnvelope(JTS.transform(bbox, null, xform, 10), targetCrs);
                 }
             }
         } catch (Exception e) {
@@ -847,8 +833,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      *
      * @throws ConfigurationException thrown when an error occurs.
      */
-    protected String getAttribute(Element elem, String attName,
-        boolean mandatory) throws ConfigurationException {
+    protected String getAttribute(Element elem, String attName, boolean mandatory)
+        throws ConfigurationException {
         Attr att = elem.getAttributeNode(attName);
 
         String value = null;
@@ -859,12 +845,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
         if (mandatory) {
             if (att == null) {
-                throw new ConfigurationException("element "
-                    + elem.getNodeName()
+                throw new ConfigurationException("element " + elem.getNodeName()
                     + " does not contains an attribute named " + attName);
             } else if ("".equals(value)) {
-                throw new ConfigurationException("attribute " + attName
-                    + "in element " + elem.getNodeName() + " is empty");
+                throw new ConfigurationException("attribute " + attName + "in element "
+                    + elem.getNodeName() + " is empty");
             }
         }
 
@@ -1082,10 +1067,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
             URI namespace = ft.getNamespace(); //DJB:: change to #getNamespace() due to API change
 
-            String[] baseNames = DataTransferObjectFactory
-                .getRequiredBaseAttributes(schemaBase);
-            AttributeType[] attributes = new AttributeType[schema.size()
-                + baseNames.length];
+            String[] baseNames = DataTransferObjectFactory.getRequiredBaseAttributes(schemaBase);
+            AttributeType[] attributes = new AttributeType[schema.size() + baseNames.length];
 
             if (attributes.length > 0) {
                 int errors = 0;
@@ -1101,8 +1084,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
                 if (errors != 0) {
                     //resize array;
-                    AttributeType[] tmp = new AttributeType[attributes.length
-                        - errors];
+                    AttributeType[] tmp = new AttributeType[attributes.length - errors];
                     count = count - errors;
 
                     for (int i = 0; i < count; i++) {
@@ -1119,19 +1101,15 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
                     // force the user specified CRS if the data has no CRS, or reproject it 
                     // if necessary
-                    if (Geometry.class.isAssignableFrom(
-                                attributes[count].getType())) {
+                    if (Geometry.class.isAssignableFrom(attributes[count].getType())) {
                         GeometricAttributeType old = (GeometricAttributeType) attributes[count];
 
                         try {
                             if (old.getCoordinateSystem() == null) {
-                                attributes[count] = new GeometricAttributeType(old,
-                                        getSRS(SRS));
+                                attributes[count] = new GeometricAttributeType(old, getSRS(SRS));
                                 srsHandling = FORCE;
-                            } else if ((srsHandling == REPROJECT)
-                                    || (srsHandling == FORCE)) {
-                                attributes[count] = new GeometricAttributeType(old,
-                                        getSRS(SRS));
+                            } else if ((srsHandling == REPROJECT) || (srsHandling == FORCE)) {
+                                attributes[count] = new GeometricAttributeType(old, getSRS(SRS));
                             }
                         } catch (Exception e) {
                             e.printStackTrace(); //DJB: this is okay to ignore since (a) it should never happen (b) we'll use the default one (crs=null)
@@ -1140,16 +1118,15 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
                     if (attributes[count] == null) {
                         throw new IOException("the FeatureType " + getName()
-                            + " does not contains the configured attribute "
-                            + attName + ". Check your schema configuration");
+                            + " does not contains the configured attribute " + attName
+                            + ". Check your schema configuration");
                     }
 
                     count++;
                 }
 
                 try {
-                    ft = FeatureTypeFactory.newFeatureType(attributes,
-                            typeName, namespace);
+                    ft = FeatureTypeFactory.newFeatureType(attributes, typeName, namespace);
                 } catch (SchemaException ex) {
                 } catch (FactoryConfigurationError ex) {
                 }
@@ -1243,8 +1220,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      *
      * @see org.geotools.data.FeatureTypeMetaData#AttributeTypeMetaData(java.lang.String)
      */
-    public synchronized AttributeTypeInfo AttributeTypeMetaData(
-        String attributeName) {
+    public synchronized AttributeTypeInfo AttributeTypeMetaData(String attributeName) {
         AttributeTypeInfo info = null;
 
         if (schema != null) {
@@ -1253,8 +1229,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 info = new AttributeTypeInfo(dto);
             }
 
-            DataStore dataStore = data.getDataStoreInfo(dataStoreId)
-                                      .getDataStore();
+            DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
 
             try {
                 FeatureType ftype = dataStore.getSchema(typeName);
@@ -1263,13 +1238,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             }
         } else {
             // will need to generate from Schema
-            DataStore dataStore = data.getDataStoreInfo(dataStoreId)
-                                      .getDataStore();
+            DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
 
             try {
                 FeatureType ftype = dataStore.getSchema(typeName);
-                info = new AttributeTypeInfo(ftype.getAttributeType(
-                            attributeName));
+                info = new AttributeTypeInfo(ftype.getAttributeType(attributeName));
             } catch (IOException e) {
             }
         }
@@ -1354,8 +1327,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * @return
      */
     private CoordinateReferenceSystem getSRS(int epsg) {
-        CoordinateReferenceSystem result = (CoordinateReferenceSystem) SRSLookup
-            .get(new Integer(epsg));
+        CoordinateReferenceSystem result = (CoordinateReferenceSystem) SRSLookup.get(new Integer(
+                    epsg));
 
         if (result == null) {
             //make and add to hash

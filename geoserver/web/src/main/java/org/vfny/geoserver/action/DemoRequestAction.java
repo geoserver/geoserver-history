@@ -86,8 +86,7 @@ public class DemoRequestAction extends GeoServerAction {
 
         StringBuffer buf = new StringBuffer();
 
-        for (String line = reader.readLine(); line != null;
-                line = reader.readLine()) {
+        for (String line = reader.readLine(); line != null; line = reader.readLine()) {
             buf.append(line);
             buf.append("\n");
         }

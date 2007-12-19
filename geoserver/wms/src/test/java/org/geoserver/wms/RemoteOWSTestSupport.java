@@ -33,8 +33,7 @@ public class RemoteOWSTestSupport {
             try {
                 WFSDataStoreFactory factory = new WFSDataStoreFactory();
                 Map params = new HashMap(factory.getImplementationHints());
-                URL url = new URL(WFS_SERVER_URL
-                        + "service=WFS&request=GetCapabilities");
+                URL url = new URL(WFS_SERVER_URL + "service=WFS&request=GetCapabilities");
                 params.put(WFSDataStoreFactory.URL.key, url);
                 params.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.TRUE);
 

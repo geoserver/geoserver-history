@@ -262,10 +262,8 @@ public class WMSContentForm extends ActionForm {
         if (envelope.getCoordinateReferenceSystem().getName().toString()
                         .equalsIgnoreCase("EPSG:WGS 84")) {
             return "EPSG:4326";
-        } else if (envelope.getCoordinateReferenceSystem().getIdentifiers()
-                               .toArray().length > 0) {
-            return envelope.getCoordinateReferenceSystem().getIdentifiers()
-                           .toArray()[0].toString();
+        } else if (envelope.getCoordinateReferenceSystem().getIdentifiers().toArray().length > 0) {
+            return envelope.getCoordinateReferenceSystem().getIdentifiers().toArray()[0].toString();
         } else {
             return "EPSG:4326";
         }
@@ -333,10 +331,8 @@ public class WMSContentForm extends ActionForm {
 
             while (it.hasNext()) {
                 baseMapTitle = (String) it.next();
-                baseMapLayerValues = (String) config.getBaseMapLayers()
-                                                    .get(baseMapTitle);
-                baseMapStyleValues = (String) config.getBaseMapStyles()
-                                                    .get(baseMapTitle);
+                baseMapLayerValues = (String) config.getBaseMapLayers().get(baseMapTitle);
+                baseMapStyleValues = (String) config.getBaseMapStyles().get(baseMapTitle);
                 baseMapEnvelopeValues = (GeneralEnvelope) config.getBaseMapEnvelopes()
                                                                 .get(baseMapTitle);
 
@@ -353,14 +349,12 @@ public class WMSContentForm extends ActionForm {
         }
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         if ((targetCRS == null) && (envIndex >= 0)) {
             errors.add("onlineResource",
-                new ActionError("error.wms.onlineResource.required",
-                    onlineResource));
+                new ActionError("error.wms.onlineResource.required", onlineResource));
         } else if (envIndex >= 0) {
             GeneralEnvelope envelope = getBaseMapEnvelope(envIndex);
 
@@ -370,8 +364,7 @@ public class WMSContentForm extends ActionForm {
 
             //GeneralEnvelope newEnvelope = new GeneralEnvelope(minCP, maxCP);
             //newEnvelope.setCoordinateReferenceSystem(sourceCRS);
-            envelope.setEnvelope(new GeneralEnvelope(
-                    (double[]) minCPs.get(new Integer(envIndex)),
+            envelope.setEnvelope(new GeneralEnvelope((double[]) minCPs.get(new Integer(envIndex)),
                     (double[]) maxCPs.get(new Integer(envIndex))));
             envelope.setCoordinateReferenceSystem(targetCRS);
             setBaseMapEnvelope(envIndex, envelope);
@@ -379,8 +372,7 @@ public class WMSContentForm extends ActionForm {
 
         if ((onlineResource == null) || "".equals(onlineResource)) {
             errors.add("onlineResource",
-                new ActionError("error.wms.onlineResource.required",
-                    onlineResource));
+                new ActionError("error.wms.onlineResource.required", onlineResource));
         } else {
             try {
                 URL url = new URL(onlineResource);

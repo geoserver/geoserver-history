@@ -127,10 +127,8 @@ public class GetDiff {
                                 // case of multiple geometries being returned
                                 if (name.evaluate(featureType) == null) {
                                     // we want to throw wfs exception, but cant
-                                    throw new WFSException(
-                                        "Illegal property name: "
-                                        + name.getPropertyName(),
-                                        "InvalidParameterValue");
+                                    throw new WFSException("Illegal property name: "
+                                        + name.getPropertyName(), "InvalidParameterValue");
                                 }
 
                                 return name;
@@ -143,24 +141,20 @@ public class GetDiff {
 
                 // extract collection
                 VersioningFeatureSource store = (VersioningFeatureSource) source;
-                FeatureDiffReader differences = store.getDifferences(query
-                        .getFromFeatureVersion(), query.getToFeatureVersion(),
-                        filter, null);
+                FeatureDiffReader differences = store.getDifferences(query.getFromFeatureVersion(),
+                        query.getToFeatureVersion(), filter, null);
 
                 // TODO: handle logs reprojection in another CRS
                 result.add(differences);
             }
         } catch (IOException e) {
-            throw new WFSException("Error occurred getting features", e,
-                request.getHandle());
+            throw new WFSException("Error occurred getting features", e, request.getHandle());
         }
 
-        return (FeatureDiffReader[]) result.toArray(new FeatureDiffReader[result
-            .size()]);
+        return (FeatureDiffReader[]) result.toArray(new FeatureDiffReader[result.size()]);
     }
 
-    FeatureTypeInfo featureTypeInfo(QName name)
-        throws WFSException, IOException {
+    FeatureTypeInfo featureTypeInfo(QName name) throws WFSException, IOException {
         FeatureTypeInfo meta = catalog.getFeatureTypeInfo(name.getLocalPart(),
                 name.getNamespaceURI());
 

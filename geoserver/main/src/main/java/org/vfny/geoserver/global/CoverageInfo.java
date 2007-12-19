@@ -86,20 +86,21 @@ public final class CoverageInfo extends GlobalLayerSupertype {
      */
     private List keywords;
 
-	/**
-	 * Watermarking options
-	 */
+    /**
+     * Watermarking options
+     */
     private boolean allowWatermarking;
     private String watermarkingURL;
+
     /**
      * <pre>
      * O -- O -- O      0 -- 1 -- 2
      * |    |    |      |    |    |
-     * O -- O -- O  ==  3 -- 4 -- 5 
+     * O -- O -- O  ==  3 -- 4 -- 5
      * |    |    |      |    |    |
      * O -- O -- O      6 -- 7 -- 8
      * </pre>
-     * 
+     *
      */
     private Integer watermarkingPosition;
 
@@ -505,8 +506,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
     public GeneralEnvelope getWGS84LonLatEnvelope() {
         if (this.lonLatWGS84Envelope == null) {
             try {
-                this.lonLatWGS84Envelope = CoverageStoreUtils
-                    .getWGS84LonLatEnvelope(this.envelope);
+                this.lonLatWGS84Envelope = CoverageStoreUtils.getWGS84LonLatEnvelope(this.envelope);
             } catch (IndexOutOfBoundsException e) {
                 return null;
             } catch (FactoryException e) {
@@ -568,14 +568,12 @@ public final class CoverageInfo extends GlobalLayerSupertype {
             // coverage we ask intersect it otherwise it is pointless to load it
             // since its reader might return null;
             // /////////////////////////////////////////////////////////
-            final CoordinateReferenceSystem sourceCRS = envelope
-                .getCoordinateReferenceSystem();
+            final CoordinateReferenceSystem sourceCRS = envelope.getCoordinateReferenceSystem();
             final CoordinateReferenceSystem destCRS = crs;
 
             if (!CRSUtilities.equalsIgnoreMetadata(sourceCRS, destCRS)) {
                 // get a math transform
-                final MathTransform transform = CoverageUtils.getMathTransform(sourceCRS,
-                        destCRS);
+                final MathTransform transform = CoverageUtils.getMathTransform(sourceCRS, destCRS);
 
                 // transform the envelope
                 if (!transform.isIdentity()) {
@@ -609,12 +607,10 @@ public final class CoverageInfo extends GlobalLayerSupertype {
             //
             // /////////////////////////////////////////////////////////
             gc = reader.read(CoverageUtils.getParameters(
-                        getReader().getFormat().getReadParameters(),
-                        getParameters()));
+                        getReader().getFormat().getReadParameters(), getParameters()));
 
             if ((gc == null) || !(gc instanceof GridCoverage2D)) {
-                throw new IOException(
-                    "The requested coverage could not be found.");
+                throw new IOException("The requested coverage could not be found.");
             }
         } catch (InvalidParameterValueException e) {
             LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
@@ -657,24 +653,24 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         return verticalExtent;
     }
 
-	/**
-	 * @return the allowWatermarking
-	 */
-	public boolean isAllowWatermarking() {
-		return allowWatermarking;
-	}
+    /**
+     * @return the allowWatermarking
+     */
+    public boolean isAllowWatermarking() {
+        return allowWatermarking;
+    }
 
-	/**
-	 * @return the watermarkingPosition
-	 */
-	public Integer getWatermarkingPosition() {
-		return watermarkingPosition;
-	}
+    /**
+     * @return the watermarkingPosition
+     */
+    public Integer getWatermarkingPosition() {
+        return watermarkingPosition;
+    }
 
-	/**
-	 * @return the watermarkingURL
-	 */
-	public String getWatermarkingURL() {
-		return watermarkingURL;
-	}
+    /**
+     * @return the watermarkingURL
+     */
+    public String getWatermarkingURL() {
+        return watermarkingURL;
+    }
 }

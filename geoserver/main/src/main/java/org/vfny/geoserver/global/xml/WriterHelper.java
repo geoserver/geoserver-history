@@ -27,8 +27,7 @@ import java.util.logging.Logger;
  */
 public class WriterHelper {
     /** Used internally to create log information to detect errors. */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.global");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 
     /** The output writer. */
     protected Writer writer;
@@ -130,8 +129,7 @@ public class WriterHelper {
             String s = (String) i.next();
 
             if (attributes.get(s) != null) {
-                sb.append(s + " = " + "\""
-                    + escape((attributes.get(s)).toString()) + "\" ");
+                sb.append(s + " = " + "\"" + escape((attributes.get(s)).toString()) + "\" ");
             }
         }
 
@@ -199,8 +197,7 @@ public class WriterHelper {
             String s = (String) i.next();
 
             if (attributes.get(s) != null) {
-                sb.append(s + " = " + "\""
-                    + escape((attributes.get(s)).toString()) + "\" ");
+                sb.append(s + " = " + "\"" + escape((attributes.get(s)).toString()) + "\" ");
             }
         }
 
@@ -221,8 +218,7 @@ public class WriterHelper {
      *
      * @throws ConfigurationException When an IO exception occurs.
      */
-    public void textTag(String tagName, String data)
-        throws ConfigurationException {
+    public void textTag(String tagName, String data) throws ConfigurationException {
         textTag(tagName, Collections.EMPTY_MAP, data);
     }
 
@@ -251,13 +247,11 @@ public class WriterHelper {
             String s = (String) i.next();
 
             if (attributes.get(s) != null) {
-                sb.append(s + " = " + "\""
-                    + escape((attributes.get(s)).toString()) + "\" ");
+                sb.append(s + " = " + "\"" + escape((attributes.get(s)).toString()) + "\" ");
             }
         }
 
-        sb.append(">" + escape(((data != null) ? data : "")) + "</" + tagName
-            + ">");
+        sb.append(">" + escape(((data != null) ? data : "")) + "</" + tagName + ">");
         writeln(sb.toString());
     }
 

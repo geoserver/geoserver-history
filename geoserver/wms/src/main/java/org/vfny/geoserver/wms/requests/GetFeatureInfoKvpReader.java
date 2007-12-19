@@ -11,7 +11,6 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.servlets.WMService;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -131,34 +130,39 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
      */
     private FeatureTypeInfo[] parseLayers(WMS wms) throws WmsException {
         List layers = readFlat(getValue("QUERY_LAYERS"), INNER_DELIMETER);
-        
+
         // expand base layers, if there is any
-        if(wms.getBaseMapLayers() != null) {
+        if (wms.getBaseMapLayers() != null) {
             for (int i = 0; i < layers.size(); i++) {
                 String layerGroup = (String) wms.getBaseMapLayers().get(layers.get(i));
-                if(layerGroup != null) {
+
+                if (layerGroup != null) {
                     List layerGroupExpanded = readFlat(layerGroup, INNER_DELIMETER);
                     layers.remove(i);
                     layers.addAll(i, layerGroupExpanded);
                 }
             }
         }
-        
+
         // remove coverage layers, we cannot query them
         Data catalog = request.getWMS().getData();
+
         for (Iterator it = layers.iterator(); it.hasNext();) {
             String layerName = (String) it.next();
-            if(catalog.getLayerType(layerName) != Data.TYPE_VECTOR)
+
+            if (catalog.getLayerType(layerName) != Data.TYPE_VECTOR) {
                 it.remove();
+            }
         }
-        
-        
+
         int layerCount = layers.size();
+
         if (layerCount == 0) {
-            throw new WmsException("No QUERY_LAYERS has been requested, or no queriable layer in the request anyways", getClass().getName());
+            throw new WmsException("No QUERY_LAYERS has been requested, or no queriable layer in the request anyways",
+                getClass().getName());
         }
+
         FeatureTypeInfo[] featureTypes = new FeatureTypeInfo[layerCount];
-        
 
         String layerName = null;
         FeatureTypeInfo ftype = null;

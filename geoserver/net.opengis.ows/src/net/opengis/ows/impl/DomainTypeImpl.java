@@ -124,8 +124,8 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
         value = newValue;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.DOMAIN_TYPE__VALUE, oldValue, value));
+            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.DOMAIN_TYPE__VALUE,
+                    oldValue, value));
         }
     }
 
@@ -162,8 +162,8 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
         name = newName;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.DOMAIN_TYPE__NAME, oldName, name));
+            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.DOMAIN_TYPE__NAME,
+                    oldName, name));
         }
     }
 
@@ -172,8 +172,8 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case OwsPackage.DOMAIN_TYPE__METADATA:
             return ((InternalEList) getMetadata()).basicRemove(otherEnd, msgs);
@@ -263,15 +263,13 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
     public boolean eIsSet(int featureID) {
         switch (featureID) {
         case OwsPackage.DOMAIN_TYPE__VALUE:
-            return (VALUE_EDEFAULT == null) ? (value != null)
-                                            : (!VALUE_EDEFAULT.equals(value));
+            return (VALUE_EDEFAULT == null) ? (value != null) : (!VALUE_EDEFAULT.equals(value));
 
         case OwsPackage.DOMAIN_TYPE__METADATA:
             return (metadata != null) && !metadata.isEmpty();
 
         case OwsPackage.DOMAIN_TYPE__NAME:
-            return (NAME_EDEFAULT == null) ? (name != null)
-                                           : (!NAME_EDEFAULT.equals(name));
+            return (NAME_EDEFAULT == null) ? (name != null) : (!NAME_EDEFAULT.equals(name));
         }
 
         return super.eIsSet(featureID);

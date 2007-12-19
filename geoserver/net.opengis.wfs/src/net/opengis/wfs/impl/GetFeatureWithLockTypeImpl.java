@@ -27,8 +27,7 @@ import java.math.BigInteger;
  *
  * @generated
  */
-public class GetFeatureWithLockTypeImpl extends GetFeatureTypeImpl
-    implements GetFeatureWithLockType {
+public class GetFeatureWithLockTypeImpl extends GetFeatureTypeImpl implements GetFeatureWithLockType {
     /**
      * The default value of the '{@link #getExpiry() <em>Expiry</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -99,8 +98,7 @@ public class GetFeatureWithLockTypeImpl extends GetFeatureTypeImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.GET_FEATURE_WITH_LOCK_TYPE__EXPIRY, oldExpiry,
-                    expiry, !oldExpiryESet));
+                    WfsPackage.GET_FEATURE_WITH_LOCK_TYPE__EXPIRY, oldExpiry, expiry, !oldExpiryESet));
         }
     }
 
@@ -117,8 +115,8 @@ public class GetFeatureWithLockTypeImpl extends GetFeatureTypeImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.UNSET,
-                    WfsPackage.GET_FEATURE_WITH_LOCK_TYPE__EXPIRY, oldExpiry,
-                    EXPIRY_EDEFAULT, oldExpiryESet));
+                    WfsPackage.GET_FEATURE_WITH_LOCK_TYPE__EXPIRY, oldExpiry, EXPIRY_EDEFAULT,
+                    oldExpiryESet));
         }
     }
 

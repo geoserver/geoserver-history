@@ -52,8 +52,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
     public void testReadMandatory() throws Exception {
         HashMap raw = new HashMap();
         raw.put("layers",
-            MockData.BASIC_POLYGONS.getPrefix() + ":"
-            + MockData.BASIC_POLYGONS.getLocalPart());
+            MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
         raw.put("styles", MockData.BASIC_POLYGONS.getLocalPart());
         raw.put("format", "image/jpeg");
         raw.put("srs", "epsg:3003");
@@ -119,10 +118,8 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
     public void testDefaultStyle() throws Exception {
         HashMap raw = new HashMap();
         raw.put("layers",
-            MockData.BASIC_POLYGONS.getPrefix() + ":"
-            + MockData.BASIC_POLYGONS.getLocalPart() + ","
-            + MockData.BUILDINGS.getPrefix() + ":"
-            + MockData.BUILDINGS.getLocalPart());
+            MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart()
+            + "," + MockData.BUILDINGS.getPrefix() + ":" + MockData.BUILDINGS.getLocalPart());
         raw.put("styles", ",");
         raw.put("format", "image/jpeg");
         raw.put("srs", "epsg:3003");
@@ -161,8 +158,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         assertNotNull(request.getCQLFilter());
         assertEquals(1, request.getCQLFilter().size());
 
-        PropertyIsEqualTo filter = (PropertyIsEqualTo) request.getCQLFilter()
-                                                              .get(0);
+        PropertyIsEqualTo filter = (PropertyIsEqualTo) request.getCQLFilter().get(0);
     }
 
     public void testFeatureId() throws Exception {
@@ -181,12 +177,10 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
     public void testSldNoDefault() throws Exception {
         // no style name, no default, we should fall back on the server default
         HashMap kvp = new HashMap();
-        URL url = GetMapKvpRequestReader.class.getResource(
-                "BasicPolygonsLibraryNoDefault.sld");
+        URL url = GetMapKvpRequestReader.class.getResource("BasicPolygonsLibraryNoDefault.sld");
         kvp.put("sld", url.toString());
         kvp.put("layers",
-            MockData.BASIC_POLYGONS.getPrefix() + ":"
-            + MockData.BASIC_POLYGONS.getLocalPart());
+            MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
         request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
@@ -202,12 +196,10 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
     public void testSldDefault() throws Exception {
         // no style name, but the sld has a default for that layer
         HashMap kvp = new HashMap();
-        URL url = GetMapKvpRequestReader.class.getResource(
-                "BasicPolygonsLibraryDefault.sld");
+        URL url = GetMapKvpRequestReader.class.getResource("BasicPolygonsLibraryDefault.sld");
         kvp.put("sld", url.toString());
         kvp.put("layers",
-            MockData.BASIC_POLYGONS.getPrefix() + ":"
-            + MockData.BASIC_POLYGONS.getLocalPart());
+            MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
         request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
@@ -223,12 +215,10 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
     public void testSldNamed() throws Exception {
         // style name matching one in the sld
         HashMap kvp = new HashMap();
-        URL url = GetMapKvpRequestReader.class.getResource(
-                "BasicPolygonsLibraryNoDefault.sld");
+        URL url = GetMapKvpRequestReader.class.getResource("BasicPolygonsLibraryNoDefault.sld");
         kvp.put("sld", url.toString());
         kvp.put("layers",
-            MockData.BASIC_POLYGONS.getPrefix() + ":"
-            + MockData.BASIC_POLYGONS.getLocalPart());
+            MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
         kvp.put("styles", "TheLibraryModeStyle");
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
@@ -245,20 +235,17 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
     public void testSldFailLookup() throws Exception {
         // nothing matches the required style name
         HashMap kvp = new HashMap();
-        URL url = GetMapKvpRequestReader.class.getResource(
-                "BasicPolygonsLibraryNoDefault.sld");
+        URL url = GetMapKvpRequestReader.class.getResource("BasicPolygonsLibraryNoDefault.sld");
         kvp.put("sld", url.toString());
         kvp.put("layers",
-            MockData.BASIC_POLYGONS.getPrefix() + ":"
-            + MockData.BASIC_POLYGONS.getLocalPart());
+            MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
         kvp.put("styles", "ThisStyleDoesNotExists");
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
 
         try {
             request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
-            fail(
-                "The style looked up, 'ThisStyleDoesNotExists', should not have been found");
+            fail("The style looked up, 'ThisStyleDoesNotExists', should not have been found");
         } catch (WmsException e) {
             System.out.println(e);
         }
@@ -299,11 +286,9 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         assertEquals(new URL("http://sigma.openplans.org:8080/geoserver/wfs?"),
             request.getRemoteOwsURL());
         assertEquals(1, request.getLayers().length);
-        assertEquals(MapLayerInfo.TYPE_REMOTE_VECTOR,
-            request.getLayers()[0].getType());
+        assertEquals(MapLayerInfo.TYPE_REMOTE_VECTOR, request.getLayers()[0].getType());
         assertEquals("topp:states",
-            request.getLayers()[0].getRemoteFeatureSource().getSchema()
-                                  .getTypeName());
+            request.getLayers()[0].getRemoteFeatureSource().getSchema().getTypeName());
     }
 
     public void testRemoteWFSNoStyle() throws Exception {
@@ -325,8 +310,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
 
         try {
             request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
-            fail(
-                "This should have thrown an exception because of the missing style");
+            fail("This should have thrown an exception because of the missing style");
         } catch (WmsException e) {
             assertEquals("NoDefaultStyle", e.getCode());
         }
@@ -345,15 +329,13 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         raw.put("height", "300");
         raw.put("width", "300");
         raw.put("remote_ows_type", "WFS");
-        raw.put("remote_ows_url",
-            "http://phantom.openplans.org:8080/crapserver/wfs?");
+        raw.put("remote_ows_url", "http://phantom.openplans.org:8080/crapserver/wfs?");
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
 
         try {
             request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
-            fail(
-                "This should have thrown an exception because of the non existent layer");
+            fail("This should have thrown an exception because of the non existent layer");
         } catch (WmsException e) {
             e.printStackTrace();
             assertEquals("RemoteOWSFailure", e.getCode());

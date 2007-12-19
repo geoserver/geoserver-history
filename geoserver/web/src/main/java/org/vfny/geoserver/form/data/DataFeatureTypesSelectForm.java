@@ -32,8 +32,7 @@ public class DataFeatureTypesSelectForm extends ActionForm {
         selectedFeatureTypeName = "";
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         return errors;

@@ -157,8 +157,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetDifferenceQuery(
-        DifferenceQueryType newDifferenceQuery, NotificationChain msgs) {
+    public NotificationChain basicSetDifferenceQuery(DifferenceQueryType newDifferenceQuery,
+        NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsvPackage.Literals.DOCUMENT_ROOT__DIFFERENCE_QUERY,
             newDifferenceQuery, msgs);
     }
@@ -179,9 +179,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public GetDiffType getGetDiff() {
-        return (GetDiffType) getMixed()
-                                 .get(WfsvPackage.Literals.DOCUMENT_ROOT__GET_DIFF,
-            true);
+        return (GetDiffType) getMixed().get(WfsvPackage.Literals.DOCUMENT_ROOT__GET_DIFF, true);
     }
 
     /**
@@ -189,8 +187,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetGetDiff(GetDiffType newGetDiff,
-        NotificationChain msgs) {
+    public NotificationChain basicSetGetDiff(GetDiffType newGetDiff, NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsvPackage.Literals.DOCUMENT_ROOT__GET_DIFF,
             newGetDiff, msgs);
     }
@@ -211,9 +208,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public GetLogType getGetLog() {
-        return (GetLogType) getMixed()
-                                .get(WfsvPackage.Literals.DOCUMENT_ROOT__GET_LOG,
-            true);
+        return (GetLogType) getMixed().get(WfsvPackage.Literals.DOCUMENT_ROOT__GET_LOG, true);
     }
 
     /**
@@ -221,8 +216,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetGetLog(GetLogType newGetLog,
-        NotificationChain msgs) {
+    public NotificationChain basicSetGetLog(GetLogType newGetLog, NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsvPackage.Literals.DOCUMENT_ROOT__GET_LOG,
             newGetLog, msgs);
     }
@@ -243,9 +237,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public RollbackType getRollback() {
-        return (RollbackType) getMixed()
-                                  .get(WfsvPackage.Literals.DOCUMENT_ROOT__ROLLBACK,
-            true);
+        return (RollbackType) getMixed().get(WfsvPackage.Literals.DOCUMENT_ROOT__ROLLBACK, true);
     }
 
     /**
@@ -253,8 +245,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetRollback(RollbackType newRollback,
-        NotificationChain msgs) {
+    public NotificationChain basicSetRollback(RollbackType newRollback, NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsvPackage.Literals.DOCUMENT_ROOT__ROLLBACK,
             newRollback, msgs);
     }
@@ -296,8 +287,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setVersionedDelete(
-        VersionedDeleteElementType newVersionedDelete) {
+    public void setVersionedDelete(VersionedDeleteElementType newVersionedDelete) {
         ((FeatureMap.Internal) getMixed()).set(WfsvPackage.Literals.DOCUMENT_ROOT__VERSIONED_DELETE,
             newVersionedDelete);
     }
@@ -329,8 +319,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setVersionedUpdate(
-        VersionedUpdateElementType newVersionedUpdate) {
+    public void setVersionedUpdate(VersionedUpdateElementType newVersionedUpdate) {
         ((FeatureMap.Internal) getMixed()).set(WfsvPackage.Literals.DOCUMENT_ROOT__VERSIONED_UPDATE,
             newVersionedUpdate);
     }
@@ -340,19 +329,17 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case WfsvPackage.DOCUMENT_ROOT__MIXED:
             return ((InternalEList) getMixed()).basicRemove(otherEnd, msgs);
 
         case WfsvPackage.DOCUMENT_ROOT__XMLNS_PREFIX_MAP:
-            return ((InternalEList) getXMLNSPrefixMap()).basicRemove(otherEnd,
-                msgs);
+            return ((InternalEList) getXMLNSPrefixMap()).basicRemove(otherEnd, msgs);
 
         case WfsvPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
-            return ((InternalEList) getXSISchemaLocation()).basicRemove(otherEnd,
-                msgs);
+            return ((InternalEList) getXSISchemaLocation()).basicRemove(otherEnd, msgs);
 
         case WfsvPackage.DOCUMENT_ROOT__DIFFERENCE_QUERY:
             return basicSetDifferenceQuery(null, msgs);

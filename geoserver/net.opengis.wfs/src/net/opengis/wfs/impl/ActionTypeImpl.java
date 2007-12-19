@@ -127,8 +127,8 @@ public class ActionTypeImpl extends EObjectImpl implements ActionType {
         message = newMessage;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.ACTION_TYPE__MESSAGE, oldMessage, message));
+            eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.ACTION_TYPE__MESSAGE,
+                    oldMessage, message));
         }
     }
 
@@ -151,8 +151,8 @@ public class ActionTypeImpl extends EObjectImpl implements ActionType {
         code = newCode;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.ACTION_TYPE__CODE, oldCode, code));
+            eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.ACTION_TYPE__CODE,
+                    oldCode, code));
         }
     }
 
@@ -175,8 +175,8 @@ public class ActionTypeImpl extends EObjectImpl implements ActionType {
         locator = newLocator;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.ACTION_TYPE__LOCATOR, oldLocator, locator));
+            eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.ACTION_TYPE__LOCATOR,
+                    oldLocator, locator));
         }
     }
 
@@ -260,16 +260,13 @@ public class ActionTypeImpl extends EObjectImpl implements ActionType {
     public boolean eIsSet(int featureID) {
         switch (featureID) {
         case WfsPackage.ACTION_TYPE__MESSAGE:
-            return (MESSAGE_EDEFAULT == null) ? (message != null)
-                                              : (!MESSAGE_EDEFAULT.equals(message));
+            return (MESSAGE_EDEFAULT == null) ? (message != null) : (!MESSAGE_EDEFAULT.equals(message));
 
         case WfsPackage.ACTION_TYPE__CODE:
-            return (CODE_EDEFAULT == null) ? (code != null)
-                                           : (!CODE_EDEFAULT.equals(code));
+            return (CODE_EDEFAULT == null) ? (code != null) : (!CODE_EDEFAULT.equals(code));
 
         case WfsPackage.ACTION_TYPE__LOCATOR:
-            return (LOCATOR_EDEFAULT == null) ? (locator != null)
-                                              : (!LOCATOR_EDEFAULT.equals(locator));
+            return (LOCATOR_EDEFAULT == null) ? (locator != null) : (!LOCATOR_EDEFAULT.equals(locator));
         }
 
         return super.eIsSet(featureID);

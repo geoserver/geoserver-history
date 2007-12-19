@@ -18,10 +18,9 @@ public class WFSVSchemaLocationResolver extends WFSSchemaLocationResolver {
      *
      *        @generated modifiable
      */
-    public String resolveSchemaLocation(XSDSchema xsdSchema,
-        String namespaceURI, String schemaLocationURI) {
-        String location = super.resolveSchemaLocation(xsdSchema, namespaceURI,
-                schemaLocationURI);
+    public String resolveSchemaLocation(XSDSchema xsdSchema, String namespaceURI,
+        String schemaLocationURI) {
+        String location = super.resolveSchemaLocation(xsdSchema, namespaceURI, schemaLocationURI);
 
         if (location != null) {
             return location;
@@ -32,8 +31,7 @@ public class WFSVSchemaLocationResolver extends WFSSchemaLocationResolver {
         }
 
         //if no namespace given, assume default for the current schema
-        if (((namespaceURI == null) || "".equals(namespaceURI))
-                && (xsdSchema != null)) {
+        if (((namespaceURI == null) || "".equals(namespaceURI)) && (xsdSchema != null)) {
             namespaceURI = xsdSchema.getTargetNamespace();
         }
 

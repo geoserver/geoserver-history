@@ -35,9 +35,8 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Id$
  */
 public class ValidationTestSelectAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping,
-        ActionForm incomingForm, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
+    public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,
+        UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws ServletException {
         ValidationTestSelectForm form = (ValidationTestSelectForm) incomingForm;
 
@@ -50,16 +49,13 @@ public class ValidationTestSelectAction extends ConfigAction {
         String delete = messages.getMessage(locale, "label.delete");
 
         ServletContext context = this.getServlet().getServletContext();
-        ValidationConfig validationConfig = (ValidationConfig) context
-            .getAttribute(ValidationConfig.CONFIG_KEY);
+        ValidationConfig validationConfig = (ValidationConfig) context.getAttribute(ValidationConfig.CONFIG_KEY);
         TestSuiteConfig suiteConfig = (TestSuiteConfig) request.getSession()
                                                                .getAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY);
 
         if (edit.equals(buttonAction)) {
-            TestConfig testConfig = (TestConfig) suiteConfig.getTests()
-                                                            .get(selectedTest);
-            request.getSession()
-                   .setAttribute(TestConfig.CURRENTLY_SELECTED_KEY, testConfig);
+            TestConfig testConfig = (TestConfig) suiteConfig.getTests().get(selectedTest);
+            request.getSession().setAttribute(TestConfig.CURRENTLY_SELECTED_KEY, testConfig);
 
             return mapping.findForward("validationTestEditor");
         } else if (delete.equals(buttonAction)) {
@@ -68,8 +64,7 @@ public class ValidationTestSelectAction extends ConfigAction {
             suiteConfig.setTests(tests);
             getApplicationState().notifyConfigChanged();
 
-            request.getSession()
-                   .removeAttribute(TestConfig.CURRENTLY_SELECTED_KEY);
+            request.getSession().removeAttribute(TestConfig.CURRENTLY_SELECTED_KEY);
 
             return mapping.findForward("validationTest");
         }

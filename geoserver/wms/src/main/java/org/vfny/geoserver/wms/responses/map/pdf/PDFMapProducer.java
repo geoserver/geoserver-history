@@ -39,8 +39,7 @@ import java.util.logging.Logger;
  * @author Simone Giannecchini - GeoSolutions
  * @version $Id$
  */
-class PDFMapProducer extends AbstractRasterMapProducer
-    implements RasterMapProducer {
+class PDFMapProducer extends AbstractRasterMapProducer implements RasterMapProducer {
     /** A logger for this class. */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses.wms.map.pdf");
@@ -88,8 +87,7 @@ class PDFMapProducer extends AbstractRasterMapProducer
      */
     public String getContentType() throws java.lang.IllegalStateException {
         if (this.format == null) {
-            throw new IllegalStateException(
-                "the output map format was not yet specified");
+            throw new IllegalStateException("the output map format was not yet specified");
         }
 
         return this.format;
@@ -129,8 +127,7 @@ class PDFMapProducer extends AbstractRasterMapProducer
             // step 1: creation of a document-object
             // width of document-object is width*72 inches
             // height of document-object is height*72 inches
-            com.lowagie.text.Rectangle pageSize = new com.lowagie.text.Rectangle(width,
-                    height);
+            com.lowagie.text.Rectangle pageSize = new com.lowagie.text.Rectangle(width, height);
 
             Document document = new Document(pageSize);
             document.setMargins(0, 0, 0, 0);
@@ -167,8 +164,7 @@ class PDFMapProducer extends AbstractRasterMapProducer
                 graphic.setComposite(AlphaComposite.getInstance(type));
 
                 Color c = new Color(mapContext.getBgColor().getRed(),
-                        mapContext.getBgColor().getGreen(),
-                        mapContext.getBgColor().getBlue(), 0);
+                        mapContext.getBgColor().getGreen(), mapContext.getBgColor().getBlue(), 0);
                 graphic.setBackground(mapContext.getBgColor());
                 graphic.setColor(c);
                 graphic.fillRect(0, 0, width, height);
@@ -190,13 +186,11 @@ class PDFMapProducer extends AbstractRasterMapProducer
             // if we set it to true then it does it all twice...
             Map rendererParams = new HashMap();
             rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
-            rendererParams.put("renderingBuffer",
-                new Integer(mapContext.getBuffer()));
+            rendererParams.put("renderingBuffer", new Integer(mapContext.getBuffer()));
             renderer.setRendererHints(rendererParams);
 
             Envelope dataArea = mapContext.getAreaOfInterest();
-            AffineTransform at = RendererUtilities.worldToScreenTransform(dataArea,
-                    paintArea);
+            AffineTransform at = RendererUtilities.worldToScreenTransform(dataArea, paintArea);
 
             if (this.abortRequested) {
                 graphic.dispose();
@@ -220,8 +214,7 @@ class PDFMapProducer extends AbstractRasterMapProducer
         } catch (Throwable t) {
             LOGGER.warning("UNCAUGHT exception: " + t.getMessage());
 
-            WmsException wmse = new WmsException("UNCAUGHT exception: "
-                    + t.getMessage());
+            WmsException wmse = new WmsException("UNCAUGHT exception: " + t.getMessage());
             wmse.setStackTrace(t.getStackTrace());
             throw wmse;
         }
@@ -230,8 +223,8 @@ class PDFMapProducer extends AbstractRasterMapProducer
     public String getContentDisposition() {
         if (this.mapContext.getLayer(0) != null) {
             try {
-                String title = this.mapContext.getLayer(0).getFeatureSource()
-                                              .getSchema().getTypeName();
+                String title = this.mapContext.getLayer(0).getFeatureSource().getSchema()
+                                              .getTypeName();
 
                 if ((title != null) && !title.equals("")) {
                     return "attachment; filename=" + title + ".pdf";
@@ -243,8 +236,8 @@ class PDFMapProducer extends AbstractRasterMapProducer
         return "attachment; filename=geoserver.pdf";
     }
 
-    public void formatImageOutputStream(RenderedImage image,
-        OutputStream outStream) throws WmsException, IOException {
+    public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
+        throws WmsException, IOException {
         // do nothing
     }
 }

@@ -29,8 +29,8 @@ public class PropertyNameTypeBinding extends OGCPropertyNameTypeBinding {
     /** parser namespace mappings */
     NamespaceSupport namespaceSupport;
 
-    public PropertyNameTypeBinding(FilterFactory filterFactory,
-        NamespaceSupport namespaceSupport, Data catalog) {
+    public PropertyNameTypeBinding(FilterFactory filterFactory, NamespaceSupport namespaceSupport,
+        Data catalog) {
         super(filterFactory);
         this.namespaceSupport = namespaceSupport;
         this.catalog = catalog;
@@ -38,8 +38,7 @@ public class PropertyNameTypeBinding extends OGCPropertyNameTypeBinding {
 
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        PropertyName propertyName = (PropertyName) super.parse(instance, node,
-                value);
+        PropertyName propertyName = (PropertyName) super.parse(instance, node, value);
 
         //JD: temporary hack, this should be carried out at evaluation time
         String name = propertyName.getPropertyName();
@@ -52,8 +51,7 @@ public class PropertyNameTypeBinding extends OGCPropertyNameTypeBinding {
             //only accept if its an application schema namespace, or gml
             if (!GML.NAMESPACE.equals(namespaceURI)
                     && (catalog.getNameSpaceFromURI(namespaceURI) == null)) {
-                throw new WFSException("Illegal attribute namespace: "
-                    + namespaceURI);
+                throw new WFSException("Illegal attribute namespace: " + namespaceURI);
             }
         }
 

@@ -87,9 +87,7 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
     private final static String AA_NONE = "NONE";
     private final static String AA_TEXT = "TEXT";
     private final static String AA_FULL = "FULL";
-    private final static List AA_SETTINGS = Arrays.asList(new String[] {
-                AA_NONE, AA_TEXT, AA_FULL
-            });
+    private final static List AA_SETTINGS = Arrays.asList(new String[] { AA_NONE, AA_TEXT, AA_FULL });
 
     /**
      * The lookup table used for data type transformation (it's really the identity one)
@@ -97,15 +95,14 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
     private static LookupTableJAI IDENTITY_TABLE = new LookupTableJAI(getTable());
 
     /** A logger for this class. */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses.wms.map");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
 
     /** Which format to encode the image in if one is not supplied */
     private static final String DEFAULT_MAP_FORMAT = "image/png";
 
     /** WMS Service configuration * */
     private WMS wms;
-    
+
     /** The Watermark Painter instance **/
     private WatermarkPainter wmPainter;
 
@@ -178,10 +175,8 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
         final int height = mapContext.getMapHeight();
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine(new StringBuffer("setting up ").append(width).append("x")
-                                                       .append(height)
-                                                       .append(" image")
-                                                       .toString());
+            LOGGER.fine(new StringBuffer("setting up ").append(width).append("x").append(height)
+                                                       .append(" image").toString());
         }
 
         // extra antialias setting
@@ -199,8 +194,9 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
         if ((paletteInverter != null) && AA_NONE.equals(antialias)) {
             palette = paletteInverter.getIcm();
         } else if (AA_NONE.equals(antialias)) {
-            PaletteExtractor pe = new PaletteExtractor(mapContext.isTransparent()
-                    ? null : mapContext.getBgColor());
+            PaletteExtractor pe = new PaletteExtractor(mapContext.isTransparent() ? null
+                                                                                  : mapContext
+                    .getBgColor());
             MapLayer[] layers = mapContext.getLayers();
 
             for (int i = 0; i < layers.length; i++) {
@@ -221,8 +217,7 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
         // generates striped images in that case (see GEOS-
         boolean useAlpha = mapContext.isTransparent()
             || MetatileMapProducer.isRequestTiled(request, this);
-        final RenderedImage preparedImage = prepareImage(width, height,
-                palette, useAlpha);
+        final RenderedImage preparedImage = prepareImage(width, height, palette, useAlpha);
         final Graphics2D graphic;
 
         if (preparedImage instanceof BufferedImage) {
@@ -238,8 +233,7 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
         final Map hintsMap = new HashMap();
 
         // fill the background with no antialiasing
-        hintsMap.put(RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_OFF);
+        hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         graphic.setRenderingHints(hintsMap);
 
         if (!mapContext.isTransparent()) {
@@ -254,8 +248,7 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
             graphic.setComposite(AlphaComposite.getInstance(type));
 
             Color c = new Color(mapContext.getBgColor().getRed(),
-                    mapContext.getBgColor().getGreen(),
-                    mapContext.getBgColor().getBlue(), 0);
+                    mapContext.getBgColor().getGreen(), mapContext.getBgColor().getBlue(), 0);
             graphic.setBackground(mapContext.getBgColor());
             graphic.setColor(c);
             graphic.fillRect(0, 0, width, height);
@@ -265,18 +258,15 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
 
         // set up the antialias hints
         if (AA_NONE.equals(antialias)) {
-            hintsMap.put(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_OFF);
+            hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 
             if (preparedImage.getColorModel() instanceof IndexColorModel) {
                 // otherwise we end up with dithered colors where the match is
                 // not 100%
-                hintsMap.put(RenderingHints.KEY_DITHERING,
-                    RenderingHints.VALUE_DITHER_DISABLE);
+                hintsMap.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
             }
         } else if (AA_TEXT.equals(antialias)) {
-            hintsMap.put(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_OFF);
+            hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
             hintsMap.put(RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         } else {
@@ -285,25 +275,20 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
                     + "', valid values are " + AA_SETTINGS);
             }
 
-            hintsMap.put(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
+            hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         }
 
         // turn off/on interpolation rendering hint
-        if ((wms != null)
-                && WMSConfig.INT_NEAREST.equals(wms.getAllowInterpolation())) {
+        if ((wms != null) && WMSConfig.INT_NEAREST.equals(wms.getAllowInterpolation())) {
             hintsMap.put(JAI.KEY_INTERPOLATION, NN_INTERPOLATION);
-        } else if ((wms != null)
-                && WMSConfig.INT_BIlINEAR.equals(wms.getAllowInterpolation())) {
+        } else if ((wms != null) && WMSConfig.INT_BIlINEAR.equals(wms.getAllowInterpolation())) {
             hintsMap.put(JAI.KEY_INTERPOLATION, BIL_INTERPOLATION);
-        } else if ((wms != null)
-                && WMSConfig.INT_BICUBIC.equals(wms.getAllowInterpolation())) {
+        } else if ((wms != null) && WMSConfig.INT_BICUBIC.equals(wms.getAllowInterpolation())) {
             hintsMap.put(JAI.KEY_INTERPOLATION, BIC_INTERPOLATION);
         }
 
         // line look better with this hint, they are less blurred
-        hintsMap.put(RenderingHints.KEY_STROKE_CONTROL,
-            RenderingHints.VALUE_STROKE_NORMALIZE);
+        hintsMap.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
 
         // make sure the hints are set before we start rendering the map
         graphic.setRenderingHints(hintsMap);
@@ -317,8 +302,7 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
         // setup the renderer hints
         Map rendererParams = new HashMap();
         rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
-        rendererParams.put("renderingBuffer",
-            new Integer(mapContext.getBuffer()));
+        rendererParams.put("renderingBuffer", new Integer(mapContext.getBuffer()));
         rendererParams.put("maxFiltersToSendToDatastore", new Integer(20));
         rendererParams.put(ShapefileRenderer.SCALE_COMPUTATION_METHOD_KEY,
             ShapefileRenderer.SCALE_OGC);
@@ -343,21 +327,25 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
         // finally render the image
         final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
         renderer.paint(graphic, paintArea, dataArea);
-        
+
         // //
         // AlFa: Applying watermarking
         // //
-        if (this.wmPainter != null)
-			try {
-				this.wmPainter.paint(graphic, paintArea);
-			} catch (MalformedURLException e) {
-				LOGGER.severe("Could not Watermark map due to the following error: " + e.getLocalizedMessage());
-			} catch (ClassCastException e) {
-				LOGGER.severe("Could not Watermark map due to the following error: " + e.getLocalizedMessage());
-			} catch (IOException e) {
-				LOGGER.severe("Could not Watermark map due to the following error: " + e.getLocalizedMessage());
-			}
-        
+        if (this.wmPainter != null) {
+            try {
+                this.wmPainter.paint(graphic, paintArea);
+            } catch (MalformedURLException e) {
+                LOGGER.severe("Could not Watermark map due to the following error: "
+                    + e.getLocalizedMessage());
+            } catch (ClassCastException e) {
+                LOGGER.severe("Could not Watermark map due to the following error: "
+                    + e.getLocalizedMessage());
+            } catch (IOException e) {
+                LOGGER.severe("Could not Watermark map due to the following error: "
+                    + e.getLocalizedMessage());
+            }
+        }
+
         graphic.dispose();
 
         if (!this.abortRequested) {
@@ -379,21 +367,20 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
      * @param paletteInverter
      * @return
      */
-    protected RenderedImage prepareImage(int width, int height,
-        IndexColorModel palette, boolean transparent) {
+    protected RenderedImage prepareImage(int width, int height, IndexColorModel palette,
+        boolean transparent) {
         if (palette != null) {
             // unfortunately we can't use packed rasters because line rendering gets completely
             // broken, see GEOS-1312 (http://jira.codehaus.org/browse/GEOS-1312)
             //			final WritableRaster raster = palette.createCompatibleWritableRaster(width, height);
-            final WritableRaster raster = Raster.createInterleavedRaster(palette
-                    .getTransferType(), width, height, 1, null);
+            final WritableRaster raster = Raster.createInterleavedRaster(palette.getTransferType(),
+                    width, height, 1, null);
 
             return new BufferedImage(palette, raster, false, null);
         }
 
         if (transparent) {
-            return new BufferedImage(width, height,
-                BufferedImage.TYPE_4BYTE_ABGR);
+            return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         } else {
             // don't use alpha channel if the image is not transparent
             return new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
@@ -457,8 +444,7 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
             // We got an image that needs to be converted.
             //
             // /////////////////////////////////////////////////////////////////
-            final InverseColorMapOp invColorMap = this.getMapContext()
-                                                      .getPaletteInverter();
+            final InverseColorMapOp invColorMap = this.getMapContext().getPaletteInverter();
 
             if (invColorMap != null) {
                 // make me parametric which means make me work with other image
@@ -472,8 +458,7 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
                 //
                 // //
                 // make sure we start from a componentcolormodel.
-                image = new ImageWorker(originalImage).forceComponentColorModel()
-                                                      .getRenderedImage();
+                image = new ImageWorker(originalImage).forceComponentColorModel().getRenderedImage();
 
                 //				if (originalImage.getColorModel().hasAlpha()) {
                 //					// //
@@ -554,8 +539,7 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
         int h = source.getHeight();
         ImageLayout layout = new ImageLayout();
         layout.setColorModel(source.getColorModel());
-        layout.setSampleModel(source.getColorModel()
-                                    .createCompatibleSampleModel(w, h));
+        layout.setSampleModel(source.getColorModel().createCompatibleSampleModel(w, h));
         // if I don't force tiling off with this setting an exception is thrown
         // when writing the image out...
         layout.setTileWidth(w);
@@ -566,12 +550,12 @@ public abstract class DefaultRasterMapProducer extends AbstractRasterMapProducer
         return LookupDescriptor.create(source, IDENTITY_TABLE, hints);
     }
 
-	/**
-	 * Set the Watermark Painter.
-	 * 
-	 * @param wmPainter the wmPainter to set
-	 */
-	public void setWmPainter(WatermarkPainter wmPainter) {
-		this.wmPainter = wmPainter;
-	}
+    /**
+     * Set the Watermark Painter.
+     *
+     * @param wmPainter the wmPainter to set
+     */
+    public void setWmPainter(WatermarkPainter wmPainter) {
+        this.wmPainter = wmPainter;
+    }
 }

@@ -49,8 +49,7 @@ public class WMSCapabilitiesResponse implements Response {
     private Set formats;
     private ApplicationContext applicationContext;
 
-    public WMSCapabilitiesResponse(Set wmsGetMapFormats,
-        ApplicationContext applicationContext) {
+    public WMSCapabilitiesResponse(Set wmsGetMapFormats, ApplicationContext applicationContext) {
         this.formats = wmsGetMapFormats;
         this.applicationContext = applicationContext;
     }
@@ -77,8 +76,8 @@ public class WMSCapabilitiesResponse implements Response {
             throw new IllegalArgumentException("Not a GetCapabilities Request");
         }
 
-        WMSCapsTransformer transformer = new WMSCapsTransformer(request
-                .getBaseUrl(), formats, applicationContext);
+        WMSCapsTransformer transformer = new WMSCapsTransformer(request.getBaseUrl(), formats,
+                applicationContext);
 
         // if (request.getWFS().getGeoServer().isVerbose()) {
         transformer.setIndentation(2);
@@ -107,8 +106,7 @@ public class WMSCapabilitiesResponse implements Response {
      */
     public String getContentType(GeoServer gs) throws IllegalStateException {
         if (rawResponse == null) {
-            throw new IllegalStateException(
-                "execute() not called or not succeed.");
+            throw new IllegalStateException("execute() not called or not succeed.");
         }
 
         return WMSCapsTransformer.WMS_CAPS_MIME;

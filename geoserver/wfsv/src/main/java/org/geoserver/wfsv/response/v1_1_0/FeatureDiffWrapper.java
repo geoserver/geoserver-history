@@ -26,15 +26,13 @@ public class FeatureDiffWrapper extends FeatureWrapper {
         if (object instanceof FeatureDiffReader[]) {
             HashMap map = new HashMap();
             map.put("queryDiffs",
-                new SimpleSequence(Arrays.asList((FeatureDiffReader[]) object),
-                    this));
+                new SimpleSequence(Arrays.asList((FeatureDiffReader[]) object), this));
 
             return new SimpleHash(map);
         } else if (object instanceof FeatureDiffReader) {
             HashMap map = new HashMap();
             FeatureDiffReader reader = (FeatureDiffReader) object;
-            map.put("differences",
-                new CollectionModel(new FeatureDiffCollection(reader), this));
+            map.put("differences", new CollectionModel(new FeatureDiffCollection(reader), this));
             map.put("fromVersion", reader.getFromVersion());
             map.put("toVersion", reader.getToVersion());
             map.put("typeName", reader.getSchema().getTypeName());

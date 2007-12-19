@@ -99,8 +99,8 @@ public class HTTPTypeImpl extends EObjectImpl implements HTTPType {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case OwsPackage.HTTP_TYPE__GROUP:
             return ((InternalEList) getGroup()).basicRemove(otherEnd, msgs);

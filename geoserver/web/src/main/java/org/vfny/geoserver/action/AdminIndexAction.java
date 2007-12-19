@@ -29,13 +29,12 @@ public class AdminIndexAction extends ConfigAction {
     /* (non-Javadoc)
      * @see org.vfny.geoserver.action.ConfigAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, org.vfny.geoserver.global.UserContainer, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        UserContainer user, HttpServletRequest request,
-        HttpServletResponse response) throws Exception {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
+        throws Exception {
         ServletContext sc = request.getSession().getServletContext();
 
-        final JAI jaiDef = ((GeoServer) sc.getAttribute(GeoServer.WEB_CONTAINER_KEY))
-            .getJAIDefault();
+        final JAI jaiDef = ((GeoServer) sc.getAttribute(GeoServer.WEB_CONTAINER_KEY)).getJAIDefault();
         final SunTileCache jaiCache = ((GeoServer) sc.getAttribute(GeoServer.WEB_CONTAINER_KEY))
             .getJaiCache();
         final long memCapacity = jaiCache.getMemoryCapacity() / 1024;

@@ -59,8 +59,7 @@ public class PropertyTypeBinding extends AbstractComplexBinding {
      */
     NamespaceContext namespaceContext;
 
-    public PropertyTypeBinding(WfsFactory wfsfactory,
-        NamespaceContext namespaceContext) {
+    public PropertyTypeBinding(WfsFactory wfsfactory, NamespaceContext namespaceContext) {
         this.wfsfactory = wfsfactory;
         this.namespaceContext = namespaceContext;
     }
@@ -96,8 +95,7 @@ public class PropertyTypeBinding extends AbstractComplexBinding {
         String name = (String) node.getChildValue("Name");
 
         //turn into qname
-        QName qName = (QName) new XSQNameBinding(namespaceContext).parse(null,
-                name);
+        QName qName = (QName) new XSQNameBinding(namespaceContext).parse(null, name);
         property.setName(qName);
 
         //&lt;xsd:element minOccurs="0" name="Value"&gt;

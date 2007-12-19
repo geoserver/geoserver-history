@@ -39,8 +39,7 @@ import java.util.Collection;
  *
  * @generated
  */
-public class OperationsMetadataTypeImpl extends EObjectImpl
-    implements OperationsMetadataType {
+public class OperationsMetadataTypeImpl extends EObjectImpl implements OperationsMetadataType {
     /**
      * The cached value of the '{@link #getOperation() <em>Operation</em>}' containment reference list.
      * <!-- begin-user-doc -->
@@ -155,14 +154,13 @@ public class OperationsMetadataTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetExtendedCapabilities(
-        EObject newExtendedCapabilities, NotificationChain msgs) {
+    public NotificationChain basicSetExtendedCapabilities(EObject newExtendedCapabilities,
+        NotificationChain msgs) {
         EObject oldExtendedCapabilities = extendedCapabilities;
         extendedCapabilities = newExtendedCapabilities;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     OwsPackage.OPERATIONS_METADATA_TYPE__EXTENDED_CAPABILITIES,
                     oldExtendedCapabilities, newExtendedCapabilities);
 
@@ -188,15 +186,13 @@ public class OperationsMetadataTypeImpl extends EObjectImpl
             if (extendedCapabilities != null) {
                 msgs = ((InternalEObject) extendedCapabilities).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.OPERATIONS_METADATA_TYPE__EXTENDED_CAPABILITIES,
-                        null, msgs);
+                        - OwsPackage.OPERATIONS_METADATA_TYPE__EXTENDED_CAPABILITIES, null, msgs);
             }
 
             if (newExtendedCapabilities != null) {
                 msgs = ((InternalEObject) newExtendedCapabilities).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.OPERATIONS_METADATA_TYPE__EXTENDED_CAPABILITIES,
-                        null, msgs);
+                        - OwsPackage.OPERATIONS_METADATA_TYPE__EXTENDED_CAPABILITIES, null, msgs);
             }
 
             msgs = basicSetExtendedCapabilities(newExtendedCapabilities, msgs);
@@ -216,8 +212,8 @@ public class OperationsMetadataTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case OwsPackage.OPERATIONS_METADATA_TYPE__OPERATION:
             return ((InternalEList) getOperation()).basicRemove(otherEnd, msgs);

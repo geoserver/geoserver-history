@@ -105,8 +105,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
      */
     public EObject getAbstractMetaData() {
         return (EObject) getAbstractMetaDataGroup()
-                             .get(OwsPackage.Literals.METADATA_TYPE__ABSTRACT_META_DATA,
-            true);
+                             .get(OwsPackage.Literals.METADATA_TYPE__ABSTRACT_META_DATA, true);
     }
 
     /**
@@ -114,8 +113,8 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetAbstractMetaData(
-        EObject newAbstractMetaData, NotificationChain msgs) {
+    public NotificationChain basicSetAbstractMetaData(EObject newAbstractMetaData,
+        NotificationChain msgs) {
         return ((FeatureMap.Internal) getAbstractMetaDataGroup()).basicAdd(OwsPackage.Literals.METADATA_TYPE__ABSTRACT_META_DATA,
             newAbstractMetaData, msgs);
     }
@@ -139,8 +138,8 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
         about = newAbout;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.METADATA_TYPE__ABOUT, oldAbout, about));
+            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.METADATA_TYPE__ABOUT,
+                    oldAbout, about));
         }
     }
 
@@ -149,12 +148,11 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case OwsPackage.METADATA_TYPE__ABSTRACT_META_DATA_GROUP:
-            return ((InternalEList) getAbstractMetaDataGroup()).basicRemove(otherEnd,
-                msgs);
+            return ((InternalEList) getAbstractMetaDataGroup()).basicRemove(otherEnd, msgs);
 
         case OwsPackage.METADATA_TYPE__ABSTRACT_META_DATA:
             return basicSetAbstractMetaData(null, msgs);
@@ -238,15 +236,13 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
     public boolean eIsSet(int featureID) {
         switch (featureID) {
         case OwsPackage.METADATA_TYPE__ABSTRACT_META_DATA_GROUP:
-            return (abstractMetaDataGroup != null)
-            && !abstractMetaDataGroup.isEmpty();
+            return (abstractMetaDataGroup != null) && !abstractMetaDataGroup.isEmpty();
 
         case OwsPackage.METADATA_TYPE__ABSTRACT_META_DATA:
             return getAbstractMetaData() != null;
 
         case OwsPackage.METADATA_TYPE__ABOUT:
-            return (ABOUT_EDEFAULT == null) ? (about != null)
-                                            : (!ABOUT_EDEFAULT.equals(about));
+            return (ABOUT_EDEFAULT == null) ? (about != null) : (!ABOUT_EDEFAULT.equals(about));
         }
 
         return super.eIsSet(featureID);

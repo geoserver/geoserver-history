@@ -30,16 +30,18 @@ public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource
         super(source, schema, definitionQuery, declaredCRS, srsHandling);
     }
 
-    public FeatureDiffReader getDifferences(String fromVersion, String toVersion, Filter filter, String[] users)
-        throws IOException {
+    public FeatureDiffReader getDifferences(String fromVersion, String toVersion, Filter filter,
+        String[] users) throws IOException {
         // TODO: if we are bound to a smaller schema, we should remove the
         // hidden attributes from the differences
-        return ((VersioningFeatureSource) source).getDifferences(fromVersion, toVersion, filter, users);
+        return ((VersioningFeatureSource) source).getDifferences(fromVersion, toVersion, filter,
+            users);
     }
 
-    public FeatureCollection getLog(String fromVersion, String toVersion, Filter filter, String[] users, int maxFeatures)
-        throws IOException {
-        return ((VersioningFeatureSource) source).getLog(fromVersion, toVersion, filter, users, maxFeatures);
+    public FeatureCollection getLog(String fromVersion, String toVersion, Filter filter,
+        String[] users, int maxFeatures) throws IOException {
+        return ((VersioningFeatureSource) source).getLog(fromVersion, toVersion, filter, users,
+            maxFeatures);
     }
 
     /**
@@ -55,12 +57,13 @@ public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource
      * @param schema
      * @param definitionQuery
      * @param declaredCRS
-     *            
+     *
      *
      * @return
      */
     public static GeoServerFeatureSource create(VersioningFeatureSource featureSource,
-        FeatureType schema, Filter definitionQuery, CoordinateReferenceSystem declaredCRS, int srsHandling) {
+        FeatureType schema, Filter definitionQuery, CoordinateReferenceSystem declaredCRS,
+        int srsHandling) {
         if (featureSource instanceof VersioningFeatureLocking) {
             return new GeoServerVersioningFeatureLocking((VersioningFeatureLocking) featureSource,
                 schema, definitionQuery, declaredCRS, srsHandling);
@@ -72,16 +75,18 @@ public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource
         return new GeoServerVersioningFeatureSource(featureSource, schema, definitionQuery,
             declaredCRS, srsHandling);
     }
-    
+
     public FeatureCollection getVersionedFeatures() throws IOException {
         return ((VersioningFeatureSource) source).getVersionedFeatures();
     }
 
-    public FeatureCollection getVersionedFeatures(Query q) throws IOException {
+    public FeatureCollection getVersionedFeatures(Query q)
+        throws IOException {
         return ((VersioningFeatureSource) source).getVersionedFeatures(q);
     }
 
-    public FeatureCollection getVersionedFeatures(Filter f) throws IOException {
+    public FeatureCollection getVersionedFeatures(Filter f)
+        throws IOException {
         return ((VersioningFeatureSource) source).getVersionedFeatures(f);
     }
 }

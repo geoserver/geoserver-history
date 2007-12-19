@@ -11,13 +11,13 @@ import org.vfny.geoserver.wms.WmsException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
-
 import javax.xml.transform.TransformerException;
 
 
 public class RSSGeoRSSMapProducer implements GetMapProducer {
     /** format names/aliases */
     public static HashSet FORMATS = new HashSet();
+
     static {
         FORMATS.add("rss");
         FORMATS.add("application/rss xml");
@@ -37,8 +37,7 @@ public class RSSGeoRSSMapProducer implements GetMapProducer {
     }
 
     public void produceMap() throws WmsException {
-		
-	}
+    }
 
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         RSSGeoRSSTransformer tx = new RSSGeoRSSTransformer();
@@ -56,23 +55,24 @@ public class RSSGeoRSSMapProducer implements GetMapProducer {
     public String getContentDisposition() {
         return "inline; filename=geoserver.xml";
     }
-	public WMSMapContext getMapContext() {
-		return map;
-	}
-	
-	public void setMapContext(WMSMapContext mapContext) {
-		this.map = mapContext;
-	}
 
-	public String getOutputFormat() {
-		return MIME_TYPE;
-	}
-	
-	public void setOutputFormat(String format) {
-		throw new UnsupportedOperationException();
-	}
-    
-	public void setContentType(String mime) {
-		throw new UnsupportedOperationException();
-	}
+    public WMSMapContext getMapContext() {
+        return map;
+    }
+
+    public void setMapContext(WMSMapContext mapContext) {
+        this.map = mapContext;
+    }
+
+    public String getOutputFormat() {
+        return MIME_TYPE;
+    }
+
+    public void setOutputFormat(String format) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setContentType(String mime) {
+        throw new UnsupportedOperationException();
+    }
 }

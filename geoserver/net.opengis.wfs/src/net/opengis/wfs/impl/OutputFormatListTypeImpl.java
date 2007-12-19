@@ -31,8 +31,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *
  * @generated
  */
-public class OutputFormatListTypeImpl extends EObjectImpl
-    implements OutputFormatListType {
+public class OutputFormatListTypeImpl extends EObjectImpl implements OutputFormatListType {
     /**
      * The default value of the '{@link #getFormat() <em>Format</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -78,8 +77,7 @@ public class OutputFormatListTypeImpl extends EObjectImpl
      */
     public FeatureMap getGroup() {
         if (group == null) {
-            group = new BasicFeatureMap(this,
-                    WfsPackage.OUTPUT_FORMAT_LIST_TYPE__GROUP);
+            group = new BasicFeatureMap(this, WfsPackage.OUTPUT_FORMAT_LIST_TYPE__GROUP);
         }
 
         return group;
@@ -91,9 +89,7 @@ public class OutputFormatListTypeImpl extends EObjectImpl
      * @generated
      */
     public String getFormat() {
-        return (String) getGroup()
-                            .get(WfsPackage.Literals.OUTPUT_FORMAT_LIST_TYPE__FORMAT,
-            true);
+        return (String) getGroup().get(WfsPackage.Literals.OUTPUT_FORMAT_LIST_TYPE__FORMAT, true);
     }
 
     /**
@@ -111,8 +107,8 @@ public class OutputFormatListTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case WfsPackage.OUTPUT_FORMAT_LIST_TYPE__GROUP:
             return ((InternalEList) getGroup()).basicRemove(otherEnd, msgs);

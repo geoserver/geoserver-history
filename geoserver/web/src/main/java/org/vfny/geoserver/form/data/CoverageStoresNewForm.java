@@ -68,14 +68,12 @@ public final class CoverageStoresNewForm extends ActionForm {
      *
      * @return DOCUMENT ME!
      */
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         if (!getDataFormatDescriptions().contains(getSelectedDescription())) {
             errors.add("selectedDescription",
-                new ActionError("error.dataFormatFactory.invalid",
-                    getSelectedDescription()));
+                new ActionError("error.dataFormatFactory.invalid", getSelectedDescription()));
         }
 
         if ((getDataFormatID() == null) || getDataFormatID().equals("")) {

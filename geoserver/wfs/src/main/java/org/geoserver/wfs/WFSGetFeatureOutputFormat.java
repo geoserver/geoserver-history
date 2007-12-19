@@ -79,8 +79,8 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
         if ("GetFeature".equalsIgnoreCase(operation.getId())
                 || "GetFeatureWithLock".equalsIgnoreCase(operation.getId())) {
             //also check that the resultType is "results"
-            GetFeatureType request = (GetFeatureType) OwsUtils.parameter(operation
-                    .getParameters(), GetFeatureType.class);
+            GetFeatureType request = (GetFeatureType) OwsUtils.parameter(operation.getParameters(),
+                    GetFeatureType.class);
 
             if (request.getResultType() == ResultTypeType.RESULTS_LITERAL) {
                 //call subclass hook
@@ -135,8 +135,8 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
     /**
      * Calls through to {@link #write(FeatureCollectionType, OutputStream, Operation)}.
      */
-    public final void write(Object value, OutputStream output,
-        Operation operation) throws IOException, ServiceException {
+    public final void write(Object value, OutputStream output, Operation operation)
+        throws IOException, ServiceException {
         write((FeatureCollectionType) value, output, operation);
     }
 
@@ -147,7 +147,6 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
      * @param output The output stream to serialize to.
      * @param getFeature The GetFeature operation descriptor.
      */
-    protected abstract void write(FeatureCollectionType featureCollection,
-        OutputStream output, Operation getFeature)
-        throws IOException, ServiceException;
+    protected abstract void write(FeatureCollectionType featureCollection, OutputStream output,
+        Operation getFeature) throws IOException, ServiceException;
 }

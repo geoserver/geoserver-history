@@ -60,14 +60,13 @@ public class UpdateXmlReader extends XmlRequestReader {
             adapter.parse(requestSource);
             LOGGER.finer("just parsed: " + requestSource);
         } catch (SAXException e) {
-            throw new CatalogException(e,
-                "XML UpdateCatalog request parsing error", getClass().getName());
-        } catch (IOException e) {
-            throw new CatalogException(e,
-                "XML UpdateCatalog request input error", getClass().getName());
-        } catch (ParserConfigurationException e) {
-            throw new CatalogException(e, "Some sort of issue creating parser",
+            throw new CatalogException(e, "XML UpdateCatalog request parsing error",
                 getClass().getName());
+        } catch (IOException e) {
+            throw new CatalogException(e, "XML UpdateCatalog request input error",
+                getClass().getName());
+        } catch (ParserConfigurationException e) {
+            throw new CatalogException(e, "Some sort of issue creating parser", getClass().getName());
         }
 
         LOGGER.finer("about to return ");

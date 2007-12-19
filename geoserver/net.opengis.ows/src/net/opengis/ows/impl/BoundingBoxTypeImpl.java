@@ -151,8 +151,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.BOUNDING_BOX_TYPE__LOWER_CORNER, oldLowerCorner,
-                    lowerCorner));
+                    OwsPackage.BOUNDING_BOX_TYPE__LOWER_CORNER, oldLowerCorner, lowerCorner));
         }
     }
 
@@ -176,8 +175,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.BOUNDING_BOX_TYPE__UPPER_CORNER, oldUpperCorner,
-                    upperCorner));
+                    OwsPackage.BOUNDING_BOX_TYPE__UPPER_CORNER, oldUpperCorner, upperCorner));
         }
     }
 
@@ -225,8 +223,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.BOUNDING_BOX_TYPE__DIMENSIONS, oldDimensions,
-                    dimensions));
+                    OwsPackage.BOUNDING_BOX_TYPE__DIMENSIONS, oldDimensions, dimensions));
         }
     }
 
@@ -324,17 +321,14 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
         switch (featureID) {
         case OwsPackage.BOUNDING_BOX_TYPE__LOWER_CORNER:
             return (LOWER_CORNER_EDEFAULT == null) ? (lowerCorner != null)
-                                                   : (!LOWER_CORNER_EDEFAULT
-            .equals(lowerCorner));
+                                                   : (!LOWER_CORNER_EDEFAULT.equals(lowerCorner));
 
         case OwsPackage.BOUNDING_BOX_TYPE__UPPER_CORNER:
             return (UPPER_CORNER_EDEFAULT == null) ? (upperCorner != null)
-                                                   : (!UPPER_CORNER_EDEFAULT
-            .equals(upperCorner));
+                                                   : (!UPPER_CORNER_EDEFAULT.equals(upperCorner));
 
         case OwsPackage.BOUNDING_BOX_TYPE__CRS:
-            return (CRS_EDEFAULT == null) ? (crs != null)
-                                          : (!CRS_EDEFAULT.equals(crs));
+            return (CRS_EDEFAULT == null) ? (crs != null) : (!CRS_EDEFAULT.equals(crs));
 
         case OwsPackage.BOUNDING_BOX_TYPE__DIMENSIONS:
             return (DIMENSIONS_EDEFAULT == null) ? (dimensions != null)

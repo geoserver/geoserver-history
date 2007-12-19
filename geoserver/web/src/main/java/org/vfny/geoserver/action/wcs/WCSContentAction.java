@@ -25,9 +25,9 @@ import javax.servlet.http.HttpServletResponse;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public final class WCSContentAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        UserContainer user, HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
+        throws IOException, ServletException {
         WCSContentForm contentForm = (WCSContentForm) form;
 
         boolean enabled = contentForm.isEnabled();

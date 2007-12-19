@@ -80,15 +80,13 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
      */
     GeoServer geoServer;
 
-    public LegacyServiceExceptionHandler(List services, OWS ows,
-        GeoServer geoServer) {
+    public LegacyServiceExceptionHandler(List services, OWS ows, GeoServer geoServer) {
         super(services);
         this.ows = ows;
         this.geoServer = geoServer;
     }
 
-    public LegacyServiceExceptionHandler(Service service, OWS ows,
-        GeoServer geoServer) {
+    public LegacyServiceExceptionHandler(Service service, OWS ows, GeoServer geoServer) {
         super(service);
         this.ows = ows;
         this.geoServer = geoServer;
@@ -110,9 +108,8 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
         this.contentType = contentType;
     }
 
-    public void handleServiceException(ServiceException exception,
-        Service service, HttpServletRequest request,
-        HttpServletResponse response) {
+    public void handleServiceException(ServiceException exception, Service service,
+        HttpServletRequest request, HttpServletResponse response) {
         String tab = "   ";
         StringBuffer sb = new StringBuffer();
 
@@ -128,10 +125,8 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
 
         //dtd location
         if (dtdLocation != null) {
-            String fullDtdLocation = ResponseUtils.appendPath(ows
-                    .getSchemaBaseURL(), dtdLocation);
-            sb.append("<!DOCTYPE ServiceExceptionReport SYSTEM \""
-                + fullDtdLocation + "\"> ");
+            String fullDtdLocation = ResponseUtils.appendPath(ows.getSchemaBaseURL(), dtdLocation);
+            sb.append("<!DOCTYPE ServiceExceptionReport SYSTEM \"" + fullDtdLocation + "\"> ");
         }
 
         //root element
@@ -139,14 +134,13 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
 
         //xml schema location
         if ((schemaLocation != null) && (dtdLocation == null)) {
-            String fullSchemaLocation = ResponseUtils.appendPath(ows
-                    .getSchemaBaseURL(), schemaLocation);
+            String fullSchemaLocation = ResponseUtils.appendPath(ows.getSchemaBaseURL(),
+                    schemaLocation);
 
             sb.append("xmlns=\"http://www.opengis.net/ogc\" ");
-            sb.append(
-                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
-            sb.append("xsi:schemaLocation=\"http://www.opengis.net/ogc "
-                + fullSchemaLocation + "\"");
+            sb.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
+            sb.append("xsi:schemaLocation=\"http://www.opengis.net/ogc " + fullSchemaLocation
+                + "\"");
         }
 
         sb.append(">");
@@ -160,8 +154,7 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
         }
 
         //exception locator
-        if ((exception.getLocator() != null)
-                && !exception.getLocator().equals("")) {
+        if ((exception.getLocator() != null) && !exception.getLocator().equals("")) {
             sb.append(" locator=\"" + exception.getLocator() + "\"");
         }
 
@@ -177,8 +170,7 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
                 exception.printStackTrace(new PrintStream(stackTrace));
 
                 sb.append("\nDetails:\n");
-                sb.append(ResponseUtils.encodeXML(
-                        new String(stackTrace.toByteArray())));
+                sb.append(ResponseUtils.encodeXML(new String(stackTrace.toByteArray())));
             }
         }
 
@@ -196,8 +188,7 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
         } catch (IOException e) {
             //throw new RuntimeException(e);
             // Hmm, not much we can do here.  I guess log the fact that we couldn't write out the exception and be done with it...
-            LOGGER.log(Level.INFO,
-                "Problem writing exception information back to calling client:",
+            LOGGER.log(Level.INFO, "Problem writing exception information back to calling client:",
                 e);
         }
     }

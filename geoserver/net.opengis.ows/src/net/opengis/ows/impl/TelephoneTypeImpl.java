@@ -106,8 +106,8 @@ public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
         voice = newVoice;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.TELEPHONE_TYPE__VOICE, oldVoice, voice));
+            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.TELEPHONE_TYPE__VOICE,
+                    oldVoice, voice));
         }
     }
 
@@ -131,8 +131,7 @@ public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.TELEPHONE_TYPE__FACSIMILE, oldFacsimile,
-                    facsimile));
+                    OwsPackage.TELEPHONE_TYPE__FACSIMILE, oldFacsimile, facsimile));
         }
     }
 
@@ -203,8 +202,7 @@ public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
     public boolean eIsSet(int featureID) {
         switch (featureID) {
         case OwsPackage.TELEPHONE_TYPE__VOICE:
-            return (VOICE_EDEFAULT == null) ? (voice != null)
-                                            : (!VOICE_EDEFAULT.equals(voice));
+            return (VOICE_EDEFAULT == null) ? (voice != null) : (!VOICE_EDEFAULT.equals(voice));
 
         case OwsPackage.TELEPHONE_TYPE__FACSIMILE:
             return (FACSIMILE_EDEFAULT == null) ? (facsimile != null)

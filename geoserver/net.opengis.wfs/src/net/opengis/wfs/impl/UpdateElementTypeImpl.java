@@ -42,8 +42,7 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class UpdateElementTypeImpl extends EObjectImpl
-    implements UpdateElementType {
+public class UpdateElementTypeImpl extends EObjectImpl implements UpdateElementType {
     /**
      * The default value of the '{@link #getFilter() <em>Filter</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -266,8 +265,8 @@ public class UpdateElementTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.UPDATE_ELEMENT_TYPE__INPUT_FORMAT,
-                    oldInputFormat, inputFormat, !oldInputFormatESet));
+                    WfsPackage.UPDATE_ELEMENT_TYPE__INPUT_FORMAT, oldInputFormat, inputFormat,
+                    !oldInputFormatESet));
         }
     }
 
@@ -284,8 +283,8 @@ public class UpdateElementTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.UNSET,
-                    WfsPackage.UPDATE_ELEMENT_TYPE__INPUT_FORMAT,
-                    oldInputFormat, INPUT_FORMAT_EDEFAULT, oldInputFormatESet));
+                    WfsPackage.UPDATE_ELEMENT_TYPE__INPUT_FORMAT, oldInputFormat,
+                    INPUT_FORMAT_EDEFAULT, oldInputFormatESet));
         }
     }
 
@@ -318,8 +317,7 @@ public class UpdateElementTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.UPDATE_ELEMENT_TYPE__SRS_NAME, oldSrsName,
-                    srsName));
+                    WfsPackage.UPDATE_ELEMENT_TYPE__SRS_NAME, oldSrsName, srsName));
         }
     }
 
@@ -343,8 +341,7 @@ public class UpdateElementTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.UPDATE_ELEMENT_TYPE__TYPE_NAME, oldTypeName,
-                    typeName));
+                    WfsPackage.UPDATE_ELEMENT_TYPE__TYPE_NAME, oldTypeName, typeName));
         }
     }
 
@@ -353,8 +350,8 @@ public class UpdateElementTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case WfsPackage.UPDATE_ELEMENT_TYPE__PROPERTY:
             return ((InternalEList) getProperty()).basicRemove(otherEnd, msgs);
@@ -486,12 +483,10 @@ public class UpdateElementTypeImpl extends EObjectImpl
             return (property != null) && !property.isEmpty();
 
         case WfsPackage.UPDATE_ELEMENT_TYPE__FILTER:
-            return (FILTER_EDEFAULT == null) ? (filter != null)
-                                             : (!FILTER_EDEFAULT.equals(filter));
+            return (FILTER_EDEFAULT == null) ? (filter != null) : (!FILTER_EDEFAULT.equals(filter));
 
         case WfsPackage.UPDATE_ELEMENT_TYPE__HANDLE:
-            return (HANDLE_EDEFAULT == null) ? (handle != null)
-                                             : (!HANDLE_EDEFAULT.equals(handle));
+            return (HANDLE_EDEFAULT == null) ? (handle != null) : (!HANDLE_EDEFAULT.equals(handle));
 
         case WfsPackage.UPDATE_ELEMENT_TYPE__INPUT_FORMAT:
             return isSetInputFormat();

@@ -13,11 +13,9 @@ import org.w3c.dom.NodeList;
 
 public class DescribeFeatureTypeTest extends WFSTestSupport {
     public void testDateMappings() throws Exception {
-        String xml = "<wfs:DescribeFeatureType " + "service=\"WFS\" "
-            + "version=\"1.1.0\" "
+        String xml = "<wfs:DescribeFeatureType " + "service=\"WFS\" " + "version=\"1.1.0\" "
             + "xmlns:wfs=\"http://www.opengis.net/wfs\" " + "xmlns:sf=\""
-            + MockData.PRIMITIVEGEOFEATURE.getNamespaceURI() + "\">"
-            + " <wfs:TypeName>sf:"
+            + MockData.PRIMITIVEGEOFEATURE.getNamespaceURI() + "\">" + " <wfs:TypeName>sf:"
             + MockData.PRIMITIVEGEOFEATURE.getLocalPart() + "</wfs:TypeName>"
             + "</wfs:DescribeFeatureType>";
 
@@ -46,10 +44,8 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
     }
 
     public void testNoNamespaceDeclaration() throws Exception {
-        String xml = "<wfs:DescribeFeatureType " + "service=\"WFS\" "
-            + "version=\"1.1.0\" "
-            + "xmlns:wfs=\"http://www.opengis.net/wfs\">"
-            + " <wfs:TypeName>sf:"
+        String xml = "<wfs:DescribeFeatureType " + "service=\"WFS\" " + "version=\"1.1.0\" "
+            + "xmlns:wfs=\"http://www.opengis.net/wfs\">" + " <wfs:TypeName>sf:"
             + MockData.PRIMITIVEGEOFEATURE.getLocalPart() + "</wfs:TypeName>"
             + "</wfs:DescribeFeatureType>";
 

@@ -191,8 +191,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
             return createAllSomeTypeFromString(eDataType, initialValue);
 
         case WfsPackage.IDENTIFIER_GENERATION_OPTION_TYPE:
-            return createIdentifierGenerationOptionTypeFromString(eDataType,
-                initialValue);
+            return createIdentifierGenerationOptionTypeFromString(eDataType, initialValue);
 
         case WfsPackage.OPERATION_TYPE:
             return createOperationTypeFromString(eDataType, initialValue);
@@ -240,8 +239,8 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
             return createTypeNameListTypeFromString(eDataType, initialValue);
 
         default:
-            throw new IllegalArgumentException("The datatype '"
-                + eDataType.getName() + "' is not a valid classifier");
+            throw new IllegalArgumentException("The datatype '" + eDataType.getName()
+                + "' is not a valid classifier");
         }
     }
 
@@ -256,8 +255,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
             return convertAllSomeTypeToString(eDataType, instanceValue);
 
         case WfsPackage.IDENTIFIER_GENERATION_OPTION_TYPE:
-            return convertIdentifierGenerationOptionTypeToString(eDataType,
-                instanceValue);
+            return convertIdentifierGenerationOptionTypeToString(eDataType, instanceValue);
 
         case WfsPackage.OPERATION_TYPE:
             return convertOperationTypeToString(eDataType, instanceValue);
@@ -305,8 +303,8 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
             return convertTypeNameListTypeToString(eDataType, instanceValue);
 
         default:
-            throw new IllegalArgumentException("The datatype '"
-                + eDataType.getName() + "' is not a valid classifier");
+            throw new IllegalArgumentException("The datatype '" + eDataType.getName()
+                + "' is not a valid classifier");
         }
     }
 
@@ -700,14 +698,12 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public AllSomeType createAllSomeTypeFromString(EDataType eDataType,
-        String initialValue) {
+    public AllSomeType createAllSomeTypeFromString(EDataType eDataType, String initialValue) {
         AllSomeType result = AllSomeType.get(initialValue);
 
         if (result == null) {
             throw new IllegalArgumentException("The value '" + initialValue
-                + "' is not a valid enumerator of '" + eDataType.getName()
-                + "'");
+                + "' is not a valid enumerator of '" + eDataType.getName() + "'");
         }
 
         return result;
@@ -718,8 +714,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertAllSomeTypeToString(EDataType eDataType,
-        Object instanceValue) {
+    public String convertAllSomeTypeToString(EDataType eDataType, Object instanceValue) {
         return (instanceValue == null) ? null : instanceValue.toString();
     }
 
@@ -730,13 +725,11 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      */
     public IdentifierGenerationOptionType createIdentifierGenerationOptionTypeFromString(
         EDataType eDataType, String initialValue) {
-        IdentifierGenerationOptionType result = IdentifierGenerationOptionType
-            .get(initialValue);
+        IdentifierGenerationOptionType result = IdentifierGenerationOptionType.get(initialValue);
 
         if (result == null) {
             throw new IllegalArgumentException("The value '" + initialValue
-                + "' is not a valid enumerator of '" + eDataType.getName()
-                + "'");
+                + "' is not a valid enumerator of '" + eDataType.getName() + "'");
         }
 
         return result;
@@ -747,8 +740,8 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertIdentifierGenerationOptionTypeToString(
-        EDataType eDataType, Object instanceValue) {
+    public String convertIdentifierGenerationOptionTypeToString(EDataType eDataType,
+        Object instanceValue) {
         return (instanceValue == null) ? null : instanceValue.toString();
     }
 
@@ -757,14 +750,12 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public OperationType createOperationTypeFromString(EDataType eDataType,
-        String initialValue) {
+    public OperationType createOperationTypeFromString(EDataType eDataType, String initialValue) {
         OperationType result = OperationType.get(initialValue);
 
         if (result == null) {
             throw new IllegalArgumentException("The value '" + initialValue
-                + "' is not a valid enumerator of '" + eDataType.getName()
-                + "'");
+                + "' is not a valid enumerator of '" + eDataType.getName() + "'");
         }
 
         return result;
@@ -775,8 +766,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertOperationTypeToString(EDataType eDataType,
-        Object instanceValue) {
+    public String convertOperationTypeToString(EDataType eDataType, Object instanceValue) {
         return (instanceValue == null) ? null : instanceValue.toString();
     }
 
@@ -785,14 +775,12 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public ResultTypeType createResultTypeTypeFromString(EDataType eDataType,
-        String initialValue) {
+    public ResultTypeType createResultTypeTypeFromString(EDataType eDataType, String initialValue) {
         ResultTypeType result = ResultTypeType.get(initialValue);
 
         if (result == null) {
             throw new IllegalArgumentException("The value '" + initialValue
-                + "' is not a valid enumerator of '" + eDataType.getName()
-                + "'");
+                + "' is not a valid enumerator of '" + eDataType.getName() + "'");
         }
 
         return result;
@@ -803,8 +791,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertResultTypeTypeToString(EDataType eDataType,
-        Object instanceValue) {
+    public String convertResultTypeTypeToString(EDataType eDataType, Object instanceValue) {
         return (instanceValue == null) ? null : instanceValue.toString();
     }
 
@@ -813,8 +800,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String createServiceTypeFromString(EDataType eDataType,
-        String initialValue) {
+    public String createServiceTypeFromString(EDataType eDataType, String initialValue) {
         return (String) super.createFromString(eDataType, initialValue);
     }
 
@@ -823,8 +809,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertServiceTypeToString(EDataType eDataType,
-        Object instanceValue) {
+    public String convertServiceTypeToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 
@@ -833,8 +818,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public Filter createFilterFromString(EDataType eDataType,
-        String initialValue) {
+    public Filter createFilterFromString(EDataType eDataType, String initialValue) {
         return (Filter) super.createFromString(eDataType, initialValue);
     }
 
@@ -843,8 +827,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertFilterToString(EDataType eDataType,
-        Object instanceValue) {
+    public String convertFilterToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 
@@ -871,8 +854,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public Calendar createCalendarFromString(EDataType eDataType,
-        String initialValue) {
+    public Calendar createCalendarFromString(EDataType eDataType, String initialValue) {
         return (Calendar) super.createFromString(eDataType, initialValue);
     }
 
@@ -881,8 +863,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertCalendarToString(EDataType eDataType,
-        Object instanceValue) {
+    public String convertCalendarToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 
@@ -891,29 +872,26 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public FeatureCollection createFeatureCollectionFromString(
-        EDataType eDataType, String initialValue) {
-        return (FeatureCollection) super.createFromString(eDataType,
-            initialValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public String convertFeatureCollectionToString(EDataType eDataType,
-        Object instanceValue) {
-        return super.convertToString(eDataType, instanceValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public FeatureId createFeatureIdFromString(EDataType eDataType,
+    public FeatureCollection createFeatureCollectionFromString(EDataType eDataType,
         String initialValue) {
+        return (FeatureCollection) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public String convertFeatureCollectionToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public FeatureId createFeatureIdFromString(EDataType eDataType, String initialValue) {
         return (FeatureId) super.createFromString(eDataType, initialValue);
     }
 
@@ -922,8 +900,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertFeatureIdToString(EDataType eDataType,
-        Object instanceValue) {
+    public String convertFeatureIdToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 
@@ -932,8 +909,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String createServiceType_1FromString(EDataType eDataType,
-        String initialValue) {
+    public String createServiceType_1FromString(EDataType eDataType, String initialValue) {
         return (String) super.createFromString(eDataType, initialValue);
     }
 
@@ -942,8 +918,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertServiceType_1ToString(EDataType eDataType,
-        Object instanceValue) {
+    public String convertServiceType_1ToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 
@@ -970,8 +945,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String createFormatTypeFromString(EDataType eDataType,
-        String initialValue) {
+    public String createFormatTypeFromString(EDataType eDataType, String initialValue) {
         return (String) super.createFromString(eDataType, initialValue);
     }
 
@@ -980,8 +954,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertFormatTypeToString(EDataType eDataType,
-        Object instanceValue) {
+    public String convertFormatTypeToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 
@@ -990,8 +963,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String createTypeTypeFromString(EDataType eDataType,
-        String initialValue) {
+    public String createTypeTypeFromString(EDataType eDataType, String initialValue) {
         return (String) super.createFromString(eDataType, initialValue);
     }
 
@@ -1000,8 +972,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertTypeTypeToString(EDataType eDataType,
-        Object instanceValue) {
+    public String convertTypeTypeToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 
@@ -1010,8 +981,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public Function createFunctionFromString(EDataType eDataType,
-        String initialValue) {
+    public Function createFunctionFromString(EDataType eDataType, String initialValue) {
         return (Function) super.createFromString(eDataType, initialValue);
     }
 
@@ -1020,8 +990,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertFunctionToString(EDataType eDataType,
-        Object instanceValue) {
+    public String convertFunctionToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 
@@ -1030,8 +999,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public SortBy createSortByFromString(EDataType eDataType,
-        String initialValue) {
+    public SortBy createSortByFromString(EDataType eDataType, String initialValue) {
         return (SortBy) super.createFromString(eDataType, initialValue);
     }
 
@@ -1040,8 +1008,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertSortByToString(EDataType eDataType,
-        Object instanceValue) {
+    public String convertSortByToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 
@@ -1050,8 +1017,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public List createTypeNameListTypeFromString(EDataType eDataType,
-        String initialValue) {
+    public List createTypeNameListTypeFromString(EDataType eDataType, String initialValue) {
         return (List) super.createFromString(eDataType, initialValue);
     }
 
@@ -1060,8 +1026,7 @@ public class WfsFactoryImpl extends EFactoryImpl implements WfsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertTypeNameListTypeToString(EDataType eDataType,
-        Object instanceValue) {
+    public String convertTypeNameListTypeToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 

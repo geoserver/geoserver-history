@@ -73,11 +73,9 @@ public class CatalogReader {
      * @throws Exception If error processing "datastores" element.
      */
     public List /*<Map>*/ dataStores() throws Exception {
-        Element dataStoresElement = ReaderUtils.getChildElement(catalog,
-                "datastores", true);
+        Element dataStoresElement = ReaderUtils.getChildElement(catalog, "datastores", true);
 
-        NodeList dataStoreElements = dataStoresElement.getElementsByTagName(
-                "datastore");
+        NodeList dataStoreElements = dataStoresElement.getElementsByTagName("datastore");
         ArrayList dataStores = new ArrayList();
 
         for (int i = 0; i < dataStoreElements.getLength(); i++) {
@@ -107,11 +105,9 @@ public class CatalogReader {
      * @throws Exception If error processing "namespaces" element.
      */
     public Map namespaces() throws Exception {
-        Element namespacesElement = ReaderUtils.getChildElement(catalog,
-                "namespaces", true);
+        Element namespacesElement = ReaderUtils.getChildElement(catalog, "namespaces", true);
 
-        NodeList namespaceElements = namespacesElement.getElementsByTagName(
-                "namespace");
+        NodeList namespaceElements = namespacesElement.getElementsByTagName("namespace");
         Map namespaces = new HashMap();
 
         for (int i = 0; i < namespaceElements.getLength(); i++) {

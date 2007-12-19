@@ -67,8 +67,8 @@ public final class ResultTypeType extends AbstractEnumerator {
      * @generated
      * @ordered
      */
-    public static final ResultTypeType RESULTS_LITERAL = new ResultTypeType(RESULTS,
-            "results", "results");
+    public static final ResultTypeType RESULTS_LITERAL = new ResultTypeType(RESULTS, "results",
+            "results");
 
     /**
      * The '<em><b>Hits</b></em>' literal object.
@@ -78,8 +78,7 @@ public final class ResultTypeType extends AbstractEnumerator {
      * @generated
      * @ordered
      */
-    public static final ResultTypeType HITS_LITERAL = new ResultTypeType(HITS,
-            "hits", "hits");
+    public static final ResultTypeType HITS_LITERAL = new ResultTypeType(HITS, "hits", "hits");
 
     /**
      * An array of all the '<em><b>Result Type Type</b></em>' enumerators.
@@ -97,8 +96,7 @@ public final class ResultTypeType extends AbstractEnumerator {
      * <!-- end-user-doc -->
      * @generated
      */
-    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(
-                VALUES_ARRAY));
+    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
     /**
      * Only this class can construct instances.

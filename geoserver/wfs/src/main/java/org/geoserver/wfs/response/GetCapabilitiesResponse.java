@@ -22,8 +22,8 @@ public class GetCapabilitiesResponse extends Response {
     }
 
     public String getMimeType(Object value, Operation operation) {
-        GetCapabilitiesType request = (GetCapabilitiesType) OwsUtils
-            .parameter(operation.getParameters(), GetCapabilitiesType.class);
+        GetCapabilitiesType request = (GetCapabilitiesType) OwsUtils.parameter(operation
+                .getParameters(), GetCapabilitiesType.class);
 
         if ((request != null) && (request.getAcceptFormats() != null)) {
             //look for an accepted format

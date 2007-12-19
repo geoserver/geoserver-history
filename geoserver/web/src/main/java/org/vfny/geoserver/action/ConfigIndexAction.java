@@ -28,9 +28,9 @@ public class ConfigIndexAction extends ConfigAction {
     /* (non-Javadoc)
      * @see org.vfny.geoserver.action.ConfigAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, org.vfny.geoserver.global.UserContainer, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        UserContainer user, HttpServletRequest request,
-        HttpServletResponse response) throws Exception {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
+        throws Exception {
         ServletContext sc = request.getSession().getServletContext();
 
         // return back to the admin screen

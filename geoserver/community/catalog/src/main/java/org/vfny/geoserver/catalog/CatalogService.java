@@ -39,8 +39,7 @@ public interface CatalogService {
     /**
      * DeleteFeatureType operation.
      */
-    DeleteFeatureTypeResponse deleteFeatureType(
-        DeleteFeatureTypeRequest request);
+    DeleteFeatureTypeResponse deleteFeatureType(DeleteFeatureTypeRequest request);
 
     /**
      * UpdateCatalog operation.

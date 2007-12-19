@@ -88,8 +88,8 @@ public class VersionedUpdateElementTypeImpl extends UpdateElementTypeImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsvPackage.VERSIONED_UPDATE_ELEMENT_TYPE__FEATURE_VERSION,
-                    oldFeatureVersion, featureVersion));
+                    WfsvPackage.VERSIONED_UPDATE_ELEMENT_TYPE__FEATURE_VERSION, oldFeatureVersion,
+                    featureVersion));
         }
     }
 
@@ -148,8 +148,7 @@ public class VersionedUpdateElementTypeImpl extends UpdateElementTypeImpl
         switch (featureID) {
         case WfsvPackage.VERSIONED_UPDATE_ELEMENT_TYPE__FEATURE_VERSION:
             return (FEATURE_VERSION_EDEFAULT == null) ? (featureVersion != null)
-                                                      : (!FEATURE_VERSION_EDEFAULT
-            .equals(featureVersion));
+                                                      : (!FEATURE_VERSION_EDEFAULT.equals(featureVersion));
         }
 
         return super.eIsSet(featureID);

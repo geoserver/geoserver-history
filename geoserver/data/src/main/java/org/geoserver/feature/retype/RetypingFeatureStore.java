@@ -20,10 +20,8 @@ import java.util.Set;
 /**
  * Renaming wrapper for a {@link FeatureStore} instance, to be used along with {@link RetypingDataStore}
  */
-public class RetypingFeatureStore extends RetypingFeatureSource
-    implements FeatureStore {
-    public RetypingFeatureStore(DataStore ds, FeatureStore wrapped,
-        FeatureTypeMap typeMap) {
+public class RetypingFeatureStore extends RetypingFeatureSource implements FeatureStore {
+    public RetypingFeatureStore(DataStore ds, FeatureStore wrapped, FeatureTypeMap typeMap) {
         super(ds, wrapped, typeMap);
     }
 
@@ -48,15 +46,14 @@ public class RetypingFeatureStore extends RetypingFeatureSource
         featureStore().removeFeatures(filter);
     }
 
-    public void modifyFeatures(AttributeType[] type, Object[] value,
-        Filter filter) throws IOException {
+    public void modifyFeatures(AttributeType[] type, Object[] value, Filter filter)
+        throws IOException {
         featureStore().modifyFeatures(type, value, filter);
     }
 
     public void setFeatures(FeatureReader reader) throws IOException {
         featureStore()
-            .setFeatures(new RetypingFeatureReader(reader,
-                typeMap.getOriginalFeatureType()));
+            .setFeatures(new RetypingFeatureReader(reader, typeMap.getOriginalFeatureType()));
     }
 
     public Set addFeatures(FeatureCollection collection)

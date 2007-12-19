@@ -25,8 +25,7 @@ import java.util.logging.Level;
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
-public class FormatOptionsKvpParser extends KvpParser
-    implements ApplicationContextAware {
+public class FormatOptionsKvpParser extends KvpParser implements ApplicationContextAware {
     /**
      * application context used to lookup KvpParsers
      */
@@ -42,8 +41,7 @@ public class FormatOptionsKvpParser extends KvpParser
     }
 
     public Object parse(String value) throws Exception {
-        List parsers = GeoServerExtensions.extensions(KvpParser.class,
-                applicationContext);
+        List parsers = GeoServerExtensions.extensions(KvpParser.class, applicationContext);
         Map formatOptions = new CaseInsensitiveMap(new HashMap());
 
         //TODO: refactor some of this routine out into utility class since 

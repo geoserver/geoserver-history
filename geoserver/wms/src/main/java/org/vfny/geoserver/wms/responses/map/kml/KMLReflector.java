@@ -8,7 +8,6 @@ import org.geoserver.wms.WebMapService;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletResponse;
 
 
@@ -46,61 +45,64 @@ public class KMLReflector {
         this.wms = wms;
     }
 
-    public void wms(GetMapRequest request, HttpServletResponse response) throws Exception {
-        
+    public void wms(GetMapRequest request, HttpServletResponse response)
+        throws Exception {
         //first set up some of the normal wms defaults
-        if ( request.getWidth() < 1 ) {
-            request.setWidth( 1024 );
+        if (request.getWidth() < 1) {
+            request.setWidth(1024);
         }
-        if ( request.getHeight() < 1 ) {
-            request.setHeight( 1024 );
+
+        if (request.getHeight() < 1) {
+            request.setHeight(1024);
         }
-        
+
         //set rest of the wms defaults
-        wms.reflect( request );
-        
+        wms.reflect(request);
+
         //set some kml specific defaults
         Map fo = request.getFormatOptions();
-        if ( fo.get( "kmattr") == null ) {
-            fo.put( "kmattr", KMATTR );
+
+        if (fo.get("kmattr") == null) {
+            fo.put("kmattr", KMATTR);
         }
-        if ( fo.get( "kmscore" ) == null ) {
-            fo.put( "kmscore", KMSCORE );
+
+        if (fo.get("kmscore") == null) {
+            fo.put("kmscore", KMSCORE);
         }
-        
+
         //set the format
         //TODO: create a subclass of GetMapRequest to store these values
-        if ( request.getSuperOverlay() ) {
-            request.setFormat( KML_MIME_TYPE );
+        if (request.getSuperOverlay()) {
+            request.setFormat(KML_MIME_TYPE);
+        } else {
+            request.setFormat(KMZ_MIME_TYPE);
         }
-        else {
-            request.setFormat( KMZ_MIME_TYPE );
-        }
-        
-        response.setContentType( KML_MIME_TYPE );
-        
+
+        response.setContentType(KML_MIME_TYPE);
+
         //set the content disposition
         StringBuffer filename = new StringBuffer();
-        for ( int i = 0; i < request.getLayers().length; i++ ) {
+
+        for (int i = 0; i < request.getLayers().length; i++) {
             String name = request.getLayers()[i].getName();
-            
+
             //strip off prefix
             int j = name.indexOf(':');
-            if ( j > -1 ) {
-                    name = name.substring( j + 1 );
+
+            if (j > -1) {
+                name = name.substring(j + 1);
             }
-            
+
             filename.append(name + "_");
         }
-        filename.setLength(filename.length()-1);
-        response.setHeader("Content-Disposition", 
-                        "attachment; filename=" + filename.toString() + ".kml");
-        
+
+        filename.setLength(filename.length() - 1);
+        response.setHeader("Content-Disposition",
+            "attachment; filename=" + filename.toString() + ".kml");
+
         KMLNetworkLinkTransformer transformer = new KMLNetworkLinkTransformer();
         transformer.setIndentation(3);
-        transformer.setEncodeAsRegion( request.getSuperOverlay() );
-        transformer.transform( request, response.getOutputStream() );
-        
-     
+        transformer.setEncodeAsRegion(request.getSuperOverlay());
+        transformer.transform(request, response.getOutputStream());
     }
 }

@@ -4,6 +4,9 @@
  */
 package org.geoserver.ows.kvp;
 
+import org.geoserver.ows.KvpParser;
+import org.joda.time.Instant;
+import org.joda.time.Interval;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
@@ -14,10 +17,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import org.geoserver.ows.KvpParser;
-import org.joda.time.Instant;
-import org.joda.time.Interval;
 
 
 /**
@@ -33,19 +32,14 @@ public class TimeKvpParser extends KvpParser {
      * All patterns that are correct regarding the ISO-8601 norm.
      */
     private static final String[] PATTERNS = {
-        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-        "yyyy-MM-dd'T'HH:mm:ss'Z'",
-        "yyyy-MM-dd'T'HH:mm'Z'",
-        "yyyy-MM-dd'T'HH'Z'",
-        "yyyy-MM-dd",
-        "yyyy-MM",
-        "yyyy"
-    };
+            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "yyyy-MM-dd'T'HH:mm:ss'Z'", "yyyy-MM-dd'T'HH:mm'Z'",
+            "yyyy-MM-dd'T'HH'Z'", "yyyy-MM-dd", "yyyy-MM", "yyyy"
+        };
 
     /**
      * Amount of milliseconds in a day.
      */
-    static final long MILLIS_IN_DAY = 24*60*60*1000;
+    static final long MILLIS_IN_DAY = 24 * 60 * 60 * 1000;
 
     /**
      * Date formats to be used in order to parse the String given by the user in the request.
@@ -79,29 +73,39 @@ public class TimeKvpParser extends KvpParser {
         if (value == null) {
             return Collections.EMPTY_LIST;
         }
+
         value = value.trim();
+
         if (value.length() == 0) {
             return Collections.EMPTY_LIST;
         }
+
         final List dates = new ArrayList();
+
         if (value.indexOf(',') >= 0) {
             String[] listDates = value.split(",");
-            for (int i=0; i<listDates.length; i++) {
+
+            for (int i = 0; i < listDates.length; i++) {
                 dates.add(new Instant(getDate(listDates[i].trim()).getTime()));
             }
+
             return dates;
         }
-        
+
         String[] period = value.split("/");
+
         // Only one date given.
         if (period.length == 1) {
             dates.add(new Instant(getDate(value).getTime()));
+
             return dates;
         }
+
         // Period like : yyyy-MM-ddTHH:mm:ssZ/yyyy-MM-ddTHH:mm:ssZ/P1D
         if (period.length == 3) {
             final Date begin = getDate(period[0]);
-            final Date end   = getDate(period[1]);
+            final Date end = getDate(period[1]);
+
             //final long millisIncrement = parsePeriod(period[2]);
             final long startTime = begin.getTime();
             final long endTime = end.getTime();
@@ -112,8 +116,10 @@ public class TimeKvpParser extends KvpParser {
                 j++;
             }*/
             dates.add(new Interval(new Instant(startTime), new Instant(endTime)));
+
             return dates;
         }
+
         throw new ParseException("Invalid time parameter: " + value, 0);
     }
 
@@ -126,11 +132,12 @@ public class TimeKvpParser extends KvpParser {
      * @throws ParseException if the string can not be parsed.
      */
     private Date getDate(final String value) throws ParseException {
-        for (int i=0; i<formats.length; i++) {
+        for (int i = 0; i < formats.length; i++) {
             if (formats[i] == null) {
                 formats[i] = new SimpleDateFormat(PATTERNS[i]);
                 formats[i].setTimeZone(TimeZone.getTimeZone("GMT"));
             }
+
             /* We do not use the standard method DateFormat.parse(String), because if the parsing
              * stops before the end of the string, the remaining characters are just ignored and
              * no exception is thrown. So we have to ensure that the whole string is correct for
@@ -138,13 +145,15 @@ public class TimeKvpParser extends KvpParser {
              */
             ParsePosition pos = new ParsePosition(0);
             Date time = formats[i].parse(value, pos);
+
             if (pos.getIndex() == value.length()) {
                 return time;
             }
         }
+
         throw new ParseException("Invalid date: " + value, 0);
     }
-    
+
     /**
      * Parses the increment part of a period and returns it in milliseconds.
      *
@@ -155,51 +164,94 @@ public class TimeKvpParser extends KvpParser {
      */
     static long parsePeriod(final String period) throws ParseException {
         final int length = period.length();
-        if (length!=0 && Character.toUpperCase(period.charAt(0)) != 'P') {
+
+        if ((length != 0) && (Character.toUpperCase(period.charAt(0)) != 'P')) {
             throw new ParseException("Invalid period increment given: " + period, 0);
         }
+
         long millis = 0;
         boolean time = false;
         int lower = 0;
+
         while (++lower < length) {
             char letter = Character.toUpperCase(period.charAt(lower));
+
             if (letter == 'T') {
                 time = true;
+
                 if (++lower >= length) {
                     break;
                 }
             }
+
             int upper = lower;
             letter = period.charAt(upper);
-            while (!Character.isLetter(letter) || letter == 'e' || letter == 'E') {
+
+            while (!Character.isLetter(letter) || (letter == 'e') || (letter == 'E')) {
                 if (++upper >= length) {
                     throw new ParseException("Missing symbol in \"" + period + "\".", lower);
                 }
+
                 letter = period.charAt(upper);
             }
+
             letter = Character.toUpperCase(letter);
+
             final double value = Double.parseDouble(period.substring(lower, upper));
             final double factor;
+
             if (time) {
                 switch (letter) {
-                    case 'S': factor =       1000; break;
-                    case 'M': factor =    60*1000; break;
-                    case 'H': factor = 60*60*1000; break;
-                    default: throw new ParseException("Unknown time symbol: " + letter, upper);
+                case 'S':
+                    factor = 1000;
+
+                    break;
+
+                case 'M':
+                    factor = 60 * 1000;
+
+                    break;
+
+                case 'H':
+                    factor = 60 * 60 * 1000;
+
+                    break;
+
+                default:
+                    throw new ParseException("Unknown time symbol: " + letter, upper);
                 }
             } else {
                 switch (letter) {
-                    case 'D': factor =               MILLIS_IN_DAY; break;
-                    case 'W': factor =           7 * MILLIS_IN_DAY; break;
-                    // TODO: handle months in a better way than just taking the average length.
-                    case 'M': factor =          30 * MILLIS_IN_DAY; break;
-                    case 'Y': factor =      365.25 * MILLIS_IN_DAY; break;
-                    default: throw new ParseException("Unknown period symbol: " + letter, upper);
+                case 'D':
+                    factor = MILLIS_IN_DAY;
+
+                    break;
+
+                case 'W':
+                    factor = 7 * MILLIS_IN_DAY;
+
+                    break;
+
+                // TODO: handle months in a better way than just taking the average length.
+                case 'M':
+                    factor = 30 * MILLIS_IN_DAY;
+
+                    break;
+
+                case 'Y':
+                    factor = 365.25 * MILLIS_IN_DAY;
+
+                    break;
+
+                default:
+                    throw new ParseException("Unknown period symbol: " + letter, upper);
                 }
             }
+
             millis += Math.round(value * factor);
             lower = upper;
         }
+
         return millis;
     }
 }

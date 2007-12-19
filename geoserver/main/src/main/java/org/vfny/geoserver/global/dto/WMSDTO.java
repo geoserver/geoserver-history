@@ -48,10 +48,8 @@ public final class WMSDTO implements DataTransferObject {
 
     /** The interpolation rendering hint */
     private String allowInterpolation;
-
-	private boolean globalWatermarking = false;
-	
-	private String globalWatermarkingURL;
+    private boolean globalWatermarking = false;
+    private String globalWatermarkingURL;
 
     /**
      * WMS constructor.  does nothing
@@ -120,8 +118,7 @@ public final class WMSDTO implements DataTransferObject {
 
         WMSDTO dto = (WMSDTO) other;
 
-        boolean equals = (gmlPrefixing == dto.gmlPrefixing)
-            && (svgAntiAlias == dto.svgAntiAlias)
+        boolean equals = (gmlPrefixing == dto.gmlPrefixing) && (svgAntiAlias == dto.svgAntiAlias)
             && (globalWatermarking == dto.getGlobalWatermarking())
             && (globalWatermarkingURL == dto.getGlobalWatermarkingURL())
             && (allowInterpolation == dto.allowInterpolation);
@@ -315,19 +312,19 @@ public final class WMSDTO implements DataTransferObject {
         return allowInterpolation;
     }
 
-	public boolean getGlobalWatermarking() {
-		return globalWatermarking;
-	}
+    public boolean getGlobalWatermarking() {
+        return globalWatermarking;
+    }
 
-	public void setGlobalWatermarking(boolean globalWatermarking) {
-		this.globalWatermarking = globalWatermarking;
-	}
+    public void setGlobalWatermarking(boolean globalWatermarking) {
+        this.globalWatermarking = globalWatermarking;
+    }
 
-	public String getGlobalWatermarkingURL() {
-		return globalWatermarkingURL;
-	}
+    public String getGlobalWatermarkingURL() {
+        return globalWatermarkingURL;
+    }
 
-	public void setGlobalWatermarkingURL(String globalWatermarkingURL) {
-		this.globalWatermarkingURL = globalWatermarkingURL;
-	}
+    public void setGlobalWatermarkingURL(String globalWatermarkingURL) {
+        this.globalWatermarkingURL = globalWatermarkingURL;
+    }
 }

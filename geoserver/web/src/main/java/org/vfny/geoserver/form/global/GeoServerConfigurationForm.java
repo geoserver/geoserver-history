@@ -117,8 +117,7 @@ public class GeoServerConfigurationForm extends ActionForm {
     public void reset(ActionMapping arg0, HttpServletRequest request) {
         super.reset(arg0, request);
 
-        GlobalConfig globalConfig = (GlobalConfig) getServlet()
-                                                       .getServletContext()
+        GlobalConfig globalConfig = (GlobalConfig) getServlet().getServletContext()
                                                        .getAttribute(GlobalConfig.CONFIG_KEY);
 
         maxFeatures = globalConfig.getMaxFeatures();
@@ -171,33 +170,27 @@ public class GeoServerConfigurationForm extends ActionForm {
         contactEmail = contactConfig.getContactEmail();
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        final long maxMemoryAvailable = Runtime.getRuntime().maxMemory()
-            - (4 * 1024 * 1024);
+        final long maxMemoryAvailable = Runtime.getRuntime().maxMemory() - (4 * 1024 * 1024);
 
-        if ((jaiMemoryCapacity < 0)
-                || (jaiMemoryCapacity > Defaults.JaiMemoryCapacity)) {
+        if ((jaiMemoryCapacity < 0) || (jaiMemoryCapacity > Defaults.JaiMemoryCapacity)) {
             errors.add("jaiMemCapacity",
                 new ActionError("error.geoserver.JAIMemCapacity",
                     new Long(Defaults.JaiMemoryCapacity)));
         }
 
         if ((jaiMemoryThreshold < 0.0) || (jaiMemoryThreshold > 1.0)) {
-            errors.add("jaiMemThreshold",
-                new ActionError("error.geoserver.JAIMemThreshold"));
+            errors.add("jaiMemThreshold", new ActionError("error.geoserver.JAIMemThreshold"));
         }
 
         if ((jaiTileThreads < 0) || (jaiTileThreads > 100)) {
-            errors.add("jaiTileThreads",
-                new ActionError("error.geoserver.JAITileThreads"));
+            errors.add("jaiTileThreads", new ActionError("error.geoserver.JAITileThreads"));
         }
 
         if ((jaiTilePriority < 1) || (jaiTilePriority > 10)) {
-            errors.add("jaiTilePriority",
-                new ActionError("error.geoserver.JAITilePriority"));
+            errors.add("jaiTilePriority", new ActionError("error.geoserver.JAITilePriority"));
         }
 
         return errors;

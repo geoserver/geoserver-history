@@ -7,11 +7,11 @@
 package net.opengis.wfsv;
 
 import net.opengis.wfs.WfsPackage;
-
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -497,7 +497,8 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int VERSIONED_DELETE_ELEMENT_TYPE__FEATURE_VERSION = WfsPackage.DELETE_ELEMENT_TYPE_FEATURE_COUNT + 0;
+    int VERSIONED_DELETE_ELEMENT_TYPE__FEATURE_VERSION = WfsPackage.DELETE_ELEMENT_TYPE_FEATURE_COUNT
+        + 0;
 
     /**
      * The number of structural features of the '<em>Versioned Delete Element Type</em>' class.
@@ -506,7 +507,8 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int VERSIONED_DELETE_ELEMENT_TYPE_FEATURE_COUNT = WfsPackage.DELETE_ELEMENT_TYPE_FEATURE_COUNT + 1;
+    int VERSIONED_DELETE_ELEMENT_TYPE_FEATURE_COUNT = WfsPackage.DELETE_ELEMENT_TYPE_FEATURE_COUNT
+        + 1;
 
     /**
      * The meta object id for the '{@link net.opengis.wfsv.impl.VersionedUpdateElementTypeImpl <em>Versioned Update Element Type</em>}' class.
@@ -579,7 +581,8 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int VERSIONED_UPDATE_ELEMENT_TYPE__FEATURE_VERSION = WfsPackage.UPDATE_ELEMENT_TYPE_FEATURE_COUNT + 0;
+    int VERSIONED_UPDATE_ELEMENT_TYPE__FEATURE_VERSION = WfsPackage.UPDATE_ELEMENT_TYPE_FEATURE_COUNT
+        + 0;
 
     /**
      * The number of structural features of the '<em>Versioned Update Element Type</em>' class.
@@ -588,8 +591,8 @@ public interface WfsvPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int VERSIONED_UPDATE_ELEMENT_TYPE_FEATURE_COUNT = WfsPackage.UPDATE_ELEMENT_TYPE_FEATURE_COUNT + 1;
-
+    int VERSIONED_UPDATE_ELEMENT_TYPE_FEATURE_COUNT = WfsPackage.UPDATE_ELEMENT_TYPE_FEATURE_COUNT
+        + 1;
 
     /**
      * Returns the meta object for class '{@link net.opengis.wfsv.DifferenceQueryType <em>Difference Query Type</em>}'.
@@ -979,7 +982,7 @@ public interface WfsvPackage extends EPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    interface Literals  {
+    interface Literals {
         /**
          * The meta object literal for the '{@link net.opengis.wfsv.impl.DifferenceQueryTypeImpl <em>Difference Query Type</em>}' class.
          * <!-- begin-user-doc -->
@@ -1004,7 +1007,8 @@ public interface WfsvPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION = eINSTANCE.getDifferenceQueryType_FromFeatureVersion();
+        EAttribute DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION = eINSTANCE
+            .getDifferenceQueryType_FromFeatureVersion();
 
         /**
          * The meta object literal for the '<em><b>Srs Name</b></em>' attribute feature.
@@ -1020,7 +1024,8 @@ public interface WfsvPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION = eINSTANCE.getDifferenceQueryType_ToFeatureVersion();
+        EAttribute DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION = eINSTANCE
+            .getDifferenceQueryType_ToFeatureVersion();
 
         /**
          * The meta object literal for the '<em><b>Type Name</b></em>' attribute feature.
@@ -1246,7 +1251,8 @@ public interface WfsvPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute VERSIONED_DELETE_ELEMENT_TYPE__FEATURE_VERSION = eINSTANCE.getVersionedDeleteElementType_FeatureVersion();
+        EAttribute VERSIONED_DELETE_ELEMENT_TYPE__FEATURE_VERSION = eINSTANCE
+            .getVersionedDeleteElementType_FeatureVersion();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfsv.impl.VersionedUpdateElementTypeImpl <em>Versioned Update Element Type</em>}' class.
@@ -1264,8 +1270,7 @@ public interface WfsvPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute VERSIONED_UPDATE_ELEMENT_TYPE__FEATURE_VERSION = eINSTANCE.getVersionedUpdateElementType_FeatureVersion();
-
+        EAttribute VERSIONED_UPDATE_ELEMENT_TYPE__FEATURE_VERSION = eINSTANCE
+            .getVersionedUpdateElementType_FeatureVersion();
     }
-
 } //WfsvPackage

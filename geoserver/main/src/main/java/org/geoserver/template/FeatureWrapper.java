@@ -121,8 +121,7 @@ public class FeatureWrapper extends BeansWrapper {
         if (object instanceof FeatureCollection) {
             //create a model with just one variable called 'features'
             SimpleHash map = new SimpleHash();
-            map.put("features",
-                new CollectionModel((FeatureCollection) object, this));
+            map.put("features", new CollectionModel((FeatureCollection) object, this));
             map.put("type", wrap(((FeatureCollection) object).getSchema()));
 
             return map;
@@ -139,8 +138,7 @@ public class FeatureWrapper extends BeansWrapper {
                 Map attribute = new HashMap();
                 attribute.put("name", type.getLocalName());
                 attribute.put("type", type.getBinding().getName());
-                attribute.put("isGeometry",
-                    Boolean.valueOf(type instanceof GeometryAttributeType));
+                attribute.put("isGeometry", Boolean.valueOf(type instanceof GeometryAttributeType));
 
                 attributeMap.put(type.getLocalName(), attribute);
             }
@@ -176,12 +174,10 @@ public class FeatureWrapper extends BeansWrapper {
                     //some special case checks
                     attribute.put("rawValue", "");
                     attribute.put("isGeometry",
-                        Boolean.valueOf(Geometry.class.isAssignableFrom(
-                                type.getBinding())));
+                        Boolean.valueOf(Geometry.class.isAssignableFrom(type.getBinding())));
                 } else {
                     attribute.put("rawValue", value);
-                    attribute.put("isGeometry",
-                        Boolean.valueOf(value instanceof Geometry));
+                    attribute.put("isGeometry", Boolean.valueOf(value instanceof Geometry));
                 }
 
                 attribute.put("name", type.getName());

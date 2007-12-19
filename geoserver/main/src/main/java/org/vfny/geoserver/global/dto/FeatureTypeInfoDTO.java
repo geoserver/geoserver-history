@@ -161,8 +161,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      */
     public FeatureTypeInfoDTO(FeatureTypeInfoDTO dto) {
         if (dto == null) {
-            throw new NullPointerException(
-                "Non null FeatureTypeInfoDTO required");
+            throw new NullPointerException("Non null FeatureTypeInfoDTO required");
         }
 
         dataStoreId = dto.getDataStoreId();
@@ -300,9 +299,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         r = r && (schemaBase == f.getSchemaBase());
 
         r = r && (isCachingEnabled() == f.isCachingEnabled());
-        r = r
-            && ((getCacheMaxAge() != null)
-            && getCacheMaxAge().equals(f.getCacheMaxAge()));
+        r = r && ((getCacheMaxAge() != null) && getCacheMaxAge().equals(f.getCacheMaxAge()));
 
         return r;
     }
@@ -846,12 +843,11 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     //-- Modif C. Kolbowicz - 06/10/2004
     public String toString() {
-        return "[FeatureTypeInfoDTO: " + name + ", datastoreId: " + dataStoreId
-        + ", latLongBBOX: " + latLongBBox + "\n  SRS: " + SRS + ", schema:"
-        + schema + ", schemaName: " + schemaName + ", dirName: " + dirName
-        + ", title: " + title + "\n  definitionQuery: " + definitionQuery
-        + ", defaultStyle: " + defaultStyle + ", legend icon: " + legendURL
-        + ", caching?: " + cachingEnabled + ", max-age: " + cacheMaxAge;
+        return "[FeatureTypeInfoDTO: " + name + ", datastoreId: " + dataStoreId + ", latLongBBOX: "
+        + latLongBBox + "\n  SRS: " + SRS + ", schema:" + schema + ", schemaName: " + schemaName
+        + ", dirName: " + dirName + ", title: " + title + "\n  definitionQuery: " + definitionQuery
+        + ", defaultStyle: " + defaultStyle + ", legend icon: " + legendURL + ", caching?: "
+        + cachingEnabled + ", max-age: " + cacheMaxAge;
     }
 
     public String getWmsPath() {

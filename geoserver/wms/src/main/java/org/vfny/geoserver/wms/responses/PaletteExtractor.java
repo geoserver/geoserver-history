@@ -60,8 +60,7 @@ import java.util.Set;
  * referenced (a future version may learn to extract a palette merging the ones
  * of the external graphics).
  */
-public class PaletteExtractor extends FilterAttributeExtractor
-    implements StyleVisitor {
+public class PaletteExtractor extends FilterAttributeExtractor implements StyleVisitor {
     public static final Color TRANSPARENT = new Color(255, 255, 255, 0);
     private static final int TRANSPARENT_CODE = (255 << 16) | (255 << 8) | 255;
     Set /*<Color>*/ colors;
@@ -87,8 +86,7 @@ public class PaletteExtractor extends FilterAttributeExtractor
 
     public boolean canComputePalette() {
         // hard fail conditions
-        if (translucentSymbolizers || externalGraphicsSymbolizers
-                || unknownColors || rasterUsed) {
+        if (translucentSymbolizers || externalGraphicsSymbolizers || unknownColors || rasterUsed) {
             return false;
         }
 
@@ -114,15 +112,14 @@ public class PaletteExtractor extends FilterAttributeExtractor
 
         for (Iterator it = colors.iterator(); it.hasNext();) {
             Color color = (Color) it.next();
-            cmap[i++] = (color.getAlpha() << 24) | (color.getRed() << 16)
-                | (color.getGreen() << 8) | color.getBlue();
+            cmap[i++] = (color.getAlpha() << 24) | (color.getRed() << 16) | (color.getGreen() << 8)
+                | color.getBlue();
         }
 
         // have a nice looking palette
         Arrays.sort(cmap);
 
-        int transparentIndex = (cmap[cmap.length - 1] == TRANSPARENT_CODE)
-            ? (cmap.length - 1) : (-1);
+        int transparentIndex = (cmap[cmap.length - 1] == TRANSPARENT_CODE) ? (cmap.length - 1) : (-1);
 
         // find out the minimum number of bits required to represent the palette, and return it
         int bits = 8;
@@ -145,8 +142,8 @@ public class PaletteExtractor extends FilterAttributeExtractor
             cmap = temp;
         }
 
-        return new IndexColorModel(bits, cmap.length, cmap, 0, true,
-            transparentIndex, DataBuffer.TYPE_BYTE);
+        return new IndexColorModel(bits, cmap.length, cmap, 0, true, transparentIndex,
+            DataBuffer.TYPE_BYTE);
     }
 
     /**
@@ -161,8 +158,7 @@ public class PaletteExtractor extends FilterAttributeExtractor
 
         if (opacity instanceof Literal) {
             Literal lo = (Literal) opacity;
-            double value = ((Double) lo.evaluate(null, Double.class))
-                .doubleValue();
+            double value = ((Double) lo.evaluate(null, Double.class)).doubleValue();
             translucentSymbolizers = translucentSymbolizers || (value != 1);
         } else {
             // we cannot know, so we assume some will be non opaque
@@ -456,33 +452,27 @@ public class PaletteExtractor extends FilterAttributeExtractor
         // nothing to do
     }
 
-	public void visit(ContrastEnhancement contrastEnhancement) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void visit(ContrastEnhancement contrastEnhancement) {
+        // TODO Auto-generated method stub
+    }
 
-	public void visit(ImageOutline outline) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void visit(ImageOutline outline) {
+        // TODO Auto-generated method stub
+    }
 
-	public void visit(ChannelSelection cs) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void visit(ChannelSelection cs) {
+        // TODO Auto-generated method stub
+    }
 
-	public void visit(OverlapBehavior ob) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void visit(OverlapBehavior ob) {
+        // TODO Auto-generated method stub
+    }
 
-	public void visit(SelectedChannelType sct) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void visit(SelectedChannelType sct) {
+        // TODO Auto-generated method stub
+    }
 
-	public void visit(ShadedRelief sr) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void visit(ShadedRelief sr) {
+        // TODO Auto-generated method stub
+    }
 }

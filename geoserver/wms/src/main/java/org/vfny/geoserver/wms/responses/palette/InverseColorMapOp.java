@@ -38,10 +38,9 @@ public final class InverseColorMapOp implements BufferedImageOp {
     protected final boolean hasAlpha;
     protected final int transparencyIndex;
 
-    public InverseColorMapOp(final IndexColorModel destCM,
-        final int quantizationColors, final int alphaThreshold) {
-        this.rasterOp = new InverseColorMapRasterOp(destCM, quantizationColors,
-                alphaThreshold);
+    public InverseColorMapOp(final IndexColorModel destCM, final int quantizationColors,
+        final int alphaThreshold) {
+        this.rasterOp = new InverseColorMapRasterOp(destCM, quantizationColors, alphaThreshold);
         this.icm = destCM;
         this.alphaThreshold = alphaThreshold;
         hasAlpha = icm.hasAlpha();
@@ -53,15 +52,14 @@ public final class InverseColorMapOp implements BufferedImageOp {
             InverseColorMapRasterOp.DEFAULT_ALPHA_TH);
     }
 
-    public BufferedImage createCompatibleDestImage(BufferedImage src,
-        ColorModel destCM) {
+    public BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel destCM) {
         if (!(destCM instanceof IndexColorModel)
                 || (((IndexColorModel) destCM).getTransparency() == Transparency.TRANSLUCENT)) {
             return null;
         }
 
-        return new BufferedImage(src.getWidth(), src.getHeight(),
-            BufferedImage.TYPE_BYTE_INDEXED, (IndexColorModel) destCM);
+        return new BufferedImage(src.getWidth(), src.getHeight(), BufferedImage.TYPE_BYTE_INDEXED,
+            (IndexColorModel) destCM);
     }
 
     public BufferedImage filter(BufferedImage src, BufferedImage dest) {
@@ -101,8 +99,8 @@ public final class InverseColorMapOp implements BufferedImageOp {
         // Create the destination image
         //
         // //
-        final BufferedImage dest = new BufferedImage(src.getWidth(),
-                src.getHeight(), BufferedImage.TYPE_BYTE_INDEXED, icm);
+        final BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(),
+                BufferedImage.TYPE_BYTE_INDEXED, icm);
         final WritableRaster destWr = dest.getRaster();
 
         // //
@@ -121,8 +119,8 @@ public final class InverseColorMapOp implements BufferedImageOp {
             final int minTileX = src.getMinTileX();
             final int minTileY = src.getMinTileY();
             final Raster sourceR = src.getTile(minTileX, minTileY);
-            rasterOp.filter(sourceR.createChild(src.getMinX(), src.getMinY(),
-                    src.getWidth(), src.getHeight(), 0, 0, null), destWr);
+            rasterOp.filter(sourceR.createChild(src.getMinX(), src.getMinY(), src.getWidth(),
+                    src.getHeight(), 0, 0, null), destWr);
 
             return dest;
         }
@@ -182,8 +180,7 @@ public final class InverseColorMapOp implements BufferedImageOp {
                         if (!sourceHasAlpha || !hasAlpha
                                 || (sourceHasAlpha && hasAlpha
                                 && (rgba[alphaBand] >= this.alphaThreshold))) {
-                            int val = invCM.getIndexNearest(rgba[0] & 0xff,
-                                    rgba[1] & 0xff, rgba[2]);
+                            int val = invCM.getIndexNearest(rgba[0] & 0xff, rgba[1] & 0xff, rgba[2]);
 
                             if (hasAlpha && (val >= transparencyIndex)) {
                                 val++;

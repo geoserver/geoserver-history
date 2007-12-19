@@ -39,12 +39,10 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
                                                                                             .getName());
 
     /** DOCUMENT ME! */
-    private static final FilterFactory filterFactory = FilterFactoryFinder
-        .createFilterFactory();
+    private static final FilterFactory filterFactory = FilterFactoryFinder.createFilterFactory();
 
     /** DOCUMENT ME! */
-    private static final StyleFactory sFac = StyleFactoryFinder
-        .createStyleFactory();
+    private static final StyleFactory sFac = StyleFactoryFinder.createStyleFactory();
 
     /** DOCUMENT ME! */
     private static final Color BG_COLOR = Color.white;
@@ -103,8 +101,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
         final FeatureSource basicPolygons = ds.getFeatureSource(BASIC_POLYGONS_TYPE);
         final Envelope env = basicPolygons.getBounds();
 
-        LOGGER.info("about to create map ctx for BasicPolygons with bounds "
-            + env);
+        LOGGER.info("about to create map ctx for BasicPolygons with bounds " + env);
 
         final WMSMapContext map = new WMSMapContext();
         map.setAreaOfInterest(env);
@@ -152,14 +149,13 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
      * @throws IOException
      *             DOCUMENT ME!
      */
-    public void testBlueLake()
-        throws IOException, IllegalFilterException, Exception {
+    public void testBlueLake() throws IOException, IllegalFilterException, Exception {
         final DataStore ds = getCiteDataStore();
         Envelope env = getBlueLakeBounds();
         double shift = env.getWidth() / 6;
 
-        env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift,
-                env.getMinY() - shift, env.getMaxY() + shift);
+        env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift, env.getMinY() - shift,
+                env.getMaxY() + shift);
 
         final WMSMapContext map = new WMSMapContext();
         int w = 400;
@@ -170,28 +166,18 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
         map.setTransparent(true);
         map.setRequest(new GetMapRequest(null));
 
-        map.addLayer(ds.getFeatureSource(FORESTS_TYPE),
-            getDefaultStyle(FORESTS_TYPE));
-        map.addLayer(ds.getFeatureSource(LAKES_TYPE),
-            getDefaultStyle(LAKES_TYPE));
-        map.addLayer(ds.getFeatureSource(STREAMS_TYPE),
-            getDefaultStyle(STREAMS_TYPE));
-        map.addLayer(ds.getFeatureSource(NAMED_PLACES_TYPE),
-            getDefaultStyle(NAMED_PLACES_TYPE));
-        map.addLayer(ds.getFeatureSource(ROAD_SEGMENTS_TYPE),
-            getDefaultStyle(ROAD_SEGMENTS_TYPE));
-        map.addLayer(ds.getFeatureSource(PONDS_TYPE),
-            getDefaultStyle(PONDS_TYPE));
-        map.addLayer(ds.getFeatureSource(BUILDINGS_TYPE),
-            getDefaultStyle(BUILDINGS_TYPE));
+        map.addLayer(ds.getFeatureSource(FORESTS_TYPE), getDefaultStyle(FORESTS_TYPE));
+        map.addLayer(ds.getFeatureSource(LAKES_TYPE), getDefaultStyle(LAKES_TYPE));
+        map.addLayer(ds.getFeatureSource(STREAMS_TYPE), getDefaultStyle(STREAMS_TYPE));
+        map.addLayer(ds.getFeatureSource(NAMED_PLACES_TYPE), getDefaultStyle(NAMED_PLACES_TYPE));
+        map.addLayer(ds.getFeatureSource(ROAD_SEGMENTS_TYPE), getDefaultStyle(ROAD_SEGMENTS_TYPE));
+        map.addLayer(ds.getFeatureSource(PONDS_TYPE), getDefaultStyle(PONDS_TYPE));
+        map.addLayer(ds.getFeatureSource(BUILDINGS_TYPE), getDefaultStyle(BUILDINGS_TYPE));
 
-        map.addLayer(ds.getFeatureSource(DIVIDED_ROUTES_TYPE),
-            getDefaultStyle(DIVIDED_ROUTES_TYPE));
-        map.addLayer(ds.getFeatureSource(BRIDGES_TYPE),
-            getDefaultStyle(BRIDGES_TYPE));
+        map.addLayer(ds.getFeatureSource(DIVIDED_ROUTES_TYPE), getDefaultStyle(DIVIDED_ROUTES_TYPE));
+        map.addLayer(ds.getFeatureSource(BRIDGES_TYPE), getDefaultStyle(BRIDGES_TYPE));
 
-        map.addLayer(ds.getFeatureSource(MAP_NEATLINE_TYPE),
-            getDefaultStyle(MAP_NEATLINE_TYPE));
+        map.addLayer(ds.getFeatureSource(MAP_NEATLINE_TYPE), getDefaultStyle(MAP_NEATLINE_TYPE));
 
         map.setAreaOfInterest(env);
 
@@ -208,8 +194,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
      * @param testName
      * @param producer
      */
-    protected void assertNotBlank(String testName,
-        DefaultRasterMapProducer producer) {
+    protected void assertNotBlank(String testName, DefaultRasterMapProducer producer) {
         BufferedImage image = (BufferedImage) producer.getImage();
         assertNotBlank(testName, image, BG_COLOR);
         showImage(testName, image);
@@ -236,8 +221,8 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
 
         double shift = env.getWidth() / 6;
 
-        env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift,
-                env.getMinY() - shift, env.getMaxY() + shift);
+        env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift, env.getMinY() - shift,
+                env.getMaxY() + shift);
 
         WMSMapContext map = new WMSMapContext();
         map.setRequest(new GetMapRequest(null));
@@ -295,8 +280,8 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
          * @throws IOException
          *             never.
          */
-        public void formatImageOutputStream(RenderedImage image,
-            OutputStream outStream) throws WmsException, IOException {
+        public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
+            throws WmsException, IOException {
             /*
              * Intentionally left blank, since this class is used just to ensure
              * the abstract raster producer correctly generates a BufferedImage.
@@ -327,8 +312,7 @@ public class DefaultRasterMapProducerTest extends AbstractCiteDataTest {
             //
             // // Combine the color model and raster into a buffered image
             // return new BufferedImage(DEFAULT_PALETTE, raster, false, null);
-            return new BufferedImage(width, height,
-                BufferedImage.TYPE_4BYTE_ABGR);
+            return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         }
 
         public String getContentDisposition() {

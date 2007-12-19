@@ -442,8 +442,7 @@ public class GetMapRequest extends WMSRequest {
     }
 
     public void setLayers(List /*<MapLayerInfo>*/ layers) {
-        this.mandatoryParams.layers = (MapLayerInfo[]) layers.toArray(new MapLayerInfo[layers
-                .size()]);
+        this.mandatoryParams.layers = (MapLayerInfo[]) layers.toArray(new MapLayerInfo[layers.size()]);
     }
 
     /**
@@ -524,8 +523,7 @@ public class GetMapRequest extends WMSRequest {
     }
 
     public void setTransparent(Boolean transparent) {
-        this.optionalParams.transparent = (transparent != null)
-            ? transparent.booleanValue() : false;
+        this.optionalParams.transparent = (transparent != null) ? transparent.booleanValue() : false;
     }
 
     public void setBuffer(int buffer) {

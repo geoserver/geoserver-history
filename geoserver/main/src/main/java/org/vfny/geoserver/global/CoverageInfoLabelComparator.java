@@ -19,7 +19,6 @@ public class CoverageInfoLabelComparator implements Comparator {
         CoverageInfo c2 = (CoverageInfo) o2;
 
         // this will take care of null values as well
-        return new CompareToBuilder().append(c1.getLabel(), c2.getLabel())
-                                     .toComparison();
+        return new CompareToBuilder().append(c1.getLabel(), c2.getLabel()).toComparison();
     }
 }

@@ -101,7 +101,6 @@ O:
             requested.addAll(infos);
         }
 
-        return (FeatureTypeInfo[]) requested.toArray(new FeatureTypeInfo[requested
-            .size()]);
+        return (FeatureTypeInfo[]) requested.toArray(new FeatureTypeInfo[requested.size()]);
     }
 }

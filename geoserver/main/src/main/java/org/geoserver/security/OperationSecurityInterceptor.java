@@ -33,10 +33,8 @@ public class OperationSecurityInterceptor extends AbstractSecurityInterceptor
         return super.beforeInvocation(object);
     }
 
-    public Object invoke(Operation operation, Method method,
-        Object serviceBean, Object[] parameters)
-        throws InvocationTargetException, IllegalArgumentException,
-            IllegalAccessException {
+    public Object invoke(Operation operation, Method method, Object serviceBean, Object[] parameters)
+        throws InvocationTargetException, IllegalArgumentException, IllegalAccessException {
         InterceptorStatusToken token = super.beforeInvocation(operation);
 
         try {

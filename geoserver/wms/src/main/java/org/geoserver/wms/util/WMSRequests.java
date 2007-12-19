@@ -39,8 +39,7 @@ public class WMSRequests {
      *
      * @return The base for wms requests.
      */
-    public static String getBaseUrl(HttpServletRequest request,
-        GeoServer geoServer) {
+    public static String getBaseUrl(HttpServletRequest request, GeoServer geoServer) {
         String baseUrl = Requests.getBaseUrl(request, geoServer);
         baseUrl = Requests.appendContextPath(baseUrl, "wms");
 
@@ -56,8 +55,7 @@ public class WMSRequests {
      * @return The base for wms requests.
      */
     public static String getBaseUrl(WMSRequest request) {
-        return getBaseUrl(request.getHttpServletRequest(),
-            request.getGeoServer());
+        return getBaseUrl(request.getHttpServletRequest(), request.getGeoServer());
     }
 
     /**
@@ -96,8 +94,8 @@ public class WMSRequests {
      *
      * @return The full url for a getMap request.
      */
-    public static String getTiledGetMapUrl(GetMapRequest req, MapLayer layer,
-        Envelope bbox, String[] kvp) {
+    public static String getTiledGetMapUrl(GetMapRequest req, MapLayer layer, Envelope bbox,
+        String[] kvp) {
         String baseUrl = Requests.getTileCacheBaseUrl(req.getHttpServletRequest(),
                 req.getGeoServer());
 
@@ -105,8 +103,7 @@ public class WMSRequests {
             return getGetMapUrl(req, layer, bbox, kvp);
         }
 
-        return getGetMapUrl(baseUrl, req, layer.getTitle(),
-            layer.getStyle().getName(), bbox, kvp);
+        return getGetMapUrl(baseUrl, req, layer.getTitle(), layer.getStyle().getName(), bbox, kvp);
     }
 
     /**
@@ -127,8 +124,7 @@ public class WMSRequests {
      *
      * @return The full url for a getMap request.
      */
-    public static String getGetMapUrl(GetMapRequest req, MapLayer layer,
-        Envelope bbox, String[] kvp) {
+    public static String getGetMapUrl(GetMapRequest req, MapLayer layer, Envelope bbox, String[] kvp) {
         //base url
         String baseUrl = getBaseUrl(req);
 
@@ -162,8 +158,8 @@ public class WMSRequests {
      *
      * @return The full url for a getMap request.
      */
-    public static String getGetMapUrl(GetMapRequest req, String layer,
-        String style, Envelope bbox, String[] kvp) {
+    public static String getGetMapUrl(GetMapRequest req, String layer, String style, Envelope bbox,
+        String[] kvp) {
         //base url
         String baseUrl = getBaseUrl(req);
 
@@ -179,8 +175,7 @@ public class WMSRequests {
      *
      * @return The full url for a getMap request.
      */
-    public static String getGetLegendGraphicUrl(WMSRequest req, MapLayer layer,
-        String[] kvp) {
+    public static String getGetLegendGraphicUrl(WMSRequest req, MapLayer layer, String[] kvp) {
         //parameters
         HashMap params = new HashMap();
 
@@ -205,8 +200,8 @@ public class WMSRequests {
      * Helper method for encoding GetMap request.
      *
      */
-    static String getGetMapUrl(String baseUrl, GetMapRequest req, String layer,
-        String style, Envelope bbox, String[] kvp) {
+    static String getGetMapUrl(String baseUrl, GetMapRequest req, String layer, String style,
+        Envelope bbox, String[] kvp) {
         //parameters
         HashMap params = new HashMap();
 
@@ -228,8 +223,7 @@ public class WMSRequests {
                 //use default for layer
                 for (int i = 0; i < req.getLayers().length; i++) {
                     if (layer.equals(req.getLayers()[i].getName())) {
-                        styles.append(req.getLayers()[i].getDefaultStyle()
-                                                        .getName());
+                        styles.append(req.getLayers()[i].getDefaultStyle().getName());
                     }
                 }
             }
@@ -264,15 +258,11 @@ public class WMSRequests {
 
             if (req.getRawKvp().get("filter") != null) {
                 //split out the filter we need
-                List filters = KvpUtils.readFlat((String) req.getRawKvp()
-                                                             .get("filter"),
-                        "()");
+                List filters = KvpUtils.readFlat((String) req.getRawKvp().get("filter"), "()");
                 params.put("filter", filters.get(index));
             } else if (req.getRawKvp().get("cql_filter") != null) {
                 //split out the filter we need
-                List filters = KvpUtils.readFlat((String) req.getRawKvp()
-                                                             .get("cql_filter"),
-                        "|");
+                List filters = KvpUtils.readFlat((String) req.getRawKvp().get("cql_filter"), "|");
                 params.put("cql_filter", filters.get(index));
             } else if (req.getRawKvp().get("featureid") != null) {
                 //semantics of feautre id slightly different, replicate entire value
@@ -307,10 +297,8 @@ public class WMSRequests {
         params.put("srs", req.getSRS());
 
         //format options
-        if ((req.getFormatOptions() != null)
-                && !req.getFormatOptions().isEmpty()) {
-            params.put("format_options",
-                encodeFormatOptions(req.getFormatOptions()));
+        if ((req.getFormatOptions() != null) && !req.getFormatOptions().isEmpty()) {
+            params.put("format_options", encodeFormatOptions(req.getFormatOptions()));
         }
 
         //overrides / additions
@@ -375,10 +363,8 @@ public class WMSRequests {
      * Helper method to encode an envelope to be used in a wms request.
      */
     static String encode(Envelope box) {
-        return new StringBuffer().append(box.getMinX()).append(",")
-                                 .append(box.getMinY()).append(",")
-                                 .append(box.getMaxX()).append(",")
-                                 .append(box.getMaxY()).toString();
+        return new StringBuffer().append(box.getMinX()).append(",").append(box.getMinY()).append(",")
+                                 .append(box.getMaxX()).append(",").append(box.getMaxY()).toString();
     }
 
     /**
@@ -395,8 +381,7 @@ public class WMSRequests {
 
         for (Iterator e = kvp.entrySet().iterator(); e.hasNext();) {
             Map.Entry entry = (Map.Entry) e.next();
-            query.append(entry.getKey()).append("=").append(entry.getValue())
-                 .append("&");
+            query.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
 
         query.setLength(query.length() - 1);

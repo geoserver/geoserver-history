@@ -36,8 +36,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *
  * @generated
  */
-public class GetCapabilitiesTypeImpl extends EObjectImpl
-    implements GetCapabilitiesType {
+public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilitiesType {
     /**
      * The default value of the '{@link #getUpdateSequence() <em>Update Sequence</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -140,16 +139,15 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetAcceptVersions(
-        AcceptVersionsType newAcceptVersions, NotificationChain msgs) {
+    public NotificationChain basicSetAcceptVersions(AcceptVersionsType newAcceptVersions,
+        NotificationChain msgs) {
         AcceptVersionsType oldAcceptVersions = acceptVersions;
         acceptVersions = newAcceptVersions;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
-                    OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS,
-                    oldAcceptVersions, newAcceptVersions);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS, oldAcceptVersions,
+                    newAcceptVersions);
 
             if (msgs == null) {
                 msgs = notification;
@@ -172,15 +170,13 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl
 
             if (acceptVersions != null) {
                 msgs = ((InternalEObject) acceptVersions).eInverseRemove(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS,
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS,
                         null, msgs);
             }
 
             if (newAcceptVersions != null) {
                 msgs = ((InternalEObject) newAcceptVersions).eInverseAdd(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS,
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS,
                         null, msgs);
             }
 
@@ -191,8 +187,8 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl
             }
         } else if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS,
-                    newAcceptVersions, newAcceptVersions));
+                    OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS, newAcceptVersions,
+                    newAcceptVersions));
         }
     }
 
@@ -210,16 +206,13 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetSections(SectionsType newSections,
-        NotificationChain msgs) {
+    public NotificationChain basicSetSections(SectionsType newSections, NotificationChain msgs) {
         SectionsType oldSections = sections;
         sections = newSections;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
-                    OwsPackage.GET_CAPABILITIES_TYPE__SECTIONS, oldSections,
-                    newSections);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.GET_CAPABILITIES_TYPE__SECTIONS, oldSections, newSections);
 
             if (msgs == null) {
                 msgs = notification;
@@ -242,14 +235,14 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl
 
             if (sections != null) {
                 msgs = ((InternalEObject) sections).eInverseRemove(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.GET_CAPABILITIES_TYPE__SECTIONS, null, msgs);
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.GET_CAPABILITIES_TYPE__SECTIONS, null,
+                        msgs);
             }
 
             if (newSections != null) {
                 msgs = ((InternalEObject) newSections).eInverseAdd(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.GET_CAPABILITIES_TYPE__SECTIONS, null, msgs);
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.GET_CAPABILITIES_TYPE__SECTIONS, null,
+                        msgs);
             }
 
             msgs = basicSetSections(newSections, msgs);
@@ -259,8 +252,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl
             }
         } else if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.GET_CAPABILITIES_TYPE__SECTIONS, newSections,
-                    newSections));
+                    OwsPackage.GET_CAPABILITIES_TYPE__SECTIONS, newSections, newSections));
         }
     }
 
@@ -278,16 +270,15 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetAcceptFormats(
-        AcceptFormatsType newAcceptFormats, NotificationChain msgs) {
+    public NotificationChain basicSetAcceptFormats(AcceptFormatsType newAcceptFormats,
+        NotificationChain msgs) {
         AcceptFormatsType oldAcceptFormats = acceptFormats;
         acceptFormats = newAcceptFormats;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
-                    OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_FORMATS,
-                    oldAcceptFormats, newAcceptFormats);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_FORMATS, oldAcceptFormats,
+                    newAcceptFormats);
 
             if (msgs == null) {
                 msgs = notification;
@@ -310,15 +301,13 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl
 
             if (acceptFormats != null) {
                 msgs = ((InternalEObject) acceptFormats).eInverseRemove(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_FORMATS,
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_FORMATS,
                         null, msgs);
             }
 
             if (newAcceptFormats != null) {
                 msgs = ((InternalEObject) newAcceptFormats).eInverseAdd(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_FORMATS,
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_FORMATS,
                         null, msgs);
             }
 
@@ -329,8 +318,8 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl
             }
         } else if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_FORMATS,
-                    newAcceptFormats, newAcceptFormats));
+                    OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_FORMATS, newAcceptFormats,
+                    newAcceptFormats));
         }
     }
 
@@ -354,8 +343,8 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.GET_CAPABILITIES_TYPE__UPDATE_SEQUENCE,
-                    oldUpdateSequence, updateSequence));
+                    OwsPackage.GET_CAPABILITIES_TYPE__UPDATE_SEQUENCE, oldUpdateSequence,
+                    updateSequence));
         }
     }
 
@@ -379,8 +368,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.GET_CAPABILITIES_TYPE__BASE_URL, oldBaseUrl,
-                    baseUrl));
+                    OwsPackage.GET_CAPABILITIES_TYPE__BASE_URL, oldBaseUrl, baseUrl));
         }
     }
 
@@ -389,8 +377,8 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS:
             return basicSetAcceptVersions(null, msgs);
@@ -521,8 +509,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl
 
         case OwsPackage.GET_CAPABILITIES_TYPE__UPDATE_SEQUENCE:
             return (UPDATE_SEQUENCE_EDEFAULT == null) ? (updateSequence != null)
-                                                      : (!UPDATE_SEQUENCE_EDEFAULT
-            .equals(updateSequence));
+                                                      : (!UPDATE_SEQUENCE_EDEFAULT.equals(updateSequence));
 
         case OwsPackage.GET_CAPABILITIES_TYPE__BASE_URL:
             return (BASE_URL_EDEFAULT == null) ? (baseUrl != null)

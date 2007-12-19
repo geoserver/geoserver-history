@@ -75,8 +75,8 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
 
     public ReprojectingFeatureCollection(FeatureCollection delegate,
         CoordinateReferenceSystem target)
-        throws SchemaException, OperationNotFoundException,
-            FactoryRegistryException, FactoryException {
+        throws SchemaException, OperationNotFoundException, FactoryRegistryException,
+            FactoryException {
         super(delegate);
 
         this.target = target;
@@ -86,8 +86,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
         transformers = new HashMap();
 
         //cache "default" transform
-        CoordinateReferenceSystem source = delegate.getSchema()
-                                                   .getDefaultGeometry()
+        CoordinateReferenceSystem source = delegate.getSchema().getDefaultGeometry()
                                                    .getCoordinateSystem();
 
         if (source != null) {
@@ -223,8 +222,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
             if (object instanceof Geometry) {
                 //check for crs
                 Geometry geometry = (Geometry) object;
-                CoordinateReferenceSystem crs = (CoordinateReferenceSystem) geometry
-                    .getUserData();
+                CoordinateReferenceSystem crs = (CoordinateReferenceSystem) geometry.getUserData();
 
                 if (crs == null) {
                     // no crs specified on geometry, check default
@@ -249,10 +247,8 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
                                                                                .createOperation(crs,
                                         target).getMathTransform();
                             } catch (Exception e) {
-                                String msg = "Could not transform for crs: "
-                                    + crs;
-                                throw (IOException) new IOException(msg)
-                                .initCause(e);
+                                String msg = "Could not transform for crs: " + crs;
+                                throw (IOException) new IOException(msg).initCause(e);
                             }
 
                             transformer.setMathTransform(tx);
@@ -263,8 +259,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
                         try {
                             object = transformer.transform(geometry);
                         } catch (TransformException e) {
-                            String msg = "Error occured transforming "
-                                + geometry.toString();
+                            String msg = "Error occured transforming " + geometry.toString();
                             throw (IOException) new IOException(msg).initCause(e);
                         }
                     }

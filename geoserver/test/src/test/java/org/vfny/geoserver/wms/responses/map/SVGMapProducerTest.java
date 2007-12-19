@@ -34,9 +34,8 @@ public class SVGMapProducerTest extends AbstractCiteDataTest {
                 });
         Polygon polygon = gf.createPolygon(gf.createLinearRing(
                     new Coordinate[] {
-                        new Coordinate(0, 0), new Coordinate(0, 200),
-                        new Coordinate(200, 200), new Coordinate(200, 0),
-                        new Coordinate(0, 0)
+                        new Coordinate(0, 0), new Coordinate(0, 200), new Coordinate(200, 200),
+                        new Coordinate(200, 0), new Coordinate(0, 0)
                     }), null);
 
         AttributeTypeFactory atf = AttributeTypeFactory.defaultInstance();

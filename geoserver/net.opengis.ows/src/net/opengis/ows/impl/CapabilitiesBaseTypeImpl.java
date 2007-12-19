@@ -36,8 +36,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *
  * @generated
  */
-public class CapabilitiesBaseTypeImpl extends EObjectImpl
-    implements CapabilitiesBaseType {
+public class CapabilitiesBaseTypeImpl extends EObjectImpl implements CapabilitiesBaseType {
     /**
      * The default value of the '{@link #getUpdateSequence() <em>Update Sequence</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -141,14 +140,12 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl
      * @generated
      */
     public NotificationChain basicSetServiceIdentification(
-        ServiceIdentificationType newServiceIdentification,
-        NotificationChain msgs) {
+        ServiceIdentificationType newServiceIdentification, NotificationChain msgs) {
         ServiceIdentificationType oldServiceIdentification = serviceIdentification;
         serviceIdentification = newServiceIdentification;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     OwsPackage.CAPABILITIES_BASE_TYPE__SERVICE_IDENTIFICATION,
                     oldServiceIdentification, newServiceIdentification);
 
@@ -167,23 +164,20 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setServiceIdentification(
-        ServiceIdentificationType newServiceIdentification) {
+    public void setServiceIdentification(ServiceIdentificationType newServiceIdentification) {
         if (newServiceIdentification != serviceIdentification) {
             NotificationChain msgs = null;
 
             if (serviceIdentification != null) {
                 msgs = ((InternalEObject) serviceIdentification).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.CAPABILITIES_BASE_TYPE__SERVICE_IDENTIFICATION,
-                        null, msgs);
+                        - OwsPackage.CAPABILITIES_BASE_TYPE__SERVICE_IDENTIFICATION, null, msgs);
             }
 
             if (newServiceIdentification != null) {
                 msgs = ((InternalEObject) newServiceIdentification).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.CAPABILITIES_BASE_TYPE__SERVICE_IDENTIFICATION,
-                        null, msgs);
+                        - OwsPackage.CAPABILITIES_BASE_TYPE__SERVICE_IDENTIFICATION, null, msgs);
             }
 
             msgs = basicSetServiceIdentification(newServiceIdentification, msgs);
@@ -212,16 +206,15 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetServiceProvider(
-        ServiceProviderType newServiceProvider, NotificationChain msgs) {
+    public NotificationChain basicSetServiceProvider(ServiceProviderType newServiceProvider,
+        NotificationChain msgs) {
         ServiceProviderType oldServiceProvider = serviceProvider;
         serviceProvider = newServiceProvider;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
-                    OwsPackage.CAPABILITIES_BASE_TYPE__SERVICE_PROVIDER,
-                    oldServiceProvider, newServiceProvider);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.CAPABILITIES_BASE_TYPE__SERVICE_PROVIDER, oldServiceProvider,
+                    newServiceProvider);
 
             if (msgs == null) {
                 msgs = notification;
@@ -245,15 +238,13 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl
             if (serviceProvider != null) {
                 msgs = ((InternalEObject) serviceProvider).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.CAPABILITIES_BASE_TYPE__SERVICE_PROVIDER,
-                        null, msgs);
+                        - OwsPackage.CAPABILITIES_BASE_TYPE__SERVICE_PROVIDER, null, msgs);
             }
 
             if (newServiceProvider != null) {
                 msgs = ((InternalEObject) newServiceProvider).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.CAPABILITIES_BASE_TYPE__SERVICE_PROVIDER,
-                        null, msgs);
+                        - OwsPackage.CAPABILITIES_BASE_TYPE__SERVICE_PROVIDER, null, msgs);
             }
 
             msgs = basicSetServiceProvider(newServiceProvider, msgs);
@@ -263,8 +254,8 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl
             }
         } else if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.CAPABILITIES_BASE_TYPE__SERVICE_PROVIDER,
-                    newServiceProvider, newServiceProvider));
+                    OwsPackage.CAPABILITIES_BASE_TYPE__SERVICE_PROVIDER, newServiceProvider,
+                    newServiceProvider));
         }
     }
 
@@ -288,10 +279,9 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl
         operationsMetadata = newOperationsMetadata;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
-                    OwsPackage.CAPABILITIES_BASE_TYPE__OPERATIONS_METADATA,
-                    oldOperationsMetadata, newOperationsMetadata);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.CAPABILITIES_BASE_TYPE__OPERATIONS_METADATA, oldOperationsMetadata,
+                    newOperationsMetadata);
 
             if (msgs == null) {
                 msgs = notification;
@@ -308,23 +298,20 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setOperationsMetadata(
-        OperationsMetadataType newOperationsMetadata) {
+    public void setOperationsMetadata(OperationsMetadataType newOperationsMetadata) {
         if (newOperationsMetadata != operationsMetadata) {
             NotificationChain msgs = null;
 
             if (operationsMetadata != null) {
                 msgs = ((InternalEObject) operationsMetadata).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.CAPABILITIES_BASE_TYPE__OPERATIONS_METADATA,
-                        null, msgs);
+                        - OwsPackage.CAPABILITIES_BASE_TYPE__OPERATIONS_METADATA, null, msgs);
             }
 
             if (newOperationsMetadata != null) {
                 msgs = ((InternalEObject) newOperationsMetadata).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.CAPABILITIES_BASE_TYPE__OPERATIONS_METADATA,
-                        null, msgs);
+                        - OwsPackage.CAPABILITIES_BASE_TYPE__OPERATIONS_METADATA, null, msgs);
             }
 
             msgs = basicSetOperationsMetadata(newOperationsMetadata, msgs);
@@ -334,8 +321,8 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl
             }
         } else if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.CAPABILITIES_BASE_TYPE__OPERATIONS_METADATA,
-                    newOperationsMetadata, newOperationsMetadata));
+                    OwsPackage.CAPABILITIES_BASE_TYPE__OPERATIONS_METADATA, newOperationsMetadata,
+                    newOperationsMetadata));
         }
     }
 
@@ -359,8 +346,8 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.CAPABILITIES_BASE_TYPE__UPDATE_SEQUENCE,
-                    oldUpdateSequence, updateSequence));
+                    OwsPackage.CAPABILITIES_BASE_TYPE__UPDATE_SEQUENCE, oldUpdateSequence,
+                    updateSequence));
         }
     }
 
@@ -384,8 +371,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.CAPABILITIES_BASE_TYPE__VERSION, oldVersion,
-                    version));
+                    OwsPackage.CAPABILITIES_BASE_TYPE__VERSION, oldVersion, version));
         }
     }
 
@@ -394,8 +380,8 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case OwsPackage.CAPABILITIES_BASE_TYPE__SERVICE_IDENTIFICATION:
             return basicSetServiceIdentification(null, msgs);
@@ -526,12 +512,10 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl
 
         case OwsPackage.CAPABILITIES_BASE_TYPE__UPDATE_SEQUENCE:
             return (UPDATE_SEQUENCE_EDEFAULT == null) ? (updateSequence != null)
-                                                      : (!UPDATE_SEQUENCE_EDEFAULT
-            .equals(updateSequence));
+                                                      : (!UPDATE_SEQUENCE_EDEFAULT.equals(updateSequence));
 
         case OwsPackage.CAPABILITIES_BASE_TYPE__VERSION:
-            return (VERSION_EDEFAULT == null) ? (version != null)
-                                              : (!VERSION_EDEFAULT.equals(version));
+            return (VERSION_EDEFAULT == null) ? (version != null) : (!VERSION_EDEFAULT.equals(version));
         }
 
         return super.eIsSet(featureID);

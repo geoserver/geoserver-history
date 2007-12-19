@@ -73,8 +73,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
     private static final String INFO_FILE = "info.xml";
 
     /** used to create styles */
-    private static StyleFactory styleFactory = StyleFactoryFinder
-        .createStyleFactory();
+    private static StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
 
     /** used to cache layer names and types **/
     private volatile Map layerNames = new HashMap();
@@ -225,8 +224,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
         formats = loadFormats(config);
         dataStores = loadDataStores(config);
         nameSpaces = loadNamespaces(config);
-        defaultNameSpace = (NameSpaceInfo) nameSpaces.get(config
-                .getDefaultNameSpacePrefix());
+        defaultNameSpace = (NameSpaceInfo) nameSpaces.get(config.getDefaultNameSpacePrefix());
 
         // Step 2: set up styles
         styles = loadStyles(config);
@@ -261,14 +259,14 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
 
             if (formatDTO.isEnabled()) {
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine(new StringBuffer("Register Format '").append(id)
-                                                                     .append("'")
+                    LOGGER.fine(new StringBuffer("Register Format '").append(id).append("'")
                                                                      .toString());
                 }
             } else {
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine(new StringBuffer("Did not Register Format '").append(
-                            id).append("' as it was not enabled").toString());
+                    LOGGER.fine(new StringBuffer("Did not Register Format '").append(id)
+                                                                             .append("' as it was not enabled")
+                                                                             .toString());
                 }
             }
         }
@@ -318,13 +316,14 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
 
             if (dataStoreDTO.isEnabled()) {
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine(new StringBuffer("Register DataStore '").append(
-                            id).append("'").toString());
+                    LOGGER.fine(new StringBuffer("Register DataStore '").append(id).append("'")
+                                                                        .toString());
                 }
             } else {
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine(new StringBuffer("Did not Register DataStore '").append(
-                            id).append("' as it was not enabled").toString());
+                    LOGGER.fine(new StringBuffer("Did not Register DataStore '").append(id)
+                                                                                .append("' as it was not enabled")
+                                                                                .toString());
                 }
             }
         }
@@ -399,13 +398,13 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
             if ((dto.getFormats() != null)
                     && (dto.getFormats().get(coverageDTO.getFormatId()) != null)) {
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine(new StringBuffer("Register Coverage '").append(
-                            id).append("'").toString());
+                    LOGGER.fine(new StringBuffer("Register Coverage '").append(id).append("'")
+                                                                       .toString());
                 }
             } else {
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine(new StringBuffer("Did not Register Coverage '").append(
-                            id).append("' as didn't exist a valid Format")
+                    LOGGER.fine(new StringBuffer("Did not Register Coverage '").append(id)
+                                                                               .append("' as didn't exist a valid Format")
                                                                                .toString());
                 }
             }
@@ -458,8 +457,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */ {
         Style s;
 
         //let's sort the featuretypes first, and give some good loading messages as we go along.
-        FeatureTypeInfoDTO[] ftypes = (FeatureTypeInfoDTO[]) dto.getFeaturesTypes()
-                                                                .values()
+        FeatureTypeInfoDTO[] ftypes = (FeatureTypeInfoDTO[]) dto.getFeaturesTypes().values()
                                                                 .toArray(new FeatureTypeInfoDTO[dto.getFeaturesTypes()
                                                                                                    .size()]);
         Arrays.sort(ftypes,
@@ -482,8 +480,7 @@ SCHEMA:
 
             if (featureTypeDTO == null) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning(new StringBuffer(
-                            "Ignore null FeatureTypeInfo DTO!").toString());
+                    LOGGER.warning(new StringBuffer("Ignore null FeatureTypeInfo DTO!").toString());
                 }
 
                 continue;
@@ -491,54 +488,48 @@ SCHEMA:
 
             key = featureTypeDTO.getKey(); // dataStoreId:typeName
 
-            LOGGER.info("Loading feature type '" + key + "' (layer "
-                + curLayerNum + "/" + totalLayers + ")");
+            LOGGER.info("Loading feature type '" + key + "' (layer " + curLayerNum + "/"
+                + totalLayers + ")");
 
             if (LOGGER.isLoggable(Level.FINER)) {
                 LOGGER.finer(new StringBuffer("FeatureType ").append(key)
                                                              .append(": loading feature type info dto:")
-                                                             .append(featureTypeDTO)
-                                                             .toString());
+                                                             .append(featureTypeDTO).toString());
             }
 
             dataStoreId = featureTypeDTO.getDataStoreId();
 
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(new StringBuffer("FeatureType ").append(key)
-                                                              .append(" looking up :")
-                                                              .append(dataStoreId)
-                                                              .toString());
+                LOGGER.finest(new StringBuffer("FeatureType ").append(key).append(" looking up :")
+                                                              .append(dataStoreId).toString());
             }
 
             dataStoreInfo = (DataStoreInfo) dataStores.get(dataStoreId);
 
             if (dataStoreInfo == null) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(
-                            key).append(" could not be used - DataStore ")
+                    LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(key)
+                                                                      .append(" could not be used - DataStore ")
                                                                       .append(dataStoreId)
                                                                       .append(" is not defined!")
                                                                       .toString());
                 }
 
-                DataStoreInfoDTO tmp = (DataStoreInfoDTO) dto.getDataStores()
-                                                             .get(dataStoreId);
+                DataStoreInfoDTO tmp = (DataStoreInfoDTO) dto.getDataStores().get(dataStoreId);
 
                 if ((tmp != null) && (!tmp.isEnabled())) {
                     errors.put(featureTypeDTO, Boolean.FALSE);
                 } else {
                     errors.put(featureTypeDTO,
                         new ConfigurationException("FeatureTypeInfo " + key
-                            + " could not be used - DataStore " + dataStoreId
-                            + " is not defined!"));
+                            + " could not be used - DataStore " + dataStoreId + " is not defined!"));
                 }
 
                 continue;
             } else {
                 if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.finest(new StringBuffer(key).append(
-                            " datastore found :").append(dataStoreInfo)
-                                                       .toString());
+                    LOGGER.finest(new StringBuffer(key).append(" datastore found :")
+                                                       .append(dataStoreInfo).toString());
                 }
             }
 
@@ -546,15 +537,14 @@ SCHEMA:
 
             if (s == null) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(
-                            key).append(" ignored - Style '")
+                    LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(key)
+                                                                      .append(" ignored - Style '")
                                                                       .append(featureTypeDTO
                             .getDefaultStyle()).append("' not found!").toString());
                 }
 
                 errors.put(featureTypeDTO,
-                    new ConfigurationException("FeatureTypeInfo " + key
-                        + " ignored - Style '"
+                    new ConfigurationException("FeatureTypeInfo " + key + " ignored - Style '"
                         + featureTypeDTO.getDefaultStyle() + "' not found!"));
 
                 continue SCHEMA;
@@ -585,8 +575,7 @@ SCHEMA:
                 // boolean createAttrDTO =
                 // (featureTypeDTO.getSchemaAttributes().size() == 0);
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine(new StringBuffer("locading datastore ").append(
-                            typeName).toString());
+                    LOGGER.fine(new StringBuffer("locading datastore ").append(typeName).toString());
                 }
 
                 boolean createAttrDTO;
@@ -607,37 +596,31 @@ SCHEMA:
                                 attributeDTOs).toString());
                     }
                 } else {
-                    for (int index = 0;
-                            index < featureType.getAttributeCount(); index++) {
+                    for (int index = 0; index < featureType.getAttributeCount(); index++) {
                         AttributeType attrib = featureType.getAttributeType(index);
                         attributeNames.add(attrib.getName());
                         ATTRIBUTENames.add(attrib.getName().toUpperCase());
                     }
 
                     if (featureTypeDTO.getSchemaAttributes() != null) {
-                        for (Iterator a = featureTypeDTO.getSchemaAttributes()
-                                                        .iterator();
+                        for (Iterator a = featureTypeDTO.getSchemaAttributes().iterator();
                                 a.hasNext();) {
-                            AttributeTypeInfoDTO attribDTO = (AttributeTypeInfoDTO) a
-                                .next();
+                            AttributeTypeInfoDTO attribDTO = (AttributeTypeInfoDTO) a.next();
                             String attributeName = attribDTO.getName();
 
                             if (!attributeNames.contains(attributeName)) {
-                                if (ATTRIBUTENames.contains(
-                                            attributeName.toUpperCase())) {
+                                if (ATTRIBUTENames.contains(attributeName.toUpperCase())) {
                                     if (LOGGER.isLoggable(Level.SEVERE)) {
-                                        LOGGER.severe(new StringBuffer(
-                                                "FeatureTypeInfo ").append(key)
-                                                                                          .append(" ignored - attribute '")
+                                        LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(
+                                                key).append(" ignored - attribute '")
                                                                                           .append(attributeName)
                                                                                           .append("' not found - please check captialization")
                                                                                           .toString());
                                     }
                                 } else {
                                     if (LOGGER.isLoggable(Level.SEVERE)) {
-                                        LOGGER.severe(new StringBuffer(
-                                                "FeatureTypeInfo ").append(key)
-                                                                                          .append(" ignored - attribute '")
+                                        LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(
+                                                key).append(" ignored - attribute '")
                                                                                           .append(attributeName)
                                                                                           .append("' not found!")
                                                                                           .toString());
@@ -655,15 +638,14 @@ SCHEMA:
 
                                     if (LOGGER.isLoggable(Level.SEVERE)) {
                                         LOGGER.severe(new StringBuffer(
-                                                "Valid attribute names include :::").append(
-                                                names).toString());
+                                                "Valid attribute names include :::").append(names)
+                                                                                                           .toString());
                                     }
                                 }
 
                                 errors.put(featureTypeDTO,
                                     new ConfigurationException(
-                                        new StringBuffer("FeatureTypeInfo ").append(
-                                            key)
+                                        new StringBuffer("FeatureTypeInfo ").append(key)
                                                                             .append(" could not be used - DataStore ")
                                                                             .append(dataStoreId)
                                                                             .append(" is not defined!")
@@ -676,8 +658,8 @@ SCHEMA:
                 }
             } catch (IllegalStateException illegalState) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(
-                            key).append(" ignored - as DataStore ")
+                    LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(key)
+                                                                      .append(" ignored - as DataStore ")
                                                                       .append(dataStoreId)
                                                                       .append(" is disabled!")
                                                                       .toString());
@@ -693,13 +675,11 @@ SCHEMA:
                                                             .append(" ignored - as DataStore ")
                                                             .append(dataStoreId)
                                                             .append(" is unavailable:")
-                                                            .append(ioException)
-                                                            .toString());
+                                                            .append(ioException).toString());
                 }
 
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE,
-                        new StringBuffer(key).append(" unavailable").toString(),
+                    LOGGER.log(Level.FINE, new StringBuffer(key).append(" unavailable").toString(),
                         ioException);
                 }
 
@@ -713,8 +693,7 @@ SCHEMA:
                                                             .append(" ignored - as DataStore ")
                                                             .append(dataStoreId)
                                                             .append(" can't find FeatureType '"
-                            + typeName + "'.  Error was:\n").append(nse)
-                                                            .toString());
+                            + typeName + "'.  Error was:\n").append(nse).toString());
                 }
 
                 if (LOGGER.isLoggable(Level.FINE)) {
@@ -728,14 +707,12 @@ SCHEMA:
                         new StringBuffer("FeatureTypeInfo ").append(key)
                                                             .append(" ignored - as DataStore ")
                                                             .append(dataStoreId)
-                                                            .append(" is broken:")
-                                                            .append(unExpected)
+                                                            .append(" is broken:").append(unExpected)
                                                             .toString());
                 }
 
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE,
-                        new StringBuffer(key).append(" unavailable").toString(),
+                    LOGGER.log(Level.FINE, new StringBuffer(key).append(" unavailable").toString(),
                         unExpected);
                 }
 
@@ -749,10 +726,8 @@ SCHEMA:
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.finest(new StringBuffer("FeatureType ").append(key)
                                                               .append(" creating FeatureTypeInfo for ")
-                                                              .append(prefix)
-                                                              .append(":")
-                                                              .append(typeName)
-                                                              .toString());
+                                                              .append(prefix).append(":")
+                                                              .append(typeName).toString());
             }
 
             FeatureTypeInfo featureTypeInfo = null;
@@ -764,14 +739,12 @@ SCHEMA:
                     LOGGER.log(Level.SEVERE,
                         new StringBuffer("FeatureTypeInfo ").append(key)
                                                             .append(" ignored - configuration problem:")
-                                                            .append(configException)
-                                                            .toString());
+                                                            .append(configException).toString());
                 }
 
                 if (LOGGER.isLoggable(Level.FINEST)) {
                     LOGGER.log(Level.FINEST,
-                        new StringBuffer(key).append(" unavailable").toString(),
-                        configException);
+                        new StringBuffer(key).append(" unavailable").toString(), configException);
                 }
 
                 errors.put(featureTypeDTO, configException);
@@ -783,8 +756,7 @@ SCHEMA:
 
             if (map.containsKey(key2)) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.severe(new StringBuffer("FeatureTypeInfo '").append(
-                            key2)
+                    LOGGER.severe(new StringBuffer("FeatureTypeInfo '").append(key2)
                                                                        .append("' already defined - you must have duplicate defined?")
                                                                        .toString());
                 }
@@ -794,8 +766,9 @@ SCHEMA:
                         + "' already defined - you must have duplicate defined?"));
             } else {
                 if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.finest(new StringBuffer("FeatureTypeInfo ").append(
-                            key2).append(" has been created...").toString());
+                    LOGGER.finest(new StringBuffer("FeatureTypeInfo ").append(key2)
+                                                                      .append(" has been created...")
+                                                                      .toString());
                 }
 
                 map.put(key2, featureTypeInfo);
@@ -803,8 +776,8 @@ SCHEMA:
                 layerNames.put(key2, TYPE_VECTOR);
 
                 if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.finest(new StringBuffer("FeatureTypeInfo '").append(
-                            key2).append("' is registered:")
+                    LOGGER.finest(new StringBuffer("FeatureTypeInfo '").append(key2)
+                                                                       .append("' is registered:")
                                                                        .append(dataStoreInfo)
                                                                        .toString());
                 }
@@ -872,9 +845,7 @@ SCHEMA:
 
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.log(Level.SEVERE,
-                        new StringBuffer("Could not load style ").append(id)
-                                                                 .toString(),
-                        ioException);
+                        new StringBuffer("Could not load style ").append(id).toString(), ioException);
                 }
 
                 continue;
@@ -885,10 +856,8 @@ SCHEMA:
         }
 
         if (LOGGER.isLoggable(Level.FINER)) {
-            LOGGER.finer(new StringBuffer("returning styles ").append(map)
-                                                              .append("\n and set map ")
-                                                              .append(stFiles)
-                                                              .toString());
+            LOGGER.finer(new StringBuffer("returning styles ").append(map).append("\n and set map ")
+                                                              .append(stFiles).toString());
         }
 
         return map;
@@ -914,21 +883,19 @@ SCHEMA:
 
             if (value == Boolean.TRUE) {
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine(new StringBuffer(key).append(": ready")
-                                                     .toString());
+                    LOGGER.fine(new StringBuffer(key).append(": ready").toString());
                 }
             } else if (value instanceof Throwable) {
                 Throwable t = (Throwable) value;
 
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE,
-                        new StringBuffer(key).append(" not ready").toString(), t);
+                    LOGGER.log(Level.SEVERE, new StringBuffer(key).append(" not ready").toString(),
+                        t);
                 }
             } else {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning(new StringBuffer(key).append(": '")
-                                                        .append(value)
-                                                        .append("'").toString());
+                    LOGGER.warning(new StringBuffer(key).append(": '").append(value).append("'")
+                                                        .toString());
                 }
             }
         }
@@ -974,12 +941,10 @@ SCHEMA:
         while (i.hasNext()) {
             Map.Entry e = (Map.Entry) i.next();
             FeatureTypeInfoDTO ftdto = (FeatureTypeInfoDTO) e.getKey();
-            DataStoreInfo dsdto = (DataStoreInfo) dataStores.get(ftdto
-                    .getDataStoreId());
+            DataStoreInfo dsdto = (DataStoreInfo) dataStores.get(ftdto.getDataStoreId());
 
             if (dsdto != null) {
-                m.put(dsdto.getNamesSpacePrefix() + ":" + ftdto.getName(),
-                    e.getValue());
+                m.put(dsdto.getNamesSpacePrefix() + ":" + ftdto.getName(), e.getValue());
             }
         }
 
@@ -1030,8 +995,7 @@ SCHEMA:
         }
 
         if (LOGGER.isLoggable(Level.FINER)) {
-            LOGGER.finer(new StringBuffer("setting styles to: ").append(tmp)
-                                                                .toString());
+            LOGGER.finer(new StringBuffer("setting styles to: ").append(tmp).toString());
         }
 
         dto.setStyles(tmp);
@@ -1268,8 +1232,7 @@ SCHEMA:
             return found;
         }
 
-        throw new NoSuchElementException("Could not locate FeatureTypeConfig '"
-            + name + "'");
+        throw new NoSuchElementException("Could not locate FeatureTypeConfig '" + name + "'");
     }
 
     /**
@@ -1302,8 +1265,7 @@ SCHEMA:
      *
      * @return FeatureTypeInfo
      */
-    public synchronized FeatureTypeInfo getFeatureTypeInfo(String typename,
-        String uri) {
+    public synchronized FeatureTypeInfo getFeatureTypeInfo(String typename, String uri) {
         // For some reason I don't understand GR patched this to remove the namespace 
         // test, but this breaks if there are multiple feature types with the same
         // name in different namespaces. Now, to stay on the safe side, I will lookup
@@ -1317,8 +1279,7 @@ SCHEMA:
             FeatureTypeInfo fType = (FeatureTypeInfo) it.next();
 
             if (fType.isEnabled()) {
-                String typeId = fType.getNameSpace().getPrefix() + ":"
-                    + typename;
+                String typeId = fType.getNameSpace().getPrefix() + ":" + typename;
                 boolean t1 = fType.getName().equals(typeId);
                 boolean t2 = fType.getNameSpace().getUri().equals(uri);
 
@@ -1370,8 +1331,7 @@ SCHEMA:
             return found;
         }
 
-        throw new NoSuchElementException("Could not locate CoverageConfig '"
-            + name + "'");
+        throw new NoSuchElementException("Could not locate CoverageConfig '" + name + "'");
     }
 
     public synchronized CoverageInfo getCoverageInfo(String name, String uri) {
@@ -1608,8 +1568,7 @@ SCHEMA:
                 continue; // locks not supported
             }
 
-            Transaction t = new DefaultTransaction("Refresh "
-                    + meta.getNameSpace());
+            Transaction t = new DefaultTransaction("Refresh " + meta.getNameSpace());
 
             try {
                 t.addAuthorization(lockID);
@@ -1626,8 +1585,7 @@ SCHEMA:
                     t.close();
                 } catch (IOException closeException) {
                     if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.log(Level.FINEST, closeException.getMessage(),
-                            closeException);
+                        LOGGER.log(Level.FINEST, closeException.getMessage(), closeException);
                     }
                 }
             }
@@ -1671,8 +1629,7 @@ SCHEMA:
                 continue; // locks not supported
             }
 
-            Transaction t = new DefaultTransaction("Refresh "
-                    + meta.getNameSpace());
+            Transaction t = new DefaultTransaction("Refresh " + meta.getNameSpace());
 
             try {
                 t.addAuthorization(lockID);
@@ -1689,8 +1646,7 @@ SCHEMA:
                     t.close();
                 } catch (IOException closeException) {
                     if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.log(Level.FINEST, closeException.getMessage(),
-                            closeException);
+                        LOGGER.log(Level.FINEST, closeException.getMessage(), closeException);
                     }
                 }
             }
@@ -1932,8 +1888,8 @@ SCHEMA:
      * @see org.geotools.data.Catalog#getFeatureSource(java.lang.String,
      *      java.lang.String)
      */
-    public synchronized FeatureSource getFeatureSource(String prefix,
-        String typeName) throws IOException {
+    public synchronized FeatureSource getFeatureSource(String prefix, String typeName)
+        throws IOException {
         if ((prefix == null) || (prefix == "")) {
             prefix = defaultNameSpace.getPrefix();
         }
@@ -1971,13 +1927,12 @@ SCHEMA:
 
         // vector layers are namespace prefixed, coverages are not
         if (layerName.indexOf(":") == -1) {
-            final String prefixedName = defaultNameSpace.getPrefix() + ":"
-                + layerName;
+            final String prefixedName = defaultNameSpace.getPrefix() + ":" + layerName;
 
             return (Integer) layerNames.get(prefixedName);
         } else {
-            final String strippedName = layerName.substring(layerName.indexOf(
-                        ":") + 1, layerName.length());
+            final String strippedName = layerName.substring(layerName.indexOf(":") + 1,
+                    layerName.length());
 
             return (Integer) layerNames.get(strippedName);
         }

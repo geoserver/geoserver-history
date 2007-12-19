@@ -73,15 +73,13 @@ public class DCPTypeImpl extends EObjectImpl implements DCPType {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetHTTP(HTTPType newHTTP,
-        NotificationChain msgs) {
+    public NotificationChain basicSetHTTP(HTTPType newHTTP, NotificationChain msgs) {
         HTTPType oldHTTP = hTTP;
         hTTP = newHTTP;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET, OwsPackage.DCP_TYPE__HTTP, oldHTTP,
-                    newHTTP);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.DCP_TYPE__HTTP, oldHTTP, newHTTP);
 
             if (msgs == null) {
                 msgs = notification;
@@ -104,14 +102,12 @@ public class DCPTypeImpl extends EObjectImpl implements DCPType {
 
             if (hTTP != null) {
                 msgs = ((InternalEObject) hTTP).eInverseRemove(this,
-                        EOPPOSITE_FEATURE_BASE - OwsPackage.DCP_TYPE__HTTP,
-                        null, msgs);
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.DCP_TYPE__HTTP, null, msgs);
             }
 
             if (newHTTP != null) {
                 msgs = ((InternalEObject) newHTTP).eInverseAdd(this,
-                        EOPPOSITE_FEATURE_BASE - OwsPackage.DCP_TYPE__HTTP,
-                        null, msgs);
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.DCP_TYPE__HTTP, null, msgs);
             }
 
             msgs = basicSetHTTP(newHTTP, msgs);
@@ -120,8 +116,8 @@ public class DCPTypeImpl extends EObjectImpl implements DCPType {
                 msgs.dispatch();
             }
         } else if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.DCP_TYPE__HTTP, newHTTP, newHTTP));
+            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.DCP_TYPE__HTTP,
+                    newHTTP, newHTTP));
         }
     }
 
@@ -130,8 +126,8 @@ public class DCPTypeImpl extends EObjectImpl implements DCPType {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case OwsPackage.DCP_TYPE__HTTP:
             return basicSetHTTP(null, msgs);

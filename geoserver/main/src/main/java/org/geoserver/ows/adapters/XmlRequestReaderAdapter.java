@@ -20,15 +20,14 @@ public class XmlRequestReaderAdapter extends org.geoserver.ows.XmlRequestReader
     AbstractService service;
     HttpServletRequest httpRequest;
 
-    public XmlRequestReaderAdapter(QName element, AbstractService service,
-        Class delegate) {
+    public XmlRequestReaderAdapter(QName element, AbstractService service, Class delegate) {
         super(element);
         this.service = service;
         this.delegateClass = delegate;
     }
 
-    public XmlRequestReaderAdapter(String namespace, String local,
-        AbstractService service, Class delegate) {
+    public XmlRequestReaderAdapter(String namespace, String local, AbstractService service,
+        Class delegate) {
         this(new QName(namespace, local), service, delegate);
     }
 
@@ -55,9 +54,7 @@ public class XmlRequestReaderAdapter extends org.geoserver.ows.XmlRequestReader
             throw new IllegalStateException("No appropriate constructor");
         }
 
-        XmlRequestReader delegate = (XmlRequestReader) constructor.newInstance(new Object[] {
-                    service
-                });
+        XmlRequestReader delegate = (XmlRequestReader) constructor.newInstance(new Object[] { service });
 
         return delegate.read(reader, httpRequest);
     }

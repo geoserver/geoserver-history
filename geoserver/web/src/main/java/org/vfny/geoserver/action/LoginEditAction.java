@@ -29,9 +29,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author rgould, Refractions Research, Inc.
  */
 public class LoginEditAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        UserContainer user, HttpServletRequest request,
-        HttpServletResponse response) {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response) {
         LoginForm loginForm = (LoginForm) form;
         String username = loginForm.getUsername();
         String password = loginForm.getPassword();
@@ -52,8 +51,7 @@ public class LoginEditAction extends ConfigAction {
         global.setAdminUserName(username);
         global.setAdminPassword(password);
         getApplicationState().notifyConfigChanged();
-        getServlet().getServletContext()
-            .setAttribute(GlobalConfig.CONFIG_KEY, global);
+        getServlet().getServletContext().setAttribute(GlobalConfig.CONFIG_KEY, global);
 
         String forward = (String) request.getAttribute("forward");
 

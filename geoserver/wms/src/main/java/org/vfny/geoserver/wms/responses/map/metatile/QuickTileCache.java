@@ -64,8 +64,8 @@ public class QuickTileCache {
         String mapDefinition = buildMapDefinition(request.getHttpServletRequest());
         Envelope bbox = request.getBbox();
         Point2D origin = request.getTilesOrigin();
-        MapKey mapKey = new MapKey(mapDefinition,
-                normalize(bbox.getWidth() / request.getWidth()), origin);
+        MapKey mapKey = new MapKey(mapDefinition, normalize(bbox.getWidth() / request.getWidth()),
+                origin);
         Point tileCoords = getTileCoordinates(bbox, origin);
         Point metaTileCoords = getMetaTileCoordinates(tileCoords);
         MetaTileKey key = new MetaTileKey(mapKey, metaTileCoords);
@@ -155,8 +155,7 @@ public class QuickTileCache {
 
             // we don't have multi-valued parameters afaik, otherwise we would
             // have to use getParameterValues and deal with the returned array
-            sb.append(paramName).append('=')
-              .append(request.getParameter(paramName));
+            sb.append(paramName).append('=').append(request.getParameter(paramName));
 
             if (en.hasMoreElements()) {
                 sb.append('&');
@@ -173,8 +172,7 @@ public class QuickTileCache {
      * @param request
      * @return
      */
-    public synchronized RenderedImage getTile(MetaTileKey key,
-        GetMapRequest request) {
+    public synchronized RenderedImage getTile(MetaTileKey key, GetMapRequest request) {
         CacheElement ce = (CacheElement) tileCache.get(key);
 
         if (ce == null) {
@@ -197,10 +195,8 @@ public class QuickTileCache {
      * @param tiles
      * @return
      */
-    public RenderedImage getTile(MetaTileKey key, GetMapRequest request,
-        RenderedImage[] tiles) {
-        Point tileCoord = getTileCoordinates(request.getBbox(),
-                key.mapKey.origin);
+    public RenderedImage getTile(MetaTileKey key, GetMapRequest request, RenderedImage[] tiles) {
+        Point tileCoord = getTileCoordinates(request.getBbox(), key.mapKey.origin);
         Point metaCoord = key.metaTileCoords;
 
         return tiles[tileCoord.x - metaCoord.x
@@ -236,9 +232,8 @@ public class QuickTileCache {
         }
 
         public int hashCode() {
-            return new HashCodeBuilder().append(mapDefinition).append(resolution)
-                                        .append(resolution).append(origin)
-                                        .toHashCode();
+            return new HashCodeBuilder().append(mapDefinition).append(resolution).append(resolution)
+                                        .append(origin).toHashCode();
         }
 
         public boolean equals(Object obj) {
@@ -254,8 +249,8 @@ public class QuickTileCache {
         }
 
         public String toString() {
-            return mapDefinition + "\nw:" + "\nresolution:" + resolution
-            + "\norig:" + origin.getX() + "," + origin.getY();
+            return mapDefinition + "\nw:" + "\nresolution:" + resolution + "\norig:"
+            + origin.getX() + "," + origin.getY();
         }
     }
 
@@ -273,18 +268,15 @@ public class QuickTileCache {
         }
 
         public Envelope getMetaTileEnvelope() {
-            double minx = mapKey.origin.getX()
-                + (mapKey.resolution * 256 * metaTileCoords.x);
-            double miny = mapKey.origin.getY()
-                + (mapKey.resolution * 256 * metaTileCoords.y);
+            double minx = mapKey.origin.getX() + (mapKey.resolution * 256 * metaTileCoords.x);
+            double miny = mapKey.origin.getY() + (mapKey.resolution * 256 * metaTileCoords.y);
 
-            return new Envelope(minx, minx + (mapKey.resolution * 256 * 3),
-                miny, miny + (mapKey.resolution * 256 * 3));
+            return new Envelope(minx, minx + (mapKey.resolution * 256 * 3), miny,
+                miny + (mapKey.resolution * 256 * 3));
         }
 
         public int hashCode() {
-            return new HashCodeBuilder().append(mapKey).append(metaTileCoords)
-                                        .toHashCode();
+            return new HashCodeBuilder().append(mapKey).append(metaTileCoords).toHashCode();
         }
 
         public boolean equals(Object obj) {
@@ -295,8 +287,7 @@ public class QuickTileCache {
             MetaTileKey other = (MetaTileKey) obj;
 
             return new EqualsBuilder().append(mapKey, other.mapKey)
-                                      .append(metaTileCoords,
-                other.metaTileCoords).isEquals();
+                                      .append(metaTileCoords, other.metaTileCoords).isEquals();
         }
 
         public int getMetaFactor() {
@@ -308,8 +299,7 @@ public class QuickTileCache {
         }
 
         public String toString() {
-            return mapKey + "\nmtc:" + metaTileCoords.x + ","
-            + metaTileCoords.y;
+            return mapKey + "\nmtc:" + metaTileCoords.x + "," + metaTileCoords.y;
         }
     }
 

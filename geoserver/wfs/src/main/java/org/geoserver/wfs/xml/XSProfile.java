@@ -49,10 +49,8 @@ public class XSProfile extends TypeMappingProfile {
         // we create a custom schema which also contains a mapping for 
         // java.util.Date
         Schema additional = new SchemaImpl(XS.NAMESPACE);
-        additional.put(name(XS.DATETIME),
-            AttributeTypeFactory.newAttributeType("date", Date.class));
-        profiles.add(new ProfileImpl(additional,
-                Collections.singleton(name(XS.DATETIME))));
+        additional.put(name(XS.DATETIME), AttributeTypeFactory.newAttributeType("date", Date.class));
+        profiles.add(new ProfileImpl(additional, Collections.singleton(name(XS.DATETIME))));
 
         //profile.add(name(XS.ANYTYPE)); //Map.class
     }

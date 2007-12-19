@@ -83,8 +83,7 @@ public class DemoForm extends ActionForm {
         ServletContext context = getServlet().getServletContext();
         //DJB: changed this for geoserver_data_dir 
         // this.dir = new File(context.getRealPath("/data/demo"));
-        this.dir = new File(GeoserverDataDirectory.getGeoserverDataDirectory(),
-                "/data/demo");
+        this.dir = new File(GeoserverDataDirectory.getGeoserverDataDirectory(), "/data/demo");
         demoList = new ArrayList();
         demoList.add("");
 
@@ -111,8 +110,7 @@ public class DemoForm extends ActionForm {
      * @param request
      * @return
      */
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         return errors;

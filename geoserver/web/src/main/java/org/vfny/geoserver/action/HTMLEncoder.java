@@ -178,7 +178,7 @@ public class HTMLEncoder {
                 case '�':
                 case '�':
                     buf.append(c + "&acute;");
-
+                
                     break;*/
                 case 160:
                 case 161:

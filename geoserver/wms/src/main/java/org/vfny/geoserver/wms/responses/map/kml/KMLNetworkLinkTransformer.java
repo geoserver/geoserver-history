@@ -97,8 +97,8 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
                 //link
                 start("Link");
 
-                String href = WMSRequests.getGetMapUrl(request,
-                        layers[i].getName(), null, null, null);
+                String href = WMSRequests.getGetMapUrl(request, layers[i].getName(), null, null,
+                        null);
                 start("href");
                 cdata(href);
                 end("href");
@@ -125,8 +125,8 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
                 // earth will append it for us
                 request.setBbox(null);
 
-                String href = WMSRequests.getGetMapUrl(request,
-                        layers[i].getName(), null, null, null);
+                String href = WMSRequests.getGetMapUrl(request, layers[i].getName(), null, null,
+                        null);
                 start("href");
                 cdata(href);
                 end("href");
@@ -151,8 +151,7 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
                 try {
                     b = request.getLayers()[i].getLatLongBoundingBox();
                 } catch (IOException e1) {
-                    LOGGER.warning("Unable to calculate bounds for "
-                        + layer.getName());
+                    LOGGER.warning("Unable to calculate bounds for " + layer.getName());
 
                     continue;
                 }
@@ -178,8 +177,7 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
             double[] p1 = getRect(lon1, lat1, R_EARTH);
             double[] p2 = getRect(lon2, lat2, R_EARTH);
             double[] midpoint = new double[] {
-                    (p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2,
-                    (p1[2] + p2[2]) / 2
+                    (p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2, (p1[2] + p2[2]) / 2
                 };
 
             midpoint = getGeographic(midpoint[0], midpoint[1], midpoint[2]);

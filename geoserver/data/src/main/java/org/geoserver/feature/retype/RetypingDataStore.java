@@ -52,52 +52,46 @@ public class RetypingDataStore implements DataStore {
             "GeoServer does not support schema updates at the moment");
     }
 
-    public FeatureWriter getFeatureWriter(String typeName, Filter filter,
-        Transaction transaction) throws IOException {
+    public FeatureWriter getFeatureWriter(String typeName, Filter filter, Transaction transaction)
+        throws IOException {
         FeatureTypeMap map = getTypeMapBackwards(typeName);
         updateMap(map, false);
 
-        FeatureWriter writer = wrapped.getFeatureWriter(map.getOriginalName(),
-                filter, transaction);
+        FeatureWriter writer = wrapped.getFeatureWriter(map.getOriginalName(), filter, transaction);
 
         if (map.isUnchanged()) {
             return writer;
         }
 
-        return new RetypingFeatureCollection.RetypingFeatureWriter(writer,
-            map.getFeatureType());
+        return new RetypingFeatureCollection.RetypingFeatureWriter(writer, map.getFeatureType());
     }
 
-    public FeatureWriter getFeatureWriter(String typeName,
-        Transaction transaction) throws IOException {
+    public FeatureWriter getFeatureWriter(String typeName, Transaction transaction)
+        throws IOException {
         FeatureTypeMap map = getTypeMapBackwards(typeName);
         updateMap(map, false);
 
-        FeatureWriter writer = wrapped.getFeatureWriter(map.getOriginalName(),
-                transaction);
+        FeatureWriter writer = wrapped.getFeatureWriter(map.getOriginalName(), transaction);
 
         if (map.isUnchanged()) {
             return writer;
         }
 
-        return new RetypingFeatureCollection.RetypingFeatureWriter(writer,
-            map.getFeatureType());
+        return new RetypingFeatureCollection.RetypingFeatureWriter(writer, map.getFeatureType());
     }
 
-    public FeatureWriter getFeatureWriterAppend(String typeName,
-        Transaction transaction) throws IOException {
+    public FeatureWriter getFeatureWriterAppend(String typeName, Transaction transaction)
+        throws IOException {
         FeatureTypeMap map = getTypeMapBackwards(typeName);
         updateMap(map, false);
 
-        FeatureWriter writer = wrapped.getFeatureWriterAppend(map
-                .getOriginalName(), transaction);
+        FeatureWriter writer = wrapped.getFeatureWriterAppend(map.getOriginalName(), transaction);
 
         if (map.isUnchanged()) {
             return writer;
         }
 
-        return new RetypingFeatureCollection.RetypingFeatureWriter(writer,
-            map.getFeatureType());
+        return new RetypingFeatureCollection.RetypingFeatureWriter(writer, map.getFeatureType());
     }
 
     public FeatureType getSchema(String typeName) throws IOException {
@@ -176,8 +170,7 @@ public class RetypingDataStore implements DataStore {
         return wrapped.getLockingManager();
     }
 
-    public FeatureSource getView(Query query)
-        throws IOException, SchemaException {
+    public FeatureSource getView(Query query) throws IOException, SchemaException {
         FeatureTypeMap map = getTypeMapBackwards(query.getTypeName());
         updateMap(map, false);
 
@@ -198,8 +191,7 @@ public class RetypingDataStore implements DataStore {
         FeatureTypeMap map = (FeatureTypeMap) backwardsMap.get(externalTypeName);
 
         if (map == null) {
-            throw new IOException(
-                "Type mapping has not been established for type  "
+            throw new IOException("Type mapping has not been established for type  "
                 + externalTypeName + ". "
                 + "Make sure you access types using getTypeNames() or getSchema() "
                 + "before trying to read/write onto them");
@@ -248,12 +240,11 @@ public class RetypingDataStore implements DataStore {
         }
 
         try {
-            return FeatureTypeBuilder.newFeatureType(original.getAttributeTypes(),
-                transfomedName, original.getNamespace(), false,
-                original.getAncestors(), original.getDefaultGeometry());
+            return FeatureTypeBuilder.newFeatureType(original.getAttributeTypes(), transfomedName,
+                original.getNamespace(), false, original.getAncestors(),
+                original.getDefaultGeometry());
         } catch (Exception e) {
-            throw new DataSourceException("Could not build the renamed feature type.",
-                e);
+            throw new DataSourceException("Could not build the renamed feature type.", e);
         }
     }
 

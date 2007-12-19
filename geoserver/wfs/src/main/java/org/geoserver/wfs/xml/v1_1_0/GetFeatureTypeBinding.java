@@ -180,34 +180,30 @@ public class GetFeatureTypeBinding extends AbstractComplexBinding {
         //&lt;xsd:attribute default="results" name="resultType"
         //      type="wfs:ResultTypeType" use="optional"&gt;
         if (node.hasAttribute("resultType")) {
-            getFeature.setResultType((ResultTypeType) node.getAttributeValue(
-                    "resultType"));
+            getFeature.setResultType((ResultTypeType) node.getAttributeValue("resultType"));
         }
 
         //&lt;xsd:attribute default="text/xml; subtype=gml/3.1.1"
         //		name="outputFormat" type="xsd:string" use="optional"&gt;
         if (node.hasAttribute("outputFormat")) {
-            getFeature.setOutputFormat((String) node.getAttributeValue(
-                    "outputFormat"));
+            getFeature.setOutputFormat((String) node.getAttributeValue("outputFormat"));
         }
 
         //&lt;xsd:attribute name="maxFeatures" type="xsd:positiveInteger" use="optional"&gt;
         if (node.hasAttribute("maxFeatures")) {
-            getFeature.setMaxFeatures((BigInteger) node.getAttributeValue(
-                    "maxFeatures"));
+            getFeature.setMaxFeatures((BigInteger) node.getAttributeValue("maxFeatures"));
         }
 
         //&lt;xsd:attribute name="traverseXlinkDepth" type="xsd:string" use="optional"&gt;
         if (node.hasAttribute("traverseXlinkDepth")) {
-            getFeature.setTraverseXlinkDepth((String) node.getAttributeValue(
-                    "traverseXlinkDepth"));
+            getFeature.setTraverseXlinkDepth((String) node.getAttributeValue("traverseXlinkDepth"));
         }
 
         //&lt;xsd:attribute name="traverseXlinkExpiry"
         //		type="xsd:positiveInteger" use="optional"&gt;
         if (node.hasAttribute("traverseXlinkExpiry")) {
-            getFeature.setTraverseXlinkExpiry((BigInteger) node
-                .getAttributeValue("traverseXlinkExpiry"));
+            getFeature.setTraverseXlinkExpiry((BigInteger) node.getAttributeValue(
+                    "traverseXlinkExpiry"));
         }
 
         return getFeature;

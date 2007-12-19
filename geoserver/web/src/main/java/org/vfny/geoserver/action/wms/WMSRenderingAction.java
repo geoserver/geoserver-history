@@ -18,22 +18,23 @@ import javax.servlet.http.HttpServletResponse;
 
 
 public class WMSRenderingAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        UserContainer user, HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
+        throws IOException, ServletException {
         WMSConfig config = getWMSConfig();
         WMSRenderingForm renderingForm = (WMSRenderingForm) form;
 
         boolean svgAntiAlias = renderingForm.getSvgAntiAlias();
         boolean globalWatermarking = renderingForm.getGlobalWatermarking();
-        
+
         if (renderingForm.isSvgAntiAliasChecked() == false) {
             svgAntiAlias = false;
         }
+
         if (renderingForm.isGlobalWatermarkingChecked() == false) {
-        	globalWatermarking = false;
+            globalWatermarking = false;
         }
-        
+
         config.setSvgRenderer(renderingForm.getSvgRenderer());
         config.setSvgAntiAlias(svgAntiAlias);
         config.setGlobalWatermarking(globalWatermarking);

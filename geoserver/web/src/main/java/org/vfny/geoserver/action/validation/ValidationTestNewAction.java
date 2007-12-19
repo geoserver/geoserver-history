@@ -48,12 +48,10 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Id$
  */
 public class ValidationTestNewAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping,
-        ActionForm incomingForm, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response) {
+    public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,
+        UserContainer user, HttpServletRequest request, HttpServletResponse response) {
         ServletContext context = this.getServlet().getServletContext();
-        ValidationConfig validationConfig = (ValidationConfig) context
-            .getAttribute(ValidationConfig.CONFIG_KEY);
+        ValidationConfig validationConfig = (ValidationConfig) context.getAttribute(ValidationConfig.CONFIG_KEY);
 
         ValidationTestNewForm form = (ValidationTestNewForm) incomingForm;
 
@@ -72,8 +70,7 @@ public class ValidationTestNewAction extends ConfigAction {
         suiteConfig.addTest(testConfig);
         getApplicationState().notifyConfigChanged();
 
-        request.getSession()
-               .setAttribute(TestConfig.CURRENTLY_SELECTED_KEY, testConfig);
+        request.getSession().setAttribute(TestConfig.CURRENTLY_SELECTED_KEY, testConfig);
 
         return mapping.findForward("validationTestEditor");
     }

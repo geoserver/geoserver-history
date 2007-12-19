@@ -15,8 +15,7 @@ import java.util.Date;
  *
  */
 public class FeatureISODateWrapper extends org.geoserver.template.FeatureWrapper {
-    private static SimpleDateFormat sdf = new SimpleDateFormat(
-            "yyyy-MM-dd'T'HH:mm:ss");
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     /**
      * Wraps dates as ISO date strings; defaults to the superclass for other kind of objects.

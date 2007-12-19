@@ -31,8 +31,7 @@ import javax.xml.namespace.QName;
  *
  * @generated
  */
-public class DeleteElementTypeImpl extends EObjectImpl
-    implements DeleteElementType {
+public class DeleteElementTypeImpl extends EObjectImpl implements DeleteElementType {
     /**
      * The default value of the '{@link #getFilter() <em>Filter</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -179,8 +178,7 @@ public class DeleteElementTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.DELETE_ELEMENT_TYPE__TYPE_NAME, oldTypeName,
-                    typeName));
+                    WfsPackage.DELETE_ELEMENT_TYPE__TYPE_NAME, oldTypeName, typeName));
         }
     }
 
@@ -264,12 +262,10 @@ public class DeleteElementTypeImpl extends EObjectImpl
     public boolean eIsSet(int featureID) {
         switch (featureID) {
         case WfsPackage.DELETE_ELEMENT_TYPE__FILTER:
-            return (FILTER_EDEFAULT == null) ? (filter != null)
-                                             : (!FILTER_EDEFAULT.equals(filter));
+            return (FILTER_EDEFAULT == null) ? (filter != null) : (!FILTER_EDEFAULT.equals(filter));
 
         case WfsPackage.DELETE_ELEMENT_TYPE__HANDLE:
-            return (HANDLE_EDEFAULT == null) ? (handle != null)
-                                             : (!HANDLE_EDEFAULT.equals(handle));
+            return (HANDLE_EDEFAULT == null) ? (handle != null) : (!HANDLE_EDEFAULT.equals(handle));
 
         case WfsPackage.DELETE_ELEMENT_TYPE__TYPE_NAME:
             return (TYPE_NAME_EDEFAULT == null) ? (typeName != null)

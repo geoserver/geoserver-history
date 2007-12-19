@@ -37,8 +37,7 @@ public class GETMAPValidator {
      */
     public List validateGETMAP(InputStream xml, ServletContext servContext) {
         // File schemaFile = new File( GeoserverDataDirectory.getGeoserverDataDirectory(servContext),"/data/capabilities/sld/StyledLayerDescriptor.xsd");
-        File schemaFile = new File(GeoserverDataDirectory
-                .getGeoserverDataDirectory(),
+        File schemaFile = new File(GeoserverDataDirectory.getGeoserverDataDirectory(),
                 "/data/capabilities/sld/GetMap.xsd");
 
         try {
@@ -73,8 +72,7 @@ public class GETMAPValidator {
     }
 
     public List validateGETMAP(InputSource xml, ServletContext servContext) {
-        File schemaFile = new File(GeoserverDataDirectory
-                .getGeoserverDataDirectory(),
+        File schemaFile = new File(GeoserverDataDirectory.getGeoserverDataDirectory(),
                 "/data/capabilities/sld/GetMap.xsd");
 
         try {
@@ -99,8 +97,7 @@ public class GETMAPValidator {
 
         try {
             parser.setFeature("http://xml.org/sax/features/validation", true);
-            parser.setFeature("http://apache.org/xml/features/validation/schema",
-                true);
+            parser.setFeature("http://apache.org/xml/features/validation/schema", true);
             parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking",
                 false);
 

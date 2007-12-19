@@ -73,11 +73,9 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
         return "attachment;filename=" + this.sourceCoverage.getName() + ".tiff";
     }
 
-    public void encode(OutputStream output)
-        throws ServiceException, IOException {
+    public void encode(OutputStream output) throws ServiceException, IOException {
         if (sourceCoverage == null) {
-            throw new IllegalStateException(
-                "It seems prepare() has not been called"
+            throw new IllegalStateException("It seems prepare() has not been called"
                 + " or has not succeed");
         }
 
@@ -90,14 +88,12 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
         wp.setTiling(256, 256);
 
         final ParameterValueGroup writerParams = format.getWriteParameters();
-        writerParams.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName()
-                                                                       .toString())
+        writerParams.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString())
                     .setValue(wp);
 
         GridCoverageWriter writer = format.getWriter(output);
         writer.write(sourceCoverage,
-            (GeneralParameterValue[]) writerParams.values()
-                                                  .toArray(new GeneralParameterValue[1]));
+            (GeneralParameterValue[]) writerParams.values().toArray(new GeneralParameterValue[1]));
 
         writer.dispose();
 

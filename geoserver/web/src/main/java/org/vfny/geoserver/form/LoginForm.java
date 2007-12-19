@@ -63,8 +63,7 @@ public class LoginForm extends ActionForm {
      * @param request
      * @return
      */
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         Locale locale = (Locale) request.getLocale();
@@ -77,13 +76,11 @@ public class LoginForm extends ActionForm {
         String passwordLabel = messages.getMessage(locale, "label.password");
 
         if ((username == null) || username.equals("")) {
-            errors.add("username",
-                new ActionError("errors.required", usernameLabel));
+            errors.add("username", new ActionError("errors.required", usernameLabel));
         }
 
         if ((password == null) || password.equals("")) {
-            errors.add("password",
-                new ActionError("errors.required", passwordLabel));
+            errors.add("password", new ActionError("errors.required", passwordLabel));
         }
 
         //failed experiment, as it looks like Login and LoginEdit use the same

@@ -103,8 +103,8 @@ public class WFS extends org.vfny.geoserver.global.Service {
      *
      * @throws ConfigurationException
      */
-    public WFS(Config config, Data data, GeoServer geoServer,
-        GeoValidator validator) throws ConfigurationException {
+    public WFS(Config config, Data data, GeoServer geoServer, GeoValidator validator)
+        throws ConfigurationException {
         this(config.getXMLReader().getWfs());
         setData(data);
         setGeoServer(geoServer);

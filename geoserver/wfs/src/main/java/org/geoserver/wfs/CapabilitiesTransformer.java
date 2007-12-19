@@ -114,8 +114,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             public void encode(Object object) throws IllegalArgumentException {
                 request = (GetCapabilitiesType) object;
 
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request
-                        .getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(),
+                        wfs.getGeoServer().getProxyBaseUrl());
 
                 AttributesImpl attributes = new AttributesImpl();
                 attributes.addAttribute("", "version", "version", "", "1.0.0");
@@ -137,19 +137,18 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 }
 
                 //filter
-                attributes.addAttribute("", "xmlns:" + OGC_PREFIX,
-                    "xmlns:" + OGC_PREFIX, "", OGC_URI);
+                attributes.addAttribute("", "xmlns:" + OGC_PREFIX, "xmlns:" + OGC_PREFIX, "",
+                    OGC_URI);
 
                 //xml schema
-                attributes.addAttribute("", "xmlns:" + XSI_PREFIX,
-                    "xmlns:" + XSI_PREFIX, "", XSI_URI);
+                attributes.addAttribute("", "xmlns:" + XSI_PREFIX, "xmlns:" + XSI_PREFIX, "",
+                    XSI_URI);
 
                 String locationAtt = XSI_PREFIX + ":schemaLocation";
                 String locationDef = WFS_URI + " "
                     + ResponseUtils.appendPath(proxifiedBaseUrl,
                         "schemas/wfs/1.0.0/WFS-capabilities.xsd");
-                attributes.addAttribute("", locationAtt, locationAtt, "",
-                    locationDef);
+                attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
 
                 start("WFS_Capabilities", attributes);
 
@@ -188,11 +187,10 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                 handleKeywords(wfs.getKeywords());
 
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request
-                        .getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(),
+                        wfs.getGeoServer().getProxyBaseUrl());
 
-                element("OnlineResource",
-                    ResponseUtils.appendPath(proxifiedBaseUrl, "wfs"));
+                element("OnlineResource", ResponseUtils.appendPath(proxifiedBaseUrl, "wfs"));
                 element("Fees", wfs.getFees());
                 element("AccessConstraints", wfs.getAccessConstraints());
                 end("Service");
@@ -366,14 +364,11 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                     Map dupes = new HashMap();
 
                     for (Iterator i = featureProducers.iterator(); i.hasNext();) {
-                        WFSGetFeatureOutputFormat format = (WFSGetFeatureOutputFormat) i
-                            .next();
+                        WFSGetFeatureOutputFormat format = (WFSGetFeatureOutputFormat) i.next();
 
-                        if (!dupes.containsKey(
-                                    format.getCapabilitiesElementName())) {
+                        if (!dupes.containsKey(format.getCapabilitiesElementName())) {
                             element(format.getCapabilitiesElementName(), null);
-                            dupes.put(format.getCapabilitiesElementName(),
-                                new Object());
+                            dupes.put(format.getCapabilitiesElementName(), new Object());
                         }
                     }
                 }
@@ -467,28 +462,25 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
              *        requests
              */
             private void handleDcpType(String capabilityName, String httpMethod) {
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request
-                        .getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(),
+                        wfs.getGeoServer().getProxyBaseUrl());
 
                 if (proxifiedBaseUrl.endsWith("?")) {
-                    proxifiedBaseUrl = proxifiedBaseUrl.substring(0,
-                            proxifiedBaseUrl.length() - 1);
+                    proxifiedBaseUrl = proxifiedBaseUrl.substring(0, proxifiedBaseUrl.length() - 1);
                 }
 
                 if (HTTP_GET.equals(httpMethod)) {
                     proxifiedBaseUrl = ResponseUtils.appendPath(proxifiedBaseUrl,
                             "wfs?request=" + capabilityName);
                 } else if (HTTP_POST.equals(httpMethod)) {
-                    proxifiedBaseUrl = ResponseUtils.appendPath(proxifiedBaseUrl,
-                            "wfs?");
+                    proxifiedBaseUrl = ResponseUtils.appendPath(proxifiedBaseUrl, "wfs?");
                 }
 
                 start("DCPType");
                 start("HTTP");
 
                 AttributesImpl atts = new AttributesImpl();
-                atts.addAttribute("", "onlineResource", "onlineResource", "",
-                    proxifiedBaseUrl);
+                atts.addAttribute("", "onlineResource", "onlineResource", "", proxifiedBaseUrl);
                 element(httpMethod, null, atts);
 
                 end("HTTP");
@@ -540,10 +532,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                 end("Operations");
 
-                List featureTypes = new ArrayList(catalog.getFeatureTypeInfos()
-                                                         .values());
-                Collections.sort(featureTypes,
-                    new FeatureTypeInfoTitleComparator());
+                List featureTypes = new ArrayList(catalog.getFeatureTypeInfos().values());
+                Collections.sort(featureTypes, new FeatureTypeInfoTitleComparator());
 
                 for (Iterator it = featureTypes.iterator(); it.hasNext();) {
                     FeatureTypeInfo ftype = (FeatureTypeInfo) it.next();
@@ -596,8 +586,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 try {
                     bbox = info.getLatLongBoundingBox();
                 } catch (IOException e) {
-                    String msg = "Could not calculate bbox for: "
-                        + info.getName();
+                    String msg = "Could not calculate bbox for: " + info.getName();
                     LOGGER.log(Level.SEVERE, msg, e);
 
                     return;
@@ -709,8 +698,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                                     .getName();
                                 String n2 = ((Function) o2).getName();
 
-                                return n1.toLowerCase()
-                                         .compareTo(n2.toLowerCase());
+                                return n1.toLowerCase().compareTo(n2.toLowerCase());
                             }
                         });
 
@@ -733,8 +721,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                         int funNArgs = ((FunctionExpression) fe).getArgCount();
 
                         AttributesImpl atts = new AttributesImpl();
-                        atts.addAttribute("", "nArgs", "nArgs", "",
-                            funNArgs + "");
+                        atts.addAttribute("", "nArgs", "nArgs", "", funNArgs + "");
 
                         element(prefix + "Function_Name", funName, atts);
                     }
@@ -771,19 +758,17 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             public void encode(Object object) throws IllegalArgumentException {
                 request = (GetCapabilitiesType) object;
 
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request
-                        .getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(),
+                        wfs.getGeoServer().getProxyBaseUrl());
 
                 AttributesImpl attributes = attributes(new String[] {
-                            "version", "1.1.0", "xmlns:xsi", XSI_URI, "xmlns",
-                            WFS_URI, "xmlns:wfs", WFS_URI, "xmlns:ows",
-                            OWS.NAMESPACE, "xmlns:gml", GML.NAMESPACE,
-                            "xmlns:ogc", OGC.NAMESPACE, "xmlns:xlink",
-                            XLINK.NAMESPACE, "xsi:schemaLocation",
+                            "version", "1.1.0", "xmlns:xsi", XSI_URI, "xmlns", WFS_URI, "xmlns:wfs",
+                            WFS_URI, "xmlns:ows", OWS.NAMESPACE, "xmlns:gml", GML.NAMESPACE,
+                            "xmlns:ogc", OGC.NAMESPACE, "xmlns:xlink", XLINK.NAMESPACE,
+                            "xsi:schemaLocation",
                             
                         org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE + " "
-                            + ResponseUtils.appendPath(proxifiedBaseUrl,
-                                "schemas/wfs/1.1.0/wfs.xsd")
+                            + ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd")
                         });
 
                 NameSpaceInfo[] namespaces = catalog.getNameSpaces();
@@ -980,8 +965,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
              */
             void getCapabilities() {
                 Map.Entry[] parameters = new Map.Entry[] {
-                        parameter("AcceptVersions",
-                            new String[] { "1.0.0", "1.1.0" }),
+                        parameter("AcceptVersions", new String[] { "1.0.0", "1.1.0" }),
                         parameter("AcceptFormats", new String[] { "text/xml" })
                     //    				parameter( 
                     //    					"Sections", 
@@ -1001,8 +985,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             void describeFeatureType() {
                 //TODO: process extension point
                 Map.Entry[] parameters = new Map.Entry[] {
-                        parameter("outputFormat",
-                            new String[] { "text/gml; subtype=gml/3.1.1" })
+                        parameter("outputFormat", new String[] { "text/gml; subtype=gml/3.1.1" })
                     };
 
                 operation("DescribeFeatureType", parameters, true, true);
@@ -1013,10 +996,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
              */
             void getFeature() {
                 Map.Entry[] parameters = new Map.Entry[] {
-                        parameter("resultType",
-                            new String[] { "results", "hits" }),
-                        parameter("outputFormat",
-                            new String[] { "text/gml; subtype=gml/3.1.1" })
+                        parameter("resultType", new String[] { "results", "hits" }),
+                        parameter("outputFormat", new String[] { "text/gml; subtype=gml/3.1.1" })
                     };
 
                 operation("GetFeature", parameters, true, true);
@@ -1027,10 +1008,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
              */
             void getFeatureWithLock() {
                 Map.Entry[] parameters = new Map.Entry[] {
-                        parameter("resultType",
-                            new String[] { "results", "hits" }),
-                        parameter("outputFormat",
-                            new String[] { "text/gml; subtype=gml/3.1.1" })
+                        parameter("resultType", new String[] { "results", "hits" }),
+                        parameter("outputFormat", new String[] { "text/gml; subtype=gml/3.1.1" })
                     };
 
                 operation("GetFeatureWithLock", parameters, true, true);
@@ -1041,8 +1020,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
              */
             void lockFeature() {
                 Map.Entry[] parameters = new Map.Entry[] {
-                        parameter("releaseAction",
-                            new String[] { "ALL", "SOME" })
+                        parameter("releaseAction", new String[] { "ALL", "SOME" })
                     };
 
                 operation("LockFeature", parameters, true, true);
@@ -1053,14 +1031,10 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
              */
             void transaction() {
                 Map.Entry[] parameters = new Map.Entry[] {
-                        parameter("inputFormat",
-                            new String[] { "text/gml; subtype=gml/3.1.1" }),
+                        parameter("inputFormat", new String[] { "text/gml; subtype=gml/3.1.1" }),
                         parameter("idgen",
-                            new String[] {
-                                "GenerateNew", "UseExisting", "ReplaceDuplicate"
-                            }),
-                        parameter("releaseAction",
-                            new String[] { "ALL", "SOME" })
+                            new String[] { "GenerateNew", "UseExisting", "ReplaceDuplicate" }),
+                        parameter("releaseAction", new String[] { "ALL", "SOME" })
                     };
 
                 operation("Transaction", parameters, true, true);
@@ -1115,10 +1089,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                 end("Operations");
 
-                List featureTypes = new ArrayList(catalog.getFeatureTypeInfos()
-                                                         .values());
-                Collections.sort(featureTypes,
-                    new FeatureTypeInfoTitleComparator());
+                List featureTypes = new ArrayList(catalog.getFeatureTypeInfos().values());
+                Collections.sort(featureTypes, new FeatureTypeInfoTitleComparator());
 
                 for (Iterator i = featureTypes.iterator(); i.hasNext();) {
                     FeatureTypeInfo featureType = (FeatureTypeInfo) i.next();
@@ -1222,8 +1194,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 String prefix = featureType.getNameSpace().getPrefix();
                 String uri = featureType.getNameSpace().getURI();
 
-                start("FeatureType",
-                    attributes(new String[] { "xmlns:" + prefix, uri }));
+                start("FeatureType", attributes(new String[] { "xmlns:" + prefix, uri }));
 
                 element("Name", featureType.getName());
                 element("Title", featureType.getTitle());
@@ -1231,8 +1202,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 keywords(featureType.getKeywords());
 
                 //default srs
-                element("DefaultSRS",
-                    "urn:x-ogc:def:crs:EPSG:6.11.2:" + featureType.getSRS());
+                element("DefaultSRS", "urn:x-ogc:def:crs:EPSG:6.11.2:" + featureType.getSRS());
 
                 //TODO: other srs's
                 start("OutputFormats");
@@ -1240,11 +1210,9 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 Collection featureProducers = GeoServerExtensions.extensions(WFSGetFeatureOutputFormat.class);
 
                 for (Iterator i = featureProducers.iterator(); i.hasNext();) {
-                    WFSGetFeatureOutputFormat format = (WFSGetFeatureOutputFormat) i
-                        .next();
+                    WFSGetFeatureOutputFormat format = (WFSGetFeatureOutputFormat) i.next();
 
-                    for (Iterator f = format.getOutputFormats().iterator();
-                            f.hasNext();) {
+                    for (Iterator f = format.getOutputFormats().iterator(); f.hasNext();) {
                         element("Format", f.next().toString());
                     }
                 }
@@ -1261,10 +1229,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                 start("ows:WGS84BoundingBox");
 
-                element("ows:LowerCorner", bbox.getMinX() + " "
-                    + bbox.getMinY());
-                element("ows:UpperCorner", bbox.getMaxX() + " "
-                    + bbox.getMaxY());
+                element("ows:LowerCorner", bbox.getMinX() + " " + bbox.getMinY());
+                element("ows:UpperCorner", bbox.getMaxX() + " " + bbox.getMaxY());
 
                 end("ows:WGS84BoundingBox");
 
@@ -1327,26 +1293,17 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 end("ogc:GeometryOperands");
 
                 start("ogc:SpatialOperators");
-                element("ogc:SpatialOperator", null,
-                    attributes(new String[] { "name", "Disjoint" }));
-                element("ogc:SpatialOperator", null,
-                    attributes(new String[] { "name", "Equals" }));
-                element("ogc:SpatialOperator", null,
-                    attributes(new String[] { "name", "DWithin" }));
-                element("ogc:SpatialOperator", null,
-                    attributes(new String[] { "name", "Beyond" }));
+                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "Disjoint" }));
+                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "Equals" }));
+                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "DWithin" }));
+                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "Beyond" }));
                 element("ogc:SpatialOperator", null,
                     attributes(new String[] { "name", "Intersects" }));
-                element("ogc:SpatialOperator", null,
-                    attributes(new String[] { "name", "Touches" }));
-                element("ogc:SpatialOperator", null,
-                    attributes(new String[] { "name", "Crosses" }));
-                element("ogc:SpatialOperator", null,
-                    attributes(new String[] { "name", "Contains" }));
-                element("ogc:SpatialOperator", null,
-                    attributes(new String[] { "name", "Overlaps" }));
-                element("ogc:SpatialOperator", null,
-                    attributes(new String[] { "name", "BBOX" }));
+                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "Touches" }));
+                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "Crosses" }));
+                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "Contains" }));
+                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "Overlaps" }));
+                element("ogc:SpatialOperator", null, attributes(new String[] { "name", "BBOX" }));
                 end("ogc:SpatialOperators");
 
                 end("ogc:Spatial_Capabilities");
@@ -1397,8 +1354,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                                     String n1 = ((Function) o1).getName();
                                     String n2 = ((Function) o2).getName();
 
-                                    return n1.toLowerCase()
-                                             .compareTo(n2.toLowerCase());
+                                    return n1.toLowerCase().compareTo(n2.toLowerCase());
                                 }
                             });
 
@@ -1457,8 +1413,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             }
 
             void keywords(List keywords) {
-                keywords((String[]) keywords.toArray(
-                        new String[keywords.size()]));
+                keywords((String[]) keywords.toArray(new String[keywords.size()]));
             }
 
             /**
@@ -1502,34 +1457,29 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
              * @param get
              * @param post
              */
-            void operation(String name, Map.Entry[] parameters, boolean get,
-                boolean post) {
+            void operation(String name, Map.Entry[] parameters, boolean get, boolean post) {
                 start("ows:Operation", attributes(new String[] { "name", name }));
 
                 //dcp
                 start("ows:DCP");
                 start("ows:HTTP");
 
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request
-                        .getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(),
+                        wfs.getGeoServer().getProxyBaseUrl());
 
                 if (proxifiedBaseUrl.endsWith("?")) {
-                    proxifiedBaseUrl = proxifiedBaseUrl.substring(0,
-                            proxifiedBaseUrl.length() - 1);
+                    proxifiedBaseUrl = proxifiedBaseUrl.substring(0, proxifiedBaseUrl.length() - 1);
                 }
 
                 if (proxifiedBaseUrl.indexOf('?') != -1) {
-                    proxifiedBaseUrl = proxifiedBaseUrl.substring(0,
-                            proxifiedBaseUrl.indexOf('?'));
+                    proxifiedBaseUrl = proxifiedBaseUrl.substring(0, proxifiedBaseUrl.indexOf('?'));
                 }
 
                 if (get) {
                     element("ows:Get", null,
                         attributes(
                             new String[] {
-                                "xlink:href",
-                                ResponseUtils.appendPath(proxifiedBaseUrl,
-                                    "wfs?")
+                                "xlink:href", ResponseUtils.appendPath(proxifiedBaseUrl, "wfs?")
                             }));
                 }
 
@@ -1537,9 +1487,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                     element("ows:Post", null,
                         attributes(
                             new String[] {
-                                "xlink:href",
-                                ResponseUtils.appendPath(proxifiedBaseUrl,
-                                    "wfs?")
+                                "xlink:href", ResponseUtils.appendPath(proxifiedBaseUrl, "wfs?")
                             }));
                 }
 
@@ -1551,8 +1499,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                     String pname = (String) parameters[i].getKey();
                     String[] pvalues = (String[]) parameters[i].getValue();
 
-                    start("ows:Parameter",
-                        attributes(new String[] { "name", pname }));
+                    start("ows:Parameter", attributes(new String[] { "name", pname }));
 
                     for (int j = 0; j < pvalues.length; j++) {
                         element("ows:Value", pvalues[j]);

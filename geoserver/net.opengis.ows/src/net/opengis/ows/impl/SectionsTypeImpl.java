@@ -66,8 +66,7 @@ public class SectionsTypeImpl extends EObjectImpl implements SectionsType {
      */
     public EList getSection() {
         if (section == null) {
-            section = new EDataTypeUniqueEList(String.class, this,
-                    OwsPackage.SECTIONS_TYPE__SECTION);
+            section = new EDataTypeUniqueEList(String.class, this, OwsPackage.SECTIONS_TYPE__SECTION);
         }
 
         return section;

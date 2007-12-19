@@ -88,8 +88,7 @@ public final class CustomPaletteBuilder {
         this(src, 256, 1, 1, DEFAULT_ALPHA_TH);
     }
 
-    public CustomPaletteBuilder(RenderedImage src, int size, int subsx,
-        int subsy, int alpha_th) {
+    public CustomPaletteBuilder(RenderedImage src, int size, int subsx, int subsy, int alpha_th) {
         if ((subsx <= 0) || (subsx >= src.getWidth())) {
             throw new IllegalArgumentException("Invalid subsample x size");
         }
@@ -117,8 +116,7 @@ public final class CustomPaletteBuilder {
         }
 
         if (this.requiredSize > 256) {
-            throw new IllegalArgumentException(
-                "Unvalid number of colors require.");
+            throw new IllegalArgumentException("Unvalid number of colors require.");
         }
 
         this.maxLevel = (int) Math.ceil(Math.log(requiredSize) / Math.log(2));
@@ -176,8 +174,8 @@ public final class CustomPaletteBuilder {
         //
         // //
         final IndexColorModel icm = getIndexColorModel();
-        final WritableRaster destWr = icm.createCompatibleWritableRaster(src
-                .getWidth(), src.getHeight());
+        final WritableRaster destWr = icm.createCompatibleWritableRaster(src.getWidth(),
+                src.getHeight());
         final BufferedImage dst = new BufferedImage(icm, destWr, false, null);
 
         // //
@@ -236,8 +234,7 @@ public final class CustomPaletteBuilder {
                     for (int i = minx, ii = dstTempX; i < maxx; i++, ii++) {
                         r.getPixel(i, j, rgba);
 
-                        destWr.setSample(ii, jj, 0,
-                            findColorIndex(root, rgba, alphaBand));
+                        destWr.setSample(ii, jj, 0, findColorIndex(root, rgba, alphaBand));
                     }
                 }
 
@@ -251,8 +248,7 @@ public final class CustomPaletteBuilder {
     }
 
     protected int findColorIndex(ColorNode aNode, int[] rgba, int transpBand) {
-        if ((transparency != Transparency.OPAQUE)
-                && (rgba[transpBand] < alphaThreshold)) {
+        if ((transparency != Transparency.OPAQUE) && (rgba[transpBand] < alphaThreshold)) {
             return 0; // default transparent pixel
         }
 
@@ -266,15 +262,13 @@ public final class CustomPaletteBuilder {
                     int i = 1;
 
                     for (; i < 8; i++) {
-                        if (((childIndex + i) < 8)
-                                && (aNode.children[childIndex + i] != null)) {
+                        if (((childIndex + i) < 8) && (aNode.children[childIndex + i] != null)) {
                             childIndex += i;
 
                             break;
                         }
 
-                        if (((childIndex - i) >= 0)
-                                && (aNode.children[childIndex - i] != null)) {
+                        if (((childIndex - i) >= 0) && (aNode.children[childIndex - i] != null)) {
                             childIndex -= i;
 
                             break;
@@ -282,8 +276,7 @@ public final class CustomPaletteBuilder {
                     }
                 }
 
-                return findColorIndex(aNode.children[childIndex], rgba,
-                    transpBand);
+                return findColorIndex(aNode.children[childIndex], rgba, transpBand);
             }
         } catch (Exception e) {
         }
@@ -358,8 +351,7 @@ public final class CustomPaletteBuilder {
                          * assume all colors with alpha less than 1.0 as fully
                          * transparent.
                          */
-                        if (discriminantTransparency
-                                && (rgba[transpBand] < alphaThreshold)) {
+                        if (discriminantTransparency && (rgba[transpBand] < alphaThreshold)) {
                             transColor = insertNode(transColor, rgba, 0);
                         } else {
                             root = insertNode(root, rgba, 0);
@@ -410,8 +402,7 @@ public final class CustomPaletteBuilder {
                 }
             }
 
-            aNode.children[branchIndex] = insertNode(aNode.children[branchIndex],
-                    rgba, aLevel + 1);
+            aNode.children[branchIndex] = insertNode(aNode.children[branchIndex], rgba, aLevel + 1);
         }
 
         return aNode;
@@ -444,8 +435,7 @@ public final class CustomPaletteBuilder {
         return new IndexColorModel(8, currSize, red, green, blue);
     }
 
-    protected int findPaletteEntry(ColorNode aNode, int index, byte[] red,
-        byte[] green, byte[] blue) {
+    protected int findPaletteEntry(ColorNode aNode, int index, byte[] red, byte[] green, byte[] blue) {
         if (aNode == null) {
             return index;
         }
@@ -462,8 +452,7 @@ public final class CustomPaletteBuilder {
         } else {
             for (int i = 0; i < 8; i++) {
                 if (aNode.children[i] != null) {
-                    index = findPaletteEntry(aNode.children[i], index, red,
-                            green, blue);
+                    index = findPaletteEntry(aNode.children[i], index, red, green, blue);
                 }
             }
         }
@@ -473,8 +462,7 @@ public final class CustomPaletteBuilder {
 
     protected int getBranchIndex(int[] rgba, int aLevel) {
         if ((aLevel > maxLevel) || (aLevel < 0)) {
-            throw new IllegalArgumentException("Invalid octree node depth: "
-                + aLevel);
+            throw new IllegalArgumentException("Invalid octree node depth: " + aLevel);
         }
 
         int shift = maxLevel - aLevel;
@@ -618,8 +606,7 @@ public final class CustomPaletteBuilder {
             int g = (int) green / colorCount;
             int b = (int) blue / colorCount;
 
-            int c = (0xff << 24) | ((0xff & r) << 16) | ((0xff & g) << 8)
-                | (0xff & b);
+            int c = (0xff << 24) | ((0xff & r) << 16) | ((0xff & g) << 8) | (0xff & b);
 
             return c;
         }

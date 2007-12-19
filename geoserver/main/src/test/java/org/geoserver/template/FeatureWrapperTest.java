@@ -38,20 +38,17 @@ public class FeatureWrapperTest extends TestCase {
                 };
         features.add(new DefaultFeature((DefaultFeatureType) featureType,
                 new Object[] {
-                    "one", new Integer(1), new Double(1.1),
-                    gf.createPoint(new Coordinate(1, 1))
+                    "one", new Integer(1), new Double(1.1), gf.createPoint(new Coordinate(1, 1))
                 }, "fid.1") {
             });
         features.add(new DefaultFeature((DefaultFeatureType) featureType,
                 new Object[] {
-                    "two", new Integer(2), new Double(2.2),
-                    gf.createPoint(new Coordinate(2, 2))
+                    "two", new Integer(2), new Double(2.2), gf.createPoint(new Coordinate(2, 2))
                 }, "fid.2") {
             });
         features.add(new DefaultFeature((DefaultFeatureType) featureType,
                 new Object[] {
-                    "three", new Integer(3), new Double(3.3),
-                    gf.createPoint(new Coordinate(3, 3))
+                    "three", new Integer(3), new Double(3.3), gf.createPoint(new Coordinate(3, 3))
                 }, "fid.3") {
             });
 
@@ -75,8 +72,7 @@ public class FeatureWrapperTest extends TestCase {
         template.process(features.iterator().next(), out);
 
         //replace ',' with '.' for locales which use a comma for decimal point
-        assertEquals("one\n1\n1.1\nPOINT (1 1)",
-            out.toString().replace(',', '.'));
+        assertEquals("one\n1\n1.1\nPOINT (1 1)", out.toString().replace(',', '.'));
     }
 
     public void testFeatureDynamic() throws Exception {

@@ -74,8 +74,7 @@ public class GetCoverageXmlReader extends XmlRequestReader {
                 LOGGER.fine("just parsed: " + requestSource);
             }
         } catch (SAXException e) {
-            throw new WcsException(e,
-                "XML getCoverage request SAX parsing error",
+            throw new WcsException(e, "XML getCoverage request SAX parsing error",
                 XmlRequestReader.class.getName());
         } catch (IOException e) {
             throw new WcsException(e, "XML get coverage request input error",

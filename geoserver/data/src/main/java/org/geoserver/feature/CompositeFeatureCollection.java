@@ -84,8 +84,7 @@ public class CompositeFeatureCollection extends DataFeatureCollection {
                 }
 
                 //grap next
-                iterator = ((FeatureCollection) collections.get(index++))
-                    .iterator();
+                iterator = ((FeatureCollection) collections.get(index++)).iterator();
 
                 if (iterator.hasNext()) {
                     return true;
@@ -95,8 +94,7 @@ public class CompositeFeatureCollection extends DataFeatureCollection {
             //no more
             if (iterator != null) {
                 //close the last iterator
-                ((FeatureCollection) collections.get(collections.size() - 1))
-                .close(iterator);
+                ((FeatureCollection) collections.get(collections.size() - 1)).close(iterator);
             }
 
             return false;

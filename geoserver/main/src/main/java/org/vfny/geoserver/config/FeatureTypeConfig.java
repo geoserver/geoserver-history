@@ -38,8 +38,7 @@ import java.util.logging.Logger;
  * @version $Id$
  */
 public class FeatureTypeConfig {
-    protected static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.config");
+    protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.config");
 
     /** The Id of the datastore which should be used to get this featuretype. */
     private String dataStoreId;
@@ -190,16 +189,13 @@ public class FeatureTypeConfig {
      * @param schema Geotools2 FeatureType
      * @param generate True to generate entries for all attribtues
      */
-    public FeatureTypeConfig(String dataStoreId, FeatureType schema,
-        boolean generate) {
+    public FeatureTypeConfig(String dataStoreId, FeatureType schema, boolean generate) {
         if ((dataStoreId == null) || (dataStoreId.length() == 0)) {
-            throw new IllegalArgumentException(
-                "dataStoreId is required for FeatureTypeConfig");
+            throw new IllegalArgumentException("dataStoreId is required for FeatureTypeConfig");
         }
 
         if (schema == null) {
-            throw new IllegalArgumentException(
-                "FeatureType is required for FeatureTypeConfig");
+            throw new IllegalArgumentException("FeatureType is required for FeatureTypeConfig");
         }
 
         this.dataStoreId = dataStoreId;
@@ -252,8 +248,7 @@ public class FeatureTypeConfig {
      */
     public FeatureTypeConfig(FeatureTypeInfoDTO dto) {
         if (dto == null) {
-            throw new NullPointerException(
-                "Non null FeatureTypeInfoDTO required");
+            throw new NullPointerException("Non null FeatureTypeInfoDTO required");
         }
 
         dataStoreId = dto.getDataStoreId();
@@ -270,8 +265,7 @@ public class FeatureTypeConfig {
             Iterator i = dto.getSchemaAttributes().iterator();
 
             while (i.hasNext()) {
-                schemaAttributes.add(new AttributeTypeInfoConfig(
-                        (AttributeTypeInfoDTO) i.next()));
+                schemaAttributes.add(new AttributeTypeInfoConfig((AttributeTypeInfoDTO) i.next()));
             }
         }
 
@@ -415,13 +409,11 @@ public class FeatureTypeConfig {
      *
      * @return AttributeTypeInfoConfig from the schema, if found
      */
-    public AttributeTypeInfoConfig getAttributeFromSchema(
-        String attributeTypeName) {
+    public AttributeTypeInfoConfig getAttributeFromSchema(String attributeTypeName) {
         Iterator iter = schemaAttributes.iterator();
 
         while (iter.hasNext()) {
-            AttributeTypeInfoConfig atiConfig = (AttributeTypeInfoConfig) iter
-                .next();
+            AttributeTypeInfoConfig atiConfig = (AttributeTypeInfoConfig) iter.next();
 
             if (atiConfig.getName().equals(attributeTypeName)) {
                 return atiConfig;
@@ -755,9 +747,8 @@ public class FeatureTypeConfig {
     }
 
     public String toString() {
-        return "FeatureTypeConfig[name: " + name + " schemaName: " + schemaName
-        + " SRS: " + SRS + " schemaAttributes: " + schemaAttributes
-        + " schemaBase " + schemaBase + "]";
+        return "FeatureTypeConfig[name: " + name + " schemaName: " + schemaName + " SRS: " + SRS
+        + " schemaAttributes: " + schemaAttributes + " schemaBase " + schemaBase + "]";
     }
 
     public String getWmsPath() {

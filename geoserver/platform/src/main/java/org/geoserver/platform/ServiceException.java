@@ -80,8 +80,7 @@ public class ServiceException extends RuntimeException {
      * @param code The application specific exception code for the exception.
      * @param locator The application specific locator for the exception.
      */
-    public ServiceException(String message, Throwable cause, String code,
-        String locator) {
+    public ServiceException(String message, Throwable cause, String code, String locator) {
         this(message, cause, code);
         this.locator = locator;
     }

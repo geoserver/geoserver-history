@@ -33,8 +33,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *
  * @generated
  */
-public class LockFeatureResponseTypeImpl extends EObjectImpl
-    implements LockFeatureResponseType {
+public class LockFeatureResponseTypeImpl extends EObjectImpl implements LockFeatureResponseType {
     /**
      * The default value of the '{@link #getLockId() <em>Lock Id</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -113,8 +112,7 @@ public class LockFeatureResponseTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__LOCK_ID, oldLockId,
-                    lockId));
+                    WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__LOCK_ID, oldLockId, lockId));
         }
     }
 
@@ -132,16 +130,15 @@ public class LockFeatureResponseTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetFeaturesLocked(
-        FeaturesLockedType newFeaturesLocked, NotificationChain msgs) {
+    public NotificationChain basicSetFeaturesLocked(FeaturesLockedType newFeaturesLocked,
+        NotificationChain msgs) {
         FeaturesLockedType oldFeaturesLocked = featuresLocked;
         featuresLocked = newFeaturesLocked;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
-                    WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED,
-                    oldFeaturesLocked, newFeaturesLocked);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED, oldFeaturesLocked,
+                    newFeaturesLocked);
 
             if (msgs == null) {
                 msgs = notification;
@@ -165,15 +162,13 @@ public class LockFeatureResponseTypeImpl extends EObjectImpl
             if (featuresLocked != null) {
                 msgs = ((InternalEObject) featuresLocked).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED,
-                        null, msgs);
+                        - WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED, null, msgs);
             }
 
             if (newFeaturesLocked != null) {
                 msgs = ((InternalEObject) newFeaturesLocked).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED,
-                        null, msgs);
+                        - WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED, null, msgs);
             }
 
             msgs = basicSetFeaturesLocked(newFeaturesLocked, msgs);
@@ -183,8 +178,8 @@ public class LockFeatureResponseTypeImpl extends EObjectImpl
             }
         } else if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED,
-                    newFeaturesLocked, newFeaturesLocked));
+                    WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED, newFeaturesLocked,
+                    newFeaturesLocked));
         }
     }
 
@@ -202,14 +197,13 @@ public class LockFeatureResponseTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetFeaturesNotLocked(
-        FeaturesNotLockedType newFeaturesNotLocked, NotificationChain msgs) {
+    public NotificationChain basicSetFeaturesNotLocked(FeaturesNotLockedType newFeaturesNotLocked,
+        NotificationChain msgs) {
         FeaturesNotLockedType oldFeaturesNotLocked = featuresNotLocked;
         featuresNotLocked = newFeaturesNotLocked;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__FEATURES_NOT_LOCKED,
                     oldFeaturesNotLocked, newFeaturesNotLocked);
 
@@ -235,15 +229,13 @@ public class LockFeatureResponseTypeImpl extends EObjectImpl
             if (featuresNotLocked != null) {
                 msgs = ((InternalEObject) featuresNotLocked).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__FEATURES_NOT_LOCKED,
-                        null, msgs);
+                        - WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__FEATURES_NOT_LOCKED, null, msgs);
             }
 
             if (newFeaturesNotLocked != null) {
                 msgs = ((InternalEObject) newFeaturesNotLocked).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__FEATURES_NOT_LOCKED,
-                        null, msgs);
+                        - WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__FEATURES_NOT_LOCKED, null, msgs);
             }
 
             msgs = basicSetFeaturesNotLocked(newFeaturesNotLocked, msgs);
@@ -263,8 +255,8 @@ public class LockFeatureResponseTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED:
             return basicSetFeaturesLocked(null, msgs);
@@ -356,8 +348,7 @@ public class LockFeatureResponseTypeImpl extends EObjectImpl
     public boolean eIsSet(int featureID) {
         switch (featureID) {
         case WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__LOCK_ID:
-            return (LOCK_ID_EDEFAULT == null) ? (lockId != null)
-                                              : (!LOCK_ID_EDEFAULT.equals(lockId));
+            return (LOCK_ID_EDEFAULT == null) ? (lockId != null) : (!LOCK_ID_EDEFAULT.equals(lockId));
 
         case WfsPackage.LOCK_FEATURE_RESPONSE_TYPE__FEATURES_LOCKED:
             return featuresLocked != null;

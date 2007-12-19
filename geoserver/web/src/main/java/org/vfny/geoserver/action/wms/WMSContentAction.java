@@ -45,17 +45,16 @@ import javax.servlet.http.HttpServletResponse;
  *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public final class WMSContentAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        UserContainer user, HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
+        throws IOException, ServletException {
         WMSContentForm contentForm = (WMSContentForm) form;
 
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = getResources(request);
-        final String SUBMIT = HTMLEncoder.decode(messages.getMessage(locale,
-                    "label.submit"));
-        final String GENERATE_BBOX = HTMLEncoder.decode(messages.getMessage(
-                    locale, "config.data.calculateBoundingBox.label"));
+        final String SUBMIT = HTMLEncoder.decode(messages.getMessage(locale, "label.submit"));
+        final String GENERATE_BBOX = HTMLEncoder.decode(messages.getMessage(locale,
+                    "config.data.calculateBoundingBox.label"));
         final String ADD_NEW_LAYERGROUP = "Add New Layer-Group";
         final String REMOVE_LAYERGROUP = "Remove";
 
@@ -75,25 +74,21 @@ public final class WMSContentAction extends ConfigAction {
         config.setOnlineResource(new URL(onlineResource));
 
         if (SUBMIT.equals(action)) {
-            return executeSubmit(mapping, action, contentForm, config, request,
-                response);
+            return executeSubmit(mapping, action, contentForm, config, request, response);
         } else if (ADD_NEW_LAYERGROUP.equals(action)) {
-            return executeAddNewLayerGroup(mapping, action, contentForm,
-                config, request, response);
+            return executeAddNewLayerGroup(mapping, action, contentForm, config, request, response);
         } else if (action.startsWith(REMOVE_LAYERGROUP)) {
-            return executeRemoveLayerGroup(mapping, action, contentForm,
-                config, request, response);
+            return executeRemoveLayerGroup(mapping, action, contentForm, config, request, response);
         } else if (action.startsWith(GENERATE_BBOX)) {
-            return executeGenerateBBOX(mapping, action, contentForm, config,
-                request, response);
+            return executeGenerateBBOX(mapping, action, contentForm, config, request, response);
         }
 
         return mapping.findForward("config.wms.content");
     }
 
-    private ActionForward executeGenerateBBOX(ActionMapping mapping,
-        String action, WMSContentForm contentForm, WMSConfig config,
-        HttpServletRequest request, HttpServletResponse response) {
+    private ActionForward executeGenerateBBOX(ActionMapping mapping, String action,
+        WMSContentForm contentForm, WMSConfig config, HttpServletRequest request,
+        HttpServletResponse response) {
         HashMap layerMap = new HashMap();
         HashMap styleMap = new HashMap();
         HashMap envelopeMap = new HashMap();
@@ -103,16 +98,12 @@ public final class WMSContentAction extends ConfigAction {
         int bmi;
         Iterator it;
 
-        for (bmi = 0, it = contentForm.getBaseMapTitles().iterator();
-                it.hasNext(); bmi++) {
+        for (bmi = 0, it = contentForm.getBaseMapTitles().iterator(); it.hasNext(); bmi++) {
             String baseMapTitle = (String) it.next();
 
-            String baseMapLayers = (String) contentForm.getBaseMapLayers()
-                                                       .get(bmi);
-            String baseMapStyles = (String) contentForm.getBaseMapStyles()
-                                                       .get(bmi);
-            GeneralEnvelope envelope = (GeneralEnvelope) contentForm.getBaseMapEnvelopes()
-                                                                    .get(bmi);
+            String baseMapLayers = (String) contentForm.getBaseMapLayers().get(bmi);
+            String baseMapStyles = (String) contentForm.getBaseMapStyles().get(bmi);
+            GeneralEnvelope envelope = (GeneralEnvelope) contentForm.getBaseMapEnvelopes().get(bmi);
 
             /*
              * System.out.println("******************* contentAction: title=" +
@@ -138,9 +129,8 @@ public final class WMSContentAction extends ConfigAction {
                         if (layerType.intValue() == MapLayerInfo.TYPE_VECTOR) {
                             FeatureTypeInfo ftype = catalog.getFeatureTypeInfo(layerName);
                             ftype = ((ftype != null) ? ftype
-                                                     : catalog
-                                .getFeatureTypeInfo(layerName.substring(layerName
-                                        .indexOf(":") + 1, layerName.length())));
+                                                     : catalog.getFeatureTypeInfo(layerName
+                                    .substring(layerName.indexOf(":") + 1, layerName.length())));
 
                             if (selectedEnvelope == null) {
                                 ReferencedEnvelope ftEnvelope = null;
@@ -148,27 +138,20 @@ public final class WMSContentAction extends ConfigAction {
                                 try {
                                     if (ftype.getBoundingBox() instanceof ReferencedEnvelope
                                             && !ftype.getBoundingBox().isNull()) {
-                                        ftEnvelope = (ReferencedEnvelope) ftype
-                                            .getBoundingBox();
+                                        ftEnvelope = (ReferencedEnvelope) ftype.getBoundingBox();
                                     } else {
                                         // TODO Add Action Errors
-                                        return mapping.findForward(
-                                            "config.wms.content");
+                                        return mapping.findForward("config.wms.content");
                                     }
                                 } catch (IOException e) {
                                     // TODO Add Action Errors
-                                    return mapping.findForward(
-                                        "config.wms.content");
+                                    return mapping.findForward("config.wms.content");
                                 }
 
                                 selectedEnvelope = new GeneralEnvelope(new double[] {
-                                            ftEnvelope.getMinX(),
-                                            ftEnvelope.getMinY()
+                                            ftEnvelope.getMinX(), ftEnvelope.getMinY()
                                         },
-                                        new double[] {
-                                            ftEnvelope.getMaxX(),
-                                            ftEnvelope.getMaxY()
-                                        });
+                                        new double[] { ftEnvelope.getMaxX(), ftEnvelope.getMaxY() });
                                 selectedEnvelope.setCoordinateReferenceSystem(ftEnvelope
                                     .getCoordinateReferenceSystem());
                             } else {
@@ -179,107 +162,78 @@ public final class WMSContentAction extends ConfigAction {
 
                                 try {
                                     if (ftype.getBoundingBox() instanceof ReferencedEnvelope) {
-                                        ftEnvelope = (ReferencedEnvelope) ftype
-                                            .getBoundingBox();
+                                        ftEnvelope = (ReferencedEnvelope) ftype.getBoundingBox();
                                         ftEnvelope.transform(dstCRS, true);
                                     } else {
                                         // TODO Add Action Errors
-                                        return mapping.findForward(
-                                            "config.wms.content");
+                                        return mapping.findForward("config.wms.content");
                                     }
                                 } catch (TransformException e) {
                                     // TODO Add Action Errors
-                                    return mapping.findForward(
-                                        "config.wms.content");
+                                    return mapping.findForward("config.wms.content");
                                 } catch (FactoryException e) {
                                     // TODO Add Action Errors
-                                    return mapping.findForward(
-                                        "config.wms.content");
+                                    return mapping.findForward("config.wms.content");
                                 } catch (IOException e) {
                                     // TODO Add Action Errors
-                                    return mapping.findForward(
-                                        "config.wms.content");
+                                    return mapping.findForward("config.wms.content");
                                 }
 
                                 ReferencedEnvelope newEnvelope = new ReferencedEnvelope(dstCRS);
-                                newEnvelope.init(selectedEnvelope.getLowerCorner()
-                                                                 .getOrdinate(0),
-                                    selectedEnvelope.getUpperCorner()
-                                                    .getOrdinate(0),
-                                    selectedEnvelope.getLowerCorner()
-                                                    .getOrdinate(1),
-                                    selectedEnvelope.getUpperCorner()
-                                                    .getOrdinate(1));
+                                newEnvelope.init(selectedEnvelope.getLowerCorner().getOrdinate(0),
+                                    selectedEnvelope.getUpperCorner().getOrdinate(0),
+                                    selectedEnvelope.getLowerCorner().getOrdinate(1),
+                                    selectedEnvelope.getUpperCorner().getOrdinate(1));
 
                                 newEnvelope.expandToInclude(ftEnvelope);
 
                                 selectedEnvelope = new GeneralEnvelope(new double[] {
-                                            newEnvelope.getMinX(),
-                                            newEnvelope.getMinY()
+                                            newEnvelope.getMinX(), newEnvelope.getMinY()
                                         },
-                                        new double[] {
-                                            newEnvelope.getMaxX(),
-                                            newEnvelope.getMaxY()
-                                        });
+                                        new double[] { newEnvelope.getMaxX(), newEnvelope.getMaxY() });
                                 selectedEnvelope.setCoordinateReferenceSystem(dstCRS);
                             }
                         } else if (layerType.intValue() == MapLayerInfo.TYPE_RASTER) {
                             CoverageInfo cv = catalog.getCoverageInfo(layerName);
                             cv = ((cv != null) ? cv
-                                               : catalog.getCoverageInfo(layerName
-                                    .substring(layerName.indexOf(":") + 1,
-                                        layerName.length())));
+                                               : catalog.getCoverageInfo(layerName.substring(layerName
+                                        .indexOf(":") + 1, layerName.length())));
 
                             if (selectedEnvelope == null) {
                                 selectedEnvelope = cv.getEnvelope();
                             } else {
-                                final CoordinateReferenceSystem cvCRS = cv
-                                    .getCrs();
+                                final CoordinateReferenceSystem cvCRS = cv.getCrs();
                                 final CoordinateReferenceSystem dstCRS = selectedEnvelope
                                     .getCoordinateReferenceSystem();
 
                                 ReferencedEnvelope cvEnvelope = new ReferencedEnvelope(cvCRS);
-                                cvEnvelope.init(cv.getEnvelope().getLowerCorner()
-                                                  .getOrdinate(0),
-                                    cv.getEnvelope().getUpperCorner()
-                                      .getOrdinate(0),
-                                    cv.getEnvelope().getLowerCorner()
-                                      .getOrdinate(1),
-                                    cv.getEnvelope().getUpperCorner()
-                                      .getOrdinate(1));
+                                cvEnvelope.init(cv.getEnvelope().getLowerCorner().getOrdinate(0),
+                                    cv.getEnvelope().getUpperCorner().getOrdinate(0),
+                                    cv.getEnvelope().getLowerCorner().getOrdinate(1),
+                                    cv.getEnvelope().getUpperCorner().getOrdinate(1));
 
                                 try {
                                     cvEnvelope.transform(dstCRS, true);
                                 } catch (TransformException e) {
                                     // TODO Add Action Errors
-                                    return mapping.findForward(
-                                        "config.wms.content");
+                                    return mapping.findForward("config.wms.content");
                                 } catch (FactoryException e) {
                                     // TODO Add Action Errors
-                                    return mapping.findForward(
-                                        "config.wms.content");
+                                    return mapping.findForward("config.wms.content");
                                 }
 
                                 ReferencedEnvelope newEnvelope = new ReferencedEnvelope(dstCRS);
-                                newEnvelope.init(selectedEnvelope.getLowerCorner()
-                                                                 .getOrdinate(0),
-                                    selectedEnvelope.getUpperCorner()
-                                                    .getOrdinate(0),
-                                    selectedEnvelope.getLowerCorner()
-                                                    .getOrdinate(1),
-                                    selectedEnvelope.getUpperCorner()
-                                                    .getOrdinate(1));
+                                newEnvelope.init(selectedEnvelope.getLowerCorner().getOrdinate(0),
+                                    selectedEnvelope.getUpperCorner().getOrdinate(0),
+                                    selectedEnvelope.getLowerCorner().getOrdinate(1),
+                                    selectedEnvelope.getUpperCorner().getOrdinate(1));
 
                                 newEnvelope.expandToInclude(cvEnvelope);
 
                                 selectedEnvelope = new GeneralEnvelope(new double[] {
-                                            newEnvelope.getMinX(),
-                                            newEnvelope.getMinY()
+                                            newEnvelope.getMinX(), newEnvelope.getMinY()
                                         },
-                                        new double[] {
-                                            newEnvelope.getMaxX(),
-                                            newEnvelope.getMaxY()
-                                        });
+                                        new double[] { newEnvelope.getMaxX(), newEnvelope.getMaxY() });
                                 selectedEnvelope.setCoordinateReferenceSystem(dstCRS);
                             }
                         }
@@ -306,9 +260,9 @@ public final class WMSContentAction extends ConfigAction {
         return mapping.findForward("config.wms.content");
     }
 
-    private ActionForward executeRemoveLayerGroup(ActionMapping mapping,
-        String action, WMSContentForm contentForm, WMSConfig config,
-        HttpServletRequest request, HttpServletResponse response) {
+    private ActionForward executeRemoveLayerGroup(ActionMapping mapping, String action,
+        WMSContentForm contentForm, WMSConfig config, HttpServletRequest request,
+        HttpServletResponse response) {
         HashMap layerMap = new HashMap();
         HashMap styleMap = new HashMap();
         HashMap envelopeMap = new HashMap();
@@ -328,16 +282,12 @@ public final class WMSContentAction extends ConfigAction {
 
         int bmi = 0;
 
-        for (Iterator it = contentForm.getBaseMapTitles().iterator();
-                it.hasNext();) {
+        for (Iterator it = contentForm.getBaseMapTitles().iterator(); it.hasNext();) {
             String baseMapTitle = (String) it.next();
 
-            String baseMapLayers = (String) contentForm.getBaseMapLayers()
-                                                       .get(bmi);
-            String baseMapStyles = (String) contentForm.getBaseMapStyles()
-                                                       .get(bmi);
-            GeneralEnvelope envelope = (GeneralEnvelope) contentForm.getBaseMapEnvelopes()
-                                                                    .get(bmi);
+            String baseMapLayers = (String) contentForm.getBaseMapLayers().get(bmi);
+            String baseMapStyles = (String) contentForm.getBaseMapStyles().get(bmi);
+            GeneralEnvelope envelope = (GeneralEnvelope) contentForm.getBaseMapEnvelopes().get(bmi);
 
             /*
              * System.out.println("******************* contentAction: title=" +
@@ -358,10 +308,9 @@ public final class WMSContentAction extends ConfigAction {
         return mapping.findForward("config.wms.content");
     }
 
-    private ActionForward executeAddNewLayerGroup(ActionMapping mapping,
-        String action, WMSContentForm contentForm, WMSConfig config,
-        HttpServletRequest request, HttpServletResponse response)
-        throws ServletException {
+    private ActionForward executeAddNewLayerGroup(ActionMapping mapping, String action,
+        WMSContentForm contentForm, WMSConfig config, HttpServletRequest request,
+        HttpServletResponse response) throws ServletException {
         HashMap layerMap = new HashMap();
         HashMap styleMap = new HashMap();
         HashMap envelopeMap = new HashMap();
@@ -369,16 +318,12 @@ public final class WMSContentAction extends ConfigAction {
         int bmi;
         Iterator it;
 
-        for (bmi = 0, it = contentForm.getBaseMapTitles().iterator();
-                it.hasNext(); bmi++) {
+        for (bmi = 0, it = contentForm.getBaseMapTitles().iterator(); it.hasNext(); bmi++) {
             String baseMapTitle = (String) it.next();
-            String baseMapLayers = (String) contentForm.getBaseMapLayers()
-                                                       .get(bmi);
-            String baseMapStyles = (String) contentForm.getBaseMapStyles()
-                                                       .get(bmi);
+            String baseMapLayers = (String) contentForm.getBaseMapLayers().get(bmi);
+            String baseMapStyles = (String) contentForm.getBaseMapStyles().get(bmi);
 
-            GeneralEnvelope envelope = (GeneralEnvelope) contentForm.getBaseMapEnvelopes()
-                                                                    .get(bmi);
+            GeneralEnvelope envelope = (GeneralEnvelope) contentForm.getBaseMapEnvelopes().get(bmi);
 
             /*
              * System.out.println("******************* contentAction: title=" +
@@ -393,15 +338,13 @@ public final class WMSContentAction extends ConfigAction {
         String name = "<new_layer_group>";
         int num = 2;
 
-        while ((config.getBaseMapLayers() != null)
-                && (config.getBaseMapLayers().get(name) != null)) {
+        while ((config.getBaseMapLayers() != null) && (config.getBaseMapLayers().get(name) != null)) {
             name = "<new_layer_group" + num + ">";
             num++;
         }
 
-        GeneralEnvelope defaultEnvelope = new GeneralEnvelope(new double[] {
-                    -180.0, -90.0
-                }, new double[] { 180.0, 90.0 });
+        GeneralEnvelope defaultEnvelope = new GeneralEnvelope(new double[] { -180.0, -90.0 },
+                new double[] { 180.0, 90.0 });
 
         try {
             defaultEnvelope.setCoordinateReferenceSystem(CRS.decode("EPSG:4326"));
@@ -428,8 +371,8 @@ public final class WMSContentAction extends ConfigAction {
     }
 
     private ActionForward executeSubmit(ActionMapping mapping, String action,
-        WMSContentForm contentForm, WMSConfig config,
-        HttpServletRequest request, HttpServletResponse response) {
+        WMSContentForm contentForm, WMSConfig config, HttpServletRequest request,
+        HttpServletResponse response) {
         HashMap layerMap = new HashMap();
         HashMap styleMap = new HashMap();
         HashMap envelopeMap = new HashMap();
@@ -437,15 +380,11 @@ public final class WMSContentAction extends ConfigAction {
         int bmi;
         Iterator it;
 
-        for (bmi = 0, it = contentForm.getBaseMapTitles().iterator();
-                it.hasNext(); bmi++) {
+        for (bmi = 0, it = contentForm.getBaseMapTitles().iterator(); it.hasNext(); bmi++) {
             String baseMapTitle = (String) it.next();
-            String baseMapLayers = (String) contentForm.getBaseMapLayers()
-                                                       .get(bmi);
-            String baseMapStyles = (String) contentForm.getBaseMapStyles()
-                                                       .get(bmi);
-            GeneralEnvelope envelope = (GeneralEnvelope) contentForm.getBaseMapEnvelopes()
-                                                                    .get(bmi);
+            String baseMapLayers = (String) contentForm.getBaseMapLayers().get(bmi);
+            String baseMapStyles = (String) contentForm.getBaseMapStyles().get(bmi);
+            GeneralEnvelope envelope = (GeneralEnvelope) contentForm.getBaseMapEnvelopes().get(bmi);
 
             /*System.out.println("******************* contentAction: title=" + baseMapTitle + ", layers="
                + baseMapLayers + ", styles=" + baseMapStyles);*/
@@ -464,8 +403,7 @@ public final class WMSContentAction extends ConfigAction {
                 if (layerType == null) {
                     ActionErrors errors = new ActionErrors();
                     errors.add(ActionErrors.GLOBAL_ERROR,
-                        new ActionError("errors.invalid",
-                            new ActionMessage("Layer " + layerName)));
+                        new ActionError("errors.invalid", new ActionMessage("Layer " + layerName)));
                     saveErrors(request, errors);
 
                     return mapping.findForward("config.wms.content");
@@ -480,8 +418,7 @@ public final class WMSContentAction extends ConfigAction {
                 if ((style == null) && !"".equals(styleName)) {
                     ActionErrors errors = new ActionErrors();
                     errors.add(ActionErrors.GLOBAL_ERROR,
-                        new ActionError("error.styleId.notFound",
-                            new ActionMessage(styleName)));
+                        new ActionError("error.styleId.notFound", new ActionMessage(styleName)));
                     saveErrors(request, errors);
 
                     return mapping.findForward("config.wms.content");

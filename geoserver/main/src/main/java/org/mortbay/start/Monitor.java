@@ -30,8 +30,7 @@ public class Monitor extends Thread {
             }
 
             setDaemon(true);
-            _socket = new ServerSocket(_port, 1,
-                    InetAddress.getByName("127.0.0.1"));
+            _socket = new ServerSocket(_port, 1, InetAddress.getByName("127.0.0.1"));
 
             if (_port == 0) {
                 _port = _socket.getLocalPort();

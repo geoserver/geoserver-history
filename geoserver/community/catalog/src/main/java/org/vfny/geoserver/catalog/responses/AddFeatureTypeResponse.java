@@ -53,24 +53,24 @@ import javax.servlet.ServletException;
  * @author $Author: Alessio Fabiani (GeoSolutions)
  */
 public class AddFeatureTypeResponse implements Response {
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
     private static final String CURR_VER = "\"1.0\"";
     private static final String CATALOG_URL = "http://www.geo-solutions.it/schemas/catalog";
-    private static final String CATALOG_NAMESPACE = new StringBuffer(
-            "\n  xmlns=\"").append(CATALOG_URL).append("\"").toString();
+    private static final String CATALOG_NAMESPACE = new StringBuffer("\n  xmlns=\"").append(CATALOG_URL)
+                                                                                    .append("\"")
+                                                                                    .toString();
     private static final String XLINK_URL = "\"http://www.w3.org/1999/xlink\"";
-    private static final String XLINK_NAMESPACE = new StringBuffer(
-            "\n  xmlns:xlink=").append(XLINK_URL).toString();
+    private static final String XLINK_NAMESPACE = new StringBuffer("\n  xmlns:xlink=").append(XLINK_URL)
+                                                                                      .toString();
     private static final String OGC_URL = "\"http://www.opengis.net/ogc\"";
-    private static final String OGC_NAMESPACE = new StringBuffer(
-            "\n  xmlns:ogc=").append(OGC_URL).toString();
+    private static final String OGC_NAMESPACE = new StringBuffer("\n  xmlns:ogc=").append(OGC_URL)
+                                                                                  .toString();
     private static final String GML_URL = "\"http://www.opengis.net/gml\"";
-    private static final String GML_NAMESPACE = new StringBuffer(
-            "\n  xmlns:gml=").append(GML_URL).toString();
+    private static final String GML_NAMESPACE = new StringBuffer("\n  xmlns:gml=").append(GML_URL)
+                                                                                  .toString();
     private static final String SCHEMA_URI = "\"http://www.w3.org/2001/XMLSchema-instance\"";
-    private static final String XSI_NAMESPACE = new StringBuffer(
-            "\n  xmlns:xsi=").append(SCHEMA_URI).toString();
+    private static final String XSI_NAMESPACE = new StringBuffer("\n  xmlns:xsi=").append(SCHEMA_URI)
+                                                                                  .toString();
 
     /** Fixed return footer information */
     private static final String FOOTER = "\n</AddFeatureType>";
@@ -82,16 +82,14 @@ public class AddFeatureTypeResponse implements Response {
     // protected final static CRSFactory crsFactory =
     // FactoryFinder.getCRSFactory(new
     // Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-    protected final static CRSFactory crsFactory = ReferencingFactoryFinder
-        .getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,
-                CRSAuthorityFactory.class));
+    protected final static CRSFactory crsFactory = ReferencingFactoryFinder.getCRSFactory(new Hints(
+                Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
 
     /**
      * The default transformations factory.
      */
     protected final static CoordinateOperationFactory opFactory = ReferencingFactoryFinder
-        .getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT,
-                Boolean.TRUE));
+        .getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
 
     /** The root directory from which the configuration is loaded. */
     private File root;
@@ -105,8 +103,7 @@ public class AddFeatureTypeResponse implements Response {
      * @uml.property name="datumFactory"
      * @uml.associationEnd multiplicity="(1 1)"
      */
-    protected final DatumFactory datumFactory = ReferencingFactoryFinder
-        .getDatumFactory(null);
+    protected final DatumFactory datumFactory = ReferencingFactoryFinder.getDatumFactory(null);
 
     /**
      * The default math transform factory.
@@ -132,8 +129,8 @@ public class AddFeatureTypeResponse implements Response {
 
         if (!(request instanceof AddFeatureTypeRequest)) {
             throw new CatalogException(new StringBuffer(
-                    "illegal request type, expected DescribeRequest, got ").append(
-                    request).toString());
+                    "illegal request type, expected DescribeRequest, got ").append(request)
+                                                                                                               .toString());
         }
 
         AddFeatureTypeRequest catalogRequest = (AddFeatureTypeRequest) request;
@@ -155,8 +152,7 @@ public class AddFeatureTypeResponse implements Response {
             // Loading FeatureTypes ...
             // //
             FeatureTypeInfoDTO featureType = loadFeature(sr);
-            featureType.setDirName(featureType.getDataStoreId() + "_"
-                + featureType.getName());
+            featureType.setDirName(featureType.getDataStoreId() + "_" + featureType.getName());
 
             // //
             // Updating the catalog.
@@ -175,10 +171,8 @@ public class AddFeatureTypeResponse implements Response {
             // Adding the FeatureType
             // //
             // update the data config
-            DataConfig dataConfig = ConfigRequests.getDataConfig(req
-                    .getHttpServletRequest());
-            dataConfig.getFeaturesTypes()
-                      .put(ftName, new FeatureTypeConfig(featureType));
+            DataConfig dataConfig = ConfigRequests.getDataConfig(req.getHttpServletRequest());
+            dataConfig.getFeaturesTypes().put(ftName, new FeatureTypeConfig(featureType));
 
             request.getCATALOG().getData().load(dataConfig.toDTO());
 
@@ -188,8 +182,7 @@ public class AddFeatureTypeResponse implements Response {
             File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
 
             try {
-                XMLConfigWriter.store((DataDTO) request.getCATALOG().getData()
-                                                       .toDTO(), rootDir);
+                XMLConfigWriter.store((DataDTO) request.getCATALOG().getData().toDTO(), rootDir);
             } catch (ConfigurationException e) {
                 e.printStackTrace();
                 throw new ServletException(e);
@@ -236,10 +229,8 @@ public class AddFeatureTypeResponse implements Response {
         StringBuffer tempResponse = new StringBuffer();
 
         tempResponse.append("<?xml version=\"1.0\" encoding=\"")
-                    .append(catalogRequest.getGeoServer().getCharSet()
-                                          .displayName()).append("\"?>")
-                    .append("\n<AddFeatureType version=").append(CURR_VER)
-                    .append(" ").toString();
+                    .append(catalogRequest.getGeoServer().getCharSet().displayName()).append("\"?>")
+                    .append("\n<AddFeatureType version=").append(CURR_VER).append(" ").toString();
 
         tempResponse.append(CATALOG_NAMESPACE);
         tempResponse.append(XLINK_NAMESPACE);
@@ -252,8 +243,7 @@ public class AddFeatureTypeResponse implements Response {
          * ").append(request.getSchemaBaseUrl()).append(
          * "catalog/1.0.0/describeCoverage.xsd\">\n\n");
          */
-        tempResponse.append(" xsi:schemaLocation=\"").append(CATALOG_URL)
-                    .append(" ")
+        tempResponse.append(" xsi:schemaLocation=\"").append(CATALOG_URL).append(" ")
                     .append("http://www.geo-solutions.it/catalog/1.0/")
                     .append("addFeatureType.xsd\">\n\n");
 
@@ -300,18 +290,13 @@ public class AddFeatureTypeResponse implements Response {
         }
 
         try {
-            boolean dynamic = ReaderUtils.getBooleanAttribute(bboxElem,
-                    "dynamic", false, true);
+            boolean dynamic = ReaderUtils.getBooleanAttribute(bboxElem, "dynamic", false, true);
 
             if (!dynamic) {
-                double minx = ReaderUtils.getDoubleAttribute(bboxElem, "minx",
-                        true);
-                double miny = ReaderUtils.getDoubleAttribute(bboxElem, "miny",
-                        true);
-                double maxx = ReaderUtils.getDoubleAttribute(bboxElem, "maxx",
-                        true);
-                double maxy = ReaderUtils.getDoubleAttribute(bboxElem, "maxy",
-                        true);
+                double minx = ReaderUtils.getDoubleAttribute(bboxElem, "minx", true);
+                double miny = ReaderUtils.getDoubleAttribute(bboxElem, "miny", true);
+                double maxx = ReaderUtils.getDoubleAttribute(bboxElem, "maxx", true);
+                double maxy = ReaderUtils.getDoubleAttribute(bboxElem, "maxy", true);
 
                 return new Envelope(minx, maxx, miny, maxy);
             }
@@ -339,20 +324,16 @@ public class AddFeatureTypeResponse implements Response {
     private org.opengis.filter.Filter loadDefinitionQuery(Element typeRoot)
         throws ConfigurationException {
         try {
-            Element defQNode = ReaderUtils.getChildElement(typeRoot,
-                    "definitionQuery", false);
+            Element defQNode = ReaderUtils.getChildElement(typeRoot, "definitionQuery", false);
             org.opengis.filter.Filter filter = null;
 
             if (defQNode != null) {
-                LOGGER.finer(
-                    "definitionQuery element found, looking for Filter");
+                LOGGER.finer("definitionQuery element found, looking for Filter");
 
-                Element filterNode = ReaderUtils.getChildElement(defQNode,
-                        "Filter", false);
+                Element filterNode = ReaderUtils.getChildElement(defQNode, "Filter", false);
 
                 if ((filterNode != null)
-                        && ((filterNode = ReaderUtils.getFirstChildElement(
-                                filterNode)) != null)) {
+                        && ((filterNode = ReaderUtils.getFirstChildElement(filterNode)) != null)) {
                     filter = FilterDOMParser.parseFilter(filterNode);
 
                     return filter;
@@ -400,15 +381,14 @@ public class AddFeatureTypeResponse implements Response {
 
         try {
             if (LOGGER.isLoggable(Level.CONFIG)) {
-                LOGGER.config(new StringBuffer("Loading configuration data: ").append(
-                        infoData).toString());
+                LOGGER.config(new StringBuffer("Loading configuration data: ").append(infoData)
+                                                                              .toString());
             }
 
             featureElem = ReaderUtils.parse(infoData);
             infoData.close();
         } catch (Exception erk) {
-            throw new ConfigurationException("Could not parse info data:"
-                + infoData, erk);
+            throw new ConfigurationException("Could not parse info data:" + infoData, erk);
         }
 
         FeatureTypeInfoDTO dto = loadFeaturePt2(featureElem);
@@ -417,8 +397,7 @@ public class AddFeatureTypeResponse implements Response {
          * TODO Load Schema defined by user
          */
         if (LOGGER.isLoggable(Level.CONFIG)) {
-            LOGGER.config(new StringBuffer("added featureType ").append(
-                    dto.getName()).toString());
+            LOGGER.config(new StringBuffer("added featureType ").append(dto.getName()).toString());
         }
 
         return dto;
@@ -447,8 +426,7 @@ public class AddFeatureTypeResponse implements Response {
             ft.setName(ReaderUtils.getChildText(fTypeRoot, "name", true));
             ft.setTitle(ReaderUtils.getChildText(fTypeRoot, "title", true));
             ft.setAbstract(ReaderUtils.getChildText(fTypeRoot, "abstract"));
-            ft.setWmsPath(ReaderUtils.getChildText(fTypeRoot,
-                    "wmspath" /* , true */));
+            ft.setWmsPath(ReaderUtils.getChildText(fTypeRoot, "wmspath" /* , true */));
 
             String keywords = ReaderUtils.getChildText(fTypeRoot, "keywords");
 
@@ -462,12 +440,10 @@ public class AddFeatureTypeResponse implements Response {
                 ft.setKeywords(l);
             }
 
-            Element urls = ReaderUtils.getChildElement(fTypeRoot,
-                    "metadataLinks");
+            Element urls = ReaderUtils.getChildElement(fTypeRoot, "metadataLinks");
 
             if (urls != null) {
-                Element[] childs = ReaderUtils.getChildElements(urls,
-                        "metadataLink");
+                Element[] childs = ReaderUtils.getChildElements(urls, "metadataLink");
                 List l = new LinkedList();
 
                 for (int i = 0; i < childs.length; i++) {
@@ -477,16 +453,13 @@ public class AddFeatureTypeResponse implements Response {
                 ft.setMetadataLinks(l);
             }
 
-            ft.setDataStoreId(ReaderUtils.getAttribute(fTypeRoot, "datastore",
-                    true));
-            ft.setSRS(Integer.parseInt(ReaderUtils.getChildText(fTypeRoot,
-                        "SRS", true)));
+            ft.setDataStoreId(ReaderUtils.getAttribute(fTypeRoot, "datastore", true));
+            ft.setSRS(Integer.parseInt(ReaderUtils.getChildText(fTypeRoot, "SRS", true)));
 
             Element tmp = ReaderUtils.getChildElement(fTypeRoot, "styles");
 
             if (tmp != null) {
-                ft.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default",
-                        false));
+                ft.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default", false));
 
                 final NodeList childrens = tmp.getChildNodes();
                 final int numChildNodes = childrens.getLength();
@@ -497,56 +470,45 @@ public class AddFeatureTypeResponse implements Response {
 
                     if (child.getNodeType() == Node.ELEMENT_NODE) {
                         if (child.getNodeName().equals("style")) {
-                            ft.addStyle(ReaderUtils.getElementText(
-                                    (Element) child));
+                            ft.addStyle(ReaderUtils.getElementText((Element) child));
                         }
                     }
                 }
             }
 
-            Element cacheInfo = ReaderUtils.getChildElement(fTypeRoot,
-                    "cacheinfo");
+            Element cacheInfo = ReaderUtils.getChildElement(fTypeRoot, "cacheinfo");
 
             if (cacheInfo != null) {
-                ft.setCacheMaxAge(ReaderUtils.getAttribute(cacheInfo, "maxage",
-                        false)); // not mandatory
-                ft.setCachingEnabled((new Boolean(ReaderUtils.getAttribute(
-                            cacheInfo, "enabled", true))).booleanValue());
+                ft.setCacheMaxAge(ReaderUtils.getAttribute(cacheInfo, "maxage", false)); // not mandatory
+                ft.setCachingEnabled((new Boolean(ReaderUtils.getAttribute(cacheInfo, "enabled",
+                            true))).booleanValue());
             }
 
             // Modif C. Kolbowicz - 06/10/2004
-            Element legendURL = ReaderUtils.getChildElement(fTypeRoot,
-                    "LegendURL");
+            Element legendURL = ReaderUtils.getChildElement(fTypeRoot, "LegendURL");
 
             if (legendURL != null) {
                 LegendURLDTO legend = new LegendURLDTO();
-                legend.setWidth(Integer.parseInt(ReaderUtils.getAttribute(
-                            legendURL, "width", true)));
-                legend.setHeight(Integer.parseInt(ReaderUtils.getAttribute(
-                            legendURL, "height", true)));
-                legend.setFormat(ReaderUtils.getChildText(legendURL, "Format",
-                        true));
-                legend.setOnlineResource(ReaderUtils.getAttribute(
-                        ReaderUtils.getChildElement(legendURL,
-                            "OnlineResource", true), "xlink:href", true));
+                legend.setWidth(Integer.parseInt(ReaderUtils.getAttribute(legendURL, "width", true)));
+                legend.setHeight(Integer.parseInt(ReaderUtils.getAttribute(legendURL, "height", true)));
+                legend.setFormat(ReaderUtils.getChildText(legendURL, "Format", true));
+                legend.setOnlineResource(ReaderUtils.getAttribute(ReaderUtils.getChildElement(
+                            legendURL, "OnlineResource", true), "xlink:href", true));
                 ft.setLegendURL(legend);
             }
 
-            Envelope latLonBBox = loadBBox(ReaderUtils.getChildElement(
-                        fTypeRoot, "latLonBoundingBox"));
+            Envelope latLonBBox = loadBBox(ReaderUtils.getChildElement(fTypeRoot,
+                        "latLonBoundingBox"));
             // -- Modif C. Kolbowicz - 06/10/2004
             ft.setLatLongBBox(latLonBBox);
 
-            Envelope nativeBBox = loadBBox(ReaderUtils.getChildElement(
-                        fTypeRoot, "nativeBBox"));
+            Envelope nativeBBox = loadBBox(ReaderUtils.getChildElement(fTypeRoot, "nativeBBox"));
             ft.setNativeBBox(nativeBBox);
 
-            Element numDecimalsElem = ReaderUtils.getChildElement(fTypeRoot,
-                    "numDecimals", false);
+            Element numDecimalsElem = ReaderUtils.getChildElement(fTypeRoot, "numDecimals", false);
 
             if (numDecimalsElem != null) {
-                ft.setNumDecimals(ReaderUtils.getIntAttribute(numDecimalsElem,
-                        "value", false, 8));
+                ft.setNumDecimals(ReaderUtils.getIntAttribute(numDecimalsElem, "value", false, 8));
             }
 
             ft.setDefinitionQuery(loadDefinitionQuery(fTypeRoot));

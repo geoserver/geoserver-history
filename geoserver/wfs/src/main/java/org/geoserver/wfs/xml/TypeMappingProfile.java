@@ -143,8 +143,7 @@ public class TypeMappingProfile /*extends ProfileImpl*/ {
                         Map.Entry e1 = (Map.Entry) o1;
                         Map.Entry e2 = (Map.Entry) o2;
 
-                        AttributeType a1 = (AttributeType) e1
-                            .getValue();
+                        AttributeType a1 = (AttributeType) e1.getValue();
                         AttributeType a2 = (AttributeType) e2.getValue();
 
                         if (a1.getType().equals(a2.getType())) {

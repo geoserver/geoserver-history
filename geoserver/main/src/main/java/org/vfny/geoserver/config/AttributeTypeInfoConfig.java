@@ -173,8 +173,7 @@ public class AttributeTypeInfoConfig {
         minOccurs = 1;
         maxOccurs = 1;
 
-        NameSpaceTranslatorFactory nsFactory = NameSpaceTranslatorFactory
-            .getInstance();
+        NameSpaceTranslatorFactory nsFactory = NameSpaceTranslatorFactory.getInstance();
         NameSpaceTranslator nst = nsFactory.getNameSpaceTranslator("xs");
         NameSpaceElement nse = nst.getElement(name);
 

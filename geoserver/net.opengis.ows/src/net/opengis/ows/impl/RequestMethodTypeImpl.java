@@ -31,8 +31,7 @@ import java.util.Collection;
  *
  * @generated
  */
-public class RequestMethodTypeImpl extends OnlineResourceTypeImpl
-    implements RequestMethodType {
+public class RequestMethodTypeImpl extends OnlineResourceTypeImpl implements RequestMethodType {
     /**
      * The cached value of the '{@link #getConstraint() <em>Constraint</em>}' containment reference list.
      * <!-- begin-user-doc -->
@@ -80,8 +79,8 @@ public class RequestMethodTypeImpl extends OnlineResourceTypeImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case OwsPackage.REQUEST_METHOD_TYPE__CONSTRAINT:
             return ((InternalEList) getConstraint()).basicRemove(otherEnd, msgs);

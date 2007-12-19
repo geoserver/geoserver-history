@@ -117,8 +117,7 @@ public class CoverageStoreConfig {
      */
     public void reset(CoverageStoreInfoDTO dto) {
         if (dto == null) {
-            throw new NullPointerException(
-                "Non null CoverageStoreInfoDTO required");
+            throw new NullPointerException("Non null CoverageStoreInfoDTO required");
         }
 
         factory = CoverageStoreUtils.aquireFactoryByType(dto.getType());
@@ -148,8 +147,7 @@ public class CoverageStoreConfig {
      */
     public void update(CoverageStoreInfoDTO df) {
         if (df == null) {
-            throw new NullPointerException(
-                "CoverageStoreInfo Data Transfer Object required");
+            throw new NullPointerException("CoverageStoreInfo Data Transfer Object required");
         }
 
         id = df.getId();

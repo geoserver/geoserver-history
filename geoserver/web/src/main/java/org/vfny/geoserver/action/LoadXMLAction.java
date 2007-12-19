@@ -59,9 +59,9 @@ import javax.servlet.http.HttpServletResponse;
  *           in 1.4 we should. -CH
  */
 public class LoadXMLAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        UserContainer user, HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
+        throws IOException, ServletException {
         ActionForward r1 = loadValidation(mapping, form, request, response);
         ActionForward r2 = loadGeoserver(mapping, form, request, response);
 
@@ -107,8 +107,7 @@ public class LoadXMLAction extends ConfigAction {
             geoserverDTO = configReader.getGeoServer();
             dataDTO = configReader.getData();
         } else {
-            System.err.println(
-                "Config Reader not initialized for LoadXMLAction.execute().");
+            System.err.println("Config Reader not initialized for LoadXMLAction.execute().");
 
             return mapping.findForward("welcome");
 
@@ -145,18 +144,15 @@ public class LoadXMLAction extends ConfigAction {
         // or can we use null or something?
         //
         if (LOGGER.isLoggable(Level.FINER)) {
-            LOGGER.finer(new StringBuffer("request: ").append(
-                    request.getServletPath()).toString());
-            LOGGER.finer(new StringBuffer("forward: ").append(
-                    mapping.getForward()).toString());
+            LOGGER.finer(new StringBuffer("request: ").append(request.getServletPath()).toString());
+            LOGGER.finer(new StringBuffer("forward: ").append(mapping.getForward()).toString());
         }
 
         return mapping.findForward("config");
     }
 
-    private ActionForward loadValidation(ActionMapping mapping,
-        ActionForm form, //UserContainer user,
-    HttpServletRequest request, HttpServletResponse response)
+    private ActionForward loadValidation(ActionMapping mapping, ActionForm form, //UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         ServletContext sc = request.getSession().getServletContext();
 

@@ -149,8 +149,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.DESCRIPTION_TYPE__ABSTRACT, oldAbstract,
-                    abstract_));
+                    OwsPackage.DESCRIPTION_TYPE__ABSTRACT, oldAbstract, abstract_));
         }
     }
 
@@ -173,8 +172,8 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case OwsPackage.DESCRIPTION_TYPE__KEYWORDS:
             return ((InternalEList) getKeywords()).basicRemove(otherEnd, msgs);
@@ -264,8 +263,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
     public boolean eIsSet(int featureID) {
         switch (featureID) {
         case OwsPackage.DESCRIPTION_TYPE__TITLE:
-            return (TITLE_EDEFAULT == null) ? (title != null)
-                                            : (!TITLE_EDEFAULT.equals(title));
+            return (TITLE_EDEFAULT == null) ? (title != null) : (!TITLE_EDEFAULT.equals(title));
 
         case OwsPackage.DESCRIPTION_TYPE__ABSTRACT:
             return (ABSTRACT_EDEFAULT == null) ? (abstract_ != null)

@@ -27,8 +27,7 @@ import java.util.NoSuchElementException;
 public class RetypingFeatureCollection extends DecoratingFeatureCollection {
     FeatureType target;
 
-    public RetypingFeatureCollection(FeatureCollection delegate,
-        FeatureType target) {
+    public RetypingFeatureCollection(FeatureCollection delegate, FeatureType target) {
         super(delegate);
         this.target = target;
     }
@@ -88,8 +87,7 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
 
         public Object next() {
             try {
-                return RetypingFeatureCollection.retype((Feature) delegate.next(),
-                    target);
+                return RetypingFeatureCollection.retype((Feature) delegate.next(), target);
             } catch (IllegalAttributeException e) {
                 throw new RuntimeException(e);
             }
@@ -123,9 +121,7 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
             return delegate.hasNext();
         }
 
-        public Feature next()
-            throws IOException, IllegalAttributeException,
-                NoSuchElementException {
+        public Feature next() throws IOException, IllegalAttributeException, NoSuchElementException {
             return RetypingFeatureCollection.retype(delegate.next(), target);
         }
     }
@@ -162,8 +158,8 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
 
                 return retyped;
             } catch (IllegalAttributeException e) {
-                throw (IOException) new IOException(
-                    "Error occurred while retyping feature").initCause(e);
+                throw (IOException) new IOException("Error occurred while retyping feature")
+                .initCause(e);
             }
         }
 
@@ -181,8 +177,8 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
 
                 delegate.write();
             } catch (IllegalAttributeException e) {
-                throw (IOException) new IOException(
-                    "Error occurred while retyping feature").initCause(e);
+                throw (IOException) new IOException("Error occurred while retyping feature")
+                .initCause(e);
             }
         }
     }

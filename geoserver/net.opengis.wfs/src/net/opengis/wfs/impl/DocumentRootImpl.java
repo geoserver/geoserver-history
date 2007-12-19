@@ -198,9 +198,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public DeleteElementType getDelete() {
-        return (DeleteElementType) getMixed()
-                                       .get(WfsPackage.Literals.DOCUMENT_ROOT__DELETE,
-            true);
+        return (DeleteElementType) getMixed().get(WfsPackage.Literals.DOCUMENT_ROOT__DELETE, true);
     }
 
     /**
@@ -208,8 +206,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetDelete(DeleteElementType newDelete,
-        NotificationChain msgs) {
+    public NotificationChain basicSetDelete(DeleteElementType newDelete, NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsPackage.Literals.DOCUMENT_ROOT__DELETE,
             newDelete, msgs);
     }
@@ -220,8 +217,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public void setDelete(DeleteElementType newDelete) {
-        ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__DELETE,
-            newDelete);
+        ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__DELETE, newDelete);
     }
 
     /**
@@ -251,8 +247,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setDescribeFeatureType(
-        DescribeFeatureTypeType newDescribeFeatureType) {
+    public void setDescribeFeatureType(DescribeFeatureTypeType newDescribeFeatureType) {
         ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__DESCRIBE_FEATURE_TYPE,
             newDescribeFeatureType);
     }
@@ -273,8 +268,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetFeatureCollection(
-        FeatureCollectionType newFeatureCollection, NotificationChain msgs) {
+    public NotificationChain basicSetFeatureCollection(FeatureCollectionType newFeatureCollection,
+        NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsPackage.Literals.DOCUMENT_ROOT__FEATURE_COLLECTION,
             newFeatureCollection, msgs);
     }
@@ -305,8 +300,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetFeatureTypeList(
-        FeatureTypeListType newFeatureTypeList, NotificationChain msgs) {
+    public NotificationChain basicSetFeatureTypeList(FeatureTypeListType newFeatureTypeList,
+        NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsPackage.Literals.DOCUMENT_ROOT__FEATURE_TYPE_LIST,
             newFeatureTypeList, msgs);
     }
@@ -337,8 +332,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetGetCapabilities(
-        GetCapabilitiesType newGetCapabilities, NotificationChain msgs) {
+    public NotificationChain basicSetGetCapabilities(GetCapabilitiesType newGetCapabilities,
+        NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsPackage.Literals.DOCUMENT_ROOT__GET_CAPABILITIES,
             newGetCapabilities, msgs);
     }
@@ -359,9 +354,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public GetFeatureType getGetFeature() {
-        return (GetFeatureType) getMixed()
-                                    .get(WfsPackage.Literals.DOCUMENT_ROOT__GET_FEATURE,
-            true);
+        return (GetFeatureType) getMixed().get(WfsPackage.Literals.DOCUMENT_ROOT__GET_FEATURE, true);
     }
 
     /**
@@ -369,8 +362,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetGetFeature(GetFeatureType newGetFeature,
-        NotificationChain msgs) {
+    public NotificationChain basicSetGetFeature(GetFeatureType newGetFeature, NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsPackage.Literals.DOCUMENT_ROOT__GET_FEATURE,
             newGetFeature, msgs);
     }
@@ -412,8 +404,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setGetFeatureWithLock(
-        GetFeatureWithLockType newGetFeatureWithLock) {
+    public void setGetFeatureWithLock(GetFeatureWithLockType newGetFeatureWithLock) {
         ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__GET_FEATURE_WITH_LOCK,
             newGetFeatureWithLock);
     }
@@ -425,8 +416,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      */
     public GetGmlObjectType getGetGmlObject() {
         return (GetGmlObjectType) getMixed()
-                                      .get(WfsPackage.Literals.DOCUMENT_ROOT__GET_GML_OBJECT,
-            true);
+                                      .get(WfsPackage.Literals.DOCUMENT_ROOT__GET_GML_OBJECT, true);
     }
 
     /**
@@ -434,8 +424,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetGetGmlObject(
-        GetGmlObjectType newGetGmlObject, NotificationChain msgs) {
+    public NotificationChain basicSetGetGmlObject(GetGmlObjectType newGetGmlObject,
+        NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsPackage.Literals.DOCUMENT_ROOT__GET_GML_OBJECT,
             newGetGmlObject, msgs);
     }
@@ -456,9 +446,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public InsertElementType getInsert() {
-        return (InsertElementType) getMixed()
-                                       .get(WfsPackage.Literals.DOCUMENT_ROOT__INSERT,
-            true);
+        return (InsertElementType) getMixed().get(WfsPackage.Literals.DOCUMENT_ROOT__INSERT, true);
     }
 
     /**
@@ -466,8 +454,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetInsert(InsertElementType newInsert,
-        NotificationChain msgs) {
+    public NotificationChain basicSetInsert(InsertElementType newInsert, NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsPackage.Literals.DOCUMENT_ROOT__INSERT,
             newInsert, msgs);
     }
@@ -478,8 +465,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public void setInsert(InsertElementType newInsert) {
-        ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__INSERT,
-            newInsert);
+        ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__INSERT, newInsert);
     }
 
     /**
@@ -489,8 +475,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      */
     public LockFeatureType getLockFeature() {
         return (LockFeatureType) getMixed()
-                                     .get(WfsPackage.Literals.DOCUMENT_ROOT__LOCK_FEATURE,
-            true);
+                                     .get(WfsPackage.Literals.DOCUMENT_ROOT__LOCK_FEATURE, true);
     }
 
     /**
@@ -498,8 +483,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetLockFeature(
-        LockFeatureType newLockFeature, NotificationChain msgs) {
+    public NotificationChain basicSetLockFeature(LockFeatureType newLockFeature,
+        NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsPackage.Literals.DOCUMENT_ROOT__LOCK_FEATURE,
             newLockFeature, msgs);
     }
@@ -541,8 +526,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setLockFeatureResponse(
-        LockFeatureResponseType newLockFeatureResponse) {
+    public void setLockFeatureResponse(LockFeatureResponseType newLockFeatureResponse) {
         ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__LOCK_FEATURE_RESPONSE,
             newLockFeatureResponse);
     }
@@ -553,9 +537,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public String getLockId() {
-        return (String) getMixed()
-                            .get(WfsPackage.Literals.DOCUMENT_ROOT__LOCK_ID,
-            true);
+        return (String) getMixed().get(WfsPackage.Literals.DOCUMENT_ROOT__LOCK_ID, true);
     }
 
     /**
@@ -564,8 +546,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public void setLockId(String newLockId) {
-        ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__LOCK_ID,
-            newLockId);
+        ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__LOCK_ID, newLockId);
     }
 
     /**
@@ -574,9 +555,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public NativeType getNative() {
-        return (NativeType) getMixed()
-                                .get(WfsPackage.Literals.DOCUMENT_ROOT__NATIVE,
-            true);
+        return (NativeType) getMixed().get(WfsPackage.Literals.DOCUMENT_ROOT__NATIVE, true);
     }
 
     /**
@@ -584,8 +563,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetNative(NativeType newNative,
-        NotificationChain msgs) {
+    public NotificationChain basicSetNative(NativeType newNative, NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsPackage.Literals.DOCUMENT_ROOT__NATIVE,
             newNative, msgs);
     }
@@ -596,8 +574,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public void setNative(NativeType newNative) {
-        ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__NATIVE,
-            newNative);
+        ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__NATIVE, newNative);
     }
 
     /**
@@ -606,9 +583,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public PropertyType getProperty() {
-        return (PropertyType) getMixed()
-                                  .get(WfsPackage.Literals.DOCUMENT_ROOT__PROPERTY,
-            true);
+        return (PropertyType) getMixed().get(WfsPackage.Literals.DOCUMENT_ROOT__PROPERTY, true);
     }
 
     /**
@@ -616,8 +591,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetProperty(PropertyType newProperty,
-        NotificationChain msgs) {
+    public NotificationChain basicSetProperty(PropertyType newProperty, NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsPackage.Literals.DOCUMENT_ROOT__PROPERTY,
             newProperty, msgs);
     }
@@ -638,9 +612,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public String getPropertyName() {
-        return (String) getMixed()
-                            .get(WfsPackage.Literals.DOCUMENT_ROOT__PROPERTY_NAME,
-            true);
+        return (String) getMixed().get(WfsPackage.Literals.DOCUMENT_ROOT__PROPERTY_NAME, true);
     }
 
     /**
@@ -659,9 +631,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public QueryType getQuery() {
-        return (QueryType) getMixed()
-                               .get(WfsPackage.Literals.DOCUMENT_ROOT__QUERY,
-            true);
+        return (QueryType) getMixed().get(WfsPackage.Literals.DOCUMENT_ROOT__QUERY, true);
     }
 
     /**
@@ -669,8 +639,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetQuery(QueryType newQuery,
-        NotificationChain msgs) {
+    public NotificationChain basicSetQuery(QueryType newQuery, NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsPackage.Literals.DOCUMENT_ROOT__QUERY,
             newQuery, msgs);
     }
@@ -681,8 +650,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public void setQuery(QueryType newQuery) {
-        ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__QUERY,
-            newQuery);
+        ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__QUERY, newQuery);
     }
 
     /**
@@ -712,8 +680,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setServesGMLObjectTypeList(
-        GMLObjectTypeListType newServesGMLObjectTypeList) {
+    public void setServesGMLObjectTypeList(GMLObjectTypeListType newServesGMLObjectTypeList) {
         ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__SERVES_GML_OBJECT_TYPE_LIST,
             newServesGMLObjectTypeList);
     }
@@ -735,8 +702,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public NotificationChain basicSetSupportsGMLObjectTypeList(
-        GMLObjectTypeListType newSupportsGMLObjectTypeList,
-        NotificationChain msgs) {
+        GMLObjectTypeListType newSupportsGMLObjectTypeList, NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsPackage.Literals.DOCUMENT_ROOT__SUPPORTS_GML_OBJECT_TYPE_LIST,
             newSupportsGMLObjectTypeList, msgs);
     }
@@ -746,8 +712,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setSupportsGMLObjectTypeList(
-        GMLObjectTypeListType newSupportsGMLObjectTypeList) {
+    public void setSupportsGMLObjectTypeList(GMLObjectTypeListType newSupportsGMLObjectTypeList) {
         ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__SUPPORTS_GML_OBJECT_TYPE_LIST,
             newSupportsGMLObjectTypeList);
     }
@@ -758,9 +723,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public TransactionType getTransaction() {
-        return (TransactionType) getMixed()
-                                     .get(WfsPackage.Literals.DOCUMENT_ROOT__TRANSACTION,
-            true);
+        return (TransactionType) getMixed().get(WfsPackage.Literals.DOCUMENT_ROOT__TRANSACTION, true);
     }
 
     /**
@@ -768,8 +731,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetTransaction(
-        TransactionType newTransaction, NotificationChain msgs) {
+    public NotificationChain basicSetTransaction(TransactionType newTransaction,
+        NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsPackage.Literals.DOCUMENT_ROOT__TRANSACTION,
             newTransaction, msgs);
     }
@@ -811,8 +774,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setTransactionResponse(
-        TransactionResponseType newTransactionResponse) {
+    public void setTransactionResponse(TransactionResponseType newTransactionResponse) {
         ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__TRANSACTION_RESPONSE,
             newTransactionResponse);
     }
@@ -823,9 +785,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public UpdateElementType getUpdate() {
-        return (UpdateElementType) getMixed()
-                                       .get(WfsPackage.Literals.DOCUMENT_ROOT__UPDATE,
-            true);
+        return (UpdateElementType) getMixed().get(WfsPackage.Literals.DOCUMENT_ROOT__UPDATE, true);
     }
 
     /**
@@ -833,8 +793,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetUpdate(UpdateElementType newUpdate,
-        NotificationChain msgs) {
+    public NotificationChain basicSetUpdate(UpdateElementType newUpdate, NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsPackage.Literals.DOCUMENT_ROOT__UPDATE,
             newUpdate, msgs);
     }
@@ -845,8 +804,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @generated
      */
     public void setUpdate(UpdateElementType newUpdate) {
-        ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__UPDATE,
-            newUpdate);
+        ((FeatureMap.Internal) getMixed()).set(WfsPackage.Literals.DOCUMENT_ROOT__UPDATE, newUpdate);
     }
 
     /**
@@ -865,8 +823,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetWfsCapabilities(
-        WFSCapabilitiesType newWfsCapabilities, NotificationChain msgs) {
+    public NotificationChain basicSetWfsCapabilities(WFSCapabilitiesType newWfsCapabilities,
+        NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsPackage.Literals.DOCUMENT_ROOT__WFS_CAPABILITIES,
             newWfsCapabilities, msgs);
     }
@@ -897,8 +855,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetXlinkPropertyName(
-        XlinkPropertyNameType newXlinkPropertyName, NotificationChain msgs) {
+    public NotificationChain basicSetXlinkPropertyName(XlinkPropertyNameType newXlinkPropertyName,
+        NotificationChain msgs) {
         return ((FeatureMap.Internal) getMixed()).basicAdd(WfsPackage.Literals.DOCUMENT_ROOT__XLINK_PROPERTY_NAME,
             newXlinkPropertyName, msgs);
     }
@@ -918,19 +876,17 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case WfsPackage.DOCUMENT_ROOT__MIXED:
             return ((InternalEList) getMixed()).basicRemove(otherEnd, msgs);
 
         case WfsPackage.DOCUMENT_ROOT__XMLNS_PREFIX_MAP:
-            return ((InternalEList) getXMLNSPrefixMap()).basicRemove(otherEnd,
-                msgs);
+            return ((InternalEList) getXMLNSPrefixMap()).basicRemove(otherEnd, msgs);
 
         case WfsPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
-            return ((InternalEList) getXSISchemaLocation()).basicRemove(otherEnd,
-                msgs);
+            return ((InternalEList) getXSISchemaLocation()).basicRemove(otherEnd, msgs);
 
         case WfsPackage.DOCUMENT_ROOT__DELETE:
             return basicSetDelete(null, msgs);
@@ -1446,8 +1402,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 
         case WfsPackage.DOCUMENT_ROOT__PROPERTY_NAME:
             return (PROPERTY_NAME_EDEFAULT == null) ? (getPropertyName() != null)
-                                                    : (!PROPERTY_NAME_EDEFAULT
-            .equals(getPropertyName()));
+                                                    : (!PROPERTY_NAME_EDEFAULT.equals(getPropertyName()));
 
         case WfsPackage.DOCUMENT_ROOT__QUERY:
             return getQuery() != null;

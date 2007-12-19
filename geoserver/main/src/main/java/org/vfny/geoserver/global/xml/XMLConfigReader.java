@@ -4,31 +4,8 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.ServletContext;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
 import org.apache.xml.serialize.LineSeparator;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -81,9 +58,29 @@ import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletContext;
 
 
 /**
@@ -108,8 +105,7 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class XMLConfigReader {
     /** Used internally to create log information to detect errors. */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.global");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 
     /** The root directory from which the configuration is loaded. */
     private File root;
@@ -210,17 +206,14 @@ public class XMLConfigReader {
         // }
         // File configFile = ReaderUtils.checkFile(new File(configDir,
         // "services.xml"), false);
-        File servicesFile = GeoserverDataDirectory.findConfigFile(
-                "services.xml");
+        File servicesFile = GeoserverDataDirectory.findConfigFile("services.xml");
         loadServices(servicesFile);
 
         File catalogFile = GeoserverDataDirectory.findConfigFile("catalog.xml");
 
-        File featureTypeDir = GeoserverDataDirectory.findConfigDir(root,
-                "featureTypes/");
+        File featureTypeDir = GeoserverDataDirectory.findConfigDir(root, "featureTypes/");
         File styleDir = GeoserverDataDirectory.findConfigDir(root, "styles/");
-        File coverageDir = GeoserverDataDirectory.findConfigDir(root,
-                "coverages/");
+        File coverageDir = GeoserverDataDirectory.findConfigDir(root, "coverages/");
 
         loadCatalog(catalogFile, featureTypeDir, styleDir, coverageDir);
 
@@ -246,15 +239,14 @@ public class XMLConfigReader {
      */
     protected void loadServices(File configFile) throws ConfigurationException {
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.config(new StringBuffer("Loading configuration file: ").append(
-                    configFile).toString());
+            LOGGER.config(new StringBuffer("Loading configuration file: ").append(configFile)
+                                                                          .toString());
         }
 
         Element configElem = null;
 
         try {
-            Reader reader = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(
-                        configFile));
+            Reader reader = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(configFile));
             configElem = ReaderUtils.parse(reader);
             reader.close();
         } catch (FileNotFoundException e) {
@@ -267,8 +259,7 @@ public class XMLConfigReader {
             LOGGER.fine("parsing configuration documents");
         }
 
-        Element elem = (Element) configElem.getElementsByTagName("global")
-                                           .item(0);
+        Element elem = (Element) configElem.getElementsByTagName("global").item(0);
         loadGlobal(elem);
 
         NodeList configuredServices = configElem.getElementsByTagName("service");
@@ -325,8 +316,7 @@ public class XMLConfigReader {
         service.setMetadataLink(mdl);
         service.setFees("NONE");
         service.setAccessConstraints("NONE");
-        service.setMaintainer(
-            "http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311");
+        service.setMaintainer("http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311");
 
         try {
             service.setOnlineResource(new URL("http://geoserver.org"));
@@ -355,18 +345,17 @@ public class XMLConfigReader {
      * @throws ConfigurationException
      *             When an error occurs.
      */
-    protected void loadCatalog(File catalogFile, File featureTypeDir,
-        File styleDir, File coverageDir) throws ConfigurationException {
+    protected void loadCatalog(File catalogFile, File featureTypeDir, File styleDir,
+        File coverageDir) throws ConfigurationException {
         Element catalogElem = null;
 
         try {
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.config(new StringBuffer("Loading configuration file: ").append(
-                        catalogFile).toString());
+                LOGGER.config(new StringBuffer("Loading configuration file: ").append(catalogFile)
+                                                                              .toString());
             }
 
-            Reader fr = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(
-                        catalogFile));
+            Reader fr = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(catalogFile));
             catalogElem = ReaderUtils.parse(fr);
             fr.close();
         } catch (FileNotFoundException e) {
@@ -376,14 +365,13 @@ public class XMLConfigReader {
         }
 
         try {
-            data.setNameSpaces(loadNameSpaces(ReaderUtils.getChildElement(
-                        catalogElem, "namespaces", true)));
+            data.setNameSpaces(loadNameSpaces(ReaderUtils.getChildElement(catalogElem,
+                        "namespaces", true)));
             setDefaultNS();
 
             try { // try <formats> to be backwards compatible to 1.4
 
-                Element formatElement = ReaderUtils.getChildElement(catalogElem,
-                        "formats", true);
+                Element formatElement = ReaderUtils.getChildElement(catalogElem, "formats", true);
                 data.setFormats(loadFormats(formatElement));
             } catch (Exception e) {
                 // gobble
@@ -392,11 +380,11 @@ public class XMLConfigReader {
                     + "version of GeoServer. This problem is now being fixed automatically.");
             }
 
-            data.setDataStores(loadDataStores(ReaderUtils.getChildElement(
-                        catalogElem, "datastores", true)));
+            data.setDataStores(loadDataStores(ReaderUtils.getChildElement(catalogElem,
+                        "datastores", true)));
 
-            data.setStyles(loadStyles(ReaderUtils.getChildElement(catalogElem,
-                        "styles", false), styleDir));
+            data.setStyles(loadStyles(ReaderUtils.getChildElement(catalogElem, "styles", false),
+                    styleDir));
             // must be last
             data.setFeaturesTypes(loadFeatureTypes(featureTypeDir));
             data.setCoverages(loadCoverages(coverageDir));
@@ -423,8 +411,7 @@ public class XMLConfigReader {
                 data.setDefaultNameSpacePrefix(ns.getPrefix());
 
                 if (LOGGER.isLoggable(Level.FINER)) {
-                    LOGGER.finer(new StringBuffer(
-                            "set default namespace pre to ").append(
+                    LOGGER.finer(new StringBuffer("set default namespace pre to ").append(
                             ns.getPrefix()).toString());
                 }
 
@@ -451,8 +438,7 @@ public class XMLConfigReader {
     protected Level getLoggingLevel(Element globalConfigElem)
         throws ConfigurationException {
         Level level = Logger.getLogger("org.vfny.geoserver").getLevel();
-        Element levelElem = ReaderUtils.getChildElement(globalConfigElem,
-                "loggingLevel");
+        Element levelElem = ReaderUtils.getChildElement(globalConfigElem, "loggingLevel");
 
         if (levelElem != null) {
             String levelName = levelElem.getFirstChild().getNodeValue();
@@ -461,15 +447,13 @@ public class XMLConfigReader {
                 level = Level.parse(levelName);
             } catch (IllegalArgumentException ex) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning(new StringBuffer(
-                            "illegal loggingLevel name: ").append(levelName)
+                    LOGGER.warning(new StringBuffer("illegal loggingLevel name: ").append(levelName)
                                                                                   .toString());
                 }
             }
         } else {
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.config(
-                    "No loggingLevel found, using default logging.properties setting");
+                LOGGER.config("No loggingLevel found, using default logging.properties setting");
             }
         }
 
@@ -497,22 +481,18 @@ public class XMLConfigReader {
                 LOGGER.finer("parsing global configuration parameters");
             }
 
-            String log4jConfigFile = ReaderUtils.getChildText(globalElem,
-                    "log4jConfigFile", false);
+            String log4jConfigFile = ReaderUtils.getChildText(globalElem, "log4jConfigFile", false);
             geoServer.setLog4jConfigFile(log4jConfigFile);
 
             boolean suppressStdOutLogging = false;
             Element elem = null;
-            elem = ReaderUtils.getChildElement(globalElem,
-                    "suppressStdOutLogging", false);
+            elem = ReaderUtils.getChildElement(globalElem, "suppressStdOutLogging", false);
 
             if (elem != null) {
-                suppressStdOutLogging = ReaderUtils.getBooleanAttribute(elem,
-                        "value", false, false);
+                suppressStdOutLogging = ReaderUtils.getBooleanAttribute(elem, "value", false, false);
             }
 
-            String logLocation = ReaderUtils.getChildText(globalElem,
-                    "logLocation");
+            String logLocation = ReaderUtils.getChildText(globalElem, "logLocation");
 
             if ((logLocation != null) && "".equals(logLocation.trim())) {
                 logLocation = null;
@@ -522,84 +502,73 @@ public class XMLConfigReader {
             geoServer.setLogLocation(logLocation);
 
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.fine(new StringBuffer("logging config is ").append(
-                        log4jConfigFile).toString());
+                LOGGER.fine(new StringBuffer("logging config is ").append(log4jConfigFile).toString());
             }
 
             if (logLocation != null) {
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.fine(new StringBuffer("logging to ").append(
-                            logLocation).toString());
+                    LOGGER.fine(new StringBuffer("logging to ").append(logLocation).toString());
                 }
             }
 
             double jaiMemoryCapacity = 0;
-            elem = ReaderUtils.getChildElement(globalElem, "JaiMemoryCapacity",
-                    false);
+            elem = ReaderUtils.getChildElement(globalElem, "JaiMemoryCapacity", false);
 
             if (elem != null) {
-                jaiMemoryCapacity = ReaderUtils.getDoubleAttribute(elem,
-                        "value", false);
+                jaiMemoryCapacity = ReaderUtils.getDoubleAttribute(elem, "value", false);
             }
 
             double jaiMemoryThreshold = 0.0;
-            elem = ReaderUtils.getChildElement(globalElem,
-                    "JaiMemoryThreshold", false);
+            elem = ReaderUtils.getChildElement(globalElem, "JaiMemoryThreshold", false);
 
             if (elem != null) {
-                jaiMemoryThreshold = ReaderUtils.getDoubleAttribute(elem,
-                        "value", false);
+                jaiMemoryThreshold = ReaderUtils.getDoubleAttribute(elem, "value", false);
             }
 
             int jaiTileThreads = 7;
-            elem = ReaderUtils.getChildElement(globalElem, "JaiTileThreads",
-                    false);
+            elem = ReaderUtils.getChildElement(globalElem, "JaiTileThreads", false);
 
             if (elem != null) {
-                jaiTileThreads = ReaderUtils.getIntAttribute(elem, "value",
-                        false, 7);
+                jaiTileThreads = ReaderUtils.getIntAttribute(elem, "value", false, 7);
             }
 
             int jaiTilePriority = 5;
-            elem = ReaderUtils.getChildElement(globalElem, "JaiTilePriority",
-                    false);
+            elem = ReaderUtils.getChildElement(globalElem, "JaiTilePriority", false);
 
             if (elem != null) {
-                jaiTilePriority = ReaderUtils.getIntAttribute(elem, "value",
-                        false, 5);
+                jaiTilePriority = ReaderUtils.getIntAttribute(elem, "value", false, 5);
             }
 
             Boolean jaiRecycling = Boolean.FALSE;
             elem = ReaderUtils.getChildElement(globalElem, "JaiRecycling", false);
 
             if (elem != null) {
-                jaiRecycling = Boolean.valueOf(ReaderUtils.getBooleanAttribute(
-                            elem, "value", false, false));
+                jaiRecycling = Boolean.valueOf(ReaderUtils.getBooleanAttribute(elem, "value",
+                            false, false));
             }
 
             Boolean imageIOCache = Boolean.FALSE;
             elem = ReaderUtils.getChildElement(globalElem, "ImageIOCache", false);
 
             if (elem != null) {
-                imageIOCache = Boolean.valueOf(ReaderUtils.getBooleanAttribute(
-                            elem, "value", false, false));
+                imageIOCache = Boolean.valueOf(ReaderUtils.getBooleanAttribute(elem, "value",
+                            false, false));
             }
 
             Boolean jaiJPEGNative = Boolean.TRUE;
-            elem = ReaderUtils.getChildElement(globalElem, "JaiJPEGNative",
-                    false);
+            elem = ReaderUtils.getChildElement(globalElem, "JaiJPEGNative", false);
 
             if (elem != null) {
-                jaiJPEGNative = Boolean.valueOf(ReaderUtils.getBooleanAttribute(
-                            elem, "value", false, false));
+                jaiJPEGNative = Boolean.valueOf(ReaderUtils.getBooleanAttribute(elem, "value",
+                            false, false));
             }
 
             Boolean jaiPNGNative = Boolean.TRUE;
             elem = ReaderUtils.getChildElement(globalElem, "JaiPNGNative", false);
 
             if (elem != null) {
-                jaiPNGNative = Boolean.valueOf(ReaderUtils.getBooleanAttribute(
-                            elem, "value", false, false));
+                jaiPNGNative = Boolean.valueOf(ReaderUtils.getBooleanAttribute(elem, "value",
+                            false, false));
             }
 
             geoServer.setJaiMemoryCapacity(jaiMemoryCapacity);
@@ -617,8 +586,7 @@ public class XMLConfigReader {
             elem = ReaderUtils.getChildElement(globalElem, "verbose", false);
 
             if (elem != null) {
-                geoServer.setVerbose(ReaderUtils.getBooleanAttribute(elem,
-                        "value", false, true));
+                geoServer.setVerbose(ReaderUtils.getBooleanAttribute(elem, "value", false, true));
             }
 
             elem = ReaderUtils.getChildElement(globalElem, "maxFeatures");
@@ -626,20 +594,20 @@ public class XMLConfigReader {
             if (elem != null) {
                 // if the element is pressent, it's "value" attribute is
                 // mandatory
-                geoServer.setMaxFeatures(ReaderUtils.getIntAttribute(elem,
-                        "value", true, geoServer.getMaxFeatures()));
+                geoServer.setMaxFeatures(ReaderUtils.getIntAttribute(elem, "value", true,
+                        geoServer.getMaxFeatures()));
             }
 
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.fine(new StringBuffer("maxFeatures is ").append(
-                        geoServer.getMaxFeatures()).toString());
+                LOGGER.fine(new StringBuffer("maxFeatures is ").append(geoServer.getMaxFeatures())
+                                                               .toString());
             }
 
             elem = ReaderUtils.getChildElement(globalElem, "numDecimals");
 
             if (elem != null) {
-                geoServer.setNumDecimals(ReaderUtils.getIntAttribute(elem,
-                        "value", true, geoServer.getNumDecimals()));
+                geoServer.setNumDecimals(ReaderUtils.getIntAttribute(elem, "value", true,
+                        geoServer.getNumDecimals()));
             }
 
             if (LOGGER.isLoggable(Level.FINE)) {
@@ -657,8 +625,8 @@ public class XMLConfigReader {
                     geoServer.setCharSet(cs);
 
                     if (LOGGER.isLoggable(Level.FINER)) {
-                        LOGGER.finer(new StringBuffer("charSet: ").append(
-                                cs.displayName()).toString());
+                        LOGGER.finer(new StringBuffer("charSet: ").append(cs.displayName())
+                                                                  .toString());
                     }
                 } catch (Exception ex) {
                     if (LOGGER.isLoggable(Level.INFO)) {
@@ -668,8 +636,7 @@ public class XMLConfigReader {
             }
 
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.fine(new StringBuffer("charSet is ").append(
-                        geoServer.getCharSet()).toString());
+                LOGGER.fine(new StringBuffer("charSet is ").append(geoServer.getCharSet()).toString());
             }
 
             // Schema base doesn't work - this root thing is wrong. So for 1.2.0
@@ -682,8 +649,7 @@ public class XMLConfigReader {
             // think
             // anyone is going to miss it much - though I could be proved wrong.
             // ch
-            String schemaBaseUrl = ReaderUtils.getChildText(globalElem,
-                    "SchemaBaseUrl");
+            String schemaBaseUrl = ReaderUtils.getChildText(globalElem, "SchemaBaseUrl");
 
             if (schemaBaseUrl != null) {
                 geoServer.setSchemaBaseUrl(schemaBaseUrl);
@@ -691,12 +657,10 @@ public class XMLConfigReader {
                 // This is wrong - need some key to tell the method to return
                 // based
                 // on the url passed in.
-                geoServer.setSchemaBaseUrl(root.toString()
-                    + "/data/capabilities/");
+                geoServer.setSchemaBaseUrl(root.toString() + "/data/capabilities/");
             }
 
-            String proxyBaseUrl = ReaderUtils.getChildText(globalElem,
-                    "ProxyBaseUrl");
+            String proxyBaseUrl = ReaderUtils.getChildText(globalElem, "ProxyBaseUrl");
 
             if (proxyBaseUrl != null) {
                 geoServer.setProxyBaseUrl(proxyBaseUrl);
@@ -704,30 +668,26 @@ public class XMLConfigReader {
                 geoServer.setSchemaBaseUrl(null);
             }
 
-            String adminUserName = ReaderUtils.getChildText(globalElem,
-                    "adminUserName");
+            String adminUserName = ReaderUtils.getChildText(globalElem, "adminUserName");
 
             if (adminUserName != null) {
                 geoServer.setAdminUserName(adminUserName);
             }
 
-            String adminPassword = ReaderUtils.getChildText(globalElem,
-                    "adminPassword");
+            String adminPassword = ReaderUtils.getChildText(globalElem, "adminPassword");
 
             if (adminPassword != null) {
                 geoServer.setAdminPassword(adminPassword);
             }
 
-            elem = ReaderUtils.getChildElement(globalElem, "verboseExceptions",
-                    false);
+            elem = ReaderUtils.getChildElement(globalElem, "verboseExceptions", false);
 
             if (elem != null) {
-                geoServer.setVerboseExceptions(ReaderUtils.getBooleanAttribute(
-                        elem, "value", false, true));
+                geoServer.setVerboseExceptions(ReaderUtils.getBooleanAttribute(elem, "value",
+                        false, true));
             }
 
-            String tileCache = ReaderUtils.getChildText(globalElem,
-                    "tileCache", false);
+            String tileCache = ReaderUtils.getChildText(globalElem, "tileCache", false);
 
             if (tileCache != null) {
                 geoServer.setTileCache(tileCache);
@@ -763,17 +723,14 @@ public class XMLConfigReader {
         }
 
         Element elem;
-        elem = ReaderUtils.getChildElement(contactInfoElement,
-                "ContactPersonPrimary");
+        elem = ReaderUtils.getChildElement(contactInfoElement, "ContactPersonPrimary");
 
         if (elem != null) {
             c.setContactPerson(ReaderUtils.getChildText(elem, "ContactPerson"));
-            c.setContactOrganization(ReaderUtils.getChildText(elem,
-                    "ContactOrganization"));
+            c.setContactOrganization(ReaderUtils.getChildText(elem, "ContactOrganization"));
         }
 
-        c.setContactPosition(ReaderUtils.getChildText(contactInfoElement,
-                "ContactPosition"));
+        c.setContactPosition(ReaderUtils.getChildText(contactInfoElement, "ContactPosition"));
         elem = ReaderUtils.getChildElement(contactInfoElement, "ContactAddress");
 
         if (elem != null) {
@@ -785,14 +742,12 @@ public class XMLConfigReader {
             c.setAddressCountry(ReaderUtils.getChildText(elem, "Country"));
         }
 
-        c.setContactVoice(ReaderUtils.getChildText(contactInfoElement,
-                "ContactVoiceTelephone"));
+        c.setContactVoice(ReaderUtils.getChildText(contactInfoElement, "ContactVoiceTelephone"));
         c.setContactFacsimile(ReaderUtils.getChildText(contactInfoElement,
                 "ContactFacsimileTelephone"));
         c.setContactEmail(ReaderUtils.getChildText(contactInfoElement,
                 "ContactElectronicMailAddress"));
-        c.setOnlineResource(ReaderUtils.getChildText(contactInfoElement,
-                "ContactOnlineResource"));
+        c.setOnlineResource(ReaderUtils.getChildText(contactInfoElement, "ContactOnlineResource"));
 
         return c;
     }
@@ -836,31 +791,25 @@ public class XMLConfigReader {
         wfs = new WFSDTO();
 
         try {
-            wfs.setFeatureBounding(ReaderUtils.getBooleanAttribute(
-                    ReaderUtils.getChildElement(wfsElement, "featureBounding"),
-                    "value", false, false));
+            wfs.setFeatureBounding(ReaderUtils.getBooleanAttribute(ReaderUtils.getChildElement(
+                        wfsElement, "featureBounding"), "value", false, false));
 
-            Element elem = ReaderUtils.getChildElement(wfsElement,
-                    "srsXmlStyle", false);
+            Element elem = ReaderUtils.getChildElement(wfsElement, "srsXmlStyle", false);
 
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.fine(new StringBuffer("reading srsXmlStyle: ").append(
-                        elem).toString());
+                LOGGER.fine(new StringBuffer("reading srsXmlStyle: ").append(elem).toString());
             }
 
             if (elem != null) {
-                wfs.setSrsXmlStyle(ReaderUtils.getBooleanAttribute(elem,
-                        "value", false, true));
+                wfs.setSrsXmlStyle(ReaderUtils.getBooleanAttribute(elem, "value", false, true));
 
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.fine(new StringBuffer("set srsXmlStyle to ").append(
-                            ReaderUtils.getBooleanAttribute(elem, "value",
-                                false, true)).toString());
+                            ReaderUtils.getBooleanAttribute(elem, "value", false, true)).toString());
                 }
             }
 
-            String serviceLevelValue = ReaderUtils.getChildText(wfsElement,
-                    "serviceLevel");
+            String serviceLevelValue = ReaderUtils.getChildText(wfsElement, "serviceLevel");
             int serviceLevel = WFSDTO.COMPLETE;
 
             if ((serviceLevelValue != null) && !serviceLevelValue.equals("")) {
@@ -886,14 +835,13 @@ public class XMLConfigReader {
                     }
                 }
             } else { // TODO: this should probably parse the strings as well,
-                serviceLevel = ReaderUtils.getIntAttribute(ReaderUtils
-                        .getChildElement(wfsElement, "serviceLevel"), "value",
-                        false, WFSDTO.COMPLETE);
+                serviceLevel = ReaderUtils.getIntAttribute(ReaderUtils.getChildElement(wfsElement,
+                            "serviceLevel"), "value", false, WFSDTO.COMPLETE);
             }
 
             if (LOGGER.isLoggable(Level.FINER)) {
-                LOGGER.finer(new StringBuffer("setting service level to ").append(
-                        serviceLevel).toString());
+                LOGGER.finer(new StringBuffer("setting service level to ").append(serviceLevel)
+                                                                          .toString());
             }
 
             wfs.setServiceLevel(serviceLevel);
@@ -902,19 +850,15 @@ public class XMLConfigReader {
             // it might not be there, in which case we just use the default
             // value
             // (see WFSDTO.java)
-            Element e = ReaderUtils.getChildElement(wfsElement,
-                    "citeConformanceHacks");
+            Element e = ReaderUtils.getChildElement(wfsElement, "citeConformanceHacks");
 
             if (e != null) {
-                String text = ReaderUtils.getChildText(wfsElement,
-                        "citeConformanceHacks");
-                boolean citeConformanceHacks = Boolean.valueOf(text)
-                                                      .booleanValue(); // just get the value and parse it
+                String text = ReaderUtils.getChildText(wfsElement, "citeConformanceHacks");
+                boolean citeConformanceHacks = Boolean.valueOf(text).booleanValue(); // just get the value and parse it
                 wfs.setCiteConformanceHacks(citeConformanceHacks);
 
                 if (LOGGER.isLoggable(Level.FINER)) {
-                    LOGGER.finer(new StringBuffer(
-                            "setting citeConformanceHacks to ").append(
+                    LOGGER.finer(new StringBuffer("setting citeConformanceHacks to ").append(
                             citeConformanceHacks).toString());
                 }
             }
@@ -946,16 +890,18 @@ public class XMLConfigReader {
         wms.setService(loadService(wmsElement));
 
         wms.setSvgRenderer(ReaderUtils.getChildText(wmsElement, "svgRenderer"));
-        wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(
-                    wmsElement, "svgAntiAlias")));
-        if (ReaderUtils.getChildText(wmsElement, "globalWatermarking")!=null)
-        	wms.setGlobalWatermarking(!"false".equals(ReaderUtils.getChildText(
-        			wmsElement, "globalWatermarking")));
-        wms.setGlobalWatermarkingURL(ReaderUtils.getChildText(
-                wmsElement, "globalWatermarkingURL"));
+        wms.setSvgAntiAlias(!"false".equals(ReaderUtils.getChildText(wmsElement, "svgAntiAlias")));
+
+        if (ReaderUtils.getChildText(wmsElement, "globalWatermarking") != null) {
+            wms.setGlobalWatermarking(!"false".equals(ReaderUtils.getChildText(wmsElement,
+                        "globalWatermarking")));
+        }
+
+        wms.setGlobalWatermarkingURL(ReaderUtils.getChildText(wmsElement, "globalWatermarkingURL"));
+
         try {
-            wms.setAllowInterpolation(ReaderUtils.getChildText(wmsElement,
-                    "allowInterpolation", true));
+            wms.setAllowInterpolation(ReaderUtils.getChildText(wmsElement, "allowInterpolation",
+                    true));
         } catch (Exception e) {
             wms.setAllowInterpolation("Nearest");
         }
@@ -968,8 +914,7 @@ public class XMLConfigReader {
         HashMap styleMap = new HashMap();
         HashMap envelopeMap = new HashMap();
 
-        Element groupBase = ReaderUtils.getChildElement(wmsElement,
-                "BaseMapGroups");
+        Element groupBase = ReaderUtils.getChildElement(wmsElement, "BaseMapGroups");
 
         if (groupBase == null) {
             LOGGER.config("No baseMap groups defined yet");
@@ -977,26 +922,21 @@ public class XMLConfigReader {
             return;
         }
 
-        Element[] groups = ReaderUtils.getChildElements(groupBase,
-                "BaseMapGroup");
+        Element[] groups = ReaderUtils.getChildElements(groupBase, "BaseMapGroup");
 
         for (int i = 0; i < groups.length; i++) {
             Element group = groups[i];
 
             try {
-                String title = ReaderUtils.getAttribute(group, "baseMapTitle",
-                        true);
+                String title = ReaderUtils.getAttribute(group, "baseMapTitle", true);
                 String layers = ReaderUtils.getChildText(group, "baseMapLayers");
                 String styles = ReaderUtils.getChildText(group, "baseMapStyles");
 
-                Element envelope = ReaderUtils.getChildElement(group,
-                        "baseMapEnvelope");
-                String srsName = ReaderUtils.getAttribute(envelope, "srsName",
-                        true);
+                Element envelope = ReaderUtils.getChildElement(group, "baseMapEnvelope");
+                String srsName = ReaderUtils.getAttribute(envelope, "srsName", true);
                 layerMap.put(title, layers);
                 styleMap.put(title, styles);
-                envelopeMap.put(title,
-                    loadEnvelope(envelope, CRS.decode(srsName)));
+                envelopeMap.put(title, loadEnvelope(envelope, CRS.decode(srsName)));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -1031,29 +971,25 @@ public class XMLConfigReader {
             s.setName(name);
             s.setTitle(ReaderUtils.getChildText(serviceRoot, "title", false));
             s.setAbstract(ReaderUtils.getChildText(serviceRoot, "abstract"));
-            s.setKeywords(ReaderUtils.getKeyWords(ReaderUtils.getChildElement(
-                        serviceRoot, "keywords")));
-            s.setMetadataLink(getMetaDataLink(ReaderUtils.getChildElement(
-                        serviceRoot, "metadataLink")));
+            s.setKeywords(ReaderUtils.getKeyWords(ReaderUtils.getChildElement(serviceRoot,
+                        "keywords")));
+            s.setMetadataLink(getMetaDataLink(ReaderUtils.getChildElement(serviceRoot,
+                        "metadataLink")));
             s.setFees(ReaderUtils.getChildText(serviceRoot, "fees"));
-            s.setAccessConstraints(ReaderUtils.getChildText(serviceRoot,
-                    "accessConstraints"));
+            s.setAccessConstraints(ReaderUtils.getChildText(serviceRoot, "accessConstraints"));
             s.setMaintainer(ReaderUtils.getChildText(serviceRoot, "maintainer"));
-            s.setEnabled(ReaderUtils.getBooleanAttribute(serviceRoot,
-                    "enabled", false, true));
-            s.setStrategy(ReaderUtils.getChildText(serviceRoot,
-                    "serviceStrategy"));
-            s.setPartialBufferSize(ReaderUtils.getIntAttribute(serviceRoot,
-                    "partialBufferSize", false, 0));
+            s.setEnabled(ReaderUtils.getBooleanAttribute(serviceRoot, "enabled", false, true));
+            s.setStrategy(ReaderUtils.getChildText(serviceRoot, "serviceStrategy"));
+            s.setPartialBufferSize(ReaderUtils.getIntAttribute(serviceRoot, "partialBufferSize",
+                    false, 0));
 
-            String url = ReaderUtils.getChildText(serviceRoot,
-                    "onlineResource", true);
+            String url = ReaderUtils.getChildText(serviceRoot, "onlineResource", true);
 
             try {
                 s.setOnlineResource(new URL(url));
             } catch (MalformedURLException e) {
-                LOGGER.severe("Invalid online resource URL for service " + name
-                    + ": " + url + ". Defaulting to geoserver home.");
+                LOGGER.severe("Invalid online resource URL for service " + name + ": " + url
+                    + ". Defaulting to geoserver home.");
                 s.setOnlineResource(new URL("http://www.geoserver.org"));
             }
         } catch (Exception e) {
@@ -1091,12 +1027,11 @@ public class XMLConfigReader {
                 NameSpaceInfoDTO ns = new NameSpaceInfoDTO();
                 ns.setUri(ReaderUtils.getAttribute(elem, "uri", true));
                 ns.setPrefix(ReaderUtils.getAttribute(elem, "prefix", true));
-                ns.setDefault(ReaderUtils.getBooleanAttribute(elem, "default",
-                        false, false) || (nsCount == 1));
+                ns.setDefault(ReaderUtils.getBooleanAttribute(elem, "default", false, false)
+                    || (nsCount == 1));
 
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.config(new StringBuffer("added namespace ").append(
-                            ns).toString());
+                    LOGGER.config(new StringBuffer("added namespace ").append(ns).toString());
                 }
 
                 nameSpaces.put(ns.getPrefix(), ns);
@@ -1155,13 +1090,11 @@ public class XMLConfigReader {
                 s.setId(ReaderUtils.getAttribute(styleElem, "id", true));
                 s.setFilename(new File(baseDir,
                         ReaderUtils.getAttribute(styleElem, "filename", true)));
-                s.setDefault(ReaderUtils.getBooleanAttribute(styleElem,
-                        "default", false, false));
+                s.setDefault(ReaderUtils.getBooleanAttribute(styleElem, "default", false, false));
                 styles.put(s.getId(), s);
 
                 if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.config(new StringBuffer("Loaded style ").append(
-                            s.getId()).toString());
+                    LOGGER.config(new StringBuffer("Loaded style ").append(s.getId()).toString());
                 }
             } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "Ignored misconfigured style", e);
@@ -1247,28 +1180,25 @@ public class XMLConfigReader {
         try {
             fm.setId(ReaderUtils.getAttribute(fmElem, "id", true));
 
-            String namespacePrefix = ReaderUtils.getAttribute(fmElem,
-                    "namespace", true);
+            String namespacePrefix = ReaderUtils.getAttribute(fmElem, "namespace", true);
 
             if (data.getNameSpaces().containsKey(namespacePrefix)) {
                 fm.setNameSpaceId(namespacePrefix);
             } else {
-                LOGGER.warning("Could not find namespace " + namespacePrefix
-                    + " defaulting to " + data.getDefaultNameSpacePrefix());
+                LOGGER.warning("Could not find namespace " + namespacePrefix + " defaulting to "
+                    + data.getDefaultNameSpacePrefix());
                 fm.setNameSpaceId(data.getDefaultNameSpacePrefix());
             }
 
             fm.setType(ReaderUtils.getChildText(fmElem, "type", true));
             fm.setUrl(ReaderUtils.getChildText(fmElem, "url", false));
-            fm.setEnabled(ReaderUtils.getBooleanAttribute(fmElem, "enabled",
-                    false, true));
+            fm.setEnabled(ReaderUtils.getBooleanAttribute(fmElem, "enabled", false, true));
             fm.setTitle(ReaderUtils.getChildText(fmElem, "title", false));
             fm.setAbstract(ReaderUtils.getChildText(fmElem, "description", false));
 
             if (LOGGER.isLoggable(Level.FINER)) {
-                LOGGER.finer(new StringBuffer(
-                        "loading parameters for FormatDTO ").append(fm.getId())
-                                                                                  .toString());
+                LOGGER.finer(new StringBuffer("loading parameters for FormatDTO ").append(
+                        fm.getId()).toString());
             }
         } catch (Exception e) {
             throw new ConfigurationException(e);
@@ -1307,14 +1237,12 @@ public class XMLConfigReader {
                 dsConfig = loadDataStore(dsElem);
 
                 if (dataStores.containsKey(dsConfig.getId())) {
-                    LOGGER.warning("Ignored duplicated datastore with id "
-                        + dsConfig.getId());
+                    LOGGER.warning("Ignored duplicated datastore with id " + dsConfig.getId());
                 } else {
                     dataStores.put(dsConfig.getId(), dsConfig);
                 }
             } catch (ConfigurationException e) {
-                LOGGER.log(Level.WARNING, "Ignored a misconfigured datastore.",
-                    e);
+                LOGGER.log(Level.WARNING, "Ignored a misconfigured datastore.", e);
             }
         }
 
@@ -1348,37 +1276,33 @@ public class XMLConfigReader {
 
             ds.setId(ReaderUtils.getAttribute(dsElem, "id", true));
 
-            String namespacePrefix = ReaderUtils.getAttribute(dsElem,
-                    "namespace", true);
+            String namespacePrefix = ReaderUtils.getAttribute(dsElem, "namespace", true);
 
             if (data.getNameSpaces().containsKey(namespacePrefix)) {
                 ds.setNameSpaceId(namespacePrefix);
             } else {
-                LOGGER.warning("Could not find namespace " + namespacePrefix
-                    + " defaulting to " + data.getDefaultNameSpacePrefix());
+                LOGGER.warning("Could not find namespace " + namespacePrefix + " defaulting to "
+                    + data.getDefaultNameSpacePrefix());
                 ds.setNameSpaceId(data.getDefaultNameSpacePrefix());
             }
 
-            ds.setEnabled(ReaderUtils.getBooleanAttribute(dsElem, "enabled",
-                    false, true));
+            ds.setEnabled(ReaderUtils.getBooleanAttribute(dsElem, "enabled", false, true));
             ds.setTitle(ReaderUtils.getChildText(dsElem, "title", false));
             ds.setAbstract(ReaderUtils.getChildText(dsElem, "description", false));
 
             if (LOGGER.isLoggable(Level.FINER)) {
-                LOGGER.finer(new StringBuffer(
-                        "loading connection parameters for DataStoreDTO ").append(
+                LOGGER.finer(new StringBuffer("loading connection parameters for DataStoreDTO ").append(
                         ds.getNameSpaceId()).toString());
             }
 
-            ds.setConnectionParams(loadConnectionParams(
-                    ReaderUtils.getChildElement(dsElem, "connectionParams", true)));
+            ds.setConnectionParams(loadConnectionParams(ReaderUtils.getChildElement(dsElem,
+                        "connectionParams", true)));
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.config(new StringBuffer("Loaded datastore ").append(
-                    ds.getId()).toString());
+            LOGGER.config(new StringBuffer("Loaded datastore ").append(ds.getId()).toString());
         }
 
         return ds;
@@ -1424,10 +1348,9 @@ public class XMLConfigReader {
                 connectionParams.put(paramKey, paramValue);
 
                 if (LOGGER.isLoggable(Level.FINER)) {
-                    LOGGER.finer(new StringBuffer("added parameter ").append(
-                            paramKey).append(": '")
-                                                                     .append(paramValue
-                            .replaceAll("'", "\"")).append("'").toString());
+                    LOGGER.finer(new StringBuffer("added parameter ").append(paramKey).append(": '")
+                                                                     .append(paramValue.replaceAll(
+                                "'", "\"")).append("'").toString());
                 }
             }
         } catch (Exception e) {
@@ -1470,15 +1393,14 @@ public class XMLConfigReader {
     protected Map loadFeatureTypes(File featureTypeRoot)
         throws ConfigurationException {
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest(new StringBuffer("examining: ").append(
-                    featureTypeRoot.getAbsolutePath()).toString());
-            LOGGER.finest(new StringBuffer("is dir: ").append(
-                    featureTypeRoot.isDirectory()).toString());
+            LOGGER.finest(new StringBuffer("examining: ").append(featureTypeRoot.getAbsolutePath())
+                                                         .toString());
+            LOGGER.finest(new StringBuffer("is dir: ").append(featureTypeRoot.isDirectory())
+                                                      .toString());
         }
 
         if (!featureTypeRoot.isDirectory()) {
-            throw new IllegalArgumentException(
-                "featureTypeRoot must be a directoy");
+            throw new IllegalArgumentException("featureTypeRoot must be a directoy");
         }
 
         File[] directories = featureTypeRoot.listFiles(new FileFilter() {
@@ -1494,8 +1416,7 @@ public class XMLConfigReader {
 
             if (info.exists() && info.isFile()) {
                 if (LOGGER.isLoggable(Level.FINER)) {
-                    LOGGER.finer(new StringBuffer("Info dir:").append(info)
-                                                              .toString());
+                    LOGGER.finer(new StringBuffer("Info dir:").append(info).toString());
                 }
 
                 try { // Decode the URL of the FT. This is to catch colons
@@ -1513,15 +1434,13 @@ public class XMLConfigReader {
                     map.put(ftName, dto);
                 } catch (UnsupportedEncodingException e) {
                     // throw new ConfigurationException(e);
-                    LOGGER.severe("unable to load featuretype from file "
-                        + info + ".  Skipping that featuretype.  Error was: "
-                        + e);
+                    LOGGER.severe("unable to load featuretype from file " + info
+                        + ".  Skipping that featuretype.  Error was: " + e);
 
                     continue;
                 } catch (ConfigurationException ce) {
-                    LOGGER.severe("unable to load featuretype from file "
-                        + info + ".  Skipping that featuretype.  Error was: "
-                        + ce);
+                    LOGGER.severe("unable to load featuretype from file " + info
+                        + ".  Skipping that featuretype.  Error was: " + ce);
 
                     continue;
                 }
@@ -1564,38 +1483,32 @@ public class XMLConfigReader {
     protected FeatureTypeInfoDTO loadFeature(File infoFile)
         throws ConfigurationException {
         if (!infoFile.exists()) {
-            throw new IllegalArgumentException("Info File not found:"
-                + infoFile);
+            throw new IllegalArgumentException("Info File not found:" + infoFile);
         }
 
         if (!infoFile.isFile()) {
-            throw new IllegalArgumentException("Info file is the wrong type:"
-                + infoFile);
+            throw new IllegalArgumentException("Info file is the wrong type:" + infoFile);
         }
 
         if (!isInfoFile(infoFile)) {
-            throw new IllegalArgumentException("Info File not valid:"
-                + infoFile);
+            throw new IllegalArgumentException("Info File not valid:" + infoFile);
         }
 
         Element featureElem = null;
 
         try {
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.config(new StringBuffer("Loading configuration file: ").append(
-                        infoFile).toString());
+                LOGGER.config(new StringBuffer("Loading configuration file: ").append(infoFile)
+                                                                              .toString());
             }
 
-            Reader reader = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(
-                        infoFile));
+            Reader reader = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(infoFile));
             featureElem = ReaderUtils.parse(reader);
             reader.close();
         } catch (FileNotFoundException fileNotFound) {
-            throw new ConfigurationException("Could not read info file:"
-                + infoFile, fileNotFound);
+            throw new ConfigurationException("Could not read info file:" + infoFile, fileNotFound);
         } catch (Exception erk) {
-            throw new ConfigurationException("Could not parse info file:"
-                + infoFile, erk);
+            throw new ConfigurationException("Could not parse info file:" + infoFile, erk);
         }
 
         FeatureTypeInfoDTO dto = loadFeaturePt2(featureElem);
@@ -1611,8 +1524,7 @@ public class XMLConfigReader {
             // attempt to load optional schema information
             //
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(new StringBuffer("process schema file ").append(
-                        infoFile).toString());
+                LOGGER.finest(new StringBuffer("process schema file ").append(infoFile).toString());
             }
 
             try {
@@ -1626,8 +1538,7 @@ public class XMLConfigReader {
         }
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.config(new StringBuffer("added featureType ").append(
-                    dto.getName()).toString());
+            LOGGER.config(new StringBuffer("added featureType ").append(dto.getName()).toString());
         }
 
         return dto;
@@ -1657,8 +1568,7 @@ public class XMLConfigReader {
             ft.setName(ReaderUtils.getChildText(fTypeRoot, "name", true));
             ft.setTitle(ReaderUtils.getChildText(fTypeRoot, "title", true));
             ft.setAbstract(ReaderUtils.getChildText(fTypeRoot, "abstract"));
-            ft.setWmsPath(ReaderUtils.getChildText(fTypeRoot,
-                    "wmspath" /* , true */));
+            ft.setWmsPath(ReaderUtils.getChildText(fTypeRoot, "wmspath" /* , true */));
 
             String keywords = ReaderUtils.getChildText(fTypeRoot, "keywords");
 
@@ -1672,12 +1582,10 @@ public class XMLConfigReader {
                 ft.setKeywords(l);
             }
 
-            Element urls = ReaderUtils.getChildElement(fTypeRoot,
-                    "metadataLinks");
+            Element urls = ReaderUtils.getChildElement(fTypeRoot, "metadataLinks");
 
             if (urls != null) {
-                Element[] childs = ReaderUtils.getChildElements(urls,
-                        "metadataLink");
+                Element[] childs = ReaderUtils.getChildElements(urls, "metadataLink");
                 List l = new LinkedList();
 
                 for (int i = 0; i < childs.length; i++) {
@@ -1687,16 +1595,13 @@ public class XMLConfigReader {
                 ft.setMetadataLinks(l);
             }
 
-            ft.setDataStoreId(ReaderUtils.getAttribute(fTypeRoot, "datastore",
-                    true));
-            ft.setSRS(Integer.parseInt(ReaderUtils.getChildText(fTypeRoot,
-                        "SRS", true)));
+            ft.setDataStoreId(ReaderUtils.getAttribute(fTypeRoot, "datastore", true));
+            ft.setSRS(Integer.parseInt(ReaderUtils.getChildText(fTypeRoot, "SRS", true)));
 
             try {
-                String srsHandling = ReaderUtils.getChildText(fTypeRoot,
-                        "SRSHandling", false);
-                ft.setSRSHandling((srsHandling != null)
-                    ? Integer.parseInt(srsHandling) : FeatureTypeInfo.FORCE);
+                String srsHandling = ReaderUtils.getChildText(fTypeRoot, "SRSHandling", false);
+                ft.setSRSHandling((srsHandling != null) ? Integer.parseInt(srsHandling)
+                                                        : FeatureTypeInfo.FORCE);
             } catch (Exception e) {
                 ft.setSRSHandling(FeatureTypeInfo.FORCE);
             }
@@ -1704,8 +1609,7 @@ public class XMLConfigReader {
             Element tmp = ReaderUtils.getChildElement(fTypeRoot, "styles");
 
             if (tmp != null) {
-                ft.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default",
-                        false));
+                ft.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default", false));
 
                 final NodeList childrens = tmp.getChildNodes();
                 final int numChildNodes = childrens.getLength();
@@ -1716,56 +1620,45 @@ public class XMLConfigReader {
 
                     if (child.getNodeType() == Node.ELEMENT_NODE) {
                         if (child.getNodeName().equals("style")) {
-                            ft.addStyle(ReaderUtils.getElementText(
-                                    (Element) child));
+                            ft.addStyle(ReaderUtils.getElementText((Element) child));
                         }
                     }
                 }
             }
 
-            Element cacheInfo = ReaderUtils.getChildElement(fTypeRoot,
-                    "cacheinfo");
+            Element cacheInfo = ReaderUtils.getChildElement(fTypeRoot, "cacheinfo");
 
             if (cacheInfo != null) {
-                ft.setCacheMaxAge(ReaderUtils.getAttribute(cacheInfo, "maxage",
-                        false)); // not mandatory
-                ft.setCachingEnabled((new Boolean(ReaderUtils.getAttribute(
-                            cacheInfo, "enabled", true))).booleanValue());
+                ft.setCacheMaxAge(ReaderUtils.getAttribute(cacheInfo, "maxage", false)); // not mandatory
+                ft.setCachingEnabled((new Boolean(ReaderUtils.getAttribute(cacheInfo, "enabled",
+                            true))).booleanValue());
             }
 
             // Modif C. Kolbowicz - 06/10/2004
-            Element legendURL = ReaderUtils.getChildElement(fTypeRoot,
-                    "LegendURL");
+            Element legendURL = ReaderUtils.getChildElement(fTypeRoot, "LegendURL");
 
             if (legendURL != null) {
                 LegendURLDTO legend = new LegendURLDTO();
-                legend.setWidth(Integer.parseInt(ReaderUtils.getAttribute(
-                            legendURL, "width", true)));
-                legend.setHeight(Integer.parseInt(ReaderUtils.getAttribute(
-                            legendURL, "height", true)));
-                legend.setFormat(ReaderUtils.getChildText(legendURL, "Format",
-                        true));
-                legend.setOnlineResource(ReaderUtils.getAttribute(
-                        ReaderUtils.getChildElement(legendURL,
-                            "OnlineResource", true), "xlink:href", true));
+                legend.setWidth(Integer.parseInt(ReaderUtils.getAttribute(legendURL, "width", true)));
+                legend.setHeight(Integer.parseInt(ReaderUtils.getAttribute(legendURL, "height", true)));
+                legend.setFormat(ReaderUtils.getChildText(legendURL, "Format", true));
+                legend.setOnlineResource(ReaderUtils.getAttribute(ReaderUtils.getChildElement(
+                            legendURL, "OnlineResource", true), "xlink:href", true));
                 ft.setLegendURL(legend);
             }
 
-            Envelope latLonBBox = loadBBox(ReaderUtils.getChildElement(
-                        fTypeRoot, "latLonBoundingBox"));
+            Envelope latLonBBox = loadBBox(ReaderUtils.getChildElement(fTypeRoot,
+                        "latLonBoundingBox"));
             // -- Modif C. Kolbowicz - 06/10/2004
             ft.setLatLongBBox(latLonBBox);
 
-            Envelope nativeBBox = loadBBox(ReaderUtils.getChildElement(
-                        fTypeRoot, "nativeBBox"));
+            Envelope nativeBBox = loadBBox(ReaderUtils.getChildElement(fTypeRoot, "nativeBBox"));
             ft.setNativeBBox(nativeBBox);
 
-            Element numDecimalsElem = ReaderUtils.getChildElement(fTypeRoot,
-                    "numDecimals", false);
+            Element numDecimalsElem = ReaderUtils.getChildElement(fTypeRoot, "numDecimals", false);
 
             if (numDecimalsElem != null) {
-                ft.setNumDecimals(ReaderUtils.getIntAttribute(numDecimalsElem,
-                        "value", false, 8));
+                ft.setNumDecimals(ReaderUtils.getIntAttribute(numDecimalsElem, "value", false, 8));
             }
 
             ft.setDefinitionQuery(loadDefinitionQuery(fTypeRoot));
@@ -1785,13 +1678,11 @@ public class XMLConfigReader {
      * @return
      * @throws ConfigurationException
      */
-    protected Map loadCoverages(File coverageRoot)
-        throws ConfigurationException {
+    protected Map loadCoverages(File coverageRoot) throws ConfigurationException {
         if (LOGGER.isLoggable(Level.FINEST) && (coverageRoot != null)) {
-            LOGGER.finest(new StringBuffer("examining: ").append(
-                    coverageRoot.getAbsolutePath()).toString());
-            LOGGER.finest(new StringBuffer("is dir: ").append(
-                    coverageRoot.isDirectory()).toString());
+            LOGGER.finest(new StringBuffer("examining: ").append(coverageRoot.getAbsolutePath())
+                                                         .toString());
+            LOGGER.finest(new StringBuffer("is dir: ").append(coverageRoot.isDirectory()).toString());
         }
 
         if (coverageRoot == null) { // no coverages have been specified by the
@@ -1801,8 +1692,7 @@ public class XMLConfigReader {
         }
 
         if (!coverageRoot.isDirectory()) {
-            throw new IllegalArgumentException(
-                "coverageRoot must be a directoy");
+            throw new IllegalArgumentException("coverageRoot must be a directoy");
         }
 
         File[] directories = coverageRoot.listFiles(new FileFilter() {
@@ -1821,16 +1711,14 @@ public class XMLConfigReader {
 
             if (info.exists() && info.isFile()) {
                 if (LOGGER.isLoggable(Level.FINER)) {
-                    LOGGER.finer(new StringBuffer("Info dir:").append(info)
-                                                              .toString());
+                    LOGGER.finer(new StringBuffer("Info dir:").append(info).toString());
                 }
 
                 try {
                     dto = loadCoverage(info);
                     map.put(dto.getKey(), dto);
                 } catch (ConfigurationException e) {
-                    LOGGER.log(Level.WARNING,
-                        "Skipped misconfigured coverage " + info.getPath(), e);
+                    LOGGER.log(Level.WARNING, "Skipped misconfigured coverage " + info.getPath(), e);
                 }
             }
         }
@@ -1849,33 +1737,27 @@ public class XMLConfigReader {
     protected CoverageInfoDTO loadCoverage(File infoFile)
         throws ConfigurationException {
         if (!infoFile.exists()) {
-            throw new IllegalArgumentException("Info File not found:"
-                + infoFile);
+            throw new IllegalArgumentException("Info File not found:" + infoFile);
         }
 
         if (!infoFile.isFile()) {
-            throw new IllegalArgumentException("Info file is the wrong type:"
-                + infoFile);
+            throw new IllegalArgumentException("Info file is the wrong type:" + infoFile);
         }
 
         if (!isInfoFile(infoFile)) {
-            throw new IllegalArgumentException("Info File not valid:"
-                + infoFile);
+            throw new IllegalArgumentException("Info File not valid:" + infoFile);
         }
 
         Element coverageElem = null;
 
         try {
-            Reader reader = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(
-                        infoFile));
+            Reader reader = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(infoFile));
             coverageElem = ReaderUtils.parse(reader);
             reader.close();
         } catch (FileNotFoundException fileNotFound) {
-            throw new ConfigurationException("Could not read info file:"
-                + infoFile, fileNotFound);
+            throw new ConfigurationException("Could not read info file:" + infoFile, fileNotFound);
         } catch (Exception erk) {
-            throw new ConfigurationException("Could not parse info file:"
-                + infoFile, erk);
+            throw new ConfigurationException("Could not parse info file:" + infoFile, erk);
         }
 
         // loding the DTO.
@@ -1885,8 +1767,7 @@ public class XMLConfigReader {
         dto.setDirName(parentDir.getName());
 
         if (LOGGER.isLoggable(Level.FINER)) {
-            LOGGER.finer(new StringBuffer("added coverageType ").append(
-                    dto.getName()).toString());
+            LOGGER.finer(new StringBuffer("added coverageType ").append(dto.getName()).toString());
         }
 
         return dto;
@@ -1899,7 +1780,7 @@ public class XMLConfigReader {
      * @return
      * @throws ConfigurationException
      */
-    protected CoverageInfoDTO loadCoverageDTOFromXML(Element coverageRoot)
+    public static CoverageInfoDTO loadCoverageDTOFromXML(Element coverageRoot)
         throws ConfigurationException {
         final CoverageInfoDTO cv = new CoverageInfoDTO();
 
@@ -1915,21 +1796,17 @@ public class XMLConfigReader {
             // /////////////////////////////////////////////////////////////////////
             cv.setFormatId(ReaderUtils.getAttribute(coverageRoot, "format", true));
             cv.setName(ReaderUtils.getChildText(coverageRoot, "name", true));
-            cv.setRealName(ReaderUtils.getChildText(coverageRoot,
-                    "realName" /* , true */));
-            cv.setWmsPath(ReaderUtils.getChildText(coverageRoot,
-                    "wmspath" /* , true */));
+            cv.setRealName(ReaderUtils.getChildText(coverageRoot, "realName" /* , true */));
+            cv.setWmsPath(ReaderUtils.getChildText(coverageRoot, "wmspath" /* , true */));
             cv.setLabel(ReaderUtils.getChildText(coverageRoot, "label", true));
-            cv.setDescription(ReaderUtils.getChildText(coverageRoot,
-                    "description"));
+            cv.setDescription(ReaderUtils.getChildText(coverageRoot, "description"));
 
             // /////////////////////////////////////////////////////////////////////
             //
             // METADATA AND KEYORDS
             //
             // /////////////////////////////////////////////////////////////////////
-            final String keywords = ReaderUtils.getChildText(coverageRoot,
-                    "keywords");
+            final String keywords = ReaderUtils.getChildText(coverageRoot, "keywords");
 
             if (keywords != null) {
                 l = new ArrayList(10);
@@ -1942,22 +1819,27 @@ public class XMLConfigReader {
                 cv.setKeywords(l);
             }
 
-            cv.setMetadataLink(loadMetaDataLink(ReaderUtils.getChildElement(
-                        coverageRoot, "metadataLink")));
+            cv.setMetadataLink(loadMetaDataLink(ReaderUtils.getChildElement(coverageRoot,
+                        "metadataLink")));
 
-			// //
-			// Watermarking options
-			// //
+            // //
+            // Watermarking options
+            // //
             Element wmRoot = ReaderUtils.getChildElement(coverageRoot, "waterMarking");
+
             if (wmRoot != null) {
-            	cv.setAllowWatermarking(Boolean.parseBoolean(ReaderUtils.getAttribute(wmRoot, "enable", true)));
-            	cv.setWatermarkingURL(ReaderUtils.getChildText(wmRoot, "watermarkingURL"));
-            	if (ReaderUtils.getChildText(wmRoot, "watermarkingPosition") != null)
-            		try {
-            			cv.setWatermarkingPosition(Integer.valueOf(ReaderUtils.getChildText(wmRoot, "watermarkingPosition")));
-            		} catch (NumberFormatException e) {
-            			cv.setWatermarkingPosition(null);
-            		}
+                cv.setAllowWatermarking(Boolean.parseBoolean(ReaderUtils.getAttribute(wmRoot,
+                            "enable", true)));
+                cv.setWatermarkingURL(ReaderUtils.getChildText(wmRoot, "watermarkingURL"));
+
+                if (ReaderUtils.getChildText(wmRoot, "watermarkingPosition") != null) {
+                    try {
+                        cv.setWatermarkingPosition(Integer.valueOf(ReaderUtils.getChildText(
+                                    wmRoot, "watermarkingPosition")));
+                    } catch (NumberFormatException e) {
+                        cv.setWatermarkingPosition(null);
+                    }
+                }
             }
 
             // /////////////////////////////////////////////////////////////////////
@@ -1965,12 +1847,10 @@ public class XMLConfigReader {
             // DEAFULT STYLE
             //
             // /////////////////////////////////////////////////////////////////////
-            final Element tmp = ReaderUtils.getChildElement(coverageRoot,
-                    "styles");
+            final Element tmp = ReaderUtils.getChildElement(coverageRoot, "styles");
 
             if (tmp != null) {
-                cv.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default",
-                        false));
+                cv.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default", false));
 
                 final NodeList childrens = tmp.getChildNodes();
                 final int numChildNodes = childrens.getLength();
@@ -1981,8 +1861,7 @@ public class XMLConfigReader {
 
                     if (child.getNodeType() == Node.ELEMENT_NODE) {
                         if (child.getNodeName().equals("style")) {
-                            cv.addStyle(ReaderUtils.getElementText(
-                                    (Element) child));
+                            cv.addStyle(ReaderUtils.getElementText((Element) child));
                         }
                     }
                 }
@@ -1993,15 +1872,14 @@ public class XMLConfigReader {
             // CRS
             //
             // /////////////////////////////////////////////////////////////////////
-            final Element envelope = ReaderUtils.getChildElement(coverageRoot,
-                    "envelope");
+            final Element envelope = ReaderUtils.getChildElement(coverageRoot, "envelope");
             cv.setSrsName(ReaderUtils.getAttribute(envelope, "srsName", true));
 
             final CoordinateReferenceSystem crs;
 
             try {
-                crs = CRS.parseWKT(ReaderUtils.getAttribute(envelope, "crs",
-                            false).replaceAll("'", "\""));
+                crs = CRS.parseWKT(ReaderUtils.getAttribute(envelope, "crs", false)
+                                              .replaceAll("'", "\""));
             } catch (FactoryException e) {
                 throw new ConfigurationException(e);
             } catch (ConfigurationException e) {
@@ -2020,8 +1898,7 @@ public class XMLConfigReader {
             cv.setEnvelope(gcEnvelope);
 
             try {
-                cv.setLonLatWGS84Envelope(CoverageStoreUtils
-                    .getWGS84LonLatEnvelope(gcEnvelope));
+                cv.setLonLatWGS84Envelope(CoverageStoreUtils.getWGS84LonLatEnvelope(gcEnvelope));
             } catch (MismatchedDimensionException e) {
                 throw new ConfigurationException(e);
             } catch (IndexOutOfBoundsException e) {
@@ -2063,8 +1940,7 @@ public class XMLConfigReader {
             // GRID GEOMETRY
             //
             // /////////////////////////////////////////////////////////////////////
-            final Element grid = ReaderUtils.getChildElement(coverageRoot,
-                    "grid");
+            final Element grid = ReaderUtils.getChildElement(coverageRoot, "grid");
             cv.setGrid(loadGrid(grid, gcEnvelope, crs));
 
             // /////////////////////////////////////////////////////////////////////
@@ -2074,10 +1950,9 @@ public class XMLConfigReader {
             // /////////////////////////////////////////////////////////////////////
             cv.setDimensionNames(loadDimensionNames(grid));
 
-            final NodeList dims = coverageRoot.getElementsByTagName(
-                    "CoverageDimension");
-            cv.setNDimensionalCoverage(ReaderUtils.getChildElement(
-                    coverageRoot, "CoverageDimension").hasAttribute("nd"));
+            final NodeList dims = coverageRoot.getElementsByTagName("CoverageDimension");
+            cv.setNDimensionalCoverage(ReaderUtils.getChildElement(coverageRoot, "CoverageDimension")
+                                                  .hasAttribute("nd"));
             cv.setDimensions(loadDimensions(dims));
 
             // /////////////////////////////////////////////////////////////////////
@@ -2085,10 +1960,8 @@ public class XMLConfigReader {
             // SUPPORTED/REQUEST CRS
             //
             // /////////////////////////////////////////////////////////////////////
-            final Element supportedCRSs = ReaderUtils.getChildElement(coverageRoot,
-                    "supportedCRSs");
-            final String requestCRSs = ReaderUtils.getChildText(supportedCRSs,
-                    "requestCRSs");
+            final Element supportedCRSs = ReaderUtils.getChildElement(coverageRoot, "supportedCRSs");
+            final String requestCRSs = ReaderUtils.getChildText(supportedCRSs, "requestCRSs");
 
             if (requestCRSs != null) {
                 l = new LinkedList();
@@ -2102,8 +1975,7 @@ public class XMLConfigReader {
                 cv.setRequestCRSs(l);
             }
 
-            final String responseCRSs = ReaderUtils.getChildText(supportedCRSs,
-                    "responseCRSs");
+            final String responseCRSs = ReaderUtils.getChildText(supportedCRSs, "responseCRSs");
 
             if (responseCRSs != null) {
                 l = new LinkedList();
@@ -2123,11 +1995,9 @@ public class XMLConfigReader {
             // /////////////////////////////////////////////////////////////////////
             final Element supportedFormats = ReaderUtils.getChildElement(coverageRoot,
                     "supportedFormats");
-            cv.setNativeFormat(ReaderUtils.getAttribute(supportedFormats,
-                    "nativeFormat", true));
+            cv.setNativeFormat(ReaderUtils.getAttribute(supportedFormats, "nativeFormat", true));
 
-            final String formats = ReaderUtils.getChildText(supportedFormats,
-                    "formats");
+            final String formats = ReaderUtils.getChildText(supportedFormats, "formats");
 
             if (formats != null) {
                 l = new LinkedList();
@@ -2147,8 +2017,8 @@ public class XMLConfigReader {
             // /////////////////////////////////////////////////////////////////////
             final Element supportedInterpolations = ReaderUtils.getChildElement(coverageRoot,
                     "supportedInterpolations");
-            cv.setDefaultInterpolationMethod(ReaderUtils.getAttribute(
-                    supportedInterpolations, "default", true));
+            cv.setDefaultInterpolationMethod(ReaderUtils.getAttribute(supportedInterpolations,
+                    "default", true));
 
             final String interpolations = ReaderUtils.getChildText(supportedInterpolations,
                     "interpolationMethods");
@@ -2169,8 +2039,8 @@ public class XMLConfigReader {
             // READ PARAMETERS
             //
             // /////////////////////////////////////////////////////////////////////
-            cv.setParameters(loadConnectionParams(ReaderUtils.getChildElement(
-                        coverageRoot, "parameters", false)));
+            cv.setParameters(loadConnectionParams(ReaderUtils.getChildElement(coverageRoot,
+                        "parameters", false)));
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }
@@ -2186,8 +2056,8 @@ public class XMLConfigReader {
      * @return
      * @throws ConfigurationException
      */
-    public static GeneralEnvelope loadEnvelope(Element envelopeElem,
-        CoordinateReferenceSystem crs) throws ConfigurationException {
+    public static GeneralEnvelope loadEnvelope(Element envelopeElem, CoordinateReferenceSystem crs)
+        throws ConfigurationException {
         if (envelopeElem == null) {
             return new GeneralEnvelope(crs);
         }
@@ -2213,9 +2083,8 @@ public class XMLConfigReader {
             }
         }
 
-        GeneralEnvelope envelope = new GeneralEnvelope(new double[] {
-                    coords[0].x, coords[0].y
-                }, new double[] { coords[1].x, coords[1].y });
+        GeneralEnvelope envelope = new GeneralEnvelope(new double[] { coords[0].x, coords[0].y },
+                new double[] { coords[1].x, coords[1].y });
         envelope.setCoordinateReferenceSystem(crs);
 
         return envelope;
@@ -2261,16 +2130,14 @@ public class XMLConfigReader {
             return null;
         }
 
-        final NodeList timePositions = temporalExtent.getElementsByTagName(
-                "timePosition");
+        final NodeList timePositions = temporalExtent.getElementsByTagName("timePosition");
 
         if ((timePositions != null) && (timePositions.getLength() > 0)) {
             final int numTimePositions = timePositions.getLength();
             final List times = new LinkedList();
 
             for (int i = 0; i < numTimePositions; i++) {
-                times.add(ReaderUtils.getElementText(
-                        (Element) timePositions.item(i)));
+                times.add(ReaderUtils.getElementText((Element) timePositions.item(i)));
             }
 
             Map tempExtent = new HashMap();
@@ -2278,15 +2145,12 @@ public class XMLConfigReader {
 
             return tempExtent;
         } else {
-            final NodeList beginTime = temporalExtent.getElementsByTagName(
-                    "beginTime");
-            final NodeList endTime = temporalExtent.getElementsByTagName(
-                    "endTime");
+            final NodeList beginTime = temporalExtent.getElementsByTagName("beginTime");
+            final NodeList endTime = temporalExtent.getElementsByTagName("endTime");
 
             if ((beginTime != null) && (endTime != null)) {
-                final Interval timePeriod = new Interval(new Instant(
-                            Long.parseLong(ReaderUtils.getElementText(
-                                    (Element) beginTime.item(0)))),
+                final Interval timePeriod = new Interval(new Instant(Long.parseLong(
+                                ReaderUtils.getElementText((Element) beginTime.item(0)))),
                         new Instant(Long.parseLong(ReaderUtils.getElementText(
                                     (Element) endTime.item(0)))));
 
@@ -2311,14 +2175,12 @@ public class XMLConfigReader {
      * @throws ConfigurationException
      * @throws FactoryException
      */
-    public static GridGeometry loadGrid(Element gridElem,
-        GeneralEnvelope envelope, CoordinateReferenceSystem crs)
-        throws ConfigurationException, FactoryException {
+    public static GridGeometry loadGrid(Element gridElem, GeneralEnvelope envelope,
+        CoordinateReferenceSystem crs) throws ConfigurationException, FactoryException {
         final GeneralEnvelope gcEnvelope = new GeneralEnvelope(new GeneralDirectPosition(
                     envelope.getLowerCorner().getOrdinate(0),
                     envelope.getLowerCorner().getOrdinate(1)),
-                new GeneralDirectPosition(envelope.getUpperCorner()
-                                                  .getOrdinate(0),
+                new GeneralDirectPosition(envelope.getUpperCorner().getOrdinate(0),
                     envelope.getUpperCorner().getOrdinate(1)));
 
         gcEnvelope.setCoordinateReferenceSystem(crs);
@@ -2327,8 +2189,7 @@ public class XMLConfigReader {
             // new grid range
             GeneralGridRange newGridrange = new GeneralGridRange(new int[] { 0, 0 },
                     new int[] { 1, 1 });
-            GridGeometry2D newGridGeometry = new GridGeometry2D(newGridrange,
-                    gcEnvelope);
+            GridGeometry2D newGridGeometry = new GridGeometry2D(newGridrange, gcEnvelope);
 
             return newGridGeometry;
         }
@@ -2365,8 +2226,7 @@ public class XMLConfigReader {
         // new grid range
         GeneralGridRange newGridrange = new GeneralGridRange(lowers, upers);
 
-        Element geoTransform = ReaderUtils.getChildElement(gridElem,
-                "geoTransform");
+        Element geoTransform = ReaderUtils.getChildElement(gridElem, "geoTransform");
 
         if (geoTransform != null) {
             double[] flatMatrix = new double[3 * 3];
@@ -2375,39 +2235,31 @@ public class XMLConfigReader {
             Element scaleY = ReaderUtils.getChildElement(geoTransform, "scaleY");
             Element shearX = ReaderUtils.getChildElement(geoTransform, "shearX");
             Element shearY = ReaderUtils.getChildElement(geoTransform, "shearY");
-            Element translateX = ReaderUtils.getChildElement(geoTransform,
-                    "translateX");
-            Element translateY = ReaderUtils.getChildElement(geoTransform,
-                    "translateY");
+            Element translateX = ReaderUtils.getChildElement(geoTransform, "translateX");
+            Element translateY = ReaderUtils.getChildElement(geoTransform, "translateY");
 
             if (scaleX != null) {
-                flatMatrix[0] = Double.parseDouble(ReaderUtils.getElementText(
-                            scaleX));
+                flatMatrix[0] = Double.parseDouble(ReaderUtils.getElementText(scaleX));
             }
 
             if (shearX != null) {
-                flatMatrix[1] = Double.parseDouble(ReaderUtils.getElementText(
-                            shearX));
+                flatMatrix[1] = Double.parseDouble(ReaderUtils.getElementText(shearX));
             }
 
             if (translateX != null) {
-                flatMatrix[2] = Double.parseDouble(ReaderUtils.getElementText(
-                            translateX));
+                flatMatrix[2] = Double.parseDouble(ReaderUtils.getElementText(translateX));
             }
 
             if (shearY != null) {
-                flatMatrix[3] = Double.parseDouble(ReaderUtils.getElementText(
-                            shearY));
+                flatMatrix[3] = Double.parseDouble(ReaderUtils.getElementText(shearY));
             }
 
             if (scaleY != null) {
-                flatMatrix[4] = Double.parseDouble(ReaderUtils.getElementText(
-                            scaleY));
+                flatMatrix[4] = Double.parseDouble(ReaderUtils.getElementText(scaleY));
             }
 
             if (translateY != null) {
-                flatMatrix[5] = Double.parseDouble(ReaderUtils.getElementText(
-                            translateY));
+                flatMatrix[5] = Double.parseDouble(ReaderUtils.getElementText(translateY));
             }
 
             flatMatrix[8] = 1.0;
@@ -2441,12 +2293,10 @@ public class XMLConfigReader {
         }
 
         NodeList axisNames = gridElem.getElementsByTagName("axisName");
-        InternationalString[] dimNames = new InternationalString[axisNames
-            .getLength()];
+        InternationalString[] dimNames = new InternationalString[axisNames.getLength()];
 
         for (int i = 0; i < axisNames.getLength(); i++) {
-            String values = ReaderUtils.getElementText((Element) axisNames.item(
-                        i));
+            String values = ReaderUtils.getElementText((Element) axisNames.item(i));
 
             if (values != null) {
                 dimNames[i] = NameFactory.create(values).toInternationalString();
@@ -2466,28 +2316,25 @@ public class XMLConfigReader {
             for (int dim = 0; dim < dimElems.getLength(); dim++) {
                 dimensions[dim] = new CoverageDimension();
                 dimensions[dim].setName(ReaderUtils.getElementText(
-                        (Element) ((Element) dimElems.item(dim)).getElementsByTagName(
-                            "name").item(0)));
+                        (Element) ((Element) dimElems.item(dim)).getElementsByTagName("name").item(0)));
                 dimensions[dim].setDescription(ReaderUtils.getElementText(
-                        (Element) ((Element) dimElems.item(dim)).getElementsByTagName(
-                            "description").item(0)));
+                        (Element) ((Element) dimElems.item(dim)).getElementsByTagName("description")
+                                   .item(0)));
 
-                NodeList interval = ((Element) dimElems.item(dim))
-                    .getElementsByTagName("interval");
+                NodeList interval = ((Element) dimElems.item(dim)).getElementsByTagName("interval");
                 double min = Double.parseDouble(ReaderUtils.getElementText(
-                            (Element) ((Element) interval.item(0)).getElementsByTagName(
-                                "min").item(0)));
+                            (Element) ((Element) interval.item(0)).getElementsByTagName("min")
+                                       .item(0)));
                 double max = Double.parseDouble(ReaderUtils.getElementText(
-                            (Element) ((Element) interval.item(0)).getElementsByTagName(
-                                "max").item(0)));
+                            (Element) ((Element) interval.item(0)).getElementsByTagName("max")
+                                       .item(0)));
                 dimensions[dim].setRange(new NumberRange(min, max));
 
-                NodeList nullValues = ((Element) dimElems.item(dim))
-                    .getElementsByTagName("nullValues");
+                NodeList nullValues = ((Element) dimElems.item(dim)).getElementsByTagName(
+                        "nullValues");
 
                 if ((nullValues != null) && (nullValues.getLength() > 0)) {
-                    NodeList values = ((Element) nullValues.item(0))
-                        .getElementsByTagName("value");
+                    NodeList values = ((Element) nullValues.item(0)).getElementsByTagName("value");
 
                     if (values != null) {
                         Vector nulls = new Vector();
@@ -2513,8 +2360,7 @@ public class XMLConfigReader {
         try {
             ml.setAbout(ReaderUtils.getAttribute(metalinkRoot, "about", false));
             ml.setType(ReaderUtils.getAttribute(metalinkRoot, "type", false));
-            ml.setMetadataType(ReaderUtils.getAttribute(metalinkRoot,
-                    "metadataType", false));
+            ml.setMetadataType(ReaderUtils.getAttribute(metalinkRoot, "metadataType", false));
             ml.setContent(ReaderUtils.getElementText(metalinkRoot));
         } catch (Exception e) {
             ml = null;
@@ -2577,18 +2423,13 @@ public class XMLConfigReader {
         }
 
         try {
-            boolean dynamic = ReaderUtils.getBooleanAttribute(bboxElem,
-                    "dynamic", false, true);
+            boolean dynamic = ReaderUtils.getBooleanAttribute(bboxElem, "dynamic", false, true);
 
             if (!dynamic) {
-                double minx = ReaderUtils.getDoubleAttribute(bboxElem, "minx",
-                        true);
-                double miny = ReaderUtils.getDoubleAttribute(bboxElem, "miny",
-                        true);
-                double maxx = ReaderUtils.getDoubleAttribute(bboxElem, "maxx",
-                        true);
-                double maxy = ReaderUtils.getDoubleAttribute(bboxElem, "maxy",
-                        true);
+                double minx = ReaderUtils.getDoubleAttribute(bboxElem, "minx", true);
+                double miny = ReaderUtils.getDoubleAttribute(bboxElem, "miny", true);
+                double maxx = ReaderUtils.getDoubleAttribute(bboxElem, "maxx", true);
+                double maxy = ReaderUtils.getDoubleAttribute(bboxElem, "maxy", true);
 
                 return new Envelope(minx, maxx, miny, maxy);
             }
@@ -2617,20 +2458,16 @@ public class XMLConfigReader {
     protected Filter loadDefinitionQuery(Element typeRoot)
         throws ConfigurationException {
         try {
-            Element defQNode = ReaderUtils.getChildElement(typeRoot,
-                    "definitionQuery", false);
+            Element defQNode = ReaderUtils.getChildElement(typeRoot, "definitionQuery", false);
             Filter filter = null;
 
             if (defQNode != null) {
-                LOGGER.finer(
-                    "definitionQuery element found, looking for Filter");
+                LOGGER.finer("definitionQuery element found, looking for Filter");
 
-                Element filterNode = ReaderUtils.getChildElement(defQNode,
-                        "Filter", false);
+                Element filterNode = ReaderUtils.getChildElement(defQNode, "Filter", false);
 
                 if ((filterNode != null)
-                        && ((filterNode = ReaderUtils.getFirstChildElement(
-                                filterNode)) != null)) {
+                        && ((filterNode = ReaderUtils.getFirstChildElement(filterNode)) != null)) {
                     filter = FilterDOMParser.parseFilter(filterNode);
 
                     return filter;
@@ -2691,22 +2528,19 @@ public class XMLConfigReader {
         Element elem = null;
         dto.setSchemaFile(schemaFile);
 
-        if ((schemaFile == null)
-                || (!schemaFile.exists() || !schemaFile.canRead())) {
-            System.err.println("File does not exist for schema for "
-                + dto.getName());
+        if ((schemaFile == null) || (!schemaFile.exists() || !schemaFile.canRead())) {
+            System.err.println("File does not exist for schema for " + dto.getName());
 
             return;
         }
 
         try {
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.config(new StringBuffer("Loading configuration file: ").append(
-                        schemaFile).toString());
+                LOGGER.config(new StringBuffer("Loading configuration file: ").append(schemaFile)
+                                                                              .toString());
             }
 
-            Reader reader = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(
-                        schemaFile));
+            Reader reader = XmlCharsetDetector.getCharsetAwareReader(new FileInputStream(schemaFile));
             elem = ReaderUtils.parse(reader);
             reader.close();
         } catch (FileNotFoundException e) {
@@ -2714,18 +2548,16 @@ public class XMLConfigReader {
                 LOGGER.log(Level.FINEST, e.getMessage(), e);
             }
 
-            throw new ConfigurationException("Could not open schema file:"
-                + schemaFile, e);
+            throw new ConfigurationException("Could not open schema file:" + schemaFile, e);
         } catch (Exception erk) {
-            throw new ConfigurationException("Could not parse schema file:"
-                + schemaFile, erk);
+            throw new ConfigurationException("Could not parse schema file:" + schemaFile, erk);
         }
 
         try {
             processSchema(elem, dto);
         } catch (ConfigurationException e) {
-            throw new ConfigurationException("Error occured in " + schemaFile
-                + "\n" + e.getMessage(), e);
+            throw new ConfigurationException("Error occured in " + schemaFile + "\n"
+                + e.getMessage(), e);
         }
     }
 
@@ -2742,21 +2574,19 @@ public class XMLConfigReader {
      *
      * @throws ConfigurationException
      */
-    public static void processSchema(Element elem,
-        FeatureTypeInfoDTO featureTypeInfoDTO) throws ConfigurationException {
+    public static void processSchema(Element elem, FeatureTypeInfoDTO featureTypeInfoDTO)
+        throws ConfigurationException {
         ArrayList list = new ArrayList();
 
         try {
-            featureTypeInfoDTO.setSchemaName(ReaderUtils.getAttribute(elem,
-                    "name", true));
+            featureTypeInfoDTO.setSchemaName(ReaderUtils.getAttribute(elem, "name", true));
 
             elem = ReaderUtils.getChildElement(elem, "xs:complexContent");
             elem = ReaderUtils.getChildElement(elem, "xs:extension");
 
             NameSpaceTranslator gml = NameSpaceTranslatorFactory.getInstance()
                                                                 .getNameSpaceTranslator("gml");
-            NameSpaceElement nse = gml.getElement(ReaderUtils.getAttribute(
-                        elem, "base", true));
+            NameSpaceElement nse = gml.getElement(ReaderUtils.getAttribute(elem, "base", true));
             featureTypeInfoDTO.setSchemaBase(nse.getQualifiedTypeDefName());
             elem = ReaderUtils.getChildElement(elem, "xs:sequence");
 
@@ -2806,8 +2636,7 @@ public class XMLConfigReader {
                         ati.setComplex(false);
                     } else {
                         Element tmp = ReaderUtils.getFirstChildElement(elem);
-                        OutputFormat format = new OutputFormat(tmp
-                                .getOwnerDocument());
+                        OutputFormat format = new OutputFormat(tmp.getOwnerDocument());
                         format.setLineSeparator(LineSeparator.Windows);
                         format.setIndenting(true);
                         format.setLineWidth(0);
@@ -2828,12 +2657,9 @@ public class XMLConfigReader {
                     }
                 }
 
-                ati.setNillable(ReaderUtils.getBooleanAttribute(elem,
-                        "nillable", false, true));
-                ati.setMaxOccurs(ReaderUtils.getIntAttribute(elem, "maxOccurs",
-                        false, 1));
-                ati.setMinOccurs(ReaderUtils.getIntAttribute(elem, "minOccurs",
-                        false, 1));
+                ati.setNillable(ReaderUtils.getBooleanAttribute(elem, "nillable", false, true));
+                ati.setMaxOccurs(ReaderUtils.getIntAttribute(elem, "maxOccurs", false, 1));
+                ati.setMinOccurs(ReaderUtils.getIntAttribute(elem, "minOccurs", false, 1));
                 list.add(ati);
             }
         } catch (Exception e) {

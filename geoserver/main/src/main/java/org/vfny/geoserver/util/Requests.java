@@ -69,8 +69,7 @@ public final class Requests {
      * @param httpServletRequest
      * @return http://server:port/path-defined-context
      */
-    public static String getBaseUrl(HttpServletRequest httpServletRequest,
-        GeoServer geoserver) {
+    public static String getBaseUrl(HttpServletRequest httpServletRequest, GeoServer geoserver) {
         // try with the web interface configuration, if it fails, look into
         // web.xml just to keep compatibility (should be removed next version)
         // and finally, if nothing is found, give up and return the default base URL
@@ -87,9 +86,8 @@ public final class Requests {
             }
 
             if ((url == null) || (url.trim().length() == 0)) {
-                url = httpServletRequest.getScheme() + "://"
-                    + httpServletRequest.getServerName() + ":"
-                    + httpServletRequest.getServerPort()
+                url = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName()
+                    + ":" + httpServletRequest.getServerPort()
                     + httpServletRequest.getContextPath() + "/";
             } else {
                 url = appendContextPath(url, httpServletRequest.getContextPath());
@@ -104,8 +102,7 @@ public final class Requests {
         return url;
     }
 
-    public static String getBaseJspUrl(HttpServletRequest httpServletRequest,
-        GeoServer geoserver) {
+    public static String getBaseJspUrl(HttpServletRequest httpServletRequest, GeoServer geoserver) {
         // try with the web interface configuration, if it fails, look into
         // web.xml just to keep compatibility (should be removed next version)
         // and finally, if nothing is found, give up and return the default base URL
@@ -122,10 +119,9 @@ public final class Requests {
             }
 
             if ((url == null) || (url.trim().length() == 0)) {
-                url = httpServletRequest.getScheme() + "://"
-                    + httpServletRequest.getServerName() + ":"
-                    + httpServletRequest.getServerPort()
-                    + httpServletRequest.getRequestURI() + "/";
+                url = httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName()
+                    + ":" + httpServletRequest.getServerPort() + httpServletRequest.getRequestURI()
+                    + "/";
             } else {
                 url = appendContextPath(url, httpServletRequest.getRequestURI());
             }
@@ -151,8 +147,7 @@ public final class Requests {
      * @return The url to the tile cache, or <code>null</code> if no tile
      * cache set.
      */
-    public static String getTileCacheBaseUrl(HttpServletRequest request,
-        GeoServer geoServer) {
+    public static String getTileCacheBaseUrl(HttpServletRequest request, GeoServer geoServer) {
         //first check if tile cache set
         String tileCacheBaseUrl = geoServer.getTileCache();
 
@@ -231,8 +226,7 @@ public final class Requests {
      * @param httpServletRequest
      * @return http://server:port/path-defined-context/data/capabilities
      */
-    public static String getSchemaBaseUrl(
-        HttpServletRequest httpServletRequest, GeoServer geoserver) {
+    public static String getSchemaBaseUrl(HttpServletRequest httpServletRequest, GeoServer geoserver) {
         return getBaseUrl(httpServletRequest, geoserver) + "schemas/";
     }
 
@@ -256,8 +250,7 @@ public final class Requests {
 
                 //JD: for some reason there is sometimes a string here. doing
                 // an instanceof check ... although i am not sure why this occurs.
-                Object o = SecurityContextHolder.getContext().getAuthentication()
-                                                .getPrincipal();
+                Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
                 if (o instanceof UserDetails) {
                     UserDetails ud = (UserDetails) o;
@@ -266,8 +259,7 @@ public final class Requests {
                     user.setUsername((String) o);
                 }
 
-                request.getSession()
-                       .setAttribute(UserContainer.SESSION_KEY, user);
+                request.getSession().setAttribute(UserContainer.SESSION_KEY, user);
             }
 
             return user;
@@ -291,8 +283,7 @@ public final class Requests {
      */
     public static boolean isLoggedIn(HttpServletRequest request) {
         // check the user is not the anonymous one
-        Authentication authentication = SecurityContextHolder.getContext()
-                                                             .getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         return (authentication != null)
         && !(authentication instanceof AnonymousAuthenticationToken);
@@ -355,8 +346,7 @@ public final class Requests {
                 return new GZIPInputStream(conn.getInputStream());
             } else if (encoding.equalsIgnoreCase("deflate")) {
                 //If it is encoded as deflate, then select the inflater inputstream.
-                return new InflaterInputStream(conn.getInputStream(),
-                    new Inflater(true));
+                return new InflaterInputStream(conn.getInputStream(), new Inflater(true));
             } else {
                 //Else read the raw bytes
                 return conn.getInputStream();
@@ -381,8 +371,7 @@ public final class Requests {
             return map;
         }
 
-        StringTokenizer semiColonSplitter = new StringTokenizer(rawOptionString,
-                ";");
+        StringTokenizer semiColonSplitter = new StringTokenizer(rawOptionString, ";");
 
         while (semiColonSplitter.hasMoreElements()) {
             String curKVP = semiColonSplitter.nextToken();

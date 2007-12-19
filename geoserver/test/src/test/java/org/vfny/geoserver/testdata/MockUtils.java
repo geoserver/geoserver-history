@@ -70,8 +70,7 @@ public class MockUtils {
      *            readers.
      * @return
      */
-    public static MockHttpServletRequest newHttpRequest(
-        boolean includeMockGeoserver)
+    public static MockHttpServletRequest newHttpRequest(boolean includeMockGeoserver)
         throws ConfigurationException, IOException {
         return newHttpRequest(Collections.EMPTY_MAP, includeMockGeoserver);
     }
@@ -93,9 +92,8 @@ public class MockUtils {
      *            readers.
      * @return
      */
-    public static MockHttpServletRequest newHttpRequest(
-        Map /* <String, String> */ initialParams, boolean includeMockGeoServer)
-        throws ConfigurationException, IOException {
+    public static MockHttpServletRequest newHttpRequest(Map /* <String, String> */ initialParams,
+        boolean includeMockGeoServer) throws ConfigurationException, IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
 
         for (Iterator it = initialParams.entrySet().iterator(); it.hasNext();) {
@@ -106,9 +104,8 @@ public class MockUtils {
 
             if ((value != null) && value.getClass().isArray()) {
                 if (value.getClass().getComponentType() != String.class) {
-                    throw new IllegalArgumentException(
-                        "provided an illegal parameter for " + name + ": "
-                        + value);
+                    throw new IllegalArgumentException("provided an illegal parameter for " + name
+                        + ": " + value);
                 }
 
                 request.setupAddParameter(name, (String[]) value);
@@ -179,8 +176,7 @@ public class MockUtils {
         service.setAccessConstraints("NONE");
         service.setEnabled(true);
         service.setFees("NONE");
-        service.setKeywords(Arrays.asList(
-                new String[] { "test", "mock", "service", "config" }));
+        service.setKeywords(Arrays.asList(new String[] { "test", "mock", "service", "config" }));
         service.setMaintainer("Gabriel Roldan");
         service.setName("WMS");
 
@@ -213,8 +209,7 @@ public class MockUtils {
         service.setAccessConstraints("NONE");
         service.setEnabled(true);
         service.setFees("NONE");
-        service.setKeywords(Arrays.asList(
-                new String[] { "test", "mock", "service", "config" }));
+        service.setKeywords(Arrays.asList(new String[] { "test", "mock", "service", "config" }));
         service.setMaintainer("Gabriel Roldan");
         service.setName("WMS");
 
@@ -247,8 +242,7 @@ public class MockUtils {
         System.out.println(testDataUrl);
 
         if (!"file".equals(testDataUrl.getProtocol())) {
-            throw new IOException("unsupported protocol: "
-                + testDataUrl.getProtocol());
+            throw new IOException("unsupported protocol: " + testDataUrl.getProtocol());
         }
 
         String url = testDataUrl.toExternalForm();
@@ -256,8 +250,7 @@ public class MockUtils {
         dir = new File(testPath);
 
         if (!dir.exists() || !dir.isDirectory()) {
-            throw new ConfigurationException(
-                "Expected cite test dataset directory at " + dir);
+            throw new ConfigurationException("Expected cite test dataset directory at " + dir);
         }
 
         Map formats = new HashMap();
@@ -354,8 +347,7 @@ public class MockUtils {
             File sldFile = new File(baseDir, sldName);
 
             if (!sldFile.exists()) {
-                System.err.println("Style file not found, unsing default.sld: "
-                    + sldFile);
+                System.err.println("Style file not found, unsing default.sld: " + sldFile);
 
                 continue;
             }
@@ -402,8 +394,7 @@ public class MockUtils {
         tempDir.mkdir();
 
         if (!tempDir.exists() || !tempDir.isDirectory()) {
-            throw new IOException(tempDir.getAbsolutePath()
-                + " is not a writable directory");
+            throw new IOException(tempDir.getAbsolutePath() + " is not a writable directory");
         }
 
         for (int i = 0; i < AbstractCiteDataTest.CITE_TYPE_NAMES.length; i++) {
@@ -446,8 +437,7 @@ public class MockUtils {
         InputStream in = MockUtils.class.getResourceAsStream(resourceName);
 
         if (in == null) {
-            throw new NullPointerException(resourceName
-                + " not found in classpath");
+            throw new NullPointerException(resourceName + " not found in classpath");
         }
 
         OutputStream out = new java.io.FileOutputStream(outFile);
@@ -519,8 +509,7 @@ public class MockUtils {
             FeatureType schema = super.getSchema(typeName);
 
             try {
-                return DataUtilities.createSubType(schema, null,
-                    DefaultGeographicCRS.WGS84);
+                return DataUtilities.createSubType(schema, null, DefaultGeographicCRS.WGS84);
             } catch (SchemaException e) {
                 throw new DataSourceException(e.getMessage(), e);
             }

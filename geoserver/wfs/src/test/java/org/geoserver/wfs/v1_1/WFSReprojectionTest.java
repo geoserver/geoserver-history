@@ -27,26 +27,22 @@ public class WFSReprojectionTest extends WFSTestSupport {
     }
 
     public void testGetFeatureGet() throws Exception {
-        Document dom1 = getAsDOM(
-                "wfs?request=getfeature&service=wfs&version=1.0.0&typename="
+        Document dom1 = getAsDOM("wfs?request=getfeature&service=wfs&version=1.0.0&typename="
                 + MockData.POLYGONS.getLocalPart());
-        Document dom2 = getAsDOM(
-                "wfs?request=getfeature&service=wfs&version=1.0.0&typename="
+        Document dom2 = getAsDOM("wfs?request=getfeature&service=wfs&version=1.0.0&typename="
                 + MockData.POLYGONS.getLocalPart() + "&srsName=epsg:900913");
 
         runTest(dom1, dom2);
     }
 
     public void testGetFeaturePost() throws Exception {
-        String xml = "<wfs:GetFeature " + "service=\"WFS\" "
-            + "version=\"1.0.0\" "
+        String xml = "<wfs:GetFeature " + "service=\"WFS\" " + "version=\"1.0.0\" "
             + "xmlns:cdf=\"http://www.opengis.net/cite/data\" "
             + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
-            + "xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> "
-            + "<wfs:Query typeName=\"" + MockData.POLYGONS.getPrefix() + ":"
-            + MockData.POLYGONS.getLocalPart() + "\"> "
-            + "<wfs:PropertyName>cgf:polygonProperty</wfs:PropertyName> "
-            + "</wfs:Query> " + "</wfs:GetFeature>";
+            + "xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> " + "<wfs:Query typeName=\""
+            + MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart() + "\"> "
+            + "<wfs:PropertyName>cgf:polygonProperty</wfs:PropertyName> " + "</wfs:Query> "
+            + "</wfs:GetFeature>";
 
         Document dom1 = postAsDOM("wfs", xml);
 
@@ -54,11 +50,10 @@ public class WFSReprojectionTest extends WFSTestSupport {
             + "xmlns:cdf=\"http://www.opengis.net/cite/data\" "
             + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
             + "xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> "
-            + "<wfs:Query srsName=\"epsg:900913\" typeName=\""
-            + MockData.POLYGONS.getPrefix() + ":"
-            + MockData.POLYGONS.getLocalPart() + "\"> "
-            + "<wfs:PropertyName>cgf:polygonProperty</wfs:PropertyName> "
-            + "</wfs:Query> " + "</wfs:GetFeature>";
+            + "<wfs:Query srsName=\"epsg:900913\" typeName=\"" + MockData.POLYGONS.getPrefix()
+            + ":" + MockData.POLYGONS.getLocalPart() + "\"> "
+            + "<wfs:PropertyName>cgf:polygonProperty</wfs:PropertyName> " + "</wfs:Query> "
+            + "</wfs:GetFeature>";
 
         Document dom2 = postAsDOM("wfs", xml);
 
@@ -72,21 +67,18 @@ public class WFSReprojectionTest extends WFSTestSupport {
         print(dom);
 
         Element envelope = getFirstElementByTagName(dom, "gml:Envelope");
-        String lc = getFirstElementByTagName(envelope, "gml:lowerCorner")
-                        .getFirstChild().getNodeValue();
-        String uc = getFirstElementByTagName(envelope, "gml:upperCorner")
-                        .getFirstChild().getNodeValue();
+        String lc = getFirstElementByTagName(envelope, "gml:lowerCorner").getFirstChild()
+                        .getNodeValue();
+        String uc = getFirstElementByTagName(envelope, "gml:upperCorner").getFirstChild()
+                        .getNodeValue();
         double[] c = new double[] {
-                Double.parseDouble(lc.split(" ")[0]),
-                Double.parseDouble(lc.split(" ")[1]),
-                Double.parseDouble(uc.split(" ")[0]),
-                Double.parseDouble(uc.split(" ")[1])
+                Double.parseDouble(lc.split(" ")[0]), Double.parseDouble(lc.split(" ")[1]),
+                Double.parseDouble(uc.split(" ")[0]), Double.parseDouble(uc.split(" ")[1])
             };
         double[] cr = new double[4];
         tx.transform(c, 0, cr, 0, 2);
 
-        q += ("&bbox=" + cr[0] + "," + cr[1] + "," + cr[2] + "," + cr[3]
-        + ",epsg:900913");
+        q += ("&bbox=" + cr[0] + "," + cr[1] + "," + cr[2] + "," + cr[3] + ",epsg:900913");
         dom = getAsDOM(q);
 
         assertEquals(1,
@@ -99,35 +91,29 @@ public class WFSReprojectionTest extends WFSTestSupport {
             + MockData.POLYGONS.getLocalPart();
         Document dom = getAsDOM(q);
         Element envelope = getFirstElementByTagName(dom, "gml:Envelope");
-        String lc = getFirstElementByTagName(envelope, "gml:lowerCorner")
-                        .getFirstChild().getNodeValue();
-        String uc = getFirstElementByTagName(envelope, "gml:upperCorner")
-                        .getFirstChild().getNodeValue();
+        String lc = getFirstElementByTagName(envelope, "gml:lowerCorner").getFirstChild()
+                        .getNodeValue();
+        String uc = getFirstElementByTagName(envelope, "gml:upperCorner").getFirstChild()
+                        .getNodeValue();
         double[] c = new double[] {
-                Double.parseDouble(lc.split(" ")[0]),
-                Double.parseDouble(lc.split(" ")[1]),
-                Double.parseDouble(uc.split(" ")[0]),
-                Double.parseDouble(uc.split(" ")[1])
+                Double.parseDouble(lc.split(" ")[0]), Double.parseDouble(lc.split(" ")[1]),
+                Double.parseDouble(uc.split(" ")[0]), Double.parseDouble(uc.split(" ")[1])
             };
         double[] cr = new double[4];
         tx.transform(c, 0, cr, 0, 2);
 
-        String xml = "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\""
-            + " xmlns:" + MockData.POLYGONS.getPrefix() + "=\""
-            + MockData.POLYGONS.getNamespaceURI() + "\""
+        String xml = "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\"" + " xmlns:"
+            + MockData.POLYGONS.getPrefix() + "=\"" + MockData.POLYGONS.getNamespaceURI() + "\""
             + " xmlns:ogc=\"http://www.opengis.net/ogc\" "
             + " xmlns:gml=\"http://www.opengis.net/gml\" "
-            + " xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> "
-            + "<wfs:Query typeName=\"" + MockData.POLYGONS.getPrefix() + ":"
-            + MockData.POLYGONS.getLocalPart() + "\">"
-            + "<wfs:PropertyName>cgf:polygonProperty</wfs:PropertyName> "
-            + "<ogc:Filter>" + "<ogc:BBOX>"
-            + "<ogc:PropertyName>polygonProperty</ogc:PropertyName>"
-            + "<gml:Envelope srsName=\"epsg:900913\">" + "<gml:lowerCorner>"
-            + cr[0] + " " + cr[1] + "</gml:lowerCorner>" + "<gml:upperCorner>"
-            + cr[2] + " " + cr[3] + "</gml:upperCorner>" + "</gml:Envelope>"
-            + "</ogc:BBOX>" + "</ogc:Filter>" + "</wfs:Query> "
-            + "</wfs:GetFeature>";
+            + " xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> " + "<wfs:Query typeName=\""
+            + MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart() + "\">"
+            + "<wfs:PropertyName>cgf:polygonProperty</wfs:PropertyName> " + "<ogc:Filter>"
+            + "<ogc:BBOX>" + "<ogc:PropertyName>polygonProperty</ogc:PropertyName>"
+            + "<gml:Envelope srsName=\"epsg:900913\">" + "<gml:lowerCorner>" + cr[0] + " " + cr[1]
+            + "</gml:lowerCorner>" + "<gml:upperCorner>" + cr[2] + " " + cr[3]
+            + "</gml:upperCorner>" + "</gml:Envelope>" + "</ogc:BBOX>" + "</ogc:Filter>"
+            + "</wfs:Query> " + "</wfs:GetFeature>";
 
         dom = postAsDOM("wfs", xml);
 
@@ -141,10 +127,8 @@ public class WFSReprojectionTest extends WFSTestSupport {
             + MockData.POLYGONS.getLocalPart();
         Document dom = getAsDOM(q);
 
-        Element polygonProperty = getFirstElementByTagName(dom,
-                "cgf:polygonProperty");
-        Element posList = getFirstElementByTagName(polygonProperty,
-                "gml:posList");
+        Element polygonProperty = getFirstElementByTagName(dom, "cgf:polygonProperty");
+        Element posList = getFirstElementByTagName(polygonProperty, "gml:posList");
 
         double[] c = posList(posList.getFirstChild().getNodeValue());
         double[] cr = new double[c.length];
@@ -152,11 +136,10 @@ public class WFSReprojectionTest extends WFSTestSupport {
 
         String xml = "<wfs:Transaction service=\"WFS\" version=\"1.1.0\" "
             + " xmlns:wfs=\"http://www.opengis.net/wfs\" "
-            + " xmlns:gml=\"http://www.opengis.net/gml\" " + " xmlns:cgf=\""
-            + MockData.CGF_URI + "\">"
-            + "<wfs:Insert handle=\"insert-1\" srsName=\"epsg:900913\">"
-            + " <cgf:Polygons>" + "<cgf:polygonProperty>" + "<gml:Polygon >"
-            + "<gml:exterior>" + "<gml:LinearRing>" + "<gml:posList>";
+            + " xmlns:gml=\"http://www.opengis.net/gml\" " + " xmlns:cgf=\"" + MockData.CGF_URI
+            + "\">" + "<wfs:Insert handle=\"insert-1\" srsName=\"epsg:900913\">"
+            + " <cgf:Polygons>" + "<cgf:polygonProperty>" + "<gml:Polygon >" + "<gml:exterior>"
+            + "<gml:LinearRing>" + "<gml:posList>";
 
         for (int i = 0; i < cr.length; i++) {
             xml += cr[i];
@@ -166,9 +149,8 @@ public class WFSReprojectionTest extends WFSTestSupport {
             }
         }
 
-        xml += ("</gml:posList>" + "</gml:LinearRing>" + "</gml:exterior>"
-        + "</gml:Polygon>" + "</cgf:polygonProperty>" + " </cgf:Polygons>"
-        + "</wfs:Insert>" + "</wfs:Transaction>");
+        xml += ("</gml:posList>" + "</gml:LinearRing>" + "</gml:exterior>" + "</gml:Polygon>"
+        + "</cgf:polygonProperty>" + " </cgf:Polygons>" + "</wfs:Insert>" + "</wfs:Transaction>");
         postAsDOM("wfs", xml);
 
         dom = getAsDOM(q);
@@ -183,10 +165,8 @@ public class WFSReprojectionTest extends WFSTestSupport {
             + MockData.POLYGONS.getLocalPart();
         Document dom = getAsDOM(q);
 
-        Element polygonProperty = getFirstElementByTagName(dom,
-                "cgf:polygonProperty");
-        Element posList = getFirstElementByTagName(polygonProperty,
-                "gml:posList");
+        Element polygonProperty = getFirstElementByTagName(dom, "cgf:polygonProperty");
+        Element posList = getFirstElementByTagName(polygonProperty, "gml:posList");
 
         double[] c = posList(posList.getFirstChild().getNodeValue());
         double[] cr = new double[c.length];
@@ -194,10 +174,9 @@ public class WFSReprojectionTest extends WFSTestSupport {
 
         String xml = "<wfs:Transaction service=\"WFS\" version=\"1.1.0\" "
             + " xmlns:wfs=\"http://www.opengis.net/wfs\" "
-            + " xmlns:gml=\"http://www.opengis.net/gml\" " + " xmlns:cgf=\""
-            + MockData.CGF_URI + "\">" + "<wfs:Insert handle=\"insert-1\">"
-            + " <cgf:Polygons>" + "<cgf:polygonProperty>"
-            + "<gml:Polygon srsName=\"epsg:900913\">" + "<gml:exterior>"
+            + " xmlns:gml=\"http://www.opengis.net/gml\" " + " xmlns:cgf=\"" + MockData.CGF_URI
+            + "\">" + "<wfs:Insert handle=\"insert-1\">" + " <cgf:Polygons>"
+            + "<cgf:polygonProperty>" + "<gml:Polygon srsName=\"epsg:900913\">" + "<gml:exterior>"
             + "<gml:LinearRing>" + "<gml:posList>";
 
         for (int i = 0; i < cr.length; i++) {
@@ -208,9 +187,8 @@ public class WFSReprojectionTest extends WFSTestSupport {
             }
         }
 
-        xml += ("</gml:posList>" + "</gml:LinearRing>" + "</gml:exterior>"
-        + "</gml:Polygon>" + "</cgf:polygonProperty>" + " </cgf:Polygons>"
-        + "</wfs:Insert>" + "</wfs:Transaction>");
+        xml += ("</gml:posList>" + "</gml:LinearRing>" + "</gml:exterior>" + "</gml:Polygon>"
+        + "</cgf:polygonProperty>" + " </cgf:Polygons>" + "</wfs:Insert>" + "</wfs:Transaction>");
         postAsDOM("wfs", xml);
 
         dom = getAsDOM(q);
@@ -227,10 +205,8 @@ public class WFSReprojectionTest extends WFSTestSupport {
         Document dom = getAsDOM(q);
         print(dom);
 
-        Element polygonProperty = getFirstElementByTagName(dom,
-                "cgf:polygonProperty");
-        Element posList = getFirstElementByTagName(polygonProperty,
-                "gml:posList");
+        Element polygonProperty = getFirstElementByTagName(dom, "cgf:polygonProperty");
+        Element posList = getFirstElementByTagName(polygonProperty, "gml:posList");
 
         double[] c = posList(posList.getFirstChild().getNodeValue());
         double[] cr = new double[c.length];
@@ -244,8 +220,8 @@ public class WFSReprojectionTest extends WFSTestSupport {
             + "xmlns:gml=\"http://www.opengis.net/gml\"> "
             + "<wfs:Update typeName=\"cgf:Polygons\" > " + "<wfs:Property>"
             + "<wfs:Name>polygonProperty</wfs:Name>" + "<wfs:Value>"
-            + "<gml:Polygon srsName=\"epsg:900913\">" + "<gml:exterior>"
-            + "<gml:LinearRing>" + "<gml:posList>";
+            + "<gml:Polygon srsName=\"epsg:900913\">" + "<gml:exterior>" + "<gml:LinearRing>"
+            + "<gml:posList>";
 
         for (int i = 0; i < cr.length; i++) {
             xml += cr[i];
@@ -255,16 +231,13 @@ public class WFSReprojectionTest extends WFSTestSupport {
             }
         }
 
-        xml += ("</gml:posList>" + "</gml:LinearRing>" + "</gml:exterior>"
-        + "</gml:Polygon>" + "</wfs:Value>" + "</wfs:Property>"
-        + "<ogc:Filter>" + "<ogc:PropertyIsEqualTo>"
-        + "<ogc:PropertyName>id</ogc:PropertyName>"
-        + "<ogc:Literal>t0002</ogc:Literal>" + "</ogc:PropertyIsEqualTo>"
-        + "</ogc:Filter>" + "</wfs:Update>" + "</wfs:Transaction>");
+        xml += ("</gml:posList>" + "</gml:LinearRing>" + "</gml:exterior>" + "</gml:Polygon>"
+        + "</wfs:Value>" + "</wfs:Property>" + "<ogc:Filter>" + "<ogc:PropertyIsEqualTo>"
+        + "<ogc:PropertyName>id</ogc:PropertyName>" + "<ogc:Literal>t0002</ogc:Literal>"
+        + "</ogc:PropertyIsEqualTo>" + "</ogc:Filter>" + "</wfs:Update>" + "</wfs:Transaction>");
 
         dom = postAsDOM("wfs", xml);
-        assertEquals("wfs:TransactionResponse",
-            dom.getDocumentElement().getNodeName());
+        assertEquals("wfs:TransactionResponse", dom.getDocumentElement().getNodeName());
 
         Element totalUpdated = getFirstElementByTagName(dom, "wfs:totalUpdated");
         assertEquals("1", totalUpdated.getFirstChild().getNodeValue());
@@ -286,8 +259,7 @@ public class WFSReprojectionTest extends WFSTestSupport {
     }
 
     public void runTest(Document dom1, Document dom2) throws Exception {
-        Element box = getFirstElementByTagName(dom1.getDocumentElement(),
-                "gml:Box");
+        Element box = getFirstElementByTagName(dom1.getDocumentElement(), "gml:Box");
         Element coordinates = getFirstElementByTagName(box, "gml:coordinates");
         double[] d1 = coordinates(coordinates.getFirstChild().getNodeValue());
 

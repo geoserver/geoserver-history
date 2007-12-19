@@ -60,24 +60,24 @@ import javax.servlet.ServletException;
  * @author $Author: Alessio Fabiani (GeoSolutions)
  */
 public class AddCoverageResponse implements Response {
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses");
     private static final String CURR_VER = "\"1.0\"";
     private static final String CATALOG_URL = "http://www.geo-solutions.it/schemas/catalog";
-    private static final String CATALOG_NAMESPACE = new StringBuffer(
-            "\n  xmlns=\"").append(CATALOG_URL).append("\"").toString();
+    private static final String CATALOG_NAMESPACE = new StringBuffer("\n  xmlns=\"").append(CATALOG_URL)
+                                                                                    .append("\"")
+                                                                                    .toString();
     private static final String XLINK_URL = "\"http://www.w3.org/1999/xlink\"";
-    private static final String XLINK_NAMESPACE = new StringBuffer(
-            "\n  xmlns:xlink=").append(XLINK_URL).toString();
+    private static final String XLINK_NAMESPACE = new StringBuffer("\n  xmlns:xlink=").append(XLINK_URL)
+                                                                                      .toString();
     private static final String OGC_URL = "\"http://www.opengis.net/ogc\"";
-    private static final String OGC_NAMESPACE = new StringBuffer(
-            "\n  xmlns:ogc=").append(OGC_URL).toString();
+    private static final String OGC_NAMESPACE = new StringBuffer("\n  xmlns:ogc=").append(OGC_URL)
+                                                                                  .toString();
     private static final String GML_URL = "\"http://www.opengis.net/gml\"";
-    private static final String GML_NAMESPACE = new StringBuffer(
-            "\n  xmlns:gml=").append(GML_URL).toString();
+    private static final String GML_NAMESPACE = new StringBuffer("\n  xmlns:gml=").append(GML_URL)
+                                                                                  .toString();
     private static final String SCHEMA_URI = "\"http://www.w3.org/2001/XMLSchema-instance\"";
-    private static final String XSI_NAMESPACE = new StringBuffer(
-            "\n  xmlns:xsi=").append(SCHEMA_URI).toString();
+    private static final String XSI_NAMESPACE = new StringBuffer("\n  xmlns:xsi=").append(SCHEMA_URI)
+                                                                                  .toString();
 
     /** Fixed return footer information */
     private static final String FOOTER = "\n</AddCoverage>";
@@ -89,16 +89,14 @@ public class AddCoverageResponse implements Response {
     // protected final static CRSFactory crsFactory =
     // FactoryFinder.getCRSFactory(new
     // Hints(Hints.CRS_AUTHORITY_FACTORY,EPSGCRSAuthorityFactory.class));
-    protected final static CRSFactory crsFactory = ReferencingFactoryFinder
-        .getCRSFactory(new Hints(Hints.CRS_AUTHORITY_FACTORY,
-                CRSAuthorityFactory.class));
+    protected final static CRSFactory crsFactory = ReferencingFactoryFinder.getCRSFactory(new Hints(
+                Hints.CRS_AUTHORITY_FACTORY, CRSAuthorityFactory.class));
 
     /**
      * The default transformations factory.
      */
     protected final static CoordinateOperationFactory opFactory = ReferencingFactoryFinder
-        .getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT,
-                Boolean.TRUE));
+        .getCoordinateOperationFactory(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
 
     /** The root directory from which the configuration is loaded. */
     private File root;
@@ -117,8 +115,7 @@ public class AddCoverageResponse implements Response {
      * @uml.property name="datumFactory"
      * @uml.associationEnd multiplicity="(1 1)"
      */
-    protected final DatumFactory datumFactory = ReferencingFactoryFinder
-        .getDatumFactory(null);
+    protected final DatumFactory datumFactory = ReferencingFactoryFinder.getDatumFactory(null);
 
     /**
      * The default math transform factory.
@@ -144,8 +141,8 @@ public class AddCoverageResponse implements Response {
 
         if (!(request instanceof AddCoverageRequest)) {
             throw new CatalogException(new StringBuffer(
-                    "illegal request type, expected DescribeRequest, got ").append(
-                    request).toString());
+                    "illegal request type, expected DescribeRequest, got ").append(request)
+                                                                                                               .toString());
         }
 
         AddCoverageRequest catalogRequest = (AddCoverageRequest) request;
@@ -169,8 +166,7 @@ public class AddCoverageResponse implements Response {
             // Loading Coverages ...
             // //
             CoverageInfoDTO coverage = loadCoverage(sr);
-            coverage.setDirName(coverage.getFormatId() + "_"
-                + coverage.getName());
+            coverage.setDirName(coverage.getFormatId() + "_" + coverage.getName());
 
             // //
             // Updating the catalog.
@@ -189,38 +185,39 @@ public class AddCoverageResponse implements Response {
             // Adding the Coverage
             // //
             // update the data config
-            DataConfig dataConfig = ConfigRequests.getDataConfig(req
-                    .getHttpServletRequest());
-            
+            DataConfig dataConfig = ConfigRequests.getDataConfig(req.getHttpServletRequest());
+
             // //
             // Save the XML ...
             // //
             File rootDir = GeoserverDataDirectory.getGeoserverDataDirectory();
 
-        	// //
-        	// Remove existing Coverages
-        	// //
-            for (Iterator keySetIterator = dataConfig.getCoverages().keySet().iterator(); keySetIterator.hasNext();) {
-            	String key = (String) keySetIterator.next();
-            	
-            	if (((CoverageConfig)dataConfig.getCoverages().get(key)).getName().equals(coverage.getName())) {
-                	dataConfig.getCoverages().put(key, null);
-                	dataConfig.getCoverages().remove(key);
-                	request.getCATALOG().getData().load(dataConfig.toDTO());
-                	break;
-            	}
+            // //
+            // Remove existing Coverages
+            // //
+            for (Iterator keySetIterator = dataConfig.getCoverages().keySet().iterator();
+                    keySetIterator.hasNext();) {
+                String key = (String) keySetIterator.next();
+
+                if (((CoverageConfig) dataConfig.getCoverages().get(key)).getName()
+                         .equals(coverage.getName())) {
+                    dataConfig.getCoverages().put(key, null);
+                    dataConfig.getCoverages().remove(key);
+                    request.getCATALOG().getData().load(dataConfig.toDTO());
+
+                    break;
+                }
             }
-            
+
             // //
             // Adding the new Coverage...
             // //
             dataConfig.getCoverages().put(cvName, new CoverageConfig(coverage));
 
             request.getCATALOG().getData().load(dataConfig.toDTO());
-            
+
             try {
-                XMLConfigWriter.store((DataDTO) request.getCATALOG().getData()
-                                                       .toDTO(), rootDir);
+                XMLConfigWriter.store((DataDTO) request.getCATALOG().getData().toDTO(), rootDir);
             } catch (ConfigurationException e) {
                 e.printStackTrace();
                 throw new ServletException(e);
@@ -267,10 +264,8 @@ public class AddCoverageResponse implements Response {
         StringBuffer tempResponse = new StringBuffer();
 
         tempResponse.append("<?xml version=\"1.0\" encoding=\"")
-                    .append(catalogRequest.getGeoServer().getCharSet()
-                                          .displayName()).append("\"?>")
-                    .append("\n<AddCoverage version=").append(CURR_VER)
-                    .append(" ").toString();
+                    .append(catalogRequest.getGeoServer().getCharSet().displayName()).append("\"?>")
+                    .append("\n<AddCoverage version=").append(CURR_VER).append(" ").toString();
 
         tempResponse.append(CATALOG_NAMESPACE);
         tempResponse.append(XLINK_NAMESPACE);
@@ -283,8 +278,7 @@ public class AddCoverageResponse implements Response {
          * ").append(request.getSchemaBaseUrl()).append(
          * "catalog/1.0.0/describeCoverage.xsd\">\n\n");
          */
-        tempResponse.append(" xsi:schemaLocation=\"").append(CATALOG_URL)
-                    .append(" ")
+        tempResponse.append(" xsi:schemaLocation=\"").append(CATALOG_URL).append(" ")
                     .append("http://www.geo-solutions.it/catalog/1.0/")
                     .append("addCoverage.xsd\">\n\n");
 
@@ -333,274 +327,27 @@ public class AddCoverageResponse implements Response {
 
         try {
             if (LOGGER.isLoggable(Level.CONFIG)) {
-                LOGGER.config(new StringBuffer("Loading configuration data: ").append(
-                        infoData).toString());
+                LOGGER.config(new StringBuffer("Loading configuration data: ").append(infoData)
+                                                                              .toString());
             }
 
             coverageElem = ReaderUtils.parse(infoData);
             infoData.close();
         } catch (Exception erk) {
-            throw new ConfigurationException("Could not parse info file:"
-                + infoData, erk);
+            throw new ConfigurationException("Could not parse info file:" + infoData, erk);
         }
 
         // loding the DTO.
-        CoverageInfoDTO dto = loadCoverageDTOFromXML(coverageElem);
+        CoverageInfoDTO dto = XMLConfigReader.loadCoverageDTOFromXML(coverageElem);
 
         /*
          * File parentDir = infoFile.getParentFile();
          * dto.setDirName(parentDir.getName());
          */
         if (LOGGER.isLoggable(Level.FINER)) {
-            LOGGER.finer(new StringBuffer("added coverageType ").append(
-                    dto.getName()).toString());
+            LOGGER.finer(new StringBuffer("added coverageType ").append(dto.getName()).toString());
         }
 
         return dto;
-    }
-
-    /**
-     * Creation of a DTo cfron an info.xml file for a coverage.
-     *
-     * @param coverageRoot
-     *
-     * @return
-     *
-     * @throws ConfigurationException
-     */
-    private CoverageInfoDTO loadCoverageDTOFromXML(Element coverageRoot)
-        throws ConfigurationException {
-        final CoverageInfoDTO cv = new CoverageInfoDTO();
-
-        try {
-            int length = 0;
-            List l = null;
-            int i = 0;
-            String[] ss = null;
-            // /////////////////////////////////////////////////////////////////////
-            //
-            // COVERAGEINFO DTO INITIALIZATION
-            //
-            // /////////////////////////////////////////////////////////////////////
-            cv.setFormatId(ReaderUtils.getAttribute(coverageRoot, "format", true));
-            cv.setName(ReaderUtils.getChildText(coverageRoot, "name", true));
-            cv.setWmsPath(ReaderUtils.getChildText(coverageRoot,
-                    "wmspath" /* , true */));
-            cv.setLabel(ReaderUtils.getChildText(coverageRoot, "label", true));
-            cv.setDescription(ReaderUtils.getChildText(coverageRoot,
-                    "description"));
-
-            // /////////////////////////////////////////////////////////////////////
-            //
-            // METADATA AND KEYORDS
-            //
-            // /////////////////////////////////////////////////////////////////////
-            final String keywords = ReaderUtils.getChildText(coverageRoot,
-                    "keywords");
-
-            if (keywords != null) {
-                l = new ArrayList(10);
-                ss = keywords.split(",");
-                length = ss.length;
-
-                for (i = 0; i < length; i++)
-                    l.add(ss[i].trim());
-
-                cv.setKeywords(l);
-            }
-
-            cv.setMetadataLink(XMLConfigReader.loadMetaDataLink(
-                    ReaderUtils.getChildElement(coverageRoot, "metadataLink")));
-
-            // /////////////////////////////////////////////////////////////////////
-            //
-            // DEAFULT STYLE
-            //
-            // /////////////////////////////////////////////////////////////////////
-            final Element tmp = ReaderUtils.getChildElement(coverageRoot,
-                    "styles");
-
-            if (tmp != null) {
-                cv.setDefaultStyle(ReaderUtils.getAttribute(tmp, "default",
-                        false));
-
-                final NodeList childrens = tmp.getChildNodes();
-                final int numChildNodes = childrens.getLength();
-                Node child;
-
-                for (int n = 0; n < numChildNodes; n++) {
-                    child = childrens.item(n);
-
-                    if (child.getNodeType() == Node.ELEMENT_NODE) {
-                        if (child.getNodeName().equals("style")) {
-                            cv.addStyle(ReaderUtils.getElementText(
-                                    (Element) child));
-                        }
-                    }
-                }
-            }
-
-            // /////////////////////////////////////////////////////////////////////
-            //
-            // CRS
-            //
-            // /////////////////////////////////////////////////////////////////////
-            final Element envelope = ReaderUtils.getChildElement(coverageRoot,
-                    "envelope");
-            cv.setSrsName(ReaderUtils.getAttribute(envelope, "srsName", true));
-
-            final CoordinateReferenceSystem crs;
-
-            try {
-                crs = CRS.parseWKT(ReaderUtils.getAttribute(envelope, "crs",
-                            false).replaceAll("'", "\""));
-            } catch (FactoryException e) {
-                throw new ConfigurationException(e);
-            } catch (ConfigurationException e) {
-                throw new ConfigurationException(e);
-            }
-
-            cv.setCrs(crs);
-            cv.setSrsWKT(crs.toWKT());
-
-            // /////////////////////////////////////////////////////////////////////
-            //
-            // ENVELOPE
-            //
-            // /////////////////////////////////////////////////////////////////////
-            GeneralEnvelope gcEnvelope = XMLConfigReader.loadEnvelope(envelope,
-                    crs);
-            cv.setEnvelope(gcEnvelope);
-
-            try {
-                cv.setLonLatWGS84Envelope(CoverageStoreUtils
-                    .getWGS84LonLatEnvelope(gcEnvelope));
-            } catch (IndexOutOfBoundsException e) {
-                throw new ConfigurationException(e);
-            } catch (NoSuchAuthorityCodeException e) {
-                throw new ConfigurationException(e);
-            } catch (FactoryException e) {
-                throw new ConfigurationException(e);
-            } catch (TransformException e) {
-                throw new ConfigurationException(e);
-            }
-
-            // /////////////////////////////////////////////////////////////////////
-            //
-            // GRID GEOMETRY
-            //
-            // /////////////////////////////////////////////////////////////////////
-            final Element grid = ReaderUtils.getChildElement(coverageRoot,
-                    "grid");
-            cv.setGrid(XMLConfigReader.loadGrid(grid, gcEnvelope, crs));
-
-            // /////////////////////////////////////////////////////////////////////
-            //
-            // SAMPLE DIMENSIONS
-            //
-            // /////////////////////////////////////////////////////////////////////
-            cv.setDimensionNames(XMLConfigReader.loadDimensionNames(grid));
-
-            final NodeList dims = coverageRoot.getElementsByTagName(
-                    "CoverageDimension");
-            cv.setDimensions(XMLConfigReader.loadDimensions(dims));
-
-            // /////////////////////////////////////////////////////////////////////
-            //
-            // SUPPORTED/REQUEST CRS
-            //
-            // /////////////////////////////////////////////////////////////////////
-            final Element supportedCRSs = ReaderUtils.getChildElement(coverageRoot,
-                    "supportedCRSs");
-            final String requestCRSs = ReaderUtils.getChildText(supportedCRSs,
-                    "requestCRSs");
-
-            if (requestCRSs != null) {
-                l = new LinkedList();
-                ss = requestCRSs.split(",");
-
-                length = ss.length;
-
-                for (i = 0; i < length; i++)
-                    l.add(ss[i].trim());
-
-                cv.setRequestCRSs(l);
-            }
-
-            final String responseCRSs = ReaderUtils.getChildText(supportedCRSs,
-                    "responseCRSs");
-
-            if (responseCRSs != null) {
-                l = new LinkedList();
-                ss = responseCRSs.split(",");
-                length = ss.length;
-
-                for (i = 0; i < length; i++)
-                    l.add(ss[i].trim());
-
-                cv.setResponseCRSs(l);
-            }
-
-            // /////////////////////////////////////////////////////////////////////
-            //
-            // SUPPORTED FORMATS
-            //
-            // /////////////////////////////////////////////////////////////////////
-            final Element supportedFormats = ReaderUtils.getChildElement(coverageRoot,
-                    "supportedFormats");
-            cv.setNativeFormat(ReaderUtils.getAttribute(supportedFormats,
-                    "nativeFormat", true));
-
-            final String formats = ReaderUtils.getChildText(supportedFormats,
-                    "formats");
-
-            if (formats != null) {
-                l = new LinkedList();
-                ss = formats.split(",");
-                length = ss.length;
-
-                for (i = 0; i < length; i++)
-                    l.add(ss[i].trim());
-
-                cv.setSupportedFormats(l);
-            }
-
-            // /////////////////////////////////////////////////////////////////////
-            //
-            // SUPPORTED INTERPOLATIONS
-            //
-            // /////////////////////////////////////////////////////////////////////
-            final Element supportedInterpolations = ReaderUtils.getChildElement(coverageRoot,
-                    "supportedInterpolations");
-            cv.setDefaultInterpolationMethod(ReaderUtils.getAttribute(
-                    supportedInterpolations, "default", true));
-
-            final String interpolations = ReaderUtils.getChildText(supportedInterpolations,
-                    "interpolationMethods");
-
-            if (interpolations != null) {
-                l = new LinkedList();
-                ss = interpolations.split(",");
-                length = ss.length;
-
-                for (i = 0; i < length; i++)
-                    l.add(ss[i].trim());
-
-                cv.setInterpolationMethods(l);
-            }
-
-            // /////////////////////////////////////////////////////////////////////
-            //
-            // READ PARAMETERS
-            //
-            // /////////////////////////////////////////////////////////////////////
-            cv.setParameters(XMLConfigReader.loadConnectionParams(
-                    ReaderUtils.getChildElement(coverageRoot, "parameters",
-                        false)));
-        } catch (Exception e) {
-            throw new ConfigurationException(e);
-        }
-
-        return cv;
     }
 }

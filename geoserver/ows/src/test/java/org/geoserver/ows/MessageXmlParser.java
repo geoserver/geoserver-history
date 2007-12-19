@@ -19,8 +19,7 @@ public class MessageXmlParser extends XmlRequestReader {
     }
 
     public Object read(Object request, Reader reader) throws Exception {
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance()
-                                                        .newDocumentBuilder();
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
         Document doc = builder.parse(new InputSource(reader));
         String message = doc.getDocumentElement().getAttribute("message");

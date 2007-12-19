@@ -62,8 +62,7 @@ public abstract class Response {
      *
      */
     public Response(Class binding, String outputFormat) {
-        this(binding,
-            (outputFormat == null) ? null : Collections.singleton(outputFormat));
+        this(binding, (outputFormat == null) ? null : Collections.singleton(outputFormat));
     }
 
     /**
@@ -174,6 +173,6 @@ public abstract class Response {
      * @throws IOException Any I/O errors that occur
      * @throws ServiceException Any service errors that occur
      */
-    public abstract void write(Object value, OutputStream output,
-        Operation operation) throws IOException, ServiceException;
+    public abstract void write(Object value, OutputStream output, Operation operation)
+        throws IOException, ServiceException;
 }

@@ -36,8 +36,7 @@ import java.util.Collection;
  *
  * @generated
  */
-public class InsertElementTypeImpl extends EObjectImpl
-    implements InsertElementType {
+public class InsertElementTypeImpl extends EObjectImpl implements InsertElementType {
     /**
      * The default value of the '{@link #getHandle() <em>Handle</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -225,8 +224,7 @@ public class InsertElementTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.INSERT_ELEMENT_TYPE__IDGEN, oldIdgen, idgen,
-                    !oldIdgenESet));
+                    WfsPackage.INSERT_ELEMENT_TYPE__IDGEN, oldIdgen, idgen, !oldIdgenESet));
         }
     }
 
@@ -243,8 +241,7 @@ public class InsertElementTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.UNSET,
-                    WfsPackage.INSERT_ELEMENT_TYPE__IDGEN, oldIdgen,
-                    IDGEN_EDEFAULT, oldIdgenESet));
+                    WfsPackage.INSERT_ELEMENT_TYPE__IDGEN, oldIdgen, IDGEN_EDEFAULT, oldIdgenESet));
         }
     }
 
@@ -280,8 +277,8 @@ public class InsertElementTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.INSERT_ELEMENT_TYPE__INPUT_FORMAT,
-                    oldInputFormat, inputFormat, !oldInputFormatESet));
+                    WfsPackage.INSERT_ELEMENT_TYPE__INPUT_FORMAT, oldInputFormat, inputFormat,
+                    !oldInputFormatESet));
         }
     }
 
@@ -298,8 +295,8 @@ public class InsertElementTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.UNSET,
-                    WfsPackage.INSERT_ELEMENT_TYPE__INPUT_FORMAT,
-                    oldInputFormat, INPUT_FORMAT_EDEFAULT, oldInputFormatESet));
+                    WfsPackage.INSERT_ELEMENT_TYPE__INPUT_FORMAT, oldInputFormat,
+                    INPUT_FORMAT_EDEFAULT, oldInputFormatESet));
         }
     }
 
@@ -332,8 +329,7 @@ public class InsertElementTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.INSERT_ELEMENT_TYPE__SRS_NAME, oldSrsName,
-                    srsName));
+                    WfsPackage.INSERT_ELEMENT_TYPE__SRS_NAME, oldSrsName, srsName));
         }
     }
 
@@ -447,8 +443,7 @@ public class InsertElementTypeImpl extends EObjectImpl
             return (feature != null) && !feature.isEmpty();
 
         case WfsPackage.INSERT_ELEMENT_TYPE__HANDLE:
-            return (HANDLE_EDEFAULT == null) ? (handle != null)
-                                             : (!HANDLE_EDEFAULT.equals(handle));
+            return (HANDLE_EDEFAULT == null) ? (handle != null) : (!HANDLE_EDEFAULT.equals(handle));
 
         case WfsPackage.INSERT_ELEMENT_TYPE__IDGEN:
             return isSetIdgen();

@@ -14,11 +14,9 @@ public class GetFeatureInfoTest extends WMSTestSupport {
      * @throws Exception
      */
     public void testSimple() throws Exception {
-        String layer = MockData.FORESTS.getPrefix() + ":"
-            + MockData.FORESTS.getLocalPart();
+        String layer = MockData.FORESTS.getPrefix() + ":" + MockData.FORESTS.getLocalPart();
         String request = "wms?bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg&info_format=text/plain&request=GetFeatureInfo&layers="
-            + layer + "&query_layers=" + layer
-            + "&width=20&height=20&x=10&y=10";
+            + layer + "&query_layers=" + layer + "&width=20&height=20&x=10&y=10";
         String result = getAsString(request);
         assertNotNull(result);
         assertTrue(result.indexOf("Green Forest") > 0);

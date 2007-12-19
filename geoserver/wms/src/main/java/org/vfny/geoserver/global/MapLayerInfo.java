@@ -174,8 +174,7 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
         } else {
             // using referenced envelope (experiment)
             return new ReferencedEnvelope(coverage.getEnvelope().getMinimum(0),
-                coverage.getEnvelope().getMaximum(0),
-                coverage.getEnvelope().getMinimum(1),
+                coverage.getEnvelope().getMaximum(0), coverage.getEnvelope().getMinimum(1),
                 coverage.getEnvelope().getMaximum(1), coverage.getCrs());
         }
     }
@@ -199,11 +198,10 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
             }
         } else {
             // using referenced envelope (experiment)
-            org.geotools.geometry.GeneralEnvelope ge = coverage
-                .getWGS84LonLatEnvelope();
+            org.geotools.geometry.GeneralEnvelope ge = coverage.getWGS84LonLatEnvelope();
 
-            return new Envelope(ge.getMinimum(0), ge.getMaximum(0),
-                ge.getMinimum(1), ge.getMaximum(1));
+            return new Envelope(ge.getMinimum(0), ge.getMaximum(0), ge.getMinimum(1),
+                ge.getMaximum(1));
         }
     }
 

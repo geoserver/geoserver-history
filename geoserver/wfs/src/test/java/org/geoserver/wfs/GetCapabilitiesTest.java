@@ -16,8 +16,7 @@ import java.util.TreeSet;
 public class GetCapabilitiesTest extends WFSTestSupport {
     public void testGet() throws Exception {
         Document doc = getAsDOM("wfs?service=WFS&request=getCapabilities");
-        assertEquals("wfs:WFS_Capabilities",
-            doc.getDocumentElement().getNodeName());
+        assertEquals("wfs:WFS_Capabilities", doc.getDocumentElement().getNodeName());
     }
 
     public void testPost() throws Exception {
@@ -32,8 +31,7 @@ public class GetCapabilitiesTest extends WFSTestSupport {
     }
 
     public void testOutputFormats() throws Exception {
-        Document doc = getAsDOM(
-                "wfs?service=WFS&request=getCapabilities&version=1.0.0");
+        Document doc = getAsDOM("wfs?service=WFS&request=getCapabilities&version=1.0.0");
 
         Element outputFormats = getFirstElementByTagName(doc, "ResultFormat");
         NodeList formats = outputFormats.getChildNodes();
@@ -50,8 +48,7 @@ public class GetCapabilitiesTest extends WFSTestSupport {
         TreeSet s2 = new TreeSet();
 
         for (Iterator e = extensions.iterator(); e.hasNext();) {
-            WFSGetFeatureOutputFormat extension = (WFSGetFeatureOutputFormat) e
-                .next();
+            WFSGetFeatureOutputFormat extension = (WFSGetFeatureOutputFormat) e.next();
             s2.add(extension.getCapabilitiesElementName());
         }
 

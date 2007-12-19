@@ -141,8 +141,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             try {
                 listener.changed();
             } catch (Throwable t) {
-                LOGGER.warning(
-                    "listener threw exception, turn logging to FINE to view stack trace");
+                LOGGER.warning("listener threw exception, turn logging to FINE to view stack trace");
                 LOGGER.log(Level.FINE, t.getLocalizedMessage(), t);
             }
         }
@@ -461,8 +460,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             logLocation = dto.getLogLocation();
 
             try {
-                configureGeoServerLogging(log4jConfigFile,
-                    suppressStdOutLogging, logLocation);
+                configureGeoServerLogging(log4jConfigFile, suppressStdOutLogging, logLocation);
             } catch (IOException ioe) {
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.log(Level.FINE, "", ioe);
@@ -493,8 +491,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             adminPassword = dto.getAdminPassword();
             verboseExceptions = dto.isVerboseExceptions();
         } else {
-            throw new ConfigurationException(
-                "load(GeoServerDTO) expected a non-null value");
+            throw new ConfigurationException("load(GeoServerDTO) expected a non-null value");
         }
     }
 
@@ -586,12 +583,10 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
                 return false;
             }
 
-            String loggingSystem = (String) clprops.get(
-                    "org.apache.commons.logging.Log");
+            String loggingSystem = (String) clprops.get("org.apache.commons.logging.Log");
 
             if (loggingSystem.indexOf("Log4JLogger") == -1) {
-                LOGGER.warning(
-                    "Non Log4JLogger commons-logging.properties detected: "
+                LOGGER.warning("Non Log4JLogger commons-logging.properties detected: "
                     + loggingSystem);
 
                 return false;
@@ -601,8 +596,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             //So geoserver can definitely control the logging setup.
             return true;
         } catch (IOException ioe) {
-            LOGGER.warning(
-                "Error figuring out GeoServer logging configuration: " + ioe);
+            LOGGER.warning("Error figuring out GeoServer logging configuration: " + ioe);
 
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.log(Level.FINE, "", ioe);
@@ -636,8 +630,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
                 "No log4jConfigFile defined in services.xml:  using 'DEFAULT_LOGGING.properties'");
         }
 
-        File log4jConfigFile = GeoserverDataDirectory.findConfigFile("logs"
-                + File.separator + log4jConfigFileStr);
+        File log4jConfigFile = GeoserverDataDirectory.findConfigFile("logs" + File.separator
+                + log4jConfigFileStr);
 
         if (log4jConfigFile == null) {
             //hmm, well, we don't have a log4j config file and this could be due to the fact
@@ -654,8 +648,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             //now we copy in the various logging config files from the base repo location on the classpath
             final String[] lcfiles = new String[] {
                     "DEFAULT_LOGGING.properties", "VERBOSE_LOGGING.properties",
-                    "PRODUCTION_LOGGING.properties",
-                    "GEOTOOLS_DEVELOPER_LOGGING.properties",
+                    "PRODUCTION_LOGGING.properties", "GEOTOOLS_DEVELOPER_LOGGING.properties",
                     "GEOSERVER_DEVELOPER_LOGGING.properties"
                 };
 
@@ -669,23 +662,21 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
 
             //ok, the possibly-new 'logs' directory is in-place, with all the various configs there.
             // Is the originally configured log4jconfigfile there now?
-            log4jConfigFile = GeoserverDataDirectory.findConfigFile("logs"
-                    + File.separator + log4jConfigFileStr);
+            log4jConfigFile = GeoserverDataDirectory.findConfigFile("logs" + File.separator
+                    + log4jConfigFileStr);
 
             if (log4jConfigFile == null) {
-                LOGGER.warning("Still couldn't find log4jConfigFile '"
-                    + log4jConfigFileStr
+                LOGGER.warning("Still couldn't find log4jConfigFile '" + log4jConfigFileStr
                     + "'.  Using DEFAULT_LOGGING.properties instead.");
             }
 
-            log4jConfigFile = GeoserverDataDirectory.findConfigFile("logs"
-                    + File.separator + "DEFAULT_LOGGING.properties");
+            log4jConfigFile = GeoserverDataDirectory.findConfigFile("logs" + File.separator
+                    + "DEFAULT_LOGGING.properties");
         }
 
         if (log4jConfigFile == null) {
-            throw new ConfigurationException(
-                "Unable to load logging configuration '" + log4jConfigFileStr
-                + "'.  In addition, an attempt "
+            throw new ConfigurationException("Unable to load logging configuration '"
+                + log4jConfigFileStr + "'.  In addition, an attempt "
                 + "was made to create the 'logs' directory in your data dir, and to use the DEFAULT_LOGGING configuration, but"
                 + "this failed as well.  Is your data dir writeable?");
         }
@@ -693,13 +684,12 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         InputStream loggingConfigStream = new FileInputStream(log4jConfigFile);
 
         if (loggingConfigStream == null) {
-            LOGGER.warning("Couldn't find Log4J configuration file '"
-                + log4jConfigFileStr + "' in the 'loggingConfigs' directory.");
+            LOGGER.warning("Couldn't find Log4J configuration file '" + log4jConfigFileStr
+                + "' in the 'loggingConfigs' directory.");
 
             return;
         } else {
-            LOGGER.fine("GeoServer logging profile '"
-                + log4jConfigFile.getName() + "' enabled.");
+            LOGGER.fine("GeoServer logging profile '" + log4jConfigFile.getName() + "' enabled.");
         }
 
         //We've got two levels of logging going on here, and two 'gating' systems, as well.  Java logging is used
@@ -720,10 +710,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         // Here's step 1.
         for (Iterator i = sortedCategories.iterator(); i.hasNext();) {
             String curCategory = (String) i.next();
-            String logLevel = lprops.getProperty("log4j.category."
-                    + curCategory);
-            Logger.getLogger(curCategory)
-                  .setLevel(log4JLevelToJDKLoggingLevel(logLevel));
+            String logLevel = lprops.getProperty("log4j.category." + curCategory);
+            Logger.getLogger(curCategory).setLevel(log4JLevelToJDKLoggingLevel(logLevel));
             //TODO: reset log level to fine
             LOGGER.fine("set logger '" + curCategory + "' to level '"
                 + log4JLevelToJDKLoggingLevel(logLevel).getLocalizedName()
@@ -742,21 +730,17 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
 
                 if (curLName.startsWith(curCat)) {
                     //this is the best-matching category from log4j for this Java Logging category.
-                    String logLevel = lprops.getProperty("log4j.category."
-                            + curCat);
-                    Logger.getLogger(curLName)
-                          .setLevel(log4JLevelToJDKLoggingLevel(logLevel));
+                    String logLevel = lprops.getProperty("log4j.category." + curCat);
+                    Logger.getLogger(curLName).setLevel(log4JLevelToJDKLoggingLevel(logLevel));
                     //TODO: reset log level to fine
                     LOGGER.fine("set java logger '" + curLName + "' to level '"
-                        + log4JLevelToJDKLoggingLevel(logLevel)
-                              .getLocalizedName()
+                        + log4JLevelToJDKLoggingLevel(logLevel).getLocalizedName()
                         + "', figured from log4j level '" + logLevel + "'");
                 }
             }
         }
 
-        Appender gslf = org.apache.log4j.Logger.getRootLogger()
-                                               .getAppender("geoserverlogfile");
+        Appender gslf = org.apache.log4j.Logger.getRootLogger().getAppender("geoserverlogfile");
 
         if (gslf != null) {
             //clear out previous configuration
@@ -764,35 +748,28 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         }
 
         // reset logging for geotools and geoserver.
-        org.apache.log4j.Logger.getLogger("org.geotools").getLoggerRepository()
-                               .resetConfiguration();
-        org.apache.log4j.Logger.getLogger("org.geoserver").getLoggerRepository()
-                               .resetConfiguration();
-        org.apache.log4j.Logger.getLogger("org.vfny").getLoggerRepository()
-                               .resetConfiguration();
+        org.apache.log4j.Logger.getLogger("org.geotools").getLoggerRepository().resetConfiguration();
+        org.apache.log4j.Logger.getLogger("org.geoserver").getLoggerRepository().resetConfiguration();
+        org.apache.log4j.Logger.getLogger("org.vfny").getLoggerRepository().resetConfiguration();
 
         PropertyConfigurator.configure(lprops);
 
-        gslf = org.apache.log4j.Logger.getRootLogger()
-                                      .getAppender("geoserverlogfile");
+        gslf = org.apache.log4j.Logger.getRootLogger().getAppender("geoserverlogfile");
 
         if (gslf instanceof org.apache.log4j.RollingFileAppender) {
             if (logFileName == null) {
-                logFileName = new File(GeoserverDataDirectory
-                        .findCreateConfigDir("logs"), "geoserver.log")
-                    .getAbsolutePath();
+                logFileName = new File(GeoserverDataDirectory.findCreateConfigDir("logs"),
+                        "geoserver.log").getAbsolutePath();
             } else {
                 if (!new File(logFileName).isAbsolute()) {
-                    logFileName = new File(GeoserverDataDirectory
-                            .getGeoserverDataDirectory(), logFileName)
-                        .getAbsolutePath();
+                    logFileName = new File(GeoserverDataDirectory.getGeoserverDataDirectory(),
+                            logFileName).getAbsolutePath();
                     LOGGER.fine(
                         "Non-absolute pathname detected for logfile.  Setting logfile relative to data dir.");
                 }
             }
 
-            lprops.setProperty("log4j.appender.geoserverlogfile.File",
-                logFileName);
+            lprops.setProperty("log4j.appender.geoserverlogfile.File", logFileName);
             PropertyConfigurator.configure(lprops);
             LOGGER.fine("Logging output to file '" + logFileName + "'");
         } else if (gslf != null) {
@@ -808,25 +785,21 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
                 "Suppressing StdOut logging.  If you want to see GeoServer logs, be sure to look in '"
                 + logFileName + "'");
 
-            Enumeration allAppenders = org.apache.log4j.Logger.getRootLogger()
-                                                              .getAllAppenders();
+            Enumeration allAppenders = org.apache.log4j.Logger.getRootLogger().getAllAppenders();
             Appender curApp;
 
             while (allAppenders.hasMoreElements()) {
                 curApp = (Appender) allAppenders.nextElement();
 
                 if (curApp instanceof org.apache.log4j.ConsoleAppender) {
-                    org.apache.log4j.Logger.getRootLogger()
-                                           .removeAppender(curApp);
+                    org.apache.log4j.Logger.getRootLogger().removeAppender(curApp);
                 }
             }
         } else {
-            LOGGER.info("StdOut logging enabled.  Log file also output to '"
-                + logFileName + "'");
+            LOGGER.info("StdOut logging enabled.  Log file also output to '" + logFileName + "'");
         }
 
-        LOGGER.fine(
-            "FINISHED CONFIGURING GEOSERVER LOGGING -------------------------");
+        LOGGER.fine("FINISHED CONFIGURING GEOSERVER LOGGING -------------------------");
     }
 
     private static void copyResourceToFile(String resource, File target) {
@@ -836,15 +809,13 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         int read;
 
         try {
-            is = Thread.currentThread().getContextClassLoader()
-                       .getResourceAsStream(resource);
+            is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
             os = new FileOutputStream(target);
 
             while ((read = is.read(buffer)) > 0)
                 os.write(buffer, 0, read);
         } catch (Exception e) {
-            LOGGER.log(Level.WARNING,
-                "Error trying to copy logging configuration file", e);
+            LOGGER.log(Level.WARNING, "Error trying to copy logging configuration file", e);
         } finally {
             try {
                 is.close();
@@ -870,16 +841,14 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             return Level.CONFIG;
         } else if (log4jLevel.equalsIgnoreCase("INFO")) {
             return Level.INFO;
-        } else if (log4jLevel.equalsIgnoreCase("WARN")
-                || log4jLevel.equalsIgnoreCase("ERROR")) {
+        } else if (log4jLevel.equalsIgnoreCase("WARN") || log4jLevel.equalsIgnoreCase("ERROR")) {
             return Level.WARNING;
         } else if (log4jLevel.equalsIgnoreCase("FATAL")) {
             return Level.SEVERE;
         } else if (log4jLevel.equalsIgnoreCase("OFF")) {
             return Level.OFF;
         } else {
-            LOGGER.warning("Can't figure out what sort of Log4j log level '"
-                + log4jLevel + "' is.");
+            LOGGER.warning("Can't figure out what sort of Log4j log level '" + log4jLevel + "' is.");
 
             return Level.ALL;
         }
@@ -1041,13 +1010,11 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             return getContactPerson(); // ie Chris Holmes 
         }
 
-        if ((getContactPosition() != null)
-                && (getContactPosition().length() != 0)) {
+        if ((getContactPosition() != null) && (getContactPosition().length() != 0)) {
             return getContactPosition(); // ie Lead Developer 
         }
 
-        if ((getContactOrganization() != null)
-                && (getContactOrganization().length() != 0)) {
+        if ((getContactOrganization() != null) && (getContactOrganization().length() != 0)) {
             return getContactOrganization(); // ie TOPP 
         }
 
@@ -1217,21 +1184,17 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
            HACK: we must get a standard API way for releasing resources...
          */
         try {
-            Class sdepfClass = Class.forName(
-                    "org.geotools.arcsde.pool.ArcSDEConnectionPoolFactory");
+            Class sdepfClass = Class.forName("org.geotools.arcsde.pool.ArcSDEConnectionPoolFactory");
 
             LOGGER.fine("SDE datasource found, releasing resources");
 
-            java.lang.reflect.Method m = sdepfClass.getMethod("getInstance",
-                    new Class[0]);
+            java.lang.reflect.Method m = sdepfClass.getMethod("getInstance", new Class[0]);
             Object pfInstance = m.invoke(sdepfClass, new Object[0]);
 
-            LOGGER.fine("got sde connection pool factory instance: "
-                + pfInstance);
+            LOGGER.fine("got sde connection pool factory instance: " + pfInstance);
 
             java.lang.reflect.Method closeMethod = pfInstance.getClass()
-                                                             .getMethod("clear",
-                    new Class[0]);
+                                                             .getMethod("clear", new Class[0]);
 
             closeMethod.invoke(pfInstance, new Object[0]);
             LOGGER.info("Asking ArcSDE datasource to release connections.");

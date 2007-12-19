@@ -39,10 +39,8 @@ import javax.media.jai.InterpolationNearest;
  *
  */
 public class WCSUtils {
-    private final static Hints LENIENT_HINT = new Hints(Hints.LENIENT_DATUM_SHIFT,
-            Boolean.TRUE);
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.util");
+    private final static Hints LENIENT_HINT = new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.util");
     private final static SelectSampleDimension bandSelectFactory = new SelectSampleDimension();
     private final static Crop cropFactory = new Crop();
     private final static Interpolate interpolateFactory = new Interpolate();
@@ -57,14 +55,12 @@ public class WCSUtils {
         //
         // ///////////////////////////////////////////////////////////////////
         final DefaultProcessor processor = new DefaultProcessor(LENIENT_HINT);
-        bandSelectParams = processor.getOperation("SelectSampleDimension")
-                                    .getParameters();
+        bandSelectParams = processor.getOperation("SelectSampleDimension").getParameters();
         cropParams = processor.getOperation("CoverageCrop").getParameters();
         interpolateParams = processor.getOperation("Interpolate").getParameters();
         scaleParams = processor.getOperation("Scale").getParameters();
         resampleParams = processor.getOperation("Resample").getParameters();
-        filteredSubsampleParams = processor.getOperation("FilteredSubsample")
-                                           .getParameters();
+        filteredSubsampleParams = processor.getOperation("FilteredSubsample").getParameters();
     }
 
     private final static ParameterValueGroup bandSelectParams;
@@ -96,8 +92,7 @@ public class WCSUtils {
      * @throws WcsException
      */
     public static GridCoverage2D reproject(GridCoverage2D coverage,
-        final CoordinateReferenceSystem sourceCRS,
-        final CoordinateReferenceSystem targetCRS,
+        final CoordinateReferenceSystem sourceCRS, final CoordinateReferenceSystem targetCRS,
         final Interpolation interpolation) throws WcsException {
         // ///////////////////////////////////////////////////////////////////
         //
@@ -110,8 +105,7 @@ public class WCSUtils {
              * Operations.DEFAULT.resample( coverage, targetCRS, null,
              * Interpolation.getInstance(Interpolation.INTERP_NEAREST))
              */
-            final ParameterValueGroup param = (ParameterValueGroup) resampleParams
-                .clone();
+            final ParameterValueGroup param = (ParameterValueGroup) resampleParams.clone();
             param.parameter("Source").setValue(coverage);
             param.parameter("CoordinateReferenceSystem").setValue(targetCRS);
             param.parameter("GridGeometry").setValue(null);
@@ -149,13 +143,11 @@ public class WCSUtils {
         // ///////////////////////////////////////////////////////////////////
         if (interpolation != null) {
             /* Operations.DEFAULT.interpolate(coverage, interpolation) */
-            final ParameterValueGroup param = (ParameterValueGroup) interpolateParams
-                .clone();
+            final ParameterValueGroup param = (ParameterValueGroup) interpolateParams.clone();
             param.parameter("Source").setValue(coverage);
             param.parameter("Type").setValue(interpolation);
 
-            coverage = (GridCoverage2D) interpolateFactory.doOperation(param,
-                    hints);
+            coverage = (GridCoverage2D) interpolateFactory.doOperation(param, hints);
         }
 
         return coverage;
@@ -178,9 +170,8 @@ public class WCSUtils {
      * @param destinationEnvelopeInSourceCRS
      * @return GridCoverage2D
      */
-    public static GridCoverage2D scale(final GridCoverage2D coverage,
-        final GridRange newGridRange, final GridCoverage sourceCoverage,
-        final CoordinateReferenceSystem sourceCRS,
+    public static GridCoverage2D scale(final GridCoverage2D coverage, final GridRange newGridRange,
+        final GridCoverage sourceCoverage, final CoordinateReferenceSystem sourceCRS,
         final GeneralEnvelope destinationEnvelopeInSourceCRS) {
         // ///////////////////////////////////////////////////////////////////
         //
@@ -191,23 +182,22 @@ public class WCSUtils {
         //
         // ///////////////////////////////////////////////////////////////////
         GridGeometry2D scaledGridGeometry = new GridGeometry2D(newGridRange,
-                (destinationEnvelopeInSourceCRS != null)
-                ? destinationEnvelopeInSourceCRS : sourceCoverage.getEnvelope());
+                (destinationEnvelopeInSourceCRS != null) ? destinationEnvelopeInSourceCRS
+                                                         : sourceCoverage.getEnvelope());
 
         /*
          * Operations.DEFAULT.resample( coverage, sourceCRS, scaledGridGeometry,
          * Interpolation.getInstance(Interpolation.INTERP_NEAREST));
          */
-        final ParameterValueGroup param = (ParameterValueGroup) resampleParams
-            .clone();
+        final ParameterValueGroup param = (ParameterValueGroup) resampleParams.clone();
         param.parameter("Source").setValue(coverage);
         param.parameter("CoordinateReferenceSystem").setValue(sourceCRS);
         param.parameter("GridGeometry").setValue(scaledGridGeometry);
         param.parameter("InterpolationType")
              .setValue(Interpolation.getInstance(Interpolation.INTERP_NEAREST));
 
-        final GridCoverage2D scaledGridCoverage = (GridCoverage2D) resampleFactory
-            .doOperation(param, hints);
+        final GridCoverage2D scaledGridCoverage = (GridCoverage2D) resampleFactory.doOperation(param,
+                hints);
 
         return scaledGridCoverage;
     }
@@ -224,12 +214,10 @@ public class WCSUtils {
      * @param gc
      * @return
      */
-    public static GridCoverage2D scale(final double scaleX,
-        final double scaleY, float xTrans, float yTrans,
-        final Interpolation interpolation, final BorderExtender be,
+    public static GridCoverage2D scale(final double scaleX, final double scaleY, float xTrans,
+        float yTrans, final Interpolation interpolation, final BorderExtender be,
         final GridCoverage2D gc) {
-        final ParameterValueGroup param = (ParameterValueGroup) scaleParams
-            .clone();
+        final ParameterValueGroup param = (ParameterValueGroup) scaleParams.clone();
         param.parameter("source").setValue(gc);
         param.parameter("xScale").setValue(new Float(scaleX));
         param.parameter("yScale").setValue(new Float(scaleY));
@@ -249,10 +237,9 @@ public class WCSUtils {
      * @param interpolation
      * @return
      */
-    public static GridCoverage2D resample(final GridCoverage2D gc,
-        CoordinateReferenceSystem crs, final Interpolation interpolation) {
-        final ParameterValueGroup param = (ParameterValueGroup) resampleParams
-            .clone();
+    public static GridCoverage2D resample(final GridCoverage2D gc, CoordinateReferenceSystem crs,
+        final Interpolation interpolation) {
+        final ParameterValueGroup param = (ParameterValueGroup) resampleParams.clone();
         param.parameter("source").setValue(gc);
         param.parameter("CoordinateReferenceSystem").setValue(crs);
         param.parameter("InterpolationType").setValue(interpolation);
@@ -271,16 +258,14 @@ public class WCSUtils {
      * @param be
      * @return
      */
-    public static GridCoverage2D filteredSubsample(final GridCoverage2D gc,
-        int scaleXInt, int scaleYInt, final Interpolation interpolation,
-        final BorderExtender be) {
+    public static GridCoverage2D filteredSubsample(final GridCoverage2D gc, int scaleXInt,
+        int scaleYInt, final Interpolation interpolation, final BorderExtender be) {
         final GridCoverage2D preScaledGridCoverage;
 
         if ((scaleXInt == 1) && (scaleYInt == 1)) {
             preScaledGridCoverage = gc;
         } else {
-            final ParameterValueGroup param = (ParameterValueGroup) filteredSubsampleParams
-                .clone();
+            final ParameterValueGroup param = (ParameterValueGroup) filteredSubsampleParams.clone();
             param.parameter("source").setValue(gc);
             param.parameter("scaleX").setValue(new Integer(scaleXInt));
             param.parameter("scaleY").setValue(new Integer(scaleYInt));
@@ -289,15 +274,13 @@ public class WCSUtils {
                 param.parameter("qsFilterArray").setValue(new float[] { 1.0F });
             } else {
                 param.parameter("qsFilterArray")
-                     .setValue(new float[] {
-                        0.5F, 1.0F / 3.0F, 0.0F, -1.0F / 12.0F
-                    });
+                     .setValue(new float[] { 0.5F, 1.0F / 3.0F, 0.0F, -1.0F / 12.0F });
             }
 
             param.parameter("Interpolation").setValue(interpolation);
             param.parameter("BorderExtender").setValue(be);
-            preScaledGridCoverage = (GridCoverage2D) filteredSubsampleFactory
-                .doOperation(param, hints);
+            preScaledGridCoverage = (GridCoverage2D) filteredSubsampleFactory.doOperation(param,
+                    hints);
         }
 
         return preScaledGridCoverage;
@@ -320,10 +303,9 @@ public class WCSUtils {
      * @throws WcsException
      */
     public static GridCoverage2D crop(final Coverage coverage,
-        final GeneralEnvelope sourceEnvelope,
-        final CoordinateReferenceSystem sourceCRS,
-        final GeneralEnvelope destinationEnvelopeInSourceCRS,
-        final Boolean conserveEnvelope) throws WcsException {
+        final GeneralEnvelope sourceEnvelope, final CoordinateReferenceSystem sourceCRS,
+        final GeneralEnvelope destinationEnvelopeInSourceCRS, final Boolean conserveEnvelope)
+        throws WcsException {
         // ///////////////////////////////////////////////////////////////////
         //
         // CROP
@@ -339,8 +321,7 @@ public class WCSUtils {
 
         // dow we have something to show?
         if (intersectionEnvelope.isEmpty()) {
-            throw new WcsException(
-                "The Intersection is null. Check the requested BBOX!");
+            throw new WcsException("The Intersection is null. Check the requested BBOX!");
         }
 
         if (!intersectionEnvelope.equals((GeneralEnvelope) sourceEnvelope)) {
@@ -349,14 +330,12 @@ public class WCSUtils {
             // intersectionEnvelope, gridCoverage);
 
             /* Operations.DEFAULT.crop(coverage, intersectionEnvelope) */
-            final ParameterValueGroup param = (ParameterValueGroup) cropParams
-                .clone();
+            final ParameterValueGroup param = (ParameterValueGroup) cropParams.clone();
             param.parameter("Source").setValue(coverage);
             param.parameter("Envelope").setValue(intersectionEnvelope);
             param.parameter("ConserveEnvelope").setValue(conserveEnvelope);
 
-            croppedGridCoverage = (GridCoverage2D) cropFactory.doOperation(param,
-                    hints);
+            croppedGridCoverage = (GridCoverage2D) cropFactory.doOperation(param, hints);
         } else {
             croppedGridCoverage = (GridCoverage2D) coverage;
         }
@@ -390,8 +369,8 @@ public class WCSUtils {
      * @return Coverage
      * @throws WcsException
      */
-    public static Coverage bandSelect(final Map params,
-        final GridCoverage coverage) throws WcsException {
+    public static Coverage bandSelect(final Map params, final GridCoverage coverage)
+        throws WcsException {
         // ///////////////////////////////////////////////////////////////////
         //
         // BAND SELECT
@@ -416,10 +395,8 @@ public class WCSUtils {
 
                         if (values.indexOf("/") > 0) {
                             final String[] minMaxRes = values.split("/");
-                            final int min = (int) Math.round(Double.parseDouble(
-                                        minMaxRes[0]));
-                            final int max = (int) Math.round(Double.parseDouble(
-                                        minMaxRes[1]));
+                            final int min = (int) Math.round(Double.parseDouble(minMaxRes[0]));
+                            final int max = (int) Math.round(Double.parseDouble(minMaxRes[1]));
                             final double res = ((minMaxRes.length > 2)
                                 ? Double.parseDouble(minMaxRes[2]) : 0.0);
 
@@ -434,8 +411,7 @@ public class WCSUtils {
                             final String[] bands = values.split(",");
 
                             for (int v = 0; v < bands.length; v++) {
-                                final String key = param.toLowerCase()
-                                    + bands[v];
+                                final String key = param.toLowerCase() + bands[v];
 
                                 if (dims.containsKey(key)) {
                                     selectedBands.add(dims.get(key));
@@ -447,8 +423,7 @@ public class WCSUtils {
                             }
                         }
                     } catch (Exception e) {
-                        throw new WcsException(
-                            "Band parameters incorrectly specified: "
+                        throw new WcsException("Band parameters incorrectly specified: "
                             + e.getLocalizedMessage());
                     }
                 }
@@ -466,8 +441,7 @@ public class WCSUtils {
 
         if ((bands != null) && (bands.length > 0)) {
             /* Operations.DEFAULT.selectSampleDimension(coverage, bands) */
-            final ParameterValueGroup param = (ParameterValueGroup) bandSelectParams
-                .clone();
+            final ParameterValueGroup param = (ParameterValueGroup) bandSelectParams.clone();
             param.parameter("Source").setValue(coverage);
             param.parameter("SampleDimensions").setValue(bands);
             // param.parameter("VisibleSampleDimension").setValue(bands);

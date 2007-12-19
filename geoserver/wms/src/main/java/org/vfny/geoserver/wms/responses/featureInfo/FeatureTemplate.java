@@ -42,7 +42,7 @@ import java.util.Map;
  * </code>
  * </pre>
  * </p>
- * For performance reasons the template lookups will be cached, so it's advised to 
+ * For performance reasons the template lookups will be cached, so it's advised to
  * use the same FeatureTemplate object in a loop that encodes various features, but not
  * to cache it for a long time (static reference).
  * Moreover, FeatureTemplate is not thread safe, so instantiate one for each thread.
@@ -61,39 +61,41 @@ public class FeatureTemplate {
         // over instantiations of kml writer
         templateConfig = new Configuration();
         templateConfig.setObjectWrapper(new FeatureWrapper());
-        
+
         //set the default output formats for dates
         templateConfig.setDateFormat("MM/dd/yyyy");
         templateConfig.setDateTimeFormat("MM/dd/yyyy HH:mm:ss");
         templateConfig.setTimeFormat("HH:mm:ss");
-        
+
         //set the default locale to be US and the 
         //TODO: this may be somethign we want to configure/change
         templateConfig.setLocale(Locale.US);
         templateConfig.setNumberFormat("0.###########");
     }
-    
+
     /**
      * Default date format produced by templates
      */
     public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yy");
+
     /**
      * Default datetime format produced by templates
      */
     public static SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
+
     /**
      * Default time format produced by templates
      */
     public static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
-    
+
     /**
      * Template cache used to avoid paying the cost of template lookup for each feature
      */
     Map templateCache = new HashMap();
-    
+
     /**
      * Cached writer used for plain conversion from Feature to String. Improves performance
-     * significantly compared to an OutputStreamWriter over a ByteOutputStream. 
+     * significantly compared to an OutputStreamWriter over a ByteOutputStream.
      */
     CharArrayWriter caw = new CharArrayWriter();
 
@@ -147,7 +149,7 @@ public class FeatureTemplate {
      * @throws IOException Any errors that occur during execution of the template.
      */
     public void title(Feature feature, Writer writer) throws IOException {
-        execute(feature, feature.getFeatureType(), writer, "title.ftl",null);
+        execute(feature, feature.getFeatureType(), writer, "title.ftl", null);
     }
 
     /**
@@ -161,7 +163,7 @@ public class FeatureTemplate {
      */
     public void description(Feature feature, Writer writer)
         throws IOException {
-        execute(feature, feature.getFeatureType(), writer, "description.ftl",null);
+        execute(feature, feature.getFeatureType(), writer, "description.ftl", null);
     }
 
     /**
@@ -197,69 +199,71 @@ public class FeatureTemplate {
     /**
      * Executes a template for the feature writing the results to a writer.
      * <p>
-     * The template to execute is secified via the <tt>template</tt>, and 
-     * <tt>lookup</tt> parameters. The <tt>lookup</tt> is used to specify the 
-     * class from which <tt>template</tt> shoould be loaded relative to in teh 
+     * The template to execute is secified via the <tt>template</tt>, and
+     * <tt>lookup</tt> parameters. The <tt>lookup</tt> is used to specify the
+     * class from which <tt>template</tt> shoould be loaded relative to in teh
      * case where the user has not specified an override in the data directory.
      * </p>
      * @param feature The feature to execute the template against.
      * @param writer The writer for output.
      * @param template The template name.
      * @param lookup The class to lookup the template relative to.
-     * 
+     *
      */
     public void template(Feature feature, Writer writer, String template, Class lookup)
         throws IOException {
-        execute(feature,feature.getFeatureType(),writer,template,lookup);
+        execute(feature, feature.getFeatureType(), writer, template, lookup);
     }
-    
+
     /**
      * Executes a template for the feature writing the results to an output stream.
      * <p>
-     * The template to execute is secified via the <tt>template</tt>, and 
-     * <tt>lookup</tt> parameters. The <tt>lookup</tt> is used to specify the 
-     * class from which <tt>template</tt> shoould be loaded relative to in teh 
+     * The template to execute is secified via the <tt>template</tt>, and
+     * <tt>lookup</tt> parameters. The <tt>lookup</tt> is used to specify the
+     * class from which <tt>template</tt> shoould be loaded relative to in teh
      * case where the user has not specified an override in the data directory.
      * </p>
      * @param feature The feature to execute the template against.
      * @param output The output.
      * @param template The template name.
      * @param lookup The class to lookup the template relative to.
-     * 
+     *
      */
     public void template(Feature feature, OutputStream output, String template, Class lookup)
         throws IOException {
-        template( feature, new OutputStreamWriter( output ), template, lookup );
+        template(feature, new OutputStreamWriter(output), template, lookup);
     }
-    
+
     /**
      * Executes a template for the feature returning the result as a string.
      * <p>
-     * The template to execute is secified via the <tt>template</tt>, and 
-     * <tt>lookup</tt> parameters. The <tt>lookup</tt> is used to specify the 
-     * class from which <tt>template</tt> shoould be loaded relative to in teh 
+     * The template to execute is secified via the <tt>template</tt>, and
+     * <tt>lookup</tt> parameters. The <tt>lookup</tt> is used to specify the
+     * class from which <tt>template</tt> shoould be loaded relative to in teh
      * case where the user has not specified an override in the data directory.
      * </p>
      * @param feature The feature to execute the template against.
      * @param template The template name.
      * @param lookup The class to lookup the template relative to.
-     * 
+     *
      */
-    public String template(Feature feature, String template, Class lookup) throws IOException {
+    public String template(Feature feature, String template, Class lookup)
+        throws IOException {
         caw.reset();
-        template(feature,caw,template,lookup);
+        template(feature, caw, template, lookup);
+
         return caw.toString();
     }
-    
+
     /*
      * Internal helper method to exceute the template against feature or
      * feature collection.
      */
-    private void execute(Object feature, FeatureType featureType, Writer writer, String template,Class lookup)
-        throws IOException {
+    private void execute(Object feature, FeatureType featureType, Writer writer, String template,
+        Class lookup) throws IOException {
         Template t = null;
-        
-        t = lookupTemplate(featureType, template,lookup);
+
+        t = lookupTemplate(featureType, template, lookup);
 
         try {
             t.process(feature, writer);
@@ -274,18 +278,21 @@ public class FeatureTemplate {
      * expensive, so we cache templates by feture type and template.
      *
      */
-    private Template lookupTemplate(FeatureType featureType, String template, Class lookup) throws IOException {
+    private Template lookupTemplate(FeatureType featureType, String template, Class lookup)
+        throws IOException {
         Template t;
-        
+
         // lookup the cache first
         TemplateKey key = new TemplateKey(featureType, template);
         t = (Template) templateCache.get(key);
-        if(t != null)
+
+        if (t != null) {
             return t;
-        
+        }
+
         // otherwise, build a loader and do the lookup
-        GeoServerTemplateLoader templateLoader = 
-            new GeoServerTemplateLoader(lookup!=null?lookup:getClass());
+        GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader((lookup != null)
+                ? lookup : getClass());
         templateLoader.setFeatureType(featureType);
 
         //Configuration is not thread safe
@@ -294,45 +301,62 @@ public class FeatureTemplate {
             t = templateConfig.getTemplate(template);
             t.setEncoding("UTF-8");
         }
+
         templateCache.put(key, t);
+
         return t;
     }
-    
+
     private static class TemplateKey {
         FeatureType type;
         String template;
+
         public TemplateKey(FeatureType type, String template) {
             super();
             this.type = type;
             this.template = template;
         }
-        
+
         public int hashCode() {
             final int PRIME = 31;
             int result = 1;
-            result = PRIME * result + ((template == null) ? 0 : template.hashCode());
-            result = PRIME * result + ((type == null) ? 0 : type.hashCode());
+            result = (PRIME * result) + ((template == null) ? 0 : template.hashCode());
+            result = (PRIME * result) + ((type == null) ? 0 : type.hashCode());
+
             return result;
         }
-        
+
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+
+            if (getClass() != obj.getClass()) {
                 return false;
+            }
+
             final TemplateKey other = (TemplateKey) obj;
+
             if (template == null) {
-                if (other.template != null)
+                if (other.template != null) {
                     return false;
-            } else if (!template.equals(other.template))
+                }
+            } else if (!template.equals(other.template)) {
                 return false;
+            }
+
             if (type == null) {
-                if (other.type != null)
+                if (other.type != null) {
                     return false;
-            } else if (!type.equals(other.type))
+                }
+            } else if (!type.equals(other.type)) {
                 return false;
+            }
+
             return true;
         }
     }

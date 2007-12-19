@@ -22,12 +22,9 @@ public final class WFSVBindingConfiguration extends WFSBindingConfiguration {
         //Types
         container.registerComponentImplementation(WFSV.DifferenceQueryType,
             DifferenceQueryTypeBinding.class);
-        container.registerComponentImplementation(WFSV.GetDiffType,
-            GetDiffTypeBinding.class);
-        container.registerComponentImplementation(WFSV.GetLogType,
-            GetLogTypeBinding.class);
-        container.registerComponentImplementation(WFSV.RollbackType,
-            RollbackTypeBinding.class);
+        container.registerComponentImplementation(WFSV.GetDiffType, GetDiffTypeBinding.class);
+        container.registerComponentImplementation(WFSV.GetLogType, GetLogTypeBinding.class);
+        container.registerComponentImplementation(WFSV.RollbackType, RollbackTypeBinding.class);
         container.registerComponentImplementation(WFSV.VersionedDeleteElementType,
             VersionedDeleteElementTypeBinding.class);
         container.registerComponentImplementation(WFSV.VersionedUpdateElementType,

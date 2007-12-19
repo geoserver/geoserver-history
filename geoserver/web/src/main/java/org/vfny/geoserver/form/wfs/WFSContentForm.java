@@ -177,20 +177,16 @@ public class WFSContentForm extends ActionForm {
         }
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if ((serviceLevel != WFSDTO.BASIC)
-                && (serviceLevel != WFSDTO.TRANSACTIONAL)
+        if ((serviceLevel != WFSDTO.BASIC) && (serviceLevel != WFSDTO.TRANSACTIONAL)
                 && (serviceLevel != WFSDTO.COMPLETE)) {
-            errors.add("serviceLevel",
-                new ActionError("error.serviceLevel.invalid"));
+            errors.add("serviceLevel", new ActionError("error.serviceLevel.invalid"));
         }
 
         if ((onlineResource == null) || onlineResource.equals("")) {
-            errors.add("onlineResource",
-                new ActionError("error.wfs.onlineResource.required"));
+            errors.add("onlineResource", new ActionError("error.wfs.onlineResource.required"));
         } else {
             try {
                 URL url = new URL(onlineResource);

@@ -174,8 +174,8 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
             return createUpdateSequenceTypeFromString(eDataType, initialValue);
 
         default:
-            throw new IllegalArgumentException("The datatype '"
-                + eDataType.getName() + "' is not a valid classifier");
+            throw new IllegalArgumentException("The datatype '" + eDataType.getName()
+                + "' is not a valid classifier");
         }
     }
 
@@ -199,8 +199,8 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
             return convertUpdateSequenceTypeToString(eDataType, instanceValue);
 
         default:
-            throw new IllegalArgumentException("The datatype '"
-                + eDataType.getName() + "' is not a valid classifier");
+            throw new IllegalArgumentException("The datatype '" + eDataType.getName()
+                + "' is not a valid classifier");
         }
     }
 
@@ -528,8 +528,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String createMimeTypeFromString(EDataType eDataType,
-        String initialValue) {
+    public String createMimeTypeFromString(EDataType eDataType, String initialValue) {
         return (String) super.createFromString(eDataType, initialValue);
     }
 
@@ -538,8 +537,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertMimeTypeToString(EDataType eDataType,
-        Object instanceValue) {
+    public String convertMimeTypeToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 
@@ -548,8 +546,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String createVersionTypeFromString(EDataType eDataType,
-        String initialValue) {
+    public String createVersionTypeFromString(EDataType eDataType, String initialValue) {
         return (String) super.createFromString(eDataType, initialValue);
     }
 
@@ -558,8 +555,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertVersionTypeToString(EDataType eDataType,
-        Object instanceValue) {
+    public String convertVersionTypeToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 
@@ -568,8 +564,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public List createPositionTypeFromString(EDataType eDataType,
-        String initialValue) {
+    public List createPositionTypeFromString(EDataType eDataType, String initialValue) {
         return (List) super.createFromString(eDataType, initialValue);
     }
 
@@ -578,8 +573,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertPositionTypeToString(EDataType eDataType,
-        Object instanceValue) {
+    public String convertPositionTypeToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 
@@ -588,8 +582,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String createUpdateSequenceTypeFromString(EDataType eDataType,
-        String initialValue) {
+    public String createUpdateSequenceTypeFromString(EDataType eDataType, String initialValue) {
         return (String) super.createFromString(eDataType, initialValue);
     }
 
@@ -598,8 +591,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String convertUpdateSequenceTypeToString(EDataType eDataType,
-        Object instanceValue) {
+    public String convertUpdateSequenceTypeToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 

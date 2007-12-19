@@ -34,8 +34,7 @@ import java.util.logging.Logger;
  */
 public class EncodeSVG {
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses.wms.map");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
     private static final String DOCTYPE = "<!DOCTYPE svg \n\tPUBLIC \"-//W3C//DTD SVG 20001102//EN\" \n\t\"http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd\">\n";
 
     /** the XML and SVG header */
@@ -117,9 +116,8 @@ public class EncodeSVG {
     public String createViewBox() {
         Envelope referenceSpace = mapContext.getAreaOfInterest();
         String viewBox = writer.getX(referenceSpace.getMinX()) + " "
-            + (writer.getY(referenceSpace.getMinY())
-            - referenceSpace.getHeight()) + " " + referenceSpace.getWidth()
-            + " " + referenceSpace.getHeight();
+            + (writer.getY(referenceSpace.getMinY()) - referenceSpace.getHeight()) + " "
+            + referenceSpace.getWidth() + " " + referenceSpace.getHeight();
 
         return viewBox;
     }
@@ -134,10 +132,8 @@ public class EncodeSVG {
         // a configuration option wether to include it or not.
         String viewBox = createViewBox();
         String header = SVG_HEADER.replaceAll("_viewBox_", viewBox);
-        header = header.replaceAll("_width_",
-                String.valueOf(mapContext.getMapWidth()));
-        header = header.replaceAll("_height_",
-                String.valueOf(mapContext.getMapHeight()));
+        header = header.replaceAll("_width_", String.valueOf(mapContext.getMapWidth()));
+        header = header.replaceAll("_height_", String.valueOf(mapContext.getMapHeight()));
         writer.write(header);
     }
 
@@ -152,8 +148,7 @@ public class EncodeSVG {
         GeometryAttributeType gtype = layer.getDefaultGeometry();
         Class geometryClass = gtype.getType();
 
-        if ((geometryClass == MultiPoint.class)
-                || (geometryClass == Point.class)) {
+        if ((geometryClass == MultiPoint.class) || (geometryClass == Point.class)) {
             writePointDefs();
         }
     }
@@ -192,18 +187,15 @@ public class EncodeSVG {
             FeatureType schema = fSource.getSchema();
 
             try {
-                Expression bboxExpression = fFac.createBBoxExpression(mapContext
-                        .getAreaOfInterest());
+                Expression bboxExpression = fFac.createBBoxExpression(mapContext.getAreaOfInterest());
                 GeometryFilter bboxFilter = fFac.createGeometryFilter(FilterType.GEOMETRY_INTERSECTS);
-                bboxFilter.addLeftGeometry(fFac.createAttributeExpression(
-                        schema, schema.getDefaultGeometry().getName()));
+                bboxFilter.addLeftGeometry(fFac.createAttributeExpression(schema,
+                        schema.getDefaultGeometry().getName()));
                 bboxFilter.addRightGeometry(bboxExpression);
 
-                Query bboxQuery = new DefaultQuery(schema.getTypeName(),
-                        bboxFilter);
+                Query bboxQuery = new DefaultQuery(schema.getTypeName(), bboxFilter);
 
-                LOGGER.fine("obtaining FeatureReader for "
-                    + schema.getTypeName());
+                LOGGER.fine("obtaining FeatureReader for " + schema.getTypeName());
                 featureReader = fSource.getFeatures(bboxQuery).features();
                 LOGGER.fine("got FeatureReader, now writing");
 
@@ -224,8 +216,7 @@ public class EncodeSVG {
 
                 writeDefs(schema);
 
-                writer.writeFeatures(fSource.getSchema(), featureReader,
-                    styleName);
+                writer.writeFeatures(fSource.getSchema(), featureReader, styleName);
                 writer.write("</g>\n");
             } catch (IOException ex) {
                 throw ex;
@@ -235,8 +226,7 @@ public class EncodeSVG {
             } catch (Throwable t) {
                 LOGGER.warning("UNCAUGHT exception: " + t.getMessage());
 
-                IOException ioe = new IOException("UNCAUGHT exception: "
-                        + t.getMessage());
+                IOException ioe = new IOException("UNCAUGHT exception: " + t.getMessage());
                 ioe.setStackTrace(t.getStackTrace());
                 throw ioe;
             } finally {

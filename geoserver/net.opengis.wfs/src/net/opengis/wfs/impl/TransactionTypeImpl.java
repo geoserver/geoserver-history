@@ -40,8 +40,7 @@ import java.util.Collection;
  *
  * @generated
  */
-public class TransactionTypeImpl extends BaseRequestTypeImpl
-    implements TransactionType {
+public class TransactionTypeImpl extends BaseRequestTypeImpl implements TransactionType {
     /**
      * The default value of the '{@link #getLockId() <em>Lock Id</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -208,16 +207,15 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl
      */
     public void setReleaseAction(AllSomeType newReleaseAction) {
         AllSomeType oldReleaseAction = releaseAction;
-        releaseAction = (newReleaseAction == null) ? RELEASE_ACTION_EDEFAULT
-                                                   : newReleaseAction;
+        releaseAction = (newReleaseAction == null) ? RELEASE_ACTION_EDEFAULT : newReleaseAction;
 
         boolean oldReleaseActionESet = releaseActionESet;
         releaseActionESet = true;
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION,
-                    oldReleaseAction, releaseAction, !oldReleaseActionESet));
+                    WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION, oldReleaseAction, releaseAction,
+                    !oldReleaseActionESet));
         }
     }
 
@@ -234,9 +232,8 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.UNSET,
-                    WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION,
-                    oldReleaseAction, RELEASE_ACTION_EDEFAULT,
-                    oldReleaseActionESet));
+                    WfsPackage.TRANSACTION_TYPE__RELEASE_ACTION, oldReleaseAction,
+                    RELEASE_ACTION_EDEFAULT, oldReleaseActionESet));
         }
     }
 
@@ -254,8 +251,8 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case WfsPackage.TRANSACTION_TYPE__GROUP:
             return ((InternalEList) getGroup()).basicRemove(otherEnd, msgs);
@@ -417,8 +414,7 @@ public class TransactionTypeImpl extends BaseRequestTypeImpl
     public boolean eIsSet(int featureID) {
         switch (featureID) {
         case WfsPackage.TRANSACTION_TYPE__LOCK_ID:
-            return (LOCK_ID_EDEFAULT == null) ? (lockId != null)
-                                              : (!LOCK_ID_EDEFAULT.equals(lockId));
+            return (LOCK_ID_EDEFAULT == null) ? (lockId != null) : (!LOCK_ID_EDEFAULT.equals(lockId));
 
         case WfsPackage.TRANSACTION_TYPE__GROUP:
             return (group != null) && !group.isEmpty();

@@ -241,8 +241,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
      * @generated
      */
     public EList getXlinkPropertyName() {
-        return getGroup()
-                   .list(WfsPackage.Literals.QUERY_TYPE__XLINK_PROPERTY_NAME);
+        return getGroup().list(WfsPackage.Literals.QUERY_TYPE__XLINK_PROPERTY_NAME);
     }
 
     /**
@@ -278,8 +277,8 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
         filter = newFilter;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.QUERY_TYPE__FILTER, oldFilter, filter));
+            eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.QUERY_TYPE__FILTER,
+                    oldFilter, filter));
         }
     }
 
@@ -290,8 +289,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
      */
     public EList getSortBy() {
         if (sortBy == null) {
-            sortBy = new EDataTypeUniqueEList(SortBy.class, this,
-                    WfsPackage.QUERY_TYPE__SORT_BY);
+            sortBy = new EDataTypeUniqueEList(SortBy.class, this, WfsPackage.QUERY_TYPE__SORT_BY);
         }
 
         return sortBy;
@@ -317,8 +315,7 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.QUERY_TYPE__FEATURE_VERSION, oldFeatureVersion,
-                    featureVersion));
+                    WfsPackage.QUERY_TYPE__FEATURE_VERSION, oldFeatureVersion, featureVersion));
         }
     }
 
@@ -341,8 +338,8 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
         handle = newHandle;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.QUERY_TYPE__HANDLE, oldHandle, handle));
+            eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.QUERY_TYPE__HANDLE,
+                    oldHandle, handle));
         }
     }
 
@@ -365,8 +362,8 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
         srsName = newSrsName;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.QUERY_TYPE__SRS_NAME, oldSrsName, srsName));
+            eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.QUERY_TYPE__SRS_NAME,
+                    oldSrsName, srsName));
         }
     }
 
@@ -389,8 +386,8 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
         typeName = newTypeName;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.QUERY_TYPE__TYPE_NAME, oldTypeName, typeName));
+            eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.QUERY_TYPE__TYPE_NAME,
+                    oldTypeName, typeName));
         }
     }
 
@@ -399,15 +396,14 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case WfsPackage.QUERY_TYPE__GROUP:
             return ((InternalEList) getGroup()).basicRemove(otherEnd, msgs);
 
         case WfsPackage.QUERY_TYPE__XLINK_PROPERTY_NAME:
-            return ((InternalEList) getXlinkPropertyName()).basicRemove(otherEnd,
-                msgs);
+            return ((InternalEList) getXlinkPropertyName()).basicRemove(otherEnd, msgs);
         }
 
         return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -605,20 +601,17 @@ public class QueryTypeImpl extends EObjectImpl implements QueryType {
             return (function != null) && !function.isEmpty();
 
         case WfsPackage.QUERY_TYPE__FILTER:
-            return (FILTER_EDEFAULT == null) ? (filter != null)
-                                             : (!FILTER_EDEFAULT.equals(filter));
+            return (FILTER_EDEFAULT == null) ? (filter != null) : (!FILTER_EDEFAULT.equals(filter));
 
         case WfsPackage.QUERY_TYPE__SORT_BY:
             return (sortBy != null) && !sortBy.isEmpty();
 
         case WfsPackage.QUERY_TYPE__FEATURE_VERSION:
             return (FEATURE_VERSION_EDEFAULT == null) ? (featureVersion != null)
-                                                      : (!FEATURE_VERSION_EDEFAULT
-            .equals(featureVersion));
+                                                      : (!FEATURE_VERSION_EDEFAULT.equals(featureVersion));
 
         case WfsPackage.QUERY_TYPE__HANDLE:
-            return (HANDLE_EDEFAULT == null) ? (handle != null)
-                                             : (!HANDLE_EDEFAULT.equals(handle));
+            return (HANDLE_EDEFAULT == null) ? (handle != null) : (!HANDLE_EDEFAULT.equals(handle));
 
         case WfsPackage.QUERY_TYPE__SRS_NAME:
             return (SRS_NAME_EDEFAULT == null) ? (srsName != null)

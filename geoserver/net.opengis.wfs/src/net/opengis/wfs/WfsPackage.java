@@ -263,8 +263,7 @@ public interface WfsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME = BASE_REQUEST_TYPE_FEATURE_COUNT
-        + 0;
+    int DESCRIBE_FEATURE_TYPE_TYPE__TYPE_NAME = BASE_REQUEST_TYPE_FEATURE_COUNT + 0;
 
     /**
      * The feature id for the '<em><b>Output Format</b></em>' attribute.
@@ -273,8 +272,7 @@ public interface WfsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT = BASE_REQUEST_TYPE_FEATURE_COUNT
-        + 1;
+    int DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT = BASE_REQUEST_TYPE_FEATURE_COUNT + 1;
 
     /**
      * The number of structural features of the '<em>Describe Feature Type Type</em>' class.
@@ -283,8 +281,7 @@ public interface WfsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DESCRIBE_FEATURE_TYPE_TYPE_FEATURE_COUNT = BASE_REQUEST_TYPE_FEATURE_COUNT
-        + 2;
+    int DESCRIBE_FEATURE_TYPE_TYPE_FEATURE_COUNT = BASE_REQUEST_TYPE_FEATURE_COUNT + 2;
 
     /**
      * The meta object id for the '{@link net.opengis.wfs.impl.DocumentRootImpl <em>Document Root</em>}' class.
@@ -977,8 +974,7 @@ public interface WfsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int GET_CAPABILITIES_TYPE__SERVICE = OwsPackage.GET_CAPABILITIES_TYPE_FEATURE_COUNT
-        + 0;
+    int GET_CAPABILITIES_TYPE__SERVICE = OwsPackage.GET_CAPABILITIES_TYPE_FEATURE_COUNT + 0;
 
     /**
      * The number of structural features of the '<em>Get Capabilities Type</em>' class.
@@ -987,8 +983,7 @@ public interface WfsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int GET_CAPABILITIES_TYPE_FEATURE_COUNT = OwsPackage.GET_CAPABILITIES_TYPE_FEATURE_COUNT
-        + 1;
+    int GET_CAPABILITIES_TYPE_FEATURE_COUNT = OwsPackage.GET_CAPABILITIES_TYPE_FEATURE_COUNT + 1;
 
     /**
      * The meta object id for the '{@link net.opengis.wfs.impl.GetFeatureTypeImpl <em>Get Feature Type</em>}' class.
@@ -1079,8 +1074,7 @@ public interface WfsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int GET_FEATURE_TYPE__TRAVERSE_XLINK_DEPTH = BASE_REQUEST_TYPE_FEATURE_COUNT
-        + 4;
+    int GET_FEATURE_TYPE__TRAVERSE_XLINK_DEPTH = BASE_REQUEST_TYPE_FEATURE_COUNT + 4;
 
     /**
      * The feature id for the '<em><b>Traverse Xlink Expiry</b></em>' attribute.
@@ -1089,8 +1083,7 @@ public interface WfsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int GET_FEATURE_TYPE__TRAVERSE_XLINK_EXPIRY = BASE_REQUEST_TYPE_FEATURE_COUNT
-        + 5;
+    int GET_FEATURE_TYPE__TRAVERSE_XLINK_EXPIRY = BASE_REQUEST_TYPE_FEATURE_COUNT + 5;
 
     /**
      * The number of structural features of the '<em>Get Feature Type</em>' class.
@@ -1217,8 +1210,7 @@ public interface WfsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int GET_FEATURE_WITH_LOCK_TYPE_FEATURE_COUNT = GET_FEATURE_TYPE_FEATURE_COUNT
-        + 1;
+    int GET_FEATURE_WITH_LOCK_TYPE_FEATURE_COUNT = GET_FEATURE_TYPE_FEATURE_COUNT + 1;
 
     /**
      * The meta object id for the '{@link net.opengis.wfs.impl.GetGmlObjectTypeImpl <em>Get Gml Object Type</em>}' class.
@@ -1273,8 +1265,7 @@ public interface WfsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int GET_GML_OBJECT_TYPE__GML_OBJECT_ID = BASE_REQUEST_TYPE_FEATURE_COUNT
-        + 0;
+    int GET_GML_OBJECT_TYPE__GML_OBJECT_ID = BASE_REQUEST_TYPE_FEATURE_COUNT + 0;
 
     /**
      * The feature id for the '<em><b>Output Format</b></em>' attribute.
@@ -1283,8 +1274,7 @@ public interface WfsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int GET_GML_OBJECT_TYPE__OUTPUT_FORMAT = BASE_REQUEST_TYPE_FEATURE_COUNT
-        + 1;
+    int GET_GML_OBJECT_TYPE__OUTPUT_FORMAT = BASE_REQUEST_TYPE_FEATURE_COUNT + 1;
 
     /**
      * The feature id for the '<em><b>Traverse Xlink Depth</b></em>' attribute.
@@ -1293,8 +1283,7 @@ public interface WfsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_DEPTH = BASE_REQUEST_TYPE_FEATURE_COUNT
-        + 2;
+    int GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_DEPTH = BASE_REQUEST_TYPE_FEATURE_COUNT + 2;
 
     /**
      * The feature id for the '<em><b>Traverse Xlink Expiry</b></em>' attribute.
@@ -1303,8 +1292,7 @@ public interface WfsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_EXPIRY = BASE_REQUEST_TYPE_FEATURE_COUNT
-        + 3;
+    int GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_EXPIRY = BASE_REQUEST_TYPE_FEATURE_COUNT + 3;
 
     /**
      * The number of structural features of the '<em>Get Gml Object Type</em>' class.
@@ -2362,8 +2350,7 @@ public interface WfsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int WFS_CAPABILITIES_TYPE_FEATURE_COUNT = OwsPackage.CAPABILITIES_BASE_TYPE_FEATURE_COUNT
-        + 4;
+    int WFS_CAPABILITIES_TYPE_FEATURE_COUNT = OwsPackage.CAPABILITIES_BASE_TYPE_FEATURE_COUNT + 4;
 
     /**
      * The meta object id for the '{@link net.opengis.wfs.impl.XlinkPropertyNameTypeImpl <em>Xlink Property Name Type</em>}' class.
@@ -4769,8 +4756,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute BASE_REQUEST_TYPE__HANDLE = eINSTANCE
-            .getBaseRequestType_Handle();
+        EAttribute BASE_REQUEST_TYPE__HANDLE = eINSTANCE.getBaseRequestType_Handle();
 
         /**
          * The meta object literal for the '<em><b>Service</b></em>' attribute feature.
@@ -4778,8 +4764,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute BASE_REQUEST_TYPE__SERVICE = eINSTANCE
-            .getBaseRequestType_Service();
+        EAttribute BASE_REQUEST_TYPE__SERVICE = eINSTANCE.getBaseRequestType_Service();
 
         /**
          * The meta object literal for the '<em><b>Version</b></em>' attribute feature.
@@ -4787,8 +4772,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute BASE_REQUEST_TYPE__VERSION = eINSTANCE
-            .getBaseRequestType_Version();
+        EAttribute BASE_REQUEST_TYPE__VERSION = eINSTANCE.getBaseRequestType_Version();
 
         /**
          * The meta object literal for the '<em><b>Base Url</b></em>' attribute feature.
@@ -4796,8 +4780,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute BASE_REQUEST_TYPE__BASE_URL = eINSTANCE
-            .getBaseRequestType_BaseUrl();
+        EAttribute BASE_REQUEST_TYPE__BASE_URL = eINSTANCE.getBaseRequestType_BaseUrl();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.DeleteElementTypeImpl <em>Delete Element Type</em>}' class.
@@ -4815,8 +4798,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute DELETE_ELEMENT_TYPE__FILTER = eINSTANCE
-            .getDeleteElementType_Filter();
+        EAttribute DELETE_ELEMENT_TYPE__FILTER = eINSTANCE.getDeleteElementType_Filter();
 
         /**
          * The meta object literal for the '<em><b>Handle</b></em>' attribute feature.
@@ -4824,8 +4806,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute DELETE_ELEMENT_TYPE__HANDLE = eINSTANCE
-            .getDeleteElementType_Handle();
+        EAttribute DELETE_ELEMENT_TYPE__HANDLE = eINSTANCE.getDeleteElementType_Handle();
 
         /**
          * The meta object literal for the '<em><b>Type Name</b></em>' attribute feature.
@@ -4833,8 +4814,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute DELETE_ELEMENT_TYPE__TYPE_NAME = eINSTANCE
-            .getDeleteElementType_TypeName();
+        EAttribute DELETE_ELEMENT_TYPE__TYPE_NAME = eINSTANCE.getDeleteElementType_TypeName();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.DescribeFeatureTypeTypeImpl <em>Describe Feature Type Type</em>}' class.
@@ -4888,8 +4868,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__XMLNS_PREFIX_MAP = eINSTANCE
-            .getDocumentRoot_XMLNSPrefixMap();
+        EReference DOCUMENT_ROOT__XMLNS_PREFIX_MAP = eINSTANCE.getDocumentRoot_XMLNSPrefixMap();
 
         /**
          * The meta object literal for the '<em><b>XSI Schema Location</b></em>' map feature.
@@ -4897,8 +4876,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__XSI_SCHEMA_LOCATION = eINSTANCE
-            .getDocumentRoot_XSISchemaLocation();
+        EReference DOCUMENT_ROOT__XSI_SCHEMA_LOCATION = eINSTANCE.getDocumentRoot_XSISchemaLocation();
 
         /**
          * The meta object literal for the '<em><b>Delete</b></em>' containment reference feature.
@@ -4923,8 +4901,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__FEATURE_COLLECTION = eINSTANCE
-            .getDocumentRoot_FeatureCollection();
+        EReference DOCUMENT_ROOT__FEATURE_COLLECTION = eINSTANCE.getDocumentRoot_FeatureCollection();
 
         /**
          * The meta object literal for the '<em><b>Feature Type List</b></em>' containment reference feature.
@@ -4932,8 +4909,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__FEATURE_TYPE_LIST = eINSTANCE
-            .getDocumentRoot_FeatureTypeList();
+        EReference DOCUMENT_ROOT__FEATURE_TYPE_LIST = eINSTANCE.getDocumentRoot_FeatureTypeList();
 
         /**
          * The meta object literal for the '<em><b>Get Capabilities</b></em>' containment reference feature.
@@ -4941,8 +4917,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__GET_CAPABILITIES = eINSTANCE
-            .getDocumentRoot_GetCapabilities();
+        EReference DOCUMENT_ROOT__GET_CAPABILITIES = eINSTANCE.getDocumentRoot_GetCapabilities();
 
         /**
          * The meta object literal for the '<em><b>Get Feature</b></em>' containment reference feature.
@@ -4950,8 +4925,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__GET_FEATURE = eINSTANCE
-            .getDocumentRoot_GetFeature();
+        EReference DOCUMENT_ROOT__GET_FEATURE = eINSTANCE.getDocumentRoot_GetFeature();
 
         /**
          * The meta object literal for the '<em><b>Get Feature With Lock</b></em>' containment reference feature.
@@ -4968,8 +4942,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__GET_GML_OBJECT = eINSTANCE
-            .getDocumentRoot_GetGmlObject();
+        EReference DOCUMENT_ROOT__GET_GML_OBJECT = eINSTANCE.getDocumentRoot_GetGmlObject();
 
         /**
          * The meta object literal for the '<em><b>Insert</b></em>' containment reference feature.
@@ -4985,8 +4958,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__LOCK_FEATURE = eINSTANCE
-            .getDocumentRoot_LockFeature();
+        EReference DOCUMENT_ROOT__LOCK_FEATURE = eINSTANCE.getDocumentRoot_LockFeature();
 
         /**
          * The meta object literal for the '<em><b>Lock Feature Response</b></em>' containment reference feature.
@@ -5027,8 +4999,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute DOCUMENT_ROOT__PROPERTY_NAME = eINSTANCE
-            .getDocumentRoot_PropertyName();
+        EAttribute DOCUMENT_ROOT__PROPERTY_NAME = eINSTANCE.getDocumentRoot_PropertyName();
 
         /**
          * The meta object literal for the '<em><b>Query</b></em>' containment reference feature.
@@ -5062,8 +5033,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__TRANSACTION = eINSTANCE
-            .getDocumentRoot_Transaction();
+        EReference DOCUMENT_ROOT__TRANSACTION = eINSTANCE.getDocumentRoot_Transaction();
 
         /**
          * The meta object literal for the '<em><b>Transaction Response</b></em>' containment reference feature.
@@ -5088,8 +5058,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__WFS_CAPABILITIES = eINSTANCE
-            .getDocumentRoot_WfsCapabilities();
+        EReference DOCUMENT_ROOT__WFS_CAPABILITIES = eINSTANCE.getDocumentRoot_WfsCapabilities();
 
         /**
          * The meta object literal for the '<em><b>Xlink Property Name</b></em>' containment reference feature.
@@ -5097,8 +5066,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__XLINK_PROPERTY_NAME = eINSTANCE
-            .getDocumentRoot_XlinkPropertyName();
+        EReference DOCUMENT_ROOT__XLINK_PROPERTY_NAME = eINSTANCE.getDocumentRoot_XlinkPropertyName();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.FeatureCollectionTypeImpl <em>Feature Collection Type</em>}' class.
@@ -5116,8 +5084,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute FEATURE_COLLECTION_TYPE__LOCK_ID = eINSTANCE
-            .getFeatureCollectionType_LockId();
+        EAttribute FEATURE_COLLECTION_TYPE__LOCK_ID = eINSTANCE.getFeatureCollectionType_LockId();
 
         /**
          * The meta object literal for the '<em><b>Time Stamp</b></em>' attribute feature.
@@ -5143,8 +5110,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute FEATURE_COLLECTION_TYPE__FEATURE = eINSTANCE
-            .getFeatureCollectionType_Feature();
+        EAttribute FEATURE_COLLECTION_TYPE__FEATURE = eINSTANCE.getFeatureCollectionType_Feature();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.FeatureTypeListTypeImpl <em>Feature Type List Type</em>}' class.
@@ -5162,8 +5128,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference FEATURE_TYPE_LIST_TYPE__OPERATIONS = eINSTANCE
-            .getFeatureTypeListType_Operations();
+        EReference FEATURE_TYPE_LIST_TYPE__OPERATIONS = eINSTANCE.getFeatureTypeListType_Operations();
 
         /**
          * The meta object literal for the '<em><b>Feature Type</b></em>' containment reference list feature.
@@ -5206,8 +5171,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute FEATURE_TYPE_TYPE__ABSTRACT = eINSTANCE
-            .getFeatureTypeType_Abstract();
+        EAttribute FEATURE_TYPE_TYPE__ABSTRACT = eINSTANCE.getFeatureTypeType_Abstract();
 
         /**
          * The meta object literal for the '<em><b>Keywords</b></em>' containment reference list feature.
@@ -5215,8 +5179,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference FEATURE_TYPE_TYPE__KEYWORDS = eINSTANCE
-            .getFeatureTypeType_Keywords();
+        EReference FEATURE_TYPE_TYPE__KEYWORDS = eINSTANCE.getFeatureTypeType_Keywords();
 
         /**
          * The meta object literal for the '<em><b>Default SRS</b></em>' attribute feature.
@@ -5224,8 +5187,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute FEATURE_TYPE_TYPE__DEFAULT_SRS = eINSTANCE
-            .getFeatureTypeType_DefaultSRS();
+        EAttribute FEATURE_TYPE_TYPE__DEFAULT_SRS = eINSTANCE.getFeatureTypeType_DefaultSRS();
 
         /**
          * The meta object literal for the '<em><b>Other SRS</b></em>' attribute feature.
@@ -5233,8 +5195,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute FEATURE_TYPE_TYPE__OTHER_SRS = eINSTANCE
-            .getFeatureTypeType_OtherSRS();
+        EAttribute FEATURE_TYPE_TYPE__OTHER_SRS = eINSTANCE.getFeatureTypeType_OtherSRS();
 
         /**
          * The meta object literal for the '<em><b>No SRS</b></em>' containment reference feature.
@@ -5242,8 +5203,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference FEATURE_TYPE_TYPE__NO_SRS = eINSTANCE
-            .getFeatureTypeType_NoSRS();
+        EReference FEATURE_TYPE_TYPE__NO_SRS = eINSTANCE.getFeatureTypeType_NoSRS();
 
         /**
          * The meta object literal for the '<em><b>Operations</b></em>' containment reference feature.
@@ -5251,8 +5211,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference FEATURE_TYPE_TYPE__OPERATIONS = eINSTANCE
-            .getFeatureTypeType_Operations();
+        EReference FEATURE_TYPE_TYPE__OPERATIONS = eINSTANCE.getFeatureTypeType_Operations();
 
         /**
          * The meta object literal for the '<em><b>Output Formats</b></em>' containment reference feature.
@@ -5260,8 +5219,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference FEATURE_TYPE_TYPE__OUTPUT_FORMATS = eINSTANCE
-            .getFeatureTypeType_OutputFormats();
+        EReference FEATURE_TYPE_TYPE__OUTPUT_FORMATS = eINSTANCE.getFeatureTypeType_OutputFormats();
 
         /**
          * The meta object literal for the '<em><b>WGS84 Bounding Box</b></em>' containment reference list feature.
@@ -5278,8 +5236,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference FEATURE_TYPE_TYPE__METADATA_URL = eINSTANCE
-            .getFeatureTypeType_MetadataURL();
+        EReference FEATURE_TYPE_TYPE__METADATA_URL = eINSTANCE.getFeatureTypeType_MetadataURL();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.FeaturesLockedTypeImpl <em>Features Locked Type</em>}' class.
@@ -5297,8 +5254,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute FEATURES_LOCKED_TYPE__GROUP = eINSTANCE
-            .getFeaturesLockedType_Group();
+        EAttribute FEATURES_LOCKED_TYPE__GROUP = eINSTANCE.getFeaturesLockedType_Group();
 
         /**
          * The meta object literal for the '<em><b>Feature Id</b></em>' attribute list feature.
@@ -5306,8 +5262,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute FEATURES_LOCKED_TYPE__FEATURE_ID = eINSTANCE
-            .getFeaturesLockedType_FeatureId();
+        EAttribute FEATURES_LOCKED_TYPE__FEATURE_ID = eINSTANCE.getFeaturesLockedType_FeatureId();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.FeaturesNotLockedTypeImpl <em>Features Not Locked Type</em>}' class.
@@ -5325,8 +5280,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute FEATURES_NOT_LOCKED_TYPE__GROUP = eINSTANCE
-            .getFeaturesNotLockedType_Group();
+        EAttribute FEATURES_NOT_LOCKED_TYPE__GROUP = eINSTANCE.getFeaturesNotLockedType_Group();
 
         /**
          * The meta object literal for the '<em><b>Feature Id</b></em>' attribute list feature.
@@ -5372,8 +5326,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute GML_OBJECT_TYPE_TYPE__NAME = eINSTANCE
-            .getGMLObjectTypeType_Name();
+        EAttribute GML_OBJECT_TYPE_TYPE__NAME = eINSTANCE.getGMLObjectTypeType_Name();
 
         /**
          * The meta object literal for the '<em><b>Title</b></em>' attribute feature.
@@ -5381,8 +5334,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute GML_OBJECT_TYPE_TYPE__TITLE = eINSTANCE
-            .getGMLObjectTypeType_Title();
+        EAttribute GML_OBJECT_TYPE_TYPE__TITLE = eINSTANCE.getGMLObjectTypeType_Title();
 
         /**
          * The meta object literal for the '<em><b>Abstract</b></em>' attribute feature.
@@ -5390,8 +5342,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute GML_OBJECT_TYPE_TYPE__ABSTRACT = eINSTANCE
-            .getGMLObjectTypeType_Abstract();
+        EAttribute GML_OBJECT_TYPE_TYPE__ABSTRACT = eINSTANCE.getGMLObjectTypeType_Abstract();
 
         /**
          * The meta object literal for the '<em><b>Keywords</b></em>' containment reference list feature.
@@ -5399,8 +5350,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference GML_OBJECT_TYPE_TYPE__KEYWORDS = eINSTANCE
-            .getGMLObjectTypeType_Keywords();
+        EReference GML_OBJECT_TYPE_TYPE__KEYWORDS = eINSTANCE.getGMLObjectTypeType_Keywords();
 
         /**
          * The meta object literal for the '<em><b>Output Formats</b></em>' containment reference feature.
@@ -5427,8 +5377,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute GET_CAPABILITIES_TYPE__SERVICE = eINSTANCE
-            .getGetCapabilitiesType_Service();
+        EAttribute GET_CAPABILITIES_TYPE__SERVICE = eINSTANCE.getGetCapabilitiesType_Service();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.GetFeatureTypeImpl <em>Get Feature Type</em>}' class.
@@ -5454,8 +5403,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute GET_FEATURE_TYPE__MAX_FEATURES = eINSTANCE
-            .getGetFeatureType_MaxFeatures();
+        EAttribute GET_FEATURE_TYPE__MAX_FEATURES = eINSTANCE.getGetFeatureType_MaxFeatures();
 
         /**
          * The meta object literal for the '<em><b>Output Format</b></em>' attribute feature.
@@ -5463,8 +5411,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute GET_FEATURE_TYPE__OUTPUT_FORMAT = eINSTANCE
-            .getGetFeatureType_OutputFormat();
+        EAttribute GET_FEATURE_TYPE__OUTPUT_FORMAT = eINSTANCE.getGetFeatureType_OutputFormat();
 
         /**
          * The meta object literal for the '<em><b>Result Type</b></em>' attribute feature.
@@ -5472,8 +5419,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute GET_FEATURE_TYPE__RESULT_TYPE = eINSTANCE
-            .getGetFeatureType_ResultType();
+        EAttribute GET_FEATURE_TYPE__RESULT_TYPE = eINSTANCE.getGetFeatureType_ResultType();
 
         /**
          * The meta object literal for the '<em><b>Traverse Xlink Depth</b></em>' attribute feature.
@@ -5509,8 +5455,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute GET_FEATURE_WITH_LOCK_TYPE__EXPIRY = eINSTANCE
-            .getGetFeatureWithLockType_Expiry();
+        EAttribute GET_FEATURE_WITH_LOCK_TYPE__EXPIRY = eINSTANCE.getGetFeatureWithLockType_Expiry();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.GetGmlObjectTypeImpl <em>Get Gml Object Type</em>}' class.
@@ -5528,8 +5473,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute GET_GML_OBJECT_TYPE__GML_OBJECT_ID = eINSTANCE
-            .getGetGmlObjectType_GmlObjectId();
+        EAttribute GET_GML_OBJECT_TYPE__GML_OBJECT_ID = eINSTANCE.getGetGmlObjectType_GmlObjectId();
 
         /**
          * The meta object literal for the '<em><b>Output Format</b></em>' attribute feature.
@@ -5537,8 +5481,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute GET_GML_OBJECT_TYPE__OUTPUT_FORMAT = eINSTANCE
-            .getGetGmlObjectType_OutputFormat();
+        EAttribute GET_GML_OBJECT_TYPE__OUTPUT_FORMAT = eINSTANCE.getGetGmlObjectType_OutputFormat();
 
         /**
          * The meta object literal for the '<em><b>Traverse Xlink Depth</b></em>' attribute feature.
@@ -5574,8 +5517,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute INSERT_ELEMENT_TYPE__FEATURE = eINSTANCE
-            .getInsertElementType_Feature();
+        EAttribute INSERT_ELEMENT_TYPE__FEATURE = eINSTANCE.getInsertElementType_Feature();
 
         /**
          * The meta object literal for the '<em><b>Handle</b></em>' attribute feature.
@@ -5583,8 +5525,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute INSERT_ELEMENT_TYPE__HANDLE = eINSTANCE
-            .getInsertElementType_Handle();
+        EAttribute INSERT_ELEMENT_TYPE__HANDLE = eINSTANCE.getInsertElementType_Handle();
 
         /**
          * The meta object literal for the '<em><b>Idgen</b></em>' attribute feature.
@@ -5592,8 +5533,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute INSERT_ELEMENT_TYPE__IDGEN = eINSTANCE
-            .getInsertElementType_Idgen();
+        EAttribute INSERT_ELEMENT_TYPE__IDGEN = eINSTANCE.getInsertElementType_Idgen();
 
         /**
          * The meta object literal for the '<em><b>Input Format</b></em>' attribute feature.
@@ -5601,8 +5541,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute INSERT_ELEMENT_TYPE__INPUT_FORMAT = eINSTANCE
-            .getInsertElementType_InputFormat();
+        EAttribute INSERT_ELEMENT_TYPE__INPUT_FORMAT = eINSTANCE.getInsertElementType_InputFormat();
 
         /**
          * The meta object literal for the '<em><b>Srs Name</b></em>' attribute feature.
@@ -5610,8 +5549,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute INSERT_ELEMENT_TYPE__SRS_NAME = eINSTANCE
-            .getInsertElementType_SrsName();
+        EAttribute INSERT_ELEMENT_TYPE__SRS_NAME = eINSTANCE.getInsertElementType_SrsName();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.InsertResultsTypeImpl <em>Insert Results Type</em>}' class.
@@ -5629,8 +5567,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference INSERT_RESULTS_TYPE__FEATURE = eINSTANCE
-            .getInsertResultsType_Feature();
+        EReference INSERT_RESULTS_TYPE__FEATURE = eINSTANCE.getInsertResultsType_Feature();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.InsertedFeatureTypeImpl <em>Inserted Feature Type</em>}' class.
@@ -5648,8 +5585,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute INSERTED_FEATURE_TYPE__FEATURE_ID = eINSTANCE
-            .getInsertedFeatureType_FeatureId();
+        EAttribute INSERTED_FEATURE_TYPE__FEATURE_ID = eINSTANCE.getInsertedFeatureType_FeatureId();
 
         /**
          * The meta object literal for the '<em><b>Handle</b></em>' attribute feature.
@@ -5657,8 +5593,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute INSERTED_FEATURE_TYPE__HANDLE = eINSTANCE
-            .getInsertedFeatureType_Handle();
+        EAttribute INSERTED_FEATURE_TYPE__HANDLE = eINSTANCE.getInsertedFeatureType_Handle();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.LockFeatureResponseTypeImpl <em>Lock Feature Response Type</em>}' class.
@@ -5676,8 +5611,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute LOCK_FEATURE_RESPONSE_TYPE__LOCK_ID = eINSTANCE
-            .getLockFeatureResponseType_LockId();
+        EAttribute LOCK_FEATURE_RESPONSE_TYPE__LOCK_ID = eINSTANCE.getLockFeatureResponseType_LockId();
 
         /**
          * The meta object literal for the '<em><b>Features Locked</b></em>' containment reference feature.
@@ -5721,8 +5655,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute LOCK_FEATURE_TYPE__EXPIRY = eINSTANCE
-            .getLockFeatureType_Expiry();
+        EAttribute LOCK_FEATURE_TYPE__EXPIRY = eINSTANCE.getLockFeatureType_Expiry();
 
         /**
          * The meta object literal for the '<em><b>Lock Action</b></em>' attribute feature.
@@ -5730,8 +5663,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute LOCK_FEATURE_TYPE__LOCK_ACTION = eINSTANCE
-            .getLockFeatureType_LockAction();
+        EAttribute LOCK_FEATURE_TYPE__LOCK_ACTION = eINSTANCE.getLockFeatureType_LockAction();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.LockTypeImpl <em>Lock Type</em>}' class.
@@ -5791,8 +5723,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute METADATA_URL_TYPE__FORMAT = eINSTANCE
-            .getMetadataURLType_Format();
+        EAttribute METADATA_URL_TYPE__FORMAT = eINSTANCE.getMetadataURLType_Format();
 
         /**
          * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
@@ -5818,8 +5749,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute NATIVE_TYPE__SAFE_TO_IGNORE = eINSTANCE
-            .getNativeType_SafeToIgnore();
+        EAttribute NATIVE_TYPE__SAFE_TO_IGNORE = eINSTANCE.getNativeType_SafeToIgnore();
 
         /**
          * The meta object literal for the '<em><b>Vendor Id</b></em>' attribute feature.
@@ -5855,8 +5785,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute OPERATIONS_TYPE__OPERATION = eINSTANCE
-            .getOperationsType_Operation();
+        EAttribute OPERATIONS_TYPE__OPERATION = eINSTANCE.getOperationsType_Operation();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.OutputFormatListTypeImpl <em>Output Format List Type</em>}' class.
@@ -5874,8 +5803,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute OUTPUT_FORMAT_LIST_TYPE__GROUP = eINSTANCE
-            .getOutputFormatListType_Group();
+        EAttribute OUTPUT_FORMAT_LIST_TYPE__GROUP = eINSTANCE.getOutputFormatListType_Group();
 
         /**
          * The meta object literal for the '<em><b>Format</b></em>' attribute feature.
@@ -5883,8 +5811,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute OUTPUT_FORMAT_LIST_TYPE__FORMAT = eINSTANCE
-            .getOutputFormatListType_Format();
+        EAttribute OUTPUT_FORMAT_LIST_TYPE__FORMAT = eINSTANCE.getOutputFormatListType_Format();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.PropertyTypeImpl <em>Property Type</em>}' class.
@@ -5936,8 +5863,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute QUERY_TYPE__PROPERTY_NAME = eINSTANCE
-            .getQueryType_PropertyName();
+        EAttribute QUERY_TYPE__PROPERTY_NAME = eINSTANCE.getQueryType_PropertyName();
 
         /**
          * The meta object literal for the '<em><b>Xlink Property Name</b></em>' containment reference list feature.
@@ -5945,8 +5871,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference QUERY_TYPE__XLINK_PROPERTY_NAME = eINSTANCE
-            .getQueryType_XlinkPropertyName();
+        EReference QUERY_TYPE__XLINK_PROPERTY_NAME = eINSTANCE.getQueryType_XlinkPropertyName();
 
         /**
          * The meta object literal for the '<em><b>Function</b></em>' attribute list feature.
@@ -5978,8 +5903,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute QUERY_TYPE__FEATURE_VERSION = eINSTANCE
-            .getQueryType_FeatureVersion();
+        EAttribute QUERY_TYPE__FEATURE_VERSION = eINSTANCE.getQueryType_FeatureVersion();
 
         /**
          * The meta object literal for the '<em><b>Handle</b></em>' attribute feature.
@@ -6048,8 +5972,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute TRANSACTION_RESPONSE_TYPE__VERSION = eINSTANCE
-            .getTransactionResponseType_Version();
+        EAttribute TRANSACTION_RESPONSE_TYPE__VERSION = eINSTANCE.getTransactionResponseType_Version();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.TransactionResultsTypeImpl <em>Transaction Results Type</em>}' class.
@@ -6067,8 +5990,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute TRANSACTION_RESULTS_TYPE__HANDLE = eINSTANCE
-            .getTransactionResultsType_Handle();
+        EAttribute TRANSACTION_RESULTS_TYPE__HANDLE = eINSTANCE.getTransactionResultsType_Handle();
 
         /**
          * The meta object literal for the '<em><b>Action</b></em>' containment reference list feature.
@@ -6076,8 +5998,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference TRANSACTION_RESULTS_TYPE__ACTION = eINSTANCE
-            .getTransactionResultsType_Action();
+        EReference TRANSACTION_RESULTS_TYPE__ACTION = eINSTANCE.getTransactionResultsType_Action();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.TransactionSummaryTypeImpl <em>Transaction Summary Type</em>}' class.
@@ -6132,8 +6053,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute TRANSACTION_TYPE__LOCK_ID = eINSTANCE
-            .getTransactionType_LockId();
+        EAttribute TRANSACTION_TYPE__LOCK_ID = eINSTANCE.getTransactionType_LockId();
 
         /**
          * The meta object literal for the '<em><b>Group</b></em>' attribute list feature.
@@ -6149,8 +6069,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference TRANSACTION_TYPE__INSERT = eINSTANCE
-            .getTransactionType_Insert();
+        EReference TRANSACTION_TYPE__INSERT = eINSTANCE.getTransactionType_Insert();
 
         /**
          * The meta object literal for the '<em><b>Update</b></em>' containment reference list feature.
@@ -6158,8 +6077,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference TRANSACTION_TYPE__UPDATE = eINSTANCE
-            .getTransactionType_Update();
+        EReference TRANSACTION_TYPE__UPDATE = eINSTANCE.getTransactionType_Update();
 
         /**
          * The meta object literal for the '<em><b>Delete</b></em>' containment reference list feature.
@@ -6167,8 +6085,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference TRANSACTION_TYPE__DELETE = eINSTANCE
-            .getTransactionType_Delete();
+        EReference TRANSACTION_TYPE__DELETE = eINSTANCE.getTransactionType_Delete();
 
         /**
          * The meta object literal for the '<em><b>Native</b></em>' containment reference list feature.
@@ -6176,8 +6093,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference TRANSACTION_TYPE__NATIVE = eINSTANCE
-            .getTransactionType_Native();
+        EReference TRANSACTION_TYPE__NATIVE = eINSTANCE.getTransactionType_Native();
 
         /**
          * The meta object literal for the '<em><b>Release Action</b></em>' attribute feature.
@@ -6185,8 +6101,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute TRANSACTION_TYPE__RELEASE_ACTION = eINSTANCE
-            .getTransactionType_ReleaseAction();
+        EAttribute TRANSACTION_TYPE__RELEASE_ACTION = eINSTANCE.getTransactionType_ReleaseAction();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.UpdateElementTypeImpl <em>Update Element Type</em>}' class.
@@ -6204,8 +6119,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference UPDATE_ELEMENT_TYPE__PROPERTY = eINSTANCE
-            .getUpdateElementType_Property();
+        EReference UPDATE_ELEMENT_TYPE__PROPERTY = eINSTANCE.getUpdateElementType_Property();
 
         /**
          * The meta object literal for the '<em><b>Filter</b></em>' attribute feature.
@@ -6213,8 +6127,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute UPDATE_ELEMENT_TYPE__FILTER = eINSTANCE
-            .getUpdateElementType_Filter();
+        EAttribute UPDATE_ELEMENT_TYPE__FILTER = eINSTANCE.getUpdateElementType_Filter();
 
         /**
          * The meta object literal for the '<em><b>Handle</b></em>' attribute feature.
@@ -6222,8 +6135,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute UPDATE_ELEMENT_TYPE__HANDLE = eINSTANCE
-            .getUpdateElementType_Handle();
+        EAttribute UPDATE_ELEMENT_TYPE__HANDLE = eINSTANCE.getUpdateElementType_Handle();
 
         /**
          * The meta object literal for the '<em><b>Input Format</b></em>' attribute feature.
@@ -6231,8 +6143,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute UPDATE_ELEMENT_TYPE__INPUT_FORMAT = eINSTANCE
-            .getUpdateElementType_InputFormat();
+        EAttribute UPDATE_ELEMENT_TYPE__INPUT_FORMAT = eINSTANCE.getUpdateElementType_InputFormat();
 
         /**
          * The meta object literal for the '<em><b>Srs Name</b></em>' attribute feature.
@@ -6240,8 +6151,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute UPDATE_ELEMENT_TYPE__SRS_NAME = eINSTANCE
-            .getUpdateElementType_SrsName();
+        EAttribute UPDATE_ELEMENT_TYPE__SRS_NAME = eINSTANCE.getUpdateElementType_SrsName();
 
         /**
          * The meta object literal for the '<em><b>Type Name</b></em>' attribute feature.
@@ -6249,8 +6159,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute UPDATE_ELEMENT_TYPE__TYPE_NAME = eINSTANCE
-            .getUpdateElementType_TypeName();
+        EAttribute UPDATE_ELEMENT_TYPE__TYPE_NAME = eINSTANCE.getUpdateElementType_TypeName();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.impl.WFSCapabilitiesTypeImpl <em>WFS Capabilities Type</em>}' class.
@@ -6314,8 +6223,7 @@ public interface WfsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute XLINK_PROPERTY_NAME_TYPE__VALUE = eINSTANCE
-            .getXlinkPropertyNameType_Value();
+        EAttribute XLINK_PROPERTY_NAME_TYPE__VALUE = eINSTANCE.getXlinkPropertyNameType_Value();
 
         /**
          * The meta object literal for the '<em><b>Traverse Xlink Depth</b></em>' attribute feature.
@@ -6353,8 +6261,7 @@ public interface WfsPackage extends EPackage {
          * @see net.opengis.wfs.impl.WfsPackageImpl#getIdentifierGenerationOptionType()
          * @generated
          */
-        EEnum IDENTIFIER_GENERATION_OPTION_TYPE = eINSTANCE
-            .getIdentifierGenerationOptionType();
+        EEnum IDENTIFIER_GENERATION_OPTION_TYPE = eINSTANCE.getIdentifierGenerationOptionType();
 
         /**
          * The meta object literal for the '{@link net.opengis.wfs.OperationType <em>Operation Type</em>}' enum.

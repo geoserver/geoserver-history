@@ -142,8 +142,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *
      * @throws WmsException For any problems executing.
      */
-    protected abstract void execute(FeatureTypeInfo[] requestedLayers,
-        Filter[] filters, int x, int y) throws WmsException;
+    protected abstract void execute(FeatureTypeInfo[] requestedLayers, Filter[] filters, int x,
+        int y) throws WmsException;
 
     /**
      * Gets the map request.  Used by delegate children to find out more

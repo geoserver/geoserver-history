@@ -89,8 +89,7 @@ public class GetLegendGraphicKvpReaderTest extends TestCase {
         wms.setData(data);
 
         GetLegendGraphic service = new GetLegendGraphic(wms);
-        this.requestReader = new GetLegendGraphicKvpReader(allParameters,
-                service);
+        this.requestReader = new GetLegendGraphicKvpReader(allParameters, service);
         this.httpRequest = MockUtils.newHttpRequest(allParameters, true);
 
         dummy = new WMService("dummy", wms) {
@@ -144,16 +143,14 @@ public class GetLegendGraphicKvpReaderTest extends TestCase {
      * </p>
      */
     public void testRemoteSLDMultipleStyles() throws ServiceException {
-        final URL remoteSldUrl = getClass()
-                                     .getResource("test-data/MultipleStyles.sld");
+        final URL remoteSldUrl = getClass().getResource("test-data/MultipleStyles.sld");
         this.allParameters.put("SLD", remoteSldUrl.toExternalForm());
 
         this.allParameters.put("LAYER", "cite:Ponds");
         this.allParameters.put("STYLE", "Ponds");
         requestReader = new GetLegendGraphicKvpReader(this.allParameters, dummy);
 
-        GetLegendGraphicRequest request = (GetLegendGraphicRequest) requestReader
-            .getRequest(httpRequest);
+        GetLegendGraphicRequest request = (GetLegendGraphicRequest) requestReader.getRequest(httpRequest);
 
         //the style names Ponds is declared in third position on the sld doc
         Style selectedStyle = request.getStyle();

@@ -133,8 +133,7 @@ public abstract class XmlRequestReader {
 
         XmlRequestReader other = (XmlRequestReader) obj;
 
-        return new EqualsBuilder().append(element, other.element)
-                                  .append(version, other.version)
+        return new EqualsBuilder().append(element, other.element).append(version, other.version)
                                   .append(serviceId, other.serviceId).isEquals();
     }
 
@@ -142,8 +141,7 @@ public abstract class XmlRequestReader {
      * Implementation of hashcode.
      */
     public int hashCode() {
-        return new HashCodeBuilder().append(element).append(version)
-                                    .append(serviceId).toHashCode();
+        return new HashCodeBuilder().append(element).append(version).append(serviceId).toHashCode();
     }
 
     public String getServiceId() {

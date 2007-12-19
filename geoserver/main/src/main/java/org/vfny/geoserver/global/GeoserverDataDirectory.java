@@ -50,8 +50,7 @@ public class GeoserverDataDirectory {
     private static GeoServerResourceLoader loader;
     private static Data catalog;
     private static ApplicationContext appContext;
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.global");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
     private static boolean isTrueDataDir = false;
 
     /**
@@ -88,8 +87,7 @@ public class GeoserverDataDirectory {
             NameSpaceInfo nsInfo = data.getNameSpaceFromURI(namespace.toString());
 
             if (nsInfo != null) {
-                ftInfo = data.getFeatureTypeInfo(nsInfo.getPrefix() + ":"
-                        + name);
+                ftInfo = data.getFeatureTypeInfo(nsInfo.getPrefix() + ":" + name);
             }
         }
 
@@ -209,8 +207,7 @@ public class GeoserverDataDirectory {
      *
      * @return The file handle, or null.
      */
-    public static File findConfigFile(String file)
-        throws ConfigurationException {
+    public static File findConfigFile(String file) throws ConfigurationException {
         try {
             return loader.find(file);
         } catch (IOException e) {
@@ -260,17 +257,14 @@ public class GeoserverDataDirectory {
                     loader.addSearchLocation(new File(dataDir, "data"));
                     loader.addSearchLocation(new File(dataDir, "WEB-INF"));
 
-                    LOGGER.severe(
-                        "\n----------------------------------\n- GEOSERVER_DATA_DIR: "
-                        + dataDir.getAbsolutePath()
-                        + "\n----------------------------------");
+                    LOGGER.severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
+                        + dataDir.getAbsolutePath() + "\n----------------------------------");
 
                     return;
                 }
             } catch (SecurityException e) {
                 // gobble exception
-                LOGGER.fine(
-                    "Security exception occurred. This is usually not a big deal.\n"
+                LOGGER.fine("Security exception occurred. This is usually not a big deal.\n"
                     + e.getMessage());
             }
 
@@ -284,10 +278,8 @@ public class GeoserverDataDirectory {
                 loader.setBaseDirectory(dataDir);
                 loader.addSearchLocation(new File(dataDir, "data"));
                 loader.addSearchLocation(new File(dataDir, "WEB-INF"));
-                LOGGER.severe(
-                    "\n----------------------------------\n- GEOSERVER_DATA_DIR: "
-                    + dataDir.getAbsolutePath()
-                    + "\n----------------------------------");
+                LOGGER.severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
+                    + dataDir.getAbsolutePath() + "\n----------------------------------");
 
                 return;
             }
@@ -302,10 +294,8 @@ public class GeoserverDataDirectory {
             loader.setBaseDirectory(dataDir);
             loader.addSearchLocation(new File(dataDir, "data"));
             loader.addSearchLocation(new File(dataDir, "WEB-INF"));
-            LOGGER.severe(
-                "\n----------------------------------\n- GEOSERVER_DATA_DIR: "
-                + dataDir.getAbsolutePath()
-                + "\n----------------------------------");
+            LOGGER.severe("\n----------------------------------\n- GEOSERVER_DATA_DIR: "
+                + dataDir.getAbsolutePath() + "\n----------------------------------");
             loader.addSearchLocation(new File(servContext.getRealPath("WEB-INF")));
             loader.addSearchLocation(new File(servContext.getRealPath("data")));
         }

@@ -1,8 +1,8 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wms.xml;
-
-import java.io.Reader;
-
-import javax.xml.namespace.QName;
 
 import org.geoserver.ows.XmlRequestReader;
 import org.geoserver.wms.kvp.GetMapKvpRequestReader;
@@ -11,38 +11,37 @@ import org.geotools.styling.SLDParser;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
+import java.io.Reader;
+import javax.xml.namespace.QName;
+
 
 /**
- * Reads 
+ * Reads
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  *
  */
 public class SLDXmlRequestReader extends XmlRequestReader {
-
     StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
-    
+
     public SLDXmlRequestReader() {
-        super("http://www.opengis.net/sld", "StyledLayerDescriptor" );
+        super("http://www.opengis.net/sld", "StyledLayerDescriptor");
     }
 
     public void setStyleFactory(StyleFactory styleFactory) {
         this.styleFactory = styleFactory;
     }
-    
-   
+
     public Object read(Object request, Reader reader) throws Exception {
-        if ( request == null ) {
-            throw new IllegalArgumentException( "request must be not null" );
+        if (request == null) {
+            throw new IllegalArgumentException("request must be not null");
         }
-        
+
         GetMapRequest getMap = (GetMapRequest) request;
-        StyledLayerDescriptor sld = 
-            new SLDParser( styleFactory, reader ).parseSLD();
-        
+        StyledLayerDescriptor sld = new SLDParser(styleFactory, reader).parseSLD();
+
         //process the sld 
         GetMapKvpRequestReader.processStandaloneSld(getMap, sld);
-    
+
         return getMap;
     }
-    
 }

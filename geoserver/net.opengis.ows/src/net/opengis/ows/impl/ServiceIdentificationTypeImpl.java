@@ -136,16 +136,14 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetServiceType(CodeType newServiceType,
-        NotificationChain msgs) {
+    public NotificationChain basicSetServiceType(CodeType newServiceType, NotificationChain msgs) {
         CodeType oldServiceType = serviceType;
         serviceType = newServiceType;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
-                    OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE,
-                    oldServiceType, newServiceType);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE, oldServiceType,
+                    newServiceType);
 
             if (msgs == null) {
                 msgs = notification;
@@ -169,15 +167,13 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl
             if (serviceType != null) {
                 msgs = ((InternalEObject) serviceType).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE,
-                        null, msgs);
+                        - OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE, null, msgs);
             }
 
             if (newServiceType != null) {
                 msgs = ((InternalEObject) newServiceType).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE,
-                        null, msgs);
+                        - OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE, null, msgs);
             }
 
             msgs = basicSetServiceType(newServiceType, msgs);
@@ -187,8 +183,8 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl
             }
         } else if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE,
-                    newServiceType, newServiceType));
+                    OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE, newServiceType,
+                    newServiceType));
         }
     }
 
@@ -271,8 +267,8 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE:
             return basicSetServiceType(null, msgs);
@@ -377,18 +373,15 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl
             return serviceType != null;
 
         case OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE_VERSION:
-            return (SERVICE_TYPE_VERSION_EDEFAULT == null)
-            ? (serviceTypeVersion != null)
-            : (!SERVICE_TYPE_VERSION_EDEFAULT.equals(serviceTypeVersion));
+            return (SERVICE_TYPE_VERSION_EDEFAULT == null) ? (serviceTypeVersion != null)
+                                                           : (!SERVICE_TYPE_VERSION_EDEFAULT.equals(serviceTypeVersion));
 
         case OwsPackage.SERVICE_IDENTIFICATION_TYPE__FEES:
-            return (FEES_EDEFAULT == null) ? (fees != null)
-                                           : (!FEES_EDEFAULT.equals(fees));
+            return (FEES_EDEFAULT == null) ? (fees != null) : (!FEES_EDEFAULT.equals(fees));
 
         case OwsPackage.SERVICE_IDENTIFICATION_TYPE__ACCESS_CONSTRAINTS:
-            return (ACCESS_CONSTRAINTS_EDEFAULT == null)
-            ? (accessConstraints != null)
-            : (!ACCESS_CONSTRAINTS_EDEFAULT.equals(accessConstraints));
+            return (ACCESS_CONSTRAINTS_EDEFAULT == null) ? (accessConstraints != null)
+                                                         : (!ACCESS_CONSTRAINTS_EDEFAULT.equals(accessConstraints));
         }
 
         return super.eIsSet(featureID);

@@ -36,13 +36,12 @@ public class GeoJSONTest extends WFSTestSupport {
     }
 
     public void testPost() throws Exception {
-        String xml = "<wfs:GetFeature " + "service=\"WFS\" "
-            + "outputFormat=\"json\" " + "version=\"1.1.0\" "
-            + "xmlns:cdf=\"http://www.opengis.net/cite/data\" "
+        String xml = "<wfs:GetFeature " + "service=\"WFS\" " + "outputFormat=\"json\" "
+            + "version=\"1.1.0\" " + "xmlns:cdf=\"http://www.opengis.net/cite/data\" "
             + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
             + "xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> "
-            + "<wfs:Query typeName=\"sf:PrimitiveGeoFeature\"> "
-            + "</wfs:Query> " + "</wfs:GetFeature>";
+            + "<wfs:Query typeName=\"sf:PrimitiveGeoFeature\"> " + "</wfs:Query> "
+            + "</wfs:GetFeature>";
 
         InputStream is = post("wfs", xml);
         BufferedReader in = new BufferedReader(new InputStreamReader(is));

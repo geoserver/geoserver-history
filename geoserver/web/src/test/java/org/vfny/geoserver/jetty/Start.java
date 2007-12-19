@@ -62,16 +62,14 @@ public class Start {
             // jetty stop just after you started it...)
             // jettyServer.stop(); 
         } catch (Exception e) {
-            log.log(Level.SEVERE,
-                "Could not start the Jetty server: " + e.getMessage(), e);
+            log.log(Level.SEVERE, "Could not start the Jetty server: " + e.getMessage(), e);
 
             if (jettyServer != null) {
                 try {
                     jettyServer.stop();
                 } catch (Exception e1) {
                     log.log(Level.SEVERE,
-                        "Unable to stop the " + "Jetty server:"
-                        + e1.getMessage(), e1);
+                        "Unable to stop the " + "Jetty server:" + e1.getMessage(), e1);
                 }
             }
         }

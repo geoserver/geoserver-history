@@ -90,12 +90,11 @@ public class Mercator1SPGoogle extends Mercator {
          */
         static final ParameterDescriptorGroup PARAMETERS = createDescriptorGroup(new NamedIdentifier[] {
                     new NamedIdentifier(Citations.OGC, "Mercator_1SP_Google"),
-                    new NamedIdentifier(Citations.GEOTOOLS,
-                        "Mercator_1SP_Google")
+                    new NamedIdentifier(Citations.GEOTOOLS, "Mercator_1SP_Google")
                 },
                 new ParameterDescriptor[] {
-                    SEMI_MAJOR, SEMI_MINOR, LATITUDE_OF_ORIGIN, CENTRAL_MERIDIAN,
-                    SCALE_FACTOR, FALSE_EASTING, FALSE_NORTHING
+                    SEMI_MAJOR, SEMI_MINOR, LATITUDE_OF_ORIGIN, CENTRAL_MERIDIAN, SCALE_FACTOR,
+                    FALSE_EASTING, FALSE_NORTHING
                 });
 
         /**
@@ -119,8 +118,7 @@ public class Mercator1SPGoogle extends Mercator {
          * @return The created math transform.
          * @throws ParameterNotFoundException if a required parameter was not found.
          */
-        protected MathTransform createMathTransform(
-            final ParameterValueGroup parameters)
+        protected MathTransform createMathTransform(final ParameterValueGroup parameters)
             throws ParameterNotFoundException {
             // make sure we assume a spherical reference
             parameters.parameter("semi_minor")

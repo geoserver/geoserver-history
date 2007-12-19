@@ -51,9 +51,8 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Id$
  */
 public class GeoServerConfigurationSubmit extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping,
-        ActionForm incomingForm, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response) {
+    public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,
+        UserContainer user, HttpServletRequest request, HttpServletResponse response) {
         GeoServerConfigurationForm form = (GeoServerConfigurationForm) incomingForm;
         int maxFeatures = form.getMaxFeatures();
 
@@ -71,8 +70,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
             charset = Charset.forName(stringCharset);
         } catch (IllegalArgumentException uce) {
             ActionErrors errors = new ActionErrors();
-            errors.add(ActionErrors.GLOBAL_ERROR,
-                new ActionError("error.badCharSet"));
+            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.badCharSet"));
             saveErrors(request, errors);
 
             return mapping.findForward("config.server");
@@ -199,8 +197,7 @@ public class GeoServerConfigurationSubmit extends ConfigAction {
         globalConfig.setContact(contactConfig);
         getApplicationState().notifyConfigChanged();
 
-        getServlet().getServletContext()
-            .setAttribute(GlobalConfig.CONFIG_KEY, globalConfig);
+        getServlet().getServletContext().setAttribute(GlobalConfig.CONFIG_KEY, globalConfig);
 
         return mapping.findForward("config");
     }

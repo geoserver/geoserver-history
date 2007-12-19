@@ -105,10 +105,13 @@ public class DifferenceQueryTypeBinding extends AbstractComplexBinding {
             result.setFilter((Filter) node.getChildValue(Filter.class));
         }
 
-        if(node.hasAttribute("fromFeatureVersion"))
+        if (node.hasAttribute("fromFeatureVersion")) {
             result.setFromFeatureVersion((String) node.getAttributeValue("fromFeatureVersion"));
-        if(node.hasAttribute("toFeatureVersion"))
+        }
+
+        if (node.hasAttribute("toFeatureVersion")) {
             result.setToFeatureVersion((String) node.getAttributeValue("toFeatureVersion"));
+        }
 
         return result;
     }

@@ -152,8 +152,7 @@ public class EncodingInfo {
         sb.append((null == fEncoding) ? "[NULL]" : fEncoding);
 
         if (null != fIsBigEndian) {
-            sb.append((fIsBigEndian.booleanValue()) ? " BIG ENDIAN"
-                                                    : " LITTLE ENDIAN");
+            sb.append((fIsBigEndian.booleanValue()) ? " BIG ENDIAN" : " LITTLE ENDIAN");
         }
 
         if (fHasBOM) {

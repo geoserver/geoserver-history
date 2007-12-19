@@ -50,8 +50,7 @@ public final class JPEGMapProducerFactory implements GetMapProducerFactorySpi {
 
     public boolean isAvailable() {
         try {
-            return (Class.forName(
-                "com.sun.media.imageioimpl.plugins.jpeg.CLibJPEGImageWriter") != null)
+            return (Class.forName("com.sun.media.imageioimpl.plugins.jpeg.CLibJPEGImageWriter") != null)
             || (Class.forName("com.sun.imageio.plugins.jpeg.JPEGImageWriter") != null);
         } catch (ClassNotFoundException e) {
             return false;

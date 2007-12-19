@@ -30,7 +30,6 @@ import javax.xml.transform.TransformerException;
 public class DescribeLayerTransformer extends TransformerBase {
     /** The base url upon URLs which point to 'me' should be based. */
     private String baseUrl;
-    
     private GeoServer geoserver;
 
     /**
@@ -78,7 +77,8 @@ public class DescribeLayerTransformer extends TransformerBase {
      */
     public Transformer createTransformer() throws TransformerException {
         Transformer transformer = super.createTransformer();
-        String dtdUrl = RequestUtils.proxifiedBaseURL(baseUrl,geoserver.getProxyBaseUrl()) + "schemas/wms/1.1.1/WMS_DescribeLayerResponse.dtd";
+        String dtdUrl = RequestUtils.proxifiedBaseURL(baseUrl, geoserver.getProxyBaseUrl())
+            + "schemas/wms/1.1.1/WMS_DescribeLayerResponse.dtd";
         transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdUrl);
 
         return transformer;
@@ -134,7 +134,8 @@ public class DescribeLayerTransformer extends TransformerBase {
         private void handleLayers(DescribeLayerRequest req) {
             MapLayerInfo layer;
 
-            String url = RequestUtils.proxifiedBaseURL(req.getBaseUrl(),req.getServiceRef().getGeoServer().getProxyBaseUrl()) + "wfs/WfsDispatcher?";
+            String url = RequestUtils.proxifiedBaseURL(req.getBaseUrl(),
+                    req.getServiceRef().getGeoServer().getProxyBaseUrl()) + "wfs/WfsDispatcher?";
 
             AttributesImpl layerAtts = new AttributesImpl();
             layerAtts.addAttribute("", "name", "name", "", "");

@@ -43,8 +43,7 @@ public class WFSHandlerFactory implements HandlerFactory {
      */
     FeatureTypeSchemaBuilder schemaBuilder;
 
-    public WFSHandlerFactory(Data catalog,
-        FeatureTypeSchemaBuilder schemaBuilder) {
+    public WFSHandlerFactory(Data catalog, FeatureTypeSchemaBuilder schemaBuilder) {
         this.catalog = catalog;
         this.schemaBuilder = schemaBuilder;
     }
@@ -53,8 +52,7 @@ public class WFSHandlerFactory implements HandlerFactory {
         return null;
     }
 
-    public ElementHandler createElementHandler(QName name, Handler parent,
-        ParserHandler parser) {
+    public ElementHandler createElementHandler(QName name, Handler parent, ParserHandler parser) {
         String namespaceURI = name.getNamespaceURI();
 
         if (namespaceURI == null) {
@@ -64,17 +62,14 @@ public class WFSHandlerFactory implements HandlerFactory {
 
         try {
             //look for a FeatureType
-            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(name.getLocalPart(),
-                    namespaceURI);
+            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(name.getLocalPart(), namespaceURI);
 
             if (meta != null) {
                 //found it
                 XSDSchema schema = schemaBuilder.build(meta, null);
 
-                for (Iterator e = schema.getElementDeclarations().iterator();
-                        e.hasNext();) {
-                    XSDElementDeclaration element = (XSDElementDeclaration) e
-                        .next();
+                for (Iterator e = schema.getElementDeclarations().iterator(); e.hasNext();) {
+                    XSDElementDeclaration element = (XSDElementDeclaration) e.next();
 
                     if (name.getLocalPart().equals(element.getName())) {
                         return new ElementHandlerImpl(element, parent, parser);
@@ -88,13 +83,13 @@ public class WFSHandlerFactory implements HandlerFactory {
         return null;
     }
 
-    public ElementHandler createElementHandler(XSDElementDeclaration e,
-        Handler parent, ParserHandler parser) {
+    public ElementHandler createElementHandler(XSDElementDeclaration e, Handler parent,
+        ParserHandler parser) {
         return null;
     }
 
-    public AttributeHandler createAttributeHandler(XSDAttributeDeclaration a,
-        Handler parent, ParserHandler parser) {
+    public AttributeHandler createAttributeHandler(XSDAttributeDeclaration a, Handler parent,
+        ParserHandler parser) {
         return null;
     }
 }

@@ -18,8 +18,7 @@ import java.util.logging.Logger;
  *
  */
 public class FeatureSourceUtils {
-    protected static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.feature");
+    protected static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.feature");
 
     /**
      * Retreives the bounds for a feature source.
@@ -45,8 +44,7 @@ public class FeatureSourceUtils {
                 ev = fs.getFeatures().getBounds();
             } catch (Throwable t) {
                 LOGGER.log(Level.FINE,
-                    "Could not compute the data bounding box. Returning an empty envelope",
-                    t);
+                    "Could not compute the data bounding box. Returning an empty envelope", t);
                 ev = new Envelope();
             }
         }

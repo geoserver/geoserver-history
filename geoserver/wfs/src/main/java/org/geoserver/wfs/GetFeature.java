@@ -63,8 +63,7 @@ import javax.xml.namespace.QName;
  */
 public class GetFeature {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /** The catalog */
     protected Data catalog;
@@ -144,14 +143,11 @@ public class GetFeature {
         int maxFeatures = Math.min(request.getMaxFeatures().intValue(),
                 wfs.getGeoServer().getMaxFeatures());
 
-        FeatureCollectionType result = WfsFactory.eINSTANCE
-            .createFeatureCollectionType();
+        FeatureCollectionType result = WfsFactory.eINSTANCE.createFeatureCollectionType();
         int count = 0; //should probably be long
 
         try {
-            for (int i = 0;
-                    (i < request.getQuery().size()) && (count <= maxFeatures);
-                    i++) {
+            for (int i = 0; (i < request.getQuery().size()) && (count <= maxFeatures); i++) {
                 QueryType query = (QueryType) request.getQuery().get(i);
 
                 FeatureTypeInfo meta = null;
@@ -179,11 +175,9 @@ public class GetFeature {
                     }
 
                     if (!attNames.contains(propName)) {
-                        String mesg = "Requested property: " + propName
-                            + " is " + "not available " + "for "
-                            + query.getTypeName() + ".  "
-                            + "The possible propertyName " + "values are: "
-                            + attNames;
+                        String mesg = "Requested property: " + propName + " is " + "not available "
+                            + "for " + query.getTypeName() + ".  " + "The possible propertyName "
+                            + "values are: " + attNames;
 
                         throw new WFSException(mesg);
                     }
@@ -199,11 +193,9 @@ public class GetFeature {
 
                     while (ii.hasNext()) {
                         AttributeTypeInfo ati = (AttributeTypeInfo) ii.next();
-                        LOGGER.finer("checking to see if " + propNames
-                            + " contains" + ati);
+                        LOGGER.finer("checking to see if " + propNames + " contains" + ati);
 
-                        if (((ati.getMinOccurs() > 0)
-                                && (ati.getMaxOccurs() != 0))) {
+                        if (((ati.getMinOccurs() > 0) && (ati.getMaxOccurs() != 0))) {
                             //mandatory, add it
                             properties.add(ati.getName());
 
@@ -225,8 +217,7 @@ public class GetFeature {
                         // all of the geometries, but we'll have to remove them in the 
                         // returned feature type
                         if (wfs.isFeatureBounding()
-                                && meta.getFeatureType()
-                                           .getAttributeType(ati.getName()) instanceof GeometryAttributeType
+                                && meta.getFeatureType().getAttributeType(ati.getName()) instanceof GeometryAttributeType
                                 && !properties.contains(ati.getName())) {
                             properties.add(ati.getName());
                             extraGeometries.add(ati.getName());
@@ -246,10 +237,8 @@ public class GetFeature {
                                 // case of multiple geometries being returned
                                 if (name.evaluate(featureType) == null) {
                                     //we want to throw wfs exception, but cant
-                                    throw new WFSException(
-                                        "Illegal property name: "
-                                        + name.getPropertyName(),
-                                        "InvalidParameterValue");
+                                    throw new WFSException("Illegal property name: "
+                                        + name.getPropertyName(), "InvalidParameterValue");
                                 }
 
                                 return name;
@@ -257,12 +246,10 @@ public class GetFeature {
                             ;
                         };
 
-                    query.getFilter()
-                         .accept(new AbstractFilterVisitor(visitor), null);
+                    query.getFilter().accept(new AbstractFilterVisitor(visitor), null);
                 }
 
-                org.geotools.data.Query gtQuery = toDataQuery(query,
-                        maxFeatures - count, source);
+                org.geotools.data.Query gtQuery = toDataQuery(query, maxFeatures - count, source);
                 LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery);
 
                 FeatureCollection features = source.getFeatures(gtQuery);
@@ -274,12 +261,11 @@ public class GetFeature {
                     List residualProperties = new ArrayList(properties);
                     residualProperties.removeAll(extraGeometries);
 
-                    String[] residualNames = (String[]) residualProperties
-                        .toArray(new String[residualProperties.size()]);
-                    FeatureType targetType = DataUtilities.createSubType(features
-                            .getSchema(), residualNames);
-                    features = new FeatureBoundsFeatureCollection(features,
-                            targetType);
+                    String[] residualNames = (String[]) residualProperties.toArray(new String[residualProperties
+                            .size()]);
+                    FeatureType targetType = DataUtilities.createSubType(features.getSchema(),
+                            residualNames);
+                    features = new FeatureBoundsFeatureCollection(features, targetType);
                 }
 
                 //JD: TODO reoptimize
@@ -294,19 +280,16 @@ public class GetFeature {
                 result.getFeature().add(features);
             }
         } catch (IOException e) {
-            throw new WFSException("Error occurred getting features", e,
-                request.getHandle());
+            throw new WFSException("Error occurred getting features", e, request.getHandle());
         } catch (SchemaException e) {
-            throw new WFSException("Error occurred getting features", e,
-                request.getHandle());
+            throw new WFSException("Error occurred getting features", e, request.getHandle());
         }
 
         //locking
         if (request instanceof GetFeatureWithLockType) {
             GetFeatureWithLockType withLockRequest = (GetFeatureWithLockType) request;
 
-            LockFeatureType lockRequest = WfsFactory.eINSTANCE
-                .createLockFeatureType();
+            LockFeatureType lockRequest = WfsFactory.eINSTANCE.createLockFeatureType();
             lockRequest.setExpiry(withLockRequest.getExpiry());
             lockRequest.setHandle(withLockRequest.getHandle());
             lockRequest.setLockAction(AllSomeType.ALL_LITERAL);
@@ -354,8 +337,8 @@ public class GetFeature {
      * @return A Query for use with the FeatureSource interface
      *
      */
-    public org.geotools.data.Query toDataQuery(QueryType query,
-        int maxFeatures, FeatureSource source) throws WFSException {
+    public org.geotools.data.Query toDataQuery(QueryType query, int maxFeatures,
+        FeatureSource source) throws WFSException {
         if (maxFeatures <= 0) {
             maxFeatures = DefaultQuery.DEFAULT_MAX;
         }
@@ -378,16 +361,14 @@ public class GetFeature {
         }
 
         // make sure filters are expressed in the data native CRS
-        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools
-                .getDefaultHints());
-        ReprojectingFilterVisitor visitor = new ReprojectingFilterVisitor(ff,
-                source.getSchema());
+        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
+        ReprojectingFilterVisitor visitor = new ReprojectingFilterVisitor(ff, source.getSchema());
         Filter transformedFilter = (Filter) filter.accept(visitor, null);
 
         //only handle non-joins for now
         QName typeName = (QName) query.getTypeName().get(0);
-        DefaultQuery dataQuery = new DefaultQuery(typeName.getLocalPart(),
-                transformedFilter, maxFeatures, props, query.getHandle());
+        DefaultQuery dataQuery = new DefaultQuery(typeName.getLocalPart(), transformedFilter,
+                maxFeatures, props, query.getHandle());
 
         //figure out the crs the data is in
         CoordinateReferenceSystem crs = (source.getSchema().getDefaultGeometry() != null)
@@ -424,8 +405,7 @@ public class GetFeature {
         //handle sorting
         if (query.getSortBy() != null) {
             List sortBy = query.getSortBy();
-            dataQuery.setSortBy((SortBy[]) sortBy.toArray(
-                    new SortBy[sortBy.size()]));
+            dataQuery.setSortBy((SortBy[]) sortBy.toArray(new SortBy[sortBy.size()]));
         }
 
         //handle version, datastore may be able to use it
@@ -436,8 +416,7 @@ public class GetFeature {
         return dataQuery;
     }
 
-    FeatureTypeInfo featureTypeInfo(QName name)
-        throws WFSException, IOException {
+    FeatureTypeInfo featureTypeInfo(QName name) throws WFSException, IOException {
         FeatureTypeInfo meta = catalog.getFeatureTypeInfo(name.getLocalPart(),
                 name.getNamespaceURI());
 

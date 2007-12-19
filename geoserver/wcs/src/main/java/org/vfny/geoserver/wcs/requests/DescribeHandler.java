@@ -21,8 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.wcs");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.wcs");
 
     /**
      * Internal GetCapabilities request for construction.
@@ -62,8 +61,8 @@ public class DescribeHandler extends XMLFilterImpl implements ContentHandler {
      *
      * @throws SAXException For standard SAX errors.
      */
-    public void startElement(String namespaceURI, String localName,
-        String rawName, Attributes atts) throws SAXException {
+    public void startElement(String namespaceURI, String localName, String rawName, Attributes atts)
+        throws SAXException {
         LOGGER.finest("found start element: " + localName);
         currentTag = localName;
 

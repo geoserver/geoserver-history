@@ -276,8 +276,7 @@ public final class DataDTO implements DataTransferObject {
         }
 
         if (defaultNameSpacePrefix != null) {
-            r = r
-                && defaultNameSpacePrefix.equals(c.getDefaultNameSpacePrefix());
+            r = r && defaultNameSpacePrefix.equals(c.getDefaultNameSpacePrefix());
         } else if (c.getDefaultNameSpacePrefix() != null) {
             return false;
         }
@@ -455,8 +454,7 @@ public final class DataDTO implements DataTransferObject {
         defaultNameSpacePrefix = dnsp;
 
         if (!nameSpaces.containsKey(dnsp)) {
-            throw new NoSuchElementException(
-                "Invalid NameSpace Prefix for Default");
+            throw new NoSuchElementException("Invalid NameSpace Prefix for Default");
         }
     }
 

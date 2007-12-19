@@ -244,9 +244,8 @@ public class RollbackTypeImpl extends NativeTypeImpl implements RollbackType {
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsvPackage.ROLLBACK_TYPE__TO_FEATURE_VERSION,
-                    oldToFeatureVersion, toFeatureVersion,
-                    !oldToFeatureVersionESet));
+                    WfsvPackage.ROLLBACK_TYPE__TO_FEATURE_VERSION, oldToFeatureVersion,
+                    toFeatureVersion, !oldToFeatureVersionESet));
         }
     }
 
@@ -263,9 +262,8 @@ public class RollbackTypeImpl extends NativeTypeImpl implements RollbackType {
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.UNSET,
-                    WfsvPackage.ROLLBACK_TYPE__TO_FEATURE_VERSION,
-                    oldToFeatureVersion, TO_FEATURE_VERSION_EDEFAULT,
-                    oldToFeatureVersionESet));
+                    WfsvPackage.ROLLBACK_TYPE__TO_FEATURE_VERSION, oldToFeatureVersion,
+                    TO_FEATURE_VERSION_EDEFAULT, oldToFeatureVersionESet));
         }
     }
 
@@ -324,8 +322,8 @@ public class RollbackTypeImpl extends NativeTypeImpl implements RollbackType {
         userESet = true;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsvPackage.ROLLBACK_TYPE__USER, oldUser, user, !oldUserESet));
+            eNotify(new ENotificationImpl(this, Notification.SET, WfsvPackage.ROLLBACK_TYPE__USER,
+                    oldUser, user, !oldUserESet));
         }
     }
 
@@ -342,8 +340,7 @@ public class RollbackTypeImpl extends NativeTypeImpl implements RollbackType {
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.UNSET,
-                    WfsvPackage.ROLLBACK_TYPE__USER, oldUser, USER_EDEFAULT,
-                    oldUserESet));
+                    WfsvPackage.ROLLBACK_TYPE__USER, oldUser, USER_EDEFAULT, oldUserESet));
         }
     }
 
@@ -462,12 +459,10 @@ public class RollbackTypeImpl extends NativeTypeImpl implements RollbackType {
     public boolean eIsSet(int featureID) {
         switch (featureID) {
         case WfsvPackage.ROLLBACK_TYPE__FILTER:
-            return (FILTER_EDEFAULT == null) ? (filter != null)
-                                             : (!FILTER_EDEFAULT.equals(filter));
+            return (FILTER_EDEFAULT == null) ? (filter != null) : (!FILTER_EDEFAULT.equals(filter));
 
         case WfsvPackage.ROLLBACK_TYPE__HANDLE:
-            return (HANDLE_EDEFAULT == null) ? (handle != null)
-                                             : (!HANDLE_EDEFAULT.equals(handle));
+            return (HANDLE_EDEFAULT == null) ? (handle != null) : (!HANDLE_EDEFAULT.equals(handle));
 
         case WfsvPackage.ROLLBACK_TYPE__TO_FEATURE_VERSION:
             return isSetToFeatureVersion();

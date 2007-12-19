@@ -79,8 +79,7 @@ public abstract class NameSpaceTranslator {
             if (nse != null) {
                 Class cls = nse.getJavaClass();
 
-                if ((cls != null) && cls.isAssignableFrom(type)
-                        && !cls.equals(Object.class)) {
+                if ((cls != null) && cls.isAssignableFrom(type) && !cls.equals(Object.class)) {
                     r.add(nse);
                 }
             }

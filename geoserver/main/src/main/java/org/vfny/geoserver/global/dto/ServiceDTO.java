@@ -235,9 +235,8 @@ public final class ServiceDTO implements DataTransferObject {
             return false;
         }
 
-        if ((serverAbstract != null)
-                ? (!serverAbstract.equals(dto.getAbstract()))
-                    : (dto.serverAbstract != null)) {
+        if ((serverAbstract != null) ? (!serverAbstract.equals(dto.getAbstract()))
+                                         : (dto.serverAbstract != null)) {
             return false;
         }
 
@@ -249,14 +248,12 @@ public final class ServiceDTO implements DataTransferObject {
             return false;
         }
 
-        if ((accessConstraints != null)
-                ? (!accessConstraints.equals(dto.accessConstraints))
-                    : (dto.accessConstraints != null)) {
+        if ((accessConstraints != null) ? (!accessConstraints.equals(dto.accessConstraints))
+                                            : (dto.accessConstraints != null)) {
             return false;
         }
 
-        if ((maintainer != null) ? (!maintainer.equals(dto.maintainer))
-                                     : (dto.maintainer != null)) {
+        if ((maintainer != null) ? (!maintainer.equals(dto.maintainer)) : (dto.maintainer != null)) {
             return false;
         }
 
@@ -265,8 +262,7 @@ public final class ServiceDTO implements DataTransferObject {
             return false;
         }
 
-        if ((strategy != null) ? (!strategy.equals(dto.strategy))
-                                   : (dto.strategy != null)) {
+        if ((strategy != null) ? (!strategy.equals(dto.strategy)) : (dto.strategy != null)) {
             return false;
         }
 
@@ -284,8 +280,7 @@ public final class ServiceDTO implements DataTransferObject {
         return (enabled ? 1 : 0) | ((name != null) ? name.hashCode() : 0)
         | ((title != null) ? title.hashCode() : 0)
         | ((serverAbstract != null) ? serverAbstract.hashCode() : 0)
-        | ((keywords != null) ? keywords.hashCode() : 0)
-        | ((fees != null) ? fees.hashCode() : 0)
+        | ((keywords != null) ? keywords.hashCode() : 0) | ((fees != null) ? fees.hashCode() : 0)
         | ((accessConstraints != null) ? accessConstraints.hashCode() : 0)
         | ((maintainer != null) ? maintainer.hashCode() : 0)
         | ((metadataLink != null) ? metadataLink.hashCode() : 0)

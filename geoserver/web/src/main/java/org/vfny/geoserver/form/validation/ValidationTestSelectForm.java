@@ -39,8 +39,7 @@ public class ValidationTestSelectForm extends ActionForm {
         this.request = request;
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         return errors;
@@ -48,8 +47,7 @@ public class ValidationTestSelectForm extends ActionForm {
 
     public SortedSet getTests() {
         ServletContext context = this.getServlet().getServletContext();
-        ValidationConfig validationConfig = (ValidationConfig) context
-            .getAttribute(ValidationConfig.CONFIG_KEY);
+        ValidationConfig validationConfig = (ValidationConfig) context.getAttribute(ValidationConfig.CONFIG_KEY);
         TestSuiteConfig suiteConfig = (TestSuiteConfig) request.getSession()
                                                                .getAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY);
 

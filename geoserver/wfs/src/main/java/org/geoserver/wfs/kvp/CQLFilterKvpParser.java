@@ -25,8 +25,7 @@ public class CQLFilterKvpParser extends KvpParser {
         try {
             return CQL.toFilterList(value);
         } catch (CQLException pe) {
-            throw new ServiceException("Could not parse CQL filter list."
-                + pe.getMessage(), pe);
+            throw new ServiceException("Could not parse CQL filter list." + pe.getMessage(), pe);
         }
     }
 }

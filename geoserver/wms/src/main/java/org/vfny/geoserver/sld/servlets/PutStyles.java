@@ -59,10 +59,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 
 public class PutStyles extends AbstractService {
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.sld.servlets");
-    private static final StyleFactory styleFactory = StyleFactoryFinder
-        .createStyleFactory();
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.sld.servlets");
+    private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
     public final String success_mime_type = "application/vnd.ogc.success+xml";
 
     public PutStyles() {
@@ -114,15 +112,13 @@ public class PutStyles extends AbstractService {
         String paramValue;
 
         // gather the parameters
-        for (Enumeration pnames = request.getParameterNames();
-                pnames.hasMoreElements();) {
+        for (Enumeration pnames = request.getParameterNames(); pnames.hasMoreElements();) {
             paramName = (String) pnames.nextElement();
             paramValue = request.getParameter(paramName);
             requestParams.put(paramName.toUpperCase(), paramValue);
         }
 
-        PutStylesKvpReader requestReader = new PutStylesKvpReader(requestParams,
-                this);
+        PutStylesKvpReader requestReader = new PutStylesKvpReader(requestParams, this);
 
         PutStylesRequest serviceRequest; // the request object we will deal with
 
@@ -150,14 +146,13 @@ public class PutStyles extends AbstractService {
      *
      *
      */
-    public void doPost(HttpServletRequest request,
-        HttpServletResponse response, Reader requestXml)
+    public void doPost(HttpServletRequest request, HttpServletResponse response, Reader requestXml)
         throws ServletException, IOException {
         LOGGER.fine("PutStyles POST");
 
         if (requestXml == null) {
-            requestXml = new BufferedReader(XmlCharsetDetector
-                    .getCharsetAwareReader(request.getInputStream()));
+            requestXml = new BufferedReader(XmlCharsetDetector.getCharsetAwareReader(
+                        request.getInputStream()));
         }
 
         File temp = File.createTempFile("putStylesPost", "xml");
@@ -342,9 +337,9 @@ public class PutStyles extends AbstractService {
      * @throws IOException
      * @throws WmsException
      */
-    private void processSLD(PutStylesRequest serviceRequest,
-        HttpServletRequest request, HttpServletResponse response,
-        ServletContext context) throws IOException, SldException {
+    private void processSLD(PutStylesRequest serviceRequest, HttpServletRequest request,
+        HttpServletResponse response, ServletContext context)
+        throws IOException, SldException {
         LOGGER.info("Processing SLD");
 
         String sld_remote = serviceRequest.getSLD();
@@ -357,8 +352,7 @@ public class PutStyles extends AbstractService {
         String sld_body = serviceRequest.getSldBody(); // the actual SLD body
 
         if ((sld_body == null) || (sld_body == "")) {
-            throw new IllegalArgumentException(
-                "The body of the SLD cannot be empty!");
+            throw new IllegalArgumentException("The body of the SLD cannot be empty!");
         }
 
         // write out SLD so we can read it in and validate it
@@ -377,8 +371,7 @@ public class PutStyles extends AbstractService {
         tempOut.flush();
         tempOut.close();
 
-        BufferedInputStream fs = new BufferedInputStream(new FileInputStream(
-                    temp));
+        BufferedInputStream fs = new BufferedInputStream(new FileInputStream(temp));
 
         // finish making our tempory file stream (for SLD validation)
         CharArrayReader xml = new CharArrayReader(sld_body.toCharArray()); // put the xml into a 'Reader'
@@ -401,8 +394,7 @@ public class PutStyles extends AbstractService {
         // "ftname_styleLayerName": ignore "_style"
         String layerName = getNodeValue(n_layerName); //.split("_styleLayerName")[0];
         String styleName = getNodeValue(n_styleName);
-        LOGGER.info("PutStyles SLD:\nLayer: " + layerName + ", style: "
-            + styleName);
+        LOGGER.info("PutStyles SLD:\nLayer: " + layerName + ", style: " + styleName);
 
         // store the SLD
         StyleConfig style = new StyleConfig();
@@ -434,8 +426,7 @@ public class PutStyles extends AbstractService {
         sldText.append(
             "	xmlns=\"http://www.opengis.net/sld\" xmlns:ogc=\"http://www.opengis.net/ogc\"\n");
         sldText.append("	xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n");
-        sldText.append(
-            "	xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n");
+        sldText.append("	xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n");
 
         FileOutputStream style_fos = new FileOutputStream(styleFile); // save the sld to a file
 
@@ -478,8 +469,7 @@ public class PutStyles extends AbstractService {
         // get the feature type and save the style for it, if the feature type exists yet
         // If there is no FT there that may mean that the user is just creating it.
         if (layerName != null) {
-            FeatureTypeConfig featureTypeConfig = dataConfig
-                .getFeatureTypeConfig(layerName);
+            FeatureTypeConfig featureTypeConfig = dataConfig.getFeatureTypeConfig(layerName);
             featureTypeConfig.setDefaultStyle(styleName);
         }
 
@@ -489,8 +479,7 @@ public class PutStyles extends AbstractService {
 
         String message = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             + "<sld:success>success</sld:success>";
-        BufferedOutputStream out = new BufferedOutputStream(response
-                .getOutputStream());
+        BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());
         byte[] msg = message.getBytes();
         out.write(msg);
         out.flush();

@@ -59,16 +59,13 @@ import javax.servlet.http.HttpServletResponse;
 public class DataFeatureTypesNewAction extends ConfigAction {
     public final static String NEW_FEATURE_TYPE_KEY = "newFeatureType";
 
-    public ActionForward execute(ActionMapping mapping,
-        ActionForm incomingForm, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
+    public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,
+        UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws IOException {
         DataFeatureTypesNewForm form = (DataFeatureTypesNewForm) incomingForm;
-        String selectedNewFeatureType = form
-            .getSelectedNewFeatureType();
+        String selectedNewFeatureType = form.getSelectedNewFeatureType();
 
-        DataConfig dataConfig = (DataConfig) request.getSession()
-                                                    .getServletContext()
+        DataConfig dataConfig = (DataConfig) request.getSession().getServletContext()
                                                     .getAttribute(DataConfig.CONFIG_KEY);
         int index = selectedNewFeatureType.indexOf(DataConfig.SEPARATOR);
         String dataStoreID = selectedNewFeatureType.substring(0, index);
@@ -76,8 +73,7 @@ public class DataFeatureTypesNewAction extends ConfigAction {
                 + DataConfig.SEPARATOR.length());
 
         DataStoreConfig dsConfig = dataConfig.getDataStore(dataStoreID);
-        DataStore dataStore = dsConfig.findDataStore(request.getSession()
-                                                            .getServletContext());
+        DataStore dataStore = dsConfig.findDataStore(request.getSession().getServletContext());
 
         FeatureTypeConfig ftConfig;
 
@@ -117,9 +113,7 @@ public class DataFeatureTypesNewAction extends ConfigAction {
                         if (id.toString().indexOf("EPSG:") != -1) // this should probably use the Citation, but this is easier!
                          {
                             //we have an EPSG #, so lets use it!
-                            String str_num = id.toString()
-                                               .substring(id.toString()
-                                                            .indexOf(':') + 1);
+                            String str_num = id.toString().substring(id.toString().indexOf(':') + 1);
                             int num = Integer.parseInt(str_num);
                             ftConfig.setSRS(num);
 
@@ -131,8 +125,7 @@ public class DataFeatureTypesNewAction extends ConfigAction {
                 e.printStackTrace(); // not a big deal - we'll default to 0.
             }
 
-            FeatureSource fs = dataStore.getFeatureSource(featureType
-                    .getTypeName());
+            FeatureSource fs = dataStore.getFeatureSource(featureType.getTypeName());
 
             // TODO translate to lat long, pending
             //This should not be done by default, as it is an expensive operation.
@@ -148,24 +141,21 @@ public class DataFeatureTypesNewAction extends ConfigAction {
             if (e instanceof FileNotFoundException) {
                 ActionErrors errors = new ActionErrors();
                 errors.add(ActionErrors.GLOBAL_ERROR,
-                    new ActionError("error.exception",
-                        "File not found: " + e.getMessage()));
+                    new ActionError("error.exception", "File not found: " + e.getMessage()));
                 saveErrors(request, errors);
 
                 return mapping.findForward("config.data.type.new");
             }
 
             ActionErrors errors = new ActionErrors();
-            errors.add(ActionErrors.GLOBAL_ERROR,
-                new ActionError("error.exception", e.getMessage()));
+            errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.exception", e.getMessage()));
 
             saveErrors(request, errors);
 
             return mapping.findForward("config.data.type.new");
         }
 
-        request.getSession()
-               .setAttribute(DataConfig.SELECTED_FEATURE_TYPE, ftConfig);
+        request.getSession().setAttribute(DataConfig.SELECTED_FEATURE_TYPE, ftConfig);
         request.getSession().removeAttribute(DataConfig.SELECTED_ATTRIBUTE_TYPE);
 
         user.setFeatureTypeConfig(ftConfig);

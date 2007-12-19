@@ -37,16 +37,13 @@ public class StylesNewForm extends ActionForm {
      * @param request
      * @return Any ActionErrors produced by validation
      */
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         if ((styleID == null) || styleID.equals("")) {
-            errors.add("styleID",
-                new ActionError("error.styleID.required", styleID));
+            errors.add("styleID", new ActionError("error.styleID.required", styleID));
         } else if (!Pattern.matches("^[-\\w.:]*$", styleID)) {
-            errors.add("styleID",
-                new ActionError("error.styleID.invalid", styleID));
+            errors.add("styleID", new ActionError("error.styleID.invalid", styleID));
         }
 
         return errors;

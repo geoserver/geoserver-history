@@ -64,14 +64,13 @@ public class InsertElementHandler implements TransactionElementHandler {
         }
     }
 
-    public void execute(EObject element, TransactionType request,
-        Map featureStores, TransactionResponseType response,
-        TransactionListener listener) throws WFSTransactionException {
+    public void execute(EObject element, TransactionType request, Map featureStores,
+        TransactionResponseType response, TransactionListener listener)
+        throws WFSTransactionException {
         LOGGER.finer("Transasction Insert:" + element);
 
         InsertElementType insert = (InsertElementType) element;
-        long inserted = response.getTransactionSummary().getTotalInserted()
-                                .longValue();
+        long inserted = response.getTransactionSummary().getTotalInserted().longValue();
 
         try {
             // group features by their schema
@@ -80,8 +79,7 @@ public class InsertElementHandler implements TransactionElementHandler {
             for (Iterator f = insert.getFeature().iterator(); f.hasNext();) {
                 Feature feature = (Feature) f.next();
                 FeatureType schema = feature.getFeatureType();
-                FeatureCollection collection = (FeatureCollection) schema2features
-                    .get(schema);
+                FeatureCollection collection = (FeatureCollection) schema2features.get(schema);
 
                 if (collection == null) {
                     collection = new DefaultFeatureCollection(null, schema);
@@ -103,13 +101,11 @@ public class InsertElementHandler implements TransactionElementHandler {
                 FeatureCollection collection = (FeatureCollection) c.next();
                 FeatureType schema = collection.getSchema();
 
-                QName elementName = new QName(schema.getNamespace().toString(),
-                        schema.getTypeName());
+                QName elementName = new QName(schema.getNamespace().toString(), schema.getTypeName());
                 FeatureStore store = (FeatureStore) featureStores.get(elementName);
 
                 if (store == null) {
-                    throw new WFSException(
-                        "Could not locate FeatureStore for '" + elementName
+                    throw new WFSException("Could not locate FeatureStore for '" + elementName
                         + "'");
                 }
 
@@ -121,13 +117,11 @@ public class InsertElementHandler implements TransactionElementHandler {
                     }
 
                     // reprojection
-                    CoordinateReferenceSystem target = store.getSchema()
-                                                            .getDefaultGeometry()
+                    CoordinateReferenceSystem target = store.getSchema().getDefaultGeometry()
                                                             .getCoordinateSystem();
 
                     if (target != null) {
-                        collection = new ReprojectingFeatureCollection(collection,
-                                target);
+                        collection = new ReprojectingFeatureCollection(collection, target);
                     }
 
                     // Need to use the namespace here for the
@@ -149,8 +143,7 @@ public class InsertElementHandler implements TransactionElementHandler {
                     // qName.getLocalPart() );
 
                     // this is possible with the insert hack above.
-                    LOGGER.finer(
-                        "Use featureValidation to check contents of insert");
+                    LOGGER.finer("Use featureValidation to check contents of insert");
 
                     // featureValidation(
                     // typeInfo.getDataStore().getId(), schema,
@@ -162,8 +155,8 @@ public class InsertElementHandler implements TransactionElementHandler {
                         schema2fids.put(schema.getTypeName(), fids);
                     }
 
-                    listener.dataStoreChange(new TransactionEvent(
-                            TransactionEventType.PRE_INSERT, collection));
+                    listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_INSERT,
+                            collection));
                     fids.addAll(store.addFeatures(collection));
                 }
             }
@@ -177,8 +170,7 @@ public class InsertElementHandler implements TransactionElementHandler {
                 FeatureType schema = feature.getFeatureType();
 
                 // get the next fid
-                LinkedList fids = (LinkedList) schema2fids.get(schema
-                        .getTypeName());
+                LinkedList fids = (LinkedList) schema2fids.get(schema.getTypeName());
                 String fid = (String) fids.removeFirst();
 
                 insertedFeature = WfsFactory.eINSTANCE.createInsertedFeatureType();
@@ -196,8 +188,7 @@ public class InsertElementHandler implements TransactionElementHandler {
         }
 
         // update transaction summary
-        response.getTransactionSummary()
-                .setTotalInserted(BigInteger.valueOf(inserted));
+        response.getTransactionSummary().setTotalInserted(BigInteger.valueOf(inserted));
     }
 
     /**
@@ -222,8 +213,7 @@ public class InsertElementHandler implements TransactionElementHandler {
                             Geometry geom = (Geometry) f.getAttribute(i);
 
                             if (geom != null) {
-                                JTS.checkCoordinatesRange(geom,
-                                    gat.getCoordinateSystem());
+                                JTS.checkCoordinatesRange(geom, gat.getCoordinateSystem());
                             }
                         }
                     }
@@ -250,8 +240,7 @@ public class InsertElementHandler implements TransactionElementHandler {
                 String namespaceURI = null;
 
                 if (feature.getFeatureType().getNamespace() != null) {
-                    namespaceURI = feature.getFeatureType().getNamespace()
-                                          .toString();
+                    namespaceURI = feature.getFeatureType().getNamespace().toString();
                 }
 
                 typeNames.add(new QName(namespaceURI, name));

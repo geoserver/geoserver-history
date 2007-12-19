@@ -41,18 +41,16 @@ public class AbstractGeometryTypeBinding extends org.geotools.gml3.bindings.Abst
         this.crs = crs;
     }
 
-    public void initializeChildContext(ElementInstance childInstance,
-        Node node, MutablePicoContainer context) {
+    public void initializeChildContext(ElementInstance childInstance, Node node,
+        MutablePicoContainer context) {
         //if an srsName is set for this geometry, put it in the context for 
         // children, so they can use it as well
         if (node.hasAttribute("srsName")) {
             try {
-                CoordinateReferenceSystem crs = GML2ParsingUtils
-                    .crs(node);
+                CoordinateReferenceSystem crs = GML2ParsingUtils.crs(node);
 
                 if (crs != null) {
-                    context.registerComponentInstance(CoordinateReferenceSystem.class,
-                        crs);
+                    context.registerComponentInstance(CoordinateReferenceSystem.class, crs);
                 }
             } catch (Exception e) {
                 throw new WFSException(e, "InvalidParameterValue");
@@ -67,8 +65,8 @@ public class AbstractGeometryTypeBinding extends org.geotools.gml3.bindings.Abst
                 CRS.decode(node.getAttributeValue("srsName").toString());
             }
         } catch (NoSuchAuthorityCodeException e) {
-            throw new WFSException("Invalid Authority Code: "
-                + e.getAuthorityCode(), "InvalidParameterValue");
+            throw new WFSException("Invalid Authority Code: " + e.getAuthorityCode(),
+                "InvalidParameterValue");
         }
 
         Geometry geometry = (Geometry) super.parse(instance, node, value);
@@ -86,8 +84,7 @@ public class AbstractGeometryTypeBinding extends org.geotools.gml3.bindings.Abst
             }
 
             //2. ensure the coordinates of the geometry fall into valid space defined by crs
-            CoordinateReferenceSystem crs = (CoordinateReferenceSystem) geometry
-                .getUserData();
+            CoordinateReferenceSystem crs = (CoordinateReferenceSystem) geometry.getUserData();
 
             if (crs != null) {
                 try {

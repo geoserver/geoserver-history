@@ -83,8 +83,7 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
                         StringBuffer sb = new StringBuffer();
 
                         for (int i = 0; i < l.getNumPoints(); i++) {
-                            Coordinate c = l
-                                .getCoordinateN(i);
+                            Coordinate c = l.getCoordinateN(i);
                             sb.append(c.x).append(" ").append(c.y).append(" ");
                         }
 
@@ -170,12 +169,10 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
     }
 
     abstract class GeoRSSTranslatorSupport extends TranslatorSupport {
-        public GeoRSSTranslatorSupport(ContentHandler contentHandler,
-            String prefix, String nsURI) {
+        public GeoRSSTranslatorSupport(ContentHandler contentHandler, String prefix, String nsURI) {
             super(contentHandler, prefix, nsURI);
 
-            nsSupport.declarePrefix(geometryEncoding.getPrefix(),
-                geometryEncoding.getNamespaceURI());
+            nsSupport.declarePrefix(geometryEncoding.getPrefix(), geometryEncoding.getNamespaceURI());
         }
 
         /**
@@ -212,15 +209,13 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
             throws IOException {
             ReferencedEnvelope mapArea = map.getAreaOfInterest();
             CoordinateReferenceSystem wgs84 = null;
-            FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools
-                    .getDefaultHints());
+            FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());
 
             try {
                 // this should never throw an exception, but we have to deal with it anyways
                 wgs84 = CRS.decode("EPSG:4326");
             } catch (Exception e) {
-                throw (IOException) (new IOException(
-                    "Unable to decode WGS84...").initCause(e));
+                throw (IOException) (new IOException("Unable to decode WGS84...").initCause(e));
             }
 
             List featureCollections = new ArrayList();
@@ -234,8 +229,7 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
                 try {
                     FeatureSource source = layer.getFeatureSource();
 
-                    GeometryAttributeType at = source.getSchema()
-                                                     .getDefaultGeometry();
+                    GeometryAttributeType at = source.getSchema().getDefaultGeometry();
 
                     if (at == null) {
                         // geometryless layers...
@@ -244,28 +238,24 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
                         // make sure we are querying the source with the bbox in the right CRS, if
                         // not, reproject the bbox
                         ReferencedEnvelope env = new ReferencedEnvelope(mapArea);
-                        CoordinateReferenceSystem sourceCRS = at
-                            .getCoordinateSystem();
+                        CoordinateReferenceSystem sourceCRS = at.getCoordinateSystem();
 
                         if ((sourceCRS != null)
                                 && !CRS.equalsIgnoreMetadata(
-                                    mapArea.getCoordinateReferenceSystem(),
-                                    sourceCRS)) {
+                                    mapArea.getCoordinateReferenceSystem(), sourceCRS)) {
                             env = env.transform(sourceCRS, true);
                         }
 
                         // build the mixed query
                         Filter original = query.getFilter();
-                        Filter bbox = ff.bbox(at.getLocalName(), env.getMinX(),
-                                env.getMinY(), env.getMaxX(), env.getMaxY(),
-                                null);
+                        Filter bbox = ff.bbox(at.getLocalName(), env.getMinX(), env.getMinY(),
+                                env.getMaxX(), env.getMaxY(), null);
                         query.setFilter(ff.and(original, bbox));
 
                         // query and eventually reproject
                         features = source.getFeatures(query);
 
-                        if ((sourceCRS != null)
-                                && !CRS.equalsIgnoreMetadata(wgs84, sourceCRS)) {
+                        if ((sourceCRS != null) && !CRS.equalsIgnoreMetadata(wgs84, sourceCRS)) {
                             ReprojectingFeatureCollection coll = new ReprojectingFeatureCollection(features,
                                     wgs84);
                             coll.setDefaultSource(sourceCRS);

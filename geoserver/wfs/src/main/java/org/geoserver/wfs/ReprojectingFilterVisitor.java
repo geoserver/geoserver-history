@@ -43,8 +43,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
     FeatureType featureType;
 
-    public ReprojectingFilterVisitor(FilterFactory2 factory,
-        FeatureType featureType) {
+    public ReprojectingFilterVisitor(FilterFactory2 factory, FeatureType featureType) {
         super(factory);
         this.featureType = featureType;
     }
@@ -87,14 +86,11 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
 
             // grab the property data
             String propertyName = filter.getPropertyName();
-            CoordinateReferenceSystem targetCrs = findPropertyCRS(factory
-                    .property(propertyName));
+            CoordinateReferenceSystem targetCrs = findPropertyCRS(factory.property(propertyName));
 
             // if there is a mismatch, reproject and replace
-            if ((crs != null) && (targetCrs != null)
-                    && !CRS.equalsIgnoreMetadata(crs, targetCrs)) {
-                ReferencedEnvelope envelope = new ReferencedEnvelope(minx,
-                        maxx, miny, maxy, crs);
+            if ((crs != null) && (targetCrs != null) && !CRS.equalsIgnoreMetadata(crs, targetCrs)) {
+                ReferencedEnvelope envelope = new ReferencedEnvelope(minx, maxx, miny, maxy, crs);
                 envelope = envelope.transform(targetCrs, true);
                 minx = envelope.getMinX();
                 miny = envelope.getMinY();
@@ -103,8 +99,7 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
                 srs = targetCrs.getIdentifiers().iterator().next().toString();
             }
 
-            return getFactory(extraData)
-                       .bbox(propertyName, minx, miny, maxx, maxy, srs);
+            return getFactory(extraData).bbox(propertyName, minx, miny, maxx, maxy, srs);
         } catch (Exception e) {
             throw new RuntimeException("Could not decode srs '" + srs + "'", e);
         }
@@ -112,32 +107,27 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
 
     public Object visit(Beyond filter, Object extraData) {
         return new GeometryFilterTransformer() {
-                Object cloneFilter(BinarySpatialOperator filter,
-                    Object extraData) {
-                    return ReprojectingFilterVisitor.super.visit((Beyond) filter,
-                        extraData);
+                Object cloneFilter(BinarySpatialOperator filter, Object extraData) {
+                    return ReprojectingFilterVisitor.super.visit((Beyond) filter, extraData);
                 }
 
-                Object cloneFilter(BinarySpatialOperator bso, Object extraData,
-                    Expression ex1, Expression ex2) {
+                Object cloneFilter(BinarySpatialOperator bso, Object extraData, Expression ex1,
+                    Expression ex2) {
                     Beyond filter = (Beyond) bso;
 
-                    return factory.beyond(ex1, ex2, filter.getDistance(),
-                        filter.getDistanceUnits());
+                    return factory.beyond(ex1, ex2, filter.getDistance(), filter.getDistanceUnits());
                 }
             }.transform(filter, extraData);
     }
 
     public Object visit(Contains filter, Object extraData) {
         return new GeometryFilterTransformer() {
-                Object cloneFilter(BinarySpatialOperator filter,
-                    Object extraData) {
-                    return ReprojectingFilterVisitor.super.visit((Contains) filter,
-                        extraData);
+                Object cloneFilter(BinarySpatialOperator filter, Object extraData) {
+                    return ReprojectingFilterVisitor.super.visit((Contains) filter, extraData);
                 }
 
-                Object cloneFilter(BinarySpatialOperator bso, Object extraData,
-                    Expression ex1, Expression ex2) {
+                Object cloneFilter(BinarySpatialOperator bso, Object extraData, Expression ex1,
+                    Expression ex2) {
                     return factory.contains(ex1, ex2);
                 }
             }.transform(filter, extraData);
@@ -145,14 +135,12 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
 
     public Object visit(Crosses filter, Object extraData) {
         return new GeometryFilterTransformer() {
-                Object cloneFilter(BinarySpatialOperator filter,
-                    Object extraData) {
-                    return ReprojectingFilterVisitor.super.visit((Crosses) filter,
-                        extraData);
+                Object cloneFilter(BinarySpatialOperator filter, Object extraData) {
+                    return ReprojectingFilterVisitor.super.visit((Crosses) filter, extraData);
                 }
 
-                Object cloneFilter(BinarySpatialOperator bso, Object extraData,
-                    Expression ex1, Expression ex2) {
+                Object cloneFilter(BinarySpatialOperator bso, Object extraData, Expression ex1,
+                    Expression ex2) {
                     return factory.crosses(ex1, ex2);
                 }
             }.transform(filter, extraData);
@@ -160,14 +148,12 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
 
     public Object visit(Disjoint filter, Object extraData) {
         return new GeometryFilterTransformer() {
-                Object cloneFilter(BinarySpatialOperator filter,
-                    Object extraData) {
-                    return ReprojectingFilterVisitor.super.visit((Disjoint) filter,
-                        extraData);
+                Object cloneFilter(BinarySpatialOperator filter, Object extraData) {
+                    return ReprojectingFilterVisitor.super.visit((Disjoint) filter, extraData);
                 }
 
-                Object cloneFilter(BinarySpatialOperator bso, Object extraData,
-                    Expression ex1, Expression ex2) {
+                Object cloneFilter(BinarySpatialOperator bso, Object extraData, Expression ex1,
+                    Expression ex2) {
                     return factory.disjoint(ex1, ex2);
                 }
             }.transform(filter, extraData);
@@ -175,32 +161,27 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
 
     public Object visit(DWithin filter, Object extraData) {
         return new GeometryFilterTransformer() {
-                Object cloneFilter(BinarySpatialOperator filter,
-                    Object extraData) {
-                    return ReprojectingFilterVisitor.super.visit((DWithin) filter,
-                        extraData);
+                Object cloneFilter(BinarySpatialOperator filter, Object extraData) {
+                    return ReprojectingFilterVisitor.super.visit((DWithin) filter, extraData);
                 }
 
-                Object cloneFilter(BinarySpatialOperator bso, Object extraData,
-                    Expression ex1, Expression ex2) {
+                Object cloneFilter(BinarySpatialOperator bso, Object extraData, Expression ex1,
+                    Expression ex2) {
                     DWithin filter = (DWithin) bso;
 
-                    return factory.dwithin(ex1, ex2, filter.getDistance(),
-                        filter.getDistanceUnits());
+                    return factory.dwithin(ex1, ex2, filter.getDistance(), filter.getDistanceUnits());
                 }
             }.transform(filter, extraData);
     }
 
     public Object visit(Intersects filter, Object extraData) {
         return new GeometryFilterTransformer() {
-                Object cloneFilter(BinarySpatialOperator filter,
-                    Object extraData) {
-                    return ReprojectingFilterVisitor.super.visit((Intersects) filter,
-                        extraData);
+                Object cloneFilter(BinarySpatialOperator filter, Object extraData) {
+                    return ReprojectingFilterVisitor.super.visit((Intersects) filter, extraData);
                 }
 
-                Object cloneFilter(BinarySpatialOperator bso, Object extraData,
-                    Expression ex1, Expression ex2) {
+                Object cloneFilter(BinarySpatialOperator bso, Object extraData, Expression ex1,
+                    Expression ex2) {
                     return factory.intersects(ex1, ex2);
                 }
             }.transform(filter, extraData);
@@ -208,14 +189,12 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
 
     public Object visit(Overlaps filter, Object extraData) {
         return new GeometryFilterTransformer() {
-                Object cloneFilter(BinarySpatialOperator filter,
-                    Object extraData) {
-                    return ReprojectingFilterVisitor.super.visit((Overlaps) filter,
-                        extraData);
+                Object cloneFilter(BinarySpatialOperator filter, Object extraData) {
+                    return ReprojectingFilterVisitor.super.visit((Overlaps) filter, extraData);
                 }
 
-                Object cloneFilter(BinarySpatialOperator bso, Object extraData,
-                    Expression ex1, Expression ex2) {
+                Object cloneFilter(BinarySpatialOperator bso, Object extraData, Expression ex1,
+                    Expression ex2) {
                     return factory.overlaps(ex1, ex2);
                 }
             }.transform(filter, extraData);
@@ -223,14 +202,12 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
 
     public Object visit(Touches filter, Object extraData) {
         return new GeometryFilterTransformer() {
-                Object cloneFilter(BinarySpatialOperator filter,
-                    Object extraData) {
-                    return ReprojectingFilterVisitor.super.visit((Touches) filter,
-                        extraData);
+                Object cloneFilter(BinarySpatialOperator filter, Object extraData) {
+                    return ReprojectingFilterVisitor.super.visit((Touches) filter, extraData);
                 }
 
-                Object cloneFilter(BinarySpatialOperator bso, Object extraData,
-                    Expression ex1, Expression ex2) {
+                Object cloneFilter(BinarySpatialOperator bso, Object extraData, Expression ex1,
+                    Expression ex2) {
                     return factory.touches(ex1, ex2);
                 }
             }.transform(filter, extraData);
@@ -238,14 +215,12 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
 
     public Object visit(Within filter, Object extraData) {
         return new GeometryFilterTransformer() {
-                Object cloneFilter(BinarySpatialOperator filter,
-                    Object extraData) {
-                    return ReprojectingFilterVisitor.super.visit((Within) filter,
-                        extraData);
+                Object cloneFilter(BinarySpatialOperator filter, Object extraData) {
+                    return ReprojectingFilterVisitor.super.visit((Within) filter, extraData);
                 }
 
-                Object cloneFilter(BinarySpatialOperator bso, Object extraData,
-                    Expression ex1, Expression ex2) {
+                Object cloneFilter(BinarySpatialOperator bso, Object extraData, Expression ex1,
+                    Expression ex2) {
                     return factory.within(ex1, ex2);
                 }
             }.transform(filter, extraData);
@@ -261,10 +236,8 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
         Object transform(BinarySpatialOperator filter, Object extraData) {
             // check working assumptions, first expression is a property
             if (!(filter.getExpression1() instanceof PropertyName)) {
-                throw new IllegalArgumentException(
-                    "Binary geometry filter, but first expression "
-                    + "is not a property name? (it's a "
-                    + filter.getExpression1().getClass() + ")");
+                throw new IllegalArgumentException("Binary geometry filter, but first expression "
+                    + "is not a property name? (it's a " + filter.getExpression1().getClass() + ")");
             }
 
             CoordinateReferenceSystem propertyCrs = findPropertyCRS((PropertyName) filter
@@ -276,19 +249,15 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
 
             // second expression is a geometry literal
             if (!(filter.getExpression2() instanceof Literal)) {
-                throw new IllegalArgumentException(
-                    "Binary geometry filter, but second expression "
-                    + "is not a literal? (it's a "
-                    + filter.getExpression1().getClass() + ")");
+                throw new IllegalArgumentException("Binary geometry filter, but second expression "
+                    + "is not a literal? (it's a " + filter.getExpression1().getClass() + ")");
             }
 
             Object value = ((Literal) filter.getExpression2()).getValue();
 
             if (!(value instanceof Geometry)) {
-                throw new IllegalArgumentException(
-                    "Binary geometry filter, but second expression "
-                    + "is not a geometry literal? (it's a " + value.getClass()
-                    + ")");
+                throw new IllegalArgumentException("Binary geometry filter, but second expression "
+                    + "is not a geometry literal? (it's a " + value.getClass() + ")");
             }
 
             Geometry geom = (Geometry) value;
@@ -301,8 +270,7 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
 
             try {
                 // reproject
-                CoordinateReferenceSystem geomCRS = (CoordinateReferenceSystem) geom
-                    .getUserData();
+                CoordinateReferenceSystem geomCRS = (CoordinateReferenceSystem) geom.getUserData();
                 Geometry transformed = JTS.transform(geom,
                         CRS.findMathTransform(geomCRS, propertyCrs, true));
                 transformed.setUserData(propertyCrs);
@@ -315,8 +283,7 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
 
                 return cloneFilter(filter, extraData, ex1, ex2);
             } catch (Exception e) {
-                throw new RuntimeException(
-                    "Could not reproject geometry filter " + filter, e);
+                throw new RuntimeException("Could not reproject geometry filter " + filter, e);
             }
         }
 
@@ -327,8 +294,7 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
          * @param extraData
          * @return
          */
-        abstract Object cloneFilter(BinarySpatialOperator filter,
-            Object extraData);
+        abstract Object cloneFilter(BinarySpatialOperator filter, Object extraData);
 
         /**
          * Clone with the provided parameters as first and second expressions
@@ -339,7 +305,7 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
          * @param ex2
          * @return
          */
-        abstract Object cloneFilter(BinarySpatialOperator filter,
-            Object extraData, Expression ex1, Expression ex2);
+        abstract Object cloneFilter(BinarySpatialOperator filter, Object extraData, Expression ex1,
+            Expression ex2);
     }
 }

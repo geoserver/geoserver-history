@@ -62,8 +62,8 @@ public class OpenLayersMapTemplateTest extends WMSTestSupport {
 
         DocumentBuilder docBuilder = dbf.newDocumentBuilder();
         docBuilder.setEntityResolver(new EntityResolver() {
-                public InputSource resolveEntity(String publicId,
-                    String systemId) throws SAXException, IOException {
+                public InputSource resolveEntity(String publicId, String systemId)
+                    throws SAXException, IOException {
                     StringReader reader = new StringReader(
                             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                     InputSource source = new InputSource(reader);
@@ -74,8 +74,7 @@ public class OpenLayersMapTemplateTest extends WMSTestSupport {
                 }
             });
 
-        Document document = docBuilder.parse(new ByteArrayInputStream(
-                    output.toByteArray()));
+        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
         assertNotNull(document);
 
         assertEquals("html", document.getDocumentElement().getNodeName());

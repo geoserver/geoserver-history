@@ -10,15 +10,13 @@ import net.opengis.ows.CodeType;
 import net.opengis.ows.ContactType;
 import net.opengis.ows.OwsPackage;
 import net.opengis.ows.ResponsiblePartyType;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -38,369 +36,458 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * @generated
  */
 public class ResponsiblePartyTypeImpl extends EObjectImpl implements ResponsiblePartyType {
-	/**
-     * The default value of the '{@link #getIndividualName() <em>Individual Name</em>}' attribute.
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @see #getIndividualName()
-     * @generated
-     * @ordered
-     */
-	protected static final String INDIVIDUAL_NAME_EDEFAULT = null;
+    /**
+    * The default value of the '{@link #getIndividualName() <em>Individual Name</em>}' attribute.
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @see #getIndividualName()
+    * @generated
+    * @ordered
+    */
+    protected static final String INDIVIDUAL_NAME_EDEFAULT = null;
 
-	/**
-     * The cached value of the '{@link #getIndividualName() <em>Individual Name</em>}' attribute.
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @see #getIndividualName()
-     * @generated
-     * @ordered
-     */
-	protected String individualName = INDIVIDUAL_NAME_EDEFAULT;
+    /**
+    * The cached value of the '{@link #getIndividualName() <em>Individual Name</em>}' attribute.
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @see #getIndividualName()
+    * @generated
+    * @ordered
+    */
+    protected String individualName = INDIVIDUAL_NAME_EDEFAULT;
 
-	/**
-     * The default value of the '{@link #getOrganisationName() <em>Organisation Name</em>}' attribute.
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @see #getOrganisationName()
-     * @generated
-     * @ordered
-     */
-	protected static final String ORGANISATION_NAME_EDEFAULT = null;
+    /**
+    * The default value of the '{@link #getOrganisationName() <em>Organisation Name</em>}' attribute.
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @see #getOrganisationName()
+    * @generated
+    * @ordered
+    */
+    protected static final String ORGANISATION_NAME_EDEFAULT = null;
 
-	/**
-     * The cached value of the '{@link #getOrganisationName() <em>Organisation Name</em>}' attribute.
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @see #getOrganisationName()
-     * @generated
-     * @ordered
-     */
-	protected String organisationName = ORGANISATION_NAME_EDEFAULT;
+    /**
+    * The cached value of the '{@link #getOrganisationName() <em>Organisation Name</em>}' attribute.
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @see #getOrganisationName()
+    * @generated
+    * @ordered
+    */
+    protected String organisationName = ORGANISATION_NAME_EDEFAULT;
 
-	/**
-     * The default value of the '{@link #getPositionName() <em>Position Name</em>}' attribute.
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @see #getPositionName()
-     * @generated
-     * @ordered
-     */
-	protected static final String POSITION_NAME_EDEFAULT = null;
+    /**
+    * The default value of the '{@link #getPositionName() <em>Position Name</em>}' attribute.
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @see #getPositionName()
+    * @generated
+    * @ordered
+    */
+    protected static final String POSITION_NAME_EDEFAULT = null;
 
-	/**
-     * The cached value of the '{@link #getPositionName() <em>Position Name</em>}' attribute.
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @see #getPositionName()
-     * @generated
-     * @ordered
-     */
-	protected String positionName = POSITION_NAME_EDEFAULT;
+    /**
+    * The cached value of the '{@link #getPositionName() <em>Position Name</em>}' attribute.
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @see #getPositionName()
+    * @generated
+    * @ordered
+    */
+    protected String positionName = POSITION_NAME_EDEFAULT;
 
-	/**
-     * The cached value of the '{@link #getContactInfo() <em>Contact Info</em>}' containment reference.
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @see #getContactInfo()
-     * @generated
-     * @ordered
-     */
-	protected ContactType contactInfo;
+    /**
+    * The cached value of the '{@link #getContactInfo() <em>Contact Info</em>}' containment reference.
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @see #getContactInfo()
+    * @generated
+    * @ordered
+    */
+    protected ContactType contactInfo;
 
-	/**
-     * The cached value of the '{@link #getRole() <em>Role</em>}' containment reference.
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @see #getRole()
-     * @generated
-     * @ordered
-     */
-	protected CodeType role;
+    /**
+    * The cached value of the '{@link #getRole() <em>Role</em>}' containment reference.
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @see #getRole()
+    * @generated
+    * @ordered
+    */
+    protected CodeType role;
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	protected ResponsiblePartyTypeImpl() {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    protected ResponsiblePartyTypeImpl() {
         super();
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	protected EClass eStaticClass() {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    protected EClass eStaticClass() {
         return OwsPackage.Literals.RESPONSIBLE_PARTY_TYPE;
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public String getIndividualName() {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public String getIndividualName() {
         return individualName;
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public void setIndividualName(String newIndividualName) {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public void setIndividualName(String newIndividualName) {
         String oldIndividualName = individualName;
         individualName = newIndividualName;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.RESPONSIBLE_PARTY_TYPE__INDIVIDUAL_NAME, oldIndividualName, individualName));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.RESPONSIBLE_PARTY_TYPE__INDIVIDUAL_NAME, oldIndividualName,
+                    individualName));
+        }
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public String getOrganisationName() {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public String getOrganisationName() {
         return organisationName;
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public void setOrganisationName(String newOrganisationName) {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public void setOrganisationName(String newOrganisationName) {
         String oldOrganisationName = organisationName;
         organisationName = newOrganisationName;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.RESPONSIBLE_PARTY_TYPE__ORGANISATION_NAME, oldOrganisationName, organisationName));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.RESPONSIBLE_PARTY_TYPE__ORGANISATION_NAME, oldOrganisationName,
+                    organisationName));
+        }
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public String getPositionName() {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public String getPositionName() {
         return positionName;
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public void setPositionName(String newPositionName) {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public void setPositionName(String newPositionName) {
         String oldPositionName = positionName;
         positionName = newPositionName;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.RESPONSIBLE_PARTY_TYPE__POSITION_NAME, oldPositionName, positionName));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.RESPONSIBLE_PARTY_TYPE__POSITION_NAME, oldPositionName, positionName));
+        }
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public ContactType getContactInfo() {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public ContactType getContactInfo() {
         return contactInfo;
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public NotificationChain basicSetContactInfo(ContactType newContactInfo, NotificationChain msgs) {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public NotificationChain basicSetContactInfo(ContactType newContactInfo, NotificationChain msgs) {
         ContactType oldContactInfo = contactInfo;
         contactInfo = newContactInfo;
+
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO, oldContactInfo, newContactInfo);
-            if (msgs == null) msgs = notification; else msgs.add(notification);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO, oldContactInfo, newContactInfo);
+
+            if (msgs == null) {
+                msgs = notification;
+            } else {
+                msgs.add(notification);
+            }
         }
+
         return msgs;
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public void setContactInfo(ContactType newContactInfo) {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public void setContactInfo(ContactType newContactInfo) {
         if (newContactInfo != contactInfo) {
             NotificationChain msgs = null;
-            if (contactInfo != null)
-                msgs = ((InternalEObject)contactInfo).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO, null, msgs);
-            if (newContactInfo != null)
-                msgs = ((InternalEObject)newContactInfo).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO, null, msgs);
+
+            if (contactInfo != null) {
+                msgs = ((InternalEObject) contactInfo).eInverseRemove(this,
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO,
+                        null, msgs);
+            }
+
+            if (newContactInfo != null) {
+                msgs = ((InternalEObject) newContactInfo).eInverseAdd(this,
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO,
+                        null, msgs);
+            }
+
             msgs = basicSetContactInfo(newContactInfo, msgs);
-            if (msgs != null) msgs.dispatch();
+
+            if (msgs != null) {
+                msgs.dispatch();
+            }
+        } else if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO, newContactInfo, newContactInfo));
         }
-        else if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO, newContactInfo, newContactInfo));
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public CodeType getRole() {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public CodeType getRole() {
         return role;
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public NotificationChain basicSetRole(CodeType newRole, NotificationChain msgs) {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public NotificationChain basicSetRole(CodeType newRole, NotificationChain msgs) {
         CodeType oldRole = role;
         role = newRole;
+
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE, oldRole, newRole);
-            if (msgs == null) msgs = notification; else msgs.add(notification);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE, oldRole, newRole);
+
+            if (msgs == null) {
+                msgs = notification;
+            } else {
+                msgs.add(notification);
+            }
         }
+
         return msgs;
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public void setRole(CodeType newRole) {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public void setRole(CodeType newRole) {
         if (newRole != role) {
             NotificationChain msgs = null;
-            if (role != null)
-                msgs = ((InternalEObject)role).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE, null, msgs);
-            if (newRole != null)
-                msgs = ((InternalEObject)newRole).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE, null, msgs);
+
+            if (role != null) {
+                msgs = ((InternalEObject) role).eInverseRemove(this,
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE, null, msgs);
+            }
+
+            if (newRole != null) {
+                msgs = ((InternalEObject) newRole).eInverseAdd(this,
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE, null, msgs);
+            }
+
             msgs = basicSetRole(newRole, msgs);
-            if (msgs != null) msgs.dispatch();
+
+            if (msgs != null) {
+                msgs.dispatch();
+            }
+        } else if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE, newRole, newRole));
         }
-        else if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE, newRole, newRole));
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO:
-                return basicSetContactInfo(null, msgs);
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE:
-                return basicSetRole(null, msgs);
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO:
+            return basicSetContactInfo(null, msgs);
+
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE:
+            return basicSetRole(null, msgs);
         }
+
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__INDIVIDUAL_NAME:
-                return getIndividualName();
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__ORGANISATION_NAME:
-                return getOrganisationName();
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__POSITION_NAME:
-                return getPositionName();
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO:
-                return getContactInfo();
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE:
-                return getRole();
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__INDIVIDUAL_NAME:
+            return getIndividualName();
+
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__ORGANISATION_NAME:
+            return getOrganisationName();
+
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__POSITION_NAME:
+            return getPositionName();
+
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO:
+            return getContactInfo();
+
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE:
+            return getRole();
         }
+
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public void eSet(int featureID, Object newValue) {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__INDIVIDUAL_NAME:
-                setIndividualName((String)newValue);
-                return;
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__ORGANISATION_NAME:
-                setOrganisationName((String)newValue);
-                return;
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__POSITION_NAME:
-                setPositionName((String)newValue);
-                return;
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO:
-                setContactInfo((ContactType)newValue);
-                return;
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE:
-                setRole((CodeType)newValue);
-                return;
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__INDIVIDUAL_NAME:
+            setIndividualName((String) newValue);
+
+            return;
+
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__ORGANISATION_NAME:
+            setOrganisationName((String) newValue);
+
+            return;
+
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__POSITION_NAME:
+            setPositionName((String) newValue);
+
+            return;
+
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO:
+            setContactInfo((ContactType) newValue);
+
+            return;
+
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE:
+            setRole((CodeType) newValue);
+
+            return;
         }
+
         super.eSet(featureID, newValue);
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public void eUnset(int featureID) {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public void eUnset(int featureID) {
         switch (featureID) {
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__INDIVIDUAL_NAME:
-                setIndividualName(INDIVIDUAL_NAME_EDEFAULT);
-                return;
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__ORGANISATION_NAME:
-                setOrganisationName(ORGANISATION_NAME_EDEFAULT);
-                return;
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__POSITION_NAME:
-                setPositionName(POSITION_NAME_EDEFAULT);
-                return;
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO:
-                setContactInfo((ContactType)null);
-                return;
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE:
-                setRole((CodeType)null);
-                return;
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__INDIVIDUAL_NAME:
+            setIndividualName(INDIVIDUAL_NAME_EDEFAULT);
+
+            return;
+
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__ORGANISATION_NAME:
+            setOrganisationName(ORGANISATION_NAME_EDEFAULT);
+
+            return;
+
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__POSITION_NAME:
+            setPositionName(POSITION_NAME_EDEFAULT);
+
+            return;
+
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO:
+            setContactInfo((ContactType) null);
+
+            return;
+
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE:
+            setRole((CodeType) null);
+
+            return;
         }
+
         super.eUnset(featureID);
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public boolean eIsSet(int featureID) {
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public boolean eIsSet(int featureID) {
         switch (featureID) {
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__INDIVIDUAL_NAME:
-                return INDIVIDUAL_NAME_EDEFAULT == null ? individualName != null : !INDIVIDUAL_NAME_EDEFAULT.equals(individualName);
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__ORGANISATION_NAME:
-                return ORGANISATION_NAME_EDEFAULT == null ? organisationName != null : !ORGANISATION_NAME_EDEFAULT.equals(organisationName);
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__POSITION_NAME:
-                return POSITION_NAME_EDEFAULT == null ? positionName != null : !POSITION_NAME_EDEFAULT.equals(positionName);
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO:
-                return contactInfo != null;
-            case OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE:
-                return role != null;
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__INDIVIDUAL_NAME:
+            return (INDIVIDUAL_NAME_EDEFAULT == null) ? (individualName != null)
+                                                      : (!INDIVIDUAL_NAME_EDEFAULT.equals(individualName));
+
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__ORGANISATION_NAME:
+            return (ORGANISATION_NAME_EDEFAULT == null) ? (organisationName != null)
+                                                        : (!ORGANISATION_NAME_EDEFAULT.equals(organisationName));
+
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__POSITION_NAME:
+            return (POSITION_NAME_EDEFAULT == null) ? (positionName != null)
+                                                    : (!POSITION_NAME_EDEFAULT.equals(positionName));
+
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO:
+            return contactInfo != null;
+
+        case OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE:
+            return role != null;
         }
+
         return super.eIsSet(featureID);
     }
 
-	/**
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public String toString() {
-        if (eIsProxy()) return super.toString();
+    /**
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * @generated
+    */
+    public String toString() {
+        if (eIsProxy()) {
+            return super.toString();
+        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (individualName: ");
@@ -410,7 +497,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
         result.append(", positionName: ");
         result.append(positionName);
         result.append(')');
+
         return result.toString();
     }
-
 } //ResponsiblePartyTypeImpl

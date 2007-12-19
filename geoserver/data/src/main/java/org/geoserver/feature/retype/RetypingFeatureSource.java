@@ -30,8 +30,7 @@ public class RetypingFeatureSource implements FeatureSource {
     DataStore ds;
     Map listeners = new HashMap();
 
-    public RetypingFeatureSource(DataStore ds, FeatureSource wrapped,
-        FeatureTypeMap typeMap) {
+    public RetypingFeatureSource(DataStore ds, FeatureSource wrapped, FeatureTypeMap typeMap) {
         this.ds = ds;
         this.wrapped = wrapped;
         this.typeMap = typeMap;
@@ -77,8 +76,8 @@ public class RetypingFeatureSource implements FeatureSource {
     }
 
     public FeatureCollection getFeatures(Query query) throws IOException {
-        return new RetypingFeatureCollection(wrapped.getFeatures(retypeQuery(
-                    query)), typeMap.getFeatureType());
+        return new RetypingFeatureCollection(wrapped.getFeatures(retypeQuery(query)),
+            typeMap.getFeatureType());
     }
 
     public FeatureCollection getFeatures(Filter filter)

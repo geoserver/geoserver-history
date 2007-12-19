@@ -77,25 +77,20 @@ public final class CoverageStoresSelectForm extends ActionForm {
      *
      * @return DOCUMENT ME!
      */
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = (MessageResources) request.getAttribute(Globals.MESSAGES_KEY);
-        String EDIT = HTMLEncoder.decode(messages.getMessage(locale,
-                    "label.edit"));
-        String DELETE = HTMLEncoder.decode(messages.getMessage(locale,
-                    "label.delete"));
+        String EDIT = HTMLEncoder.decode(messages.getMessage(locale, "label.edit"));
+        String DELETE = HTMLEncoder.decode(messages.getMessage(locale, "label.delete"));
 
         if (!getDataFormatIds().contains(getSelectedDataFormatId())) {
             errors.add("selectedDataFormatId",
-                new ActionError("errors.factory.invalid",
-                    getSelectedDataFormatId()));
+                new ActionError("errors.factory.invalid", getSelectedDataFormatId()));
         }
 
-        if (!DELETE.equals(getButtonAction())
-                && !EDIT.equals(getButtonAction())) {
+        if (!DELETE.equals(getButtonAction()) && !EDIT.equals(getButtonAction())) {
             errors.add("buttonAction",
                 new ActionError("errors.buttonAction.invalid", getButtonAction()));
         }

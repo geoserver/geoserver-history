@@ -150,9 +150,8 @@ public class Dispatcher extends AbstractController {
         request.setCharacterEncoding(charSet.name());
     }
 
-    protected ModelAndView handleRequestInternal(
-        HttpServletRequest httpRequest, HttpServletResponse httpResponse)
-        throws Exception {
+    protected ModelAndView handleRequestInternal(HttpServletRequest httpRequest,
+        HttpServletResponse httpResponse) throws Exception {
         preprocessRequest(httpRequest);
 
         //create a new request instance
@@ -207,8 +206,7 @@ public class Dispatcher extends AbstractController {
 
         //figure out method
         request.get = "GET".equalsIgnoreCase(httpRequest.getMethod())
-            || "application/x-www-form-urlencoded".equals(httpRequest
-                .getContentType());
+            || "application/x-www-form-urlencoded".equals(httpRequest.getContentType());
 
         //create the kvp map
         parseKVP(request);
@@ -225,11 +223,9 @@ public class Dispatcher extends AbstractController {
                 int read = request.input.read(req, 0, 1024);
 
                 if (read < 1024) {
-                    logger.fine("Raw XML request starts with: "
-                        + new String(req));
+                    logger.fine("Raw XML request starts with: " + new String(req));
                 } else {
-                    logger.fine("Raw XML request starts with: "
-                        + new String(req) + "...");
+                    logger.fine("Raw XML request starts with: " + new String(req) + "...");
                 }
 
                 request.input.reset();
@@ -242,8 +238,7 @@ public class Dispatcher extends AbstractController {
     BufferedReader reader(HttpServletRequest httpRequest)
         throws IOException {
         //create a buffer so we can reset the input stream
-        BufferedInputStream input = new BufferedInputStream(httpRequest
-                .getInputStream());
+        BufferedInputStream input = new BufferedInputStream(httpRequest.getInputStream());
         input.mark(2048);
 
         //create object to hold encoding info
@@ -320,8 +315,8 @@ public class Dispatcher extends AbstractController {
 
         if (service == null) {
             //give up 
-            throw new ServiceException("Could not determine service",
-                "MissingParameterValue", "service");
+            throw new ServiceException("Could not determine service", "MissingParameterValue",
+                "service");
         }
 
         //load from teh context
@@ -389,8 +384,7 @@ public class Dispatcher extends AbstractController {
                 }
 
                 // GEOS-934  and GEOS-1288
-                Method setBaseUrl = OwsUtils.setter(requestBean.getClass(),
-                        "baseUrl", String.class);
+                Method setBaseUrl = OwsUtils.setter(requestBean.getClass(), "baseUrl", String.class);
 
                 if (setBaseUrl != null) {
                     setBaseUrl.invoke(requestBean,
@@ -404,18 +398,16 @@ public class Dispatcher extends AbstractController {
                 if (requestBean != null) {
                     //if we dont have a version thus far, check the request object
                     if (req.service == null) {
-                        req.service = lookupRequestBeanProperty(requestBean,
-                                "service", false);
+                        req.service = lookupRequestBeanProperty(requestBean, "service", false);
                     }
 
                     if (req.version == null) {
-                        req.version = lookupRequestBeanProperty(requestBean,
-                                "version", false);
+                        req.version = lookupRequestBeanProperty(requestBean, "version", false);
                     }
 
                     if (req.outputFormat == null) {
-                        req.outputFormat = lookupRequestBeanProperty(requestBean,
-                                "outputFormat", true);
+                        req.outputFormat = lookupRequestBeanProperty(requestBean, "outputFormat",
+                                true);
                     }
 
                     parameters[i] = requestBean;
@@ -435,8 +427,8 @@ public class Dispatcher extends AbstractController {
                 } else {
                     //version must be valid
                     if (!req.version.matches("[0-99].[0-99].[0-99]")) {
-                        throw new ServiceException("Invalid version: "
-                            + req.version, "InvalidParameterValue", "version");
+                        throw new ServiceException("Invalid version: " + req.version,
+                            "InvalidParameterValue", "version");
                     }
 
                     //make sure the versoin actually exists
@@ -454,8 +446,8 @@ public class Dispatcher extends AbstractController {
                     }
 
                     if (!found) {
-                        throw new ServiceException("Invalid version: "
-                            + req.version, "InvalidParameterValue", "version");
+                        throw new ServiceException("Invalid version: " + req.version,
+                            "InvalidParameterValue", "version");
                     }
                 }
 
@@ -467,14 +459,11 @@ public class Dispatcher extends AbstractController {
             }
         }
 
-        return new Operation(req.request, serviceDescriptor, operation,
-            parameters);
+        return new Operation(req.request, serviceDescriptor, operation, parameters);
     }
 
-    String lookupRequestBeanProperty(Object requestBean, String property,
-        boolean allowDefaultValues) {
-        if (requestBean instanceof EObject
-                && EMFUtils.has((EObject) requestBean, property)) {
+    String lookupRequestBeanProperty(Object requestBean, String property, boolean allowDefaultValues) {
+        if (requestBean instanceof EObject && EMFUtils.has((EObject) requestBean, property)) {
             //special case hack for eObject, we should move 
             // this out into an extension ppint
             EObject eObject = (EObject) requestBean;
@@ -484,8 +473,7 @@ public class Dispatcher extends AbstractController {
             }
         } else {
             //straight reflection
-            String version = (String) OwsUtils.property(requestBean, property,
-                    String.class);
+            String version = (String) OwsUtils.property(requestBean, property, String.class);
 
             if (version != null) {
                 return normalize(version);
@@ -507,8 +495,7 @@ public class Dispatcher extends AbstractController {
 
         try {
             if (securityInterceptor != null) {
-                result = securityInterceptor.invoke(opDescriptor, operation,
-                        serviceBean, parameters);
+                result = securityInterceptor.invoke(opDescriptor, operation, serviceBean, parameters);
             } else {
                 result = operation.invoke(serviceBean, parameters);
             }
@@ -601,8 +588,7 @@ O:
                 Response r2 = (Response) responses.get(1);
 
                 if (r1.getBinding().equals(r2.getBinding())) {
-                    String msg = "Multiple responses: (" + result.getClass()
-                        + ")";
+                    String msg = "Multiple responses: (" + result.getClass() + ")";
                     throw new RuntimeException(msg);
                 }
             }
@@ -617,8 +603,7 @@ O:
             }
 
             //set the mime type
-            req.httpResponse.setContentType(response.getMimeType(result,
-                    opDescriptor));
+            req.httpResponse.setContentType(response.getMimeType(result, opDescriptor));
 
             //set any extra headers, other than the mime-type
             if (response.getHeaders(result, opDescriptor) != null) {
@@ -758,8 +743,7 @@ O:
                         KvpRequestReader kvp1 = (KvpRequestReader) o1;
                         KvpRequestReader kvp2 = (KvpRequestReader) o2;
 
-                        if (kvp2.getRequestBean()
-                                    .isAssignableFrom(kvp1.getRequestBean())) {
+                        if (kvp2.getRequestBean().isAssignableFrom(kvp1.getRequestBean())) {
                             return -1;
                         }
 
@@ -881,8 +865,7 @@ O:
                             XmlRequestReader r1 = (XmlRequestReader) o1;
                             XmlRequestReader r2 = (XmlRequestReader) o2;
 
-                            Version v1 = r1
-                                .getVersion();
+                            Version v1 = r1.getVersion();
                             Version v2 = r2.getVersion();
 
                             if ((v1 == null) && (v2 == null)) {
@@ -938,8 +921,7 @@ O:
         OutputStrategyFactory factory = null;
 
         try {
-            factory = (OutputStrategyFactory) GeoServerExtensions.bean(
-                    "serviceStrategyFactory");
+            factory = (OutputStrategyFactory) GeoServerExtensions.bean("serviceStrategyFactory");
         } catch (NoSuchBeanDefinitionException e) {
             return null;
         }
@@ -948,9 +930,7 @@ O:
     }
 
     BufferedInputStream input(File cache) throws IOException {
-        return (cache == null) ? null
-                               : new BufferedInputStream(new FileInputStream(
-                cache));
+        return (cache == null) ? null : new BufferedInputStream(new FileInputStream(cache));
     }
 
     void parseKVP(Request req) throws ServiceException {
@@ -1032,8 +1012,7 @@ O:
             Object requestBean = kvpReader.createRequest();
 
             if (requestBean != null) {
-                requestBean = kvpReader.read(requestBean, request.kvp,
-                        request.rawKvp);
+                requestBean = kvpReader.read(requestBean, request.kvp, request.rawKvp);
             }
 
             return requestBean;
@@ -1042,8 +1021,8 @@ O:
         return null;
     }
 
-    Object parseRequestXML(Object requestBean, BufferedReader input,
-        Request request) throws Exception {
+    Object parseRequestXML(Object requestBean, BufferedReader input, Request request)
+        throws Exception {
         //check for an empty input stream
         //if (input.available() == 0) {
         if (!input.ready()) {
@@ -1061,8 +1040,7 @@ O:
         parser.setInput(input);
         parser.nextTag();
 
-        String namespace = (parser.getNamespace() != null)
-            ? parser.getNamespace() : "";
+        String namespace = (parser.getNamespace() != null) ? parser.getNamespace() : "";
         String element = parser.getName();
         String version = null;
 
@@ -1175,8 +1153,7 @@ O:
             while (cause != null) {
                 if (cause instanceof ServiceException) {
                     ServiceException cse = (ServiceException) cause;
-                    se = new ServiceException(cse.getMessage(), t,
-                            cse.getCode(), cse.getLocator());
+                    se = new ServiceException(cse.getMessage(), t, cse.getCode(), cse.getLocator());
 
                     break;
                 }
@@ -1214,8 +1191,7 @@ O:
             handler = new DefaultServiceExceptionHandler();
         }
 
-        handler.handleServiceException(se, service, request.httpRequest,
-            request.httpResponse);
+        handler.handleServiceException(se, service, request.httpRequest, request.httpResponse);
     }
 
     /**

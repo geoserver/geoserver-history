@@ -126,8 +126,7 @@ public class LockFeatureTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        LockFeatureType lockFeature = wfsfactory
-            .createLockFeatureType();
+        LockFeatureType lockFeature = wfsfactory.createLockFeatureType();
 
         //&lt;xsd:element maxOccurs="unbounded" name="Lock" type="wfs:LockType"&gt;
         lockFeature.getLock().addAll(node.getChildValues(LockType.class));
@@ -141,8 +140,7 @@ public class LockFeatureTypeBinding extends AbstractComplexBinding {
 
         //&lt;xsd:attribute default="ALL" name="lockAction"
         if (node.hasAttribute("lockAction")) {
-            lockFeature.setLockAction((AllSomeType) node.getAttributeValue(
-                    "lockAction"));
+            lockFeature.setLockAction((AllSomeType) node.getAttributeValue("lockAction"));
         } else {
             lockFeature.setLockAction(AllSomeType.ALL_LITERAL);
         }

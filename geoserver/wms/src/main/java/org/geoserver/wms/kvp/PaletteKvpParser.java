@@ -24,19 +24,16 @@ public class PaletteKvpParser extends KvpParser {
     public Object parse(String value) throws Exception {
         // palette
         try {
-            final InverseColorMapOp model = PaletteManager
-                .getPalette(value);
+            final InverseColorMapOp model = PaletteManager.getPalette(value);
 
             if (model == null) {
-                throw new WmsException("Palette " + value
-                    + " could not be found "
+                throw new WmsException("Palette " + value + " could not be found "
                     + "in $GEOSERVER_DATA_DIR/palettes directory");
             }
 
             return model;
         } catch (Exception e) {
-            throw new WmsException(e,
-                "Palette " + value + " could not be loaded", null);
+            throw new WmsException(e, "Palette " + value + " could not be loaded", null);
         }
     }
 }

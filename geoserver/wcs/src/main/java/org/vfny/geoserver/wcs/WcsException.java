@@ -94,8 +94,8 @@ public class WcsException extends ServiceException {
      *       validate right (reference our own schema), and to put the correct
      *       mime type here.
      */
-    public String getXmlResponse(boolean printStackTrace,
-        HttpServletRequest request, GeoServer geoserver) {
+    public String getXmlResponse(boolean printStackTrace, HttpServletRequest request,
+        GeoServer geoserver) {
         //Perhaps not the best place to do this, but it's by far the best place to ensure
         //that all logged errors get recorded in the same way, as there all must return
         //xml responses.
@@ -111,8 +111,7 @@ public class WcsException extends ServiceException {
 
         returnXml.append(indent + "xmlns=\"http://www.opengis.net/ogc\"\n");
 
-        returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/"
-            + "XMLSchema-instance\"\n");
+        returnXml.append(indent + "xmlns:xsi=\"http://www.w3.org/2001/" + "XMLSchema-instance\"\n");
 
         returnXml.append(indent);
 

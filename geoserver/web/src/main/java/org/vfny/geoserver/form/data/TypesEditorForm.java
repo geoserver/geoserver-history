@@ -218,8 +218,7 @@ public class TypesEditorForm extends ActionForm {
 
         action = "";
 
-        ServletContext servletContext = getServlet()
-                                            .getServletContext();
+        ServletContext servletContext = getServlet().getServletContext();
         ServletContext context = servletContext;
 
         DataConfig config = ConfigRequests.getDataConfig(request);
@@ -279,8 +278,7 @@ public class TypesEditorForm extends ActionForm {
 
         try {
             DataConfig dataConfig = (DataConfig) servletContext.getAttribute(DataConfig.CONFIG_KEY);
-            DataStoreConfig dsConfig = dataConfig.getDataStore(type
-                    .getDataStoreId());
+            DataStoreConfig dsConfig = dataConfig.getDataStore(type.getDataStoreId());
             DataStore dataStore = dsConfig.findDataStore(servletContext);
             FeatureType featureType = dataStore.getSchema(type.getName());
             GeometryAttributeType dg = featureType.getDefaultGeometry();
@@ -297,9 +295,8 @@ public class TypesEditorForm extends ActionForm {
         MessageResources resources = ((MessageResources) request.getAttribute(Globals.MESSAGES_KEY));
 
         if (nativeSRSWKT == "-") {
-            allSrsHandling = Arrays.asList(new String[] {
-                        resources.getMessage("label.type.forceSRS")
-                    });
+            allSrsHandling = Arrays.asList(new String[] { resources.getMessage(
+                            "label.type.forceSRS") });
         } else {
             allSrsHandling = Arrays.asList(new String[] {
                         resources.getMessage("label.type.forceSRS"),
@@ -325,8 +322,7 @@ public class TypesEditorForm extends ActionForm {
             // DataStore unavailable!
         }
 
-        if (((type.getSchemaBase() == null)
-                || "--".equals(type.getSchemaBase()))
+        if (((type.getSchemaBase() == null) || "--".equals(type.getSchemaBase()))
                 || (type.getSchemaAttributes() == null)) {
             //We are using the generated attributes
             this.schemaBase = "--";
@@ -347,11 +343,9 @@ public class TypesEditorForm extends ActionForm {
             // Need to add read only AttributeDisplay for each required attribute
             // defined by schemaBase
             //
-            List schemaAttributes = DataTransferObjectFactory
-                .generateRequiredAttributes(schemaBase);
+            List schemaAttributes = DataTransferObjectFactory.generateRequiredAttributes(schemaBase);
             attributes.addAll(attributesDisplayList(schemaAttributes));
-            attributes.addAll(attributesFormList(type.getSchemaAttributes(),
-                    featureType));
+            attributes.addAll(attributesFormList(type.getSchemaAttributes(), featureType));
             addList = new ArrayList(featureType.getAttributeCount());
 
             for (int i = 0; i < featureType.getAttributeCount(); i++) {
@@ -382,8 +376,7 @@ public class TypesEditorForm extends ActionForm {
         metadataLinks[1] = new MetaDataLink();
         metadataLinks[1].setType("text/plain");
 
-        if ((type.getMetadataLinks() != null)
-                && (type.getMetadataLinks().size() > 0)) {
+        if ((type.getMetadataLinks() != null) && (type.getMetadataLinks().size() > 0)) {
             List links = new ArrayList(type.getMetadataLinks());
             MetaDataLink link = (MetaDataLink) links.get(0);
             metadataLinks[0] = new MetaDataLink(link);
@@ -453,8 +446,7 @@ public class TypesEditorForm extends ActionForm {
         for (Iterator i = dtoList.iterator(); i.hasNext(); index++) {
             Object next = i.next();
             //System.out.println(index + " attribute: " + next);
-            list.add(new AttributeDisplay(
-                    new AttributeTypeInfoConfig((AttributeTypeInfoDTO) next)));
+            list.add(new AttributeDisplay(new AttributeTypeInfoConfig((AttributeTypeInfoDTO) next)));
         }
 
         return list;
@@ -473,8 +465,7 @@ public class TypesEditorForm extends ActionForm {
 
         for (Iterator i = dtoList.iterator(); i.hasNext();) {
             AttributeTypeInfoConfig config = (AttributeTypeInfoConfig) i.next();
-            list.add(new AttributeForm(config,
-                    schema.getAttributeType(config.getName())));
+            list.add(new AttributeForm(config, schema.getAttributeType(config.getName())));
         }
 
         return list;
@@ -514,8 +505,7 @@ public class TypesEditorForm extends ActionForm {
         return list;
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         Locale locale = (Locale) request.getLocale();
@@ -525,10 +515,10 @@ public class TypesEditorForm extends ActionForm {
         MessageResources messages = (MessageResources) request.getAttribute(Globals.MESSAGES_KEY);
         final String BBOX = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.calculateBoundingBox.label"));
-        final String SLDWIZARD = HTMLEncoder.decode(messages.getMessage(
-                    locale, "config.data.sldWizard.label"));
-        final String LOOKUP_SRS = HTMLEncoder.decode(messages.getMessage(
-                    locale, "config.data.lookupSRS.label"));
+        final String SLDWIZARD = HTMLEncoder.decode(messages.getMessage(locale,
+                    "config.data.sldWizard.label"));
+        final String LOOKUP_SRS = HTMLEncoder.decode(messages.getMessage(locale,
+                    "config.data.lookupSRS.label"));
 
         // If autoGenerateExtent flag is not set, don't break.
         if (autoGenerateExtent == null) {
@@ -537,9 +527,8 @@ public class TypesEditorForm extends ActionForm {
 
         // Pass Attribute Management Actions through without
         // much validation.
-        if (action.startsWith("Up") || action.startsWith("Down")
-                || action.startsWith("Remove") || action.equals(BBOX)
-                || action.equals(SLDWIZARD) || action.equals(LOOKUP_SRS)) {
+        if (action.startsWith("Up") || action.startsWith("Down") || action.startsWith("Remove")
+                || action.equals(BBOX) || action.equals(SLDWIZARD) || action.equals(LOOKUP_SRS)) {
             return errors;
         }
 
@@ -547,16 +536,13 @@ public class TypesEditorForm extends ActionForm {
         DataConfig data = ConfigRequests.getDataConfig(request);
 
         if (!(data.getStyles().containsKey(styleId) || "".equals(styleId))) {
-            errors.add("styleId",
-                new ActionError("error.styleId.notFound", styleId));
+            errors.add("styleId", new ActionError("error.styleId.notFound", styleId));
         }
 
         // check name exists in current DataStore?
         if (!autoGenerateExtent.equals("true")) {
-            if (("".equals(minX) || "".equals(minY) || "".equals(maxX)
-                    || "".equals(maxY))) {
-                errors.add("latlongBoundingBox",
-                    new ActionError("error.latLonBoundingBox.required"));
+            if (("".equals(minX) || "".equals(minY) || "".equals(maxX) || "".equals(maxY))) {
+                errors.add("latlongBoundingBox", new ActionError("error.latLonBoundingBox.required"));
             } else {
                 try {
                     Double.parseDouble(minX);
@@ -565,8 +551,7 @@ public class TypesEditorForm extends ActionForm {
                     Double.parseDouble(maxY);
                 } catch (NumberFormatException badNumber) {
                     errors.add("latlongBoundingBox",
-                        new ActionError("error.latLonBoundingBox.invalid",
-                            badNumber));
+                        new ActionError("error.latLonBoundingBox.invalid", badNumber));
                 }
             }
         }
@@ -575,11 +560,9 @@ public class TypesEditorForm extends ActionForm {
             try {
                 Integer.parseInt(cacheMaxAge);
             } catch (NumberFormatException nfe) {
-                errors.add("cacheMaxAge",
-                    new ActionError("error.cacheMaxAge.malformed", nfe));
+                errors.add("cacheMaxAge", new ActionError("error.cacheMaxAge.malformed", nfe));
             } catch (Throwable t) {
-                errors.add("cacheMaxAge",
-                    new ActionError("error.cacheMaxAge.error", t));
+                errors.add("cacheMaxAge", new ActionError("error.cacheMaxAge.error", t));
             }
         }
 
@@ -1110,7 +1093,6 @@ public class TypesEditorForm extends ActionForm {
 
     public boolean isDeclaredCRSDifferent() {
         return (nativeCRS == null)
-        || ((declaredCRS != null)
-        && !CRS.equalsIgnoreMetadata(declaredCRS, nativeCRS));
+        || ((declaredCRS != null) && !CRS.equalsIgnoreMetadata(declaredCRS, nativeCRS));
     }
 }

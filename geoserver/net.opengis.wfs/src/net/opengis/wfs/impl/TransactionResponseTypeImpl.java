@@ -35,8 +35,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *
  * @generated
  */
-public class TransactionResponseTypeImpl extends EObjectImpl
-    implements TransactionResponseType {
+public class TransactionResponseTypeImpl extends EObjectImpl implements TransactionResponseType {
     /**
      * The default value of the '{@link #getVersion() <em>Version</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -134,8 +133,7 @@ public class TransactionResponseTypeImpl extends EObjectImpl
         transactionSummary = newTransactionSummary;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY,
                     oldTransactionSummary, newTransactionSummary);
 
@@ -154,23 +152,20 @@ public class TransactionResponseTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setTransactionSummary(
-        TransactionSummaryType newTransactionSummary) {
+    public void setTransactionSummary(TransactionSummaryType newTransactionSummary) {
         if (newTransactionSummary != transactionSummary) {
             NotificationChain msgs = null;
 
             if (transactionSummary != null) {
                 msgs = ((InternalEObject) transactionSummary).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY,
-                        null, msgs);
+                        - WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY, null, msgs);
             }
 
             if (newTransactionSummary != null) {
                 msgs = ((InternalEObject) newTransactionSummary).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY,
-                        null, msgs);
+                        - WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY, null, msgs);
             }
 
             msgs = basicSetTransactionSummary(newTransactionSummary, msgs);
@@ -205,8 +200,7 @@ public class TransactionResponseTypeImpl extends EObjectImpl
         transactionResults = newTransactionResults;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS,
                     oldTransactionResults, newTransactionResults);
 
@@ -225,23 +219,20 @@ public class TransactionResponseTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setTransactionResults(
-        TransactionResultsType newTransactionResults) {
+    public void setTransactionResults(TransactionResultsType newTransactionResults) {
         if (newTransactionResults != transactionResults) {
             NotificationChain msgs = null;
 
             if (transactionResults != null) {
                 msgs = ((InternalEObject) transactionResults).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS,
-                        null, msgs);
+                        - WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS, null, msgs);
             }
 
             if (newTransactionResults != null) {
                 msgs = ((InternalEObject) newTransactionResults).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS,
-                        null, msgs);
+                        - WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_RESULTS, null, msgs);
             }
 
             msgs = basicSetTransactionResults(newTransactionResults, msgs);
@@ -270,16 +261,15 @@ public class TransactionResponseTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetInsertResults(
-        InsertResultsType newInsertResults, NotificationChain msgs) {
+    public NotificationChain basicSetInsertResults(InsertResultsType newInsertResults,
+        NotificationChain msgs) {
         InsertResultsType oldInsertResults = insertResults;
         insertResults = newInsertResults;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
-                    WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS,
-                    oldInsertResults, newInsertResults);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS, oldInsertResults,
+                    newInsertResults);
 
             if (msgs == null) {
                 msgs = notification;
@@ -303,15 +293,13 @@ public class TransactionResponseTypeImpl extends EObjectImpl
             if (insertResults != null) {
                 msgs = ((InternalEObject) insertResults).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS,
-                        null, msgs);
+                        - WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS, null, msgs);
             }
 
             if (newInsertResults != null) {
                 msgs = ((InternalEObject) newInsertResults).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS,
-                        null, msgs);
+                        - WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS, null, msgs);
             }
 
             msgs = basicSetInsertResults(newInsertResults, msgs);
@@ -321,8 +309,8 @@ public class TransactionResponseTypeImpl extends EObjectImpl
             }
         } else if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS,
-                    newInsertResults, newInsertResults));
+                    WfsPackage.TRANSACTION_RESPONSE_TYPE__INSERT_RESULTS, newInsertResults,
+                    newInsertResults));
         }
     }
 
@@ -349,8 +337,8 @@ public class TransactionResponseTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.TRANSACTION_RESPONSE_TYPE__VERSION, oldVersion,
-                    version, !oldVersionESet));
+                    WfsPackage.TRANSACTION_RESPONSE_TYPE__VERSION, oldVersion, version,
+                    !oldVersionESet));
         }
     }
 
@@ -367,8 +355,8 @@ public class TransactionResponseTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.UNSET,
-                    WfsPackage.TRANSACTION_RESPONSE_TYPE__VERSION, oldVersion,
-                    VERSION_EDEFAULT, oldVersionESet));
+                    WfsPackage.TRANSACTION_RESPONSE_TYPE__VERSION, oldVersion, VERSION_EDEFAULT,
+                    oldVersionESet));
         }
     }
 
@@ -386,8 +374,8 @@ public class TransactionResponseTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case WfsPackage.TRANSACTION_RESPONSE_TYPE__TRANSACTION_SUMMARY:
             return basicSetTransactionSummary(null, msgs);

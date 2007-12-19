@@ -37,8 +37,7 @@ import java.util.Collection;
  *
  * @generated
  */
-public class LockFeatureTypeImpl extends BaseRequestTypeImpl
-    implements LockFeatureType {
+public class LockFeatureTypeImpl extends BaseRequestTypeImpl implements LockFeatureType {
     /**
      * The default value of the '{@link #getExpiry() <em>Expiry</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -162,8 +161,7 @@ public class LockFeatureTypeImpl extends BaseRequestTypeImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.LOCK_FEATURE_TYPE__EXPIRY, oldExpiry, expiry,
-                    !oldExpiryESet));
+                    WfsPackage.LOCK_FEATURE_TYPE__EXPIRY, oldExpiry, expiry, !oldExpiryESet));
         }
     }
 
@@ -180,8 +178,7 @@ public class LockFeatureTypeImpl extends BaseRequestTypeImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.UNSET,
-                    WfsPackage.LOCK_FEATURE_TYPE__EXPIRY, oldExpiry,
-                    EXPIRY_EDEFAULT, oldExpiryESet));
+                    WfsPackage.LOCK_FEATURE_TYPE__EXPIRY, oldExpiry, EXPIRY_EDEFAULT, oldExpiryESet));
         }
     }
 
@@ -210,16 +207,15 @@ public class LockFeatureTypeImpl extends BaseRequestTypeImpl
      */
     public void setLockAction(AllSomeType newLockAction) {
         AllSomeType oldLockAction = lockAction;
-        lockAction = (newLockAction == null) ? LOCK_ACTION_EDEFAULT
-                                             : newLockAction;
+        lockAction = (newLockAction == null) ? LOCK_ACTION_EDEFAULT : newLockAction;
 
         boolean oldLockActionESet = lockActionESet;
         lockActionESet = true;
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.LOCK_FEATURE_TYPE__LOCK_ACTION, oldLockAction,
-                    lockAction, !oldLockActionESet));
+                    WfsPackage.LOCK_FEATURE_TYPE__LOCK_ACTION, oldLockAction, lockAction,
+                    !oldLockActionESet));
         }
     }
 
@@ -236,8 +232,8 @@ public class LockFeatureTypeImpl extends BaseRequestTypeImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.UNSET,
-                    WfsPackage.LOCK_FEATURE_TYPE__LOCK_ACTION, oldLockAction,
-                    LOCK_ACTION_EDEFAULT, oldLockActionESet));
+                    WfsPackage.LOCK_FEATURE_TYPE__LOCK_ACTION, oldLockAction, LOCK_ACTION_EDEFAULT,
+                    oldLockActionESet));
         }
     }
 
@@ -255,8 +251,8 @@ public class LockFeatureTypeImpl extends BaseRequestTypeImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case WfsPackage.LOCK_FEATURE_TYPE__LOCK:
             return ((InternalEList) getLock()).basicRemove(otherEnd, msgs);

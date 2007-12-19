@@ -141,18 +141,16 @@ public class InsertElementTypeBinding extends AbstractComplexEMFBinding {
         return InsertElementType.class;
     }
 
-    public void initializeChildContext(ElementInstance childInstance,
-        Node node, MutablePicoContainer context) {
+    public void initializeChildContext(ElementInstance childInstance, Node node,
+        MutablePicoContainer context) {
         //if an srsName is set for this geometry, put it in the context for 
         // children, so they can use it as well
         if (node.hasAttribute("srsName")) {
             try {
-                CoordinateReferenceSystem crs = GML2ParsingUtils
-                    .crs(node);
+                CoordinateReferenceSystem crs = GML2ParsingUtils.crs(node);
 
                 if (crs != null) {
-                    context.registerComponentInstance(CoordinateReferenceSystem.class,
-                        crs);
+                    context.registerComponentInstance(CoordinateReferenceSystem.class, crs);
                 }
             } catch (Exception e) {
                 throw new WFSException(e, "InvalidParameterValue");
@@ -186,8 +184,7 @@ public class InsertElementTypeBinding extends AbstractComplexEMFBinding {
         //&lt;xsd:attribute default="GenerateNew" name="idgen"
         //		type="wfs:IdentifierGenerationOptionType" use="optional"&gt;
         if (node.hasAttribute("idgen")) {
-            insertElement.setIdgen((IdentifierGenerationOptionType) node
-                .getAttributeValue("idgen"));
+            insertElement.setIdgen((IdentifierGenerationOptionType) node.getAttributeValue("idgen"));
         }
 
         //&lt;xsd:attribute name="handle" type="xsd:string" use="optional"&gt;
@@ -198,8 +195,7 @@ public class InsertElementTypeBinding extends AbstractComplexEMFBinding {
         //&lt;xsd:attribute default="text/xml; subtype=gml/3.1.1"
         //		 name="inputFormat" type="xsd:string" use="optional"&gt;
         if (node.hasAttribute("inputFormat")) {
-            insertElement.setInputFormat((String) node.getAttributeValue(
-                    "inputFormat"));
+            insertElement.setInputFormat((String) node.getAttributeValue("inputFormat"));
         }
 
         //&lt;xsd:attribute name="srsName" type="xsd:anyURI" use="optional"&gt;

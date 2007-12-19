@@ -108,8 +108,7 @@ public class WmsException extends ServiceException {
         super(e, preMessage, locator);
     }
 
-    public WmsException(Throwable e, String preMessage, String locator,
-        String code) {
+    public WmsException(Throwable e, String preMessage, String locator, String code) {
         this(e, preMessage, locator);
         setCode(code);
     }
@@ -123,21 +122,20 @@ public class WmsException extends ServiceException {
      *
      * @task REVISIT: adapt it to handle WMS too
      */
-    public String getXmlResponse(boolean printStackTrace,
-        HttpServletRequest request, GeoServer geoserver) {
+    public String getXmlResponse(boolean printStackTrace, HttpServletRequest request,
+        GeoServer geoserver) {
         StringBuffer returnXml = new StringBuffer("<?xml version=\"1.0\"");
         returnXml.append(" encoding=\"UTF-8\" standalone=\"no\" ?>");
 
         String dtdUrl = Requests.getSchemaBaseUrl(request, geoserver)
             + "/wms/1.1.1/WMS_exception_1_1_1.dtd";
-        returnXml.append("<!DOCTYPE ServiceExceptionReport SYSTEM \"" + dtdUrl
-            + "\"> ");
+        returnXml.append("<!DOCTYPE ServiceExceptionReport SYSTEM \"" + dtdUrl + "\"> ");
         returnXml.append("<ServiceExceptionReport version=\"1.1.1\">");
 
         // Write exception code
         returnXml.append("    <ServiceException"
-            + ((getCode() != null) ? (" code=\"" + getCode() + "\"") : "")
-            + ">" + getXmlMessage(printStackTrace) + "</ServiceException>");
+            + ((getCode() != null) ? (" code=\"" + getCode() + "\"") : "") + ">"
+            + getXmlMessage(printStackTrace) + "</ServiceException>");
 
         // Write footer
         returnXml.append("  </ServiceExceptionReport>");

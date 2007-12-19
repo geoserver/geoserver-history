@@ -64,13 +64,11 @@ public class EditableUserDAO implements UserDetailsService {
      * Find the file that should provide the user information.
      */
     private File getUserFile() throws ConfigurationException, IOException {
-        File securityDir = GeoserverDataDirectory
-            .findCreateConfigDir("security");
+        File securityDir = GeoserverDataDirectory.findCreateConfigDir("security");
         File userFile = new File(securityDir, "users.properties");
 
         if (!userFile.exists() && !userFile.createNewFile()) {
-            System.out.println("Couldn't create file: "
-                + userFile.getAbsolutePath());
+            System.out.println("Couldn't create file: " + userFile.getAbsolutePath());
             throw new ConfigurationException("Couldn't create users.properties");
         } else {
             return userFile;
@@ -81,16 +79,12 @@ public class EditableUserDAO implements UserDetailsService {
      * Generate the default geoserver administrator user.
      */
     private void createDefaultUser() {
-        String name = ((geoServer == null) ? "admin"
-                                           : geoServer.getAdminUserName());
-        String passwd = ((geoServer == null) ? "geoserver"
-                                             : geoServer.getAdminPassword());
+        String name = ((geoServer == null) ? "admin" : geoServer.getAdminUserName());
+        String passwd = ((geoServer == null) ? "geoserver" : geoServer.getAdminPassword());
 
         myDetailStorage.put(name,
             new User(name, passwd, true, true, true, true,
-                new GrantedAuthority[] {
-                    new GrantedAuthorityImpl("ROLE_ADMINISTRATOR")
-                }));
+                new GrantedAuthority[] { new GrantedAuthorityImpl("ROLE_ADMINISTRATOR") }));
     }
 
     public UserDetails loadUserByUsername(String username) {
@@ -114,8 +108,7 @@ public class EditableUserDAO implements UserDetailsService {
      * Remove a user specified by name.  If the username is not used by any
      * known user, nothing happens.
      */
-    public void deleteUser(String username)
-        throws IOException, ConfigurationException {
+    public void deleteUser(String username) throws IOException, ConfigurationException {
         update();
         myDetailStorage.remove(username);
         syncChanges();
@@ -189,8 +182,7 @@ public class EditableUserDAO implements UserDetailsService {
             prop.setProperty(key, value);
         }
 
-        OutputStream os = new BufferedOutputStream(new FileOutputStream(
-                    getUserFile()));
+        OutputStream os = new BufferedOutputStream(new FileOutputStream(getUserFile()));
 
         prop.store(os,
             "Geoserver user data. Format is username=password,role1,role2,...[enabled|disabled]");

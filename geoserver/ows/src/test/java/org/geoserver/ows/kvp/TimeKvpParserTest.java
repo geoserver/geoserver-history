@@ -4,15 +4,13 @@
  */
 package org.geoserver.ows.kvp;
 
+import junit.framework.TestCase;
+import org.joda.time.Instant;
+import org.joda.time.Interval;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-
-import junit.framework.TestCase;
-
-import org.joda.time.Instant;
-import org.joda.time.Interval;
 
 
 /**
@@ -29,8 +27,7 @@ public class TimeKvpParserTest extends TestCase {
     /**
      * Format of dates.
      */
-    private final static DateFormat format = new SimpleDateFormat(
-            "yyyy-MM-dd'T'HH'Z'");
+    private final static DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH'Z'");
 
     /**
      * Tests only the increment part of the time parameter.
@@ -44,8 +41,7 @@ public class TimeKvpParserTest extends TestCase {
         assertEquals(14 * millisInDay, TimeKvpParser.parsePeriod("P2W"));
         assertEquals(8 * millisInDay, TimeKvpParser.parsePeriod("P1W1D"));
         assertEquals(millisInDay, TimeKvpParser.parsePeriod("PT24H"));
-        assertEquals(Math.round(1.5 * millisInDay),
-            TimeKvpParser.parsePeriod("P1.5D"));
+        assertEquals(Math.round(1.5 * millisInDay), TimeKvpParser.parsePeriod("P1.5D"));
     }
 
     /**
@@ -58,7 +54,9 @@ public class TimeKvpParserTest extends TestCase {
         List l = (List) timeKvpParser.parse(PERIOD);
         // Verify that the list contains at least one element.
         assertFalse(l.isEmpty());
-        assertEquals(new Interval(new Instant("2007-01-01T12:00:00.000Z"), new Instant("2007-01-31T12:00:00.000Z")), l.get(0));
+        assertEquals(new Interval(new Instant("2007-01-01T12:00:00.000Z"),
+                new Instant("2007-01-31T12:00:00.000Z")), l.get(0));
+
         // //
         // OLD
         // //

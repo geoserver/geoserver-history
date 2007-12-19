@@ -115,8 +115,8 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         return null;
     }
 
-    Template getTemplate(FeatureType featureType, String templateFileName,
-        Charset charset) throws IOException {
+    Template getTemplate(FeatureType featureType, String templateFileName, Charset charset)
+        throws IOException {
         // setup template subsystem
         if (templateLoader == null) {
             templateLoader = new GeoServerTemplateLoader(getClass());

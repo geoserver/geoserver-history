@@ -59,13 +59,11 @@ public class PropertyTypePropertyExtractor implements PropertyExtractor {
 
         //first guess its type
         QName newTypeName = guessValueType(property.getValue());
-        XSDTypeDefinition type = (newTypeName != null)
-            ? index.getTypeDefinition(newTypeName) : null;
+        XSDTypeDefinition type = (newTypeName != null) ? index.getTypeDefinition(newTypeName) : null;
 
         if (type != null) {
             //create a new particle based on the new type
-            XSDElementDeclaration value = XSDFactory.eINSTANCE
-                .createXSDElementDeclaration();
+            XSDElementDeclaration value = XSDFactory.eINSTANCE.createXSDElementDeclaration();
             value.setName("Value");
             value.setTypeDefinition(type);
 
@@ -78,8 +76,8 @@ public class PropertyTypePropertyExtractor implements PropertyExtractor {
         } else {
             //coudl not determine new type, just fall back to xs:anyType
             Object[] p = new Object[] {
-                    Schemas.getChildElementParticle(element.getType(), "Value",
-                        false), property.getValue()
+                    Schemas.getChildElementParticle(element.getType(), "Value", false),
+                    property.getValue()
                 };
             properties.add(p);
         }
@@ -89,9 +87,7 @@ public class PropertyTypePropertyExtractor implements PropertyExtractor {
 
     private QName guessValueType(Object value) {
         Class clazz = value.getClass();
-        List profiles = Arrays.asList(new Object[] {
-                    new XSProfile(), new GML3Profile()
-                });
+        List profiles = Arrays.asList(new Object[] { new XSProfile(), new GML3Profile() });
 
         for (Iterator it = profiles.iterator(); it.hasNext();) {
             TypeMappingProfile profile = (TypeMappingProfile) it.next();

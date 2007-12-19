@@ -61,8 +61,7 @@ public final class GifMapProducerFactory implements GetMapProducerFactorySpi {
      */
     public boolean isAvailable() {
         try {
-            Class.forName(
-                "com.sun.media.imageioimpl.plugins.gif.GIFImageWriterSpi");
+            Class.forName("com.sun.media.imageioimpl.plugins.gif.GIFImageWriterSpi");
 
             return true;
         } catch (ClassNotFoundException e) {
@@ -100,8 +99,7 @@ public final class GifMapProducerFactory implements GetMapProducerFactorySpi {
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
         if (!canProduce(mapFormat)) {
-            throw new IllegalArgumentException(mapFormat
-                + " not supported by this map producer");
+            throw new IllegalArgumentException(mapFormat + " not supported by this map producer");
         }
 
         return new GIFMapProducer("image/gif", wms); // DJB: added "image/gif" or

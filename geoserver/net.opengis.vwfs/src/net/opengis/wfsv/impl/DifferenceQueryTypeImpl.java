@@ -6,16 +6,14 @@
  */
 package net.opengis.wfsv.impl;
 
-import javax.xml.namespace.QName;
 import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.WfsvPackage;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+import javax.xml.namespace.QName;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -188,8 +186,11 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
     public void setFilter(Object newFilter) {
         Object oldFilter = filter;
         filter = newFilter;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, WfsvPackage.DIFFERENCE_QUERY_TYPE__FILTER, oldFilter, filter));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    WfsvPackage.DIFFERENCE_QUERY_TYPE__FILTER, oldFilter, filter));
+        }
     }
 
     /**
@@ -209,10 +210,15 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
     public void setFromFeatureVersion(String newFromFeatureVersion) {
         String oldFromFeatureVersion = fromFeatureVersion;
         fromFeatureVersion = newFromFeatureVersion;
+
         boolean oldFromFeatureVersionESet = fromFeatureVersionESet;
         fromFeatureVersionESet = true;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, WfsvPackage.DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION, oldFromFeatureVersion, fromFeatureVersion, !oldFromFeatureVersionESet));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    WfsvPackage.DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION, oldFromFeatureVersion,
+                    fromFeatureVersion, !oldFromFeatureVersionESet));
+        }
     }
 
     /**
@@ -225,8 +231,12 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
         boolean oldFromFeatureVersionESet = fromFeatureVersionESet;
         fromFeatureVersion = FROM_FEATURE_VERSION_EDEFAULT;
         fromFeatureVersionESet = false;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.UNSET, WfsvPackage.DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION, oldFromFeatureVersion, FROM_FEATURE_VERSION_EDEFAULT, oldFromFeatureVersionESet));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.UNSET,
+                    WfsvPackage.DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION, oldFromFeatureVersion,
+                    FROM_FEATURE_VERSION_EDEFAULT, oldFromFeatureVersionESet));
+        }
     }
 
     /**
@@ -255,8 +265,11 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
     public void setSrsName(String newSrsName) {
         String oldSrsName = srsName;
         srsName = newSrsName;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, WfsvPackage.DIFFERENCE_QUERY_TYPE__SRS_NAME, oldSrsName, srsName));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    WfsvPackage.DIFFERENCE_QUERY_TYPE__SRS_NAME, oldSrsName, srsName));
+        }
     }
 
     /**
@@ -276,10 +289,15 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
     public void setToFeatureVersion(String newToFeatureVersion) {
         String oldToFeatureVersion = toFeatureVersion;
         toFeatureVersion = newToFeatureVersion;
+
         boolean oldToFeatureVersionESet = toFeatureVersionESet;
         toFeatureVersionESet = true;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, WfsvPackage.DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION, oldToFeatureVersion, toFeatureVersion, !oldToFeatureVersionESet));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    WfsvPackage.DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION, oldToFeatureVersion,
+                    toFeatureVersion, !oldToFeatureVersionESet));
+        }
     }
 
     /**
@@ -292,8 +310,12 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
         boolean oldToFeatureVersionESet = toFeatureVersionESet;
         toFeatureVersion = TO_FEATURE_VERSION_EDEFAULT;
         toFeatureVersionESet = false;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.UNSET, WfsvPackage.DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION, oldToFeatureVersion, TO_FEATURE_VERSION_EDEFAULT, oldToFeatureVersionESet));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.UNSET,
+                    WfsvPackage.DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION, oldToFeatureVersion,
+                    TO_FEATURE_VERSION_EDEFAULT, oldToFeatureVersionESet));
+        }
     }
 
     /**
@@ -322,8 +344,11 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
     public void setTypeName(QName newTypeName) {
         QName oldTypeName = typeName;
         typeName = newTypeName;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, WfsvPackage.DIFFERENCE_QUERY_TYPE__TYPE_NAME, oldTypeName, typeName));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    WfsvPackage.DIFFERENCE_QUERY_TYPE__TYPE_NAME, oldTypeName, typeName));
+        }
     }
 
     /**
@@ -333,17 +358,22 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
      */
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__FILTER:
-                return getFilter();
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION:
-                return getFromFeatureVersion();
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__SRS_NAME:
-                return getSrsName();
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION:
-                return getToFeatureVersion();
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__TYPE_NAME:
-                return getTypeName();
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__FILTER:
+            return getFilter();
+
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION:
+            return getFromFeatureVersion();
+
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__SRS_NAME:
+            return getSrsName();
+
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION:
+            return getToFeatureVersion();
+
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__TYPE_NAME:
+            return getTypeName();
         }
+
         return super.eGet(featureID, resolve, coreType);
     }
 
@@ -354,22 +384,32 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
      */
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__FILTER:
-                setFilter(newValue);
-                return;
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION:
-                setFromFeatureVersion((String)newValue);
-                return;
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__SRS_NAME:
-                setSrsName((String)newValue);
-                return;
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION:
-                setToFeatureVersion((String)newValue);
-                return;
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__TYPE_NAME:
-                setTypeName((QName)newValue);
-                return;
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__FILTER:
+            setFilter(newValue);
+
+            return;
+
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION:
+            setFromFeatureVersion((String) newValue);
+
+            return;
+
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__SRS_NAME:
+            setSrsName((String) newValue);
+
+            return;
+
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION:
+            setToFeatureVersion((String) newValue);
+
+            return;
+
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__TYPE_NAME:
+            setTypeName((QName) newValue);
+
+            return;
         }
+
         super.eSet(featureID, newValue);
     }
 
@@ -380,22 +420,32 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
      */
     public void eUnset(int featureID) {
         switch (featureID) {
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__FILTER:
-                setFilter(FILTER_EDEFAULT);
-                return;
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION:
-                unsetFromFeatureVersion();
-                return;
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__SRS_NAME:
-                setSrsName(SRS_NAME_EDEFAULT);
-                return;
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION:
-                unsetToFeatureVersion();
-                return;
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__TYPE_NAME:
-                setTypeName(TYPE_NAME_EDEFAULT);
-                return;
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__FILTER:
+            setFilter(FILTER_EDEFAULT);
+
+            return;
+
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION:
+            unsetFromFeatureVersion();
+
+            return;
+
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__SRS_NAME:
+            setSrsName(SRS_NAME_EDEFAULT);
+
+            return;
+
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION:
+            unsetToFeatureVersion();
+
+            return;
+
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__TYPE_NAME:
+            setTypeName(TYPE_NAME_EDEFAULT);
+
+            return;
         }
+
         super.eUnset(featureID);
     }
 
@@ -406,17 +456,24 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
      */
     public boolean eIsSet(int featureID) {
         switch (featureID) {
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__FILTER:
-                return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION:
-                return isSetFromFeatureVersion();
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__SRS_NAME:
-                return SRS_NAME_EDEFAULT == null ? srsName != null : !SRS_NAME_EDEFAULT.equals(srsName);
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION:
-                return isSetToFeatureVersion();
-            case WfsvPackage.DIFFERENCE_QUERY_TYPE__TYPE_NAME:
-                return TYPE_NAME_EDEFAULT == null ? typeName != null : !TYPE_NAME_EDEFAULT.equals(typeName);
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__FILTER:
+            return (FILTER_EDEFAULT == null) ? (filter != null) : (!FILTER_EDEFAULT.equals(filter));
+
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__FROM_FEATURE_VERSION:
+            return isSetFromFeatureVersion();
+
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__SRS_NAME:
+            return (SRS_NAME_EDEFAULT == null) ? (srsName != null)
+                                               : (!SRS_NAME_EDEFAULT.equals(srsName));
+
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__TO_FEATURE_VERSION:
+            return isSetToFeatureVersion();
+
+        case WfsvPackage.DIFFERENCE_QUERY_TYPE__TYPE_NAME:
+            return (TYPE_NAME_EDEFAULT == null) ? (typeName != null)
+                                                : (!TYPE_NAME_EDEFAULT.equals(typeName));
         }
+
         return super.eIsSet(featureID);
     }
 
@@ -426,21 +483,35 @@ public class DifferenceQueryTypeImpl extends EObjectImpl implements DifferenceQu
      * @generated
      */
     public String toString() {
-        if (eIsProxy()) return super.toString();
+        if (eIsProxy()) {
+            return super.toString();
+        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (filter: ");
         result.append(filter);
         result.append(", fromFeatureVersion: ");
-        if (fromFeatureVersionESet) result.append(fromFeatureVersion); else result.append("<unset>");
+
+        if (fromFeatureVersionESet) {
+            result.append(fromFeatureVersion);
+        } else {
+            result.append("<unset>");
+        }
+
         result.append(", srsName: ");
         result.append(srsName);
         result.append(", toFeatureVersion: ");
-        if (toFeatureVersionESet) result.append(toFeatureVersion); else result.append("<unset>");
+
+        if (toFeatureVersionESet) {
+            result.append(toFeatureVersion);
+        } else {
+            result.append("<unset>");
+        }
+
         result.append(", typeName: ");
         result.append(typeName);
         result.append(')');
+
         return result.toString();
     }
-
 } //DifferenceQueryTypeImpl

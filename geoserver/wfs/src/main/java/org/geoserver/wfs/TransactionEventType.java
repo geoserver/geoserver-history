@@ -57,8 +57,7 @@ public class TransactionEventType extends SimpleEnumerationType {
 
     public CodeList[] family() {
         synchronized (VALUES) {
-            return (TransactionEventType[]) VALUES.toArray(new TransactionEventType[VALUES
-                .size()]);
+            return (TransactionEventType[]) VALUES.toArray(new TransactionEventType[VALUES.size()]);
         }
     }
 }

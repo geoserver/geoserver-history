@@ -44,8 +44,7 @@ public class FeatureTimeTemplateTest extends WMSTestSupport {
     }
 
     public void testTimestamp() throws Exception {
-        setupTemplate(MockData.PRIMITIVEGEOFEATURE, "time.ftl",
-            "${dateProperty.value}");
+        setupTemplate(MockData.PRIMITIVEGEOFEATURE, "time.ftl", "${dateProperty.value}");
 
         FeatureTimeTemplate template = new FeatureTimeTemplate();
         String[] result = template.execute(feature);
@@ -67,8 +66,7 @@ public class FeatureTimeTemplateTest extends WMSTestSupport {
     }
 
     public void testTimeSpanOpenEndedStart() throws Exception {
-        setupTemplate(MockData.PRIMITIVEGEOFEATURE, "time.ftl",
-            "||${dateProperty.value}");
+        setupTemplate(MockData.PRIMITIVEGEOFEATURE, "time.ftl", "||${dateProperty.value}");
 
         FeatureTimeTemplate template = new FeatureTimeTemplate();
         String[] result = template.execute(feature);
@@ -79,8 +77,7 @@ public class FeatureTimeTemplateTest extends WMSTestSupport {
     }
 
     public void testTimeSpanOpenEndedEnd() throws Exception {
-        setupTemplate(MockData.PRIMITIVEGEOFEATURE, "time.ftl",
-            "${dateProperty.value}||");
+        setupTemplate(MockData.PRIMITIVEGEOFEATURE, "time.ftl", "${dateProperty.value}||");
 
         FeatureTimeTemplate template = new FeatureTimeTemplate();
         String[] result = template.execute(feature);

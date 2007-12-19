@@ -29,8 +29,7 @@ import javax.imageio.stream.ImageOutputStream;
  */
 public final class TiffMapProducer extends DefaultRasterMapProducer {
     /** A logger for this class. */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses.wms.map");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
     private final static ImageWriterSpi writerSPI = new TIFFImageWriterSpi();
 
     /**
@@ -60,8 +59,8 @@ public final class TiffMapProducer extends DefaultRasterMapProducer {
      * @throws IOException
      *             if the image writing fails.
      */
-    public void formatImageOutputStream(RenderedImage image,
-        OutputStream outStream) throws WmsException, IOException {
+    public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
+        throws WmsException, IOException {
         // getting a writer
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Getting a writer for tiff");

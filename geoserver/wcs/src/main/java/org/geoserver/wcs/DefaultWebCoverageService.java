@@ -18,8 +18,7 @@ import org.vfny.geoserver.wcs.servlets.Coverage;
 import org.vfny.geoserver.wcs.servlets.Describe;
 
 
-public class DefaultWebCoverageService implements WebCoverageService,
-    ApplicationContextAware {
+public class DefaultWebCoverageService implements WebCoverageService, ApplicationContextAware {
     /**
      * Application context
      */
@@ -30,17 +29,14 @@ public class DefaultWebCoverageService implements WebCoverageService,
         this.context = context;
     }
 
-    public WCSCapabilitiesResponse getCapabilities(
-        WCSCapabilitiesRequest request) {
-        Capabilities getCapabilities = (Capabilities) context
-            .getBean("wcsGetCapabilities");
+    public WCSCapabilitiesResponse getCapabilities(WCSCapabilitiesRequest request) {
+        Capabilities getCapabilities = (Capabilities) context.getBean("wcsGetCapabilities");
 
         return (WCSCapabilitiesResponse) getCapabilities.getResponse();
     }
 
     public DescribeResponse describeCoverage(DescribeRequest request) {
-        Describe describeCoverage = (Describe) context.getBean(
-                "wcsDescribeCoverage");
+        Describe describeCoverage = (Describe) context.getBean("wcsDescribeCoverage");
 
         return (DescribeResponse) describeCoverage.getResponse();
     }

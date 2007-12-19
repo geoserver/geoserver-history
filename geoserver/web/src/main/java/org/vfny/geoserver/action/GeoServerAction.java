@@ -61,8 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class GeoServerAction extends ActionSupport {
     /** Class logger */
-    protected static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.action");
+    protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.action");
 
     //    /**
     //     * Logs the user out from the current Session.
@@ -166,7 +165,6 @@ public class GeoServerAction extends ActionSupport {
      * @return Configuration model for Catalog information.
      */
     protected ApplicationState getApplicationState(HttpServletRequest request) {
-        return (ApplicationState) getWebApplicationContext()
-                                      .getBean("applicationState");
+        return (ApplicationState) getWebApplicationContext().getBean("applicationState");
     }
 }

@@ -19,8 +19,7 @@ public interface WFS {
 
     /* Type Definitions */
     /** @generated */
-    public static final QName ALLSOMETYPE = new QName("http://www.opengis.net/wfs",
-            "AllSomeType");
+    public static final QName ALLSOMETYPE = new QName("http://www.opengis.net/wfs", "AllSomeType");
 
     /** @generated */
     public static final QName DELETEELEMENTTYPE = new QName("http://www.opengis.net/wfs",
@@ -31,8 +30,7 @@ public interface WFS {
             "DescribeFeatureTypeType");
 
     /** @generated */
-    public static final QName EMPTYTYPE = new QName("http://www.opengis.net/wfs",
-            "EmptyType");
+    public static final QName EMPTYTYPE = new QName("http://www.opengis.net/wfs", "EmptyType");
 
     /** @generated */
     public static final QName FEATURECOLLECTIONTYPE = new QName("http://www.opengis.net/wfs",
@@ -71,24 +69,19 @@ public interface WFS {
             "LockFeatureType");
 
     /** @generated */
-    public static final QName LOCKTYPE = new QName("http://www.opengis.net/wfs",
-            "LockType");
+    public static final QName LOCKTYPE = new QName("http://www.opengis.net/wfs", "LockType");
 
     /** @generated */
-    public static final QName NATIVETYPE = new QName("http://www.opengis.net/wfs",
-            "NativeType");
+    public static final QName NATIVETYPE = new QName("http://www.opengis.net/wfs", "NativeType");
 
     /** @generated */
-    public static final QName PROPERTYTYPE = new QName("http://www.opengis.net/wfs",
-            "PropertyType");
+    public static final QName PROPERTYTYPE = new QName("http://www.opengis.net/wfs", "PropertyType");
 
     /** @generated */
-    public static final QName QUERYTYPE = new QName("http://www.opengis.net/wfs",
-            "QueryType");
+    public static final QName QUERYTYPE = new QName("http://www.opengis.net/wfs", "QueryType");
 
     /** @generated */
-    public static final QName STATUSTYPE = new QName("http://www.opengis.net/wfs",
-            "StatusType");
+    public static final QName STATUSTYPE = new QName("http://www.opengis.net/wfs", "StatusType");
 
     /** @generated */
     public static final QName TRANSACTIONRESULTTYPE = new QName("http://www.opengis.net/wfs",
@@ -112,16 +105,14 @@ public interface WFS {
 
     /* Elements */
     /** @generated */
-    public static final QName DELETE = new QName("http://www.opengis.net/wfs",
-            "Delete");
+    public static final QName DELETE = new QName("http://www.opengis.net/wfs", "Delete");
 
     /** @generated */
     public static final QName DESCRIBEFEATURETYPE = new QName("http://www.opengis.net/wfs",
             "DescribeFeatureType");
 
     /** @generated */
-    public static final QName FAILED = new QName("http://www.opengis.net/wfs",
-            "FAILED");
+    public static final QName FAILED = new QName("http://www.opengis.net/wfs", "FAILED");
 
     /** @generated */
     public static final QName FEATURECOLLECTION = new QName("http://www.opengis.net/wfs",
@@ -132,52 +123,41 @@ public interface WFS {
             "GetCapabilities");
 
     /** @generated */
-    public static final QName GETFEATURE = new QName("http://www.opengis.net/wfs",
-            "GetFeature");
+    public static final QName GETFEATURE = new QName("http://www.opengis.net/wfs", "GetFeature");
 
     /** @generated */
     public static final QName GETFEATUREWITHLOCK = new QName("http://www.opengis.net/wfs",
             "GetFeatureWithLock");
 
     /** @generated */
-    public static final QName INSERT = new QName("http://www.opengis.net/wfs",
-            "Insert");
+    public static final QName INSERT = new QName("http://www.opengis.net/wfs", "Insert");
 
     /** @generated */
-    public static final QName LOCKFEATURE = new QName("http://www.opengis.net/wfs",
-            "LockFeature");
+    public static final QName LOCKFEATURE = new QName("http://www.opengis.net/wfs", "LockFeature");
 
     /** @generated */
-    public static final QName LOCKID = new QName("http://www.opengis.net/wfs",
-            "LockId");
+    public static final QName LOCKID = new QName("http://www.opengis.net/wfs", "LockId");
 
     /** @generated */
-    public static final QName NATIVE = new QName("http://www.opengis.net/wfs",
-            "Native");
+    public static final QName NATIVE = new QName("http://www.opengis.net/wfs", "Native");
 
     /** @generated */
-    public static final QName PARTIAL = new QName("http://www.opengis.net/wfs",
-            "PARTIAL");
+    public static final QName PARTIAL = new QName("http://www.opengis.net/wfs", "PARTIAL");
 
     /** @generated */
-    public static final QName PROPERTY = new QName("http://www.opengis.net/wfs",
-            "Property");
+    public static final QName PROPERTY = new QName("http://www.opengis.net/wfs", "Property");
 
     /** @generated */
-    public static final QName QUERY = new QName("http://www.opengis.net/wfs",
-            "Query");
+    public static final QName QUERY = new QName("http://www.opengis.net/wfs", "Query");
 
     /** @generated */
-    public static final QName SUCCESS = new QName("http://www.opengis.net/wfs",
-            "SUCCESS");
+    public static final QName SUCCESS = new QName("http://www.opengis.net/wfs", "SUCCESS");
 
     /** @generated */
-    public static final QName TRANSACTION = new QName("http://www.opengis.net/wfs",
-            "Transaction");
+    public static final QName TRANSACTION = new QName("http://www.opengis.net/wfs", "Transaction");
 
     /** @generated */
-    public static final QName UPDATE = new QName("http://www.opengis.net/wfs",
-            "Update");
+    public static final QName UPDATE = new QName("http://www.opengis.net/wfs", "Update");
 
     /** @generated */
     public static final QName WFS_LOCKFEATURERESPONSE = new QName("http://www.opengis.net/wfs",

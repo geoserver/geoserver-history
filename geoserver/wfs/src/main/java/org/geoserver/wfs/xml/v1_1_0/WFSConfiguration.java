@@ -37,7 +37,6 @@ import org.picocontainer.defaults.SetterInjectionComponentAdapter;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.GeoServer;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -59,16 +58,13 @@ public class WFSConfiguration extends Configuration {
 
         this.catalog = catalog;
         this.schemaBuilder = schemaBuilder;
-        
-        catalog.getGeoServer().addListener(
-          new GeoServer.Listener() {
 
-            public void changed() {
-                flush();
-            }
-          }
-        );
-        
+        catalog.getGeoServer().addListener(new GeoServer.Listener() {
+                public void changed() {
+                    flush();
+                }
+            });
+
         addDependency(new OGCConfiguration());
         addDependency(new GMLConfiguration());
         addDependency(new OWSConfiguration());
@@ -132,19 +128,16 @@ public class WFSConfiguration extends Configuration {
         container.registerComponentImplementation(OGC.PropertyNameType,
             PropertyNameTypeBinding.class);
         container.registerComponentImplementation(GML.CircleType, CircleTypeBinding.class);
-        
+
         //use setter injection for AbstractGeometryType bindign to allow an 
         // optional crs to be set in teh binding context for parsing, this crs
         // is set by the binding of a parent element.
         // note: it is important that this component adapter is non-caching so 
         // that the setter property gets updated properly every time
-        container.registerComponent(
-            new SetterInjectionComponentAdapter( 
-                GML.AbstractGeometryType, AbstractGeometryTypeBinding.class, 
-                new Parameter[]{ new OptionalComponentParameter(CoordinateReferenceSystem.class)} 
-            )
-        );
-        
+        container.registerComponent(new SetterInjectionComponentAdapter(GML.AbstractGeometryType,
+                AbstractGeometryTypeBinding.class,
+                new Parameter[] { new OptionalComponentParameter(CoordinateReferenceSystem.class) }));
+
         // override XSQName binding
         container.registerComponentImplementation(XS.QNAME, XSQNameBinding.class);
     }

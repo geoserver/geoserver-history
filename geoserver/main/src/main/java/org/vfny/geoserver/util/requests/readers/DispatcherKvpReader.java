@@ -29,8 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class DispatcherKvpReader {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.readers");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
     private String queryString;
     private Map requestParams;
 
@@ -72,8 +71,7 @@ public class DispatcherKvpReader {
         if (responseType != null) {
             responseType = responseType.toUpperCase();
 
-            if (responseType.equals("GETCAPABILITIES")
-                    || responseType.equals("CAPABILITIES")) {
+            if (responseType.equals("GETCAPABILITIES") || responseType.equals("CAPABILITIES")) {
                 return Dispatcher.GET_CAPABILITIES_REQUEST;
             } else if (responseType.equals("DESCRIBEFEATURETYPE")) {
                 return Dispatcher.DESCRIBE_FEATURE_TYPE_REQUEST;
@@ -85,8 +83,7 @@ public class DispatcherKvpReader {
                 return Dispatcher.GET_FEATURE_LOCK_REQUEST;
             } else if (responseType.equals("LOCKFEATURE")) {
                 return Dispatcher.LOCK_REQUEST;
-            } else if (responseType.equals("GETMAP")
-                    || responseType.equals("MAP")) {
+            } else if (responseType.equals("GETMAP") || responseType.equals("MAP")) {
                 return Dispatcher.GET_MAP_REQUEST;
             } else if (responseType.equals("GETFEATUREINFO")) {
                 return Dispatcher.GET_FEATURE_INFO_REQUEST;

@@ -167,8 +167,7 @@ public final class CATALOG extends Service {
         service.setMetadataLink(mdl);
         service.setFees("NONE");
         service.setAccessConstraints("NONE");
-        service.setMaintainer(
-            "http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311");
+        service.setMaintainer("http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311");
 
         try {
             service.setOnlineResource(new URL("http://geoserver.org"));

@@ -127,8 +127,8 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT,
-                    oldOutputFormat, outputFormat, !oldOutputFormatESet));
+                    WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT, oldOutputFormat,
+                    outputFormat, !oldOutputFormatESet));
         }
     }
 
@@ -145,8 +145,8 @@ public class DescribeFeatureTypeTypeImpl extends BaseRequestTypeImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.UNSET,
-                    WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT,
-                    oldOutputFormat, OUTPUT_FORMAT_EDEFAULT, oldOutputFormatESet));
+                    WfsPackage.DESCRIBE_FEATURE_TYPE_TYPE__OUTPUT_FORMAT, oldOutputFormat,
+                    OUTPUT_FORMAT_EDEFAULT, oldOutputFormatESet));
         }
     }
 

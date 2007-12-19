@@ -50,7 +50,7 @@ public class WMS extends Service {
 
     /** svg anitalias or not **/
     private boolean svgAntiAlias;
-    
+
     /** global Watermarking **/
     private boolean globalWatermarking;
 
@@ -307,27 +307,26 @@ public class WMS extends Service {
     }
 
     public Map getBaseMapEnvelopes() {
-        return (baseMapEnvelopes != null) ? baseMapEnvelopes
-                                          : Collections.EMPTY_MAP;
+        return (baseMapEnvelopes != null) ? baseMapEnvelopes : Collections.EMPTY_MAP;
     }
 
     public void getBaseMapEnvelopes(Map envelopes) {
         baseMapEnvelopes = envelopes;
     }
 
-	public boolean isGlobalWatermarking() {
-		return globalWatermarking;
-	}
+    public boolean isGlobalWatermarking() {
+        return globalWatermarking;
+    }
 
-	public void setGlobalWatermarking(boolean globalWatermarking) {
-		this.globalWatermarking = globalWatermarking;
-	}
+    public void setGlobalWatermarking(boolean globalWatermarking) {
+        this.globalWatermarking = globalWatermarking;
+    }
 
-	public String getGlobalWatermarkingURL() {
-		return globalWatermarkingURL;
-	}
+    public String getGlobalWatermarkingURL() {
+        return globalWatermarkingURL;
+    }
 
-	public void setGlobalWatermarkingURL(String globalWatermarkingURL) {
-		this.globalWatermarkingURL = globalWatermarkingURL;
-	}
+    public void setGlobalWatermarkingURL(String globalWatermarkingURL) {
+        this.globalWatermarkingURL = globalWatermarkingURL;
+    }
 }

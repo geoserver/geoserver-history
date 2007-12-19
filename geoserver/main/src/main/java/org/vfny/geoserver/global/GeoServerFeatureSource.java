@@ -49,8 +49,7 @@ import java.util.logging.Logger;
  */
 public class GeoServerFeatureSource implements FeatureSource {
     /** Shared package logger */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.global");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 
     /** FeatureSource being served up */
     protected FeatureSource source;
@@ -82,9 +81,8 @@ public class GeoServerFeatureSource implements FeatureSource {
      * @param definitionQuery Filter used to limit results
      * @param declaredCRS Geometries will be forced or projected to this CRS
      */
-    GeoServerFeatureSource(FeatureSource source, FeatureType schema,
-        Filter definitionQuery, CoordinateReferenceSystem declaredCRS,
-        int srsHandling) {
+    GeoServerFeatureSource(FeatureSource source, FeatureType schema, Filter definitionQuery,
+        CoordinateReferenceSystem declaredCRS, int srsHandling) {
         this.source = source;
         this.schema = schema;
         this.definitionQuery = definitionQuery;
@@ -112,19 +110,18 @@ public class GeoServerFeatureSource implements FeatureSource {
      *
      * @return
      */
-    public static GeoServerFeatureSource create(FeatureSource featureSource,
-        FeatureType schema, Filter definitionQuery,
-        CoordinateReferenceSystem declaredCRS, int srsHandling) {
+    public static GeoServerFeatureSource create(FeatureSource featureSource, FeatureType schema,
+        Filter definitionQuery, CoordinateReferenceSystem declaredCRS, int srsHandling) {
         if (featureSource instanceof FeatureLocking) {
-            return new GeoServerFeatureLocking((FeatureLocking) featureSource,
-                schema, definitionQuery, declaredCRS, srsHandling);
+            return new GeoServerFeatureLocking((FeatureLocking) featureSource, schema,
+                definitionQuery, declaredCRS, srsHandling);
         } else if (featureSource instanceof FeatureStore) {
-            return new GeoServerFeatureStore((FeatureStore) featureSource,
-                schema, definitionQuery, declaredCRS, srsHandling);
+            return new GeoServerFeatureStore((FeatureStore) featureSource, schema, definitionQuery,
+                declaredCRS, srsHandling);
         }
 
-        return new GeoServerFeatureSource(featureSource, schema,
-            definitionQuery, declaredCRS, srsHandling);
+        return new GeoServerFeatureSource(featureSource, schema, definitionQuery, declaredCRS,
+            srsHandling);
     }
 
     /**
@@ -161,8 +158,7 @@ public class GeoServerFeatureSource implements FeatureSource {
             return defQuery;
         } catch (Exception ex) {
             throw new DataSourceException(
-                "Could not restrict the query to the definition criteria: "
-                + ex.getMessage(), ex);
+                "Could not restrict the query to the definition criteria: " + ex.getMessage(), ex);
         }
     }
 
@@ -202,13 +198,12 @@ public class GeoServerFeatureSource implements FeatureSource {
                 if (schema.getAttributeType(queriedAtts[i]) != null) {
                     allowedAtts.add(queriedAtts[i]);
                 } else {
-                    LOGGER.info("queried a not allowed property: "
-                        + queriedAtts[i] + ". Ommitting it from query");
+                    LOGGER.info("queried a not allowed property: " + queriedAtts[i]
+                        + ". Ommitting it from query");
                 }
             }
 
-            propNames = (String[]) allowedAtts.toArray(new String[allowedAtts
-                    .size()]);
+            propNames = (String[]) allowedAtts.toArray(new String[allowedAtts.size()]);
         }
 
         return propNames;
@@ -236,8 +231,7 @@ public class GeoServerFeatureSource implements FeatureSource {
                 newFilter = ff.and(definitionQuery, filter);
             }
         } catch (Exception ex) {
-            throw new DataSourceException("Can't create the definition filter",
-                ex);
+            throw new DataSourceException("Can't create the definition filter", ex);
         }
 
         return newFilter;
@@ -311,11 +305,9 @@ public class GeoServerFeatureSource implements FeatureSource {
         boolean requireXferCRS = (newQuery.getCoordinateSystem() == null)
             && (query.getCoordinateSystem() != null);
 
-        if ((newQuery.getCoordinateSystem() != null)
-                && (query.getCoordinateSystem() != null)) {
+        if ((newQuery.getCoordinateSystem() != null) && (query.getCoordinateSystem() != null)) {
             //b. both have CRS, but they're different
-            requireXferCRS = !(newQuery.getCoordinateSystem()
-                                       .equals(query.getCoordinateSystem()));
+            requireXferCRS = !(newQuery.getCoordinateSystem().equals(query.getCoordinateSystem()));
         }
 
         if (requireXferCRS) {
@@ -324,8 +316,7 @@ public class GeoServerFeatureSource implements FeatureSource {
                 newQuery = new DefaultQuery(newQuery);
             }
 
-            ((DefaultQuery) newQuery).setCoordinateSystem(query
-                .getCoordinateSystem());
+            ((DefaultQuery) newQuery).setCoordinateSystem(query.getCoordinateSystem());
         }
 
         try {
@@ -333,8 +324,7 @@ public class GeoServerFeatureSource implements FeatureSource {
             // we get what we ask for ... which is not reprojection, since 
             // datastores are unreliable in this aspect we dont know if they will
             // reproject or not.
-            CoordinateReferenceSystem targetCRS = newQuery
-                .getCoordinateSystemReproject();
+            CoordinateReferenceSystem targetCRS = newQuery.getCoordinateSystemReproject();
 
             if (targetCRS != null) {
                 ((DefaultQuery) newQuery).setCoordinateSystemReproject(null);
@@ -346,14 +336,12 @@ public class GeoServerFeatureSource implements FeatureSource {
             CoordinateReferenceSystem nativeCRS = null;
 
             if (fc.getSchema().getDefaultGeometry() != null) {
-                nativeCRS = fc.getSchema().getDefaultGeometry()
-                              .getCoordinateSystem();
+                nativeCRS = fc.getSchema().getDefaultGeometry().getCoordinateSystem();
             }
 
             if ((srsHandling == FeatureTypeInfo.LEAVE) && (nativeCRS != null)) {
                 //do nothing
-            } else if ((srsHandling == FeatureTypeInfo.FORCE)
-                    || (nativeCRS == null)) {
+            } else if ((srsHandling == FeatureTypeInfo.FORCE) || (nativeCRS == null)) {
                 //force the declared crs
                 fc = new ForceCoordinateSystemFeatureResults(fc, declaredCRS);
                 nativeCRS = declaredCRS;
@@ -428,8 +416,7 @@ public class GeoServerFeatureSource implements FeatureSource {
         if (definitionQuery == Filter.INCLUDE) {
             return source.getBounds();
         } else {
-            Query query = new DefaultQuery(getSchema().getTypeName(),
-                    definitionQuery);
+            Query query = new DefaultQuery(getSchema().getTypeName(), definitionQuery);
 
             return source.getBounds(query);
         }

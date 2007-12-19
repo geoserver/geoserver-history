@@ -47,8 +47,7 @@ public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
      */
     OwsFactory owsFactory;
 
-    public GetCapabilitiesTypeBinding(WfsFactory wfsFactory,
-        OwsFactory owsFactory) {
+    public GetCapabilitiesTypeBinding(WfsFactory wfsFactory, OwsFactory owsFactory) {
         this.wfsFactory = wfsFactory;
         this.owsFactory = owsFactory;
     }
@@ -78,14 +77,12 @@ public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        GetCapabilitiesType getCapabilities = wfsFactory
-            .createGetCapabilitiesType();
+        GetCapabilitiesType getCapabilities = wfsFactory.createGetCapabilitiesType();
         getCapabilities.setAcceptVersions(owsFactory.createAcceptVersionsType());
 
         WFSBindingUtils.service(getCapabilities, node);
 
-        getCapabilities.getAcceptVersions().getVersion()
-                       .add(node.getAttributeValue("version"));
+        getCapabilities.getAcceptVersions().getVersion().add(node.getAttributeValue("version"));
 
         return getCapabilities;
     }

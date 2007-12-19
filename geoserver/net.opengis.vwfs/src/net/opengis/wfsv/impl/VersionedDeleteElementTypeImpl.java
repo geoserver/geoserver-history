@@ -7,17 +7,13 @@
 package net.opengis.wfsv.impl;
 
 import net.opengis.wfs.impl.DeleteElementTypeImpl;
-
 import net.opengis.wfsv.VersionedDeleteElementType;
 import net.opengis.wfsv.WfsvPackage;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -32,7 +28,8 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *
  * @generated
  */
-public class VersionedDeleteElementTypeImpl extends DeleteElementTypeImpl implements VersionedDeleteElementType {
+public class VersionedDeleteElementTypeImpl extends DeleteElementTypeImpl
+    implements VersionedDeleteElementType {
     /**
      * The default value of the '{@link #getFeatureVersion() <em>Feature Version</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -88,8 +85,12 @@ public class VersionedDeleteElementTypeImpl extends DeleteElementTypeImpl implem
     public void setFeatureVersion(String newFeatureVersion) {
         String oldFeatureVersion = featureVersion;
         featureVersion = newFeatureVersion;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, WfsvPackage.VERSIONED_DELETE_ELEMENT_TYPE__FEATURE_VERSION, oldFeatureVersion, featureVersion));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    WfsvPackage.VERSIONED_DELETE_ELEMENT_TYPE__FEATURE_VERSION, oldFeatureVersion,
+                    featureVersion));
+        }
     }
 
     /**
@@ -99,9 +100,10 @@ public class VersionedDeleteElementTypeImpl extends DeleteElementTypeImpl implem
      */
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-            case WfsvPackage.VERSIONED_DELETE_ELEMENT_TYPE__FEATURE_VERSION:
-                return getFeatureVersion();
+        case WfsvPackage.VERSIONED_DELETE_ELEMENT_TYPE__FEATURE_VERSION:
+            return getFeatureVersion();
         }
+
         return super.eGet(featureID, resolve, coreType);
     }
 
@@ -112,10 +114,12 @@ public class VersionedDeleteElementTypeImpl extends DeleteElementTypeImpl implem
      */
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-            case WfsvPackage.VERSIONED_DELETE_ELEMENT_TYPE__FEATURE_VERSION:
-                setFeatureVersion((String)newValue);
-                return;
+        case WfsvPackage.VERSIONED_DELETE_ELEMENT_TYPE__FEATURE_VERSION:
+            setFeatureVersion((String) newValue);
+
+            return;
         }
+
         super.eSet(featureID, newValue);
     }
 
@@ -126,10 +130,12 @@ public class VersionedDeleteElementTypeImpl extends DeleteElementTypeImpl implem
      */
     public void eUnset(int featureID) {
         switch (featureID) {
-            case WfsvPackage.VERSIONED_DELETE_ELEMENT_TYPE__FEATURE_VERSION:
-                setFeatureVersion(FEATURE_VERSION_EDEFAULT);
-                return;
+        case WfsvPackage.VERSIONED_DELETE_ELEMENT_TYPE__FEATURE_VERSION:
+            setFeatureVersion(FEATURE_VERSION_EDEFAULT);
+
+            return;
         }
+
         super.eUnset(featureID);
     }
 
@@ -140,9 +146,11 @@ public class VersionedDeleteElementTypeImpl extends DeleteElementTypeImpl implem
      */
     public boolean eIsSet(int featureID) {
         switch (featureID) {
-            case WfsvPackage.VERSIONED_DELETE_ELEMENT_TYPE__FEATURE_VERSION:
-                return FEATURE_VERSION_EDEFAULT == null ? featureVersion != null : !FEATURE_VERSION_EDEFAULT.equals(featureVersion);
+        case WfsvPackage.VERSIONED_DELETE_ELEMENT_TYPE__FEATURE_VERSION:
+            return (FEATURE_VERSION_EDEFAULT == null) ? (featureVersion != null)
+                                                      : (!FEATURE_VERSION_EDEFAULT.equals(featureVersion));
         }
+
         return super.eIsSet(featureID);
     }
 
@@ -152,13 +160,15 @@ public class VersionedDeleteElementTypeImpl extends DeleteElementTypeImpl implem
      * @generated
      */
     public String toString() {
-        if (eIsProxy()) return super.toString();
+        if (eIsProxy()) {
+            return super.toString();
+        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (featureVersion: ");
         result.append(featureVersion);
         result.append(')');
+
         return result.toString();
     }
-
 } //VersionedDeleteElementTypeImpl

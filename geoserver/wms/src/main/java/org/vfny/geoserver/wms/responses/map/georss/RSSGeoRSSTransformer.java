@@ -104,8 +104,7 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
                         try {
                             encodeItem(feature, map);
                         } catch (Exception e) {
-                            LOGGER.warning("Encoding failed for feature: "
-                                + feature.getID());
+                            LOGGER.warning("Encoding failed for feature: " + feature.getID());
                             LOGGER.log(Level.FINE, "", e);
                         }
                     }
@@ -124,16 +123,14 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
             try {
                 element("title", template.title(feature));
             } catch (Exception e) {
-                String msg = "Error occured executing title template for: "
-                    + feature.getID();
+                String msg = "Error occured executing title template for: " + feature.getID();
                 LOGGER.log(Level.WARNING, msg, e);
             }
 
             //create the link as getFeature request with fid filter
             //TODO: throw this into a utility class
             //TODO: use an html based output format
-            String link = Requests.getBaseUrl(map.getRequest()
-                                                 .getHttpServletRequest(),
+            String link = Requests.getBaseUrl(map.getRequest().getHttpServletRequest(),
                     map.getRequest().getGeoServer());
             link += ("wfs?request=getfeature&service=wfs&version=1.0.0&featureid="
             + feature.getID());
@@ -149,8 +146,7 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
                 cdata(description);
                 end("description");
             } catch (Exception e) {
-                String msg = "Error occured executing description template for: "
-                    + feature.getID();
+                String msg = "Error occured executing description template for: " + feature.getID();
                 LOGGER.log(Level.WARNING, msg, e);
             }
 

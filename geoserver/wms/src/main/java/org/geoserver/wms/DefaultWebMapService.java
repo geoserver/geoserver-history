@@ -30,8 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class DefaultWebMapService implements WebMapService,
-    ApplicationContextAware {
+public class DefaultWebMapService implements WebMapService, ApplicationContextAware {
     /**
      * default for 'format' parameter.
      */
@@ -65,8 +64,8 @@ public class DefaultWebMapService implements WebMapService,
     /**
      * default for 'bbox' paramter
      */
-    public static ReferencedEnvelope BBOX = new ReferencedEnvelope(new Envelope(
-                -180, 180, -90, 90), DefaultGeographicCRS.WGS84);
+    public static ReferencedEnvelope BBOX = new ReferencedEnvelope(new Envelope(-180, 180, -90, 90),
+            DefaultGeographicCRS.WGS84);
 
     /**
      * Application context
@@ -78,10 +77,8 @@ public class DefaultWebMapService implements WebMapService,
         this.context = context;
     }
 
-    public WMSCapabilitiesResponse getCapabilities(
-        WMSCapabilitiesRequest request) {
-        Capabilities capabilities = (Capabilities) context.getBean(
-                "wmsGetCapabilities");
+    public WMSCapabilitiesResponse getCapabilities(WMSCapabilitiesRequest request) {
+        Capabilities capabilities = (Capabilities) context.getBean("wmsGetCapabilities");
 
         return (WMSCapabilitiesResponse) capabilities.getResponse();
     }
@@ -91,8 +88,7 @@ public class DefaultWebMapService implements WebMapService,
     }
 
     public DescribeLayerResponse describeLayer(DescribeLayerRequest request) {
-        DescribeLayer describeLayer = (DescribeLayer) context.getBean(
-                "wmsDescribeLayer");
+        DescribeLayer describeLayer = (DescribeLayer) context.getBean("wmsDescribeLayer");
 
         return (DescribeLayerResponse) describeLayer.getResponse();
     }
@@ -108,14 +104,12 @@ public class DefaultWebMapService implements WebMapService,
     }
 
     public GetFeatureInfoResponse getFeatureInfo(GetFeatureInfoRequest request) {
-        GetFeatureInfo getFeatureInfo = (GetFeatureInfo) context.getBean(
-                "wmsGetFeatureInfo");
+        GetFeatureInfo getFeatureInfo = (GetFeatureInfo) context.getBean("wmsGetFeatureInfo");
 
         return (GetFeatureInfoResponse) getFeatureInfo.getResponse();
     }
 
-    public GetLegendGraphicResponse getLegendGraphic(
-        GetLegendGraphicRequest request) {
+    public GetLegendGraphicResponse getLegendGraphic(GetLegendGraphicRequest request) {
         GetLegendGraphic getLegendGraphic = (GetLegendGraphic) context.getBean(
                 "wmsGetLegendGraphic");
 

@@ -26,8 +26,7 @@ import java.net.Socket;
  */
 public class Main {
     private boolean _debug = System.getProperty("DEBUG", null) != null;
-    private String _config = System.getProperty("START",
-            "org/mortbay/start/start.config");
+    private String _config = System.getProperty("START", "org/mortbay/start/start.config");
     private int _port = Integer.getInteger("STOP.PORT", 8079).intValue();
     private String _key = System.getProperty("STOP.KEY", "mortbay");
 
@@ -38,8 +37,7 @@ public class Main {
     void stop() {
         try {
             if (_port <= 0) {
-                System.err.println(
-                    "START.PORT system property must be specified");
+                System.err.println("START.PORT system property must be specified");
             }
 
             if (_key == null) {

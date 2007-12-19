@@ -114,8 +114,7 @@ public class KMLMapProducerFactory implements GetMapProducerFactorySpi {
             return new KMLMapProducer(mapFormat, MIME_TYPE);
         }
 
-        throw new IllegalArgumentException("Unable to produce format "
-            + mapFormat);
+        throw new IllegalArgumentException("Unable to produce format " + mapFormat);
     }
 
     /* (non-Javadoc)

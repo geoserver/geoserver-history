@@ -25,16 +25,14 @@ public class CapabilitiesTransformerTest extends WFSTestSupport {
     static Logger logger = Logger.getLogger("org.geoserver.wfs.test");
 
     GetCapabilitiesType request() {
-        GetCapabilitiesType type = WfsFactory.eINSTANCE
-            .createGetCapabilitiesType();
+        GetCapabilitiesType type = WfsFactory.eINSTANCE.createGetCapabilitiesType();
         type.setBaseUrl("http://localhost:8080/geoserver");
 
         return type;
     }
 
     public void test() throws Exception {
-        CapabilitiesTransformer tx = new CapabilitiesTransformer.WFS1_1(getWFS(),
-                getCatalog());
+        CapabilitiesTransformer tx = new CapabilitiesTransformer.WFS1_1(getWFS(), getCatalog());
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         tx.transform(request(), output);
 

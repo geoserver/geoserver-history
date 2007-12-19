@@ -42,8 +42,7 @@ public class DefaultServiceExceptionHandlerTest extends TestCase {
         MockHttpServletResponse response = new MockHttpServletResponse();
         response.setupOutputStream(output);
 
-        ServiceException exception = new ServiceException(
-                "hello service exception");
+        ServiceException exception = new ServiceException("hello service exception");
         exception.setCode("helloCode");
         exception.setLocator("helloLocator");
         exception.getExceptionText().add("helloText");
@@ -51,16 +50,13 @@ public class DefaultServiceExceptionHandlerTest extends TestCase {
         DefaultServiceExceptionHandler handler = new DefaultServiceExceptionHandler();
         handler.handleServiceException(exception, service, request, response);
 
-        InputStream input = new ByteArrayInputStream(output.getContents()
-                                                           .getBytes());
+        InputStream input = new ByteArrayInputStream(output.getContents().getBytes());
 
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
-            .newInstance();
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         docBuilderFactory.setNamespaceAware(true);
 
         Document doc = docBuilderFactory.newDocumentBuilder().parse(input);
 
-        assertEquals("ows:ExceptionReport",
-            doc.getDocumentElement().getNodeName());
+        assertEquals("ows:ExceptionReport", doc.getDocumentElement().getNodeName());
     }
 }

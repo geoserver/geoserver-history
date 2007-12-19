@@ -32,8 +32,7 @@ import java.util.Collection;
  *
  * @generated
  */
-public class InsertResultsTypeImpl extends EObjectImpl
-    implements InsertResultsType {
+public class InsertResultsTypeImpl extends EObjectImpl implements InsertResultsType {
     /**
      * The cached value of the '{@link #getFeature() <em>Feature</em>}' containment reference list.
      * <!-- begin-user-doc -->
@@ -69,8 +68,8 @@ public class InsertResultsTypeImpl extends EObjectImpl
      */
     public EList getFeature() {
         if (feature == null) {
-            feature = new EObjectContainmentEList(InsertedFeatureType.class,
-                    this, WfsPackage.INSERT_RESULTS_TYPE__FEATURE);
+            feature = new EObjectContainmentEList(InsertedFeatureType.class, this,
+                    WfsPackage.INSERT_RESULTS_TYPE__FEATURE);
         }
 
         return feature;
@@ -81,8 +80,8 @@ public class InsertResultsTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case WfsPackage.INSERT_RESULTS_TYPE__FEATURE:
             return ((InternalEList) getFeature()).basicRemove(otherEnd, msgs);

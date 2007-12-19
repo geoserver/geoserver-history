@@ -120,8 +120,7 @@ public final class OperationType extends AbstractEnumerator {
      * @generated
      * @ordered
      */
-    public static final OperationType INSERT_LITERAL = new OperationType(INSERT,
-            "Insert", "Insert");
+    public static final OperationType INSERT_LITERAL = new OperationType(INSERT, "Insert", "Insert");
 
     /**
      * The '<em><b>Update</b></em>' literal object.
@@ -131,8 +130,7 @@ public final class OperationType extends AbstractEnumerator {
      * @generated
      * @ordered
      */
-    public static final OperationType UPDATE_LITERAL = new OperationType(UPDATE,
-            "Update", "Update");
+    public static final OperationType UPDATE_LITERAL = new OperationType(UPDATE, "Update", "Update");
 
     /**
      * The '<em><b>Delete</b></em>' literal object.
@@ -142,8 +140,7 @@ public final class OperationType extends AbstractEnumerator {
      * @generated
      * @ordered
      */
-    public static final OperationType DELETE_LITERAL = new OperationType(DELETE,
-            "Delete", "Delete");
+    public static final OperationType DELETE_LITERAL = new OperationType(DELETE, "Delete", "Delete");
 
     /**
      * The '<em><b>Query</b></em>' literal object.
@@ -153,8 +150,7 @@ public final class OperationType extends AbstractEnumerator {
      * @generated
      * @ordered
      */
-    public static final OperationType QUERY_LITERAL = new OperationType(QUERY,
-            "Query", "Query");
+    public static final OperationType QUERY_LITERAL = new OperationType(QUERY, "Query", "Query");
 
     /**
      * The '<em><b>Lock</b></em>' literal object.
@@ -164,8 +160,7 @@ public final class OperationType extends AbstractEnumerator {
      * @generated
      * @ordered
      */
-    public static final OperationType LOCK_LITERAL = new OperationType(LOCK,
-            "Lock", "Lock");
+    public static final OperationType LOCK_LITERAL = new OperationType(LOCK, "Lock", "Lock");
 
     /**
      * The '<em><b>Get Gml Object</b></em>' literal object.
@@ -185,8 +180,8 @@ public final class OperationType extends AbstractEnumerator {
      * @generated
      */
     private static final OperationType[] VALUES_ARRAY = new OperationType[] {
-            INSERT_LITERAL, UPDATE_LITERAL, DELETE_LITERAL, QUERY_LITERAL,
-            LOCK_LITERAL, GET_GML_OBJECT_LITERAL,
+            INSERT_LITERAL, UPDATE_LITERAL, DELETE_LITERAL, QUERY_LITERAL, LOCK_LITERAL,
+            GET_GML_OBJECT_LITERAL,
         };
 
     /**
@@ -195,8 +190,7 @@ public final class OperationType extends AbstractEnumerator {
      * <!-- end-user-doc -->
      * @generated
      */
-    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(
-                VALUES_ARRAY));
+    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
     /**
      * Only this class can construct instances.

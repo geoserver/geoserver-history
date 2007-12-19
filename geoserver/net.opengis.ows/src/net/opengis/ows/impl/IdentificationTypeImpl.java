@@ -42,8 +42,7 @@ import java.util.Collection;
  *
  * @generated
  */
-public class IdentificationTypeImpl extends DescriptionTypeImpl
-    implements IdentificationType {
+public class IdentificationTypeImpl extends DescriptionTypeImpl implements IdentificationType {
     /**
      * The default value of the '{@link #getOutputFormat() <em>Output Format</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -146,16 +145,13 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetIdentifier(CodeType newIdentifier,
-        NotificationChain msgs) {
+    public NotificationChain basicSetIdentifier(CodeType newIdentifier, NotificationChain msgs) {
         CodeType oldIdentifier = identifier;
         identifier = newIdentifier;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
-                    OwsPackage.IDENTIFICATION_TYPE__IDENTIFIER, oldIdentifier,
-                    newIdentifier);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.IDENTIFICATION_TYPE__IDENTIFIER, oldIdentifier, newIdentifier);
 
             if (msgs == null) {
                 msgs = notification;
@@ -178,14 +174,14 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl
 
             if (identifier != null) {
                 msgs = ((InternalEObject) identifier).eInverseRemove(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.IDENTIFICATION_TYPE__IDENTIFIER, null, msgs);
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.IDENTIFICATION_TYPE__IDENTIFIER, null,
+                        msgs);
             }
 
             if (newIdentifier != null) {
                 msgs = ((InternalEObject) newIdentifier).eInverseAdd(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.IDENTIFICATION_TYPE__IDENTIFIER, null, msgs);
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.IDENTIFICATION_TYPE__IDENTIFIER, null,
+                        msgs);
             }
 
             msgs = basicSetIdentifier(newIdentifier, msgs);
@@ -195,8 +191,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl
             }
         } else if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.IDENTIFICATION_TYPE__IDENTIFIER, newIdentifier,
-                    newIdentifier));
+                    OwsPackage.IDENTIFICATION_TYPE__IDENTIFIER, newIdentifier, newIdentifier));
         }
     }
 
@@ -220,8 +215,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl
      * @generated
      */
     public EList getBoundingBox() {
-        return getBoundingBoxGroup()
-                   .list(OwsPackage.Literals.IDENTIFICATION_TYPE__BOUNDING_BOX);
+        return getBoundingBoxGroup().list(OwsPackage.Literals.IDENTIFICATION_TYPE__BOUNDING_BOX);
     }
 
     /**
@@ -244,8 +238,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.IDENTIFICATION_TYPE__OUTPUT_FORMAT,
-                    oldOutputFormat, outputFormat));
+                    OwsPackage.IDENTIFICATION_TYPE__OUTPUT_FORMAT, oldOutputFormat, outputFormat));
         }
     }
 
@@ -270,8 +263,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl
      */
     public String getAvailableCRS() {
         return (String) getAvailableCRSGroup()
-                            .get(OwsPackage.Literals.IDENTIFICATION_TYPE__AVAILABLE_CRS,
-            true);
+                            .get(OwsPackage.Literals.IDENTIFICATION_TYPE__AVAILABLE_CRS, true);
     }
 
     /**
@@ -303,22 +295,20 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case OwsPackage.IDENTIFICATION_TYPE__IDENTIFIER:
             return basicSetIdentifier(null, msgs);
 
         case OwsPackage.IDENTIFICATION_TYPE__BOUNDING_BOX_GROUP:
-            return ((InternalEList) getBoundingBoxGroup()).basicRemove(otherEnd,
-                msgs);
+            return ((InternalEList) getBoundingBoxGroup()).basicRemove(otherEnd, msgs);
 
         case OwsPackage.IDENTIFICATION_TYPE__BOUNDING_BOX:
             return ((InternalEList) getBoundingBox()).basicRemove(otherEnd, msgs);
 
         case OwsPackage.IDENTIFICATION_TYPE__AVAILABLE_CRS_GROUP:
-            return ((InternalEList) getAvailableCRSGroup()).basicRemove(otherEnd,
-                msgs);
+            return ((InternalEList) getAvailableCRSGroup()).basicRemove(otherEnd, msgs);
 
         case OwsPackage.IDENTIFICATION_TYPE__METADATA:
             return ((InternalEList) getMetadata()).basicRemove(otherEnd, msgs);
@@ -481,16 +471,14 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl
 
         case OwsPackage.IDENTIFICATION_TYPE__OUTPUT_FORMAT:
             return (OUTPUT_FORMAT_EDEFAULT == null) ? (outputFormat != null)
-                                                    : (!OUTPUT_FORMAT_EDEFAULT
-            .equals(outputFormat));
+                                                    : (!OUTPUT_FORMAT_EDEFAULT.equals(outputFormat));
 
         case OwsPackage.IDENTIFICATION_TYPE__AVAILABLE_CRS_GROUP:
             return (availableCRSGroup != null) && !availableCRSGroup.isEmpty();
 
         case OwsPackage.IDENTIFICATION_TYPE__AVAILABLE_CRS:
             return (AVAILABLE_CRS_EDEFAULT == null) ? (getAvailableCRS() != null)
-                                                    : (!AVAILABLE_CRS_EDEFAULT
-            .equals(getAvailableCRS()));
+                                                    : (!AVAILABLE_CRS_EDEFAULT.equals(getAvailableCRS()));
 
         case OwsPackage.IDENTIFICATION_TYPE__METADATA:
             return (metadata != null) && !metadata.isEmpty();

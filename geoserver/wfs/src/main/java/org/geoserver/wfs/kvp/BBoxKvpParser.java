@@ -24,10 +24,8 @@ public class BBoxKvpParser extends KvpParser {
 
         // check to make sure that the bounding box has 4 coordinates
         if (unparsed.size() < 4) {
-            throw new IllegalArgumentException(
-                "Requested bounding box contains wrong"
-                + "number of coordinates (should have " + "4): "
-                + unparsed.size());
+            throw new IllegalArgumentException("Requested bounding box contains wrong"
+                + "number of coordinates (should have " + "4): " + unparsed.size());
         }
 
         //if it does, store them in an array of doubles
@@ -37,8 +35,8 @@ public class BBoxKvpParser extends KvpParser {
             try {
                 bbox[i] = Double.parseDouble((String) unparsed.get(i));
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Bounding box coordinate "
-                    + i + " is not parsable:" + unparsed.get(i));
+                throw new IllegalArgumentException("Bounding box coordinate " + i
+                    + " is not parsable:" + unparsed.get(i));
             }
         }
 

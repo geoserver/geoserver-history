@@ -20,11 +20,9 @@ import java.util.logging.Logger;
  * @author Gabriel Rold?n
  * @version $Id$
  */
-public class SVGMapProducer extends AbstractGetMapProducer
-    implements GetMapProducer {
+public class SVGMapProducer extends AbstractGetMapProducer implements GetMapProducer {
     /** DOCUMENT ME! */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses.wms.map");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.map");
 
     /** DOCUMENT ME! */
     private EncodeSVG svgEncoder;

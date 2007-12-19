@@ -46,8 +46,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class DispatcherXmlReader {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.readers");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
     /** Handler for request interpretation duties. */
     private DispatcherHandler currentRequest;

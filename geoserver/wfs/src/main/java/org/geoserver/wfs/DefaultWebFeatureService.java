@@ -28,8 +28,7 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class DefaultWebFeatureService implements WebFeatureService,
-    ApplicationContextAware {
+public class DefaultWebFeatureService implements WebFeatureService, ApplicationContextAware {
     /**
      * WFS service configuration.
      */
@@ -87,8 +86,8 @@ public class DefaultWebFeatureService implements WebFeatureService,
      *
      * @throws WFSException Any service exceptions.
      */
-    public FeatureTypeInfo[] describeFeatureType(
-        DescribeFeatureTypeType request) throws WFSException {
+    public FeatureTypeInfo[] describeFeatureType(DescribeFeatureTypeType request)
+        throws WFSException {
         return new DescribeFeatureType(wfs, catalog).run(request);
     }
 
@@ -118,8 +117,8 @@ public class DefaultWebFeatureService implements WebFeatureService,
      *
      * @throws WFSException Any service exceptions.
      */
-    public FeatureCollectionType getFeatureWithLock(
-        GetFeatureWithLockType request) throws WFSException {
+    public FeatureCollectionType getFeatureWithLock(GetFeatureWithLockType request)
+        throws WFSException {
         return getFeature(request);
     }
 

@@ -57,8 +57,7 @@ class PNGLegendGraphicProducer extends DefaultRasterLegendProducer {
         final MemoryCacheImageOutputStream memOutStream = new MemoryCacheImageOutputStream(out);
         final ImageWorker worker = new ImageWorker(image);
         final PlanarImage finalImage = (image.getColorModel() instanceof DirectColorModel)
-            ? worker.forceComponentColorModel().getPlanarImage()
-            : worker.getPlanarImage();
+            ? worker.forceComponentColorModel().getPlanarImage() : worker.getPlanarImage();
 
         // /////////////////////////////////////////////////////////////////
         //

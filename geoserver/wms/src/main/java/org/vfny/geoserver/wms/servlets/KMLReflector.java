@@ -60,8 +60,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  */
 public class KMLReflector extends WMService {
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.wms.servlets");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.wms.servlets");
     final String KML_MIME_TYPE = "application/vnd.google-earth.kml+xml";
     final String KMZ_MIME_TYPE = "application/vnd.google-earth.kmz+xml";
 
@@ -82,13 +81,11 @@ public class KMLReflector extends WMService {
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        setWMS((WMS) config.getServletContext()
-                           .getAttribute(WMS.WEB_CONTAINER_KEY));
+        setWMS((WMS) config.getServletContext().getAttribute(WMS.WEB_CONTAINER_KEY));
     }
 
     protected Response getResponseHandler() {
-        ApplicationContext context = WebApplicationContextUtils
-            .getWebApplicationContext(getServletContext());
+        ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 
         //return new GetMapResponse(config);
         return new GetMapResponse(getWMS(), context);
@@ -127,16 +124,14 @@ public class KMLReflector extends WMService {
         response.setContentType(KMLMapProducerFactory.MIME_TYPE);
 
         // the output stream we will write to
-        BufferedOutputStream out = new BufferedOutputStream(response
-                .getOutputStream());
+        BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());
 
         Map requestParams = new HashMap();
         String paramName;
         String paramValue;
 
         // gather the parameters
-        for (Enumeration pnames = request.getParameterNames();
-                pnames.hasMoreElements();) {
+        for (Enumeration pnames = request.getParameterNames(); pnames.hasMoreElements();) {
             paramName = (String) pnames.nextElement();
             paramValue = request.getParameter(paramName);
             requestParams.put(paramName.toUpperCase(), paramValue);
@@ -162,15 +157,12 @@ public class KMLReflector extends WMService {
         }
 
         final MapLayerInfo[] layers = serviceRequest.getLayers();
-        LOGGER.info("KML NetworkLink sharing " + layers.length
-            + " layer(s) created.");
+        LOGGER.info("KML NetworkLink sharing " + layers.length + " layer(s) created.");
 
         Style[] styles = null;
 
-        if ((serviceRequest.getStyles() != null)
-                && !serviceRequest.getStyles().isEmpty()) {
-            styles = (Style[]) serviceRequest.getStyles()
-                                             .toArray(new Style[] {  });
+        if ((serviceRequest.getStyles() != null) && !serviceRequest.getStyles().isEmpty()) {
+            styles = (Style[]) serviceRequest.getStyles().toArray(new Style[] {  });
         }
 
         // fill in our default values for the request if the user didn't pass the value in
@@ -258,10 +250,8 @@ public class KMLReflector extends WMService {
         sb.append("<Folder>\n");
 
         String proxifiedBaseUrl = RequestUtils.baseURL(request);
-        GeoServer gs = (GeoServer) GeoServerExtensions.extensions(GeoServer.class)
-                                                      .get(0);
-        proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(proxifiedBaseUrl,
-                gs.getProxyBaseUrl());
+        GeoServer gs = (GeoServer) GeoServerExtensions.extensions(GeoServer.class).get(0);
+        proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(proxifiedBaseUrl, gs.getProxyBaseUrl());
 
         Envelope layerbbox = null;
 
@@ -303,10 +293,9 @@ public class KMLReflector extends WMService {
                 sb.append("<Link>\n");
                 sb.append("<href><![CDATA[" + proxifiedBaseUrl
                     + "/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kml+XML"
-                    + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS
-                    + "&layers=" + layers[i].getName() + style + "&bbox="
-                    + (String) requestParams.get("BBOX") + filter + "&legend="
-                    + String.valueOf(serviceRequest.getLegend())
+                    + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + "&layers="
+                    + layers[i].getName() + style + "&bbox=" + (String) requestParams.get("BBOX")
+                    + filter + "&legend=" + String.valueOf(serviceRequest.getLegend())
                     + "&superoverlay=true]]></href>\n");
                 sb.append("<viewRefreshMode>onRegion</viewRefreshMode>\n");
 
@@ -330,16 +319,13 @@ public class KMLReflector extends WMService {
                 sb.append("<Url>\n");
                 sb.append("<href><![CDATA[" + proxifiedBaseUrl
                     + "/wms?service=WMS&request=GetMap&format=application/vnd.google-earth.kmz+XML"
-                    + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS
-                    + "&layers=" + layers[i].getName() + style
-                    + filter // optional
+                    + "&width=" + WIDTH + "&height=" + HEIGHT + "&srs=" + SRS + "&layers="
+                    + layers[i].getName() + style + filter // optional
                     + "&KMScore=" + serviceRequest.getKMScore() + "&KMAttr="
                     + String.valueOf(serviceRequest.getKMattr()) + "&legend="
-                    + String.valueOf(serviceRequest.getLegend())
-                    + "]]></href>\n");
+                    + String.valueOf(serviceRequest.getLegend()) + "]]></href>\n");
                 sb.append("<viewRefreshMode>onStop</viewRefreshMode>\n");
-                sb.append("<viewRefreshTime>" + REFRESH
-                    + "</viewRefreshTime>\n");
+                sb.append("<viewRefreshTime>" + REFRESH + "</viewRefreshTime>\n");
                 sb.append("</Url>\n");
                 sb.append("</NetworkLink>\n");
             }
@@ -383,17 +369,14 @@ public class KMLReflector extends WMService {
         LOGGER.fine("lat2: " + lat2 + "; lon2: " + lon2);
         LOGGER.fine("latmid: " + midpoint[1] + "; lonmid: " + midpoint[0]);
 
-        return "<LookAt id=\"geoserver\">" + "  <longitude>"
-        + ((lon1 + lon2) / 2) + "</longitude>      <!-- kml:angle180 -->"
-        + "  <latitude>" + midpoint[1]
+        return "<LookAt id=\"geoserver\">" + "  <longitude>" + ((lon1 + lon2) / 2)
+        + "</longitude>      <!-- kml:angle180 -->" + "  <latitude>" + midpoint[1]
         + "</latitude>        <!-- kml:angle90 -->"
-        + "  <altitude>0</altitude>       <!-- double --> " + "  <range>"
-        + distance + "</range>              <!-- double -->"
-        + "  <tilt>0</tilt>               <!-- float -->"
+        + "  <altitude>0</altitude>       <!-- double --> " + "  <range>" + distance
+        + "</range>              <!-- double -->" + "  <tilt>0</tilt>               <!-- float -->"
         + "  <heading>0</heading>         <!-- float -->"
         + "  <altitudeMode>clampToGround</altitudeMode> "
-        + "  <!--kml:altitudeModeEnum:clampToGround, relativeToGround, absolute -->"
-        + "</LookAt>";
+        + "  <!--kml:altitudeModeEnum:clampToGround, relativeToGround, absolute -->" + "</LookAt>";
     }
 
     private double[] getRect(double lat, double lon, double radius) {

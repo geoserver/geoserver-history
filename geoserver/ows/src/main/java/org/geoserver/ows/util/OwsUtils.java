@@ -201,8 +201,7 @@ public class OwsUtils {
         for (int i = 0; i < parameters.length; i++) {
             Object parameter = parameters[i];
 
-            if ((parameter != null)
-                    && type.isAssignableFrom(parameter.getClass())) {
+            if ((parameter != null) && type.isAssignableFrom(parameter.getClass())) {
                 return parameter;
             }
         }

@@ -27,8 +27,7 @@ import java.util.logging.Logger;
  */
 abstract class GlobalLayerSupertype {
     /** for debugging */
-    protected static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.global");
+    protected static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.global");
 
     /**
      * getDTO purpose.

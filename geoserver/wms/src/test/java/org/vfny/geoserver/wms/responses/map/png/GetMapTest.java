@@ -19,15 +19,11 @@ public class GetMapTest extends WMSTestSupport {
         }
 
         ServletResponse response = getAsServletResponse(
-                "wms?request=getmap&service=wms&version=1.1.1"
-                + "&format=image/png" + "&layers="
-                + RemoteOWSTestSupport.TOPP_STATES + ","
-                + MockData.BASIC_POLYGONS.getPrefix() + ":"
-                + MockData.BASIC_POLYGONS.getLocalPart()
-                + "&styles=Population,"
-                + MockData.BASIC_POLYGONS.getLocalPart()
-                + "&remote_ows_type=WFS" + "&remote_ows_url="
-                + RemoteOWSTestSupport.WFS_SERVER_URL
+                "wms?request=getmap&service=wms&version=1.1.1" + "&format=image/png" + "&layers="
+                + RemoteOWSTestSupport.TOPP_STATES + "," + MockData.BASIC_POLYGONS.getPrefix()
+                + ":" + MockData.BASIC_POLYGONS.getLocalPart() + "&styles=Population,"
+                + MockData.BASIC_POLYGONS.getLocalPart() + "&remote_ows_type=WFS"
+                + "&remote_ows_url=" + RemoteOWSTestSupport.WFS_SERVER_URL
                 + "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326");
 
         assertEquals("image/png", response.getContentType());
@@ -41,9 +37,8 @@ public class GetMapTest extends WMSTestSupport {
         URL url = GetMapTest.class.getResource("remoteOws.sld");
 
         ServletResponse response = getAsServletResponse(
-                "wms?request=getmap&service=wms&version=1.1.1"
-                + "&format=image/png" + "&sld=" + url.toString()
-                + "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326");
+                "wms?request=getmap&service=wms&version=1.1.1" + "&format=image/png" + "&sld="
+                + url.toString() + "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326");
 
         assertEquals("image/png", response.getContentType());
     }

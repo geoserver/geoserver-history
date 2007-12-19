@@ -29,8 +29,7 @@ public class VersionNegotiationTest extends WFSTestSupport {
 
     public void test0() throws Exception {
         // test when provided and accepted match up
-        GetCapabilitiesType request = factory
-            .createGetCapabilitiesType();
+        GetCapabilitiesType request = factory.createGetCapabilitiesType();
         request.setService("WFS");
         request.setAcceptVersions(owsFactory.createAcceptVersionsType());
         request.getAcceptVersions().getVersion().add("1.0.0");

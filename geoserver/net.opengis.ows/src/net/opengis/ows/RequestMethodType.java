@@ -8,6 +8,7 @@ package net.opengis.ows;
 
 import org.eclipse.emf.common.util.EList;
 
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Request Method Type</b></em>'.
@@ -29,20 +30,19 @@ import org.eclipse.emf.common.util.EList;
  * @generated
  */
 public interface RequestMethodType extends OnlineResourceType {
-	/**
-     * Returns the value of the '<em><b>Constraint</b></em>' containment reference list.
-     * The list contents are of type {@link net.opengis.ows.DomainType}.
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * <!-- begin-model-doc -->
-     * Optional unordered list of valid domain constraints on non-parameter quantities that each apply to this request method for this operation. If one of these Constraint elements has the same "name" attribute as a Constraint element in the OperationsMetadata or Operation element, this Constraint element shall override the other one for this operation. The list of required and optional constraints for this request method for this operation shall be specified in the Implementation Specification for this service.
-     * <!-- end-model-doc -->
-     * @return the value of the '<em>Constraint</em>' containment reference list.
-     * @see net.opengis.ows.OwsPackage#getRequestMethodType_Constraint()
-     * @model type="net.opengis.ows.DomainType" containment="true"
-     *        extendedMetaData="kind='element' name='Constraint' namespace='##targetNamespace'"
-     * @generated
-     */
-	EList getConstraint();
-
+    /**
+    * Returns the value of the '<em><b>Constraint</b></em>' containment reference list.
+    * The list contents are of type {@link net.opengis.ows.DomainType}.
+    * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+    * <!-- begin-model-doc -->
+    * Optional unordered list of valid domain constraints on non-parameter quantities that each apply to this request method for this operation. If one of these Constraint elements has the same "name" attribute as a Constraint element in the OperationsMetadata or Operation element, this Constraint element shall override the other one for this operation. The list of required and optional constraints for this request method for this operation shall be specified in the Implementation Specification for this service.
+    * <!-- end-model-doc -->
+    * @return the value of the '<em>Constraint</em>' containment reference list.
+    * @see net.opengis.ows.OwsPackage#getRequestMethodType_Constraint()
+    * @model type="net.opengis.ows.DomainType" containment="true"
+    *        extendedMetaData="kind='element' name='Constraint' namespace='##targetNamespace'"
+    * @generated
+    */
+    EList getConstraint();
 } // RequestMethodType

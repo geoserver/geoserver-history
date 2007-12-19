@@ -4,15 +4,11 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
-import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
@@ -34,12 +30,14 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 
 /**
@@ -234,20 +232,22 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                 }
 
                 try {
-                    getFInfoFilter = filterFac.intersects(filterFac.property(finfo.getFeatureType().getDefaultGeometry()
-                            .getLocalName()), filterFac.literal(pixelRect));
-//                    getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
-//                    ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac
-//                        .createLiteralExpression(pixelRect));
-//
-//                    if (finfo.getFeatureType().getDefaultGeometry() != null) {
-//                        ((GeometryFilter) getFInfoFilter).addRightGeometry(filterFac
-//                            .createAttributeExpression());
-//                    } else {
-//                        LOGGER.warning("GetFeatureInfo for feature type with no default geometry.");
-//                    }
-//                    ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac
-//                        .createLiteralExpression(pixelRect));
+                    getFInfoFilter = filterFac.intersects(filterFac.property(
+                                finfo.getFeatureType().getDefaultGeometry().getLocalName()),
+                            filterFac.literal(pixelRect));
+
+                    //                    getFInfoFilter = filterFac.createGeometryFilter(AbstractFilter.GEOMETRY_INTERSECTS);
+                    //                    ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac
+                    //                        .createLiteralExpression(pixelRect));
+                    //
+                    //                    if (finfo.getFeatureType().getDefaultGeometry() != null) {
+                    //                        ((GeometryFilter) getFInfoFilter).addRightGeometry(filterFac
+                    //                            .createAttributeExpression());
+                    //                    } else {
+                    //                        LOGGER.warning("GetFeatureInfo for feature type with no default geometry.");
+                    //                    }
+                    //                    ((GeometryFilter) getFInfoFilter).addLeftGeometry(filterFac
+                    //                        .createLiteralExpression(pixelRect));
                 } catch (IllegalFilterException e) {
                     e.printStackTrace();
                     throw new WmsException(null, "Internal error : " + e.getMessage());

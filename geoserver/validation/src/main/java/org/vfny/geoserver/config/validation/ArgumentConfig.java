@@ -154,8 +154,7 @@ public class ArgumentConfig {
      */
     public void setValue(Object value) {
         if (value == null) {
-            throw new NullPointerException(
-                "value should only be set when it has a value");
+            throw new NullPointerException("value should only be set when it has a value");
         }
 
         this.value = value;
@@ -185,8 +184,8 @@ public class ArgumentConfig {
         return r;
     }
 
-    public static synchronized void loadPropertyLists(TestConfig testConfig,
-        Locale lc, List attributeKeys, List attributeHelps, List attributeValues) {
+    public static synchronized void loadPropertyLists(TestConfig testConfig, Locale lc,
+        List attributeKeys, List attributeHelps, List attributeValues) {
         if (!lc.equals(Locale.getDefault())) {
             Locale.setDefault(lc);
             Introspector.flushCaches();

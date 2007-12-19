@@ -42,16 +42,13 @@ public class DataNamespacesNewForm extends ActionForm {
      * @param request
      * @return Any ActionErrors produced by validation
      */
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         if ((getPrefix() == null) || getPrefix().equals("")) {
-            errors.add("prefix",
-                new ActionError("error.prefix.required", getPrefix()));
+            errors.add("prefix", new ActionError("error.prefix.required", getPrefix()));
         } else if (!Pattern.matches("^\\w*$", getPrefix())) {
-            errors.add("dataStoreID",
-                new ActionError("error.prefix.invalid", getPrefix()));
+            errors.add("dataStoreID", new ActionError("error.prefix.invalid", getPrefix()));
         }
 
         return errors;

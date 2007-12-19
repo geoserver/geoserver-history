@@ -32,9 +32,8 @@ import javax.servlet.http.HttpServletResponse;
  *         modification)
  */
 public final class CoverageStoresEditorAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        UserContainer user, HttpServletRequest request,
-        HttpServletResponse response)
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
         throws ConfigurationException, IOException, ServletException {
         CoverageStoresEditorForm dataFormatsForm = (CoverageStoresEditorForm) form;
         String dataFormatID = dataFormatsForm.getDataFormatId();
@@ -52,8 +51,7 @@ public final class CoverageStoresEditorAction extends ConfigAction {
 
         if (config == null) {
             // we are creating a new one.
-            dataConfig.addDataFormat(getUserContainer(request)
-                                         .getDataFormatConfig());
+            dataConfig.addDataFormat(getUserContainer(request).getDataFormatConfig());
             config = (CoverageStoreConfig) dataConfig.getDataFormat(dataFormatID);
             newCoverageFlag = true;
         }
@@ -79,14 +77,13 @@ public final class CoverageStoresEditorAction extends ConfigAction {
         getUserContainer(request).setDataFormatConfig(null);
         getApplicationState().notifyConfigChanged();
 
-        CoverageStoreInfo cvStoreInfo = new CoverageStoreInfo(config.toDTO(),
-                getData());
+        CoverageStoreInfo cvStoreInfo = new CoverageStoreInfo(config.toDTO(), getData());
 
         if (newCoverageFlag) {
             //if we're making a new coverage store, then go ahead and create the new coverage and
             //forward to the editor
-            CoverageConfig[] coverageConfigs = DataCoveragesNewAction
-                .newCoverageConfig(cvStoreInfo, dataFormatID, request);
+            CoverageConfig[] coverageConfigs = DataCoveragesNewAction.newCoverageConfig(cvStoreInfo,
+                    dataFormatID, request);
 
             if (coverageConfigs.length == 1) {
                 user.setCoverageConfig(coverageConfigs[0]);
@@ -95,11 +92,9 @@ public final class CoverageStoresEditorAction extends ConfigAction {
             } else if (coverageConfigs.length > 1) {
                 for (int ci = 0; ci < coverageConfigs.length; ci++) {
                     final CoverageConfig cvConfig = coverageConfigs[ci];
-                    final StringBuffer coverage = new StringBuffer(cvConfig
-                            .getFormatId());
-                    dataConfig.addCoverage(coverage.append(":")
-                                                   .append(cvConfig.getName())
-                                                   .toString(), cvConfig);
+                    final StringBuffer coverage = new StringBuffer(cvConfig.getFormatId());
+                    dataConfig.addCoverage(coverage.append(":").append(cvConfig.getName()).toString(),
+                        cvConfig);
                 }
 
                 // Don't think reset is needed (as me have moved on to new page)

@@ -122,8 +122,7 @@ public class FeatureCollectionTypeBinding extends AbstractComplexEMFBinding {
             if (!featureCollection.getFeature().isEmpty()) {
                 if (featureCollection.getFeature().size() > 1) {
                     //wrap in a single
-                    return new CompositeFeatureCollection(featureCollection
-                        .getFeature());
+                    return new CompositeFeatureCollection(featureCollection.getFeature());
                 }
 
                 //just return the single

@@ -15,8 +15,7 @@ import java.util.logging.Logger;
  */
 public class DeleteFeatureTypeRequest extends CATALOGRequest {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.catalog");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.catalog");
 
     /**
      * featureTypeId.
@@ -70,8 +69,8 @@ public class DeleteFeatureTypeRequest extends CATALOGRequest {
      * @return A string of this request.
      */
     public String toString() {
-        StringBuffer returnString = new StringBuffer(
-                "DeleteFeatureType Request [featureTypeId: ").append(featureTypeId);
+        StringBuffer returnString = new StringBuffer("DeleteFeatureType Request [featureTypeId: ")
+            .append(featureTypeId);
 
         return returnString.toString();
     }

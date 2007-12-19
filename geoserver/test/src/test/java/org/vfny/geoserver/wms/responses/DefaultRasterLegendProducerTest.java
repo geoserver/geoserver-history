@@ -66,8 +66,7 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
                         throw new UnsupportedOperationException();
                     }
 
-                    public String getContentType()
-                        throws java.lang.IllegalStateException {
+                    public String getContentType() throws java.lang.IllegalStateException {
                         throw new UnsupportedOperationException();
                     }
                 };
@@ -115,12 +114,11 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
         BufferedImage legend = this.legendProducer.getLegendGraphic();
 
         //was the legend painted?
-        super.assertNotBlank("testUserSpecifiedRule", legend,
-            DefaultRasterLegendProducer.BG_COLOR);
+        super.assertNotBlank("testUserSpecifiedRule", legend, DefaultRasterLegendProducer.BG_COLOR);
 
         //was created only one rule?
-        String errMsg = "expected just one legend of height " + HEIGHT_HINT
-            + ", for the rule " + rule.getName();
+        String errMsg = "expected just one legend of height " + HEIGHT_HINT + ", for the rule "
+            + rule.getName();
         int resultLegendCount = legend.getHeight() / HEIGHT_HINT;
         assertEquals(errMsg, 1, resultLegendCount);
     }
@@ -207,8 +205,8 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
      *         <code>citeTypeName</code>, getting its default test style, or
      *         asking the producer to generate the legend
      */
-    private BufferedImage testProduceLegendGraphic(String citeTypeName,
-        int ruleCount) throws Exception {
+    private BufferedImage testProduceLegendGraphic(String citeTypeName, int ruleCount)
+        throws Exception {
         FeatureType layer = getCiteDataStore().getSchema(citeTypeName);
         GetLegendGraphicRequest req = new GetLegendGraphicRequest(service);
         req.setLayer(layer);

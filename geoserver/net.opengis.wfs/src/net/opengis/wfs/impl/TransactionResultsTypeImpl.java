@@ -35,8 +35,7 @@ import java.util.Collection;
  *
  * @generated
  */
-public class TransactionResultsTypeImpl extends EObjectImpl
-    implements TransactionResultsType {
+public class TransactionResultsTypeImpl extends EObjectImpl implements TransactionResultsType {
     /**
      * The default value of the '{@link #getHandle() <em>Handle</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -105,8 +104,7 @@ public class TransactionResultsTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE, oldHandle,
-                    handle));
+                    WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE, oldHandle, handle));
         }
     }
 
@@ -129,8 +127,8 @@ public class TransactionResultsTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case WfsPackage.TRANSACTION_RESULTS_TYPE__ACTION:
             return ((InternalEList) getAction()).basicRemove(otherEnd, msgs);
@@ -207,8 +205,7 @@ public class TransactionResultsTypeImpl extends EObjectImpl
     public boolean eIsSet(int featureID) {
         switch (featureID) {
         case WfsPackage.TRANSACTION_RESULTS_TYPE__HANDLE:
-            return (HANDLE_EDEFAULT == null) ? (handle != null)
-                                             : (!HANDLE_EDEFAULT.equals(handle));
+            return (HANDLE_EDEFAULT == null) ? (handle != null) : (!HANDLE_EDEFAULT.equals(handle));
 
         case WfsPackage.TRANSACTION_RESULTS_TYPE__ACTION:
             return (action != null) && !action.isEmpty();

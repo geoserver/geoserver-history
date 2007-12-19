@@ -107,8 +107,8 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
         name = newName;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.PROPERTY_TYPE__NAME, oldName, name));
+            eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.PROPERTY_TYPE__NAME,
+                    oldName, name));
         }
     }
 
@@ -131,8 +131,8 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
         value = newValue;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.PROPERTY_TYPE__VALUE, oldValue, value));
+            eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.PROPERTY_TYPE__VALUE,
+                    oldValue, value));
         }
     }
 
@@ -203,12 +203,10 @@ public class PropertyTypeImpl extends EObjectImpl implements PropertyType {
     public boolean eIsSet(int featureID) {
         switch (featureID) {
         case WfsPackage.PROPERTY_TYPE__NAME:
-            return (NAME_EDEFAULT == null) ? (name != null)
-                                           : (!NAME_EDEFAULT.equals(name));
+            return (NAME_EDEFAULT == null) ? (name != null) : (!NAME_EDEFAULT.equals(name));
 
         case WfsPackage.PROPERTY_TYPE__VALUE:
-            return (VALUE_EDEFAULT == null) ? (value != null)
-                                            : (!VALUE_EDEFAULT.equals(value));
+            return (VALUE_EDEFAULT == null) ? (value != null) : (!VALUE_EDEFAULT.equals(value));
         }
 
         return super.eIsSet(featureID);

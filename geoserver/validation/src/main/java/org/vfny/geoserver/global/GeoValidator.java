@@ -89,17 +89,14 @@ public class GeoValidator extends ValidationProcessor {
         Map testSuites = null;
 
         try {
-            File plugInDir = GeoserverDataDirectory
-                .findConfigDir(dataDir, "plugIns");
-            File validationDir = GeoserverDataDirectory.findConfigDir(dataDir,
-                    "validation");
+            File plugInDir = GeoserverDataDirectory.findConfigDir(dataDir, "plugIns");
+            File validationDir = GeoserverDataDirectory.findConfigDir(dataDir, "validation");
 
             if (plugInDir.exists()) {
                 plugIns = XMLReader.loadPlugIns(plugInDir);
 
                 if (validationDir.exists()) {
-                    testSuites = XMLReader.loadValidations(validationDir,
-                            plugIns);
+                    testSuites = XMLReader.loadValidations(validationDir, plugIns);
                 }
 
                 testSuites = new HashMap();
@@ -107,8 +104,7 @@ public class GeoValidator extends ValidationProcessor {
                 plugIns = new HashMap();
             }
         } catch (Exception e) {
-            Logger.getLogger("org.vfny.geoserver.global")
-                  .log(Level.WARNING, "loading plugins", e);
+            Logger.getLogger("org.vfny.geoserver.global").log(Level.WARNING, "loading plugins", e);
 
             testSuites = new HashMap();
             plugIns = new HashMap();
@@ -193,8 +189,8 @@ public class GeoValidator extends ValidationProcessor {
             }
 
             try {
-                PlugIn plugIn = new org.geotools.validation.PlugIn(plugInName,
-                        plugInClass, dto.getDescription(), plugInArgs);
+                PlugIn plugIn = new org.geotools.validation.PlugIn(plugInName, plugInClass,
+                        dto.getDescription(), plugInArgs);
                 defaultPlugIns.put(plugInName, plugIn);
             } catch (ValidationException e) {
                 e.printStackTrace();
@@ -236,8 +232,8 @@ public class GeoValidator extends ValidationProcessor {
                 }
 
                 try {
-                    PlugIn plugIn = (org.geotools.validation.PlugIn) defaultPlugIns
-                        .get(dto.getPlugIn().getName());
+                    PlugIn plugIn = (org.geotools.validation.PlugIn) defaultPlugIns.get(dto.getPlugIn()
+                                                                                           .getName());
                     Validation validation = plugIn.createValidation(dto.getName(),
                             dto.getDescription(), testArgs);
 

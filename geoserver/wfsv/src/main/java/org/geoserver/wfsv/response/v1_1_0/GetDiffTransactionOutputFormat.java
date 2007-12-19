@@ -67,8 +67,8 @@ public class GetDiffTransactionOutputFormat extends Response {
      */
     FilterFactory filterFactory;
 
-    public GetDiffTransactionOutputFormat(WFS wfs, Data catalog,
-        WFSConfiguration configuration, FilterFactory filterFactory) {
+    public GetDiffTransactionOutputFormat(WFS wfs, Data catalog, WFSConfiguration configuration,
+        FilterFactory filterFactory) {
         super(FeatureDiffReader[].class);
 
         this.wfs = wfs;
@@ -89,12 +89,11 @@ public class GetDiffTransactionOutputFormat extends Response {
      * Checks that the resultType is of type "hits".
      */
     public boolean canHandle(Operation operation) {
-        GetDiffType request = (GetDiffType) OwsUtils.parameter(operation
-                .getParameters(), GetDiffType.class);
+        GetDiffType request = (GetDiffType) OwsUtils.parameter(operation.getParameters(),
+                GetDiffType.class);
 
         return (request != null)
-        && request.getOutputFormat()
-                  .equals("text/xml; subtype=wfs-transaction/1.1.0");
+        && request.getOutputFormat().equals("text/xml; subtype=wfs-transaction/1.1.0");
     }
 
     public void write(Object value, OutputStream output, Operation operation)
@@ -102,8 +101,7 @@ public class GetDiffTransactionOutputFormat extends Response {
         final FeatureDiffReader[] diffReaders = (FeatureDiffReader[]) value;
 
         // create a new feature collcetion type with just the numbers
-        final TransactionType transaction = WfsFactory.eINSTANCE
-            .createTransactionType();
+        final TransactionType transaction = WfsFactory.eINSTANCE.createTransactionType();
 
         for (int i = 0; i < diffReaders.length; i++) {
             final FeatureDiffReader diffReader = diffReaders[i];
@@ -114,8 +112,7 @@ public class GetDiffTransactionOutputFormat extends Response {
             final QName typeName = new QName(schema.getNamespace().getAuthority(),
                     schema.getTypeName());
             final Set deletedIds = new HashSet();
-            final InsertElementType insert = WfsFactory.eINSTANCE
-                .createInsertElementType();
+            final InsertElementType insert = WfsFactory.eINSTANCE.createInsertElementType();
 
             while (diffReader.hasNext()) {
                 FeatureDiff diff = diffReader.next();
@@ -133,16 +130,13 @@ public class GetDiffTransactionOutputFormat extends Response {
 
                 case FeatureDiff.UPDATED:
 
-                    final UpdateElementType update = WfsFactory.eINSTANCE
-                        .createUpdateElementType();
+                    final UpdateElementType update = WfsFactory.eINSTANCE.createUpdateElementType();
                     final EList properties = update.getProperty();
 
                     Feature f = diff.getFeature();
 
-                    for (Iterator it = diff.getChangedAttributes().iterator();
-                            it.hasNext();) {
-                        final PropertyType property = WfsFactory.eINSTANCE
-                            .createPropertyType();
+                    for (Iterator it = diff.getChangedAttributes().iterator(); it.hasNext();) {
+                        final PropertyType property = WfsFactory.eINSTANCE.createPropertyType();
                         String name = (String) it.next();
                         property.setName(new QName(name));
                         property.setValue(f.getAttribute(name));
@@ -150,8 +144,7 @@ public class GetDiffTransactionOutputFormat extends Response {
                     }
 
                     FeatureId featureId = filterFactory.featureId(diff.getID());
-                    final Filter filter = filterFactory.id(Collections.singleton(
-                                featureId));
+                    final Filter filter = filterFactory.id(Collections.singleton(featureId));
                     update.setFilter(filter);
                     update.setTypeName(typeName);
                     transaction.getUpdate().add(update);
@@ -159,8 +152,7 @@ public class GetDiffTransactionOutputFormat extends Response {
                     break;
 
                 default:
-                    throw new WFSException("Could not handle diff type "
-                        + diff.getState());
+                    throw new WFSException("Could not handle diff type " + diff.getState());
                 }
             }
 
@@ -170,8 +162,7 @@ public class GetDiffTransactionOutputFormat extends Response {
             }
 
             if (deletedIds.size() > 0) {
-                final DeleteElementType delete = WfsFactory.eINSTANCE
-                    .createDeleteElementType();
+                final DeleteElementType delete = WfsFactory.eINSTANCE.createDeleteElementType();
                 delete.setFilter(filterFactory.id(deletedIds));
                 delete.setTypeName(typeName);
                 transaction.getDelete().add(delete);
@@ -196,8 +187,8 @@ public class GetDiffTransactionOutputFormat extends Response {
 
             // load the metadata for the feature type
             String namespaceURI = featureType.getNamespace().toString();
-            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType
-                    .getTypeName(), namespaceURI);
+            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getTypeName(),
+                    namespaceURI);
 
             // add it to the map
             Set metas = (Set) ns2metas.get(namespaceURI);
@@ -230,16 +221,14 @@ public class GetDiffTransactionOutputFormat extends Response {
 
             // set the schema location
             encoder.setSchemaLocation(namespaceURI,
-                ResponseUtils.appendQueryString(wfs.getOnlineResource()
-                                                   .toString(),
+                ResponseUtils.appendQueryString(wfs.getOnlineResource().toString(),
                     "service=WFS&version=1.1.0&request=DescribeFeatureType&typeName="
                     + typeNames.toString()));
         }
 
         try {
             System.out.println(transaction);
-            encoder.encode(transaction,
-                org.geoserver.wfs.xml.v1_1_0.WFS.TRANSACTION, output);
+            encoder.encode(transaction, org.geoserver.wfs.xml.v1_1_0.WFS.TRANSACTION, output);
         } catch (SAXException e) {
             throw (IOException) new IOException("Encoding error ").initCause(e);
         } finally {

@@ -32,8 +32,7 @@ import java.util.Collection;
  *
  * @generated
  */
-public class InsertedFeatureTypeImpl extends EObjectImpl
-    implements InsertedFeatureType {
+public class InsertedFeatureTypeImpl extends EObjectImpl implements InsertedFeatureType {
     /**
      * The default value of the '{@link #getHandle() <em>Handle</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -191,8 +190,7 @@ public class InsertedFeatureTypeImpl extends EObjectImpl
             return (featureId != null) && !featureId.isEmpty();
 
         case WfsPackage.INSERTED_FEATURE_TYPE__HANDLE:
-            return (HANDLE_EDEFAULT == null) ? (handle != null)
-                                             : (!HANDLE_EDEFAULT.equals(handle));
+            return (HANDLE_EDEFAULT == null) ? (handle != null) : (!HANDLE_EDEFAULT.equals(handle));
         }
 
         return super.eIsSet(featureID);

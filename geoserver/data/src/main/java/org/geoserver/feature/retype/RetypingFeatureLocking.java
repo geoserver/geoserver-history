@@ -15,10 +15,8 @@ import java.io.IOException;
 /**
  * Renaming wrapper for a {@link FeatureLocking} instance, to be used along with {@link RetypingDataStore}
  */
-class RetypingFeatureLocking extends RetypingFeatureStore
-    implements FeatureLocking {
-    public RetypingFeatureLocking(DataStore ds, FeatureLocking wrapped,
-        FeatureTypeMap typeMap) {
+class RetypingFeatureLocking extends RetypingFeatureStore implements FeatureLocking {
+    public RetypingFeatureLocking(DataStore ds, FeatureLocking wrapped, FeatureTypeMap typeMap) {
         super(ds, wrapped, typeMap);
     }
 

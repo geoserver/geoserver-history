@@ -22,27 +22,24 @@ import java.io.IOException;
  * @author Andrea Aime, TOPP
  */
 public class VersioningTransaction extends Transaction {
-    public VersioningTransaction(WFS wfs, Data catalog,
-        ApplicationContext context) {
+    public VersioningTransaction(WFS wfs, Data catalog, ApplicationContext context) {
         super(wfs, catalog, context);
     }
 
-    protected DefaultTransaction getDatastoreTransaction(
-        TransactionType request) throws IOException {
+    protected DefaultTransaction getDatastoreTransaction(TransactionType request)
+        throws IOException {
         DefaultTransaction transaction = new DefaultTransaction();
 
         // use handle as the log messages
         String username = "anonymous";
-        Object principal = SecurityContextHolder.getContext().getAuthentication()
-                                                .getPrincipal();
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (principal instanceof UserDetails) {
             username = ((UserDetails) principal).getUsername();
         }
 
         transaction.putProperty(VersionedPostgisDataStore.AUTHOR, username);
-        transaction.putProperty(VersionedPostgisDataStore.MESSAGE,
-            request.getHandle());
+        transaction.putProperty(VersionedPostgisDataStore.MESSAGE, request.getHandle());
 
         return transaction;
     }

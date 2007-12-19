@@ -135,8 +135,7 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.EXCEPTION_TYPE__EXCEPTION_CODE,
-                    oldExceptionCode, exceptionCode));
+                    OwsPackage.EXCEPTION_TYPE__EXCEPTION_CODE, oldExceptionCode, exceptionCode));
         }
     }
 
@@ -249,12 +248,10 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
 
         case OwsPackage.EXCEPTION_TYPE__EXCEPTION_CODE:
             return (EXCEPTION_CODE_EDEFAULT == null) ? (exceptionCode != null)
-                                                     : (!EXCEPTION_CODE_EDEFAULT
-            .equals(exceptionCode));
+                                                     : (!EXCEPTION_CODE_EDEFAULT.equals(exceptionCode));
 
         case OwsPackage.EXCEPTION_TYPE__LOCATOR:
-            return (LOCATOR_EDEFAULT == null) ? (locator != null)
-                                              : (!LOCATOR_EDEFAULT.equals(locator));
+            return (LOCATOR_EDEFAULT == null) ? (locator != null) : (!LOCATOR_EDEFAULT.equals(locator));
         }
 
         return super.eIsSet(featureID);

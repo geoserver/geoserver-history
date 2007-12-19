@@ -62,8 +62,7 @@ abstract public class Request {
      * @param requestType Name of the request (example, GetCapabilties)
      * @param serviceRef The servlet for the request.
      */
-    protected Request(String serviceType, String requestType,
-        AbstractService serviceRef) {
+    protected Request(String serviceType, String requestType, AbstractService serviceRef) {
         this.service = serviceType;
         this.request = requestType;
         this.serviceRef = serviceRef;
@@ -167,14 +166,11 @@ abstract public class Request {
 
         Request req = (Request) o;
         boolean equals = true;
-        equals = ((request == null) ? (req.getRequest() == null)
-                                    : request.equals(req.getRequest()))
+        equals = ((request == null) ? (req.getRequest() == null) : request.equals(req.getRequest()))
             && equals;
-        equals = ((version == null) ? (req.getVersion() == null)
-                                    : version.equals(req.getVersion()))
+        equals = ((version == null) ? (req.getVersion() == null) : version.equals(req.getVersion()))
             && equals;
-        equals = ((service == null) ? (req.getService() == null)
-                                    : service.equals(req.getService()))
+        equals = ((service == null) ? (req.getService() == null) : service.equals(req.getService()))
             && equals;
 
         return equals;
@@ -238,8 +234,7 @@ abstract public class Request {
      * @return the base url of the schemas.  Will be getBaseUrl() + data/capabilities.
      */
     public String getSchemaBaseUrl() {
-        return Requests.getSchemaBaseUrl(getHttpServletRequest(),
-            serviceRef.getGeoServer());
+        return Requests.getSchemaBaseUrl(getHttpServletRequest(), serviceRef.getGeoServer());
     }
 
     /**
@@ -260,8 +255,7 @@ abstract public class Request {
         }
 
         // will happen if the dispatcher was called, as opposed to using the /wfs url.
-        if (uri.endsWith("/wcs") || uri.endsWith("/wfs")
-                || uri.endsWith("/wms")) {
+        if (uri.endsWith("/wcs") || uri.endsWith("/wfs") || uri.endsWith("/wms")) {
             return true;
         }
 

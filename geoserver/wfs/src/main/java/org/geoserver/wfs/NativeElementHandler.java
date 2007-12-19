@@ -35,15 +35,14 @@ public class NativeElementHandler implements TransactionElementHandler {
         NativeType nativ = (NativeType) element;
 
         if (!nativ.isSafeToIgnore()) {
-            throw new WFSTransactionException("Native element:"
-                + nativ.getVendorId() + " unsupported but marked as"
-                + " unsafe to ignore", "InvalidParameterValue");
+            throw new WFSTransactionException("Native element:" + nativ.getVendorId()
+                + " unsupported but marked as" + " unsafe to ignore", "InvalidParameterValue");
         }
     }
 
-    public void execute(EObject element, TransactionType request,
-        Map featureSources, TransactionResponseType response,
-        TransactionListener listener) throws WFSTransactionException {
+    public void execute(EObject element, TransactionType request, Map featureSources,
+        TransactionResponseType response, TransactionListener listener)
+        throws WFSTransactionException {
         // nothing to do, we just ignore if possible
     }
 

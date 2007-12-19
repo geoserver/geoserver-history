@@ -80,8 +80,7 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
      */
     public EList getKeyword() {
         if (keyword == null) {
-            keyword = new EDataTypeUniqueEList(String.class, this,
-                    OwsPackage.KEYWORDS_TYPE__KEYWORD);
+            keyword = new EDataTypeUniqueEList(String.class, this, OwsPackage.KEYWORDS_TYPE__KEYWORD);
         }
 
         return keyword;
@@ -101,15 +100,13 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetType(CodeType newType,
-        NotificationChain msgs) {
+    public NotificationChain basicSetType(CodeType newType, NotificationChain msgs) {
         CodeType oldType = type;
         type = newType;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET, OwsPackage.KEYWORDS_TYPE__TYPE, oldType,
-                    newType);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.KEYWORDS_TYPE__TYPE, oldType, newType);
 
             if (msgs == null) {
                 msgs = notification;
@@ -132,14 +129,12 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
 
             if (type != null) {
                 msgs = ((InternalEObject) type).eInverseRemove(this,
-                        EOPPOSITE_FEATURE_BASE - OwsPackage.KEYWORDS_TYPE__TYPE,
-                        null, msgs);
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.KEYWORDS_TYPE__TYPE, null, msgs);
             }
 
             if (newType != null) {
                 msgs = ((InternalEObject) newType).eInverseAdd(this,
-                        EOPPOSITE_FEATURE_BASE - OwsPackage.KEYWORDS_TYPE__TYPE,
-                        null, msgs);
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.KEYWORDS_TYPE__TYPE, null, msgs);
             }
 
             msgs = basicSetType(newType, msgs);
@@ -148,8 +143,8 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
                 msgs.dispatch();
             }
         } else if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.KEYWORDS_TYPE__TYPE, newType, newType));
+            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.KEYWORDS_TYPE__TYPE,
+                    newType, newType));
         }
     }
 
@@ -158,8 +153,8 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case OwsPackage.KEYWORDS_TYPE__TYPE:
             return basicSetType(null, msgs);

@@ -92,8 +92,7 @@ public class CATALOGDTO implements DataTransferObject {
 
         CATALOGDTO dto = (CATALOGDTO) other;
 
-        return ((service == null)) ? (dto.getService() == null)
-                                   : service.equals(dto.getService());
+        return ((service == null)) ? (dto.getService() == null) : service.equals(dto.getService());
     }
 
     /**

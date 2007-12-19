@@ -54,8 +54,8 @@ public abstract class WFSDescribeFeatureTypeOutputFormat extends Response {
     /**
      * Calls through to {@link #write(FeatureTypeInfo[], OutputStream, Operation)}.
      */
-    public final void write(Object value, OutputStream output,
-        Operation operation) throws IOException, ServiceException {
+    public final void write(Object value, OutputStream output, Operation operation)
+        throws IOException, ServiceException {
         write((FeatureTypeInfo[]) value, output, operation);
     }
 
@@ -67,7 +67,6 @@ public abstract class WFSDescribeFeatureTypeOutputFormat extends Response {
      * @param output The output stream to serialize to.
      * @param getFeature The DescribeFeatureType operation descriptor.
      */
-    protected abstract void write(FeatureTypeInfo[] featureTypeInfos,
-        OutputStream output, Operation describeFeatureType)
-        throws IOException;
+    protected abstract void write(FeatureTypeInfo[] featureTypeInfos, OutputStream output,
+        Operation describeFeatureType) throws IOException;
 }

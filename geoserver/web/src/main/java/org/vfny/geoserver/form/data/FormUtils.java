@@ -15,8 +15,7 @@ import java.io.IOException;
  * Utility class for common operations used by forms.
  */
 public class FormUtils {
-    public static ActionErrors checkFileExistsAndCanRead(File file,
-        ActionErrors errors) {
+    public static ActionErrors checkFileExistsAndCanRead(File file, ActionErrors errors) {
         if (!file.exists()) {
             String actionKey = "error.file.NotExists";
             Object[] params = new Object[] { file };

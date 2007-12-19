@@ -139,15 +139,13 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetPhone(TelephoneType newPhone,
-        NotificationChain msgs) {
+    public NotificationChain basicSetPhone(TelephoneType newPhone, NotificationChain msgs) {
         TelephoneType oldPhone = phone;
         phone = newPhone;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET, OwsPackage.CONTACT_TYPE__PHONE, oldPhone,
-                    newPhone);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.CONTACT_TYPE__PHONE, oldPhone, newPhone);
 
             if (msgs == null) {
                 msgs = notification;
@@ -170,14 +168,12 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
 
             if (phone != null) {
                 msgs = ((InternalEObject) phone).eInverseRemove(this,
-                        EOPPOSITE_FEATURE_BASE - OwsPackage.CONTACT_TYPE__PHONE,
-                        null, msgs);
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.CONTACT_TYPE__PHONE, null, msgs);
             }
 
             if (newPhone != null) {
                 msgs = ((InternalEObject) newPhone).eInverseAdd(this,
-                        EOPPOSITE_FEATURE_BASE - OwsPackage.CONTACT_TYPE__PHONE,
-                        null, msgs);
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.CONTACT_TYPE__PHONE, null, msgs);
             }
 
             msgs = basicSetPhone(newPhone, msgs);
@@ -186,8 +182,8 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
                 msgs.dispatch();
             }
         } else if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.CONTACT_TYPE__PHONE, newPhone, newPhone));
+            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.CONTACT_TYPE__PHONE,
+                    newPhone, newPhone));
         }
     }
 
@@ -205,15 +201,13 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetAddress(AddressType newAddress,
-        NotificationChain msgs) {
+    public NotificationChain basicSetAddress(AddressType newAddress, NotificationChain msgs) {
         AddressType oldAddress = address;
         address = newAddress;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET, OwsPackage.CONTACT_TYPE__ADDRESS,
-                    oldAddress, newAddress);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.CONTACT_TYPE__ADDRESS, oldAddress, newAddress);
 
             if (msgs == null) {
                 msgs = notification;
@@ -236,14 +230,12 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
 
             if (address != null) {
                 msgs = ((InternalEObject) address).eInverseRemove(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.CONTACT_TYPE__ADDRESS, null, msgs);
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.CONTACT_TYPE__ADDRESS, null, msgs);
             }
 
             if (newAddress != null) {
                 msgs = ((InternalEObject) newAddress).eInverseAdd(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.CONTACT_TYPE__ADDRESS, null, msgs);
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.CONTACT_TYPE__ADDRESS, null, msgs);
             }
 
             msgs = basicSetAddress(newAddress, msgs);
@@ -252,8 +244,8 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
                 msgs.dispatch();
             }
         } else if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.CONTACT_TYPE__ADDRESS, newAddress, newAddress));
+            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.CONTACT_TYPE__ADDRESS,
+                    newAddress, newAddress));
         }
     }
 
@@ -271,15 +263,14 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetOnlineResource(
-        OnlineResourceType newOnlineResource, NotificationChain msgs) {
+    public NotificationChain basicSetOnlineResource(OnlineResourceType newOnlineResource,
+        NotificationChain msgs) {
         OnlineResourceType oldOnlineResource = onlineResource;
         onlineResource = newOnlineResource;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET, OwsPackage.CONTACT_TYPE__ONLINE_RESOURCE,
-                    oldOnlineResource, newOnlineResource);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.CONTACT_TYPE__ONLINE_RESOURCE, oldOnlineResource, newOnlineResource);
 
             if (msgs == null) {
                 msgs = notification;
@@ -302,14 +293,14 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
 
             if (onlineResource != null) {
                 msgs = ((InternalEObject) onlineResource).eInverseRemove(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.CONTACT_TYPE__ONLINE_RESOURCE, null, msgs);
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.CONTACT_TYPE__ONLINE_RESOURCE, null,
+                        msgs);
             }
 
             if (newOnlineResource != null) {
                 msgs = ((InternalEObject) newOnlineResource).eInverseAdd(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.CONTACT_TYPE__ONLINE_RESOURCE, null, msgs);
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.CONTACT_TYPE__ONLINE_RESOURCE, null,
+                        msgs);
             }
 
             msgs = basicSetOnlineResource(newOnlineResource, msgs);
@@ -319,8 +310,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
             }
         } else if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.CONTACT_TYPE__ONLINE_RESOURCE,
-                    newOnlineResource, newOnlineResource));
+                    OwsPackage.CONTACT_TYPE__ONLINE_RESOURCE, newOnlineResource, newOnlineResource));
         }
     }
 
@@ -344,8 +334,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.CONTACT_TYPE__HOURS_OF_SERVICE,
-                    oldHoursOfService, hoursOfService));
+                    OwsPackage.CONTACT_TYPE__HOURS_OF_SERVICE, oldHoursOfService, hoursOfService));
         }
     }
 
@@ -369,8 +358,8 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.CONTACT_TYPE__CONTACT_INSTRUCTIONS,
-                    oldContactInstructions, contactInstructions));
+                    OwsPackage.CONTACT_TYPE__CONTACT_INSTRUCTIONS, oldContactInstructions,
+                    contactInstructions));
         }
     }
 
@@ -379,8 +368,8 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case OwsPackage.CONTACT_TYPE__PHONE:
             return basicSetPhone(null, msgs);
@@ -511,13 +500,11 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
 
         case OwsPackage.CONTACT_TYPE__HOURS_OF_SERVICE:
             return (HOURS_OF_SERVICE_EDEFAULT == null) ? (hoursOfService != null)
-                                                       : (!HOURS_OF_SERVICE_EDEFAULT
-            .equals(hoursOfService));
+                                                       : (!HOURS_OF_SERVICE_EDEFAULT.equals(hoursOfService));
 
         case OwsPackage.CONTACT_TYPE__CONTACT_INSTRUCTIONS:
-            return (CONTACT_INSTRUCTIONS_EDEFAULT == null)
-            ? (contactInstructions != null)
-            : (!CONTACT_INSTRUCTIONS_EDEFAULT.equals(contactInstructions));
+            return (CONTACT_INSTRUCTIONS_EDEFAULT == null) ? (contactInstructions != null)
+                                                           : (!CONTACT_INSTRUCTIONS_EDEFAULT.equals(contactInstructions));
         }
 
         return super.eIsSet(featureID);

@@ -135,24 +135,20 @@ public class GetLogTypeBinding extends AbstractComplexBinding {
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
         GetLogType result = wfsvFactory.createGetLogType();
-        result.getDifferenceQuery()
-              .addAll(node.getChildValues(DifferenceQueryType.class));
+        result.getDifferenceQuery().addAll(node.getChildValues(DifferenceQueryType.class));
 
         if (node.hasAttribute("resultType")) {
-            result.setResultType((ResultTypeType) node.getAttributeValue(
-                    "resultType"));
+            result.setResultType((ResultTypeType) node.getAttributeValue("resultType"));
         }
 
         if (node.hasAttribute("outputFormat")) {
-            result.setOutputFormat((String) node.getAttributeValue(
-                    "outputFormat"));
+            result.setOutputFormat((String) node.getAttributeValue("outputFormat"));
         } else {
             result.setOutputFormat("text/xml; subtype=gml/3.1.1");
         }
 
         if (node.hasAttribute("maxFeatures")) {
-            result.setMaxFeatures((BigInteger) node.getAttributeValue(
-                    "maxFeatures"));
+            result.setMaxFeatures((BigInteger) node.getAttributeValue("maxFeatures"));
         }
 
         return result;

@@ -63,12 +63,11 @@ public class WfsExceptionHandler extends DefaultServiceExceptionHandler {
             s.append("<ServiceExceptionReport\n");
             s.append(tab + "version=\"1.2.0\"\n");
             s.append(tab + "xmlns=\"http://www.opengis.net/ogc\"\n");
-            s.append(tab
-                + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
+            s.append(tab + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
             s.append(tab);
             s.append("xsi:schemaLocation=\"http://www.opengis.net/ogc ");
-            s.append(ResponseUtils.appendPath(wfs.getSchemaBaseURL(),
-                    "wfs/1.0.0/OGC-exception.xsd") + "\">\n");
+            s.append(ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "wfs/1.0.0/OGC-exception.xsd")
+                + "\">\n");
 
             s.append(tab + "<ServiceException");
 
@@ -91,8 +90,7 @@ public class WfsExceptionHandler extends DefaultServiceExceptionHandler {
                     e.printStackTrace(new PrintStream(stackTrace));
 
                     s.append("\nDetails:\n");
-                    s.append(ResponseUtils.encodeXML(
-                            new String(stackTrace.toByteArray())));
+                    s.append(ResponseUtils.encodeXML(new String(stackTrace.toByteArray())));
                 }
             }
 

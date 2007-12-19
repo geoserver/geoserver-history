@@ -24,8 +24,7 @@ public final class GMLAbstractFeatureTypeBinding extends org.geotools.gml2.bindi
     Data catalog;
 
     public GMLAbstractFeatureTypeBinding(FeatureTypeCache featureTypeCache,
-        BindingWalkerFactory bwFactory, GeometryFactory geometryFactory,
-        Data catalog) {
+        BindingWalkerFactory bwFactory, GeometryFactory geometryFactory, Data catalog) {
         super(featureTypeCache, bwFactory);
         this.geometryFactory = geometryFactory;
         this.catalog = catalog;
@@ -59,8 +58,7 @@ public final class GMLAbstractFeatureTypeBinding extends org.geotools.gml2.bindi
                             Polygon polygon = polygon(bounds);
                             boundedByNode.setValue(polygon);
                         } else if (type.isAssignableFrom(MultiPolygon.class)) {
-                            MultiPolygon multiPolygon = geometryFactory
-                                .createMultiPolygon(new Polygon[] {
+                            MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(new Polygon[] {
                                         polygon(bounds)
                                     });
                             boundedByNode.setValue(multiPolygon);

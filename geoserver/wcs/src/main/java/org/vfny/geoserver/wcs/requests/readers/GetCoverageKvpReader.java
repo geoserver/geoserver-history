@@ -5,7 +5,6 @@
 package org.vfny.geoserver.wcs.requests.readers;
 
 import com.vividsolutions.jts.geom.Envelope;
-
 import org.geoserver.ows.kvp.TimeKvpParser;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.ServiceException;
@@ -13,7 +12,6 @@ import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.CoverageRequest;
 import org.vfny.geoserver.wcs.servlets.WCService;
-
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -168,15 +166,17 @@ public class GetCoverageKvpReader extends KvpRequestReader {
         }
 
         if (keyExists("TIME")) {
-        	final TimeKvpParser timeParser = new TimeKvpParser("TIME");
+            final TimeKvpParser timeParser = new TimeKvpParser("TIME");
+
             try {
-				currentRequest.setTime((List) timeParser.parse(getValue("TIME")));
-			} catch (ParseException e) {
-				throw new WcsException(e.getLocalizedMessage());
-			}
+                currentRequest.setTime((List) timeParser.parse(getValue("TIME")));
+            } catch (ParseException e) {
+                throw new WcsException(e.getLocalizedMessage());
+            }
+
             parameters.remove("TIME");
         }
-        
+
         currentRequest.setParameters(parameters);
 
         return currentRequest;

@@ -83,8 +83,7 @@ public class PlugInConfig {
                 String key = (String) i.next();
 
                 //TODO clone value.
-                args.put(key,
-                    new ArgumentConfig((ArgumentConfig) pi.getArgs().get(key)));
+                args.put(key, new ArgumentConfig((ArgumentConfig) pi.getArgs().get(key)));
             }
         }
     }
@@ -111,8 +110,7 @@ public class PlugInConfig {
                 String key = (String) i.next();
 
                 //TODO clone value.
-                args.put(key,
-                    new ArgumentConfig((ArgumentDTO) pi.getArgs().get(key)));
+                args.put(key, new ArgumentConfig((ArgumentDTO) pi.getArgs().get(key)));
             }
         }
     }
@@ -316,8 +314,8 @@ public class PlugInConfig {
             StringReader sr = new StringReader(value);
 
             try {
-                ac.setValue(ArgHelper.getArgumentInstance(
-                        ArgHelper.getArgumentType(ac.getValue()), value));
+                ac.setValue(ArgHelper.getArgumentInstance(ArgHelper.getArgumentType(ac.getValue()),
+                        value));
 
                 return true;
             } catch (Exception e) {
@@ -356,8 +354,7 @@ public class PlugInConfig {
         ac.setName(name);
 
         try {
-            ac.setValue(ArgHelper.getArgumentInstance(ArgHelper.getArgumentType(
-                        cl), value));
+            ac.setValue(ArgHelper.getArgumentInstance(ArgHelper.getArgumentType(cl), value));
         } catch (ValidationException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -384,8 +381,7 @@ public class PlugInConfig {
 
         Class cl = pd.getPropertyType();
 
-        return ArgHelper.getArgumentInstance(ArgHelper.getArgumentType(cl),
-            value);
+        return ArgHelper.getArgumentInstance(ArgHelper.getArgumentType(cl), value);
     }
 
     /**
@@ -413,8 +409,7 @@ public class PlugInConfig {
         }
 
         if (ac.isFinal()) {
-            throw new IllegalArgumentException(
-                "Cannot include final arguments as part of a test.");
+            throw new IllegalArgumentException("Cannot include final arguments as part of a test.");
         }
 
         ac.setValue(value);
@@ -452,8 +447,7 @@ public class PlugInConfig {
      */
     public PropertyDescriptor getPropertyDescriptor(String name) {
         if (name == null) {
-            throw new NullPointerException(
-                "name must be defined to get a PropertyDescriptor.");
+            throw new NullPointerException("name must be defined to get a PropertyDescriptor.");
         }
 
         PropertyDescriptor[] pds = getPropertyDescriptors();

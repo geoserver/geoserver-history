@@ -60,8 +60,7 @@ public class Log4JFormatter extends Formatter {
      * The line separator. This is the value of the "line.separator" property
      * at the time the <code>Log4JFormatter</code> was created.
      */
-    private final String lineSeparator = System.getProperty("line.separator",
-            "\n");
+    private final String lineSeparator = System.getProperty("line.separator", "\n");
 
     /**
      * The line separator for the message body. This line always begin with
@@ -302,8 +301,7 @@ public class Log4JFormatter extends Formatter {
      * @param e the error that occured.
      */
     private static void unexpectedException(final Exception e) {
-        Utilities.unexpectedException("org.geotools.resources",
-            "GeotoolsHandler", "init", e);
+        Utilities.unexpectedException("org.geotools.resources", "GeotoolsHandler", "init", e);
     }
 
     /**
@@ -314,8 +312,7 @@ public class Log4JFormatter extends Formatter {
      * @return The header width.
      */
     private static int getHeaderWidth() {
-        return Preferences.userNodeForPackage(Log4JFormatter.class)
-                          .getInt("logging.header", 15);
+        return Preferences.userNodeForPackage(Log4JFormatter.class).getInt("logging.header", 15);
     }
 
     /**
@@ -325,8 +322,7 @@ public class Log4JFormatter extends Formatter {
      * @param margin the size of the margin to set.
      */
     static void setHeaderWidth(final int margin) {
-        Preferences.userNodeForPackage(Log4JFormatter.class)
-                   .putInt("logging.header", margin);
+        Preferences.userNodeForPackage(Log4JFormatter.class).putInt("logging.header", margin);
     }
 
     /**

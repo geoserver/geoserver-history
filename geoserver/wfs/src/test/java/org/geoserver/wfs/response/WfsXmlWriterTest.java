@@ -1,26 +1,26 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wfs.response;
-
-import java.io.File;
-import java.io.FileOutputStream;
-
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.geoserver.wfs.WFSTestSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import java.io.File;
+import java.io.FileOutputStream;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 
 public class WfsXmlWriterTest extends WFSTestSupport {
-
     public void test() throws Exception {
         File tmp = File.createTempFile("wfs", "xml");
         tmp.deleteOnExit();
 
-        WfsXmlWriter writer = new WfsXmlWriter.WFS1_0(getWFS(),
-                new FileOutputStream(tmp));
+        WfsXmlWriter writer = new WfsXmlWriter.WFS1_0(getWFS(), new FileOutputStream(tmp));
         writer.openTag("wfs", "FeatureCollection");
-        writer.openTag("gml", "Feature", new String[] { "id", "foo", "srs",
-                "4326" });
+        writer.openTag("gml", "Feature", new String[] { "id", "foo", "srs", "4326" });
         writer.text("some text");
         writer.closeTag("gml", "Feature");
         writer.closeTag("wfs", "FeatureCollection");
@@ -33,8 +33,8 @@ public class WfsXmlWriterTest extends WFSTestSupport {
 
         assertNotNull(doc);
 
-        assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
-                .getNodeName());
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
+
         NodeList features = doc.getElementsByTagName("gml:Feature");
         assertEquals(1, features.getLength());
 

@@ -30,8 +30,7 @@ import java.util.Collection;
  *
  * @generated
  */
-public class AcceptVersionsTypeImpl extends EObjectImpl
-    implements AcceptVersionsType {
+public class AcceptVersionsTypeImpl extends EObjectImpl implements AcceptVersionsType {
     /**
      * The cached value of the '{@link #getVersion() <em>Version</em>}' attribute list.
      * <!-- begin-user-doc -->

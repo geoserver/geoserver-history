@@ -24,12 +24,10 @@ import java.io.StringReader;
 public class DescribeFeatureResponseTest extends WFSTestSupport {
     Operation request() {
         Service service = new Service("wfs", null, null);
-        DescribeFeatureTypeType type = WfsFactory.eINSTANCE
-            .createDescribeFeatureTypeType();
+        DescribeFeatureTypeType type = WfsFactory.eINSTANCE.createDescribeFeatureTypeType();
         type.setBaseUrl("http://localhost:8080/geoserver");
 
-        Operation request = new Operation("wfs", service, null,
-                new Object[] { type });
+        Operation request = new Operation("wfs", service, null, new Object[] { type });
 
         return request;
     }
@@ -40,12 +38,10 @@ public class DescribeFeatureResponseTest extends WFSTestSupport {
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-        XmlSchemaEncoder response = new XmlSchemaEncoder(getWFS(), catalog,
-                getResourceLoader());
+        XmlSchemaEncoder response = new XmlSchemaEncoder(getWFS(), catalog, getResourceLoader());
         response.write(new FeatureTypeInfo[] { meta }, output, request());
 
-        Element schema = ReaderUtils.parse(new StringReader(
-                    new String(output.toByteArray())));
+        Element schema = ReaderUtils.parse(new StringReader(new String(output.toByteArray())));
         assertEquals("xsd:schema", schema.getNodeName());
 
         NodeList types = schema.getElementsByTagName("xsd:complexType");
@@ -53,19 +49,15 @@ public class DescribeFeatureResponseTest extends WFSTestSupport {
     }
 
     public void testWithDifferntNamespaces() throws Exception {
-        FeatureTypeInfo meta1 = getCatalog()
-                                    .getFeatureTypeInfo(MockData.BASIC_POLYGONS);
-        FeatureTypeInfo meta2 = getCatalog()
-                                    .getFeatureTypeInfo(MockData.POLYGONS);
+        FeatureTypeInfo meta1 = getCatalog().getFeatureTypeInfo(MockData.BASIC_POLYGONS);
+        FeatureTypeInfo meta2 = getCatalog().getFeatureTypeInfo(MockData.POLYGONS);
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-        XmlSchemaEncoder response = new XmlSchemaEncoder(getWFS(),
-                getCatalog(), getResourceLoader());
+        XmlSchemaEncoder response = new XmlSchemaEncoder(getWFS(), getCatalog(), getResourceLoader());
         response.write(new FeatureTypeInfo[] { meta1, meta2 }, output, request());
 
-        Element schema = ReaderUtils.parse(new StringReader(
-                    new String(output.toByteArray())));
+        Element schema = ReaderUtils.parse(new StringReader(new String(output.toByteArray())));
         assertEquals("xsd:schema", schema.getNodeName());
 
         NodeList imprts = schema.getElementsByTagName("xsd:import");

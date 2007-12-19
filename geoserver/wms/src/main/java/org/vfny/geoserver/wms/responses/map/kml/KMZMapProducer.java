@@ -37,8 +37,7 @@ import javax.xml.transform.TransformerException;
  */
 class KMZMapProducer extends AbstractGetMapProducer implements GetMapProducer {
     /** standard logger */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses.wms.kmz");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.kmz");
 
     /**
      * delegating producer for rendering.
@@ -53,7 +52,7 @@ class KMZMapProducer extends AbstractGetMapProducer implements GetMapProducer {
     /**
      * WaterMark Painter instance
      */
-	private WatermarkPainter wmPainter;
+    private WatermarkPainter wmPainter;
 
     public KMZMapProducer(String mapFormat, String mime_type, WMS wms) {
         super(mapFormat, mime_type);
@@ -157,15 +156,16 @@ class KMZMapProducer extends AbstractGetMapProducer implements GetMapProducer {
             mapContext.setAreaOfInterest(this.mapContext.getAreaOfInterest());
             mapContext.setBgColor(this.mapContext.getBgColor());
             mapContext.setBuffer(this.mapContext.getBuffer());
-            mapContext.setContactInformation(this.mapContext
-                .getContactInformation());
+            mapContext.setContactInformation(this.mapContext.getContactInformation());
             mapContext.setKeywords(this.mapContext.getKeywords());
             mapContext.setAbstract(this.mapContext.getAbstract());
             mapContext.setTransparent(true);
 
             // render the map
-            if (wmPainter == null)
-            	wmPainter = new WatermarkPainter(this.mapContext.getRequest());
+            if (wmPainter == null) {
+                wmPainter = new WatermarkPainter(this.mapContext.getRequest());
+            }
+
             mapProducer.setMapContext(mapContext);
             mapProducer.setWmPainter(wmPainter);
             mapProducer.produceMap();

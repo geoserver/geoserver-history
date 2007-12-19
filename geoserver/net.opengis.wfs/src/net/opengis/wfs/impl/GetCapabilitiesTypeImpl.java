@@ -98,8 +98,7 @@ public class GetCapabilitiesTypeImpl extends net.opengis.ows.impl.GetCapabilitie
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.GET_CAPABILITIES_TYPE__SERVICE, oldService,
-                    service, !oldServiceESet));
+                    WfsPackage.GET_CAPABILITIES_TYPE__SERVICE, oldService, service, !oldServiceESet));
         }
     }
 
@@ -116,8 +115,8 @@ public class GetCapabilitiesTypeImpl extends net.opengis.ows.impl.GetCapabilitie
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.UNSET,
-                    WfsPackage.GET_CAPABILITIES_TYPE__SERVICE, oldService,
-                    SERVICE_EDEFAULT, oldServiceESet));
+                    WfsPackage.GET_CAPABILITIES_TYPE__SERVICE, oldService, SERVICE_EDEFAULT,
+                    oldServiceESet));
         }
     }
 

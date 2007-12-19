@@ -8,7 +8,6 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WfsFactory;
-
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
 import org.geoserver.wfs.WFS;
@@ -98,33 +97,38 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
 
         //the 'response' object we'll pass to our OutputFormat
         FeatureCollectionType features = WfsFactory.eINSTANCE.createFeatureCollectionType();
-        
+
         //the 'request' object we'll pass to our OutputFormat
         GetFeatureType gfreq = WfsFactory.eINSTANCE.createGetFeatureType();
         gfreq.setBaseUrl(fInfoReq.getBaseUrl());
 
         for (Iterator i = results.iterator(); i.hasNext();) {
-            FeatureCollection fc = (FeatureCollection)i.next();
+            FeatureCollection fc = (FeatureCollection) i.next();
             features.getFeature().add(fc);
-            
+
             QueryType qt = WfsFactory.eINSTANCE.createQueryType();
-            String crs = GML2EncodingUtils.epsgCode(fc.getSchema().getDefaultGeometry().getCoordinateSystem());
+            String crs = GML2EncodingUtils.epsgCode(fc.getSchema().getDefaultGeometry()
+                                                      .getCoordinateSystem());
+
             if (crs != null) {
-                final String srsName = "EPSG:" + crs; 
+                final String srsName = "EPSG:" + crs;
+
                 try {
                     qt.setSrsName(new URI(srsName));
                 } catch (URISyntaxException e) {
-                    throw new ServiceException("Unable to determite coordinate system for featureType " + fc.getSchema().getTypeName() + ".  Schema told us '" + srsName + "'", e);
+                    throw new ServiceException(
+                        "Unable to determite coordinate system for featureType "
+                        + fc.getSchema().getTypeName() + ".  Schema told us '" + srsName + "'", e);
                 }
             }
+
             gfreq.getQuery().add(qt);
-            
         }
-        
+
         //this is a dummy wrapper around our 'request' object so that the new Dispatcher will accept it.
         Service serviceDesc = new Service("wms", null, null);
-        Operation opDescriptor = new Operation("",serviceDesc,null, new Object[] { gfreq });
-        
+        Operation opDescriptor = new Operation("", serviceDesc, null, new Object[] { gfreq });
+
         GML2OutputFormat format = new GML2OutputFormat(wfs, gs, catalog);
         format.write(features, out, opDescriptor);
     }

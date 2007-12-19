@@ -55,23 +55,19 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
     }
 
     public Object toDTO() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public int getNumDecimals() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public DataStoreInfo getDataStoreInfo() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public Style getDefaultStyle() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public boolean isEnabled() {
@@ -82,28 +78,23 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
     }
 
     public String getPrefix() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public NameSpaceInfo getNameSpace() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public String getName() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public Envelope getBoundingBox() throws IOException {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public Envelope getLatLongBoundingBox() throws IOException {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public String getSRS() {
@@ -115,115 +106,92 @@ public class TemporaryFeatureTypeInfo extends FeatureTypeInfo {
 
     private synchronized FeatureTypeInfoDTO getGeneratedDTO()
         throws IOException {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
-    protected String getAttribute(Element elem, String attName,
-        boolean mandatory) throws ConfigurationException {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+    protected String getAttribute(Element elem, String attName, boolean mandatory)
+        throws ConfigurationException {
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     private static Envelope getLatLongBBox(String fromSrId, Envelope bbox) {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public String getAbstract() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public List getKeywords() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public String getTitle() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public String getSchemaName() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public void setSchemaName(String string) {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public String getSchemaBase() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public void setSchemaBase(String string) {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public String getTypeName() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public FeatureType getFeatureType() throws IOException {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     private FeatureType getFeatureType(FeatureSource fs)
         throws IOException {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public DataStoreInfo getDataStoreMetaData() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public List getAttributeNames() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public List getAttributes() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
-    public synchronized AttributeTypeInfo AttributeTypeMetaData(
-        String attributeName) {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+    public synchronized AttributeTypeInfo AttributeTypeMetaData(String attributeName) {
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public boolean containsMetaData(String key) {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public void putMetaData(String key, Object value) {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public Object getMetaData(String key) {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public LegendURL getLegendURL() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 
     public File getSchemaFile() {
-        throw new IllegalArgumentException(
-            "TemporaryFeatureTypeInfo - not supported");
+        throw new IllegalArgumentException("TemporaryFeatureTypeInfo - not supported");
     }
 }

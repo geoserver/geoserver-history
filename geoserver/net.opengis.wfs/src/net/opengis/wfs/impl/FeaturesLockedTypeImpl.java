@@ -35,8 +35,7 @@ import java.util.Collection;
  *
  * @generated
  */
-public class FeaturesLockedTypeImpl extends EObjectImpl
-    implements FeaturesLockedType {
+public class FeaturesLockedTypeImpl extends EObjectImpl implements FeaturesLockedType {
     /**
      * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute list.
      * <!-- begin-user-doc -->
@@ -82,8 +81,7 @@ public class FeaturesLockedTypeImpl extends EObjectImpl
      */
     public FeatureMap getGroup() {
         if (group == null) {
-            group = new BasicFeatureMap(this,
-                    WfsPackage.FEATURES_LOCKED_TYPE__GROUP);
+            group = new BasicFeatureMap(this, WfsPackage.FEATURES_LOCKED_TYPE__GROUP);
         }
 
         return group;
@@ -108,8 +106,8 @@ public class FeaturesLockedTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case WfsPackage.FEATURES_LOCKED_TYPE__GROUP:
             return ((InternalEList) getGroup()).basicRemove(otherEnd, msgs);

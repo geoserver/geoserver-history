@@ -104,16 +104,14 @@ public class DataDataStoresEditorForm extends ActionForm {
 
         namespaces = new TreeSet(config.getNameSpaces().keySet());
 
-        DataStoreConfig dsConfig = Requests.getUserContainer(request)
-                                           .getDataStoreConfig();
+        DataStoreConfig dsConfig = Requests.getUserContainer(request).getDataStoreConfig();
 
         if (dsConfig == null) {
             // something is horribly wrong no DataStoreID selected!
             // The JSP needs to not include us if there is no
             // selected DataStore
             //
-            throw new RuntimeException(
-                "selectedDataStoreId required in Session");
+            throw new RuntimeException("selectedDataStoreId required in Session");
         }
 
         dataStoreId = dsConfig.getId();
@@ -160,14 +158,12 @@ public class DataDataStoresEditorForm extends ActionForm {
             paramKeys.add(key);
             paramValues.add((text != null) ? text : "");
             paramTypes.add(param.type.getName());
-            paramHelp.add(param.description
-                + (param.required ? "" : " (optional)"));
+            paramHelp.add(param.description + (param.required ? "" : " (optional)"));
             paramRequired.add(Boolean.valueOf(param.required).toString());
         }
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         // Selected DataStoreConfig is in session
@@ -210,8 +206,7 @@ public class DataDataStoresEditorForm extends ActionForm {
                     } catch (MalformedURLException e) {
                         //check for special case of file
                         try {
-                            if (GeoserverDataDirectory.findDataFile(value)
-                                                          .exists()) {
+                            if (GeoserverDataDirectory.findDataFile(value).exists()) {
                                 new URL("file://" + value);
                                 setParamValues(i, "file://" + value);
                             }
@@ -220,8 +215,7 @@ public class DataDataStoresEditorForm extends ActionForm {
                         }
                     }
 
-                    if ((url.getProtocol() == null)
-                            || (url.getProtocol() == "file")) {
+                    if ((url.getProtocol() == null) || (url.getProtocol() == "file")) {
                         //do a check to see if the shapefile url is valid, report 
                         // an error if it does not 
                         File file = GeoserverDataDirectory.findDataFile(value);
@@ -240,14 +234,12 @@ public class DataDataStoresEditorForm extends ActionForm {
                 }
             } catch (IOException erp) {
                 errors.add("paramValue[" + i + "]",
-                    new ActionError("error.dataStoreEditor.param.parse", key,
-                        param.type, erp));
+                    new ActionError("error.dataStoreEditor.param.parse", key, param.type, erp));
 
                 continue;
             } catch (Throwable t) { //thrown by param.parse()
                 errors.add("paramValue[" + i + "]",
-                    new ActionError("error.dataStoreEditor.param.parse", key,
-                        param.type, t));
+                    new ActionError("error.dataStoreEditor.param.parse", key, param.type, t));
 
                 continue;
             }
@@ -272,8 +264,7 @@ public class DataDataStoresEditorForm extends ActionForm {
         // Factory will provide even more stringent checking
         //
         if (!factory.canProcess(connectionParams)) {
-            errors.add("paramValue",
-                new ActionError("error.datastoreEditor.validation"));
+            errors.add("paramValue", new ActionError("error.datastoreEditor.validation"));
         }
 
         return errors;

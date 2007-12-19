@@ -36,8 +36,7 @@ import java.util.logging.Logger;
  */
 public class GetFeatureInfoResponse implements Response {
     /** package logger   */
-    private static final Logger LOGGER = Logger.getLogger(GetMapResponse.class.getPackage()
-                                                                              .getName());
+    private static final Logger LOGGER = Logger.getLogger(GetMapResponse.class.getPackage().getName());
 
     /** list of output format specialists */
     private static final List delegates = new LinkedList();
@@ -91,8 +90,7 @@ public class GetFeatureInfoResponse implements Response {
      * @throws ServiceException DOCUMENT ME!
      */
     public void execute(Request request) throws ServiceException {
-        LOGGER.entering(getClass().getName(), "execute",
-            new Object[] { request });
+        LOGGER.entering(getClass().getName(), "execute", new Object[] { request });
 
         GetFeatureInfoRequest getFeatureInfoReq = (GetFeatureInfoRequest) request;
         this.delegate = getDelegate(getFeatureInfoReq);
@@ -171,8 +169,7 @@ public class GetFeatureInfoResponse implements Response {
         }
 
         if (LOGGER.isLoggable(Level.FINER)) {
-            LOGGER.finer(new StringBuffer("asking delegate for write to ").append(
-                    out).toString());
+            LOGGER.finer(new StringBuffer("asking delegate for write to ").append(out).toString());
         }
 
         delegate.writeTo(out);
@@ -192,13 +189,12 @@ public class GetFeatureInfoResponse implements Response {
      *         format specified in <code>request</code> or if it can't be
      *         instantiated
      */
-    private static GetFeatureInfoDelegate getDelegate(
-        GetFeatureInfoRequest request) throws WmsException {
+    private static GetFeatureInfoDelegate getDelegate(GetFeatureInfoRequest request)
+        throws WmsException {
         String requestFormat = request.getInfoFormat();
 
         if (LOGGER.isLoggable(Level.FINER)) {
-            LOGGER.finer(new StringBuffer("request format is ").append(
-                    requestFormat).toString());
+            LOGGER.finer(new StringBuffer("request format is ").append(requestFormat).toString());
         }
 
         GetFeatureInfoDelegate curDelegate = null;
@@ -211,8 +207,7 @@ public class GetFeatureInfoResponse implements Response {
                 delegateClass = curDelegate.getClass();
 
                 if (LOGGER.isLoggable(Level.FINER)) {
-                    LOGGER.finer(new StringBuffer(
-                            "found GetFeatureInfoDelegate ").append(
+                    LOGGER.finer(new StringBuffer("found GetFeatureInfoDelegate ").append(
                             delegateClass).toString());
                 }
 
@@ -230,8 +225,7 @@ public class GetFeatureInfoResponse implements Response {
         try {
             curDelegate = (GetFeatureInfoDelegate) delegateClass.newInstance();
         } catch (Exception ex) {
-            throw new WmsException(ex,
-                "Cannot obtain the map generator for the requested format",
+            throw new WmsException(ex, "Cannot obtain the map generator for the requested format",
                 "GetMapResponse::getDelegate()");
         }
 

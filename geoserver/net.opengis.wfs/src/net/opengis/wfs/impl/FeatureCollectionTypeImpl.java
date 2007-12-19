@@ -36,8 +36,7 @@ import java.util.Collection;
  *
  * @generated
  */
-public class FeatureCollectionTypeImpl extends EObjectImpl
-    implements FeatureCollectionType {
+public class FeatureCollectionTypeImpl extends EObjectImpl implements FeatureCollectionType {
     /**
      * The default value of the '{@link #getLockId() <em>Lock Id</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -146,8 +145,7 @@ public class FeatureCollectionTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.FEATURE_COLLECTION_TYPE__LOCK_ID, oldLockId,
-                    lockId));
+                    WfsPackage.FEATURE_COLLECTION_TYPE__LOCK_ID, oldLockId, lockId));
         }
     }
 
@@ -171,8 +169,7 @@ public class FeatureCollectionTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP,
-                    oldTimeStamp, timeStamp));
+                    WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP, oldTimeStamp, timeStamp));
         }
     }
 
@@ -196,8 +193,8 @@ public class FeatureCollectionTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES,
-                    oldNumberOfFeatures, numberOfFeatures));
+                    WfsPackage.FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES, oldNumberOfFeatures,
+                    numberOfFeatures));
         }
     }
 
@@ -309,17 +306,15 @@ public class FeatureCollectionTypeImpl extends EObjectImpl
     public boolean eIsSet(int featureID) {
         switch (featureID) {
         case WfsPackage.FEATURE_COLLECTION_TYPE__LOCK_ID:
-            return (LOCK_ID_EDEFAULT == null) ? (lockId != null)
-                                              : (!LOCK_ID_EDEFAULT.equals(lockId));
+            return (LOCK_ID_EDEFAULT == null) ? (lockId != null) : (!LOCK_ID_EDEFAULT.equals(lockId));
 
         case WfsPackage.FEATURE_COLLECTION_TYPE__TIME_STAMP:
             return (TIME_STAMP_EDEFAULT == null) ? (timeStamp != null)
                                                  : (!TIME_STAMP_EDEFAULT.equals(timeStamp));
 
         case WfsPackage.FEATURE_COLLECTION_TYPE__NUMBER_OF_FEATURES:
-            return (NUMBER_OF_FEATURES_EDEFAULT == null)
-            ? (numberOfFeatures != null)
-            : (!NUMBER_OF_FEATURES_EDEFAULT.equals(numberOfFeatures));
+            return (NUMBER_OF_FEATURES_EDEFAULT == null) ? (numberOfFeatures != null)
+                                                         : (!NUMBER_OF_FEATURES_EDEFAULT.equals(numberOfFeatures));
 
         case WfsPackage.FEATURE_COLLECTION_TYPE__FEATURE:
             return (feature != null) && !feature.isEmpty();

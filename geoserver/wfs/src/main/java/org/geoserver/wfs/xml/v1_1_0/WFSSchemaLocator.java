@@ -58,8 +58,7 @@ public class WFSSchemaLocator extends SchemaLocator {
             FeatureTypeInfo meta = (FeatureTypeInfo) i.next();
 
             //build the schema for the types in the single namespace
-            XSDSchema schema = schemaBuilder.build(new FeatureTypeInfo[] { meta },
-                    baseUrl);
+            XSDSchema schema = schemaBuilder.build(new FeatureTypeInfo[] { meta }, baseUrl);
 
             //declare the namespace
             String prefix = meta.getNameSpace().getPrefix();
@@ -67,13 +66,11 @@ public class WFSSchemaLocator extends SchemaLocator {
             wfsSchema.getQNamePrefixToNamespaceMap().put(prefix, namespaceURI);
 
             //add the types + elements to the wfs schema
-            for (Iterator t = schema.getTypeDefinitions().iterator();
-                    t.hasNext();) {
+            for (Iterator t = schema.getTypeDefinitions().iterator(); t.hasNext();) {
                 wfsSchema.getTypeDefinitions().add(t.next());
             }
 
-            for (Iterator e = schema.getElementDeclarations().iterator();
-                    e.hasNext();) {
+            for (Iterator e = schema.getElementDeclarations().iterator(); e.hasNext();) {
                 wfsSchema.getElementDeclarations().add(e.next());
             }
         }

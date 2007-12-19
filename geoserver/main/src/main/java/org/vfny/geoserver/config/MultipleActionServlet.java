@@ -65,8 +65,7 @@ public class MultipleActionServlet extends ActionServlet {
                 }
 
                 String prefix = name.substring(6);
-                moduleConfig = initModuleConfig(prefix,
-                        getServletConfig().getInitParameter(name));
+                moduleConfig = initModuleConfig(prefix, getServletConfig().getInitParameter(name));
                 initModuleMessageResources(moduleConfig);
                 initModuleDataSources(moduleConfig);
                 initModulePlugIns(moduleConfig);
@@ -105,8 +104,8 @@ public class MultipleActionServlet extends ActionServlet {
         throws ServletException {
         // :FIXME: Document UnavailableException? (Doesn't actually throw anything)
         if (log.isDebugEnabled()) {
-            log.debug("Initializing module path '" + prefix
-                + "' configuration from '" + paths + "'");
+            log.debug("Initializing module path '" + prefix + "' configuration from '" + paths
+                + "'");
         }
 
         // Parse the configuration for this module
@@ -138,8 +137,7 @@ public class MultipleActionServlet extends ActionServlet {
             this.parseModuleConfigFile(digester, path);
         }
 
-        getServletContext()
-            .setAttribute(Globals.MODULE_KEY + config.getPrefix(), config);
+        getServletContext().setAttribute(Globals.MODULE_KEY + config.getPrefix(), config);
 
         // Force creation and registration of DynaActionFormClass instances
         // for all dynamic form beans we wil be using

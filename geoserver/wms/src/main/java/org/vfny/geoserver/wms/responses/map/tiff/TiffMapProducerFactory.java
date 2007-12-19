@@ -61,8 +61,7 @@ public final class TiffMapProducerFactory implements GetMapProducerFactorySpi {
 
     public boolean isAvailable() {
         try {
-            Class.forName(
-                "com.sun.media.imageio.plugins.tiff.TIFFImageWriteParam");
+            Class.forName("com.sun.media.imageio.plugins.tiff.TIFFImageWriteParam");
 
             return true;
         } catch (Exception e) {
@@ -91,8 +90,7 @@ public final class TiffMapProducerFactory implements GetMapProducerFactorySpi {
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
         if (!canProduce(mapFormat)) {
-            throw new IllegalArgumentException("Can't produce " + mapFormat
-                + " format");
+            throw new IllegalArgumentException("Can't produce " + mapFormat + " format");
         }
 
         return new TiffMapProducer(mapFormat, MIME_TYPE, wms);

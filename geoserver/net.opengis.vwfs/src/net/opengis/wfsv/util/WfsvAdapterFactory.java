@@ -61,13 +61,11 @@ public class WfsvAdapterFactory extends AdapterFactoryImpl {
                 return createRollbackTypeAdapter();
             }
 
-            public Object caseVersionedDeleteElementType(
-                VersionedDeleteElementType object) {
+            public Object caseVersionedDeleteElementType(VersionedDeleteElementType object) {
                 return createVersionedDeleteElementTypeAdapter();
             }
 
-            public Object caseVersionedUpdateElementType(
-                VersionedUpdateElementType object) {
+            public Object caseVersionedUpdateElementType(VersionedUpdateElementType object) {
                 return createVersionedUpdateElementTypeAdapter();
             }
 

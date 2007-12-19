@@ -62,8 +62,7 @@ public class WFSConfiguration extends Configuration {
 
     public String getSchemaFileURL() {
         return getSchemaLocationResolver()
-                   .resolveSchemaLocation(null, WFS.NAMESPACE,
-            "WFS-transaction.xsd");
+                   .resolveSchemaLocation(null, WFS.NAMESPACE, "WFS-transaction.xsd");
     }
 
     public BindingConfiguration getBindingConfiguration() {
@@ -79,8 +78,7 @@ public class WFSConfiguration extends Configuration {
 
         context.registerComponentInstance(OwsFactory.eINSTANCE);
         context.registerComponentInstance(WfsFactory.eINSTANCE);
-        context.registerComponentInstance(new WFSHandlerFactory(catalog,
-                schemaBuilder));
+        context.registerComponentInstance(new WFSHandlerFactory(catalog, schemaBuilder));
         context.registerComponentInstance(catalog);
 
         //TODO: this code is copied from the 1.1 configuration, FACTOR IT OUT!!!
@@ -114,11 +112,8 @@ public class WFSConfiguration extends Configuration {
         // is set by the binding of a parent element.
         // note: it is important that this component adapter is non-caching so 
         // that the setter property gets updated properly every time
-        bindings.registerComponent(new SetterInjectionComponentAdapter(
-                GML.AbstractGeometryType, AbstractGeometryTypeBinding.class,
-                new Parameter[] {
-                    new OptionalComponentParameter(
-                        CoordinateReferenceSystem.class)
-                }));
+        bindings.registerComponent(new SetterInjectionComponentAdapter(GML.AbstractGeometryType,
+                AbstractGeometryTypeBinding.class,
+                new Parameter[] { new OptionalComponentParameter(CoordinateReferenceSystem.class) }));
     }
 }

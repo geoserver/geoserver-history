@@ -106,8 +106,8 @@ public class CodeTypeImpl extends EObjectImpl implements CodeType {
         value = newValue;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.CODE_TYPE__VALUE, oldValue, value));
+            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.CODE_TYPE__VALUE,
+                    oldValue, value));
         }
     }
 
@@ -130,8 +130,8 @@ public class CodeTypeImpl extends EObjectImpl implements CodeType {
         codeSpace = newCodeSpace;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.CODE_TYPE__CODE_SPACE, oldCodeSpace, codeSpace));
+            eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.CODE_TYPE__CODE_SPACE,
+                    oldCodeSpace, codeSpace));
         }
     }
 
@@ -202,8 +202,7 @@ public class CodeTypeImpl extends EObjectImpl implements CodeType {
     public boolean eIsSet(int featureID) {
         switch (featureID) {
         case OwsPackage.CODE_TYPE__VALUE:
-            return (VALUE_EDEFAULT == null) ? (value != null)
-                                            : (!VALUE_EDEFAULT.equals(value));
+            return (VALUE_EDEFAULT == null) ? (value != null) : (!VALUE_EDEFAULT.equals(value));
 
         case OwsPackage.CODE_TYPE__CODE_SPACE:
             return (CODE_SPACE_EDEFAULT == null) ? (codeSpace != null)

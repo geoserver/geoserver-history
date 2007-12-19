@@ -101,14 +101,12 @@ public class GetCapabilitiesTypeBinding extends AbstractComplexBinding {
             getCapabilities = owsfactory.createGetCapabilitiesType();
         }
 
-        getCapabilities.setAcceptVersions((AcceptVersionsType) node
-            .getChildValue(AcceptVersionsType.class));
-        getCapabilities.setSections((SectionsType) node.getChildValue(
-                SectionsType.class));
+        getCapabilities.setAcceptVersions((AcceptVersionsType) node.getChildValue(
+                AcceptVersionsType.class));
+        getCapabilities.setSections((SectionsType) node.getChildValue(SectionsType.class));
         getCapabilities.setAcceptFormats((AcceptFormatsType) node.getChildValue(
                 AcceptFormatsType.class));
-        getCapabilities.setUpdateSequence((String) node.getAttributeValue(
-                "updateSequence"));
+        getCapabilities.setUpdateSequence((String) node.getAttributeValue("updateSequence"));
 
         return getCapabilities;
     }

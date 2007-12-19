@@ -47,8 +47,7 @@ public class LoggingStartupContextListener implements ServletContextListener {
         //is set to log via log4j using the default classpath-loaded log4j.properties file.
         //The "real" logging setup (if a different profile is specified by the UI) will
         //get loaded when the geoserver config is loaded.
-        LOGGER.config(
-            "Default commons-logging configuration in-use.  Geoserver will"
+        LOGGER.config("Default commons-logging configuration in-use.  Geoserver will"
             + " load the stored logging configuration once geoserver has finished"
             + " reading its config files.");
     }

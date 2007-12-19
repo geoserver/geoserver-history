@@ -46,8 +46,7 @@ public class ValidationTestSuiteNewForm extends ActionForm {
         newName = "";
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         return errors;

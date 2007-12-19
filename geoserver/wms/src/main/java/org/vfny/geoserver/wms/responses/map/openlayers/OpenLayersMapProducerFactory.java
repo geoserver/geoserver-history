@@ -14,8 +14,7 @@ import java.util.Set;
 
 public class OpenLayersMapProducerFactory implements GetMapProducerFactorySpi {
     public boolean canProduce(String mapFormat) {
-        return getSupportedFormats().contains(mapFormat)
-        || "openlayers".equals(mapFormat);
+        return getSupportedFormats().contains(mapFormat) || "openlayers".equals(mapFormat);
     }
 
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)

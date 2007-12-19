@@ -4,12 +4,11 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import java.util.Map;
-
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.servlets.WMService;
+import java.util.Map;
 
 
 /**

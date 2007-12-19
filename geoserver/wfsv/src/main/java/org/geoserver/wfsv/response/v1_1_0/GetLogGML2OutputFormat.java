@@ -23,8 +23,8 @@ public class GetLogGML2OutputFormat extends GML2OutputFormat {
         //GetFeature operation?
         if ("GetLog".equalsIgnoreCase(operation.getId())) {
             //also check that the resultType is "results"
-            GetLogType request = (GetLogType) OwsUtils.parameter(operation
-                    .getParameters(), GetLogType.class);
+            GetLogType request = (GetLogType) OwsUtils.parameter(operation.getParameters(),
+                    GetLogType.class);
 
             return request.getResultType() == ResultTypeType.RESULTS_LITERAL;
         }

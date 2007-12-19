@@ -126,8 +126,7 @@ public class DataStoreConfig {
      */
     public void update(DataStoreInfoDTO ds) {
         if (ds == null) {
-            throw new NullPointerException(
-                "DataStoreInfo Data Transfer Object required");
+            throw new NullPointerException("DataStoreInfo Data Transfer Object required");
         }
 
         id = ds.getId();

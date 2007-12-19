@@ -43,10 +43,10 @@ public class KMLLegendTransformer extends KMLTransformerBase {
         public void encode(Object o) throws IllegalArgumentException {
             MapLayer mapLayer = (MapLayer) o;
 
-            if ( isStandAlone() ) {
-                start( "kml" );
+            if (isStandAlone()) {
+                start("kml");
             }
-            
+
             start("ScreenOverlay");
             element("name", "Legend");
 
@@ -65,9 +65,9 @@ public class KMLLegendTransformer extends KMLTransformerBase {
             end("Icon");
 
             end("ScreenOverlay");
-            
-            if ( isStandAlone() ) {
-                end( "kml" );
+
+            if (isStandAlone()) {
+                end("kml");
             }
         }
     }

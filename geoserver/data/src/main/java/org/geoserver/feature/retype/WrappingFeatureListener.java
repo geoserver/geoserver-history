@@ -16,15 +16,14 @@ public class WrappingFeatureListener implements FeatureListener {
     RetypingFeatureSource source;
     FeatureListener listener;
 
-    public WrappingFeatureListener(RetypingFeatureSource source,
-        FeatureListener listener) {
+    public WrappingFeatureListener(RetypingFeatureSource source, FeatureListener listener) {
         this.source = source;
         this.listener = listener;
     }
 
     public void changed(FeatureEvent featureEvent) {
-        FeatureEvent retyped = new FeatureEvent(source,
-                featureEvent.getEventType(), featureEvent.getBounds());
+        FeatureEvent retyped = new FeatureEvent(source, featureEvent.getEventType(),
+                featureEvent.getBounds());
         listener.changed(retyped);
     }
 }

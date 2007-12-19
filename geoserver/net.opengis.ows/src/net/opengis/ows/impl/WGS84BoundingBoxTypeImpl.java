@@ -20,8 +20,7 @@ import org.eclipse.emf.ecore.EClass;
  *
  * @generated
  */
-public class WGS84BoundingBoxTypeImpl extends BoundingBoxTypeImpl
-    implements WGS84BoundingBoxType {
+public class WGS84BoundingBoxTypeImpl extends BoundingBoxTypeImpl implements WGS84BoundingBoxType {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

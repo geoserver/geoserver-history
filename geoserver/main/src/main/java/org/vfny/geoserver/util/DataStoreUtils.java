@@ -45,8 +45,7 @@ public abstract class DataStoreUtils {
         throws IOException {
         //DJB: changed this for geoserver_data_dir   	
         //String baseDir = sc.getRealPath("/");
-        File baseDir = GeoserverDataDirectory
-            .getGeoserverDataDirectory();
+        File baseDir = GeoserverDataDirectory.getGeoserverDataDirectory();
 
         return getDataStore(getParams(params, baseDir.getAbsolutePath()));
     }
@@ -107,8 +106,7 @@ public abstract class DataStoreUtils {
      * @return
      */
     public static DataStoreFactorySpi aquireFactory(Map params) {
-        for (Iterator i = DataStoreFinder.getAvailableDataStores();
-                i.hasNext();) {
+        for (Iterator i = DataStoreFinder.getAvailableDataStores(); i.hasNext();) {
             DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
 
             if (factory.canProcess(params)) {
@@ -142,8 +140,7 @@ public abstract class DataStoreUtils {
      * @return
      */
     public static DataStoreFactorySpi aquireFactory(String displayName) {
-        for (Iterator i = DataStoreFinder.getAvailableDataStores();
-                i.hasNext();) {
+        for (Iterator i = DataStoreFinder.getAvailableDataStores(); i.hasNext();) {
             DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
 
             if (factory.getDisplayName().equals(displayName)) {
@@ -200,8 +197,7 @@ public abstract class DataStoreUtils {
     public static List listDataStoresDescriptions() {
         List list = new ArrayList();
 
-        for (Iterator i = DataStoreFinder.getAvailableDataStores();
-                i.hasNext();) {
+        for (Iterator i = DataStoreFinder.getAvailableDataStores(); i.hasNext();) {
             DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
             list.add(factory.getDisplayName());
         }

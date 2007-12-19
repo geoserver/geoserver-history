@@ -260,16 +260,13 @@ public class MetadataURLTypeImpl extends EObjectImpl implements MetadataURLType 
     public boolean eIsSet(int featureID) {
         switch (featureID) {
         case WfsPackage.METADATA_URL_TYPE__VALUE:
-            return (VALUE_EDEFAULT == null) ? (value != null)
-                                            : (!VALUE_EDEFAULT.equals(value));
+            return (VALUE_EDEFAULT == null) ? (value != null) : (!VALUE_EDEFAULT.equals(value));
 
         case WfsPackage.METADATA_URL_TYPE__FORMAT:
-            return (FORMAT_EDEFAULT == null) ? (format != null)
-                                             : (!FORMAT_EDEFAULT.equals(format));
+            return (FORMAT_EDEFAULT == null) ? (format != null) : (!FORMAT_EDEFAULT.equals(format));
 
         case WfsPackage.METADATA_URL_TYPE__TYPE:
-            return (TYPE_EDEFAULT == null) ? (type != null)
-                                           : (!TYPE_EDEFAULT.equals(type));
+            return (TYPE_EDEFAULT == null) ? (type != null) : (!TYPE_EDEFAULT.equals(type));
         }
 
         return super.eIsSet(featureID);

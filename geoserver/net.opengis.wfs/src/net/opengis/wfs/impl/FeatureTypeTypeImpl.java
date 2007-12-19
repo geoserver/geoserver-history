@@ -297,8 +297,7 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.FEATURE_TYPE_TYPE__ABSTRACT, oldAbstract,
-                    abstract_));
+                    WfsPackage.FEATURE_TYPE_TYPE__ABSTRACT, oldAbstract, abstract_));
         }
     }
 
@@ -336,8 +335,7 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.FEATURE_TYPE_TYPE__DEFAULT_SRS, oldDefaultSRS,
-                    defaultSRS));
+                    WfsPackage.FEATURE_TYPE_TYPE__DEFAULT_SRS, oldDefaultSRS, defaultSRS));
         }
     }
 
@@ -361,8 +359,7 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.FEATURE_TYPE_TYPE__OTHER_SRS, oldOtherSRS,
-                    otherSRS));
+                    WfsPackage.FEATURE_TYPE_TYPE__OTHER_SRS, oldOtherSRS, otherSRS));
         }
     }
 
@@ -380,15 +377,13 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetNoSRS(NoSRSType newNoSRS,
-        NotificationChain msgs) {
+    public NotificationChain basicSetNoSRS(NoSRSType newNoSRS, NotificationChain msgs) {
         NoSRSType oldNoSRS = noSRS;
         noSRS = newNoSRS;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET, WfsPackage.FEATURE_TYPE_TYPE__NO_SRS,
-                    oldNoSRS, newNoSRS);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    WfsPackage.FEATURE_TYPE_TYPE__NO_SRS, oldNoSRS, newNoSRS);
 
             if (msgs == null) {
                 msgs = notification;
@@ -411,14 +406,12 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
 
             if (noSRS != null) {
                 msgs = ((InternalEObject) noSRS).eInverseRemove(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.FEATURE_TYPE_TYPE__NO_SRS, null, msgs);
+                        EOPPOSITE_FEATURE_BASE - WfsPackage.FEATURE_TYPE_TYPE__NO_SRS, null, msgs);
             }
 
             if (newNoSRS != null) {
                 msgs = ((InternalEObject) newNoSRS).eInverseAdd(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.FEATURE_TYPE_TYPE__NO_SRS, null, msgs);
+                        EOPPOSITE_FEATURE_BASE - WfsPackage.FEATURE_TYPE_TYPE__NO_SRS, null, msgs);
             }
 
             msgs = basicSetNoSRS(newNoSRS, msgs);
@@ -446,15 +439,13 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetOperations(OperationsType newOperations,
-        NotificationChain msgs) {
+    public NotificationChain basicSetOperations(OperationsType newOperations, NotificationChain msgs) {
         OperationsType oldOperations = operations;
         operations = newOperations;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET, WfsPackage.FEATURE_TYPE_TYPE__OPERATIONS,
-                    oldOperations, newOperations);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    WfsPackage.FEATURE_TYPE_TYPE__OPERATIONS, oldOperations, newOperations);
 
             if (msgs == null) {
                 msgs = notification;
@@ -477,14 +468,14 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
 
             if (operations != null) {
                 msgs = ((InternalEObject) operations).eInverseRemove(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.FEATURE_TYPE_TYPE__OPERATIONS, null, msgs);
+                        EOPPOSITE_FEATURE_BASE - WfsPackage.FEATURE_TYPE_TYPE__OPERATIONS, null,
+                        msgs);
             }
 
             if (newOperations != null) {
                 msgs = ((InternalEObject) newOperations).eInverseAdd(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.FEATURE_TYPE_TYPE__OPERATIONS, null, msgs);
+                        EOPPOSITE_FEATURE_BASE - WfsPackage.FEATURE_TYPE_TYPE__OPERATIONS, null,
+                        msgs);
             }
 
             msgs = basicSetOperations(newOperations, msgs);
@@ -494,8 +485,7 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
             }
         } else if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.FEATURE_TYPE_TYPE__OPERATIONS, newOperations,
-                    newOperations));
+                    WfsPackage.FEATURE_TYPE_TYPE__OPERATIONS, newOperations, newOperations));
         }
     }
 
@@ -513,16 +503,14 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetOutputFormats(
-        OutputFormatListType newOutputFormats, NotificationChain msgs) {
+    public NotificationChain basicSetOutputFormats(OutputFormatListType newOutputFormats,
+        NotificationChain msgs) {
         OutputFormatListType oldOutputFormats = outputFormats;
         outputFormats = newOutputFormats;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
-                    WfsPackage.FEATURE_TYPE_TYPE__OUTPUT_FORMATS,
-                    oldOutputFormats, newOutputFormats);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    WfsPackage.FEATURE_TYPE_TYPE__OUTPUT_FORMATS, oldOutputFormats, newOutputFormats);
 
             if (msgs == null) {
                 msgs = notification;
@@ -545,16 +533,14 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
 
             if (outputFormats != null) {
                 msgs = ((InternalEObject) outputFormats).eInverseRemove(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.FEATURE_TYPE_TYPE__OUTPUT_FORMATS, null,
-                        msgs);
+                        EOPPOSITE_FEATURE_BASE - WfsPackage.FEATURE_TYPE_TYPE__OUTPUT_FORMATS,
+                        null, msgs);
             }
 
             if (newOutputFormats != null) {
                 msgs = ((InternalEObject) newOutputFormats).eInverseAdd(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.FEATURE_TYPE_TYPE__OUTPUT_FORMATS, null,
-                        msgs);
+                        EOPPOSITE_FEATURE_BASE - WfsPackage.FEATURE_TYPE_TYPE__OUTPUT_FORMATS,
+                        null, msgs);
             }
 
             msgs = basicSetOutputFormats(newOutputFormats, msgs);
@@ -564,8 +550,7 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
             }
         } else if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.FEATURE_TYPE_TYPE__OUTPUT_FORMATS,
-                    newOutputFormats, newOutputFormats));
+                    WfsPackage.FEATURE_TYPE_TYPE__OUTPUT_FORMATS, newOutputFormats, newOutputFormats));
         }
     }
 
@@ -576,8 +561,8 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
      */
     public EList getWGS84BoundingBox() {
         if (wGS84BoundingBox == null) {
-            wGS84BoundingBox = new EObjectContainmentEList(WGS84BoundingBoxType.class,
-                    this, WfsPackage.FEATURE_TYPE_TYPE__WGS84_BOUNDING_BOX);
+            wGS84BoundingBox = new EObjectContainmentEList(WGS84BoundingBoxType.class, this,
+                    WfsPackage.FEATURE_TYPE_TYPE__WGS84_BOUNDING_BOX);
         }
 
         return wGS84BoundingBox;
@@ -590,8 +575,8 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
      */
     public EList getMetadataURL() {
         if (metadataURL == null) {
-            metadataURL = new EObjectContainmentEList(MetadataURLType.class,
-                    this, WfsPackage.FEATURE_TYPE_TYPE__METADATA_URL);
+            metadataURL = new EObjectContainmentEList(MetadataURLType.class, this,
+                    WfsPackage.FEATURE_TYPE_TYPE__METADATA_URL);
         }
 
         return metadataURL;
@@ -602,8 +587,8 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case WfsPackage.FEATURE_TYPE_TYPE__KEYWORDS:
             return ((InternalEList) getKeywords()).basicRemove(otherEnd, msgs);
@@ -618,8 +603,7 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
             return basicSetOutputFormats(null, msgs);
 
         case WfsPackage.FEATURE_TYPE_TYPE__WGS84_BOUNDING_BOX:
-            return ((InternalEList) getWGS84BoundingBox()).basicRemove(otherEnd,
-                msgs);
+            return ((InternalEList) getWGS84BoundingBox()).basicRemove(otherEnd, msgs);
 
         case WfsPackage.FEATURE_TYPE_TYPE__METADATA_URL:
             return ((InternalEList) getMetadataURL()).basicRemove(otherEnd, msgs);
@@ -815,12 +799,10 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
     public boolean eIsSet(int featureID) {
         switch (featureID) {
         case WfsPackage.FEATURE_TYPE_TYPE__NAME:
-            return (NAME_EDEFAULT == null) ? (name != null)
-                                           : (!NAME_EDEFAULT.equals(name));
+            return (NAME_EDEFAULT == null) ? (name != null) : (!NAME_EDEFAULT.equals(name));
 
         case WfsPackage.FEATURE_TYPE_TYPE__TITLE:
-            return (TITLE_EDEFAULT == null) ? (title != null)
-                                            : (!TITLE_EDEFAULT.equals(title));
+            return (TITLE_EDEFAULT == null) ? (title != null) : (!TITLE_EDEFAULT.equals(title));
 
         case WfsPackage.FEATURE_TYPE_TYPE__ABSTRACT:
             return (ABSTRACT_EDEFAULT == null) ? (abstract_ != null)
@@ -831,8 +813,7 @@ public class FeatureTypeTypeImpl extends EObjectImpl implements FeatureTypeType 
 
         case WfsPackage.FEATURE_TYPE_TYPE__DEFAULT_SRS:
             return (DEFAULT_SRS_EDEFAULT == null) ? (defaultSRS != null)
-                                                  : (!DEFAULT_SRS_EDEFAULT
-            .equals(defaultSRS));
+                                                  : (!DEFAULT_SRS_EDEFAULT.equals(defaultSRS));
 
         case WfsPackage.FEATURE_TYPE_TYPE__OTHER_SRS:
             return (OTHER_SRS_EDEFAULT == null) ? (otherSRS != null)

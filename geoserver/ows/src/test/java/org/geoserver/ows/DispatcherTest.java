@@ -68,8 +68,7 @@ public class DispatcherTest extends TestCase {
 
         Dispatcher dispatcher = new Dispatcher();
 
-        BufferedReader buffered = new BufferedReader(new InputStreamReader(
-                    input));
+        BufferedReader buffered = new BufferedReader(new InputStreamReader(input));
         buffered.mark(2048);
 
         Map map = dispatcher.readOpPost(buffered);
@@ -82,8 +81,7 @@ public class DispatcherTest extends TestCase {
     public void testParseKVP() throws Exception {
         URL url = getClass().getResource("applicationContext.xml");
 
-        FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(url
-                .toString());
+        FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(url.toString());
 
         Dispatcher dispatcher = (Dispatcher) context.getBean("dispatcher");
 
@@ -96,24 +94,21 @@ public class DispatcherTest extends TestCase {
         params.put("message", "Hello world!");
 
         request.setupGetParameterMap(params);
-        request.setupQueryString(
-            "service=hello&request=hello&message=Hello World!");
+        request.setupQueryString("service=hello&request=hello&message=Hello World!");
 
         Dispatcher.Request req = new Dispatcher.Request();
         req.httpRequest = request;
 
         dispatcher.parseKVP(req);
 
-        Message message = (Message) dispatcher.parseRequestKVP(Message.class,
-                req);
+        Message message = (Message) dispatcher.parseRequestKVP(Message.class, req);
         assertEquals(new Message("Hello world!"), message);
     }
 
     public void testParseXML() throws Exception {
         URL url = getClass().getResource("applicationContext.xml");
 
-        FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(url
-                .toString());
+        FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(url.toString());
 
         Dispatcher dispatcher = (Dispatcher) context.getBean("dispatcher");
 
@@ -126,8 +121,7 @@ public class DispatcherTest extends TestCase {
         output.flush();
         output.close();
 
-        BufferedReader input = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(file)));
+        BufferedReader input = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
 
         input.mark(8192);
 
@@ -141,8 +135,7 @@ public class DispatcherTest extends TestCase {
     public void testHelloOperationGet() throws Exception {
         URL url = getClass().getResource("applicationContext.xml");
 
-        FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(url
-                .toString());
+        FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(url.toString());
 
         Dispatcher dispatcher = (Dispatcher) context.getBean("dispatcher");
 
@@ -181,8 +174,7 @@ public class DispatcherTest extends TestCase {
         request.setupGetInputStream(null);
         request.setupGetRequestURI(
             "http://localhost/geoserver/ows?service=hello&request=hello&message=HelloWorld");
-        request.setupQueryString(
-            "service=hello&request=hello&message=HelloWorld");
+        request.setupQueryString("service=hello&request=hello&message=HelloWorld");
         dispatcher.handleRequest(request, response);
         assertEquals(params.get("message"), response.getOutputStreamContents());
     }
@@ -190,8 +182,7 @@ public class DispatcherTest extends TestCase {
     public void testHelloOperationPost() throws Exception {
         URL url = getClass().getResource("applicationContext.xml");
 
-        FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(url
-                .toString());
+        FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(url.toString());
 
         Dispatcher dispatcher = (Dispatcher) context.getBean("dispatcher");
 

@@ -58,12 +58,10 @@ public class DataNamespacesSelectForm extends ActionForm {
         }
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
-        if ((getSelectedNamespace() == null)
-                || getSelectedNamespace().equalsIgnoreCase("")) {
+        if ((getSelectedNamespace() == null) || getSelectedNamespace().equalsIgnoreCase("")) {
             return errors; // no data in the list, so return
         }
 

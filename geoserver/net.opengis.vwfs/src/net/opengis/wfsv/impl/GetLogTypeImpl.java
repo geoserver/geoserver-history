@@ -6,32 +6,23 @@
  */
 package net.opengis.wfsv.impl;
 
-import java.math.BigInteger;
-
-import java.util.Collection;
-
 import net.opengis.wfs.ResultTypeType;
-
 import net.opengis.wfs.impl.BaseRequestTypeImpl;
-
 import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.GetLogType;
 import net.opengis.wfsv.WfsvPackage;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.eclipse.emf.ecore.impl.EObjectImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
+import java.math.BigInteger;
+import java.util.Collection;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -163,8 +154,10 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
      */
     public EList getDifferenceQuery() {
         if (differenceQuery == null) {
-            differenceQuery = new EObjectContainmentEList(DifferenceQueryType.class, this, WfsvPackage.GET_LOG_TYPE__DIFFERENCE_QUERY);
+            differenceQuery = new EObjectContainmentEList(DifferenceQueryType.class, this,
+                    WfsvPackage.GET_LOG_TYPE__DIFFERENCE_QUERY);
         }
+
         return differenceQuery;
     }
 
@@ -185,8 +178,11 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
     public void setMaxFeatures(BigInteger newMaxFeatures) {
         BigInteger oldMaxFeatures = maxFeatures;
         maxFeatures = newMaxFeatures;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, WfsvPackage.GET_LOG_TYPE__MAX_FEATURES, oldMaxFeatures, maxFeatures));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    WfsvPackage.GET_LOG_TYPE__MAX_FEATURES, oldMaxFeatures, maxFeatures));
+        }
     }
 
     /**
@@ -206,10 +202,15 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
     public void setOutputFormat(String newOutputFormat) {
         String oldOutputFormat = outputFormat;
         outputFormat = newOutputFormat;
+
         boolean oldOutputFormatESet = outputFormatESet;
         outputFormatESet = true;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, WfsvPackage.GET_LOG_TYPE__OUTPUT_FORMAT, oldOutputFormat, outputFormat, !oldOutputFormatESet));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    WfsvPackage.GET_LOG_TYPE__OUTPUT_FORMAT, oldOutputFormat, outputFormat,
+                    !oldOutputFormatESet));
+        }
     }
 
     /**
@@ -222,8 +223,12 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
         boolean oldOutputFormatESet = outputFormatESet;
         outputFormat = OUTPUT_FORMAT_EDEFAULT;
         outputFormatESet = false;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.UNSET, WfsvPackage.GET_LOG_TYPE__OUTPUT_FORMAT, oldOutputFormat, OUTPUT_FORMAT_EDEFAULT, oldOutputFormatESet));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.UNSET,
+                    WfsvPackage.GET_LOG_TYPE__OUTPUT_FORMAT, oldOutputFormat,
+                    OUTPUT_FORMAT_EDEFAULT, oldOutputFormatESet));
+        }
     }
 
     /**
@@ -251,11 +256,16 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
      */
     public void setResultType(ResultTypeType newResultType) {
         ResultTypeType oldResultType = resultType;
-        resultType = newResultType == null ? RESULT_TYPE_EDEFAULT : newResultType;
+        resultType = (newResultType == null) ? RESULT_TYPE_EDEFAULT : newResultType;
+
         boolean oldResultTypeESet = resultTypeESet;
         resultTypeESet = true;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, WfsvPackage.GET_LOG_TYPE__RESULT_TYPE, oldResultType, resultType, !oldResultTypeESet));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    WfsvPackage.GET_LOG_TYPE__RESULT_TYPE, oldResultType, resultType,
+                    !oldResultTypeESet));
+        }
     }
 
     /**
@@ -268,8 +278,12 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
         boolean oldResultTypeESet = resultTypeESet;
         resultType = RESULT_TYPE_EDEFAULT;
         resultTypeESet = false;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.UNSET, WfsvPackage.GET_LOG_TYPE__RESULT_TYPE, oldResultType, RESULT_TYPE_EDEFAULT, oldResultTypeESet));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.UNSET,
+                    WfsvPackage.GET_LOG_TYPE__RESULT_TYPE, oldResultType, RESULT_TYPE_EDEFAULT,
+                    oldResultTypeESet));
+        }
     }
 
     /**
@@ -286,11 +300,13 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
-            case WfsvPackage.GET_LOG_TYPE__DIFFERENCE_QUERY:
-                return ((InternalEList)getDifferenceQuery()).basicRemove(otherEnd, msgs);
+        case WfsvPackage.GET_LOG_TYPE__DIFFERENCE_QUERY:
+            return ((InternalEList) getDifferenceQuery()).basicRemove(otherEnd, msgs);
         }
+
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
@@ -301,15 +317,19 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
      */
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-            case WfsvPackage.GET_LOG_TYPE__DIFFERENCE_QUERY:
-                return getDifferenceQuery();
-            case WfsvPackage.GET_LOG_TYPE__MAX_FEATURES:
-                return getMaxFeatures();
-            case WfsvPackage.GET_LOG_TYPE__OUTPUT_FORMAT:
-                return getOutputFormat();
-            case WfsvPackage.GET_LOG_TYPE__RESULT_TYPE:
-                return getResultType();
+        case WfsvPackage.GET_LOG_TYPE__DIFFERENCE_QUERY:
+            return getDifferenceQuery();
+
+        case WfsvPackage.GET_LOG_TYPE__MAX_FEATURES:
+            return getMaxFeatures();
+
+        case WfsvPackage.GET_LOG_TYPE__OUTPUT_FORMAT:
+            return getOutputFormat();
+
+        case WfsvPackage.GET_LOG_TYPE__RESULT_TYPE:
+            return getResultType();
         }
+
         return super.eGet(featureID, resolve, coreType);
     }
 
@@ -320,20 +340,28 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
      */
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-            case WfsvPackage.GET_LOG_TYPE__DIFFERENCE_QUERY:
-                getDifferenceQuery().clear();
-                getDifferenceQuery().addAll((Collection)newValue);
-                return;
-            case WfsvPackage.GET_LOG_TYPE__MAX_FEATURES:
-                setMaxFeatures((BigInteger)newValue);
-                return;
-            case WfsvPackage.GET_LOG_TYPE__OUTPUT_FORMAT:
-                setOutputFormat((String)newValue);
-                return;
-            case WfsvPackage.GET_LOG_TYPE__RESULT_TYPE:
-                setResultType((ResultTypeType)newValue);
-                return;
+        case WfsvPackage.GET_LOG_TYPE__DIFFERENCE_QUERY:
+            getDifferenceQuery().clear();
+            getDifferenceQuery().addAll((Collection) newValue);
+
+            return;
+
+        case WfsvPackage.GET_LOG_TYPE__MAX_FEATURES:
+            setMaxFeatures((BigInteger) newValue);
+
+            return;
+
+        case WfsvPackage.GET_LOG_TYPE__OUTPUT_FORMAT:
+            setOutputFormat((String) newValue);
+
+            return;
+
+        case WfsvPackage.GET_LOG_TYPE__RESULT_TYPE:
+            setResultType((ResultTypeType) newValue);
+
+            return;
         }
+
         super.eSet(featureID, newValue);
     }
 
@@ -344,19 +372,27 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
      */
     public void eUnset(int featureID) {
         switch (featureID) {
-            case WfsvPackage.GET_LOG_TYPE__DIFFERENCE_QUERY:
-                getDifferenceQuery().clear();
-                return;
-            case WfsvPackage.GET_LOG_TYPE__MAX_FEATURES:
-                setMaxFeatures(MAX_FEATURES_EDEFAULT);
-                return;
-            case WfsvPackage.GET_LOG_TYPE__OUTPUT_FORMAT:
-                unsetOutputFormat();
-                return;
-            case WfsvPackage.GET_LOG_TYPE__RESULT_TYPE:
-                unsetResultType();
-                return;
+        case WfsvPackage.GET_LOG_TYPE__DIFFERENCE_QUERY:
+            getDifferenceQuery().clear();
+
+            return;
+
+        case WfsvPackage.GET_LOG_TYPE__MAX_FEATURES:
+            setMaxFeatures(MAX_FEATURES_EDEFAULT);
+
+            return;
+
+        case WfsvPackage.GET_LOG_TYPE__OUTPUT_FORMAT:
+            unsetOutputFormat();
+
+            return;
+
+        case WfsvPackage.GET_LOG_TYPE__RESULT_TYPE:
+            unsetResultType();
+
+            return;
         }
+
         super.eUnset(featureID);
     }
 
@@ -367,15 +403,20 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
      */
     public boolean eIsSet(int featureID) {
         switch (featureID) {
-            case WfsvPackage.GET_LOG_TYPE__DIFFERENCE_QUERY:
-                return differenceQuery != null && !differenceQuery.isEmpty();
-            case WfsvPackage.GET_LOG_TYPE__MAX_FEATURES:
-                return MAX_FEATURES_EDEFAULT == null ? maxFeatures != null : !MAX_FEATURES_EDEFAULT.equals(maxFeatures);
-            case WfsvPackage.GET_LOG_TYPE__OUTPUT_FORMAT:
-                return isSetOutputFormat();
-            case WfsvPackage.GET_LOG_TYPE__RESULT_TYPE:
-                return isSetResultType();
+        case WfsvPackage.GET_LOG_TYPE__DIFFERENCE_QUERY:
+            return (differenceQuery != null) && !differenceQuery.isEmpty();
+
+        case WfsvPackage.GET_LOG_TYPE__MAX_FEATURES:
+            return (MAX_FEATURES_EDEFAULT == null) ? (maxFeatures != null)
+                                                   : (!MAX_FEATURES_EDEFAULT.equals(maxFeatures));
+
+        case WfsvPackage.GET_LOG_TYPE__OUTPUT_FORMAT:
+            return isSetOutputFormat();
+
+        case WfsvPackage.GET_LOG_TYPE__RESULT_TYPE:
+            return isSetResultType();
         }
+
         return super.eIsSet(featureID);
     }
 
@@ -385,17 +426,31 @@ public class GetLogTypeImpl extends BaseRequestTypeImpl implements GetLogType {
      * @generated
      */
     public String toString() {
-        if (eIsProxy()) return super.toString();
+        if (eIsProxy()) {
+            return super.toString();
+        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (maxFeatures: ");
         result.append(maxFeatures);
         result.append(", outputFormat: ");
-        if (outputFormatESet) result.append(outputFormat); else result.append("<unset>");
+
+        if (outputFormatESet) {
+            result.append(outputFormat);
+        } else {
+            result.append("<unset>");
+        }
+
         result.append(", resultType: ");
-        if (resultTypeESet) result.append(resultType); else result.append("<unset>");
+
+        if (resultTypeESet) {
+            result.append(resultType);
+        } else {
+            result.append("<unset>");
+        }
+
         result.append(')');
+
         return result.toString();
     }
-
 } //GetLogTypeImpl

@@ -4,12 +4,11 @@
  */
 package org.vfny.geoserver.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.global.dto.ServiceDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -246,19 +245,19 @@ public class WMSConfig extends ServiceConfig {
         baseMapEnvelopes = envelopes;
     }
 
-	public boolean getGlobalWatermarking() {
-		return globalWatermarking;
-	}
+    public boolean getGlobalWatermarking() {
+        return globalWatermarking;
+    }
 
-	public void setGlobalWatermarking(boolean globalWatermarking) {
-		this.globalWatermarking = globalWatermarking;
-	}
+    public void setGlobalWatermarking(boolean globalWatermarking) {
+        this.globalWatermarking = globalWatermarking;
+    }
 
-	public String getGlobalWatermarkingURL() {
-		return globalWatermarkingURL;
-	}
+    public String getGlobalWatermarkingURL() {
+        return globalWatermarkingURL;
+    }
 
-	public void setGlobalWatermarkingURL(String globalWatermarkingURL) {
-		this.globalWatermarkingURL = globalWatermarkingURL;
-	}
+    public void setGlobalWatermarkingURL(String globalWatermarkingURL) {
+        this.globalWatermarkingURL = globalWatermarkingURL;
+    }
 }

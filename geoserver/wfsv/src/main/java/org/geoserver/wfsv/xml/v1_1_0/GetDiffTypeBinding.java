@@ -97,12 +97,10 @@ public class GetDiffTypeBinding extends AbstractComplexBinding {
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
         GetDiffType result = wfsvFactory.createGetDiffType();
-        result.getDifferenceQuery()
-              .addAll(node.getChildValues(DifferenceQueryType.class));
+        result.getDifferenceQuery().addAll(node.getChildValues(DifferenceQueryType.class));
 
         if (node.hasAttribute("outputFormat")) {
-            result.setOutputFormat((String) node.getAttributeValue(
-                    "outputFormat"));
+            result.setOutputFormat((String) node.getAttributeValue("outputFormat"));
         }
 
         return result;

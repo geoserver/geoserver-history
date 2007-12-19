@@ -30,8 +30,7 @@ import java.util.List;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class GeoServerExtensions implements ApplicationContextAware,
-    ApplicationListener {
+public class GeoServerExtensions implements ApplicationContextAware, ApplicationListener {
     static SoftValueHashMap extensionsCache = new SoftValueHashMap(40);
 
     /**
@@ -65,13 +64,11 @@ public class GeoServerExtensions implements ApplicationContextAware,
      *
      * @return A collection of the extensions, or an empty collection.
      */
-    public static final List extensions(Class extensionPoint,
-        ApplicationContext context) {
+    public static final List extensions(Class extensionPoint, ApplicationContext context) {
         List result = (List) extensionsCache.get(extensionPoint);
 
         if (result == null) {
-            result = new ArrayList(context.getBeansOfType(extensionPoint)
-                                          .values());
+            result = new ArrayList(context.getBeansOfType(extensionPoint).values());
             extensionsCache.put(extensionPoint, result);
         }
 

@@ -13,8 +13,7 @@ public class GML3GeometryTranslator extends GeometryTranslator {
         super(handler);
     }
 
-    public GML3GeometryTranslator(ContentHandler handler, int numDecimals,
-        boolean useDummyZ) {
+    public GML3GeometryTranslator(ContentHandler handler, int numDecimals, boolean useDummyZ) {
         super(handler, numDecimals, useDummyZ);
     }
 

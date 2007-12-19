@@ -19,7 +19,6 @@ public class FeatureTypeInfoTitleComparator implements Comparator {
         FeatureTypeInfo ft2 = (FeatureTypeInfo) o2;
 
         // this will take care of null values as well
-        return new CompareToBuilder().append(ft1.getTitle(), ft2.getTitle())
-                                     .toComparison();
+        return new CompareToBuilder().append(ft1.getTitle(), ft2.getTitle()).toComparison();
     }
 }

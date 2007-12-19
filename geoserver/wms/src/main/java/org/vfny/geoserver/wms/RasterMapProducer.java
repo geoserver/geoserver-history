@@ -38,6 +38,6 @@ public interface RasterMapProducer extends GetMapProducer {
      * @throws WmsException
      * @throws IOException
      */
-    public void formatImageOutputStream(RenderedImage image,
-        OutputStream outStream) throws WmsException, IOException;
+    public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
+        throws WmsException, IOException;
 }

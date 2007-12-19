@@ -22,8 +22,7 @@ import java.util.logging.Logger;
  */
 public class CoverageRequest extends WCSRequest {
     /** Standard logging instance for class */
-    private static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests");
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests");
 
     /**
      *
@@ -184,8 +183,7 @@ public class CoverageRequest extends WCSRequest {
 
         if ((this.outputFormat == null) && (request.getOutputFormat() == null)) {
             isEqual = isEqual && true;
-        } else if ((this.outputFormat == null)
-                || (request.getOutputFormat() == null)) {
+        } else if ((this.outputFormat == null) || (request.getOutputFormat() == null)) {
             isEqual = false;
         } else if (request.getOutputFormat().equals(outputFormat)) {
             isEqual = isEqual && true;
@@ -203,11 +201,9 @@ public class CoverageRequest extends WCSRequest {
             isEqual = false;
         }
 
-        if ((this.interpolation == null)
-                && (request.getInterpolation() == null)) {
+        if ((this.interpolation == null) && (request.getInterpolation() == null)) {
             isEqual = isEqual && true;
-        } else if ((this.interpolation == null)
-                || (request.getInterpolation() == null)) {
+        } else if ((this.interpolation == null) || (request.getInterpolation() == null)) {
             isEqual = false;
         } else if (request.getInterpolation().equals(interpolation)) {
             isEqual = isEqual && true;
@@ -342,13 +338,10 @@ public class CoverageRequest extends WCSRequest {
      */
     public void setOffsetVector(Double[] offsetVector) {
         if (this.envelope != null) {
-            final double envWidth = Math.abs(envelope.getMaxX()
-                    - envelope.getMinX());
-            final double envHeight = Math.abs(envelope.getMaxY()
-                    - envelope.getMinY());
+            final double envWidth = Math.abs(envelope.getMaxX() - envelope.getMinX());
+            final double envHeight = Math.abs(envelope.getMaxY() - envelope.getMinY());
             final double width = envWidth / Math.abs(offsetVector[0].doubleValue());
-            final double height = envHeight / Math.abs(offsetVector[1]
-                    .doubleValue());
+            final double height = envHeight / Math.abs(offsetVector[1].doubleValue());
             setGridOrigin(new Double[] { new Double(0.0), new Double(0.0) });
             setGridLow(new Double[] { new Double(0.0), new Double(0.0) });
             setGridHigh(new Double[] { new Double(width), new Double(height) });

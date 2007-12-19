@@ -43,8 +43,8 @@ public class RequestUtils {
      *
      */
     public static String baseURL(HttpServletRequest req) {
-        String url = req.getScheme() + "://" + req.getServerName() + ":"
-            + req.getServerPort() + req.getContextPath() + "/";
+        String url = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort()
+            + req.getContextPath() + "/";
 
         return url;
     }

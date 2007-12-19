@@ -80,8 +80,7 @@ public class DeleteElementTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        DeleteElementType deleteElement = wfsfactory
-            .createDeleteElementType();
+        DeleteElementType deleteElement = wfsfactory.createDeleteElementType();
 
         //&lt;xsd:element maxOccurs="1" minOccurs="1" ref="ogc:Filter"&gt;
         deleteElement.setFilter((Filter) node.getChildValue(Filter.class));

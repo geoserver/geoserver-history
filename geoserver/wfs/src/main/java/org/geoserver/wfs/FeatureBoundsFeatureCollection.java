@@ -35,8 +35,7 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
      * @param wrapped the wrapped feature collection
      * @param targetSchema the target schema
      */
-    public FeatureBoundsFeatureCollection(FeatureCollection wrapped,
-        FeatureType targetSchema) {
+    public FeatureBoundsFeatureCollection(FeatureCollection wrapped, FeatureType targetSchema) {
         super(targetSchema);
         this.wrapped = wrapped;
     }
@@ -114,13 +113,10 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
         }
 
         public Object[] getAttributes(Object[] attributes) {
-            Object[] retval = (attributes != null) ? attributes
-                                                   : new Object[type
-                .getAttributeCount()];
+            Object[] retval = (attributes != null) ? attributes : new Object[type.getAttributeCount()];
 
             for (int i = 0; i < retval.length; i++) {
-                retval[i] = wrapped.getAttribute(type.getAttributeType(i)
-                                                     .getName());
+                retval[i] = wrapped.getAttribute(type.getAttributeType(i).getName());
             }
 
             return retval;
@@ -130,8 +126,7 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
             // we may not have the default geometry around in the reduced feature type,
             // so let's output a referenced envelope if possible
             if (wrapped.getFeatureType().getDefaultGeometry() != null) {
-                CoordinateReferenceSystem crs = wrapped.getFeatureType()
-                                                       .getDefaultGeometry()
+                CoordinateReferenceSystem crs = wrapped.getFeatureType().getDefaultGeometry()
                                                        .getCoordinateSystem();
 
                 if (crs != null) {
@@ -170,14 +165,12 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
 
         public void setAttribute(int position, Object val)
             throws IllegalAttributeException, ArrayIndexOutOfBoundsException {
-            throw new UnsupportedOperationException(
-                "This feature wrapper is read only");
+            throw new UnsupportedOperationException("This feature wrapper is read only");
         }
 
         public void setAttribute(String path, Object attribute)
             throws IllegalAttributeException {
-            throw new UnsupportedOperationException(
-                "This feature wrapper is read only");
+            throw new UnsupportedOperationException("This feature wrapper is read only");
         }
 
         public void setDefaultGeometry(Geometry geometry)
@@ -187,8 +180,7 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
 
         public void setPrimaryGeometry(Geometry geometry)
             throws IllegalAttributeException {
-            throw new UnsupportedOperationException(
-                "This feature wrapper is read only");
+            throw new UnsupportedOperationException("This feature wrapper is read only");
         }
     }
 }

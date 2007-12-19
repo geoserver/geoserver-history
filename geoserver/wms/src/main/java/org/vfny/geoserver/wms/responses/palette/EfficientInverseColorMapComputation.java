@@ -44,8 +44,7 @@ public final class EfficientInverseColorMapComputation {
      * @param rgbColorMap
      * @param quantizationBits
      */
-    public EfficientInverseColorMapComputation(byte[][] rgbColorMap,
-        final int quantizationBits) {
+    public EfficientInverseColorMapComputation(byte[][] rgbColorMap, final int quantizationBits) {
         colorMap = rgbColorMap;
         bits = quantizationBits;
         truncationBits = 8 - bits;
@@ -137,8 +136,7 @@ public final class EfficientInverseColorMapComputation {
      *         color map for the provided triple.
      */
     public int getIndexNearest(int red, int green, int blue) {
-        return mapBuf[((red << ((2 * bits) - truncationBits))
-        & redQuantizationMask)
+        return mapBuf[((red << ((2 * bits) - truncationBits)) & redQuantizationMask)
         + ((green << ((1 * bits) - truncationBits)) & greenQuantizationMask)
         + ((blue >> (truncationBits)) & blueQuantizationMask)] & 0xFF;
     }

@@ -23,8 +23,7 @@ import javax.xml.transform.TransformerException;
  */
 class KMLMapProducer extends AbstractGetMapProducer implements GetMapProducer {
     /** standard logger */
-    protected static final Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.responses.wms.kml");
+    protected static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.responses.wms.kml");
 
     /**
      * encoder instance which does all the hard work

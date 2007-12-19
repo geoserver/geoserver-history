@@ -64,14 +64,11 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
             adapter.parse(requestSource);
             LOGGER.fine("just parsed: " + requestSource);
         } catch (SAXException e) {
-            throw new WcsException(e, "XML capabilities request parsing error",
-                getClass().getName());
+            throw new WcsException(e, "XML capabilities request parsing error", getClass().getName());
         } catch (IOException e) {
-            throw new WcsException(e, "XML capabilities request input error",
-                getClass().getName());
+            throw new WcsException(e, "XML capabilities request input error", getClass().getName());
         } catch (ParserConfigurationException e) {
-            throw new WcsException(e, "Some sort of issue creating parser",
-                getClass().getName());
+            throw new WcsException(e, "Some sort of issue creating parser", getClass().getName());
         }
 
         Request r = currentRequest.getRequest(req);

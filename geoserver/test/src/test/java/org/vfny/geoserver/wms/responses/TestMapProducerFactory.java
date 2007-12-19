@@ -105,8 +105,7 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
      * @author Gabriel Roldan, Axios Engineering
      * @version $Id$
      */
-    private class TestingMapProducer extends AbstractGetMapProducer
-        implements GetMapProducer {
+    private class TestingMapProducer extends AbstractGetMapProducer implements GetMapProducer {
         /**
          * DOCUMENT ME!
          *
@@ -125,8 +124,7 @@ public class TestMapProducerFactory implements GetMapProducerFactorySpi {
          * @throws ServiceException DOCUMENT ME!
          * @throws IOException DOCUMENT ME!
          */
-        public void writeTo(OutputStream out)
-            throws ServiceException, IOException {
+        public void writeTo(OutputStream out) throws ServiceException, IOException {
         }
 
         /**

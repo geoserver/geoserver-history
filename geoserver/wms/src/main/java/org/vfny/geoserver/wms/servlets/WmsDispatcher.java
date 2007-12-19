@@ -40,8 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 //JD: kill this class
 public class WmsDispatcher extends Dispatcher {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.servlets.wms");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets.wms");
 
     /**
      * Passes the Post method to the Get method, with no modifications.
@@ -109,8 +108,7 @@ public class WmsDispatcher extends Dispatcher {
     }
 
     protected void doResponse(boolean isPost, HttpServletRequest request,
-        HttpServletResponse response, int req_type)
-        throws ServletException, IOException {
+        HttpServletResponse response, int req_type) throws ServletException, IOException {
         HttpServlet dispatched;
         LOGGER.finer("req_type is " + req_type);
 

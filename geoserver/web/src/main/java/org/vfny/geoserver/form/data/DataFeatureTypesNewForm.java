@@ -25,8 +25,7 @@ public class DataFeatureTypesNewForm extends ActionForm {
     HttpServletRequest request;
 
     public SortedSet getNewFeatureTypes() {
-        DataConfig dataConfig = (DataConfig) request.getSession()
-                                                    .getServletContext()
+        DataConfig dataConfig = (DataConfig) request.getSession().getServletContext()
                                                     .getAttribute(DataConfig.CONFIG_KEY);
 
         TreeSet out = new TreeSet(dataConfig.getFeatureTypeIdentifiers(
@@ -43,8 +42,7 @@ public class DataFeatureTypesNewForm extends ActionForm {
         selectedNewFeatureType = "";
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         return errors;

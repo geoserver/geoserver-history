@@ -57,8 +57,7 @@ public class GeoServerTestSupport extends TestCase {
     /**
      * Common logger for test cases
      */
-    protected static final Logger LOGGER = Logger.getLogger(
-            "org.geoserver.test");
+    protected static final Logger LOGGER = Logger.getLogger("org.geoserver.test");
 
     /**
      * mock GeoServer data directory
@@ -81,8 +80,8 @@ public class GeoServerTestSupport extends TestCase {
         dataDirectory.setUp();
 
         //copy the service configuration to the data directory
-        dataDirectory.copyTo(GeoServerTestSupport.class.getResourceAsStream(
-                "services.xml"), "services.xml");
+        dataDirectory.copyTo(GeoServerTestSupport.class.getResourceAsStream("services.xml"),
+            "services.xml");
 
         //set up a mock servlet context
         MockServletContext servletContext = new MockServletContext();
@@ -131,8 +130,7 @@ public class GeoServerTestSupport extends TestCase {
      * Accessor for global resource loader instance from the test application context.
      */
     protected GeoServerResourceLoader getResourceLoader() {
-        return (GeoServerResourceLoader) applicationContext.getBean(
-            "resourceLoader");
+        return (GeoServerResourceLoader) applicationContext.getBean("resourceLoader");
     }
 
     /**
@@ -142,9 +140,7 @@ public class GeoServerTestSupport extends TestCase {
      */
     protected FeatureSource getFeatureSource(QName typeName)
         throws IOException {
-        return getCatalog()
-                   .getFeatureSource(typeName.getPrefix(),
-            typeName.getLocalPart());
+        return getCatalog().getFeatureSource(typeName.getPrefix(), typeName.getLocalPart());
     }
 
     /**
@@ -167,8 +163,8 @@ public class GeoServerTestSupport extends TestCase {
         request.setScheme("http");
         request.setServerName("localhost");
         request.setContextPath("/geoserver");
-        request.setRequestURI(ResponseUtils.stripQueryString(
-                ResponseUtils.appendPath("/geoserver/", path)));
+        request.setRequestURI(ResponseUtils.stripQueryString(ResponseUtils.appendPath(
+                    "/geoserver/", path)));
         request.setQueryString(ResponseUtils.stripQueryString(path));
         request.setRemoteAddr("127.0.0.1");
         request.setServletPath(path);
@@ -196,8 +192,7 @@ public class GeoServerTestSupport extends TestCase {
     protected InputStream get(String path) throws Exception {
         MockHttpServletResponse response = getAsServletResponse(path);
 
-        return new ByteArrayInputStream(response.getOutputStreamContent()
-                                                .getBytes());
+        return new ByteArrayInputStream(response.getOutputStreamContent().getBytes());
     }
 
     /**
@@ -237,8 +232,7 @@ public class GeoServerTestSupport extends TestCase {
 
         MockHttpServletResponse response = dispatch(request);
 
-        return new ByteArrayInputStream(response.getOutputStreamContent()
-                                                .getBytes());
+        return new ByteArrayInputStream(response.getOutputStreamContent().getBytes());
     }
 
     /**
@@ -262,8 +256,7 @@ public class GeoServerTestSupport extends TestCase {
 
         MockHttpServletResponse response = dispatch(request);
 
-        return new ByteArrayInputStream(response.getOutputStreamContent()
-                                                .getBytes());
+        return new ByteArrayInputStream(response.getOutputStreamContent().getBytes());
     }
 
     /**
@@ -399,10 +392,10 @@ public class GeoServerTestSupport extends TestCase {
      *
      * @throws IOException
      */
-    protected void setupTemplate(QName featureTypeName, String template,
-        String body) throws IOException {
-        dataDirectory.copyToFeatureTypeDirectory(new ByteArrayInputStream(
-                body.getBytes()), featureTypeName, template);
+    protected void setupTemplate(QName featureTypeName, String template, String body)
+        throws IOException {
+        dataDirectory.copyToFeatureTypeDirectory(new ByteArrayInputStream(body.getBytes()),
+            featureTypeName, template);
     }
 
     /*
@@ -452,8 +445,7 @@ public class GeoServerTestSupport extends TestCase {
             };
 
         //look up the handler
-        Dispatcher dispatcher = (Dispatcher) applicationContext.getBean(
-                "dispatcher");
+        Dispatcher dispatcher = (Dispatcher) applicationContext.getBean("dispatcher");
 
         //dispatcher.setApplicationContext( getGeoServer().getApplicationContext() );
 

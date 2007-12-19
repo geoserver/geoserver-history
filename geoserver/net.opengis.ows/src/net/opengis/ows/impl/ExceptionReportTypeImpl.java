@@ -36,8 +36,7 @@ import java.util.Collection;
  *
  * @generated
  */
-public class ExceptionReportTypeImpl extends EObjectImpl
-    implements ExceptionReportType {
+public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionReportType {
     /**
      * The default value of the '{@link #getLanguage() <em>Language</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -140,8 +139,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.EXCEPTION_REPORT_TYPE__LANGUAGE, oldLanguage,
-                    language));
+                    OwsPackage.EXCEPTION_REPORT_TYPE__LANGUAGE, oldLanguage, language));
         }
     }
 
@@ -165,8 +163,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.EXCEPTION_REPORT_TYPE__VERSION, oldVersion,
-                    version));
+                    OwsPackage.EXCEPTION_REPORT_TYPE__VERSION, oldVersion, version));
         }
     }
 
@@ -175,8 +172,8 @@ public class ExceptionReportTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case OwsPackage.EXCEPTION_REPORT_TYPE__EXCEPTION:
             return ((InternalEList) getException()).basicRemove(otherEnd, msgs);
@@ -273,8 +270,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl
                                                : (!LANGUAGE_EDEFAULT.equals(language));
 
         case OwsPackage.EXCEPTION_REPORT_TYPE__VERSION:
-            return (VERSION_EDEFAULT == null) ? (version != null)
-                                              : (!VERSION_EDEFAULT.equals(version));
+            return (VERSION_EDEFAULT == null) ? (version != null) : (!VERSION_EDEFAULT.equals(version));
         }
 
         return super.eIsSet(featureID);

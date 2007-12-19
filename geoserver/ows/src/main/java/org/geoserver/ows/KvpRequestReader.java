@@ -129,8 +129,7 @@ public class KvpRequestReader {
                 continue;
             }
 
-            Method setter = OwsUtils.setter(request.getClass(), property,
-                    value.getClass());
+            Method setter = OwsUtils.setter(request.getClass(), property, value.getClass());
 
             if (setter == null) {
                 //no setter matching the object of teh type, try to convert

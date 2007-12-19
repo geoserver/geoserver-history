@@ -86,8 +86,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
      * used to create default styles for cite types loading them from
      * test-data/styles/&lt;cite-typename&gt;.sld
      */
-    private static final StyleFactory sFac = StyleFactoryFinder
-        .createStyleFactory();
+    private static final StyleFactory sFac = StyleFactoryFinder.createStyleFactory();
 
     /** DOCUMENT ME! */
     private static final int SHOW_TIMEOUT = 200;
@@ -100,9 +99,9 @@ public abstract class AbstractCiteDataTest extends TestCase {
      * and deleting files
      */
     public static String[] CITE_TYPE_NAMES = {
-            BASIC_POLYGONS_TYPE, BRIDGES_TYPE, BUILDINGS_TYPE,
-            DIVIDED_ROUTES_TYPE, FORESTS_TYPE, LAKES_TYPE, MAP_NEATLINE_TYPE,
-            NAMED_PLACES_TYPE, PONDS_TYPE, ROAD_SEGMENTS_TYPE, STREAMS_TYPE
+            BASIC_POLYGONS_TYPE, BRIDGES_TYPE, BUILDINGS_TYPE, DIVIDED_ROUTES_TYPE, FORESTS_TYPE,
+            LAKES_TYPE, MAP_NEATLINE_TYPE, NAMED_PLACES_TYPE, PONDS_TYPE, ROAD_SEGMENTS_TYPE,
+            STREAMS_TYPE
         };
 
     /**
@@ -186,8 +185,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
      */
     protected Style getStyle(String styleName) throws Exception {
         SLDParser parser = new SLDParser(sFac);
-        URL styleRes = AbstractCiteDataTest.class.getResource(
-                "test-data/styles/" + styleName);
+        URL styleRes = AbstractCiteDataTest.class.getResource("test-data/styles/" + styleName);
         parser.setInput(styleRes);
 
         Style s = parser.readXML()[0];
@@ -212,14 +210,12 @@ public abstract class AbstractCiteDataTest extends TestCase {
      * @param timeOut
      * @param image
      */
-    protected void showImage(String frameName, long timeOut,
-        final BufferedImage image) {
+    protected void showImage(String frameName, long timeOut, final BufferedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
 
         if (((System.getProperty("java.awt.headless") == null)
-                || !System.getProperty("java.awt.headless").equals("true"))
-                && INTERACTIVE) {
+                || !System.getProperty("java.awt.headless").equals("true")) && INTERACTIVE) {
             Frame frame = new Frame(frameName);
             frame.addWindowListener(new WindowAdapter() {
                     public void windowClosing(WindowEvent e) {
@@ -258,8 +254,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
      * @param bgColor the background color for which differing pixels are
      *        looked for
      */
-    protected void assertNotBlank(String testName, BufferedImage image,
-        Color bgColor) {
+    protected void assertNotBlank(String testName, BufferedImage image, Color bgColor) {
         int pixelsDiffer = 0;
 
         for (int y = 0; y < image.getHeight(); y++) {
@@ -270,9 +265,8 @@ public abstract class AbstractCiteDataTest extends TestCase {
             }
         }
 
-        LOGGER.info(testName + ": pixel count="
-            + (image.getWidth() * image.getHeight()) + " non bg pixels: "
-            + pixelsDiffer);
+        LOGGER.info(testName + ": pixel count=" + (image.getWidth() * image.getHeight())
+            + " non bg pixels: " + pixelsDiffer);
         assertTrue(testName + " image is comlpetely blank", 0 < pixelsDiffer);
     }
 
@@ -289,8 +283,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
         List typeNames = Arrays.asList(ds.getTypeNames());
 
         for (int i = 0; i < CITE_TYPE_NAMES.length; i++) {
-            assertTrue(CITE_TYPE_NAMES[i] + " not found",
-                typeNames.contains(CITE_TYPE_NAMES[i]));
+            assertTrue(CITE_TYPE_NAMES[i] + " not found", typeNames.contains(CITE_TYPE_NAMES[i]));
         }
     }
 
@@ -311,8 +304,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
         this.tempDir.mkdir();
 
         if (!this.tempDir.exists() || !this.tempDir.isDirectory()) {
-            throw new IOException(this.tempDir.getAbsolutePath()
-                + " is not a writable directory");
+            throw new IOException(this.tempDir.getAbsolutePath() + " is not a writable directory");
         }
 
         for (int i = 0; i < CITE_TYPE_NAMES.length; i++) {
@@ -365,8 +357,7 @@ public abstract class AbstractCiteDataTest extends TestCase {
         InputStream in = AbstractCiteDataTest.class.getResourceAsStream(resourceName);
 
         if (in == null) {
-            throw new NullPointerException(resourceName
-                + " not found in classpath");
+            throw new NullPointerException(resourceName + " not found in classpath");
         }
 
         OutputStream out = new java.io.FileOutputStream(outFile);

@@ -65,8 +65,7 @@ public class GeoTiffMapProducerFactory implements GetMapProducerFactorySpi {
     public GetMapProducer createMapProducer(String mapFormat, WMS wms)
         throws IllegalArgumentException {
         if (!canProduce(mapFormat)) {
-            throw new IllegalArgumentException(mapFormat
-                + " not supported by this map producer");
+            throw new IllegalArgumentException(mapFormat + " not supported by this map producer");
         }
 
         return new GeoTiffMapProducer(mapFormat, MIME_TYPE, wms);

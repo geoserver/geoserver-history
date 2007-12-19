@@ -74,8 +74,7 @@ public class AtomGeoRSSTransformer extends GeoRSSTransformerBase {
                         try {
                             encodeEntry(feature);
                         } catch (Exception e) {
-                            LOGGER.warning("Encoding failed for feature: "
-                                + feature.getID());
+                            LOGGER.warning("Encoding failed for feature: " + feature.getID());
                             LOGGER.log(Level.FINE, "", e);
                         }
                     }

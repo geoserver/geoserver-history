@@ -1101,8 +1101,7 @@ public interface OwsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int IDENTIFICATION_TYPE__BOUNDING_BOX_GROUP = DESCRIPTION_TYPE_FEATURE_COUNT
-        + 1;
+    int IDENTIFICATION_TYPE__BOUNDING_BOX_GROUP = DESCRIPTION_TYPE_FEATURE_COUNT + 1;
 
     /**
      * The feature id for the '<em><b>Bounding Box</b></em>' containment reference list.
@@ -1129,8 +1128,7 @@ public interface OwsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int IDENTIFICATION_TYPE__AVAILABLE_CRS_GROUP = DESCRIPTION_TYPE_FEATURE_COUNT
-        + 4;
+    int IDENTIFICATION_TYPE__AVAILABLE_CRS_GROUP = DESCRIPTION_TYPE_FEATURE_COUNT + 4;
 
     /**
      * The feature id for the '<em><b>Available CRS</b></em>' attribute.
@@ -1397,8 +1395,7 @@ public interface OwsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int REQUEST_METHOD_TYPE__CONSTRAINT = ONLINE_RESOURCE_TYPE_FEATURE_COUNT
-        + 0;
+    int REQUEST_METHOD_TYPE__CONSTRAINT = ONLINE_RESOURCE_TYPE_FEATURE_COUNT + 0;
 
     /**
      * The number of structural features of the '<em>Request Method Type</em>' class.
@@ -1407,8 +1404,7 @@ public interface OwsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int REQUEST_METHOD_TYPE_FEATURE_COUNT = ONLINE_RESOURCE_TYPE_FEATURE_COUNT
-        + 1;
+    int REQUEST_METHOD_TYPE_FEATURE_COUNT = ONLINE_RESOURCE_TYPE_FEATURE_COUNT + 1;
 
     /**
      * The meta object id for the '{@link net.opengis.ows.impl.ResponsiblePartySubsetTypeImpl <em>Responsible Party Subset Type</em>}' class.
@@ -1601,8 +1597,7 @@ public interface OwsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE = DESCRIPTION_TYPE_FEATURE_COUNT
-        + 0;
+    int SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE = DESCRIPTION_TYPE_FEATURE_COUNT + 0;
 
     /**
      * The feature id for the '<em><b>Service Type Version</b></em>' attribute.
@@ -1611,8 +1606,7 @@ public interface OwsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE_VERSION = DESCRIPTION_TYPE_FEATURE_COUNT
-        + 1;
+    int SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE_VERSION = DESCRIPTION_TYPE_FEATURE_COUNT + 1;
 
     /**
      * The feature id for the '<em><b>Fees</b></em>' attribute.
@@ -1630,8 +1624,7 @@ public interface OwsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int SERVICE_IDENTIFICATION_TYPE__ACCESS_CONSTRAINTS = DESCRIPTION_TYPE_FEATURE_COUNT
-        + 3;
+    int SERVICE_IDENTIFICATION_TYPE__ACCESS_CONSTRAINTS = DESCRIPTION_TYPE_FEATURE_COUNT + 3;
 
     /**
      * The number of structural features of the '<em>Service Identification Type</em>' class.
@@ -1640,8 +1633,7 @@ public interface OwsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int SERVICE_IDENTIFICATION_TYPE_FEATURE_COUNT = DESCRIPTION_TYPE_FEATURE_COUNT
-        + 4;
+    int SERVICE_IDENTIFICATION_TYPE_FEATURE_COUNT = DESCRIPTION_TYPE_FEATURE_COUNT + 4;
 
     /**
      * The meta object id for the '{@link net.opengis.ows.impl.ServiceProviderTypeImpl <em>Service Provider Type</em>}' class.
@@ -1779,8 +1771,7 @@ public interface OwsPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int WGS84_BOUNDING_BOX_TYPE_FEATURE_COUNT = BOUNDING_BOX_TYPE_FEATURE_COUNT
-        + 0;
+    int WGS84_BOUNDING_BOX_TYPE_FEATURE_COUNT = BOUNDING_BOX_TYPE_FEATURE_COUNT + 0;
 
     /**
      * The meta object id for the '<em>Mime Type</em>' data type.
@@ -3503,8 +3494,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute ACCEPT_FORMATS_TYPE__OUTPUT_FORMAT = eINSTANCE
-            .getAcceptFormatsType_OutputFormat();
+        EAttribute ACCEPT_FORMATS_TYPE__OUTPUT_FORMAT = eINSTANCE.getAcceptFormatsType_OutputFormat();
 
         /**
          * The meta object literal for the '{@link net.opengis.ows.impl.AcceptVersionsTypeImpl <em>Accept Versions Type</em>}' class.
@@ -3522,8 +3512,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute ACCEPT_VERSIONS_TYPE__VERSION = eINSTANCE
-            .getAcceptVersionsType_Version();
+        EAttribute ACCEPT_VERSIONS_TYPE__VERSION = eINSTANCE.getAcceptVersionsType_Version();
 
         /**
          * The meta object literal for the '{@link net.opengis.ows.impl.AddressTypeImpl <em>Address Type</em>}' class.
@@ -3541,8 +3530,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute ADDRESS_TYPE__DELIVERY_POINT = eINSTANCE
-            .getAddressType_DeliveryPoint();
+        EAttribute ADDRESS_TYPE__DELIVERY_POINT = eINSTANCE.getAddressType_DeliveryPoint();
 
         /**
          * The meta object literal for the '<em><b>City</b></em>' attribute feature.
@@ -3558,8 +3546,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute ADDRESS_TYPE__ADMINISTRATIVE_AREA = eINSTANCE
-            .getAddressType_AdministrativeArea();
+        EAttribute ADDRESS_TYPE__ADMINISTRATIVE_AREA = eINSTANCE.getAddressType_AdministrativeArea();
 
         /**
          * The meta object literal for the '<em><b>Postal Code</b></em>' attribute feature.
@@ -3567,8 +3554,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute ADDRESS_TYPE__POSTAL_CODE = eINSTANCE
-            .getAddressType_PostalCode();
+        EAttribute ADDRESS_TYPE__POSTAL_CODE = eINSTANCE.getAddressType_PostalCode();
 
         /**
          * The meta object literal for the '<em><b>Country</b></em>' attribute feature.
@@ -3603,8 +3589,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute BOUNDING_BOX_TYPE__LOWER_CORNER = eINSTANCE
-            .getBoundingBoxType_LowerCorner();
+        EAttribute BOUNDING_BOX_TYPE__LOWER_CORNER = eINSTANCE.getBoundingBoxType_LowerCorner();
 
         /**
          * The meta object literal for the '<em><b>Upper Corner</b></em>' attribute feature.
@@ -3612,8 +3597,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute BOUNDING_BOX_TYPE__UPPER_CORNER = eINSTANCE
-            .getBoundingBoxType_UpperCorner();
+        EAttribute BOUNDING_BOX_TYPE__UPPER_CORNER = eINSTANCE.getBoundingBoxType_UpperCorner();
 
         /**
          * The meta object literal for the '<em><b>Crs</b></em>' attribute feature.
@@ -3629,8 +3613,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute BOUNDING_BOX_TYPE__DIMENSIONS = eINSTANCE
-            .getBoundingBoxType_Dimensions();
+        EAttribute BOUNDING_BOX_TYPE__DIMENSIONS = eINSTANCE.getBoundingBoxType_Dimensions();
 
         /**
          * The meta object literal for the '{@link net.opengis.ows.impl.CapabilitiesBaseTypeImpl <em>Capabilities Base Type</em>}' class.
@@ -3684,8 +3667,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute CAPABILITIES_BASE_TYPE__VERSION = eINSTANCE
-            .getCapabilitiesBaseType_Version();
+        EAttribute CAPABILITIES_BASE_TYPE__VERSION = eINSTANCE.getCapabilitiesBaseType_Version();
 
         /**
          * The meta object literal for the '{@link net.opengis.ows.impl.CodeTypeImpl <em>Code Type</em>}' class.
@@ -3745,8 +3727,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference CONTACT_TYPE__ONLINE_RESOURCE = eINSTANCE
-            .getContactType_OnlineResource();
+        EReference CONTACT_TYPE__ONLINE_RESOURCE = eINSTANCE.getContactType_OnlineResource();
 
         /**
          * The meta object literal for the '<em><b>Hours Of Service</b></em>' attribute feature.
@@ -3754,8 +3735,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute CONTACT_TYPE__HOURS_OF_SERVICE = eINSTANCE
-            .getContactType_HoursOfService();
+        EAttribute CONTACT_TYPE__HOURS_OF_SERVICE = eINSTANCE.getContactType_HoursOfService();
 
         /**
          * The meta object literal for the '<em><b>Contact Instructions</b></em>' attribute feature.
@@ -3763,8 +3743,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute CONTACT_TYPE__CONTACT_INSTRUCTIONS = eINSTANCE
-            .getContactType_ContactInstructions();
+        EAttribute CONTACT_TYPE__CONTACT_INSTRUCTIONS = eINSTANCE.getContactType_ContactInstructions();
 
         /**
          * The meta object literal for the '{@link net.opengis.ows.impl.DCPTypeImpl <em>DCP Type</em>}' class.
@@ -3808,8 +3787,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute DESCRIPTION_TYPE__ABSTRACT = eINSTANCE
-            .getDescriptionType_Abstract();
+        EAttribute DESCRIPTION_TYPE__ABSTRACT = eINSTANCE.getDescriptionType_Abstract();
 
         /**
          * The meta object literal for the '<em><b>Keywords</b></em>' containment reference list feature.
@@ -3817,8 +3795,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DESCRIPTION_TYPE__KEYWORDS = eINSTANCE
-            .getDescriptionType_Keywords();
+        EReference DESCRIPTION_TYPE__KEYWORDS = eINSTANCE.getDescriptionType_Keywords();
 
         /**
          * The meta object literal for the '{@link net.opengis.ows.impl.DocumentRootImpl <em>Document Root</em>}' class.
@@ -3844,8 +3821,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__XMLNS_PREFIX_MAP = eINSTANCE
-            .getDocumentRoot_XMLNSPrefixMap();
+        EReference DOCUMENT_ROOT__XMLNS_PREFIX_MAP = eINSTANCE.getDocumentRoot_XMLNSPrefixMap();
 
         /**
          * The meta object literal for the '<em><b>XSI Schema Location</b></em>' map feature.
@@ -3853,8 +3829,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__XSI_SCHEMA_LOCATION = eINSTANCE
-            .getDocumentRoot_XSISchemaLocation();
+        EReference DOCUMENT_ROOT__XSI_SCHEMA_LOCATION = eINSTANCE.getDocumentRoot_XSISchemaLocation();
 
         /**
          * The meta object literal for the '<em><b>Abstract</b></em>' attribute feature.
@@ -3870,8 +3845,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__CONTACT_INFO = eINSTANCE
-            .getDocumentRoot_ContactInfo();
+        EReference DOCUMENT_ROOT__CONTACT_INFO = eINSTANCE.getDocumentRoot_ContactInfo();
 
         /**
          * The meta object literal for the '<em><b>Individual Name</b></em>' attribute feature.
@@ -3879,8 +3853,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute DOCUMENT_ROOT__INDIVIDUAL_NAME = eINSTANCE
-            .getDocumentRoot_IndividualName();
+        EAttribute DOCUMENT_ROOT__INDIVIDUAL_NAME = eINSTANCE.getDocumentRoot_IndividualName();
 
         /**
          * The meta object literal for the '<em><b>Keywords</b></em>' containment reference feature.
@@ -3896,8 +3869,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute DOCUMENT_ROOT__ORGANISATION_NAME = eINSTANCE
-            .getDocumentRoot_OrganisationName();
+        EAttribute DOCUMENT_ROOT__ORGANISATION_NAME = eINSTANCE.getDocumentRoot_OrganisationName();
 
         /**
          * The meta object literal for the '<em><b>Point Of Contact</b></em>' containment reference feature.
@@ -3905,8 +3877,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__POINT_OF_CONTACT = eINSTANCE
-            .getDocumentRoot_PointOfContact();
+        EReference DOCUMENT_ROOT__POINT_OF_CONTACT = eINSTANCE.getDocumentRoot_PointOfContact();
 
         /**
          * The meta object literal for the '<em><b>Position Name</b></em>' attribute feature.
@@ -3914,8 +3885,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute DOCUMENT_ROOT__POSITION_NAME = eINSTANCE
-            .getDocumentRoot_PositionName();
+        EAttribute DOCUMENT_ROOT__POSITION_NAME = eINSTANCE.getDocumentRoot_PositionName();
 
         /**
          * The meta object literal for the '<em><b>Role</b></em>' containment reference feature.
@@ -3939,8 +3909,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__ABSTRACT_META_DATA = eINSTANCE
-            .getDocumentRoot_AbstractMetaData();
+        EReference DOCUMENT_ROOT__ABSTRACT_META_DATA = eINSTANCE.getDocumentRoot_AbstractMetaData();
 
         /**
          * The meta object literal for the '<em><b>Access Constraints</b></em>' attribute feature.
@@ -3948,8 +3917,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute DOCUMENT_ROOT__ACCESS_CONSTRAINTS = eINSTANCE
-            .getDocumentRoot_AccessConstraints();
+        EAttribute DOCUMENT_ROOT__ACCESS_CONSTRAINTS = eINSTANCE.getDocumentRoot_AccessConstraints();
 
         /**
          * The meta object literal for the '<em><b>Available CRS</b></em>' attribute feature.
@@ -3957,8 +3925,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute DOCUMENT_ROOT__AVAILABLE_CRS = eINSTANCE
-            .getDocumentRoot_AvailableCRS();
+        EAttribute DOCUMENT_ROOT__AVAILABLE_CRS = eINSTANCE.getDocumentRoot_AvailableCRS();
 
         /**
          * The meta object literal for the '<em><b>Bounding Box</b></em>' containment reference feature.
@@ -3966,8 +3933,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__BOUNDING_BOX = eINSTANCE
-            .getDocumentRoot_BoundingBox();
+        EReference DOCUMENT_ROOT__BOUNDING_BOX = eINSTANCE.getDocumentRoot_BoundingBox();
 
         /**
          * The meta object literal for the '<em><b>Dcp</b></em>' containment reference feature.
@@ -3983,8 +3949,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__EXCEPTION = eINSTANCE
-            .getDocumentRoot_Exception();
+        EReference DOCUMENT_ROOT__EXCEPTION = eINSTANCE.getDocumentRoot_Exception();
 
         /**
          * The meta object literal for the '<em><b>Exception Report</b></em>' containment reference feature.
@@ -3992,8 +3957,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__EXCEPTION_REPORT = eINSTANCE
-            .getDocumentRoot_ExceptionReport();
+        EReference DOCUMENT_ROOT__EXCEPTION_REPORT = eINSTANCE.getDocumentRoot_ExceptionReport();
 
         /**
          * The meta object literal for the '<em><b>Extended Capabilities</b></em>' containment reference feature.
@@ -4018,8 +3982,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__GET_CAPABILITIES = eINSTANCE
-            .getDocumentRoot_GetCapabilities();
+        EReference DOCUMENT_ROOT__GET_CAPABILITIES = eINSTANCE.getDocumentRoot_GetCapabilities();
 
         /**
          * The meta object literal for the '<em><b>Http</b></em>' containment reference feature.
@@ -4035,8 +3998,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__IDENTIFIER = eINSTANCE
-            .getDocumentRoot_Identifier();
+        EReference DOCUMENT_ROOT__IDENTIFIER = eINSTANCE.getDocumentRoot_Identifier();
 
         /**
          * The meta object literal for the '<em><b>Language</b></em>' attribute feature.
@@ -4060,8 +4022,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__OPERATION = eINSTANCE
-            .getDocumentRoot_Operation();
+        EReference DOCUMENT_ROOT__OPERATION = eINSTANCE.getDocumentRoot_Operation();
 
         /**
          * The meta object literal for the '<em><b>Operations Metadata</b></em>' containment reference feature.
@@ -4069,8 +4030,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__OPERATIONS_METADATA = eINSTANCE
-            .getDocumentRoot_OperationsMetadata();
+        EReference DOCUMENT_ROOT__OPERATIONS_METADATA = eINSTANCE.getDocumentRoot_OperationsMetadata();
 
         /**
          * The meta object literal for the '<em><b>Output Format</b></em>' attribute feature.
@@ -4078,8 +4038,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute DOCUMENT_ROOT__OUTPUT_FORMAT = eINSTANCE
-            .getDocumentRoot_OutputFormat();
+        EAttribute DOCUMENT_ROOT__OUTPUT_FORMAT = eINSTANCE.getDocumentRoot_OutputFormat();
 
         /**
          * The meta object literal for the '<em><b>Service Identification</b></em>' containment reference feature.
@@ -4096,8 +4055,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__SERVICE_PROVIDER = eINSTANCE
-            .getDocumentRoot_ServiceProvider();
+        EReference DOCUMENT_ROOT__SERVICE_PROVIDER = eINSTANCE.getDocumentRoot_ServiceProvider();
 
         /**
          * The meta object literal for the '<em><b>Supported CRS</b></em>' attribute feature.
@@ -4105,8 +4063,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute DOCUMENT_ROOT__SUPPORTED_CRS = eINSTANCE
-            .getDocumentRoot_SupportedCRS();
+        EAttribute DOCUMENT_ROOT__SUPPORTED_CRS = eINSTANCE.getDocumentRoot_SupportedCRS();
 
         /**
          * The meta object literal for the '<em><b>Wg S84 Bounding Box</b></em>' containment reference feature.
@@ -4114,8 +4071,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference DOCUMENT_ROOT__WG_S84_BOUNDING_BOX = eINSTANCE
-            .getDocumentRoot_WgS84BoundingBox();
+        EReference DOCUMENT_ROOT__WG_S84_BOUNDING_BOX = eINSTANCE.getDocumentRoot_WgS84BoundingBox();
 
         /**
          * The meta object literal for the '{@link net.opengis.ows.impl.DomainTypeImpl <em>Domain Type</em>}' class.
@@ -4167,8 +4123,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference EXCEPTION_REPORT_TYPE__EXCEPTION = eINSTANCE
-            .getExceptionReportType_Exception();
+        EReference EXCEPTION_REPORT_TYPE__EXCEPTION = eINSTANCE.getExceptionReportType_Exception();
 
         /**
          * The meta object literal for the '<em><b>Language</b></em>' attribute feature.
@@ -4176,8 +4131,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute EXCEPTION_REPORT_TYPE__LANGUAGE = eINSTANCE
-            .getExceptionReportType_Language();
+        EAttribute EXCEPTION_REPORT_TYPE__LANGUAGE = eINSTANCE.getExceptionReportType_Language();
 
         /**
          * The meta object literal for the '<em><b>Version</b></em>' attribute feature.
@@ -4185,8 +4139,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute EXCEPTION_REPORT_TYPE__VERSION = eINSTANCE
-            .getExceptionReportType_Version();
+        EAttribute EXCEPTION_REPORT_TYPE__VERSION = eINSTANCE.getExceptionReportType_Version();
 
         /**
          * The meta object literal for the '{@link net.opengis.ows.impl.ExceptionTypeImpl <em>Exception Type</em>}' class.
@@ -4204,8 +4157,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute EXCEPTION_TYPE__EXCEPTION_TEXT = eINSTANCE
-            .getExceptionType_ExceptionText();
+        EAttribute EXCEPTION_TYPE__EXCEPTION_TEXT = eINSTANCE.getExceptionType_ExceptionText();
 
         /**
          * The meta object literal for the '<em><b>Exception Code</b></em>' attribute feature.
@@ -4213,8 +4165,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute EXCEPTION_TYPE__EXCEPTION_CODE = eINSTANCE
-            .getExceptionType_ExceptionCode();
+        EAttribute EXCEPTION_TYPE__EXCEPTION_CODE = eINSTANCE.getExceptionType_ExceptionCode();
 
         /**
          * The meta object literal for the '<em><b>Locator</b></em>' attribute feature.
@@ -4249,8 +4200,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference GET_CAPABILITIES_TYPE__SECTIONS = eINSTANCE
-            .getGetCapabilitiesType_Sections();
+        EReference GET_CAPABILITIES_TYPE__SECTIONS = eINSTANCE.getGetCapabilitiesType_Sections();
 
         /**
          * The meta object literal for the '<em><b>Accept Formats</b></em>' containment reference feature.
@@ -4276,8 +4226,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute GET_CAPABILITIES_TYPE__BASE_URL = eINSTANCE
-            .getGetCapabilitiesType_BaseUrl();
+        EAttribute GET_CAPABILITIES_TYPE__BASE_URL = eINSTANCE.getGetCapabilitiesType_BaseUrl();
 
         /**
          * The meta object literal for the '{@link net.opengis.ows.impl.HTTPTypeImpl <em>HTTP Type</em>}' class.
@@ -4329,8 +4278,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference IDENTIFICATION_TYPE__IDENTIFIER = eINSTANCE
-            .getIdentificationType_Identifier();
+        EReference IDENTIFICATION_TYPE__IDENTIFIER = eINSTANCE.getIdentificationType_Identifier();
 
         /**
          * The meta object literal for the '<em><b>Bounding Box Group</b></em>' attribute list feature.
@@ -4347,8 +4295,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference IDENTIFICATION_TYPE__BOUNDING_BOX = eINSTANCE
-            .getIdentificationType_BoundingBox();
+        EReference IDENTIFICATION_TYPE__BOUNDING_BOX = eINSTANCE.getIdentificationType_BoundingBox();
 
         /**
          * The meta object literal for the '<em><b>Output Format</b></em>' attribute feature.
@@ -4356,8 +4303,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute IDENTIFICATION_TYPE__OUTPUT_FORMAT = eINSTANCE
-            .getIdentificationType_OutputFormat();
+        EAttribute IDENTIFICATION_TYPE__OUTPUT_FORMAT = eINSTANCE.getIdentificationType_OutputFormat();
 
         /**
          * The meta object literal for the '<em><b>Available CRS Group</b></em>' attribute list feature.
@@ -4374,8 +4320,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute IDENTIFICATION_TYPE__AVAILABLE_CRS = eINSTANCE
-            .getIdentificationType_AvailableCRS();
+        EAttribute IDENTIFICATION_TYPE__AVAILABLE_CRS = eINSTANCE.getIdentificationType_AvailableCRS();
 
         /**
          * The meta object literal for the '<em><b>Metadata</b></em>' containment reference list feature.
@@ -4383,8 +4328,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference IDENTIFICATION_TYPE__METADATA = eINSTANCE
-            .getIdentificationType_Metadata();
+        EReference IDENTIFICATION_TYPE__METADATA = eINSTANCE.getIdentificationType_Metadata();
 
         /**
          * The meta object literal for the '{@link net.opengis.ows.impl.KeywordsTypeImpl <em>Keywords Type</em>}' class.
@@ -4437,8 +4381,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference METADATA_TYPE__ABSTRACT_META_DATA = eINSTANCE
-            .getMetadataType_AbstractMetaData();
+        EReference METADATA_TYPE__ABSTRACT_META_DATA = eINSTANCE.getMetadataType_AbstractMetaData();
 
         /**
          * The meta object literal for the '<em><b>About</b></em>' attribute feature.
@@ -4482,8 +4425,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference OPERATION_TYPE__PARAMETER = eINSTANCE
-            .getOperationType_Parameter();
+        EReference OPERATION_TYPE__PARAMETER = eINSTANCE.getOperationType_Parameter();
 
         /**
          * The meta object literal for the '<em><b>Constraint</b></em>' containment reference list feature.
@@ -4491,8 +4433,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference OPERATION_TYPE__CONSTRAINT = eINSTANCE
-            .getOperationType_Constraint();
+        EReference OPERATION_TYPE__CONSTRAINT = eINSTANCE.getOperationType_Constraint();
 
         /**
          * The meta object literal for the '<em><b>Metadata</b></em>' containment reference list feature.
@@ -4500,8 +4441,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference OPERATION_TYPE__METADATA = eINSTANCE
-            .getOperationType_Metadata();
+        EReference OPERATION_TYPE__METADATA = eINSTANCE.getOperationType_Metadata();
 
         /**
          * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -4573,8 +4513,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference REQUEST_METHOD_TYPE__CONSTRAINT = eINSTANCE
-            .getRequestMethodType_Constraint();
+        EReference REQUEST_METHOD_TYPE__CONSTRAINT = eINSTANCE.getRequestMethodType_Constraint();
 
         /**
          * The meta object literal for the '{@link net.opengis.ows.impl.ResponsiblePartySubsetTypeImpl <em>Responsible Party Subset Type</em>}' class.
@@ -4584,8 +4523,7 @@ public interface OwsPackage extends EPackage {
          * @see net.opengis.ows.impl.OwsPackageImpl#getResponsiblePartySubsetType()
          * @generated
          */
-        EClass RESPONSIBLE_PARTY_SUBSET_TYPE = eINSTANCE
-            .getResponsiblePartySubsetType();
+        EClass RESPONSIBLE_PARTY_SUBSET_TYPE = eINSTANCE.getResponsiblePartySubsetType();
 
         /**
          * The meta object literal for the '<em><b>Individual Name</b></em>' attribute feature.
@@ -4675,8 +4613,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference RESPONSIBLE_PARTY_TYPE__ROLE = eINSTANCE
-            .getResponsiblePartyType_Role();
+        EReference RESPONSIBLE_PARTY_TYPE__ROLE = eINSTANCE.getResponsiblePartyType_Role();
 
         /**
          * The meta object literal for the '{@link net.opengis.ows.impl.SectionsTypeImpl <em>Sections Type</em>}' class.
@@ -4704,8 +4641,7 @@ public interface OwsPackage extends EPackage {
          * @see net.opengis.ows.impl.OwsPackageImpl#getServiceIdentificationType()
          * @generated
          */
-        EClass SERVICE_IDENTIFICATION_TYPE = eINSTANCE
-            .getServiceIdentificationType();
+        EClass SERVICE_IDENTIFICATION_TYPE = eINSTANCE.getServiceIdentificationType();
 
         /**
          * The meta object literal for the '<em><b>Service Type</b></em>' containment reference feature.
@@ -4731,8 +4667,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute SERVICE_IDENTIFICATION_TYPE__FEES = eINSTANCE
-            .getServiceIdentificationType_Fees();
+        EAttribute SERVICE_IDENTIFICATION_TYPE__FEES = eINSTANCE.getServiceIdentificationType_Fees();
 
         /**
          * The meta object literal for the '<em><b>Access Constraints</b></em>' attribute feature.
@@ -4804,8 +4739,7 @@ public interface OwsPackage extends EPackage {
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute TELEPHONE_TYPE__FACSIMILE = eINSTANCE
-            .getTelephoneType_Facsimile();
+        EAttribute TELEPHONE_TYPE__FACSIMILE = eINSTANCE.getTelephoneType_Facsimile();
 
         /**
          * The meta object literal for the '{@link net.opengis.ows.impl.WGS84BoundingBoxTypeImpl <em>WGS84 Bounding Box Type</em>}' class.

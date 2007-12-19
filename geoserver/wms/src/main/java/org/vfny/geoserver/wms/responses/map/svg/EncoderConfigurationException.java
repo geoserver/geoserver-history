@@ -20,8 +20,7 @@ public class EncoderConfigurationException extends WmsException {
         super(message, locator);
     }
 
-    public EncoderConfigurationException(Throwable e, String message,
-        String locator) {
+    public EncoderConfigurationException(Throwable e, String message, String locator) {
         super(e, message, locator);
     }
 }

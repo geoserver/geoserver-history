@@ -83,8 +83,7 @@ public class PALFileLoader {
      */
     public PALFileLoader(File file) {
         if (!file.exists() | !file.canRead()) {
-            throw new IllegalArgumentException(
-                "The provided file cannot be read.");
+            throw new IllegalArgumentException("The provided file cannot be read.");
         }
 
         BufferedReader reader = null;
@@ -125,13 +124,11 @@ public class PALFileLoader {
             this.mapsize = Integer.parseInt(temp);
 
             if ((mapsize > 256) || (mapsize <= 0)) {
-                throw new IllegalArgumentException(
-                    "The provided number of colors is invalid");
+                throw new IllegalArgumentException("The provided number of colors is invalid");
             }
 
             // load various colors
-            final byte[][] colorMap = new byte[3][(mapsize < 256) ? (mapsize
-                + 1) : mapsize];
+            final byte[][] colorMap = new byte[3][(mapsize < 256) ? (mapsize + 1) : mapsize];
 
             for (int i = 0; i < mapsize; i++) {
                 // get the line
@@ -148,8 +145,7 @@ public class PALFileLoader {
                     colorMap[2][i] = (byte) color.getBlue();
                 } else {
                     // tokenize it
-                    final StringTokenizer tokenizer = new StringTokenizer(temp,
-                            " ", false);
+                    final StringTokenizer tokenizer = new StringTokenizer(temp, " ", false);
                     int numComponents = 0;
 
                     while (tokenizer.hasMoreTokens()) {
@@ -158,8 +154,7 @@ public class PALFileLoader {
                                 "The number of components in one the color is greater than 3!");
                         }
 
-                        colorMap[numComponents++][i] = (byte) Integer.parseInt(tokenizer
-                                .nextToken());
+                        colorMap[numComponents++][i] = (byte) Integer.parseInt(tokenizer.nextToken());
                     }
 
                     if (numComponents != 3) {
@@ -176,11 +171,11 @@ public class PALFileLoader {
             //
             ////
             if (mapsize < 256) {
-                this.indexColorModel = new IndexColorModel(8, mapsize + 1,
-                        colorMap[0], colorMap[1], colorMap[2], mapsize);
+                this.indexColorModel = new IndexColorModel(8, mapsize + 1, colorMap[0],
+                        colorMap[1], colorMap[2], mapsize);
             } else {
-                this.indexColorModel = new IndexColorModel(8, mapsize,
-                        colorMap[0], colorMap[1], colorMap[2]);
+                this.indexColorModel = new IndexColorModel(8, mapsize, colorMap[0], colorMap[1],
+                        colorMap[2]);
             }
         } catch (FileNotFoundException e) {
             LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);

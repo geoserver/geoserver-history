@@ -216,7 +216,6 @@ public final class NameSpaceInfoDTO implements DataTransferObject {
     }
 
     public String toString() {
-        return "xmlns:" + getPrefix() + "=\"" + getUri() + "\", isDefault="
-        + _default;
+        return "xmlns:" + getPrefix() + "=\"" + getUri() + "\", isDefault=" + _default;
     }
 }

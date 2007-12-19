@@ -145,8 +145,8 @@ public final class LegendURLDTO implements DataTransferObject {
     }
 
     public String toString() {
-        return "LegendURL [" + width + ", " + height + "] - Type : " + format
-        + " -  Location : " + onlineResource + "\n";
+        return "LegendURL [" + width + ", " + height + "] - Type : " + format + " -  Location : "
+        + onlineResource + "\n";
     }
 
     /**

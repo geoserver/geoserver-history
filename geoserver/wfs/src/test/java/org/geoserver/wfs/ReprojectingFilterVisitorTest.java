@@ -100,8 +100,7 @@ public class ReprojectingFilterVisitorTest extends TestCase {
         Intersects isClone = (Intersects) clone;
         assertEquals(isClone.getExpression1(), original.getExpression1());
 
-        LineString clonedLs = (LineString) ((Literal) isClone.getExpression2())
-            .getValue();
+        LineString clonedLs = (LineString) ((Literal) isClone.getExpression2()).getValue();
         assertTrue(15 == clonedLs.getCoordinateN(0).x);
         assertTrue(10 == clonedLs.getCoordinateN(0).y);
         assertTrue(25 == clonedLs.getCoordinateN(1).x);

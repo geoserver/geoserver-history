@@ -12,7 +12,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.DefaultHandler;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -626,79 +625,78 @@ public class ReaderUtils {
 
         return d;
     }
-    
+
     /**
      * Validates an xml document against a specified schema.
      *
      * @param xml The document.
-     * @param errorHandler The validation error handler. 
+     * @param errorHandler The validation error handler.
      * @param targetNamespace The target namespace of the schema, may be <code>null</code>
      * @param schemaLocation The location of the schema to validate against, may be <code>null</code>
      *
      * @throws RuntimeException If reader failed to parse properly.
      */
-    public static void validate( Document xml, DefaultHandler errorHandler, String targetNamespace, String schemaLocation ) {
+    public static void validate(Document xml, DefaultHandler errorHandler, String targetNamespace,
+        String schemaLocation) {
         try {
             Transformer tx = TransformerFactory.newInstance().newTransformer();
             ByteArrayOutputStream output = new ByteArrayOutputStream();
-            tx.transform( new DOMSource( xml ), new StreamResult( output ) );
+            tx.transform(new DOMSource(xml), new StreamResult(output));
 
-            InputStreamReader reader =
-                    new InputStreamReader( new ByteArrayInputStream( output.toByteArray() ) );
-            validate( reader, errorHandler, targetNamespace, schemaLocation );
-        }
-        catch( Exception e ) {
-                throw new RuntimeException( e );
+            InputStreamReader reader = new InputStreamReader(new ByteArrayInputStream(
+                        output.toByteArray()));
+            validate(reader, errorHandler, targetNamespace, schemaLocation);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * Validates an xml document against a specified schema.
      *
      * @param xml Reader representing xml stream to parse.
-     * @param errorHandler The validation error handler. 
+     * @param errorHandler The validation error handler.
      * @param targetNamespace The target namespace of the schema, may be <code>null</code>
      * @param schemaLocation The location of the schema to validate against, may be <code>null</code>
      *
      * @throws RuntimeException If reader failed to parse properly.
      */
-    public static void validate ( Reader xml, DefaultHandler errorHandler, String targetNamespace, String schemaLocation ) {
-        InputSource in = new InputSource( xml );
-        
-        try {
+    public static void validate(Reader xml, DefaultHandler errorHandler, String targetNamespace,
+        String schemaLocation) {
+        InputSource in = new InputSource(xml);
 
+        try {
             //TODO: pretty sure this doesn't actually do validation
             // ahhh... xml in java....
             SAXParserFactory sf = SAXParserFactory.newInstance();
-            sf.setNamespaceAware(true); 
-            sf.setValidating(true);            
+            sf.setNamespaceAware(true);
+            sf.setValidating(true);
+
             SAXParser parser = sf.newSAXParser();
-            parser.setProperty(
-               "http://java.sun.com/xml/jaxp/properties/schemaLanguage",  
-               "http://www.w3.org/2001/XMLSchema");
+            parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaLanguage",
+                "http://www.w3.org/2001/XMLSchema");
 
-//            SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-//               parser.setProperty("http://xml.org/sax/features/validation", Boolean.TRUE);
-//               
-//                parser.setProperty("http://apache.org/xml/features/validation/schema",
-//                    Boolean.TRUE);
-//                parser.setProperty("http://apache.org/xml/features/validation/schema-full-checking",
-//                    Boolean.TRUE);
+            //            SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+            //               parser.setProperty("http://xml.org/sax/features/validation", Boolean.TRUE);
+            //               
+            //                parser.setProperty("http://apache.org/xml/features/validation/schema",
+            //                    Boolean.TRUE);
+            //                parser.setProperty("http://apache.org/xml/features/validation/schema-full-checking",
+            //                    Boolean.TRUE);
+            if (schemaLocation != null) {
+                parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaSource",
+                    schemaLocation);
 
-                if ( schemaLocation != null ) {
-                    parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaSource", schemaLocation);
-//                        if ( targetNamespace != null ) {
-//                                parser.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",
-//                                    targetNamespace + " " + schemaLocation );   
-//                        }
-                }
-                
-                parser.parse( in, errorHandler);
-                
-            } 
-                catch( Exception e ) {
-                        String msg = "Error reading : " + xml;
-                        throw new RuntimeException ( msg, e );
+                //                        if ( targetNamespace != null ) {
+                //                                parser.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",
+                //                                    targetNamespace + " " + schemaLocation );   
+                //                        }
             }
+
+            parser.parse(in, errorHandler);
+        } catch (Exception e) {
+            String msg = "Error reading : " + xml;
+            throw new RuntimeException(msg, e);
         }
+    }
 }

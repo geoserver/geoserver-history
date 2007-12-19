@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import org.vfny.geoserver.global.MapLayerInfo;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -13,108 +15,105 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
-
 import javax.imageio.ImageIO;
 
-import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 /**
  * This class prints undistorted watermarks on the map by getting information
  * from the layers.
  */
 public class WatermarkPainter {
-	/** A logger for this class. */
-	private static final Logger LOGGER = Logger
-			.getLogger("org.vfny.geoserver.wms.responses");
+    /** A logger for this class. */
+    private static final Logger LOGGER = Logger.getLogger("org.vfny.geoserver.wms.responses");
+    public static final Color TRANSPARENT = new Color(255, 255, 255, 0);
+    private static final int TRANSPARENT_CODE = (255 << 16) | (255 << 8) | 255;
 
-	public static final Color TRANSPARENT = new Color(255, 255, 255, 0);
+    /**
+     * The GetMapRequest
+     */
+    private GetMapRequest request;
 
-	private static final int TRANSPARENT_CODE = (255 << 16) | (255 << 8) | 255;
+    /**
+     * Initializes a new Watermark Painter
+     *
+     * @param background
+     *            background color, or null if transparent
+     */
+    public WatermarkPainter(GetMapRequest request) {
+        this.request = request;
+    }
 
-	/**
-	 * The GetMapRequest
-	 */
-	private GetMapRequest request;
+    /**
+     * Prevent void initialization.
+     *
+     */
+    private WatermarkPainter() {
+    }
 
-	/**
-	 * Initializes a new Watermark Painter
-	 * 
-	 * @param background
-	 *            background color, or null if transparent
-	 */
-	public WatermarkPainter(GetMapRequest request) {
-		this.request = request;
-	}
+    /**
+     * Print the WaterMarks into the graphic2D.
+     *
+     * @param g2D
+     * @param paintArea
+     * @throws IOException
+     * @throws ClassCastException
+     * @throws MalformedURLException
+     */
+    public void paint(Graphics2D g2D, Rectangle paintArea)
+        throws MalformedURLException, ClassCastException, IOException {
+        // //
+        // Global Watermarking enabled?
+        // //
+        final boolean globalWaterMarkingEnabled = this.request.getWMS().isGlobalWatermarking();
 
-	/**
-	 * Prevent void initialization.
-	 * 
-	 */
-	private WatermarkPainter() {
-	}
+        if (globalWaterMarkingEnabled) {
+            URL globalWatermarkingURL = null;
 
-	/**
-	 * Print the WaterMarks into the graphic2D.
-	 * 
-	 * @param g2D
-	 * @param paintArea
-	 * @throws IOException
-	 * @throws ClassCastException
-	 * @throws MalformedURLException
-	 */
-	public void paint(Graphics2D g2D, Rectangle paintArea)
-			throws MalformedURLException, ClassCastException, IOException {
-		// //
-		// Global Watermarking enabled?
-		// //
-		final boolean globalWaterMarkingEnabled = this.request.getWMS().isGlobalWatermarking();
-		if (globalWaterMarkingEnabled) {
-			URL globalWatermarkingURL = null;
-			try {
-				String globalWatermarkingURLString = this.request.getWMS().getGlobalWatermarkingURL();
-				
-				if (   globalWatermarkingURLString.toLowerCase().startsWith("http://") 
-					|| globalWatermarkingURLString.toLowerCase().startsWith("file:/")
-				)
-					globalWatermarkingURL = new URL(globalWatermarkingURLString);
-				else {
-					globalWatermarkingURL = new URL(this.request.getHttpServletRequest().getRequestURL() + "/" + globalWatermarkingURLString);
-				}
-			} catch (MalformedURLException e) {
-				globalWatermarkingURL = null;
-			}
-			
-			// //
-			// rendered Map Layers
-			// //
-			//final MapLayerInfo[] mapLayers = this.request.getLayers();
+            try {
+                String globalWatermarkingURLString = this.request.getWMS().getGlobalWatermarkingURL();
 
-			if (globalWaterMarkingEnabled && globalWatermarkingURL!=null) {
-				// /////////////////////////////////////////////////////////////////////
-				//
-				// Getting logo.
-				//
-				// I prefere to watermrk myself rather than relying too much on the
-				// underlying lib
-				//
-				// /////////////////////////////////////////////////////////////////////
-				LOGGER.fine("Loading logo...");
-				final BufferedImage logo = ImageIO.read(globalWatermarkingURL);
-				final int logoWidth = logo.getWidth();
-				final int logoHeight = logo.getHeight();
-				final int marginX = 5;
-				final int marginY = 5;
+                if (globalWatermarkingURLString.toLowerCase().startsWith("http://")
+                        || globalWatermarkingURLString.toLowerCase().startsWith("file:/")) {
+                    globalWatermarkingURL = new URL(globalWatermarkingURLString);
+                } else {
+                    globalWatermarkingURL = new URL(this.request.getHttpServletRequest()
+                                                                .getRequestURL() + "/"
+                            + globalWatermarkingURLString);
+                }
+            } catch (MalformedURLException e) {
+                globalWatermarkingURL = null;
+            }
 
-				// /////////////////////////////////////////////////////////////////////
-				//
-				// Watermark the files
-				//
-				// /////////////////////////////////////////////////////////////////////
-				g2D.drawRenderedImage(logo, AffineTransform
-						.getTranslateInstance(paintArea.getWidth() - logoWidth - marginX,
-								paintArea.getHeight() - logoHeight - marginY));
-			}
-		}
-	}
+            // //
+            // rendered Map Layers
+            // //
+            //final MapLayerInfo[] mapLayers = this.request.getLayers();
+            if (globalWaterMarkingEnabled && (globalWatermarkingURL != null)) {
+                // /////////////////////////////////////////////////////////////////////
+                //
+                // Getting logo.
+                //
+                // I prefere to watermrk myself rather than relying too much on the
+                // underlying lib
+                //
+                // /////////////////////////////////////////////////////////////////////
+                LOGGER.fine("Loading logo...");
+
+                final BufferedImage logo = ImageIO.read(globalWatermarkingURL);
+                final int logoWidth = logo.getWidth();
+                final int logoHeight = logo.getHeight();
+                final int marginX = 5;
+                final int marginY = 5;
+
+                // /////////////////////////////////////////////////////////////////////
+                //
+                // Watermark the files
+                //
+                // /////////////////////////////////////////////////////////////////////
+                g2D.drawRenderedImage(logo,
+                    AffineTransform.getTranslateInstance(paintArea.getWidth() - logoWidth - marginX,
+                        paintArea.getHeight() - logoHeight - marginY));
+            }
+        }
+    }
 }

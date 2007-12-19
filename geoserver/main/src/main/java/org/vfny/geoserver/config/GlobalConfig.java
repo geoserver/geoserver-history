@@ -252,8 +252,7 @@ public class GlobalConfig {
      */
     public void update(GeoServerDTO g) {
         if (g == null) {
-            throw new NullPointerException(
-                "GeoServer Data Transfer Object required");
+            throw new NullPointerException("GeoServer Data Transfer Object required");
         }
 
         maxFeatures = g.getMaxFeatures();

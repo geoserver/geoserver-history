@@ -106,8 +106,8 @@ public class FilePublisher extends AbstractController {
             // Read the first four bytes, and determine charset encoding
             count = input.read(b4);
             encInfo = XmlCharsetDetector.getEncodingName(b4, count);
-            response.setCharacterEncoding((encInfo.getEncoding() != null)
-                ? encInfo.getEncoding() : "UTF-8");
+            response.setCharacterEncoding((encInfo.getEncoding() != null) ? encInfo.getEncoding()
+                                                                          : "UTF-8");
 
             // send out the first four bytes read
             output = response.getOutputStream();

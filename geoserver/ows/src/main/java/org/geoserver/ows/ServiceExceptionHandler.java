@@ -84,9 +84,8 @@ public abstract class ServiceExceptionHandler {
      * @param request The original request to which the service generated the exception.
      * @param response The response to report the exception to.
      */
-    public abstract void handleServiceException(ServiceException exception,
-        Service service, HttpServletRequest request,
-        HttpServletResponse response);
+    public abstract void handleServiceException(ServiceException exception, Service service,
+        HttpServletRequest request, HttpServletResponse response);
 
     /**
      * Dumps an exception message along all its causes messages (since more often

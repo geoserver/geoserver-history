@@ -64,14 +64,11 @@ public class DescribeXmlReader extends XmlRequestReader {
             adapter.parse(requestSource);
             LOGGER.finer("just parsed: " + requestSource);
         } catch (SAXException e) {
-            throw new WcsException(e, "XML describe request parsing error",
-                getClass().getName());
+            throw new WcsException(e, "XML describe request parsing error", getClass().getName());
         } catch (IOException e) {
-            throw new WcsException(e, "XML describe request input error",
-                getClass().getName());
+            throw new WcsException(e, "XML describe request input error", getClass().getName());
         } catch (ParserConfigurationException e) {
-            throw new WcsException(e, "Some sort of issue creating parser",
-                getClass().getName());
+            throw new WcsException(e, "Some sort of issue creating parser", getClass().getName());
         }
 
         LOGGER.finer("about to return ");

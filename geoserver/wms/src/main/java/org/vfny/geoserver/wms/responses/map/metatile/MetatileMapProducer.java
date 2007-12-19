@@ -35,8 +35,7 @@ import javax.media.jai.operator.CropDescriptor;
  * @author Andrea Aime - TOPP
  * @author Simone Giannecchini - GeoSolutions
  */
-public final class MetatileMapProducer extends AbstractGetMapProducer
-    implements GetMapProducer {
+public final class MetatileMapProducer extends AbstractGetMapProducer implements GetMapProducer {
     /** A logger for this class. */
     private static final Logger LOGGER = Logger.getLogger(
             "org.vfny.geoserver.responses.wms.map.metatile");
@@ -65,8 +64,7 @@ public final class MetatileMapProducer extends AbstractGetMapProducer
      * @param delegate
      * @return
      */
-    public static boolean isRequestTiled(GetMapRequest request,
-        GetMapProducer delegate) {
+    public static boolean isRequestTiled(GetMapRequest request, GetMapProducer delegate) {
         if (!(request.isTiled() && (request.getTilesOrigin() != null)
                 && (request.getWidth() == 256) && (request.getHeight() == 256)
                 && delegate instanceof RasterMapProducer)) {
@@ -89,30 +87,28 @@ public final class MetatileMapProducer extends AbstractGetMapProducer
             tile = tileCache.getTile(key, request);
 
             if (LOGGER.isLoggable(Level.FINER)) {
-                LOGGER.finer("Looked for meta tile " + key.metaTileCoords.x
-                    + ", " + key.metaTileCoords.y + "in cache: "
-                    + ((tile == null) ? "hit!" : "miss"));
+                LOGGER.finer("Looked for meta tile " + key.metaTileCoords.x + ", "
+                    + key.metaTileCoords.y + "in cache: " + ((tile == null) ? "hit!" : "miss"));
             }
 
             if (tile == null) {
                 // compute the meta-tile
                 if (LOGGER.isLoggable(Level.FINER)) {
-                    LOGGER.finer("Building meta tile " + key.metaTileCoords.x
-                        + ", " + key.metaTileCoords.y);
+                    LOGGER.finer("Building meta tile " + key.metaTileCoords.x + ", "
+                        + key.metaTileCoords.y);
                 }
 
                 // alter the map definition so that we build a meta-tile instead
                 // of just the tile
                 ReferencedEnvelope origEnv = mapContext.getAreaOfInterest();
-                mapContext.setAreaOfInterest(new ReferencedEnvelope(
-                        key.getMetaTileEnvelope(),
+                mapContext.setAreaOfInterest(new ReferencedEnvelope(key.getMetaTileEnvelope(),
                         origEnv.getCoordinateReferenceSystem()));
                 mapContext.setMapWidth(key.getTileSize() * key.getMetaFactor());
                 mapContext.setMapHeight(key.getTileSize() * key.getMetaFactor());
 
                 // generate, split and cache
                 delegate.setMapContext(mapContext);
-                ((DefaultRasterMapProducer)delegate).setWmPainter(wmPainter);
+                ((DefaultRasterMapProducer) delegate).setWmPainter(wmPainter);
                 delegate.produceMap();
 
                 RenderedImage metaTile = delegate.getImage();
@@ -196,23 +192,19 @@ public final class MetatileMapProducer extends AbstractGetMapProducer
      * @param map
      * @return
      */
-    private RenderedImage[] split(MetaTileKey key, RenderedImage metaTile,
-        WMSMapContext map) {
+    private RenderedImage[] split(MetaTileKey key, RenderedImage metaTile, WMSMapContext map) {
         final int metaFactor = key.getMetaFactor();
-        final RenderedImage[] tiles = new RenderedImage[key.getMetaFactor() * key
-            .getMetaFactor()];
+        final RenderedImage[] tiles = new RenderedImage[key.getMetaFactor() * key.getMetaFactor()];
         final int tileSize = key.getTileSize();
-        final RenderingHints no_cache = new RenderingHints(JAI.KEY_TILE_CACHE,
-                null);
+        final RenderingHints no_cache = new RenderingHints(JAI.KEY_TILE_CACHE, null);
 
         for (int i = 0; i < metaFactor; i++) {
             for (int j = 0; j < metaFactor; j++) {
                 int x = j * tileSize;
                 int y = (tileSize * (metaFactor - 1)) - (i * tileSize);
 
-                tile = CropDescriptor.create(metaTile, new Float(x),
-                        new Float(y), new Float(tileSize), new Float(tileSize),
-                        no_cache);
+                tile = CropDescriptor.create(metaTile, new Float(x), new Float(y),
+                        new Float(tileSize), new Float(tileSize), no_cache);
                 tiles[(i * key.getMetaFactor()) + j] = tile;
             }
         }
@@ -238,5 +230,4 @@ public final class MetatileMapProducer extends AbstractGetMapProducer
     public String getContentType() throws IllegalStateException {
         return delegate.getContentType();
     }
-    
 }

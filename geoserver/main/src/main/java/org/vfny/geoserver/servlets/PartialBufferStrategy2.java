@@ -25,8 +25,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class PartialBufferStrategy2 implements ServiceStrategy {
     /** Class logger */
-    protected static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.servlets");
+    protected static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.servlets");
     public static final int DEFAULT_BUFFER_SIZE = 50;
     private PartialBufferedOutputStream2 out = null;
     private int bufferSize;

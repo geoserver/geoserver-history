@@ -99,8 +99,7 @@ public final class IdentifierGenerationOptionType extends AbstractEnumerator {
      * @generated
      * @ordered
      */
-    public static final IdentifierGenerationOptionType REPLACE_DUPLICATE_LITERAL =
-        new IdentifierGenerationOptionType(REPLACE_DUPLICATE,
+    public static final IdentifierGenerationOptionType REPLACE_DUPLICATE_LITERAL = new IdentifierGenerationOptionType(REPLACE_DUPLICATE,
             "ReplaceDuplicate", "ReplaceDuplicate");
 
     /**
@@ -121,8 +120,7 @@ public final class IdentifierGenerationOptionType extends AbstractEnumerator {
      * @generated
      */
     private static final IdentifierGenerationOptionType[] VALUES_ARRAY = new IdentifierGenerationOptionType[] {
-            USE_EXISTING_LITERAL, REPLACE_DUPLICATE_LITERAL,
-            GENERATE_NEW_LITERAL,
+            USE_EXISTING_LITERAL, REPLACE_DUPLICATE_LITERAL, GENERATE_NEW_LITERAL,
         };
 
     /**
@@ -131,8 +129,7 @@ public final class IdentifierGenerationOptionType extends AbstractEnumerator {
      * <!-- end-user-doc -->
      * @generated
      */
-    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(
-                VALUES_ARRAY));
+    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
     /**
      * Only this class can construct instances.
@@ -140,8 +137,7 @@ public final class IdentifierGenerationOptionType extends AbstractEnumerator {
      * <!-- end-user-doc -->
      * @generated
      */
-    private IdentifierGenerationOptionType(int value, String name,
-        String literal) {
+    private IdentifierGenerationOptionType(int value, String name, String literal) {
         super(value, name, literal);
     }
 

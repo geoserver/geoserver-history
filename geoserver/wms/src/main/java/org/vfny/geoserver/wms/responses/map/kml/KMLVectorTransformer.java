@@ -225,8 +225,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             element("name", mapLayer.getTitle());
 
             //get the styles for hte layer
-            FeatureTypeStyle[] featureTypeStyles = filterFeatureTypeStyles(mapLayer
-                    .getStyle(), featureType);
+            FeatureTypeStyle[] featureTypeStyles = filterFeatureTypeStyles(mapLayer.getStyle(),
+                    featureType);
 
             // encode the schemas (kml 2.2)
             encodeSchemas(features);
@@ -251,8 +251,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             // the code is at the moment in KML3VectorTransformer
         }
 
-        protected void encode(FeatureCollection features,
-            FeatureTypeStyle[] styles) {
+        protected void encode(FeatureCollection features, FeatureTypeStyle[] styles) {
             //grab a feader and process
             FeatureIterator reader = features.features();
 
@@ -264,8 +263,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                         encode(feature, styles);
                     } catch (Throwable t) {
                         //TODO: perhaps rethrow hte exception
-                        String msg = "Failure tranforming feature to KML:"
-                            + feature.getID();
+                        String msg = "Failure tranforming feature to KML:" + feature.getID();
                         LOGGER.log(Level.WARNING, msg, t);
                     }
                 }
@@ -305,16 +303,14 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 Rule[] rules = filterRules(styles[j], feature);
 
                 for (int i = 0; i < rules.length; i++) {
-                    symbolizerList.addAll(Arrays.asList(
-                            rules[i].getSymbolizers()));
+                    symbolizerList.addAll(Arrays.asList(rules[i].getSymbolizers()));
                 }
             }
 
             if (!symbolizerList.isEmpty()) {
                 //start the style
                 start("Style",
-                    KMLUtils.attributes(
-                        new String[] { "id", "GeoServerStyle" + feature.getID() }));
+                    KMLUtils.attributes(new String[] { "id", "GeoServerStyle" + feature.getID() }));
 
                 //encode the icon
                 encodeIconStyle(feature, styles);
@@ -337,8 +333,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes an IconStyle for a feature.
          */
-        protected void encodeIconStyle(Feature feature,
-            FeatureTypeStyle[] styles) {
+        protected void encodeIconStyle(Feature feature, FeatureTypeStyle[] styles) {
             //encode the style for the icon
             //start IconStyle
             start("IconStyle");
@@ -371,8 +366,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
                 try {
                     URL requestURL = new URL(mapContext.getRequest().getBaseUrl());
-                    imageURL = requestURL.getProtocol() + "://"
-                        + requestURL.getHost() + ":" + requestURL.getPort();
+                    imageURL = requestURL.getProtocol() + "://" + requestURL.getHost() + ":"
+                        + requestURL.getPort();
                     imageURL += "/geoserver/icon.png";
                 } catch (MalformedURLException mue) {
                     imageURL = "http://maps.google.com/mapfiles/kml/pal3/icon61.png";
@@ -407,27 +402,23 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
             for (int i = 0; i < symbolizers.length; i++) {
                 Symbolizer symbolizer = symbolizers[i];
-                LOGGER.finer(new StringBuffer("Applying symbolizer ").append(
-                        symbolizer).toString());
+                LOGGER.finer(new StringBuffer("Applying symbolizer ").append(symbolizer).toString());
 
                 //create a 2-D style
-                Style2D style = styleFactory.createStyle(feature, symbolizer,
-                        scaleRange);
+                Style2D style = styleFactory.createStyle(feature, symbolizer, scaleRange);
 
                 //split out each type of symbolizer
                 if (symbolizer instanceof TextSymbolizer) {
-                    encodeTextStyle((TextStyle2D) style,
-                        (TextSymbolizer) symbolizer);
+                    encodeTextStyle((TextStyle2D) style, (TextSymbolizer) symbolizer);
                 }
 
                 if (symbolizer instanceof PolygonSymbolizer) {
-                    encodePolygonStyle((PolygonStyle2D) style,
-                        (PolygonSymbolizer) symbolizer, forceOutline);
+                    encodePolygonStyle((PolygonStyle2D) style, (PolygonSymbolizer) symbolizer,
+                        forceOutline);
                 }
 
                 if (symbolizer instanceof LineSymbolizer) {
-                    encodeLineStyle((LineStyle2D) style,
-                        (LineSymbolizer) symbolizer);
+                    encodeLineStyle((LineStyle2D) style, (LineSymbolizer) symbolizer);
                 }
 
                 if (symbolizer instanceof PointSymbolizer) {
@@ -439,8 +430,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML IconStyle + PolyStyle from a polygon style and symbolizer.
          */
-        protected void encodePolygonStyle(PolygonStyle2D style,
-            PolygonSymbolizer symbolizer, boolean forceOutline) {
+        protected void encodePolygonStyle(PolygonStyle2D style, PolygonSymbolizer symbolizer,
+            boolean forceOutline) {
             //star the polygon style
             start("PolyStyle");
 
@@ -497,8 +488,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML IconStyle + LineStyle from a polygon style and symbolizer.
          */
-        protected void encodeLineStyle(LineStyle2D style,
-            LineSymbolizer symbolizer) {
+        protected void encodeLineStyle(LineStyle2D style, LineSymbolizer symbolizer) {
             start("LineStyle");
 
             //stroke
@@ -531,8 +521,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML IconStyle from a point style and symbolizer.
          */
-        protected void encodePointStyle(Style2D style,
-            PointSymbolizer symbolizer) {
+        protected void encodePointStyle(Style2D style, PointSymbolizer symbolizer) {
             start("IconStyle");
 
             if (style instanceof MarkStyle2D) {
@@ -568,8 +557,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             if ((symbolizer.getGraphic() != null)
                     && (symbolizer.getGraphic().getExternalGraphics() != null)
                     && (symbolizer.getGraphic().getExternalGraphics().length > 0)) {
-                ExternalGraphic graphic = symbolizer.getGraphic()
-                                                    .getExternalGraphics()[0];
+                ExternalGraphic graphic = symbolizer.getGraphic().getExternalGraphics()[0];
 
                 try {
                     if ("file".equals(graphic.getLocation().getProtocol())) {
@@ -585,8 +573,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                         //other protocols?
                     }
                 } catch (Exception e) {
-                    LOGGER.log(Level.WARNING,
-                        "Error processing external graphic:" + graphic, e);
+                    LOGGER.log(Level.WARNING, "Error processing external graphic:" + graphic, e);
                 }
             }
 
@@ -605,8 +592,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML LabelStyle from a text style and symbolizer.
          */
-        protected void encodeTextStyle(TextStyle2D style,
-            TextSymbolizer symbolizer) {
+        protected void encodeTextStyle(TextStyle2D style, TextSymbolizer symbolizer) {
             start("LabelStyle");
 
             if (symbolizer.getFill() != null) {
@@ -629,13 +615,11 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML Placemark from a feature and optional name.
          */
-        protected void encodePlacemark(Feature feature,
-            FeatureTypeStyle[] styles) {
+        protected void encodePlacemark(Feature feature, FeatureTypeStyle[] styles) {
             Geometry geometry = featureGeometry(feature);
             Coordinate centroid = geometryCentroid(geometry);
 
-            start("Placemark",
-                KMLUtils.attributes(new String[] { "id", feature.getID() }));
+            start("Placemark", KMLUtils.attributes(new String[] { "id", feature.getID() }));
 
             //encode name + description only if kmattr was specified
             if (mapContext.getRequest().getKMattr()) {
@@ -663,8 +647,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             try {
                 encodePlacemarkTime(feature);
             } catch (Exception e) {
-                String msg = "Error occured processing 'time' template: "
-                    + e.getMessage();
+                String msg = "Error occured processing 'time' template: " + e.getMessage();
                 LOGGER.log(Level.WARNING, msg);
                 LOGGER.log(Level.FINE, "", e);
             }
@@ -693,8 +676,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          * Encodes a KML Placemark name from a feature by processing a
          * template.
          */
-        protected void encodePlacemarkName(Feature feature,
-            FeatureTypeStyle[] styles) throws IOException {
+        protected void encodePlacemarkName(Feature feature, FeatureTypeStyle[] styles)
+            throws IOException {
             //order to use when figuring out what the name / label of a 
             // placemark should be:
             // 1. the title template for features
@@ -703,8 +686,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
             String title = template.title(feature);
 
             //ensure not empty and != fid
-            if ((title == null) || "".equals(title)
-                    || feature.getID().equals(title)) {
+            if ((title == null) || "".equals(title) || feature.getID().equals(title)) {
                 //try sld
                 StringBuffer label = new StringBuffer();
 
@@ -892,8 +874,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
         /**
          * Encodes a KML Placemark geometry from a geometry + centroid.
          */
-        protected void encodePlacemarkGeometry(Geometry geometry,
-            Coordinate centroid) {
+        protected void encodePlacemarkGeometry(Geometry geometry, Coordinate centroid) {
             //if point, just encode a single point, otherwise encode the geometry
             // + centroid
             if (geometry instanceof Point
@@ -907,8 +888,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 start("Point");
 
                 if (!Double.isNaN(centroid.z)) {
-                    element("coordinates",
-                        centroid.x + "," + centroid.y + "," + centroid.z);
+                    element("coordinates", centroid.x + "," + centroid.y + "," + centroid.z);
                 } else {
                     element("coordinates", centroid.x + "," + centroid.y);
                 }
@@ -1061,8 +1041,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
                     if (len > mid) {
                         //we have gone past midpoint
-                        return line.pointAlong(1
-                            - ((len - mid) / line.getLength()));
+                        return line.pointAlong(1 - ((len - mid) / line.getLength()));
                     }
                 }
 
@@ -1102,10 +1081,8 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          * @return A String of the form "#AABBGGRR".
          */
         String colorToHex(Color c, double opacity) {
-            return new StringBuffer().append(intToHex(
-                    new Float(255 * opacity).intValue()))
-                                     .append(intToHex(c.getBlue()))
-                                     .append(intToHex(c.getGreen()))
+            return new StringBuffer().append(intToHex(new Float(255 * opacity).intValue()))
+                                     .append(intToHex(c.getBlue())).append(intToHex(c.getGreen()))
                                      .append(intToHex(c.getRed())).toString();
         }
 
@@ -1123,8 +1100,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
          * @param featureType The feature type being filtered against.
          *
          */
-        protected FeatureTypeStyle[] filterFeatureTypeStyles(Style style,
-            FeatureType featureType) {
+        protected FeatureTypeStyle[] filterFeatureTypeStyles(Style style, FeatureType featureType) {
             FeatureTypeStyle[] featureTypeStyles = style.getFeatureTypeStyles();
 
             if ((featureTypeStyles == null) || (featureTypeStyles.length == 0)) {
@@ -1150,8 +1126,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
                 }
             }
 
-            return (FeatureTypeStyle[]) filtered.toArray(new FeatureTypeStyle[filtered
-                .size()]);
+            return (FeatureTypeStyle[]) filtered.toArray(new FeatureTypeStyle[filtered.size()]);
         }
 
         /**
@@ -1186,8 +1161,7 @@ public class KMLVectorTransformer extends KMLTransformerBase {
 
             for (int i = 0; i < rules.length; i++) {
                 Rule rule = rules[i];
-                LOGGER.finer(new StringBuffer("Applying rule: ").append(
-                        rule.toString()).toString());
+                LOGGER.finer(new StringBuffer("Applying rule: ").append(rule.toString()).toString());
 
                 //does this rule have an else filter
                 if (rule.hasElseFilter()) {

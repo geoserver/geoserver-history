@@ -129,8 +129,8 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
         filter = newFilter;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.LOCK_TYPE__FILTER, oldFilter, filter));
+            eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.LOCK_TYPE__FILTER,
+                    oldFilter, filter));
         }
     }
 
@@ -153,8 +153,8 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
         handle = newHandle;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.LOCK_TYPE__HANDLE, oldHandle, handle));
+            eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.LOCK_TYPE__HANDLE,
+                    oldHandle, handle));
         }
     }
 
@@ -177,8 +177,8 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
         typeName = newTypeName;
 
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.LOCK_TYPE__TYPE_NAME, oldTypeName, typeName));
+            eNotify(new ENotificationImpl(this, Notification.SET, WfsPackage.LOCK_TYPE__TYPE_NAME,
+                    oldTypeName, typeName));
         }
     }
 
@@ -262,12 +262,10 @@ public class LockTypeImpl extends EObjectImpl implements LockType {
     public boolean eIsSet(int featureID) {
         switch (featureID) {
         case WfsPackage.LOCK_TYPE__FILTER:
-            return (FILTER_EDEFAULT == null) ? (filter != null)
-                                             : (!FILTER_EDEFAULT.equals(filter));
+            return (FILTER_EDEFAULT == null) ? (filter != null) : (!FILTER_EDEFAULT.equals(filter));
 
         case WfsPackage.LOCK_TYPE__HANDLE:
-            return (HANDLE_EDEFAULT == null) ? (handle != null)
-                                             : (!HANDLE_EDEFAULT.equals(handle));
+            return (HANDLE_EDEFAULT == null) ? (handle != null) : (!HANDLE_EDEFAULT.equals(handle));
 
         case WfsPackage.LOCK_TYPE__TYPE_NAME:
             return (TYPE_NAME_EDEFAULT == null) ? (typeName != null)

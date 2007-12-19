@@ -65,8 +65,7 @@ public class GetDiffHtmlOutputFormat extends Response {
 
         try {
             template.setOutputEncoding("UTF-8");
-            template.process(diffReaders,
-                new OutputStreamWriter(output, Charset.forName("UTF-8")));
+            template.process(diffReaders, new OutputStreamWriter(output, Charset.forName("UTF-8")));
         } catch (TemplateException e) {
             String msg = "Error occured processing template.";
             throw (IOException) new IOException(msg).initCause(e);

@@ -105,8 +105,7 @@ public class KMZMapProducerFactory implements GetMapProducerFactorySpi {
             return new KMZMapProducer(mapFormat, MIME_TYPE, wms);
         }
 
-        throw new IllegalArgumentException("Unable to produce format "
-            + mapFormat);
+        throw new IllegalArgumentException("Unable to produce format " + mapFormat);
     }
 
     /*

@@ -114,13 +114,10 @@ public class LockFeature {
             fLock = newFeatureLock(request);
 
             // prepare the response object
-            LockFeatureResponseType response = WfsFactory.eINSTANCE
-                .createLockFeatureResponseType();
+            LockFeatureResponseType response = WfsFactory.eINSTANCE.createLockFeatureResponseType();
             response.setLockId(fLock.getAuthorization());
-            response.setFeaturesLocked(WfsFactory.eINSTANCE
-                .createFeaturesLockedType());
-            response.setFeaturesNotLocked(WfsFactory.eINSTANCE
-                .createFeaturesNotLockedType());
+            response.setFeaturesLocked(WfsFactory.eINSTANCE.createFeaturesLockedType());
+            response.setFeaturesNotLocked(WfsFactory.eINSTANCE.createFeaturesNotLockedType());
 
             // go thru each lock request, and try to perform locks on a feature
             // by feature basis
@@ -150,8 +147,7 @@ public class LockFeature {
                             typeName.getNamespaceURI());
 
                     if (meta == null) {
-                        throw new WFSException("Unknown feature type "
-                            + typeName.getPrefix() + ":"
+                        throw new WFSException("Unknown feature type " + typeName.getPrefix() + ":"
                             + typeName.getLocalPart());
                     }
 
@@ -176,12 +172,10 @@ public class LockFeature {
                         Id fidFilter = fidFilter(fid);
 
                         if (!(source instanceof FeatureLocking)) {
-                            LOGGER.fine("Lock " + fid
-                                + " not supported by data store (authID:"
+                            LOGGER.fine("Lock " + fid + " not supported by data store (authID:"
                                 + fLock.getAuthorization() + ")");
 
-                            response.getFeaturesNotLocked().getFeatureId()
-                                    .add(fid);
+                            response.getFeaturesNotLocked().getFeatureId().add(fid);
 
                             // lockFailedFids.add(fid);
                         } else {
@@ -192,35 +186,27 @@ public class LockFeature {
                             // HACK: Query.NO_NAMES isn't working in postgis
                             // right now,
                             // so we'll just use all.
-                            Query query = new DefaultQuery(meta.getTypeName(),
-                                    (Filter) fidFilter, Query.DEFAULT_MAX,
-                                    Query.ALL_NAMES, lock.getHandle());
+                            Query query = new DefaultQuery(meta.getTypeName(), (Filter) fidFilter,
+                                    Query.DEFAULT_MAX, Query.ALL_NAMES, lock.getHandle());
 
-                            numberLocked = ((FeatureLocking) source)
-                                .lockFeatures(query);
+                            numberLocked = ((FeatureLocking) source).lockFeatures(query);
 
                             if (numberLocked == 1) {
-                                LOGGER.fine("Lock " + fid + " (authID:"
-                                    + fLock.getAuthorization() + ")");
-                                response.getFeaturesLocked().getFeatureId()
-                                        .add(fid);
+                                LOGGER.fine("Lock " + fid + " (authID:" + fLock.getAuthorization()
+                                    + ")");
+                                response.getFeaturesLocked().getFeatureId().add(fid);
 
                                 // lockedFids.add(fid);
                             } else if (numberLocked == 0) {
-                                LOGGER.fine("Lock " + fid
-                                    + " conflict (authID:"
+                                LOGGER.fine("Lock " + fid + " conflict (authID:"
                                     + fLock.getAuthorization() + ")");
-                                response.getFeaturesNotLocked().getFeatureId()
-                                        .add(fid);
+                                response.getFeaturesNotLocked().getFeatureId().add(fid);
 
                                 // lockFailedFids.add(fid);
                             } else {
-                                LOGGER.warning("Lock " + numberLocked + " "
-                                    + fid + " (authID:"
-                                    + fLock.getAuthorization()
-                                    + ") duplicated FeatureID!");
-                                response.getFeaturesLocked().getFeatureId()
-                                        .add(fid);
+                                LOGGER.warning("Lock " + numberLocked + " " + fid + " (authID:"
+                                    + fLock.getAuthorization() + ") duplicated FeatureID!");
+                                response.getFeaturesLocked().getFeatureId().add(fid);
 
                                 // lockedFids.add(fid);
                             }
@@ -259,8 +245,7 @@ public class LockFeature {
             // should we releas all? if not set default to true
             boolean lockAll = !(request.getLockAction() == AllSomeType.SOME_LITERAL);
 
-            if (lockAll
-                    && !response.getFeaturesNotLocked().getFeatureId().isEmpty()) {
+            if (lockAll && !response.getFeaturesNotLocked().getFeatureId().isEmpty()) {
                 // I think we need to release and fail when lockAll fails
                 //
                 // abort will release the locks
@@ -325,8 +310,8 @@ public class LockFeature {
                     continue; // locks not supported
                 }
 
-                org.geotools.data.Transaction t = new DefaultTransaction(
-                        "Refresh " + meta.getNamesSpacePrefix());
+                org.geotools.data.Transaction t = new DefaultTransaction("Refresh "
+                        + meta.getNamesSpacePrefix());
 
                 try {
                     t.addAuthorization(lockId);
@@ -340,8 +325,7 @@ public class LockFeature {
                     try {
                         t.close();
                     } catch (IOException closeException) {
-                        LOGGER.log(Level.FINEST, closeException.getMessage(),
-                            closeException);
+                        LOGGER.log(Level.FINEST, closeException.getMessage(), closeException);
                     }
                 }
             }
@@ -462,8 +446,8 @@ public class LockFeature {
                     continue; // locks not supported
                 }
 
-                org.geotools.data.Transaction t = new DefaultTransaction(
-                        "Refresh " + meta.getNamesSpacePrefix());
+                org.geotools.data.Transaction t = new DefaultTransaction("Refresh "
+                        + meta.getNamesSpacePrefix());
 
                 try {
                     t.addAuthorization(lockId);
@@ -477,8 +461,7 @@ public class LockFeature {
                     try {
                         t.close();
                     } catch (IOException closeException) {
-                        LOGGER.log(Level.FINEST, closeException.getMessage(),
-                            closeException);
+                        LOGGER.log(Level.FINEST, closeException.getMessage(), closeException);
                     }
                 }
             }
@@ -524,7 +507,6 @@ public class LockFeature {
         }
 
         // FeatureLock is specified in minutes
-        return FeatureLockFactory.generate(request.getHandle(),
-            lockExpiry * 60 * 1000);
+        return FeatureLockFactory.generate(request.getHandle(), lockExpiry * 60 * 1000);
     }
 }

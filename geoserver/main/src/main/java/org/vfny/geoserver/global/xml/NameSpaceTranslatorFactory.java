@@ -43,10 +43,8 @@ public class NameSpaceTranslatorFactory {
         namespaceTranslatorInstances = new HashMap();
 
         //TODO replace null for these default namespaces.
-        namespaceTranslators.put("http://www.w3.org/2001/XMLSchema",
-            XMLSchemaTranslator.class);
-        namespaceTranslators.put("http://www.opengis.net/gml",
-            GMLSchemaTranslator.class);
+        namespaceTranslators.put("http://www.w3.org/2001/XMLSchema", XMLSchemaTranslator.class);
+        namespaceTranslators.put("http://www.opengis.net/gml", GMLSchemaTranslator.class);
 
         addNameSpaceTranslator("xs", "http://www.w3.org/2001/XMLSchema");
         addNameSpaceTranslator("xsd", "http://www.w3.org/2001/XMLSchema");
@@ -89,11 +87,10 @@ public class NameSpaceTranslatorFactory {
                 return;
             }
 
-            Constructor nstConstructor = nstClass.getConstructor(new Class[] {
-                        String.class,
+            Constructor nstConstructor = nstClass.getConstructor(new Class[] { String.class, });
+            NameSpaceTranslator nst = (NameSpaceTranslator) nstConstructor.newInstance(new Object[] {
+                        prefix,
                     });
-            NameSpaceTranslator nst = (NameSpaceTranslator) nstConstructor
-                .newInstance(new Object[] { prefix, });
             namespaceTranslatorInstances.put(prefix, nst);
         } catch (Exception e) {
             e.printStackTrace();
@@ -120,11 +117,9 @@ public class NameSpaceTranslatorFactory {
      * @param namespace The namespace.
      * @param nameSpaceTranslator The translator class for this namespace.
      */
-    public void registerNameSpaceTranslator(String namespace,
-        Class nameSpaceTranslator) {
+    public void registerNameSpaceTranslator(String namespace, Class nameSpaceTranslator) {
         if ((nameSpaceTranslator != null)
-                && NameSpaceTranslator.class.isAssignableFrom(
-                    nameSpaceTranslator)) {
+                && NameSpaceTranslator.class.isAssignableFrom(nameSpaceTranslator)) {
             namespaceTranslators.put(namespace, nameSpaceTranslator);
         }
     }

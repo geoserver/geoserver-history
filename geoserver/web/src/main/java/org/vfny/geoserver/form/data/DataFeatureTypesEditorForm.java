@@ -97,19 +97,15 @@ public class DataFeatureTypesEditorForm extends ActionForm {
         this.keywords = buf.toString();
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         DataConfig data = ConfigRequests.getDataConfig(request);
 
         // check name exists in current DataStore?
-        if ("".equals(latLonBoundingBoxMinX)
-                || "".equals(latLonBoundingBoxMinY)
-                || "".equals(latLonBoundingBoxMaxX)
-                || "".equals(latLonBoundingBoxMaxY)) {
-            errors.add("latlongBoundingBox",
-                new ActionError("error.latLonBoundingBox.required"));
+        if ("".equals(latLonBoundingBoxMinX) || "".equals(latLonBoundingBoxMinY)
+                || "".equals(latLonBoundingBoxMaxX) || "".equals(latLonBoundingBoxMaxY)) {
+            errors.add("latlongBoundingBox", new ActionError("error.latLonBoundingBox.required"));
         } else {
             try {
                 double minX = Double.parseDouble(latLonBoundingBoxMinX);

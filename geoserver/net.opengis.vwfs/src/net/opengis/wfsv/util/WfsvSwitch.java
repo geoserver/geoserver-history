@@ -75,8 +75,7 @@ public class WfsvSwitch {
             List eSuperTypes = theEClass.getESuperTypes();
 
             return eSuperTypes.isEmpty() ? defaultCase(theEObject)
-                                         : doSwitch((EClass) eSuperTypes.get(0),
-                theEObject);
+                                         : doSwitch((EClass) eSuperTypes.get(0), theEObject);
         }
     }
 
@@ -277,8 +276,7 @@ public class WfsvSwitch {
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-    public Object caseVersionedDeleteElementType(
-        VersionedDeleteElementType object) {
+    public Object caseVersionedDeleteElementType(VersionedDeleteElementType object) {
         return null;
     }
 
@@ -293,8 +291,7 @@ public class WfsvSwitch {
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-    public Object caseVersionedUpdateElementType(
-        VersionedUpdateElementType object) {
+    public Object caseVersionedUpdateElementType(VersionedUpdateElementType object) {
         return null;
     }
 

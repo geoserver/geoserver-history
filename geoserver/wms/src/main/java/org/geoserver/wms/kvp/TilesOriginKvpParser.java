@@ -20,8 +20,7 @@ public class TilesOriginKvpParser extends KvpParser {
         List coordValues = KvpUtils.readFlat(value);
 
         if (coordValues.size() != 2) {
-            throw new ServiceException(value + " is not a valid coordinate",
-                getClass().getName());
+            throw new ServiceException(value + " is not a valid coordinate", getClass().getName());
         }
 
         try {
@@ -30,8 +29,7 @@ public class TilesOriginKvpParser extends KvpParser {
 
             return new Point2D.Double(minx, miny);
         } catch (NumberFormatException ex) {
-            throw new ServiceException(ex,
-                "Illegal value for TILESORIGIN parameter: " + value,
+            throw new ServiceException(ex, "Illegal value for TILESORIGIN parameter: " + value,
                 getClass().getName() + "::parseTilesOrigin()");
         }
     }

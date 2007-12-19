@@ -60,14 +60,13 @@ public class AddCoverageXmlReader extends XmlRequestReader {
             adapter.parse(requestSource);
             LOGGER.finer("just parsed: " + requestSource);
         } catch (SAXException e) {
-            throw new CatalogException(e,
-                "XML AddCoverage request parsing error", getClass().getName());
-        } catch (IOException e) {
-            throw new CatalogException(e,
-                "XML AddCoverage request input error", getClass().getName());
-        } catch (ParserConfigurationException e) {
-            throw new CatalogException(e, "Some sort of issue creating parser",
+            throw new CatalogException(e, "XML AddCoverage request parsing error",
                 getClass().getName());
+        } catch (IOException e) {
+            throw new CatalogException(e, "XML AddCoverage request input error",
+                getClass().getName());
+        } catch (ParserConfigurationException e) {
+            throw new CatalogException(e, "Some sort of issue creating parser", getClass().getName());
         }
 
         LOGGER.finer("about to return ");

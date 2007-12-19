@@ -113,13 +113,11 @@ public class WCSContentForm extends ActionForm {
         }
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         if ((onlineResource == null) || onlineResource.equals("")) {
-            errors.add("onlineResource",
-                new ActionError("error.wcs.onlineResource.required"));
+            errors.add("onlineResource", new ActionError("error.wcs.onlineResource.required"));
         } else {
             try {
                 URL url = new URL(onlineResource);

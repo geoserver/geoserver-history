@@ -36,9 +36,8 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Id$
  */
 public class ValidationTestSuiteSelectAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping,
-        ActionForm incomingForm, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response)
+    public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,
+        UserContainer user, HttpServletRequest request, HttpServletResponse response)
         throws ServletException {
         ValidationTestSuiteSelectForm form = (ValidationTestSuiteSelectForm) incomingForm;
 
@@ -51,16 +50,13 @@ public class ValidationTestSuiteSelectAction extends ConfigAction {
         String delete = messages.getMessage(locale, "label.delete");
 
         ServletContext context = this.getServlet().getServletContext();
-        ValidationConfig validationConfig = (ValidationConfig) context
-            .getAttribute(ValidationConfig.CONFIG_KEY);
+        ValidationConfig validationConfig = (ValidationConfig) context.getAttribute(ValidationConfig.CONFIG_KEY);
 
         if (edit.equals(buttonAction)) {
             TestSuiteConfig suiteConfig = (TestSuiteConfig) validationConfig.getTestSuites()
                                                                             .get(selectedTestSuite);
 
-            request.getSession()
-                   .setAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY,
-                suiteConfig);
+            request.getSession().setAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY, suiteConfig);
 
             return mapping.findForward("validationTest");
         } else if (delete.equals(buttonAction)) {
@@ -69,8 +65,7 @@ public class ValidationTestSuiteSelectAction extends ConfigAction {
             validationConfig.setTestSuites(suites);
             getApplicationState().notifyConfigChanged();
 
-            request.getSession()
-                   .removeAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY);
+            request.getSession().removeAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY);
 
             return mapping.findForward("suite");
         }

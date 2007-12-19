@@ -4,17 +4,6 @@
  */
 package org.vfny.geoserver.form.data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
@@ -40,6 +29,15 @@ import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.Requests;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -70,19 +68,19 @@ public final class CoveragesEditorForm extends ActionForm {
     private SortedSet panelStyleIds;
     private SortedSet typeStyles;
     private String[] otherSelectedStyles;
-    
     private boolean allowWatermarking;
     private boolean allowWatermarkingChecked = false;
     private String watermarkingURL;
+
     /*
      * <pre>
      * O -- O -- O      0 -- 1 -- 2
      * |    |    |      |    |    |
-     * O -- O -- O  ==  3 -- 4 -- 5 
+     * O -- O -- O  ==  3 -- 4 -- 5
      * |    |    |      |    |    |
      * O -- O -- O      6 -- 7 -- 8
      * </pre>
-     * 
+     *
      */
     private Integer watermarkingPosition;
 
@@ -234,14 +232,10 @@ public final class CoveragesEditorForm extends ActionForm {
         if (bounds.isNull()) {
             boundingBoxMinX = "";
         } else {
-            boundingBoxMinX = Double.toString(bounds.getLowerCorner()
-                                                    .getOrdinate(0));
-            boundingBoxMinY = Double.toString(bounds.getLowerCorner()
-                                                    .getOrdinate(1));
-            boundingBoxMaxX = Double.toString(bounds.getUpperCorner()
-                                                    .getOrdinate(0));
-            boundingBoxMaxY = Double.toString(bounds.getUpperCorner()
-                                                    .getOrdinate(1));
+            boundingBoxMinX = Double.toString(bounds.getLowerCorner().getOrdinate(0));
+            boundingBoxMinY = Double.toString(bounds.getLowerCorner().getOrdinate(1));
+            boundingBoxMaxX = Double.toString(bounds.getUpperCorner().getOrdinate(0));
+            boundingBoxMaxY = Double.toString(bounds.getUpperCorner().getOrdinate(1));
         }
 
         // //
@@ -250,7 +244,7 @@ public final class CoveragesEditorForm extends ActionForm {
         allowWatermarking = cvConfig.isAllowWatermarking();
         watermarkingURL = cvConfig.getWatermarkingURL();
         watermarkingPosition = cvConfig.getWatermarkingPosition();
-        
+
         // //
         //
         //
@@ -308,8 +302,7 @@ public final class CoveragesEditorForm extends ActionForm {
             // RequestCRSs
             String CRS;
 
-            for (Iterator i = cvConfig.getRequestCRSs().iterator();
-                    i.hasNext();) {
+            for (Iterator i = cvConfig.getRequestCRSs().iterator(); i.hasNext();) {
                 CRS = (String) i.next();
                 buf.append(CRS.toUpperCase());
 
@@ -332,8 +325,7 @@ public final class CoveragesEditorForm extends ActionForm {
             // ResponseCRSs
             String CRS;
 
-            for (Iterator i = cvConfig.getResponseCRSs().iterator();
-                    i.hasNext();) {
+            for (Iterator i = cvConfig.getResponseCRSs().iterator(); i.hasNext();) {
                 CRS = (String) i.next();
                 buf.append(CRS.toUpperCase());
 
@@ -356,8 +348,7 @@ public final class CoveragesEditorForm extends ActionForm {
             // SupportedFormats
             String format;
 
-            for (Iterator i = cvConfig.getSupportedFormats().iterator();
-                    i.hasNext();) {
+            for (Iterator i = cvConfig.getSupportedFormats().iterator(); i.hasNext();) {
                 format = (String) i.next();
                 buf.append(format.toUpperCase());
 
@@ -380,8 +371,7 @@ public final class CoveragesEditorForm extends ActionForm {
             // InterpolationMethods
             String intMethod;
 
-            for (Iterator i = cvConfig.getInterpolationMethods().iterator();
-                    i.hasNext();) {
+            for (Iterator i = cvConfig.getInterpolationMethods().iterator(); i.hasNext();) {
                 intMethod = (String) i.next();
                 buf.append(intMethod.toLowerCase());
 
@@ -447,21 +437,20 @@ public final class CoveragesEditorForm extends ActionForm {
         this.paramValues = paramValues;
     }
 
-    public ActionErrors validate(ActionMapping mapping,
-        HttpServletRequest request) {
+    public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
         Locale locale = (Locale) request.getLocale();
         MessageResources messages = (MessageResources) request.getAttribute(Globals.MESSAGES_KEY);
         final String ENVELOPE = HTMLEncoder.decode(messages.getMessage(locale,
                     "config.data.calculateBoundingBox.label"));
-        final String LOOKUP_SRS = HTMLEncoder.decode(messages.getMessage(
-                    locale, "config.data.lookupSRS.label"));
+        final String LOOKUP_SRS = HTMLEncoder.decode(messages.getMessage(locale,
+                    "config.data.lookupSRS.label"));
 
         // Pass Attribute Management Actions through without
         // much validation.
-        if (action.startsWith("Up") || action.startsWith("Down")
-                || action.startsWith("Remove") || ENVELOPE.equals(action)) {
+        if (action.startsWith("Up") || action.startsWith("Down") || action.startsWith("Remove")
+                || ENVELOPE.equals(action)) {
             return errors;
         }
 
@@ -469,8 +458,7 @@ public final class CoveragesEditorForm extends ActionForm {
 
         // Check selected style exists
         if (!(data.getStyles().containsKey(styleId) || "".equals(styleId))) {
-            errors.add("styleId",
-                new ActionError("error.styleId.notFound", styleId));
+            errors.add("styleId", new ActionError("error.styleId.notFound", styleId));
         }
 
         // //
@@ -486,8 +474,7 @@ public final class CoveragesEditorForm extends ActionForm {
             try {
                 CRS.decode(srsName);
             } catch (Exception e) {
-                errors.add("envelope",
-                    new ActionError("config.data.coverage.srs", srsName));
+                errors.add("envelope", new ActionError("config.data.coverage.srs", srsName));
             }
         }
 
@@ -496,8 +483,8 @@ public final class CoveragesEditorForm extends ActionForm {
         //
         //
         // //
-        if ("".equals(boundingBoxMinX) || "".equals(boundingBoxMinY)
-                || "".equals(boundingBoxMaxX) || "".equals(boundingBoxMaxY)) {
+        if ("".equals(boundingBoxMinX) || "".equals(boundingBoxMinY) || "".equals(boundingBoxMaxX)
+                || "".equals(boundingBoxMaxY)) {
             errors.add("envelope", new ActionError("error.envelope.required"));
         } else {
             try {
@@ -506,8 +493,7 @@ public final class CoveragesEditorForm extends ActionForm {
                 Double.parseDouble(boundingBoxMaxX);
                 Double.parseDouble(boundingBoxMaxY);
             } catch (NumberFormatException badNumber) {
-                errors.add("envelope",
-                    new ActionError("error.envelope.invalid", badNumber));
+                errors.add("envelope", new ActionError("error.envelope.invalid", badNumber));
             }
         }
 
@@ -535,8 +521,7 @@ public final class CoveragesEditorForm extends ActionForm {
             // The JSP needs to not include us if there is no
             // selected Format
             //
-            throw new RuntimeException(
-                "selectedDataFormatId required in Session");
+            throw new RuntimeException("selectedDataFormatId required in Session");
         }
 
         // Retrieve connection params
@@ -573,8 +558,7 @@ public final class CoveragesEditorForm extends ActionForm {
 
                 if (param == null) {
                     errors.add("paramValue[" + i + "]",
-                        new ActionError(
-                            "error.dataFormatEditor.param.missing", key,
+                        new ActionError("error.dataFormatEditor.param.missing", key,
                             factory.getDescription()));
 
                     continue;
@@ -594,8 +578,7 @@ public final class CoveragesEditorForm extends ActionForm {
                                                     // maxFileSize="nK" />
                     }
 
-                    errors.add("styleID",
-                        new ActionError("error.file.maxLengthExceeded", size));
+                    errors.add("styleID", new ActionError("error.file.maxLengthExceeded", size));
 
                     return errors;
                 }
@@ -1089,36 +1072,36 @@ public final class CoveragesEditorForm extends ActionForm {
         this.real_name = real_name;
     }
 
-	public boolean isAllowWatermarking() {
-		return allowWatermarking;
-	}
+    public boolean isAllowWatermarking() {
+        return allowWatermarking;
+    }
 
-	public void setAllowWatermarking(boolean allowWatermarking) {
-		allowWatermarkingChecked = true;
-		this.allowWatermarking = allowWatermarking;
-	}
+    public void setAllowWatermarking(boolean allowWatermarking) {
+        allowWatermarkingChecked = true;
+        this.allowWatermarking = allowWatermarking;
+    }
 
-	public String getWatermarkingURL() {
-		return watermarkingURL;
-	}
+    public String getWatermarkingURL() {
+        return watermarkingURL;
+    }
 
-	public void setWatermarkingURL(String watermarkingURL) {
-		this.watermarkingURL = watermarkingURL;
-	}
+    public void setWatermarkingURL(String watermarkingURL) {
+        this.watermarkingURL = watermarkingURL;
+    }
 
-	public Integer getWatermarkingPosition() {
-		return watermarkingPosition;
-	}
+    public Integer getWatermarkingPosition() {
+        return watermarkingPosition;
+    }
 
-	public void setWatermarkingPosition(Integer watermarkingPosition) {
-		this.watermarkingPosition = watermarkingPosition;
-	}
+    public void setWatermarkingPosition(Integer watermarkingPosition) {
+        this.watermarkingPosition = watermarkingPosition;
+    }
 
-	public boolean isAllowWatermarkingChecked() {
-		return allowWatermarkingChecked;
-	}
+    public boolean isAllowWatermarkingChecked() {
+        return allowWatermarkingChecked;
+    }
 
-	public void setAllowWatermarkingChecked(boolean allowWatermarkingChecked) {
-		this.allowWatermarkingChecked = allowWatermarkingChecked;
-	}
+    public void setAllowWatermarkingChecked(boolean allowWatermarkingChecked) {
+        this.allowWatermarkingChecked = allowWatermarkingChecked;
+    }
 }

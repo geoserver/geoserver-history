@@ -40,14 +40,12 @@ public class KMLTransformerTest extends WMSTestSupport {
 
         mapLayer = createMapLayer(MockData.BASIC_POLYGONS);
 
-        mapContext = new WMSMapContext(createGetMapRequest(
-                    MockData.BASIC_POLYGONS));
+        mapContext = new WMSMapContext(createGetMapRequest(MockData.BASIC_POLYGONS));
         mapContext.addLayer(mapLayer);
     }
 
     public void testVectorTransformer() throws Exception {
-        KMLVectorTransformer transformer = new KMLVectorTransformer(mapContext,
-                mapLayer);
+        KMLVectorTransformer transformer = new KMLVectorTransformer(mapContext, mapLayer);
         transformer.setIndentation(2);
 
         FeatureSource featureSource = mapLayer.getFeatureSource();
@@ -56,17 +54,13 @@ public class KMLTransformerTest extends WMSTestSupport {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         transformer.transform(featureSource.getFeatures(), output);
 
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
-                                                           .newDocumentBuilder();
-        Document document = docBuilder.parse(new ByteArrayInputStream(
-                    output.toByteArray()));
+        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
 
         Element element = document.getDocumentElement();
         assertEquals("kml", element.getNodeName());
-        assertEquals(nfeatures,
-            element.getElementsByTagName("Style").getLength());
-        assertEquals(nfeatures,
-            element.getElementsByTagName("Placemark").getLength());
+        assertEquals(nfeatures, element.getElementsByTagName("Style").getLength());
+        assertEquals(nfeatures, element.getElementsByTagName("Placemark").getLength());
     }
 
     //JD: commented out because there is no way to specify a coordinate reference
@@ -120,20 +114,16 @@ public class KMLTransformerTest extends WMSTestSupport {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         transformer.transform(mapLayer, output);
 
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
-                                                           .newDocumentBuilder();
-        Document document = docBuilder.parse(new ByteArrayInputStream(
-                    output.toByteArray()));
+        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
 
         assertEquals("kml", document.getDocumentElement().getNodeName());
 
-        assertEquals(mapContext.getLayerCount(),
-            document.getElementsByTagName("Folder").getLength());
+        assertEquals(mapContext.getLayerCount(), document.getElementsByTagName("Folder").getLength());
         assertEquals(mapContext.getLayerCount(),
             document.getElementsByTagName("GroundOverlay").getLength());
 
-        assertEquals(mapContext.getLayerCount(),
-            document.getElementsByTagName("href").getLength());
+        assertEquals(mapContext.getLayerCount(), document.getElementsByTagName("href").getLength());
 
         Element href = (Element) document.getElementsByTagName("href").item(0);
         assertEquals("layer_0.png", href.getFirstChild().getNodeValue());
@@ -146,24 +136,19 @@ public class KMLTransformerTest extends WMSTestSupport {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         transformer.transform(mapLayer, output);
 
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
-                                                           .newDocumentBuilder();
-        Document document = docBuilder.parse(new ByteArrayInputStream(
-                    output.toByteArray()));
+        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
 
         assertEquals("kml", document.getDocumentElement().getNodeName());
 
-        assertEquals(mapContext.getLayerCount(),
-            document.getElementsByTagName("Folder").getLength());
+        assertEquals(mapContext.getLayerCount(), document.getElementsByTagName("Folder").getLength());
         assertEquals(mapContext.getLayerCount(),
             document.getElementsByTagName("GroundOverlay").getLength());
 
-        assertEquals(mapContext.getLayerCount(),
-            document.getElementsByTagName("href").getLength());
+        assertEquals(mapContext.getLayerCount(), document.getElementsByTagName("href").getLength());
 
         Element href = (Element) document.getElementsByTagName("href").item(0);
-        assertTrue(href.getFirstChild().getNodeValue()
-                       .startsWith("http://localhost"));
+        assertTrue(href.getFirstChild().getNodeValue().startsWith("http://localhost"));
     }
 
     public void testSuperOverlayTransformer() throws Exception {
@@ -175,16 +160,13 @@ public class KMLTransformerTest extends WMSTestSupport {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         transformer.transform(mapLayer, output);
 
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
-                                                           .newDocumentBuilder();
-        Document document = docBuilder.parse(new ByteArrayInputStream(
-                    output.toByteArray()));
+        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
 
         assertEquals("kml", document.getDocumentElement().getNodeName());
         assertEquals(3, document.getElementsByTagName("Region").getLength());
         assertEquals(2, document.getElementsByTagName("NetworkLink").getLength());
-        assertEquals(2,
-            document.getElementsByTagName("GroundOverlay").getLength());
+        assertEquals(2, document.getElementsByTagName("GroundOverlay").getLength());
     }
 
     public void testTransformer() throws Exception {
@@ -193,10 +175,8 @@ public class KMLTransformerTest extends WMSTestSupport {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         transformer.transform(mapContext, output);
 
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
-                                                           .newDocumentBuilder();
-        Document document = docBuilder.parse(new ByteArrayInputStream(
-                    output.toByteArray()));
+        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
 
         assertEquals("kml", document.getDocumentElement().getNodeName());
     }

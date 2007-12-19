@@ -42,16 +42,13 @@ import java.util.logging.Logger;
 public class CoverageUtils {
     private final static BufferedCoordinateOperationFactory operationFactory = new BufferedCoordinateOperationFactory(new Hints(
                 Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
-    private final static Logger LOGGER = Logger.getLogger(CoverageUtils.class
-            .toString());
+    private final static Logger LOGGER = Logger.getLogger(CoverageUtils.class.toString());
     public static final int TRANSPARENT = 0;
     public static final int OPAQUE = 1;
 
-    public static GeneralParameterValue[] getParameters(
-        ParameterValueGroup params) {
+    public static GeneralParameterValue[] getParameters(ParameterValueGroup params) {
         final List parameters = new ArrayList();
-        final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName()
-                                                                             .toString();
+        final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
 
         if ((params != null) && (params.values().size() > 0)) {
             List list = params.values();
@@ -86,29 +83,27 @@ public class CoverageUtils {
 
                     Object value = val.getValue();
 
-                    parameters.add(new DefaultParameterDescriptor(_key,
-                            descr.getValueClass(), null, value).createValue());
+                    parameters.add(new DefaultParameterDescriptor(_key, descr.getValueClass(),
+                            null, value).createValue());
                 }
             }
 
             return (!parameters.isEmpty())
-            ? (GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters
-                .size()]) : null;
+            ? (GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()])
+            : null;
         } else {
             return null;
         }
     }
 
-    public static GeneralParameterValue[] getParameters(
-        ParameterValueGroup params, Map values) {
+    public static GeneralParameterValue[] getParameters(ParameterValueGroup params, Map values) {
         return getParameters(params, values, false);
     }
 
-    public static GeneralParameterValue[] getParameters(
-        ParameterValueGroup params, Map values, boolean readGeom) {
+    public static GeneralParameterValue[] getParameters(ParameterValueGroup params, Map values,
+        boolean readGeom) {
         final List parameters = new ArrayList();
-        final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName()
-                                                                             .toString();
+        final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
 
         if ((params != null) && (params.values().size() > 0)) {
             List list = params.values();
@@ -146,23 +141,21 @@ public class CoverageUtils {
                     // format specific params
                     //
                     // /////////////////////////////////////////////////////////
-                    Object value = CoverageUtils.getCvParamValue(_key, val,
-                            values);
+                    Object value = CoverageUtils.getCvParamValue(_key, val, values);
 
                     if ((value == null)
                             && (_key.equalsIgnoreCase("InputTransparentColor")
                             || _key.equalsIgnoreCase("OutputTransparentColor"))) {
-                        parameters.add(new DefaultParameterDescriptor(_key,
-                                Color.class, null, value).createValue());
+                        parameters.add(new DefaultParameterDescriptor(_key, Color.class, null, value)
+                            .createValue());
                     } else {
-                        if (_key.equalsIgnoreCase("TIME")
-                                || _key.equalsIgnoreCase("ELEVATION")
+                        if (_key.equalsIgnoreCase("TIME") || _key.equalsIgnoreCase("ELEVATION")
                                 || _key.equalsIgnoreCase("DIM_RANGE")) {
                             continue;
                         }
 
-                        parameters.add(new DefaultParameterDescriptor(_key,
-                                descr.getValueClass(), null, value).createValue());
+                        parameters.add(new DefaultParameterDescriptor(_key, descr.getValueClass(),
+                                null, value).createValue());
                     }
                 }
             }
@@ -172,27 +165,25 @@ public class CoverageUtils {
             addToParameters("ELEVATION", values, parameters);
 
             return (!parameters.isEmpty())
-            ? (GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters
-                .size()]) : null;
+            ? (GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()])
+            : null;
         } else {
             return null;
         }
     }
 
-    private static void addToParameters(final String key, final Map values,
-        List parameters) {
+    private static void addToParameters(final String key, final Map values, List parameters) {
         Object content = values.get(key);
 
         if (content != null) {
-            parameters.add(new DefaultParameterDescriptor(key,
-                    content.getClass(), null, content).createValue());
+            parameters.add(new DefaultParameterDescriptor(key, content.getClass(), null, content)
+                .createValue());
         }
     }
 
     public static Map getParametersKVP(ParameterValueGroup params) {
         final Map parameters = new HashMap();
-        final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName()
-                                                                             .toString();
+        final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
 
         if ((params != null) && (params.values().size() > 0)) {
             List list = params.values();
@@ -237,8 +228,7 @@ public class CoverageUtils {
                     }
 
                     if ( /*_key.equalsIgnoreCase("TIME") || */
-                        _key.equalsIgnoreCase("ELEVATION")
-                            || _key.equalsIgnoreCase("DIM_RANGE")) {
+                        _key.equalsIgnoreCase("ELEVATION") || _key.equalsIgnoreCase("DIM_RANGE")) {
                         continue;
                     }
 
@@ -258,8 +248,8 @@ public class CoverageUtils {
      * @param param
      * @return
      */
-    public static Object getCvParamValue(final String key,
-        ParameterValue param, final List paramValues, final int index) {
+    public static Object getCvParamValue(final String key, ParameterValue param,
+        final List paramValues, final int index) {
         Object value = null;
 
         try {
@@ -271,8 +261,7 @@ public class CoverageUtils {
                         value = CRS.parseWKT((String) paramValues.get(index));
                     }
                 } else {
-                    LOGGER.info(
-                        "Unable to find a crs for the coverage param, using EPSG:4326");
+                    LOGGER.info("Unable to find a crs for the coverage param, using EPSG:4326");
                     value = CRS.decode("EPSG:4326");
                 }
             } else if (key.equalsIgnoreCase("envelope")) {
@@ -280,10 +269,8 @@ public class CoverageUtils {
                         && (((String) getParamValue(paramValues, index)).length() > 0)) {
                     String tmp = (String) getParamValue(paramValues, index);
 
-                    if ((tmp.indexOf("[") > 0)
-                            && (tmp.indexOf("]") > tmp.indexOf("["))) {
-                        tmp = tmp.substring(tmp.indexOf("[") + 1,
-                                tmp.indexOf("]")).trim();
+                    if ((tmp.indexOf("[") > 0) && (tmp.indexOf("]") > tmp.indexOf("["))) {
+                        tmp = tmp.substring(tmp.indexOf("[") + 1, tmp.indexOf("]")).trim();
                         tmp = tmp.replaceAll(",", "");
 
                         String[] strCoords = tmp.split(" ");
@@ -291,8 +278,7 @@ public class CoverageUtils {
 
                         if (strCoords.length == 4) {
                             for (int iT = 0; iT < 4; iT++) {
-                                coords[iT] = Double.parseDouble(strCoords[iT]
-                                        .trim());
+                                coords[iT] = Double.parseDouble(strCoords[iT].trim());
                             }
 
                             value = (org.opengis.geometry.Envelope) new GeneralEnvelope(new double[] {
@@ -321,8 +307,7 @@ public class CoverageUtils {
             } else {
                 Class[] clArray = { getParamValue(paramValues, index).getClass() };
                 Object[] inArray = { getParamValue(paramValues, index) };
-                value = param.getValue().getClass().getConstructor(clArray)
-                             .newInstance(inArray);
+                value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
             }
 
             // Intentionally generic exception catched
@@ -347,29 +332,23 @@ public class CoverageUtils {
      * @param param
      * @return
      */
-    public static Object getCvParamValue(final String key,
-        ParameterValue param, final Map params) {
+    public static Object getCvParamValue(final String key, ParameterValue param, final Map params) {
         Object value = null;
 
         try {
             if (key.equalsIgnoreCase("crs")) {
-                if ((params.get(key) != null)
-                        && (((String) params.get(key)).length() > 0)) {
+                if ((params.get(key) != null) && (((String) params.get(key)).length() > 0)) {
                     value = CRS.parseWKT((String) params.get(key));
                 } else {
-                    LOGGER.info(
-                        "Unable to find a crs for the coverage param, using EPSG:4326");
+                    LOGGER.info("Unable to find a crs for the coverage param, using EPSG:4326");
                     value = CRS.decode("EPSG:4326");
                 }
             } else if (key.equalsIgnoreCase("envelope")) {
-                if ((params.get(key) != null)
-                        && (((String) params.get(key)).length() > 0)) {
+                if ((params.get(key) != null) && (((String) params.get(key)).length() > 0)) {
                     String tmp = (String) params.get(key);
 
-                    if ((tmp.indexOf("[") > 0)
-                            && (tmp.indexOf("]") > tmp.indexOf("["))) {
-                        tmp = tmp.substring(tmp.indexOf("[") + 1,
-                                tmp.indexOf("]")).trim();
+                    if ((tmp.indexOf("[") > 0) && (tmp.indexOf("]") > tmp.indexOf("["))) {
+                        tmp = tmp.substring(tmp.indexOf("[") + 1, tmp.indexOf("]")).trim();
                         tmp = tmp.replaceAll(",", "");
 
                         String[] strCoords = tmp.split(" ");
@@ -377,8 +356,7 @@ public class CoverageUtils {
 
                         if (strCoords.length == 4) {
                             for (int iT = 0; iT < 4; iT++) {
-                                coords[iT] = Double.parseDouble(strCoords[iT]
-                                        .trim());
+                                coords[iT] = Double.parseDouble(strCoords[iT].trim());
                             }
 
                             value = (org.opengis.geometry.Envelope) new GeneralEnvelope(new double[] {
@@ -389,15 +367,12 @@ public class CoverageUtils {
                 }
             } else if (key.equalsIgnoreCase(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName()
                                                                                       .toString())) {
-                if ((params.get(key) != null)
-                        && params.get(key) instanceof String
+                if ((params.get(key) != null) && params.get(key) instanceof String
                         && (((String) params.get(key)).length() > 0)) {
                     String tmp = (String) params.get(key);
 
-                    if ((tmp.indexOf("[") > 0)
-                            && (tmp.indexOf("]") > tmp.indexOf("["))) {
-                        tmp = tmp.substring(tmp.indexOf("[") + 1,
-                                tmp.indexOf("]")).trim();
+                    if ((tmp.indexOf("[") > 0) && (tmp.indexOf("]") > tmp.indexOf("["))) {
+                        tmp = tmp.substring(tmp.indexOf("[") + 1, tmp.indexOf("]")).trim();
                         tmp = tmp.replaceAll(",", "");
 
                         String[] strCoords = tmp.split(" ");
@@ -405,8 +380,7 @@ public class CoverageUtils {
 
                         if (strCoords.length == 4) {
                             for (int iT = 0; iT < 4; iT++) {
-                                coords[iT] = Double.parseDouble(strCoords[iT]
-                                        .trim());
+                                coords[iT] = Double.parseDouble(strCoords[iT].trim());
                             }
 
                             value = (org.opengis.geometry.Envelope) new GeneralEnvelope(new double[] {
@@ -425,26 +399,21 @@ public class CoverageUtils {
                 } else {
                     Class[] clArray = { Color.class };
                     Object[] inArray = { params.get(key) };
-                    value = param.getValue().getClass().getConstructor(clArray)
-                                 .newInstance(inArray);
+                    value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
                 }
             } else if (key.equalsIgnoreCase("times")) {
-                value = ((params.get(key) != null)
-                    && params.get(key) instanceof Object[]) ? params.get(key)
-                                                            : null;
+                value = ((params.get(key) != null) && params.get(key) instanceof Object[])
+                    ? params.get(key) : null;
             } else if (key.equalsIgnoreCase("elevations")) {
-                value = ((params.get(key) != null)
-                    && params.get(key) instanceof String[]) ? params.get(key)
-                                                            : null;
+                value = ((params.get(key) != null) && params.get(key) instanceof String[])
+                    ? params.get(key) : null;
             } else if (key.equalsIgnoreCase("bands")) {
-                value = ((params.get(key) != null)
-                    && params.get(key) instanceof String[]) ? params.get(key)
-                                                            : null;
+                value = ((params.get(key) != null) && params.get(key) instanceof String[])
+                    ? params.get(key) : null;
             } else {
                 Class[] clArray = { String.class };
                 Object[] inArray = { params.get(key) };
-                value = param.getValue().getClass().getConstructor(clArray)
-                             .newInstance(inArray);
+                value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
             }
         } catch (Exception e) {
             value = param.getValue();
@@ -453,11 +422,10 @@ public class CoverageUtils {
         return value;
     }
 
-    public static MathTransform getMathTransform(
-        CoordinateReferenceSystem sourceCRS, CoordinateReferenceSystem destCRS) {
+    public static MathTransform getMathTransform(CoordinateReferenceSystem sourceCRS,
+        CoordinateReferenceSystem destCRS) {
         try {
-            CoordinateOperation op = operationFactory.createOperation(sourceCRS,
-                    destCRS);
+            CoordinateOperation op = operationFactory.createOperation(sourceCRS, destCRS);
 
             if (op != null) {
                 return op.getMathTransform();

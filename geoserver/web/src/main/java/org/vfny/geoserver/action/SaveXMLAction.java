@@ -39,9 +39,9 @@ import javax.servlet.http.HttpServletResponse;
  * </p>
  */
 public class SaveXMLAction extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-        UserContainer user, HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
+        throws IOException, ServletException {
         ActionForward r1 = saveGeoserver(mapping, form, request, response);
         ActionForward r2 = saveValidation(mapping, form, request, response);
 
@@ -61,8 +61,7 @@ public class SaveXMLAction extends ConfigAction {
 
         try {
             XMLConfigWriter.store((WCSDTO) getWCS(request).toDTO(),
-                (WMSDTO) getWMS(request).toDTO(),
-                (WFSDTO) getWFS(request).toDTO(),
+                (WMSDTO) getWMS(request).toDTO(), (WFSDTO) getWFS(request).toDTO(),
                 (GeoServerDTO) getWFS(request).getGeoServer().toDTO(),
                 (DataDTO) getWFS(request).getData().toDTO(), rootDir);
         } catch (ConfigurationException e) {
@@ -76,9 +75,8 @@ public class SaveXMLAction extends ConfigAction {
         return mapping.findForward("config");
     }
 
-    private ActionForward saveValidation(ActionMapping mapping,
-        ActionForm form, //UserContainer user,
-    HttpServletRequest request, HttpServletResponse response)
+    private ActionForward saveValidation(ActionMapping mapping, ActionForm form, //UserContainer user,
+        HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
         ServletContext sc = request.getSession().getServletContext();
 
@@ -97,10 +95,8 @@ public class SaveXMLAction extends ConfigAction {
         File validationDir;
 
         try {
-            plugInDir = WriterUtils.initWriteFile(new File(dataDir, "plugIns"),
-                    true);
-            validationDir = WriterUtils.initWriteFile(new File(dataDir,
-                        "validation"), true);
+            plugInDir = WriterUtils.initWriteFile(new File(dataDir, "plugIns"), true);
+            validationDir = WriterUtils.initWriteFile(new File(dataDir, "validation"), true);
         } catch (ConfigurationException confE) {
             throw new ServletException(confE);
         }
@@ -122,8 +118,7 @@ public class SaveXMLAction extends ConfigAction {
                     dto = (PlugInDTO) plugIns.get(key);
 
                     String fName = dto.getName().replaceAll(" ", "") + ".xml";
-                    File pFile = WriterUtils.initWriteFile(new File(plugInDir,
-                                fName), false);
+                    File pFile = WriterUtils.initWriteFile(new File(plugInDir, fName), false);
                     FileWriter fw = new FileWriter(pFile);
                     XMLWriter.writePlugIn(dto, fw);
                     fw.close();
@@ -155,8 +150,7 @@ public class SaveXMLAction extends ConfigAction {
                     dto = (TestSuiteDTO) testSuites.get(i.next());
 
                     String fName = dto.getName().replaceAll(" ", "") + ".xml";
-                    File pFile = WriterUtils.initWriteFile(new File(
-                                validationDir, fName), false);
+                    File pFile = WriterUtils.initWriteFile(new File(validationDir, fName), false);
                     FileWriter fw = new FileWriter(pFile); //new File(validationDir,
                                                            //dto.getName().replaceAll(" ", "") + ".xml"));
 
@@ -179,9 +173,8 @@ public class SaveXMLAction extends ConfigAction {
                 i = testSuites.keySet().iterator();
 
                 while (!found && i.hasNext())
-                    found = (((TestSuiteDTO) testSuites.get(i.next())).getName()
-                              .replaceAll(" ", "") + ".xml").equals(testsFL[j]
-                            .getName());
+                    found = (((TestSuiteDTO) testSuites.get(i.next())).getName().replaceAll(" ", "")
+                        + ".xml").equals(testsFL[j].getName());
 
                 if (!found) {
                     testsFL[j].delete();

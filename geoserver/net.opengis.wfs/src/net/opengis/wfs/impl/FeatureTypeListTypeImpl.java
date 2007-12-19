@@ -36,8 +36,7 @@ import java.util.Collection;
  *
  * @generated
  */
-public class FeatureTypeListTypeImpl extends EObjectImpl
-    implements FeatureTypeListType {
+public class FeatureTypeListTypeImpl extends EObjectImpl implements FeatureTypeListType {
     /**
      * The cached value of the '{@link #getOperations() <em>Operations</em>}' containment reference.
      * <!-- begin-user-doc -->
@@ -90,16 +89,13 @@ public class FeatureTypeListTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetOperations(OperationsType newOperations,
-        NotificationChain msgs) {
+    public NotificationChain basicSetOperations(OperationsType newOperations, NotificationChain msgs) {
         OperationsType oldOperations = operations;
         operations = newOperations;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
-                    WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS,
-                    oldOperations, newOperations);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS, oldOperations, newOperations);
 
             if (msgs == null) {
                 msgs = notification;
@@ -122,16 +118,14 @@ public class FeatureTypeListTypeImpl extends EObjectImpl
 
             if (operations != null) {
                 msgs = ((InternalEObject) operations).eInverseRemove(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS, null,
-                        msgs);
+                        EOPPOSITE_FEATURE_BASE - WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS,
+                        null, msgs);
             }
 
             if (newOperations != null) {
                 msgs = ((InternalEObject) newOperations).eInverseAdd(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS, null,
-                        msgs);
+                        EOPPOSITE_FEATURE_BASE - WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS,
+                        null, msgs);
             }
 
             msgs = basicSetOperations(newOperations, msgs);
@@ -141,8 +135,7 @@ public class FeatureTypeListTypeImpl extends EObjectImpl
             }
         } else if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS,
-                    newOperations, newOperations));
+                    WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS, newOperations, newOperations));
         }
     }
 
@@ -153,8 +146,8 @@ public class FeatureTypeListTypeImpl extends EObjectImpl
      */
     public EList getFeatureType() {
         if (featureType == null) {
-            featureType = new EObjectContainmentEList(FeatureTypeType.class,
-                    this, WfsPackage.FEATURE_TYPE_LIST_TYPE__FEATURE_TYPE);
+            featureType = new EObjectContainmentEList(FeatureTypeType.class, this,
+                    WfsPackage.FEATURE_TYPE_LIST_TYPE__FEATURE_TYPE);
         }
 
         return featureType;
@@ -165,8 +158,8 @@ public class FeatureTypeListTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case WfsPackage.FEATURE_TYPE_LIST_TYPE__OPERATIONS:
             return basicSetOperations(null, msgs);

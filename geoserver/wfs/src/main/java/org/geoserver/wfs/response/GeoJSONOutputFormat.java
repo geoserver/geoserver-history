@@ -44,12 +44,10 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
         return "GEOJSON";
     }
 
-    protected String getContentDisposition(
-        FeatureCollectionType featureCollection) {
+    protected String getContentDisposition(FeatureCollectionType featureCollection) {
         StringBuffer sb = new StringBuffer();
 
-        for (Iterator f = featureCollection.getFeature().iterator();
-                f.hasNext();) {
+        for (Iterator f = featureCollection.getFeature().iterator(); f.hasNext();) {
             FeatureCollection fc = (FeatureCollection) f.next();
             sb.append(fc.getSchema().getTypeName() + "_");
         }
@@ -59,9 +57,8 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
         return "inline; filename=" + sb.toString() + ".txt";
     }
 
-    protected void write(FeatureCollectionType featureCollection,
-        OutputStream output, Operation getFeature)
-        throws IOException, ServiceException {
+    protected void write(FeatureCollectionType featureCollection, OutputStream output,
+        Operation getFeature) throws IOException, ServiceException {
         //TODO: investigate setting proper charsets in this
         //it's part of the constructor, just need to hook it up.
         Writer outWriter = new BufferedWriter(new OutputStreamWriter(output));
@@ -86,8 +83,7 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
             CoordinateReferenceSystem crs = null;
 
             for (int i = 0; i < resultsList.size(); i++) {
-                FeatureCollection collection = (FeatureCollection) resultsList
-                    .get(i);
+                FeatureCollection collection = (FeatureCollection) resultsList.get(i);
 
                 FeatureIterator iterator = collection.features();
 
@@ -108,8 +104,7 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
                         AttributeType defaultGeomType = fType.getDefaultGeometry();
 
                         if (crs == null) {
-                            crs = fType.getDefaultGeometry()
-                                       .getCoordinateSystem();
+                            crs = fType.getDefaultGeometry().getCoordinateSystem();
                         }
 
                         jsonWriter.key("geometry");
@@ -118,13 +113,10 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
 
                         if (aGeom == null) {
                             // In case the default geometry is not set, we will just use the first geometry we find
-                            for (int j = 0;
-                                    (j < types.length) && (aGeom == null);
-                                    j++) {
+                            for (int j = 0; (j < types.length) && (aGeom == null); j++) {
                                 Object value = feature.getAttribute(j);
 
-                                if ((value != null)
-                                        && value instanceof Geometry) {
+                                if ((value != null) && value instanceof Geometry) {
                                     aGeom = (Geometry) value;
                                 }
                             }
@@ -133,8 +125,7 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
                         jsonWriter.writeGeom(aGeom);
 
                         if (defaultGeomType != null) {
-                            jsonWriter.key("geometry_name")
-                                      .value(defaultGeomType.getLocalName());
+                            jsonWriter.key("geometry_name").value(defaultGeomType.getLocalName());
                         }
 
                         jsonWriter.key("properties");
@@ -179,8 +170,7 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
 
                 // Coordinate Referense System, currently only if the namespace is EPSG
                 if (crs != null) {
-                    NamedIdentifier namedIdent = (NamedIdentifier) crs.getIdentifiers()
-                                                                      .iterator()
+                    NamedIdentifier namedIdent = (NamedIdentifier) crs.getIdentifiers().iterator()
                                                                       .next();
                     String csStr = namedIdent.getCodeSpace().toUpperCase();
 

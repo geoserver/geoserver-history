@@ -13,8 +13,7 @@ import org.geotools.xml.Parser;
 public class WFSXmlTest extends WFSTestSupport {
     WFSConfiguration configuration() {
         return new WFSConfiguration(getCatalog(),
-            new FeatureTypeSchemaBuilder.GML3(getWFS(), getCatalog(),
-                getResourceLoader()));
+            new FeatureTypeSchemaBuilder.GML3(getWFS(), getCatalog(), getResourceLoader()));
     }
 
     public void testValid() throws Exception {

@@ -134,8 +134,8 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__INDIVIDUAL_NAME,
-                    oldIndividualName, individualName));
+                    OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__INDIVIDUAL_NAME, oldIndividualName,
+                    individualName));
         }
     }
 
@@ -159,8 +159,8 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__POSITION_NAME,
-                    oldPositionName, positionName));
+                    OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__POSITION_NAME, oldPositionName,
+                    positionName));
         }
     }
 
@@ -178,16 +178,14 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetContactInfo(ContactType newContactInfo,
-        NotificationChain msgs) {
+    public NotificationChain basicSetContactInfo(ContactType newContactInfo, NotificationChain msgs) {
         ContactType oldContactInfo = contactInfo;
         contactInfo = newContactInfo;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
-                    OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__CONTACT_INFO,
-                    oldContactInfo, newContactInfo);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__CONTACT_INFO, oldContactInfo,
+                    newContactInfo);
 
             if (msgs == null) {
                 msgs = notification;
@@ -211,15 +209,13 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl
             if (contactInfo != null) {
                 msgs = ((InternalEObject) contactInfo).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__CONTACT_INFO,
-                        null, msgs);
+                        - OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__CONTACT_INFO, null, msgs);
             }
 
             if (newContactInfo != null) {
                 msgs = ((InternalEObject) newContactInfo).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__CONTACT_INFO,
-                        null, msgs);
+                        - OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__CONTACT_INFO, null, msgs);
             }
 
             msgs = basicSetContactInfo(newContactInfo, msgs);
@@ -229,8 +225,8 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl
             }
         } else if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__CONTACT_INFO,
-                    newContactInfo, newContactInfo));
+                    OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__CONTACT_INFO, newContactInfo,
+                    newContactInfo));
         }
     }
 
@@ -248,16 +244,13 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetRole(CodeType newRole,
-        NotificationChain msgs) {
+    public NotificationChain basicSetRole(CodeType newRole, NotificationChain msgs) {
         CodeType oldRole = role;
         role = newRole;
 
         if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this,
-                    Notification.SET,
-                    OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__ROLE, oldRole,
-                    newRole);
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__ROLE, oldRole, newRole);
 
             if (msgs == null) {
                 msgs = notification;
@@ -280,16 +273,14 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl
 
             if (role != null) {
                 msgs = ((InternalEObject) role).eInverseRemove(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__ROLE, null,
-                        msgs);
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__ROLE,
+                        null, msgs);
             }
 
             if (newRole != null) {
                 msgs = ((InternalEObject) newRole).eInverseAdd(this,
-                        EOPPOSITE_FEATURE_BASE
-                        - OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__ROLE, null,
-                        msgs);
+                        EOPPOSITE_FEATURE_BASE - OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__ROLE,
+                        null, msgs);
             }
 
             msgs = basicSetRole(newRole, msgs);
@@ -299,8 +290,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl
             }
         } else if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__ROLE, newRole,
-                    newRole));
+                    OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__ROLE, newRole, newRole));
         }
     }
 
@@ -309,8 +299,8 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__CONTACT_INFO:
             return basicSetContactInfo(null, msgs);
@@ -416,13 +406,11 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl
         switch (featureID) {
         case OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__INDIVIDUAL_NAME:
             return (INDIVIDUAL_NAME_EDEFAULT == null) ? (individualName != null)
-                                                      : (!INDIVIDUAL_NAME_EDEFAULT
-            .equals(individualName));
+                                                      : (!INDIVIDUAL_NAME_EDEFAULT.equals(individualName));
 
         case OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__POSITION_NAME:
             return (POSITION_NAME_EDEFAULT == null) ? (positionName != null)
-                                                    : (!POSITION_NAME_EDEFAULT
-            .equals(positionName));
+                                                    : (!POSITION_NAME_EDEFAULT.equals(positionName));
 
         case OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__CONTACT_INFO:
             return contactInfo != null;

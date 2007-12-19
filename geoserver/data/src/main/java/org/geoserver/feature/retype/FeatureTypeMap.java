@@ -6,19 +6,17 @@ package org.geoserver.feature.retype;
 
 import org.geotools.feature.FeatureType;
 
+
 /**
  * A support class containing the old feature type name, the new one, the old
  * feature type, and the new one
- * 
+ *
  * @author Andrea Aime
  */
 class FeatureTypeMap {
     String originalName;
-
     String name;
-
     FeatureType originalFeatureType;
-
     FeatureType featureType;
 
     public FeatureTypeMap(String originalName, String name) {
@@ -50,5 +48,4 @@ class FeatureTypeMap {
         this.originalFeatureType = original;
         this.featureType = transformed;
     }
-
 }

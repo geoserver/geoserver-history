@@ -33,9 +33,8 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Id$
  */
 public class ValidationTestDoIt extends ConfigAction {
-    public ActionForward execute(ActionMapping mapping,
-        ActionForm incomingForm, UserContainer user,
-        HttpServletRequest request, HttpServletResponse response) {
+    public ActionForward execute(ActionMapping mapping, ActionForm incomingForm,
+        UserContainer user, HttpServletRequest request, HttpServletResponse response) {
         boolean stopThread = false;
         String parameter = mapping.getParameter();
 
@@ -44,8 +43,7 @@ public class ValidationTestDoIt extends ConfigAction {
         }
 
         //Checks to see if previous Validation has even finished executing yet.
-        Thread oldThread = (Thread) request.getSession()
-                                           .getAttribute(ValidationRunnable.KEY);
+        Thread oldThread = (Thread) request.getSession().getAttribute(ValidationRunnable.KEY);
 
         if ((oldThread != null) && oldThread.isAlive()) {
             //OldThread has not finished execution; Shouldn't start a new one.
@@ -55,8 +53,7 @@ public class ValidationTestDoIt extends ConfigAction {
             }
         } else {
             ServletContext context = this.getServlet().getServletContext();
-            ValidationConfig validationConfig = (ValidationConfig) context
-                .getAttribute(ValidationConfig.CONFIG_KEY);
+            ValidationConfig validationConfig = (ValidationConfig) context.getAttribute(ValidationConfig.CONFIG_KEY);
             TestSuiteConfig suiteConfig = (TestSuiteConfig) request.getSession()
                                                                    .getAttribute(TestSuiteConfig.CURRENTLY_SELECTED_KEY);
             Map plugins = new HashMap();
@@ -67,8 +64,7 @@ public class ValidationTestDoIt extends ConfigAction {
 
             try {
                 ValidationRunnable testThread = new ValidationRunnable(request);
-                testThread.setup(results,
-                    getDataConfig().toRepository(context), plugins, testSuites);
+                testThread.setup(results, getDataConfig().toRepository(context), plugins, testSuites);
 
                 Thread thread = new Thread(testThread);
                 thread.start();

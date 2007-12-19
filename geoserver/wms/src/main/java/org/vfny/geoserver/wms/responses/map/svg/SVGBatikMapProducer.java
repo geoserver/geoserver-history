@@ -43,8 +43,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public class SVGBatikMapProducer extends AbstractGetMapProducer
-    implements GetMapProducer {
+public class SVGBatikMapProducer extends AbstractGetMapProducer implements GetMapProducer {
     StreamingRenderer renderer;
     WMS wms;
 
@@ -79,8 +78,7 @@ public class SVGBatikMapProducer extends AbstractGetMapProducer
         // have it...
         Map rendererParams = new HashMap();
         rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
-        rendererParams.put("renderingBuffer",
-            new Integer(mapContext.getBuffer()));
+        rendererParams.put("renderingBuffer", new Integer(mapContext.getBuffer()));
         renderer.setRendererHints(rendererParams);
         renderer.setContext(mapContext);
     }
@@ -141,8 +139,8 @@ public class SVGBatikMapProducer extends AbstractGetMapProducer
             // TODO: make a config option that toggles wether doctype is
             // written out.
             OutputFormat format = new OutputFormat();
-            XMLSerializer serializer = new XMLSerializer(new OutputStreamWriter(
-                        out, "UTF-8"), format);
+            XMLSerializer serializer = new XMLSerializer(new OutputStreamWriter(out, "UTF-8"),
+                    format);
 
             // fix the root element so it has the right namespace
             // this way firefox will show it
@@ -170,8 +168,7 @@ public class SVGBatikMapProducer extends AbstractGetMapProducer
 
         // Create an instance of org.w3c.dom.Document
         String svgNamespaceURI = "http://www.w3.org/2000/svg";
-        document = db.getDOMImplementation()
-                     .createDocument(svgNamespaceURI, "svg", null);
+        document = db.getDOMImplementation().createDocument(svgNamespaceURI, "svg", null);
 
         // Set up the context
         return SVGGeneratorContext.createDefault(document);

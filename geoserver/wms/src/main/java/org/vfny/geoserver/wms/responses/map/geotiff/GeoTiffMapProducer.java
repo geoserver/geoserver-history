@@ -35,8 +35,7 @@ public class GeoTiffMapProducer extends DefaultRasterMapProducer {
             "org.vfny.geoserver.responses.wms.map.geotiff");
 
     /** GridCoverageFactory. */
-    private final static GridCoverageFactory factory = FactoryFinder
-        .getGridCoverageFactory(null);
+    private final static GridCoverageFactory factory = FactoryFinder.getGridCoverageFactory(null);
 
     /**
      * Constructo for a {@link GeoTiffMapProducer}.
@@ -52,8 +51,8 @@ public class GeoTiffMapProducer extends DefaultRasterMapProducer {
         super(oformat, mime_type, wms);
     }
 
-    public void formatImageOutputStream(RenderedImage image,
-        OutputStream outStream) throws WmsException, IOException {
+    public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
+        throws WmsException, IOException {
         // crating a grid coverage
         final GridCoverage2D gc = factory.create("geotiff", image,
                 new GeneralEnvelope(mapContext.getAreaOfInterest()));

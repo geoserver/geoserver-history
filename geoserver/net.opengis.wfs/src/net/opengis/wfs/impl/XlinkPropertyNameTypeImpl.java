@@ -30,8 +30,7 @@ import java.math.BigInteger;
  *
  * @generated
  */
-public class XlinkPropertyNameTypeImpl extends EObjectImpl
-    implements XlinkPropertyNameType {
+public class XlinkPropertyNameTypeImpl extends EObjectImpl implements XlinkPropertyNameType {
     /**
      * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -264,18 +263,16 @@ public class XlinkPropertyNameTypeImpl extends EObjectImpl
     public boolean eIsSet(int featureID) {
         switch (featureID) {
         case WfsPackage.XLINK_PROPERTY_NAME_TYPE__VALUE:
-            return (VALUE_EDEFAULT == null) ? (value != null)
-                                            : (!VALUE_EDEFAULT.equals(value));
+            return (VALUE_EDEFAULT == null) ? (value != null) : (!VALUE_EDEFAULT.equals(value));
 
         case WfsPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_DEPTH:
-            return (TRAVERSE_XLINK_DEPTH_EDEFAULT == null)
-            ? (traverseXlinkDepth != null)
-            : (!TRAVERSE_XLINK_DEPTH_EDEFAULT.equals(traverseXlinkDepth));
+            return (TRAVERSE_XLINK_DEPTH_EDEFAULT == null) ? (traverseXlinkDepth != null)
+                                                           : (!TRAVERSE_XLINK_DEPTH_EDEFAULT.equals(traverseXlinkDepth));
 
         case WfsPackage.XLINK_PROPERTY_NAME_TYPE__TRAVERSE_XLINK_EXPIRY:
-            return (TRAVERSE_XLINK_EXPIRY_EDEFAULT == null)
-            ? (traverseXlinkExpiry != null)
-            : (!TRAVERSE_XLINK_EXPIRY_EDEFAULT.equals(traverseXlinkExpiry));
+            return (TRAVERSE_XLINK_EXPIRY_EDEFAULT == null) ? (traverseXlinkExpiry != null)
+                                                            : (!TRAVERSE_XLINK_EXPIRY_EDEFAULT
+            .equals(traverseXlinkExpiry));
         }
 
         return super.eIsSet(featureID);

@@ -30,8 +30,7 @@ import java.math.BigInteger;
  *
  * @generated
  */
-public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl
-    implements GetGmlObjectType {
+public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl implements GetGmlObjectType {
     /**
      * The default value of the '{@link #getGmlObjectId() <em>Gml Object Id</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -159,8 +158,7 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.GET_GML_OBJECT_TYPE__GML_OBJECT_ID,
-                    oldGmlObjectId, gmlObjectId));
+                    WfsPackage.GET_GML_OBJECT_TYPE__GML_OBJECT_ID, oldGmlObjectId, gmlObjectId));
         }
     }
 
@@ -187,8 +185,8 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT,
-                    oldOutputFormat, outputFormat, !oldOutputFormatESet));
+                    WfsPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT, oldOutputFormat, outputFormat,
+                    !oldOutputFormatESet));
         }
     }
 
@@ -205,8 +203,8 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.UNSET,
-                    WfsPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT,
-                    oldOutputFormat, OUTPUT_FORMAT_EDEFAULT, oldOutputFormatESet));
+                    WfsPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT, oldOutputFormat,
+                    OUTPUT_FORMAT_EDEFAULT, oldOutputFormatESet));
         }
     }
 
@@ -239,8 +237,8 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_DEPTH,
-                    oldTraverseXlinkDepth, traverseXlinkDepth));
+                    WfsPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_DEPTH, oldTraverseXlinkDepth,
+                    traverseXlinkDepth));
         }
     }
 
@@ -264,8 +262,8 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl
 
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    WfsPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_EXPIRY,
-                    oldTraverseXlinkExpiry, traverseXlinkExpiry));
+                    WfsPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_EXPIRY, oldTraverseXlinkExpiry,
+                    traverseXlinkExpiry));
         }
     }
 
@@ -363,21 +361,19 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl
         switch (featureID) {
         case WfsPackage.GET_GML_OBJECT_TYPE__GML_OBJECT_ID:
             return (GML_OBJECT_ID_EDEFAULT == null) ? (gmlObjectId != null)
-                                                    : (!GML_OBJECT_ID_EDEFAULT
-            .equals(gmlObjectId));
+                                                    : (!GML_OBJECT_ID_EDEFAULT.equals(gmlObjectId));
 
         case WfsPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT:
             return isSetOutputFormat();
 
         case WfsPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_DEPTH:
-            return (TRAVERSE_XLINK_DEPTH_EDEFAULT == null)
-            ? (traverseXlinkDepth != null)
-            : (!TRAVERSE_XLINK_DEPTH_EDEFAULT.equals(traverseXlinkDepth));
+            return (TRAVERSE_XLINK_DEPTH_EDEFAULT == null) ? (traverseXlinkDepth != null)
+                                                           : (!TRAVERSE_XLINK_DEPTH_EDEFAULT.equals(traverseXlinkDepth));
 
         case WfsPackage.GET_GML_OBJECT_TYPE__TRAVERSE_XLINK_EXPIRY:
-            return (TRAVERSE_XLINK_EXPIRY_EDEFAULT == null)
-            ? (traverseXlinkExpiry != null)
-            : (!TRAVERSE_XLINK_EXPIRY_EDEFAULT.equals(traverseXlinkExpiry));
+            return (TRAVERSE_XLINK_EXPIRY_EDEFAULT == null) ? (traverseXlinkExpiry != null)
+                                                            : (!TRAVERSE_XLINK_EXPIRY_EDEFAULT
+            .equals(traverseXlinkExpiry));
         }
 
         return super.eIsSet(featureID);

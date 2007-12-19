@@ -34,8 +34,7 @@ public abstract class KvpRequestReaderTestSupport extends GeoServerTestSupport {
     protected Map parseKvp(Map /*<String,String>*/ raw)
         throws Exception {
         //parse the raw values
-        List parsers = GeoServerExtensions.extensions(KvpParser.class,
-                applicationContext);
+        List parsers = GeoServerExtensions.extensions(KvpParser.class, applicationContext);
         Map kvp = new CaseInsensitiveMap(new HashMap());
 
         for (Iterator e = raw.entrySet().iterator(); e.hasNext();) {

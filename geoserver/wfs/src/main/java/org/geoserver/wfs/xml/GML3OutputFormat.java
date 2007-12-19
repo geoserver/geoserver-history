@@ -36,10 +36,8 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     Data catalog;
     WFSConfiguration configuration;
 
-    public GML3OutputFormat(WFS wfs, Data catalog,
-        WFSConfiguration configuration) {
-        super(new HashSet(Arrays.asList(
-                    new Object[] { "gml3", "text/xml; subtype=gml/3.1.1" })));
+    public GML3OutputFormat(WFS wfs, Data catalog, WFSConfiguration configuration) {
+        super(new HashSet(Arrays.asList(new Object[] { "gml3", "text/xml; subtype=gml/3.1.1" })));
 
         this.wfs = wfs;
         this.catalog = catalog;
@@ -54,8 +52,8 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         return "GML3";
     }
 
-    protected void write(FeatureCollectionType results, OutputStream output,
-        Operation getFeature) throws ServiceException, IOException {
+    protected void write(FeatureCollectionType results, OutputStream output, Operation getFeature)
+        throws ServiceException, IOException {
         List featureCollections = results.getFeature();
 
         //round up the info objects for each feature collection
@@ -67,8 +65,8 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
 
             //load the metadata for the feature type
             String namespaceURI = featureType.getNamespace().toString();
-            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType
-                    .getTypeName(), namespaceURI);
+            FeatureTypeInfo meta = catalog.getFeatureTypeInfo(featureType.getTypeName(),
+                    namespaceURI);
 
             //add it to the map
             Set metas = (Set) ns2metas.get(namespaceURI);
@@ -89,8 +87,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(gft.getBaseUrl(),
                 wfs.getGeoServer().getProxyBaseUrl());
         encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
-            ResponseUtils.appendPath(proxifiedBaseUrl,
-                "schemas/wfs/1.1.0/wfs.xsd"));
+            ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd"));
 
         //declare application schema namespaces
         for (Iterator i = ns2metas.entrySet().iterator(); i.hasNext();) {
@@ -118,8 +115,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         }
 
         try {
-            encoder.encode(results,
-                org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output);
+            encoder.encode(results, org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output);
         } catch (SAXException e) {
             String msg = "Error occurred encoding features";
             throw (IOException) new IOException(msg).initCause(e);

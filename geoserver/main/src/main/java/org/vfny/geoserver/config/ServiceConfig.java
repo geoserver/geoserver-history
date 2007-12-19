@@ -126,8 +126,7 @@ public class ServiceConfig {
      */
     public void update(ServiceDTO dto) {
         if (dto == null) {
-            throw new NullPointerException(
-                "Service Data Transfer Object required");
+            throw new NullPointerException("Service Data Transfer Object required");
         }
 
         ServiceDTO s = (ServiceDTO) dto;

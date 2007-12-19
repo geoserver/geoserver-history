@@ -27,8 +27,7 @@ public class AcceptFormatsKvpParser extends KvpParser {
     public Object parse(String value) throws Exception {
         List values = KvpUtils.readFlat(value);
 
-        AcceptFormatsType acceptFormats = OwsFactory.eINSTANCE
-            .createAcceptFormatsType();
+        AcceptFormatsType acceptFormats = OwsFactory.eINSTANCE.createAcceptFormatsType();
 
         for (Iterator v = values.iterator(); v.hasNext();) {
             acceptFormats.getOutputFormat().add(v.next());

@@ -32,8 +32,7 @@ import java.util.Collection;
  *
  * @generated
  */
-public class GMLObjectTypeListTypeImpl extends EObjectImpl
-    implements GMLObjectTypeListType {
+public class GMLObjectTypeListTypeImpl extends EObjectImpl implements GMLObjectTypeListType {
     /**
      * The cached value of the '{@link #getGMLObjectType() <em>GML Object Type</em>}' containment reference list.
      * <!-- begin-user-doc -->
@@ -69,8 +68,8 @@ public class GMLObjectTypeListTypeImpl extends EObjectImpl
      */
     public EList getGMLObjectType() {
         if (gMLObjectType == null) {
-            gMLObjectType = new EObjectContainmentEList(GMLObjectTypeType.class,
-                    this, WfsPackage.GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE);
+            gMLObjectType = new EObjectContainmentEList(GMLObjectTypeType.class, this,
+                    WfsPackage.GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE);
         }
 
         return gMLObjectType;
@@ -81,12 +80,11 @@ public class GMLObjectTypeListTypeImpl extends EObjectImpl
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd,
-        int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
         case WfsPackage.GML_OBJECT_TYPE_LIST_TYPE__GML_OBJECT_TYPE:
-            return ((InternalEList) getGMLObjectType()).basicRemove(otherEnd,
-                msgs);
+            return ((InternalEList) getGMLObjectType()).basicRemove(otherEnd, msgs);
         }
 
         return super.eInverseRemove(otherEnd, featureID, msgs);

@@ -69,17 +69,15 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
      * @return DOCUMENT ME!
      */
     public String getContentDisposition() {
-        return compressOutput
-        ? ("attachment;filename=" + this.sourceCoverage.getName() + ".asc.gz")
-        : null;
+        return compressOutput ? ("attachment;filename=" + this.sourceCoverage.getName() + ".asc.gz")
+                              : null;
     }
 
-    public void encode(OutputStream output)
-        throws ServiceException, IOException {
+    public void encode(OutputStream output) throws ServiceException, IOException {
         if (sourceCoverage == null) {
             throw new IllegalStateException(new StringBuffer(
-                    "It seems prepare() has not been called").append(
-                    " or has not succeed").toString());
+                    "It seems prepare() has not been called").append(" or has not succeed")
+                                                                                                      .toString());
         }
 
         GZIPOutputStream gzipOut = null;
@@ -91,8 +89,7 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
 
         try {
             final GridCoverageWriter writer = new ArcGridWriter(output);
-            final ParameterValueGroup params = writer.getFormat()
-                                                     .getWriteParameters();
+            final ParameterValueGroup params = writer.getFormat().getWriteParameters();
             //params.parameter("Compressed").setValue(compressOutput);
             writer.write(sourceCoverage, null);
 

@@ -516,7 +516,7 @@ public class UserContainer implements HttpSessionBindingListener {
      *
      */
     public void setCoverageConfig(CoverageConfig coverageConfig) {
-    	this.coverageConfig = new CoverageConfig[1];
+        this.coverageConfig = new CoverageConfig[1];
         this.coverageConfig[0] = coverageConfig;
     }
 

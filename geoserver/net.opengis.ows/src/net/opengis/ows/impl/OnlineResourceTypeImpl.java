@@ -21,8 +21,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *
  * @generated
  */
-public class OnlineResourceTypeImpl extends EObjectImpl
-    implements OnlineResourceType {
+public class OnlineResourceTypeImpl extends EObjectImpl implements OnlineResourceType {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

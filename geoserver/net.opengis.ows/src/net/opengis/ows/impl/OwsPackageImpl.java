@@ -356,8 +356,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         // Obtain or create and register package
         OwsPackageImpl theOwsPackage = (OwsPackageImpl) ((EPackage.Registry.INSTANCE
             .getEPackage(eNS_URI) instanceof OwsPackageImpl)
-            ? EPackage.Registry.INSTANCE.getEPackage(eNS_URI)
-            : new OwsPackageImpl());
+            ? EPackage.Registry.INSTANCE.getEPackage(eNS_URI) : new OwsPackageImpl());
 
         isInited = true;
 
@@ -392,8 +391,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getAcceptFormatsType_OutputFormat() {
-        return (EAttribute) acceptFormatsTypeEClass.getEStructuralFeatures()
-                                                   .get(0);
+        return (EAttribute) acceptFormatsTypeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -411,8 +409,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getAcceptVersionsType_Version() {
-        return (EAttribute) acceptVersionsTypeEClass.getEStructuralFeatures()
-                                                    .get(0);
+        return (EAttribute) acceptVersionsTypeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -538,8 +535,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getCapabilitiesBaseType_ServiceIdentification() {
-        return (EReference) capabilitiesBaseTypeEClass.getEStructuralFeatures()
-                                                      .get(0);
+        return (EReference) capabilitiesBaseTypeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -548,8 +544,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getCapabilitiesBaseType_ServiceProvider() {
-        return (EReference) capabilitiesBaseTypeEClass.getEStructuralFeatures()
-                                                      .get(1);
+        return (EReference) capabilitiesBaseTypeEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -558,8 +553,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getCapabilitiesBaseType_OperationsMetadata() {
-        return (EReference) capabilitiesBaseTypeEClass.getEStructuralFeatures()
-                                                      .get(2);
+        return (EReference) capabilitiesBaseTypeEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -568,8 +562,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getCapabilitiesBaseType_UpdateSequence() {
-        return (EAttribute) capabilitiesBaseTypeEClass.getEStructuralFeatures()
-                                                      .get(3);
+        return (EAttribute) capabilitiesBaseTypeEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -578,8 +571,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getCapabilitiesBaseType_Version() {
-        return (EAttribute) capabilitiesBaseTypeEClass.getEStructuralFeatures()
-                                                      .get(4);
+        return (EAttribute) capabilitiesBaseTypeEClass.getEStructuralFeatures().get(4);
     }
 
     /**
@@ -1074,8 +1066,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getExceptionReportType_Exception() {
-        return (EReference) exceptionReportTypeEClass.getEStructuralFeatures()
-                                                     .get(0);
+        return (EReference) exceptionReportTypeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1084,8 +1075,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getExceptionReportType_Language() {
-        return (EAttribute) exceptionReportTypeEClass.getEStructuralFeatures()
-                                                     .get(1);
+        return (EAttribute) exceptionReportTypeEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1094,8 +1084,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getExceptionReportType_Version() {
-        return (EAttribute) exceptionReportTypeEClass.getEStructuralFeatures()
-                                                     .get(2);
+        return (EAttribute) exceptionReportTypeEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1149,8 +1138,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getGetCapabilitiesType_AcceptVersions() {
-        return (EReference) getCapabilitiesTypeEClass.getEStructuralFeatures()
-                                                     .get(0);
+        return (EReference) getCapabilitiesTypeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1159,8 +1147,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getGetCapabilitiesType_Sections() {
-        return (EReference) getCapabilitiesTypeEClass.getEStructuralFeatures()
-                                                     .get(1);
+        return (EReference) getCapabilitiesTypeEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1169,8 +1156,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getGetCapabilitiesType_AcceptFormats() {
-        return (EReference) getCapabilitiesTypeEClass.getEStructuralFeatures()
-                                                     .get(2);
+        return (EReference) getCapabilitiesTypeEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1179,8 +1165,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getGetCapabilitiesType_UpdateSequence() {
-        return (EAttribute) getCapabilitiesTypeEClass.getEStructuralFeatures()
-                                                     .get(3);
+        return (EAttribute) getCapabilitiesTypeEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -1189,8 +1174,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getGetCapabilitiesType_BaseUrl() {
-        return (EAttribute) getCapabilitiesTypeEClass.getEStructuralFeatures()
-                                                     .get(4);
+        return (EAttribute) getCapabilitiesTypeEClass.getEStructuralFeatures().get(4);
     }
 
     /**
@@ -1244,8 +1228,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getIdentificationType_Identifier() {
-        return (EReference) identificationTypeEClass.getEStructuralFeatures()
-                                                    .get(0);
+        return (EReference) identificationTypeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1254,8 +1237,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getIdentificationType_BoundingBoxGroup() {
-        return (EAttribute) identificationTypeEClass.getEStructuralFeatures()
-                                                    .get(1);
+        return (EAttribute) identificationTypeEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1264,8 +1246,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getIdentificationType_BoundingBox() {
-        return (EReference) identificationTypeEClass.getEStructuralFeatures()
-                                                    .get(2);
+        return (EReference) identificationTypeEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1274,8 +1255,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getIdentificationType_OutputFormat() {
-        return (EAttribute) identificationTypeEClass.getEStructuralFeatures()
-                                                    .get(3);
+        return (EAttribute) identificationTypeEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -1284,8 +1264,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getIdentificationType_AvailableCRSGroup() {
-        return (EAttribute) identificationTypeEClass.getEStructuralFeatures()
-                                                    .get(4);
+        return (EAttribute) identificationTypeEClass.getEStructuralFeatures().get(4);
     }
 
     /**
@@ -1294,8 +1273,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getIdentificationType_AvailableCRS() {
-        return (EAttribute) identificationTypeEClass.getEStructuralFeatures()
-                                                    .get(5);
+        return (EAttribute) identificationTypeEClass.getEStructuralFeatures().get(5);
     }
 
     /**
@@ -1304,8 +1282,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getIdentificationType_Metadata() {
-        return (EReference) identificationTypeEClass.getEStructuralFeatures()
-                                                    .get(6);
+        return (EReference) identificationTypeEClass.getEStructuralFeatures().get(6);
     }
 
     /**
@@ -1449,8 +1426,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getOperationsMetadataType_Operation() {
-        return (EReference) operationsMetadataTypeEClass.getEStructuralFeatures()
-                                                        .get(0);
+        return (EReference) operationsMetadataTypeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1459,8 +1435,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getOperationsMetadataType_Parameter() {
-        return (EReference) operationsMetadataTypeEClass.getEStructuralFeatures()
-                                                        .get(1);
+        return (EReference) operationsMetadataTypeEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1469,8 +1444,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getOperationsMetadataType_Constraint() {
-        return (EReference) operationsMetadataTypeEClass.getEStructuralFeatures()
-                                                        .get(2);
+        return (EReference) operationsMetadataTypeEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1479,8 +1453,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getOperationsMetadataType_ExtendedCapabilities() {
-        return (EReference) operationsMetadataTypeEClass.getEStructuralFeatures()
-                                                        .get(3);
+        return (EReference) operationsMetadataTypeEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -1498,8 +1471,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getRequestMethodType_Constraint() {
-        return (EReference) requestMethodTypeEClass.getEStructuralFeatures()
-                                                   .get(0);
+        return (EReference) requestMethodTypeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1517,8 +1489,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getResponsiblePartySubsetType_IndividualName() {
-        return (EAttribute) responsiblePartySubsetTypeEClass.getEStructuralFeatures()
-                                                            .get(0);
+        return (EAttribute) responsiblePartySubsetTypeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1527,8 +1498,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getResponsiblePartySubsetType_PositionName() {
-        return (EAttribute) responsiblePartySubsetTypeEClass.getEStructuralFeatures()
-                                                            .get(1);
+        return (EAttribute) responsiblePartySubsetTypeEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1537,8 +1507,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getResponsiblePartySubsetType_ContactInfo() {
-        return (EReference) responsiblePartySubsetTypeEClass.getEStructuralFeatures()
-                                                            .get(2);
+        return (EReference) responsiblePartySubsetTypeEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1547,8 +1516,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getResponsiblePartySubsetType_Role() {
-        return (EReference) responsiblePartySubsetTypeEClass.getEStructuralFeatures()
-                                                            .get(3);
+        return (EReference) responsiblePartySubsetTypeEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -1566,8 +1534,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getResponsiblePartyType_IndividualName() {
-        return (EAttribute) responsiblePartyTypeEClass.getEStructuralFeatures()
-                                                      .get(0);
+        return (EAttribute) responsiblePartyTypeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1576,8 +1543,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getResponsiblePartyType_OrganisationName() {
-        return (EAttribute) responsiblePartyTypeEClass.getEStructuralFeatures()
-                                                      .get(1);
+        return (EAttribute) responsiblePartyTypeEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1586,8 +1552,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getResponsiblePartyType_PositionName() {
-        return (EAttribute) responsiblePartyTypeEClass.getEStructuralFeatures()
-                                                      .get(2);
+        return (EAttribute) responsiblePartyTypeEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1596,8 +1561,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getResponsiblePartyType_ContactInfo() {
-        return (EReference) responsiblePartyTypeEClass.getEStructuralFeatures()
-                                                      .get(3);
+        return (EReference) responsiblePartyTypeEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -1606,8 +1570,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getResponsiblePartyType_Role() {
-        return (EReference) responsiblePartyTypeEClass.getEStructuralFeatures()
-                                                      .get(4);
+        return (EReference) responsiblePartyTypeEClass.getEStructuralFeatures().get(4);
     }
 
     /**
@@ -1643,8 +1606,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getServiceIdentificationType_ServiceType() {
-        return (EReference) serviceIdentificationTypeEClass.getEStructuralFeatures()
-                                                           .get(0);
+        return (EReference) serviceIdentificationTypeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1653,8 +1615,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getServiceIdentificationType_ServiceTypeVersion() {
-        return (EAttribute) serviceIdentificationTypeEClass.getEStructuralFeatures()
-                                                           .get(1);
+        return (EAttribute) serviceIdentificationTypeEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1663,8 +1624,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getServiceIdentificationType_Fees() {
-        return (EAttribute) serviceIdentificationTypeEClass.getEStructuralFeatures()
-                                                           .get(2);
+        return (EAttribute) serviceIdentificationTypeEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1673,8 +1633,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getServiceIdentificationType_AccessConstraints() {
-        return (EAttribute) serviceIdentificationTypeEClass.getEStructuralFeatures()
-                                                           .get(3);
+        return (EAttribute) serviceIdentificationTypeEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -1692,8 +1651,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EAttribute getServiceProviderType_ProviderName() {
-        return (EAttribute) serviceProviderTypeEClass.getEStructuralFeatures()
-                                                     .get(0);
+        return (EAttribute) serviceProviderTypeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -1702,8 +1660,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getServiceProviderType_ProviderSite() {
-        return (EReference) serviceProviderTypeEClass.getEStructuralFeatures()
-                                                     .get(1);
+        return (EReference) serviceProviderTypeEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -1712,8 +1669,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
      * @generated
      */
     public EReference getServiceProviderType_ServiceContact() {
-        return (EReference) serviceProviderTypeEClass.getEStructuralFeatures()
-                                                     .get(2);
+        return (EReference) serviceProviderTypeEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -1813,8 +1769,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
 
         // Create classes and their features
         acceptFormatsTypeEClass = createEClass(ACCEPT_FORMATS_TYPE);
-        createEAttribute(acceptFormatsTypeEClass,
-            ACCEPT_FORMATS_TYPE__OUTPUT_FORMAT);
+        createEAttribute(acceptFormatsTypeEClass, ACCEPT_FORMATS_TYPE__OUTPUT_FORMAT);
 
         acceptVersionsTypeEClass = createEClass(ACCEPT_VERSIONS_TYPE);
         createEAttribute(acceptVersionsTypeEClass, ACCEPT_VERSIONS_TYPE__VERSION);
@@ -1825,8 +1780,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         createEAttribute(addressTypeEClass, ADDRESS_TYPE__ADMINISTRATIVE_AREA);
         createEAttribute(addressTypeEClass, ADDRESS_TYPE__POSTAL_CODE);
         createEAttribute(addressTypeEClass, ADDRESS_TYPE__COUNTRY);
-        createEAttribute(addressTypeEClass,
-            ADDRESS_TYPE__ELECTRONIC_MAIL_ADDRESS);
+        createEAttribute(addressTypeEClass, ADDRESS_TYPE__ELECTRONIC_MAIL_ADDRESS);
 
         boundingBoxTypeEClass = createEClass(BOUNDING_BOX_TYPE);
         createEAttribute(boundingBoxTypeEClass, BOUNDING_BOX_TYPE__LOWER_CORNER);
@@ -1835,16 +1789,11 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         createEAttribute(boundingBoxTypeEClass, BOUNDING_BOX_TYPE__DIMENSIONS);
 
         capabilitiesBaseTypeEClass = createEClass(CAPABILITIES_BASE_TYPE);
-        createEReference(capabilitiesBaseTypeEClass,
-            CAPABILITIES_BASE_TYPE__SERVICE_IDENTIFICATION);
-        createEReference(capabilitiesBaseTypeEClass,
-            CAPABILITIES_BASE_TYPE__SERVICE_PROVIDER);
-        createEReference(capabilitiesBaseTypeEClass,
-            CAPABILITIES_BASE_TYPE__OPERATIONS_METADATA);
-        createEAttribute(capabilitiesBaseTypeEClass,
-            CAPABILITIES_BASE_TYPE__UPDATE_SEQUENCE);
-        createEAttribute(capabilitiesBaseTypeEClass,
-            CAPABILITIES_BASE_TYPE__VERSION);
+        createEReference(capabilitiesBaseTypeEClass, CAPABILITIES_BASE_TYPE__SERVICE_IDENTIFICATION);
+        createEReference(capabilitiesBaseTypeEClass, CAPABILITIES_BASE_TYPE__SERVICE_PROVIDER);
+        createEReference(capabilitiesBaseTypeEClass, CAPABILITIES_BASE_TYPE__OPERATIONS_METADATA);
+        createEAttribute(capabilitiesBaseTypeEClass, CAPABILITIES_BASE_TYPE__UPDATE_SEQUENCE);
+        createEAttribute(capabilitiesBaseTypeEClass, CAPABILITIES_BASE_TYPE__VERSION);
 
         codeTypeEClass = createEClass(CODE_TYPE);
         createEAttribute(codeTypeEClass, CODE_TYPE__VALUE);
@@ -1885,8 +1834,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         createEReference(documentRootEClass, DOCUMENT_ROOT__DCP);
         createEReference(documentRootEClass, DOCUMENT_ROOT__EXCEPTION);
         createEReference(documentRootEClass, DOCUMENT_ROOT__EXCEPTION_REPORT);
-        createEReference(documentRootEClass,
-            DOCUMENT_ROOT__EXTENDED_CAPABILITIES);
+        createEReference(documentRootEClass, DOCUMENT_ROOT__EXTENDED_CAPABILITIES);
         createEAttribute(documentRootEClass, DOCUMENT_ROOT__FEES);
         createEReference(documentRootEClass, DOCUMENT_ROOT__GET_CAPABILITIES);
         createEReference(documentRootEClass, DOCUMENT_ROOT__HTTP);
@@ -1896,8 +1844,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         createEReference(documentRootEClass, DOCUMENT_ROOT__OPERATION);
         createEReference(documentRootEClass, DOCUMENT_ROOT__OPERATIONS_METADATA);
         createEAttribute(documentRootEClass, DOCUMENT_ROOT__OUTPUT_FORMAT);
-        createEReference(documentRootEClass,
-            DOCUMENT_ROOT__SERVICE_IDENTIFICATION);
+        createEReference(documentRootEClass, DOCUMENT_ROOT__SERVICE_IDENTIFICATION);
         createEReference(documentRootEClass, DOCUMENT_ROOT__SERVICE_PROVIDER);
         createEAttribute(documentRootEClass, DOCUMENT_ROOT__SUPPORTED_CRS);
         createEReference(documentRootEClass, DOCUMENT_ROOT__WG_S84_BOUNDING_BOX);
@@ -1908,12 +1855,9 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         createEAttribute(domainTypeEClass, DOMAIN_TYPE__NAME);
 
         exceptionReportTypeEClass = createEClass(EXCEPTION_REPORT_TYPE);
-        createEReference(exceptionReportTypeEClass,
-            EXCEPTION_REPORT_TYPE__EXCEPTION);
-        createEAttribute(exceptionReportTypeEClass,
-            EXCEPTION_REPORT_TYPE__LANGUAGE);
-        createEAttribute(exceptionReportTypeEClass,
-            EXCEPTION_REPORT_TYPE__VERSION);
+        createEReference(exceptionReportTypeEClass, EXCEPTION_REPORT_TYPE__EXCEPTION);
+        createEAttribute(exceptionReportTypeEClass, EXCEPTION_REPORT_TYPE__LANGUAGE);
+        createEAttribute(exceptionReportTypeEClass, EXCEPTION_REPORT_TYPE__VERSION);
 
         exceptionTypeEClass = createEClass(EXCEPTION_TYPE);
         createEAttribute(exceptionTypeEClass, EXCEPTION_TYPE__EXCEPTION_TEXT);
@@ -1921,16 +1865,11 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         createEAttribute(exceptionTypeEClass, EXCEPTION_TYPE__LOCATOR);
 
         getCapabilitiesTypeEClass = createEClass(GET_CAPABILITIES_TYPE);
-        createEReference(getCapabilitiesTypeEClass,
-            GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS);
-        createEReference(getCapabilitiesTypeEClass,
-            GET_CAPABILITIES_TYPE__SECTIONS);
-        createEReference(getCapabilitiesTypeEClass,
-            GET_CAPABILITIES_TYPE__ACCEPT_FORMATS);
-        createEAttribute(getCapabilitiesTypeEClass,
-            GET_CAPABILITIES_TYPE__UPDATE_SEQUENCE);
-        createEAttribute(getCapabilitiesTypeEClass,
-            GET_CAPABILITIES_TYPE__BASE_URL);
+        createEReference(getCapabilitiesTypeEClass, GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS);
+        createEReference(getCapabilitiesTypeEClass, GET_CAPABILITIES_TYPE__SECTIONS);
+        createEReference(getCapabilitiesTypeEClass, GET_CAPABILITIES_TYPE__ACCEPT_FORMATS);
+        createEAttribute(getCapabilitiesTypeEClass, GET_CAPABILITIES_TYPE__UPDATE_SEQUENCE);
+        createEAttribute(getCapabilitiesTypeEClass, GET_CAPABILITIES_TYPE__BASE_URL);
 
         httpTypeEClass = createEClass(HTTP_TYPE);
         createEAttribute(httpTypeEClass, HTTP_TYPE__GROUP);
@@ -1938,18 +1877,12 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         createEReference(httpTypeEClass, HTTP_TYPE__POST);
 
         identificationTypeEClass = createEClass(IDENTIFICATION_TYPE);
-        createEReference(identificationTypeEClass,
-            IDENTIFICATION_TYPE__IDENTIFIER);
-        createEAttribute(identificationTypeEClass,
-            IDENTIFICATION_TYPE__BOUNDING_BOX_GROUP);
-        createEReference(identificationTypeEClass,
-            IDENTIFICATION_TYPE__BOUNDING_BOX);
-        createEAttribute(identificationTypeEClass,
-            IDENTIFICATION_TYPE__OUTPUT_FORMAT);
-        createEAttribute(identificationTypeEClass,
-            IDENTIFICATION_TYPE__AVAILABLE_CRS_GROUP);
-        createEAttribute(identificationTypeEClass,
-            IDENTIFICATION_TYPE__AVAILABLE_CRS);
+        createEReference(identificationTypeEClass, IDENTIFICATION_TYPE__IDENTIFIER);
+        createEAttribute(identificationTypeEClass, IDENTIFICATION_TYPE__BOUNDING_BOX_GROUP);
+        createEReference(identificationTypeEClass, IDENTIFICATION_TYPE__BOUNDING_BOX);
+        createEAttribute(identificationTypeEClass, IDENTIFICATION_TYPE__OUTPUT_FORMAT);
+        createEAttribute(identificationTypeEClass, IDENTIFICATION_TYPE__AVAILABLE_CRS_GROUP);
+        createEAttribute(identificationTypeEClass, IDENTIFICATION_TYPE__AVAILABLE_CRS);
         createEReference(identificationTypeEClass, IDENTIFICATION_TYPE__METADATA);
 
         keywordsTypeEClass = createEClass(KEYWORDS_TYPE);
@@ -1957,8 +1890,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         createEReference(keywordsTypeEClass, KEYWORDS_TYPE__TYPE);
 
         metadataTypeEClass = createEClass(METADATA_TYPE);
-        createEAttribute(metadataTypeEClass,
-            METADATA_TYPE__ABSTRACT_META_DATA_GROUP);
+        createEAttribute(metadataTypeEClass, METADATA_TYPE__ABSTRACT_META_DATA_GROUP);
         createEReference(metadataTypeEClass, METADATA_TYPE__ABSTRACT_META_DATA);
         createEAttribute(metadataTypeEClass, METADATA_TYPE__ABOUT);
 
@@ -1972,18 +1904,14 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         createEAttribute(operationTypeEClass, OPERATION_TYPE__NAME);
 
         operationsMetadataTypeEClass = createEClass(OPERATIONS_METADATA_TYPE);
-        createEReference(operationsMetadataTypeEClass,
-            OPERATIONS_METADATA_TYPE__OPERATION);
-        createEReference(operationsMetadataTypeEClass,
-            OPERATIONS_METADATA_TYPE__PARAMETER);
-        createEReference(operationsMetadataTypeEClass,
-            OPERATIONS_METADATA_TYPE__CONSTRAINT);
+        createEReference(operationsMetadataTypeEClass, OPERATIONS_METADATA_TYPE__OPERATION);
+        createEReference(operationsMetadataTypeEClass, OPERATIONS_METADATA_TYPE__PARAMETER);
+        createEReference(operationsMetadataTypeEClass, OPERATIONS_METADATA_TYPE__CONSTRAINT);
         createEReference(operationsMetadataTypeEClass,
             OPERATIONS_METADATA_TYPE__EXTENDED_CAPABILITIES);
 
         requestMethodTypeEClass = createEClass(REQUEST_METHOD_TYPE);
-        createEReference(requestMethodTypeEClass,
-            REQUEST_METHOD_TYPE__CONSTRAINT);
+        createEReference(requestMethodTypeEClass, REQUEST_METHOD_TYPE__CONSTRAINT);
 
         responsiblePartySubsetTypeEClass = createEClass(RESPONSIBLE_PARTY_SUBSET_TYPE);
         createEAttribute(responsiblePartySubsetTypeEClass,
@@ -1992,41 +1920,30 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
             RESPONSIBLE_PARTY_SUBSET_TYPE__POSITION_NAME);
         createEReference(responsiblePartySubsetTypeEClass,
             RESPONSIBLE_PARTY_SUBSET_TYPE__CONTACT_INFO);
-        createEReference(responsiblePartySubsetTypeEClass,
-            RESPONSIBLE_PARTY_SUBSET_TYPE__ROLE);
+        createEReference(responsiblePartySubsetTypeEClass, RESPONSIBLE_PARTY_SUBSET_TYPE__ROLE);
 
         responsiblePartyTypeEClass = createEClass(RESPONSIBLE_PARTY_TYPE);
-        createEAttribute(responsiblePartyTypeEClass,
-            RESPONSIBLE_PARTY_TYPE__INDIVIDUAL_NAME);
-        createEAttribute(responsiblePartyTypeEClass,
-            RESPONSIBLE_PARTY_TYPE__ORGANISATION_NAME);
-        createEAttribute(responsiblePartyTypeEClass,
-            RESPONSIBLE_PARTY_TYPE__POSITION_NAME);
-        createEReference(responsiblePartyTypeEClass,
-            RESPONSIBLE_PARTY_TYPE__CONTACT_INFO);
-        createEReference(responsiblePartyTypeEClass,
-            RESPONSIBLE_PARTY_TYPE__ROLE);
+        createEAttribute(responsiblePartyTypeEClass, RESPONSIBLE_PARTY_TYPE__INDIVIDUAL_NAME);
+        createEAttribute(responsiblePartyTypeEClass, RESPONSIBLE_PARTY_TYPE__ORGANISATION_NAME);
+        createEAttribute(responsiblePartyTypeEClass, RESPONSIBLE_PARTY_TYPE__POSITION_NAME);
+        createEReference(responsiblePartyTypeEClass, RESPONSIBLE_PARTY_TYPE__CONTACT_INFO);
+        createEReference(responsiblePartyTypeEClass, RESPONSIBLE_PARTY_TYPE__ROLE);
 
         sectionsTypeEClass = createEClass(SECTIONS_TYPE);
         createEAttribute(sectionsTypeEClass, SECTIONS_TYPE__SECTION);
 
         serviceIdentificationTypeEClass = createEClass(SERVICE_IDENTIFICATION_TYPE);
-        createEReference(serviceIdentificationTypeEClass,
-            SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE);
+        createEReference(serviceIdentificationTypeEClass, SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE);
         createEAttribute(serviceIdentificationTypeEClass,
             SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE_VERSION);
-        createEAttribute(serviceIdentificationTypeEClass,
-            SERVICE_IDENTIFICATION_TYPE__FEES);
+        createEAttribute(serviceIdentificationTypeEClass, SERVICE_IDENTIFICATION_TYPE__FEES);
         createEAttribute(serviceIdentificationTypeEClass,
             SERVICE_IDENTIFICATION_TYPE__ACCESS_CONSTRAINTS);
 
         serviceProviderTypeEClass = createEClass(SERVICE_PROVIDER_TYPE);
-        createEAttribute(serviceProviderTypeEClass,
-            SERVICE_PROVIDER_TYPE__PROVIDER_NAME);
-        createEReference(serviceProviderTypeEClass,
-            SERVICE_PROVIDER_TYPE__PROVIDER_SITE);
-        createEReference(serviceProviderTypeEClass,
-            SERVICE_PROVIDER_TYPE__SERVICE_CONTACT);
+        createEAttribute(serviceProviderTypeEClass, SERVICE_PROVIDER_TYPE__PROVIDER_NAME);
+        createEReference(serviceProviderTypeEClass, SERVICE_PROVIDER_TYPE__PROVIDER_SITE);
+        createEReference(serviceProviderTypeEClass, SERVICE_PROVIDER_TYPE__SERVICE_CONTACT);
 
         telephoneTypeEClass = createEClass(TELEPHONE_TYPE);
         createEAttribute(telephoneTypeEClass, TELEPHONE_TYPE__VOICE);
@@ -2061,666 +1978,497 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         setNsURI(eNS_URI);
 
         // Obtain other dependent packages
-        XMLTypePackage theXMLTypePackage = (XMLTypePackage) EPackage.Registry.INSTANCE
-            .getEPackage(XMLTypePackage.eNS_URI);
-        EcorePackage theEcorePackage = (EcorePackage) EPackage.Registry.INSTANCE
-            .getEPackage(EcorePackage.eNS_URI);
+        XMLTypePackage theXMLTypePackage = (XMLTypePackage) EPackage.Registry.INSTANCE.getEPackage(XMLTypePackage.eNS_URI);
+        EcorePackage theEcorePackage = (EcorePackage) EPackage.Registry.INSTANCE.getEPackage(EcorePackage.eNS_URI);
 
         // Add supertypes to classes
         identificationTypeEClass.getESuperTypes().add(this.getDescriptionType());
-        requestMethodTypeEClass.getESuperTypes()
-                               .add(this.getOnlineResourceType());
-        serviceIdentificationTypeEClass.getESuperTypes()
-                                       .add(this.getDescriptionType());
-        wgs84BoundingBoxTypeEClass.getESuperTypes()
-                                  .add(this.getBoundingBoxType());
+        requestMethodTypeEClass.getESuperTypes().add(this.getOnlineResourceType());
+        serviceIdentificationTypeEClass.getESuperTypes().add(this.getDescriptionType());
+        wgs84BoundingBoxTypeEClass.getESuperTypes().add(this.getBoundingBoxType());
 
         // Initialize classes and features; add operations and parameters
-        initEClass(acceptFormatsTypeEClass, AcceptFormatsType.class,
-            "AcceptFormatsType", !IS_ABSTRACT, !IS_INTERFACE,
-            IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getAcceptFormatsType_OutputFormat(), this.getMimeType(),
-            "outputFormat", null, 0, -1, AcceptFormatsType.class,
-            !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-        initEClass(acceptVersionsTypeEClass, AcceptVersionsType.class,
-            "AcceptVersionsType", !IS_ABSTRACT, !IS_INTERFACE,
-            IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getAcceptVersionsType_Version(), this.getMimeType(),
-            "version", null, 0, -1, AcceptVersionsType.class, !IS_TRANSIENT,
-            !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-            !IS_DERIVED, IS_ORDERED);
-
-        initEClass(addressTypeEClass, AddressType.class, "AddressType",
+        initEClass(acceptFormatsTypeEClass, AcceptFormatsType.class, "AcceptFormatsType",
             !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getAddressType_DeliveryPoint(),
-            theXMLTypePackage.getString(), "deliveryPoint", null, 0, 1,
-            AddressType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getAddressType_City(), theXMLTypePackage.getString(),
-            "city", null, 0, 1, AddressType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEAttribute(getAddressType_AdministrativeArea(),
-            theXMLTypePackage.getString(), "administrativeArea", null, 0, 1,
-            AddressType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getAddressType_PostalCode(),
-            theXMLTypePackage.getString(), "postalCode", null, 0, 1,
-            AddressType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getAddressType_Country(), theXMLTypePackage.getString(),
-            "country", null, 0, 1, AddressType.class, !IS_TRANSIENT,
-            !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
-            !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getAddressType_ElectronicMailAddress(),
-            theXMLTypePackage.getString(), "electronicMailAddress", null, 0, 1,
-            AddressType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAcceptFormatsType_OutputFormat(), this.getMimeType(), "outputFormat",
+            null, 0, -1, AcceptFormatsType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-        initEClass(boundingBoxTypeEClass, BoundingBoxType.class,
-            "BoundingBoxType", !IS_ABSTRACT, !IS_INTERFACE,
-            IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getBoundingBoxType_LowerCorner(),
-            this.getPositionType(), "lowerCorner", null, 1, 1,
-            BoundingBoxType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getBoundingBoxType_UpperCorner(),
-            this.getPositionType(), "upperCorner", null, 1, 1,
-            BoundingBoxType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getBoundingBoxType_Crs(), theXMLTypePackage.getAnyURI(),
-            "crs", null, 0, 1, BoundingBoxType.class, !IS_TRANSIENT,
-            !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
-            !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getBoundingBoxType_Dimensions(),
-            theXMLTypePackage.getPositiveInteger(), "dimensions", null, 0, 1,
-            BoundingBoxType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEClass(acceptVersionsTypeEClass, AcceptVersionsType.class, "AcceptVersionsType",
+            !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getAcceptVersionsType_Version(), this.getMimeType(), "version", null, 0, -1,
+            AcceptVersionsType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+            !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-        initEClass(capabilitiesBaseTypeEClass, CapabilitiesBaseType.class,
-            "CapabilitiesBaseType", !IS_ABSTRACT, !IS_INTERFACE,
-            IS_GENERATED_INSTANCE_CLASS);
+        initEClass(addressTypeEClass, AddressType.class, "AddressType", !IS_ABSTRACT,
+            !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getAddressType_DeliveryPoint(), theXMLTypePackage.getString(),
+            "deliveryPoint", null, 0, 1, AddressType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAddressType_City(), theXMLTypePackage.getString(), "city", null, 0, 1,
+            AddressType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+            !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAddressType_AdministrativeArea(), theXMLTypePackage.getString(),
+            "administrativeArea", null, 0, 1, AddressType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAddressType_PostalCode(), theXMLTypePackage.getString(), "postalCode",
+            null, 0, 1, AddressType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAddressType_Country(), theXMLTypePackage.getString(), "country", null, 0,
+            1, AddressType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+            !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAddressType_ElectronicMailAddress(), theXMLTypePackage.getString(),
+            "electronicMailAddress", null, 0, 1, AddressType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(boundingBoxTypeEClass, BoundingBoxType.class, "BoundingBoxType", !IS_ABSTRACT,
+            !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getBoundingBoxType_LowerCorner(), this.getPositionType(), "lowerCorner",
+            null, 1, 1, BoundingBoxType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getBoundingBoxType_UpperCorner(), this.getPositionType(), "upperCorner",
+            null, 1, 1, BoundingBoxType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getBoundingBoxType_Crs(), theXMLTypePackage.getAnyURI(), "crs", null, 0, 1,
+            BoundingBoxType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+            !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getBoundingBoxType_Dimensions(), theXMLTypePackage.getPositiveInteger(),
+            "dimensions", null, 0, 1, BoundingBoxType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(capabilitiesBaseTypeEClass, CapabilitiesBaseType.class, "CapabilitiesBaseType",
+            !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getCapabilitiesBaseType_ServiceIdentification(),
-            this.getServiceIdentificationType(), null, "serviceIdentification",
-            null, 0, 1, CapabilitiesBaseType.class, !IS_TRANSIENT,
-            !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-            !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getCapabilitiesBaseType_ServiceProvider(),
-            this.getServiceProviderType(), null, "serviceProvider", null, 0, 1,
-            CapabilitiesBaseType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+            this.getServiceIdentificationType(), null, "serviceIdentification", null, 0, 1,
+            CapabilitiesBaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getCapabilitiesBaseType_ServiceProvider(), this.getServiceProviderType(),
+            null, "serviceProvider", null, 0, 1, CapabilitiesBaseType.class, !IS_TRANSIENT,
+            !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
             IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getCapabilitiesBaseType_OperationsMetadata(),
-            this.getOperationsMetadataType(), null, "operationsMetadata", null,
-            0, 1, CapabilitiesBaseType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getCapabilitiesBaseType_UpdateSequence(),
-            this.getUpdateSequenceType(), "updateSequence", null, 0, 1,
-            CapabilitiesBaseType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEAttribute(getCapabilitiesBaseType_Version(),
-            this.getVersionType(), "version", null, 1, 1,
-            CapabilitiesBaseType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-
-        initEClass(codeTypeEClass, CodeType.class, "CodeType", !IS_ABSTRACT,
-            !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getCodeType_Value(), theXMLTypePackage.getString(),
-            "value", null, 0, 1, CodeType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEAttribute(getCodeType_CodeSpace(), theXMLTypePackage.getAnyURI(),
-            "codeSpace", null, 0, 1, CodeType.class, !IS_TRANSIENT,
-            !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
-            !IS_DERIVED, IS_ORDERED);
-
-        initEClass(contactTypeEClass, ContactType.class, "ContactType",
-            !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEReference(getContactType_Phone(), this.getTelephoneType(), null,
-            "phone", null, 0, 1, ContactType.class, !IS_TRANSIENT,
-            !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-            !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getContactType_Address(), this.getAddressType(), null,
-            "address", null, 0, 1, ContactType.class, !IS_TRANSIENT,
-            !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-            !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getContactType_OnlineResource(),
-            this.getOnlineResourceType(), null, "onlineResource", null, 0, 1,
-            ContactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
-            !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getContactType_HoursOfService(),
-            theXMLTypePackage.getString(), "hoursOfService", null, 0, 1,
-            ContactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getContactType_ContactInstructions(),
-            theXMLTypePackage.getString(), "contactInstructions", null, 0, 1,
-            ContactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            this.getOperationsMetadataType(), null, "operationsMetadata", null, 0, 1,
+            CapabilitiesBaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getCapabilitiesBaseType_UpdateSequence(), this.getUpdateSequenceType(),
+            "updateSequence", null, 0, 1, CapabilitiesBaseType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getCapabilitiesBaseType_Version(), this.getVersionType(), "version", null,
+            1, 1, CapabilitiesBaseType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
             !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-        initEClass(dcpTypeEClass, DCPType.class, "DCPType", !IS_ABSTRACT,
-            !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEReference(getDCPType_HTTP(), this.getHTTPType(), null, "hTTP",
-            null, 0, 1, DCPType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-        initEClass(descriptionTypeEClass, DescriptionType.class,
-            "DescriptionType", !IS_ABSTRACT, !IS_INTERFACE,
+        initEClass(codeTypeEClass, CodeType.class, "CodeType", !IS_ABSTRACT, !IS_INTERFACE,
             IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getDescriptionType_Title(),
-            theXMLTypePackage.getString(), "title", null, 0, 1,
-            DescriptionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getDescriptionType_Abstract(),
-            theXMLTypePackage.getString(), "abstract", null, 0, 1,
-            DescriptionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getDescriptionType_Keywords(), this.getKeywordsType(),
-            null, "keywords", null, 0, -1, DescriptionType.class,
-            !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
+        initEAttribute(getCodeType_Value(), theXMLTypePackage.getString(), "value", null, 0, 1,
+            CodeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+            !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getCodeType_CodeSpace(), theXMLTypePackage.getAnyURI(), "codeSpace", null,
+            0, 1, CodeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+            !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-        initEClass(documentRootEClass, DocumentRoot.class, "DocumentRoot",
-            !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getDocumentRoot_Mixed(),
-            theEcorePackage.getEFeatureMapEntry(), "mixed", null, 0, -1, null,
-            !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+        initEClass(contactTypeEClass, ContactType.class, "ContactType", !IS_ABSTRACT,
+            !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getContactType_Phone(), this.getTelephoneType(), null, "phone", null, 0, 1,
+            ContactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getContactType_Address(), this.getAddressType(), null, "address", null, 0,
+            1, ContactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getContactType_OnlineResource(), this.getOnlineResourceType(), null,
+            "onlineResource", null, 0, 1, ContactType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+            !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getContactType_HoursOfService(), theXMLTypePackage.getString(),
+            "hoursOfService", null, 0, 1, ContactType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getContactType_ContactInstructions(), theXMLTypePackage.getString(),
+            "contactInstructions", null, 0, 1, ContactType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(dcpTypeEClass, DCPType.class, "DCPType", !IS_ABSTRACT, !IS_INTERFACE,
+            IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getDCPType_HTTP(), this.getHTTPType(), null, "hTTP", null, 0, 1,
+            DCPType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(descriptionTypeEClass, DescriptionType.class, "DescriptionType", !IS_ABSTRACT,
+            !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getDescriptionType_Title(), theXMLTypePackage.getString(), "title", null, 0,
+            1, DescriptionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+            !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getDescriptionType_Abstract(), theXMLTypePackage.getString(), "abstract",
+            null, 0, 1, DescriptionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getDescriptionType_Keywords(), this.getKeywordsType(), null, "keywords",
+            null, 0, -1, DescriptionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(documentRootEClass, DocumentRoot.class, "DocumentRoot", !IS_ABSTRACT,
+            !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getDocumentRoot_Mixed(), theEcorePackage.getEFeatureMapEntry(), "mixed",
+            null, 0, -1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
             !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getDocumentRoot_XMLNSPrefixMap(),
-            theEcorePackage.getEStringToStringMapEntry(), null,
-            "xMLNSPrefixMap", null, 0, -1, null, IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+            theEcorePackage.getEStringToStringMapEntry(), null, "xMLNSPrefixMap", null, 0, -1,
+            null, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
+            !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getDocumentRoot_XSISchemaLocation(),
-            theEcorePackage.getEStringToStringMapEntry(), null,
-            "xSISchemaLocation", null, 0, -1, null, IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getDocumentRoot_Abstract(),
-            theXMLTypePackage.getString(), "abstract", null, 0, -2, null,
-            IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-            !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEReference(getDocumentRoot_ContactInfo(), this.getContactType(),
-            null, "contactInfo", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEAttribute(getDocumentRoot_IndividualName(),
-            theXMLTypePackage.getString(), "individualName", null, 0, -2, null,
-            IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-            !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEReference(getDocumentRoot_Keywords(), this.getKeywordsType(),
-            null, "keywords", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEAttribute(getDocumentRoot_OrganisationName(),
-            theXMLTypePackage.getString(), "organisationName", null, 0, -2,
-            null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
-            !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEReference(getDocumentRoot_PointOfContact(),
-            this.getResponsiblePartyType(), null, "pointOfContact", null, 0,
-            -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
-            IS_ORDERED);
-        initEAttribute(getDocumentRoot_PositionName(),
-            theXMLTypePackage.getString(), "positionName", null, 0, -2, null,
-            IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-            !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEReference(getDocumentRoot_Role(), this.getCodeType(), null,
-            "role", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEAttribute(getDocumentRoot_Title(), theXMLTypePackage.getString(),
-            "title", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED,
-            IS_ORDERED);
-        initEReference(getDocumentRoot_AbstractMetaData(),
-            ecorePackage.getEObject(), null, "abstractMetaData", null, 0, -2,
-            null, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, IS_COMPOSITE,
-            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
-            IS_ORDERED);
-        initEAttribute(getDocumentRoot_AccessConstraints(),
-            theXMLTypePackage.getString(), "accessConstraints", null, 0, -2,
-            null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
-            !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEAttribute(getDocumentRoot_AvailableCRS(),
-            theXMLTypePackage.getAnyURI(), "availableCRS", null, 0, -2, null,
-            IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-            !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEReference(getDocumentRoot_BoundingBox(),
-            this.getBoundingBoxType(), null, "boundingBox", null, 0, -2, null,
-            IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
-            IS_ORDERED);
-        initEReference(getDocumentRoot_Dcp(), this.getDCPType(), null, "dcp",
-            null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
-            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
-            IS_DERIVED, IS_ORDERED);
-        initEReference(getDocumentRoot_Exception(), this.getExceptionType(),
-            null, "exception", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEReference(getDocumentRoot_ExceptionReport(),
-            this.getExceptionReportType(), null, "exceptionReport", null, 0,
-            -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
-            IS_ORDERED);
-        initEReference(getDocumentRoot_ExtendedCapabilities(),
-            ecorePackage.getEObject(), null, "extendedCapabilities", null, 0,
-            -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
-            IS_ORDERED);
-        initEAttribute(getDocumentRoot_Fees(), theXMLTypePackage.getString(),
-            "fees", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED,
-            IS_ORDERED);
-        initEReference(getDocumentRoot_GetCapabilities(),
-            this.getGetCapabilitiesType(), null, "getCapabilities", null, 0,
-            -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
-            IS_ORDERED);
-        initEReference(getDocumentRoot_Http(), this.getHTTPType(), null,
-            "http", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEReference(getDocumentRoot_Identifier(), this.getCodeType(), null,
-            "identifier", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEAttribute(getDocumentRoot_Language(),
-            theXMLTypePackage.getLanguage(), "language", null, 0, -2, null,
-            IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-            !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEReference(getDocumentRoot_Metadata(), this.getMetadataType(),
-            null, "metadata", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEReference(getDocumentRoot_Operation(), this.getOperationType(),
-            null, "operation", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEReference(getDocumentRoot_OperationsMetadata(),
-            this.getOperationsMetadataType(), null, "operationsMetadata", null,
-            0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
-            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
-            IS_DERIVED, IS_ORDERED);
-        initEAttribute(getDocumentRoot_OutputFormat(), this.getMimeType(),
-            "outputFormat", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED,
-            IS_ORDERED);
-        initEReference(getDocumentRoot_ServiceIdentification(),
-            this.getServiceIdentificationType(), null, "serviceIdentification",
-            null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
-            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
-            IS_DERIVED, IS_ORDERED);
-        initEReference(getDocumentRoot_ServiceProvider(),
-            this.getServiceProviderType(), null, "serviceProvider", null, 0,
-            -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
-            IS_ORDERED);
-        initEAttribute(getDocumentRoot_SupportedCRS(),
-            theXMLTypePackage.getAnyURI(), "supportedCRS", null, 0, -2, null,
-            IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
-            !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEReference(getDocumentRoot_WgS84BoundingBox(),
-            this.getWGS84BoundingBoxType(), null, "wgS84BoundingBox", null, 0,
-            -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
-            IS_ORDERED);
-
-        initEClass(domainTypeEClass, DomainType.class, "DomainType",
-            !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getDomainType_Value(), theXMLTypePackage.getString(),
-            "value", null, 1, 1, DomainType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEReference(getDomainType_Metadata(), this.getMetadataType(), null,
-            "metadata", null, 0, -1, DomainType.class, !IS_TRANSIENT,
-            !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
+            theEcorePackage.getEStringToStringMapEntry(), null, "xSISchemaLocation", null, 0, -1,
+            null, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
             !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getDomainType_Name(), theXMLTypePackage.getString(),
-            "name", null, 1, 1, DomainType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-
-        initEClass(exceptionReportTypeEClass, ExceptionReportType.class,
-            "ExceptionReportType", !IS_ABSTRACT, !IS_INTERFACE,
-            IS_GENERATED_INSTANCE_CLASS);
-        initEReference(getExceptionReportType_Exception(),
-            this.getExceptionType(), null, "exception", null, 1, -1,
-            ExceptionReportType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getExceptionReportType_Language(),
-            theXMLTypePackage.getLanguage(), "language", null, 0, 1,
-            ExceptionReportType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEAttribute(getExceptionReportType_Version(),
-            theXMLTypePackage.getString(), "version", null, 1, 1,
-            ExceptionReportType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-
-        initEClass(exceptionTypeEClass, ExceptionType.class, "ExceptionType",
-            !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getExceptionType_ExceptionText(), this.getMimeType(),
-            "exceptionText", null, 0, -1, ExceptionType.class, !IS_TRANSIENT,
-            !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-            !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getExceptionType_ExceptionCode(),
-            theXMLTypePackage.getString(), "exceptionCode", null, 1, 1,
-            ExceptionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getExceptionType_Locator(),
-            theXMLTypePackage.getString(), "locator", null, 0, 1,
-            ExceptionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-        initEClass(getCapabilitiesTypeEClass, GetCapabilitiesType.class,
-            "GetCapabilitiesType", !IS_ABSTRACT, !IS_INTERFACE,
-            IS_GENERATED_INSTANCE_CLASS);
-        initEReference(getGetCapabilitiesType_AcceptVersions(),
-            this.getAcceptVersionsType(), null, "acceptVersions", null, 0, 1,
-            GetCapabilitiesType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getGetCapabilitiesType_Sections(),
-            this.getSectionsType(), null, "sections", null, 0, 1,
-            GetCapabilitiesType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getGetCapabilitiesType_AcceptFormats(),
-            this.getAcceptFormatsType(), null, "acceptFormats", null, 0, 1,
-            GetCapabilitiesType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getGetCapabilitiesType_UpdateSequence(),
-            this.getUpdateSequenceType(), "updateSequence", null, 0, 1,
-            GetCapabilitiesType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEAttribute(getGetCapabilitiesType_BaseUrl(),
-            theXMLTypePackage.getString(), "baseUrl", null, 0, 1,
-            GetCapabilitiesType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-
-        initEClass(httpTypeEClass, HTTPType.class, "HTTPType", !IS_ABSTRACT,
-            !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getHTTPType_Group(),
-            theEcorePackage.getEFeatureMapEntry(), "group", null, 0, -1,
-            HTTPType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getHTTPType_Get(), this.getRequestMethodType(), null,
-            "get", null, 0, -1, HTTPType.class, IS_TRANSIENT, IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEReference(getHTTPType_Post(), this.getRequestMethodType(), null,
-            "post", null, 0, -1, HTTPType.class, IS_TRANSIENT, IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-
-        initEClass(identificationTypeEClass, IdentificationType.class,
-            "IdentificationType", !IS_ABSTRACT, !IS_INTERFACE,
-            IS_GENERATED_INSTANCE_CLASS);
-        initEReference(getIdentificationType_Identifier(), this.getCodeType(),
-            null, "identifier", null, 0, 1, IdentificationType.class,
-            !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEAttribute(getIdentificationType_BoundingBoxGroup(),
-            theEcorePackage.getEFeatureMapEntry(), "boundingBoxGroup", null, 0,
-            -1, IdentificationType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEReference(getIdentificationType_BoundingBox(),
-            this.getBoundingBoxType(), null, "boundingBox", null, 0, -1,
-            IdentificationType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
-            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
-            IS_DERIVED, IS_ORDERED);
-        initEAttribute(getIdentificationType_OutputFormat(),
-            this.getMimeType(), "outputFormat", null, 0, 1,
-            IdentificationType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEAttribute(getIdentificationType_AvailableCRSGroup(),
-            theEcorePackage.getEFeatureMapEntry(), "availableCRSGroup", null,
-            0, -1, IdentificationType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEAttribute(getIdentificationType_AvailableCRS(),
-            theXMLTypePackage.getAnyURI(), "availableCRS", null, 0, 1,
-            IdentificationType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
+        initEAttribute(getDocumentRoot_Abstract(), theXMLTypePackage.getString(), "abstract", null,
+            0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+            !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_ContactInfo(), this.getContactType(), null, "contactInfo",
+            null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEAttribute(getDocumentRoot_IndividualName(), theXMLTypePackage.getString(),
+            "individualName", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
             !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-        initEReference(getIdentificationType_Metadata(),
-            this.getMetadataType(), null, "metadata", null, 0, -1,
-            IdentificationType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-        initEClass(keywordsTypeEClass, KeywordsType.class, "KeywordsType",
-            !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getKeywordsType_Keyword(), this.getMimeType(),
-            "keyword", null, 0, -1, KeywordsType.class, !IS_TRANSIENT,
-            !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-            !IS_DERIVED, IS_ORDERED);
-        initEReference(getKeywordsType_Type(), this.getCodeType(), null,
-            "type", null, 0, 1, KeywordsType.class, !IS_TRANSIENT,
-            !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-            !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-        initEClass(metadataTypeEClass, MetadataType.class, "MetadataType",
-            !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getMetadataType_AbstractMetaDataGroup(),
-            theEcorePackage.getEFeatureMapEntry(), "abstractMetaDataGroup",
-            null, 0, 1, MetadataType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEReference(getMetadataType_AbstractMetaData(),
-            ecorePackage.getEObject(), null, "abstractMetaData", null, 0, 1,
-            MetadataType.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE,
-            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+        initEReference(getDocumentRoot_Keywords(), this.getKeywordsType(), null, "keywords", null,
+            0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEAttribute(getDocumentRoot_OrganisationName(), theXMLTypePackage.getString(),
+            "organisationName", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
+            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_PointOfContact(), this.getResponsiblePartyType(), null,
+            "pointOfContact", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
+            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEAttribute(getDocumentRoot_PositionName(), theXMLTypePackage.getString(),
+            "positionName", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
+            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_Role(), this.getCodeType(), null, "role", null, 0, -2, null,
+            IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
+            !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEAttribute(getDocumentRoot_Title(), theXMLTypePackage.getString(), "title", null, 0,
+            -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
             IS_DERIVED, IS_ORDERED);
-        initEAttribute(getMetadataType_About(), theXMLTypePackage.getAnyURI(),
-            "about", null, 0, 1, MetadataType.class, !IS_TRANSIENT,
-            !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
-            !IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_AbstractMetaData(), ecorePackage.getEObject(), null,
+            "abstractMetaData", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE,
+            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEAttribute(getDocumentRoot_AccessConstraints(), theXMLTypePackage.getString(),
+            "accessConstraints", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
+            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEAttribute(getDocumentRoot_AvailableCRS(), theXMLTypePackage.getAnyURI(),
+            "availableCRS", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
+            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_BoundingBox(), this.getBoundingBoxType(), null,
+            "boundingBox", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
+            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_Dcp(), this.getDCPType(), null, "dcp", null, 0, -2, null,
+            IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
+            !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_Exception(), this.getExceptionType(), null, "exception",
+            null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_ExceptionReport(), this.getExceptionReportType(), null,
+            "exceptionReport", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
+            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_ExtendedCapabilities(), ecorePackage.getEObject(), null,
+            "extendedCapabilities", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
+            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEAttribute(getDocumentRoot_Fees(), theXMLTypePackage.getString(), "fees", null, 0, -2,
+            null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+            IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_GetCapabilities(), this.getGetCapabilitiesType(), null,
+            "getCapabilities", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
+            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_Http(), this.getHTTPType(), null, "http", null, 0, -2, null,
+            IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
+            !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_Identifier(), this.getCodeType(), null, "identifier", null,
+            0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEAttribute(getDocumentRoot_Language(), theXMLTypePackage.getLanguage(), "language",
+            null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+            !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_Metadata(), this.getMetadataType(), null, "metadata", null,
+            0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_Operation(), this.getOperationType(), null, "operation",
+            null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_OperationsMetadata(), this.getOperationsMetadataType(),
+            null, "operationsMetadata", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE,
+            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+            IS_DERIVED, IS_ORDERED);
+        initEAttribute(getDocumentRoot_OutputFormat(), this.getMimeType(), "outputFormat", null, 0,
+            -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+            IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_ServiceIdentification(),
+            this.getServiceIdentificationType(), null, "serviceIdentification", null, 0, -2, null,
+            IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
+            !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_ServiceProvider(), this.getServiceProviderType(), null,
+            "serviceProvider", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
+            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEAttribute(getDocumentRoot_SupportedCRS(), theXMLTypePackage.getAnyURI(),
+            "supportedCRS", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
+            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_WgS84BoundingBox(), this.getWGS84BoundingBoxType(), null,
+            "wgS84BoundingBox", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE,
+            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
-        initEClass(onlineResourceTypeEClass, OnlineResourceType.class,
-            "OnlineResourceType", !IS_ABSTRACT, !IS_INTERFACE,
+        initEClass(domainTypeEClass, DomainType.class, "DomainType", !IS_ABSTRACT, !IS_INTERFACE,
             IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getDomainType_Value(), theXMLTypePackage.getString(), "value", null, 1, 1,
+            DomainType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+            !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getDomainType_Metadata(), this.getMetadataType(), null, "metadata", null, 0,
+            -1, DomainType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getDomainType_Name(), theXMLTypePackage.getString(), "name", null, 1, 1,
+            DomainType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+            !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-        initEClass(operationTypeEClass, OperationType.class, "OperationType",
+        initEClass(exceptionReportTypeEClass, ExceptionReportType.class, "ExceptionReportType",
             !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEReference(getOperationType_DCP(), this.getDCPType(), null, "dCP",
-            null, 1, -1, OperationType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getOperationType_Parameter(), this.getDomainType(),
-            null, "parameter", null, 0, -1, OperationType.class, !IS_TRANSIENT,
-            !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-            !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getOperationType_Constraint(), this.getDomainType(),
-            null, "constraint", null, 0, -1, OperationType.class,
-            !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEReference(getOperationType_Metadata(), this.getMetadataType(),
-            null, "metadata", null, 0, -1, OperationType.class, !IS_TRANSIENT,
-            !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-            !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getOperationType_Name(), theXMLTypePackage.getString(),
-            "name", null, 1, 1, OperationType.class, !IS_TRANSIENT,
-            !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+        initEReference(getExceptionReportType_Exception(), this.getExceptionType(), null,
+            "exception", null, 1, -1, ExceptionReportType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
             !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getExceptionReportType_Language(), theXMLTypePackage.getLanguage(),
+            "language", null, 0, 1, ExceptionReportType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getExceptionReportType_Version(), theXMLTypePackage.getString(), "version",
+            null, 1, 1, ExceptionReportType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(exceptionTypeEClass, ExceptionType.class, "ExceptionType", !IS_ABSTRACT,
+            !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getExceptionType_ExceptionText(), this.getMimeType(), "exceptionText", null,
+            0, -1, ExceptionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+            !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getExceptionType_ExceptionCode(), theXMLTypePackage.getString(),
+            "exceptionCode", null, 1, 1, ExceptionType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getExceptionType_Locator(), theXMLTypePackage.getString(), "locator", null,
+            0, 1, ExceptionType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+            !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(getCapabilitiesTypeEClass, GetCapabilitiesType.class, "GetCapabilitiesType",
+            !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getGetCapabilitiesType_AcceptVersions(), this.getAcceptVersionsType(), null,
+            "acceptVersions", null, 0, 1, GetCapabilitiesType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+            !IS_DERIVED, IS_ORDERED);
+        initEReference(getGetCapabilitiesType_Sections(), this.getSectionsType(), null, "sections",
+            null, 0, 1, GetCapabilitiesType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getGetCapabilitiesType_AcceptFormats(), this.getAcceptFormatsType(), null,
+            "acceptFormats", null, 0, 1, GetCapabilitiesType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+            !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getGetCapabilitiesType_UpdateSequence(), this.getUpdateSequenceType(),
+            "updateSequence", null, 0, 1, GetCapabilitiesType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getGetCapabilitiesType_BaseUrl(), theXMLTypePackage.getString(), "baseUrl",
+            null, 0, 1, GetCapabilitiesType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(httpTypeEClass, HTTPType.class, "HTTPType", !IS_ABSTRACT, !IS_INTERFACE,
+            IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getHTTPType_Group(), theEcorePackage.getEFeatureMapEntry(), "group", null,
+            0, -1, HTTPType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+            !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getHTTPType_Get(), this.getRequestMethodType(), null, "get", null, 0, -1,
+            HTTPType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getHTTPType_Post(), this.getRequestMethodType(), null, "post", null, 0, -1,
+            HTTPType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+
+        initEClass(identificationTypeEClass, IdentificationType.class, "IdentificationType",
+            !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getIdentificationType_Identifier(), this.getCodeType(), null, "identifier",
+            null, 0, 1, IdentificationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getIdentificationType_BoundingBoxGroup(),
+            theEcorePackage.getEFeatureMapEntry(), "boundingBoxGroup", null, 0, -1,
+            IdentificationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+            !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getIdentificationType_BoundingBox(), this.getBoundingBoxType(), null,
+            "boundingBox", null, 0, -1, IdentificationType.class, IS_TRANSIENT, IS_VOLATILE,
+            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+            IS_DERIVED, IS_ORDERED);
+        initEAttribute(getIdentificationType_OutputFormat(), this.getMimeType(), "outputFormat",
+            null, 0, 1, IdentificationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getIdentificationType_AvailableCRSGroup(),
+            theEcorePackage.getEFeatureMapEntry(), "availableCRSGroup", null, 0, -1,
+            IdentificationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+            !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getIdentificationType_AvailableCRS(), theXMLTypePackage.getAnyURI(),
+            "availableCRS", null, 0, 1, IdentificationType.class, IS_TRANSIENT, IS_VOLATILE,
+            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getIdentificationType_Metadata(), this.getMetadataType(), null, "metadata",
+            null, 0, -1, IdentificationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(keywordsTypeEClass, KeywordsType.class, "KeywordsType", !IS_ABSTRACT,
+            !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getKeywordsType_Keyword(), this.getMimeType(), "keyword", null, 0, -1,
+            KeywordsType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getKeywordsType_Type(), this.getCodeType(), null, "type", null, 0, 1,
+            KeywordsType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(metadataTypeEClass, MetadataType.class, "MetadataType", !IS_ABSTRACT,
+            !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMetadataType_AbstractMetaDataGroup(),
+            theEcorePackage.getEFeatureMapEntry(), "abstractMetaDataGroup", null, 0, 1,
+            MetadataType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+            !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getMetadataType_AbstractMetaData(), ecorePackage.getEObject(), null,
+            "abstractMetaData", null, 0, 1, MetadataType.class, IS_TRANSIENT, IS_VOLATILE,
+            !IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+            IS_DERIVED, IS_ORDERED);
+        initEAttribute(getMetadataType_About(), theXMLTypePackage.getAnyURI(), "about", null, 0, 1,
+            MetadataType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+            !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(onlineResourceTypeEClass, OnlineResourceType.class, "OnlineResourceType",
+            !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(operationTypeEClass, OperationType.class, "OperationType", !IS_ABSTRACT,
+            !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getOperationType_DCP(), this.getDCPType(), null, "dCP", null, 1, -1,
+            OperationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getOperationType_Parameter(), this.getDomainType(), null, "parameter", null,
+            0, -1, OperationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getOperationType_Constraint(), this.getDomainType(), null, "constraint",
+            null, 0, -1, OperationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getOperationType_Metadata(), this.getMetadataType(), null, "metadata", null,
+            0, -1, OperationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getOperationType_Name(), theXMLTypePackage.getString(), "name", null, 1, 1,
+            OperationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+            !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(operationsMetadataTypeEClass, OperationsMetadataType.class,
-            "OperationsMetadataType", !IS_ABSTRACT, !IS_INTERFACE,
-            IS_GENERATED_INSTANCE_CLASS);
-        initEReference(getOperationsMetadataType_Operation(),
-            this.getOperationType(), null, "operation", null, 2, -1,
-            OperationsMetadataType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getOperationsMetadataType_Parameter(),
-            this.getDomainType(), null, "parameter", null, 0, -1,
-            OperationsMetadataType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getOperationsMetadataType_Constraint(),
-            this.getDomainType(), null, "constraint", null, 0, -1,
-            OperationsMetadataType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getOperationsMetadataType_ExtendedCapabilities(),
-            ecorePackage.getEObject(), null, "extendedCapabilities", null, 0,
-            1, OperationsMetadataType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+            "OperationsMetadataType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getOperationsMetadataType_Operation(), this.getOperationType(), null,
+            "operation", null, 2, -1, OperationsMetadataType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+            !IS_DERIVED, IS_ORDERED);
+        initEReference(getOperationsMetadataType_Parameter(), this.getDomainType(), null,
+            "parameter", null, 0, -1, OperationsMetadataType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+            !IS_DERIVED, IS_ORDERED);
+        initEReference(getOperationsMetadataType_Constraint(), this.getDomainType(), null,
+            "constraint", null, 0, -1, OperationsMetadataType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+            !IS_DERIVED, IS_ORDERED);
+        initEReference(getOperationsMetadataType_ExtendedCapabilities(), ecorePackage.getEObject(),
+            null, "extendedCapabilities", null, 0, 1, OperationsMetadataType.class, !IS_TRANSIENT,
+            !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
             IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-        initEClass(requestMethodTypeEClass, RequestMethodType.class,
-            "RequestMethodType", !IS_ABSTRACT, !IS_INTERFACE,
-            IS_GENERATED_INSTANCE_CLASS);
-        initEReference(getRequestMethodType_Constraint(), this.getDomainType(),
-            null, "constraint", null, 0, -1, RequestMethodType.class,
-            !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-
-        initEClass(responsiblePartySubsetTypeEClass,
-            ResponsiblePartySubsetType.class, "ResponsiblePartySubsetType",
+        initEClass(requestMethodTypeEClass, RequestMethodType.class, "RequestMethodType",
             !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getRequestMethodType_Constraint(), this.getDomainType(), null, "constraint",
+            null, 0, -1, RequestMethodType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(responsiblePartySubsetTypeEClass, ResponsiblePartySubsetType.class,
+            "ResponsiblePartySubsetType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getResponsiblePartySubsetType_IndividualName(),
             theXMLTypePackage.getString(), "individualName", null, 0, 1,
-            ResponsiblePartySubsetType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEAttribute(getResponsiblePartySubsetType_PositionName(),
-            theXMLTypePackage.getString(), "positionName", null, 0, 1,
-            ResponsiblePartySubsetType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEReference(getResponsiblePartySubsetType_ContactInfo(),
-            this.getContactType(), null, "contactInfo", null, 0, 1,
-            ResponsiblePartySubsetType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+            ResponsiblePartySubsetType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getResponsiblePartySubsetType_PositionName(), theXMLTypePackage.getString(),
+            "positionName", null, 0, 1, ResponsiblePartySubsetType.class, !IS_TRANSIENT,
+            !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getResponsiblePartySubsetType_ContactInfo(), this.getContactType(), null,
+            "contactInfo", null, 0, 1, ResponsiblePartySubsetType.class, !IS_TRANSIENT,
+            !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
             IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getResponsiblePartySubsetType_Role(),
-            this.getCodeType(), null, "role", null, 0, 1,
-            ResponsiblePartySubsetType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-        initEClass(responsiblePartyTypeEClass, ResponsiblePartyType.class,
-            "ResponsiblePartyType", !IS_ABSTRACT, !IS_INTERFACE,
-            IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getResponsiblePartyType_IndividualName(),
-            theXMLTypePackage.getString(), "individualName", null, 0, 1,
-            ResponsiblePartyType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEAttribute(getResponsiblePartyType_OrganisationName(),
-            theXMLTypePackage.getString(), "organisationName", null, 0, 1,
-            ResponsiblePartyType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEAttribute(getResponsiblePartyType_PositionName(),
-            theXMLTypePackage.getString(), "positionName", null, 0, 1,
-            ResponsiblePartyType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEReference(getResponsiblePartyType_ContactInfo(),
-            this.getContactType(), null, "contactInfo", null, 0, 1,
-            ResponsiblePartyType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getResponsiblePartyType_Role(), this.getCodeType(),
-            null, "role", null, 1, 1, ResponsiblePartyType.class,
-            !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-
-        initEClass(sectionsTypeEClass, SectionsType.class, "SectionsType",
-            !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getSectionsType_Section(), this.getMimeType(),
-            "section", null, 0, -1, SectionsType.class, !IS_TRANSIENT,
-            !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
+        initEReference(getResponsiblePartySubsetType_Role(), this.getCodeType(), null, "role",
+            null, 0, 1, ResponsiblePartySubsetType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
             !IS_DERIVED, IS_ORDERED);
 
-        initEClass(serviceIdentificationTypeEClass,
-            ServiceIdentificationType.class, "ServiceIdentificationType",
+        initEClass(responsiblePartyTypeEClass, ResponsiblePartyType.class, "ResponsiblePartyType",
             !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEReference(getServiceIdentificationType_ServiceType(),
-            this.getCodeType(), null, "serviceType", null, 1, 1,
-            ServiceIdentificationType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+        initEAttribute(getResponsiblePartyType_IndividualName(), theXMLTypePackage.getString(),
+            "individualName", null, 0, 1, ResponsiblePartyType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getResponsiblePartyType_OrganisationName(), theXMLTypePackage.getString(),
+            "organisationName", null, 0, 1, ResponsiblePartyType.class, !IS_TRANSIENT,
+            !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getResponsiblePartyType_PositionName(), theXMLTypePackage.getString(),
+            "positionName", null, 0, 1, ResponsiblePartyType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getResponsiblePartyType_ContactInfo(), this.getContactType(), null,
+            "contactInfo", null, 0, 1, ResponsiblePartyType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+            !IS_DERIVED, IS_ORDERED);
+        initEReference(getResponsiblePartyType_Role(), this.getCodeType(), null, "role", null, 1,
+            1, ResponsiblePartyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(sectionsTypeEClass, SectionsType.class, "SectionsType", !IS_ABSTRACT,
+            !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getSectionsType_Section(), this.getMimeType(), "section", null, 0, -1,
+            SectionsType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
             IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getServiceIdentificationType_ServiceTypeVersion(),
-            this.getVersionType(), "serviceTypeVersion", null, 1, 1,
-            ServiceIdentificationType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEAttribute(getServiceIdentificationType_Fees(),
-            theXMLTypePackage.getString(), "fees", null, 0, 1,
-            ServiceIdentificationType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
+
+        initEClass(serviceIdentificationTypeEClass, ServiceIdentificationType.class,
+            "ServiceIdentificationType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getServiceIdentificationType_ServiceType(), this.getCodeType(), null,
+            "serviceType", null, 1, 1, ServiceIdentificationType.class, !IS_TRANSIENT,
+            !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getServiceIdentificationType_ServiceTypeVersion(), this.getVersionType(),
+            "serviceTypeVersion", null, 1, 1, ServiceIdentificationType.class, !IS_TRANSIENT,
+            !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getServiceIdentificationType_Fees(), theXMLTypePackage.getString(), "fees",
+            null, 0, 1, ServiceIdentificationType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getServiceIdentificationType_AccessConstraints(),
             theXMLTypePackage.getString(), "accessConstraints", null, 0, 1,
-            ServiceIdentificationType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-
-        initEClass(serviceProviderTypeEClass, ServiceProviderType.class,
-            "ServiceProviderType", !IS_ABSTRACT, !IS_INTERFACE,
-            IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getServiceProviderType_ProviderName(),
-            theXMLTypePackage.getString(), "providerName", null, 1, 1,
-            ServiceProviderType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
-            IS_ORDERED);
-        initEReference(getServiceProviderType_ProviderSite(),
-            this.getOnlineResourceType(), null, "providerSite", null, 0, 1,
-            ServiceProviderType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getServiceProviderType_ServiceContact(),
-            this.getResponsiblePartySubsetType(), null, "serviceContact", null,
-            1, 1, ServiceProviderType.class, !IS_TRANSIENT, !IS_VOLATILE,
-            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-            IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-        initEClass(telephoneTypeEClass, TelephoneType.class, "TelephoneType",
-            !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getTelephoneType_Voice(), theXMLTypePackage.getString(),
-            "voice", null, 0, 1, TelephoneType.class, !IS_TRANSIENT,
-            !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
-            !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getTelephoneType_Facsimile(),
-            theXMLTypePackage.getString(), "facsimile", null, 0, 1,
-            TelephoneType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            ServiceIdentificationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
             !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-        initEClass(wgs84BoundingBoxTypeEClass, WGS84BoundingBoxType.class,
-            "WGS84BoundingBoxType", !IS_ABSTRACT, !IS_INTERFACE,
-            IS_GENERATED_INSTANCE_CLASS);
+        initEClass(serviceProviderTypeEClass, ServiceProviderType.class, "ServiceProviderType",
+            !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getServiceProviderType_ProviderName(), theXMLTypePackage.getString(),
+            "providerName", null, 1, 1, ServiceProviderType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getServiceProviderType_ProviderSite(), this.getOnlineResourceType(), null,
+            "providerSite", null, 0, 1, ServiceProviderType.class, !IS_TRANSIENT, !IS_VOLATILE,
+            IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+            !IS_DERIVED, IS_ORDERED);
+        initEReference(getServiceProviderType_ServiceContact(),
+            this.getResponsiblePartySubsetType(), null, "serviceContact", null, 1, 1,
+            ServiceProviderType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+            !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(telephoneTypeEClass, TelephoneType.class, "TelephoneType", !IS_ABSTRACT,
+            !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getTelephoneType_Voice(), theXMLTypePackage.getString(), "voice", null, 0,
+            1, TelephoneType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+            !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getTelephoneType_Facsimile(), theXMLTypePackage.getString(), "facsimile",
+            null, 0, 1, TelephoneType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+            !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(wgs84BoundingBoxTypeEClass, WGS84BoundingBoxType.class, "WGS84BoundingBoxType",
+            !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
         // Initialize data types
-        initEDataType(mimeTypeEDataType, String.class, "MimeType",
+        initEDataType(mimeTypeEDataType, String.class, "MimeType", IS_SERIALIZABLE,
+            !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(versionTypeEDataType, String.class, "VersionType", IS_SERIALIZABLE,
+            !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(positionTypeEDataType, List.class, "PositionType", IS_SERIALIZABLE,
+            !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(updateSequenceTypeEDataType, String.class, "UpdateSequenceType",
             IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
-        initEDataType(versionTypeEDataType, String.class, "VersionType",
-            IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
-        initEDataType(positionTypeEDataType, List.class, "PositionType",
-            IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
-        initEDataType(updateSequenceTypeEDataType, String.class,
-            "UpdateSequenceType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
         // Create resource
         createResource(eNS_URI);
@@ -2746,46 +2494,28 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
             new String[] { "name", "AddressType", "kind", "elementOnly" });
         addAnnotation(getAddressType_DeliveryPoint(), source,
             new String[] {
-                "kind", "element", "name", "DeliveryPoint", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "DeliveryPoint", "namespace", "##targetNamespace"
             });
         addAnnotation(getAddressType_City(), source,
-            new String[] {
-                "kind", "element", "name", "City", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "City", "namespace", "##targetNamespace" });
         addAnnotation(getAddressType_AdministrativeArea(), source,
             new String[] {
-                "kind", "element", "name", "AdministrativeArea", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "AdministrativeArea", "namespace", "##targetNamespace"
             });
         addAnnotation(getAddressType_PostalCode(), source,
-            new String[] {
-                "kind", "element", "name", "PostalCode", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "PostalCode", "namespace", "##targetNamespace" });
         addAnnotation(getAddressType_Country(), source,
-            new String[] {
-                "kind", "element", "name", "Country", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Country", "namespace", "##targetNamespace" });
         addAnnotation(getAddressType_ElectronicMailAddress(), source,
             new String[] {
-                "kind", "element", "name", "ElectronicMailAddress", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "ElectronicMailAddress", "namespace", "##targetNamespace"
             });
         addAnnotation(boundingBoxTypeEClass, source,
             new String[] { "name", "BoundingBoxType", "kind", "elementOnly" });
         addAnnotation(getBoundingBoxType_LowerCorner(), source,
-            new String[] {
-                "kind", "element", "name", "LowerCorner", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "LowerCorner", "namespace", "##targetNamespace" });
         addAnnotation(getBoundingBoxType_UpperCorner(), source,
-            new String[] {
-                "kind", "element", "name", "UpperCorner", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "UpperCorner", "namespace", "##targetNamespace" });
         addAnnotation(getBoundingBoxType_Crs(), source,
             new String[] { "kind", "attribute", "name", "crs" });
         addAnnotation(getBoundingBoxType_Dimensions(), source,
@@ -2794,82 +2524,55 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
             new String[] { "name", "CapabilitiesBaseType", "kind", "elementOnly" });
         addAnnotation(getCapabilitiesBaseType_ServiceIdentification(), source,
             new String[] {
-                "kind", "element", "name", "ServiceIdentification", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "ServiceIdentification", "namespace", "##targetNamespace"
             });
         addAnnotation(getCapabilitiesBaseType_ServiceProvider(), source,
             new String[] {
-                "kind", "element", "name", "ServiceProvider", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "ServiceProvider", "namespace", "##targetNamespace"
             });
         addAnnotation(getCapabilitiesBaseType_OperationsMetadata(), source,
             new String[] {
-                "kind", "element", "name", "OperationsMetadata", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "OperationsMetadata", "namespace", "##targetNamespace"
             });
         addAnnotation(getCapabilitiesBaseType_UpdateSequence(), source,
             new String[] { "kind", "attribute", "name", "updateSequence" });
         addAnnotation(getCapabilitiesBaseType_Version(), source,
             new String[] { "kind", "attribute", "name", "version" });
-        addAnnotation(codeTypeEClass, source,
-            new String[] { "name", "CodeType", "kind", "simple" });
-        addAnnotation(getCodeType_Value(), source,
-            new String[] { "name", ":0", "kind", "simple" });
+        addAnnotation(codeTypeEClass, source, new String[] { "name", "CodeType", "kind", "simple" });
+        addAnnotation(getCodeType_Value(), source, new String[] { "name", ":0", "kind", "simple" });
         addAnnotation(getCodeType_CodeSpace(), source,
             new String[] { "kind", "attribute", "name", "codeSpace" });
         addAnnotation(contactTypeEClass, source,
             new String[] { "name", "ContactType", "kind", "elementOnly" });
         addAnnotation(getContactType_Phone(), source,
-            new String[] {
-                "kind", "element", "name", "Phone", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Phone", "namespace", "##targetNamespace" });
         addAnnotation(getContactType_Address(), source,
-            new String[] {
-                "kind", "element", "name", "Address", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Address", "namespace", "##targetNamespace" });
         addAnnotation(getContactType_OnlineResource(), source,
             new String[] {
-                "kind", "element", "name", "OnlineResource", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "OnlineResource", "namespace", "##targetNamespace"
             });
         addAnnotation(getContactType_HoursOfService(), source,
             new String[] {
-                "kind", "element", "name", "HoursOfService", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "HoursOfService", "namespace", "##targetNamespace"
             });
         addAnnotation(getContactType_ContactInstructions(), source,
             new String[] {
-                "kind", "element", "name", "ContactInstructions", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "ContactInstructions", "namespace", "##targetNamespace"
             });
         addAnnotation(dcpTypeEClass, source,
             new String[] { "name", "DCP_._type", "kind", "elementOnly" });
         addAnnotation(getDCPType_HTTP(), source,
-            new String[] {
-                "kind", "element", "name", "HTTP", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "HTTP", "namespace", "##targetNamespace" });
         addAnnotation(descriptionTypeEClass, source,
             new String[] { "name", "DescriptionType", "kind", "elementOnly" });
         addAnnotation(getDescriptionType_Title(), source,
-            new String[] {
-                "kind", "element", "name", "Title", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Title", "namespace", "##targetNamespace" });
         addAnnotation(getDescriptionType_Abstract(), source,
-            new String[] {
-                "kind", "element", "name", "Abstract", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Abstract", "namespace", "##targetNamespace" });
         addAnnotation(getDescriptionType_Keywords(), source,
-            new String[] {
-                "kind", "element", "name", "Keywords", "namespace",
-                "##targetNamespace"
-            });
-        addAnnotation(documentRootEClass, source,
-            new String[] { "name", "", "kind", "mixed" });
+            new String[] { "kind", "element", "name", "Keywords", "namespace", "##targetNamespace" });
+        addAnnotation(documentRootEClass, source, new String[] { "name", "", "kind", "mixed" });
         addAnnotation(getDocumentRoot_Mixed(), source,
             new String[] { "kind", "elementWildcard", "name", ":mixed" });
         addAnnotation(getDocumentRoot_XMLNSPrefixMap(), source,
@@ -2877,176 +2580,105 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         addAnnotation(getDocumentRoot_XSISchemaLocation(), source,
             new String[] { "kind", "attribute", "name", "xsi:schemaLocation" });
         addAnnotation(getDocumentRoot_Abstract(), source,
-            new String[] {
-                "kind", "element", "name", "Abstract", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Abstract", "namespace", "##targetNamespace" });
         addAnnotation(getDocumentRoot_ContactInfo(), source,
-            new String[] {
-                "kind", "element", "name", "ContactInfo", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "ContactInfo", "namespace", "##targetNamespace" });
         addAnnotation(getDocumentRoot_IndividualName(), source,
             new String[] {
-                "kind", "element", "name", "IndividualName", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "IndividualName", "namespace", "##targetNamespace"
             });
         addAnnotation(getDocumentRoot_Keywords(), source,
-            new String[] {
-                "kind", "element", "name", "Keywords", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Keywords", "namespace", "##targetNamespace" });
         addAnnotation(getDocumentRoot_OrganisationName(), source,
             new String[] {
-                "kind", "element", "name", "OrganisationName", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "OrganisationName", "namespace", "##targetNamespace"
             });
         addAnnotation(getDocumentRoot_PointOfContact(), source,
             new String[] {
-                "kind", "element", "name", "PointOfContact", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "PointOfContact", "namespace", "##targetNamespace"
             });
         addAnnotation(getDocumentRoot_PositionName(), source,
-            new String[] {
-                "kind", "element", "name", "PositionName", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "PositionName", "namespace", "##targetNamespace" });
         addAnnotation(getDocumentRoot_Role(), source,
-            new String[] {
-                "kind", "element", "name", "Role", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Role", "namespace", "##targetNamespace" });
         addAnnotation(getDocumentRoot_Title(), source,
-            new String[] {
-                "kind", "element", "name", "Title", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Title", "namespace", "##targetNamespace" });
         addAnnotation(getDocumentRoot_AbstractMetaData(), source,
             new String[] {
-                "kind", "element", "name", "AbstractMetaData", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "AbstractMetaData", "namespace", "##targetNamespace"
             });
         addAnnotation(getDocumentRoot_AccessConstraints(), source,
             new String[] {
-                "kind", "element", "name", "AccessConstraints", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "AccessConstraints", "namespace", "##targetNamespace"
             });
         addAnnotation(getDocumentRoot_AvailableCRS(), source,
-            new String[] {
-                "kind", "element", "name", "AvailableCRS", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "AvailableCRS", "namespace", "##targetNamespace" });
         addAnnotation(getDocumentRoot_BoundingBox(), source,
-            new String[] {
-                "kind", "element", "name", "BoundingBox", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "BoundingBox", "namespace", "##targetNamespace" });
         addAnnotation(getDocumentRoot_Dcp(), source,
-            new String[] {
-                "kind", "element", "name", "DCP", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "DCP", "namespace", "##targetNamespace" });
         addAnnotation(getDocumentRoot_Exception(), source,
-            new String[] {
-                "kind", "element", "name", "Exception", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Exception", "namespace", "##targetNamespace" });
         addAnnotation(getDocumentRoot_ExceptionReport(), source,
             new String[] {
-                "kind", "element", "name", "ExceptionReport", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "ExceptionReport", "namespace", "##targetNamespace"
             });
         addAnnotation(getDocumentRoot_ExtendedCapabilities(), source,
             new String[] {
-                "kind", "element", "name", "ExtendedCapabilities", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "ExtendedCapabilities", "namespace", "##targetNamespace"
             });
         addAnnotation(getDocumentRoot_Fees(), source,
-            new String[] {
-                "kind", "element", "name", "Fees", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Fees", "namespace", "##targetNamespace" });
         addAnnotation(getDocumentRoot_GetCapabilities(), source,
             new String[] {
-                "kind", "element", "name", "GetCapabilities", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "GetCapabilities", "namespace", "##targetNamespace"
             });
         addAnnotation(getDocumentRoot_Http(), source,
-            new String[] {
-                "kind", "element", "name", "HTTP", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "HTTP", "namespace", "##targetNamespace" });
         addAnnotation(getDocumentRoot_Identifier(), source,
-            new String[] {
-                "kind", "element", "name", "Identifier", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Identifier", "namespace", "##targetNamespace" });
         addAnnotation(getDocumentRoot_Language(), source,
-            new String[] {
-                "kind", "element", "name", "Language", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Language", "namespace", "##targetNamespace" });
         addAnnotation(getDocumentRoot_Metadata(), source,
-            new String[] {
-                "kind", "element", "name", "Metadata", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Metadata", "namespace", "##targetNamespace" });
         addAnnotation(getDocumentRoot_Operation(), source,
-            new String[] {
-                "kind", "element", "name", "Operation", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Operation", "namespace", "##targetNamespace" });
         addAnnotation(getDocumentRoot_OperationsMetadata(), source,
             new String[] {
-                "kind", "element", "name", "OperationsMetadata", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "OperationsMetadata", "namespace", "##targetNamespace"
             });
         addAnnotation(getDocumentRoot_OutputFormat(), source,
-            new String[] {
-                "kind", "element", "name", "OutputFormat", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "OutputFormat", "namespace", "##targetNamespace" });
         addAnnotation(getDocumentRoot_ServiceIdentification(), source,
             new String[] {
-                "kind", "element", "name", "ServiceIdentification", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "ServiceIdentification", "namespace", "##targetNamespace"
             });
         addAnnotation(getDocumentRoot_ServiceProvider(), source,
             new String[] {
-                "kind", "element", "name", "ServiceProvider", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "ServiceProvider", "namespace", "##targetNamespace"
             });
         addAnnotation(getDocumentRoot_SupportedCRS(), source,
             new String[] {
-                "kind", "element", "name", "SupportedCRS", "namespace",
-                "##targetNamespace", "affiliation", "AvailableCRS"
+                "kind", "element", "name", "SupportedCRS", "namespace", "##targetNamespace",
+                "affiliation", "AvailableCRS"
             });
         addAnnotation(getDocumentRoot_WgS84BoundingBox(), source,
             new String[] {
-                "kind", "element", "name", "WGS84BoundingBox", "namespace",
-                "##targetNamespace", "affiliation", "BoundingBox"
+                "kind", "element", "name", "WGS84BoundingBox", "namespace", "##targetNamespace",
+                "affiliation", "BoundingBox"
             });
         addAnnotation(domainTypeEClass, source,
             new String[] { "name", "DomainType", "kind", "elementOnly" });
         addAnnotation(getDomainType_Value(), source,
-            new String[] {
-                "kind", "element", "name", "Value", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Value", "namespace", "##targetNamespace" });
         addAnnotation(getDomainType_Metadata(), source,
-            new String[] {
-                "kind", "element", "name", "Metadata", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Metadata", "namespace", "##targetNamespace" });
         addAnnotation(getDomainType_Name(), source,
             new String[] { "kind", "attribute", "name", "name" });
         addAnnotation(exceptionReportTypeEClass, source,
             new String[] { "name", "ExceptionReport_._type", "kind", "elementOnly" });
         addAnnotation(getExceptionReportType_Exception(), source,
-            new String[] {
-                "kind", "element", "name", "Exception", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Exception", "namespace", "##targetNamespace" });
         addAnnotation(getExceptionReportType_Language(), source,
             new String[] { "kind", "attribute", "name", "language" });
         addAnnotation(getExceptionReportType_Version(), source,
@@ -3061,18 +2693,13 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
             new String[] { "name", "GetCapabilitiesType", "kind", "elementOnly" });
         addAnnotation(getGetCapabilitiesType_AcceptVersions(), source,
             new String[] {
-                "kind", "element", "name", "AcceptVersions", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "AcceptVersions", "namespace", "##targetNamespace"
             });
         addAnnotation(getGetCapabilitiesType_Sections(), source,
-            new String[] {
-                "kind", "element", "name", "Sections", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Sections", "namespace", "##targetNamespace" });
         addAnnotation(getGetCapabilitiesType_AcceptFormats(), source,
             new String[] {
-                "kind", "element", "name", "AcceptFormats", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "AcceptFormats", "namespace", "##targetNamespace"
             });
         addAnnotation(getGetCapabilitiesType_UpdateSequence(), source,
             new String[] { "kind", "attribute", "name", "updateSequence" });
@@ -3082,69 +2709,54 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
             new String[] { "kind", "group", "name", "group:0" });
         addAnnotation(getHTTPType_Get(), source,
             new String[] {
-                "kind", "element", "name", "Get", "namespace",
-                "##targetNamespace", "group", "#group:0"
+                "kind", "element", "name", "Get", "namespace", "##targetNamespace", "group",
+                "#group:0"
             });
         addAnnotation(getHTTPType_Post(), source,
             new String[] {
-                "kind", "element", "name", "Post", "namespace",
-                "##targetNamespace", "group", "#group:0"
+                "kind", "element", "name", "Post", "namespace", "##targetNamespace", "group",
+                "#group:0"
             });
         addAnnotation(identificationTypeEClass, source,
             new String[] { "name", "IdentificationType", "kind", "elementOnly" });
         addAnnotation(getIdentificationType_Identifier(), source,
-            new String[] {
-                "kind", "element", "name", "Identifier", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Identifier", "namespace", "##targetNamespace" });
         addAnnotation(getIdentificationType_BoundingBoxGroup(), source,
             new String[] {
-                "kind", "group", "name", "BoundingBox:group", "namespace",
-                "##targetNamespace"
+                "kind", "group", "name", "BoundingBox:group", "namespace", "##targetNamespace"
             });
         addAnnotation(getIdentificationType_BoundingBox(), source,
             new String[] {
-                "kind", "element", "name", "BoundingBox", "namespace",
-                "##targetNamespace", "group", "BoundingBox:group"
+                "kind", "element", "name", "BoundingBox", "namespace", "##targetNamespace", "group",
+                "BoundingBox:group"
             });
         addAnnotation(getIdentificationType_OutputFormat(), source,
-            new String[] {
-                "kind", "element", "name", "OutputFormat", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "OutputFormat", "namespace", "##targetNamespace" });
         addAnnotation(getIdentificationType_AvailableCRSGroup(), source,
             new String[] {
-                "kind", "group", "name", "AvailableCRS:group", "namespace",
-                "##targetNamespace"
+                "kind", "group", "name", "AvailableCRS:group", "namespace", "##targetNamespace"
             });
         addAnnotation(getIdentificationType_AvailableCRS(), source,
             new String[] {
-                "kind", "element", "name", "AvailableCRS", "namespace",
-                "##targetNamespace", "group", "AvailableCRS:group"
+                "kind", "element", "name", "AvailableCRS", "namespace", "##targetNamespace", "group",
+                "AvailableCRS:group"
             });
         addAnnotation(getIdentificationType_Metadata(), source,
-            new String[] {
-                "kind", "element", "name", "Metadata", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Metadata", "namespace", "##targetNamespace" });
         addAnnotation(keywordsTypeEClass, source,
             new String[] { "name", "KeywordsType", "kind", "elementOnly" });
         addAnnotation(getKeywordsType_Type(), source,
-            new String[] {
-                "kind", "element", "name", "Type", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Type", "namespace", "##targetNamespace" });
         addAnnotation(metadataTypeEClass, source,
             new String[] { "name", "MetadataType", "kind", "elementOnly" });
         addAnnotation(getMetadataType_AbstractMetaDataGroup(), source,
             new String[] {
-                "kind", "group", "name", "AbstractMetaData:group", "namespace",
-                "##targetNamespace"
+                "kind", "group", "name", "AbstractMetaData:group", "namespace", "##targetNamespace"
             });
         addAnnotation(getMetadataType_AbstractMetaData(), source,
             new String[] {
-                "kind", "element", "name", "AbstractMetaData", "namespace",
-                "##targetNamespace", "group", "AbstractMetaData:group"
+                "kind", "element", "name", "AbstractMetaData", "namespace", "##targetNamespace",
+                "group", "AbstractMetaData:group"
             });
         addAnnotation(getMetadataType_About(), source,
             new String[] { "kind", "attribute", "name", "about" });
@@ -3153,165 +2765,91 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         addAnnotation(operationTypeEClass, source,
             new String[] { "name", "Operation_._type", "kind", "elementOnly" });
         addAnnotation(getOperationType_DCP(), source,
-            new String[] {
-                "kind", "element", "name", "DCP", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "DCP", "namespace", "##targetNamespace" });
         addAnnotation(getOperationType_Parameter(), source,
-            new String[] {
-                "kind", "element", "name", "Parameter", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Parameter", "namespace", "##targetNamespace" });
         addAnnotation(getOperationType_Constraint(), source,
-            new String[] {
-                "kind", "element", "name", "Constraint", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Constraint", "namespace", "##targetNamespace" });
         addAnnotation(getOperationType_Metadata(), source,
-            new String[] {
-                "kind", "element", "name", "Metadata", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Metadata", "namespace", "##targetNamespace" });
         addAnnotation(getOperationType_Name(), source,
             new String[] { "kind", "attribute", "name", "name" });
         addAnnotation(operationsMetadataTypeEClass, source,
-            new String[] {
-                "name", "OperationsMetadata_._type", "kind", "elementOnly"
-            });
+            new String[] { "name", "OperationsMetadata_._type", "kind", "elementOnly" });
         addAnnotation(getOperationsMetadataType_Operation(), source,
-            new String[] {
-                "kind", "element", "name", "Operation", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Operation", "namespace", "##targetNamespace" });
         addAnnotation(getOperationsMetadataType_Parameter(), source,
-            new String[] {
-                "kind", "element", "name", "Parameter", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Parameter", "namespace", "##targetNamespace" });
         addAnnotation(getOperationsMetadataType_Constraint(), source,
-            new String[] {
-                "kind", "element", "name", "Constraint", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Constraint", "namespace", "##targetNamespace" });
         addAnnotation(getOperationsMetadataType_ExtendedCapabilities(), source,
             new String[] {
-                "kind", "element", "name", "ExtendedCapabilities", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "ExtendedCapabilities", "namespace", "##targetNamespace"
             });
         addAnnotation(requestMethodTypeEClass, source,
             new String[] { "name", "RequestMethodType", "kind", "elementOnly" });
         addAnnotation(getRequestMethodType_Constraint(), source,
-            new String[] {
-                "kind", "element", "name", "Constraint", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Constraint", "namespace", "##targetNamespace" });
         addAnnotation(responsiblePartySubsetTypeEClass, source,
-            new String[] {
-                "name", "ResponsiblePartySubsetType", "kind", "elementOnly"
-            });
+            new String[] { "name", "ResponsiblePartySubsetType", "kind", "elementOnly" });
         addAnnotation(getResponsiblePartySubsetType_IndividualName(), source,
             new String[] {
-                "kind", "element", "name", "IndividualName", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "IndividualName", "namespace", "##targetNamespace"
             });
         addAnnotation(getResponsiblePartySubsetType_PositionName(), source,
-            new String[] {
-                "kind", "element", "name", "PositionName", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "PositionName", "namespace", "##targetNamespace" });
         addAnnotation(getResponsiblePartySubsetType_ContactInfo(), source,
-            new String[] {
-                "kind", "element", "name", "ContactInfo", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "ContactInfo", "namespace", "##targetNamespace" });
         addAnnotation(getResponsiblePartySubsetType_Role(), source,
-            new String[] {
-                "kind", "element", "name", "Role", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Role", "namespace", "##targetNamespace" });
         addAnnotation(responsiblePartyTypeEClass, source,
             new String[] { "name", "ResponsiblePartyType", "kind", "elementOnly" });
         addAnnotation(getResponsiblePartyType_IndividualName(), source,
             new String[] {
-                "kind", "element", "name", "IndividualName", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "IndividualName", "namespace", "##targetNamespace"
             });
         addAnnotation(getResponsiblePartyType_OrganisationName(), source,
             new String[] {
-                "kind", "element", "name", "OrganisationName", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "OrganisationName", "namespace", "##targetNamespace"
             });
         addAnnotation(getResponsiblePartyType_PositionName(), source,
-            new String[] {
-                "kind", "element", "name", "PositionName", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "PositionName", "namespace", "##targetNamespace" });
         addAnnotation(getResponsiblePartyType_ContactInfo(), source,
-            new String[] {
-                "kind", "element", "name", "ContactInfo", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "ContactInfo", "namespace", "##targetNamespace" });
         addAnnotation(getResponsiblePartyType_Role(), source,
-            new String[] {
-                "kind", "element", "name", "Role", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Role", "namespace", "##targetNamespace" });
         addAnnotation(sectionsTypeEClass, source,
             new String[] { "name", "SectionsType", "kind", "elementOnly" });
         addAnnotation(serviceIdentificationTypeEClass, source,
-            new String[] {
-                "name", "ServiceIdentification_._type", "kind", "elementOnly"
-            });
+            new String[] { "name", "ServiceIdentification_._type", "kind", "elementOnly" });
         addAnnotation(getServiceIdentificationType_ServiceType(), source,
+            new String[] { "kind", "element", "name", "ServiceType", "namespace", "##targetNamespace" });
+        addAnnotation(getServiceIdentificationType_ServiceTypeVersion(), source,
             new String[] {
-                "kind", "element", "name", "ServiceType", "namespace",
-                "##targetNamespace"
-            });
-        addAnnotation(getServiceIdentificationType_ServiceTypeVersion(),
-            source,
-            new String[] {
-                "kind", "element", "name", "ServiceTypeVersion", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "ServiceTypeVersion", "namespace", "##targetNamespace"
             });
         addAnnotation(getServiceIdentificationType_Fees(), source,
-            new String[] {
-                "kind", "element", "name", "Fees", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Fees", "namespace", "##targetNamespace" });
         addAnnotation(getServiceIdentificationType_AccessConstraints(), source,
             new String[] {
-                "kind", "element", "name", "AccessConstraints", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "AccessConstraints", "namespace", "##targetNamespace"
             });
         addAnnotation(serviceProviderTypeEClass, source,
             new String[] { "name", "ServiceProvider_._type", "kind", "elementOnly" });
         addAnnotation(getServiceProviderType_ProviderName(), source,
-            new String[] {
-                "kind", "element", "name", "ProviderName", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "ProviderName", "namespace", "##targetNamespace" });
         addAnnotation(getServiceProviderType_ProviderSite(), source,
-            new String[] {
-                "kind", "element", "name", "ProviderSite", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "ProviderSite", "namespace", "##targetNamespace" });
         addAnnotation(getServiceProviderType_ServiceContact(), source,
             new String[] {
-                "kind", "element", "name", "ServiceContact", "namespace",
-                "##targetNamespace"
+                "kind", "element", "name", "ServiceContact", "namespace", "##targetNamespace"
             });
         addAnnotation(telephoneTypeEClass, source,
             new String[] { "name", "TelephoneType", "kind", "elementOnly" });
         addAnnotation(getTelephoneType_Voice(), source,
-            new String[] {
-                "kind", "element", "name", "Voice", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Voice", "namespace", "##targetNamespace" });
         addAnnotation(getTelephoneType_Facsimile(), source,
-            new String[] {
-                "kind", "element", "name", "Facsimile", "namespace",
-                "##targetNamespace"
-            });
+            new String[] { "kind", "element", "name", "Facsimile", "namespace", "##targetNamespace" });
         addAnnotation(wgs84BoundingBoxTypeEClass, source,
             new String[] { "name", "WGS84BoundingBoxType", "kind", "elementOnly" });
     }

@@ -83,8 +83,7 @@ public class PaletteManager {
         // adds the paletteInverter dir with a running Geoserver, we won't find it
         // anymore...
         final File root = GeoserverDataDirectory.getGeoserverDataDirectory();
-        final File paletteDir = GeoserverDataDirectory.findConfigDir(root,
-                "palettes");
+        final File paletteDir = GeoserverDataDirectory.findConfigDir(root, "palettes");
         final String[] names = new String[] {
                 name + ".gif", name + ".png", name + ".pal", name + ".tif"
             };
@@ -107,8 +106,7 @@ public class PaletteManager {
             final String fileName = file.getName();
 
             if (fileName.endsWith("pal")) {
-                final IndexColorModel icm = new PALFileLoader(file)
-                    .getIndexColorModel();
+                final IndexColorModel icm = new PALFileLoader(file).getIndexColorModel();
 
                 if (icm != null) {
                     final InverseColorMapOp eicm = new InverseColorMapOp(icm);
@@ -124,8 +122,7 @@ public class PaletteManager {
                     final ImageReader reader = (ImageReader) it.next();
                     reader.setInput(iis);
 
-                    final ColorModel cm = ((ImageTypeSpecifier) reader.getImageTypes(0)
-                                                                      .next())
+                    final ColorModel cm = ((ImageTypeSpecifier) reader.getImageTypes(0).next())
                         .getColorModel();
 
                     if (cm instanceof IndexColorModel) {
@@ -180,8 +177,7 @@ public class PaletteManager {
         cmap[255] = (255 << 16) | (255 << 8) | 255;
 
         // create the color model
-        return new IndexColorModel(8, 256, cmap, 0, true, 255,
-            DataBuffer.TYPE_BYTE);
+        return new IndexColorModel(8, 256, cmap, 0, true, 255, DataBuffer.TYPE_BYTE);
     }
 
     /**

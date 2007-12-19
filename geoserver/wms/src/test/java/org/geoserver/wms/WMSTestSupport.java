@@ -61,12 +61,10 @@ public class WMSTestSupport extends GeoServerTestSupport {
     protected MapLayer createMapLayer(QName layerName)
         throws IOException {
         //TODO: support coverages
-        FeatureTypeInfo info = getCatalog()
-                                   .getFeatureTypeInfo(layerName);
+        FeatureTypeInfo info = getCatalog().getFeatureTypeInfo(layerName);
         Style style = info.getDefaultStyle();
 
-        DefaultMapLayer layer = new DefaultMapLayer(info.getFeatureSource(),
-                style);
+        DefaultMapLayer layer = new DefaultMapLayer(info.getFeatureSource(), style);
         layer.setTitle(info.getTypeName());
 
         return layer;
@@ -104,13 +102,11 @@ public class WMSTestSupport extends GeoServerTestSupport {
         List styles = new ArrayList();
 
         for (int i = 0; i < layerNames.length; i++) {
-            FeatureTypeInfo ftInfo = getCatalog()
-                                         .getFeatureTypeInfo(layerNames[i]);
+            FeatureTypeInfo ftInfo = getCatalog().getFeatureTypeInfo(layerNames[i]);
             styles.add(ftInfo.getDefaultStyle());
 
             try {
-                layers[i] = new MapLayerInfo((FeatureTypeInfoDTO) ftInfo.toDTO(),
-                        getCatalog());
+                layers[i] = new MapLayerInfo((FeatureTypeInfoDTO) ftInfo.toDTO(), getCatalog());
             } catch (ConfigurationException e) {
                 throw new RuntimeException(e);
             }

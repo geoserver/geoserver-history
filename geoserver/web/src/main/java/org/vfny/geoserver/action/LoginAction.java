@@ -44,8 +44,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @task TODO: add a page to change the username and password from the ui.
  */
-public class LoginAction extends GeoServerAction
-    implements ApplicationContextAware {
+public class LoginAction extends GeoServerAction implements ApplicationContextAware {
     ApplicationContext context;
 
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -74,10 +73,8 @@ public class LoginAction extends GeoServerAction
         }
 
         ActionErrors errors = new ActionErrors();
-        errors.add(ActionErrors.GLOBAL_ERROR,
-            new ActionError("error.login.invalidCombo"));
-        errors.add(ActionErrors.GLOBAL_ERROR,
-            new ActionError("message.login.hint"));
+        errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.login.invalidCombo"));
+        errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("message.login.hint"));
         request.setAttribute(Globals.ERROR_KEY, errors);
 
         return mapping.findForward("login");

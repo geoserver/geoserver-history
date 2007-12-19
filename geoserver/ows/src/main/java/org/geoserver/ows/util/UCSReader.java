@@ -344,8 +344,8 @@ public class UCSReader extends Reader {
          *    are at the beginning of the `fCharBuf`). They are usually picked
          *    up during next call(s) to one of the `read` methods.
          */
-        if ((0 > offset) || (offset > ch.length) || (0 > length)
-                || ((offset + length) > ch.length) || (0 > (offset + length))) {
+        if ((0 > offset) || (offset > ch.length) || (0 > length) || ((offset + length) > ch.length)
+                || (0 > (offset + length))) {
             throw new IndexOutOfBoundsException();
         } else if (0 == length) {
             return 0;
@@ -449,10 +449,8 @@ public class UCSReader extends Reader {
                         // Checking if we can put another 2 chars in buffer.
                         if (2 <= (length - charsCount)) {
                             int cp1 = (codepoint - 0x10000) & 0xFFFFF;
-                            ch[offset + charsCount] = (char) (0xD800
-                                + (cp1 >>> 10));
-                            ch[offset + charsCount + 1] = (char) (0xDC00
-                                + (cp1 & 0x3FF));
+                            ch[offset + charsCount] = (char) (0xD800 + (cp1 >>> 10));
+                            ch[offset + charsCount + 1] = (char) (0xDC00 + (cp1 & 0x3FF));
                             charsCount += 2;
                         } else {
                             break; // END for
@@ -492,8 +490,7 @@ public class UCSReader extends Reader {
                         int cp1 = (codepoint - 0x10000) & 0xFFFFF;
                         // In this case store low surrogate code unit first, so that
                         // it can be read back after high one.
-                        fCharBuf[fCharCount++] = (char) (0xDC00
-                            + ((char) cp1 & 0x3FF));
+                        fCharBuf[fCharCount++] = (char) (0xDC00 + ((char) cp1 & 0x3FF));
                         fCharBuf[fCharCount++] = (char) (0xD800 + (cp1 >>> 10));
                     }
                 } // END for
@@ -730,7 +727,6 @@ public class UCSReader extends Reader {
      *         supplementary character range; <code>false</code> otherwise.
      */
     protected boolean isSupplementaryCodePoint(int codePoint) {
-        return (codePoint >= MIN_SUPPLEMENTARY_CODE_POINT)
-        && (codePoint <= MAX_CODE_POINT);
+        return (codePoint >= MIN_SUPPLEMENTARY_CODE_POINT) && (codePoint <= MAX_CODE_POINT);
     }
 } // class UCSReader

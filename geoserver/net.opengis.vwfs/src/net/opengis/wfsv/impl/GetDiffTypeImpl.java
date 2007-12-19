@@ -6,28 +6,21 @@
  */
 package net.opengis.wfsv.impl;
 
-import java.util.Collection;
-
 import net.opengis.wfs.impl.BaseRequestTypeImpl;
-
 import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.GetDiffType;
 import net.opengis.wfsv.WfsvPackage;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.eclipse.emf.ecore.impl.EObjectImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
+import java.util.Collection;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -108,8 +101,10 @@ public class GetDiffTypeImpl extends BaseRequestTypeImpl implements GetDiffType 
      */
     public EList getDifferenceQuery() {
         if (differenceQuery == null) {
-            differenceQuery = new EObjectContainmentEList(DifferenceQueryType.class, this, WfsvPackage.GET_DIFF_TYPE__DIFFERENCE_QUERY);
+            differenceQuery = new EObjectContainmentEList(DifferenceQueryType.class, this,
+                    WfsvPackage.GET_DIFF_TYPE__DIFFERENCE_QUERY);
         }
+
         return differenceQuery;
     }
 
@@ -130,10 +125,15 @@ public class GetDiffTypeImpl extends BaseRequestTypeImpl implements GetDiffType 
     public void setOutputFormat(String newOutputFormat) {
         String oldOutputFormat = outputFormat;
         outputFormat = newOutputFormat;
+
         boolean oldOutputFormatESet = outputFormatESet;
         outputFormatESet = true;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, WfsvPackage.GET_DIFF_TYPE__OUTPUT_FORMAT, oldOutputFormat, outputFormat, !oldOutputFormatESet));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    WfsvPackage.GET_DIFF_TYPE__OUTPUT_FORMAT, oldOutputFormat, outputFormat,
+                    !oldOutputFormatESet));
+        }
     }
 
     /**
@@ -146,8 +146,12 @@ public class GetDiffTypeImpl extends BaseRequestTypeImpl implements GetDiffType 
         boolean oldOutputFormatESet = outputFormatESet;
         outputFormat = OUTPUT_FORMAT_EDEFAULT;
         outputFormatESet = false;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.UNSET, WfsvPackage.GET_DIFF_TYPE__OUTPUT_FORMAT, oldOutputFormat, OUTPUT_FORMAT_EDEFAULT, oldOutputFormatESet));
+
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.UNSET,
+                    WfsvPackage.GET_DIFF_TYPE__OUTPUT_FORMAT, oldOutputFormat,
+                    OUTPUT_FORMAT_EDEFAULT, oldOutputFormatESet));
+        }
     }
 
     /**
@@ -164,11 +168,13 @@ public class GetDiffTypeImpl extends BaseRequestTypeImpl implements GetDiffType 
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID,
+        NotificationChain msgs) {
         switch (featureID) {
-            case WfsvPackage.GET_DIFF_TYPE__DIFFERENCE_QUERY:
-                return ((InternalEList)getDifferenceQuery()).basicRemove(otherEnd, msgs);
+        case WfsvPackage.GET_DIFF_TYPE__DIFFERENCE_QUERY:
+            return ((InternalEList) getDifferenceQuery()).basicRemove(otherEnd, msgs);
         }
+
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
@@ -179,11 +185,13 @@ public class GetDiffTypeImpl extends BaseRequestTypeImpl implements GetDiffType 
      */
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-            case WfsvPackage.GET_DIFF_TYPE__DIFFERENCE_QUERY:
-                return getDifferenceQuery();
-            case WfsvPackage.GET_DIFF_TYPE__OUTPUT_FORMAT:
-                return getOutputFormat();
+        case WfsvPackage.GET_DIFF_TYPE__DIFFERENCE_QUERY:
+            return getDifferenceQuery();
+
+        case WfsvPackage.GET_DIFF_TYPE__OUTPUT_FORMAT:
+            return getOutputFormat();
         }
+
         return super.eGet(featureID, resolve, coreType);
     }
 
@@ -194,14 +202,18 @@ public class GetDiffTypeImpl extends BaseRequestTypeImpl implements GetDiffType 
      */
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-            case WfsvPackage.GET_DIFF_TYPE__DIFFERENCE_QUERY:
-                getDifferenceQuery().clear();
-                getDifferenceQuery().addAll((Collection)newValue);
-                return;
-            case WfsvPackage.GET_DIFF_TYPE__OUTPUT_FORMAT:
-                setOutputFormat((String)newValue);
-                return;
+        case WfsvPackage.GET_DIFF_TYPE__DIFFERENCE_QUERY:
+            getDifferenceQuery().clear();
+            getDifferenceQuery().addAll((Collection) newValue);
+
+            return;
+
+        case WfsvPackage.GET_DIFF_TYPE__OUTPUT_FORMAT:
+            setOutputFormat((String) newValue);
+
+            return;
         }
+
         super.eSet(featureID, newValue);
     }
 
@@ -212,13 +224,17 @@ public class GetDiffTypeImpl extends BaseRequestTypeImpl implements GetDiffType 
      */
     public void eUnset(int featureID) {
         switch (featureID) {
-            case WfsvPackage.GET_DIFF_TYPE__DIFFERENCE_QUERY:
-                getDifferenceQuery().clear();
-                return;
-            case WfsvPackage.GET_DIFF_TYPE__OUTPUT_FORMAT:
-                unsetOutputFormat();
-                return;
+        case WfsvPackage.GET_DIFF_TYPE__DIFFERENCE_QUERY:
+            getDifferenceQuery().clear();
+
+            return;
+
+        case WfsvPackage.GET_DIFF_TYPE__OUTPUT_FORMAT:
+            unsetOutputFormat();
+
+            return;
         }
+
         super.eUnset(featureID);
     }
 
@@ -229,11 +245,13 @@ public class GetDiffTypeImpl extends BaseRequestTypeImpl implements GetDiffType 
      */
     public boolean eIsSet(int featureID) {
         switch (featureID) {
-            case WfsvPackage.GET_DIFF_TYPE__DIFFERENCE_QUERY:
-                return differenceQuery != null && !differenceQuery.isEmpty();
-            case WfsvPackage.GET_DIFF_TYPE__OUTPUT_FORMAT:
-                return isSetOutputFormat();
+        case WfsvPackage.GET_DIFF_TYPE__DIFFERENCE_QUERY:
+            return (differenceQuery != null) && !differenceQuery.isEmpty();
+
+        case WfsvPackage.GET_DIFF_TYPE__OUTPUT_FORMAT:
+            return isSetOutputFormat();
         }
+
         return super.eIsSet(featureID);
     }
 
@@ -243,13 +261,21 @@ public class GetDiffTypeImpl extends BaseRequestTypeImpl implements GetDiffType 
      * @generated
      */
     public String toString() {
-        if (eIsProxy()) return super.toString();
+        if (eIsProxy()) {
+            return super.toString();
+        }
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (outputFormat: ");
-        if (outputFormatESet) result.append(outputFormat); else result.append("<unset>");
+
+        if (outputFormatESet) {
+            result.append(outputFormat);
+        } else {
+            result.append("<unset>");
+        }
+
         result.append(')');
+
         return result.toString();
     }
-
 } //GetDiffTypeImpl

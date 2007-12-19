@@ -72,12 +72,10 @@ public class UpdateElementHandler implements TransactionElementHandler {
         UpdateElementType update = (UpdateElementType) element;
 
         try {
-            FeatureTypeInfo meta = (FeatureTypeInfo) typeInfos.values()
-                                                              .iterator().next();
+            FeatureTypeInfo meta = (FeatureTypeInfo) typeInfos.values().iterator().next();
             FeatureType featureType = meta.getFeatureType();
 
-            for (Iterator prop = update.getProperty().iterator();
-                    prop.hasNext();) {
+            for (Iterator prop = update.getProperty().iterator(); prop.hasNext();) {
                 PropertyType property = (PropertyType) prop.next();
 
                 //check that valus that are non-nillable exist
@@ -85,10 +83,8 @@ public class UpdateElementHandler implements TransactionElementHandler {
                     String propertyName = property.getName().getLocalPart();
                     AttributeType attributeType = featureType.getAttributeType(propertyName);
 
-                    if ((attributeType != null)
-                            && (attributeType.getMinOccurs() > 0)) {
-                        String msg = "Property '"
-                            + attributeType.getLocalName()
+                    if ((attributeType != null) && (attributeType.getMinOccurs() > 0)) {
+                        String msg = "Property '" + attributeType.getLocalName()
                             + "' is mandatory but no value specified.";
                         throw new WFSException(msg, "MissingParameterValue");
                     }
@@ -99,8 +95,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
                 PropertyName propertyName = null;
 
                 if ((name.getPrefix() != null) && !"".equals(name.getPrefix())) {
-                    propertyName = ff.property(name.getPrefix() + ":"
-                            + name.getLocalPart());
+                    propertyName = ff.property(name.getPrefix() + ":" + name.getLocalPart());
                 } else {
                     propertyName = ff.property(name.getLocalPart());
                 }
@@ -111,26 +106,23 @@ public class UpdateElementHandler implements TransactionElementHandler {
                 }
             }
         } catch (IOException e) {
-            throw new WFSTransactionException(
-                "Could not locate feature type information for "
+            throw new WFSTransactionException("Could not locate feature type information for "
                 + update.getTypeName(), e, update.getHandle());
         }
     }
 
-    public void execute(EObject element, TransactionType request,
-        Map featureStores, TransactionResponseType response,
-        TransactionListener listener) throws WFSTransactionException {
+    public void execute(EObject element, TransactionType request, Map featureStores,
+        TransactionResponseType response, TransactionListener listener)
+        throws WFSTransactionException {
         UpdateElementType update = (UpdateElementType) element;
         QName elementName = update.getTypeName();
         String handle = update.getHandle();
-        long updated = response.getTransactionSummary().getTotalUpdated()
-                               .longValue();
+        long updated = response.getTransactionSummary().getTotalUpdated().longValue();
 
         FeatureStore store = (FeatureStore) featureStores.get(elementName);
 
         if (store == null) {
-            throw new WFSException("Could not locate FeatureStore for '"
-                + elementName + "'");
+            throw new WFSException("Could not locate FeatureStore for '" + elementName + "'");
         }
 
         LOGGER.finer("Transaction Update:" + element);
@@ -142,11 +134,8 @@ public class UpdateElementHandler implements TransactionElementHandler {
             Object[] values = new Object[update.getProperty().size()];
 
             for (int j = 0; j < update.getProperty().size(); j++) {
-                PropertyType property = (PropertyType) update.getProperty()
-                                                             .get(j);
-                types[j] = store.getSchema()
-                                .getAttributeType(property.getName()
-                                                          .getLocalPart());
+                PropertyType property = (PropertyType) update.getProperty().get(j);
+                types[j] = store.getSchema().getAttributeType(property.getName().getLocalPart());
                 values[j] = property.getValue();
 
                 // if geometry, it may be necessary to reproject it to the native CRS before
@@ -158,21 +147,18 @@ public class UpdateElementHandler implements TransactionElementHandler {
                     CoordinateReferenceSystem source = null;
 
                     if (geometry.getUserData() instanceof CoordinateReferenceSystem) {
-                        source = (CoordinateReferenceSystem) geometry
-                            .getUserData();
+                        source = (CoordinateReferenceSystem) geometry.getUserData();
                     }
 
                     // see if the geometry has a CRS other than the default one
                     CoordinateReferenceSystem target = null;
 
                     if (types[j] instanceof GeometricAttributeType) {
-                        target = ((GeometricAttributeType) types[j])
-                            .getCoordinateSystem();
+                        target = ((GeometricAttributeType) types[j]).getCoordinateSystem();
                     }
 
                     if (wfs.getCiteConformanceHacks()) {
-                        JTS.checkCoordinatesRange(geometry,
-                            (source != null) ? source : target);
+                        JTS.checkCoordinatesRange(geometry, (source != null) ? source : target);
                     }
 
                     //if we have a source and target and they are not equal, do 
@@ -182,15 +168,13 @@ public class UpdateElementHandler implements TransactionElementHandler {
                         try {
                             //TODO: this code should be shared with the code
                             // from ReprojectingFeatureCollection --JD
-                            MathTransform tx = CRS.findMathTransform(source,
-                                    target);
+                            MathTransform tx = CRS.findMathTransform(source, target);
                             GeometryCoordinateSequenceTransformer gtx = new GeometryCoordinateSequenceTransformer();
                             gtx.setMathTransform(tx);
 
                             values[j] = gtx.transform(geometry);
                         } catch (Exception e) {
-                            String msg = "Failed to reproject geometry:"
-                                + e.getLocalizedMessage();
+                            String msg = "Failed to reproject geometry:" + e.getLocalizedMessage();
                             throw new WFSTransactionException(msg, e);
                         }
                     }
@@ -205,8 +189,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
             LOGGER.finer("Preprocess to remember modification as a set of fids");
 
             FeatureCollection features = store.getFeatures(filter);
-            listener.dataStoreChange(new TransactionEvent(
-                    TransactionEventType.PRE_UPDATE, features));
+            listener.dataStoreChange(new TransactionEvent(TransactionEventType.PRE_UPDATE, features));
 
             Iterator preprocess = features.iterator();
 
@@ -229,8 +212,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
                 }
             } finally {
                 // make sure we unlock
-                if ((request.getLockId() != null)
-                        && store instanceof FeatureLocking
+                if ((request.getLockId() != null) && store instanceof FeatureLocking
                         && (request.getReleaseAction() == AllSomeType.SOME_LITERAL)) {
                     FeatureLocking locking = (FeatureLocking) store;
                     locking.unLockFeatures(filter);
@@ -239,8 +221,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
 
             // Post process - gather the same features after the update, and  
             if (!fids.isEmpty()) {
-                LOGGER.finer(
-                    "Post process update for boundary update and featureValidation");
+                LOGGER.finer("Post process update for boundary update and featureValidation");
 
                 FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
                 Set featureIds = new HashSet();
@@ -252,8 +233,8 @@ public class UpdateElementHandler implements TransactionElementHandler {
                 Id modified = ff.id(featureIds);
 
                 FeatureCollection changed = store.getFeatures(modified);
-                listener.dataStoreChange(new TransactionEvent(
-                        TransactionEventType.POST_UPDATE, changed));
+                listener.dataStoreChange(new TransactionEvent(TransactionEventType.POST_UPDATE,
+                        changed));
             }
 
             // update the update counter
@@ -267,8 +248,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
         }
 
         // update transaction summary
-        response.getTransactionSummary()
-                .setTotalUpdated(BigInteger.valueOf(updated));
+        response.getTransactionSummary().setTotalUpdated(BigInteger.valueOf(updated));
     }
 
     public Class getElementClass() {

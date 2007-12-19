@@ -85,8 +85,7 @@ public class DescribeKvpReader extends KvpRequestReader {
         currentRequest.setVersion(getValue("VERSION"));
         currentRequest.setRequest(getValue("REQUEST"));
         currentRequest.setOutputFormat(getValue("OUTPUTFORMAT"));
-        currentRequest.setCoverages(readFlat(getValue("COVERAGE"),
-                INNER_DELIMETER));
+        currentRequest.setCoverages(readFlat(getValue("COVERAGE"), INNER_DELIMETER));
 
         return currentRequest;
     }

@@ -25,8 +25,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class GML3FeatureProducerTest extends WFSTestSupport {
     GML3OutputFormat producer() {
         WFSConfiguration configuration = new WFSConfiguration(getCatalog(),
-                new FeatureTypeSchemaBuilder.GML3(getWFS(), getCatalog(),
-                    getResourceLoader()));
+                new FeatureTypeSchemaBuilder.GML3(getWFS(), getCatalog(), getResourceLoader()));
 
         return new GML3OutputFormat(getWFS(), getCatalog(), configuration);
     }
@@ -36,57 +35,45 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
         GetFeatureType type = WfsFactory.eINSTANCE.createGetFeatureType();
         type.setBaseUrl("http://localhost:8080/geoserver");
 
-        Operation request = new Operation("wfs", service, null,
-                new Object[] { type });
+        Operation request = new Operation("wfs", service, null, new Object[] { type });
 
         return request;
     }
 
     public void testSingle() throws Exception {
-        DataStoreInfo dataStore = getCatalog()
-                                      .getDataStoreInfo(MockData.CDF_PREFIX);
+        DataStoreInfo dataStore = getCatalog().getDataStoreInfo(MockData.CDF_PREFIX);
         FeatureSource source = dataStore.getDataStore()
-                                        .getFeatureSource(MockData.SEVEN
-                .getLocalPart());
+                                        .getFeatureSource(MockData.SEVEN.getLocalPart());
         FeatureCollection features = source.getFeatures();
 
-        FeatureCollectionType fcType = WfsFactory.eINSTANCE
-            .createFeatureCollectionType();
+        FeatureCollectionType fcType = WfsFactory.eINSTANCE.createFeatureCollectionType();
 
         fcType.getFeature().add(features);
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         producer().write(fcType, output, request());
 
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
-                                                           .newDocumentBuilder();
-        Document document = docBuilder.parse(new ByteArrayInputStream(
-                    output.toByteArray()));
+        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
         assertEquals(7, document.getElementsByTagName("cdf:Seven").getLength());
     }
 
     public void testMultipleSameNamespace() throws Exception {
-        DataStoreInfo dataStore = getCatalog()
-                                      .getDataStoreInfo(MockData.CDF_PREFIX);
+        DataStoreInfo dataStore = getCatalog().getDataStoreInfo(MockData.CDF_PREFIX);
 
-        FeatureCollectionType fcType = WfsFactory.eINSTANCE
-            .createFeatureCollectionType();
+        FeatureCollectionType fcType = WfsFactory.eINSTANCE.createFeatureCollectionType();
         fcType.getFeature()
-              .add(dataStore.getDataStore()
-                            .getFeatureSource(MockData.SEVEN.getLocalPart())
+              .add(dataStore.getDataStore().getFeatureSource(MockData.SEVEN.getLocalPart())
                             .getFeatures());
         fcType.getFeature()
-              .add(dataStore.getDataStore()
-                            .getFeatureSource(MockData.FIFTEEN.getLocalPart())
+              .add(dataStore.getDataStore().getFeatureSource(MockData.FIFTEEN.getLocalPart())
                             .getFeatures());
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         producer().write(fcType, output, request());
 
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
-                                                           .newDocumentBuilder();
-        Document document = docBuilder.parse(new ByteArrayInputStream(
-                    output.toByteArray()));
+        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
         assertEquals(7 + 15,
             document.getElementsByTagName("cdf:Seven").getLength()
             + document.getElementsByTagName("cdf:Fifteen").getLength());
@@ -96,28 +83,21 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
         DataStoreInfo seven = getCatalog().getDataStoreInfo(MockData.CDF_PREFIX);
         DataStoreInfo polys = getCatalog().getDataStoreInfo(MockData.CGF_PREFIX);
 
-        FeatureCollectionType fcType = WfsFactory.eINSTANCE
-            .createFeatureCollectionType();
+        FeatureCollectionType fcType = WfsFactory.eINSTANCE.createFeatureCollectionType();
         fcType.getFeature()
-              .add(seven.getDataStore()
-                        .getFeatureSource(MockData.SEVEN.getLocalPart())
-                        .getFeatures());
+              .add(seven.getDataStore().getFeatureSource(MockData.SEVEN.getLocalPart()).getFeatures());
         fcType.getFeature()
-              .add(polys.getDataStore()
-                        .getFeatureSource(MockData.POLYGONS.getLocalPart())
+              .add(polys.getDataStore().getFeatureSource(MockData.POLYGONS.getLocalPart())
                         .getFeatures());
 
-        int npolys = polys.getDataStore()
-                          .getFeatureSource(MockData.POLYGONS.getLocalPart())
+        int npolys = polys.getDataStore().getFeatureSource(MockData.POLYGONS.getLocalPart())
                           .getFeatures().size();
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         producer().write(fcType, output, request());
 
-        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
-                                                           .newDocumentBuilder();
-        Document document = docBuilder.parse(new ByteArrayInputStream(
-                    output.toByteArray()));
+        DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = docBuilder.parse(new ByteArrayInputStream(output.toByteArray()));
         assertEquals(7 + npolys,
             document.getElementsByTagName("cdf:Seven").getLength()
             + document.getElementsByTagName("cgf:Polygons").getLength());

@@ -57,9 +57,8 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
     /**
      * Writes out an OWS ExceptionReport document.
      */
-    public void handleServiceException(ServiceException exception,
-        Service service, HttpServletRequest request,
-        HttpServletResponse response) {
+    public void handleServiceException(ServiceException exception, Service service,
+        HttpServletRequest request, HttpServletResponse response) {
         OwsFactory factory = OwsFactory.eINSTANCE;
 
         ExceptionType e = factory.createExceptionType();
@@ -107,18 +106,15 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
         encoder.setOutputFormat(format);
 
         encoder.setSchemaLocation(org.geoserver.ows.xml.v1_0.OWS.NAMESPACE,
-            RequestUtils.schemaBaseURL(request)
-            + "ows/1.0.0/owsExceptionReport.xsd");
+            RequestUtils.schemaBaseURL(request) + "ows/1.0.0/owsExceptionReport.xsd");
 
         try {
-            encoder.encode(report,
-                org.geoserver.ows.xml.v1_0.OWS.EXCEPTIONREPORT,
+            encoder.encode(report, org.geoserver.ows.xml.v1_0.OWS.EXCEPTIONREPORT,
                 response.getOutputStream());
         } catch (Exception ex) {
             //throw new RuntimeException(ex);
             // Hmm, not much we can do here.  I guess log the fact that we couldn't write out the exception and be done with it...
-            LOGGER.log(Level.INFO,
-                "Problem writing exception information back to calling client:",
+            LOGGER.log(Level.INFO, "Problem writing exception information back to calling client:",
                 e);
         } finally {
             try {

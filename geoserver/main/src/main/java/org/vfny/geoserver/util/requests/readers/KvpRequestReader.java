@@ -67,8 +67,7 @@ import javax.xml.parsers.SAXParserFactory;
  */
 abstract public class KvpRequestReader {
     /** Class logger */
-    private static Logger LOGGER = Logger.getLogger(
-            "org.vfny.geoserver.requests.readers");
+    private static Logger LOGGER = Logger.getLogger("org.vfny.geoserver.requests.readers");
 
     /** Delimeter for KVPs in the raw string */
     private static final String KEYWORD_DELIMITER = "&";
@@ -83,8 +82,7 @@ abstract public class KvpRequestReader {
     protected static final String INNER_DELIMETER = ",";
 
     /** Holds mappings between HTTP and ASCII encodings */
-    protected final static FilterFactory factory = CommonFactoryFinder
-        .getFilterFactory(null);
+    protected final static FilterFactory factory = CommonFactoryFinder.getFilterFactory(null);
 
     /** KVP pair listing; stores all data from the KVP request */
     protected Map kvpPairs = new HashMap(10);
@@ -232,8 +230,7 @@ abstract public class KvpRequestReader {
         kvps = new HashMap(10);
 
         // parses initial request sream into KVPs
-        StringTokenizer requestKeywords = new StringTokenizer(cleanRequest.trim(),
-                KEYWORD_DELIMITER);
+        StringTokenizer requestKeywords = new StringTokenizer(cleanRequest.trim(), KEYWORD_DELIMITER);
 
         // parses KVPs into values and keywords and puts them in a HashTable
         while (requestKeywords.hasMoreTokens()) {
@@ -263,8 +260,7 @@ abstract public class KvpRequestReader {
             } else {
                 // handles all other standard cases by looking for the correct
                 // delimeter and then sticking the KVPs into the hash table
-                StringTokenizer requestValues = new StringTokenizer(kvpPair,
-                        VALUE_DELIMITER);
+                StringTokenizer requestValues = new StringTokenizer(kvpPair, VALUE_DELIMITER);
 
                 // make sure that there is a key token
                 if (requestValues.hasMoreTokens()) {
@@ -356,8 +352,8 @@ abstract public class KvpRequestReader {
         Object[] bboxValues = readFlat(bboxParam, INNER_DELIMETER).toArray();
 
         if (bboxValues.length != 4) {
-            throw new ServiceException(bboxParam
-                + " is not a valid pair of coordinates", getClass().getName());
+            throw new ServiceException(bboxParam + " is not a valid pair of coordinates",
+                getClass().getName());
         }
 
         try {
@@ -368,17 +364,16 @@ abstract public class KvpRequestReader {
             bbox = new Envelope(minx, maxx, miny, maxy);
 
             if (minx > maxx) {
-                throw new ServiceException("illegal bbox, minX: " + minx
-                    + " is " + "greater than maxX: " + maxx);
+                throw new ServiceException("illegal bbox, minX: " + minx + " is "
+                    + "greater than maxX: " + maxx);
             }
 
             if (miny > maxy) {
-                throw new ServiceException("illegal bbox, minY: " + miny
-                    + " is " + "greater than maxY: " + maxy);
+                throw new ServiceException("illegal bbox, minY: " + miny + " is "
+                    + "greater than maxY: " + maxy);
             }
         } catch (NumberFormatException ex) {
-            throw new ServiceException(ex,
-                "Illegal value for BBOX parameter: " + bboxParam,
+            throw new ServiceException(ex, "Illegal value for BBOX parameter: " + bboxParam,
                 getClass().getName() + "::parseBbox()");
         }
 
@@ -426,8 +421,7 @@ abstract public class KvpRequestReader {
         try {
             return CQL.toFilterList(filter);
         } catch (CQLException pe) {
-            throw new ServiceException("Could not parse CQL filter list."
-                + pe.getMessage(), pe);
+            throw new ServiceException("Could not parse CQL filter list." + pe.getMessage(), pe);
         }
     }
 
@@ -493,12 +487,10 @@ abstract public class KvpRequestReader {
             adapter.parse(requestSource);
             LOGGER.fine("just parsed: " + requestSource);
         } catch (SAXException e) {
-            throw new ServiceException(e,
-                "XML getFeature request SAX parsing error",
+            throw new ServiceException(e, "XML getFeature request SAX parsing error",
                 XmlRequestReader.class.getName());
         } catch (IOException e) {
-            throw new ServiceException(e,
-                "XML get feature request input error",
+            throw new ServiceException(e, "XML get feature request input error",
                 XmlRequestReader.class.getName());
         } catch (ParserConfigurationException e) {
             throw new ServiceException(e, "Some sort of issue creating parser",

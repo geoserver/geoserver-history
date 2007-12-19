@@ -31,8 +31,7 @@ public class DimRangeKvpParser extends KvpParser {
      */
     public Object parse(final String value) throws ParseException {
         if (!value.contains(",")) {
-            throw new ParseException("The dim_range parameter does not contain any comma.",
-                0);
+            throw new ParseException("The dim_range parameter does not contain any comma.", 0);
         }
 
         String[] range = value.split(",");
