@@ -3,8 +3,6 @@ package org.geoserver.wcs;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.opengis.wcs.v1_1_1.CapabilitiesType;
-import net.opengis.wcs.v1_1_1.CoverageDescriptionsType;
 import net.opengis.wcs.v1_1_1.DescribeCoverageType;
 import net.opengis.wcs.v1_1_1.GetCapabilitiesType;
 import net.opengis.wcs.v1_1_1.GetCoverageType;
@@ -12,7 +10,6 @@ import net.opengis.wcs.v1_1_1.GetCoverageType;
 import org.geoserver.ows.util.CapabilitiesUtils;
 import org.geoserver.wcs.response.DescribeCoverageTransformer;
 import org.geoserver.wcs.response.WCSCapsTransformer;
-import org.geotools.xml.transform.TransformerBase;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.wcs.WcsException;
@@ -30,7 +27,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
 
 
     public WCSCapsTransformer getCapabilities(GetCapabilitiesType request) {
-      //do the version negotiation dance
+        // do the version negotiation dance
         List<String> provided = new ArrayList<String>();
 //        provided.add("1.0.0");
         provided.add("1.1.0");
@@ -50,12 +47,6 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
     }
 
     public DescribeCoverageTransformer describeCoverage(DescribeCoverageType request) {
-      //do the version negotiation dance
-        List<String> provided = new ArrayList<String>();
-//        provided.add("1.0.0");
-        provided.add("1.1.0");
-        provided.add("1.1.1");
-
         final String version = request.getVersion();
         if ("1.1.0".equals(version) || "1.1.1".equals(version)) {
             return new DescribeCoverageTransformer(wcs, catalog);
