@@ -356,7 +356,7 @@ public class CoverageResponse implements Response {
 
         // - first check if the responseCRS is present on the Coverage
         // ResponseCRSs list
-        if (!meta.getResponseCRSs().contains(responseCRS)) {
+        if (meta.getResponseCRSs() == null || !meta.getResponseCRSs().contains(responseCRS)) {
             throw new WcsException("This Coverage does not support the requested Response-CRS.");
         }
 
@@ -368,7 +368,7 @@ public class CoverageResponse implements Response {
 
         // - first check if the requestCRS is present on the Coverage
         // RequestCRSs list
-        if (!meta.getResponseCRSs().contains(requestCRS)) {
+        if (meta.getResponseCRSs() == null || !meta.getResponseCRSs().contains(requestCRS)) {
             throw new WcsException("This Coverage does not support the requested CRS.");
         }
 
@@ -406,7 +406,7 @@ public class CoverageResponse implements Response {
 
         // this is the destination envelope in the coverage crs
         final GeneralEnvelope destinationEnvelopeInSourceCRS = (!deviceCRSToGCCRSTransform
-            .isIdentity()) ? CRSUtilities.transform(deviceCRSToGCCRSTransform, destinationEnvelope)
+            .isIdentity()) ? CRS.transform(deviceCRSToGCCRSTransform, destinationEnvelope)
                            : new GeneralEnvelope(destinationEnvelope);
         destinationEnvelopeInSourceCRS.setCoordinateReferenceSystem(cvCRS);
 
@@ -509,7 +509,7 @@ public class CoverageResponse implements Response {
         /**
          * Reproject
          */
-        subCoverage = WCSUtils.reproject(subCoverage, sourceCRS, targetCRS, interpolation);
+        subCoverage = WCSUtils.reproject(subCoverage, cvCRS, targetCRS, interpolation);
 
         return subCoverage;
     }

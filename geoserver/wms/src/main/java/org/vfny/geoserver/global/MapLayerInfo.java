@@ -4,16 +4,17 @@
  */
 package org.vfny.geoserver.global;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.List;
+
 import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.Style;
-import org.opengis.filter.Filter;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.util.DataStoreUtils;
-import java.io.IOException;
-import java.util.List;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**

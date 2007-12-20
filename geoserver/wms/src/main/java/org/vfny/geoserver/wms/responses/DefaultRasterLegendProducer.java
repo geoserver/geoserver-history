@@ -4,11 +4,27 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.Polygon;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
+
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.feature.AttributeType;
 import org.geotools.feature.Feature;
@@ -36,25 +52,12 @@ import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.GetLegendGraphicProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
 
 
 /**
@@ -191,6 +194,8 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
         try {
             if (request.getLayer().getType() == MapLayerInfo.TYPE_VECTOR) {
                 sampleFeature = createSampleFeature(request.getLayer().getFeature().getFeatureType());
+            } else if (request.getLayer().getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
+            	sampleFeature = createSampleFeature(request.getLayer().getRemoteFeatureSource().getSchema());
             } else {
                 FeatureCollection feature = FeatureUtilities.wrapGridCoverage((GridCoverage2D) request.getLayer()
                                                                                                       .getCoverage()

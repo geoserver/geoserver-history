@@ -4,7 +4,13 @@
  */
 package org.vfny.geoserver.wms.responses;
 
-import org.geotools.feature.FeatureType;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.logging.Logger;
+
+import org.geotools.data.FeatureSource;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.styling.FeatureTypeStyle;
@@ -15,16 +21,12 @@ import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;
 import org.geotools.styling.Symbolizer;
 import org.vfny.geoserver.ServiceException;
+import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.testdata.AbstractCiteDataTest;
 import org.vfny.geoserver.testdata.MockUtils;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.logging.Logger;
 
 
 /**
@@ -100,7 +102,7 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
             + multipleRulesStyle.getName());
 
         GetLegendGraphicRequest req = new GetLegendGraphicRequest(service);
-        req.setLayer(getCiteDataStore().getSchema(ROAD_SEGMENTS_TYPE));
+        req.setLayer(new MapLayerInfo(getCiteDataStore().getFeatureSource(ROAD_SEGMENTS_TYPE)));
         req.setStyle(multipleRulesStyle);
         req.setRule(rule);
         req.setLegendOptions(new HashMap());
@@ -207,9 +209,9 @@ public class DefaultRasterLegendProducerTest extends AbstractCiteDataTest {
      */
     private BufferedImage testProduceLegendGraphic(String citeTypeName, int ruleCount)
         throws Exception {
-        FeatureType layer = getCiteDataStore().getSchema(citeTypeName);
+        FeatureSource fs = getCiteDataStore().getFeatureSource(citeTypeName);
         GetLegendGraphicRequest req = new GetLegendGraphicRequest(service);
-        req.setLayer(layer);
+        req.setLayer(new MapLayerInfo(fs));
         req.setStyle(getDefaultStyle(citeTypeName));
 
         final int HEIGHT_HINT = 30;
