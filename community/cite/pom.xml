@@ -65,7 +65,6 @@
                   </copy>
 
                   <!-- copy over cite1 component -->
-                  <delete dir="${basedir}/engine/components/cite1"/>
                   <copy todir="${basedir}/engine/components">
                      <fileset dir="${basedir}/tests/components" 
                          excludes="/**/.svn"/>
@@ -74,12 +73,22 @@
                       file="${basedir}/build.properties"/>
  
                   <!-- copy over resources from test suite -->
-                  <delete>
-                    <fileset dir="${basedir}/engine/scripts" includes="**/*"/>
-                  </delete>
-                  <copy todir="${basedir}/engine/scripts/${cite.service}-${cite.version}">
-                    <fileset dir="${basedir}/tests/${cite.service}/${cite.version}/ets" includes="resources/**/*"/>
+                  <copy todir="${basedir}/engine/scripts/wfs-1.0.0">
+                    <fileset dir="${basedir}/tests/wfs/1.0.0/ets" includes="resources/**/*,ctl/**/*"/>
                   </copy>
+                  <copy todir="${basedir}/engine/scripts/wfs-1.1.0">
+                    <fileset dir="${basedir}/tests/wfs/1.1.0/ets" includes="resources/**/*,ctl/**/*"/>
+                  </copy>
+                  <copy todir="${basedir}/engine/scripts/wms-1.1.1">
+                    <fileset dir="${basedir}/tests/wms/1.1.1/ets" includes="resources/**/*,ctl/**/*"/>
+                  </copy>
+                  <copy todir="${basedir}/engine/scripts/wcs-1.0.0">
+                    <fileset dir="${basedir}/tests/wcs/1.0.0/ets" includes="resources/**/*,ctl/**/*"/>
+                  </copy>
+
+                  <!-- create necessary directories -->
+                  <mkdir dir="${basedir}/target/server/lib"/>
+                  <mkdir dir="${basedir}/target/common/lib"/>
                </tasks> 
              </configuration>
              <goals>
@@ -91,7 +100,26 @@
             <phase>clean</phase>
             <configuration>
               <tasks>
+                <!-- delete env setup -->
+                <delete>
+                  <fileset dir="${basedir}/engine/bin" includes="setenv.sh,setenv.bat"/> 
+                </delete>
+
+                <!-- clean the cite1 component -->
+                <delete dir="${basedir}/engine/components/cite1"/>
+
+                <!-- delete test scripts -->
+                <delete includeemptydirs="true">
+                  <fileset dir="${basedir}/engine/scripts" includes="**/*"/>
+                </delete>
+
+                <!-- clean the engine -->
+                <ant dir="${basedir}/engine/apps/engine" target="clean"/>
                 <ant dir="${basedir}/engine" target="clean"/>
+           
+                <delete>
+                  <fileset dir="${basedir}/engine/setup/UserFilesRealm" includes="UserFilesRealm.jar"/>       
+                </delete>
               </tasks>
             </configuration>
             <goals>
@@ -104,9 +132,13 @@
             <configuration>
               <tasks>
                 <property name="tomcat.dir" value="${basedir}/target"/>
-                <mkdir dir="${basedir}/target/server/lib"/>
-                <ant dir="${basedir}/engine" target="jar.engine"/>
-                <ant dir="${basedir}/engine" target="jar.components"/>
+                <ant dir="${basedir}/engine/apps/engine" target="jar"/>
+                <ant dir="${basedir}/engine/apps/manager" target="jar"/>
+		<ant dir="${basedir}/engine" target="war"/>
+		<ant dir="${basedir}/engine" target="jar.realm"/>
+                <!--ant dir="${basedir}/engine" target="jar.realm"/-->
+                <!--ant dir="${basedir}/engine" target="jar.engine"/>
+                <ant dir="${basedir}/engine" target="jar.components"/-->
               </tasks>
             </configuration>
             <goals>
@@ -114,6 +146,41 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-dependency-plugin</artifactId>
+         <configuration>
+            <artifactItems>
+               <artifactItem>
+                  <groupId>tomcat</groupId>
+                  <artifactId>catalina</artifactId>
+                  <version>5.5.9</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${basedir}/target/server/lib</outputDirectory>
+               </artifactItem>
+            </artifactItems>
+            <stripVersion>true</stripVersion>
+         </configuration>
+         <executions>
+           <execution>
+             <id>pre</id>
+             <phase>process-sources</phase>
+             <goals>
+               <goal>copy</goal>
+             </goals>
+           </execution>
+         </executions>
+      </plugin> 
+      <plugin>
+         <groupId>org.codehaus.mojo</groupId>
+         <artifactId>tomcat-maven-plugin</artifactId>
+         <configuration>
+           <path>/teamengine</path>
+           <port>9090</port>
+           <warSourceDirectory>${basedir}/engine/webapps/teamengine</warSourceDirectory>
+         </configuration>
       </plugin>
     </plugins>
   </build>
