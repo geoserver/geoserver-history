@@ -91,13 +91,21 @@
         <version>${gt.version}</version>
         <configuration>
           <schemaLocation>wcsAll.xsd</schemaLocation>
-          <schemaSourceDirectory>${basedir}/../net.opengis.wcs.v1_1_1/schemas/wcs/1.1.1</schemaSourceDirectory>
+          <schemaSourceDirectory>
+            ${basedir}/../net.opengis.wcs.v1_1_1/schemas/wcs/1.1.1
+          </schemaSourceDirectory>
           <schemaLookupDirectories>
-            <schemaLookupDirectory>${basedir}/../net.opengis.wcs.v1_1_1/schemas/wcs/1.1.1</schemaLookupDirectory>
-            <schemaLookupDirectory>${basedir}/../net.opengis.ows.v1_1_0/schemas/ows/1.1.0</schemaLookupDirectory>
+            <schemaLookupDirectory>
+              ${basedir}/../net.opengis.wcs.v1_1_1/schemas/wcs/1.1.1
+            </schemaLookupDirectory>
+            <schemaLookupDirectory>
+              ${basedir}/../net.opengis.ows.v1_1_0/schemas/ows/1.1.0
+            </schemaLookupDirectory>
           </schemaLookupDirectories>
           <destinationPackage>org.geoserver.wcs.xml.v1_1_0</destinationPackage>
-          <complexBindingBaseClass>org.geotools.xml.AbstractComplexEMFBinding</complexBindingBaseClass>
+          <complexBindingBaseClass>
+            org.geotools.xml.AbstractComplexEMFBinding
+          </complexBindingBaseClass>
           <generateConfiguration>true</generateConfiguration>
           <generateBindingConfiguration>true</generateBindingConfiguration>
           <generateBindingInterface>true</generateBindingInterface>
@@ -111,6 +119,20 @@
           -->
         </configuration>
       </plugin>
+      <!-- jjtree parser generation 
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javacc-maven-plugin</artifactId>
+        <version>2.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jjtree</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      -->
     </plugins>
   </build>
 
