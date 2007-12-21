@@ -35,20 +35,32 @@ public class VersionedFeaturePropertyExtractor implements PropertyExtractor {
     private static final Logger LOGGER = Logging
             .getLogger("org.geoserver.wfsv.xml.v1_1_0");
 
-    private static final XSDParticle VERSION;
+    private static final XSDParticle CR_VERSION;
 
-    private static final XSDParticle AUTHOR;
+    private static final XSDParticle CR_AUTHOR;
 
-    private static final XSDParticle DATE;
+    private static final XSDParticle CR_DATE;
 
-    private static final XSDParticle MESSAGE;
+    private static final XSDParticle CR_MESSAGE;
+    
+    private static final XSDParticle LU_VERSION;
+
+    private static final XSDParticle LU_AUTHOR;
+
+    private static final XSDParticle LU_DATE;
+
+    private static final XSDParticle LU_MESSAGE;
 
     static {
         XSDSchema schema = new XSConfiguration().schema();
-        VERSION = particle(schema, "version", XSD_SCHEMA, "string", true, 0, 1);
-        AUTHOR = particle(schema, "author", XSD_SCHEMA, "string", true, 0, 1);
-        DATE = particle(schema, "date", XSD_SCHEMA, "dateTime", true, 0, 1);
-        MESSAGE = particle(schema, "message", XSD_SCHEMA, "string", true, 0, 1);
+        CR_VERSION = particle(schema, "creationVersion", XSD_SCHEMA, "string", true, 0, 1);
+        CR_AUTHOR = particle(schema, "createdBy", XSD_SCHEMA, "string", true, 0, 1);
+        CR_DATE = particle(schema, "creationDate", XSD_SCHEMA, "dateTime", true, 0, 1);
+        CR_MESSAGE = particle(schema, "creationMessage", XSD_SCHEMA, "string", true, 0, 1);
+        LU_VERSION = particle(schema, "lastUpdateVersion", XSD_SCHEMA, "string", true, 0, 1);
+        LU_AUTHOR = particle(schema, "lastUpdatedBy", XSD_SCHEMA, "string", true, 0, 1);
+        LU_DATE = particle(schema, "lastUpdateDate", XSD_SCHEMA, "dateTime", true, 0, 1);
+        LU_MESSAGE = particle(schema, "lastUpdateMessage", XSD_SCHEMA, "string", true, 0, 1);
     }
 
     static XSDParticle particle(XSDSchema schema, String elementName,
@@ -100,11 +112,19 @@ public class VersionedFeaturePropertyExtractor implements PropertyExtractor {
     public List properties(Object object, XSDElementDeclaration elem) {
         Feature f = (Feature) object;
         List particles = new ArrayList();
-        particles.add(new Object[] { VERSION, f.getAttribute("version") });
-        particles.add(new Object[] { AUTHOR, f.getAttribute("author") });
-        particles.add(new Object[] { DATE, f.getAttribute("date") });
-        particles.add(new Object[] { MESSAGE, f.getAttribute("message") });
+        particles.add(particleValue(f, CR_VERSION));
+        particles.add(particleValue(f, CR_AUTHOR));
+        particles.add(particleValue(f, CR_DATE));
+        particles.add(particleValue(f, CR_MESSAGE));
+        particles.add(particleValue(f, LU_VERSION));
+        particles.add(particleValue(f, LU_AUTHOR));
+        particles.add(particleValue(f, LU_DATE));
+        particles.add(particleValue(f, LU_MESSAGE));
         return particles;
+    }
+
+    private Object[] particleValue(Feature f, XSDParticle particle) {
+        return new Object[] { particle, f.getAttribute(((XSDElementDeclaration) particle.getContent()).getName()) };
     }
 
 }
