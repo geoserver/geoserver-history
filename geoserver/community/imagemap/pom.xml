@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.geoserver</groupId>
+		<artifactId>geoserver</artifactId>
+		<version>1.6.0-RC2</version>
+	</parent>
+
+  <groupId>org.geoserver</groupId>
+  <artifactId>imagemap</artifactId>
+  <packaging>jar</packaging>
+  <name>ImageMap output format</name>
+
+    <dependencies>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>wms</artifactId>
+	  <version>1.6.0-RC2</version>
+    </dependency>
+  </dependencies>
+</project>
