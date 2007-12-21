@@ -15,7 +15,7 @@ import org.geotools.coverage.processing.operation.Scale;
 import org.geotools.coverage.processing.operation.SelectSampleDimension;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.resources.CRSUtilities;
+import org.geotools.referencing.CRS;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridRange;
@@ -100,7 +100,7 @@ public class WCSUtils {
         //
         //
         // ///////////////////////////////////////////////////////////////////
-        if (!CRSUtilities.equalsIgnoreMetadata(sourceCRS, targetCRS)) {
+        if (!CRS.equalsIgnoreMetadata(sourceCRS, targetCRS)) {
             /*
              * Operations.DEFAULT.resample( coverage, targetCRS, null,
              * Interpolation.getInstance(Interpolation.INTERP_NEAREST))

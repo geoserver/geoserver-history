@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wcs.responses.coverage;
 
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.gce.arcgrid.ArcGridFormat;
 import org.geotools.gce.arcgrid.ArcGridWriter;
 import org.opengis.coverage.grid.GridCoverageWriter;
 import org.opengis.parameter.ParameterValueGroup;
@@ -33,18 +34,33 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
      */
     private GridCoverage2D sourceCoverage;
     private boolean compressOutput = false;
+    private boolean grassOutput = false;
 
     public AscCoverageResponseDelegate() {
     }
 
     public boolean canProduce(String outputFormat) {
-        return "ArcGrid".equalsIgnoreCase(outputFormat)
-        || "ArcGrid-GZIP".equalsIgnoreCase(outputFormat);
+        return 
+           "ArcGrid".equalsIgnoreCase(outputFormat)
+        || "asc".equalsIgnoreCase(outputFormat)
+        || "ArcGrid-GZIP".equalsIgnoreCase(outputFormat)
+        || "asc-GZIP".equalsIgnoreCase(outputFormat)
+        || "asc-GZ".equalsIgnoreCase(outputFormat)
+        || "ArcGrid-GRASS".equalsIgnoreCase(outputFormat)
+        || "GRASS".equalsIgnoreCase(outputFormat)
+        || "asc-GRASS".equalsIgnoreCase(outputFormat);
     }
 
     public void prepare(String outputFormat, GridCoverage2D coverage)
         throws IOException {
-        this.compressOutput = "ArcGrid-GZIP".equalsIgnoreCase(outputFormat);
+        this.compressOutput = 
+        		   "ArcGrid-GZIP".equalsIgnoreCase(outputFormat)
+        		|| "asc-GZIP".equalsIgnoreCase(outputFormat)
+        		|| "asc-GZ".equalsIgnoreCase(outputFormat);
+        this.grassOutput    = 
+        		   "ArcGrid-GRASS".equalsIgnoreCase(outputFormat)
+        		|| "GRASS".equalsIgnoreCase(outputFormat)
+        	    || "asc-GRASS".equalsIgnoreCase(outputFormat);
         this.sourceCoverage = coverage;
     }
 
@@ -91,6 +107,7 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
             final GridCoverageWriter writer = new ArcGridWriter(output);
             final ParameterValueGroup params = writer.getFormat().getWriteParameters();
             //params.parameter("Compressed").setValue(compressOutput);
+            params.parameter("GRASS").setValue(this.grassOutput);
             writer.write(sourceCoverage, null);
 
             if (gzipOut != null) {
