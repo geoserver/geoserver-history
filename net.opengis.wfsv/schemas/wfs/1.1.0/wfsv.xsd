@@ -81,10 +81,14 @@
     <xsd:complexContent>
       <xsd:extension base="gml:AbstractFeatureType">
         <xsd:sequence>
-          <xsd:element name="version" type="xsd:string" minOccurs="1"/>
-          <xsd:element name="author" type="xsd:string" minOccurs="0"/>
-          <xsd:element name="date" type="xsd:dateTime" minOccurs="1"/>
-          <xsd:element name="message" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="creationVersion" type="xsd:string" minOccurs="1"/>
+          <xsd:element name="createdBy" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="creationDate" type="xsd:dateTime" minOccurs="1"/>
+          <xsd:element name="creationMessage" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="lastUpdateVersion" type="xsd:string" minOccurs="1"/>
+          <xsd:element name="lastUpdatedBy" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="lastUpdateDate" type="xsd:dateTime" minOccurs="1"/>
+          <xsd:element name="lastUpdateMessage" type="xsd:string" minOccurs="0"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
