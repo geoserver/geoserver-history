@@ -8,6 +8,8 @@ package net.opengis.wfs;
 
 import java.math.BigInteger;
 
+import org.opengis.filter.identity.GmlObjectId;
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Get Gml Object Type</b></em>'.
@@ -51,7 +53,7 @@ public interface GetGmlObjectType extends BaseRequestType {
      *        extendedMetaData="kind='element' name='GmlObjectId' namespace='http://www.opengis.net/ogc'"
      * @generated
      */
-	Object getGmlObjectId();
+	GmlObjectId/*<String>*/ getGmlObjectId();
 
 	/**
      * Sets the value of the '{@link net.opengis.wfs.GetGmlObjectType#getGmlObjectId <em>Gml Object Id</em>}' attribute.
@@ -61,7 +63,7 @@ public interface GetGmlObjectType extends BaseRequestType {
      * @see #getGmlObjectId()
      * @generated
      */
-	void setGmlObjectId(Object value);
+	void setGmlObjectId(GmlObjectId/*<String>*/ value);
 
 	/**
      * Returns the value of the '<em><b>Output Format</b></em>' attribute.
