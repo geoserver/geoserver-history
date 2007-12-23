@@ -16,6 +16,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.opengis.filter.identity.GmlObjectId;
 
 /**
  * <!-- begin-user-doc -->
@@ -42,7 +43,7 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl implements GetGmlO
      * @generated
      * @ordered
      */
-	protected static final Object GML_OBJECT_ID_EDEFAULT = null;
+	protected static final GmlObjectId/*<String>*/ GML_OBJECT_ID_EDEFAULT = null;
 
 	/**
      * The cached value of the '{@link #getGmlObjectId() <em>Gml Object Id</em>}' attribute.
@@ -52,7 +53,7 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl implements GetGmlO
      * @generated
      * @ordered
      */
-	protected Object gmlObjectId = GML_OBJECT_ID_EDEFAULT;
+	protected GmlObjectId/*<String>*/ gmlObjectId = GML_OBJECT_ID_EDEFAULT;
 
 	/**
      * The default value of the '{@link #getOutputFormat() <em>Output Format</em>}' attribute.
@@ -146,7 +147,7 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl implements GetGmlO
 	 * <!-- end-user-doc -->
      * @generated
      */
-	public Object getGmlObjectId() {
+	public GmlObjectId/*<String>*/ getGmlObjectId() {
         return gmlObjectId;
     }
 
@@ -155,7 +156,7 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl implements GetGmlO
 	 * <!-- end-user-doc -->
      * @generated
      */
-	public void setGmlObjectId(Object newGmlObjectId) {
+	public void setGmlObjectId(GmlObjectId/*<String>*/ newGmlObjectId) {
         Object oldGmlObjectId = gmlObjectId;
         gmlObjectId = newGmlObjectId;
         if (eNotificationRequired())
@@ -277,7 +278,7 @@ public class GetGmlObjectTypeImpl extends BaseRequestTypeImpl implements GetGmlO
 	public void eSet(int featureID, Object newValue) {
         switch (featureID) {
             case WfsPackage.GET_GML_OBJECT_TYPE__GML_OBJECT_ID:
-                setGmlObjectId(newValue);
+                setGmlObjectId((GmlObjectId/*<String>*/) newValue);
                 return;
             case WfsPackage.GET_GML_OBJECT_TYPE__OUTPUT_FORMAT:
                 setOutputFormat((String)newValue);
