@@ -63,14 +63,17 @@ public class LoggingFilter implements Filter {
             } else {
                 message = "" + req.getRemoteHost() + " made a non-HTTP request";
             }
+
+            logger.info(message + (body == null? "" : "\n" + body + "\n"));
+            long startTime = System.currentTimeMillis();
+            chain.doFilter(req, res);
+            long requestTime = System.currentTimeMillis() - startTime;
+            logger.info(path +  " took " + requestTime + "ms");
+        } else {
+            chain.doFilter(req, res);
         }
 
-        logger.info(message + (body == null? "" : "\n" + body + "\n"));
-        long startTime = System.currentTimeMillis();
-        chain.doFilter(req, res);
-        long requestTime = System.currentTimeMillis() - startTime;
-        logger.info(path +  " took " + requestTime + "ms");
-    }
+   }
 
     public void init(FilterConfig filterConfig) {
         enabled = getConfigBool("enabled", filterConfig);
