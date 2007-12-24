@@ -75,14 +75,14 @@
     <enabled>true</enabled>
    </snapshots>
   </repository>
-  <repository>
+  <!-- repository>
    <id>espace</id>
    <name>espace</name>
    <url>http://maven.espace.ird.nc</url>
    <snapshots>
     <enabled>false</enabled>
    </snapshots>
-  </repository>
+  </repository -->
   <repository>
    <id>mortbay</id>
    <name>mortbay</name>
