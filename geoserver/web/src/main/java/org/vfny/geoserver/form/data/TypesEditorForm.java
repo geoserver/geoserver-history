@@ -363,7 +363,7 @@ public class TypesEditorForm extends ActionForm {
             buf.append(keyword);
 
             if (i.hasNext()) {
-                buf.append(" ");
+                buf.append(", ");
             }
         }
 
