@@ -9,6 +9,8 @@ import java.net.URISyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.geoserver.platform.GeoServerExtensions;
+
 
 /**
  * Utility class performing operations related to http requests.
@@ -56,8 +58,10 @@ public class RequestUtils {
      * 
      */
     public static String proxifiedBaseURL(String baseUrl, String proxyBase) {
-        if (proxyBase == null || proxyBase.trim().length() == 0)
-            return baseUrl;
+        if (proxyBase == null || proxyBase.trim().length() == 0) {
+        	if (!baseUrl.endsWith("/")) baseUrl += "/";
+        	return baseUrl;
+        }
         
         try {
             URI baseUri = new URI(baseUrl);
