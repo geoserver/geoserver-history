@@ -167,7 +167,7 @@ public class CoverageResource extends MapResource {
             Format format = csi.getFormat();
             AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) csi.getReader(); // TODO acquire an instance somehow
 
-            cc = new CoverageConfig(coverageStore, format, reader, myDC);
+            //cc = new CoverageConfig(coverageStore, format, reader, myDC);
         }
 
         if (details.get("WMSPath") != null) {
