@@ -1,7 +1,12 @@
 package org.geoserver.wcs.xml.v1_1_1;
 
+import net.opengis.wcs.v1_1_1.Wcs111Factory;
+
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;	
+import org.geotools.gml3.GMLConfiguration;
+import org.geotools.ows.v1_1.OWSConfiguration;
 import org.geotools.xml.Configuration;
+import org.geotools.xml.XMLConfiguration;
 import org.picocontainer.MutablePicoContainer;
 
 /**
@@ -19,7 +24,8 @@ public class WCSConfiguration extends Configuration {
     public WCSConfiguration() {
        super(WCS.getInstance());
        
-       //TODO: add dependencies here
+       addDependency(new GMLConfiguration());
+       addDependency(new OWSConfiguration());
     }
     
     /**
@@ -59,8 +65,9 @@ public class WCSConfiguration extends Configuration {
         container.registerComponentImplementation(WCS._GetCoverage,_GetCoverageBinding.class);
         container.registerComponentImplementation(WCS._InterpolationMethods,_InterpolationMethodsBinding.class);
         container.registerComponentImplementation(WCS.RangeSubsetType_FieldSubset,RangeSubsetType_FieldSubsetBinding.class);
-
-
+    }
     
+    protected void configureContext(MutablePicoContainer container) {
+        container.registerComponentInstance(Wcs111Factory.eINSTANCE);
     }
 } 
