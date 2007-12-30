@@ -3,6 +3,10 @@ package org.geoserver.wcs.xml.v1_1_1;
 
 import java.util.Set;
 import javax.xml.namespace.QName;
+
+import org.geotools.gml3.GML;
+import org.geotools.ows.v1_1.OWS;
+import org.geotools.xml.XML;
 import org.geotools.xml.XSD;
 
 /**
@@ -30,7 +34,10 @@ public final class WCS extends XSD {
     }
     
     protected void addDependencies(Set dependencies) {
-       //TODO: add dependencies here
+       super.addDependencies(dependencies);
+        
+        dependencies.add( GML.getInstance() );
+        dependencies.add( OWS.getInstance() );
     }
     
     /**
