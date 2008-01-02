@@ -10,36 +10,6 @@
   <version>1.0</version>
   <name>Compliance + Interopability Testing + Evaluation (CITE) Module</name>
 
-  <profiles>
-    <profile>
-      <id>wfs-1.0.0</id>
-      <properties>
-        <cite.service>wfs</cite.service>
-        <cite.version>1.0.0</cite.version>
-      </properties>
-    </profile>
-    <profile>
-      <id>wfs-1.1.0</id>
-      <properties>
-        <cite.service>wfs</cite.service>
-        <cite.version>1.1.0</cite.version>
-      </properties>
-    </profile>
-    <profile>
-      <id>wcs-1.0.0</id>
-      <properties>
-        <cite.service>wcs</cite.service>
-        <cite.version>1.0.0</cite.version>
-      </properties>
-    </profile>
-    <profile>
-      <id>wms-1.1.1</id>
-      <properties>
-        <cite.service>wms</cite.service>
-        <cite.version>1.1.1</cite.version>
-      </properties>
-    </profile>
-  </profiles>
   <build>
     <plugins>
       <plugin>
