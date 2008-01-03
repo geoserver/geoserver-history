@@ -23,6 +23,7 @@ import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WfsFactory;
+import net.opengis.wfs.XlinkPropertyNameType;
 
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
@@ -430,17 +431,62 @@ public class GetFeature {
 
         //handle xlink traversal depth
         if (request.getTraverseXlinkDepth() != null) {
-            //TODO: make this an integer in the model
-            Integer traverseXlinkDepth = new Integer( request.getTraverseXlinkDepth() );
+            //TODO: make this an integer in the model, and have hte NumericKvpParser
+            // handle '*' as max value
+            Integer traverseXlinkDepth = traverseXlinkDepth( request.getTraverseXlinkDepth() );
             
             //set the depth as a hint on the query
             Hints hints = new Hints(Hints.ASSOCIATION_TRAVERSAL_DEPTH, traverseXlinkDepth);
             dataQuery.setHints(hints);
         }
         
+        //handle xlink properties
+        if (!query.getXlinkPropertyName().isEmpty() ) {
+            for ( Iterator x = query.getXlinkPropertyName().iterator(); x.hasNext(); ) {
+                XlinkPropertyNameType xlinkProperty = (XlinkPropertyNameType) x.next();
+                
+                Integer traverseXlinkDepth = traverseXlinkDepth( xlinkProperty.getTraverseXlinkDepth() );
+                
+                //set the depth and property as hints on the query
+                Hints hints = new Hints();
+                hints.put(Hints.ASSOCIATION_TRAVERSAL_DEPTH, traverseXlinkDepth );
+                
+                PropertyName xlinkPropertyName = filterFactory.property( xlinkProperty.getValue() );
+                hints.put(Hints.ASSOCIATION_PROPERTY, xlinkPropertyName );
+                
+                dataQuery.setHints( hints );
+                
+                //TODO: support multiple properties
+                break;
+            }
+        }
+        
         return dataQuery;
     }
 
+    static Integer traverseXlinkDepth( String raw ) {
+        Integer traverseXlinkDepth = null;
+        try {
+            traverseXlinkDepth = new Integer( raw );
+        }
+        catch( NumberFormatException nfe ) {
+            //try handling *
+            if ( "*".equals( raw ) ) {
+                //TODO: JD: not sure what this value should be? i think it 
+                // might be reported in teh acapabilitis document, using 
+                // INteger.MAX_VALUE will result in stack overflow... for now
+                // we just use 10
+                traverseXlinkDepth = new Integer( 2 );
+            }
+            else {
+                //not wildcard case, throw original exception
+                throw nfe;
+            }
+        }
+        
+        return traverseXlinkDepth;
+    }
+    
     FeatureTypeInfo featureTypeInfo(QName name) throws WFSException, IOException {
         FeatureTypeInfo meta = catalog.getFeatureTypeInfo(name.getLocalPart(),
                 name.getNamespaceURI());
