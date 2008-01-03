@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wcs.responses;
 
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.xml.transform.TransformerBase;
@@ -120,7 +121,11 @@ public class WCSCapsTransformer extends TransformerBase {
 		// point to correct
 		// location
 
-		transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdUrl);
+		//JD: disabling doctype because it throws off the cite test parser.
+		// I do not beleive that a doctype def is necessary anyways since 
+		// there is a xml schema for wcs 1.0, and plus, this doctype url points tp 
+		// an xml schema, which is just plain wrong
+		//transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdUrl);
 
 		return transformer;
 	}
@@ -288,14 +293,18 @@ public class WCSCapsTransformer extends TransformerBase {
             String url = "";
             String baseUrl = RequestUtils.proxifiedBaseURL(
 					request.getBaseUrl(), request.getServiceRef()
-							.getGeoServer().getProxyBaseUrl())
-					+ "wcs?SERVICE=WCS&";
+							.getGeoServer().getProxyBaseUrl());
+            baseUrl = ResponseUtils.appendPath(baseUrl, "wcs");
+            
+            //ensure ends in "?" or "&"
+            baseUrl = ResponseUtils.appendQueryString(baseUrl, "");
 
             if (request.isDispatchedRequest()) {
-                url = new StringBuffer(baseUrl).append("?").toString();
-            } else {
+                url = baseUrl;
+            }
+            else {
                 url = new StringBuffer(baseUrl).append("/").append(capabilityName).append("?")
-                                               .toString();
+                .toString();    
             }
 
             attributes.addAttribute("", "xlink:href", "xlink:href", "", url);
