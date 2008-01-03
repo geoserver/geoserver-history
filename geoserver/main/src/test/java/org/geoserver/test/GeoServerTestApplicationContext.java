@@ -4,13 +4,12 @@
  */
 package org.geoserver.test;
 
-import com.mockrunner.mock.web.MockServletContext;
+import javax.servlet.ServletContext;
+
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.ui.context.Theme;
 import org.springframework.web.context.WebApplicationContext;
-import javax.servlet.ServletContext;
 
 
 /**
