@@ -8,6 +8,7 @@ import net.opengis.wcs.v1_1_1.GetCoverageType;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wcs.WcsException;
+import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 
 public class GetCoverageReaderTest extends WCSTestSupport {
 
@@ -22,67 +23,259 @@ public class GetCoverageReaderTest extends WCSTestSupport {
 
     public void testMissingParams() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        
-        try { 
+
+        try {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
             fail("Hey, format is missing, this should have failed");
-        } catch(WcsException e) {
+        } catch (WcsException e) {
             assertEquals("MissingParameterValue", e.getCode());
         }
 
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
-        try { 
+        try {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
             fail("Hey, format is missing, this should have failed");
-        } catch(WcsException e) {
+        } catch (WcsException e) {
             assertEquals("MissingParameterValue", e.getCode());
         }
-        
+
         raw.put("format", "GeoTiff");
-        try { 
+        try {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
-        } catch(Exception e) {
+        } catch (Exception e) {
             fail("This time all mandatory params where provided?");
         }
-        
+
     }
-    
+
     public void testWrongFormatParams() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "SuperCoolFormat");
-        try { 
+        try {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
             fail("When did we learn to encode SuperCoolFormat?");
-        } catch(Exception e) {
+        } catch (Exception e) {
             // ok, fine
         }
     }
-    
+
     public void testUnknownCoverageParams() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = "fairyTales:rumpelstilskin";
         raw.put("identifier", layerId);
         raw.put("format", "SuperCoolFormat");
-        try { 
+        try {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
             fail("That coverage is not registered???");
-        } catch(WcsException e) {
+        } catch (WcsException e) {
             assertEquals(layerId, e.getLocator());
         }
     }
-    
+
     public void testBasic() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "GeoTiff");
+        raw.put("store", "false");
+        raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:32618");
 
-        GetCoverageType getCoverage =  (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
+        GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(),
+                parseKvp(raw), raw);
         assertEquals(layerId, getCoverage.getIdentifier().getValue());
         assertEquals("GEOTIFF", getCoverage.getOutput().getFormat());
         assertFalse(getCoverage.getOutput().isStore());
+        assertEquals("urn:ogc:def:crs:EPSG:6.6:32618", getCoverage.getOutput().getGridCRS()
+                .getGridBaseCRS());
     }
+
+    public void testStoreUnsupported() throws Exception {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        raw.put("identifier", layerId);
+        raw.put("format", "GeoTiff");
+        raw.put("store", "true");
+
+        try {
+            reader.read(reader.createRequest(), parseKvp(raw), raw);
+            fail("We should have had a WcsException here?");
+        } catch (WcsException e) {
+            assertEquals("store", e.getLocator());
+            assertEquals("InvalidParameterValue", e.getCode());
+        }
+    }
+
+    public void testUnsupportedCRS() throws Exception {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        raw.put("identifier", layerId);
+        raw.put("format", "GeoTiff");
+        raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:-1000");
+
+        try {
+            reader.read(reader.createRequest(), parseKvp(raw), raw);
+            fail("We should have had a WcsException here?");
+        } catch (WcsException e) {
+            assertEquals("GridBaseCRS", e.getLocator());
+            assertEquals("InvalidParameterValue", e.getCode());
+        }
+    }
+
+    public void testGridTypes() throws Exception {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        raw.put("identifier", layerId);
+        raw.put("format", "GeoTiff");
+
+        raw.put("gridType", GridType.GT2dGridIn2dCrs.getXmlConstant());
+        GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(),
+                parseKvp(raw), raw);
+        assertEquals(GridType.GT2dGridIn2dCrs.getXmlConstant(), getCoverage.getOutput()
+                .getGridCRS().getGridType());
+
+        raw.put("gridType", GridType.GT2dSimpleGrid.getXmlConstant());
+        getCoverage = (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
+        assertEquals(GridType.GT2dSimpleGrid.getXmlConstant(), getCoverage.getOutput().getGridCRS()
+                .getGridType());
+
+        raw.put("gridType", GridType.GT2dGridIn3dCrs.getXmlConstant());
+        try {
+            reader.read(reader.createRequest(), parseKvp(raw), raw);
+            fail("We should have had a WcsException here?");
+        } catch (WcsException e) {
+            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals("GridType", e.getLocator());
+        }
+
+        raw.put("gridType", "Hoolabaloola");
+        try {
+            reader.read(reader.createRequest(), parseKvp(raw), raw);
+            fail("We should have had a WcsException here?");
+        } catch (WcsException e) {
+            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals("GridType", e.getLocator());
+        }
+    }
+
+    public void testGridCS() throws Exception {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        raw.put("identifier", layerId);
+        raw.put("format", "GeoTiff");
+
+        raw.put("GridCS", GridCS.GCSGrid2dSquare.getXmlConstant());
+        GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(),
+                parseKvp(raw), raw);
+        assertEquals(GridCS.GCSGrid2dSquare.getXmlConstant(), getCoverage.getOutput().getGridCRS()
+                .getGridCS());
+
+        raw.put("GridCS", "Hoolabaloola");
+        try {
+            reader.read(reader.createRequest(), parseKvp(raw), raw);
+            fail("We should have had a WcsException here?");
+        } catch (WcsException e) {
+            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals("GridCS", e.getLocator());
+        }
+    }
+
+    public void testGridOrigin() throws Exception {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        raw.put("identifier", layerId);
+        raw.put("format", "GeoTiff");
+
+        GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(),
+                parseKvp(raw), raw);
+        double[] origin = (double[]) getCoverage.getOutput().getGridCRS().getGridOrigin();
+        assertEquals(2, origin.length);
+        assertEquals(0.0, origin[0]);
+        assertEquals(0.0, origin[1]);
+
+        raw.put("GridOrigin", "10.5,-30.2");
+        getCoverage = (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
+        origin = (double[]) getCoverage.getOutput().getGridCRS().getGridOrigin();
+        assertEquals(2, origin.length);
+        assertEquals(10.5, origin[0]);
+        assertEquals(-30.2, origin[1]);
+
+        raw.put("GridOrigin", "12");
+        try {
+            reader.read(reader.createRequest(), parseKvp(raw), raw);
+            fail("We should have had a WcsException here?");
+        } catch (WcsException e) {
+            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals("GridOrigin", e.getLocator());
+        }
+
+        raw.put("GridOrigin", "12,a");
+        try {
+            reader.read(reader.createRequest(), parseKvp(raw), raw);
+            fail("We should have had a WcsException here?");
+        } catch (WcsException e) {
+            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals("GridOrigin", e.getLocator());
+        }
+
+        raw.put("GridOrigin", "12,13,14");
+        try {
+            reader.read(reader.createRequest(), parseKvp(raw), raw);
+            fail("We should have had a WcsException here?");
+        } catch (WcsException e) {
+            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals("GridOrigin", e.getLocator());
+        }
+    }
+
+    public void testGridOffsets() throws Exception {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        raw.put("identifier", layerId);
+        raw.put("format", "GeoTiff");
+
+        GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(),
+                parseKvp(raw), raw);
+        double[] offsets = (double[]) getCoverage.getOutput().getGridCRS().getGridOffsets();
+        assertEquals(2, offsets.length);
+        assertEquals(0.0, offsets[0]);
+        assertEquals(0.0, offsets[1]);
+
+        raw.put("GridOffsets", "10.5,-30.2");
+        getCoverage = (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
+        offsets = (double[]) getCoverage.getOutput().getGridCRS().getGridOffsets();
+        assertEquals(2, offsets.length);
+        assertEquals(10.5, offsets[0]);
+        assertEquals(-30.2, offsets[1]);
+
+        raw.put("GridOffsets", "12");
+        try {
+            reader.read(reader.createRequest(), parseKvp(raw), raw);
+            fail("We should have had a WcsException here?");
+        } catch (WcsException e) {
+            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals("GridOffsets", e.getLocator());
+        }
+
+        raw.put("GridOffsets", "12,a");
+        try {
+            reader.read(reader.createRequest(), parseKvp(raw), raw);
+            fail("We should have had a WcsException here?");
+        } catch (WcsException e) {
+            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals("GridOffsets", e.getLocator());
+        }
+
+        raw.put("GridOffsets", "12,13,14");
+        try {
+            reader.read(reader.createRequest(), parseKvp(raw), raw);
+            fail("We should have had a WcsException here?");
+        } catch (WcsException e) {
+            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals("GridOffsets", e.getLocator());
+        }
+    }
+
 }

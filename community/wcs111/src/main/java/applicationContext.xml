@@ -49,9 +49,22 @@
   
   <!-- kvp parsers -->
   <bean id="wcs111RangeSubsetKvpParser" class="org.geoserver.wcs.kvp.RangeSubsetKvpParser"/>
+  
   <bean id="wcs111IdentifierKvpParser" class="org.geoserver.wcs.kvp.IdentifierKvpParser">
     <constructor-arg ref="catalog"/>
   </bean>
+  
+  <bean id="wcs111GridBaseCRS" class="org.geoserver.wcs.kvp.GridBaseCRSKvpParser"/>
+  
+  <bean id="wcs111TimeSequenceKvpParser" class="org.geoserver.wcs.kvp.TimeSequenceKvpParser"/>
+  
+  <bean id="wcs111GridTypeKvpParser" class="org.geoserver.wcs.kvp.GridTypeKvpParser"/>
+  
+  <bean id="wcs111GridCSKvpParser" class="org.geoserver.wcs.kvp.GridCSKvpParser"/>
+  
+  <bean id="wcs111GridOriginKvpParser" class="org.geoserver.wcs.kvp.GridOriginKvpParser"/>
+  
+  <bean id="wcs111GridOffsetsKvpParser" class="org.geoserver.wcs.kvp.GridOffsetsKvpParser"/>
 
   <!-- kvp request readers -->
   <bean id="wcs111GetCapabilitiesKvpReader"

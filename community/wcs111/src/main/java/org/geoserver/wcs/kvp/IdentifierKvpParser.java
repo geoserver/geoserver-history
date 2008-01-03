@@ -10,6 +10,7 @@ import net.opengis.ows.v1_1_0.Ows11Factory;
 import org.geoserver.ows.KvpParser;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wcs.WcsException;
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
 
 public class IdentifierKvpParser extends KvpParser {
 
@@ -24,7 +25,7 @@ public class IdentifierKvpParser extends KvpParser {
     public Object parse(String value) throws Exception {
         Integer type = catalog.getLayerType(value);
         if (!Data.TYPE_RASTER.equals(type))
-            throw new WcsException("Could not find coverage '" + value + "'", "InvalidParameterException", value);
+            throw new WcsException("Could not find coverage '" + value + "'", InvalidParameterValue, value);
         CodeType result = Ows11Factory.eINSTANCE.createCodeType();
         result.setValue(value);
         return result;
