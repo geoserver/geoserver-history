@@ -76,10 +76,6 @@ public class HitsOutputFormat extends Response {
         encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
             ResponseUtils.appendPath(wfs.getSchemaBaseURL(), "wfs/1.1.0/wfs.xsd"));
 
-        try {
-            encoder.encode(hits, org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output);
-        } catch (SAXException e) {
-            throw (IOException) new IOException("Encoding error ").initCause(e);
-        }
+        encoder.encode(hits, org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output);
     }
 }
