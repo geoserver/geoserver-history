@@ -156,7 +156,14 @@
 		<constructor-arg ref="catalog"/>
 		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
-		
+	<bean id="geometryResponse"
+		class="org.geoserver.wfs.response.GeometryResponse"/>
+	<bean id="featureResponse"
+		class="org.geoserver.wfs.response.FeatureResponse">
+		<constructor-arg ref="catalog"/>
+		<constructor-arg ref="xmlConfiguration-1.1"/>
+	</bean>
+	
 	<!-- cite compliance hack -->
 	<bean id="citeComplianceHack" class="org.geoserver.wfs.CiteComplianceHack">
 		<constructor-arg ref="wfs"/>
@@ -294,6 +301,9 @@
 	</bean>
 	<bean id="transactionXmlReader-1.1.0" parent="xmlReader-1.1.0">
 		<constructor-arg value="Transaction"/>
+	</bean>
+	<bean id="getGmlObjectXmlReader-1.1.0" parent="xmlReader-1.1.0">
+	    <constructor-arg value="GetGmlObject"/>
 	</bean>
 	
 	<!-- default feature type encoders -->

@@ -938,7 +938,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 getCapabilities();
                 describeFeatureType();
                 getFeature();
-
+                getGmlObject();
+                
                 if (wfs.getServiceLevel() == WFS.COMPLETE) {
                     lockFeature();
                     getFeatureWithLock();
@@ -1032,6 +1033,15 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 operation("Transaction", parameters, true, true);
             }
 
+            /**
+             * Encodes the GetGmlObject ows:Operation element.
+             *
+             */
+            void getGmlObject() {
+                Map.Entry[] parameters = new Map.Entry[] {        };
+                operation("GetGmlObject", parameters, true, true);
+            }
+            
             /**
                  * Encdoes the wfs:FeatureTypeList element.
                  *<p>

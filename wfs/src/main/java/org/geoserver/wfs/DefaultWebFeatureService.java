@@ -9,6 +9,7 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetCapabilitiesType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.GetFeatureWithLockType;
+import net.opengis.wfs.GetGmlObjectType;
 import net.opengis.wfs.LockFeatureResponseType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.TransactionResponseType;
@@ -155,7 +156,25 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
 
         return transaction.transaction(request);
     }
-
+    
+    /**
+     * WFS GetGmlObject operation.
+     * 
+     * @param request The GetGmlObject request.
+     *
+     * @return The gml object request.
+     * 
+     * @throws WFSException Any service exceptions.
+     *
+     */
+    public Object getGmlObject(GetGmlObjectType request) throws WFSException {
+        
+        GetGmlObject getGmlObject = new GetGmlObject(wfs,catalog);
+        getGmlObject.setFilterFactory( filterFactory );
+        
+        return getGmlObject.run( request );
+    }
+    
     //the following operations are not part of the spec
     public void releaseLock(String lockId) throws WFSException {
         new LockFeature(wfs, catalog).release(lockId);

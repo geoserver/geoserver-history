@@ -4,10 +4,15 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import java.math.BigInteger;
+
+import net.opengis.wfs.GetGmlObjectType;
 import net.opengis.wfs.WfsFactory;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
+import org.opengis.filter.identity.GmlObjectId;
+
 import javax.xml.namespace.QName;
 
 
@@ -94,7 +99,7 @@ public class GetGmlObjectTypeBinding extends AbstractComplexBinding {
      * @generated modifiable
      */
     public Class getType() {
-        return null;
+        return GetGmlObjectType.class;
     }
 
     /**
@@ -105,7 +110,28 @@ public class GetGmlObjectTypeBinding extends AbstractComplexBinding {
      */
     public Object parse(ElementInstance instance, Node node, Object value)
         throws Exception {
-        //TODO: implement
-        return null;
+        
+        GetGmlObjectType getGmlObject = wfsfactory.createGetGmlObjectType();
+        
+        //&lt;xsd:element ref="ogc:GmlObjectId"/&gt;
+        getGmlObject.setGmlObjectId((GmlObjectId) node.getChildValue(GmlObjectId.class));
+        
+        //&lt;xsd:attribute default="GML3" name="outputFormat"
+        //    type="xsd:string" use="optional"/&gt;
+        if ( node.hasAttribute("outputFormat") ) {
+            getGmlObject.setOutputFormat((String)node.getAttributeValue("outputFormat") );
+        }
+
+        //&lt;xsd:attribute name="traverseXlinkDepth" 
+        //    type="xsd:string" use="required"&gt;
+        getGmlObject.setTraverseXlinkDepth( (String)node.getAttributeValue("traverseXlinkDepth") );
+        
+        //&lt;xsd:attribute name="traverseXlinkExpiry"
+        //    type="xsd:positiveInteger" use="optional"&gt;
+        if ( node.hasAttribute( "traverseXlinkExpiry" ) ) {
+            getGmlObject.setTraverseXlinkExpiry( (BigInteger) node.getAttributeValue("traverseXlinkExpiry"));
+        }
+        
+        return getGmlObject;
     }
 }

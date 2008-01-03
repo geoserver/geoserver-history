@@ -101,6 +101,26 @@
           -->
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.geotools.maven</groupId>
+        <artifactId>gt2-xmlcodegen</artifactId>
+        <configuration>
+          <schemaLocation>wfs.xsd</schemaLocation>
+          <schemaSourceDirectory>${basedir}/src/main/java/org/geoserver/wfs/xml/v1_1_0/</schemaSourceDirectory>
+          <schemaLookupDirectories>
+            <schemaLookupDirectory>${basedir}/../ows/src/main/java/org/geoserver/ows/xml/v1_0</schemaLookupDirectory>
+          </schemaLookupDirectories>
+          <generateConfiguration>false</generateConfiguration>
+          <generateXsd>false</generateXsd>
+          <generateElementBindings>true</generateElementBindings>
+	  <generateBindingConfiguration>false</generateBindingConfiguration>
+          <generateBindingInterface>false</generateBindingInterface>
+          <generateSchemaLocationResolver>false</generateSchemaLocationResolver>
+          <includes>
+	      <include>XlinkPropertyName</include>
+          </includes>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
