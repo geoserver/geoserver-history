@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wcs.kvp;
 
 import java.io.StringReader;
@@ -22,6 +26,11 @@ import org.geoserver.wcs.kvp.rangesubset.RangeSubsetParser;
 import org.geoserver.wcs.kvp.rangesubset.RangeSubsetParserVisitor;
 import org.geoserver.wcs.kvp.rangesubset.SimpleNode;
 
+/**
+ * Parses the RangeSubset parameter of a GetFeature KVP request
+ * @author Andrea Aime
+ *
+ */
 public class RangeSubsetKvpParser extends KvpParser {
 
     public RangeSubsetKvpParser() {
@@ -33,7 +42,11 @@ public class RangeSubsetKvpParser extends KvpParser {
     public Object parse(String value) throws Exception {
         RangeSubsetParser parser = new RangeSubsetParser(new StringReader(value));
         SimpleNode root = parser.RangeSubset();
-        return root.jjtAccept(new RangeSubsetKvpParserVisitor(), null);
+        RangeSubsetType result = (RangeSubsetType) root.jjtAccept(new RangeSubsetKvpParserVisitor(), null);
+        
+        // TODO: check for validity of requested fields, axis using catalog
+        
+        return result;
     }
     
     private static class RangeSubsetKvpParserVisitor implements RangeSubsetParserVisitor {

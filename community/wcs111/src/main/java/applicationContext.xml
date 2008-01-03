@@ -46,32 +46,47 @@
       </props>
     </property>
   </bean>
+  
+  <!-- kvp parsers -->
+  <bean id="wcs111RangeSubsetKvpParser" class="org.geoserver.wcs.kvp.RangeSubsetKvpParser"/>
+  <bean id="wcs111IdentifierKvpParser" class="org.geoserver.wcs.kvp.IdentifierKvpParser">
+    <constructor-arg ref="catalog"/>
+  </bean>
 
   <!-- kvp request readers -->
   <bean id="wcs111GetCapabilitiesKvpReader"
     class="org.geoserver.wcs.kvp.WcsGetCapabilitiesRequestReader" />
-    
+
   <bean id="wcs111DescribeCoverageKvpReader"
-    class="org.geoserver.wcs.kvp.DescribeCoverageKvpRequestReader" >
+    class="org.geoserver.wcs.kvp.DescribeCoverageKvpRequestReader">
+    <constructor-arg index="0" ref="catalog" />
+  </bean>
+
+  <bean id="wcs111GetCoverageRequestReader"
+    class="org.geoserver.wcs.kvp.GetCoverageRequestReader">
     <constructor-arg index="0" ref="catalog" />
   </bean>
   
-  <!-- the xml configuration -->
-  <bean id="wcs-1.1.1-configuration" 
-    class="org.geoserver.wcs.xml.v1_1_1.WCSConfiguration" />
-  
-  <!--  xml request readers -->
-  <bean id="wcs111CapabilitiesRequestReader"
-    class="org.geoserver.wcs.xml.v1_1_1.WcsXmlReader">
-    <constructor-arg value="GetCapabilities"/>
-    <constructor-arg value="1.1.1"/>
-    <constructor-arg ref="wcs-1.1.1-configuration"/>
+  <bean id="wcs111StoreKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
+    <constructor-arg value="store"/>
   </bean>
-    
+
+  <!-- the xml configuration -->
+  <bean id="wcs-1.1.1-configuration" class="org.geoserver.wcs.xml.v1_1_1.WCSConfiguration" />
+
+  <!--  xml request readers -->
+  <bean id="wcs111CapabilitiesRequestReader" class="org.geoserver.wcs.xml.v1_1_1.WcsXmlReader">
+    <constructor-arg value="GetCapabilities" />
+    <constructor-arg value="1.1.1" />
+    <constructor-arg ref="wcs-1.1.1-configuration" />
+  </bean>
+
+
+
   <!-- responses -->
   <bean id="wcs111GetCapabilitiesResponse"
-    class="org.geoserver.wcs.response.GetCapabilitiesResponse" singleton="false"/>
-    
+    class="org.geoserver.wcs.response.GetCapabilitiesResponse" singleton="false" />
+
   <bean id="wcs111DescribeCoverageResponse"
-    class="org.geoserver.wcs.response.DescribeCoverageResponse" singleton="false"/>
+    class="org.geoserver.wcs.response.DescribeCoverageResponse" singleton="false" />
 </beans>
