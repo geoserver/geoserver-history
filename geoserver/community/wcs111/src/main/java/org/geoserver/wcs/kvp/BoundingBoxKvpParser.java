@@ -16,6 +16,7 @@ import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.wcs.WcsException;
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
 
 /**
  * This and wfs BBoxKvpParser share a lot, it's just they don't share the same
@@ -72,10 +73,10 @@ public class BoundingBoxKvpParser extends KvpParser {
                 if (crs.getCoordinateSystem().getDimension() != lower.length)
                     throw new WcsException("CRS specified has dimension "
                             + crs.getCoordinateSystem().getDimension() + " but bbox specified has "
-                            + lower.length, "InvalidParameterValue", "BoundingBox");
+                            + lower.length, InvalidParameterValue, "BoundingBox");
             } catch (Exception e) {
                 throw new WcsException("Could not recognize crs " + crsName,
-                        "InvalidParameterValue", "BoundingBox");
+                        InvalidParameterValue, "BoundingBox");
             }
         }
 

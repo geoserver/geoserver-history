@@ -245,28 +245,6 @@ public @SuppressWarnings("all") class RangeSubsetParser/*@bgen(jjtree)*/implemen
     finally { jj_save(3, xla); }
   }
 
-  final private boolean jj_3R_8() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  final private boolean jj_3_2() {
-    if (jj_scan_token(COLON)) return true;
-    if (jj_3R_4()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_5() {
-    if (jj_3R_6()) return true;
-    return false;
-  }
-
-  final private boolean jj_3_1() {
-    if (jj_scan_token(SEMICOLON)) return true;
-    if (jj_3R_3()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_7() {
     if (jj_scan_token(IDENTIFIER)) return true;
     return false;
@@ -302,6 +280,28 @@ public @SuppressWarnings("all") class RangeSubsetParser/*@bgen(jjtree)*/implemen
   final private boolean jj_3_3() {
     if (jj_scan_token(LP)) return true;
     if (jj_3R_5()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_8() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  final private boolean jj_3_2() {
+    if (jj_scan_token(COLON)) return true;
+    if (jj_3R_4()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_5() {
+    if (jj_3R_6()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_1() {
+    if (jj_scan_token(SEMICOLON)) return true;
+    if (jj_3R_3()) return true;
     return false;
   }
 
