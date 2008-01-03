@@ -25,6 +25,10 @@ import javax.servlet.http.HttpServletRequest;
 public class WcsException extends ServiceException {
     /** Class logger */
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.wcs");
+    
+    public enum WcsExceptionCode {
+        MissingParameterValue, InvalidParameterValue, NoApplicableCode, UnsupportedCombination, NotEnoughStorage
+    }
 
     /**
          * The fixed MIME type of a WCS exception.
@@ -64,6 +68,10 @@ public class WcsException extends ServiceException {
      */
     public WcsException(String message, String locator) {
         super(message, locator);
+    }
+    
+    public WcsException(String message, WcsExceptionCode code, String locator) {
+        super(message, code.name(), locator);
     }
 
     public WcsException(String message, Throwable cause) {
