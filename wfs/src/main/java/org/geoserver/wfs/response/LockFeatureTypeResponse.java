@@ -130,13 +130,8 @@ public class LockFeatureTypeResponse extends Response {
         encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
                 ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd"));
 
-        try {
-            encoder.encode(lockResponse, org.geoserver.wfs.xml.v1_1_0.WFS.LOCKFEATURERESPONSE,
+        encoder.encode(lockResponse, org.geoserver.wfs.xml.v1_1_0.WFS.LOCKFEATURERESPONSE,
                 output);
-        } catch (SAXException e) {
-            throw (IOException) new IOException().initCause(e);
-        }
-
         output.flush();
     }
 }
