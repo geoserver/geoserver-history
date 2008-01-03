@@ -136,13 +136,9 @@ public class VersionedGML3OutputFormat extends Response {
                                     + typeNames.toString()));
         }
 
-        try {
-            encoder.encode(results,
+        encoder.encode(results,
                     org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output);
-        } catch (SAXException e) {
-            String msg = "Error occurred encoding features";
-            throw (IOException) new IOException(msg).initCause(e);
-        }
+       
     }
 
     public boolean canHandle(Operation operation) {
