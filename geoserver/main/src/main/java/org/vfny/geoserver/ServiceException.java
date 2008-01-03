@@ -135,6 +135,11 @@ public class ServiceException extends org.geoserver.platform.ServiceException {
 
         LOGGER.fine("> [" + this.locator + "]:\n  " + this.getMessage());
     }
+    
+    public ServiceException(String message, String code, String locator) {
+        super(message, code, locator);
+        this.locator = locator;
+    }
 
     /**
      * DOCUMENT ME!
