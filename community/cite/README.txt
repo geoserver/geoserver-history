@@ -10,20 +10,13 @@ into it.
   'svn co http://teamengine.svn.sourceforge.net/svnroot/teamengine/trunk
 engine'
   
-*Notes* : 
-
-  1. At this time, revision 257 is the latest version that is known to work
-     and has been tested. It is recommended that you check out that version.
-
-     'svn co -r 257 http://teamengine.svn... engine'
-  
 B. Get Test Sources
 
 Create a directory called 'tests', and check out the cite test sources into
 it.
 
   'mkdir tests'
-  'svn co https://svn.opengeospatial.org:8443/ogc-projects/cite/trunk'
+  'svn co https://svn.opengeospatial.org:8443/ogc-projects/cite/trunk tests'
 
 *Note* : You will need a user name and password for the cite subversion
  repository. If you have a cite portal account, that will work.
