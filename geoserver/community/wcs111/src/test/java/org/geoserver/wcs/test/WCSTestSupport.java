@@ -8,6 +8,7 @@ import javax.xml.namespace.QName;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
+import org.geoserver.test.ows.KvpRequestReaderTestSupport;
 import org.vfny.geoserver.global.WCS;
 
 /**
@@ -16,7 +17,7 @@ import org.vfny.geoserver.global.WCS;
  * @author Andrea Aime, TOPP
  * 
  */
-public class WCSTestSupport extends GeoServerTestSupport {
+public class WCSTestSupport extends KvpRequestReaderTestSupport {
     protected static final String BASEPATH = "wcs111";
 
     public static String WCS_PREFIX = "wcs";

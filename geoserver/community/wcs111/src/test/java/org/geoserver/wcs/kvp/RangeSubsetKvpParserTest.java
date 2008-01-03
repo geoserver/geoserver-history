@@ -1,4 +1,4 @@
-package org.geoserver.wcs.kvp.rangesubset;
+package org.geoserver.wcs.kvp;
 
 import junit.framework.TestCase;
 import net.opengis.wcs.v1_1_1.RangeSubsetType;
