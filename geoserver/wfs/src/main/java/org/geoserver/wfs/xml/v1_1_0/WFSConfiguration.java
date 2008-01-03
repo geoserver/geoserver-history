@@ -137,6 +137,14 @@ public class WFSConfiguration extends Configuration {
             UpdateElementTypeBinding.class);
         container.registerComponentImplementation(WFS.WFS_CAPABILITIESTYPE,
             WFS_CapabilitiesTypeBinding.class);
+        container.registerComponentImplementation(WFS.XLINKPROPERTYNAME, 
+            XlinkPropertyNameBinding.class);
+
+        //cite specific bindings
+        container.registerComponentImplementation(
+            FeatureReferenceTypeBinding.FeatureReferenceType, 
+            FeatureReferenceTypeBinding.class
+        );
     }
 
     public Data getCatalog() {

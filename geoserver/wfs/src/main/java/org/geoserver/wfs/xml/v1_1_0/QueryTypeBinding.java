@@ -267,7 +267,11 @@ public class QueryTypeBinding extends AbstractComplexBinding {
         if (node.hasAttribute("srsName")) {
             query.setSrsName((URI) node.getAttributeValue("srsName"));
         }
-
+        
+        if ( node.hasChild( "XlinkPropertyName" ) ) {
+            query.getXlinkPropertyName().addAll( node.getChildValues( "XlinkPropertyName" ));    
+        }
+        
         return query;
     }
 }
