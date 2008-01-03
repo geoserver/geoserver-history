@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wcs.responses.coverage;
 
+import org.geoserver.platform.Operation;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.grid.io.imageio.GeoToolsWriteParams;
@@ -73,6 +74,12 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
         return "attachment;filename=" + this.sourceCoverage.getName() + ".tiff";
     }
 
+    public String[][] getHeaders(Object value, Operation operation)
+			throws ServiceException {
+		return (String[][]) new String[][] { { "Content-Disposition",
+				"attachment; filename=" + this.sourceCoverage.getName() + ".tiff" } };
+	}
+
     public void encode(OutputStream output) throws ServiceException, IOException {
         if (sourceCoverage == null) {
             throw new IllegalStateException("It seems prepare() has not been called"
@@ -81,9 +88,9 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
 
         final GeoTiffFormat format = new GeoTiffFormat();
         final GeoTiffWriteParams wp = new GeoTiffWriteParams();
-        wp.setCompressionMode(GeoTiffWriteParams.MODE_EXPLICIT);
-        wp.setCompressionType("LZW");
-        wp.setCompressionQuality(0.75F);
+        //wp.setCompressionMode(GeoTiffWriteParams.MODE_EXPLICIT);
+        //wp.setCompressionType("LZW");
+        //wp.setCompressionQuality(0.75F);
         wp.setTilingMode(GeoToolsWriteParams.MODE_EXPLICIT);
         wp.setTiling(256, 256);
 

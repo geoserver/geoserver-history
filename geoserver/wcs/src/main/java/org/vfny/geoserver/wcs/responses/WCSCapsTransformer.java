@@ -115,7 +115,7 @@ public class WCSCapsTransformer extends TransformerBase {
                                                        // point to correct
                                                        // location
 
-        transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdUrl);
+        //transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdUrl);
 
         return transformer;
     }
@@ -183,7 +183,7 @@ public class WCSCapsTransformer extends TransformerBase {
 
             final String locationDef = WCS_URI + " "
                 + RequestUtils.proxifiedBaseURL(request.getBaseUrl(),
-                    wcs.getGeoServer().getProxyBaseUrl()) + "wcs/1.0.0/wcsCapabilities.xsd";
+                    wcs.getGeoServer().getProxyBaseUrl()) + "schemas/wcs/1.0.0/wcsCapabilities.xsd";
 
             attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
             start("WCS_Capabilities", attributes);
