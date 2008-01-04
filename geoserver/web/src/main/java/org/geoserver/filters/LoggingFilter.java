@@ -51,7 +51,7 @@ public class LoggingFilter implements Filter {
                     message += " request-size: " + hreq.getContentLength();
                     message += " body: ";
                     StringBuffer buff = new StringBuffer();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(hreq.getInputStream()));
+                    BufferedReader reader = hreq.getReader();
                     char[] readIn = new char[256];
                     int amountRead = 0;
                     while ((amountRead = reader.read(readIn, 0 , 256)) != -1){
