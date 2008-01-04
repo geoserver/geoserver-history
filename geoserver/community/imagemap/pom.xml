@@ -21,5 +21,17 @@
       <artifactId>wms</artifactId>
 	  <version>1.6.0-RC2</version>
     </dependency>
+	<dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt2-sample-data</artifactId>
+      <version>2.4-SNAPSHOT</version>
+    </dependency>
   </dependencies>
+  <build>
+	<testResources>
+      <testResource>
+        <directory>src/test/resources</directory>        
+      </testResource>      
+    </testResources>
+  </build>
 </project>

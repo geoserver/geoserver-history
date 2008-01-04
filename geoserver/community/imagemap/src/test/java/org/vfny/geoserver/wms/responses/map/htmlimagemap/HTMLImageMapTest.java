@@ -22,14 +22,14 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.geotools.resources.TestData;
+import org.geotools.test.*;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.GetMapProducer;
@@ -67,9 +67,8 @@ public class HTMLImageMapTest extends TestCase {
 	    System.setProperty("org.geotools.referencing.forceXY", "true");
 		File testdata=TestData.file(this, ".");
 		System.setProperty("GEOSERVER_DATA_DIR", testdata.getAbsolutePath());
-		GeoServerResourceLoader loader = new GeoServerResourceLoader(testdata);
-		DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory(new ClassPathXmlApplicationContext("applicationContext.xml"));
-        GenericWebApplicationContext context = new GenericWebApplicationContext(beanFactory);
+		GeoServerResourceLoader loader = new GeoServerResourceLoader(testdata);		
+        GenericWebApplicationContext context = new GenericWebApplicationContext();
         context.getBeanFactory().registerSingleton("resourceLoader", loader);
         GeoserverDataDirectory.init(context);
 		
@@ -115,6 +114,22 @@ public class HTMLImageMapTest extends TestCase {
     	File testdata=TestData.file(this, "featureTypes");
 	
         return new MyPropertyDataStore(testdata);
+            
+    }
+	
+	public DataStore getProjectedTestDataStore() throws IOException {
+    	File testdata=TestData.file(this, "featureTypes");
+	
+        try {
+			return new MyPropertyDataStore(testdata,CRS.decode("EPSG:3004"));
+		} catch (NoSuchAuthorityCodeException e) {
+			e.printStackTrace();
+			return null;
+		} catch (FactoryException e) {
+			// 
+			e.printStackTrace();
+			return null;
+		}
             
     }
 	
@@ -201,19 +216,19 @@ public class HTMLImageMapTest extends TestCase {
         this.mapProducer.produceMap();
         assertTestResult("BasicPolygons", this.mapProducer);
 
-	}
+	}	
 	
-	public void testMapProduceReprojectAndLabel() throws Exception {
-		final DataStore ds = getTestDataStore();
-        final FeatureSource fs = ds.getFeatureSource("NamedPlaces");
-        final Envelope env = fs.getBounds();
-
-        LOGGER.info("about to create map ctx for NamedPlaces with bounds " + env);
+	public void testMapProduceReproject() throws Exception {
+		final DataStore ds = getProjectedTestDataStore();
+        final FeatureSource fs = ds.getFeatureSource("ProjectedPolygon");
+        final ReferencedEnvelope env = new ReferencedEnvelope(fs.getBounds(),CRS.decode("EPSG:3004"));
+        
+        LOGGER.info("about to create map ctx for ProjectedPolygon with bounds " + env);
 
         final WMSMapContext map = new WMSMapContext();
         
-        CoordinateReferenceSystem sourceCrs=CRS.decode("EPSG:4326");
-        CoordinateReferenceSystem targetCrs=CRS.decode("EPSG:3004");
+        CoordinateReferenceSystem sourceCrs=CRS.decode("EPSG:3004");
+        CoordinateReferenceSystem targetCrs=CRS.decode("EPSG:3003");
         
         MathTransform transform=CRS.findMathTransform(sourceCrs, targetCrs,true);
         Envelope projEnv=JTS.transform(env, transform);
@@ -227,14 +242,14 @@ public class HTMLImageMapTest extends TestCase {
        
         
         map.setCoordinateReferenceSystem(targetCrs);
-        Style basicStyle=getTestStyle("NamedPlaces.sld");
+        Style basicStyle=getTestStyle("BasicPolygons.sld");
         
         map.addLayer(fs, basicStyle);
 
         this.mapProducer.setOutputFormat("text/html");
         this.mapProducer.setMapContext(map);
         this.mapProducer.produceMap();
-        assertTestResult("NamedPlaces", this.mapProducer);
+        assertTestResult("ProjectedPolygon", this.mapProducer);
 	}
 	
 	public void testMapProduceLines() throws Exception {
@@ -339,6 +354,8 @@ public class HTMLImageMapTest extends TestCase {
 	}
 	
 	static class MyPropertyDataStore extends PropertyDataStore {
+		
+		CoordinateReferenceSystem myCRS=DefaultGeographicCRS.WGS84;
 	    /**
          * Creates a new MyPropertyDataStore object.
          *
@@ -346,6 +363,16 @@ public class HTMLImageMapTest extends TestCase {
          */
 	    public MyPropertyDataStore(File dir) {
 	        super(dir);
+	    }
+	    
+	    /**
+         * Creates a new MyPropertyDataStore object.
+         *
+         * @param dir DOCUMENT ME!
+         */
+	    public MyPropertyDataStore(File dir,CoordinateReferenceSystem coordinateSystem) {
+	        super(dir);
+	        this.myCRS=coordinateSystem;
 	    }
 
 	    /**
@@ -362,7 +389,7 @@ public class HTMLImageMapTest extends TestCase {
 	        FeatureType schema = super.getSchema(typeName);
 
 	        try {
-	            return DataUtilities.createSubType(schema, null, DefaultGeographicCRS.WGS84);
+	            return DataUtilities.createSubType(schema, null, myCRS);
 	        } catch (SchemaException e) {
 	            throw new DataSourceException(e.getMessage(), e);
 	        }

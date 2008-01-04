@@ -83,7 +83,7 @@ public class EncodeHTMLImageMap {
         long t = System.currentTimeMillis();
 
         try {
-        	// encodes the various layers
+        	// encodes the different layers
             writeLayers();
 
             this.writer.flush();
@@ -287,8 +287,7 @@ public class EncodeHTMLImageMap {
             	// 3) rule filters               
                 processRuleForQuery(ftsList, q);
 
-                //ensure reprojection occurs, do not trust query, use the wrapper 
-                q.setCoordinateSystem(mapContext.getCoordinateReferenceSystem());
+                //ensure reprojection occurs, do not trust query, use the wrapper                 
                 FeatureCollection fColl=null;
                 if ( reproject ) {
                 	fColl=new ReprojectFeatureResults( fSource.getFeatures(q),mapContext.getCoordinateReferenceSystem() );

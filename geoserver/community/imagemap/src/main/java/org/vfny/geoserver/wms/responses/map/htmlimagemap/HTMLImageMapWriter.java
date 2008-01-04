@@ -22,7 +22,6 @@ import org.geotools.feature.FeatureType;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.operation.DefaultMathTransformFactory;
 import org.geotools.referencing.operation.matrix.GeneralMatrix;
-import org.geotools.referencing.operation.transform.LinearTransform1D;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.LineSymbolizer;
@@ -37,8 +36,6 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.expression.Expression;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.MathTransform2D;
-import org.opengis.referencing.operation.Matrix;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.wms.WMSMapContext;
 

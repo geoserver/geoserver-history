@@ -22,8 +22,7 @@ public class HTMLImageMapMapProducerFactory implements GetMapProducerFactorySpi 
     
    
 	/**
-     * The ImageMap is served as text/html: it is an HTML fragment, after all.
-     * TODO: Verify if this doesn't conflict with other map producers.   
+     * The ImageMap is served as text/html: it is an HTML fragment, after all.   
      */
     static final String MIME_TYPE = "text/html";
     
@@ -42,7 +41,7 @@ public class HTMLImageMapMapProducerFactory implements GetMapProducerFactorySpi 
      * @return the verbose description of the GetMapProducer
      */
     public String getName() {
-        return "HTML ImageMap (SVG) map producer";
+        return "HTML ImageMap map producer";
     }
 
     /**
