@@ -114,7 +114,7 @@ public class BufferedRequestWrapperTest extends GeoServerTestSupport{
 				if (methods[i].getParameterTypes().length == 0){
 					Object resultA = methods[i].invoke(reqA);
 					Object resultB = methods[i].invoke(reqB);
-		            assertEqual(resultA, resultB);
+		            assertEquals(resultA, resultB);
 				} 
 			} catch (Exception e){
 				// don't do anything, it's fine
