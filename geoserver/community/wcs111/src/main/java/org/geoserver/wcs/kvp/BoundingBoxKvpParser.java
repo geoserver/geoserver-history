@@ -16,6 +16,8 @@ import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.wcs.WcsException;
+import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
+
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
 
 /**
@@ -35,33 +37,39 @@ public class BoundingBoxKvpParser extends KvpParser {
 
         // check to make sure that the bounding box has 4 coordinates
         if (unparsed.size() < 4) {
-            throw new IllegalArgumentException("Requested bounding box contains wrong"
-                    + "number of coordinates (should have at least 4): " + unparsed.size());
+            throw new WcsException("Requested bounding box contains wrong"
+                    + "number of coordinates (should have at least 4): " + unparsed.size(),
+                    WcsExceptionCode.InvalidParameterValue, "BoundingBox");
         }
 
         // if it does, store them in an array of doubles
         int size = unparsed.size();
-        double[] lower = new double[(int) Math.floor(size / 2.0)];
-        double[] upper = new double[lower.length];
+        Double[] lower = new Double[(int) Math.floor(size / 2.0)];
+        Double[] upper = new Double[lower.length];
 
         for (int i = 0; i < lower.length; i++) {
             try {
                 lower[i] = Double.parseDouble((String) unparsed.get(i * 2));
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Bounding box coordinate is not parsable:" + unparsed.get(i * 2));
+                throw new WcsException("Bounding box coordinate is not parsable:"
+                        + unparsed.get(i * 2), WcsExceptionCode.InvalidParameterValue,
+                        "BoundingBox");
             }
-            
+
             try {
                 upper[i] = Double.parseDouble((String) unparsed.get(i * 2 + 1));
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Bounding box coordinate is not parsable:" + unparsed.get(i * 2 + 1));
+                throw new WcsException("Bounding box coordinate is not parsable:"
+                        + unparsed.get(i * 2 + 1), WcsExceptionCode.InvalidParameterValue,
+                        "BoundingBox");
             }
         }
 
         for (int i = 0; i < lower.length; i++) {
             if (lower[i] >= upper[i])
-                throw new ServiceException("illegal bbox, min of dimension " + (i + 1) + ":"
-                        + lower[i] + " is " + "greater than max of same dimesion: " + upper[i]);
+                throw new WcsException("illegal bbox, min of dimension " + (i + 1) + ":" + lower[i]
+                        + " is " + "greater than max of same dimesion: " + upper[i],
+                        WcsExceptionCode.InvalidParameterValue, "BoundingBox");
         }
 
         // check for crs
@@ -75,8 +83,8 @@ public class BoundingBoxKvpParser extends KvpParser {
                             + crs.getCoordinateSystem().getDimension() + " but bbox specified has "
                             + lower.length, InvalidParameterValue, "BoundingBox");
             } catch (Exception e) {
-                throw new WcsException("Could not recognize crs " + crsName,
-                        InvalidParameterValue, "BoundingBox");
+                throw new WcsException("Could not recognize crs " + crsName, InvalidParameterValue,
+                        "BoundingBox");
             }
         }
 
