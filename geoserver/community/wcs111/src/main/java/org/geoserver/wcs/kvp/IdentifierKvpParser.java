@@ -25,7 +25,7 @@ public class IdentifierKvpParser extends KvpParser {
     public Object parse(String value) throws Exception {
         Integer type = catalog.getLayerType(value);
         if (!Data.TYPE_RASTER.equals(type))
-            throw new WcsException("Could not find coverage '" + value + "'", InvalidParameterValue, value);
+            throw new WcsException("Could not find coverage '" + value + "'", InvalidParameterValue, "identifier");
         CodeType result = Ows11Factory.eINSTANCE.createCodeType();
         result.setValue(value);
         return result;

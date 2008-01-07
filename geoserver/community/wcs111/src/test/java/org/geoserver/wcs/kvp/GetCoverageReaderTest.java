@@ -301,27 +301,37 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             assertEquals("GridOffsets", e.getLocator());
         }
     }
-
-//    /**
-//     * Tests valid range subset expressions, but with a mix of valid and invalid identifiers
-//     * @throws Exception
-//     */
-//    public void testRangeSubset() throws Exception {
-//        Map<String, Object> raw = new HashMap<String, Object>();
-//        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
-//        raw.put("identifier", layerId);
-//        raw.put("format", "GeoTiff");
-//        raw.put("BoundingBox", "-45,146,-42,147");
-//        
-//        // unknown field
-//        raw.put("rangeSubset", "jimbo:nearest");
-//        try {
-//            reader.read(reader.createRequest(), parseKvp(raw), raw);
-//            fail("We should have had a WcsException here?");
-//        } catch (WcsException e) {
-//            assertEquals(InvalidParameterValue.name(), e.getCode());
-//            assertEquals("RangeSubset", e.getLocator());
-//        }
-//    }
+    
+    /**
+     * Tests valid range subset expressions, but with a mix of valid and invalid identifiers
+     * @throws Exception
+     */
+    public void testRangeSubset() throws Exception {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        raw.put("identifier", layerId);
+        raw.put("format", "GeoTiff");
+        raw.put("BoundingBox", "-45,146,-42,147");
+        
+        // unknown field
+        raw.put("rangeSubset", "jimbo:nearest");
+        try {
+            reader.read(reader.createRequest(), parseKvp(raw), raw);
+            fail("We should have had a WcsException here?");
+        } catch (WcsException e) {
+            assertEquals(InvalidParameterValue.name(), e.getCode());
+            assertEquals("RangeSubset", e.getLocator());
+        }
+        
+        // unknown axis
+        raw.put("rangeSubset", "BlueMarble:nearest[MadAxis[key]]");
+        try {
+            reader.read(reader.createRequest(), parseKvp(raw), raw);
+            fail("We should have had a WcsException here?");
+        } catch (WcsException e) {
+            assertEquals(InvalidParameterValue.name(), e.getCode());
+            assertEquals("RangeSubset", e.getLocator());
+        }
+    }
 
 }

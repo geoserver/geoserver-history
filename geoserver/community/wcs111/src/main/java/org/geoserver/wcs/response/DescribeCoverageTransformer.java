@@ -266,7 +266,7 @@ public class DescribeCoverageTransformer extends TransformerBase {
             // at the moment we only handle single field coverages
             start("wcs:Field");
             CoverageDimension[] dimensions = ci.getDimensions();
-            element("wcs:Identifier", ci.getName());
+            element("wcs:Identifier", ci.getLabel());
             // the output domain of the field
             start("wcs:Definition");
             NumberRange range = getCoverageRange(dimensions);
