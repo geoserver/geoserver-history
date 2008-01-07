@@ -54,7 +54,9 @@
     <constructor-arg ref="catalog"/>
   </bean>
   
-  <bean id="wcs111GridBaseCRS" class="org.geoserver.wcs.kvp.GridBaseCRSKvpParser"/>
+  <bean id="wcs111BoundingBoxKvpParser" class="org.geoserver.wcs.kvp.BoundingBoxKvpParser"/>
+  
+  <bean id="wcs111GridBaseCRSKvpParser" class="org.geoserver.wcs.kvp.GridBaseCRSKvpParser"/>
   
   <bean id="wcs111TimeSequenceKvpParser" class="org.geoserver.wcs.kvp.TimeSequenceKvpParser"/>
   
