@@ -537,10 +537,10 @@ public class TypesEditorAction extends ConfigAction {
     private Set keyWords(TypesEditorForm typeForm) {
         HashSet keywords = new HashSet();
         String[] array = (typeForm.getKeywords() != null)
-            ? typeForm.getKeywords().split(System.getProperty("line.separator")) : new String[0];
+            ? typeForm.getKeywords().split(",") : new String[0];
 
         for (int i = 0; i < array.length; i++) {
-            keywords.add(array[i]);
+            keywords.add(array[i].trim());
         }
 
         return keywords;
