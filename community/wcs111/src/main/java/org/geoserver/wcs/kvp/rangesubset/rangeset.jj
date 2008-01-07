@@ -69,7 +69,7 @@ TOKEN : /* SEPARATORS */
 }
 TOKEN : /* IDENTIFIERS: the grammar says at least one char, or any type */
 {
-  < IDENTIFIER: (~[",",";","[","]"])+>
+  < IDENTIFIER: (~[",",";",":","[","]"])+ >
 }
 
 
@@ -81,7 +81,7 @@ SimpleNode RangeSubset() : {/*@bgen(jjtree) RangeSubset */
 {/*@bgen(jjtree) RangeSubset */
   try {
 /*@egen*/
-  FieldSubset() (<SEMICOLON> FieldSubset())*/*@bgen(jjtree)*/
+  FieldSubset() (<SEMICOLON> FieldSubset())* <EOF>/*@bgen(jjtree)*/
   {
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
@@ -179,7 +179,7 @@ void AxisSubset() : {/*@bgen(jjtree) AxisSubset */
 
 void Keys()       : {}
 {
-	Key() (<COMMA> Key())
+	Key() (<COMMA> Key())*
 }
 
 void FieldId() : {/*@bgen(jjtree) FieldId */

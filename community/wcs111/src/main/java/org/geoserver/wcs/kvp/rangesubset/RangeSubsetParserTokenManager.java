@@ -46,7 +46,7 @@ private final int jjMoveStringLiteralDfa0_0()
       case 44:
          return jjStopAtPos(0, 7);
       case 58:
-         return jjStartNfaWithStates_0(0, 9, 0);
+         return jjStopAtPos(0, 9);
       case 59:
          return jjStopAtPos(0, 8);
       case 91:
@@ -110,7 +110,7 @@ private final int jjMoveNfa_0(int startState, int curPos)
             switch(jjstateSet[--i])
             {
                case 0:
-                  if ((0xf7ffefffffffffffL & l) == 0L)
+                  if ((0xf3ffefffffffffffL & l) == 0L)
                      break;
                   kind = 10;
                   jjstateSet[jjnewStateCnt++] = 0;

@@ -32,6 +32,7 @@ public @SuppressWarnings("all") class RangeSubsetParser/*@bgen(jjtree)*/implemen
         jj_consume_token(SEMICOLON);
         FieldSubset();
       }
+      jj_consume_token(0);
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
     {if (true) return jjtn000;}
@@ -145,8 +146,16 @@ public @SuppressWarnings("all") class RangeSubsetParser/*@bgen(jjtree)*/implemen
 
   final public void Keys() throws ParseException {
     Key();
-    jj_consume_token(COMMA);
-    Key();
+    label_3:
+    while (true) {
+      if (jj_2_5(3)) {
+        ;
+      } else {
+        break label_3;
+      }
+      jj_consume_token(COMMA);
+      Key();
+    }
   }
 
   final public void FieldId() throws ParseException {
@@ -245,19 +254,37 @@ public @SuppressWarnings("all") class RangeSubsetParser/*@bgen(jjtree)*/implemen
     finally { jj_save(3, xla); }
   }
 
-  final private boolean jj_3R_7() {
+  final private boolean jj_2_5(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_5(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(4, xla); }
+  }
+
+  final private boolean jj_3R_8() {
     if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_9() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  final private boolean jj_3_5() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_8()) return true;
     return false;
   }
 
   final private boolean jj_3_4() {
     if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_6()) return true;
+    if (jj_3R_7()) return true;
     return false;
   }
 
-  final private boolean jj_3R_3() {
-    if (jj_3R_7()) return true;
+  final private boolean jj_3R_4() {
+    if (jj_3R_9()) return true;
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_2()) jj_scanpos = xsp;
@@ -266,42 +293,42 @@ public @SuppressWarnings("all") class RangeSubsetParser/*@bgen(jjtree)*/implemen
     return false;
   }
 
-  final private boolean jj_3R_4() {
+  final private boolean jj_3R_5() {
     if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
-  final private boolean jj_3R_6() {
-    if (jj_3R_8()) return true;
+  final private boolean jj_3R_7() {
+    if (jj_3R_10()) return true;
     if (jj_scan_token(LP)) return true;
     return false;
   }
 
   final private boolean jj_3_3() {
     if (jj_scan_token(LP)) return true;
-    if (jj_3R_5()) return true;
+    if (jj_3R_6()) return true;
     return false;
   }
 
-  final private boolean jj_3R_8() {
+  final private boolean jj_3R_10() {
     if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
   final private boolean jj_3_2() {
     if (jj_scan_token(COLON)) return true;
-    if (jj_3R_4()) return true;
+    if (jj_3R_5()) return true;
     return false;
   }
 
-  final private boolean jj_3R_5() {
-    if (jj_3R_6()) return true;
+  final private boolean jj_3R_6() {
+    if (jj_3R_7()) return true;
     return false;
   }
 
   final private boolean jj_3_1() {
     if (jj_scan_token(SEMICOLON)) return true;
-    if (jj_3R_3()) return true;
+    if (jj_3R_4()) return true;
     return false;
   }
 
@@ -322,7 +349,7 @@ public @SuppressWarnings("all") class RangeSubsetParser/*@bgen(jjtree)*/implemen
    private static void jj_la1_0() {
       jj_la1_0 = new int[] {};
    }
-  final private JJCalls[] jj_2_rtns = new JJCalls[4];
+  final private JJCalls[] jj_2_rtns = new JJCalls[5];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
 
@@ -539,7 +566,7 @@ public @SuppressWarnings("all") class RangeSubsetParser/*@bgen(jjtree)*/implemen
 
   final private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -550,6 +577,7 @@ public @SuppressWarnings("all") class RangeSubsetParser/*@bgen(jjtree)*/implemen
             case 1: jj_3_2(); break;
             case 2: jj_3_3(); break;
             case 3: jj_3_4(); break;
+            case 4: jj_3_5(); break;
           }
         }
         p = p.next;
