@@ -1,9 +1,13 @@
 package org.geoserver.wcs.kvp;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import net.opengis.wcs.v1_1_1.AxisSubsetType;
+import net.opengis.wcs.v1_1_1.FieldSubsetType;
 import net.opengis.wcs.v1_1_1.GetCoverageType;
+import net.opengis.wcs.v1_1_1.RangeSubsetType;
 
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.vfny.geoserver.global.Data;
@@ -332,6 +336,32 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             assertEquals(InvalidParameterValue.name(), e.getCode());
             assertEquals("RangeSubset", e.getLocator());
         }
+        
+        // unknown key
+        raw.put("rangeSubset", "BlueMarble:nearest[Bands[MadKey]]");
+        try {
+            reader.read(reader.createRequest(), parseKvp(raw), raw);
+            fail("We should have had a WcsException here?");
+        } catch (WcsException e) {
+            assertEquals(InvalidParameterValue.name(), e.getCode());
+            assertEquals("RangeSubset", e.getLocator());
+        }
+        
+        // ok, finally something we can parse
+        raw.put("rangeSubset", "BlueMarble:nearest[Bands[ReD_BaNd]]");
+        GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
+        RangeSubsetType rs = getCoverage.getRangeSubset();
+        assertNotNull(rs);
+        assertEquals(1, rs.getFieldSubset().size());
+        FieldSubsetType field = (FieldSubsetType) rs.getFieldSubset().get(0);
+        assertEquals("BlueMarble", field.getIdentifier().getValue());
+        assertEquals(1, field.getAxisSubset().size());
+        AxisSubsetType axis = (AxisSubsetType) field.getAxisSubset().get(0);
+        assertEquals("Bands", axis.getIdentifier());
+        List keys = axis.getKey();
+        assertEquals(1, keys.size());
+        // make sure the name has been fixed during the parsing too
+        assertEquals("Red_band", keys.get(0));
     }
 
 }

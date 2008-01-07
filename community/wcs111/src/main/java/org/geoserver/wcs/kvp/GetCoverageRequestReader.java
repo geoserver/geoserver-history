@@ -111,9 +111,18 @@ public class GetCoverageRequestReader extends EMFKvpRequestReader {
         int[] bands = new int[keys.size()];
         for (int j = 0; j < bands.length; j++) {
             final String key = (String) keys.get(j);
-            if (!dimensionMap.contains(key))
+            String parsedKey = null;
+            for (String dimensionName : dimensionMap) {
+                if(dimensionName.equalsIgnoreCase(key)) {
+                    parsedKey = dimensionName;
+                    break;
+                }
+            }
+            if (parsedKey == null)
                 throw new WcsException("Unknown field/axis/key combination " + fieldId + "/"
-                        + axisSubset.getIdentifier() + "/" + key);
+                        + axisSubset.getIdentifier() + "/" + key, InvalidParameterValue, "RangeSubset");
+            else
+                keys.set(j, parsedKey);
         }
     }
 
