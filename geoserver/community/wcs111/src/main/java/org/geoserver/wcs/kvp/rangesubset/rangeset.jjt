@@ -96,7 +96,7 @@ void AxisSubset() : {}
 
 void Keys() #void : {}
 {
-	Key() (<COMMA> Key())
+	Key() (<COMMA> Key())*
 }
 
 void FieldId() : {
