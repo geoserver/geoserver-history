@@ -270,7 +270,7 @@ public class DescribeCoverageTransformer extends TransformerBase {
             // the output domain of the field
             start("wcs:Definition");
             NumberRange range = getCoverageRange(dimensions);
-            if (range == null) {
+            if (range == null || range.isEmpty()) {
                 element("wcs:AnyValue", "");
             } else {
                 start("ows:AllowedValues");
@@ -295,7 +295,7 @@ public class DescribeCoverageTransformer extends TransformerBase {
             start("wcs:AvailableKeys");
             CoverageDimension[] dimensions = ci.getDimensions();
             for (int i = 0; i < dimensions.length; i++) {
-                element("wcs:Key", dimensions[i].getName());
+                element("wcs:Key", dimensions[i].getName().replace(' ', '_'));
             }
             end("wcs:AvailableKeys");
             end("wcs:Axis");
