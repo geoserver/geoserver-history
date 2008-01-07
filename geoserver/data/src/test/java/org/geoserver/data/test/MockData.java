@@ -551,25 +551,25 @@ public class MockData {
 
         // basic info
         FileWriter writer = new FileWriter(info);
-        writer.write("<coverage format=\"" + coverage + "\">");
-        writer.write("<name>" + coverage + "</name>");
-        writer.write("<label>" + coverage + "</label>");
-        writer.write("<description>" + coverage + " description</description>");
+        writer.write("<coverage format=\"" + coverage + "\">\n");
+        writer.write("<name>" + coverage + "</name>\n");
+        writer.write("<label>" + coverage + "</label>\n");
+        writer.write("<description>" + coverage + " description</description>\n");
         // TODO: need to add metadata links?
-        writer.write("<keywords>WCS," + coverage + " </keywords>");
+        writer.write("<keywords>WCS," + coverage + " </keywords>\n");
         if(styleName == null)
             styleName = "raster";
-        writer.write("<styles default=\"" + styleName + "\"/>");
+        writer.write("<styles default=\"" + styleName + "\"/>\n");
         
         // envelope
         CoordinateReferenceSystem crs = reader.getCrs();
         GeneralEnvelope envelope = reader.getOriginalEnvelope();
         GeneralEnvelope wgs84envelope = CoverageStoreUtils.getWGS84LonLatEnvelope(envelope);
         final String nativeCrsName = CRS.lookupIdentifier(crs, false);
-        writer.write("<envelope crs=\"" + crs.toString().replaceAll("\"", "'") + "\" srsName=\"" + nativeCrsName + "\">");
-        writer.write("<pos>" + wgs84envelope.getMinimum(0) + " " + wgs84envelope.getMinimum(1) + "</pos>");
-        writer.write("<pos>" + wgs84envelope.getMaximum(0) + " " + wgs84envelope.getMaximum(1) + "</pos>");
-        writer.write("</envelope>");
+        writer.write("<envelope crs=\"" + crs.toString().replaceAll("\"", "'") + "\" srsName=\"" + nativeCrsName + "\">\n");
+        writer.write("<pos>" + wgs84envelope.getMinimum(0) + " " + wgs84envelope.getMinimum(1) + "</pos>\n");
+        writer.write("<pos>" + wgs84envelope.getMaximum(0) + " " + wgs84envelope.getMaximum(1) + "</pos>\n");
+        writer.write("</envelope>\n");
         
         /**
          * Now reading a fake small GridCoverage just to retrieve meta information:
@@ -601,69 +601,69 @@ public class MockData {
             lower = lower + geometry.getGridRange().getLower(i) + " "; 
             upper = upper + geometry.getGridRange().getUpper(i) + " ";
         }
-        writer.write("<grid dimension = \"" + dimensions + "\">");
-        writer.write("<low>" + lower + "</low>");
-        writer.write("<high>" + upper + "</high>");
+        writer.write("<grid dimension = \"" + dimensions + "\">\n");
+        writer.write("<low>" + lower + "</low>\n");
+        writer.write("<high>" + upper + "</high>\n");
         final CoordinateSystem cs = crs.getCoordinateSystem();
         for (int i=0; i < cs.getDimension(); i++) {
-            writer.write("<axisName>" + cs.getAxis(i).getName().getCode() + "</axisName>");
+            writer.write("<axisName>" + cs.getAxis(i).getName().getCode() + "</axisName>\n");
         }
         if(geometry.getGridToCRS() instanceof AffineTransform) {
             AffineTransform aTX = (AffineTransform) geometry.getGridToCRS();
             writer.write("<geoTransform>");
-                writer.write("<scaleX>" + aTX.getScaleX() + "</scaleX>");
-                writer.write("<scaleY>" + aTX.getScaleY() + "</scaleY>");
-                writer.write("<shearX>" + aTX.getShearX() + "</shearX>");
-                writer.write("<shearY>" + aTX.getShearY() + "</shearY>");
-                writer.write("<translateX>" + aTX.getTranslateX() + "</translateX>");
-                writer.write("<translateY>" + aTX.getTranslateY() + "</translateY>");
-            writer.write("</geoTransform>");                    
+                writer.write("<scaleX>" + aTX.getScaleX() + "</scaleX>\n");
+                writer.write("<scaleY>" + aTX.getScaleY() + "</scaleY>\n");
+                writer.write("<shearX>" + aTX.getShearX() + "</shearX>\n");
+                writer.write("<shearY>" + aTX.getShearY() + "</shearY>\n");
+                writer.write("<translateX>" + aTX.getTranslateX() + "</translateX>\n");
+                writer.write("<translateY>" + aTX.getTranslateY() + "</translateY>\n");
+            writer.write("</geoTransform>\n");                    
         }
-        writer.write("</grid>");
+        writer.write("</grid>\n");
         
         // coverage dimensions
         final GridSampleDimension[] sd = gc.getSampleDimensions();
         for (int i = 0; i < sd.length; i++) {
-            writer.write("<CoverageDimension>");
-            writer.write("<name>" + sd[i].getDescription().toString() + "</name>");
-            writer.write("<interval>");
-            writer.write("<min>" + sd[i].getMinimumValue() + "</min>");
-            writer.write("<max>" + sd[i].getMinimumValue() + "</max>");
-            writer.write("</interval>");
-            writer.write("<nullValues>");
+            writer.write("<CoverageDimension>\n");
+            writer.write("<name>" + sd[i].getDescription().toString() + "</name>\n");
+            writer.write("<interval>\n");
+            writer.write("<min>" + sd[i].getMinimumValue() + "</min>\n");
+            writer.write("<max>" + sd[i].getMaximumValue() + "</max>\n");
+            writer.write("</interval>\n");
+            writer.write("<nullValues>\n");
             for (Iterator it = sd[i].getCategories().iterator(); it.hasNext();) {
                 Category cat = (Category) it.next();
 
                 if ((cat != null) && cat.getName().toString().equalsIgnoreCase("no data")) {
                     double min = cat.getRange().getMinimum();
                     double max = cat.getRange().getMaximum();
-                    writer.write("<value>" + min + "</value>");
+                    writer.write("<value>" + min + "</value>\n");
                     if(min != max)
-                        writer.write("<value>" + max + "</value>");
+                        writer.write("<value>" + max + "</value>\n");
                 }
             }
-            writer.write("</nullValues>");
-            writer.write("</CoverageDimension>");
+            writer.write("</nullValues>\n");
+            writer.write("</CoverageDimension>\n");
         }
         
         // supported crs
-        writer.write("<supportedCRSs>");
-        writer.write("<requestCRSs>" + nativeCrsName + "</requestCRSs>");
-        writer.write("<responseCRSs>" + nativeCrsName + "</responseCRSs>");
-        writer.write("</supportedCRSs>");
+        writer.write("<supportedCRSs>\n");
+        writer.write("<requestCRSs>" + nativeCrsName + "</requestCRSs>\n");
+        writer.write("<responseCRSs>" + nativeCrsName + "</responseCRSs>\n");
+        writer.write("</supportedCRSs>\n");
         
         // supported formats
-        writer.write("<supportedFormats nativeFormat = \"" + format.getName() + "\">");
-        writer.write("<formats>ARCGRID,ARCGRID-GZIP,GEOTIFF,PNG,GIF,TIFF</formats>");
-        writer.write("</supportedFormats>");
+        writer.write("<supportedFormats nativeFormat = \"" + format.getName() + "\">\n");
+        writer.write("<formats>ARCGRID,ARCGRID-GZIP,GEOTIFF,PNG,GIF,TIFF</formats>\n");
+        writer.write("</supportedFormats>\n");
         
         // supported interpolations
-        writer.write("<supportedInterpolations default = \"nearest neighbor\">");
-        writer.write("<interpolationMethods>nearest neighbor</interpolationMethods>");
-        writer.write("</supportedInterpolations>");
+        writer.write("<supportedInterpolations default = \"nearest neighbor\">\n");
+        writer.write("<interpolationMethods>nearest neighbor</interpolationMethods>\n");
+        writer.write("</supportedInterpolations>\n");
         
         // the end
-        writer.write("</coverage>");
+        writer.write("</coverage>\n");
         writer.flush();
         writer.close();
     }
