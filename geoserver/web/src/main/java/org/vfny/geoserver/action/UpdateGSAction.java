@@ -65,14 +65,17 @@ public class UpdateGSAction extends ConfigAction {
             WFSDTO wfsDTO = getWFSConfig().toDTO();
             GeoServerDTO geoserverDTO = getGlobalConfig().toDTO();
             DataDTO dataDTO = getDataConfig().toDTO();
-
+            
+            //load each service global bean from the modified config DTO
             getWCS(request).load(wcsDTO);
             getWFS(request).load(wfsDTO);
             getWMS(request).load(wmsDTO);
-            getWFS(request).getGeoServer().load(geoserverDTO);
-            getWFS(request).getData().load(dataDTO);
+            
+            //load the main geoserver bean from the modified config DTO
             getWCS(request).getGeoServer().load(geoserverDTO);
+            //load the data bean from the modified config DTO
             getWCS(request).getData().load(dataDTO);
+
 
             getApplicationState().notifyToGeoServer();
         } catch (ConfigurationException e) {
