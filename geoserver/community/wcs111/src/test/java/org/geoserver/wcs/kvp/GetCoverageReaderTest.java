@@ -8,7 +8,7 @@ import net.opengis.wcs.v1_1_1.GetCoverageType;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wcs.WcsException;
-import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
 
 public class GetCoverageReaderTest extends WCSTestSupport {
 
@@ -20,6 +20,11 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         Data catalog = (Data) applicationContext.getBean("catalog");
         reader = new GetCoverageRequestReader(catalog);
     }
+    
+    protected String getDefaultLogConfiguration() {
+        return "/DEFAULT_LOGGING.properties";
+    }
+    
 
     public void testMissingParams() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
@@ -43,8 +48,17 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         raw.put("format", "GeoTiff");
         try {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
-        } catch (Exception e) {
+            fail("Hey, boundingBox is missing, this should have failed");
+        } catch (WcsException e) {
+            assertEquals("MissingParameterValue", e.getCode());
+        }
+        
+        raw.put("BoundingBox", "-45,146,-42,147");
+        try {
+            reader.read(reader.createRequest(), parseKvp(raw), raw);
+        } catch (WcsException e) {
             fail("This time all mandatory params where provided?");
+            assertEquals("MissingParameterValue", e.getCode());
         }
 
     }
@@ -54,11 +68,13 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "SuperCoolFormat");
+        raw.put("BoundingBox", "-45,146,-42,147");
         try {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
             fail("When did we learn to encode SuperCoolFormat?");
-        } catch (Exception e) {
-            // ok, fine
+        } catch (WcsException e) {
+            assertEquals(InvalidParameterValue.toString(), e.getCode());
+            assertEquals("format", e.getLocator());
         }
     }
 
@@ -67,11 +83,13 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         final String layerId = "fairyTales:rumpelstilskin";
         raw.put("identifier", layerId);
         raw.put("format", "SuperCoolFormat");
+        raw.put("BoundingBox", "-45,146,-42,147");
         try {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
             fail("That coverage is not registered???");
         } catch (WcsException e) {
-            assertEquals(layerId, e.getLocator());
+            assertEquals(InvalidParameterValue.toString(), e.getCode());
+            assertEquals("identifier", e.getLocator());
         }
     }
 
@@ -80,15 +98,16 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "GeoTiff");
+        raw.put("BoundingBox", "-45,146,-42,147");
         raw.put("store", "false");
-        raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:32618");
+        raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:4326");
 
         GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(),
                 parseKvp(raw), raw);
         assertEquals(layerId, getCoverage.getIdentifier().getValue());
         assertEquals("GEOTIFF", getCoverage.getOutput().getFormat());
         assertFalse(getCoverage.getOutput().isStore());
-        assertEquals("urn:ogc:def:crs:EPSG:6.6:32618", getCoverage.getOutput().getGridCRS()
+        assertEquals("urn:ogc:def:crs:EPSG:6.6:4326", getCoverage.getOutput().getGridCRS()
                 .getGridBaseCRS());
     }
 
@@ -97,6 +116,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "GeoTiff");
+        raw.put("BoundingBox", "-45,146,-42,147");
         raw.put("store", "true");
 
         try {
@@ -129,6 +149,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "GeoTiff");
+        raw.put("BoundingBox", "-45,146,-42,147");
 
         raw.put("gridType", GridType.GT2dGridIn2dCrs.getXmlConstant());
         GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(),
@@ -146,7 +167,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
             fail("We should have had a WcsException here?");
         } catch (WcsException e) {
-            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals(InvalidParameterValue.name(), e.getCode());
             assertEquals("GridType", e.getLocator());
         }
 
@@ -155,7 +176,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
             fail("We should have had a WcsException here?");
         } catch (WcsException e) {
-            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals(InvalidParameterValue.name(), e.getCode());
             assertEquals("GridType", e.getLocator());
         }
     }
@@ -165,6 +186,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "GeoTiff");
+        raw.put("BoundingBox", "-45,146,-42,147");
 
         raw.put("GridCS", GridCS.GCSGrid2dSquare.getXmlConstant());
         GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(),
@@ -177,7 +199,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
             fail("We should have had a WcsException here?");
         } catch (WcsException e) {
-            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals(InvalidParameterValue.name(), e.getCode());
             assertEquals("GridCS", e.getLocator());
         }
     }
@@ -187,6 +209,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "GeoTiff");
+        raw.put("BoundingBox", "-45,146,-42,147");
 
         GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(),
                 parseKvp(raw), raw);
@@ -207,7 +230,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
             fail("We should have had a WcsException here?");
         } catch (WcsException e) {
-            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals(InvalidParameterValue.name(), e.getCode());
             assertEquals("GridOrigin", e.getLocator());
         }
 
@@ -216,7 +239,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
             fail("We should have had a WcsException here?");
         } catch (WcsException e) {
-            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals(InvalidParameterValue.name(), e.getCode());
             assertEquals("GridOrigin", e.getLocator());
         }
 
@@ -225,7 +248,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
             fail("We should have had a WcsException here?");
         } catch (WcsException e) {
-            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals(InvalidParameterValue.name(), e.getCode());
             assertEquals("GridOrigin", e.getLocator());
         }
     }
@@ -235,6 +258,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "GeoTiff");
+        raw.put("BoundingBox", "-45,146,-42,147");
 
         GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(),
                 parseKvp(raw), raw);
@@ -255,7 +279,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
             fail("We should have had a WcsException here?");
         } catch (WcsException e) {
-            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals(InvalidParameterValue.name(), e.getCode());
             assertEquals("GridOffsets", e.getLocator());
         }
 
@@ -264,7 +288,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
             fail("We should have had a WcsException here?");
         } catch (WcsException e) {
-            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals(InvalidParameterValue.name(), e.getCode());
             assertEquals("GridOffsets", e.getLocator());
         }
 
@@ -273,9 +297,31 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
             fail("We should have had a WcsException here?");
         } catch (WcsException e) {
-            assertEquals(WcsExceptionCode.InvalidParameterValue.name(), e.getCode());
+            assertEquals(InvalidParameterValue.name(), e.getCode());
             assertEquals("GridOffsets", e.getLocator());
         }
     }
+
+//    /**
+//     * Tests valid range subset expressions, but with a mix of valid and invalid identifiers
+//     * @throws Exception
+//     */
+//    public void testRangeSubset() throws Exception {
+//        Map<String, Object> raw = new HashMap<String, Object>();
+//        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+//        raw.put("identifier", layerId);
+//        raw.put("format", "GeoTiff");
+//        raw.put("BoundingBox", "-45,146,-42,147");
+//        
+//        // unknown field
+//        raw.put("rangeSubset", "jimbo:nearest");
+//        try {
+//            reader.read(reader.createRequest(), parseKvp(raw), raw);
+//            fail("We should have had a WcsException here?");
+//        } catch (WcsException e) {
+//            assertEquals(InvalidParameterValue.name(), e.getCode());
+//            assertEquals("RangeSubset", e.getLocator());
+//        }
+//    }
 
 }
