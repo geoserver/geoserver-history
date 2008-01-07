@@ -298,7 +298,7 @@ function prepareFormData(){
 		</span>
 	  </td>
 	  <td class="datum">
-		<html:textarea property="keywords" cols="60" rows="2"/>
+		<html:textarea property="keywords" cols="90" rows="10"/>
 	  </td>
     </tr>
 
