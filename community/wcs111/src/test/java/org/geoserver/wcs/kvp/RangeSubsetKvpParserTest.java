@@ -49,8 +49,8 @@ public class RangeSubsetKvpParserTest extends TestCase {
         assertEquals("nearest", field.getInterpolationType());
     }
     
-    public void testAxisKeys() throws Exception {
-        RangeSubsetType rs = (RangeSubsetType) parser.parse("radiance[bands[Red,Blue]]");
+    public void testAxisSingleKey() throws Exception {
+        RangeSubsetType rs = (RangeSubsetType) parser.parse("radiance[bands[Red]]");
         assertNotNull(rs);
         assertEquals(1, rs.getFieldSubset().size());
         FieldSubsetType field = (FieldSubsetType) rs.getFieldSubset().get(0);
@@ -59,8 +59,23 @@ public class RangeSubsetKvpParserTest extends TestCase {
         AxisSubsetType axis = (AxisSubsetType) field.getAxisSubset().get(0);
         assertEquals("bands", axis.getIdentifier());
         List keys = axis.getKey();
-        assertEquals(2, keys.size());
+        assertEquals(1, keys.size());
         assertEquals("Red", keys.get(0));
-        assertEquals("Blue", keys.get(1));
+    }
+    
+    public void testAxisKeys() throws Exception {
+        RangeSubsetType rs = (RangeSubsetType) parser.parse("radiance[bands[Red,Green,Blue]]");
+        assertNotNull(rs);
+        assertEquals(1, rs.getFieldSubset().size());
+        FieldSubsetType field = (FieldSubsetType) rs.getFieldSubset().get(0);
+        assertEquals("radiance", field.getIdentifier().getValue());
+        assertEquals(1, field.getAxisSubset().size());
+        AxisSubsetType axis = (AxisSubsetType) field.getAxisSubset().get(0);
+        assertEquals("bands", axis.getIdentifier());
+        List keys = axis.getKey();
+        assertEquals(3, keys.size());
+        assertEquals("Red", keys.get(0));
+        assertEquals("Green", keys.get(1));
+        assertEquals("Blue", keys.get(2));
     }
 }
