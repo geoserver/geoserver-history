@@ -69,13 +69,13 @@ TOKEN : /* SEPARATORS */
 }
 TOKEN : /* IDENTIFIERS: the grammar says at least one char, or any type */
 {
-  < IDENTIFIER: (~[",",";","[","]"])+>
+  < IDENTIFIER: (~[",",";",":","[","]"])+ >
 }
 
 
 SimpleNode RangeSubset() : {}
 {
-  FieldSubset() (<SEMICOLON> FieldSubset())*
+  FieldSubset() (<SEMICOLON> FieldSubset())* <EOF>
   { return jjtThis; }
 }
 
