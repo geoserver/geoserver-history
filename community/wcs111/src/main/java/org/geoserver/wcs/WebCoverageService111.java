@@ -10,7 +10,7 @@ import net.opengis.wcs.v1_1_1.GetCoverageType;
 
 import org.geoserver.wcs.response.DescribeCoverageTransformer;
 import org.geoserver.wcs.response.WCSCapsTransformer;
-import org.vfny.geoserver.wcs.responses.CoverageResponse;
+import org.geotools.coverage.grid.GridCoverage2D;
 
 
 
@@ -38,5 +38,5 @@ public interface WebCoverageService111 {
     /**
      * GetCoverage operation.
      */
-    CoverageResponse getCoverage(GetCoverageType request);
+    GridCoverage2D[] getCoverage(GetCoverageType request);
 }
