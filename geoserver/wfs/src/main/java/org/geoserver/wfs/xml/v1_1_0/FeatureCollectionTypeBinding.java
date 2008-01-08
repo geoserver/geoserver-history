@@ -99,7 +99,7 @@ public class FeatureCollectionTypeBinding extends AbstractComplexEMFBinding {
      * @generated modifiable
      */
     public Class getType() {
-        return FeatureCollection.class;
+        return FeatureCollectionType.class;
     }
 
     /**
