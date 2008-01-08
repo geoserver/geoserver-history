@@ -36,12 +36,15 @@ import org.geotools.filter.visitor.AbstractFilterVisitor;
 import org.geotools.referencing.CRS;
 import org.geotools.xml.EMFUtils;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.ExpressionVisitor;
 import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.sort.SortBy;
+import org.opengis.filter.spatial.BBOX;
+import org.opengis.filter.spatial.BinarySpatialOperator;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.global.AttributeTypeInfo;
 import org.vfny.geoserver.global.Data;
@@ -227,12 +230,14 @@ public class GetFeature {
 
                 //make sure filters are sane
                 if (query.getFilter() != null) {
+                    
+                    //1. ensure any property name refers to a property that 
+                    // actually exists
                     final SimpleFeatureType featureType = source.getSchema();
                     ExpressionVisitor visitor = new AbstractExpressionVisitor() {
                             public Object visit(PropertyName name, Object data) {
                                 // case of multiple geometries being returned
                                 if (name.evaluate(featureType) == null) {
-                                    //we want to throw wfs exception, but cant
                                     throw new WFSException("Illegal property name: "
                                         + name.getPropertyName(), "InvalidParameterValue");
                                 }
@@ -241,8 +246,36 @@ public class GetFeature {
                             }
                             ;
                         };
-
                     query.getFilter().accept(new AbstractFilterVisitor(visitor), null);
+                    
+                    //2. ensure any spatial predicate is made against a property 
+                    // that is actually special
+                    AbstractFilterVisitor fvisitor = new AbstractFilterVisitor() {
+                      
+                        protected Object visit( BinarySpatialOperator filter, Object data ) {
+                            PropertyName name = null;
+                            if ( filter.getExpression1() instanceof PropertyName ) {
+                                name = (PropertyName) filter.getExpression1();
+                            }
+                            else if ( filter.getExpression2() instanceof PropertyName ) {
+                                name = (PropertyName) filter.getExpression2();
+                            }
+                            
+                            if ( name != null ) {
+                                //check against fetaure type to make sure its
+                                // a geometric type
+                                AttributeDescriptor att = (AttributeDescriptor) name.evaluate(featureType);
+                                if ( !( att instanceof GeometryDescriptor ) ) {
+                                    throw new WFSException("Property " + name + " is not geometric", "InvalidParameterValue");
+                                }
+                            }
+                            
+                            return filter;
+                        }
+                    };
+                    query.getFilter().accept(fvisitor, null);
+                    
+                    
                 }
 
                 org.geotools.data.Query gtQuery = toDataQuery(query, maxFeatures - count, source, request);
