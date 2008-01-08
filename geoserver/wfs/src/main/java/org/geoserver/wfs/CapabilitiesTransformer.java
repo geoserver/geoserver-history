@@ -989,11 +989,14 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                  */
             void getFeature() {
                 Map.Entry[] parameters = new Map.Entry[] {
-                        parameter("resultType", new String[] { "results", "hits" }),
-                        parameter("outputFormat", new String[] { "text/gml; subtype=gml/3.1.1" })
-                    };
-
-                operation("GetFeature", parameters, true, true);
+                    parameter("resultType", new String[] { "results", "hits" }),
+                    parameter("outputFormat", new String[] { "text/gml; subtype=gml/3.1.1" })
+                };
+                Map.Entry[] constraints = new Map.Entry[] {
+                    parameter("LocalTraverseXLinkScope", new String[]{ "2" } )
+                };
+                
+                operation("GetFeature", parameters, constraints, true, true);
             }
 
             /**
@@ -1417,47 +1420,47 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             }
 
             /**
-                 * Encodes the ows:Operation element.
-                 * <p>
-                 * <pre>
-                 * &lt;complexType&gt;
-                 *      &lt;sequence&gt;
-                 *        &lt;element ref="ows:DCP" maxOccurs="unbounded"&gt;
-                 *          &lt;annotation&gt;
-                 *            &lt;documentation&gt;Unordered list of Distributed Computing Platforms (DCPs) supported for this operation. At present, only the HTTP DCP is defined, so this element will appear only once. &lt;/documentation&gt;
-                 *          &lt;/annotation&gt;
-                 *        &lt;/element&gt;
-                 *        &lt;element name="Parameter" type="ows:DomainType" minOccurs="0" maxOccurs="unbounded"&gt;
-                 *          &lt;annotation&gt;
-                 *            &lt;documentation&gt;Optional unordered list of parameter domains that each apply to this operation which this server implements. If one of these Parameter elements has the same "name" attribute as a Parameter element in the OperationsMetadata element, this Parameter element shall override the other one for this operation. The list of required and optional parameter domain limitations for this operation shall be specified in the Implementation Specification for this service. &lt;/documentation&gt;
-                 *          &lt;/annotation&gt;
-                 *        &lt;/element&gt;
-                 *        &lt;element name="Constraint" type="ows:DomainType" minOccurs="0" maxOccurs="unbounded"&gt;
-                 *          &lt;annotation&gt;
-                 *            &lt;documentation&gt;Optional unordered list of valid domain constraints on non-parameter quantities that each apply to this operation. If one of these Constraint elements has the same "name" attribute as a Constraint element in the OperationsMetadata element, this Constraint element shall override the other one for this operation. The list of required and optional constraints for this operation shall be specified in the Implementation Specification for this service. &lt;/documentation&gt;
-                 *          &lt;/annotation&gt;
-                 *        &lt;/element&gt;
-                 *        &lt;element ref="ows:Metadata" minOccurs="0" maxOccurs="unbounded"&gt;
-                 *          &lt;annotation&gt;
-                 *            &lt;documentation&gt;Optional unordered list of additional metadata about this operation and its' implementation. A list of required and optional metadata elements for this operation should be specified in the Implementation Specification for this service. (Informative: This metadata might specify the operation request parameters or provide the XML Schemas for the operation request.) &lt;/documentation&gt;
-                 *          &lt;/annotation&gt;
-                 *        &lt;/element&gt;
-                 *      &lt;/sequence&gt;
-                 *      &lt;attribute name="name" type="string" use="required"&gt;
-                 *        &lt;annotation&gt;
-                 *          &lt;documentation&gt;Name or identifier of this operation (request) (for example, GetCapabilities). The list of required and optional operations implemented shall be specified in the Implementation Specification for this service. &lt;/documentation&gt;
-                 *        &lt;/annotation&gt;
-                 *      &lt;/attribute&gt;
-                 *    &lt;/complexType&gt;
-                 * </pre>
-                 * </p>
-                 *
-                 * @param name
-                 * @param parameters
-                 * @param get
-                 * @param post
-                 */
-            void operation(String name, Map.Entry[] parameters, boolean get, boolean post) {
+             * Encodes the ows:Operation element.
+             * <p>
+             * <pre>
+             * &lt;complexType&gt;
+             *      &lt;sequence&gt;
+             *        &lt;element ref="ows:DCP" maxOccurs="unbounded"&gt;
+             *          &lt;annotation&gt;
+             *            &lt;documentation&gt;Unordered list of Distributed Computing Platforms (DCPs) supported for this operation. At present, only the HTTP DCP is defined, so this element will appear only once. &lt;/documentation&gt;
+             *          &lt;/annotation&gt;
+             *        &lt;/element&gt;
+             *        &lt;element name="Parameter" type="ows:DomainType" minOccurs="0" maxOccurs="unbounded"&gt;
+             *          &lt;annotation&gt;
+             *            &lt;documentation&gt;Optional unordered list of parameter domains that each apply to this operation which this server implements. If one of these Parameter elements has the same "name" attribute as a Parameter element in the OperationsMetadata element, this Parameter element shall override the other one for this operation. The list of required and optional parameter domain limitations for this operation shall be specified in the Implementation Specification for this service. &lt;/documentation&gt;
+             *          &lt;/annotation&gt;
+             *        &lt;/element&gt;
+             *        &lt;element name="Constraint" type="ows:DomainType" minOccurs="0" maxOccurs="unbounded"&gt;
+             *          &lt;annotation&gt;
+             *            &lt;documentation&gt;Optional unordered list of valid domain constraints on non-parameter quantities that each apply to this operation. If one of these Constraint elements has the same "name" attribute as a Constraint element in the OperationsMetadata element, this Constraint element shall override the other one for this operation. The list of required and optional constraints for this operation shall be specified in the Implementation Specification for this service. &lt;/documentation&gt;
+             *          &lt;/annotation&gt;
+             *        &lt;/element&gt;
+             *        &lt;element ref="ows:Metadata" minOccurs="0" maxOccurs="unbounded"&gt;
+             *          &lt;annotation&gt;
+             *            &lt;documentation&gt;Optional unordered list of additional metadata about this operation and its' implementation. A list of required and optional metadata elements for this operation should be specified in the Implementation Specification for this service. (Informative: This metadata might specify the operation request parameters or provide the XML Schemas for the operation request.) &lt;/documentation&gt;
+             *          &lt;/annotation&gt;
+             *        &lt;/element&gt;
+             *      &lt;/sequence&gt;
+             *      &lt;attribute name="name" type="string" use="required"&gt;
+             *        &lt;annotation&gt;
+             *          &lt;documentation&gt;Name or identifier of this operation (request) (for example, GetCapabilities). The list of required and optional operations implemented shall be specified in the Implementation Specification for this service. &lt;/documentation&gt;
+             *        &lt;/annotation&gt;
+             *      &lt;/attribute&gt;
+             *    &lt;/complexType&gt;
+             * </pre>
+             * </p>
+             *
+             * @param name
+             * @param parameters
+             * @param get
+             * @param post
+             */
+            void operation(String name, Map.Entry[] parameters, Map.Entry[] constraints, boolean get, boolean post) { 
                 start("ows:Operation", attributes(new String[] { "name", name }));
 
                 //dcp
@@ -1498,8 +1501,29 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                     end("ows:Parameter");
                 }
+                
+                //constraints
+                for ( int i = 0; constraints != null && i < constraints.length; i++ ) {
+                    String cname = (String) constraints[i].getKey();
+                    String[] cvalues = (String[]) constraints[i].getValue();
+                    
+                    start( "ows:Constraint", attributes(new String[] { "name", cname }));
 
+                    for (int j = 0; j < cvalues.length; j++) {
+                        element("ows:Value", cvalues[j]);
+                    }
+
+                    end( "ows:Constraint" );
+                }
+                
                 end("ows:Operation");
+            }
+            
+            /**
+             * @see {@link #operation(String, java.util.Map.Entry[], java.util.Map.Entry[], boolean, boolean)}
+             */
+            void operation(String name, Map.Entry[] parameters, boolean get, boolean post) {
+               operation(name,parameters,null,get,post);
             }
 
             AttributesImpl attributes(String[] nameValues) {
