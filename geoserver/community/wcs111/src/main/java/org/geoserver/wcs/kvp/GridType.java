@@ -11,17 +11,44 @@ package org.geoserver.wcs.kvp;
  * 
  */
 public enum GridType {
-    GT2dGridIn2dCrs("urn:ogc:def:method:WCS:1.1:2dGridIn2dCrs"), //
-    GT2dGridIn3dCrs("urn:ogc:def:method:WCS:1.1:2dGridIn3dCrs"), //
-    GT2dSimpleGrid("urn:ogc:def:method:WCS:1.1:2dSimpleGrid");
+    GT2dGridIn2dCrs("urn:ogc:def:method:WCS:1.1:2dGridIn2dCrs", 2, 4), //
+    GT2dGridIn3dCrs("urn:ogc:def:method:WCS:1.1:2dGridIn3dCrs", 3, 6), //
+    GT2dSimpleGrid("urn:ogc:def:method:WCS:1.1:2dSimpleGrid", 2, 2);
 
     private String xmlConstant;
+    private int offsetArrayLength;
+    private int originArrayLength;
 
-    GridType(String xmlConstant) {
+    GridType(String xmlConstant, int originArrayLenght, int offsetArrayLenght) {
         this.xmlConstant = xmlConstant;
+        this.offsetArrayLength = offsetArrayLenght;
+        this.originArrayLength = originArrayLenght;
     }
 
+    /**
+     * Returns the full fledges xml constant associated to the specified grid type
+     * @return
+     */
     public String getXmlConstant() {
         return xmlConstant;
     }
+
+    /**
+     * Returns the expected size of the offsets array for this grid type
+     * @return
+     */
+    public int getOffsetArrayLength() {
+        return offsetArrayLength;
+    }
+
+    
+    /**
+     * Returns the expected size of the origin array for this grid type
+     * @return
+     */
+    public int getOriginArrayLength() {
+        return originArrayLength;
+    }
+    
+    
 }

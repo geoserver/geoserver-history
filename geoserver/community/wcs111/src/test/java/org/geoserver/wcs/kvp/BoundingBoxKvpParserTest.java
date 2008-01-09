@@ -44,9 +44,9 @@ public class BoundingBoxKvpParserTest extends TestCase {
         BoundingBoxType bbox = (BoundingBoxType) parser.parse("10,20,15,30");
         assertEquals(2, bbox.getLowerCorner().size());
         assertEquals(10.0, bbox.getLowerCorner().get(0));
-        assertEquals(15.0, bbox.getLowerCorner().get(1));
+        assertEquals(20.0, bbox.getLowerCorner().get(1));
         assertEquals(2, bbox.getUpperCorner().size());
-        assertEquals(20.0, bbox.getUpperCorner().get(0));
+        assertEquals(15.0, bbox.getUpperCorner().get(0));
         assertEquals(30.0, bbox.getUpperCorner().get(1));
         assertNull(bbox.getCrs());
     }
@@ -55,25 +55,35 @@ public class BoundingBoxKvpParserTest extends TestCase {
         BoundingBoxType bbox = (BoundingBoxType) parser.parse("10,20,15,30,EPSG:4326");
         assertEquals(2, bbox.getLowerCorner().size());
         assertEquals(10.0, bbox.getLowerCorner().get(0));
-        assertEquals(15.0, bbox.getLowerCorner().get(1));
+        assertEquals(20.0, bbox.getLowerCorner().get(1));
         assertEquals(2, bbox.getUpperCorner().size());
-        assertEquals(20.0, bbox.getUpperCorner().get(0));
+        assertEquals(15.0, bbox.getUpperCorner().get(0));
         assertEquals(30.0, bbox.getUpperCorner().get(1));
         assertEquals("EPSG:4326", bbox.getCrs());
     }
     
     public void test3DNoCrs() throws Exception {
-        BoundingBoxType bbox = (BoundingBoxType) parser.parse("10,20,15,30,0,10,EPSG:4979");
+        BoundingBoxType bbox = (BoundingBoxType) parser.parse("10,20,15,30,40,50,EPSG:4979");
         assertEquals(3, bbox.getLowerCorner().size());
         assertEquals(10.0, bbox.getLowerCorner().get(0));
-        assertEquals(15.0, bbox.getLowerCorner().get(1));
-        assertEquals(0.0, bbox.getLowerCorner().get(2));
+        assertEquals(20.0, bbox.getLowerCorner().get(1));
+        assertEquals(15.0, bbox.getLowerCorner().get(2));
         assertEquals(3, bbox.getUpperCorner().size());
-        assertEquals(20.0, bbox.getUpperCorner().get(0));
-        assertEquals(30.0, bbox.getUpperCorner().get(1));
-        assertEquals(10.0, bbox.getUpperCorner().get(2));
+        assertEquals(30.0, bbox.getUpperCorner().get(0));
+        assertEquals(40.0, bbox.getUpperCorner().get(1));
+        assertEquals(50.0, bbox.getUpperCorner().get(2));
         assertEquals("EPSG:4979", bbox.getCrs());
     }
     
+    public void testWgs84FullExtent() throws Exception {
+        BoundingBoxType bbox = (BoundingBoxType) parser.parse("-180,-90,180,90,urn:ogc:def:crs:EPSG:4326");
+        assertEquals(2, bbox.getLowerCorner().size());
+        assertEquals(-180.0, bbox.getLowerCorner().get(0));
+        assertEquals(-90.0, bbox.getLowerCorner().get(1));
+        assertEquals(2, bbox.getUpperCorner().size());
+        assertEquals(180.0, bbox.getUpperCorner().get(0));
+        assertEquals(90.0, bbox.getUpperCorner().get(1));
+        assertEquals("urn:ogc:def:crs:EPSG:4326", bbox.getCrs());
+    }
     
 }

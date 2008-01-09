@@ -95,7 +95,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
         throw new WcsException("Could not understand version:" + version);
     }
 
-    public GridCoverage2D[] getCoverage(GetCoverageType request) {
+    public GridCoverage[] getCoverage(GetCoverageType request) {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest(new StringBuffer("execute CoverageRequest response. Called request is: ")
                     .append(request).toString());
@@ -104,7 +104,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
         CoverageInfo meta = null;
         GridCoverage coverage = null;
         try {
-            meta = catalog.getCoverageInfo(request.getIdentifier().toString());
+            meta = catalog.getCoverageInfo(request.getIdentifier().getValue());
             
             // grab the format, the reader using the default params,
             final Format format = meta.getFormatInfo().getFormat();
@@ -119,8 +119,8 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             final GeneralEnvelope destinationEnvelope;
             if(bbox != null) {
                 // first off, parse the envelope corners
-                double[] lowerCorner = new double[] {bbox.getLowerCorner().size()};
-                double[] upperCorner = new double[] {bbox.getUpperCorner().size()};
+                double[] lowerCorner = new double[bbox.getLowerCorner().size()];
+                double[] upperCorner = new double[bbox.getUpperCorner().size()];
                 for (int i = 0; i < lowerCorner.length; i++) {
                     lowerCorner[i] = (Double) bbox.getLowerCorner().get(i);
                     upperCorner[i] = (Double) bbox.getUpperCorner().get(i);
@@ -133,10 +133,11 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                     destinationEnvelopeInSourceCRS = destinationEnvelope;
                 } else {
                     // otherwise we need to transform
-                    final CoordinateReferenceSystem bboxCRS = CRS.parseWKT(bbox.getCrs());
+                    final CoordinateReferenceSystem bboxCRS = CRS.decode(bbox.getCrs());
                     destinationEnvelope.setCoordinateReferenceSystem(bboxCRS);
                     final MathTransform bboxToNativeTx = CRS.findMathTransform(bboxCRS, nativeCRS, true);
                     destinationEnvelopeInSourceCRS = CRS.transform(bboxToNativeTx, destinationEnvelope);
+                    destinationEnvelopeInSourceCRS.setCoordinateReferenceSystem(nativeCRS);
                 }
             } else {
                 destinationEnvelopeInSourceCRS = reader.getOriginalEnvelope();
@@ -269,9 +270,9 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
              * Reproject
              */
             final GridCoverage2D reprojectedCoverage = WCSUtils.reproject(scaledCoverage, 
-                    destinationEnvelope.getCoordinateReferenceSystem(), targetCRS, interpolation);
+                    nativeCRS, targetCRS, interpolation);
             
-            return new GridCoverage2D[] {reprojectedCoverage};
+            return new GridCoverage[] {reprojectedCoverage};
         } catch (Exception e) {
             throw new WcsException(e);
         }

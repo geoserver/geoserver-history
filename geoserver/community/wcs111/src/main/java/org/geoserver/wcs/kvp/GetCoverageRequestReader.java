@@ -67,9 +67,9 @@ public class GetCoverageRequestReader extends EMFKvpRequestReader {
 
     private void checkRangeSubset(CoverageInfo info, RangeSubsetType rangeSubset) {
         // quick escape if no range subset has been specified (it's legal)
-        if(rangeSubset == null)
+        if (rangeSubset == null)
             return;
-        
+
         if (rangeSubset.getFieldSubset().size() > 1) {
             throw new WcsException("Multi field coverages are not supported yet",
                     InvalidParameterValue, "RangeSubset");
@@ -85,10 +85,9 @@ public class GetCoverageRequestReader extends EMFKvpRequestReader {
         if (field.getAxisSubset().size() > 1) {
             throw new WcsException("Multi axis coverages are not supported yet",
                     InvalidParameterValue, "RangeSubset");
-        }
-        else if(field.getAxisSubset().size() == 0)
+        } else if (field.getAxisSubset().size() == 0)
             return;
-        
+
         AxisSubsetType axisSubset = (AxisSubsetType) field.getAxisSubset().get(0);
         final String axisId = axisSubset.getIdentifier();
         if (!axisId.equalsIgnoreCase("Bands"))
@@ -113,14 +112,15 @@ public class GetCoverageRequestReader extends EMFKvpRequestReader {
             final String key = (String) keys.get(j);
             String parsedKey = null;
             for (String dimensionName : dimensionMap) {
-                if(dimensionName.equalsIgnoreCase(key)) {
+                if (dimensionName.equalsIgnoreCase(key)) {
                     parsedKey = dimensionName;
                     break;
                 }
             }
             if (parsedKey == null)
                 throw new WcsException("Unknown field/axis/key combination " + fieldId + "/"
-                        + axisSubset.getIdentifier() + "/" + key, InvalidParameterValue, "RangeSubset");
+                        + axisSubset.getIdentifier() + "/" + key, InvalidParameterValue,
+                        "RangeSubset");
             else
                 keys.set(j, parsedKey);
         }
@@ -194,29 +194,47 @@ public class GetCoverageRequestReader extends EMFKvpRequestReader {
         }
 
         // check and set grid type
-        String gridType = (String) kvp.get("gridType");
-        if (gridType != null)
-            output.getGridCRS().setGridType(gridType);
+        String gridTypeValue = (String) kvp.get("gridType");
+        GridType type = GridType.GT2dGridIn2dCrs;
+        if (gridTypeValue != null) {
+            type = null;
+            for (GridType gt : GridType.values()) {
+                if (gt.getXmlConstant().equalsIgnoreCase(gridTypeValue))
+                    type = gt;
+            }
+            if (type == null)
+                throw new WcsException("Unknown grid type " + gridTypeValue, InvalidParameterValue,
+                        "GridType");
+            else if (type == GridType.GT2dGridIn3dCrs)
+                throw new WcsException("Unsupported grid type " + gridTypeValue,
+                        InvalidParameterValue, "GridType");
+
+            output.getGridCRS().setGridType(type.getXmlConstant());
+        }
 
         // check and set grid cs
         String gridCS = (String) kvp.get("gridCS");
-        if (gridCS != null)
-            output.getGridCRS().setGridCS(gridCS);
+        if (gridCS != null) {
+            if (!gridCS.equalsIgnoreCase(GridCS.GCSGrid2dSquare.getXmlConstant()))
+                throw new WcsException("Unsupported grid cs " + gridCS, InvalidParameterValue,
+                        "GridCS");
+            output.getGridCRS().setGridCS(GridCS.GCSGrid2dSquare.getXmlConstant());
+        }
 
         // check and set grid origin
         CoordinateReferenceSystem crs = CRS.decode(output.getGridCRS().getGridBaseCRS());
-        final int crsDimension = crs.getCoordinateSystem().getDimension();
         double[] gridOrigin = (double[]) kvp.get("GridOrigin");
         if (gridOrigin != null) {
             // make sure the origin dimension matches the output crs dimension
 
-            if (crsDimension != gridOrigin.length)
+            if (gridOrigin.length != type.getOriginArrayLength())
                 throw new WcsException("Grid origin size (" + gridOrigin.length
-                        + ") inconsistent with crs dimension (" + crsDimension + ")",
+                        + ") inconsistent with grid type " + type.getXmlConstant()
+                        + " that requires (" + type.getOriginArrayLength() + ")",
                         WcsExceptionCode.InvalidParameterValue, "GridOrigin");
             output.getGridCRS().setGridOrigin(gridOrigin);
         } else {
-            double[] defaultOrigins = new double[crsDimension];
+            double[] defaultOrigins = new double[type.getOriginArrayLength()];
             Arrays.fill(defaultOrigins, 0);
             output.getGridCRS().setGridOrigin(defaultOrigins);
         }
@@ -224,15 +242,21 @@ public class GetCoverageRequestReader extends EMFKvpRequestReader {
         // check and set grid offsets
         double[] gridOffsets = (double[]) kvp.get("GridOffsets");
         if (gridOffsets != null) {
-            // make sure the origin dimension matches the output crs dimension
-            if (crsDimension != gridOffsets.length)
-                throw new WcsException("Grid offsets size (" + gridOffsets.length
-                        + ") inconsistent with crs dimension (" + crsDimension + ")",
-                        WcsExceptionCode.InvalidParameterValue, "GridOffsets");
+            // make sure the origin dimension matches the grid type
+            if (type.getOffsetArrayLength() != gridOffsets.length)
+                throw new WcsException("Invalid offsets lenght, grid type " + type.getXmlConstant()
+                        + " requires " + type.getOffsetArrayLength(), InvalidParameterValue,
+                        "GridOffsets");
+
             output.getGridCRS().setGridOffsets(gridOffsets);
         } else {
-            double[] defaultOffsets = new double[crsDimension];
+            // create a diagonal unit matrix
+            double[] defaultOffsets = new double[type.getOffsetArrayLength()];
             Arrays.fill(defaultOffsets, 0);
+            int crsDimension = (int) Math.sqrt(type.getOffsetArrayLength());
+            for (int i = 0; i < crsDimension; i++) {
+                defaultOffsets[i * crsDimension + i] = 1;
+            }
             output.getGridCRS().setGridOffsets(defaultOffsets);
         }
 
