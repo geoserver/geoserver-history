@@ -25,7 +25,7 @@
     </Namespace>
     <Namespace>
       <prefix>sa</prefix>
-      <uri>http://www.opengis.net/sampling</uri>
+      <uri>http://www.seegrid.csiro.au/xml/sampling</uri>
     </Namespace>
     <Namespace>
       <prefix>geo</prefix>
@@ -37,22 +37,13 @@
     </Namespace>
   </namespaces>
   <sourceDataStores>
-    <!--DataStore>
-      <id>borehole_denormalized</id>
-      <parameters>
-        <Parameter>
-          <name>directory</name>
-          <value>file:./data</value>
-        </Parameter>
-      </parameters>
-    </DataStore-->
     <DataStore>
       <id>borehole_denormalized</id>
       <parameters>
         <Parameter>
-          <name>url</name>
+          <name>directory</name>
           <!-- path can be relative to this file if starts with "file: -->
-          <value>file:./data/boreholes_denormalized.shp</value>
+          <value>file:./data</value>
         </Parameter>
       </parameters>
     </DataStore>
@@ -97,13 +88,13 @@
         <AttributeMapping>
           <targetAttribute>xmml:Borehole</targetAttribute>
           <idExpression>
-            <OCQL>strConcat("bh.", BGS_ID)</OCQL>
+            <OCQL>strConcat('bh.', BGS_ID)</OCQL>
           </idExpression>
         </AttributeMapping>
         <AttributeMapping>
           <targetAttribute>Borehole/gml:name[1]</targetAttribute>
           <sourceExpression>
-            <OCQL>strConcat( strConcat(QS, strConcat("/", RT)), strConcat(strConcat("/", NUMB), strConcat("/", BSUFF)) )</OCQL>
+            <OCQL>strConcat( strConcat(QS, strConcat('/', RT)), strConcat(strConcat('/', NUMB), strConcat('/', BSUFF)) )</OCQL>
           </sourceExpression>
           <ClientProperty>
             <name>gml:codeSpace</name>
@@ -144,13 +135,13 @@
           Don't know where comment is defined
           <AttributeMapping>
           <targetAttribute>Borehole/comment</targetAttribute>
-          <sourceExpression><OCQL>strConcat(CONFIDENTI, "Access Restrictions: ")</OCQL></sourceExpression>
+          <sourceExpression><OCQL>strConcat(CONFIDENTI, 'Access Restrictions: ')</OCQL></sourceExpression>
           </AttributeMapping>
         -->
         <AttributeMapping>
           <targetAttribute>Borehole/sa:surveyDetails/sa:SurveyProcedure</targetAttribute>
           <idExpression>
-            <OCQL>strConcat("bh.", strConcat(BGS_ID, ".sp"))</OCQL>
+            <OCQL>strConcat('bh.', strConcat(BGS_ID, '.sp'))</OCQL>
           </idExpression>
         </AttributeMapping>
 
@@ -196,7 +187,7 @@
         <AttributeMapping>
           <targetAttribute>Borehole/sa:shape/geo:LineByVector</targetAttribute>
           <idExpression>
-            <OCQL>strConcat("bh.", strConcat(BGS_ID, ".shape"))</OCQL>
+            <OCQL>strConcat('bh.', strConcat(BGS_ID, '.shape'))</OCQL>
           </idExpression>
           <targetAttributeNode>geo:LineByVectorType</targetAttributeNode>
         </AttributeMapping>
@@ -205,7 +196,7 @@
           <targetAttribute>Borehole/sa:shape/geo:LineByVector/geo:origin</targetAttribute>
           <ClientProperty>
             <name>xlink:href</name>
-            <value>strConcat("#bh.", strConcat(BGS_ID, ".start"))</value>
+            <value>strConcat('#bh.', strConcat(BGS_ID, '.start'))</value>
           </ClientProperty>
         </AttributeMapping>
 
@@ -230,7 +221,7 @@
         <AttributeMapping>
           <targetAttribute>Borehole/xmml:log/xmml:IntervalLog</targetAttribute>
           <idExpression>
-            <OCQL>strConcat("bh.", strConcat(BGS_ID, ".log"))</OCQL>
+            <OCQL>strConcat('bh.', strConcat(BGS_ID, '.log'))</OCQL>
           </idExpression>
           <ClientProperty>
             <name>xmml:dimension</name>
@@ -299,11 +290,11 @@
         <AttributeMapping>
           <targetAttribute>xmml:log/xmml:IntervalLog/xmml:intervalSetDomain/geo:MultiGInterval</targetAttribute>
           <idExpression>
-            <OCQL>strConcat("bh.", strConcat(BGS_ID, ".logdomain"))</OCQL>
+            <OCQL>strConcat('bh.', strConcat(BGS_ID, '.logdomain'))</OCQL>
           </idExpression>
           <ClientProperty>
             <name>srsName</name>
-            <value>strConcat("#bh.", strConcat(BGS_ID, ".shape"))</value>
+            <value>strConcat('#bh.', strConcat(BGS_ID, '.shape'))</value>
           </ClientProperty>
         </AttributeMapping>
 
@@ -315,7 +306,7 @@
         <AttributeMapping>
           <targetAttribute>xmml:log/xmml:IntervalLog/xmml:intervalSetDomain/geo:MultiGInterval/geo:member/geo:GInterval</targetAttribute>
           <idExpression>
-            <OCQL>strConcat("bh.", strConcat(BGS_ID, ".loginterval.1"))</OCQL>
+            <OCQL>strConcat('bh.', strConcat(BGS_ID, '.loginterval.1'))</OCQL>
           </idExpression>
         </AttributeMapping>
 

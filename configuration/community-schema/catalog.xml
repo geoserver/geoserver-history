@@ -11,7 +11,7 @@
         <parameter value="file:featureTypes/MappedFeatureTest/MappedFeature.xml" name="url" />
       </connectionParams>
     </datastore-->
-    <datastore namespace="xmml" enabled="false" id="borehole">
+    <datastore namespace="xmml" enabled="true" id="borehole">
       <connectionParams>
         <parameter value="complex" name="dbtype" />
         <parameter value="file:featureTypes/Borehole/BoreholeTest_properties.xml" name="url" />
