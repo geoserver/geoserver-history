@@ -30,7 +30,7 @@ public class WfsXmlReader extends XmlRequestReader {
         return parser.parse(reader);
     }
 
-	@Override
+	//@Override
 	public Object read(Object request, Reader reader, Map arg2) throws Exception {
 		// TODO Auto-generated method stub
 		return read(request,reader);

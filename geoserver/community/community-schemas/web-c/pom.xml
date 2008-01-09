@@ -17,22 +17,18 @@
   <dependencies>
     
     <!-- plugin in jdbc driveres -->
-    <dependency>
+    <!-- dependency>
       <groupId>net.sourceforge.jtds</groupId>
       <artifactId>jtds</artifactId>
       <version>1.2.2</version>
-    </dependency>
+    </dependency-->
     
     
-    <dependency>
+    <!-- dependency>
       <groupId>oracle</groupId>
       <artifactId>ojdbc</artifactId>
       <version>14</version>
-    </dependency>
-    
-    
-    
-      
+    </dependency-->
 
     <!--dependency>
       <groupId>it.geosolutions</groupId>
@@ -303,11 +299,11 @@
       <artifactId>gt2-demo-property</artifactId>
       <version>2.4-SNAPSHOT</version>
     </dependency>
-    <dependency>
+    <!-- dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt2-geometryless</artifactId>
       <version>2.4-SNAPSHOT</version>
-    </dependency>
+    </dependency-->
   </dependencies>
 
   <pluginRepositories>

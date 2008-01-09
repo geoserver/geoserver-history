@@ -416,7 +416,7 @@ public class GetFeature {
                     source = (FeatureSource2) ((FeatureAccess) dataStore).access(name);
 
                     descriptor = (AttributeDescriptor) ((FeatureSource2) source).describe();
-                    featureType = (FeatureType) descriptor.getType();
+                    featureType = (FeatureType) descriptor.type();
                 } else {
                     source = dataStore.getFeatureSource(typeName);
                     featureType = new ISOFeatureTypeAdapter(source.getSchema());
@@ -538,7 +538,7 @@ public class GetFeature {
 
         AttributeDescriptor defaultGeometry = schema.getDefaultGeometry();
         GeometryType geomType = (GeometryType) ((defaultGeometry == null) ? null
-                                                                          : defaultGeometry.getType());
+                                                                          : defaultGeometry.type());
 
         // figure out the crs the data is in
         CoordinateReferenceSystem crs = (geomType == null) ? null : geomType.getCRS();
