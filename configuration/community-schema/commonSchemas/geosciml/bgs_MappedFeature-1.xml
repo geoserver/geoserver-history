@@ -8,7 +8,7 @@
   xmlns:smXML="http://www.isotc211.org/smXML" xmlns:gml="http://www.opengis.net/gml"
   xmlns:om="http://www.opengis.net/om" xmlns:swe="http://www.opengis.net/swe" xmlns:xmml="http://www.opengis.net/xmml"
   xmlns:geo="http://www.seegrid.csiro.au/xml/geometry" xmlns:meta="http://www.seegrid.csiro.au/xml/metaLite"
-  xmlns:sa="http://www.opengis.net/sampling" xmlns:xst="http://www.seegrid.csiro.au/xml/st"
+  xmlns:sa="http://www.seegrid.csiro.au/xml/sampling" xmlns:xst="http://www.seegrid.csiro.au/xml/st"
   xmlns:n1="http://www.seegrid.csiro.au/xml/swe" xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:smil20="http://www.w3.org/2001/SMIL20/" xmlns:smil20lang="http://www.w3.org/2001/SMIL20/Language"
   xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
