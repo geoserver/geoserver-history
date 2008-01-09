@@ -104,4 +104,9 @@
 
   <bean id="wcs111DescribeCoverageResponse"
     class="org.geoserver.wcs.response.DescribeCoverageResponse" singleton="false" />
+    
+  <bean id="wcs111MultipartResponse"
+    class="org.geoserver.wcs.response.WCSMultipartResponse" singleton="false" >
+    <constructor-arg ref="geoServer"/>
+  </bean>  
 </beans>

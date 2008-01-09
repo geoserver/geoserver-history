@@ -49,7 +49,7 @@ public class BoundingBoxKvpParser extends KvpParser {
 
         for (int i = 0; i < lower.length; i++) {
             try {
-                lower[i] = Double.parseDouble((String) unparsed.get(i * 2));
+                lower[i] = Double.parseDouble((String) unparsed.get(i));
             } catch (NumberFormatException e) {
                 throw new WcsException("Bounding box coordinate is not parsable:"
                         + unparsed.get(i * 2), WcsExceptionCode.InvalidParameterValue,
@@ -57,7 +57,7 @@ public class BoundingBoxKvpParser extends KvpParser {
             }
 
             try {
-                upper[i] = Double.parseDouble((String) unparsed.get(i * 2 + 1));
+                upper[i] = Double.parseDouble((String) unparsed.get(lower.length + i));
             } catch (NumberFormatException e) {
                 throw new WcsException("Bounding box coordinate is not parsable:"
                         + unparsed.get(i * 2 + 1), WcsExceptionCode.InvalidParameterValue,
@@ -67,7 +67,7 @@ public class BoundingBoxKvpParser extends KvpParser {
 
         for (int i = 0; i < lower.length; i++) {
             if (lower[i] >= upper[i])
-                throw new WcsException("illegal bbox, min of dimension " + (i + 1) + ":" + lower[i]
+                throw new WcsException("illegal bbox, min of dimension " + (i + 1) + ": " + lower[i]
                         + " is " + "greater than max of same dimesion: " + upper[i],
                         WcsExceptionCode.InvalidParameterValue, "BoundingBox");
         }

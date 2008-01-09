@@ -267,9 +267,11 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(),
                 parseKvp(raw), raw);
         double[] offsets = (double[]) getCoverage.getOutput().getGridCRS().getGridOffsets();
-        assertEquals(2, offsets.length);
-        assertEquals(0.0, offsets[0]);
+        assertEquals(4, offsets.length);
+        assertEquals(1.0, offsets[0]);
         assertEquals(0.0, offsets[1]);
+        assertEquals(0.0, offsets[2]);
+        assertEquals(1.0, offsets[3]);
 
         raw.put("GridOffsets", "10.5,-30.2");
         getCoverage = (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
