@@ -7,7 +7,6 @@ package org.geoserver.wcs.kvp;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.MissingParameterValue;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -234,9 +233,7 @@ public class GetCoverageRequestReader extends EMFKvpRequestReader {
                         WcsExceptionCode.InvalidParameterValue, "GridOrigin");
             output.getGridCRS().setGridOrigin(gridOrigin);
         } else {
-            double[] defaultOrigins = new double[type.getOriginArrayLength()];
-            Arrays.fill(defaultOrigins, 0);
-            output.getGridCRS().setGridOrigin(defaultOrigins);
+            output.getGridCRS().setGridOrigin(null);
         }
 
         // check and set grid offsets
@@ -250,14 +247,7 @@ public class GetCoverageRequestReader extends EMFKvpRequestReader {
 
             output.getGridCRS().setGridOffsets(gridOffsets);
         } else {
-            // create a diagonal unit matrix
-            double[] defaultOffsets = new double[type.getOffsetArrayLength()];
-            Arrays.fill(defaultOffsets, 0);
-            int crsDimension = (int) Math.sqrt(type.getOffsetArrayLength());
-            for (int i = 0; i < crsDimension; i++) {
-                defaultOffsets[i * crsDimension + i] = 1;
-            }
-            output.getGridCRS().setGridOffsets(defaultOffsets);
+            output.getGridCRS().setGridOffsets(null);
         }
 
         return output;
