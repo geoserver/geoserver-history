@@ -6,14 +6,16 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.fao.styling.RulesBuilder;
+import org.fao.styling.impl.GrayColorRamp;
 import org.fao.styling.impl.RedColorRamp;
 import org.geotools.styling.Rule;
+import org.geotools.styling.Style;
 import org.restlet.Context;
+import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
-import org.restlet.resource.StringRepresentation;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
 
@@ -23,135 +25,186 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+
 /**
- * Create Classified sets of rules.
+ * Create Classified sets of rules. And save as style to current style
+ *
  * @author kappu
  *
  */
 
 public class ClassifierResource extends BaseResource {
 
-	private Integer firstRuleID=null;
-	private Integer lastRuleID=null;
-	private String featureTypeName=null;
-	private String classMethod=null;
-	private String property=null;
-	private Integer classNum=null;
+	private String featureTypeName = null;
+	private String userStyleId = null;
 	private Rule[] rules;
 	private Map attributes;
 
 	public ClassifierResource(Context con, Request req, Response resp, Data data) {
 		super(con, req, resp, data);
-		
-		this.attributes = req.getAttributes();
-		if (attributes.containsKey("classMethod")) 
-			classMethod = (String) attributes.get("classMethod");
-		if (attributes.containsKey("property")) 
-			property = (String) attributes.get("property");
-		if (attributes.containsKey("classNum")) 
-			classNum =  new Integer(attributes.get("classNum").toString());
-		if (attributes.containsKey("featureType")) 
-			featureTypeName = (String) attributes.get("featureType");
-		
-		
-		
-		//Get featureType or coverage at this time we are able to manage only featureType
-		
-		
-		
-		}
 
-	public boolean allowGet() {
+		this.attributes = req.getAttributes();
+		if (attributes.containsKey("userStyleID"))
+			userStyleId = (String) attributes.get("userStyleID");
+		if (attributes.containsKey("featureType"))
+			featureTypeName = (String) attributes.get("featureType");
+
+	}
+
+	public boolean allowPost() {
+
 		return true;
 	}
 
-	public void handleGet() {
+	public synchronized void handlePost() {
+		String classMethod;
+		String property;
+		Integer classNum;
 		RulesBuilder ruBuild;
-		List<Rule> rulesL=null;
-		FeatureTypeInfo ftInf=null;
-		Object obj =this.findLayer(attributes);
 		
 		/*
-		 * nota attento che per la unique value non hai bisogno della classe :-)
+		 * get featureType dosn't manage coverage for at this moment
 		 */
-		if(obj!=null && this.classNum!=null && this.classMethod!=null && this.property!=null){
-			
-			if(obj instanceof FeatureTypeInfo){
-			 ftInf=(FeatureTypeInfo)obj;
-				ruBuild=new RulesBuilder();
-				try {
-					if(this.classMethod.equals("quantile"))	
-							rulesL=ruBuild.quantileClassification(ftInf.getFeatureSource().getFeatures(), this.property, this.classNum);
-					else if(this.classMethod.equals("equalInterval"))	
-						rulesL=ruBuild.equalIntervalClassification(ftInf.getFeatureSource().getFeatures(), this.property, this.classNum);
-					else if(this.classMethod.equals("uniqueValue"))	
-						rulesL=ruBuild.uniqueIntervalClassification(ftInf.getFeatureSource().getFeatures(), this.property);
-					Class geomT =ftInf.getFeatureType().getDefaultGeometry().getBinding();
-					RedColorRamp ramp = new RedColorRamp();
-					
-					
-					/*
-					 * Line Symbolizer
-					 */
-					if (geomT == LineString.class || geomT == MultiLineString.class){
-						ruBuild.lineStyle(rulesL, ramp);
-					}
-					
-					/*
-					 * Polygon Symbolyzer
-					 */
-					else if(geomT == MultiPolygon.class || geomT == Polygon.class || geomT == Point.class || geomT == MultiPoint.class){
-						ruBuild.polygonStyle(rulesL, ramp);
-					}
-						
-	
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}			
-			}
+		FeatureTypeInfo ftInf=null;
+		Object obj =this.findLayer(attributes);
+		if(obj==null || !(obj instanceof FeatureTypeInfo)){
+			getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+			getResponse().setEntity("Can't locate feaureType resource",
+			MediaType.TEXT_PLAIN);
+			return;
 		}
-	if (rulesL != null) {
-		this.rules=new Rule[rulesL.size()];
-		this.rules=	rulesL.toArray(this.rules);
-		this.firstRuleID=new Integer("0");
-		this.lastRuleID=new Integer(this.rules.length);
-		if (this.lastRuleID>50)this.lastRuleID=50;
-		getResponse().setEntity(
-					new StringRepresentation(this.fetchRules(),
-							MediaType.TEXT_PLAIN));
-		} else {
-			getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-			getResponse().setEntity("Couldn't find requested resource",
+	
+		/*
+		 * is feature Type info as expected
+		 */
+		ftInf= (FeatureTypeInfo)obj;
+		
+		/*
+		 * Check userStyle exist and if so should be in featureType sld list
+		 */
+		if(this.dt.getStyle(this.userStyleId)==null|| 
+				(!ftInf.getStyles().contains(this.dt.getStyle(this.userStyleId))) &&
+				!ftInf.getDefaultStyle().equals(this.dt.getStyle(this.userStyleId))){
+			getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+			getResponse().setEntity("Can't locate UserStyle resource for this feature type",
+			MediaType.TEXT_PLAIN);
+			return;	
+		}
+		
+		/*
+		 *Retrive and check mandatory post pram: classMethod property
+		 */
+		Request req = getRequest();
+		Form params = req.getEntityAsForm();
+		 
+		if (params.getFirst("classMethod")==null || params.getFirst("classMethod").getValue() == null ||
+				(!params.getFirst("classMethod").getValue().equalsIgnoreCase("unique") && 
+						!params.getFirst("classMethod").getValue().equalsIgnoreCase("quantile") &&
+						!params.getFirst("classMethod").getValue().equalsIgnoreCase("equalInterval"))){
+			getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+			getResponse().setEntity("Bad classMethod prameter value",
+			MediaType.TEXT_PLAIN);
+			return;
+		}else 
+			classMethod=params.getFirst("classMethod").getValue();
+		if (params.getFirst("property")==null || params.getFirst("property").getValue() == null || !(ftInf.getAttributeNames().contains(params.getFirst("property").getValue()))){
+			getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+			getResponse().setEntity("Missing requested property",
 					MediaType.TEXT_PLAIN);
+			return;
+		}else
+			property=params.getFirst("property").getValue();
+	
+		/*
+		 * Retriving or setting default value for optional param ClassNum,startColor, endColor, midColor
+		 */
+		if(params.getFirst("classNum") == null || params.getFirst("classNum").getValue() == null	){
+			classNum=4;
+		}else
+			classNum= Integer.parseInt(params.getFirst("classNum").getValue());
+			classNum= (classNum<2)? 4:classNum;
+	
+	/*
+	 * Now we can start to create classification
+	 */
+		ruBuild=new RulesBuilder();
+		List<Rule> rulesL=null;
+		try {
+			if(classMethod.equals("quantile"))	
+					rulesL=ruBuild.quantileClassification(ftInf.getFeatureSource().getFeatures(), property, classNum);
+			else if(classMethod.equals("equalInterval"))	
+				rulesL=ruBuild.equalIntervalClassification(ftInf.getFeatureSource().getFeatures(), property, classNum);
+			else if(classMethod.equals("unique"))	
+				rulesL=ruBuild.uniqueIntervalClassification(ftInf.getFeatureSource().getFeatures(), property);
+			Class geomT =ftInf.getFeatureType().getDefaultGeometry().getBinding();
+			
+			/*
+			 * Check the number of class if more then 100 refuse to produce sld
+			 * 
+			 */
+			if(rulesL.size()>100){
+				getResponse().setStatus(Status.CLIENT_ERROR_NOT_ACCEPTABLE);
+				getResponse().setEntity("This classification produce more then 100 class, change method or attribute",
+						MediaType.TEXT_PLAIN);
+				return;
+			}
+			
+			
+		/*
+		 * now we have to create symbolizer
+		 */
+			GrayColorRamp ramp = new GrayColorRamp();
+		/*
+		 * Line Symbolizer
+		 */
+			
+			if (geomT == LineString.class || geomT == MultiLineString.class){
+				ruBuild.lineStyle(rulesL, ramp);
+			}
+		
+		/*
+		 * Polygon Symbolyzer
+		 */
+		else if(geomT == MultiPolygon.class || geomT == Polygon.class || geomT == Point.class || geomT == MultiPoint.class){
+				ruBuild.polygonStyle(rulesL, ramp);
+			}		
+		}catch (IOException e) {
+			
+			getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+			getResponse().setEntity(e.toString(),
+					MediaType.TEXT_PLAIN);
+			return;
+			
 		}
+		
+		/*
+		 * Now we have to put new rules in UserStyle
+		 */
+		if (rulesL != null) {
+			this.rules=new Rule[rulesL.size()];
+			this.rules=	rulesL.toArray(this.rules);
+			Style style = this.dt.getStyle(this.userStyleId);
+			style.getFeatureTypeStyles()[0].setRules(rules);
+			
+			/*
+			 * creation ok 
+			 */
+			getResponse().setStatus(Status.SUCCESS_CREATED);
+			getResponse().setEntity("Classfy succesfully created",
+					MediaType.TEXT_PLAIN);
+		}else{
+			getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+			getResponse().setEntity("Unable to complete classfication",
+				MediaType.TEXT_PLAIN);	
+		}
+		
+		
 	}
 	
+	public boolean allowGet() {
+		return false;
+	}	
 	
-	private String fetchRules() {
-		String rulesSz;
-		rulesSz = "[";
-		if (this.firstRuleID != null && this.lastRuleID != null) {
-			rulesSz += this.jsonRule(rules[this.firstRuleID.intValue()]);
-			for (int i = 1; i < this.lastRuleID.intValue(); i++) {
-				rulesSz += ",";
-				rulesSz += this.jsonRule(rules[i]);
-			}
-			rulesSz += "]";
-			return rulesSz;
-		} else if (this.firstRuleID != null) {
-			rulesSz += this.jsonRule(rules[this.firstRuleID.intValue()]);
-			rulesSz += "]";
-		} else {
-			rulesSz += this.jsonRule(rules[0]);
-			for (int i = 1; i < rules.length; i++) {
-				rulesSz += ",";
-				rulesSz += this.jsonRule(rules[i]);
-			}
-			rulesSz += "]";
-		}
-		return rulesSz;
-	}
 	private Object findLayer(Map attributes) {
 		/* Looks in attribute map if there is the featureType param */
 		if (attributes.containsKey("featureType")) {
@@ -159,7 +212,7 @@ public class ClassifierResource extends BaseResource {
 
 			/* First try to find as a FeatureType */
 			try {
-				return this.dt.	getFeatureTypeInfo(this.featureTypeName);
+				return this.dt.getFeatureTypeInfo(this.featureTypeName);
 			} catch (NoSuchElementException e) {
 				/* Try to find as coverage */
 				try {
@@ -174,5 +227,5 @@ public class ClassifierResource extends BaseResource {
 		} else
 			return null;
 	}
-	
+
 }
