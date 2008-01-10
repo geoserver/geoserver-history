@@ -169,17 +169,17 @@ public class RulesResource extends BaseResource {
 		 */
 		try {
 			String newSld = transform.transform(style);
-			FileWriter fw = new FileWriter(file);
-			fw.write(newSld);
-			fw.flush();
-			fw.close();
+		//	FileWriter fw = new FileWriter(file);
+		//	fw.write(newSld);
+		//	fw.flush();
+		//	fw.close();
 		} catch (TransformerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
+		} //catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			//e.printStackTrace();
+		//}
 
 		/*
 		 * if (style != null & fTStyle != null && rules != null) { mve

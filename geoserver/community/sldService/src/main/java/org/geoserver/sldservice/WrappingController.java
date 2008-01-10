@@ -54,14 +54,15 @@ public class WrappingController extends AbstractController {
 		Router router = new Router();
 		
 		/*attach finder*/
-		
+		router.attach("/attributeInfo/{featureType}", new ListAttributes(router.getContext(), this.dt));
+		router.attach("/classify/{featureType}/{userStyleID}",  new ResourceFinder(ResourceFinder.RESOURCE_CLASSIFIER,router.getContext(),this.dt));
 		router.attach("/{featureType}", new ListUserStyles(router.getContext(), this.dt));
 		router.attach("/{featureType}/{userStyleID}",  new ResourceFinder(ResourceFinder.RESOURCE_USERSTYLE,router.getContext(),this.dt));
 		router.attach("/{featureType}/{userStyleID}/{featureTypeID}",  new ResourceFinder(ResourceFinder.RESOURCE_FEATURETYPESTYLE,router.getContext(),this.dt));
 		router.attach("/{featureType}/{userStyleID}/{featureTypeID}/rules",  new ResourceFinder(ResourceFinder.RESOURCE_RULESRESOURCE,router.getContext(),this.dt));
 		router.attach("/{featureType}/{userStyleID}/{featureTypeID}/rules/{firstRuleID}",  new ResourceFinder(ResourceFinder.RESOURCE_RULESRESOURCE,router.getContext(),this.dt));
 		router.attach("/{featureType}/{userStyleID}/{featureTypeID}/rules/{firstRuleID}/{lastRuleID}",  new ResourceFinder(ResourceFinder.RESOURCE_RULESRESOURCE,router.getContext(),this.dt));
-		router.attach("/classify/{featureType}/{classMethod}/{property}/{classNum}",  new ResourceFinder(ResourceFinder.RESOURCE_CLASSIFIER,router.getContext(),this.dt));
+		
 		return router;
 	}
 
