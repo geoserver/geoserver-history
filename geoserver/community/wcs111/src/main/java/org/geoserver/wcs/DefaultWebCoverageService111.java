@@ -33,6 +33,7 @@ import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
+import org.geotools.referencing.operation.transform.IdentityTransform;
 import org.geotools.util.logging.Logging;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.Format;
@@ -102,7 +103,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
         }
 
         CoverageInfo meta = null;
-        GridCoverage coverage = null;
+        GridCoverage2D coverage = null;
         try {
             meta = catalog.getCoverageInfo(request.getIdentifier().getValue());
             
@@ -160,6 +161,32 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             if(gridCRS != null) {
                 double[] origin = (double[]) gridCRS.getGridOrigin();
                 double[] offsets = (double[]) gridCRS.getGridOffsets();
+
+                // from the specification if grid origin is omitted and the crs is 2d the default it's 0,0
+                if(origin == null) {
+                    origin = new double[] {0, 0};
+                }
+                
+                // if no offsets has been specified we try to default on the native ones
+                if(offsets == null) {
+                    if(!(gridToCRS instanceof AffineTransform2D) && !(gridToCRS instanceof IdentityTransform))
+                        throw new WcsException("Internal error, the coverage we're playing with does not have an affine transform...");
+                    
+                    if(gridToCRS instanceof IdentityTransform) {
+                        if(gridCRS.getGridType().equals(GridType.GT2dSimpleGrid))
+                            offsets = new double[] {1, 1};
+                        else
+                            offsets = new double[] {1, 0, 0 ,1};
+                    } else {
+                        AffineTransform2D affine = (AffineTransform2D) gridToCRS;
+                        if(gridCRS.getGridType().equals(GridType.GT2dSimpleGrid))
+                            offsets = new double[] {affine.getScaleX(), affine.getScaleY()};
+                        else
+                            offsets = new double[] {affine.getScaleX(), affine.getShearX(), affine.getShearY(), affine.getScaleY()};
+                    }
+                }
+                    
+                // building the actual transform for the resulting grid geometry
                 AffineTransform tx; 
                 if(gridCRS.getGridType().equals(GridType.GT2dSimpleGrid)) {
                     tx = new AffineTransform(offsets[0], 0, 0, offsets[1], origin[0], origin[1]);
@@ -170,12 +197,13 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             } 
             
             // now we have enough info to read the coverage, grab the parameters
-            // and add the
-            // grid geometry info
+            // and add the grid geometry info
             final Map parameters = CoverageUtils.getParametersKVP(reader.getFormat().getReadParameters());
-            final GridGeometry2D destinationGridGeometry = new GridGeometry2D(gridToCRS, destinationEnvelopeInSourceCRS);
+            final GeneralEnvelope intersected = new GeneralEnvelope(destinationEnvelopeInSourceCRS);
+            intersected.intersect(originalEnvelope);
+            final GridGeometry2D destinationGridGeometry = new GridGeometry2D(gridToCRS, intersected);
             parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), destinationGridGeometry);
-            coverage = reader.read(CoverageUtils.getParameters(
+            coverage = (GridCoverage2D) reader.read(CoverageUtils.getParameters(
                     reader.getFormat().getReadParameters(), parameters, true));
             if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
                 throw new IOException("The requested coverage could not be found.");
@@ -184,7 +212,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             /**
              * Band Select (works on just one field)
              */
-            Coverage bandSelectedCoverage = coverage;
+            GridCoverage2D bandSelectedCoverage = coverage;
             String interpolationType = null;
             if(request.getRangeSubset() != null) {
                 if(request.getRangeSubset().getFieldSubset().size() > 1) {
@@ -221,7 +249,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
 
                 // finally execute the band select
                 try {
-                    bandSelectedCoverage = WCSUtils.bandSelect(coverage, bands);
+                    bandSelectedCoverage = (GridCoverage2D) WCSUtils.bandSelect(coverage, bands);
                 } catch (WcsException e) {
                     throw new WcsException(e.getLocalizedMessage());
                 }
@@ -252,7 +280,6 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                     }
                 }
             }
-
 
             /**
              * Crop

@@ -6,6 +6,9 @@ import java.util.List;
 
 import org.apache.xpath.XPathAPI;
 import org.geoserver.wcs.test.WCSTestSupport;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -13,10 +16,16 @@ import org.w3c.dom.NodeList;
 
 public class DescribeCoverageTest extends WCSTestSupport {
 
-//    @Override
-//    protected String getDefaultLogConfiguration() {
-//        return "/GEOSERVER_DEVELOPER_LOGGING.properties";
-//    }
+    @Override
+    protected String getDefaultLogConfiguration() {
+        return "/DEFAULT_LOGGING.properties";
+    }
+    
+    public void testCRS() throws NoSuchAuthorityCodeException, FactoryException {
+        System.out.println(CRS.decode("EPSG:4326"));
+        System.out.println(CRS.decode("urn:ogc:def:crs:EPSG:4326"));
+    }
+
 
     public void testDescribeNoIdentifiers() throws Exception {
         Document dom = getAsDOM(BASEPATH + "?request=DescribeCoverage&service=WCS&version=1.1.1");

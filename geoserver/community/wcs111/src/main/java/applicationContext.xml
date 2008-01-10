@@ -107,6 +107,6 @@
     
   <bean id="wcs111MultipartResponse"
     class="org.geoserver.wcs.response.WCSMultipartResponse" singleton="false" >
-    <constructor-arg ref="geoServer"/>
+    <constructor-arg ref="catalog"/>
   </bean>  
 </beans>
