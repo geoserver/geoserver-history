@@ -8,13 +8,19 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
+
 import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.userdetails.UserDetails;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.acegisecurity.userdetails.memory.UserAttribute;
 import org.acegisecurity.userdetails.memory.UserAttributeEditor;
+
+import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.restconfig.HTMLTemplate;
 import org.geoserver.security.EditableUserDAO;
+import org.vfny.geoserver.global.GeoServer;
+
 import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
@@ -24,12 +30,15 @@ import org.restlet.resource.OutputRepresentation;
 import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.StringRepresentation;
+
 import org.springframework.dao.DataAccessException;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -47,11 +56,14 @@ import java.util.Map;
 public abstract class MapResource extends Resource {
     private static Map myFormatMap;
     private DataFormat myRequestFormat;
+	private GeoServer myGeoserver;
+    static Logger LOG = org.geotools.util.logging.Logging.getLogger("org.geoserver.community");
 
     public MapResource(Context context, Request request, Response response) {
         super(context, request, response);
         myFormatMap = getSupportedFormats();
         myRequestFormat = (DataFormat) myFormatMap.get(request.getAttributes().get("type"));
+		myGeoserver = (GeoServer)GeoServerExtensions.bean("geoServer");
     }
 
     public abstract Map getSupportedFormats();
@@ -81,11 +93,20 @@ public abstract class MapResource extends Resource {
     public Map getPageDetails() {
         Map map = new HashMap();
         String currentURL = getRequest().getResourceRef().getBaseRef().toString();
+        currentURL = RequestUtils.proxifiedBaseURL(currentURL, 
+                myGeoserver.getProxyBaseUrl());
+
+        LOG.info("Proxy Base URL: " + myGeoserver.getProxyBaseUrl());
+
         String formatName = (String) getRequest().getAttributes().get("type");
 
         if (formatName != null) {
             currentURL = currentURL.substring(0, currentURL.length() - formatName.length() - 1);
         }
+
+		if (currentURL.endsWith("/")){
+			currentURL = currentURL.substring(0, currentURL.length() - 1);
+		}
 
         map.put("currentURL", currentURL);
 
