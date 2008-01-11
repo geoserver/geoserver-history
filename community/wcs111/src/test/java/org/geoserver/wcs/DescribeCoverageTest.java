@@ -18,10 +18,10 @@ import org.w3c.dom.NodeList;
 
 public class DescribeCoverageTest extends WCSTestSupport {
 
-    @Override
-    protected String getDefaultLogConfiguration() {
-        return "/DEFAULT_LOGGING.properties";
-    }
+//    @Override
+//    protected String getDefaultLogConfiguration() {
+//        return "/DEFAULT_LOGGING.properties";
+//    }
     
     public void testCRS() throws NoSuchAuthorityCodeException, FactoryException {
         System.out.println(CRS.decode("EPSG:4326"));
