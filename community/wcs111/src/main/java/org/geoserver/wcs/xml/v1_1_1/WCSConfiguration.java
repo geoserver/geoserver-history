@@ -1,10 +1,15 @@
 package org.geoserver.wcs.xml.v1_1_1;
 
+import java.util.Map;
+
+import net.opengis.ows.v1_1_0.Ows11Factory;
 import net.opengis.wcs.v1_1_1.Wcs111Factory;
 
 import org.eclipse.xsd.util.XSDSchemaLocationResolver;	
 import org.geotools.gml3.GMLConfiguration;
+import org.geotools.ows.v1_1.OWS;
 import org.geotools.ows.v1_1.OWSConfiguration;
+import org.geotools.xml.ComplexEMFBinding;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.XMLConfiguration;
 import org.picocontainer.MutablePicoContainer;
@@ -60,11 +65,16 @@ public class WCSConfiguration extends Configuration {
         container.registerComponentImplementation(WCS._Capabilities,_CapabilitiesBinding.class);
         container.registerComponentImplementation(WCS._Contents,_ContentsBinding.class);
         container.registerComponentImplementation(WCS._CoverageDescriptions,_CoverageDescriptionsBinding.class);
-        container.registerComponentImplementation(WCS._DescribeCoverage,_DescribeCoverageBinding.class);
         container.registerComponentImplementation(WCS._GetCapabilities,_GetCapabilitiesBinding.class);
         container.registerComponentImplementation(WCS._GetCoverage,_GetCoverageBinding.class);
         container.registerComponentImplementation(WCS._InterpolationMethods,_InterpolationMethodsBinding.class);
         container.registerComponentImplementation(WCS.RangeSubsetType_FieldSubset,RangeSubsetType_FieldSubsetBinding.class);
+    }
+    
+    @Override
+    protected void registerBindings(Map bindings) {
+        super.registerBindings(bindings);
+        bindings.put(WCS._DescribeCoverage,new ComplexEMFBinding(Wcs111Factory.eINSTANCE, WCS._DescribeCoverage));
     }
     
     protected void configureContext(MutablePicoContainer container) {

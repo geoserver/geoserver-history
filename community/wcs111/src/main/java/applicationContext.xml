@@ -95,6 +95,12 @@
     <constructor-arg value="1.1.1" />
     <constructor-arg ref="wcs-1.1.1-configuration" />
   </bean>
+  
+  <bean id="wcs111DescribeCoverageRequestReader" class="org.geoserver.wcs.xml.v1_1_1.WcsXmlReader">
+    <constructor-arg value="DescribeCoverage" />
+    <constructor-arg value="1.1.1" />
+    <constructor-arg ref="wcs-1.1.1-configuration" />
+  </bean>
 
 
 

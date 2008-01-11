@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.XPathAPI;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.geotools.referencing.CRS;
@@ -36,7 +38,7 @@ public class DescribeCoverageTest extends WCSTestSupport {
         assertEquals("identifiers", element.getAttribute("locator"));
     }
 
-    public void testDescribeUnknownCoverage() throws Exception {
+    public void testDescribeUnknownCoverageKvp() throws Exception {
         Document dom = getAsDOM(BASEPATH
                 + "?request=DescribeCoverage&service=WCS&version=1.1.1&identifiers=plop");
 //        print(dom);
@@ -46,14 +48,52 @@ public class DescribeCoverageTest extends WCSTestSupport {
         assertEquals("identifiers", element.getAttribute("locator"));
         assertTrue(element.getTextContent().contains("plop"));
     }
+    
+    public void testDescribeUnknownCoverageXml() throws Exception {
+        List<Exception> errors = new ArrayList<Exception>();
+        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + // 
+            "<wcs:DescribeCoverage service=\"WCS\" " + //
+            "xmlns:ows=\"http://www.opengis.net/ows/1.1\"\r\n" + // 
+            "  xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\"\r\n" + // 
+            "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \r\n" + // 
+            "  version=\"1.1.1\" >\r\n" + //
+            "  <wcs:Identifier>plop</wcs:Identifier>\r\n" + // 
+            "</wcs:DescribeCoverage>";
+        Document dom = postAsDOM(BASEPATH, request, errors);
+//        print(dom);
+        assertEquals(1, dom.getElementsByTagName("ows:ExceptionReport").getLength());
+        Element element = (Element) dom.getElementsByTagName("ows:Exception").item(0);
+        assertEquals("InvalidParameterValue", element.getAttribute("exceptionCode"));
+        assertEquals("identifiers", element.getAttribute("locator"));
+        assertTrue(element.getTextContent().contains("plop"));
+    }
 
-    public void testDescribeDemCoverage() throws Exception {
+    public void testDescribeDemCoverageKvp() throws Exception {
         List<Exception> errors = new ArrayList<Exception>();
         Document dom = getAsDOM(BASEPATH
                 + "?request=DescribeCoverage&service=WCS&version=1.1.1&identifiers="
                 + layerId(WCSTestSupport.TASMANIA_DEM), errors);
         print(dom);
         checkValidationErrors(errors);
+        checkDemCoverageDescription(dom);
+    }
+    
+    public void testDescribeDemCoverageXml() throws Exception {
+        List<Exception> errors = new ArrayList<Exception>();
+        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + // 
+            "<wcs:DescribeCoverage service=\"WCS\" " + //
+            "xmlns:ows=\"http://www.opengis.net/ows/1.1\"\r\n" + // 
+            "  xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\"\r\n" + // 
+            "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \r\n" + // 
+            "  version=\"1.1.1\" >\r\n" + //
+            "  <wcs:Identifier>" + layerId(WCSTestSupport.TASMANIA_DEM) + "</wcs:Identifier>\r\n" + // 
+            "</wcs:DescribeCoverage>";
+        Document dom = postAsDOM(BASEPATH, request, errors);
+        checkValidationErrors(errors);
+        checkDemCoverageDescription(dom);
+    }
+
+    private void checkDemCoverageDescription(Document dom) throws TransformerException {
         // check the basics, the output is a single coverage description with the expected id
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescriptions").getLength());
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescription").getLength());

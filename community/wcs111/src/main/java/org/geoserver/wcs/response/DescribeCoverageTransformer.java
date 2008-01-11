@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -30,6 +31,8 @@ import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.WCS;
+import org.vfny.geoserver.wcs.WcsException;
+import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegateFactory;
 import org.xml.sax.ContentHandler;
@@ -102,49 +105,56 @@ public class DescribeCoverageTransformer extends TransformerBase {
          *             if the Object is not encodeable.
          */
         public void encode(Object o) throws IllegalArgumentException {
-            try {
-                if (!(o instanceof DescribeCoverageType)) {
-                    throw new IllegalArgumentException(new StringBuffer(
-                            "Not a GetCapabilitiesType: ").append(o).toString());
-                }
-
-                this.request = (DescribeCoverageType) o;
-
-                final AttributesImpl attributes = new AttributesImpl();
-                attributes.addAttribute("", "xmlns:wcs", "xmlns:wcs", "", WCS_URI);
-
-                attributes.addAttribute("", "xmlns:xlink", "xmlns:xlink", "",
-                        "http://www.w3.org/1999/xlink");
-                attributes.addAttribute("", "xmlns:ogc", "xmlns:ogc", "",
-                        "http://www.opengis.net/ogc");
-                attributes.addAttribute("", "xmlns:ows", "xmlns:ows", "",
-                        "http://www.opengis.net/ows/1.1");
-                attributes.addAttribute("", "xmlns:gml", "xmlns:gml", "",
-                        "http://www.opengis.net/gml");
-
-                final String prefixDef = new StringBuffer("xmlns:").append(XSI_PREFIX).toString();
-                attributes.addAttribute("", prefixDef, prefixDef, "", XSI_URI);
-
-                final String locationAtt = new StringBuffer(XSI_PREFIX).append(":schemaLocation")
-                        .toString();
-
-                proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wcs
-                        .getGeoServer().getProxyBaseUrl());
-                final String locationDef = WCS_URI + " " + proxifiedBaseUrl
-                        + "schemas/wcs/1.1.1/wcsDescribeCoverage.xsd";
-                attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
-
-                start("wcs:CoverageDescriptions", attributes);
-                for (Iterator it = request.getIdentifier().iterator(); it.hasNext();) {
-                    String coverageId = (String) it.next();
-                    CoverageInfo ci = catalog.getCoverageInfo(coverageId);
-                    handleCoverageDescription(ci);
-                }
-                end("wcs:CoverageDescriptions");
-            } catch (Exception e) {
-                throw new RuntimeException(
-                        "Unexpected error occurred during describe coverage xml encoding", e);
+            // try {
+            if (!(o instanceof DescribeCoverageType)) {
+                throw new IllegalArgumentException(new StringBuffer("Not a GetCapabilitiesType: ")
+                        .append(o).toString());
             }
+
+            this.request = (DescribeCoverageType) o;
+
+            final AttributesImpl attributes = new AttributesImpl();
+            attributes.addAttribute("", "xmlns:wcs", "xmlns:wcs", "", WCS_URI);
+
+            attributes.addAttribute("", "xmlns:xlink", "xmlns:xlink", "",
+                    "http://www.w3.org/1999/xlink");
+            attributes.addAttribute("", "xmlns:ogc", "xmlns:ogc", "", "http://www.opengis.net/ogc");
+            attributes.addAttribute("", "xmlns:ows", "xmlns:ows", "",
+                    "http://www.opengis.net/ows/1.1");
+            attributes.addAttribute("", "xmlns:gml", "xmlns:gml", "", "http://www.opengis.net/gml");
+
+            final String prefixDef = new StringBuffer("xmlns:").append(XSI_PREFIX).toString();
+            attributes.addAttribute("", prefixDef, prefixDef, "", XSI_URI);
+
+            final String locationAtt = new StringBuffer(XSI_PREFIX).append(":schemaLocation")
+                    .toString();
+
+            proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wcs
+                    .getGeoServer().getProxyBaseUrl());
+            final String locationDef = WCS_URI + " " + proxifiedBaseUrl
+                    + "schemas/wcs/1.1.1/wcsDescribeCoverage.xsd";
+            attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
+
+            start("wcs:CoverageDescriptions", attributes);
+            for (Iterator it = request.getIdentifier().iterator(); it.hasNext();) {
+                String coverageId = (String) it.next();
+
+                // check the coverage is known
+                if (!Data.TYPE_RASTER.equals(catalog.getLayerType(coverageId))) {
+                    throw new WcsException("Could not find the specified coverage: "
+                            + coverageId, WcsExceptionCode.InvalidParameterValue, "identifiers");
+                }
+
+                CoverageInfo ci = catalog.getCoverageInfo(coverageId);
+                try {
+                    handleCoverageDescription(ci);
+                } catch (Exception e) {
+                    throw new RuntimeException(
+                            "Unexpected error occurred during describe coverage xml encoding", e);
+                }
+
+            }
+            end("wcs:CoverageDescriptions");
         }
 
         void handleCoverageDescription(CoverageInfo ci) throws Exception {
@@ -354,8 +364,10 @@ public class DescribeCoverageTransformer extends TransformerBase {
             for (Iterator it = ci.getSupportedFormats().iterator(); it.hasNext();) {
                 String format = (String) it.next();
                 // wcs 1.1 requires mime types, not format names
-                CoverageResponseDelegate delegate = CoverageResponseDelegateFactory.encoderFor(format);
-                // this is a nasty hack... the output format should not need any preparation, 
+                CoverageResponseDelegate delegate = CoverageResponseDelegateFactory
+                        .encoderFor(format);
+                // this is a nasty hack... the output format should not need any
+                // preparation,
                 // we already provided the format to the factory
                 delegate.prepare(format, null);
                 element("wcs:SupportedFormat", delegate.getContentType(wcs.getGeoServer()));
@@ -364,9 +376,9 @@ public class DescribeCoverageTransformer extends TransformerBase {
 
         private void handleSupportedCRSs(CoverageInfo ci) throws Exception {
             Set supportedCRSs = new LinkedHashSet();
-            if(ci.getRequestCRSs() != null)
+            if (ci.getRequestCRSs() != null)
                 supportedCRSs.addAll(ci.getRequestCRSs());
-            if(ci.getResponseCRSs() != null)
+            if (ci.getResponseCRSs() != null)
                 supportedCRSs.addAll(ci.getResponseCRSs());
             for (Iterator it = supportedCRSs.iterator(); it.hasNext();) {
                 String crsName = (String) it.next();
