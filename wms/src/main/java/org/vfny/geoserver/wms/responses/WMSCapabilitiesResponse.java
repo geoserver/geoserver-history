@@ -4,6 +4,15 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import javax.xml.transform.TransformerException;
+
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
@@ -13,13 +22,6 @@ import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.helpers.WMSCapsTransformer;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.logging.Logger;
-import javax.xml.transform.TransformerException;
 
 
 /**
@@ -75,6 +77,26 @@ public class WMSCapabilitiesResponse implements Response {
         if (!(request instanceof CapabilitiesRequest)) {
             throw new IllegalArgumentException("Not a GetCapabilities Request");
         }
+        
+        //UpdateSequence handling for WMS:  see WMS 1.1.1 page 23
+        CapabilitiesRequest capreq = (CapabilitiesRequest)request;
+        int reqUS = -1;
+        if (capreq.getUpdateSequence() != null) {
+	        try {
+	        	reqUS = Integer.parseInt(capreq.getUpdateSequence());
+	        } catch (NumberFormatException nfe) {
+	        	throw new ServiceException("GeoServer only accepts numbers in the updateSequence parameter");
+	        }
+        }
+        int geoUS = request.getServiceRef().getServiceRef().getGeoServer().getUpdateSequence();
+    	if (reqUS > geoUS) {
+    		throw new org.geoserver.platform.ServiceException("Client supplied an updateSequence that is greater than the current sever updateSequence","InvalidUpdateSequence");
+    	}
+    	if (reqUS == geoUS) {
+    		throw new org.geoserver.platform.ServiceException("WMS capabilities document is current (updateSequence = " + geoUS + ")","CurrentUpdateSequence");
+    	}
+    	//otherwise it's a normal response...
+        
 
         WMSCapsTransformer transformer = new WMSCapsTransformer(request.getBaseUrl(),
                 formats, applicationContext);

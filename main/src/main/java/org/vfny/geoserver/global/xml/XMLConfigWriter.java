@@ -280,6 +280,9 @@ public class XMLConfigWriter {
                 cw.comment("Defines hte location of a tile cache (full url or relative path)");
                 cw.textTag("tileCache", g.getTileCache());
             }
+            
+            cw.comment("Stores the current updateSequence");
+            cw.textTag("updateSequence", g.getUpdateSequence() + "");
 
             cw.closeTag("global");
         }

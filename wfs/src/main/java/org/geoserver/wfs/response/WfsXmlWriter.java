@@ -100,7 +100,7 @@ public abstract class WfsXmlWriter {
         namespaceSupport.declarePrefix("xs", XS.NAMESPACE);
         namespaceSupport.declarePrefix("ogc", OGC.NAMESPACE);
         namespaceSupport.declarePrefix("gml", GML.NAMESPACE);
-        ;
+        
         namespaceSupport.declarePrefix("wfs", org.geoserver.wfs.xml.v1_0_0.WFS.NAMESPACE);
         namespaceSupport.declarePrefix("", org.geoserver.wfs.xml.v1_0_0.WFS.NAMESPACE);
     }

@@ -12,6 +12,7 @@ import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.ows.xml.v1_0.OWS;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.response.GetCapabilitiesResponse;
 import org.geotools.factory.FactoryRegistry;
 import org.geotools.filter.FunctionExpression;
@@ -90,6 +91,35 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
         this.wfs = wfs;
         this.catalog = catalog;
     }
+    
+    
+    /**
+     * It turns out that the he WFS 1.0 and 1.1 specifications don't actually support an updatesequence-based
+     * getcapabilities operation.  There's no mention of an updatesequence request parameter in the getcapabilities
+     * operation, and there's no normative behaviour description for what the updatesequence parameter in the
+     * capabilities document should *do*.
+     * 
+     * So this behaviour is not used right now, at all (as of Jan 2007)
+     * @param request
+     * @throws ServiceException
+     */
+    public void verifyUpdateSequence(GetCapabilitiesType request) throws ServiceException {
+    	int reqUS = -1;
+        if (request.getUpdateSequence() != null) {
+	        try {
+	        	reqUS = Integer.parseInt(request.getUpdateSequence());
+	        } catch (NumberFormatException nfe) {
+	        	throw new ServiceException("GeoServer only accepts numbers in the updateSequence parameter");
+	        }
+        }
+        int geoUS = wfs.getGeoServer().getUpdateSequence();
+    	if (reqUS > geoUS) {
+    		throw new ServiceException("Client supplied an updateSequence that is greater than the current sever updateSequence","InvalidUpdateSequence");
+    	}
+    	if (reqUS == geoUS) {
+    		throw new ServiceException("WFS capabilities document is current (updateSequence = " + geoUS + ")","CurrentUpdateSequence");
+    	}
+    }
 
     /**
      * Transformer for wfs 1.0 capabilities document.
@@ -116,6 +146,9 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             public void encode(Object object) throws IllegalArgumentException {
                 request = (GetCapabilitiesType)object;
                 String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
+                
+                // Not used.  WFS 1.1 and 1.0 don't actually support updatesequence
+                //verifyUpdateSequence(request);
                 
                 AttributesImpl attributes = new AttributesImpl();
                 attributes.addAttribute("", "version", "version", "", "1.0.0");
@@ -753,6 +786,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 request = (GetCapabilitiesType)object;
                 String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wfs.getGeoServer().getProxyBaseUrl());
                 
+                verifyUpdateSequence(request);
+                
                 AttributesImpl attributes = attributes(new String[] {
                             "version", "1.1.0", "xmlns:xsi", XSI_URI, "xmlns", WFS_URI, "xmlns:wfs",
                             WFS_URI, "xmlns:ows", OWS.NAMESPACE, "xmlns:gml", GML.NAMESPACE,
@@ -780,6 +815,8 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                     attributes.addAttribute("", prefixDef, prefixDef, "", uri);
                 }
+                
+                attributes.addAttribute("", "updateSequence", "updateSequence", "", wfs.getGeoServer().getUpdateSequence() + "");
 
                 start("wfs:WFS_Capabilities", attributes);
 

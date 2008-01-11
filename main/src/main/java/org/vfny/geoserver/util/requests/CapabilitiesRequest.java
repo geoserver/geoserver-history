@@ -16,14 +16,29 @@ import org.vfny.geoserver.servlets.AbstractService;
  * @version $Id$
  */
 public class CapabilitiesRequest extends Request {
-    /**
+	
+	private String updateSequence;
+	
+	/**
      * Creates a new capabilities request object.
      *
      * @param serviceType The id of the service being handled.
      * @param service The service handing the request.
      */
     public CapabilitiesRequest(String serviceType, AbstractService service) {
+    	this(serviceType, service, null);
+    }
+	
+    /**
+     * Creates a new capabilities request object.
+     *
+     * @param serviceType The id of the service being handled.
+     * @param service The service handing the request.
+     * @param updateSequence The updateSequence number from the GetCapabilities request
+     */
+    public CapabilitiesRequest(String serviceType, AbstractService service, String updateSequence) {
         super(serviceType, "GetCapabilities", service);
+        this.updateSequence = updateSequence;
     }
 
     /**
@@ -46,4 +61,18 @@ public class CapabilitiesRequest extends Request {
     public boolean equals(Object o) {
         return super.equals(o);
     }
+
+	/**
+	 * @return the updateSequence
+	 */
+	public String getUpdateSequence() {
+		return updateSequence;
+	}
+
+	/**
+	 * @param updateSequence the updateSequence to set
+	 */
+	public void setUpdateSequence(String updateSequence) {
+		this.updateSequence = updateSequence;
+	}
 }
