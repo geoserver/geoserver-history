@@ -8,8 +8,11 @@ import java.util.NoSuchElementException;
 
 import org.fao.styling.ColorRamp;
 import org.fao.styling.RulesBuilder;
+import org.fao.styling.impl.BlueColorRamp;
 import org.fao.styling.impl.CustomColorRamp;
 import org.fao.styling.impl.GrayColorRamp;
+import org.fao.styling.impl.RandomColorRamp;
+import org.fao.styling.impl.RedColorRamp;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.restlet.Context;
@@ -62,6 +65,7 @@ public class ClassifierResource extends BaseResource {
 		String classMethod = null;
 		String property = null;
 		Integer classNum = null;
+		String colorRamp =null;
 		Color startColor = null;
 		Color endColor = null;
 		Color midColor = null;
@@ -132,7 +136,7 @@ public class ClassifierResource extends BaseResource {
 
 		/*
 		 * Retriving or setting default value for optional param
-		 * ClassNum,startColor, endColor, midColor
+		 * ClassNum,startColor, endColor, midColor,colorRamp
 		 */
 		if (params.getFirst("classNum") == null
 				|| params.getFirst("classNum").getValue() == null) {
@@ -140,6 +144,20 @@ public class ClassifierResource extends BaseResource {
 		} else
 			classNum = Integer.parseInt(params.getFirst("classNum").getValue());
 		classNum = (classNum < 2) ? 4 : classNum;
+		/*
+		 * Looks for color ramp type [red, blue, gray, random , custom]
+		 */
+		if (params.getFirst("colorRamp") != null
+				&& params.getFirst("colorRamp").getValue() != null) {
+
+			colorRamp = params.getFirst("colorRamp").getValue();	
+			
+		}
+		
+		/*
+		 * if is custom lokking for custom color
+		 */
+		if(colorRamp.equalsIgnoreCase("custom")){
 		
 		if (params.getFirst("startColor") != null
 				&& params.getFirst("startColor").getValue() != null) {
@@ -166,6 +184,7 @@ public class ClassifierResource extends BaseResource {
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			}
+		}
 		}
 
 		/*
@@ -200,19 +219,28 @@ public class ClassifierResource extends BaseResource {
 			}
 			
 			/*
-			 * now we have to create symbolizer
+			 * now we have to create symbolizer choose the correct color ramp
 			 */
-			ColorRamp ramp;
-			if (startColor != null && endColor != null) {
+			ColorRamp ramp=null;
+			if (colorRamp.equalsIgnoreCase("random"))
+				ramp= (ColorRamp) new RandomColorRamp();
+			else if(colorRamp.equalsIgnoreCase("red"))
+				ramp= (ColorRamp) new RedColorRamp();
+			else if(colorRamp.equalsIgnoreCase("blue"))
+				ramp= (ColorRamp) new BlueColorRamp();
+			else if(colorRamp.equalsIgnoreCase("custom")){
+				if (startColor != null && endColor != null) {
 				CustomColorRamp tramp = new CustomColorRamp();
 				tramp.setStartColor(startColor);
 				tramp.setEndColor(endColor);
 				if (midColor != null)
 					tramp.setMid(midColor);
 				ramp =(ColorRamp)tramp;
-			} else {
+			
+				} 
+			}else if(ramp ==null) 
 				ramp = (ColorRamp) new GrayColorRamp();
-			}
+			
 			/*
 			 * Line Symbolizer
 			 */
