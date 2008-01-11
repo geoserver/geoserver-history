@@ -47,17 +47,6 @@ public class DescribeCoverageKvpRequestReader extends EMFKvpRequestReader {
             throw ex;
         }
         
-        // check we know about the coverages
-        for (Iterator it = identifiers.iterator(); it.hasNext();) {
-            String coverageId = (String) it.next();
-            if(!Data.TYPE_RASTER.equals(catalog.getLayerType(coverageId))) {
-                WcsException ex = new WcsException("Could not find the specified coverage: " + 
-                        coverageId, "identifiers");
-                ex.setCode("InvalidParameterValue");
-                throw ex;
-            }
-        }
-        
         // all right, set into the model (note there is a mismatch between the kvp name and the
         // xml name, that's why we have to parse the identifiers by hand)
         describeCoverage.getIdentifier().addAll(identifiers);

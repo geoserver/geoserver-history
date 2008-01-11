@@ -1,8 +1,10 @@
 package org.geoserver.wcs.xml.v1_1_1;
 
 
+import net.opengis.wcs.v1_1_1.DescribeCoverageType;
+import net.opengis.wcs.v1_1_1.Wcs111Factory;
+
 import org.geotools.xml.*;
-import org.geotools.xml.AbstractComplexEMFBinding;
 
 
 import javax.xml.namespace.QName;
@@ -34,6 +36,10 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class _DescribeCoverageBinding extends AbstractComplexEMFBinding {
+    
+    public _DescribeCoverageBinding() {
+        super(Wcs111Factory.eINSTANCE);
+    }
 
 	/**
 	 * @generated
@@ -49,7 +55,7 @@ public class _DescribeCoverageBinding extends AbstractComplexEMFBinding {
 	 * @generated modifiable
 	 */	
 	public Class getType() {
-		return null;
+		return DescribeCoverageType.class;
 	}
 	
 	/**
