@@ -158,13 +158,13 @@ public class RulesBuilder {
 			//adjust the colorRamp with the correct number of classes
 			fillRamp.setNumClasses(rules.size());
 			colors = fillRamp.getRamp().iterator();
-
+			
 			it = rules.iterator();
 			while (it.hasNext() && colors.hasNext()) {
 				color = colors.next();
 				rule = it.next();
 				rule.setSymbolizers(new Symbolizer[] { sb
-						.createPolygonSymbolizer(color) });
+						.createPolygonSymbolizer(sb.createStroke(Color.BLACK,1),sb.createFill(color)) });
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -278,14 +278,13 @@ public class RulesBuilder {
 				Set ls = groups.getValues(i);
 				Iterator it = ls.iterator();
 				val = ff.literal(it.next());
-				szFilter = att + "='" + val.toString().replace("'", "\'") + "'";
-				szTitle = "" + val.toString().replace("'", "\'");
+				szFilter = att + "=\"" + val + "\"";
+				szTitle = "" + val;
 
 				while (it.hasNext()) {
 					val = ff.literal(it.next());
-					szFilter += " OR " + att + "='" + val.toString().replace("'", "\'") + "'";
-					szTitle += " OR " + val.toString().replace("'", "\'");
-
+					szFilter += " OR " + att + "=\"" + val + "\"";
+					szTitle += " OR " + val;
 				}
 				f = CQL.toFilter(szFilter);
 				r.setTitle(szTitle);
