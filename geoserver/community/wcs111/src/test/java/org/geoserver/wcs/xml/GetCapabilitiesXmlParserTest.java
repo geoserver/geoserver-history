@@ -5,7 +5,6 @@ import java.io.StringReader;
 import junit.framework.TestCase;
 import net.opengis.wcs.v1_1_1.GetCapabilitiesType;
 
-import org.geoserver.ows.xml.v1_0.VersionTypeBinding;
 import org.geoserver.wcs.xml.v1_1_1.WCSConfiguration;
 import org.geoserver.wcs.xml.v1_1_1.WcsXmlReader;
 
