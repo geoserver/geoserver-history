@@ -198,6 +198,7 @@ public class WCSCapsTransformer extends TransformerBase {
                 + "schemas/wcs/1.0.0/wcsCapabilities.xsd";
 
             attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
+            attributes.addAttribute("", "updateSequence", "updateSequence", "", wcs.getGeoServer().getUpdateSequence() + "");
             start("WCS_Capabilities", attributes);
 
             handleService();

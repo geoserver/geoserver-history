@@ -55,6 +55,10 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
         }
 
         currentRequest.setVersion(reqVersion);
+        
+        if (keyExists("UPDATESEQUENCE")) {
+        	currentRequest.setUpdateSequence(getValue("UPDATESEQUENCE"));
+        }
 
         return currentRequest;
     }

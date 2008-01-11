@@ -65,6 +65,9 @@ public class UpdateGSAction extends ConfigAction {
             WFSDTO wfsDTO = getWFSConfig().toDTO();
             GeoServerDTO geoserverDTO = getGlobalConfig().toDTO();
             DataDTO dataDTO = getDataConfig().toDTO();
+
+            final int gsUs = geoserverDTO.getUpdateSequence();
+            geoserverDTO.setUpdateSequence(gsUs + 1);
             
             //load each service global bean from the modified config DTO
             getWCS(request).load(wcsDTO);
@@ -75,6 +78,9 @@ public class UpdateGSAction extends ConfigAction {
             getWCS(request).getGeoServer().load(geoserverDTO);
             //load the data bean from the modified config DTO
             getWCS(request).getData().load(dataDTO);
+            
+            //also, don't forget to update the main global config with the changes to the updatesequence
+            getGlobalConfig().update(geoserverDTO);
 
 
             getApplicationState().notifyToGeoServer();

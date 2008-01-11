@@ -81,6 +81,8 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
                     request.setVersion(atts.getValue(i));
                 } else if (atts.getLocalName(i).equals("service")) {
                     request.setService(atts.getValue(i));
+                } else if (atts.getLocalName(i).equals("updateSequence")) {
+                	request.setUpdateSequence(atts.getValue(i));
                 }
             }
         }

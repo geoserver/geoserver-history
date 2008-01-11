@@ -40,6 +40,8 @@ class WFSReprojectionUtil {
                 return nativeCRS;
             } else {
                 String code = GML2EncodingUtils.epsgCode(nativeCRS);
+                //it's possible that we can't do the CRS -> code -> CRS conversion...so we'll just return what we have
+                if (code == null) return nativeCRS;
                 return CRS.decode("urn:x-ogc:def:crs:EPSG:6.11.2:" + code);
             }
         } catch (Exception e) {

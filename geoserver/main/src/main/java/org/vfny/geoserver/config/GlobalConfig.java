@@ -159,6 +159,8 @@ public class GlobalConfig {
 
     /** tile cache location, full url or relative path */
     private String tileCache;
+    
+    private int updateSequence;
 
     /**
      * GlobalConfig constructor.
@@ -231,6 +233,8 @@ public class GlobalConfig {
         jaiPNGNative = g.getJaiPNGNative().booleanValue();
 
         tileCache = g.getTileCache();
+        
+        updateSequence = g.getUpdateSequence();
 
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
@@ -280,6 +284,8 @@ public class GlobalConfig {
         jaiPNGNative = g.getJaiPNGNative().booleanValue();
 
         tileCache = g.getTileCache();
+        
+        updateSequence = g.getUpdateSequence();
 
         if (g.getContact() != null) {
             contact = new ContactConfig(g.getContact());
@@ -323,6 +329,7 @@ public class GlobalConfig {
         g.setJaiPNGNative(Boolean.valueOf(jaiPNGNative));
         g.setProxyBaseUrl(proxyBaseUrl);
         g.setTileCache(tileCache);
+        g.setUpdateSequence(updateSequence);
 
         return g;
     }
@@ -705,4 +712,18 @@ public class GlobalConfig {
     public void setTileCache(String tileCache) {
         this.tileCache = tileCache;
     }
+
+	/**
+	 * @return the updateSequence
+	 */
+	public int getUpdateSequence() {
+		return updateSequence;
+	}
+
+	/**
+	 * @param updateSequence the updateSequence to set
+	 */
+	public void setUpdateSequence(int updateSequence) {
+		this.updateSequence = updateSequence;
+	}
 }

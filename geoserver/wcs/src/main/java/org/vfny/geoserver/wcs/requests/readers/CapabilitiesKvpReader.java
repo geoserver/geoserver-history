@@ -46,6 +46,7 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
         CapabilitiesRequest currentRequest = new WCSCapabilitiesRequest(service);
         currentRequest.setHttpServletRequest(request);
         currentRequest.setVersion(getValue("VERSION"));
+        currentRequest.setUpdateSequence(getValue("UPDATESEQUENCE"));
 
         //service is set in the constructor
         //currentRequest.setService(getValue("SERVICE"));

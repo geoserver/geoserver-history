@@ -190,6 +190,9 @@ public final class GeoServerDTO implements DataTransferObject {
 
     /** tile cache location, full url or relative path */
     private String tileCache;
+    
+    /** the current update sequence **/
+    private int updateSequence;
 
     /**
      * GlobalConfig constructor.
@@ -755,4 +758,18 @@ public final class GeoServerDTO implements DataTransferObject {
     public void setTileCache(String tileCache) {
         this.tileCache = tileCache;
     }
+
+	/**
+	 * @return the updateSequence
+	 */
+	public int getUpdateSequence() {
+		return updateSequence;
+	}
+
+	/**
+	 * @param updateSequence the updateSequence to set
+	 */
+	public void setUpdateSequence(int updateSequence) {
+		this.updateSequence = updateSequence;
+	}
 }
