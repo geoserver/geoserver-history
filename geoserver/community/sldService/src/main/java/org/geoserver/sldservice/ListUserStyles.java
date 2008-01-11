@@ -1,17 +1,15 @@
 package org.geoserver.sldservice;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import javax.servlet.http.HttpServletRequest;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import net.sf.json.xml.XMLSerializer;
 
 import org.geotools.styling.Style;
 import org.restlet.Context;
@@ -25,10 +23,6 @@ import org.restlet.resource.StringRepresentation;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-
-import com.noelios.restlet.ext.servlet.ServletCall;
-import com.noelios.restlet.http.HttpCall;
-import com.noelios.restlet.http.HttpRequest;
 
 /**
  * @author kappu
@@ -93,10 +87,14 @@ public class ListUserStyles extends Restlet {
 		String name;
 		/* set the default style */
 		name = defStyle.getName();
-		styleOut.put("name", name);
+		styleOut.put("default", "true");
 		styleOut.put("link", bUrl + "/" + name);
-		out.add(styleOut);
+		styleOut.put("name", name);
+		
+		
+		out.add(JSONObject.fromObject(styleOut).toString());
 
+		
 		if (styles != null) {
 			Iterator it = styles.iterator();
 			Style style;
@@ -104,12 +102,14 @@ public class ListUserStyles extends Restlet {
 				style = (Style) it.next();
 				name = style.getName();
 				styleOut = new HashMap();
-				styleOut.put("name", name);
 				styleOut.put("link", bUrl + "/" + name);
-				out.add(styleOut);
+				styleOut.put("name", name);
+				out.add(JSONObject.fromObject(styleOut).toString());
+
 			}
 		}
-
+		
+		Collections.sort(out);
 		JSONArray json = JSONArray.fromObject(out);
 		return json;
 	}
