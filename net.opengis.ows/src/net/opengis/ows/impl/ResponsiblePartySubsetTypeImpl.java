@@ -37,7 +37,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * @generated
  */
 public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements ResponsiblePartySubsetType {
-	/**
+    /**
      * The default value of the '{@link #getIndividualName() <em>Individual Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -47,7 +47,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
      */
 	protected static final String INDIVIDUAL_NAME_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getIndividualName() <em>Individual Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -57,7 +57,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
      */
 	protected String individualName = INDIVIDUAL_NAME_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getPositionName() <em>Position Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -67,7 +67,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
      */
 	protected static final String POSITION_NAME_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getPositionName() <em>Position Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -77,7 +77,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
      */
 	protected String positionName = POSITION_NAME_EDEFAULT;
 
-	/**
+    /**
      * The cached value of the '{@link #getContactInfo() <em>Contact Info</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -85,9 +85,9 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
      * @generated
      * @ordered
      */
-	protected ContactType contactInfo;
+	protected ContactType contactInfo= null;
 
-	/**
+    /**
      * The cached value of the '{@link #getRole() <em>Role</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -95,9 +95,9 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
      * @generated
      * @ordered
      */
-	protected CodeType role;
+	protected CodeType role= null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -106,7 +106,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -115,7 +115,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
         return OwsPackage.Literals.RESPONSIBLE_PARTY_SUBSET_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -124,7 +124,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
         return individualName;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -136,7 +136,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__INDIVIDUAL_NAME, oldIndividualName, individualName));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -145,7 +145,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
         return positionName;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -157,7 +157,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__POSITION_NAME, oldPositionName, positionName));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -166,7 +166,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
         return contactInfo;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -181,7 +181,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -200,7 +200,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__CONTACT_INFO, newContactInfo, newContactInfo));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -209,7 +209,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
         return role;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -224,7 +224,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -243,7 +243,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.RESPONSIBLE_PARTY_SUBSET_TYPE__ROLE, newRole, newRole));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -258,7 +258,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -277,7 +277,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -300,7 +300,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -323,7 +323,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -342,7 +342,7 @@ public class ResponsiblePartySubsetTypeImpl extends EObjectImpl implements Respo
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

@@ -37,7 +37,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * @generated
  */
 public interface IdentificationType extends DescriptionType {
-	/**
+    /**
      * Returns the value of the '<em><b>Identifier</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -53,7 +53,7 @@ public interface IdentificationType extends DescriptionType {
      */
 	CodeType getIdentifier();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.IdentificationType#getIdentifier <em>Identifier</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -63,7 +63,7 @@ public interface IdentificationType extends DescriptionType {
      */
 	void setIdentifier(CodeType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Bounding Box Group</b></em>' attribute list.
      * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
      * <!-- begin-user-doc -->
@@ -79,7 +79,7 @@ public interface IdentificationType extends DescriptionType {
      */
 	FeatureMap getBoundingBoxGroup();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Bounding Box</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.BoundingBoxType}.
      * <!-- begin-user-doc -->
@@ -95,7 +95,7 @@ public interface IdentificationType extends DescriptionType {
      */
 	EList getBoundingBox();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Output Format</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -111,7 +111,7 @@ public interface IdentificationType extends DescriptionType {
      */
 	String getOutputFormat();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.IdentificationType#getOutputFormat <em>Output Format</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -121,7 +121,7 @@ public interface IdentificationType extends DescriptionType {
      */
 	void setOutputFormat(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Available CRS Group</b></em>' attribute list.
      * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
      * <!-- begin-user-doc -->
@@ -137,7 +137,7 @@ public interface IdentificationType extends DescriptionType {
      */
 	FeatureMap getAvailableCRSGroup();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Available CRS</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -153,7 +153,7 @@ public interface IdentificationType extends DescriptionType {
      */
 	String getAvailableCRS();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.IdentificationType#getAvailableCRS <em>Available CRS</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -163,7 +163,7 @@ public interface IdentificationType extends DescriptionType {
      */
 	void setAvailableCRS(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Metadata</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.MetadataType}.
      * <!-- begin-user-doc -->

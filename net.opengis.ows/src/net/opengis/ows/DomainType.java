@@ -33,7 +33,7 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface DomainType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Value</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -49,7 +49,7 @@ public interface DomainType extends EObject {
      */
 	String getValue();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DomainType#getValue <em>Value</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -59,7 +59,7 @@ public interface DomainType extends EObject {
      */
 	void setValue(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Metadata</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.MetadataType}.
      * <!-- begin-user-doc -->
@@ -75,7 +75,7 @@ public interface DomainType extends EObject {
      */
 	EList getMetadata();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -91,7 +91,7 @@ public interface DomainType extends EObject {
      */
 	String getName();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DomainType#getName <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

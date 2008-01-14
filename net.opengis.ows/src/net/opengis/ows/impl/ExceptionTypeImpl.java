@@ -38,7 +38,7 @@ import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
  * @generated
  */
 public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
-	/**
+    /**
      * The cached value of the '{@link #getExceptionText() <em>Exception Text</em>}' attribute list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -46,9 +46,9 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
      * @generated
      * @ordered
      */
-	protected EList exceptionText;
+	protected EList exceptionText= null;
 
-	/**
+    /**
      * The default value of the '{@link #getExceptionCode() <em>Exception Code</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -58,7 +58,7 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
      */
 	protected static final String EXCEPTION_CODE_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getExceptionCode() <em>Exception Code</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -68,7 +68,7 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
      */
 	protected String exceptionCode = EXCEPTION_CODE_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getLocator() <em>Locator</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -78,7 +78,7 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
      */
 	protected static final String LOCATOR_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getLocator() <em>Locator</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -88,7 +88,7 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
      */
 	protected String locator = LOCATOR_EDEFAULT;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -97,7 +97,7 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -106,7 +106,7 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
         return OwsPackage.Literals.EXCEPTION_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -118,7 +118,7 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
         return exceptionText;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -127,7 +127,7 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
         return exceptionCode;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -139,7 +139,7 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.EXCEPTION_TYPE__EXCEPTION_CODE, oldExceptionCode, exceptionCode));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -148,7 +148,7 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
         return locator;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -160,7 +160,7 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.EXCEPTION_TYPE__LOCATOR, oldLocator, locator));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -177,7 +177,7 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -198,7 +198,7 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -218,7 +218,7 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -235,7 +235,7 @@ public class ExceptionTypeImpl extends EObjectImpl implements ExceptionType {
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

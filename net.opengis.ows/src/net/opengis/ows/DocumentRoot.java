@@ -61,7 +61,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * @generated
  */
 public interface DocumentRoot extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Mixed</b></em>' attribute list.
      * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
      * <!-- begin-user-doc -->
@@ -78,7 +78,7 @@ public interface DocumentRoot extends EObject {
      */
 	FeatureMap getMixed();
 
-	/**
+    /**
      * Returns the value of the '<em><b>XMLNS Prefix Map</b></em>' map.
      * The key is of type {@link java.lang.String},
      * and the value is of type {@link java.lang.String},
@@ -96,7 +96,7 @@ public interface DocumentRoot extends EObject {
      */
 	EMap getXMLNSPrefixMap();
 
-	/**
+    /**
      * Returns the value of the '<em><b>XSI Schema Location</b></em>' map.
      * The key is of type {@link java.lang.String},
      * and the value is of type {@link java.lang.String},
@@ -114,7 +114,7 @@ public interface DocumentRoot extends EObject {
      */
 	EMap getXSISchemaLocation();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Abstract</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -130,7 +130,7 @@ public interface DocumentRoot extends EObject {
      */
 	String getAbstract();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getAbstract <em>Abstract</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -140,7 +140,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setAbstract(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Contact Info</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -156,7 +156,7 @@ public interface DocumentRoot extends EObject {
      */
 	ContactType getContactInfo();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getContactInfo <em>Contact Info</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -166,7 +166,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setContactInfo(ContactType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Individual Name</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -182,7 +182,7 @@ public interface DocumentRoot extends EObject {
      */
 	String getIndividualName();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getIndividualName <em>Individual Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -192,7 +192,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setIndividualName(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Keywords</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -209,7 +209,7 @@ public interface DocumentRoot extends EObject {
      */
 	KeywordsType getKeywords();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getKeywords <em>Keywords</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -219,7 +219,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setKeywords(KeywordsType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Organisation Name</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -235,7 +235,7 @@ public interface DocumentRoot extends EObject {
      */
 	String getOrganisationName();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getOrganisationName <em>Organisation Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -245,7 +245,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setOrganisationName(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Point Of Contact</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -262,7 +262,7 @@ public interface DocumentRoot extends EObject {
      */
 	ResponsiblePartyType getPointOfContact();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getPointOfContact <em>Point Of Contact</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -272,7 +272,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setPointOfContact(ResponsiblePartyType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Position Name</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -288,7 +288,7 @@ public interface DocumentRoot extends EObject {
      */
 	String getPositionName();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getPositionName <em>Position Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -298,7 +298,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setPositionName(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Role</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -314,7 +314,7 @@ public interface DocumentRoot extends EObject {
      */
 	CodeType getRole();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getRole <em>Role</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -324,7 +324,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setRole(CodeType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Title</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -340,7 +340,7 @@ public interface DocumentRoot extends EObject {
      */
 	String getTitle();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getTitle <em>Title</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -350,7 +350,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setTitle(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Abstract Meta Data</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -365,7 +365,7 @@ public interface DocumentRoot extends EObject {
      */
 	EObject getAbstractMetaData();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Access Constraints</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -381,7 +381,7 @@ public interface DocumentRoot extends EObject {
      */
 	String getAccessConstraints();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getAccessConstraints <em>Access Constraints</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -391,7 +391,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setAccessConstraints(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Available CRS</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -408,7 +408,7 @@ public interface DocumentRoot extends EObject {
      */
 	String getAvailableCRS();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getAvailableCRS <em>Available CRS</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -418,7 +418,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setAvailableCRS(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Bounding Box</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -435,7 +435,7 @@ public interface DocumentRoot extends EObject {
      */
 	BoundingBoxType getBoundingBox();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getBoundingBox <em>Bounding Box</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -445,7 +445,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setBoundingBox(BoundingBoxType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Dcp</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -461,7 +461,7 @@ public interface DocumentRoot extends EObject {
      */
 	DCPType getDcp();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getDcp <em>Dcp</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -471,7 +471,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setDcp(DCPType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Exception</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -488,7 +488,7 @@ public interface DocumentRoot extends EObject {
      */
 	ExceptionType getException();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getException <em>Exception</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -498,7 +498,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setException(ExceptionType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Exception Report</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -514,7 +514,7 @@ public interface DocumentRoot extends EObject {
      */
 	ExceptionReportType getExceptionReport();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getExceptionReport <em>Exception Report</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -524,7 +524,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setExceptionReport(ExceptionReportType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Extended Capabilities</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -540,7 +540,7 @@ public interface DocumentRoot extends EObject {
      */
 	EObject getExtendedCapabilities();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getExtendedCapabilities <em>Extended Capabilities</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -550,7 +550,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setExtendedCapabilities(EObject value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Fees</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -566,7 +566,7 @@ public interface DocumentRoot extends EObject {
      */
 	String getFees();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getFees <em>Fees</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -576,7 +576,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setFees(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Get Capabilities</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -593,7 +593,7 @@ public interface DocumentRoot extends EObject {
      */
 	GetCapabilitiesType getGetCapabilities();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getGetCapabilities <em>Get Capabilities</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -603,7 +603,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setGetCapabilities(GetCapabilitiesType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Http</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -619,7 +619,7 @@ public interface DocumentRoot extends EObject {
      */
 	HTTPType getHttp();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getHttp <em>Http</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -629,7 +629,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setHttp(HTTPType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Identifier</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -645,7 +645,7 @@ public interface DocumentRoot extends EObject {
      */
 	CodeType getIdentifier();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getIdentifier <em>Identifier</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -655,7 +655,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setIdentifier(CodeType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Language</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -671,7 +671,7 @@ public interface DocumentRoot extends EObject {
      */
 	String getLanguage();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getLanguage <em>Language</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -681,7 +681,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setLanguage(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Metadata</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -698,7 +698,7 @@ public interface DocumentRoot extends EObject {
      */
 	MetadataType getMetadata();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getMetadata <em>Metadata</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -708,7 +708,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setMetadata(MetadataType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Operation</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -724,7 +724,7 @@ public interface DocumentRoot extends EObject {
      */
 	OperationType getOperation();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getOperation <em>Operation</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -734,7 +734,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setOperation(OperationType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Operations Metadata</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -750,7 +750,7 @@ public interface DocumentRoot extends EObject {
      */
 	OperationsMetadataType getOperationsMetadata();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getOperationsMetadata <em>Operations Metadata</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -760,7 +760,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setOperationsMetadata(OperationsMetadataType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Output Format</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -776,7 +776,7 @@ public interface DocumentRoot extends EObject {
      */
 	String getOutputFormat();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getOutputFormat <em>Output Format</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -786,7 +786,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setOutputFormat(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Service Identification</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -802,7 +802,7 @@ public interface DocumentRoot extends EObject {
      */
 	ServiceIdentificationType getServiceIdentification();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getServiceIdentification <em>Service Identification</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -812,7 +812,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setServiceIdentification(ServiceIdentificationType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Service Provider</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -828,7 +828,7 @@ public interface DocumentRoot extends EObject {
      */
 	ServiceProviderType getServiceProvider();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getServiceProvider <em>Service Provider</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -838,7 +838,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setServiceProvider(ServiceProviderType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Supported CRS</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -854,7 +854,7 @@ public interface DocumentRoot extends EObject {
      */
 	String getSupportedCRS();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getSupportedCRS <em>Supported CRS</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -864,7 +864,7 @@ public interface DocumentRoot extends EObject {
      */
 	void setSupportedCRS(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Wg S84 Bounding Box</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -881,7 +881,7 @@ public interface DocumentRoot extends EObject {
      */
 	WGS84BoundingBoxType getWgS84BoundingBox();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DocumentRoot#getWgS84BoundingBox <em>Wg S84 Bounding Box</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

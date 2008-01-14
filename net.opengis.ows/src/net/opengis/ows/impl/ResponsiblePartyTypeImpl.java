@@ -38,7 +38,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * @generated
  */
 public class ResponsiblePartyTypeImpl extends EObjectImpl implements ResponsiblePartyType {
-	/**
+    /**
      * The default value of the '{@link #getIndividualName() <em>Individual Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -48,7 +48,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
      */
 	protected static final String INDIVIDUAL_NAME_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getIndividualName() <em>Individual Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -58,7 +58,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
      */
 	protected String individualName = INDIVIDUAL_NAME_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getOrganisationName() <em>Organisation Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -68,7 +68,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
      */
 	protected static final String ORGANISATION_NAME_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getOrganisationName() <em>Organisation Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -78,7 +78,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
      */
 	protected String organisationName = ORGANISATION_NAME_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getPositionName() <em>Position Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -88,7 +88,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
      */
 	protected static final String POSITION_NAME_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getPositionName() <em>Position Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -98,7 +98,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
      */
 	protected String positionName = POSITION_NAME_EDEFAULT;
 
-	/**
+    /**
      * The cached value of the '{@link #getContactInfo() <em>Contact Info</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -106,9 +106,9 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
      * @generated
      * @ordered
      */
-	protected ContactType contactInfo;
+	protected ContactType contactInfo= null;
 
-	/**
+    /**
      * The cached value of the '{@link #getRole() <em>Role</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -116,9 +116,9 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
      * @generated
      * @ordered
      */
-	protected CodeType role;
+	protected CodeType role= null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -127,7 +127,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -136,7 +136,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
         return OwsPackage.Literals.RESPONSIBLE_PARTY_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -145,7 +145,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
         return individualName;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -157,7 +157,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.RESPONSIBLE_PARTY_TYPE__INDIVIDUAL_NAME, oldIndividualName, individualName));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -166,7 +166,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
         return organisationName;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -178,7 +178,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.RESPONSIBLE_PARTY_TYPE__ORGANISATION_NAME, oldOrganisationName, organisationName));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -187,7 +187,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
         return positionName;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -199,7 +199,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.RESPONSIBLE_PARTY_TYPE__POSITION_NAME, oldPositionName, positionName));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -208,7 +208,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
         return contactInfo;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -223,7 +223,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -242,7 +242,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.RESPONSIBLE_PARTY_TYPE__CONTACT_INFO, newContactInfo, newContactInfo));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -251,7 +251,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
         return role;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -266,7 +266,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -285,7 +285,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.RESPONSIBLE_PARTY_TYPE__ROLE, newRole, newRole));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -300,7 +300,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -321,7 +321,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -347,7 +347,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -373,7 +373,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -394,7 +394,7 @@ public class ResponsiblePartyTypeImpl extends EObjectImpl implements Responsible
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

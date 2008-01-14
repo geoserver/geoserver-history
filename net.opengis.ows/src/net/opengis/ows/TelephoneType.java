@@ -32,7 +32,7 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface TelephoneType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Voice</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -48,7 +48,7 @@ public interface TelephoneType extends EObject {
      */
 	String getVoice();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.TelephoneType#getVoice <em>Voice</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -58,7 +58,7 @@ public interface TelephoneType extends EObject {
      */
 	void setVoice(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Facsimile</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -75,7 +75,7 @@ public interface TelephoneType extends EObject {
      */
 	String getFacsimile();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.TelephoneType#getFacsimile <em>Facsimile</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

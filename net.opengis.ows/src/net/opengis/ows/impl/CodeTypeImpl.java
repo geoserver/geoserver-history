@@ -31,7 +31,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * @generated
  */
 public class CodeTypeImpl extends EObjectImpl implements CodeType {
-	/**
+    /**
      * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -41,7 +41,7 @@ public class CodeTypeImpl extends EObjectImpl implements CodeType {
      */
 	protected static final String VALUE_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -51,7 +51,7 @@ public class CodeTypeImpl extends EObjectImpl implements CodeType {
      */
 	protected String value = VALUE_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getCodeSpace() <em>Code Space</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -61,7 +61,7 @@ public class CodeTypeImpl extends EObjectImpl implements CodeType {
      */
 	protected static final String CODE_SPACE_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getCodeSpace() <em>Code Space</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -71,7 +71,7 @@ public class CodeTypeImpl extends EObjectImpl implements CodeType {
      */
 	protected String codeSpace = CODE_SPACE_EDEFAULT;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -80,7 +80,7 @@ public class CodeTypeImpl extends EObjectImpl implements CodeType {
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -89,7 +89,7 @@ public class CodeTypeImpl extends EObjectImpl implements CodeType {
         return OwsPackage.Literals.CODE_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -98,7 +98,7 @@ public class CodeTypeImpl extends EObjectImpl implements CodeType {
         return value;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -110,7 +110,7 @@ public class CodeTypeImpl extends EObjectImpl implements CodeType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.CODE_TYPE__VALUE, oldValue, value));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -119,7 +119,7 @@ public class CodeTypeImpl extends EObjectImpl implements CodeType {
         return codeSpace;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -131,7 +131,7 @@ public class CodeTypeImpl extends EObjectImpl implements CodeType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.CODE_TYPE__CODE_SPACE, oldCodeSpace, codeSpace));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -146,7 +146,7 @@ public class CodeTypeImpl extends EObjectImpl implements CodeType {
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -163,7 +163,7 @@ public class CodeTypeImpl extends EObjectImpl implements CodeType {
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -180,7 +180,7 @@ public class CodeTypeImpl extends EObjectImpl implements CodeType {
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -195,7 +195,7 @@ public class CodeTypeImpl extends EObjectImpl implements CodeType {
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

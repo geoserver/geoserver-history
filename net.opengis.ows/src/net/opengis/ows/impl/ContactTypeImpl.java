@@ -39,7 +39,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * @generated
  */
 public class ContactTypeImpl extends EObjectImpl implements ContactType {
-	/**
+    /**
      * The cached value of the '{@link #getPhone() <em>Phone</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -47,9 +47,9 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
      * @generated
      * @ordered
      */
-	protected TelephoneType phone;
+	protected TelephoneType phone= null;
 
-	/**
+    /**
      * The cached value of the '{@link #getAddress() <em>Address</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -57,9 +57,9 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
      * @generated
      * @ordered
      */
-	protected AddressType address;
+	protected AddressType address= null;
 
-	/**
+    /**
      * The cached value of the '{@link #getOnlineResource() <em>Online Resource</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -67,9 +67,9 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
      * @generated
      * @ordered
      */
-	protected OnlineResourceType onlineResource;
+	protected OnlineResourceType onlineResource= null;
 
-	/**
+    /**
      * The default value of the '{@link #getHoursOfService() <em>Hours Of Service</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -79,7 +79,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
      */
 	protected static final String HOURS_OF_SERVICE_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getHoursOfService() <em>Hours Of Service</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -89,7 +89,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
      */
 	protected String hoursOfService = HOURS_OF_SERVICE_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getContactInstructions() <em>Contact Instructions</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -99,7 +99,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
      */
 	protected static final String CONTACT_INSTRUCTIONS_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getContactInstructions() <em>Contact Instructions</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -109,7 +109,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
      */
 	protected String contactInstructions = CONTACT_INSTRUCTIONS_EDEFAULT;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -118,7 +118,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -127,7 +127,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
         return OwsPackage.Literals.CONTACT_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -136,7 +136,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
         return phone;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -151,7 +151,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -170,7 +170,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.CONTACT_TYPE__PHONE, newPhone, newPhone));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -179,7 +179,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
         return address;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -194,7 +194,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -213,7 +213,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.CONTACT_TYPE__ADDRESS, newAddress, newAddress));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -222,7 +222,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
         return onlineResource;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -237,7 +237,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -256,7 +256,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.CONTACT_TYPE__ONLINE_RESOURCE, newOnlineResource, newOnlineResource));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -265,7 +265,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
         return hoursOfService;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -277,7 +277,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.CONTACT_TYPE__HOURS_OF_SERVICE, oldHoursOfService, hoursOfService));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -286,7 +286,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
         return contactInstructions;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -298,7 +298,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.CONTACT_TYPE__CONTACT_INSTRUCTIONS, oldContactInstructions, contactInstructions));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -315,7 +315,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -336,7 +336,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -362,7 +362,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -388,7 +388,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -409,7 +409,7 @@ public class ContactTypeImpl extends EObjectImpl implements ContactType {
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

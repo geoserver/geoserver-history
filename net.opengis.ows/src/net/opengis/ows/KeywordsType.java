@@ -50,7 +50,7 @@ public interface KeywordsType extends EObject {
 	 */
 	EList getKeyword();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Type</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -67,7 +67,7 @@ public interface KeywordsType extends EObject {
      */
 	CodeType getType();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.KeywordsType#getType <em>Type</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

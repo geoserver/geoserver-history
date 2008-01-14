@@ -29,7 +29,7 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface ExceptionReportType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Exception</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.ExceptionType}.
      * <!-- begin-user-doc -->
@@ -45,7 +45,7 @@ public interface ExceptionReportType extends EObject {
      */
 	EList getException();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Language</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -61,7 +61,7 @@ public interface ExceptionReportType extends EObject {
      */
 	String getLanguage();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ExceptionReportType#getLanguage <em>Language</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -71,7 +71,7 @@ public interface ExceptionReportType extends EObject {
      */
 	void setLanguage(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Version</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -87,7 +87,7 @@ public interface ExceptionReportType extends EObject {
      */
 	String getVersion();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ExceptionReportType#getVersion <em>Version</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

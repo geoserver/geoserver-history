@@ -33,7 +33,7 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface GetCapabilitiesType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Accept Versions</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -49,7 +49,7 @@ public interface GetCapabilitiesType extends EObject {
      */
 	AcceptVersionsType getAcceptVersions();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.GetCapabilitiesType#getAcceptVersions <em>Accept Versions</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -59,7 +59,7 @@ public interface GetCapabilitiesType extends EObject {
      */
 	void setAcceptVersions(AcceptVersionsType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Sections</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -75,7 +75,7 @@ public interface GetCapabilitiesType extends EObject {
      */
 	SectionsType getSections();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.GetCapabilitiesType#getSections <em>Sections</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -85,7 +85,7 @@ public interface GetCapabilitiesType extends EObject {
      */
 	void setSections(SectionsType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Accept Formats</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -101,7 +101,7 @@ public interface GetCapabilitiesType extends EObject {
      */
 	AcceptFormatsType getAcceptFormats();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.GetCapabilitiesType#getAcceptFormats <em>Accept Formats</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -111,7 +111,7 @@ public interface GetCapabilitiesType extends EObject {
      */
 	void setAcceptFormats(AcceptFormatsType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Update Sequence</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -127,7 +127,7 @@ public interface GetCapabilitiesType extends EObject {
      */
 	String getUpdateSequence();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.GetCapabilitiesType#getUpdateSequence <em>Update Sequence</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

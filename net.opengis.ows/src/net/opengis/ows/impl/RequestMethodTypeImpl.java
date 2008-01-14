@@ -36,7 +36,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * @generated
  */
 public class RequestMethodTypeImpl extends OnlineResourceTypeImpl implements RequestMethodType {
-	/**
+    /**
      * The cached value of the '{@link #getConstraint() <em>Constraint</em>}' containment reference list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -44,9 +44,9 @@ public class RequestMethodTypeImpl extends OnlineResourceTypeImpl implements Req
      * @generated
      * @ordered
      */
-	protected EList constraint;
+	protected EList constraint= null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -55,7 +55,7 @@ public class RequestMethodTypeImpl extends OnlineResourceTypeImpl implements Req
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -64,7 +64,7 @@ public class RequestMethodTypeImpl extends OnlineResourceTypeImpl implements Req
         return OwsPackage.Literals.REQUEST_METHOD_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -76,7 +76,7 @@ public class RequestMethodTypeImpl extends OnlineResourceTypeImpl implements Req
         return constraint;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -89,7 +89,7 @@ public class RequestMethodTypeImpl extends OnlineResourceTypeImpl implements Req
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -102,7 +102,7 @@ public class RequestMethodTypeImpl extends OnlineResourceTypeImpl implements Req
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -117,7 +117,7 @@ public class RequestMethodTypeImpl extends OnlineResourceTypeImpl implements Req
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -131,7 +131,7 @@ public class RequestMethodTypeImpl extends OnlineResourceTypeImpl implements Req
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

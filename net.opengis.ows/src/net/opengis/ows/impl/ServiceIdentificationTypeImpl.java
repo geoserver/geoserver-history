@@ -35,7 +35,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * @generated
  */
 public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implements ServiceIdentificationType {
-	/**
+    /**
      * The cached value of the '{@link #getServiceType() <em>Service Type</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -43,9 +43,9 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
      * @generated
      * @ordered
      */
-	protected CodeType serviceType;
+	protected CodeType serviceType= null;
 
-	/**
+    /**
      * The default value of the '{@link #getServiceTypeVersion() <em>Service Type Version</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -55,7 +55,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
      */
 	protected static final String SERVICE_TYPE_VERSION_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getServiceTypeVersion() <em>Service Type Version</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -65,7 +65,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
      */
 	protected String serviceTypeVersion = SERVICE_TYPE_VERSION_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getFees() <em>Fees</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -75,7 +75,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
      */
 	protected static final String FEES_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getFees() <em>Fees</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -85,7 +85,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
      */
 	protected String fees = FEES_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getAccessConstraints() <em>Access Constraints</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -95,7 +95,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
      */
 	protected static final String ACCESS_CONSTRAINTS_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getAccessConstraints() <em>Access Constraints</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -105,7 +105,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
      */
 	protected String accessConstraints = ACCESS_CONSTRAINTS_EDEFAULT;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -114,7 +114,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -123,7 +123,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
         return OwsPackage.Literals.SERVICE_IDENTIFICATION_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -132,7 +132,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
         return serviceType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -147,7 +147,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -166,7 +166,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE, newServiceType, newServiceType));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -175,7 +175,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
         return serviceTypeVersion;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -187,7 +187,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.SERVICE_IDENTIFICATION_TYPE__SERVICE_TYPE_VERSION, oldServiceTypeVersion, serviceTypeVersion));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -196,7 +196,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
         return fees;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -208,7 +208,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.SERVICE_IDENTIFICATION_TYPE__FEES, oldFees, fees));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -217,7 +217,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
         return accessConstraints;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -229,7 +229,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.SERVICE_IDENTIFICATION_TYPE__ACCESS_CONSTRAINTS, oldAccessConstraints, accessConstraints));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -242,7 +242,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -261,7 +261,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -284,7 +284,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -307,7 +307,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -326,7 +326,7 @@ public class ServiceIdentificationTypeImpl extends DescriptionTypeImpl implement
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

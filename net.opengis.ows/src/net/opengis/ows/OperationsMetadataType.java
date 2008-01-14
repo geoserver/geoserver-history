@@ -30,7 +30,7 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface OperationsMetadataType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Operation</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.OperationType}.
      * <!-- begin-user-doc -->
@@ -46,7 +46,7 @@ public interface OperationsMetadataType extends EObject {
      */
 	EList getOperation();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Parameter</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.DomainType}.
      * <!-- begin-user-doc -->
@@ -62,7 +62,7 @@ public interface OperationsMetadataType extends EObject {
      */
 	EList getParameter();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Constraint</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.DomainType}.
      * <!-- begin-user-doc -->
@@ -78,7 +78,7 @@ public interface OperationsMetadataType extends EObject {
      */
 	EList getConstraint();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Extended Capabilities</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -95,7 +95,7 @@ public interface OperationsMetadataType extends EObject {
      */
 	EObject getExtendedCapabilities();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.OperationsMetadataType#getExtendedCapabilities <em>Extended Capabilities</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

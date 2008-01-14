@@ -31,7 +31,7 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface CodeType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Value</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -48,7 +48,7 @@ public interface CodeType extends EObject {
      */
 	String getValue();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.CodeType#getValue <em>Value</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -58,7 +58,7 @@ public interface CodeType extends EObject {
      */
 	void setValue(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Code Space</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -75,7 +75,7 @@ public interface CodeType extends EObject {
      */
 	String getCodeSpace();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.CodeType#getCodeSpace <em>Code Space</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

@@ -49,7 +49,7 @@ public interface ExceptionType extends EObject {
 	 */
 	EList getExceptionText();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Exception Code</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -65,7 +65,7 @@ public interface ExceptionType extends EObject {
      */
 	String getExceptionCode();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ExceptionType#getExceptionCode <em>Exception Code</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -75,7 +75,7 @@ public interface ExceptionType extends EObject {
      */
 	void setExceptionCode(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Locator</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -91,7 +91,7 @@ public interface ExceptionType extends EObject {
      */
 	String getLocator();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ExceptionType#getLocator <em>Locator</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

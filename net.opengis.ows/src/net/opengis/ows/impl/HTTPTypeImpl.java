@@ -40,7 +40,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * @generated
  */
 public class HTTPTypeImpl extends EObjectImpl implements HTTPType {
-	/**
+    /**
      * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -48,9 +48,9 @@ public class HTTPTypeImpl extends EObjectImpl implements HTTPType {
      * @generated
      * @ordered
      */
-	protected FeatureMap group;
+	protected FeatureMap group= null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -59,7 +59,7 @@ public class HTTPTypeImpl extends EObjectImpl implements HTTPType {
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -68,7 +68,7 @@ public class HTTPTypeImpl extends EObjectImpl implements HTTPType {
         return OwsPackage.Literals.HTTP_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -80,25 +80,25 @@ public class HTTPTypeImpl extends EObjectImpl implements HTTPType {
         return group;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	public EList getGet() {
-        return getGroup().list(OwsPackage.Literals.HTTP_TYPE__GET);
+        return ((FeatureMap)getGroup()).list(OwsPackage.Literals.HTTP_TYPE__GET);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	public EList getPost() {
-        return getGroup().list(OwsPackage.Literals.HTTP_TYPE__POST);
+        return ((FeatureMap)getGroup()).list(OwsPackage.Literals.HTTP_TYPE__POST);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -115,7 +115,7 @@ public class HTTPTypeImpl extends EObjectImpl implements HTTPType {
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -133,7 +133,7 @@ public class HTTPTypeImpl extends EObjectImpl implements HTTPType {
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -155,7 +155,7 @@ public class HTTPTypeImpl extends EObjectImpl implements HTTPType {
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -175,7 +175,7 @@ public class HTTPTypeImpl extends EObjectImpl implements HTTPType {
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -192,7 +192,7 @@ public class HTTPTypeImpl extends EObjectImpl implements HTTPType {
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

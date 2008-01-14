@@ -36,7 +36,7 @@ import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
  * @generated
  */
 public class SectionsTypeImpl extends EObjectImpl implements SectionsType {
-	/**
+    /**
      * The cached value of the '{@link #getSection() <em>Section</em>}' attribute list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -44,9 +44,9 @@ public class SectionsTypeImpl extends EObjectImpl implements SectionsType {
      * @generated
      * @ordered
      */
-	protected EList section;
+	protected EList section= null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -55,7 +55,7 @@ public class SectionsTypeImpl extends EObjectImpl implements SectionsType {
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -64,7 +64,7 @@ public class SectionsTypeImpl extends EObjectImpl implements SectionsType {
         return OwsPackage.Literals.SECTIONS_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -76,7 +76,7 @@ public class SectionsTypeImpl extends EObjectImpl implements SectionsType {
         return section;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -89,7 +89,7 @@ public class SectionsTypeImpl extends EObjectImpl implements SectionsType {
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -104,7 +104,7 @@ public class SectionsTypeImpl extends EObjectImpl implements SectionsType {
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -118,7 +118,7 @@ public class SectionsTypeImpl extends EObjectImpl implements SectionsType {
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -131,7 +131,7 @@ public class SectionsTypeImpl extends EObjectImpl implements SectionsType {
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

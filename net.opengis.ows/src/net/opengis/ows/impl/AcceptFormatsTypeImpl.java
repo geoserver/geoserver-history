@@ -36,7 +36,7 @@ import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
  * @generated
  */
 public class AcceptFormatsTypeImpl extends EObjectImpl implements AcceptFormatsType {
-	/**
+    /**
      * The cached value of the '{@link #getOutputFormat() <em>Output Format</em>}' attribute list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -44,9 +44,9 @@ public class AcceptFormatsTypeImpl extends EObjectImpl implements AcceptFormatsT
      * @generated
      * @ordered
      */
-	protected EList outputFormat;
+	protected EList outputFormat= null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -55,7 +55,7 @@ public class AcceptFormatsTypeImpl extends EObjectImpl implements AcceptFormatsT
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -64,7 +64,7 @@ public class AcceptFormatsTypeImpl extends EObjectImpl implements AcceptFormatsT
         return OwsPackage.Literals.ACCEPT_FORMATS_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -76,7 +76,7 @@ public class AcceptFormatsTypeImpl extends EObjectImpl implements AcceptFormatsT
         return outputFormat;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -89,7 +89,7 @@ public class AcceptFormatsTypeImpl extends EObjectImpl implements AcceptFormatsT
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -104,7 +104,7 @@ public class AcceptFormatsTypeImpl extends EObjectImpl implements AcceptFormatsT
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -118,7 +118,7 @@ public class AcceptFormatsTypeImpl extends EObjectImpl implements AcceptFormatsT
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -131,7 +131,7 @@ public class AcceptFormatsTypeImpl extends EObjectImpl implements AcceptFormatsT
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

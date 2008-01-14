@@ -37,7 +37,7 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface BoundingBoxType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Lower Corner</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -53,7 +53,7 @@ public interface BoundingBoxType extends EObject {
      */
 	List getLowerCorner();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.BoundingBoxType#getLowerCorner <em>Lower Corner</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -63,7 +63,7 @@ public interface BoundingBoxType extends EObject {
      */
 	void setLowerCorner(List value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Upper Corner</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -79,7 +79,7 @@ public interface BoundingBoxType extends EObject {
      */
 	List getUpperCorner();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.BoundingBoxType#getUpperCorner <em>Upper Corner</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -89,7 +89,7 @@ public interface BoundingBoxType extends EObject {
      */
 	void setUpperCorner(List value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Crs</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -107,7 +107,7 @@ public interface BoundingBoxType extends EObject {
      */
 	String getCrs();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.BoundingBoxType#getCrs <em>Crs</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -117,7 +117,7 @@ public interface BoundingBoxType extends EObject {
      */
 	void setCrs(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Dimensions</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -133,7 +133,7 @@ public interface BoundingBoxType extends EObject {
      */
 	BigInteger getDimensions();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.BoundingBoxType#getDimensions <em>Dimensions</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

@@ -36,7 +36,7 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface AddressType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Delivery Point</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -52,7 +52,7 @@ public interface AddressType extends EObject {
      */
 	String getDeliveryPoint();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.AddressType#getDeliveryPoint <em>Delivery Point</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -62,7 +62,7 @@ public interface AddressType extends EObject {
      */
 	void setDeliveryPoint(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>City</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -78,7 +78,7 @@ public interface AddressType extends EObject {
      */
 	String getCity();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.AddressType#getCity <em>City</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -88,7 +88,7 @@ public interface AddressType extends EObject {
      */
 	void setCity(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Administrative Area</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -104,7 +104,7 @@ public interface AddressType extends EObject {
      */
 	String getAdministrativeArea();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.AddressType#getAdministrativeArea <em>Administrative Area</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -114,7 +114,7 @@ public interface AddressType extends EObject {
      */
 	void setAdministrativeArea(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Postal Code</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -130,7 +130,7 @@ public interface AddressType extends EObject {
      */
 	String getPostalCode();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.AddressType#getPostalCode <em>Postal Code</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -140,7 +140,7 @@ public interface AddressType extends EObject {
      */
 	void setPostalCode(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Country</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -156,7 +156,7 @@ public interface AddressType extends EObject {
      */
 	String getCountry();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.AddressType#getCountry <em>Country</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -166,7 +166,7 @@ public interface AddressType extends EObject {
      */
 	void setCountry(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Electronic Mail Address</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -182,7 +182,7 @@ public interface AddressType extends EObject {
      */
 	String getElectronicMailAddress();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.AddressType#getElectronicMailAddress <em>Electronic Mail Address</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

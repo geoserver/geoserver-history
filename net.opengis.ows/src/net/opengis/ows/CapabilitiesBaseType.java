@@ -33,7 +33,7 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface CapabilitiesBaseType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Service Identification</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -50,7 +50,7 @@ public interface CapabilitiesBaseType extends EObject {
      */
 	ServiceIdentificationType getServiceIdentification();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.CapabilitiesBaseType#getServiceIdentification <em>Service Identification</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -60,7 +60,7 @@ public interface CapabilitiesBaseType extends EObject {
      */
 	void setServiceIdentification(ServiceIdentificationType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Service Provider</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -77,7 +77,7 @@ public interface CapabilitiesBaseType extends EObject {
      */
 	ServiceProviderType getServiceProvider();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.CapabilitiesBaseType#getServiceProvider <em>Service Provider</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -87,7 +87,7 @@ public interface CapabilitiesBaseType extends EObject {
      */
 	void setServiceProvider(ServiceProviderType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Operations Metadata</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -104,7 +104,7 @@ public interface CapabilitiesBaseType extends EObject {
      */
 	OperationsMetadataType getOperationsMetadata();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.CapabilitiesBaseType#getOperationsMetadata <em>Operations Metadata</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -114,7 +114,7 @@ public interface CapabilitiesBaseType extends EObject {
      */
 	void setOperationsMetadata(OperationsMetadataType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Update Sequence</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -131,7 +131,7 @@ public interface CapabilitiesBaseType extends EObject {
      */
 	String getUpdateSequence();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.CapabilitiesBaseType#getUpdateSequence <em>Update Sequence</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -141,7 +141,7 @@ public interface CapabilitiesBaseType extends EObject {
      */
 	void setUpdateSequence(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Version</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -158,7 +158,7 @@ public interface CapabilitiesBaseType extends EObject {
      */
 	String getVersion();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.CapabilitiesBaseType#getVersion <em>Version</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

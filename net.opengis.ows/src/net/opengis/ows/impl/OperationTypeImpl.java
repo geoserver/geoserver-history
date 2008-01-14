@@ -46,7 +46,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * @generated
  */
 public class OperationTypeImpl extends EObjectImpl implements OperationType {
-	/**
+    /**
      * The cached value of the '{@link #getDCP() <em>DCP</em>}' containment reference list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -54,9 +54,9 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
      * @generated
      * @ordered
      */
-	protected EList dCP;
+	protected EList dCP= null;
 
-	/**
+    /**
      * The cached value of the '{@link #getParameter() <em>Parameter</em>}' containment reference list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -64,9 +64,9 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
      * @generated
      * @ordered
      */
-	protected EList parameter;
+	protected EList parameter= null;
 
-	/**
+    /**
      * The cached value of the '{@link #getConstraint() <em>Constraint</em>}' containment reference list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -74,9 +74,9 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
      * @generated
      * @ordered
      */
-	protected EList constraint;
+	protected EList constraint= null;
 
-	/**
+    /**
      * The cached value of the '{@link #getMetadata() <em>Metadata</em>}' containment reference list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -84,9 +84,9 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
      * @generated
      * @ordered
      */
-	protected EList metadata;
+	protected EList metadata= null;
 
-	/**
+    /**
      * The default value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -96,7 +96,7 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
      */
 	protected static final String NAME_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -106,7 +106,7 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
      */
 	protected String name = NAME_EDEFAULT;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -115,7 +115,7 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -124,7 +124,7 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
         return OwsPackage.Literals.OPERATION_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -136,7 +136,7 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
         return dCP;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -148,7 +148,7 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
         return parameter;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -160,7 +160,7 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
         return constraint;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -172,7 +172,7 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
         return metadata;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -181,7 +181,7 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
         return name;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -193,7 +193,7 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.OPERATION_TYPE__NAME, oldName, name));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -212,7 +212,7 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -233,7 +233,7 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -263,7 +263,7 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -289,7 +289,7 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -310,7 +310,7 @@ public class OperationTypeImpl extends EObjectImpl implements OperationType {
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
