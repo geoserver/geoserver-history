@@ -25,6 +25,7 @@ import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.GrantedAuthorityImpl;
 import org.acegisecurity.providers.AuthenticationProvider;
 import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
+import org.acegisecurity.userdetails.User;
 
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.ConfigurationException;
@@ -134,7 +135,7 @@ public class OpenPlansAuthenticationProvider implements AuthenticationProvider {
       
       if (roleSet == null) {
         roleSet = new TreeSet();
-        roleSet.add("ROLE_ANONYMOUS");
+        roleSet.add("ROLE_LOGGED");
       }
       
       ga = new GrantedAuthority[roleSet.size() + (auth.getAuthorities() == null? 0 : auth.getAuthorities().length)];
@@ -152,11 +153,22 @@ public class OpenPlansAuthenticationProvider implements AuthenticationProvider {
            i++){
              ga[i] = new GrantedAuthorityImpl((String)iter.next());
            }
-      
-      UsernamePasswordAuthenticationToken upat =
-        new UsernamePasswordAuthenticationToken(auth.getName(), auth.getCredentials(), ga);
-      return upat;
-    }
+
+	  UsernamePasswordAuthenticationToken upat =
+		  new UsernamePasswordAuthenticationToken(
+				  new User(auth.getName(),
+					  (auth.getCredentials() == null ? null : auth.getCredentials().toString()),
+					  true,
+					  true,
+					  true,
+					  true,
+					  ga
+					  ),
+				  auth.getCredentials(),
+				  ga
+				  );
+	  return upat;
+	}
 
 	public boolean supports(Class arg0) {
 		return UsernamePasswordAuthenticationToken.class.equals(arg0);
