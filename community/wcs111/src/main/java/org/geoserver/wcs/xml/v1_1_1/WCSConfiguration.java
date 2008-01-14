@@ -39,6 +39,7 @@ public class WCSConfiguration extends Configuration {
         super.registerBindings(bindings);
         
         final EFactory wcsFactory = Wcs111Factory.eINSTANCE;
+        register(bindings, wcsFactory, WCS._GetCapabilities);
         register(bindings, wcsFactory, WCS.RequestBaseType);
         register(bindings, wcsFactory, WCS._DescribeCoverage);
         register(bindings, wcsFactory, WCS._GetCoverage);
