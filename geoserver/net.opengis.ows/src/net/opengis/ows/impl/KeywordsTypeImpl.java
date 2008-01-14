@@ -40,7 +40,7 @@ import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
  * @generated
  */
 public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
-	/**
+    /**
      * The cached value of the '{@link #getKeyword() <em>Keyword</em>}' attribute list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -48,9 +48,9 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
      * @generated
      * @ordered
      */
-	protected EList keyword;
+	protected EList keyword= null;
 
-	/**
+    /**
      * The cached value of the '{@link #getType() <em>Type</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -58,9 +58,9 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
      * @generated
      * @ordered
      */
-	protected CodeType type;
+	protected CodeType type= null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -69,7 +69,7 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -78,7 +78,7 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
         return OwsPackage.Literals.KEYWORDS_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -90,7 +90,7 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
         return keyword;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -99,7 +99,7 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
         return type;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -114,7 +114,7 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -133,7 +133,7 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.KEYWORDS_TYPE__TYPE, newType, newType));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -146,7 +146,7 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -161,7 +161,7 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -179,7 +179,7 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -196,7 +196,7 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -211,7 +211,7 @@ public class KeywordsTypeImpl extends EObjectImpl implements KeywordsType {
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

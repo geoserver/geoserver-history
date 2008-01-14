@@ -33,7 +33,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * @generated
  */
 public class DCPTypeImpl extends EObjectImpl implements DCPType {
-	/**
+    /**
      * The cached value of the '{@link #getHTTP() <em>HTTP</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -41,9 +41,9 @@ public class DCPTypeImpl extends EObjectImpl implements DCPType {
      * @generated
      * @ordered
      */
-	protected HTTPType hTTP;
+	protected HTTPType hTTP= null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -52,7 +52,7 @@ public class DCPTypeImpl extends EObjectImpl implements DCPType {
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -61,7 +61,7 @@ public class DCPTypeImpl extends EObjectImpl implements DCPType {
         return OwsPackage.Literals.DCP_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -70,7 +70,7 @@ public class DCPTypeImpl extends EObjectImpl implements DCPType {
         return hTTP;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -85,7 +85,7 @@ public class DCPTypeImpl extends EObjectImpl implements DCPType {
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -104,7 +104,7 @@ public class DCPTypeImpl extends EObjectImpl implements DCPType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.DCP_TYPE__HTTP, newHTTP, newHTTP));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -117,7 +117,7 @@ public class DCPTypeImpl extends EObjectImpl implements DCPType {
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -130,7 +130,7 @@ public class DCPTypeImpl extends EObjectImpl implements DCPType {
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -144,7 +144,7 @@ public class DCPTypeImpl extends EObjectImpl implements DCPType {
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -158,7 +158,7 @@ public class DCPTypeImpl extends EObjectImpl implements DCPType {
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

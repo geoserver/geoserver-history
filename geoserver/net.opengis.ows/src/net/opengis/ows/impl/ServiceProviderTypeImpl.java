@@ -36,7 +36,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * @generated
  */
 public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProviderType {
-	/**
+    /**
      * The default value of the '{@link #getProviderName() <em>Provider Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -46,7 +46,7 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
      */
 	protected static final String PROVIDER_NAME_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getProviderName() <em>Provider Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -56,7 +56,7 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
      */
 	protected String providerName = PROVIDER_NAME_EDEFAULT;
 
-	/**
+    /**
      * The cached value of the '{@link #getProviderSite() <em>Provider Site</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -64,9 +64,9 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
      * @generated
      * @ordered
      */
-	protected OnlineResourceType providerSite;
+	protected OnlineResourceType providerSite= null;
 
-	/**
+    /**
      * The cached value of the '{@link #getServiceContact() <em>Service Contact</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -74,9 +74,9 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
      * @generated
      * @ordered
      */
-	protected ResponsiblePartySubsetType serviceContact;
+	protected ResponsiblePartySubsetType serviceContact= null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -85,7 +85,7 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -94,7 +94,7 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
         return OwsPackage.Literals.SERVICE_PROVIDER_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -103,7 +103,7 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
         return providerName;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -115,7 +115,7 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.SERVICE_PROVIDER_TYPE__PROVIDER_NAME, oldProviderName, providerName));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -124,7 +124,7 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
         return providerSite;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -139,7 +139,7 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -158,7 +158,7 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.SERVICE_PROVIDER_TYPE__PROVIDER_SITE, newProviderSite, newProviderSite));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -167,7 +167,7 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
         return serviceContact;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -182,7 +182,7 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -201,7 +201,7 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.SERVICE_PROVIDER_TYPE__SERVICE_CONTACT, newServiceContact, newServiceContact));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -216,7 +216,7 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -233,7 +233,7 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -253,7 +253,7 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -273,7 +273,7 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -290,7 +290,7 @@ public class ServiceProviderTypeImpl extends EObjectImpl implements ServiceProvi
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

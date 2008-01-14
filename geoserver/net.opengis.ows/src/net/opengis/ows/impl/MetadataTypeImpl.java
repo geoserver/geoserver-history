@@ -39,7 +39,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * @generated
  */
 public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
-	/**
+    /**
      * The cached value of the '{@link #getAbstractMetaDataGroup() <em>Abstract Meta Data Group</em>}' attribute list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -47,9 +47,9 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
      * @generated
      * @ordered
      */
-	protected FeatureMap abstractMetaDataGroup;
+	protected FeatureMap abstractMetaDataGroup= null;
 
-	/**
+    /**
      * The default value of the '{@link #getAbout() <em>About</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -59,7 +59,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
      */
 	protected static final String ABOUT_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getAbout() <em>About</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -69,7 +69,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
      */
 	protected String about = ABOUT_EDEFAULT;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -78,7 +78,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -87,7 +87,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
         return OwsPackage.Literals.METADATA_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -99,7 +99,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
         return abstractMetaDataGroup;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -108,7 +108,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
         return (EObject)getAbstractMetaDataGroup().get(OwsPackage.Literals.METADATA_TYPE__ABSTRACT_META_DATA, true);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -117,7 +117,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
         return ((FeatureMap.Internal)getAbstractMetaDataGroup()).basicAdd(OwsPackage.Literals.METADATA_TYPE__ABSTRACT_META_DATA, newAbstractMetaData, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -126,7 +126,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
         return about;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -138,7 +138,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.METADATA_TYPE__ABOUT, oldAbout, about));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -153,7 +153,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -171,7 +171,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -188,7 +188,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -205,7 +205,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -222,7 +222,7 @@ public class MetadataTypeImpl extends EObjectImpl implements MetadataType {
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

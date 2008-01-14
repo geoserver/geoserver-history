@@ -34,7 +34,7 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface DescriptionType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Title</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -51,7 +51,7 @@ public interface DescriptionType extends EObject {
      */
 	String getTitle();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DescriptionType#getTitle <em>Title</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -61,7 +61,7 @@ public interface DescriptionType extends EObject {
      */
 	void setTitle(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Abstract</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -78,7 +78,7 @@ public interface DescriptionType extends EObject {
      */
 	String getAbstract();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DescriptionType#getAbstract <em>Abstract</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -88,7 +88,7 @@ public interface DescriptionType extends EObject {
      */
 	void setAbstract(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Keywords</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.KeywordsType}.
      * <!-- begin-user-doc -->

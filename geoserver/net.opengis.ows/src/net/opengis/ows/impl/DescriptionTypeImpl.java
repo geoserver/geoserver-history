@@ -42,7 +42,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * @generated
  */
 public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType {
-	/**
+    /**
      * The default value of the '{@link #getTitle() <em>Title</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -52,7 +52,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
      */
 	protected static final String TITLE_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getTitle() <em>Title</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -62,7 +62,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
      */
 	protected String title = TITLE_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getAbstract() <em>Abstract</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -72,7 +72,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
      */
 	protected static final String ABSTRACT_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getAbstract() <em>Abstract</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -82,7 +82,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
      */
 	protected String abstract_ = ABSTRACT_EDEFAULT;
 
-	/**
+    /**
      * The cached value of the '{@link #getKeywords() <em>Keywords</em>}' containment reference list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -90,9 +90,9 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
      * @generated
      * @ordered
      */
-	protected EList keywords;
+	protected EList keywords= null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -101,7 +101,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -110,7 +110,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
         return OwsPackage.Literals.DESCRIPTION_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -119,7 +119,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
         return title;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -131,7 +131,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.DESCRIPTION_TYPE__TITLE, oldTitle, title));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -140,7 +140,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
         return abstract_;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -152,7 +152,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.DESCRIPTION_TYPE__ABSTRACT, oldAbstract, abstract_));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -164,7 +164,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
         return keywords;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -177,7 +177,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -194,7 +194,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -215,7 +215,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -235,7 +235,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -252,7 +252,7 @@ public class DescriptionTypeImpl extends EObjectImpl implements DescriptionType 
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

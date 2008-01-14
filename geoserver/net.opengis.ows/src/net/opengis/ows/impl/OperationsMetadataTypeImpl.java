@@ -45,7 +45,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * @generated
  */
 public class OperationsMetadataTypeImpl extends EObjectImpl implements OperationsMetadataType {
-	/**
+    /**
      * The cached value of the '{@link #getOperation() <em>Operation</em>}' containment reference list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -53,9 +53,9 @@ public class OperationsMetadataTypeImpl extends EObjectImpl implements Operation
      * @generated
      * @ordered
      */
-	protected EList operation;
+	protected EList operation= null;
 
-	/**
+    /**
      * The cached value of the '{@link #getParameter() <em>Parameter</em>}' containment reference list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -63,9 +63,9 @@ public class OperationsMetadataTypeImpl extends EObjectImpl implements Operation
      * @generated
      * @ordered
      */
-	protected EList parameter;
+	protected EList parameter= null;
 
-	/**
+    /**
      * The cached value of the '{@link #getConstraint() <em>Constraint</em>}' containment reference list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -73,9 +73,9 @@ public class OperationsMetadataTypeImpl extends EObjectImpl implements Operation
      * @generated
      * @ordered
      */
-	protected EList constraint;
+	protected EList constraint= null;
 
-	/**
+    /**
      * The cached value of the '{@link #getExtendedCapabilities() <em>Extended Capabilities</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -83,9 +83,9 @@ public class OperationsMetadataTypeImpl extends EObjectImpl implements Operation
      * @generated
      * @ordered
      */
-	protected EObject extendedCapabilities;
+	protected EObject extendedCapabilities= null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -94,7 +94,7 @@ public class OperationsMetadataTypeImpl extends EObjectImpl implements Operation
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -103,7 +103,7 @@ public class OperationsMetadataTypeImpl extends EObjectImpl implements Operation
         return OwsPackage.Literals.OPERATIONS_METADATA_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -115,7 +115,7 @@ public class OperationsMetadataTypeImpl extends EObjectImpl implements Operation
         return operation;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -127,7 +127,7 @@ public class OperationsMetadataTypeImpl extends EObjectImpl implements Operation
         return parameter;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -139,7 +139,7 @@ public class OperationsMetadataTypeImpl extends EObjectImpl implements Operation
         return constraint;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -148,7 +148,7 @@ public class OperationsMetadataTypeImpl extends EObjectImpl implements Operation
         return extendedCapabilities;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -163,7 +163,7 @@ public class OperationsMetadataTypeImpl extends EObjectImpl implements Operation
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -182,7 +182,7 @@ public class OperationsMetadataTypeImpl extends EObjectImpl implements Operation
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.OPERATIONS_METADATA_TYPE__EXTENDED_CAPABILITIES, newExtendedCapabilities, newExtendedCapabilities));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -201,7 +201,7 @@ public class OperationsMetadataTypeImpl extends EObjectImpl implements Operation
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -220,7 +220,7 @@ public class OperationsMetadataTypeImpl extends EObjectImpl implements Operation
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -246,7 +246,7 @@ public class OperationsMetadataTypeImpl extends EObjectImpl implements Operation
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -269,7 +269,7 @@ public class OperationsMetadataTypeImpl extends EObjectImpl implements Operation
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

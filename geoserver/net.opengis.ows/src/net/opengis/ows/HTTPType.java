@@ -31,7 +31,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * @generated
  */
 public interface HTTPType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Group</b></em>' attribute list.
      * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
      * <!-- begin-user-doc -->
@@ -48,7 +48,7 @@ public interface HTTPType extends EObject {
      */
 	FeatureMap getGroup();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Get</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.RequestMethodType}.
      * <!-- begin-user-doc -->
@@ -64,7 +64,7 @@ public interface HTTPType extends EObject {
      */
 	EList getGet();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Post</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.RequestMethodType}.
      * <!-- begin-user-doc -->

@@ -39,7 +39,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * @generated
  */
 public class CapabilitiesBaseTypeImpl extends EObjectImpl implements CapabilitiesBaseType {
-	/**
+    /**
      * The cached value of the '{@link #getServiceIdentification() <em>Service Identification</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -47,9 +47,9 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
      * @generated
      * @ordered
      */
-	protected ServiceIdentificationType serviceIdentification;
+	protected ServiceIdentificationType serviceIdentification= null;
 
-	/**
+    /**
      * The cached value of the '{@link #getServiceProvider() <em>Service Provider</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -57,9 +57,9 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
      * @generated
      * @ordered
      */
-	protected ServiceProviderType serviceProvider;
+	protected ServiceProviderType serviceProvider= null;
 
-	/**
+    /**
      * The cached value of the '{@link #getOperationsMetadata() <em>Operations Metadata</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -67,9 +67,9 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
      * @generated
      * @ordered
      */
-	protected OperationsMetadataType operationsMetadata;
+	protected OperationsMetadataType operationsMetadata= null;
 
-	/**
+    /**
      * The default value of the '{@link #getUpdateSequence() <em>Update Sequence</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -79,7 +79,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
      */
 	protected static final String UPDATE_SEQUENCE_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getUpdateSequence() <em>Update Sequence</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -89,7 +89,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
      */
 	protected String updateSequence = UPDATE_SEQUENCE_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getVersion() <em>Version</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -99,7 +99,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
      */
 	protected static final String VERSION_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getVersion() <em>Version</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -109,7 +109,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
      */
 	protected String version = VERSION_EDEFAULT;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -118,7 +118,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -127,7 +127,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
         return OwsPackage.Literals.CAPABILITIES_BASE_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -136,7 +136,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
         return serviceIdentification;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -151,7 +151,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -170,7 +170,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.CAPABILITIES_BASE_TYPE__SERVICE_IDENTIFICATION, newServiceIdentification, newServiceIdentification));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -179,7 +179,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
         return serviceProvider;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -194,7 +194,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -213,7 +213,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.CAPABILITIES_BASE_TYPE__SERVICE_PROVIDER, newServiceProvider, newServiceProvider));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -222,7 +222,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
         return operationsMetadata;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -237,7 +237,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -256,7 +256,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.CAPABILITIES_BASE_TYPE__OPERATIONS_METADATA, newOperationsMetadata, newOperationsMetadata));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -265,7 +265,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
         return updateSequence;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -277,7 +277,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.CAPABILITIES_BASE_TYPE__UPDATE_SEQUENCE, oldUpdateSequence, updateSequence));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -286,7 +286,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
         return version;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -298,7 +298,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.CAPABILITIES_BASE_TYPE__VERSION, oldVersion, version));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -315,7 +315,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -336,7 +336,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -362,7 +362,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -388,7 +388,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -409,7 +409,7 @@ public class CapabilitiesBaseTypeImpl extends EObjectImpl implements Capabilitie
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

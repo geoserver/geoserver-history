@@ -33,7 +33,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * @generated
  */
 public interface MetadataType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Abstract Meta Data Group</b></em>' attribute list.
      * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
      * <!-- begin-user-doc -->
@@ -44,13 +44,13 @@ public interface MetadataType extends EObject {
 	 * <!-- end-user-doc -->
      * @return the value of the '<em>Abstract Meta Data Group</em>' attribute list.
      * @see net.opengis.ows.OwsPackage#getMetadataType_AbstractMetaDataGroup()
-     * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry" many="false"
+     * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry"
      *        extendedMetaData="kind='group' name='AbstractMetaData:group' namespace='##targetNamespace'"
      * @generated
      */
 	FeatureMap getAbstractMetaDataGroup();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Abstract Meta Data</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -66,7 +66,7 @@ public interface MetadataType extends EObject {
      */
 	EObject getAbstractMetaData();
 
-	/**
+    /**
      * Returns the value of the '<em><b>About</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -82,7 +82,7 @@ public interface MetadataType extends EObject {
      */
 	String getAbout();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.MetadataType#getAbout <em>About</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

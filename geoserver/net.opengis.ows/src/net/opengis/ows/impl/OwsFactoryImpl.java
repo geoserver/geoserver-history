@@ -26,7 +26,7 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
  * @generated
  */
 public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
-	/**
+    /**
      * Creates the default factory implementation.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -45,7 +45,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return new OwsFactoryImpl();
     }
 
-	/**
+    /**
      * Creates an instance of the factory.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -55,7 +55,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -96,7 +96,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         }
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -116,7 +116,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         }
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -136,7 +136,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         }
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -146,7 +146,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return acceptFormatsType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -156,7 +156,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return acceptVersionsType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -166,7 +166,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return addressType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -176,7 +176,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return boundingBoxType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -186,7 +186,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return capabilitiesBaseType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -196,7 +196,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return codeType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -206,7 +206,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return contactType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -216,7 +216,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return dcpType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -226,7 +226,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return descriptionType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -236,7 +236,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return documentRoot;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -246,7 +246,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return domainType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -256,7 +256,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return exceptionReportType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -266,7 +266,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return exceptionType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -276,7 +276,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return getCapabilitiesType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -286,7 +286,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return httpType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -296,7 +296,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return identificationType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -306,7 +306,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return keywordsType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -316,7 +316,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return metadataType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -326,7 +326,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return onlineResourceType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -336,7 +336,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return operationType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -346,7 +346,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return operationsMetadataType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -356,7 +356,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return requestMethodType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -366,7 +366,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return responsiblePartySubsetType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -376,7 +376,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return responsiblePartyType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -386,7 +386,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return sectionsType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -396,7 +396,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return serviceIdentificationType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -406,7 +406,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return serviceProviderType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -416,7 +416,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return telephoneType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -426,7 +426,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return wgs84BoundingBoxType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -435,7 +435,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return (String)super.createFromString(eDataType, initialValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -444,7 +444,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return super.convertToString(eDataType, instanceValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -453,7 +453,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return (String)super.createFromString(eDataType, initialValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -462,7 +462,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return super.convertToString(eDataType, instanceValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -471,7 +471,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return (List)super.createFromString(eDataType, initialValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -480,7 +480,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return super.convertToString(eDataType, instanceValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -489,7 +489,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return (String)super.createFromString(eDataType, initialValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -498,7 +498,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return super.convertToString(eDataType, instanceValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -507,7 +507,7 @@ public class OwsFactoryImpl extends EFactoryImpl implements OwsFactory {
         return (OwsPackage)getEPackage();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @deprecated

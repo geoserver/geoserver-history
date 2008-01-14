@@ -27,7 +27,7 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface ServiceProviderType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Provider Name</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -43,7 +43,7 @@ public interface ServiceProviderType extends EObject {
      */
 	String getProviderName();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ServiceProviderType#getProviderName <em>Provider Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -53,7 +53,7 @@ public interface ServiceProviderType extends EObject {
      */
 	void setProviderName(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Provider Site</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -69,7 +69,7 @@ public interface ServiceProviderType extends EObject {
      */
 	OnlineResourceType getProviderSite();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ServiceProviderType#getProviderSite <em>Provider Site</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -79,7 +79,7 @@ public interface ServiceProviderType extends EObject {
      */
 	void setProviderSite(OnlineResourceType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Service Contact</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -95,7 +95,7 @@ public interface ServiceProviderType extends EObject {
      */
 	ResponsiblePartySubsetType getServiceContact();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ServiceProviderType#getServiceContact <em>Service Contact</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

@@ -58,238 +58,238 @@ import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
  * @generated
  */
 public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass acceptFormatsTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass acceptVersionsTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass addressTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass boundingBoxTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass capabilitiesBaseTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass codeTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass contactTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass dcpTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass descriptionTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass documentRootEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass domainTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass exceptionReportTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass exceptionTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass getCapabilitiesTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass httpTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass identificationTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass keywordsTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass metadataTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass onlineResourceTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass operationTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass operationsMetadataTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass requestMethodTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass responsiblePartySubsetTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass responsiblePartyTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass sectionsTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass serviceIdentificationTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass serviceProviderTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass telephoneTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EClass wgs84BoundingBoxTypeEClass = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EDataType mimeTypeEDataType = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EDataType versionTypeEDataType = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EDataType positionTypeEDataType = null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private EDataType updateSequenceTypeEDataType = null;
 
-	/**
+    /**
      * Creates an instance of the model <b>Package</b>, registered with
      * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
      * package URI value.
@@ -308,14 +308,14 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         super(eNS_URI, OwsFactory.eINSTANCE);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private static boolean isInited = false;
 
-	/**
+    /**
      * Creates, registers, and initializes the <b>Package</b> for this
      * model, and for any others upon which it depends.  Simple
      * dependencies are satisfied by calling this method on all
@@ -361,7 +361,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return theOwsPackage;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -370,7 +370,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return acceptFormatsTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -379,7 +379,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)acceptFormatsTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -388,7 +388,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return acceptVersionsTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -397,7 +397,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)acceptVersionsTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -406,7 +406,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return addressTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -415,7 +415,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)addressTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -424,7 +424,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)addressTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -433,7 +433,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)addressTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -442,7 +442,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)addressTypeEClass.getEStructuralFeatures().get(3);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -451,7 +451,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)addressTypeEClass.getEStructuralFeatures().get(4);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -460,7 +460,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)addressTypeEClass.getEStructuralFeatures().get(5);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -469,7 +469,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return boundingBoxTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -478,7 +478,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)boundingBoxTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -487,7 +487,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)boundingBoxTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -496,7 +496,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)boundingBoxTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -505,7 +505,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)boundingBoxTypeEClass.getEStructuralFeatures().get(3);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -514,7 +514,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return capabilitiesBaseTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -523,7 +523,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)capabilitiesBaseTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -532,7 +532,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)capabilitiesBaseTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -541,7 +541,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)capabilitiesBaseTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -550,7 +550,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)capabilitiesBaseTypeEClass.getEStructuralFeatures().get(3);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -559,7 +559,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)capabilitiesBaseTypeEClass.getEStructuralFeatures().get(4);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -568,7 +568,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return codeTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -577,7 +577,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)codeTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -586,7 +586,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)codeTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -595,7 +595,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return contactTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -604,7 +604,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)contactTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -613,7 +613,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)contactTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -622,7 +622,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)contactTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -631,7 +631,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)contactTypeEClass.getEStructuralFeatures().get(3);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -640,7 +640,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)contactTypeEClass.getEStructuralFeatures().get(4);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -649,7 +649,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return dcpTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -658,7 +658,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)dcpTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -667,7 +667,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return descriptionTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -676,7 +676,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)descriptionTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -685,7 +685,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)descriptionTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -694,7 +694,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)descriptionTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -703,7 +703,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return documentRootEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -712,7 +712,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)documentRootEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -721,7 +721,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -730,7 +730,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -739,7 +739,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)documentRootEClass.getEStructuralFeatures().get(3);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -748,7 +748,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(4);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -757,7 +757,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)documentRootEClass.getEStructuralFeatures().get(5);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -766,7 +766,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(6);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -775,7 +775,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)documentRootEClass.getEStructuralFeatures().get(7);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -784,7 +784,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(8);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -793,7 +793,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)documentRootEClass.getEStructuralFeatures().get(9);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -802,7 +802,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(10);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -811,7 +811,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)documentRootEClass.getEStructuralFeatures().get(11);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -820,7 +820,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(12);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -829,7 +829,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)documentRootEClass.getEStructuralFeatures().get(13);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -838,7 +838,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)documentRootEClass.getEStructuralFeatures().get(14);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -847,7 +847,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(15);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -856,7 +856,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(16);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -865,7 +865,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(17);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -874,7 +874,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(18);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -883,7 +883,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(19);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -892,7 +892,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)documentRootEClass.getEStructuralFeatures().get(20);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -901,7 +901,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(21);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -910,7 +910,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(22);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -919,7 +919,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(23);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -928,7 +928,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)documentRootEClass.getEStructuralFeatures().get(24);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -937,7 +937,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(25);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -946,7 +946,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(26);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -955,7 +955,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(27);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -964,7 +964,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)documentRootEClass.getEStructuralFeatures().get(28);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -973,7 +973,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(29);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -982,7 +982,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(30);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -991,7 +991,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)documentRootEClass.getEStructuralFeatures().get(31);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1000,7 +1000,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(32);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1009,7 +1009,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return domainTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1018,7 +1018,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)domainTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1027,7 +1027,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)domainTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1036,7 +1036,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)domainTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1045,7 +1045,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return exceptionReportTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1054,7 +1054,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)exceptionReportTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1063,7 +1063,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)exceptionReportTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1072,7 +1072,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)exceptionReportTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1081,7 +1081,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return exceptionTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1090,7 +1090,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)exceptionTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1099,7 +1099,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)exceptionTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1108,7 +1108,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)exceptionTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1117,7 +1117,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return getCapabilitiesTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1126,7 +1126,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)getCapabilitiesTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1135,7 +1135,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)getCapabilitiesTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1144,7 +1144,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)getCapabilitiesTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1153,7 +1153,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)getCapabilitiesTypeEClass.getEStructuralFeatures().get(3);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -1171,7 +1171,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return httpTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1180,7 +1180,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)httpTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1189,7 +1189,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)httpTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1198,7 +1198,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)httpTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1207,7 +1207,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return identificationTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1216,7 +1216,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)identificationTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1225,7 +1225,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)identificationTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1234,7 +1234,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)identificationTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1243,7 +1243,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)identificationTypeEClass.getEStructuralFeatures().get(3);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1252,7 +1252,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)identificationTypeEClass.getEStructuralFeatures().get(4);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1261,7 +1261,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)identificationTypeEClass.getEStructuralFeatures().get(5);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1270,7 +1270,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)identificationTypeEClass.getEStructuralFeatures().get(6);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1279,7 +1279,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return keywordsTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1288,7 +1288,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)keywordsTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1297,7 +1297,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)keywordsTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1306,7 +1306,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return metadataTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1315,7 +1315,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)metadataTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1324,7 +1324,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)metadataTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1333,7 +1333,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)metadataTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1342,7 +1342,16 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return onlineResourceTypeEClass;
     }
 
-	/**
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getOnlineResourceType_Href() {
+        return (EAttribute)onlineResourceTypeEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1351,7 +1360,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return operationTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1360,7 +1369,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)operationTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1369,7 +1378,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)operationTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1378,7 +1387,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)operationTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1387,7 +1396,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)operationTypeEClass.getEStructuralFeatures().get(3);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1396,7 +1405,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)operationTypeEClass.getEStructuralFeatures().get(4);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1405,7 +1414,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return operationsMetadataTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1414,7 +1423,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)operationsMetadataTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1423,7 +1432,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)operationsMetadataTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1432,7 +1441,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)operationsMetadataTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1441,7 +1450,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)operationsMetadataTypeEClass.getEStructuralFeatures().get(3);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1450,7 +1459,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return requestMethodTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1459,7 +1468,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)requestMethodTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1468,7 +1477,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return responsiblePartySubsetTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1477,7 +1486,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)responsiblePartySubsetTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1486,7 +1495,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)responsiblePartySubsetTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1495,7 +1504,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)responsiblePartySubsetTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1504,7 +1513,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)responsiblePartySubsetTypeEClass.getEStructuralFeatures().get(3);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1513,7 +1522,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return responsiblePartyTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1522,7 +1531,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)responsiblePartyTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1531,7 +1540,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)responsiblePartyTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1540,7 +1549,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)responsiblePartyTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1549,7 +1558,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)responsiblePartyTypeEClass.getEStructuralFeatures().get(3);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1558,7 +1567,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)responsiblePartyTypeEClass.getEStructuralFeatures().get(4);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1567,7 +1576,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return sectionsTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1576,7 +1585,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)sectionsTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1585,7 +1594,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return serviceIdentificationTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1594,7 +1603,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)serviceIdentificationTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1603,7 +1612,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)serviceIdentificationTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1612,7 +1621,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)serviceIdentificationTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1621,7 +1630,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)serviceIdentificationTypeEClass.getEStructuralFeatures().get(3);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1630,7 +1639,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return serviceProviderTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1639,7 +1648,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)serviceProviderTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1648,7 +1657,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)serviceProviderTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1657,7 +1666,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EReference)serviceProviderTypeEClass.getEStructuralFeatures().get(2);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1666,7 +1675,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return telephoneTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1675,7 +1684,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)telephoneTypeEClass.getEStructuralFeatures().get(0);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1684,7 +1693,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (EAttribute)telephoneTypeEClass.getEStructuralFeatures().get(1);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1693,7 +1702,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return wgs84BoundingBoxTypeEClass;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1702,7 +1711,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return mimeTypeEDataType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1711,7 +1720,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return versionTypeEDataType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1720,7 +1729,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return positionTypeEDataType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1729,7 +1738,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return updateSequenceTypeEDataType;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -1738,14 +1747,14 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         return (OwsFactory)getEFactoryInstance();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private boolean isCreated = false;
 
-	/**
+    /**
      * Creates the meta-model objects for the package.  This method is
      * guarded to have no affect on any invocation but its first.
      * <!-- begin-user-doc -->
@@ -1884,6 +1893,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         createEAttribute(metadataTypeEClass, METADATA_TYPE__ABOUT);
 
         onlineResourceTypeEClass = createEClass(ONLINE_RESOURCE_TYPE);
+        createEAttribute(onlineResourceTypeEClass, ONLINE_RESOURCE_TYPE__HREF);
 
         operationTypeEClass = createEClass(OPERATION_TYPE);
         createEReference(operationTypeEClass, OPERATION_TYPE__DCP);
@@ -1941,14 +1951,14 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         updateSequenceTypeEDataType = createEDataType(UPDATE_SEQUENCE_TYPE);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	private boolean isInitialized = false;
 
-	/**
+    /**
      * Complete the initialization of the package and its meta-model.  This
      * method is guarded to have no affect on any invocation but its first.
      * <!-- begin-user-doc -->
@@ -2102,6 +2112,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         initEAttribute(getMetadataType_About(), theXMLTypePackage.getAnyURI(), "about", null, 0, 1, MetadataType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(onlineResourceTypeEClass, OnlineResourceType.class, "OnlineResourceType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getOnlineResourceType_Href(), ecorePackage.getEString(), "href", null, 0, 1, OnlineResourceType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(operationTypeEClass, OperationType.class, "OperationType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getOperationType_DCP(), this.getDCPType(), null, "dCP", null, 1, -1, OperationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2166,7 +2177,7 @@ public class OwsPackageImpl extends EPackageImpl implements OwsPackage {
         createExtendedMetaDataAnnotations();
     }
 
-	/**
+    /**
      * Initializes the annotations for <b>http:///org/eclipse/emf/ecore/util/ExtendedMetaData</b>.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

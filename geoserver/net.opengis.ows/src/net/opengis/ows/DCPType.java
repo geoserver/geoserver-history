@@ -25,7 +25,7 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface DCPType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>HTTP</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -42,7 +42,7 @@ public interface DCPType extends EObject {
      */
 	HTTPType getHTTP();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.DCPType#getHTTP <em>HTTP</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

@@ -34,7 +34,7 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface ContactType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Phone</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -50,7 +50,7 @@ public interface ContactType extends EObject {
      */
 	TelephoneType getPhone();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ContactType#getPhone <em>Phone</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -60,7 +60,7 @@ public interface ContactType extends EObject {
      */
 	void setPhone(TelephoneType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Address</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -76,7 +76,7 @@ public interface ContactType extends EObject {
      */
 	AddressType getAddress();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ContactType#getAddress <em>Address</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -86,7 +86,7 @@ public interface ContactType extends EObject {
      */
 	void setAddress(AddressType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Online Resource</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -102,7 +102,7 @@ public interface ContactType extends EObject {
      */
 	OnlineResourceType getOnlineResource();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ContactType#getOnlineResource <em>Online Resource</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -112,7 +112,7 @@ public interface ContactType extends EObject {
      */
 	void setOnlineResource(OnlineResourceType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Hours Of Service</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -128,7 +128,7 @@ public interface ContactType extends EObject {
      */
 	String getHoursOfService();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ContactType#getHoursOfService <em>Hours Of Service</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -138,7 +138,7 @@ public interface ContactType extends EObject {
      */
 	void setHoursOfService(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Contact Instructions</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -154,7 +154,7 @@ public interface ContactType extends EObject {
      */
 	String getContactInstructions();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ContactType#getContactInstructions <em>Contact Instructions</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

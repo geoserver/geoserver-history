@@ -35,7 +35,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * @generated
  */
 public class AddressTypeImpl extends EObjectImpl implements AddressType {
-	/**
+    /**
      * The default value of the '{@link #getDeliveryPoint() <em>Delivery Point</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -45,7 +45,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
      */
 	protected static final String DELIVERY_POINT_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getDeliveryPoint() <em>Delivery Point</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -55,7 +55,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
      */
 	protected String deliveryPoint = DELIVERY_POINT_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getCity() <em>City</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -65,7 +65,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
      */
 	protected static final String CITY_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getCity() <em>City</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -75,7 +75,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
      */
 	protected String city = CITY_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getAdministrativeArea() <em>Administrative Area</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -85,7 +85,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
      */
 	protected static final String ADMINISTRATIVE_AREA_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getAdministrativeArea() <em>Administrative Area</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -95,7 +95,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
      */
 	protected String administrativeArea = ADMINISTRATIVE_AREA_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getPostalCode() <em>Postal Code</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -105,7 +105,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
      */
 	protected static final String POSTAL_CODE_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getPostalCode() <em>Postal Code</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -115,7 +115,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
      */
 	protected String postalCode = POSTAL_CODE_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getCountry() <em>Country</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -125,7 +125,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
      */
 	protected static final String COUNTRY_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getCountry() <em>Country</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -135,7 +135,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
      */
 	protected String country = COUNTRY_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getElectronicMailAddress() <em>Electronic Mail Address</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -145,7 +145,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
      */
 	protected static final String ELECTRONIC_MAIL_ADDRESS_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getElectronicMailAddress() <em>Electronic Mail Address</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -155,7 +155,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
      */
 	protected String electronicMailAddress = ELECTRONIC_MAIL_ADDRESS_EDEFAULT;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -164,7 +164,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -173,7 +173,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
         return OwsPackage.Literals.ADDRESS_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -182,7 +182,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
         return deliveryPoint;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -194,7 +194,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.ADDRESS_TYPE__DELIVERY_POINT, oldDeliveryPoint, deliveryPoint));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -203,7 +203,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
         return city;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -215,7 +215,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.ADDRESS_TYPE__CITY, oldCity, city));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -224,7 +224,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
         return administrativeArea;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -236,7 +236,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.ADDRESS_TYPE__ADMINISTRATIVE_AREA, oldAdministrativeArea, administrativeArea));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -245,7 +245,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
         return postalCode;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -257,7 +257,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.ADDRESS_TYPE__POSTAL_CODE, oldPostalCode, postalCode));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -266,7 +266,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
         return country;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -278,7 +278,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.ADDRESS_TYPE__COUNTRY, oldCountry, country));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -287,7 +287,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
         return electronicMailAddress;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -299,7 +299,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.ADDRESS_TYPE__ELECTRONIC_MAIL_ADDRESS, oldElectronicMailAddress, electronicMailAddress));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -322,7 +322,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -351,7 +351,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -380,7 +380,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -403,7 +403,7 @@ public class AddressTypeImpl extends EObjectImpl implements AddressType {
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

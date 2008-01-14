@@ -28,7 +28,7 @@ import org.eclipse.emf.common.util.EList;
  * @generated
  */
 public interface ServiceIdentificationType extends DescriptionType {
-	/**
+    /**
      * Returns the value of the '<em><b>Service Type</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -44,7 +44,7 @@ public interface ServiceIdentificationType extends DescriptionType {
      */
 	CodeType getServiceType();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ServiceIdentificationType#getServiceType <em>Service Type</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -54,7 +54,7 @@ public interface ServiceIdentificationType extends DescriptionType {
      */
 	void setServiceType(CodeType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Service Type Version</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -70,7 +70,7 @@ public interface ServiceIdentificationType extends DescriptionType {
      */
 	String getServiceTypeVersion();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ServiceIdentificationType#getServiceTypeVersion <em>Service Type Version</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -80,7 +80,7 @@ public interface ServiceIdentificationType extends DescriptionType {
      */
 	void setServiceTypeVersion(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Fees</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -96,7 +96,7 @@ public interface ServiceIdentificationType extends DescriptionType {
      */
 	String getFees();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ServiceIdentificationType#getFees <em>Fees</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -106,7 +106,7 @@ public interface ServiceIdentificationType extends DescriptionType {
      */
 	void setFees(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Access Constraints</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -122,7 +122,7 @@ public interface ServiceIdentificationType extends DescriptionType {
      */
 	String getAccessConstraints();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ServiceIdentificationType#getAccessConstraints <em>Access Constraints</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

@@ -37,7 +37,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * @generated
  */
 public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType {
-	/**
+    /**
      * The default value of the '{@link #getLowerCorner() <em>Lower Corner</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -47,7 +47,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
      */
 	protected static final List LOWER_CORNER_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getLowerCorner() <em>Lower Corner</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -57,7 +57,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
      */
 	protected List lowerCorner = LOWER_CORNER_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getUpperCorner() <em>Upper Corner</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -67,7 +67,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
      */
 	protected static final List UPPER_CORNER_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getUpperCorner() <em>Upper Corner</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -77,7 +77,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
      */
 	protected List upperCorner = UPPER_CORNER_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getCrs() <em>Crs</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -87,7 +87,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
      */
 	protected static final String CRS_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getCrs() <em>Crs</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -97,7 +97,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
      */
 	protected String crs = CRS_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getDimensions() <em>Dimensions</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -107,7 +107,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
      */
 	protected static final BigInteger DIMENSIONS_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getDimensions() <em>Dimensions</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -117,7 +117,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
      */
 	protected BigInteger dimensions = DIMENSIONS_EDEFAULT;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -126,7 +126,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -135,7 +135,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
         return OwsPackage.Literals.BOUNDING_BOX_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -144,7 +144,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
         return lowerCorner;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -156,7 +156,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.BOUNDING_BOX_TYPE__LOWER_CORNER, oldLowerCorner, lowerCorner));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -165,7 +165,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
         return upperCorner;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -177,7 +177,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.BOUNDING_BOX_TYPE__UPPER_CORNER, oldUpperCorner, upperCorner));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -186,7 +186,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
         return crs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -198,7 +198,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.BOUNDING_BOX_TYPE__CRS, oldCrs, crs));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -207,7 +207,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
         return dimensions;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -219,7 +219,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.BOUNDING_BOX_TYPE__DIMENSIONS, oldDimensions, dimensions));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -238,7 +238,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -261,7 +261,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -284,7 +284,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -303,7 +303,7 @@ public class BoundingBoxTypeImpl extends EObjectImpl implements BoundingBoxType 
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

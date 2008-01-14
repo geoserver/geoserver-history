@@ -42,7 +42,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * @generated
  */
 public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionReportType {
-	/**
+    /**
      * The cached value of the '{@link #getException() <em>Exception</em>}' containment reference list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -50,9 +50,9 @@ public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionRep
      * @generated
      * @ordered
      */
-	protected EList exception;
+	protected EList exception= null;
 
-	/**
+    /**
      * The default value of the '{@link #getLanguage() <em>Language</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -62,7 +62,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionRep
      */
 	protected static final String LANGUAGE_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getLanguage() <em>Language</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -72,7 +72,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionRep
      */
 	protected String language = LANGUAGE_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getVersion() <em>Version</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -82,7 +82,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionRep
      */
 	protected static final String VERSION_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getVersion() <em>Version</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -92,7 +92,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionRep
      */
 	protected String version = VERSION_EDEFAULT;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -101,7 +101,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionRep
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -110,7 +110,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionRep
         return OwsPackage.Literals.EXCEPTION_REPORT_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -122,7 +122,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionRep
         return exception;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -131,7 +131,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionRep
         return language;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -143,7 +143,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionRep
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.EXCEPTION_REPORT_TYPE__LANGUAGE, oldLanguage, language));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -152,7 +152,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionRep
         return version;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -164,7 +164,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionRep
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.EXCEPTION_REPORT_TYPE__VERSION, oldVersion, version));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -177,7 +177,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionRep
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -194,7 +194,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionRep
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -215,7 +215,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionRep
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -235,7 +235,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionRep
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -252,7 +252,7 @@ public class ExceptionReportTypeImpl extends EObjectImpl implements ExceptionRep
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

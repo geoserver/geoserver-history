@@ -48,7 +48,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * @generated
  */
 public class IdentificationTypeImpl extends DescriptionTypeImpl implements IdentificationType {
-	/**
+    /**
      * The cached value of the '{@link #getIdentifier() <em>Identifier</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -56,9 +56,9 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
      * @generated
      * @ordered
      */
-	protected CodeType identifier;
+	protected CodeType identifier= null;
 
-	/**
+    /**
      * The cached value of the '{@link #getBoundingBoxGroup() <em>Bounding Box Group</em>}' attribute list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -66,9 +66,9 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
      * @generated
      * @ordered
      */
-	protected FeatureMap boundingBoxGroup;
+	protected FeatureMap boundingBoxGroup= null;
 
-	/**
+    /**
      * The default value of the '{@link #getOutputFormat() <em>Output Format</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -78,7 +78,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
      */
 	protected static final String OUTPUT_FORMAT_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getOutputFormat() <em>Output Format</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -88,7 +88,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
      */
 	protected String outputFormat = OUTPUT_FORMAT_EDEFAULT;
 
-	/**
+    /**
      * The cached value of the '{@link #getAvailableCRSGroup() <em>Available CRS Group</em>}' attribute list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -96,9 +96,9 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
      * @generated
      * @ordered
      */
-	protected FeatureMap availableCRSGroup;
+	protected FeatureMap availableCRSGroup= null;
 
-	/**
+    /**
      * The default value of the '{@link #getAvailableCRS() <em>Available CRS</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -108,7 +108,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
      */
 	protected static final String AVAILABLE_CRS_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getMetadata() <em>Metadata</em>}' containment reference list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -116,9 +116,9 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
      * @generated
      * @ordered
      */
-	protected EList metadata;
+	protected EList metadata= null;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -127,7 +127,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -136,7 +136,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
         return OwsPackage.Literals.IDENTIFICATION_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -145,7 +145,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
         return identifier;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -160,7 +160,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -179,7 +179,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.IDENTIFICATION_TYPE__IDENTIFIER, newIdentifier, newIdentifier));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -191,16 +191,16 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
         return boundingBoxGroup;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
      */
 	public EList getBoundingBox() {
-        return getBoundingBoxGroup().list(OwsPackage.Literals.IDENTIFICATION_TYPE__BOUNDING_BOX);
+        return ((FeatureMap)getBoundingBoxGroup()).list(OwsPackage.Literals.IDENTIFICATION_TYPE__BOUNDING_BOX);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -209,7 +209,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
         return outputFormat;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -221,7 +221,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.IDENTIFICATION_TYPE__OUTPUT_FORMAT, oldOutputFormat, outputFormat));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -233,7 +233,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
         return availableCRSGroup;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -242,7 +242,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
         return (String)getAvailableCRSGroup().get(OwsPackage.Literals.IDENTIFICATION_TYPE__AVAILABLE_CRS, true);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -251,7 +251,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
         ((FeatureMap.Internal)getAvailableCRSGroup()).set(OwsPackage.Literals.IDENTIFICATION_TYPE__AVAILABLE_CRS, newAvailableCRS);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -263,7 +263,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
         return metadata;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -284,7 +284,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -311,7 +311,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -345,7 +345,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -377,7 +377,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -402,7 +402,7 @@ public class IdentificationTypeImpl extends DescriptionTypeImpl implements Ident
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

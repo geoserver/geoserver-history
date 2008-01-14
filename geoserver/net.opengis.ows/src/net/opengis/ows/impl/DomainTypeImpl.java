@@ -42,7 +42,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * @generated
  */
 public class DomainTypeImpl extends EObjectImpl implements DomainType {
-	/**
+    /**
      * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -52,7 +52,7 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
      */
 	protected static final String VALUE_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -62,7 +62,7 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
      */
 	protected String value = VALUE_EDEFAULT;
 
-	/**
+    /**
      * The cached value of the '{@link #getMetadata() <em>Metadata</em>}' containment reference list.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -70,9 +70,9 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
      * @generated
      * @ordered
      */
-	protected EList metadata;
+	protected EList metadata= null;
 
-	/**
+    /**
      * The default value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -82,7 +82,7 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
      */
 	protected static final String NAME_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -92,7 +92,7 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
      */
 	protected String name = NAME_EDEFAULT;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -101,7 +101,7 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -110,7 +110,7 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
         return OwsPackage.Literals.DOMAIN_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -119,7 +119,7 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
         return value;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -131,7 +131,7 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.DOMAIN_TYPE__VALUE, oldValue, value));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -143,7 +143,7 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
         return metadata;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -152,7 +152,7 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
         return name;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -164,7 +164,7 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.DOMAIN_TYPE__NAME, oldName, name));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -177,7 +177,7 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -194,7 +194,7 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -215,7 +215,7 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -235,7 +235,7 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -252,7 +252,7 @@ public class DomainTypeImpl extends EObjectImpl implements DomainType {
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

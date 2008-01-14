@@ -39,7 +39,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * @generated
  */
 public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilitiesType {
-	/**
+    /**
      * The cached value of the '{@link #getAcceptVersions() <em>Accept Versions</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -47,9 +47,9 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
      * @generated
      * @ordered
      */
-	protected AcceptVersionsType acceptVersions;
+	protected AcceptVersionsType acceptVersions= null;
 
-	/**
+    /**
      * The cached value of the '{@link #getSections() <em>Sections</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -57,9 +57,9 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
      * @generated
      * @ordered
      */
-	protected SectionsType sections;
+	protected SectionsType sections= null;
 
-	/**
+    /**
      * The cached value of the '{@link #getAcceptFormats() <em>Accept Formats</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -67,9 +67,9 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
      * @generated
      * @ordered
      */
-	protected AcceptFormatsType acceptFormats;
+	protected AcceptFormatsType acceptFormats= null;
 
-	/**
+    /**
      * The default value of the '{@link #getUpdateSequence() <em>Update Sequence</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -79,7 +79,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
      */
 	protected static final String UPDATE_SEQUENCE_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getUpdateSequence() <em>Update Sequence</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -89,7 +89,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
      */
 	protected String updateSequence = UPDATE_SEQUENCE_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getBaseUrl() <em>Base Url</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -118,7 +118,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -127,7 +127,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
         return OwsPackage.Literals.GET_CAPABILITIES_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -136,7 +136,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
         return acceptVersions;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -151,7 +151,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -170,7 +170,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_VERSIONS, newAcceptVersions, newAcceptVersions));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -179,7 +179,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
         return sections;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -194,7 +194,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -213,7 +213,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.GET_CAPABILITIES_TYPE__SECTIONS, newSections, newSections));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -222,7 +222,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
         return acceptFormats;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -237,7 +237,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
         return msgs;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -256,7 +256,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.GET_CAPABILITIES_TYPE__ACCEPT_FORMATS, newAcceptFormats, newAcceptFormats));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -265,7 +265,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
         return updateSequence;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -277,7 +277,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.GET_CAPABILITIES_TYPE__UPDATE_SEQUENCE, oldUpdateSequence, updateSequence));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -315,7 +315,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -336,7 +336,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -362,7 +362,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -388,7 +388,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -409,7 +409,7 @@ public class GetCapabilitiesTypeImpl extends EObjectImpl implements GetCapabilit
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated

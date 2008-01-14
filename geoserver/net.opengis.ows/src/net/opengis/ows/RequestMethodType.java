@@ -29,7 +29,7 @@ import org.eclipse.emf.common.util.EList;
  * @generated
  */
 public interface RequestMethodType extends OnlineResourceType {
-	/**
+    /**
      * Returns the value of the '<em><b>Constraint</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.DomainType}.
      * <!-- begin-user-doc -->

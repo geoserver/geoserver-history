@@ -33,7 +33,7 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface ResponsiblePartySubsetType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>Individual Name</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -50,7 +50,7 @@ public interface ResponsiblePartySubsetType extends EObject {
      */
 	String getIndividualName();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ResponsiblePartySubsetType#getIndividualName <em>Individual Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -60,7 +60,7 @@ public interface ResponsiblePartySubsetType extends EObject {
      */
 	void setIndividualName(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Position Name</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -77,7 +77,7 @@ public interface ResponsiblePartySubsetType extends EObject {
      */
 	String getPositionName();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ResponsiblePartySubsetType#getPositionName <em>Position Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -87,7 +87,7 @@ public interface ResponsiblePartySubsetType extends EObject {
      */
 	void setPositionName(String value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Contact Info</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -104,7 +104,7 @@ public interface ResponsiblePartySubsetType extends EObject {
      */
 	ContactType getContactInfo();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ResponsiblePartySubsetType#getContactInfo <em>Contact Info</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -114,7 +114,7 @@ public interface ResponsiblePartySubsetType extends EObject {
      */
 	void setContactInfo(ContactType value);
 
-	/**
+    /**
      * Returns the value of the '<em><b>Role</b></em>' containment reference.
      * <!-- begin-user-doc -->
 	 * <p>
@@ -131,7 +131,7 @@ public interface ResponsiblePartySubsetType extends EObject {
      */
 	CodeType getRole();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.ResponsiblePartySubsetType#getRole <em>Role</em>}' containment reference.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

@@ -31,7 +31,7 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface OperationType extends EObject {
-	/**
+    /**
      * Returns the value of the '<em><b>DCP</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.DCPType}.
      * <!-- begin-user-doc -->
@@ -47,7 +47,7 @@ public interface OperationType extends EObject {
      */
 	EList getDCP();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Parameter</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.DomainType}.
      * <!-- begin-user-doc -->
@@ -63,7 +63,7 @@ public interface OperationType extends EObject {
      */
 	EList getParameter();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Constraint</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.DomainType}.
      * <!-- begin-user-doc -->
@@ -79,7 +79,7 @@ public interface OperationType extends EObject {
      */
 	EList getConstraint();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Metadata</b></em>' containment reference list.
      * The list contents are of type {@link net.opengis.ows.MetadataType}.
      * <!-- begin-user-doc -->
@@ -95,7 +95,7 @@ public interface OperationType extends EObject {
      */
 	EList getMetadata();
 
-	/**
+    /**
      * Returns the value of the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -111,7 +111,7 @@ public interface OperationType extends EObject {
      */
 	String getName();
 
-	/**
+    /**
      * Sets the value of the '{@link net.opengis.ows.OperationType#getName <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

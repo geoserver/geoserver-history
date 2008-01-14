@@ -112,6 +112,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ows.ecore#//GetCapabilitiesType/sections"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ows.ecore#//GetCapabilitiesType/acceptFormats"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ows.ecore#//GetCapabilitiesType/updateSequence"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ows.ecore#//GetCapabilitiesType/baseUrl"/>
     </genClasses>
     <genClasses ecoreClass="ows.ecore#//HTTPType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute ows.ecore#//HTTPType/group"/>
@@ -136,7 +137,9 @@
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference ows.ecore#//MetadataType/abstractMetaData"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ows.ecore#//MetadataType/about"/>
     </genClasses>
-    <genClasses ecoreClass="ows.ecore#//OnlineResourceType"/>
+    <genClasses ecoreClass="ows.ecore#//OnlineResourceType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ows.ecore#//OnlineResourceType/href"/>
+    </genClasses>
     <genClasses ecoreClass="ows.ecore#//OperationType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ows.ecore#//OperationType/dCP"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ows.ecore#//OperationType/parameter"/>

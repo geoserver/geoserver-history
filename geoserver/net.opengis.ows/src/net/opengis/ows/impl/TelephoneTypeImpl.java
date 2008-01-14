@@ -31,7 +31,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * @generated
  */
 public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
-	/**
+    /**
      * The default value of the '{@link #getVoice() <em>Voice</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -41,7 +41,7 @@ public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
      */
 	protected static final String VOICE_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getVoice() <em>Voice</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -51,7 +51,7 @@ public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
      */
 	protected String voice = VOICE_EDEFAULT;
 
-	/**
+    /**
      * The default value of the '{@link #getFacsimile() <em>Facsimile</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -61,7 +61,7 @@ public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
      */
 	protected static final String FACSIMILE_EDEFAULT = null;
 
-	/**
+    /**
      * The cached value of the '{@link #getFacsimile() <em>Facsimile</em>}' attribute.
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -71,7 +71,7 @@ public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
      */
 	protected String facsimile = FACSIMILE_EDEFAULT;
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -80,7 +80,7 @@ public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
         super();
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -89,7 +89,7 @@ public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
         return OwsPackage.Literals.TELEPHONE_TYPE;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -98,7 +98,7 @@ public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
         return voice;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -110,7 +110,7 @@ public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.TELEPHONE_TYPE__VOICE, oldVoice, voice));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -119,7 +119,7 @@ public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
         return facsimile;
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -131,7 +131,7 @@ public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
             eNotify(new ENotificationImpl(this, Notification.SET, OwsPackage.TELEPHONE_TYPE__FACSIMILE, oldFacsimile, facsimile));
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -146,7 +146,7 @@ public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
         return super.eGet(featureID, resolve, coreType);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -163,7 +163,7 @@ public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
         super.eSet(featureID, newValue);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -180,7 +180,7 @@ public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
         super.eUnset(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
@@ -195,7 +195,7 @@ public class TelephoneTypeImpl extends EObjectImpl implements TelephoneType {
         return super.eIsSet(featureID);
     }
 
-	/**
+    /**
      * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
      * @generated
