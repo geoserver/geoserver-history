@@ -67,21 +67,6 @@ public class GetCoverageReaderTest extends WCSTestSupport {
 
     }
 
-    public void testWrongFormatParams() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
-        raw.put("identifier", layerId);
-        raw.put("format", "SuperCoolFormat");
-        raw.put("BoundingBox", "-45,146,-42,147");
-        try {
-            reader.read(reader.createRequest(), parseKvp(raw), raw);
-            fail("When did we learn to encode SuperCoolFormat?");
-        } catch (WcsException e) {
-            assertEquals(InvalidParameterValue.toString(), e.getCode());
-            assertEquals("format", e.getLocator());
-        }
-    }
-
     public void testUnknownCoverageParams() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = "fairyTales:rumpelstilskin";
@@ -109,7 +94,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(),
                 parseKvp(raw), raw);
         assertEquals(layerId, getCoverage.getIdentifier().getValue());
-        assertEquals("GEOTIFF", getCoverage.getOutput().getFormat());
+        assertEquals("GeoTiff", getCoverage.getOutput().getFormat());
         assertFalse(getCoverage.getOutput().isStore());
         assertEquals("urn:ogc:def:crs:EPSG:6.6:4326", getCoverage.getOutput().getGridCRS()
                 .getGridBaseCRS());
@@ -214,17 +199,10 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         raw.put("identifier", layerId);
         raw.put("format", "GeoTiff");
         raw.put("BoundingBox", "-45,146,-42,147");
-
-        GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(),
-                parseKvp(raw), raw);
-        double[] origin = (double[]) getCoverage.getOutput().getGridCRS().getGridOrigin();
-        assertEquals(2, origin.length);
-        assertEquals(0.0, origin[0]);
-        assertEquals(0.0, origin[1]);
-
         raw.put("GridOrigin", "10.5,-30.2");
-        getCoverage = (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
-        origin = (double[]) getCoverage.getOutput().getGridCRS().getGridOrigin();
+        
+        GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
+        Double[] origin = (Double[]) getCoverage.getOutput().getGridCRS().getGridOrigin();
         assertEquals(2, origin.length);
         assertEquals(10.5, origin[0]);
         assertEquals(-30.2, origin[1]);
@@ -246,15 +224,6 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             assertEquals(InvalidParameterValue.name(), e.getCode());
             assertEquals("GridOrigin", e.getLocator());
         }
-
-        raw.put("GridOrigin", "12,13,14");
-        try {
-            reader.read(reader.createRequest(), parseKvp(raw), raw);
-            fail("We should have had a WcsException here?");
-        } catch (WcsException e) {
-            assertEquals(InvalidParameterValue.name(), e.getCode());
-            assertEquals("GridOrigin", e.getLocator());
-        }
     }
 
     public void testGridOffsets() throws Exception {
@@ -264,19 +233,10 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         raw.put("format", "GeoTiff");
         raw.put("BoundingBox", "-45,146,-42,147");
 
-        GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(),
-                parseKvp(raw), raw);
-        double[] offsets = (double[]) getCoverage.getOutput().getGridCRS().getGridOffsets();
-        assertEquals(4, offsets.length);
-        assertEquals(1.0, offsets[0]);
-        assertEquals(0.0, offsets[1]);
-        assertEquals(0.0, offsets[2]);
-        assertEquals(1.0, offsets[3]);
-
         raw.put("GridOffsets", "10.5,-30.2");
         raw.put("GridType", GridType.GT2dSimpleGrid.getXmlConstant());
-        getCoverage = (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
-        offsets = (double[]) getCoverage.getOutput().getGridCRS().getGridOffsets();
+        GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
+        Double[] offsets = (Double[]) getCoverage.getOutput().getGridCRS().getGridOffsets();
         assertEquals(2, offsets.length);
         assertEquals(10.5, offsets[0]);
         assertEquals(-30.2, offsets[1]);
@@ -298,15 +258,6 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             assertEquals(InvalidParameterValue.name(), e.getCode());
             assertEquals("GridOffsets", e.getLocator());
         }
-
-        raw.put("GridOffsets", "12,13,14");
-        try {
-            reader.read(reader.createRequest(), parseKvp(raw), raw);
-            fail("We should have had a WcsException here?");
-        } catch (WcsException e) {
-            assertEquals(InvalidParameterValue.name(), e.getCode());
-            assertEquals("GridOffsets", e.getLocator());
-        }
     }
     
     /**
@@ -320,38 +271,8 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         raw.put("format", "GeoTiff");
         raw.put("BoundingBox", "-45,146,-42,147");
         
-        // unknown field
-        raw.put("rangeSubset", "jimbo:nearest");
-        try {
-            reader.read(reader.createRequest(), parseKvp(raw), raw);
-            fail("We should have had a WcsException here?");
-        } catch (WcsException e) {
-            assertEquals(InvalidParameterValue.name(), e.getCode());
-            assertEquals("RangeSubset", e.getLocator());
-        }
-        
-        // unknown axis
-        raw.put("rangeSubset", "BlueMarble:nearest[MadAxis[key]]");
-        try {
-            reader.read(reader.createRequest(), parseKvp(raw), raw);
-            fail("We should have had a WcsException here?");
-        } catch (WcsException e) {
-            assertEquals(InvalidParameterValue.name(), e.getCode());
-            assertEquals("RangeSubset", e.getLocator());
-        }
-        
-        // unknown key
-        raw.put("rangeSubset", "BlueMarble:nearest[Bands[MadKey]]");
-        try {
-            reader.read(reader.createRequest(), parseKvp(raw), raw);
-            fail("We should have had a WcsException here?");
-        } catch (WcsException e) {
-            assertEquals(InvalidParameterValue.name(), e.getCode());
-            assertEquals("RangeSubset", e.getLocator());
-        }
-        
         // ok, finally something we can parse
-        raw.put("rangeSubset", "BlueMarble:nearest[Bands[ReD_BaNd]]");
+        raw.put("rangeSubset", "BlueMarble:nearest[Bands[Red_band]]");
         GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
         RangeSubsetType rs = getCoverage.getRangeSubset();
         assertNotNull(rs);
@@ -363,7 +284,6 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         assertEquals("Bands", axis.getIdentifier());
         List keys = axis.getKey();
         assertEquals(1, keys.size());
-        // make sure the name has been fixed during the parsing too
         assertEquals("Red_band", keys.get(0));
     }
 

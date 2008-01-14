@@ -30,10 +30,10 @@ public class GridOffsetsKvpParser extends KvpParser {
             throw new WcsException("Invalid grid offset, should have at least two values",
                     WcsExceptionCode.InvalidParameterValue, "GridOffsets");
 
-        double[] offsets = new double[values.size()];
+        Double[] offsets = new Double[values.size()];
         for (int i = 0; i < offsets.length; i++) {
             try {
-                offsets[i] = Double.parseDouble((String) values.get(i));
+                offsets[i] = Double.valueOf((String) values.get(i));
             } catch (NumberFormatException e) {
                 throw new WcsException("Invalid offset " + offsets[i],
                         WcsExceptionCode.InvalidParameterValue, "GridOffsets");

@@ -31,7 +31,7 @@ public class GridOriginKvpParser extends KvpParser {
             throw new WcsException("Invalid grid origin, should have at least two values",
                     WcsExceptionCode.InvalidParameterValue, "GridOrigin");
 
-        double[] origins = new double[values.size()];
+        Double[] origins = new Double[values.size()];
         for (int i = 0; i < origins.length; i++) {
             try {
                 origins[i] = Double.parseDouble((String) values.get(i));
