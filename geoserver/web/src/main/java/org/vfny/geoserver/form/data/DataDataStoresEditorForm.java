@@ -215,7 +215,7 @@ public class DataDataStoresEditorForm extends ActionForm {
                         }
                     }
                     
-                    if(url != null && url.getProtocol() == null || url.getProtocol() == "file") {
+                    if(url != null && (url.getProtocol() == null || url.getProtocol().equals("file"))) {
 	                    //do a check to see if the shapefile url is valid, report 
 	                    // an error if it does not 
 	                    File file = GeoserverDataDirectory.findDataFile(value);
