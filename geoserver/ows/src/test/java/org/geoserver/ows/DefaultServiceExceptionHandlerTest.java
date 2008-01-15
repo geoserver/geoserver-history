@@ -4,30 +4,40 @@
  */
 package org.geoserver.ows;
 
-import com.mockobjects.servlet.MockHttpServletRequest;
-import com.mockobjects.servlet.MockHttpServletResponse;
-import com.mockobjects.servlet.MockServletInputStream;
-import com.mockobjects.servlet.MockServletOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import junit.framework.TestCase;
+
+import org.apache.xpath.XPathAPI;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
 import org.geotools.util.Version;
 import org.w3c.dom.Document;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Node;
+
+import com.mockobjects.servlet.MockHttpServletRequest;
+import com.mockobjects.servlet.MockHttpServletResponse;
+import com.mockobjects.servlet.MockServletOutputStream;
 
 
 public class DefaultServiceExceptionHandlerTest extends TestCase {
+    
+    private DefaultServiceExceptionHandler handler;
+    private Service service;
+    private MockHttpServletRequest request;
+    private MockHttpServletResponse response;
+
     protected void setUp() throws Exception {
         super.setUp();
-    }
-
-    public void testHandleServiceException() throws Exception {
+        
         HelloWorld helloWorld = new HelloWorld();
-        Service service = new Service("hello", helloWorld, new Version("1.0.0"));
+        service = new Service("hello", helloWorld, new Version("1.0.0"));
 
-        MockHttpServletRequest request = new MockHttpServletRequest() {
+        request = new MockHttpServletRequest() {
                 public int getServerPort() {
                     return 8080;
                 }
@@ -39,18 +49,20 @@ public class DefaultServiceExceptionHandlerTest extends TestCase {
         request.setupGetContextPath("geoserver");
 
         MockServletOutputStream output = new MockServletOutputStream();
-        MockHttpServletResponse response = new MockHttpServletResponse();
+        response = new MockHttpServletResponse();
         response.setupOutputStream(output);
 
+        handler = new DefaultServiceExceptionHandler();
+    }
+
+    public void testHandleServiceException() throws Exception {
         ServiceException exception = new ServiceException("hello service exception");
         exception.setCode("helloCode");
         exception.setLocator("helloLocator");
         exception.getExceptionText().add("helloText");
-
-        DefaultServiceExceptionHandler handler = new DefaultServiceExceptionHandler();
         handler.handleServiceException(exception, service, request, response);
 
-        InputStream input = new ByteArrayInputStream(output.getContents().getBytes());
+        InputStream input = new ByteArrayInputStream(response.getOutputStreamContents().getBytes());
 
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         docBuilderFactory.setNamespaceAware(true);
@@ -58,5 +70,31 @@ public class DefaultServiceExceptionHandlerTest extends TestCase {
         Document doc = docBuilderFactory.newDocumentBuilder().parse(input);
 
         assertEquals("ows:ExceptionReport", doc.getDocumentElement().getNodeName());
+    }
+    
+    public void testHandleServiceExceptionCauses() throws Exception {
+        // create a stack of three exceptions
+        IllegalArgumentException illegalArgument = new IllegalArgumentException("Illegal argument here");
+        IOException ioException = new IOException("I/O exception here");
+        ioException.initCause(illegalArgument);
+        ServiceException serviceException = new ServiceException("hello service exception");
+        serviceException.setCode("helloCode");
+        serviceException.setLocator("helloLocator");
+        serviceException.getExceptionText().add("helloText");
+        serviceException.initCause(ioException);
+        handler.handleServiceException(serviceException, service, request, response);
+
+        InputStream input = new ByteArrayInputStream(response.getOutputStreamContents().getBytes());
+        System.out.println(response.getOutputStreamContents());
+
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        docBuilderFactory.setNamespaceAware(true);
+
+        Document doc = docBuilderFactory.newDocumentBuilder().parse(input);
+        Node exceptionText = XPathAPI.selectSingleNode(doc, "ows:ExceptionReport/ows:Exception/ows:ExceptionText/text()");
+        assertNotNull(exceptionText);
+        assertTrue(exceptionText.getNodeValue().indexOf(illegalArgument.getMessage()) != -1);
+        assertTrue(exceptionText.getNodeValue().indexOf(ioException.getMessage()) != -1);
+        assertTrue(exceptionText.getNodeValue().indexOf(serviceException.getMessage()) != -1);
     }
 }

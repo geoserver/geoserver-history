@@ -98,10 +98,13 @@ public abstract class ServiceExceptionHandler {
         Throwable ex = e;
         do {
             Throwable cause = ex.getCause();
-            if(e.getMessage() != null && !"".equals(e.getMessage())) {
-                s.append(ResponseUtils.encodeXML(e.getMessage()));
-                for ( Iterator t = e.getExceptionText().iterator(); t.hasNext(); ) {
-                    s.append("\n").append( t.next() );
+            final String message = ex.getMessage();
+            if(!"".equals(message)) {
+                s.append(ResponseUtils.encodeXML(message));
+                if(ex instanceof ServiceException) {
+                    for ( Iterator t = ((ServiceException) ex).getExceptionText().iterator(); t.hasNext(); ) {
+                        s.append("\n").append( t.next() );
+                    }
                 }
                 if(cause != null)
                     s.append("\n");
