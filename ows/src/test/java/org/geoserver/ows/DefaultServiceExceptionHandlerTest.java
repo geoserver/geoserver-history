@@ -12,6 +12,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import junit.framework.TestCase;
 
+import org.apache.xpath.XPathAPI;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
 import org.geotools.util.Version;
@@ -21,7 +22,6 @@ import org.w3c.dom.Node;
 import com.mockobjects.servlet.MockHttpServletRequest;
 import com.mockobjects.servlet.MockHttpServletResponse;
 import com.mockobjects.servlet.MockServletOutputStream;
-import com.sun.org.apache.xpath.internal.XPathAPI;
 
 
 public class DefaultServiceExceptionHandlerTest extends TestCase {
