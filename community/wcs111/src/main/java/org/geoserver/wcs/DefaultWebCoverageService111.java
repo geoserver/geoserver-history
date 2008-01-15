@@ -27,7 +27,7 @@ import net.opengis.wcs.v1_1_1.OutputType;
 import net.opengis.wcs.v1_1_1.RangeSubsetType;
 
 import org.geoserver.data.util.CoverageUtils;
-import org.geoserver.ows.util.CapabilitiesUtils;
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wcs.kvp.GridCS;
 import org.geoserver.wcs.kvp.GridType;
 import org.geoserver.wcs.response.DescribeCoverageTransformer;
@@ -85,7 +85,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
         List<String> accepted = null;
         if (request.getAcceptVersions() != null)
             accepted = request.getAcceptVersions().getVersion();
-        String version = CapabilitiesUtils.getVersion(provided, accepted);
+        String version = RequestUtils.getVersionPreOws(provided, accepted);
 
         // TODO: add support for 1.0.0 in here
 
