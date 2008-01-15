@@ -11,7 +11,7 @@ import java.util.TreeSet;
 
 import net.opengis.wfs.GetCapabilitiesType;
 
-import org.geoserver.ows.util.CapabilitiesUtils;
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.ServiceException;
 import org.geotools.util.Version;
 import org.vfny.geoserver.global.Data;
@@ -82,7 +82,7 @@ public class GetCapabilities {
         List<String> accepted = null;
         if(request.getAcceptVersions() != null)
             accepted = request.getAcceptVersions().getVersion();
-        String version = CapabilitiesUtils.getVersion(provided, accepted);
+        String version = RequestUtils.getVersionPreOws(provided, accepted);
 
         if ("1.0.0".equals(version)) {
             return new CapabilitiesTransformer.WFS1_0(wfs, catalog);
