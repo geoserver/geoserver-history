@@ -16,6 +16,7 @@
 package org.openplans.security;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -35,10 +36,8 @@ import org.acegisecurity.ui.AuthenticationDetailsSource;
 import org.acegisecurity.ui.AuthenticationDetailsSourceImpl;
 import org.acegisecurity.ui.AuthenticationEntryPoint;
 import org.acegisecurity.ui.rememberme.RememberMeServices;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.util.Assert;
 
 import sun.misc.BASE64Decoder;
 
@@ -54,8 +53,7 @@ import sun.misc.BASE64Decoder;
 public class OpenPlansProcessingFilter implements Filter, InitializingBean {
     //~ Static fields/initializers =====================================================================================
 
-	private static final Log logger = LogFactory.getLog(OpenPlansProcessingFilter.class);
-
+    static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.community");
     //~ Instance fields ================================================================================================
 
     private AuthenticationDetailsSource authenticationDetailsSource = new AuthenticationDetailsSourceImpl();
@@ -67,7 +65,7 @@ public class OpenPlansProcessingFilter implements Filter, InitializingBean {
     //~ Methods ========================================================================================================
 
     public void afterPropertiesSet() throws Exception {
-        Assert.notNull(this.authenticationManager, "An AuthenticationManager is required");
+        // Assert.notNull(this.authenticationManager, "An AuthenticationManager is required");
         //Assert.notNull(this.authenticationEntryPoint, "An AuthenticationEntryPoint is required");
     }
 
@@ -75,7 +73,6 @@ public class OpenPlansProcessingFilter implements Filter, InitializingBean {
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-
         if (!(request instanceof HttpServletRequest)) {
             throw new ServletException("Can only process HttpServletRequest");
         }
@@ -92,6 +89,7 @@ public class OpenPlansProcessingFilter implements Filter, InitializingBean {
             
             String[] pair = getUserAndPassword(httpRequest);
         if (pair != null){
+			LOGGER.info("Attempting to authenticate via OpenPlans cookie");
             username = pair[0];
             password = pair[1];
 
@@ -106,9 +104,7 @@ public class OpenPlansProcessingFilter implements Filter, InitializingBean {
                     authResult = authenticationManager.authenticate(authRequest);
                 } catch (AuthenticationException failed) {
                     // Authentication failed
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Authentication request for user: " + username + " failed: " + failed.toString());
-                    }
+                        LOGGER.info("Authentication request for user: " + username + " failed: " + failed.toString());
 
                     SecurityContextHolder.getContext().setAuthentication(null);
 
@@ -126,9 +122,7 @@ public class OpenPlansProcessingFilter implements Filter, InitializingBean {
                 }
 
                 // Authentication success
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Authentication success: " + authResult.toString());
-                }
+                    LOGGER.info("Authentication success: " + authResult.toString());
 
                 SecurityContextHolder.getContext().setAuthentication(authResult);
 //                System.out.println(
@@ -138,7 +132,7 @@ public class OpenPlansProcessingFilter implements Filter, InitializingBean {
 //                    rememberMeServices.loginSuccess(httpRequest, httpResponse, authResult);
                 }
             }
-    	} else logger.debug("pair was null");
+    	} else LOGGER.info("Not authenticating via OpenPlans cookie");
 
         chain.doFilter(request, response);
     }
@@ -177,7 +171,7 @@ public class OpenPlansProcessingFilter implements Filter, InitializingBean {
     }
 
     public void setAuthenticationDetailsSource(AuthenticationDetailsSource authenticationDetailsSource) {
-        Assert.notNull(authenticationDetailsSource, "AuthenticationDetailsSource required");
+        // Assert.notNull(authenticationDetailsSource, "AuthenticationDetailsSource required");
         this.authenticationDetailsSource = authenticationDetailsSource;
     }
 
@@ -215,7 +209,6 @@ public class OpenPlansProcessingFilter implements Filter, InitializingBean {
 //                  System.out.println("Found authentication cookie");
                 }
             }
-
 
 			byte[] decoded = (new BASE64Decoder()).decodeBuffer(cookie);
 			
