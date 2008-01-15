@@ -146,6 +146,12 @@
     <filter-name>Set Character Encoding</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+  
+    <!-- logging initializer, should be first thing to execute -->
+  <listener>
+    <listener-class>org.geoserver.logging.LoggingStartupContextListener</listener-class>
+  </listener>
+  
 
   <!--  spring context loader -->
   <listener>
@@ -153,11 +159,6 @@
   </listener>
   
    
-  <!-- logging initializer, should be first thing to execute -->
-  <listener>
-    <listener-class>org.geoserver.logging.LoggingStartupContextListener</listener-class>
-  </listener>
-	
   <!-- spring dispatcher servlet, dispatches incoming requests to controllers -->
   <servlet>
     <servlet-name>dispatcher</servlet-name>
