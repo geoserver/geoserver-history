@@ -441,39 +441,9 @@ public class GetMapResponse implements Response {
 			if (contentDisposition != null) {
 				this.headerContentDisposition = contentDisposition;
 			}
-		} catch (ClassCastException e) {
-			if (LOGGER.isLoggable(Level.WARNING)) {
-				LOGGER.log(Level.SEVERE, new StringBuffer(
-						"Getting feature source: ").append(e.getMessage())
-						.toString(), e);
-			}
-
-			throw new WmsException(e, new StringBuffer("Internal error : ")
-					.append(e.getMessage()).toString(), "");
-		} catch (TransformException e) {
-			throw new WmsException(e, new StringBuffer("Internal error : ")
-					.append(e.getMessage()).toString(), "");
-		} catch (FactoryConfigurationError e) {
-			throw new WmsException(e, new StringBuffer("Internal error : ")
-					.append(e.getMessage()).toString(), "");
-		} catch (SchemaException e) {
-			throw new WmsException(e, new StringBuffer("Internal error : ")
-					.append(e.getMessage()).toString(), "");
-		} catch (IllegalAttributeException e) {
-			throw new WmsException(e, new StringBuffer("Internal error : ")
-					.append(e.getMessage()).toString(), "");
-		} finally {
-			// clean
-			try {
-				// map.clearLayerList();
-			} catch (Exception e) // we dont want to propogate a new error
-			{
-				if (LOGGER.isLoggable(Level.SEVERE)) {
-					LOGGER.log(Level.SEVERE, new StringBuffer(
-							"Getting feature source: ").append(e.getMessage())
-							.toString(), e);
-				}
-			}
+		} catch (Exception e) {
+		    clearMapContext();
+			throw new WmsException(e, "Internal error ", "");
 		}
 	}
 
@@ -560,18 +530,26 @@ public class GetMapResponse implements Response {
 
 			this.delegate.writeTo(out);
 		} finally {
-			try {
-				map.clearLayerList();
-			} catch (Exception e) // we dont want to propogate a new error
-			{
-				if (LOGGER.isLoggable(Level.SEVERE)) {
-					LOGGER.log(Level.SEVERE, new StringBuffer(
-							"Getting feature source: ").append(e.getMessage())
-							.toString(), e);
-				}
-			}
+			clearMapContext();
 		}
 	}
+
+	/**
+	 * Clearing the map context is paramount, otherwise we end up with a memory leak
+	 */
+    void clearMapContext() {
+        try {
+            if(map.getLayerCount() > 0)
+                map.clearLayerList();
+        } catch (Exception e) // we dont want to propogate a new error
+        {
+        	if (LOGGER.isLoggable(Level.SEVERE)) {
+        		LOGGER.log(Level.SEVERE, new StringBuffer(
+        				"Getting feature source: ").append(e.getMessage())
+        				.toString(), e);
+        	}
+        }
+    }
 
 	/**
 	 * Creates a GetMapDelegate specialized in generating the requested map
@@ -644,5 +622,9 @@ public class GetMapResponse implements Response {
 
 	public String getContentDisposition() {
 		return headerContentDisposition;
+	}
+	
+	protected void finalize() throws Throwable {
+	    clearMapContext();
 	}
 }
