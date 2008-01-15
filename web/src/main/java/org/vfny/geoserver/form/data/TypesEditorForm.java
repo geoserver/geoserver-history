@@ -43,6 +43,12 @@ import java.util.TreeSet;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.opengis.referencing.crs.CRSAuthorityFactory;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.geotools.referencing.FactoryFinder;
+import org.geotools.factory.Hints;
+import java.util.Set;
 
 /**
  * Form used to work with FeatureType information.
@@ -565,8 +571,39 @@ public class TypesEditorForm extends ActionForm {
             }
         }
 
+        // check configured SRS actually exists
+        try{
+            int SRSnum = Integer.valueOf(SRS);
+            if (getSRS(SRSnum) == null){
+                errors.add("SRS", new ActionError("error.srs.unknown"));
+            }
+        } catch (NumberFormatException badNumber){
+            errors.add("SRS",
+                    new ActionError("error.srs.invalid", badNumber));
+        }
+
         return errors;
     }
+
+    private CoordinateReferenceSystem getSRS(int number){
+        Set factories = FactoryFinder.getCRSAuthorityFactories(new Hints());
+
+        Iterator it = factories.iterator();
+        while (it.hasNext()){
+            CRSAuthorityFactory factory = (CRSAuthorityFactory)it.next();
+            try{
+                CoordinateReferenceSystem crs = factory.createCoordinateReferenceSystem(Integer.toString(number));
+                return crs;
+            } catch (NoSuchAuthorityCodeException nsace) {
+                // let's try the next one!
+            } catch (Exception e){
+                // continue
+            }
+        }
+
+        return null;
+    }
+
 
     /**
      * Are belong to us.
