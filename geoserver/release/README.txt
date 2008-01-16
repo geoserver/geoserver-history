@@ -1,3 +1,15 @@
+GeoServer 1.6.0-RC3
+-------------------
+
+This release is the third release candidate for 1.6.0. It addresses some very 
+important performance and scalability issues regarding memory leaks. With a 
+few other odds and ends. The changlog is available here:
+
+http://jira.codehaus.org/secure/ReleaseNote.jspa?version=13993&styleName=Text&projectId=10311
+
+This release is based off of Geotools 2.4-SNAPSHOT, tag = geoserver-1.6.0-rc3,
+revision = 28790
+
 GeoServer 1.6.0-RC2
 -------------------
 
