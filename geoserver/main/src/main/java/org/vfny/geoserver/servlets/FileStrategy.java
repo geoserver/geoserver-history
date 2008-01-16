@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.servlets;
 
+import org.geoserver.ows.DispatcherOutputStream;
 import org.geoserver.ows.ServiceStrategy;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -57,7 +58,7 @@ public class FileStrategy implements ServiceStrategy {
      *
      * @throws IOException If temporary file could not be created.
      */
-    public OutputStream getDestination(HttpServletResponse response)
+    public DispatcherOutputStream getDestination(HttpServletResponse response)
         throws IOException {
         // REVISIT: Should do more than sequence here
         // (In case we are running two GeoServers at once)
@@ -83,7 +84,7 @@ public class FileStrategy implements ServiceStrategy {
         temp.deleteOnExit();
         safe = new BufferedOutputStream(new FileOutputStream(temp));
 
-        return safe;
+        return new DispatcherOutputStream(safe);
     }
 
     /**

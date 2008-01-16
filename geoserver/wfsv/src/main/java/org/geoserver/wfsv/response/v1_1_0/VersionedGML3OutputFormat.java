@@ -139,6 +139,10 @@ public class VersionedGML3OutputFormat extends Response {
             encoder.encode(results,
                     org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output);
         } catch (SAXException e) {
+            //SAXException does not sets initCause(). Instead, it holds its own "exception" field.
+            if(e.getException() != null && e.getCause() == null){
+                e.initCause(e.getException());
+            }
             String msg = "Error occurred encoding features";
             throw (IOException) new IOException(msg).initCause(e);
         }

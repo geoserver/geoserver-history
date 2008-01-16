@@ -76,6 +76,10 @@ public class DispatcherXmlReader {
             parser.setContentHandler(currentRequest);
             parser.parse(requestSource);
         } catch (SAXException e) {
+            //SAXException does not sets initCause(). Instead, it holds its own "exception" field.
+            if(e.getException() != null && e.getCause() == null){
+                e.initCause(e.getException());
+            }
             throw new ServiceException(e, "XML request parsing error",
                 DispatcherXmlReader.class.getName());
         } catch (IOException e) {

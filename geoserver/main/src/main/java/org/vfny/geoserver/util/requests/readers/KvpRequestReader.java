@@ -488,6 +488,10 @@ abstract public class KvpRequestReader {
             adapter.parse(requestSource);
             LOGGER.fine("just parsed: " + requestSource);
         } catch (SAXException e) {
+            //SAXException does not sets initCause(). Instead, it holds its own "exception" field.
+            if(e.getException() != null && e.getCause() == null){
+                e.initCause(e.getException());
+            }
             throw new ServiceException(e, "XML getFeature request SAX parsing error",
                 XmlRequestReader.class.getName());
         } catch (IOException e) {

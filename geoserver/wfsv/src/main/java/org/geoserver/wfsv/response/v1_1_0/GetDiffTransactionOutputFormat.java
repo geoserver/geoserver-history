@@ -230,6 +230,10 @@ public class GetDiffTransactionOutputFormat extends Response {
             System.out.println(transaction);
             encoder.encode(transaction, org.geoserver.wfs.xml.v1_1_0.WFS.TRANSACTION, output);
         } catch (SAXException e) {
+            //SAXException does not sets initCause(). Instead, it holds its own "exception" field.
+            if(e.getException() != null && e.getCause() == null){
+                e.initCause(e.getException());
+            }
             throw (IOException) new IOException("Encoding error ").initCause(e);
         } finally {
         	for (int i = 0; i < diffReaders.length; i++) {

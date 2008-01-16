@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.servlets;
 
+import org.geoserver.ows.DispatcherOutputStream;
 import org.geoserver.ows.ServiceStrategy;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -46,12 +47,12 @@ public class SpeedStrategy implements ServiceStrategy {
      *
      * @throws IOException If response output stream could not be aquired
      */
-    public OutputStream getDestination(HttpServletResponse response)
+    public DispatcherOutputStream getDestination(HttpServletResponse response)
         throws IOException {
         out = response.getOutputStream();
         out = new BufferedOutputStream(out);
 
-        return out;
+        return new DispatcherOutputStream(out);
     }
 
     /**

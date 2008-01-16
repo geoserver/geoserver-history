@@ -122,6 +122,10 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             encoder.encode(results, org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output);
         } catch (SAXException e) {
             String msg = "Error occurred encoding features";
+            //SAXException does not sets initCause(). Instead, it holds its own "exception" field.
+            if(e.getException() != null && e.getCause() == null){
+                e.initCause(e.getException());
+            }
             throw (IOException) new IOException(msg).initCause(e);
         }
     }
