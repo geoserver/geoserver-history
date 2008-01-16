@@ -90,7 +90,7 @@ REM if there's no GEOSERVER_DATA_DIR defined then use GEOSERVER_HOME/data_dir/
 
 :runJava
   cd %GEOSERVER_HOME%
-  %RUN_JAVA% -DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -Dorg.geotools.referencing.forceXY=true -jar %GEOSERVER_HOME%\start.jar
+  %RUN_JAVA% -DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -jar %GEOSERVER_HOME%\start.jar
 
 
 :end
