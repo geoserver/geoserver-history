@@ -608,6 +608,16 @@
      <version>2.1</version> 
      <classifier>jdk13</classifier>
    </dependency>
+   <dependency>
+   <groupId>javax.mail</groupId>
+     <artifactId>mail</artifactId>
+     <version>1.4</version>
+   </dependency>
+   <dependency>
+     <groupId>javax.activation</groupId>
+     <artifactId>activation</artifactId>
+     <version>1.1</version>
+   </dependency>
    <dependency> 
      <!-- needed by the arcsde plugin -->
      <groupId>jsqlparser</groupId> 
@@ -779,6 +789,7 @@
       <descriptor>release/ext-vpf.xml</descriptor>
       <descriptor>release/ext-arcsde.xml</descriptor>
       <descriptor>release/ext-pyramid.xml</descriptor>
+      <descriptor>release/ext-wfsv.xml</descriptor>
      </descriptors>
      <finalName>geoserver-1.7.0-SNAPSHOT</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
