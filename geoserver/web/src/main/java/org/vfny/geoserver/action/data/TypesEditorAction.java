@@ -361,7 +361,8 @@ public class TypesEditorAction extends ConfigAction {
         }
         // may the native bbox have been changed due to a change
         // in the CRS code by the user
-        if(!config.getNativeBBox().equals(nativeBbox)){
+        if(!config.getNativeBBox().equals(nativeBbox)
+            && nativeBbox != null){
             config.setNativeBBox(nativeBbox);            
         }
         config.setKeywords(keyWords(form));
