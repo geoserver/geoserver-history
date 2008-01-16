@@ -100,7 +100,7 @@
         </executions>
       </plugin>
       <!-- Binding generation -->
-      <plugin>
+      <!--plugin>
         <groupId>org.geotools.maven</groupId>
         <artifactId>gt2-xmlcodegen</artifactId>
         <version>${gt.version}</version>
@@ -124,16 +124,14 @@
           <generateConfiguration>true</generateConfiguration>
           <generateBindingConfiguration>true</generateBindingConfiguration>
           <generateBindingInterface>true</generateBindingInterface>
-          <!-- 
             <bindingConstructorArguments>
             <bindingConstructorArgument>
             <name>factory</name>
             <type>net.opengis.wfsv.WfsvFactory</type>
             </bindingConstructorArgument>
             </bindingConstructorArguments>
-          -->
         </configuration>
-      </plugin>
+      </plugin-->
       <!-- jjtree parser generation 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>

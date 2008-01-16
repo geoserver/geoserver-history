@@ -101,7 +101,7 @@
           -->
         </configuration>
       </plugin>
-      <plugin>
+      <!--plugin>
         <groupId>org.geotools.maven</groupId>
         <artifactId>gt2-xmlcodegen</artifactId>
         <configuration>
@@ -120,7 +120,7 @@
 	      <include>XlinkPropertyName</include>
           </includes>
         </configuration>
-      </plugin>
+      </plugin-->
     </plugins>
   </build>
 
