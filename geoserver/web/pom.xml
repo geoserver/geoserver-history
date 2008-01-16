@@ -67,12 +67,6 @@
       <version>1.6.0-RC2</version>
     </dependency>
     <dependency>
-      <groupId>org.geoserver</groupId>
-      <artifactId>wfsv</artifactId>
-      <version>1.6.0-RC2</version>
-    </dependency>
-
-    <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
     </dependency>
