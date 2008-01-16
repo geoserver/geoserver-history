@@ -56,7 +56,7 @@
         </executions>
       </plugin>
       <!-- Binding generation -->
-      <plugin>
+      <!--plugin>
         <groupId>org.geotools.maven</groupId>
         <artifactId>gt2-xmlcodegen</artifactId>
 	<version>${gt.version}</version>
@@ -75,16 +75,14 @@
           <generateBindingConfiguration>true</generateBindingConfiguration>
           <generateBindingInterface>true</generateBindingInterface>
           <generateSchemaLocationResolver>true</generateSchemaLocationResolver>
-          <!-- 
           <bindingConstructorArguments>
             <bindingConstructorArgument>
               <name>factory</name>
               <type>net.opengis.wfsv.WfsvFactory</type>
             </bindingConstructorArgument>
           </bindingConstructorArguments>
-          -->
         </configuration>
-      </plugin>
+      </plugin-->
     </plugins>
   </build>
 
