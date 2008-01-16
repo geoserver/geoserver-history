@@ -109,6 +109,11 @@
 			<artifactId>gt2-arcsde</artifactId>
 			<version>${gt.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.geoserver</groupId>
+			<artifactId>wfsv</artifactId>
+			<version>${project.version}</version>
+		</dependency>
   </dependencies>
 
 	<build>
