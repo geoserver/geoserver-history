@@ -17,6 +17,7 @@ import org.geotools.feature.GeometryAttributeType;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.vfny.geoserver.action.HTMLEncoder;
 import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.config.ConfigRequests;
@@ -42,7 +43,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-
 
 /**
  * Form used to work with FeatureType information.
@@ -563,6 +563,19 @@ public class TypesEditorForm extends ActionForm {
             } catch (Throwable t) {
                 errors.add("cacheMaxAge", new ActionError("error.cacheMaxAge.error", t));
             }
+        }
+
+        // check configured SRS actually exists
+        try{
+            Integer.valueOf(SRS);
+            CRS.decode("EPSG:" + SRS);
+        } catch (NumberFormatException badNumber){
+            errors.add("SRS",
+                    new ActionError("error.srs.invalid", badNumber));
+        } catch (NoSuchAuthorityCodeException nsace){
+            errors.add("SRS", new ActionError("error.srs.unknown"));
+        } catch (FactoryException fe){
+            errors.add("SRS", new ActionError("error.srs.unknown"));
         }
 
         return errors;
