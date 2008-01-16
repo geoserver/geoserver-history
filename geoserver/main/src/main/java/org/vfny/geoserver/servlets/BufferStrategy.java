@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.servlets;
 
+import org.geoserver.ows.DispatcherOutputStream;
 import org.geoserver.ows.ServiceStrategy;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -38,11 +39,11 @@ public class BufferStrategy implements ServiceStrategy {
      *
      * @throws IOException DOCUMENT ME!
      */
-    public OutputStream getDestination(HttpServletResponse response)
+    public DispatcherOutputStream getDestination(HttpServletResponse response)
         throws IOException {
         buffer = new ByteArrayOutputStream(1024 * 1024);
 
-        return buffer;
+        return new DispatcherOutputStream(buffer);
     }
 
     /**

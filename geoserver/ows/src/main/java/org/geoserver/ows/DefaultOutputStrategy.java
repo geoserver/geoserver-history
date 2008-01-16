@@ -6,6 +6,8 @@ package org.geoserver.ows;
 
 import java.io.IOException;
 import java.io.OutputStream;
+
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 
@@ -31,9 +33,10 @@ public class DefaultOutputStrategy implements ServiceStrategy {
     /**
      * @return response.getOutputStream();
      */
-    public OutputStream getDestination(HttpServletResponse response)
+    public DispatcherOutputStream getDestination(HttpServletResponse response)
         throws IOException {
-        return response.getOutputStream();
+        ServletOutputStream outputStream = response.getOutputStream();
+        return new DispatcherOutputStream(outputStream);
     }
 
     /**
