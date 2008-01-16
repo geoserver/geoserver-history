@@ -37,8 +37,9 @@ public interface ServiceStrategy extends Cloneable {
      * @return An output stream to write to.
      *
      * @throws IOException Any I/O errors that occur.
+     * @see DispatcherOutputStream
      */
-    public OutputStream getDestination(HttpServletResponse response)
+    public DispatcherOutputStream getDestination(HttpServletResponse response)
         throws IOException;
 
     /**
