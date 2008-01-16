@@ -608,6 +608,12 @@
      <version>2.1</version> 
      <classifier>jdk13</classifier>
    </dependency>
+   <dependency> 
+     <!-- needed by the arcsde plugin -->
+     <groupId>jsqlparser</groupId> 
+     <artifactId>jsqlparser</artifactId> 
+     <version>0.3.14</version> 
+   </dependency>
   </dependencies>
  </dependencyManagement>
 
