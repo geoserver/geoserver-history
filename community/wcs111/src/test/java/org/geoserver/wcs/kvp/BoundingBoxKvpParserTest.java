@@ -2,7 +2,6 @@ package org.geoserver.wcs.kvp;
 
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 import junit.framework.TestCase;
-
 import net.opengis.ows.v1_1_0.BoundingBoxType;
 
 import org.vfny.geoserver.wcs.WcsException;

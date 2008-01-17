@@ -3,13 +3,9 @@ package org.geoserver.wcs;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import net.opengis.wcs.v1_1_1.AxisSubsetType;
-import net.opengis.wcs.v1_1_1.FieldSubsetType;
 import net.opengis.wcs.v1_1_1.GetCoverageType;
-import net.opengis.wcs.v1_1_1.RangeSubsetType;
 
 import org.geoserver.wcs.kvp.GetCoverageRequestReader;
 import org.geoserver.wcs.test.WCSTestSupport;

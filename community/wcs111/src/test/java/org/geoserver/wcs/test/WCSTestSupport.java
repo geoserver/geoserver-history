@@ -7,7 +7,6 @@ package org.geoserver.wcs.test;
 import javax.xml.namespace.QName;
 
 import org.geoserver.data.test.MockData;
-import org.geoserver.test.GeoServerTestSupport;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
 import org.vfny.geoserver.global.WCS;
 
