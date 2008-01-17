@@ -20,6 +20,16 @@ public class GetCapabilitiesResponse extends Response {
     public GetCapabilitiesResponse() {
         super(TransformerBase.class);
     }
+    
+    /**
+     * Makes sure this triggers only
+     * </p>
+     */
+    public boolean canHandle(Operation operation) {
+        // is this a wfs capabilities request?
+        return "GetCapabilities".equalsIgnoreCase(operation.getId()) && 
+                operation.getService().getId().equals("wfs");
+    }
 
     public String getMimeType(Object value, Operation operation) {
         GetCapabilitiesType request = (GetCapabilitiesType) OwsUtils.parameter(operation
