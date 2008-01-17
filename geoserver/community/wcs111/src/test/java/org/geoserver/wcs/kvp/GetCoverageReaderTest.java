@@ -1,5 +1,7 @@
 package org.geoserver.wcs.kvp;
 
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +14,6 @@ import net.opengis.wcs.v1_1_1.RangeSubsetType;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wcs.WcsException;
-import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
 
 public class GetCoverageReaderTest extends WCSTestSupport {
 
