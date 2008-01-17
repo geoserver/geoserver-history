@@ -4,16 +4,19 @@
  */
 package org.geoserver.wcs.response;
 
-import net.opengis.wcs.v1_1_1.GetCapabilitiesType;
-import org.geoserver.ows.Response;
-import org.geoserver.ows.util.OwsUtils;
-import org.geoserver.platform.Operation;
-import org.geotools.xml.transform.TransformerBase;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.xml.transform.TransformerException;
+
+import net.opengis.wcs.v1_1_1.GetCapabilitiesType;
+
+import org.geoserver.ows.Response;
+import org.geoserver.ows.util.OwsUtils;
+import org.geoserver.platform.Operation;
+import org.geotools.xml.transform.TransformerBase;
 
 /**
  * Runs the transformer and outputs the capabilities
@@ -23,6 +26,18 @@ import javax.xml.transform.TransformerException;
 public class GetCapabilitiesResponse extends Response {
     public GetCapabilitiesResponse() {
         super(TransformerBase.class);
+    }
+    
+    /**
+     * Makes sure this triggers only
+     * </p>
+     */
+    public boolean canHandle(Operation operation) {
+        // is this a wcs 1.1.1 or 1.1.0 one?
+        return "GetCapabilities".equalsIgnoreCase(operation.getId()) && 
+                operation.getService().getId().equals("wcs") &&
+                (operation.getService().getVersion().toString().equals("1.1.0") ||
+                        operation.getService().getVersion().toString().equals("1.1.1"));
     }
 
     public String getMimeType(Object value, Operation operation) {
@@ -56,4 +71,5 @@ public class GetCapabilitiesResponse extends Response {
             throw (IOException) new IOException().initCause(e);
         }
     }
+    
 }
