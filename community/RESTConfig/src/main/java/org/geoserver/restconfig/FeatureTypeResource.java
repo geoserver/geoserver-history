@@ -15,11 +15,14 @@ import org.vfny.geoserver.config.AttributeTypeInfoConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -43,13 +46,64 @@ public class FeatureTypeResource extends MapResource {
 
         m.put("html", new HTMLFormat("HTMLTemplates/featuretype.ftl"));
         m.put("json", new JSONFormat());
+        m.put("xml", new AutoXMLFormat("FeatureType"));
         m.put(null, m.get("html"));
 
         return m;
     }
 
     public Map getMap() {
-        return makeFeatureTypeMap();
+        Map m = new HashMap();
+
+        m.put("Style", myFTC.getDefaultStyle());
+        m.put("AdditionalStyles", myFTC.getStyles());
+        m.put("SRS", myFTC.getSRS());
+        m.put("SRSHandling", getSRSHandling());
+        m.put("Title", myFTC.getTitle());
+        m.put("BBox", getBoundingBox()); 
+        m.put("Keywords", getKeywords());
+        m.put("Abstract", myFTC.getAbstract());
+        m.put("WMSPath", myFTC.getWmsPath());
+        m.put("MetadataLinks", getMetadataLinks());
+        m.put("CachingEnabled", myFTC.isCachingEnabled());
+        m.put("CacheTime", Integer.valueOf(myFTC.getCacheMaxAge()));
+        m.put("SchemaBase", myFTC.getSchemaBase());
+
+        return m;
+    }
+
+    protected void putMap(Map m) throws Exception{
+        System.out.println(m);
+    }
+
+    private String getSRSHandling(){
+        try{
+            return (new String[]{"Force","Reproject","Ignore"})[myFTC.getSRSHandling()];
+        } catch (Exception e){
+            return "Ignore";
+        }
+    }
+
+    private List getBoundingBox(){
+        List l = new ArrayList();
+        Envelope e = myFTC.getLatLongBBox();
+        l.add(e.getMinX());
+        l.add(e.getMaxX());
+        l.add(e.getMinY());
+        l.add(e.getMaxY());
+        return l;
+    }
+
+    private List getKeywords(){
+        List l = new ArrayList();
+        l.addAll(myFTC.getKeywords());
+        return l;
+    }
+
+    private List getMetadataLinks(){
+        List l = new ArrayList();
+        l.addAll(myFTC.getMetadataLinks());
+        return l;
     }
 
     private FeatureTypeConfig findMyFeatureTypeConfig() {
@@ -114,6 +168,7 @@ public class FeatureTypeResource extends MapResource {
         map.put("datastoreid", myFTC.getDataStoreId());
         map.put("srs", Integer.valueOf(myFTC.getSRS()));
         map.put("namespace", myDSC.getNameSpaceId());
+        map.put("defaultstyle", myFTC.getDefaultStyle());
 
         ArrayList schemAttribs = new ArrayList();
 
@@ -173,9 +228,6 @@ public class FeatureTypeResource extends MapResource {
 
     public boolean allowPut() {
         return true;
-    }
-
-    public void handlePut() {
     }
 
     public boolean allowDelete() {

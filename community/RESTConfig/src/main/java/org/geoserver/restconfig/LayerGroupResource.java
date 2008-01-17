@@ -44,29 +44,32 @@ class LayerGroupResource extends MapResource {
         Map m = new HashMap();
         m.put("html", new HTMLFormat("HTMLTemplates/layergroups.ftl"));
         m.put("json", new JSONFormat());
+        m.put("xml",  new AutoXMLFormat("layergroups"));
         m.put(null, m.get("html"));
 
         return m;
     }
 
     public Map getMap() {
+        String group = (String)getRequest().getAttributes().get("group");
         Map context = new HashMap();
         Map layerGroups = myWMSConfig.getBaseMapLayers();
-        List layerNames = new ArrayList();
-
-        if (layerGroups != null) {
-            Iterator it = layerGroups.entrySet().iterator();
-
-            while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry) it.next();
-                Map addition = new HashMap();
-                addition.put("name", entry.getKey());
-                addition.put("members", Arrays.asList(entry.getValue().toString().split(",")));
-                layerNames.add(addition);
-            }
-
-            context.put("layers", layerNames);
+        List members = null;
+        if (layerGroups != null && 
+            layerGroups.containsKey(group)){
+            members = Arrays.asList(layerGroups.get(group).toString().split(","));
         }
+
+        List styles = null;
+        if (myWMSConfig.getBaseMapStyles() != null &&
+            myWMSConfig.getBaseMapStyles().containsKey(group)){
+            styles = Arrays.asList(myWMSConfig.getBaseMapStyles().get(group).toString().split(","));
+        }
+
+        context.put("Members", members);
+        context.put("Styles", null);
+        context.put("SRS", null);
+        context.put("Envelope", null);
 
         return context;
     }

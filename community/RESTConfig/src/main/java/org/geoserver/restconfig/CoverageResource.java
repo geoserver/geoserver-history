@@ -125,6 +125,7 @@ public class CoverageResource extends MapResource {
                 }
             });
         m.put("json", new JSONFormat());
+        m.put("xml", new AutoXMLFormat("coveragestore"));
         m.put(null, m.get("html"));
 
         return m;

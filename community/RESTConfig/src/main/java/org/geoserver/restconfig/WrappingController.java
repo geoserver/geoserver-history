@@ -99,6 +99,12 @@ public class WrappingController extends AbstractController {
             new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), context,
                 router));
         router.attach("/dummy/{name}", new DummyRestlet(getApplicationContext()));
+        router.attach("/layergroups/{group}.{type}",
+            new ResourceFinder(ResourceFinder.RESOURCE_LAYERGROUP, router.getContext(), context,
+                router));
+        router.attach("/layergroups/{group}",
+                new ResourceFinder(ResourceFinder.RESOURCE_LAYERGROUP, router.getContext(), context,
+                    router));
         router.attach("/layergroups.{type}",
             new ResourceFinder(ResourceFinder.RESOURCE_LAYERGROUP, router.getContext(), context,
                 router));

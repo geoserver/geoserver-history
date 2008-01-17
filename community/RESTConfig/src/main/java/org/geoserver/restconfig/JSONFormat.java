@@ -81,6 +81,8 @@ public class JSONFormat implements DataFormat {
                         return json;
                     } else if (obj instanceof Number) {
                         return obj;
+                    } else if (obj == null) {
+                        return JSONNull.getInstance();
                     } else {
                         return obj.toString();
                     }
