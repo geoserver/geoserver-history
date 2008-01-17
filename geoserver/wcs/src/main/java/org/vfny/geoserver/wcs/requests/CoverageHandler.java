@@ -173,7 +173,8 @@ public class CoverageHandler extends XMLFilterImpl implements ContentHandler {
     public void characters(char[] ch, int start, int length)
         throws SAXException {
         String s = new String(ch, start, length);
-
+        s = s.trim();
+        
         // if inside a property element, add the element
         if (currentTag.equals("sourceCoverage")) {
             if (LOGGER.isLoggable(Level.FINEST)) {
