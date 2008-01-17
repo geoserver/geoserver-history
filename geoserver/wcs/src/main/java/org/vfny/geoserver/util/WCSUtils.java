@@ -203,6 +203,30 @@ public class WCSUtils {
 
         return scaledGridCoverage;
     }
+    
+    /**
+     * <strong>Scaling</strong><br>
+     * Let user to scale down to the EXACT needed resolution. This step does not
+     * prevent from having loaded an overview of the original image based on the
+     * requested scale.
+     * 
+     * @param destinationEnvelopeInSourceCRS
+     * @return GridCoverage2D
+     */
+    public static GridCoverage2D scale(final GridCoverage2D coverage, 
+            final GridGeometry2D scaledGridGeometry) {
+        final ParameterValueGroup param = (ParameterValueGroup) resampleParams.clone();
+        param.parameter("Source").setValue(coverage);
+        param.parameter("CoordinateReferenceSystem").setValue(coverage.getCoordinateReferenceSystem());
+        param.parameter("GridGeometry").setValue(scaledGridGeometry);
+        param.parameter("InterpolationType")
+             .setValue(Interpolation.getInstance(Interpolation.INTERP_NEAREST));
+
+        final GridCoverage2D scaledGridCoverage = (GridCoverage2D) resampleFactory.doOperation(param,
+                hints);
+
+        return scaledGridCoverage;
+    }
 
     /**
      * Scaling the input coverage using the provided parameters.
@@ -439,6 +463,10 @@ public class WCSUtils {
             bands[b] = ((Integer) selectedBands.get(b)).intValue();
         }
 
+        return bandSelect(coverage, bands);
+    }
+
+    public static Coverage bandSelect(final GridCoverage coverage, final int[] bands) {
         Coverage bandSelectedCoverage;
 
         if ((bands != null) && (bands.length > 0)) {
