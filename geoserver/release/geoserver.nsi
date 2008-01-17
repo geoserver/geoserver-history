@@ -140,10 +140,10 @@ Section "GeoServer Section" SecGeoServer
                    "http://localhost:8080/geoserver/"
 
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Start GeoServer.lnk" \
-                   "$2\bin\java.exe" '-DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -Xmx300m -jar start.jar'\
+                   "$2\bin\java.exe" '-DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -Xmx300m -DSTOP.PORT=8079 -DSTOP.KEY=geoserver -jar start.jar'\
                    "$INSTDIR\webapps\geoserver\WEB-INF\images\gs.ico" 0 SW_SHOWNORMAL
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Stop GeoServer.lnk" \
-                   "$2\bin\java.exe" '-jar start.jar --stop'\
+                   "$2\bin\java.exe" '-DSTOP.PORT=8079 -DSTOP.KEY=geoserver -jar start.jar --stop'\
                    "$INSTDIR\webapps\geoserver\WEB-INF\images\gs.ico" 0 SW_SHOWMINIMIZED
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
 
