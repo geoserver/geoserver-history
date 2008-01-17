@@ -25,9 +25,9 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         reader = new GetCoverageRequestReader(catalog);
     }
     
-    protected String getDefaultLogConfiguration() {
-        return "/DEFAULT_LOGGING.properties";
-    }
+//    protected String getDefaultLogConfiguration() {
+//        return "/DEFAULT_LOGGING.properties";
+//    }
     
 
     public void testMissingParams() throws Exception {

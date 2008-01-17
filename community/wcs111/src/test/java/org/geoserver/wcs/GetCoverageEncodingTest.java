@@ -39,7 +39,7 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
         // make sure we got a multipart
         assertTrue(response.getContentType().matches("multipart/mixed;\\s*boundary=\".*\""));
         
-        System.out.println(response.getOutputStreamContent());
+//        System.out.println(response.getOutputStreamContent());
 
         // parse the multipart, check there are two parts
         MimeMessage body = new MimeMessage((Session) null, new ByteArrayInputStream(response

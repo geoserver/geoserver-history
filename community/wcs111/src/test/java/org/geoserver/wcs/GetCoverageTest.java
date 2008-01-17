@@ -40,10 +40,10 @@ public class GetCoverageTest extends WCSTestSupport {
         catalog = (Data) applicationContext.getBean("catalog");
     }
 
-    @Override
-    protected String getDefaultLogConfiguration() {
-        return "/DEFAULT_LOGGING.properties";
-    }
+//    @Override
+//    protected String getDefaultLogConfiguration() {
+//        return "/DEFAULT_LOGGING.properties";
+//    }
     
     /**
      * Runs GetCoverage on the specified parameters and returns an array of coverages

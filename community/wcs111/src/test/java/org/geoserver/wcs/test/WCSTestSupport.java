@@ -18,11 +18,11 @@ import org.vfny.geoserver.global.WCS;
  * 
  */
 public class WCSTestSupport extends KvpRequestReaderTestSupport {
-    protected static final String BASEPATH = "wcs111";
+    protected static final String BASEPATH = "wcs";
 
     public static String WCS_PREFIX = "wcs";
 
-    public static String WCS_URI = "http://www.opengis.net/wcs";
+    public static String WCS_URI = "http://www.opengis.net/wcs/1.1.1";
 
     public static String TIFF = "tiff";
 

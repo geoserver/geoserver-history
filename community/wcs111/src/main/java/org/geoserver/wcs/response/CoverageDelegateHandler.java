@@ -39,9 +39,6 @@ public class CoverageDelegateHandler implements DataContentHandler {
     public void writeTo(Object value, String mimeType, OutputStream os) throws IOException {
         CoverageResponseDelegate delegate = (CoverageResponseDelegate) value;
         delegate.encode(os);
-        final FileOutputStream fos = new FileOutputStream("c:\\temp\\coverage.tiff");
-        delegate.encode(fos);
-        fos.close();
         os.flush();
     }
 
