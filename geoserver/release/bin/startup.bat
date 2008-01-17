@@ -72,7 +72,7 @@ REM if there's no GEOSERVER_DATA_DIR defined then use GEOSERVER_HOME/data_dir/
   goto execJava
 
 :setDataDir
-  set GEOSERVER_DATA_DIR=%GEOSERVER_HOME%\data_dir
+  set GEOSERVER_DATA_DIR="%GEOSERVER_HOME%\data_dir"
   goto execJava
 
 :execJava
@@ -85,12 +85,12 @@ REM if there's no GEOSERVER_DATA_DIR defined then use GEOSERVER_HOME/data_dir/
 :usePathJava
   ::A better way to do this is given at http://www.ericphelps.com/batch/samples/JavaRuntime.cmd.txt
   ::looking up the registry, but I think this should work too... 
-  set JAVA_RUN=java
+  set RUN_JAVA=java
   goto runJava
 
 :runJava
-  cd %GEOSERVER_HOME%
-  %RUN_JAVA% -DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -jar %GEOSERVER_HOME%\start.jar
+  cd "%GEOSERVER_HOME%"
+  "%RUN_JAVA%" -DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -DSTOP.PORT=8079 -DSTOP.KEY=geoserver -jar %GEOSERVER_HOME%\start.jar
 
 
 :end
