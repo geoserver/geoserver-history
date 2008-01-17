@@ -4,6 +4,8 @@
  */
 package org.geoserver.wcs.kvp;
 
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
+
 import java.io.StringReader;
 import java.util.Iterator;
 
@@ -11,7 +13,6 @@ import net.opengis.ows.v1_1_0.CodeType;
 import net.opengis.ows.v1_1_0.Ows11Factory;
 import net.opengis.wcs.v1_1_1.AxisSubsetType;
 import net.opengis.wcs.v1_1_1.FieldSubsetType;
-import net.opengis.wcs.v1_1_1.FieldType;
 import net.opengis.wcs.v1_1_1.RangeSubsetType;
 import net.opengis.wcs.v1_1_1.Wcs111Factory;
 
@@ -28,7 +29,6 @@ import org.geoserver.wcs.kvp.rangesubset.RangeSubsetParser;
 import org.geoserver.wcs.kvp.rangesubset.RangeSubsetParserVisitor;
 import org.geoserver.wcs.kvp.rangesubset.SimpleNode;
 import org.vfny.geoserver.wcs.WcsException;
-import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
 
 /**
  * Parses the RangeSubset parameter of a GetFeature KVP request

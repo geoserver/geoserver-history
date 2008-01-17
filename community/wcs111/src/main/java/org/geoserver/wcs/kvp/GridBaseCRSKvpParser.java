@@ -4,10 +4,11 @@
  */
 package org.geoserver.wcs.kvp;
 
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
+
 import org.geoserver.ows.KvpParser;
 import org.geotools.referencing.CRS;
 import org.vfny.geoserver.wcs.WcsException;
-import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
 
 /**
  * Does not really parse the srs, it just makes sure it's a valid one

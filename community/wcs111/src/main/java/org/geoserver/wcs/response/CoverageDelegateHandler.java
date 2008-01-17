@@ -6,7 +6,6 @@ package org.geoserver.wcs.response;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 

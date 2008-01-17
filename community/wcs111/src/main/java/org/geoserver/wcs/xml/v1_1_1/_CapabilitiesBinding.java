@@ -1,12 +1,13 @@
 package org.geoserver.wcs.xml.v1_1_1;
 
 
+import javax.xml.namespace.QName;
+
 import net.opengis.ows.GetCapabilitiesType;
 
-import org.geotools.xml.*;
-
-
-import javax.xml.namespace.QName;
+import org.geotools.xml.AbstractComplexEMFBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
 
 /**
  * Binding object for the type http://www.opengis.net/wcs/1.1.1:_Capabilities.

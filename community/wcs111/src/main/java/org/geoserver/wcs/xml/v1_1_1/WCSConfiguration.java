@@ -4,12 +4,10 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import net.opengis.ows.v1_1_0.Ows11Factory;
 import net.opengis.wcs.v1_1_1.Wcs111Factory;
 
 import org.eclipse.emf.ecore.EFactory;
 import org.geotools.gml3.GMLConfiguration;
-import org.geotools.ows.v1_1.OWS;
 import org.geotools.ows.v1_1.OWSConfiguration;
 import org.geotools.xml.ComplexEMFBinding;
 import org.geotools.xml.Configuration;

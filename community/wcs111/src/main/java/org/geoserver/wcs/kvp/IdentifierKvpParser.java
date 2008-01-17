@@ -4,13 +4,13 @@
  */
 package org.geoserver.wcs.kvp;
 
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 import net.opengis.ows.v1_1_0.CodeType;
 import net.opengis.ows.v1_1_0.Ows11Factory;
 
 import org.geoserver.ows.KvpParser;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wcs.WcsException;
-import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
 
 public class IdentifierKvpParser extends KvpParser {
 
