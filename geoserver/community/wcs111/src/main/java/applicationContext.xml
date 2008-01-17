@@ -37,12 +37,12 @@
   </bean>
 
   <!-- http url mapping -->
-  <bean id="wcsURLMapping"
+  <bean id="wcs111URLMapping"
     class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
     <property name="mappings">
       <props>
-        <prop key="/wcs111">dispatcher</prop>
-        <prop key="/wcs111/*">dispatcher</prop>
+        <prop key="/wcs">dispatcher</prop>
+        <prop key="/wcs/*">dispatcher</prop>
       </props>
     </property>
   </bean>
@@ -109,7 +109,6 @@
     <constructor-arg value="1.1.1" />
     <constructor-arg ref="wcs-1.1.1-configuration" />
   </bean>
-
 
 
   <!-- responses -->

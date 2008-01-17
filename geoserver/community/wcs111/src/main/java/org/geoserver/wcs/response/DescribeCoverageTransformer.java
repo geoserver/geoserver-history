@@ -335,6 +335,8 @@ public class DescribeCoverageTransformer extends TransformerBase {
             for (int i = 0; i < dimensions.length; i++) {
                 CoverageDimension cd = dimensions[i];
                 Double[] nulls = cd.getNullValues();
+                if(nulls == null)
+                    return;
                 if (nulls.length == 1) {
                     element("wcs:NullValue", nulls[0].toString());
                 } else if (nulls.length >= 1) {
@@ -364,13 +366,19 @@ public class DescribeCoverageTransformer extends TransformerBase {
             for (Iterator it = ci.getSupportedFormats().iterator(); it.hasNext();) {
                 String format = (String) it.next();
                 // wcs 1.1 requires mime types, not format names
-                CoverageResponseDelegate delegate = CoverageResponseDelegateFactory
-                        .encoderFor(format);
-                // this is a nasty hack... the output format should not need any
-                // preparation,
-                // we already provided the format to the factory
-                delegate.prepare(format, null);
-                element("wcs:SupportedFormat", delegate.getContentType(wcs.getGeoServer()));
+                try  {
+                    CoverageResponseDelegate delegate = CoverageResponseDelegateFactory
+                            .encoderFor(format);
+                    // this is a nasty hack... the output format should not need any
+                    // preparation,
+                    // we already provided the format to the factory
+                    delegate.prepare(format, null);
+                    element("wcs:SupportedFormat", delegate.getContentType(wcs.getGeoServer()));
+                } catch(Exception e) {
+                    // no problem, we just want to avoid people writing HALLABALOOLA in the
+                    // supported formats section of the coverage config and then break the
+                    // describe response
+                }
             }
         }
 
