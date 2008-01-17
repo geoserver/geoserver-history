@@ -8,10 +8,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
+import javax.imageio.spi.ImageReaderSpi;
+import javax.imageio.spi.ImageWriterSpi;
 import javax.servlet.ServletContext;
 
 import org.geoserver.util.ReaderUtils;
 import org.geotools.factory.Hints;
+import org.geotools.resources.image.ImageUtilities;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.ApplicationContext;
@@ -73,6 +76,10 @@ public class Config implements ApplicationContextAware {
                 + "If you want to force its enabling, "
                 + "set -Dcom.sun.media.imageio.disableCodecLib=true in your virtual machine");
             System.setProperty("com.sun.media.imageio.disableCodecLib", "true");
+        } else {
+            // in any case, the native png reader isworse than the pure java ones, so
+            // let's disable it (the native png writer is on the other side faster)...
+            ImageUtilities.allowNativeCodec("png", ImageReaderSpi.class, false);
         }
 
         ServletContext sc = this.context.getServletContext();
