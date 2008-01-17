@@ -22,7 +22,6 @@ import org.vfny.geoserver.global.CoverageInfoLabelComparator;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MetaDataLink;
-import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.WCS;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;

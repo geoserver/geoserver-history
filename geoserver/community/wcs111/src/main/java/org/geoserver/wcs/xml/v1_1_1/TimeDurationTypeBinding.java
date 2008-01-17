@@ -1,11 +1,10 @@
 package org.geoserver.wcs.xml.v1_1_1;
 
 
-import org.geotools.xml.*;
-import org.geotools.xml.AbstractSimpleBinding;
-
-
 import javax.xml.namespace.QName;
+
+import org.geotools.xml.AbstractSimpleBinding;
+import org.geotools.xml.InstanceComponent;
 
 /**
  * Binding object for the type http://www.opengis.net/wcs/1.1.1:TimeDurationType.

@@ -4,6 +4,8 @@
  */
 package org.geoserver.wcs.kvp;
 
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,11 +16,8 @@ import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.KvpUtils;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
-
-import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
 
 /**
  * This and wfs BBoxKvpParser share a lot, it's just they don't share the same
