@@ -125,7 +125,7 @@ public class CoverageResponse implements Response {
      * @return DOCUMENT ME!
      */
     public String getContentType(GeoServer gs) {
-        return /*delegate.getContentType(gs)*/ "";
+        return delegate.getContentType(gs);
     }
 
     public String getContentEncoding() {
