@@ -37,6 +37,7 @@ public class CoverageListResource extends MapResource {
 
         m.put("html", new HTMLFormat("HTMLTemplates/coverages.ftl"));
         m.put("json", new JSONFormat());
+        m.put("xml", new AutoXMLFormat("coveragestore"));
         m.put(null, m.get("html"));
 
         return m;

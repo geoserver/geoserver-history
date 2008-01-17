@@ -64,7 +64,9 @@ public class ResourceFinder extends Finder {
             : new StyleListResource(getContext(), request, response, myDataConfig));
 
         case RESOURCE_LAYERGROUP:
-            return new LayerGroupResource(getContext(), request, response, myWMSConfig);
+            return (request.getAttributes().containsKey("group")
+            ? new LayerGroupListResource(getContext(), request, response, myWMSConfig)
+            : new LayerGroupResource(getContext(), request, response, myWMSConfig));
 
         case RESOURCE_INDEX:
             return new IndexResource(getContext(), request, response, myRouter);

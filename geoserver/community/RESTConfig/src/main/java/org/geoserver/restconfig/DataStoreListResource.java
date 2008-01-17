@@ -41,6 +41,7 @@ public class DataStoreListResource extends MapResource {
         Map m = new HashMap();
         m.put("html", new HTMLFormat("HTMLTemplates/datastores.ftl"));
         m.put("json", new JSONFormat());
+        m.put("xml", new AutoXMLFormat("datastores"));
         m.put(null, m.get("html"));
 
         return m;
@@ -116,11 +117,8 @@ public class DataStoreListResource extends MapResource {
         List fts = new ArrayList();
 
         for (Iterator it = featureTypeConfigs.iterator(); it.hasNext();) {
-            HashMap am = new HashMap();
             FeatureTypeConfig ftc = (FeatureTypeConfig) it.next();
-            am.put("name", ftc.getName());
-            am.put("srs", Integer.valueOf(ftc.getSRS()));
-            fts.add(am);
+            fts.add(ftc.getName());
         }
 
         map.put("featuretypes", fts);
@@ -143,23 +141,8 @@ public class DataStoreListResource extends MapResource {
         List datastores = new ArrayList();
 
         for (Iterator it = myDC.getDataStores().values().iterator(); it.hasNext();) {
-            HashMap am = new HashMap();
-            DataStoreConfig dsc = (DataStoreConfig) it.next();
-            am.put("id", dsc.getId());
-
-            DataStoreFactorySpi factory = dsc.getFactory();
-
-            if (factory != null) {
-                am.put("type", dsc.getFactory().getDisplayName());
-            } else {
-                am.put("type", "null"); // TODO: find a better way to deal with this
-            }
-
-            if (sortedFeatureTypes.containsKey(dsc.getId())) {
-                am.put("featuretypes", sortedFeatureTypes.get(dsc.getId()));
-            }
-
-            datastores.add(am);
+            DataStoreConfig dsc = (DataStoreConfig)it.next();
+            datastores.add(dsc.getId());
         }
 
         map.put("datastores", datastores);

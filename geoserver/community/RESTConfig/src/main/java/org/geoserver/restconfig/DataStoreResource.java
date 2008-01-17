@@ -14,6 +14,8 @@ import org.restlet.resource.Resource;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DataStoreFactorySpi.Param;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -52,178 +54,43 @@ public class DataStoreResource extends MapResource {
         Map m = new HashMap();
         m.put("html", new HTMLFormat("HTMLTemplates/datastore.ftl"));
         m.put("json", new JSONFormat());
+        m.put("xml", new AutoXMLFormat("datastore"));
         m.put(null, m.get("html"));
 
         return m;
     }
 
     public Map getMap() {
-        List ftcList = getFeatureTypes(myDSC.getId());
-        Map map = makeFeatureTypeMap(ftcList);
-        map.put("datastoreid", myDSC.getId());
+        // TODO: Fill this in better (what about different types of datastore?)
+        Map map = new HashMap();
+        map.put("Enabled", myDSC.isEnabled());
+        map.put("Namespace", myDSC.getNameSpaceId());
+        map.put("Description", (myDSC.getAbstract() == null ? "" : myDSC.getAbstract()));
 
-        return map;
-    }
+        DataStoreFactorySpi factory = myDSC.getFactory();
 
-    /**
-     * Create an index showing all the datastores
-     * @param mt the media type (HTML, JSON, XML, ...)
-     */
-    public void getIndex(MediaType mt) {
-        //Get the data
-        HashMap map = makeDataStoreMap();
-        map.put("currentURL", getRequest().getResourceRef().getBaseRef());
-
-        //Do the output formatting
-        if (mt.equals(MediaType.APPLICATION_XML)) {
-            getResponse().setEntity(getIndexXML(map));
-        } else if (mt.equals(MediaType.APPLICATION_JSON)) {
-            getResponse().setEntity(getIndexJSON(map));
-        } else {
-            //implying mt.equals(MediaType.TEXT_HTML))
-            getResponse().setEntity(getIndexHTML(map));
-        }
-    }
-
-    private TemplateRepresentation getIndexXML(HashMap map) {
-        return XMLTemplate.getXmlRepresentation("XMLTemplates/datastores.ftl", map);
-    }
-
-    private TemplateRepresentation getIndexJSON(HashMap map) {
-        // ToDo
-        return null;
-    }
-
-    private TemplateRepresentation getIndexHTML(HashMap map) {
-        return HTMLTemplate.getHtmlRepresentation("HTMLTemplates/datastores.ftl", map);
-    }
-
-    /**
-     * Sorts the FeatureTypeConfigs according to the datastore to which they are associated.
-     *
-     * @return HashMap where datastore id is key and value is list of associated feature types
-     */
-    private HashMap getSortedFeatureTypes() {
-        HashMap map = new HashMap();
-
-        for (Iterator it = myDC.getFeaturesTypes().values().iterator(); it.hasNext();) {
-            FeatureTypeConfig ftc = (FeatureTypeConfig) it.next();
-            List ftcs = (ArrayList) map.get(ftc.getDataStoreId());
-
-            if (ftcs == null) {
-                ftcs = new ArrayList();
-            }
-
-            ftcs.add(ftc.getName());
-            map.put(ftc.getDataStoreId(), ftcs);
-        }
-
-        return map;
-    }
-
-    /**
-     * Get the FeatureTypeConfigs for given DataStoreId
-     *
-     * @return list of FeatureTypeConfigs in given DataStore
-     */
-    private List getFeatureTypes(String dsId) {
-        List ftcs = new ArrayList();
-
-        for (Iterator it = myDC.getFeaturesTypes().values().iterator(); it.hasNext();) {
-            FeatureTypeConfig ftc = (FeatureTypeConfig) it.next();
-
-            if (ftc.getDataStoreId().equals(dsId)) {
-                ftcs.add(ftc);
+        Map storeSpecificParameters = new HashMap();
+        Param[] parameters = factory.getParametersInfo();
+        for (int i = 0; i < parameters.length; i++){
+            Param p = parameters[i];
+            if (!("namespace".equals(p.key))){
+                Object value = myDSC.getConnectionParams().get(p.key);
+                String text  = null;
+                if (value == null) {
+                    text = null;
+                } else if (value instanceof String){
+                    text = (String) value;
+                } else {
+                    text = p.text(value);
+                }
+                String key = p.key.substring(p.key.lastIndexOf(':') + 1);
+                storeSpecificParameters.put(key, text);
             }
         }
 
-        return ftcs;
-    }
-
-    /**
-     * Extracts information from FeatureTypeConfigs and creates a Map
-     * suitable for use with FreeMarker templates.
-     *
-     * @param featureTypeConfigs list with FeatureTypeConfigs
-     * @return HashMap for use with FreeMarker templates
-     */
-    private HashMap makeFeatureTypeMap(List featureTypeConfigs) {
-        HashMap map = new HashMap();
-        List fts = new ArrayList();
-
-        for (Iterator it = featureTypeConfigs.iterator(); it.hasNext();) {
-            HashMap am = new HashMap();
-            FeatureTypeConfig ftc = (FeatureTypeConfig) it.next();
-            am.put("name", ftc.getName());
-            am.put("srs", Integer.valueOf(ftc.getSRS()));
-            fts.add(am);
-        }
-
-        map.put("featuretypes", fts);
+        map.put(factory.getClass().getSimpleName(), storeSpecificParameters);
 
         return map;
     }
-
-    /**
-     * Finds information about all datastore and the associated
-     * FeatureTypeConfigs, then creates map suitable for use with
-     * FreeMarker templates.
-     *
-     * @return HashMap for use with FreeMarker templates
-     */
-    private HashMap makeDataStoreMap() {
-        // Get all the featuretypes, sorted according to datastore
-        Map sortedFeatureTypes = getSortedFeatureTypes();
-
-        HashMap map = new HashMap();
-        List datastores = new ArrayList();
-
-        for (Iterator it = myDC.getDataStores().values().iterator(); it.hasNext();) {
-            HashMap am = new HashMap();
-            DataStoreConfig dsc = (DataStoreConfig) it.next();
-            am.put("id", dsc.getId());
-            am.put("type", dsc.getFactory().getDisplayName());
-
-            if (sortedFeatureTypes.containsKey(dsc.getId())) {
-                am.put("featuretypes", sortedFeatureTypes.get(dsc.getId()));
-            }
-
-            datastores.add(am);
-        }
-
-        map.put("datastores", datastores);
-
-        return map;
-    }
-
-    /**
-     * Create a page with information about a given datastore,
-     * determined from the request attribute "name", in the given
-     * data format.
-     *
-     * @param mt the media type (HTML, JSON, XML, ...)
-    private void getDataStore(MediaType mt) {
-        // We can end up where with an invalid datastore name
-        if(myDSC == null) {
-            //Return a 404
-            getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-            getResponse().setEntity("404 - Couldn't find requested resource", MediaType.TEXT_PLAIN);
-
-        } else {
-            List ftcs = getFeatureTypes(myDSC.getId());
-            HashMap map = makeFeatureTypeMap(ftcs);
-            map.put("datastoreid", myDSC.getId());
-            map.put("currentURL", getRequest().getResourceRef().getBaseRef());
-
-            //Do the output formatting
-            if(mt.equals(MediaType.APPLICATION_XML)) {
-                getResponse().setEntity(getDataStoreXML(map));
-            } else if(mt.equals(MediaType.APPLICATION_JSON)) {
-                getResponse().setEntity(getDataStoreJSON(map));
-            } else {
-                //implying mt.equals(MediaType.TEXT_HTML))
-                getResponse().setEntity(getDataStoreHTML(map));
-            }
-        }
-    } */
 }
+

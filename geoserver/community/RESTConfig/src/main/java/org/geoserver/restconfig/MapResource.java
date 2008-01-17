@@ -96,12 +96,12 @@ public abstract class MapResource extends Resource {
         currentURL = RequestUtils.proxifiedBaseURL(currentURL, 
                 myGeoserver.getProxyBaseUrl());
 
-        LOG.info("Proxy Base URL: " + myGeoserver.getProxyBaseUrl());
+        // LOG.info("Proxy Base URL: " + myGeoserver.getProxyBaseUrl());
 
         String formatName = (String) getRequest().getAttributes().get("type");
 
         if (formatName != null) {
-            currentURL = currentURL.substring(0, currentURL.length() - formatName.length() - 1);
+            currentURL = currentURL.substring(0, currentURL.length() - (formatName.length() + 2));
         }
 
 		if (currentURL.endsWith("/")){
