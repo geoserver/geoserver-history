@@ -4,6 +4,18 @@
  */
 package org.vfny.geoserver.config;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.units.Unit;
+
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.data.util.CoverageUtils;
 import org.geotools.coverage.Category;
@@ -13,28 +25,21 @@ import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.resources.XArray;
+import org.geotools.util.SimpleInternationalString;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.metadata.Identifier;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.cs.CoordinateSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.CoverageDimension;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import javax.units.Unit;
 
 
 /**
@@ -48,6 +53,14 @@ import javax.units.Unit;
  * @version $Id$
  */
 public class CoverageConfig {
+    
+    private static final InternationalString[] DIMENSION_NAMES = {
+        new SimpleInternationalString("x"),
+        new SimpleInternationalString("y"),
+        new SimpleInternationalString("z"),
+        new SimpleInternationalString("t")
+    };
+    
     /**
      *
      */
@@ -281,7 +294,7 @@ public class CoverageConfig {
             throw newEx;
         }
 
-        dimentionNames = gc.getDimensionNames();
+        dimentionNames = getDimensionNames(gc);
 
         final DataConfig config = ConfigRequests.getDataConfig(request);
         StringBuffer cvName = new StringBuffer(gc.getName().toString());
@@ -397,6 +410,30 @@ public class CoverageConfig {
          * ReadParameters ...
          */
         parameters = CoverageUtils.getParametersKVP(format.getReadParameters());
+    }
+
+    
+    /**
+     * Returns the dimension names for the specified coverage, either gathering them
+     * from the coordinate system, or by
+     * @param gc
+     * @return
+     */
+    private InternationalString[] getDimensionNames(GridCoverage2D gc) {
+        final InternationalString[] names;
+        if (gc.getCoordinateReferenceSystem() != null) {
+            final CoordinateSystem cs = gc.getCoordinateReferenceSystem().getCoordinateSystem();
+            names = new InternationalString[cs.getDimension()];
+            for (int i = 0; i < names.length; i++) {
+                names[i] = new SimpleInternationalString(cs.getAxis(i).getName().getCode());
+            }
+        } else {
+            names = XArray.resize(DIMENSION_NAMES, gc.getDimension());
+            for (int i = DIMENSION_NAMES.length; i < names.length; i++) {
+                names[i] = new SimpleInternationalString("dim" + (i + 1));
+            }
+        }
+        return names;
     }
 
     /**
