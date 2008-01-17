@@ -75,7 +75,6 @@ public class CoverageResponseDelegateFactory {
             }
         }
 
-        throw new NoSuchElementException(new StringBuffer("Can't create the encoder ").append(
-                encoder.getClass().getName()).toString());
+        throw new NoSuchElementException("Can't create the encoder for format " +  outputFormat);
     }
 }
