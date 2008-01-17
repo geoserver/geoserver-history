@@ -48,6 +48,8 @@
   </bean>
   
   <!-- kvp parsers -->
+  <bean id="ows11AcceptVersionsKvpParser" class="org.geoserver.wcs.kvp.AcceptVersionsKvpParser"/>
+  
   <bean id="wcs111RangeSubsetKvpParser" class="org.geoserver.wcs.kvp.RangeSubsetKvpParser"/>
   
   <bean id="wcs111IdentifierKvpParser" class="org.geoserver.wcs.kvp.IdentifierKvpParser">

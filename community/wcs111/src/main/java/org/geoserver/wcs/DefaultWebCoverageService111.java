@@ -85,7 +85,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
         List<String> accepted = null;
         if (request.getAcceptVersions() != null)
             accepted = request.getAcceptVersions().getVersion();
-        String version = RequestUtils.getVersionPreOws(provided, accepted);
+        String version = RequestUtils.getVersionOws11(provided, accepted);
 
         // TODO: add support for 1.0.0 in here
 
