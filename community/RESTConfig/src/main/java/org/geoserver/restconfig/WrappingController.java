@@ -7,6 +7,7 @@ package org.geoserver.restconfig;
 import com.noelios.restlet.ext.servlet.ServletConverter;
 import org.restlet.Restlet;
 import org.restlet.Router;
+import org.restlet.Finder;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,6 +16,8 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.WMSConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
+import java.util.Iterator;
 
 
 /**
@@ -25,6 +28,8 @@ public class WrappingController extends AbstractController {
     public static String METHOD_PUT = "PUT";
     public static String METHOD_DELETE = "DELETE";
     ServletConverter myConverter;
+    private Map myRouteMap;
+    private Router myRouter;
 
     public WrappingController() {
         super();
@@ -47,7 +52,37 @@ public class WrappingController extends AbstractController {
         return null;
     }
 
+    public void setMapping(Map m){
+        if (m == null) return;
+        if (myRouter == null) myRouter = new Router();
+
+        myRouter.getRoutes().clear();
+        Iterator it = m.entrySet().iterator();
+
+        try{
+            while (it.hasNext()){
+                Map.Entry entry = (Map.Entry) it.next();
+                myRouter.attach((String)entry.getKey(), (Finder)entry.getValue());
+            }
+        } catch (ClassCastException cce){
+            if (m != myRouteMap){
+                setMapping(myRouteMap);
+            } else {
+                myRouter.getRoutes().clear();
+            }
+            return;
+        }
+        myRouteMap = m;
+    }
+
+    public Map getMapping(){
+        return myRouteMap;
+    }
+
     public Restlet createRoot() {
+        if (myRouter == null) myRouter = new Router();
+        return myRouter;
+/*
         Router router = new Router();
         ApplicationContext context = getApplicationContext();
 
@@ -114,6 +149,6 @@ public class WrappingController extends AbstractController {
         router.attach("/projections", new DummyRestlet(getApplicationContext()));
         router.attach("/projections/{projection}", new DummyRestlet(getApplicationContext()));
 
-        return router;
+        return router; */
     }
 }

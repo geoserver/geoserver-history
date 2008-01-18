@@ -34,10 +34,22 @@ import java.util.Map;
 class LayerGroupResource extends MapResource {
     private WMSConfig myWMSConfig;
 
+    public LayerGroupResource(){
+        super();
+    }
+
     public LayerGroupResource(Context context, Request request, Response response,
         WMSConfig wmsConfig) {
         super(context, request, response);
         myWMSConfig = wmsConfig;
+    }
+
+    public void setWMSConfig(WMSConfig c){
+        myWMSConfig = c;
+    }
+
+    public WMSConfig getWMSConfig(){
+        return myWMSConfig;
     }
 
     public Map getSupportedFormats() {

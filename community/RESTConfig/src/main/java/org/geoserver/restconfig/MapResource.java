@@ -59,10 +59,9 @@ public abstract class MapResource extends Resource {
 	private GeoServer myGeoserver;
     static Logger LOG = org.geotools.util.logging.Logging.getLogger("org.geoserver.community");
 
-    public MapResource(Context context, Request request, Response response) {
-        super(context, request, response);
+    public MapResource() {
+        super();
         myFormatMap = getSupportedFormats();
-        myRequestFormat = (DataFormat) myFormatMap.get(request.getAttributes().get("type"));
 		myGeoserver = (GeoServer)GeoServerExtensions.bean("geoServer");
     }
 
@@ -70,6 +69,7 @@ public abstract class MapResource extends Resource {
 
     public void handleGet() {
         Map details = getMap();
+        myRequestFormat = (DataFormat)myFormatMap.get(getRequest().getAttributes().get("type"));
 
         if ((myRequestFormat == null) | (details == null)) {
             getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
