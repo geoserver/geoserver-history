@@ -35,10 +35,22 @@ public class FeatureTypeResource extends MapResource {
     private DataStoreConfig myDSC = null;
     private FeatureTypeConfig myFTC = null;
 
+    public FeatureTypeResource(){
+        super();
+    }
+
     public FeatureTypeResource(Context context, Request request, Response response, DataConfig dc) {
         super(context, request, response);
         myDC = dc;
         myFTC = findMyFeatureTypeConfig();
+    }
+
+    public void setDataConfig(DataConfig dc){
+        myDC = dc;
+    }
+
+    public DataConfig getDataConfig(){
+        return myDC;
     }
 
     public Map getSupportedFormats() {
@@ -53,6 +65,7 @@ public class FeatureTypeResource extends MapResource {
     }
 
     public Map getMap() {
+        myFTC = findMyFeatureTypeConfig();
         Map m = new HashMap();
 
         m.put("Style", myFTC.getDefaultStyle());

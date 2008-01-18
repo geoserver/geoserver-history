@@ -59,10 +59,12 @@ public class WrappingController extends AbstractController {
         myRouter.getRoutes().clear();
         Iterator it = m.entrySet().iterator();
 
+        myRouter.attach("", new BeanResourceFinder(new IndexResource(myRouter)));
+
         try{
             while (it.hasNext()){
                 Map.Entry entry = (Map.Entry) it.next();
-                myRouter.attach((String)entry.getKey(), (Finder)entry.getValue());
+                myRouter.attach((String)entry.getKey(), (Restlet)entry.getValue());
             }
         } catch (ClassCastException cce){
             if (m != myRouteMap){

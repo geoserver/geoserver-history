@@ -32,10 +32,22 @@ import java.util.Map;
 class StyleListResource extends MapResource {
     private DataConfig myDC;
 
+    public StyleListResource(){
+        super();
+    }
+
     public StyleListResource(Context context, Request request, Response response,
         DataConfig myDataConfig) {
         super(context, request, response);
         myDC = myDataConfig;
+    }
+
+    public void setDataConfig(DataConfig dc){
+        myDC = dc;
+    }
+
+    public DataConfig getDataConfig(){
+        return myDC;
     }
 
     public Map getMap() {

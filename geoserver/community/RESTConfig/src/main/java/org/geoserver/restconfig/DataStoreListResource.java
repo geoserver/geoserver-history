@@ -31,10 +31,22 @@ public class DataStoreListResource extends MapResource {
     private DataConfig myDC;
     private DataStoreConfig myDSC;
 
+    public DataStoreListResource(){
+        super();
+    }
+
     public DataStoreListResource(Context context, Request request, Response response, DataConfig dc) {
         super(context, request, response);
         myDC = dc;
         myDSC = findMyDataStore();
+    }
+
+    public void setDataConfig(DataConfig dc){
+        myDC = dc;
+    }
+
+    public DataConfig getDataConfig(){
+        return myDC;
     }
 
     public Map getSupportedFormats() {
@@ -60,6 +72,7 @@ public class DataStoreListResource extends MapResource {
     }
 
     public Map getMap() {
+        myDSC = findMyDataStore();
         return makeDataStoreMap();
     }
 
