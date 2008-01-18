@@ -19,10 +19,7 @@ import org.springframework.context.ApplicationContext;
   * @author David Winslow <dwinslow@openplans.org>
   */
 public class DummyRestlet extends Restlet {
-    ApplicationContext spring;
-
-    public DummyRestlet(ApplicationContext sc) {
-        spring = sc;
+    public DummyRestlet() {
     }
 
     public void handle(Request request, Response response) {

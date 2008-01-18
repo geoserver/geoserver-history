@@ -24,6 +24,10 @@ import java.util.Map;
 class IndexResource extends MapResource {
     private Router myRouter;
 
+    public IndexResource(Router r){
+        myRouter = r;
+    }
+
     public IndexResource(Context con, Request req, Response res, Router router) {
         super(con, req, res);
         myRouter = router;

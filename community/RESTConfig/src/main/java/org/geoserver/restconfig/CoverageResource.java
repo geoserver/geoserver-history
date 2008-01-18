@@ -138,6 +138,26 @@ public class CoverageResource extends MapResource {
         myData = (Data) appCon.getBean("data");
     }
 
+    public CoverageResource(){
+        super();
+    }
+
+    public void setDataConfig(DataConfig dc){
+        myDC = dc;
+    }
+
+    public DataConfig getDataConfig(){
+        return myDC;
+    }
+
+    public void setData(Data d){
+        myData = d;
+    }
+
+    public Data getData(){
+        return myData;
+    }
+
     public Map getMap() {
         System.out.println("GETting with a CoverageResource");
 

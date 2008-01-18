@@ -20,10 +20,22 @@ import java.util.Map;
 public class CoverageStoreResource extends MapResource {
     private DataConfig myDataConfig;
 
+    public CoverageStoreResource(){
+        super();
+    }
+
     public CoverageStoreResource(org.restlet.Context context, Request request, Response response,
         DataConfig config) {
         super(context, request, response);
         myDataConfig = config;
+    }
+
+    public void setDataConfig(DataConfig dc){
+        myDataConfig = dc;
+    }
+
+    public DataConfig getDataConfig(){
+        return myDataConfig;
     }
 
     @Override

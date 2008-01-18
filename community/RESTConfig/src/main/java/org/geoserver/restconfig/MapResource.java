@@ -65,6 +65,12 @@ public abstract class MapResource extends Resource {
 		myGeoserver = (GeoServer)GeoServerExtensions.bean("geoServer");
     }
 
+    public MapResource(Context context, Request request, Response response) {
+        super(context, request, response);
+        myFormatMap = getSupportedFormats();
+        myRequestFormat = (DataFormat) myFormatMap.get(request.getAttributes().get("type"));
+    }
+
     public abstract Map getSupportedFormats();
 
     public void handleGet() {

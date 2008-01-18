@@ -15,10 +15,22 @@ import java.util.Map;
 public class CoverageStoreListResource extends MapResource {
     private DataConfig myDataConfig;
 
+    public CoverageStoreListResource(){
+        super();
+    }
+
     public CoverageStoreListResource(Context context, Request request, Response response,
         DataConfig config) {
         super(context, request, response);
         myDataConfig = config;
+    }
+
+    public void setDataConfig(DataConfig dc){
+        myDataConfig = dc;
+    }
+
+    public DataConfig getDataConfig(){
+        return myDataConfig;
     }
 
     @Override
