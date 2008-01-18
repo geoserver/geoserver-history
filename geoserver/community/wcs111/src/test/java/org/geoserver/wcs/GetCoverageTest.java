@@ -54,7 +54,7 @@ public class GetCoverageTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
-        raw.put("format", "GeoTiff");
+        raw.put("format", "image/tiff");
         raw.put("BoundingBox", "-90,-180,90,180,urn:ogc:def:crs:EPSG:6.6:4326");
         raw.put("store", "false");
         raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:4326");

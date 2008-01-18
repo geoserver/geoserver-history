@@ -50,7 +50,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             assertEquals("MissingParameterValue", e.getCode());
         }
 
-        raw.put("format", "GeoTiff");
+        raw.put("format", "image/tiff");
         try {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
             fail("Hey, boundingBox is missing, this should have failed");
@@ -87,7 +87,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
-        raw.put("format", "GeoTiff");
+        raw.put("format", "image/tiff");
         raw.put("BoundingBox", "-45,146,-42,147");
         raw.put("store", "false");
         raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:4326");
@@ -95,7 +95,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         GetCoverageType getCoverage = (GetCoverageType) reader.read(reader.createRequest(),
                 parseKvp(raw), raw);
         assertEquals(layerId, getCoverage.getIdentifier().getValue());
-        assertEquals("GeoTiff", getCoverage.getOutput().getFormat());
+        assertEquals("image/tiff", getCoverage.getOutput().getFormat());
         assertFalse(getCoverage.getOutput().isStore());
         assertEquals("urn:ogc:def:crs:EPSG:6.6:4326", getCoverage.getOutput().getGridCRS()
                 .getGridBaseCRS());
@@ -105,7 +105,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
-        raw.put("format", "GeoTiff");
+        raw.put("format", "image/tiff");
         raw.put("BoundingBox", "-45,146,-42,147");
         raw.put("store", "true");
 
@@ -122,7 +122,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
-        raw.put("format", "GeoTiff");
+        raw.put("format", "image/tiff");
         raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:-1000");
 
         try {
@@ -138,7 +138,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
-        raw.put("format", "GeoTiff");
+        raw.put("format", "image/tiff");
         raw.put("BoundingBox", "-45,146,-42,147");
 
         raw.put("gridType", GridType.GT2dGridIn2dCrs.getXmlConstant());
@@ -175,7 +175,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
-        raw.put("format", "GeoTiff");
+        raw.put("format", "image/tiff");
         raw.put("BoundingBox", "-45,146,-42,147");
 
         raw.put("GridCS", GridCS.GCSGrid2dSquare.getXmlConstant());
@@ -198,7 +198,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
-        raw.put("format", "GeoTiff");
+        raw.put("format", "image/tiff");
         raw.put("BoundingBox", "-45,146,-42,147");
         raw.put("GridOrigin", "10.5,-30.2");
         
@@ -231,7 +231,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
-        raw.put("format", "GeoTiff");
+        raw.put("format", "image/tiff");
         raw.put("BoundingBox", "-45,146,-42,147");
 
         raw.put("GridOffsets", "10.5,-30.2");
@@ -269,7 +269,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
-        raw.put("format", "GeoTiff");
+        raw.put("format", "image/tiff");
         raw.put("BoundingBox", "-45,146,-42,147");
         
         // ok, finally something we can parse

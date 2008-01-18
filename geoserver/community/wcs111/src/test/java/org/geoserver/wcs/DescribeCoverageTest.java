@@ -147,7 +147,7 @@ public class DescribeCoverageTest extends WCSTestSupport {
         // check there is one field, one axis, one key (this one is a dem, just one band)
         assertEquals(1, dom.getElementsByTagName("wcs:Field").getLength());
         assertEquals(1, dom.getElementsByTagName("wcs:Axis").getLength());
-        assertEquals(1, dom.getElementsByTagName("wcs:Key").getLength());
+        assertEquals(4, dom.getElementsByTagName("wcs:Key").getLength());
 
     }
     
