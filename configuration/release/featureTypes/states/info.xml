@@ -4,12 +4,11 @@
     native wich EPGS code for the FeatureTypeInfoDTO
   -->
   <SRS>4326</SRS>
-  <SRSHandling>0</SRSHandling>
   <title>USA Population</title>
   <abstract>This is some census data on the states.</abstract>
   <numDecimals value = "0" />
   <keywords>census state boundaries united states</keywords>
-  <latLonBoundingBox dynamic = "false" miny = "24.955967" maxy = "49.371735" maxx = "-66.969849" minx = "-124.731422" />
+  <latLonBoundingBox dynamic = "false" maxx = "-66.969849" maxy = "49.371735" minx = "-124.731422" miny = "24.955967" />
   <nativeBBox dynamic = "true" />
   <!--
     the default style this FeatureTypeInfoDTO can be represented by.
