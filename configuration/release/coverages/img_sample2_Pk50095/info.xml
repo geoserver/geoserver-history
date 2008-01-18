@@ -16,53 +16,11 @@
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
 null
 
 
     
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
   
   
@@ -144,6 +102,6 @@ null
     <interpolationMethods>nearest neighbor,bilinear,bicubic,bicubic_2</interpolationMethods>
   </supportedInterpolations>
   <parameters >
-    <parameter value = "" name = "ReadGridGeometry2D" />
+    <parameter name = "ReadGridGeometry2D" value = "" />
   </parameters>
 </coverage>

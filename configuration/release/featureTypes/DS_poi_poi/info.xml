@@ -4,12 +4,11 @@
     native wich EPGS code for the FeatureTypeInfoDTO
   -->
   <SRS>4326</SRS>
-  <SRSHandling>0</SRSHandling>
   <title>poi_Type</title>
   <abstract>Generated from DS_poi</abstract>
   <numDecimals value = "8" />
   <keywords>DS_poi poi</keywords>
-  <latLonBoundingBox dynamic = "false" miny = "40.70754683896324" maxy = "40.711945649065406" maxx = "-74.00857344353275" minx = "-74.0118315772888" />
+  <latLonBoundingBox dynamic = "false" maxx = "-74.00857344353275" maxy = "40.711945649065406" minx = "-74.0118315772888" miny = "40.70754683896324" />
   <nativeBBox dynamic = "true" />
   <!--
     the default style this FeatureTypeInfoDTO can be represented by.

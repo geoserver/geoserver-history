@@ -10,8 +10,8 @@
   <wmspath>/</wmspath>
   <numDecimals value = "8" />
   <keywords>restricted sfRestricted</keywords>
-  <latLonBoundingBox dynamic = "false" miny = "44.39436387625042" maxy = "44.48215752041131" maxx = "-103.74741494853805" minx = "-103.85057172920756" />
-  <nativeBBox dynamic = "false" miny = "4916236.662227167" maxy = "4925872.146218054" maxx = "599648.9251686076" minx = "591579.1858092896" />
+  <latLonBoundingBox dynamic = "false" maxx = "-103.74741494853805" maxy = "44.48215752041131" minx = "-103.85057172920756" miny = "44.39436387625042" />
+  <nativeBBox dynamic = "false" maxx = "599648.9251686076" maxy = "4925872.146218054" minx = "591579.1858092896" miny = "4916236.662227167" />
   <!--
     the default style this FeatureTypeInfoDTO can be represented by.
     at least must contain the "default" attribute

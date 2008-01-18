@@ -4,49 +4,7 @@
   <description>Generated from sfDem</description>
   <wmspath>/</wmspath>
   <metadataLink about = "http://www.remotesensing.org:16080/websites/geotiff/geotiff.html" metadataType = "other" >
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     null
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   </metadataLink>
   <keywords>WCS,sfDem,dem</keywords>
   <!--
@@ -65,7 +23,7 @@
     AXIS['Geodetic longitude', EAST], 
     AXIS['Geodetic latitude', NORTH], 
     AUTHORITY['EPSG','4267']], 
-  PROJECTION['Transverse_Mercator'], 
+  PROJECTION['Transverse Mercator', AUTHORITY['EPSG','9807']], 
   PARAMETER['central_meridian', -105.0], 
   PARAMETER['latitude_of_origin', 0.0], 
   PARAMETER['scale_factor', 0.9996], 

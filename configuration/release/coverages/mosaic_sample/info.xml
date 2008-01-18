@@ -3,28 +3,7 @@
   <label>mosaic is a Image mosaicking plugin</label>
   <description>Generated from mosaic</description>
   <wmspath>/</wmspath>
-  <metadataLink about = "" metadataType = "" type = "" >
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+  <metadataLink about = "" type = "" metadataType = "" >
     
     
     
@@ -42,27 +21,6 @@ null
 
 
     
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
   
   
@@ -133,10 +91,10 @@ null
     <interpolationMethods>nearest neighbor,bilinear,bicubic,bicubic_2</interpolationMethods>
   </supportedInterpolations>
   <parameters >
-    <parameter value = "1" name = "InputImageROIThreshold" />
-    <parameter value = "false" name = "FinalAlpha" />
-    <parameter value = "1.0" name = "AlphaThreshold" />
-    <parameter value = "" name = "ReadGridGeometry2D" />
-    <parameter value = "false" name = "InputImageROI" />
+    <parameter name = "InputImageROIThreshold" value = "1" />
+    <parameter name = "InputImageROI" value = "false" />
+    <parameter name = "ReadGridGeometry2D" value = "" />
+    <parameter name = "FinalAlpha" value = "false" />
+    <parameter name = "AlphaThreshold" value = "1.0" />
   </parameters>
 </coverage>
