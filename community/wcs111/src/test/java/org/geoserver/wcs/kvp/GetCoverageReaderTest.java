@@ -189,6 +189,11 @@ public class GetCoverageReaderTest extends WCSTestSupport {
                 parseKvp(raw), raw);
         assertEquals(GridCS.GCSGrid2dSquare.getXmlConstant(), getCoverage.getOutput().getGridCRS()
                 .getGridCS());
+        
+        raw.put("GridCS", GridCS.GCSGrid2dSquare.getXmlConstant().toUpperCase());
+        getCoverage = (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
+        assertEquals(GridCS.GCSGrid2dSquare.getXmlConstant(), getCoverage.getOutput().getGridCRS()
+                .getGridCS());
 
         raw.put("GridCS", "Hoolabaloola");
         try {
