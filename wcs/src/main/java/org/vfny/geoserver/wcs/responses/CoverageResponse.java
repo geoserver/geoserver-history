@@ -127,7 +127,7 @@ public class CoverageResponse implements Response {
      * @return DOCUMENT ME!
      */
     public String getContentType(GeoServer gs) {
-        return /*delegate.getContentType(gs)*/ "";
+        return delegate.getContentType(gs);
     }
 
     public String getContentEncoding() {
@@ -421,11 +421,7 @@ public class CoverageResponse implements Response {
          */
         Coverage bandSelectedCoverage = null;
 
-        try {
-            bandSelectedCoverage = WCSUtils.bandSelect(request.getParameters(), coverage);
-        } catch (WcsException e) {
-            throw new WcsException(e.getLocalizedMessage());
-        }
+        bandSelectedCoverage = WCSUtils.bandSelect(request.getParameters(), coverage);
 
         /**
          * Crop
