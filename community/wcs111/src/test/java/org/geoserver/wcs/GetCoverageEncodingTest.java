@@ -38,7 +38,7 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
                 + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=geotiff";
         MockHttpServletResponse response = getAsServletResponse(request);
         // make sure we got a multipart
-        assertTrue(response.getContentType().matches("multipart/mixed;\\s*boundary=\".*\""));
+        assertTrue(response.getContentType().matches("multipart/related;\\s*boundary=\".*\""));
 
         // parse the multipart, check there are two parts
         Multipart multipart = getMultipart(response);
@@ -109,7 +109,7 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
             IOException {
         // make sure we got a multipart
         assertTrue("Content type not mulipart but " + response.getContentType(), response
-                .getContentType().matches("multipart/mixed;\\s*boundary=\".*\""));
+                .getContentType().matches("multipart/related;\\s*boundary=\".*\""));
 
         // parse the multipart, check the second part is a geotiff
         Multipart multipart = getMultipart(response);
