@@ -4,29 +4,20 @@
  */
 package org.vfny.geoserver.wcs.responses.coverage;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.gce.image.WorldImageWriter;
-import org.geotools.image.ImageWorker;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverageWriter;
 import org.opengis.parameter.GeneralParameterValue;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
-import java.awt.image.ComponentColorModel;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.MemoryCacheImageOutputStream;
-import javax.media.jai.PlanarImage;
 
 
 /**
@@ -65,7 +56,7 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 
     public void prepare(String outputFormat, GridCoverage2D coverage)
         throws IOException {
-        this.outputFormat = outputFormat.startsWith("image/") ? outputFormat.substring(7) 
+        this.outputFormat = outputFormat.startsWith("image/") ? outputFormat.substring(6) 
                 : outputFormat;
         this.sourceCoverage = coverage;
     }
