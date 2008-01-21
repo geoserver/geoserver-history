@@ -1,7 +1,5 @@
 package org.geoserver.wcs;
 
-import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,9 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
@@ -23,9 +19,6 @@ import org.geoserver.wcs.test.WCSTestSupport;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.DataSourceException;
 import org.geotools.gce.geotiff.GeoTiffReader;
-import org.geotools.referencing.operation.transform.AffineTransform2D;
-import org.opengis.coverage.grid.GridCoverage;
-import org.vfny.geoserver.wcs.WcsException;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
@@ -48,9 +41,7 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
         assertTrue(response.getContentType().matches("multipart/mixed;\\s*boundary=\".*\""));
 
         // parse the multipart, check there are two parts
-        MimeMessage body = new MimeMessage((Session) null, new ByteArrayInputStream(response
-                .getOutputStreamContent().getBytes()));
-        Multipart multipart = (Multipart) body.getContent();
+        Multipart multipart = getMultipart(response);
         assertEquals(2, multipart.getCount());
 
         // now check the first part is a proper description
@@ -73,6 +64,15 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
         // make sure we can read the coverage back
         InputStream is = coveragePart.getDataHandler().getInputStream();
         readCoverage(is);
+    }
+
+    private Multipart getMultipart(MockHttpServletResponse response) throws MessagingException,
+            IOException {
+        String content = response.getOutputStreamContent();
+        content = "Content-Type: " + response.getContentType() + "\n" + content;
+        MimeMessage body = new MimeMessage((Session) null, new ByteArrayInputStream(content.getBytes()));
+        Multipart multipart = (Multipart) body.getContent();
+        return multipart;
     }
 
     private GridCoverage2D readCoverage(InputStream is) throws IOException, FileNotFoundException,
@@ -113,9 +113,7 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
                 .getContentType().matches("multipart/mixed;\\s*boundary=\".*\""));
 
         // parse the multipart, check the second part is a geotiff
-        MimeMessage body = new MimeMessage((Session) null, new ByteArrayInputStream(response
-                .getOutputStreamContent().getBytes()));
-        Multipart multipart = (Multipart) body.getContent();
+        Multipart multipart = getMultipart(response);
         BodyPart coveragePart = multipart.getBodyPart(1);
         assertEquals("image/tiff", coveragePart.getContentType());
     }

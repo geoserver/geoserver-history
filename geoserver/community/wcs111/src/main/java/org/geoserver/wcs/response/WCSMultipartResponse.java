@@ -89,6 +89,7 @@ public class WCSMultipartResponse extends Response {
             MimeMessage message = new GeoServerMimeMessage();
             message.setContent(multipart);
             message.writeTo(output);
+            output.flush();
         } catch (MessagingException e) {
             throw new WcsException("Error occurred while encoding the mime multipart response", e);
         }
@@ -109,6 +110,7 @@ public class WCSMultipartResponse extends Response {
         protected void updateMessageID() throws MessagingException {
             removeHeader("Message-ID");
             removeHeader("MIME-Version");
+            removeHeader("Content-Type");
         }
     }
 
