@@ -16,9 +16,9 @@ public class GridCSKvpParser extends KvpParser {
     
     @Override
     public Object parse(String value) throws Exception {
-        if(!GridCS.GCSGrid2dSquare.getXmlConstant().equals(value))
+        if(!GridCS.GCSGrid2dSquare.getXmlConstant().equalsIgnoreCase(value))
             throw new WcsException("Unrecognized GridCS " + value, WcsExceptionCode.InvalidParameterValue, "GridCS");
         
-        return value;
+        return GridCS.GCSGrid2dSquare.getXmlConstant();
     }
 }
