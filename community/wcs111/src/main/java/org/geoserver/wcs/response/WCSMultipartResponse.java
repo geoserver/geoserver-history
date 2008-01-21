@@ -84,10 +84,8 @@ public class WCSMultipartResponse extends Response {
             multipart.addBodyPart(coveragePart);
 
             // write out the multipart (we need to use mime message trying to
-            // encode directly
-            // with multipart or BodyPart does not set properly the encodings
-            // and binary files
-            // gets ruined
+            // encode directly with multipart or BodyPart does not set properly
+            // the encodings and binary files gets ruined
             MimeMessage message = new GeoServerMimeMessage();
             message.setContent(multipart);
             message.writeTo(output);
