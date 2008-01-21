@@ -178,13 +178,13 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             // grab the grid to world transformation
             MathTransform gridToCRS = reader.getOriginalGridToWorld(PixelInCell.CELL_CORNER);
             if (gridCRS != null) {
-                double[] origin = (double[]) gridCRS.getGridOrigin();
-                double[] offsets = (double[]) gridCRS.getGridOffsets();
+                Double[] origin = (Double[]) gridCRS.getGridOrigin();
+                Double[] offsets = (Double[]) gridCRS.getGridOffsets();
 
                 // from the specification if grid origin is omitted and the crs
                 // is 2d the default it's 0,0
                 if (origin == null) {
-                    origin = new double[] { 0, 0 };
+                    origin = new Double[] { 0.0, 0.0 };
                 }
 
                 // if no offsets has been specified we try to default on the
@@ -197,22 +197,22 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
 
                     if (gridToCRS instanceof IdentityTransform) {
                         if (gridCRS.getGridType().equals(GridType.GT2dSimpleGrid))
-                            offsets = new double[] { 1, 1 };
+                            offsets = new Double[] { 1.0, 1.0 };
                         else
-                            offsets = new double[] { 1, 0, 0, 1 };
+                            offsets = new Double[] { 1.0, 0.0, 0.0, 1.0 };
                     } else {
                         AffineTransform2D affine = (AffineTransform2D) gridToCRS;
                         if (gridCRS.getGridType().equals(GridType.GT2dSimpleGrid))
-                            offsets = new double[] { affine.getScaleX(), affine.getScaleY() };
+                            offsets = new Double[] { affine.getScaleX(), affine.getScaleY() };
                         else
-                            offsets = new double[] { affine.getScaleX(), affine.getShearX(),
+                            offsets = new Double[] { affine.getScaleX(), affine.getShearX(),
                                     affine.getShearY(), affine.getScaleY() };
                     }
                 }
 
                 // building the actual transform for the resulting grid geometry
                 AffineTransform tx;
-                if (gridCRS.getGridType().equals(GridType.GT2dSimpleGrid)) {
+                if (gridCRS.getGridType().equals(GridType.GT2dSimpleGrid.getXmlConstant())) {
                     tx = new AffineTransform(offsets[0], 0, 0, offsets[1], origin[0], origin[1]);
                 } else {
                     tx = new AffineTransform(offsets[0], offsets[2], offsets[1], offsets[3],
@@ -336,102 +336,107 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
      * @param rangeSubset
      */
     private void checkOutput(CoverageInfo meta, OutputType output) {
+        if(output == null)
+            return;
+        
         String format = output.getFormat();
         String declaredFormat = getDeclaredFormat(meta.getSupportedFormats(), format);
         if (declaredFormat == null)
             throw new WcsException("format " + format + " is not supported for this coverage",
                     InvalidParameterValue, "format");
-
-        // check grid base crs is valid, and eventually default it out
-        String gridBaseCrs = output.getGridCRS().getGridBaseCRS();
-        if (gridBaseCrs != null) {
-            // make sure the requested is among the supported ones, by making a
-            // code level
-            // comparison (to avoid assuming epsg:xxxx and
-            // http://www.opengis.net/gml/srs/epsg.xml#xxx are different ones.
-            // We'll also consider the urn one comparable, allowing eventual
-            // axis flip on the
-            // geographic crs
-            String actualCRS = null;
-            final String gridBaseCrsCode = extractCode(gridBaseCrs);
-            for (Iterator it = meta.getResponseCRSs().iterator(); it.hasNext();) {
-                final String responseCRS = (String) it.next();
-                final String code = extractCode(responseCRS);
-                if (code.equalsIgnoreCase(gridBaseCrsCode)) {
-                    actualCRS = responseCRS;
+        
+        final GridCrsType gridCRS = output.getGridCRS();
+        if(gridCRS != null) {
+            // check grid base crs is valid, and eventually default it out
+            String gridBaseCrs = gridCRS.getGridBaseCRS();
+            if (gridBaseCrs != null) {
+                // make sure the requested is among the supported ones, by making a
+                // code level
+                // comparison (to avoid assuming epsg:xxxx and
+                // http://www.opengis.net/gml/srs/epsg.xml#xxx are different ones.
+                // We'll also consider the urn one comparable, allowing eventual
+                // axis flip on the
+                // geographic crs
+                String actualCRS = null;
+                final String gridBaseCrsCode = extractCode(gridBaseCrs);
+                for (Iterator it = meta.getResponseCRSs().iterator(); it.hasNext();) {
+                    final String responseCRS = (String) it.next();
+                    final String code = extractCode(responseCRS);
+                    if (code.equalsIgnoreCase(gridBaseCrsCode)) {
+                        actualCRS = responseCRS;
+                    }
                 }
+                if (actualCRS == null)
+                    throw new WcsException("CRS " + gridBaseCrs
+                            + " is not among the supported ones for coverage " + meta.getName(),
+                            WcsExceptionCode.InvalidParameterValue, "GridBaseCrs");
+                gridCRS.setGridBaseCRS(gridBaseCrs);
+            } else {
+                String code = GML2EncodingUtils.epsgCode(meta.getCrs());
+                gridCRS.setGridBaseCRS("urn:x-ogc:def:crs:EPSG:" + code);
             }
-            if (actualCRS == null)
-                throw new WcsException("CRS " + gridBaseCrs
-                        + " is not among the supported ones for coverage " + meta.getName(),
-                        WcsExceptionCode.InvalidParameterValue, "GridBaseCrs");
-            output.getGridCRS().setGridBaseCRS(gridBaseCrs);
-        } else {
-            String code = GML2EncodingUtils.epsgCode(meta.getCrs());
-            output.getGridCRS().setGridBaseCRS("urn:x-ogc:def:crs:EPSG:" + code);
-        }
-
-        // check grid type makes sense and apply default otherwise
-        String gridTypeValue = output.getGridCRS().getGridType();
-        GridType type = GridType.GT2dGridIn2dCrs;
-        if (gridTypeValue != null) {
-            type = null;
-            for (GridType gt : GridType.values()) {
-                if (gt.getXmlConstant().equalsIgnoreCase(gridTypeValue))
-                    type = gt;
+    
+            // check grid type makes sense and apply default otherwise
+            String gridTypeValue = gridCRS.getGridType();
+            GridType type = GridType.GT2dGridIn2dCrs;
+            if (gridTypeValue != null) {
+                type = null;
+                for (GridType gt : GridType.values()) {
+                    if (gt.getXmlConstant().equalsIgnoreCase(gridTypeValue))
+                        type = gt;
+                }
+                if (type == null)
+                    throw new WcsException("Unknown grid type " + gridTypeValue, InvalidParameterValue,
+                            "GridType");
+                else if (type == GridType.GT2dGridIn3dCrs)
+                    throw new WcsException("Unsupported grid type " + gridTypeValue,
+                            InvalidParameterValue, "GridType");
             }
-            if (type == null)
-                throw new WcsException("Unknown grid type " + gridTypeValue, InvalidParameterValue,
-                        "GridType");
-            else if (type == GridType.GT2dGridIn3dCrs)
-                throw new WcsException("Unsupported grid type " + gridTypeValue,
-                        InvalidParameterValue, "GridType");
+            gridCRS.setGridType(type.getXmlConstant());
+    
+            // check gridcs and apply only value we know about
+            String gridCS = gridCRS.getGridCS();
+            if (gridCS != null) {
+                if (!gridCS.equalsIgnoreCase(GridCS.GCSGrid2dSquare.getXmlConstant()))
+                    throw new WcsException("Unsupported grid cs " + gridCS, InvalidParameterValue,
+                            "GridCS");
+            }
+            gridCRS.setGridCS(GridCS.GCSGrid2dSquare.getXmlConstant());
+    
+            // check the grid origin and set defaults
+            CoordinateReferenceSystem crs = null;
+            try {
+                crs = CRS.decode(gridCRS.getGridBaseCRS());
+            } catch (Exception e) {
+                throw new WcsException("Could not understand crs "
+                        + gridCRS.getGridBaseCRS(), WcsExceptionCode.InvalidParameterValue,
+                        "GridBaseCRS");
+            }
+            Double[] gridOrigin = (Double[]) gridCRS.getGridOrigin();
+            if (gridOrigin != null) {
+                // make sure the origin dimension matches the output crs dimension
+                if (gridOrigin.length != type.getOriginArrayLength())
+                    throw new WcsException("Grid origin size (" + gridOrigin.length
+                            + ") inconsistent with grid type " + type.getXmlConstant()
+                            + " that requires (" + type.getOriginArrayLength() + ")",
+                            WcsExceptionCode.InvalidParameterValue, "GridOrigin");
+                gridCRS.setGridOrigin(gridOrigin);
+            } else {
+                gridCRS.setGridOrigin(null);
+            }
+    
+            // perform same checks on the offsets
+            Double[] gridOffsets = (Double[]) gridCRS.getGridOffsets();
+            if (gridOffsets != null) {
+                // make sure the origin dimension matches the grid type
+                if (type.getOffsetArrayLength() != gridOffsets.length)
+                    throw new WcsException("Invalid offsets lenght, grid type " + type.getXmlConstant()
+                            + " requires " + type.getOffsetArrayLength(), InvalidParameterValue,
+                            "GridOffsets");
+            } else {
+                gridCRS.setGridOffsets(null);
+            }
         }
-        output.getGridCRS().setGridType(type.getXmlConstant());
-
-        // check gridcs and apply only value we know about
-        String gridCS = output.getGridCRS().getGridCS();
-        if (gridCS != null) {
-            if (!gridCS.equalsIgnoreCase(GridCS.GCSGrid2dSquare.getXmlConstant()))
-                throw new WcsException("Unsupported grid cs " + gridCS, InvalidParameterValue,
-                        "GridCS");
-        }
-        output.getGridCRS().setGridCS(GridCS.GCSGrid2dSquare.getXmlConstant());
-
-        // check the grid origin and set defaults
-        CoordinateReferenceSystem crs = null;
-        try {
-            crs = CRS.decode(output.getGridCRS().getGridBaseCRS());
-        } catch (Exception e) {
-            throw new WcsException("Could not understand crs "
-                    + output.getGridCRS().getGridBaseCRS(), WcsExceptionCode.InvalidParameterValue,
-                    "GridBaseCRS");
-        }
-        Double[] gridOrigin = (Double[]) output.getGridCRS().getGridOrigin();
-        if (gridOrigin != null) {
-            // make sure the origin dimension matches the output crs dimension
-            if (gridOrigin.length != type.getOriginArrayLength())
-                throw new WcsException("Grid origin size (" + gridOrigin.length
-                        + ") inconsistent with grid type " + type.getXmlConstant()
-                        + " that requires (" + type.getOriginArrayLength() + ")",
-                        WcsExceptionCode.InvalidParameterValue, "GridOrigin");
-            output.getGridCRS().setGridOrigin(gridOrigin);
-        } else {
-            output.getGridCRS().setGridOrigin(null);
-        }
-
-        // perform same checks on the offsets
-        Double[] gridOffsets = (Double[]) output.getGridCRS().getGridOffsets();
-        if (gridOffsets != null) {
-            // make sure the origin dimension matches the grid type
-            if (type.getOffsetArrayLength() != gridOffsets.length)
-                throw new WcsException("Invalid offsets lenght, grid type " + type.getXmlConstant()
-                        + " requires " + type.getOffsetArrayLength(), InvalidParameterValue,
-                        "GridOffsets");
-        } else {
-            output.getGridCRS().setGridOffsets(null);
-        }
-
     }
 
     /**
