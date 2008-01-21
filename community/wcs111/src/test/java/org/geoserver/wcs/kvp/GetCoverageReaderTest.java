@@ -151,6 +151,12 @@ public class GetCoverageReaderTest extends WCSTestSupport {
         getCoverage = (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
         assertEquals(GridType.GT2dSimpleGrid.getXmlConstant(), getCoverage.getOutput().getGridCRS()
                 .getGridType());
+        
+        // try with different case
+        raw.put("gridType", GridType.GT2dSimpleGrid.getXmlConstant().toUpperCase());
+        getCoverage = (GetCoverageType) reader.read(reader.createRequest(), parseKvp(raw), raw);
+        assertEquals(GridType.GT2dSimpleGrid.getXmlConstant(), getCoverage.getOutput().getGridCRS()
+                .getGridType());
 
         raw.put("gridType", GridType.GT2dGridIn3dCrs.getXmlConstant());
         try {

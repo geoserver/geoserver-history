@@ -25,7 +25,7 @@ public class GridTypeKvpParser extends KvpParser {
     public Object parse(String value) throws Exception {
         GridType type = null;
         for (GridType currType : GridType.values()) {
-            if (currType.getXmlConstant().equals(value)) {
+            if (currType.getXmlConstant().equalsIgnoreCase(value)) {
                 type = currType;
                 break;
             }
@@ -39,6 +39,6 @@ public class GridTypeKvpParser extends KvpParser {
             throw new WcsException("GeoServer does not support type " + type.name(),
                     InvalidParameterValue, "GridType");
 
-        return value;
+        return type.getXmlConstant();
     }
 }
