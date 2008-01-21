@@ -30,6 +30,7 @@ import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wcs.kvp.GridCS;
 import org.geoserver.wcs.kvp.GridType;
+import org.geoserver.wcs.response.CoverageDelegateHandler;
 import org.geoserver.wcs.response.DescribeCoverageTransformer;
 import org.geoserver.wcs.response.WCSCapsTransformer;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -56,6 +57,8 @@ import org.vfny.geoserver.global.WCS;
 import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
+import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
+import org.vfny.geoserver.wcs.responses.CoverageResponseDelegateFactory;
 
 public class DefaultWebCoverageService111 implements WebCoverageService111 {
     Logger LOGGER = Logging.getLogger(DefaultWebCoverageService.class);
@@ -460,10 +463,17 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
      * @return
      */
     private String getDeclaredFormat(List supportedFormats, String format) {
+        // supported formats may be setup using old style formats, first scan the
+        // configured list
         for (Iterator it = supportedFormats.iterator(); it.hasNext();) {
             String sf = (String) it.next();
-            if (sf.equalsIgnoreCase(format))
+            if (sf.equalsIgnoreCase(format)) {
                 return sf;
+            } else {
+                CoverageResponseDelegate delegate = CoverageResponseDelegateFactory.encoderFor(sf);
+                if(delegate != null && delegate.canProduce(format))
+                    return sf;
+            }
         }
         return null;
     }
