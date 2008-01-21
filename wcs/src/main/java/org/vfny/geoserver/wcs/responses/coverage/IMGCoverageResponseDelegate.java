@@ -16,7 +16,11 @@ import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 import java.awt.image.ComponentColorModel;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
+
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -34,6 +38,10 @@ import javax.media.jai.PlanarImage;
  *         modification)
  */
 public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
+    
+    private static final Set<String> FORMATS = new HashSet<String>(Arrays.asList(
+        "image/bmp", "image/gif", "image/tiff", "image/png", "image/jpeg"));
+    
     /**
      *
      * @uml.property name="sourceCoverage"
@@ -46,18 +54,19 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
     }
 
     public boolean canProduce(String outputFormat) {
-        if (outputFormat.equalsIgnoreCase("bmp") || outputFormat.equalsIgnoreCase("gif")
-                || outputFormat.equalsIgnoreCase("tiff") || outputFormat.equalsIgnoreCase("png")
-                || outputFormat.equalsIgnoreCase("jpeg") || outputFormat.equalsIgnoreCase("tif")) {
-            return true;
-        }
-
-        return false;
+        return outputFormat != null && (
+                FORMATS.contains(outputFormat.toLowerCase()) ||
+                FORMATS.contains("image/" + outputFormat.toLowerCase()));
+    }
+    
+    public Set<String> getSupportedFormats() {
+        return FORMATS;
     }
 
     public void prepare(String outputFormat, GridCoverage2D coverage)
         throws IOException {
-        this.outputFormat = outputFormat;
+        this.outputFormat = outputFormat.startsWith("image/") ? outputFormat.substring(7) 
+                : outputFormat;
         this.sourceCoverage = coverage;
     }
 

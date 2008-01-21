@@ -4,6 +4,12 @@
  */
 package org.vfny.geoserver.wcs.responses.coverage;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.grid.io.imageio.GeoToolsWriteParams;
@@ -15,8 +21,6 @@ import org.opengis.parameter.ParameterValueGroup;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
-import java.io.IOException;
-import java.io.OutputStream;
 
 
 /**
@@ -28,6 +32,10 @@ import java.io.OutputStream;
  *         modification)
  */
 public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate {
+    
+    private static final Set<String> FORMATS = new HashSet<String>(Arrays.asList(
+            "image/geotiff", "image/tiff;subtype=\"geotiff\""));
+    
     /**
      *
      * @uml.property name="sourceCoverage"
@@ -39,16 +47,18 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
     }
 
     public boolean canProduce(String outputFormat) {
-        if (outputFormat.equalsIgnoreCase("geotiff")) {
-            return true;
-        }
-
-        return false;
+        return outputFormat != null && (
+                outputFormat.equalsIgnoreCase("geotiff") || 
+                FORMATS.contains(outputFormat.toLowerCase()));
     }
 
     public void prepare(String outputFormat, GridCoverage2D coverage)
         throws IOException {
         this.sourceCoverage = coverage;
+    }
+    
+    public Set getSupportedFormats() {
+        return FORMATS;
     }
 
     public String getContentType(GeoServer gs) {

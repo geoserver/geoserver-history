@@ -4,14 +4,16 @@
  */
 package org.vfny.geoserver.wcs.responses;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import org.vfny.geoserver.wcs.responses.coverage.AscCoverageResponseDelegate;
 import org.vfny.geoserver.wcs.responses.coverage.GTopo30CoverageResponseDelegate;
 import org.vfny.geoserver.wcs.responses.coverage.GeoTIFFCoverageResponseDelegate;
 import org.vfny.geoserver.wcs.responses.coverage.IMGCoverageResponseDelegate;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 
 /**
@@ -24,7 +26,7 @@ import java.util.NoSuchElementException;
  */
 public class CoverageResponseDelegateFactory {
     /** DOCUMENT ME! */
-    private static final List encoders = new LinkedList();
+    private static final List<CoverageResponseDelegate> encoders = new ArrayList<CoverageResponseDelegate>();
 
     static {
         encoders.add(new AscCoverageResponseDelegate());
@@ -77,4 +79,6 @@ public class CoverageResponseDelegateFactory {
 
         throw new NoSuchElementException("Can't create the encoder for format " +  outputFormat);
     }
+    
+    
 }

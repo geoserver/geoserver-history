@@ -14,6 +14,9 @@ import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
 
@@ -26,6 +29,10 @@ import java.util.zip.GZIPOutputStream;
  *         modification)
  */
 public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
+    
+    private static final Set<String> FORMATS = new HashSet<String>(Arrays.asList(
+            "application/arcgrid", "application/arcgrid;subtype=\"geotiff\""));
+    
     /**
      *
      * @uml.property name="sourceCoverage"
@@ -38,8 +45,13 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
     }
 
     public boolean canProduce(String outputFormat) {
-        return "ArcGrid".equalsIgnoreCase(outputFormat)
-        || "ArcGrid-GZIP".equalsIgnoreCase(outputFormat);
+        return outputFormat != null && ("ArcGrid".equalsIgnoreCase(outputFormat)
+            || "ArcGrid-GZIP".equalsIgnoreCase(outputFormat) ||
+            FORMATS.contains(outputFormat.toLowerCase()));
+    }
+    
+    public Set<String> getSupportedFormats() {
+        return FORMATS;
     }
 
     public void prepare(String outputFormat, GridCoverage2D coverage)
