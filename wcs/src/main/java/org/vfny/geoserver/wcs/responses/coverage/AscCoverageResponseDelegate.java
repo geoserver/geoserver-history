@@ -31,7 +31,7 @@ import java.util.zip.GZIPOutputStream;
 public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
     
     private static final Set<String> FORMATS = new HashSet<String>(Arrays.asList(
-            "application/arcgrid", "application/arcgrid;subtype=\"geotiff\""));
+            "application/arcgrid", "application/arcgrid;zipped=\"true\""));
     
     /**
      *
