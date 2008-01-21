@@ -69,7 +69,6 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
     private Multipart getMultipart(MockHttpServletResponse response) throws MessagingException,
             IOException {
         String content = response.getOutputStreamContent();
-        content = "Content-Type: " + response.getContentType() + "\n" + content;
         MimeMessage body = new MimeMessage((Session) null, new ByteArrayInputStream(content.getBytes()));
         Multipart multipart = (Multipart) body.getContent();
         return multipart;

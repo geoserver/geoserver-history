@@ -47,6 +47,14 @@ public class WCSMultipartResponse extends Response {
     }
 
     @Override
+    public String[][] getHeaders(Object value, Operation operation) throws ServiceException {
+        final GetCoverageType request = (GetCoverageType) operation.getParameters()[0];
+        final String identifier = request.getIdentifier().getValue();
+        return new String[][] { { "Content-Disposition",
+                "attachment;filename=\"" + identifier.replace(':', '_') + ".eml\"" } };
+    }
+
+    @Override
     public void write(Object value, OutputStream output, Operation operation) throws IOException,
             ServiceException {
         GridCoverage[] coverages = (GridCoverage[]) value;
@@ -109,8 +117,8 @@ public class WCSMultipartResponse extends Response {
         @Override
         protected void updateMessageID() throws MessagingException {
             removeHeader("Message-ID");
-            removeHeader("MIME-Version");
-            removeHeader("Content-Type");
+            // removeHeader("MIME-Version");
+            // removeHeader("Content-Type");
         }
     }
 
