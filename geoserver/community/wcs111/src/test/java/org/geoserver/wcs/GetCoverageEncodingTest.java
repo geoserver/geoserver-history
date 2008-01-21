@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -77,19 +79,67 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
     private GridCoverage2D readCoverage(InputStream is) throws IOException, FileNotFoundException,
             DataSourceException {
         // for some funny reason reading directly from the input stream does not
-        // work,
-        // we have to create a temp file instead
-        File f = File.createTempFile("kvpBasic", ".tiff", dataDirectory.getDataDirectoryRoot());
+        // work we have to create a temp file instead
+        File f = storeToTempFile(is, ".tiff");
+        GeoTiffReader reader = new GeoTiffReader(f);
+        GridCoverage2D coverage = (GridCoverage2D) reader.read(null);
+        reader.dispose();
+        return coverage;
+    }
+
+    private File storeToTempFile(InputStream is, String extension) throws IOException, FileNotFoundException {
+        File f = File.createTempFile("coverage", extension, dataDirectory.getDataDirectoryRoot());
         FileOutputStream fos = new FileOutputStream(f);
         byte[] buffer = new byte[4096];
         int read = 0;
         while ((read = is.read(buffer)) > 0)
             fos.write(buffer, 0, read);
         fos.close();
-        GeoTiffReader reader = new GeoTiffReader(f);
-        GridCoverage2D coverage = (GridCoverage2D) reader.read(null);
-        reader.dispose();
-        return coverage;
+        return f;
+    }
+    
+    public void testTiffOutput() throws Exception {
+        String request = "?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
+        + layerId(WCSTestSupport.TASMANIA_BM)
+        + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
+        + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=image/tiff";
+        MockHttpServletResponse response = getAsServletResponse(request);
+
+        // parse the multipart, check there are two parts
+        Multipart multipart = getMultipart(response);
+        assertEquals(2, multipart.getCount());
+        BodyPart coveragePart = multipart.getBodyPart(1);
+        assertEquals("image/tiff", coveragePart.getContentType());
+        assertEquals("<theCoverage>", coveragePart.getHeader("Content-ID")[0]);
+
+        // make sure we can read the coverage back
+        InputStream is = coveragePart.getDataHandler().getInputStream();
+        File temp = storeToTempFile(is, ".tiff");
+        ImageReader reader = ImageIO.getImageReadersByFormatName("tiff").next();
+        reader.setInput(ImageIO.createImageInputStream(temp));
+        reader.read(0);
+    }
+    
+    public void testPngOutput() throws Exception {
+        String request = "?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
+        + layerId(WCSTestSupport.TASMANIA_BM)
+        + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
+        + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=image/png";
+        MockHttpServletResponse response = getAsServletResponse(request);
+
+        // parse the multipart, check there are two parts
+        Multipart multipart = getMultipart(response);
+        assertEquals(2, multipart.getCount());
+        BodyPart coveragePart = multipart.getBodyPart(1);
+        assertEquals("image/png", coveragePart.getContentType());
+        assertEquals("<theCoverage>", coveragePart.getHeader("Content-ID")[0]);
+
+        // make sure we can read the coverage back
+        InputStream is = coveragePart.getDataHandler().getInputStream();
+        File temp = storeToTempFile(is, ".png");
+        ImageReader reader = ImageIO.getImageReadersByFormatName("png").next();
+        reader.setInput(ImageIO.createImageInputStream(temp));
+        reader.read(0);
     }
 
     public void testGeotiffNamesGalore() throws Exception {
