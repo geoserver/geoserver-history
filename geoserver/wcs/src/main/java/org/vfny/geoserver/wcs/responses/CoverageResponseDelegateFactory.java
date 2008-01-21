@@ -5,12 +5,12 @@
 package org.vfny.geoserver.wcs.responses;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.vfny.geoserver.wcs.responses.coverage.AscCoverageResponseDelegate;
+import org.vfny.geoserver.wcs.responses.coverage.DebugCoverageResponseDelegate;
 import org.vfny.geoserver.wcs.responses.coverage.GTopo30CoverageResponseDelegate;
 import org.vfny.geoserver.wcs.responses.coverage.GeoTIFFCoverageResponseDelegate;
 import org.vfny.geoserver.wcs.responses.coverage.IMGCoverageResponseDelegate;
@@ -33,6 +33,7 @@ public class CoverageResponseDelegateFactory {
         encoders.add(new IMGCoverageResponseDelegate());
         encoders.add(new GTopo30CoverageResponseDelegate());
         encoders.add(new GeoTIFFCoverageResponseDelegate());
+        encoders.add(new DebugCoverageResponseDelegate());
     }
 
     private CoverageResponseDelegateFactory() {
