@@ -43,7 +43,8 @@ public class WCSMultipartResponse extends Response {
 
     @Override
     public String getMimeType(Object value, Operation operation) throws ServiceException {
-        return multipart.getContentType();
+        // javamail outputs multipart/mixed, but in our case we're producing multipart/related
+        return multipart.getContentType().replace("mixed", "related");
     }
 
     @Override
