@@ -4,6 +4,13 @@
  */
 package org.vfny.geoserver.wcs.responses.coverage;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.zip.GZIPOutputStream;
+
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.gce.arcgrid.ArcGridWriter;
 import org.opengis.coverage.grid.GridCoverageWriter;
@@ -12,12 +19,6 @@ import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.zip.GZIPOutputStream;
 
 
 /**
