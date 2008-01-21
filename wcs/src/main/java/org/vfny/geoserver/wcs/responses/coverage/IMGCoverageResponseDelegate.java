@@ -15,6 +15,8 @@ import org.geotools.gce.image.WorldImageWriter;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverageWriter;
 import org.opengis.parameter.GeneralParameterValue;
+import org.opengis.parameter.ParameterValue;
+import org.opengis.parameter.ParameterValueGroup;
 import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
@@ -94,13 +96,12 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 
         // writing parameters for Image
         final Format writerParams = writer.getFormat();
-        writerParams.getWriteParameters().parameter("Format")
-                    .setValue(this.outputFormat.toLowerCase());
+        final ParameterValueGroup writeParameters = writerParams.getWriteParameters();
+        final ParameterValue format = writeParameters.parameter("Format");
+        format.setValue(this.outputFormat.toLowerCase());
 
         // writing
-        writer.write(sourceCoverage,
-            (GeneralParameterValue[]) writerParams.getWriteParameters().values()
-                                                  .toArray(new GeneralParameterValue[1]));
+        writer.write(sourceCoverage, new GeneralParameterValue[] {format});
 
         // freeing everything
         output.flush();
