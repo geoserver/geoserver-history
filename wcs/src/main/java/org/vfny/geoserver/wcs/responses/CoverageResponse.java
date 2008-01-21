@@ -43,6 +43,7 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
+import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 import org.vfny.geoserver.wcs.requests.CoverageRequest;
 
 
@@ -195,15 +196,10 @@ public class CoverageResponse implements Response {
 
         final String outputFormat = request.getOutputFormat();
 
-        try {
-            delegate = CoverageResponseDelegateFactory.encoderFor(outputFormat);
-        } catch (NoSuchElementException ex) {
-            WcsException newEx = new WcsException(new StringBuffer("output format: ").append(
-                        outputFormat).append(" not ")
-                                                                                     .append("supported by geoserver for this Coverage")
-                                                                                     .toString(), ex);
-            throw newEx;
-        }
+        delegate = CoverageResponseDelegateFactory.encoderFor(outputFormat);
+        if(delegate == null)
+            throw new WcsException("Output format: " + outputFormat + " not supported by geoserver " +
+            		"for this Coverage", WcsExceptionCode.InvalidParameterValue, "format");
 
         final Data catalog = request.getWCS().getData();
         CoverageInfo meta = null;

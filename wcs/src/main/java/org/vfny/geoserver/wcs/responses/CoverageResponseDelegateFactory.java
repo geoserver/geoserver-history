@@ -45,12 +45,8 @@ public class CoverageResponseDelegateFactory {
      *            DOCUMENT ME!
      *
      * @return DOCUMENT ME!
-     *
-     * @throws NoSuchElementException
-     *             DOCUMENT ME!
      */
-    public static CoverageResponseDelegate encoderFor(String outputFormat)
-        throws NoSuchElementException {
+    public static CoverageResponseDelegate encoderFor(String outputFormat) {
         CoverageResponseDelegate encoder = null;
 
         for (Iterator it = encoders.iterator(); it.hasNext();) {
@@ -77,7 +73,7 @@ public class CoverageResponseDelegateFactory {
             }
         }
 
-        throw new NoSuchElementException("Can't create the encoder for format " +  outputFormat);
+        return null;
     }
     
     
