@@ -89,6 +89,7 @@ public class WCSMultipartResponse extends Response {
             coveragePart.setDataHandler(new DataHandler(delegate, "geoserver/coverageDelegate"));
             coveragePart.setHeader("Content-ID", "<theCoverage>");
             coveragePart.setHeader("Content-Type", delegate.getContentType(catalog.getGeoServer()));
+            coveragePart.setHeader("Content-Transfer-Encoding", "base64");
             multipart.addBodyPart(coveragePart);
 
             // write out the multipart (we need to use mime message trying to
@@ -116,9 +117,8 @@ public class WCSMultipartResponse extends Response {
 
         @Override
         protected void updateMessageID() throws MessagingException {
+            // it's just ugly to see ...
             removeHeader("Message-ID");
-            // removeHeader("MIME-Version");
-            // removeHeader("Content-Type");
         }
     }
 
