@@ -9,6 +9,8 @@ import org.vfny.geoserver.ServiceException;
 import org.vfny.geoserver.global.GeoServer;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Set;
 
 
 /**
@@ -38,4 +40,12 @@ public interface CoverageResponseDelegate {
     String getContentDisposition();
 
     void encode(OutputStream output) throws ServiceException, IOException;
+    
+    /**
+     * The set of formatas this delegate supports (include only those that are
+     * matching the MIME type pattern, the others are there but should
+     * not be advertised).
+     * @return
+     */
+    public Set<String> getSupportedFormats();
 }

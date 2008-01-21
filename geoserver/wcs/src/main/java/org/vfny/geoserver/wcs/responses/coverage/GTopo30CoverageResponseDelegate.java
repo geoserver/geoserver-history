@@ -12,6 +12,9 @@ import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.ZipOutputStream;
 
 
@@ -23,6 +26,10 @@ import java.util.zip.ZipOutputStream;
  * Preferences - Java - Code Style - Code Templates
  */
 public class GTopo30CoverageResponseDelegate implements CoverageResponseDelegate {
+    
+    private static final Set<String> FORMATS = new HashSet<String>(Arrays.asList(
+            "application/gtopo30"));
+    
     /**
      * the grid coverage to be used in this repsonse
      *
@@ -37,11 +44,12 @@ public class GTopo30CoverageResponseDelegate implements CoverageResponseDelegate
      * @see org.vfny.geoserver.wcs.responses.CoverageResponseDelegate#canProduce(java.lang.String)
      */
     public boolean canProduce(String outputFormat) {
-        if (outputFormat.compareToIgnoreCase("GTopo30") == 0) {
-            return true;
-        }
-
-        return false;
+        return outputFormat != null && (outputFormat.equalsIgnoreCase("GTopo30")
+               || FORMATS.contains(outputFormat.toLowerCase()));
+    }
+    
+    public Set<String> getSupportedFormats() {
+        return FORMATS;
     }
 
     /*
