@@ -87,9 +87,7 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 
     public void encode(OutputStream output) throws ServiceException, IOException {
         if (sourceCoverage == null) {
-            throw new IllegalStateException(new StringBuffer(
-                    "It seems prepare() has not been called").append(" or has not succeed")
-                                                                                                      .toString());
+            throw new IllegalStateException("It seems prepare() has not been called or has not succeed");
         }
 
         final GridCoverageWriter writer = new WorldImageWriter(output);
@@ -105,6 +103,7 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
                                                   .toArray(new GeneralParameterValue[1]));
 
         // freeing everything
+        output.flush();
         writer.dispose();
         this.sourceCoverage.dispose(false);
         this.sourceCoverage = null;
