@@ -4,7 +4,10 @@
  */
 package org.geoserver.wcs.response;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -362,23 +365,28 @@ public class DescribeCoverageTransformer extends TransformerBase {
         }
 
         private void handleSupportedFormats(CoverageInfo ci) throws Exception {
+            // gather all the formats for this coverage 
+            Set<String> formats = new HashSet<String>();
             for (Iterator it = ci.getSupportedFormats().iterator(); it.hasNext();) {
                 String format = (String) it.next();
                 // wcs 1.1 requires mime types, not format names
                 try  {
                     CoverageResponseDelegate delegate = CoverageResponseDelegateFactory
                             .encoderFor(format);
-                    // this is a nasty hack... the output format should not need any
-                    // preparation,
-                    // we already provided the format to the factory
-                    delegate.prepare(format, null);
-                    element("wcs:SupportedFormat", delegate.getContentType(wcs.getGeoServer()));
+                    formats.addAll(delegate.getSupportedFormats());
                 } catch(Exception e) {
                     // no problem, we just want to avoid people writing HALLABALOOLA in the
                     // supported formats section of the coverage config and then break the
                     // describe response
                 }
             }
+            // sort them
+            List<String> sortedFormats = new ArrayList<String>(formats);
+            Collections.sort(sortedFormats);
+            for (String format : sortedFormats) {
+                element("wcs:SupportedFormat", format);
+            }
+            
         }
 
         private void handleSupportedCRSs(CoverageInfo ci) throws Exception {
