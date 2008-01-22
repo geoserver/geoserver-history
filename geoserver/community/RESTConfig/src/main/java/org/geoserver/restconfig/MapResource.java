@@ -54,7 +54,7 @@ import java.util.Map;
  * @author David Winslow <dwinslow@openplans.org>
  */
 public abstract class MapResource extends Resource {
-    private static Map myFormatMap;
+    private Map myFormatMap;
     private DataFormat myRequestFormat;
 	private GeoServer myGeoserver;
     static Logger LOG = org.geotools.util.logging.Logging.getLogger("org.geoserver.community");
@@ -62,6 +62,7 @@ public abstract class MapResource extends Resource {
     public MapResource() {
         super();
         myFormatMap = getSupportedFormats();
+        LOG.info("Set formats for " + getClass() + " to " + myFormatMap);
 		myGeoserver = (GeoServer)GeoServerExtensions.bean("geoServer");
     }
 
@@ -75,14 +76,23 @@ public abstract class MapResource extends Resource {
 
     public void handleGet() {
         Map details = getMap();
+        if (getRequest().getAttributes().containsKey("type")){
+            String formatName = (String)getRequest().getAttributes().get("type");
+        }
         myRequestFormat = (DataFormat)myFormatMap.get(getRequest().getAttributes().get("type"));
 
         if ((myRequestFormat == null) | (details == null)) {
             getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-            getResponse()
-                .setEntity(new StringRepresentation(
-                    "Could not find requested resource; format was "
-                    + getRequest().getAttributes().get("type"), MediaType.TEXT_PLAIN));
+            getResponse().setEntity(
+                    new StringRepresentation(
+                        "Could not find requested resource; format was " +
+                        getRequest().getAttributes().get("type") + 
+                        "; resource type is " + getClass(),
+                        MediaType.TEXT_PLAIN
+                        )
+                    );
+
+            LOG.info("Failed MapResource request; format: " + myRequestFormat + "; details: " + details);
 
             return;
         }

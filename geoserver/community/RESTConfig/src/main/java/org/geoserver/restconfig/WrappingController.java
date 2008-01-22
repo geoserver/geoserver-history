@@ -18,7 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.Iterator;
-
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Simple AbstractController implementation that does the translation between
@@ -57,14 +60,16 @@ public class WrappingController extends AbstractController {
         if (myRouter == null) myRouter = new Router();
 
         myRouter.getRoutes().clear();
-        Iterator it = m.entrySet().iterator();
 
         myRouter.attach("", new BeanResourceFinder(new IndexResource(myRouter)));
 
         try{
+            Iterator it = m.keySet().iterator();
+
             while (it.hasNext()){
-                Map.Entry entry = (Map.Entry) it.next();
-                myRouter.attach((String)entry.getKey(), (Restlet)entry.getValue());
+                String key = (String)it.next();
+
+                myRouter.attach(key, (Restlet)m.get(key));
             }
         } catch (ClassCastException cce){
             if (m != myRouteMap){
