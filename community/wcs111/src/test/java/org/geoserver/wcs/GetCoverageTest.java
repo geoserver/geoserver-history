@@ -159,7 +159,7 @@ public class GetCoverageTest extends WCSTestSupport {
         }
 
         // unknown axis
-        raw.put("rangeSubset", "BlueMarble:nearest[MadAxis[key]]");
+        raw.put("rangeSubset", "contents:nearest[MadAxis[key]]");
         try {
             executeGetCoverage(raw);
             fail("We should have had a WcsException here?");
@@ -169,7 +169,7 @@ public class GetCoverageTest extends WCSTestSupport {
         }
 
         // unknown key
-        raw.put("rangeSubset", "BlueMarble:nearest[Bands[MadKey]]");
+        raw.put("rangeSubset", "contents:nearest[Bands[MadKey]]");
         try {
             executeGetCoverage(raw);
             fail("We should have had a WcsException here?");
@@ -179,7 +179,7 @@ public class GetCoverageTest extends WCSTestSupport {
         }
 
         // ok, finally something we can parse
-        raw.put("rangeSubset", "BlueMarble:nearest[Bands[ReD_BaNd]]");
+        raw.put("rangeSubset", "contents:nearest[Bands[ReD_BaNd]]");
         GridCoverage[] coverages = executeGetCoverage(raw);
         
         assertEquals(1, coverages[0].getNumSampleDimensions());

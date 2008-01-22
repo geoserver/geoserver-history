@@ -503,7 +503,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
         // check field identifier
         FieldSubsetType field = (FieldSubsetType) rangeSubset.getFieldSubset().get(0);
         final String fieldId = field.getIdentifier().getValue();
-        if (!fieldId.equalsIgnoreCase(info.getLabel()))
+        if (!fieldId.equalsIgnoreCase("contents"))
             throw new WcsException("Unknown field " + fieldId, InvalidParameterValue, "RangeSubset");
 
         // check interpolation

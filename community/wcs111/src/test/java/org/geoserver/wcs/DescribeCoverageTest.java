@@ -189,10 +189,10 @@ public class DescribeCoverageTest extends WCSTestSupport {
             assertFalse(key.getTextContent().contains(" "));
         }
         
-        // make sure the field name is equal to the coverage name (just a reasonable default)
+        // make sure the field name is "contents" (just a reasonable default)
         Node fieldName = XPathAPI.selectSingleNode(dom, "/wcs:CoverageDescriptions/wcs:CoverageDescription/" +
         "wcs:Range/wcs:Field/wcs:Identifier");
-        assertEquals(WCSTestSupport.TASMANIA_BM.getLocalPart(), fieldName.getTextContent());
+        assertEquals("contents", fieldName.getTextContent());
     }
     
 }
