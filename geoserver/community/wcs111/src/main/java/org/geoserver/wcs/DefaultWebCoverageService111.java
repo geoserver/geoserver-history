@@ -5,6 +5,7 @@ import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParame
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -412,8 +413,14 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                         + gridCRS.getGridBaseCRS(), WcsExceptionCode.InvalidParameterValue,
                         "GridBaseCRS");
             }
-            Double[] gridOrigin = (Double[]) gridCRS.getGridOrigin();
-            if (gridOrigin != null) {
+            if(!gridCRS.isSetGridOrigin() || gridCRS.getGridOrigin() == null) {
+                // if not set, we have a default of "0 0" as a string, since I cannot
+                // find a way to make it default to new Double[] {0 0} I'll fix it here
+                Double[] origin = new Double[type.getOriginArrayLength()];
+                Arrays.fill(origin, 0.0);
+                gridCRS.setGridOrigin(origin);
+            } else {
+                Double[] gridOrigin = (Double[]) gridCRS.getGridOrigin();
                 // make sure the origin dimension matches the output crs dimension
                 if (gridOrigin.length != type.getOriginArrayLength())
                     throw new WcsException("Grid origin size (" + gridOrigin.length
@@ -421,8 +428,6 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                             + " that requires (" + type.getOriginArrayLength() + ")",
                             WcsExceptionCode.InvalidParameterValue, "GridOrigin");
                 gridCRS.setGridOrigin(gridOrigin);
-            } else {
-                gridCRS.setGridOrigin(null);
             }
     
             // perform same checks on the offsets
