@@ -660,6 +660,17 @@
  </dependencies>
 
  <build>
+  <!-- Forces some plugin versions since latest and greatest are not working properly -->
+  <pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.0</version>
+      </plugin>
+    </plugins>
+  </pluginManagement>
+ 
   <!-- TODO: the resources stuff hardcodes paths to source + test directories,
 			we should be able to use some properties here -->
   <resources>
@@ -675,6 +686,7 @@
      <include>**/*.serialized</include>
      <include>**/*.xsd</include>
      <include>META-INF/*.jai</include>
+     <include>META-INF/mailcap</include>
      <include>META-INF/services/**</include>
      <include>applicationContext.xml</include>
      <include>**/*.ftl</include>
