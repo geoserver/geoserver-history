@@ -8,9 +8,6 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.XPathAPI;
 import org.geoserver.wcs.test.WCSTestSupport;
-import org.geotools.referencing.CRS;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -23,10 +20,10 @@ public class DescribeCoverageTest extends WCSTestSupport {
 //        return "/DEFAULT_LOGGING.properties";
 //    }
     
-    public void testCRS() throws NoSuchAuthorityCodeException, FactoryException {
-        System.out.println(CRS.decode("EPSG:4326"));
-        System.out.println(CRS.decode("urn:ogc:def:crs:EPSG:4326"));
-    }
+//    public void testCRS() throws NoSuchAuthorityCodeException, FactoryException {
+//        System.out.println(CRS.decode("EPSG:4326"));
+//        System.out.println(CRS.decode("urn:ogc:def:crs:EPSG:4326"));
+//    }
 
 
     public void testDescribeNoIdentifiers() throws Exception {
@@ -73,7 +70,7 @@ public class DescribeCoverageTest extends WCSTestSupport {
         Document dom = getAsDOM(BASEPATH
                 + "?request=DescribeCoverage&service=WCS&version=1.1.1&identifiers="
                 + layerId(WCSTestSupport.TASMANIA_DEM), errors);
-        print(dom);
+//        print(dom);
         checkValidationErrors(errors);
         checkDemCoverageDescription(dom);
     }
@@ -123,7 +120,7 @@ public class DescribeCoverageTest extends WCSTestSupport {
         Document dom = getAsDOM(BASEPATH
                 + "?request=DescribeCoverage&service=WCS&version=1.1.1&identifiers="
                 + layerId(WCSTestSupport.ROTATED_CAD), errors);
-        print(dom);
+//        print(dom);
         checkValidationErrors(errors);
         // check the basics, the output is a single coverage description with the expected id
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescriptions").getLength());
@@ -139,7 +136,7 @@ public class DescribeCoverageTest extends WCSTestSupport {
         for (int i = 0; i < offsetStrs.length; i++) {
             offsets[i] = Double.parseDouble(offsetStrs[i]);
         }
-        System.out.println(Arrays.toString(offsets));
+//        System.out.println(Arrays.toString(offsets));
         assertTrue(offsets[0] < 0);
         assertTrue(offsets[1] > 0);
         assertTrue(offsets[2] > 0);
@@ -156,7 +153,7 @@ public class DescribeCoverageTest extends WCSTestSupport {
         Document dom = getAsDOM(BASEPATH
                 + "?request=DescribeCoverage&service=WCS&version=1.1.1&identifiers="
                 + layerId(WCSTestSupport.TASMANIA_BM), errors);
-        print(dom);
+//        print(dom);
         checkValidationErrors(errors);
         // check the basics, the output is a single coverage description with the expected id
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescriptions").getLength());
