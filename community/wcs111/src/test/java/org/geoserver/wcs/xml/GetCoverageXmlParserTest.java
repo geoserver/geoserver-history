@@ -43,7 +43,7 @@ public class GetCoverageXmlParserTest extends TestCase {
                 "  </wcs:DomainSubset>\r\n" + //
                 "  <wcs:Output format=\"image/tiff\"/>\r\n" + //
                 "</wcs:GetCoverage>";
-        System.out.println(request);
+//        System.out.println(request);
 
         // smoke test, we only try out a very basic request
         GetCoverageType gc = (GetCoverageType) reader.read(null, new StringReader(
