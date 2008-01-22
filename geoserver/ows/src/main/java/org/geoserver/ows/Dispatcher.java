@@ -1131,7 +1131,7 @@ public class Dispatcher extends AbstractController {
                 current = current.getCause();
             }
             if (current instanceof ClientStreamAbortedException) {
-                logger.log(Level.FINER, "Client has closed stream");
+                logger.log(Level.FINER, "Client has closed stream", t);
                 return;
             }
         }
