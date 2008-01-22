@@ -84,22 +84,25 @@ public class DataStoreResource extends MapResource {
 
         DataStoreFactorySpi factory = myDSC.getFactory();
 
-        Map storeSpecificParameters = new HashMap();
+        List storeSpecificParameters = new ArrayList();
         Param[] parameters = factory.getParametersInfo();
         for (int i = 0; i < parameters.length; i++){
             Param p = parameters[i];
             if (!("namespace".equals(p.key))){
                 Object value = myDSC.getConnectionParams().get(p.key);
-                String text  = null;
+                Map entry = new HashMap();
                 if (value == null) {
-                    text = null;
+                    entry.put("value", "");
                 } else if (value instanceof String){
-                    text = (String) value;
+                    entry.put("value", value);
                 } else {
-                    text = p.text(value);
+                    entry.put("value", p.text(value));
                 }
                 String key = p.key.substring(p.key.lastIndexOf(':') + 1);
-                storeSpecificParameters.put(key, text);
+                entry.put("name", key);
+                entry.put("type", p.type.getName());
+                entry.put("required", Boolean.toString(p.required));
+                storeSpecificParameters.add(entry);
             }
         }
 
