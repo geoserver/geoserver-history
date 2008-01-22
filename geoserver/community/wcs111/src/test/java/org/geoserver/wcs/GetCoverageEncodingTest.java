@@ -28,10 +28,10 @@ import com.sun.org.apache.xpath.internal.XPathAPI;
 
 public class GetCoverageEncodingTest extends WCSTestSupport {
 
-    @Override
-    protected String getDefaultLogConfiguration() {
-        return "/DEFAULT_LOGGING.properties";
-    }
+//    @Override
+//    protected String getDefaultLogConfiguration() {
+//        return "/DEFAULT_LOGGING.properties";
+//    }
 
     public void testKvpBasic() throws Exception {
         String request = "?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
@@ -39,6 +39,7 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
                 + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
                 + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=geotiff";
         MockHttpServletResponse response = getAsServletResponse(request);
+//        System.out.println(response.getOutputStreamContent());
         // make sure we got a multipart
         assertTrue(response.getContentType().matches("multipart/related;\\s*boundary=\".*\""));
 
