@@ -58,7 +58,10 @@ public class DebugCoverageResponseDelegate implements CoverageResponseDelegate {
 
     public void encode(OutputStream output) throws ServiceException, IOException {
         PrintStream ps = new PrintStream(output);
-        ps.println("Grid geometry: " + coverage.getGridGeometry());
+        ps.println("Grid bounds: " + coverage.getEnvelope());
+        ps.println("Grid CRS: " + coverage.getCoordinateReferenceSystem());
+        ps.println("Grid range: " + coverage.getGridGeometry().getGridRange());
+        ps.println("Grid to world: " + coverage.getGridGeometry().getGridToCRS());
         ps.println("Contents:");
         RenderedImage ri = coverage.getRenderedImage();
         Raster raster = ri.getData();
