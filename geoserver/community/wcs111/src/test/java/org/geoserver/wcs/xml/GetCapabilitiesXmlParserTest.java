@@ -49,7 +49,7 @@ public class GetCapabilitiesXmlParserTest extends TestCase {
                 "  <ows:OutputFormat>text/xml</ows:OutputFormat>" + //
                 "</ows:AcceptFormats>" + //
                 "</wcs:GetCapabilities>";
-        System.out.println(request);
+//        System.out.println(request);
         GetCapabilitiesType cap = (GetCapabilitiesType) reader.read(null,
                 new StringReader(request), null);
         assertEquals("WCS", cap.getService());
