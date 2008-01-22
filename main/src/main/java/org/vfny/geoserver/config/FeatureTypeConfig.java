@@ -250,7 +250,8 @@ public class FeatureTypeConfig {
         //GeometryFactory geometryFactory = defaultGeometry.getGeometryFactory();
         Integer epsgCode = null;
         try {
-            epsgCode = CRS.lookupEpsgCode(defaultGeometry.getCRS(),true);
+            if(defaultGeometry.getCRS() != null)
+                epsgCode = CRS.lookupEpsgCode(defaultGeometry.getCRS(),true);
         } catch (FactoryException e) {
             //log this?
         }
