@@ -4,14 +4,6 @@
  */
 package org.vfny.geoserver.global;
 
-import org.apache.struts.action.ActionServlet;
-import org.apache.struts.action.PlugIn;
-import org.apache.struts.config.ModuleConfig;
-import org.geotools.validation.dto.PlugInDTO;
-import org.geotools.validation.dto.TestDTO;
-import org.geotools.validation.dto.TestSuiteDTO;
-import org.springframework.beans.factory.InitializingBean;
-import org.vfny.geoserver.global.xml.XMLConfigWriter.WriterUtils;
 import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,7 +11,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.ServletException;
+
+import org.geotools.validation.dto.PlugInDTO;
+import org.geotools.validation.dto.TestDTO;
+import org.geotools.validation.dto.TestSuiteDTO;
+import org.springframework.beans.factory.InitializingBean;
+import org.vfny.geoserver.global.xml.XMLConfigWriter.WriterUtils;
 
 
 /**
@@ -39,7 +36,7 @@ import javax.servlet.ServletException;
  * @author dzwiers, Refractions Research, Inc.
  * @version $Id$
  */
-public class ApplicationState implements PlugIn, InitializingBean {
+public class ApplicationState implements InitializingBean {
     /** The key used to store this value in the Web Container */
     public static final String WEB_CONTAINER_KEY = "GeoServer.ApplicationState";
 
@@ -91,46 +88,6 @@ public class ApplicationState implements PlugIn, InitializingBean {
         this.data = data;
         this.validator = validator;
         this.config = config;
-    }
-
-    /**
-     * Clean up the Configuration State during application exit.
-     *
-     * <p>
-     * Since this class just holds data, no resources need to be released.
-     * </p>
-     *
-     * @see org.apache.struts.action.PlugIn#destroy()
-     */
-    public void destroy() {
-    }
-
-    /**
-     * Set up the ApplicationState during Application start up.
-     *
-     * <p>
-     * ApplicationState simply registers itself with the WEB_CONTAINER_KEY
-     * ("GeoServer.ApplicationState") during start up.
-     * </p>
-     *
-     * @param actionServlet ActionServlet representing the Application
-     * @param moduleConfig Configuration used to set up this plug in
-     *
-     * @throws ServletException
-     *
-     * @see org.apache.struts.action.PlugIn#init(org.apache.struts.action.ActionServlet,
-     *      org.apache.struts.config.ModuleConfig)
-     *
-     * @deprecated This class is no longer loaded with struts,
-     *  use {@link #afterPropertiesSet()}
-     */
-    public void init(ActionServlet actionServlet, ModuleConfig moduleConfig)
-        throws ServletException {
-        try {
-            afterPropertiesSet();
-        } catch (Exception e) {
-            throw new ServletException(e);
-        }
     }
 
     public void afterPropertiesSet() throws Exception {
