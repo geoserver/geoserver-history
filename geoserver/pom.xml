@@ -43,30 +43,6 @@
 
  <repositories>
   <repository>
-    <id>skynet.be</id>
-    <name>skynet.be</name>
-    <url>http://maven2.mirrors.skynet.be/pub/maven2</url>
-    <snapshots>
-    <enabled>false</enabled>
-   </snapshots>
-  </repository>
-  <repository>
-    <id>Sateh</id>
-    <name>Sateh</name>
-    <url>http://maven.sateh.com/repository</url>
-    <snapshots>
-    <enabled>false</enabled>
-   </snapshots>
-  </repository>
-  <repository>
-   <id>ibiblio</id>
-   <name>ibiblio</name>
-   <url>http://www.ibiblio.org/maven2</url>
-   <snapshots>
-    <enabled>false</enabled>
-   </snapshots>
-  </repository>
-  <repository>
    <id>geotools</id>
    <name>geotools</name>
    <url>http://maven.geotools.fr/repository/</url>
@@ -84,14 +60,6 @@
    </snapshots>
   </repository>
   <repository>
-   <id>espace</id>
-   <name>espace</name>
-   <url>http://maven.espace.ird.nc</url>
-   <snapshots>
-    <enabled>false</enabled>
-   </snapshots>
-  </repository>
-  <repository>
    <id>mortbay</id>
    <name>mortbay</name>
    <url>http://www.mortbay.org/maven2/release</url>
@@ -99,16 +67,6 @@
     <enabled>false</enabled>
    </snapshots>
   </repository>
-  <!--
-  <repository>
-    <id>geo-solutions</id>
-    <name>geo-solutions</name>
-    <url>http://www.geo-solutions.it/gt2_nightly/</url>
-    <snapshots>
-      <enabled>true</enabled>
-    </snapshots>
-  </repository>
-  -->
  </repositories>
 
  <pluginRepositories>
