@@ -979,6 +979,7 @@
   <module>data</module>
   <module>main</module>
   <module>wcs</module>
+  <module>wcs1_1</module>
   <module>wfs</module>
   <module>wfsv</module>
   <module>wms</module>
@@ -987,8 +988,10 @@
   <module>test</module>
   <module>ows</module>
   <module>net.opengis.ows</module>
+  <module>net.opengis.ows.1_1</module>
   <module>net.opengis.wfs</module>
   <module>net.opengis.wfsv</module>
+  <module>net.opengis.wcs.1_1</module>
  </modules>
 
  <properties>

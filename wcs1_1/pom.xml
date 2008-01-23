@@ -11,7 +11,7 @@
   </parent>
 
   <groupId>org.geoserver</groupId>
-  <artifactId>wcs11</artifactId>
+  <artifactId>wcs1_1</artifactId>
   <packaging>jar</packaging>
   <name>Web Coverage Service 1.1.1 Module</name>
 
@@ -23,7 +23,7 @@
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
-      <artifactId>net.opengis.wcs.v1_1_1</artifactId>
+      <artifactId>net.opengis.wcs.1_1</artifactId>
       <version>1.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
