@@ -22,8 +22,11 @@ import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.config.StyleConfig;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.xml.XMLConfigWriter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,7 +51,7 @@ import java.net.MalformedURLException;
  */
 class StyleResource extends Resource {
     private DataConfig myDC;
-    private ApplicationState myAppState;
+    private Data myData;
     protected static Logger LOG = org.geotools.util.logging.Logging.getLogger("org.geoserver.community");
 
     public StyleResource(){
@@ -67,6 +70,14 @@ class StyleResource extends Resource {
 
     public DataConfig getDataConfig(){
         return myDC;
+    }
+
+    public void setData(Data d){
+        myData = d;
+    } 
+
+    public Data getData(){
+        return myData;
     }
     
     public void handleGet() {
@@ -97,7 +108,8 @@ class StyleResource extends Resource {
         String styleName = (String) req.getAttributes().get("style");
         try{
             File styleDir = GeoserverDataDirectory.findCreateConfigDir("styles");
-            File newSLDFile = new File(styleDir, styleName + ".sld.temp");
+            File tempSLDFile = new File(styleDir, styleName + ".sld.temp");
+            File newSLDFile = new File(styleDir, styleName + ".sld");
 
 
             LOG.fine("Writing temporary SLD file to: " + newSLDFile);
@@ -109,7 +121,7 @@ class StyleResource extends Resource {
                                 req.getEntity().getStream()
                                 )
                             ); 
-                BufferedWriter fw = new BufferedWriter(new FileWriter(newSLDFile));
+                BufferedWriter fw = new BufferedWriter(new FileWriter(tempSLDFile));
 
                 String line;
                 while ((line = reader.readLine()) != null){
@@ -120,7 +132,7 @@ class StyleResource extends Resource {
                 fw.flush();
                 fw.close();
 
-                newSLDFile.renameTo(new File(styleDir, styleName + ".sld"));
+                tempSLDFile.renameTo(newSLDFile);
             } catch (IOException ioe){
                 LOG.severe("Problem writing temp file while PUTting a new style");
                 // TODO: This should have an HTTP error code
@@ -160,6 +172,8 @@ class StyleResource extends Resource {
 
             style.setId(styleName);
             myDC.addStyle(style.getId(), style);
+
+            saveConfiguration();
         } catch (ConfigurationException ce){
             LOG.severe("Couldn't find config directory!!" + ce);
             // TODO: These should have an HTTP error code.
@@ -167,8 +181,39 @@ class StyleResource extends Resource {
             LOG.severe(mue.getMessage());
         } catch (IOException ioe){
             LOG.severe(ioe.getMessage());
-        }
+        } 
 
         getResponse().setEntity(new StringRepresentation("AOK, style " + styleName + " created.", MediaType.TEXT_PLAIN));
+    }
+
+    public boolean allowDelete(){
+        return true;
+    }
+
+    public void handleDelete(){
+        String styleName = (String)getRequest().getAttributes().get("style");
+        
+        if (styleName != null && getDataConfig().getStyles().containsKey(styleName)){
+            try{
+                getDataConfig().removeStyle(styleName);
+                saveConfiguration();
+                getResponse().setEntity(
+                        new StringRepresentation("Deleting style " + styleName,
+                            MediaType.TEXT_PLAIN)
+                        );
+            } catch (Exception e){
+                LOG.severe("Problem while deleting style " + styleName);
+            }
+        } else {
+            LOG.severe("Delete Style failed because style " + styleName + " could not be found");
+            // TODO: This should have an HTTP status code
+        }
+    }
+
+    private void saveConfiguration() throws ConfigurationException{
+        getData().load(getDataConfig().toDTO());
+        XMLConfigWriter.store((DataDTO)getData().toDTO(),
+            GeoserverDataDirectory.getGeoserverDataDirectory()
+            );
     }
 }

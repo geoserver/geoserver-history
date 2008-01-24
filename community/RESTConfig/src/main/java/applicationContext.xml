@@ -134,7 +134,7 @@
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.StyleResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
-      <property name="applicationState"><ref bean="applicationState"/></property>
+      <property name="data"> <ref bean="data"/> </property>
     </bean>
   </property>
 </bean>
