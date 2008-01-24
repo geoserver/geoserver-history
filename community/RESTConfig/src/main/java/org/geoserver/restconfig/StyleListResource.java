@@ -71,6 +71,7 @@ class StyleListResource extends MapResource {
         Map m = new HashMap();
         m.put("html", new HTMLFormat("HTMLTemplates/styles.ftl"));
         m.put("json", new JSONFormat());
+        m.put("xml", new AutoXMLFormat());
         m.put(null, m.get("html"));
 
         return m;
