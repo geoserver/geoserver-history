@@ -50,9 +50,10 @@ public class WrappingController extends AbstractController {
 
     protected ModelAndView handleRequestInternal(HttpServletRequest req, HttpServletResponse resp)
         throws Exception {
-        myConverter.service(req, resp);
 
-        return null;
+            myConverter.service(req, resp);
+
+            return null;
     }
 
     public void setMapping(Map m){
