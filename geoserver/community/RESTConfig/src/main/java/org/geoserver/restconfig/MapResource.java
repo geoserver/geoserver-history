@@ -57,12 +57,11 @@ public abstract class MapResource extends Resource {
     private Map myFormatMap;
     private DataFormat myRequestFormat;
 	private GeoServer myGeoserver;
-    static Logger LOG = org.geotools.util.logging.Logging.getLogger("org.geoserver.community");
+    protected static Logger LOG = org.geotools.util.logging.Logging.getLogger("org.geoserver.community");
 
     public MapResource() {
         super();
         myFormatMap = getSupportedFormats();
-        LOG.info("Set formats for " + getClass() + " to " + myFormatMap);
 		myGeoserver = (GeoServer)GeoServerExtensions.bean("geoServer");
     }
 
