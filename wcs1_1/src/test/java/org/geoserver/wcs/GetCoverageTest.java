@@ -83,7 +83,7 @@ public class GetCoverageTest extends WCSTestSupport {
         }
     }
 
-    public void testWrongGridOrigin() throws Exception {
+    public void testDefaultGridOrigin() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
         final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
         raw.put("identifier", layerId);
@@ -91,10 +91,17 @@ public class GetCoverageTest extends WCSTestSupport {
         raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
 
         GridCoverage[] coverages = executeGetCoverageKvp(raw);
-        final GridRange range = coverages[0].getGridGeometry().getGridRange();
-        assertEquals(0, range.getLower(0));
-        assertEquals(0, range.getLower(1));
-
+        AffineTransform2D tx = (AffineTransform2D) coverages[0].getGridGeometry().getGridToCRS();
+        assertEquals(0.0, tx.getTranslateX());
+        assertEquals(0.0, tx.getTranslateY());
+    }
+    
+    public void testWrongGridOrigin() throws Exception {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        raw.put("identifier", layerId);
+        raw.put("format", "image/geotiff");
+        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
         raw.put("GridOrigin", "12,13,14");
         try {
             executeGetCoverageKvp(raw);
@@ -141,8 +148,8 @@ public class GetCoverageTest extends WCSTestSupport {
         assertEquals(originalTx.getScaleY(), flippedTx.getShearX(), EPS);
         assertEquals(originalTx.getShearX(), flippedTx.getScaleY(), EPS);
         assertEquals(originalTx.getShearY(), flippedTx.getScaleX(), EPS);
-        assertEquals(originalTx.getTranslateX(), flippedTx.getTranslateY(), EPS);
-        assertEquals(originalTx.getTranslateY(), flippedTx.getTranslateX(), EPS);
+        assertEquals(0.0, flippedTx.getTranslateY(), EPS);
+        assertEquals(0.0, flippedTx.getTranslateX(), EPS);
     }
     
     /**
