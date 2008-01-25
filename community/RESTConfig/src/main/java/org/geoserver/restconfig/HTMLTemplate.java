@@ -4,10 +4,12 @@
  */
 package org.geoserver.restconfig;
 
-import freemarker.template.Configuration;
+import java.util.Map;
+
 import org.restlet.data.MediaType;
 import org.restlet.ext.freemarker.TemplateRepresentation;
-import java.util.Map;
+
+import freemarker.template.Configuration;
 
 
 /**

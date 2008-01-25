@@ -1,11 +1,9 @@
 package org.geoserver.restconfig;
 
 import org.restlet.Finder;
-import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.resource.Resource;
-import java.lang.reflect.Constructor;
 
 public class BeanResourceFinder extends Finder{
     Resource myBeanToFind;

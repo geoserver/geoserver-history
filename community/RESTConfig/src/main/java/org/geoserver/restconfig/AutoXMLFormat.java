@@ -4,28 +4,23 @@
  */
 package org.geoserver.restconfig;
 
-import org.geoserver.restconfig.XMLTemplate;
-import org.jdom.Attribute;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
-import org.jdom.output.Format;
-import org.jdom.xpath.XPath;
-import org.restlet.data.MediaType;
-import org.restlet.resource.Representation;
-import org.restlet.resource.StringRepresentation;
-import org.restlet.resource.OutputRepresentation;
-import java.util.Collection;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.io.OutputStream;
-import java.io.IOException;
+
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
+import org.restlet.data.MediaType;
+import org.restlet.resource.OutputRepresentation;
+import org.restlet.resource.Representation;
 
 public class AutoXMLFormat implements DataFormat {
     String myRootName;

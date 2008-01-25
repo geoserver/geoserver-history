@@ -4,26 +4,15 @@
  */
 package org.geoserver.restconfig;
 
-import org.restlet.Context;
-import org.restlet.data.MediaType;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.data.Status;
-import org.restlet.ext.freemarker.TemplateRepresentation;
-import org.restlet.resource.FileRepresentation;
-import org.restlet.resource.Resource;
-import org.restlet.resource.StringRepresentation;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataStoreConfig;
-import org.vfny.geoserver.config.FeatureTypeConfig;
-import org.vfny.geoserver.config.StyleConfig;
-import org.vfny.geoserver.config.WMSConfig;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.restlet.Context;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
+import org.vfny.geoserver.config.WMSConfig;
 
 
 /**
@@ -79,22 +68,10 @@ class LayerGroupResource extends MapResource {
         }
 
         context.put("Members", members);
-        context.put("Styles", null);
+        context.put("Styles", styles);
         context.put("SRS", null);
         context.put("Envelope", null);
 
         return context;
-    }
-
-    public void donthandleGet() {
-        MediaType mt = null;
-        Request req = getRequest();
-
-        // Determine desired output format
-        if (req.getResourceRef().getQueryAsForm().contains("format")) {
-            mt = MediaType.valueOf(req.getResourceRef().getQueryAsForm().getFirstValue("format"));
-        } else {
-            mt = MediaType.TEXT_HTML;
-        }
     }
 }

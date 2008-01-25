@@ -4,24 +4,16 @@
  */
 package org.geoserver.restconfig;
 
-import org.restlet.Context;
-import org.restlet.data.MediaType;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.data.Status;
-import org.restlet.ext.freemarker.TemplateRepresentation;
-import org.restlet.resource.FileRepresentation;
-import org.restlet.resource.Resource;
-import org.restlet.resource.StringRepresentation;
-import org.vfny.geoserver.config.CoverageConfig;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataStoreConfig;
-import org.vfny.geoserver.config.FeatureTypeConfig;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.restlet.Context;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
+import org.vfny.geoserver.config.DataConfig;
 
 
 /**
@@ -61,19 +53,6 @@ public class CoverageListResource extends MapResource {
         }
 
         m.put("coverages", coverageList);
-
-        return m;
-    }
-
-    private Map getCoverageConfigMap(CoverageConfig cc) {
-        Map m = new HashMap();
-        m.put("coverageName", cc.getName());
-        m.put("CRSDescription", cc.getCrs().getName());
-        m.put("CRSFull", cc.getCrs().toString());
-        m.put("DefaultStyle", cc.getDefaultStyle());
-        m.put("Label", cc.getLabel());
-        m.put("Description", cc.getDescription());
-        m.put("Keywords", cc.getKeywords());
 
         return m;
     }
