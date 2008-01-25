@@ -20,6 +20,11 @@ public class GetCapabilitiesTest extends WCSTestSupport {
         super.setUp();
         geoServer = (GeoServer) applicationContext.getBean("geoServer");
     }
+    
+//    @Override
+//    protected String getDefaultLogConfiguration() {
+//        return "/GEOTOOLS_DEVELOPER_LOGGING.properties";
+//    }
 
     public void testGetBasic() throws Exception {
         List<Exception> errors = new ArrayList<Exception>();
@@ -60,15 +65,20 @@ public class GetCapabilitiesTest extends WCSTestSupport {
                 + "    <ows:Version>9.9.9</ows:Version>" //
                 + "  </ows:AcceptVersions>" // 
                 + "</wcs:GetCapabilities>";
+        List<Exception> errors = new ArrayList<Exception>();
         Document dom = postAsDOM(BASEPATH, request);
+        checkValidationErrors(errors);
+        checkOws11Exception(dom);
         assertEquals("ows:ExceptionReport", dom.getFirstChild().getNodeName());
         Node node = XPathAPI.selectSingleNode(dom, "ows:ExceptionReport/ows:Exception/@exceptionCode");
         assertEquals("VersionNegotiationFailed", node.getTextContent());
     }
     
     public void testUnsupportedVersionGet() throws Exception {
-        Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&acceptVersions=9.9.9,8.8.8");
-        assertEquals("ows:ExceptionReport", dom.getFirstChild().getNodeName());
+        List<Exception> errors = new ArrayList<Exception>();
+        Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&acceptVersions=9.9.9,8.8.8", errors);
+        checkValidationErrors(errors);
+        checkOws11Exception(dom);
         Node node = XPathAPI.selectSingleNode(dom, "ows:ExceptionReport/ows:Exception/@exceptionCode");
         assertEquals("VersionNegotiationFailed", node.getTextContent());
     }
