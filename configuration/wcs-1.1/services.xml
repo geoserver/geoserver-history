@@ -4,7 +4,9 @@
 -->
 <serverConfiguration >
   <global >
+    <log4jConfigFile>VERBOSE_LOGGING.properties</log4jConfigFile>
     <suppressStdOutLogging value = "false" />
+    <logLocation>logs/geoserver.log</logLocation>
     <JaiMemoryCapacity value = "0.5" />
     <JaiMemoryThreshold value = "0.75" />
     <JaiTileThreads value = "7" />
@@ -43,10 +45,29 @@
       is used.
     -->
     <charSet value = "UTF-8" />
+    <ContactInformation >
+      <ContactPersonPrimary >
+        <ContactPerson>Chris Holmes</ContactPerson>
+        <ContactOrganization>The Open Planning Project</ContactOrganization>
+      </ContactPersonPrimary>
+      <ContactPosition>Tecnical director</ContactPosition>
+      <ContactAddress >
+        <AddressType>Office</AddressType>
+        <Address>349 West 12th Street #3</Address>
+        <City>New York</City>
+        <StateOrProvince>New York</StateOrProvince>
+        <PostCode>10014</PostCode>
+        <Country>USA</Country>
+      </ContactAddress>
+      <ContactVoiceTelephone>212.796.4220</ContactVoiceTelephone>
+      <ContactFacsimileTelephone>646.390.2624</ContactFacsimileTelephone>
+      <ContactElectronicMailAddress>nobody@openplans.org</ContactElectronicMailAddress>
+      <ContactOnlineResource></ContactOnlineResource>
+    </ContactInformation>
     <!--
       Stores the current updateSequence
     -->
-    <updateSequence>4</updateSequence>
+    <updateSequence>5</updateSequence>
   </global>
   <services >
     <service enabled = "true" type = "WCS" >

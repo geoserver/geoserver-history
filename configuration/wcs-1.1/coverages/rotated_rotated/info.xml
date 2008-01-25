@@ -4,7 +4,9 @@
   <description>Just a fictuous rotated coverage used to show offset parameters in the rotated case</description>
   <wmspath>/</wmspath>
   <metadataLink about = "http://www.remotesensing.org:16080/websites/geotiff/geotiff.html" metadataType = "other" >
+    
     null
+  
   </metadataLink>
   <keywords>WCS,rotated,rotated</keywords>
   <!--
@@ -23,7 +25,7 @@
     AXIS['Geodetic longitude', EAST], 
     AXIS['Geodetic latitude', NORTH], 
     AUTHORITY['EPSG','4265']], 
-  PROJECTION['Transverse Mercator', AUTHORITY['EPSG','9807']], 
+  PROJECTION['Transverse_Mercator'], 
   PARAMETER['central_meridian', 9.0], 
   PARAMETER['latitude_of_origin', 0.0], 
   PARAMETER['scale_factor', 0.9996], 

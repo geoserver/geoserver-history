@@ -36,8 +36,8 @@
       Defines the style ids and file name to be used by the wms.
     -->
     <style id = "polygon" filename = "default_polygon.sld" />
-    <style id = "raster" filename = "raster.sld" />
     <style id = "point" filename = "default_point.sld" />
+    <style id = "raster" filename = "raster.sld" />
     <style id = "line" filename = "default_line.sld" />
   </styles>
 </catalog>
