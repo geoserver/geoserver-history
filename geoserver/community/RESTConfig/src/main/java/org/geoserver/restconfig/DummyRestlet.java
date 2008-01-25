@@ -9,7 +9,6 @@ import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.resource.StringRepresentation;
-import org.springframework.context.ApplicationContext;
 
 
 /**

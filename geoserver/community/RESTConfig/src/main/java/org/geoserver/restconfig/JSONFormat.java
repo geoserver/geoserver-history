@@ -4,23 +4,23 @@
  */
 package org.geoserver.restconfig;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONNull;
-import net.sf.json.JSONObject;
-import org.restlet.data.MediaType;
-import org.restlet.resource.OutputRepresentation;
-import org.restlet.resource.Representation;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONNull;
+import net.sf.json.JSONObject;
+
+import org.restlet.data.MediaType;
+import org.restlet.resource.OutputRepresentation;
+import org.restlet.resource.Representation;
 
 
 public class JSONFormat implements DataFormat {
@@ -28,8 +28,6 @@ public class JSONFormat implements DataFormat {
         return new OutputRepresentation(MediaType.APPLICATION_JSON) {
                 public void write(OutputStream os) {
                     try {
-                        Iterator it = map.entrySet().iterator();
-
                         Writer outWriter = new BufferedWriter(new OutputStreamWriter(os));
                         map.remove("page");
 

@@ -4,12 +4,13 @@
  */
 package org.geoserver.restconfig;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.vfny.geoserver.config.DataConfig;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class CoverageStoreListResource extends MapResource {

@@ -4,8 +4,9 @@
  */
 package org.geoserver.restconfig;
 
-import org.restlet.resource.Representation;
 import java.util.Map;
+
+import org.restlet.resource.Representation;
 
 
 /**

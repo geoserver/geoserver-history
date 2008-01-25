@@ -4,21 +4,17 @@
  */
 package org.geoserver.restconfig;
 
-import org.restlet.Context;
-import org.restlet.Route;
-import org.restlet.Router;
-import org.restlet.data.MediaType;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.resource.InputRepresentation;
-import org.restlet.resource.Resource;
-import java.io.BufferedInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.restlet.Context;
+import org.restlet.Route;
+import org.restlet.Router;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
 
 
 class IndexResource extends MapResource {

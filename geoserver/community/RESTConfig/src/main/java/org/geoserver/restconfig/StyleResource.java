@@ -4,6 +4,15 @@
  */
 package org.geoserver.restconfig;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.util.logging.Logger;
+
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.Hints;
 import org.geotools.styling.SLDParser;
@@ -14,34 +23,16 @@ import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
-import org.restlet.ext.freemarker.TemplateRepresentation;
 import org.restlet.resource.FileRepresentation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.StringRepresentation;
 import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataStoreConfig;
-import org.vfny.geoserver.config.FeatureTypeConfig;
 import org.vfny.geoserver.config.StyleConfig;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.dto.DataDTO;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.Reader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 
 
 /**
@@ -81,7 +72,6 @@ class StyleResource extends Resource {
     }
     
     public void handleGet() {
-        MediaType mt = null;
         Request req = getRequest();
 
         String styleName = (String) req.getAttributes().get("style");

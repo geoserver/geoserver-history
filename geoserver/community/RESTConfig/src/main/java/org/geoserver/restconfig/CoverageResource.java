@@ -4,40 +4,28 @@
  */
 package org.geoserver.restconfig;
 
-import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.geotools.geometry.GeneralEnvelope;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
-import org.opengis.coverage.grid.Format;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.restlet.Context;
-import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
-import org.restlet.data.Status;
-import org.restlet.ext.freemarker.TemplateRepresentation;
-import org.restlet.resource.FileRepresentation;
 import org.restlet.resource.Representation;
-import org.restlet.resource.Resource;
-import org.restlet.resource.StringRepresentation;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.config.CoverageConfig;
-import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataStoreConfig;
-import org.vfny.geoserver.config.FeatureTypeConfig;
-import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.CoverageStoreInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.MetaDataLink;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -182,14 +170,6 @@ public class CoverageResource extends MapResource {
         String qualified = coverageStore + ":" + coverageName;
         CoverageConfig cc = null;
         cc = (CoverageConfig) myDC.getCoverages().get(qualified);
-
-        if (cc == null) {
-            CoverageStoreInfo csi = myData.getFormatInfo(coverageStore);
-            Format format = csi.getFormat();
-            AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) csi.getReader(); // TODO acquire an instance somehow
-
-            //cc = new CoverageConfig(coverageStore, format, reader, myDC);
-        }
 
         if (details.get("WMSPath") != null) {
             cc.setWmsPath((String) details.get("WMSPath"));

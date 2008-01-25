@@ -4,24 +4,19 @@
  */
 package org.geoserver.restconfig;
 
-import com.noelios.restlet.ext.servlet.ServletConverter;
-import org.restlet.Restlet;
-import org.restlet.Router;
-import org.restlet.Finder;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.WMSConfig;
+import java.util.Iterator;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ArrayList;
+
+import org.restlet.Restlet;
+import org.restlet.Router;
+import org.springframework.beans.BeansException;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
+
+import com.noelios.restlet.ext.servlet.ServletConverter;
 
 /**
  * Simple AbstractController implementation that does the translation between
