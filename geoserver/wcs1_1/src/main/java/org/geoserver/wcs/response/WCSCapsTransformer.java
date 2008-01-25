@@ -5,9 +5,12 @@
 package org.geoserver.wcs.response;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import net.opengis.wcs.v1_1_1.GetCapabilitiesType;
@@ -196,13 +199,16 @@ public class WCSCapsTransformer extends TransformerBase {
          */
         private void handleOperationsMetadata() {
             start("ows:OperationsMetadata");
-            handleOperation("GetCapabilities");
-            handleOperation("DescribeCoverage");
-            handleOperation("GetCoverage");
+            handleOperation("GetCapabilities", null);
+            handleOperation("DescribeCoverage", null);
+            handleOperation("GetCoverage", new HashMap<String, List<String>>() {{
+                put("store", Collections.singletonList("False"));
+            }});
+            
             end("ows:OperationsMetadata");
         }
 
-        private void handleOperation(String capabilityName) {
+        private void handleOperation(String capabilityName, Map<String, List<String>> parameters) {
             AttributesImpl attributes = new AttributesImpl();
             attributes.addAttribute(null, "name", "name", null, capabilityName);
             start("ows:Operation", attributes);
@@ -224,6 +230,20 @@ public class WCSCapsTransformer extends TransformerBase {
             element("ows:Post", null, attributes);
             end("ows:HTTP");
             end("ows:DCP");
+            
+            if(parameters != null && !parameters.isEmpty()) {
+                for (Map.Entry<String, List<String>> param : parameters.entrySet()) {
+                    attributes = new AttributesImpl();
+                    attributes.addAttribute("", "name", "name", "", param.getKey());
+                    start("ows:Parameter", attributes);
+                    start("ows:AllowedValues");
+                    for (String value : param.getValue()) {
+                        element("ows:Value", value);
+                    }
+                    end("ows:AllowedValues");
+                    end("ows:Parameter");
+                }
+            }
             
             end("ows:Operation");
         }
