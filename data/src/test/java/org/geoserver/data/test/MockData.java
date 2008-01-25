@@ -555,7 +555,7 @@ public class MockData {
         writer.write("<name>" + coverage + "</name>\n");
         writer.write("<label>" + coverage + "</label>\n");
         writer.write("<description>" + coverage + " description</description>\n");
-        // TODO: need to add metadata links?
+        writer.write("<metadataLink about = \"http://www.remotesensing.org:16080/websites/geotiff/geotiff.html\" metadataType = \"other\" />");
         writer.write("<keywords>WCS," + coverage + " </keywords>\n");
         if(styleName == null)
             styleName = "raster";
