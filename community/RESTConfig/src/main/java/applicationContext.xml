@@ -15,6 +15,14 @@
           <ref bean="featureTypeFinder"/>
         </entry>
         <entry>
+          <key><value>/datastores/{datastore}/featuretypes.{type}</value></key>
+          <ref bean="featureTypeListFinder"/>
+        </entry>
+        <entry>
+          <key><value>/datastores/{datastore}/featuretypes</value></key>
+          <ref bean="featureTypeListFinder"/>
+        </entry>
+        <entry>
           <key><value>/datastores/{datastore}.{type}</value></key>
           <ref bean="datastoreFinder"/>
         </entry>
@@ -116,10 +124,18 @@
     </bean>
   </property>
 </bean>
+<bean id="featureTypeListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.FeatureTypeListResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+    </bean>
+  </property>
+</bean>
 <bean id="datastoreFinder" class="org.geoserver.restconfig.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.DataStoreResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
+      <property name="data"><ref bean="data"/></property>
     </bean>
   </property>
 </bean>
