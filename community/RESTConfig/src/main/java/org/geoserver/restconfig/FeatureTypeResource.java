@@ -5,21 +5,24 @@
 package org.geoserver.restconfig;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
-import org.restlet.Context;
-import org.restlet.data.MediaType;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.data.Status;
-import org.restlet.ext.freemarker.TemplateRepresentation;
-import org.vfny.geoserver.config.AttributeTypeInfoConfig;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.Data;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.xml.XMLConfigWriter;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -33,16 +36,7 @@ public class FeatureTypeResource extends MapResource {
     private DataConfig myDC;
     private DataStoreConfig myDSC = null;
     private FeatureTypeConfig myFTC = null;
-
-    public FeatureTypeResource(){
-        super();
-    }
-
-    public FeatureTypeResource(Context context, Request request, Response response, DataConfig dc) {
-        super(context, request, response);
-        myDC = dc;
-        myFTC = findMyFeatureTypeConfig();
-    }
+    private Data myData;
 
     public void setDataConfig(DataConfig dc){
         myDC = dc;
@@ -50,6 +44,14 @@ public class FeatureTypeResource extends MapResource {
 
     public DataConfig getDataConfig(){
         return myDC;
+    }
+    
+    public void setData(Data d){
+        myData = d;
+    }
+    
+    public Data getData(){
+        return myData;
     }
 
     public Map getSupportedFormats() {
@@ -85,9 +87,68 @@ public class FeatureTypeResource extends MapResource {
     }
 
     protected void putMap(Map m) throws Exception{
-        System.out.println(m);
+    	// TODO: Don't blindly assume map contains valid config info
+        myFTC = findMyFeatureTypeConfig();
+
+        String featureTypeName = (String) getRequest().getAttributes().get("featuretype");
+    	String dataStoreName = (String) getRequest().getAttributes().get("datastore");
+ 
+        if (myFTC == null){
+        	throw new Exception("FeatureType " + featureTypeName + " in DataStore " + dataStoreName + "not found.");
+        } else {
+        	myFTC.setDefaultStyle((String)m.get("Style"));
+        	ArrayList styles = (ArrayList)m.get("AdditionalStyles");
+        	myFTC.setStyles(styles == null ? new ArrayList() : styles);
+        	myFTC.setSRS(Integer.valueOf((String)m.get("SRS")));
+        	myFTC.setSRSHandling(decodeSRSHandling((String)m.get("SRSHandling")));
+        	myFTC.setTitle((String)m.get("Title"));
+        	
+        	Envelope latLonBbox = decodeBoundingBox((List)m.get("BBox"));
+        	if(!myFTC.getLatLongBBox().equals(latLonBbox)) {
+                myFTC.setLatLongBBox(latLonBbox);
+
+                try{
+                    Envelope nativeBBox = convertBBoxFromLatLon(latLonBbox, "EPSG:" + myFTC.getSRS());
+                    myFTC.setNativeBBox(nativeBBox);
+                } catch (Exception e) {
+                    LOG.severe("Couldn't convert new BBox to native coordinate system! Error was:" + e);
+                }
+            }
+
+        	List keywords = (List)m.get("Keywords");
+        	myFTC.setKeywords(keywords == null ?
+        			new TreeSet() :
+        		    new TreeSet((List)m.get("Keywords"))
+        			);
+        	myFTC.setAbstract((String)m.get("Abstract"));
+        	myFTC.setWmsPath((String)m.get("WMSPath"));
+        	
+        	List metadataLinks = (List)m.get("MetadataLinks");
+        	myFTC.setMetadataLinks(metadataLinks == null ?
+        			new TreeSet() :
+        		    new TreeSet((metadataLinks))
+        			);
+        	myFTC.setCachingEnabled(Boolean.valueOf((String)m.get("CachingEnabled")));
+        	myFTC.setCacheMaxAge((String)myFTC.getCacheMaxAge());
+        	myFTC.setSchemaBase((String)m.get("SchemaBase"));
+        	
+        	String qualifiedName = dataStoreName + ":" + featureTypeName;
+        	myDC.removeFeatureType(qualifiedName);
+        	myDC.addFeatureType(qualifiedName, myFTC); // TODO: This isn't needed, is it?
+        	
+        	myData.load(myDC.toDTO());
+        	
+        	saveConfiguration();
+        }
     }
 
+    private void saveConfiguration() throws ConfigurationException{
+        getData().load(getDataConfig().toDTO());
+        XMLConfigWriter.store((DataDTO)getData().toDTO(),
+            GeoserverDataDirectory.getGeoserverDataDirectory()
+            );
+    }
+    
     private String getSRSHandling(){
         try{
             return (new String[]{"Force","Reproject","Ignore"})[myFTC.getSRSHandling()];
@@ -95,6 +156,47 @@ public class FeatureTypeResource extends MapResource {
             return "Ignore";
         }
     }
+    
+    private int decodeSRSHandling(String handling){
+       List decoder = Arrays.asList(new String[]{
+    		   "Force",
+    		   "Reproject",
+    		   "Ignore"
+       });
+       
+       return decoder.indexOf(handling);
+    }
+    
+    private Envelope decodeBoundingBox(List l){
+    	double xmin = Double.valueOf((String)l.get(0));
+    	double xmax = Double.valueOf((String)l.get(1));
+    	double ymin = Double.valueOf((String)l.get(2));
+    	double ymax = Double.valueOf((String)l.get(3));
+    	return new Envelope(xmin, xmax, ymin, ymax);
+    }
+    
+    /**
+     * Convert a bounding box in latitude/longitude coordinates to another CRS, specified by name.
+     * @param latLonBbox the latitude/longitude bounding box
+     * @param crsName the name of the CRS to which it should be converted
+     * @return the converted bounding box
+     * @throws Exception if anything goes wrong
+     */
+    private Envelope convertBBoxFromLatLon(Envelope latLonBbox, String crsName) throws Exception {
+            CoordinateReferenceSystem latLon = CRS.decode("EPSG:4326");
+            CoordinateReferenceSystem nativeCRS = CRS.decode(crsName);
+            Envelope env = null;
+
+            if (!CRS.equalsIgnoreMetadata(latLon, nativeCRS)) {
+                MathTransform xform = CRS.findMathTransform(latLon, nativeCRS, true);
+                env = JTS.transform(latLonBbox, null, xform, 10); //convert data bbox to lat/long
+            } else {
+                env = latLonBbox;
+            }
+
+            return env;
+    }
+
 
     private List getBoundingBox(){
         List l = new ArrayList();
@@ -141,103 +243,7 @@ public class FeatureTypeResource extends MapResource {
     public boolean allowGet() {
         return true;
     }
-
-    public void donthandleGet() {
-        MediaType mt = null;
-        Request req = getRequest();
-
-        // Determine desired output format
-        if (req.getResourceRef().getQueryAsForm().contains("format")) {
-            mt = MediaType.valueOf(req.getResourceRef().getQueryAsForm().getFirstValue("format"));
-        } else {
-            mt = MediaType.TEXT_HTML;
-        }
-
-        // Determine what resource is requested, get it
-        if (myFTC != null) {
-            // This is a request for a particular datastore
-            getFeatureType(mt);
-        } else {
-            //Return a 404
-            getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-            getResponse().setEntity("404 - Couldn't find requested resource", MediaType.TEXT_PLAIN);
-        }
-    }
-
-    /**
-     * Extracts information from FeatureTypeConfig and creates a Map
-     * suitable for use with FreeMarker templates.
-     *
-     * @return HashMap for use with FreeMarker templates
-     */
-    private HashMap makeFeatureTypeMap() {
-        if (myFTC == null) {
-            return null;
-        }
-
-        HashMap map = new HashMap();
-        map.put("name", myFTC.getName());
-        map.put("datastoreid", myFTC.getDataStoreId());
-        map.put("srs", Integer.valueOf(myFTC.getSRS()));
-        map.put("namespace", myDSC.getNameSpaceId());
-        map.put("defaultstyle", myFTC.getDefaultStyle());
-
-        ArrayList schemAttribs = new ArrayList();
-
-        for (Iterator it = myFTC.getSchemaAttributes().iterator(); it.hasNext();) {
-            AttributeTypeInfoConfig atic = (AttributeTypeInfoConfig) it.next();
-            schemAttribs.add(atic.getName() + ": " + atic.getType());
-        }
-
-        map.put("schemaattributes", schemAttribs);
-
-        //for (Iterator it = this.myFTC..iterator(); it.hasNext();) {
-        //	HashMap am = new HashMap();
-        //	FeatureTypeConfig ftc = (FeatureTypeConfig) it.next();
-        //	am.put("name", ftc.getName());
-        //	am.put("srs", Integer.valueOf(ftc.getSRS()));
-        //	fts.add(am);
-        //}
-        //map.put("featuretypes", fts);
-        return map;
-    }
-
-    /**
-     * Create a page with information about a given datastore,
-     * determined from the request attribute "name", in the given
-     * data format.
-     *
-     * It is assumed that if we get here myFTC has been set
-     *
-     * @param mt the media type (HTML, JSON, XML, ...)
-     */
-    private void getFeatureType(MediaType mt) {
-        HashMap map = makeFeatureTypeMap();
-
-        //Do the output formatting
-        if (mt.equals(MediaType.APPLICATION_XML)) {
-            getResponse().setEntity(getFeatureTypeXML(map));
-        } else if (mt.equals(MediaType.APPLICATION_JSON)) {
-            getResponse().setEntity(getFeatureTypeJSON(map));
-        } else {
-            //implying mt.equals(MediaType.TEXT_HTML))
-            getResponse().setEntity(getFeatureTypeHTML(map));
-        }
-    }
-
-    public TemplateRepresentation getFeatureTypeXML(HashMap map) {
-        return XMLTemplate.getXmlRepresentation("XMLTemplates/featuretype.ftl", map);
-    }
-
-    public TemplateRepresentation getFeatureTypeJSON(HashMap map) {
-        // ToDo
-        return null;
-    }
-
-    public TemplateRepresentation getFeatureTypeHTML(HashMap map) {
-        return HTMLTemplate.getHtmlRepresentation("HTMLTemplates/featuretype.ftl", map);
-    }
-
+    
     public boolean allowPut() {
         return true;
     }
