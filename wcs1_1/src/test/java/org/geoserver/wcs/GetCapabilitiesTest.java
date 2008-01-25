@@ -24,6 +24,7 @@ public class GetCapabilitiesTest extends WCSTestSupport {
                 + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
         List<Exception> errors = new ArrayList<Exception>();
         Document dom = postAsDOM(BASEPATH, request, errors);
+        print(dom);
         checkValidationErrors(errors);
     }
 

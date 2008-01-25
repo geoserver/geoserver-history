@@ -323,14 +323,14 @@ public class WCSCapsTransformer extends TransformerBase {
                 elementIfNotEmpty("ows:Title", cv.getLabel());
                 elementIfNotEmpty("ows:Abstract", cv.getDescription());
                 handleKeywords(cv.getKeywords());
-                handleMetadataLink(cv.getMetadataLink());
+                handleMetadataLink(cv.getMetadataLink(), "simple");
                 handleEnvelope(cv.getWGS84LonLatEnvelope());
                 element("wcs:Identifier", cv.getName());
 
                 end("wcs:CoverageSummary");
         }
         
-        private void handleMetadataLink(MetaDataLink mdl) {
+        private void handleMetadataLink(MetaDataLink mdl, String linkType) {
             if (mdl != null) {
                 AttributesImpl attributes = new AttributesImpl();
 
@@ -339,8 +339,8 @@ public class WCSCapsTransformer extends TransformerBase {
                 }
 
                 if ((mdl.getMetadataType() != null) && (mdl.getMetadataType() != "")) {
-                    attributes.addAttribute("", "type", "type", "",
-                        mdl.getMetadataType());
+                    attributes.addAttribute("", "xlink:type", "xlink:type", "",
+                        linkType);
                 }
 
                 if (attributes.getLength() > 0) {
