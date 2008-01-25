@@ -165,7 +165,7 @@ public class DescribeCoverageTransformer extends TransformerBase {
             element("ows:Abstract", ci.getDescription());
             handleKeywords(ci.getKeywords());
             element("wcs:Identifier", ci.getName());
-            handleMetadataLink(ci.getMetadataLink());
+            handleMetadataLink(ci.getMetadataLink(), "simple");
             handleDomain(ci);
             handleRange(ci);
             handleSupportedCRSs(ci);
@@ -174,7 +174,7 @@ public class DescribeCoverageTransformer extends TransformerBase {
         }
 
         // TODO: find a way to share this with the capabilities transfomer
-        private void handleMetadataLink(MetaDataLink mdl) {
+        private void handleMetadataLink(MetaDataLink mdl, String linkType) {
             if (mdl != null) {
                 AttributesImpl attributes = new AttributesImpl();
 
@@ -183,7 +183,7 @@ public class DescribeCoverageTransformer extends TransformerBase {
                 }
 
                 if ((mdl.getMetadataType() != null) && (mdl.getMetadataType() != "")) {
-                    attributes.addAttribute("", "type", "type", "", mdl.getMetadataType());
+                    attributes.addAttribute("", "xlink:type", "xlink:type", "", linkType);
                 }
 
                 if (attributes.getLength() > 0) {
