@@ -39,7 +39,7 @@ public class DescribeCoverageTest extends WCSTestSupport {
         Document dom = getAsDOM(BASEPATH
                 + "?request=DescribeCoverage&service=WCS&version=1.1.1&identifiers=plop");
 //        print(dom);
-        assertEquals(1, dom.getElementsByTagName("ows:ExceptionReport").getLength());
+        checkOws11Exception(dom);
         Element element = (Element) dom.getElementsByTagName("ows:Exception").item(0);
         assertEquals("InvalidParameterValue", element.getAttribute("exceptionCode"));
         assertEquals("identifiers", element.getAttribute("locator"));
@@ -58,7 +58,7 @@ public class DescribeCoverageTest extends WCSTestSupport {
             "</wcs:DescribeCoverage>";
         Document dom = postAsDOM(BASEPATH, request, errors);
 //        print(dom);
-        assertEquals(1, dom.getElementsByTagName("ows:ExceptionReport").getLength());
+        checkOws11Exception(dom);
         Element element = (Element) dom.getElementsByTagName("ows:Exception").item(0);
         assertEquals("InvalidParameterValue", element.getAttribute("exceptionCode"));
         assertEquals("identifiers", element.getAttribute("locator"));

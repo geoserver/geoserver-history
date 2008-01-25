@@ -5,10 +5,14 @@
 package org.geoserver.wcs.test;
 
 import javax.xml.namespace.QName;
+import javax.xml.transform.TransformerException;
 
+import org.apache.xpath.XPathAPI;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
 import org.vfny.geoserver.global.WCS;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 /**
  * Base support class for wcs tests.
@@ -53,5 +57,14 @@ public class WCSTestSupport extends KvpRequestReaderTestSupport {
         // hum, the tiff reader does not seem to be able to load this one
         dataDirectory.addCoverage(ROTATED_CAD, WCSTestSupport.class.getResource("rotated.tiff"),
                 TIFF, null);
+    }
+    
+    protected void checkOws11Exception(Document dom) throws TransformerException {
+        assertEquals("ows:ExceptionReport", dom.getFirstChild().getNodeName());
+        Node node = XPathAPI.selectSingleNode(dom, "ows:ExceptionReport/@version");
+        assertEquals("1.1.0", node.getTextContent());
+        node = XPathAPI.selectSingleNode(dom, "ows:ExceptionReport");
+        Node attr = node.getAttributes().getNamedItem("xmlns:ows");
+        assertEquals("http://www.opengis.net/ows/1.1", attr.getTextContent());
     }
 }

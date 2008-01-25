@@ -16,7 +16,6 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.coverage.grid.GridRange;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wcs.WcsException;
 
@@ -83,19 +82,18 @@ public class GetCoverageTest extends WCSTestSupport {
         }
     }
 
-    // TODO: re-enable this test when gt2 trunk is back on shape
-//    public void testDefaultGridOrigin() throws Exception {
-//        Map<String, Object> raw = new HashMap<String, Object>();
-//        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
-//        raw.put("identifier", layerId);
-//        raw.put("format", "image/geotiff");
-//        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
-//
-//        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-//        AffineTransform2D tx = (AffineTransform2D) coverages[0].getGridGeometry().getGridToCRS();
-//        assertEquals(0.0, tx.getTranslateX());
-//        assertEquals(0.0, tx.getTranslateY());
-//    }
+    public void testDefaultGridOrigin() throws Exception {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        raw.put("identifier", layerId);
+        raw.put("format", "image/geotiff");
+        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
+
+        GridCoverage[] coverages = executeGetCoverageKvp(raw);
+        AffineTransform2D tx = (AffineTransform2D) coverages[0].getGridGeometry().getGridToCRS();
+        assertEquals(0.0, tx.getTranslateX());
+        assertEquals(0.0, tx.getTranslateY());
+    }
     
     public void testWrongGridOrigin() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
@@ -130,29 +128,28 @@ public class GetCoverageTest extends WCSTestSupport {
         }
     }
     
-    // TODO: re-enable this test when trunk is back on shape
-//    public void testNoGridOffsets() throws Exception {
-//        Map<String, Object> raw = new HashMap<String, Object>();
-//        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
-//        raw.put("identifier", layerId);
-//        raw.put("format", "image/geotiff");
-//        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
-//        raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:4326");
-//
-//        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-//        GridCoverage original = catalog.getCoverageInfo(layerId).getCoverage();
-//
-//        final AffineTransform2D originalTx = (AffineTransform2D) original.getGridGeometry()
-//                .getGridToCRS();
-//        final AffineTransform2D flippedTx = (AffineTransform2D) coverages[0].getGridGeometry()
-//                .getGridToCRS();
-//        assertEquals(originalTx.getScaleX(), flippedTx.getShearY(), EPS);
-//        assertEquals(originalTx.getScaleY(), flippedTx.getShearX(), EPS);
-//        assertEquals(originalTx.getShearX(), flippedTx.getScaleY(), EPS);
-//        assertEquals(originalTx.getShearY(), flippedTx.getScaleX(), EPS);
-//        assertEquals(0.0, flippedTx.getTranslateY(), EPS);
-//        assertEquals(0.0, flippedTx.getTranslateX(), EPS);
-//    }
+    public void testNoGridOffsets() throws Exception {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        raw.put("identifier", layerId);
+        raw.put("format", "image/geotiff");
+        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
+        raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:4326");
+
+        GridCoverage[] coverages = executeGetCoverageKvp(raw);
+        GridCoverage original = catalog.getCoverageInfo(layerId).getCoverage();
+
+        final AffineTransform2D originalTx = (AffineTransform2D) original.getGridGeometry()
+                .getGridToCRS();
+        final AffineTransform2D flippedTx = (AffineTransform2D) coverages[0].getGridGeometry()
+                .getGridToCRS();
+        assertEquals(originalTx.getScaleX(), flippedTx.getShearY(), EPS);
+        assertEquals(originalTx.getScaleY(), flippedTx.getShearX(), EPS);
+        assertEquals(originalTx.getShearX(), flippedTx.getScaleY(), EPS);
+        assertEquals(originalTx.getShearY(), flippedTx.getScaleX(), EPS);
+        assertEquals(0.0, flippedTx.getTranslateY(), EPS);
+        assertEquals(0.0, flippedTx.getTranslateX(), EPS);
+    }
     
     /**
      * This one needs to be reactivated when GEOS-1701 is fixed (along with other tests
