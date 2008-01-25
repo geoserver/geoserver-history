@@ -129,6 +129,8 @@ public abstract class MapResource extends Resource {
     }
 
     public void handlePut() {
+        myRequestFormat = (DataFormat)myFormatMap.get(getRequest().getAttributes().get("type"));
+
         Map details = myRequestFormat.readRepresentation(getRequest().getEntity());
 
         if ((myRequestFormat == null) || (details == null)) {
