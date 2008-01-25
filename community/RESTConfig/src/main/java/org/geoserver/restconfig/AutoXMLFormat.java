@@ -88,7 +88,7 @@ public class AutoXMLFormat implements DataFormat {
     private Object convert(Element elem){
         List children = elem.getChildren();
         if (children.size() == 0){
-            if (elem.getText() == null){
+            if (elem.getContent().size() == 0){
                 return null;
             } else {
                 return elem.getText();
