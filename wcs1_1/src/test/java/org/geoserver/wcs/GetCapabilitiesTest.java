@@ -10,6 +10,7 @@ import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class GetCapabilitiesTest extends WCSTestSupport {
     
@@ -31,6 +32,13 @@ public class GetCapabilitiesTest extends WCSTestSupport {
         Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS", errors);
          print(dom);
         checkValidationErrors(errors);
+        
+        // make sure we provided the store values (for the moment, unsupported, so store param should
+        // be false
+        NodeList values = XPathAPI.selectNodeList(dom, "wcs:Capabilities/ows:OperationsMetadata" +
+        		"/ows:Operation[@name=\"GetCoverage\"]/ows:Parameter/ows:AllowedValues");
+        assertEquals(1, values.getLength());
+        assertEquals("False", values.item(0).getTextContent());
     }
     
     public void testNoServiceContactInfo() throws Exception {
