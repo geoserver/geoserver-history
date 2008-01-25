@@ -5,15 +5,38 @@ import java.util.List;
 
 import org.apache.xpath.XPathAPI;
 import org.geoserver.wcs.test.WCSTestSupport;
+import org.vfny.geoserver.global.GeoServer;
+import org.vfny.geoserver.global.dto.ContactDTO;
+import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 public class GetCapabilitiesTest extends WCSTestSupport {
+    
+    private GeoServer geoServer;
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        geoServer = (GeoServer) applicationContext.getBean("geoServer");
+    }
 
     public void testGetBasic() throws Exception {
         List<Exception> errors = new ArrayList<Exception>();
         Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS", errors);
-        // print(dom);
+         print(dom);
+        checkValidationErrors(errors);
+    }
+    
+    public void testNoServiceContactInfo() throws Exception {
+        // alter geoserver state so that there is no concact information
+        GeoServerDTO dto = (GeoServerDTO) geoServer.toDTO();
+        dto.setContact(new ContactDTO());
+        geoServer.load(dto);
+        
+        List<Exception> errors = new ArrayList<Exception>();
+        Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS", errors);
+         print(dom);
         checkValidationErrors(errors);
     }
 
@@ -68,4 +91,6 @@ public class GetCapabilitiesTest extends WCSTestSupport {
         Document dom = postAsDOM(BASEPATH, request);
         assertEquals("wcs:Capabilities", dom.getFirstChild().getNodeName());
     }
+    
+    
 }

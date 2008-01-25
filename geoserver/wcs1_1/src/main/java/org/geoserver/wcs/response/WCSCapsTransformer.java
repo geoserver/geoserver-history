@@ -257,40 +257,35 @@ public class WCSCapsTransformer extends TransformerBase {
          */
         private void handleContact() {
             final GeoServer gs = wcs.getGeoServer();
-            if (((gs.getContactPerson() != null)
-                    && (gs.getContactPerson() != ""))
-                    || ((gs.getContactOrganization() != null)
-                    && (gs.getContactOrganization() != ""))) {
-                start("ows:ServiceContact");
+            start("ows:ServiceContact");
 
-                elementIfNotEmpty("ows:IndividualName", gs.getContactPerson());
-                elementIfNotEmpty("ows:PositionName", gs.getContactPosition());
-                
-                start("ows:ContactInfo");
-                start("ows:Phone");
-                elementIfNotEmpty("ows:Voice", gs.getContactVoice());
-                elementIfNotEmpty("ows:Facsimile", gs.getContactFacsimile());
-                end("ows:Phone");
-                start("ows:Address");
-                elementIfNotEmpty("ows:DeliveryPoint", gs.getAddress());
-                elementIfNotEmpty("ows:City", gs.getAddressCity());
-                elementIfNotEmpty("ows:AdministrativeArea", gs.getAddressState());
-                elementIfNotEmpty("ows:PostalCode", gs.getAddressPostalCode());
-                elementIfNotEmpty("ows:Country", gs.getAddressCountry());
-                elementIfNotEmpty("ows:ElectronicMailAddress", gs.getContactEmail());
-                end("ows:Address");
+            elementIfNotEmpty("ows:IndividualName", gs.getContactPerson());
+            elementIfNotEmpty("ows:PositionName", gs.getContactPosition());
+            
+            start("ows:ContactInfo");
+            start("ows:Phone");
+            elementIfNotEmpty("ows:Voice", gs.getContactVoice());
+            elementIfNotEmpty("ows:Facsimile", gs.getContactFacsimile());
+            end("ows:Phone");
+            start("ows:Address");
+            elementIfNotEmpty("ows:DeliveryPoint", gs.getAddress());
+            elementIfNotEmpty("ows:City", gs.getAddressCity());
+            elementIfNotEmpty("ows:AdministrativeArea", gs.getAddressState());
+            elementIfNotEmpty("ows:PostalCode", gs.getAddressPostalCode());
+            elementIfNotEmpty("ows:Country", gs.getAddressCountry());
+            elementIfNotEmpty("ows:ElectronicMailAddress", gs.getContactEmail());
+            end("ows:Address");
 
-                String or = gs.getOnlineResource();
-                if ((or != null) && !"".equals(or.trim())) {
-                    AttributesImpl attributes = new AttributesImpl();
-                    attributes.addAttribute("", "xlink:href", "xlink:href", "", or);
-                    start("ows:OnlineResource", attributes);
-                    end("OnlineResource");
-                }
-
-                end("ows:ContactInfo");
-                end("ows:ServiceContact");
+            String or = gs.getOnlineResource();
+            if ((or != null) && !"".equals(or.trim())) {
+                AttributesImpl attributes = new AttributesImpl();
+                attributes.addAttribute("", "xlink:href", "xlink:href", "", or);
+                start("ows:OnlineResource", attributes);
+                end("OnlineResource");
             }
+
+            end("ows:ContactInfo");
+            end("ows:ServiceContact");
         }
 
         private void handleEnvelope(GeneralEnvelope envelope) {
