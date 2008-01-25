@@ -4,23 +4,18 @@
  */
 package org.geoserver.restconfig;
 
-import org.restlet.Context;
-import org.restlet.data.MediaType;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.data.Status;
-import org.restlet.ext.freemarker.TemplateRepresentation;
-import org.restlet.resource.Resource;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataStoreConfig;
-import org.vfny.geoserver.config.FeatureTypeConfig;
-import org.geotools.data.DataStoreFactorySpi;
-import org.geotools.data.DataStoreFactorySpi.Param;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DataStoreFactorySpi.Param;
+import org.restlet.Context;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
 
 
 /**
@@ -31,10 +26,6 @@ import java.util.Map;
 public class DataStoreResource extends MapResource {
     private DataConfig myDC;
     private DataStoreConfig myDSC;
-
-    public DataStoreResource(){
-        super();
-    }
 
     public DataStoreResource(Context context, Request request, Response response, DataConfig dc) {
         super(context, request, response);
