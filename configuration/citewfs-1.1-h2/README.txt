@@ -12,3 +12,4 @@ WFS 1.1 H2 Cite Testing README
 2. From the command line run 'h2.sh load'
 
 3. Run GeoServer with the 'citewfs-1.1-h2' configuration.
+
