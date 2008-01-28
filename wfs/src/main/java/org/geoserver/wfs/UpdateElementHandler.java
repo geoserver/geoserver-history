@@ -226,7 +226,16 @@ public class UpdateElementHandler implements TransactionElementHandler {
                 } else {
                     store.modifyFeatures(types, values, filter);
                 }
-            } finally {
+            } 
+            catch( Exception e) {
+                //JD: this is a bit hacky but some of the wfs cite tests require
+                // that the 'InvalidParameterValue' code be set on exceptions in 
+                // cases where a "bad" value is being suppliedin an update, so 
+                // we always set to that code
+                throw new WFSTransactionException( "update error", e, "InvalidParameterValue");
+                
+            }
+            finally {
                 // make sure we unlock
                 if ((request.getLockId() != null) && store instanceof FeatureLocking
                         && (request.getReleaseAction() == AllSomeType.SOME_LITERAL)) {
