@@ -33,7 +33,11 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
+import org.geotools.filter.visitor.DefaultFilterVisitor;
+import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.xml.EMFUtils;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -45,10 +49,16 @@ import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.spatial.BBOX;
 import org.opengis.filter.spatial.BinarySpatialOperator;
+import org.opengis.metadata.extent.GeographicBoundingBox;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.global.AttributeTypeInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -275,7 +285,66 @@ public class GetFeature {
                     };
                     query.getFilter().accept(fvisitor, null);
                     
-                    
+                    //3. ensure that any bounds specified as part of the query
+                    // are valid with respect to the srs defined on the query
+                    if ( wfs.getCiteConformanceHacks() ) {
+                        
+                        if ( query.getSrsName() != null ) {
+                            final QueryType fquery = query;
+                            fvisitor = new AbstractFilterVisitor() {
+                                public Object visit(BBOX filter, Object data) {
+                                    if ( filter.getSRS() != null && 
+                                            !fquery.getSrsName().toString().equals( filter.getSRS() ) ) {
+                                        
+                                        //back project bounding box into geographic coordinates
+                                        CoordinateReferenceSystem geo = DefaultGeographicCRS.WGS84;
+                                        
+                                        GeneralEnvelope e = new GeneralEnvelope( 
+                                            new double[] { filter.getMinX(), filter.getMinY()},
+                                            new double[] { filter.getMaxX(), filter.getMaxY()}
+                                        );
+                                        CoordinateReferenceSystem crs = null;
+                                        try {
+                                            crs = CRS.decode( filter.getSRS() );
+                                            e = CRS.transform(CRS.findMathTransform(crs, geo, true), e);
+                                        } 
+                                        catch( Exception ex ) {
+                                            throw new WFSException( ex );
+                                        }
+                                        
+                                        //ensure within bounds defined by srs specified on 
+                                        // query
+                                        try {
+                                            crs = CRS.decode( fquery.getSrsName().toString() );
+                                        } 
+                                        catch( Exception ex ) {
+                                            throw new WFSException( ex );
+                                        }
+                                        
+                                        GeographicBoundingBox valid = 
+                                            (GeographicBoundingBox) crs.getDomainOfValidity()
+                                            .getGeographicElements().iterator().next();
+                                        
+                                        if ( e.getMinimum(0) < valid.getWestBoundLongitude() || 
+                                            e.getMinimum(0) > valid.getEastBoundLongitude() || 
+                                            e.getMaximum(0) < valid.getWestBoundLongitude() || 
+                                            e.getMaximum(0) > valid.getEastBoundLongitude() ||
+                                            e.getMinimum(1) < valid.getSouthBoundLatitude() || 
+                                            e.getMinimum(1) > valid.getNorthBoundLatitude() || 
+                                            e.getMaximum(1) < valid.getSouthBoundLatitude() || 
+                                            e.getMaximum(1) > valid.getNorthBoundLatitude() ) {
+                                                
+                                            throw new WFSException( "bounding box out of valid range of crs", "InvalidParameterValue");
+                                        }
+                                    }
+                                    
+                                    return data;
+                                } 
+                            };
+                            
+                            query.getFilter().accept(fvisitor, null);
+                        }
+                    }   
                 }
 
                 org.geotools.data.Query gtQuery = toDataQuery(query, maxFeatures - count, source, request);
