@@ -657,13 +657,15 @@ SCHEMA:
                 }
             } catch (IllegalStateException illegalState) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(key)
+                    LOGGER.log(Level.SEVERE, new StringBuffer("FeatureTypeInfo ").append(key)
                                                                       .append(" ignored - as DataStore ")
                                                                       .append(dataStoreId)
                                                                       .append(" is disabled!")
                                                                       .toString());
                 }
-
+                if (LOGGER.isLoggable(Level.FINE)) {
+                    LOGGER.log(Level.FINE,new StringBuffer(key).append(" ignored ").toString(), illegalState);
+                }
                 errors.put(featureTypeDTO, Boolean.FALSE);
 
                 continue;
