@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
 
+import org.geotools.coverage.CoverageFactoryFinder;
 import org.geotools.coverage.FactoryFinder;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
@@ -38,7 +39,7 @@ public class GeoTiffMapProducer extends DefaultRasterMapProducer {
             "org.vfny.geoserver.responses.wms.map.geotiff");
 
     /** GridCoverageFactory. */
-    private final static GridCoverageFactory factory = FactoryFinder.getGridCoverageFactory(null);
+    private final static GridCoverageFactory factory = CoverageFactoryFinder.getGridCoverageFactory(null);
 
     /**
      * Constructo for a {@link GeoTiffMapProducer}.
