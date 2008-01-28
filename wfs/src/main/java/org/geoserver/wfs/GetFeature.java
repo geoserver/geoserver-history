@@ -33,9 +33,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.SchemaException;
 import org.geotools.filter.expression.AbstractExpressionVisitor;
 import org.geotools.filter.visitor.AbstractFilterVisitor;
-import org.geotools.filter.visitor.DefaultFilterVisitor;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.xml.EMFUtils;
@@ -50,15 +48,10 @@ import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.spatial.BBOX;
 import org.opengis.filter.spatial.BinarySpatialOperator;
 import org.opengis.metadata.extent.GeographicBoundingBox;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.global.AttributeTypeInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -347,7 +340,11 @@ public class GetFeature {
                     }   
                 }
 
-                org.geotools.data.Query gtQuery = toDataQuery(query, maxFeatures - count, source, request);
+                // handle local maximum
+                int queryMaxFeatures = maxFeatures - count;
+                if(meta.getMaxFeatures() > 0 && meta.getMaxFeatures() < queryMaxFeatures)
+                    queryMaxFeatures = meta.getMaxFeatures();
+                org.geotools.data.Query gtQuery = toDataQuery(query, queryMaxFeatures, source, request);
                 
                 LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery);
 
