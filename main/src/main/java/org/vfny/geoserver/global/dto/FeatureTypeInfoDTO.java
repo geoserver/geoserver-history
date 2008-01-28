@@ -33,7 +33,6 @@ import java.util.List;
  * ftiDto.setName("My Feature Type");
  * ftiDto.setTitle("The Best Feature Type");
  * ftiDto.setSRS(23769);
- * ftiDto.setDataStoreId("myDataStore");
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
@@ -285,6 +284,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         r = r && (title == f.getTitle());
         r = r && (_abstract == f.getAbstract());
         r = r && (numDecimals == f.getNumDecimals());
+        r = r && (maxFeatures == f.getMaxFeatures());
 
         if (definitionQuery != null) {
             r = r && definitionQuery.equals(f.getDefinitionQuery());
@@ -355,6 +355,8 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         if (cachingEnabled) {
             r += 1;
         }
+        
+        r += maxFeatures;
 
         return r;
     }
@@ -857,7 +859,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         + latLongBBox + "\n  SRS: " + SRS + ", schema:" + schema + ", schemaName: " + schemaName
         + ", dirName: " + dirName + ", title: " + title + "\n  definitionQuery: " + definitionQuery
         + ", defaultStyle: " + defaultStyle + ", legend icon: " + legendURL + ", caching?: "
-        + cachingEnabled + ", max-age: " + cacheMaxAge;
+        + cachingEnabled + ", max-age: " + cacheMaxAge + ", maxFeatures: " + maxFeatures;
     }
 
     public String getWmsPath() {
