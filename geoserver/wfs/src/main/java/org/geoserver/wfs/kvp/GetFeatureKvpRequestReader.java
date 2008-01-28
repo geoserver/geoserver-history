@@ -212,8 +212,10 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
         FeatureTypeInfo featureTypeInfo = catalog.getFeatureTypeInfo(typeName);
         SimpleFeatureType featureType = featureTypeInfo.getFeatureType();
 
-        //TODO: should this be applied to all geometries?
-        String name = featureType.getDefaultGeometry().getLocalName();
+        //JD: should this be applied to all geometries?
+        //String name = featureType.getDefaultGeometry().getLocalName();
+        //JD: changing to "" so it is
+        String name = "";
         
         //get the epsg code
         String epsgCode = null;
