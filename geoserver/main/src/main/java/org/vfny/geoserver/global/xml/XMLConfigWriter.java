@@ -1131,6 +1131,8 @@ public class XMLConfigWriter {
                 String sfilter = ftransformer.transform(ft.getDefinitionQuery());
                 cw.writeln(sfilter);
             }
+            
+            cw.textTag("maxFeatures", String.valueOf(ft.getMaxFeatures()));
 
             cw.closeTag("featureType");
             fw.close();

@@ -1680,6 +1680,15 @@ public class XMLConfigReader {
             }
 
             ft.setDefinitionQuery(loadDefinitionQuery(fTypeRoot));
+            
+            final String maxFeaturesText = ReaderUtils.getChildText(fTypeRoot, "maxFeatures", false);
+            try {
+                ft.setMaxFeatures(Integer.parseInt(maxFeaturesText));
+            } catch(Exception e) {
+                // this may fail for a number of reasons, attribute not there, or not a number
+                ft.setMaxFeatures(0);
+            }
+            
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }

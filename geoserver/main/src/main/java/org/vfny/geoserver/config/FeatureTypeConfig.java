@@ -174,6 +174,12 @@ public class FeatureTypeConfig {
      * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
      */
     private boolean cachingEnabled;
+    
+    /**
+     * The maximum number of features to be served for this feature type (it's understood
+     * it's less than the global maxFeatures). 0 is used as the "no limit" flag
+     */
+    private int maxFeatures = 0;
 
     /**
      * Package visible constructor for test cases
@@ -339,6 +345,7 @@ public class FeatureTypeConfig {
 
         cachingEnabled = dto.isCachingEnabled();
         cacheMaxAge = dto.getCacheMaxAge();
+        maxFeatures = dto.getMaxFeatures();
     }
 
     /**
@@ -401,6 +408,7 @@ public class FeatureTypeConfig {
 
         f.setCachingEnabled(cachingEnabled);
         f.setCacheMaxAge(cacheMaxAge);
+        f.setMaxFeatures(maxFeatures);
 
         return f;
     }
@@ -780,5 +788,13 @@ public class FeatureTypeConfig {
 
     public void setCacheMaxAge(String cacheMaxAge) {
         this.cacheMaxAge = cacheMaxAge;
+    }
+
+    public int getMaxFeatures() {
+        return maxFeatures;
+    }
+
+    public void setMaxFeatures(int maxFeatures) {
+        this.maxFeatures = maxFeatures;
     }
 }

@@ -145,6 +145,9 @@ public class TypesEditorForm extends ActionForm {
 
     /** The amount of time to use for the CacheControl: max-age parameter in maps generated from this featuretype **/
     private String cacheMaxAge;
+    
+    /** The optional max amount of features to be served over wfs */ 
+    private String maxFeatures = "";
 
     /** Should we add the CacheControl: max-age header to maps generated from this featureType? **/
     private boolean cachingEnabled;
@@ -238,10 +241,13 @@ public class TypesEditorForm extends ActionForm {
         this.styleId = type.getDefaultStyle();
 
         description = type.getAbstract();
+        
+        this.maxFeatures = type.getMaxFeatures() == 0? String.valueOf(type.getMaxFeatures()) : "";
 
         this.cacheMaxAge = type.getCacheMaxAge();
         this.cachingEnabled = type.isCachingEnabled();
         cachingEnabledChecked = false;
+        this.maxFeatures = String.valueOf(type.getMaxFeatures());
 
         Envelope bounds = type.getLatLongBBox();
 
@@ -564,6 +570,15 @@ public class TypesEditorForm extends ActionForm {
                 errors.add("cacheMaxAge", new ActionError("error.cacheMaxAge.error", t));
             }
         }
+        
+        // check number of features
+        try {
+            int maxFeatures = Integer.parseInt(this.maxFeatures);
+            if(maxFeatures < 0)
+                errors.add("maxFeaturews", new ActionError("error.global.maxFeatures"));
+        } catch (NumberFormatException nfe) {
+            errors.add("maxFeaturews", new ActionError("error.global.maxFeatures", nfe));
+        } 
 
         // check configured SRS actually exists
         try{
@@ -1102,6 +1117,14 @@ public class TypesEditorForm extends ActionForm {
     
     public boolean isDeclaredCRSDifferent() {
         return nativeCRS == null || (declaredCRS != null && !CRS.equalsIgnoreMetadata(declaredCRS, nativeCRS));
+    }
+
+    public String getMaxFeatures() {
+        return maxFeatures;
+    }
+
+    public void setMaxFeatures(String maxFeatures) {
+        this.maxFeatures = maxFeatures;
     }
     
 }

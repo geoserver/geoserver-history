@@ -361,7 +361,7 @@ public class TypesEditorAction extends ConfigAction {
         }
         // may the native bbox have been changed due to a change
         // in the CRS code by the user
-        if(!config.getNativeBBox().equals(nativeBbox)){
+        if(config.getNativeBBox() != null || (nativeBbox != null && !config.getNativeBBox().equals(nativeBbox))){
             config.setNativeBBox(nativeBbox);            
         }
         config.setKeywords(keyWords(form));
@@ -369,6 +369,7 @@ public class TypesEditorAction extends ConfigAction {
         config.setWmsPath(form.getWmsPath());
         config.setCacheMaxAge(form.getCacheMaxAge());
         config.setCachingEnabled(form.isCachingEnabled());
+        config.setMaxFeatures(Integer.parseInt(form.getMaxFeatures()));
         config.setSRSHandling(form.getSrsHandlingCode());
 
         if (!form.isCachingEnabledChecked()) {
