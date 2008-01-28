@@ -152,7 +152,7 @@ public class GetFeature {
 
         List results = new ArrayList();
         try {
-            for (int i = 0; (i < request.getQuery().size()) && (count <= maxFeatures); i++) {
+            for (int i = 0; (i < request.getQuery().size()) && (count < maxFeatures); i++) {
                 QueryType query = (QueryType) request.getQuery().get(i);
 
                 FeatureTypeInfo meta = null;

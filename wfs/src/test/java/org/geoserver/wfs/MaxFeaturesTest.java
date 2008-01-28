@@ -110,5 +110,21 @@ public class MaxFeaturesTest extends WFSTestSupport {
         assertEquals(1, doc.getElementsByTagName("cite:BasicPolygons").getLength());
     }
     
+    public void testMaxFeaturesBreak() throws Exception {
+        // see http://jira.codehaus.org/browse/GEOS-1489
+        FeatureTypeInfo info = catalog.getFeatureTypeInfo(MockData.FIFTEEN);
+        info.setMaxFeatures(3);
+        info = catalog.getFeatureTypeInfo(MockData.BASIC_POLYGONS);
+        info.setMaxFeatures(2);
+        
+        Document doc = getAsDOM("wfs?request=GetFeature&typename=cdf:Fifteen,cite:BasicPolygon" +
+                "s&version=1.0.0&service=wfs&maxFeatures=3");
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
+
+        assertEquals(3, doc.getElementsByTagName("gml:featureMember").getLength());
+        assertEquals(3, doc.getElementsByTagName("cdf:Fifteen").getLength());
+        assertEquals(0, doc.getElementsByTagName("cite:BasicPolygons").getLength());
+    }
+    
     
 }
