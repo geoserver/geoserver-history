@@ -187,6 +187,10 @@
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.LayerGroupResource">
       <property name="WMSConfig"><ref bean="wmsConfig"/></property>
+      <property name="WMS"><ref bean="wms"/></property>
+      <property name="WFS"><ref bean="wfs"/></property>
+      <property name="WCS"><ref bean="wcs"/></property>
+      <property name="geoserver"><ref bean="geoServer"/> </property>
     </bean>
   </property>
 </bean> 
