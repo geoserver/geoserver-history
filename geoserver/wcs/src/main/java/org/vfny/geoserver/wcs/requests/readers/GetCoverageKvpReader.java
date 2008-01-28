@@ -166,4 +166,14 @@ public class GetCoverageKvpReader extends KvpRequestReader {
 
         return currentRequest;
     }
+    
+    protected String getValue(String key) {
+        //JD: this is probably something that the super method should do.
+        String value = super.getValue(key);
+        if ( value != null ) {
+            value = value.trim();
+        }
+        
+        return value;
+    }
 }
