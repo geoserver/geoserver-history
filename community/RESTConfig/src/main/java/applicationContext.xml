@@ -173,6 +173,7 @@
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.CoverageStoreResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
+      <property name="data"> <ref bean="data"/></property>
     </bean>
   </property>
 </bean>
