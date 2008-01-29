@@ -11,21 +11,34 @@ import java.util.List;
 import java.util.Map;
 
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.referencing.CRS;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
+
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
+import org.restlet.data.Status;
+import org.restlet.data.MediaType;
 import org.restlet.resource.Representation;
+import org.restlet.resource.StringRepresentation;
+
 import org.springframework.context.ApplicationContext;
+
 import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.MetaDataLink;
+import org.vfny.geoserver.global.ConfigurationException;
+import org.vfny.geoserver.global.dto.DataDTO;
+import org.vfny.geoserver.global.xml.XMLConfigWriter;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 
 /**
@@ -70,7 +83,6 @@ public class CoverageResource extends MapResource {
 
                         return map;
                     } catch (Exception e) {
-                        System.out.println("Couldn't read representation due to: " + e.getMessage());
 
                         return new HashMap();
                     }
@@ -147,8 +159,6 @@ public class CoverageResource extends MapResource {
     }
 
     public Map getMap() {
-        System.out.println("GETting with a CoverageResource");
-
         String coverageStore = (String) getRequest().getAttributes().get("coveragestore");
         String coverageName = (String) getRequest().getAttributes().get("coverage");
         String qualified = coverageStore + ":" + coverageName;
@@ -158,8 +168,6 @@ public class CoverageResource extends MapResource {
     }
 
     public boolean allowPut() {
-        System.out.println("CoverageResource allows PUTs");
-
         return true;
     }
 
@@ -171,95 +179,65 @@ public class CoverageResource extends MapResource {
         CoverageConfig cc = null;
         cc = (CoverageConfig) myDC.getCoverages().get(qualified);
 
-        if (details.get("WMSPath") != null) {
-            cc.setWmsPath((String) details.get("WMSPath"));
+        cc.setWmsPath((String) details.get("WMSPath"));
+        cc.setCrs(CRS.decode((String)details.get("CRS")));
+
+        GeneralEnvelope env = listAsEnvelope((List) details.get("Envelope"), (String)details.get("CRS"));
+        cc.setEnvelope(env);
+        cc.setDefaultStyle((String) details.get("DefaultStyle"));
+        
+        ArrayList styles = new ArrayList();
+        if (details.get("SupplementaryStyles") != null){
+        styles.addAll((List) details.get("SupplementaryStyles"));
         }
+        cc.setStyles(styles);
 
-        if (details.get("CRS") != null) {
-            CoordinateReferenceSystem crs = makeCRS((String) details.get("CRS"));
-
-            if (crs != null) {
-                cc.setCrs(crs);
-            }
-        }
-
-        if (details.get("Envelope") != null) {
-            GeneralEnvelope env = makeEnvelope((List) details.get("Envelope"));
-
-            if (env != null) {
-                cc.setEnvelope(env);
-            }
-        }
-
-        if (details.get("DefaultStyle") != null) {
-            cc.setDefaultStyle((String) details.get("DefaultStyle"));
-        }
-
-        if (details.get("SupplementaryStyles") != null) {
-            ArrayList styles = new ArrayList();
-            styles.addAll((List) details.get("SupplementaryStyles"));
-            cc.setStyles(styles);
-        }
-
-        if (details.get("Label") != null) {
-            cc.setLabel((String) details.get("Label"));
-        }
-
-        if (details.get("Description") != null) {
-            cc.setDescription((String) details.get("Description"));
-        }
-
-        if (details.get("OnlineResource") != null) {
-            cc.setMetadataLink(makeLink((String) details.get("OnlineResource")));
-        }
-
-        if (details.get("Keywords") != null) {
-            cc.setKeywords((List) details.get("Keywords"));
-        }
-
-        if (details.get("SupportedRequestCRSs") != null) {
-            cc.setRequestCRSs((List) details.get("SupportedRequestCRSs"));
-        }
-
-        if (details.get("SupportedResponseCRSs") != null) {
-            cc.setResponseCRSs((List) details.get("SupportedResponseCRSs"));
-        }
-
-        if (details.get("NativeFormat") != null) {
-            cc.setNativeFormat((String) details.get("NativeFormat"));
-        }
-
-        if (details.get("SupportedFormats") != null) {
-            cc.setSupportedFormats((List) details.get("SupportedFormats"));
-        }
-
-        if (details.get("DefaultInterpolationMethod") != null) {
-            cc.setDefaultInterpolationMethod((String) details.get("DefaultInterpolationMethod"));
-        }
-
-        if (details.get("InterpolationMethods") != null) {
-            cc.setInterpolationMethods((List) details.get("InterpolationMethods"));
-        }
+        cc.setLabel((String) details.get("Label"));
+        cc.setDescription((String) details.get("Description"));
+        cc.setMetadataLink(makeLink((String) details.get("OnlineResource")));
+        cc.setKeywords((List) details.get("Keywords"));
+        cc.setRequestCRSs((List) details.get("SupportedRequestCRSs"));
+        cc.setResponseCRSs((List) details.get("SupportedResponseCRSs"));
+        cc.setNativeFormat((String) details.get("NativeFormat"));
+        cc.setSupportedFormats((List) details.get("SupportedFormats"));
+        cc.setDefaultInterpolationMethod((String) details.get("DefaultInterpolationMethod"));
+        cc.setInterpolationMethods((List) details.get("InterpolationMethods"));
 
         myDC.addCoverage(qualified, cc);
+        saveConfiguration();
+
+        getResponse().setEntity(
+                new StringRepresentation("Saved configuration for " + qualified + ".",
+                    MediaType.TEXT_PLAIN
+                    )
+                );
+        getResponse().setStatus(Status.SUCCESS_OK);
     }
 
     private MetaDataLink makeLink(String s) {
-        return null;
+        MetaDataLink mdl = new MetaDataLink();
+        mdl.setAbout(s);
+        mdl.setType("other");
+        return mdl;
     }
 
-    private GeneralEnvelope makeEnvelope(List points) {
-        return null;
-    }
-
-    private CoordinateReferenceSystem makeCRS(String crs) {
-        return null;
+    private GeneralEnvelope listAsEnvelope(List coords, String srsName) throws Exception{
+        GeneralEnvelope genv = new GeneralEnvelope(CRS.decode(srsName));
+        genv.setRange(0,
+                Double.valueOf((String)coords.get(0)),
+                Double.valueOf((String)coords.get(1))
+                );
+        genv.setRange(1, 
+                Double.valueOf((String)coords.get(2)),
+                Double.valueOf((String)coords.get(3))
+                );
+        return genv;
     }
 
     private Map getCoverageConfigMap(CoverageConfig cc) {
         Map m = new HashMap();
         m.put("WMSPath", cc.getWmsPath());
-        m.put("CRS", cc.getCrs().getName());
+        m.put("CRS", cc.getCrs().getIdentifiers().toArray()[0].toString());
 
         GeneralEnvelope env = cc.getEnvelope();
         List envPoints = new ArrayList();
@@ -268,7 +246,6 @@ public class CoverageResource extends MapResource {
         envPoints.add(env.getUpperCorner().getOrdinate(0));
         envPoints.add(env.getUpperCorner().getOrdinate(1));
         m.put("Envelope", envPoints);
-        //m.put("CRSFull", cc.getCrs().toString());
         m.put("DefaultStyle", cc.getDefaultStyle());
         m.put("SupplementaryStyles", cc.getStyles()); // TODO: does this return a list of strings or something else?
         m.put("Label", cc.getLabel());
@@ -283,5 +260,12 @@ public class CoverageResource extends MapResource {
         m.put("InterpolationMethods", cc.getInterpolationMethods());
 
         return m;
+    }
+
+    private void saveConfiguration() throws ConfigurationException{
+        getData().load(getDataConfig().toDTO());
+        XMLConfigWriter.store((DataDTO)getData().toDTO(),
+                GeoserverDataDirectory.getGeoserverDataDirectory()
+                );
     }
 }
