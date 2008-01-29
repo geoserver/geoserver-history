@@ -35,13 +35,16 @@ public class CoverageListResource extends MapResource {
         return m;
     }
 
-    public CoverageListResource(Context context, Request request, Response response,
-        DataConfig myDataConfig) {
-        super(context, request, response);
-        myDC = myDataConfig;
+    public void setDataConfig(DataConfig dc){
+        myDC = dc;
+    }
+
+    public DataConfig getDataConfig(){
+        return myDC;
     }
 
     public Map getMap() {
+        String coverageStoreName = (String)getRequest().getAttributes().get("coveragestore");
         Map m = new HashMap();
         Map coverages = myDC.getCoverages();
         List coverageList = new ArrayList();
@@ -49,7 +52,11 @@ public class CoverageListResource extends MapResource {
         Iterator it = coverages.entrySet().iterator();
 
         while (it.hasNext()) {
-            coverageList.add(((Map.Entry) it.next()).getKey().toString());
+            Map.Entry entry = (Map.Entry)it.next();
+            String key = (String)entry.getKey();
+            if (key.startsWith(coverageStoreName)){
+                coverageList.add(key.substring(coverageStoreName.length() + 1));
+            }
         }
 
         m.put("coverages", coverageList);
