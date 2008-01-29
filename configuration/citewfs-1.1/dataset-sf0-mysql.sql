@@ -24,7 +24,7 @@ INSERT INTO PrimitiveGeoFeature VALUES ('description-f001', 'name-f001', NULL, g
 INSERT INTO PrimitiveGeoFeature VALUES ('description-f002', 'name-f002', NULL, geometryfromtext('POINT(0.22601 59.41276)',4326), NULL, 154, 'http://www.opengeospatial.org/', 12769, NULL, '2006-10-23Z', 4.02, 'f002');
 INSERT INTO PrimitiveGeoFeature VALUES ('description-f003', 'name-f003',  NULL, NULL, geometryfromtext('LINESTRING(9.799 46.074,10.466 46.652,11.021 47.114)',4326) , 180, NULL, 672.1, NULL, '2006-09-01Z', 12.92, 'f003');
 INSERT INTO PrimitiveGeoFeature VALUES ('description-f008', 'name-f008',  geometryfromtext('POLYGON((30.899 45.174,30.466 45.652,30.466 45.891,30.899 45.174))',4326) , NULL, NULL, 300, NULL, 783.5, '2006-06-28T07:08:00+02:00', '2006-12-12Z', 18.92, 'f008');
-INSERT INTO PrimitiveGeoFeature VALUES (NULL, 'name-f015',  NULL, geometryfromtext('POINT(34.94 -10.52)',4326), NULL, -900, NULL, 2.4, NULL, NULL, 7.90, 'f015');
+INSERT INTO PrimitiveGeoFeature VALUES (NULL, 'name-f015',  NULL, geometryfromtext('POINT(-10.52 34.94)',4326), NULL, -900, NULL, 2.4, NULL, NULL, 7.90, 'f015');
 
 DROP TABLE IF EXISTS AggregateGeoFeature;
 CREATE TABLE AggregateGeoFeature ( 
