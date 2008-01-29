@@ -63,6 +63,14 @@
           <ref bean="coverageFinder"/>
         </entry>
         <entry>
+          <key><value>/coveragestores/{coveragestore}/coverages.{type}</value></key>
+          <ref bean="coverageListFinder"/>
+        </entry>
+        <entry>
+          <key><value>/coveragestores/{coveragestore}/coverages</value></key>
+          <ref bean="coverageListFinder"/>
+        </entry>
+        <entry>
           <key><value>/coveragestores/{coveragestore}.{type}</value></key>
           <ref bean="coverageStoreFinder"/>
         </entry>
@@ -165,6 +173,13 @@
 <bean id="coverageFinder" class="org.geoserver.restconfig.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.CoverageResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+    </bean>
+  </property>
+</bean>
+<bean id="coverageListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.CoverageListResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
     </bean>
   </property>
