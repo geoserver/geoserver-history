@@ -114,8 +114,6 @@ public abstract class MapResource extends Resource {
 
         try {
             putMap(details);
-            getResponse().setStatus(Status.REDIRECTION_FOUND);
-            getResponse().setRedirectRef(this.generateRef(""));
         } catch (Exception e) {
             e.printStackTrace();
             getResponse().setEntity(e.toString(), MediaType.TEXT_PLAIN);
