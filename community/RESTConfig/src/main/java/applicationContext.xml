@@ -32,10 +32,10 @@
           <key><value>/datastores/{datastore}</value></key>
           <ref bean="datastoreFinder"/>
         </entry>
-        <!--entry>
+        <entry>
           <key><value>/datastores/{datastore}/file.{type}</value></key>
           <ref bean="datastoreFileFinder"/>
-        </entry -->
+        </entry>
         <entry>
           <key><value>/datastores.{type}</value></key>
           <ref bean="datastoreListFinder"/>
@@ -147,14 +147,14 @@
     </bean>
   </property>
 </bean>
-<!--bean id="datastoreFileFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+<bean id="datastoreFileFinder" class="org.geoserver.restconfig.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.DataStoreFileResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
       <property name="data"><ref bean="data"/></property>
     </bean>
   </property>
-</bean -->
+</bean>
 <bean id="datastoreListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.DataStoreListResource">

@@ -33,6 +33,11 @@
 
     <dependency>
       <groupId>org.geoserver</groupId>
+      <artifactId>RESTConfig</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
       <artifactId>platform</artifactId>
       <version>1.7.0-SNAPSHOT</version>
     </dependency>
