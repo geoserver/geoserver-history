@@ -16,6 +16,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
+import org.geoserver.platform.GeoServerExtensions;
+
 import com.noelios.restlet.ext.servlet.ServletConverter;
 
 /**
@@ -26,7 +28,6 @@ public class WrappingController extends AbstractController {
     public static String METHOD_PUT = "PUT";
     public static String METHOD_DELETE = "DELETE";
     ServletConverter myConverter;
-    private Map myRouteMap;
     private Router myRouter;
 
     public WrappingController() {
@@ -51,107 +52,31 @@ public class WrappingController extends AbstractController {
             return null;
     }
 
-    public void setMapping(Map m){
-        if (m == null) return;
-        if (myRouter == null) myRouter = new Router();
+    public void addRoutes(Map m, Router r){
+        Iterator it = m.keySet().iterator();
 
-        myRouter.getRoutes().clear();
+        while (it.hasNext()){
+            String key = (String)it.next();
 
-        myRouter.attach("", new BeanResourceFinder(new IndexResource(myRouter)));
-
-        try{
-            Iterator it = m.keySet().iterator();
-
-            while (it.hasNext()){
-                String key = (String)it.next();
-
-                myRouter.attach(key, (Restlet)m.get(key));
-            }
-        } catch (ClassCastException cce){
-            if (m != myRouteMap){
-                setMapping(myRouteMap);
-            } else {
-                myRouter.getRoutes().clear();
-            }
-            return;
+            r.attach(key, (Restlet)m.get(key));
         }
-        myRouteMap = m;
-    }
-
-    public Map getMapping(){
-        return myRouteMap;
     }
 
     public Restlet createRoot() {
-        if (myRouter == null) myRouter = new Router();
+        if (myRouter == null){
+            myRouter = new Router();
+
+            Iterator i = 
+                GeoServerExtensions.extensions(RESTMapping.class).iterator();
+
+            while (i.hasNext()){
+                RESTMapping rm = (RESTMapping)i.next();
+                addRoutes(rm.getRoutes(), myRouter);
+            }
+
+            myRouter.attach("", new BeanResourceFinder(new IndexResource(myRouter)));
+        }
+
         return myRouter;
-/*
-        Router router = new Router();
-        ApplicationContext context = getApplicationContext();
-
-        router.attach("",
-            new ResourceFinder(ResourceFinder.RESOURCE_INDEX, router.getContext(), context, router));
-        router.attach("/datastores.{type}",
-            new ResourceFinder(ResourceFinder.RESOURCE_DATASTORE, router.getContext(), context,
-                router));
-        router.attach("/datastores",
-            new ResourceFinder(ResourceFinder.RESOURCE_DATASTORE, router.getContext(), context,
-                router));
-        router.attach("/datastores/{datastore}.{type}",
-            new ResourceFinder(ResourceFinder.RESOURCE_DATASTORE, router.getContext(), context,
-                router));
-        router.attach("/datastores/{datastore}",
-            new ResourceFinder(ResourceFinder.RESOURCE_DATASTORE, router.getContext(), context,
-                router));
-        // This rule messes everything up: router.attach("/datastores/{datastore}/featuretypes", new ResourceFinder(ResourceFinder.RESOURCE_DATASTORE, router.getContext(), dc));
-        router.attach("/datastores/{datastore}/featuretypes/{featuretype}.{type}",
-            new ResourceFinder(ResourceFinder.RESOURCE_FEATURETYPE, router.getContext(), context,
-                router));
-        router.attach("/datastores/{datastore}/featuretypes/{featuretype}",
-            new ResourceFinder(ResourceFinder.RESOURCE_FEATURETYPE, router.getContext(), context,
-                router));
-        router.attach("/styles/{style}.{type}",
-            new ResourceFinder(ResourceFinder.RESOURCE_STYLE, router.getContext(), context, router));
-        router.attach("/styles/{style}",
-            new ResourceFinder(ResourceFinder.RESOURCE_STYLE, router.getContext(), context, router));
-        router.attach("/styles.{type}",
-            new ResourceFinder(ResourceFinder.RESOURCE_STYLE, router.getContext(), context, router));
-        router.attach("/styles",
-            new ResourceFinder(ResourceFinder.RESOURCE_STYLE, router.getContext(), context, router));
-        router.attach("/coveragestores.{type}",
-            new ResourceFinder(ResourceFinder.RESOURCE_COVERAGESTORE, router.getContext(), context,
-                router));
-        router.attach("/coveragestores",
-            new ResourceFinder(ResourceFinder.RESOURCE_COVERAGESTORE, router.getContext(), context,
-                router));
-        router.attach("/coveragestores/{coveragestore}.{type}",
-            new ResourceFinder(ResourceFinder.RESOURCE_COVERAGESTORE, router.getContext(), context,
-                router));
-        router.attach("/coveragestores/{coveragestore}",
-            new ResourceFinder(ResourceFinder.RESOURCE_COVERAGESTORE, router.getContext(), context,
-                router));
-        router.attach("/coveragestores/{coveragestore}/coverages/{coverage}.{type}",
-            new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), context,
-                router));
-        router.attach("/coveragestores/{coveragestore}/coverages/{coverage}",
-            new ResourceFinder(ResourceFinder.RESOURCE_COVERAGE, router.getContext(), context,
-                router));
-        router.attach("/dummy/{name}", new DummyRestlet(getApplicationContext()));
-        router.attach("/layergroups/{group}.{type}",
-            new ResourceFinder(ResourceFinder.RESOURCE_LAYERGROUP, router.getContext(), context,
-                router));
-        router.attach("/layergroups/{group}",
-                new ResourceFinder(ResourceFinder.RESOURCE_LAYERGROUP, router.getContext(), context,
-                    router));
-        router.attach("/layergroups.{type}",
-            new ResourceFinder(ResourceFinder.RESOURCE_LAYERGROUP, router.getContext(), context,
-                router));
-        router.attach("/layergroups",
-            new ResourceFinder(ResourceFinder.RESOURCE_LAYERGROUP, router.getContext(), context,
-                router));
-        router.attach("/projections", new DummyRestlet(getApplicationContext()));
-        router.attach("/projections/{projection}", new DummyRestlet(getApplicationContext()));
-
-        return router; */
-    }
+   }
 }
