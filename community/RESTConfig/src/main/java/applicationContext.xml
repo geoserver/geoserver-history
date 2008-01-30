@@ -3,8 +3,10 @@
 
 <beans>
 
-<bean id="restconfigwrapper" class="org.geoserver.restconfig.WrappingController">
-<property name="mapping">
+<bean id="restWrapper" class="org.geoserver.restconfig.WrappingController"/>
+
+<bean id="restConfigMapping" class="org.geoserver.restconfig.RESTMapping">
+<property name="routes">
   <map>
         <entry>
           <key><value>/datastores/{datastore}/featuretypes/{featuretype}.{type}</value></key>
@@ -30,6 +32,10 @@
           <key><value>/datastores/{datastore}</value></key>
           <ref bean="datastoreFinder"/>
         </entry>
+        <!--entry>
+          <key><value>/datastores/{datastore}/file.{type}</value></key>
+          <ref bean="datastoreFileFinder"/>
+        </entry -->
         <entry>
           <key><value>/datastores.{type}</value></key>
           <ref bean="datastoreListFinder"/>
@@ -114,17 +120,10 @@
           <key><value>/dummy.{type}</value></key>
           <ref bean="dummyRestlet"/>
         </entry>
-<!--        <prop key="">indexFinder</prop> -->
   </map>
 </property>
 </bean>
 
-
-<!--bean id="indexFinder" class="org.geoserver.restconfig.BeanResourceFinder">
-  <property name="beanToFind">
-    <bean class="org.geoserver.restconfig.IndexResource"/>
-  </property>
-</bean -->
 <bean id="featureTypeFinder" class="org.geoserver.restconfig.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.FeatureTypeResource">
@@ -148,6 +147,14 @@
     </bean>
   </property>
 </bean>
+<!--bean id="datastoreFileFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+  <property name="beanToFind">
+    <bean class="org.geoserver.restconfig.DataStoreFileResource">
+      <property name="dataConfig"><ref bean="dataConfig"/></property>
+      <property name="data"><ref bean="data"/></property>
+    </bean>
+  </property>
+</bean -->
 <bean id="datastoreListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.DataStoreListResource">
@@ -224,8 +231,8 @@
 <property name="alwaysUseFullPath" value="true"/>
 <property name="mappings">
 	<props>
-		<prop key="/api">restconfigwrapper</prop>
-		<prop key="/api/**">restconfigwrapper</prop>
+		<prop key="/api">restWrapper</prop>
+		<prop key="/api/**">restWrapper</prop>
 	</props>
 </property>
 
