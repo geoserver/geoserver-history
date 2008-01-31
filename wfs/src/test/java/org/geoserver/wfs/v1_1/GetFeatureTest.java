@@ -21,7 +21,7 @@ public class GetFeatureTest extends WFSTestSupport {
         dataDirectory.addPropertiesType( 
                 new QName( MockData.SF_URI, "WithGMLProperties", MockData.SF_PREFIX ), 
                 getClass().getResource("WithGMLProperties.properties"),
-                null
+                null, null
              );
     }
 
@@ -334,7 +334,7 @@ public class GetFeatureTest extends WFSTestSupport {
         dataDirectory.addPropertiesType( 
                 new QName( MockData.SF_URI, "new", MockData.SF_PREFIX ), 
                 getClass().getResource("new.properties"), 
-                null
+                null, null
             );
         applicationContext.refresh();
         

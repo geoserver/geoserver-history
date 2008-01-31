@@ -29,7 +29,7 @@ public class ReprojectionTest extends WFSTestSupport {
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         super.populateDataDirectory(dataDirectory);
         dataDirectory.addPropertiesType(NULL_GEOMETRIES, 
-                ReprojectionTest.class.getResource("NullGeometries.properties"), null);
+                ReprojectionTest.class.getResource("NullGeometries.properties"), null, null);
     }
     
     public void testGetFeatureGet() throws Exception {
