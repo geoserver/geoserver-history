@@ -250,39 +250,42 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
 
                 FieldSubsetType field = (FieldSubsetType) request.getRangeSubset().getFieldSubset()
                         .get(0);
+                interpolationType = field.getInterpolationType();
+                
+                // handle axis subset
                 if (field.getAxisSubset().size() > 1) {
                     throw new WcsException("Multi axis coverages are not supported yet");
                 }
-                interpolationType = field.getInterpolationType();
-
-                // prepare a support structure to quikly get the band index of a
-                // key
-                CoverageDimension[] dimensions = meta.getDimensions();
-                Map<String, Integer> dimensionMap = new HashMap<String, Integer>();
-                for (int i = 0; i < dimensions.length; i++) {
-                    String keyName = dimensions[i].getName().replace(' ', '_');
-                    dimensionMap.put(keyName, i);
-                }
-
-                // extract the band indexes
-                AxisSubsetType axisSubset = (AxisSubsetType) field.getAxisSubset().get(0);
-                List keys = axisSubset.getKey();
-                int[] bands = new int[keys.size()];
-                for (int j = 0; j < bands.length; j++) {
-                    final String key = (String) keys.get(j);
-                    Integer index = dimensionMap.get(key);
-                    if (index == null)
-                        throw new WcsException("Unknown field/axis/key combination "
-                                + field.getIdentifier().getValue() + "/"
-                                + axisSubset.getIdentifier() + "/" + key);
-                    bands[j] = index;
-                }
-
-                // finally execute the band select
-                try {
-                    bandSelectedCoverage = (GridCoverage2D) WCSUtils.bandSelect(coverage, bands);
-                } catch (WcsException e) {
-                    throw new WcsException(e.getLocalizedMessage());
+                if(field.getAxisSubset().size() == 1) {
+                    // prepare a support structure to quickly get the band index of a
+                    // key
+                    CoverageDimension[] dimensions = meta.getDimensions();
+                    Map<String, Integer> dimensionMap = new HashMap<String, Integer>();
+                    for (int i = 0; i < dimensions.length; i++) {
+                        String keyName = dimensions[i].getName().replace(' ', '_');
+                        dimensionMap.put(keyName, i);
+                    }
+    
+                    // extract the band indexes
+                    AxisSubsetType axisSubset = (AxisSubsetType) field.getAxisSubset().get(0);
+                    List keys = axisSubset.getKey();
+                    int[] bands = new int[keys.size()];
+                    for (int j = 0; j < bands.length; j++) {
+                        final String key = (String) keys.get(j);
+                        Integer index = dimensionMap.get(key);
+                        if (index == null)
+                            throw new WcsException("Unknown field/axis/key combination "
+                                    + field.getIdentifier().getValue() + "/"
+                                    + axisSubset.getIdentifier() + "/" + key);
+                        bands[j] = index;
+                    }
+    
+                    // finally execute the band select
+                    try {
+                        bandSelectedCoverage = (GridCoverage2D) WCSUtils.bandSelect(coverage, bands);
+                    } catch (WcsException e) {
+                        throw new WcsException(e.getLocalizedMessage());
+                    }
                 }
             }
 

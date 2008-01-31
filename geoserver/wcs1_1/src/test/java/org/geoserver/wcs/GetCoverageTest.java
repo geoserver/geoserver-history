@@ -267,6 +267,28 @@ public class GetCoverageTest extends WCSTestSupport {
 //        assertEquals("Green band", coverages[0].getSampleDimension(1).getDescription().toString());
 //    }
     
+    public void testRangeSubsetOnlyInterpolation() throws Exception {
+          Map<String, Object> raw = new HashMap<String, Object>();
+          final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+          raw.put("identifier", layerId);
+          raw.put("format", "image/geotiff");
+          raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG::4326");
+          raw.put("rangeSubset", "contents:nearest");
+          GridCoverage[] coverages = executeGetCoverageKvp(raw);
+          assertEquals(3, coverages[0].getNumSampleDimensions());
+    }
+    
+    public void testRangeSubsetOnlyField() throws Exception {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        raw.put("identifier", layerId);
+        raw.put("format", "image/geotiff");
+        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG::4326");
+        raw.put("rangeSubset", "contents");
+        GridCoverage[] coverages = executeGetCoverageKvp(raw);
+        assertEquals(3, coverages[0].getNumSampleDimensions());
+  }
+    
     public void testNullGridOrigin() throws Exception {
         String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + //
             "<wcs:GetCoverage service=\"WCS\" " + //
