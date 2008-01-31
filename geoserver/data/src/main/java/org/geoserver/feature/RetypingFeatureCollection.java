@@ -88,7 +88,7 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
      * @param target
      * @return
      */
-    static String reTypeId(String sourceId, SimpleFeatureType original, SimpleFeatureType target) {
+    public static String reTypeId(String sourceId, SimpleFeatureType original, SimpleFeatureType target) {
         final String originalTypeName = original.getName().getLocalPart();
         final String destTypeName = target.getName().getLocalPart();
         if(destTypeName.equals(originalTypeName))
