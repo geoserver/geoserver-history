@@ -50,7 +50,6 @@ public class AliasTest extends WFSTestSupport {
     
     public void testGetByFeatureId() throws Exception {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=cdf:ft15&version=1.0.0&featureId=ft15.1");
-        print(doc);
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
 
         assertEquals(1, doc.getElementsByTagName("gml:featureMember").getLength());
