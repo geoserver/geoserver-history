@@ -63,7 +63,7 @@ public class RetypingFeatureStore extends RetypingFeatureSource implements Featu
                 new RetypingFeatureCollection(collection, typeMap.getOriginalFeatureType()));
         Set<String> retyped = new HashSet<String>();
         for (String id : ids) {
-            retyped.add(DataUtilities.reTypeId(id, typeMap.getOriginalFeatureType(), typeMap.getFeatureType()));
+            retyped.add(RetypingFeatureCollection.reTypeId(id, typeMap.getOriginalFeatureType(), typeMap.getFeatureType()));
         }
         return retyped;
     }

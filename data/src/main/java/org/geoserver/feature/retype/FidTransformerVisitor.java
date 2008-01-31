@@ -4,7 +4,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.geoserver.feature.RetypingFeatureCollection;
 import org.geotools.data.DataUtilities;
+import org.geotools.data.store.ReTypingFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.visitor.DuplicatingFilterVisitor;
 import org.opengis.filter.Filter;
@@ -35,7 +37,7 @@ class FidTransformeVisitor extends DuplicatingFilterVisitor {
         Set<FeatureId> fids = new HashSet<FeatureId>();
         for (Iterator it = ids.iterator(); it.hasNext();) {
             String id = (String) it.next();
-            String retyped = DataUtilities.reTypeId(id, map.getFeatureType(), map.getOriginalFeatureType());
+            String retyped = RetypingFeatureCollection.reTypeId(id, map.getFeatureType(), map.getOriginalFeatureType());
             fids.add(ff.featureId(retyped));
         }
         return ff.id(fids);
