@@ -17,6 +17,7 @@
 			<outputDirectory></outputDirectory>
 			<includes>
 				<include>wfsv*.jar</include>
+				<include>net.opengis.wfsv*.jar</include>
 				<include>gt2-postgis-versioned-*.jar</include>
 			</includes>
 		</fileSet>
