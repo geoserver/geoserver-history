@@ -5,11 +5,13 @@
 package org.geoserver.feature.retype;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.geoserver.feature.RetypingFeatureCollection;
 import org.geoserver.feature.RetypingFeatureCollection.RetypingFeatureReader;
-import org.geotools.data.DataStore;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
@@ -22,7 +24,7 @@ import org.opengis.filter.Filter;
  */
 public class RetypingFeatureStore extends RetypingFeatureSource implements FeatureStore {
 
-    public RetypingFeatureStore(DataStore ds, FeatureStore wrapped, FeatureTypeMap typeMap) {
+    public RetypingFeatureStore(RetypingDataStore ds, FeatureStore wrapped, FeatureTypeMap typeMap) {
         super(ds, wrapped, typeMap);
     }
 
@@ -39,16 +41,16 @@ public class RetypingFeatureStore extends RetypingFeatureSource implements Featu
     }
 
     public void modifyFeatures(AttributeDescriptor type, Object value, Filter filter) throws IOException {
-        featureStore().modifyFeatures(type, value, filter);
+        featureStore().modifyFeatures(type, value, store.retypeFilter(filter, typeMap));
     }
 
     public void removeFeatures(Filter filter) throws IOException {
-        featureStore().removeFeatures(filter);
+        featureStore().removeFeatures(store.retypeFilter(filter, typeMap));
     }
 
     public void modifyFeatures(AttributeDescriptor[] type, Object[] value, Filter filter)
             throws IOException {
-        featureStore().modifyFeatures(type, value, filter);
+        featureStore().modifyFeatures(type, value, store.retypeFilter(filter, typeMap));
     }
 
     public void setFeatures(FeatureReader reader) throws IOException {
@@ -57,8 +59,13 @@ public class RetypingFeatureStore extends RetypingFeatureSource implements Featu
     }
 
     public Set addFeatures(FeatureCollection collection) throws IOException {
-        return featureStore().addFeatures(
-                new RetypingFeatureCollection(collection, typeMap.originalFeatureType));
+        Set<String> ids = featureStore().addFeatures(
+                new RetypingFeatureCollection(collection, typeMap.getOriginalFeatureType()));
+        Set<String> retyped = new HashSet<String>();
+        for (String id : ids) {
+            retyped.add(DataUtilities.reTypeId(id, typeMap.getOriginalFeatureType(), typeMap.getFeatureType()));
+        }
+        return retyped;
     }
 
 }
