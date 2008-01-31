@@ -70,13 +70,20 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     private String schemaBase;
 
     /**
-     * The featuretype name.
+     * The native featuretype name (the one used in the original datastore)
      *
      * <p>
      * Often related to the title - like bc_roads_Type
      * </p>
      */
     private String name;
+    
+    /**
+     * The alias for this feature type (if any)
+     */
+    private String alias;
+    
+    
     private String wmsPath;
 
     /**
@@ -153,6 +160,16 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
     }
 
 
+    public String getAlias() {
+        return alias;
+    }
+
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+
     /**
      * FeatureTypeInfo constructor.
      *
@@ -178,6 +195,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         SRSHandling = dto.getSRSHandling();
         schema = dto.getSchemaAttributes();
         name = dto.getName();
+        alias = dto.getAlias();
         wmsPath = dto.getWmsPath();
         title = dto.getTitle();
         _abstract = dto.getAbstract();
@@ -280,6 +298,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         r = r && (defaultStyle == f.getDefaultStyle());
         r = r && (styles == f.getStyles());
         r = r && (name == f.getName());
+        r = r && (alias == f.getAlias());
         r = r && (wmsPath == f.getWmsPath());
         r = r && (title == f.getTitle());
         r = r && (_abstract == f.getAbstract());
@@ -326,6 +345,10 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
         if (name != null) {
             r *= name.hashCode();
+        }
+        
+        if (alias != null) {
+            r *= alias.hashCode();
         }
 
         if (dataStoreId != null) {
@@ -855,7 +878,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     //-- Modif C. Kolbowicz - 06/10/2004
     public String toString() {
-        return "[FeatureTypeInfoDTO: " + name + ", datastoreId: " + dataStoreId + ", latLongBBOX: "
+        return "[FeatureTypeInfoDTO: " + name + ", alias: " + alias + ", datastoreId: " + dataStoreId + ", latLongBBOX: "
         + latLongBBox + "\n  SRS: " + SRS + ", schema:" + schema + ", schemaName: " + schemaName
         + ", dirName: " + dirName + ", title: " + title + "\n  definitionQuery: " + definitionQuery
         + ", defaultStyle: " + defaultStyle + ", legend icon: " + legendURL + ", caching?: "

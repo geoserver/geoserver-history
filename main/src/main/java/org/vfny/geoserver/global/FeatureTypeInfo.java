@@ -15,9 +15,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.geoserver.feature.FeatureSourceUtils;
+import org.geoserver.feature.retype.RetypingDataStore;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.ReTypeFeatureReader;
 import org.geotools.feature.AttributeTypeBuilder;
 import org.geotools.feature.FeatureTypes;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -252,6 +254,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     private int maxFeatures;
     
     /**
+     * The typename alias. If set the typename will be recognized by the alias only, the original
+     * typename will be forgotten
+     */
+    private String alias;
+    
+    /**
      * FeatureTypeInfo constructor.
      *
      * <p>
@@ -283,6 +291,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         metadataLinks = dto.getMetadataLinks();
         latLongBBox = dto.getLatLongBBox();
         typeName = dto.getName();
+        alias = dto.getAlias();
         wmsPath = dto.getWmsPath();
         numDecimals = dto.getNumDecimals();
 
@@ -340,6 +349,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         dto.setLatLongBBox(latLongBBox);
         dto.setNativeBBox(nativeBBox);
         dto.setName(typeName);
+        dto.setAlias(typeName);
         dto.setWmsPath(wmsPath);
         dto.setNumDecimals(numDecimals);
 
@@ -476,7 +486,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      *         parent Data instance.
      */
     public String getName() {
-        return getPrefix() + ":" + typeName;
+        if(alias == null)
+            return getPrefix() + ":" + typeName;
+        else
+            return getPrefix() + ":" + alias;
     }
 
     /**
@@ -506,8 +519,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 + " does not have a properly configured " + "datastore");
         }
 
-        DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
-        FeatureSource realSource = dataStore.getFeatureSource(typeName);
+        FeatureSource realSource = getAliasedFeatureSource();
         
         // avoid reprojection if the calling code can do it better
         int localSrsHandling = srsHandling;
@@ -566,6 +578,35 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             } 
             
         }
+    }
+
+    /**
+     * Returns the native feature source, eventually aliasing the name of the
+     * feature type with the specified alias
+     * @return
+     * @throws IOException
+     */
+    private FeatureSource getAliasedFeatureSource() throws IOException {
+        DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
+        FeatureSource fs;
+        if(alias == null) {
+            fs = dataStore.getFeatureSource(typeName);
+        } else {
+            // override the default renaming policy and we should be good to go
+            RetypingDataStore retyper = new RetypingDataStore(dataStore) {
+            
+                @Override
+                protected String transformFeatureTypeName(String originalName) {
+                    if(!typeName.equals(originalName))
+                        return originalName;
+                    return alias;
+                }
+            
+            };
+            fs = retyper.getFeatureSource(alias);
+        }
+        
+        return fs;
     }
 
     /**
@@ -660,9 +701,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
     private Envelope getBoundingBox(CoordinateReferenceSystem targetCrs)
         throws IOException {
-        // compute original bounding box
-        DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
-        FeatureSource realSource = dataStore.getFeatureSource(typeName);
+        FeatureSource realSource = getAliasedFeatureSource();
         Envelope bbox = FeatureSourceUtils.getBoundingBoxEnvelope(realSource);
 
         // check if the original CRS is not the declared one
@@ -681,7 +720,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         } catch (Exception e) {
             LOGGER.severe(
                 "Could not turn the original envelope in one into the declared CRS for type "
-                + typeName);
+                + getTypeName());
             LOGGER.severe("Original CRS is " + originalCRS);
             LOGGER.severe("Declared CRS is " + targetCrs);
         }
@@ -763,8 +802,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 + " does not have a properly configured " + "datastore");
         }
 
-        DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
-        FeatureSource realSource = dataStore.getFeatureSource(typeName);
+        FeatureSource realSource = getAliasedFeatureSource();
 
         return realSource.getSchema().getDefaultGeometry();
     }
@@ -1002,7 +1040,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     public String getSchemaName() {
         if (schemaName == null) {
-            return typeName + "_Type";
+            return getTypeName() + "_Type";
         }
 
         return schemaName;
@@ -1053,13 +1091,28 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     /**
      * Access the name of this SimpleFeatureType.
      * <p>
-     * This is the typeName as provided by the real gt2 DataStore.
+     * This is the typeName as provided by the gt2 datastore, unless an alias
+     * is set, in that case the alias is returned
      * </p>
      *
      * @return String getName()
      * @see org.geotools.data.FeatureTypeMetaData#getTypeName()
      */
     public String getTypeName() {
+        return alias == null ? typeName : alias;
+    }
+    
+    /**
+     * Access the name of this SimpleFeatureType.
+     * <p>
+     * This is the typeName as provided by the gt2 datastore, even when an alias
+     * is set
+     * </p>
+     *
+     * @return String getName()
+     * @see org.geotools.data.FeatureTypeMetaData#getTypeName()
+     */
+    public String getNativeTypeName() {
         return typeName;
     }
 
@@ -1087,7 +1140,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             ft = fs.getSchema();
             
             SimpleFeatureTypeBuilder tb = new SimpleFeatureTypeBuilder();
-            tb.setName( typeName );
+            tb.setName( getTypeName() );
             tb.setNamespaceURI(ft.getName().getNamespaceURI());
             
             String[] baseNames = DataTransferObjectFactory.getRequiredBaseAttributes(schemaBase);
@@ -1246,6 +1299,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * @see org.geotools.data.FeatureTypeMetaData#AttributeTypeMetaData(java.lang.String)
      */
     public synchronized AttributeTypeInfo AttributeTypeMetaData(String attributeName) {
+        // WARNING: this method has not been updated to handle aliases
         AttributeTypeInfo info = null;
 
         if (schema != null) {
