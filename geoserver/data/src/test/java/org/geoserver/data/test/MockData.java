@@ -361,7 +361,7 @@ public class MockData {
                 styleName = name.getLocalPart();
                 addStyle(styleName, style);
             }
-            addPropertiesType(name, properties, styleName);
+            addPropertiesType(name, properties, styleName, null);
         }
     }
     
@@ -394,7 +394,7 @@ public class MockData {
      *            type, or null to use a default one
      * @throws IOException
      */
-    public void addPropertiesType(QName name, URL properties, String styleName) throws IOException {
+    public void addPropertiesType(QName name, URL properties, String styleName, String alias) throws IOException {
         // setup the type directory if needed
         File directory = new File(data, name.getPrefix());
         if ( !directory.exists() ) {
@@ -413,7 +413,7 @@ public class MockData {
         copy( propertiesContents, f );
         
         // write the info file
-        info(name, styleName);
+        info(name, styleName, alias);
         
         // setup the meta information to be written in the catalog 
         namespaces.put(name.getPrefix(), name.getNamespaceURI());
@@ -487,7 +487,7 @@ public class MockData {
         copy(from, to);     
     }
 
-    void copy(InputStream from, File to) throws IOException {
+    public static void copy(InputStream from, File to) throws IOException {
         OutputStream out = new FileOutputStream(to);
 
         byte[] buffer = new byte[4096];
@@ -500,7 +500,7 @@ public class MockData {
         out.close();
     }
 
-    void info(QName name, String styleName) throws IOException {
+    void info(QName name, String styleName, String alias) throws IOException {
         String type = name.getLocalPart();
         String prefix = name.getPrefix();
 
@@ -513,6 +513,8 @@ public class MockData {
         FileWriter writer = new FileWriter(info);
         writer.write("<featureType datastore=\"" + prefix + "\">");
         writer.write("<name>" + type + "</name>");
+        if(alias != null)
+            writer.write("<alias>" + alias + "</alias>");
         writer.write("<SRS>4326</SRS>");
         // this mock type may have wrong SRS compared to the actual one in the property files...
         // let's configure SRS handling not to alter the original one, and have 4326 used only
@@ -687,7 +689,7 @@ public class MockData {
         data = null;
     }
 
-    void delete(File dir) throws IOException {
+    public static void delete(File dir) throws IOException {
         File[] files = dir.listFiles();
 
         for (int i = 0; i < files.length; i++) {

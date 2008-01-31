@@ -11,6 +11,7 @@ import java.util.Map;
 import org.geoserver.feature.RetypingFeatureCollection;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
+import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureSource;
@@ -18,7 +19,6 @@ import org.geotools.data.FeatureStore;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.LockingManager;
 import org.geotools.data.Query;
-import org.geotools.data.ReTypeFeatureReader;
 import org.geotools.data.Transaction;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -115,10 +115,10 @@ public class RetypingDataStore implements DataStore {
     public FeatureReader getFeatureReader(Query query, Transaction transaction) throws IOException {
         FeatureTypeMap map = getTypeMapBackwards(query.getTypeName());
         updateMap(map, false);
-        FeatureReader reader = wrapped.getFeatureReader(query, transaction);
+        FeatureReader reader = wrapped.getFeatureReader(retypeQuery(query, map), transaction);
         if (map.isUnchanged())
             return reader;
-        return new ReTypeFeatureReader(reader, map.getFeatureType());
+        return new RetypingFeatureCollection.RetypingFeatureReader(reader, map.getFeatureType());
     }
 
     public FeatureSource getFeatureSource(String typeName) throws IOException {
@@ -228,4 +228,32 @@ public class RetypingDataStore implements DataStore {
     public void dispose() {
         wrapped.dispose();
     }
+    
+    /**
+     * Retypes a query from the extenal type to the internal one using the
+     * provided typemap
+     * @param q
+     * @param typeMap
+     * @return
+     * @throws IOException
+     */
+    Query retypeQuery(Query q, FeatureTypeMap typeMap) {
+        DefaultQuery modified = new DefaultQuery(q);
+        modified.setTypeName(typeMap.getOriginalName());
+        modified.setFilter(retypeFilter(q.getFilter(), typeMap));
+        return modified;
+    }
+
+    /**
+     * Retypes a filter making sure the fids are using the internal typename prefix
+     * @param filter
+     * @param typeMap
+     * @return
+     */
+    Filter retypeFilter(Filter filter, FeatureTypeMap typeMap) {
+        FidTransformeVisitor visitor = new FidTransformeVisitor(typeMap);
+        return (Filter) filter.accept(visitor, null);
+    }
+    
+    
 }
