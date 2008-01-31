@@ -753,7 +753,12 @@ SCHEMA:
                 continue;
             }
 
-            String key2 = prefix + ":" + typeName;
+            
+            String key2;
+            if(featureTypeDTO.getAlias() == null)
+                key2 = prefix + ":" + typeName;
+            else
+                key2 = prefix + ":" + featureTypeDTO.getAlias();
 
             if (map.containsKey(key2)) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {

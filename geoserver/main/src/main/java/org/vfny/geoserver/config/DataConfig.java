@@ -301,7 +301,10 @@ public class DataConfig {
             key = i.next();
 
             f = (FeatureTypeInfoDTO) data.getFeaturesTypes().get(key);
-            featuresTypes.put(f.getDataStoreId() + ":" + f.getName(), new FeatureTypeConfig(f));
+            if(f.getAlias() == null)
+                featuresTypes.put(f.getDataStoreId() + ":" + f.getName(), new FeatureTypeConfig(f));
+            else
+                featuresTypes.put(f.getDataStoreId() + ":" + f.getAlias(), new FeatureTypeConfig(f));
         }
 
         ////
