@@ -82,6 +82,11 @@ public class TypesEditorForm extends ActionForm {
      * </p>
      */
     private String typeName;
+    
+    /**
+     * The alternate name for this feauture type
+     */
+    private String alias;
 
     /**
          *
@@ -278,6 +283,7 @@ public class TypesEditorForm extends ActionForm {
         }
 
         typeName = type.getName();
+        alias = type.getAlias();
         setSRS(Integer.toString(type.getSRS())); // doing it this way also sets SRSWKT
         srsHandling = type.getSRSHandling();
         
@@ -1125,6 +1131,14 @@ public class TypesEditorForm extends ActionForm {
 
     public void setMaxFeatures(String maxFeatures) {
         this.maxFeatures = maxFeatures;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias != null ? alias.trim() : alias;
     }
     
 }
