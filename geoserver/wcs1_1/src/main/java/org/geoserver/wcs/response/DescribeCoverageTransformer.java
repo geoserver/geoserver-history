@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import net.opengis.wcs.v1_1_1.DescribeCoverageType;
 
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.wcs.kvp.GridType;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.LinearTransform;
@@ -218,7 +219,7 @@ public class DescribeCoverageTransformer extends TransformerBase {
         private void handleGridCRS(CoverageInfo ci) throws Exception {
             start("wcs:GridCRS");
             element("wcs:GridBaseCRS", urnIdentifier(ci.getCrs()));
-            element("wcs:GridType", "urn:ogc:def:method:WCS:1.1:2dGridin2dCrs");
+            element("wcs:GridType", GridType.GT2dGridIn2dCrs.getXmlConstant());
             // TODO: go back to using the metadata once they can be trusted
             final LinearTransform tx = (LinearTransform) ci.getGrid().getGridToCRS();
             final Matrix matrix = tx.getMatrix();
@@ -406,7 +407,9 @@ public class DescribeCoverageTransformer extends TransformerBase {
         private String urnIdentifier(final CoordinateReferenceSystem crs) throws FactoryException {
             String authorityAndCode = CRS.lookupIdentifier(crs, false);
             String code = authorityAndCode.substring(authorityAndCode.lastIndexOf(":") + 1);
-            return "urn:ogc:def:crs:EPSG:" + code;
+            // we don't specify the version, but we still need to put a space
+            // for it in the urn form, that's why we have :: before the code
+            return "urn:ogc:def:crs:EPSG::" + code;
         }
 
         /**
