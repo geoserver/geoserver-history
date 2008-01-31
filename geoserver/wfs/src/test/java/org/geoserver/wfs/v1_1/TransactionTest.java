@@ -17,7 +17,7 @@ public class TransactionTest extends WFSTestSupport {
         dataDirectory.addPropertiesType( 
                 new QName( MockData.SF_URI, "WithGMLProperties", MockData.SF_PREFIX ), 
                 getClass().getResource("WithGMLProperties.properties"),
-                null
+                null, null
              );
     }
     
