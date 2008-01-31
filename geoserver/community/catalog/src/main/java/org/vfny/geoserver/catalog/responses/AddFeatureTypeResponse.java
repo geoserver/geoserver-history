@@ -4,7 +4,20 @@
  */
 package org.vfny.geoserver.catalog.responses;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletException;
+
 import org.geoserver.util.ReaderUtils;
 import org.geotools.factory.Hints;
 import org.geotools.filter.FilterDOMParser;
@@ -34,17 +47,8 @@ import org.vfny.geoserver.global.xml.XMLConfigWriter;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.net.URLDecoder;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.ServletException;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -172,6 +176,27 @@ public class AddFeatureTypeResponse implements Response {
             // //
             // update the data config
             DataConfig dataConfig = ConfigRequests.getDataConfig(req.getHttpServletRequest());
+            
+            // //
+            // Remove existing Coverages
+            // //
+            for (Iterator keySetIterator = dataConfig.getFeaturesTypes().keySet().iterator();
+                    keySetIterator.hasNext();) {
+                String key = (String) keySetIterator.next();
+
+                if (((FeatureTypeConfig) dataConfig.getFeaturesTypes().get(key)).getName()
+                         .equals(featureType.getName())) {
+                    dataConfig.getFeaturesTypes().put(key, null);
+                    dataConfig.getFeaturesTypes().remove(key);
+                    request.getCATALOG().getData().load(dataConfig.toDTO());
+
+                    break;
+                }
+            }            
+            
+            // //
+            // Adding the new Coverage...
+            // //
             dataConfig.getFeaturesTypes().put(ftName, new FeatureTypeConfig(featureType));
 
             request.getCATALOG().getData().load(dataConfig.toDTO());

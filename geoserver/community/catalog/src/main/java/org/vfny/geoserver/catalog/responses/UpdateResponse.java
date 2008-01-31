@@ -4,6 +4,17 @@
  */
 package org.vfny.geoserver.catalog.responses;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletException;
+
 import org.geoserver.util.ReaderUtils;
 import org.geotools.factory.Hints;
 import org.geotools.referencing.FactoryFinder;
@@ -35,15 +46,6 @@ import org.vfny.geoserver.global.dto.StyleDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.ServletException;
 
 
 /**

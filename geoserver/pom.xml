@@ -6,7 +6,7 @@
  <groupId>org.geoserver</groupId>
  <artifactId>geoserver</artifactId>
  <packaging>pom</packaging>
- <version>1.6-beta4</version>
+ <version>1.6-rs</version>
  <name>GeoServer</name>
 
  <scm>
@@ -812,7 +812,7 @@
       <descriptor>release/ext-arcsde.xml</descriptor>
       <descriptor>release/ext-pyramid.xml</descriptor>
      </descriptors>
-     <finalName>geoserver-1.6-beta4</finalName>
+     <finalName>geoserver-1.6-rs</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
     </configuration>
    </plugin>
@@ -1001,8 +1001,8 @@
  </modules>
 
  <properties>
-  <gs.version>1.6-beta4</gs.version>
-  <gt.version>2.4-SNAPSHOT</gt.version>
+  <gs.version>1.6-rs</gs.version>
+  <gt.version>2.4-RS-SNAPSHOT</gt.version>
   <java.awt.headless>true</java.awt.headless>
   <jalopy.phase>disabled</jalopy.phase>
   <jalopy.srcExcludesPattern>disabled</jalopy.srcExcludesPattern>

@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>geoserver</artifactId>
-    <version>1.6-beta4</version>
+    <version>1.6-rs</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -40,42 +40,42 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>platform</artifactId>
-      <version>1.6-beta4</version>
+      <version>1.6-rs</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.6-beta4</version>
+      <version>1.6-rs</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.6-beta4</version>
+      <version>1.6-rs</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wcs</artifactId>
-      <version>1.6-beta4</version>
+      <version>1.6-rs</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wfs</artifactId>
-      <version>1.6-beta4</version>
+      <version>1.6-rs</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wms</artifactId>
-      <version>1.6-beta4</version>
+      <version>1.6-rs</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>validation</artifactId>
-      <version>1.6-beta4</version>
+      <version>1.6-rs</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wfsv</artifactId>
-      <version>1.6-beta4</version>
+      <version>1.6-rs</version>
     </dependency>
 
 
@@ -180,14 +180,14 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.6-beta4</version>
+      <version>1.6-rs</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.6-beta4</version>
+      <version>1.6-rs</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>

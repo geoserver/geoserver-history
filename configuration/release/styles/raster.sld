@@ -15,7 +15,7 @@ http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd" version="1.0.0">
 			<Rule>
 				<RasterSymbolizer>
 				    <Opacity>1.0</Opacity>
-				    <OverlapBehavior>
+				    <!-- OverlapBehavior>
 				       <AVERAGE/>
 				    </OverlapBehavior>
 				    <ColorMap>
@@ -41,7 +41,7 @@ http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd" version="1.0.0">
 				       <ColorMapEntry color="#ffffff" quantity="5000" label="values"/>
 				       <ColorMapEntry color="#ffffff" quantity="13000" label="values"/>
 				    </ColorMap>
-				    <ShadedRelief/>
+				    <ShadedRelief/ -->
 				</RasterSymbolizer>
 			</Rule>
 		</FeatureTypeStyle>
