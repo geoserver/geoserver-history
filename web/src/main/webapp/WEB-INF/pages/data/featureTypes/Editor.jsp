@@ -55,6 +55,16 @@ function prepareFormData(){
 		<bean:write name="typesEditorForm" property="typeName"/>
       </td>
     </tr>
+    <tr>
+      <td class="label">
+		<span class="help" title="<bean:message key="help.type.alias"/>">
+          <bean:message key="label.alias"/>:
+        </span>
+      </td>
+      <td class="datum">
+		<html:text property="alias" size="30" />
+      </td>
+    </tr>
 	<tr>
       <td class="label">
 		<span class="help" title="<bean:message key="help.type.style"/>">
