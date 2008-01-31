@@ -213,7 +213,7 @@ public class Transaction {
                 final FeatureTypeInfo meta = catalog.getFeatureTypeInfo(name, namespaceURI);
 
                 if (meta == null) {
-                    String msg = name + " is not available: ";
+                    String msg = "Feature type '" + name + "' is not available: ";
                     String handle = (String) EMFUtils.get(element, "handle");
                     throw new WFSTransactionException(msg, (String) null, handle);
                 }
