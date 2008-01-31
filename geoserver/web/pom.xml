@@ -30,14 +30,6 @@
       <groupId>struts</groupId>
       <artifactId>struts</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.geoserver</groupId>
-      <artifactId>RESTConfig</artifactId>
-      <version>1.0</version>
-      <scope>community</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>platform</artifactId>
@@ -383,6 +375,22 @@
           <groupId>org.geoserver</groupId>
           <artifactId>wfsv</artifactId>
           <version>1.6.0-RC3</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>community</id>
+      <activation>
+         <property>
+           <name>community</name>
+           <value>true</value>
+         </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>RESTConfig</artifactId>
+          <version>1.0</version>
         </dependency>
       </dependencies>
     </profile>
