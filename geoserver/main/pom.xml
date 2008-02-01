@@ -116,7 +116,7 @@
 			<groupId>org.geoserver</groupId>
 			<artifactId>data</artifactId>
       <version>1.6-rs</version>
-      <!-- classifier>tests</classifier -->
+      <classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

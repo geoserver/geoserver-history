@@ -116,8 +116,8 @@ public class GetFeatureTest extends WFSTestSupport {
             + "<wfs:Query typeName=\"sf:PrimitiveGeoFeature\">" + "<ogc:Filter>" + "<ogc:BBOX>"
             + "   <ogc:PropertyName>pointProperty</ogc:PropertyName>"
             + "   <gml:Envelope srsName=\"urn:x-ogc:def:crs:EPSG:6.11.2:4326\">"
-            + "      <gml:lowerCorner>57.0 -4.5</gml:lowerCorner>"
-            + "      <gml:upperCorner>62.0 1.0</gml:upperCorner>" + "   </gml:Envelope>"
+            + "      <gml:lowerCorner>-4.5 57.0</gml:lowerCorner>"
+            + "      <gml:upperCorner>1.0 62.0</gml:upperCorner>" + "   </gml:Envelope>"
             + "</ogc:BBOX>" + "</ogc:Filter>" + "</wfs:Query>" + "</wfs:GetFeature>";
 
         Document doc = postAsDOM("wfs", xml);
@@ -137,8 +137,8 @@ public class GetFeatureTest extends WFSTestSupport {
             + "<wfs:Query typeName=\"sf:PrimitiveGeoFeature\">" + "<ogc:Filter>" + "<ogc:BBOX>"
             + "   <ogc:PropertyName>pointProperty</ogc:PropertyName>"
             + "   <gml:Envelope srsName=\"urn:x-ogc:def:crs:EPSG:6.11.2:4326\">"
-            + "      <gml:lowerCorner>-4.5 57.0</gml:lowerCorner>"
-            + "      <gml:upperCorner>1.0 62.0</gml:upperCorner>" + "   </gml:Envelope>"
+            + "      <gml:lowerCorner>57.0 -4.5</gml:lowerCorner>"
+            + "      <gml:upperCorner>62.0 1.0</gml:upperCorner>" + "   </gml:Envelope>"
             + "</ogc:BBOX>" + "</ogc:Filter>" + "</wfs:Query>" + "</wfs:GetFeature>";
 
         Document doc = postAsDOM("wfs", xml);

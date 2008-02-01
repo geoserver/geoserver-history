@@ -61,11 +61,11 @@ public class ReprojectingFilterVisitorTest extends TestCase {
 
         BBOX clonedBbox = (BBOX) clone;
         assertEquals(bbox.getPropertyName(), clonedBbox.getPropertyName());
-        assertTrue(15 == clonedBbox.getMinX());
-        assertTrue(10 == clonedBbox.getMinY());
-        assertTrue(25 == clonedBbox.getMaxX());
-        assertTrue(20 == clonedBbox.getMaxY());
-        assertEquals("EPSG:4326", clonedBbox.getSRS());
+        assertTrue(10 == clonedBbox.getMinX());
+        assertTrue(15 == clonedBbox.getMinY());
+        assertTrue(20 == clonedBbox.getMaxX());
+        assertTrue(25 == clonedBbox.getMaxY());
+        assertEquals("urn:x-ogc:def:crs:EPSG:6.11.2:4326", clonedBbox.getSRS());
     }
 
     public void testBboxReprojectUnreferencedProperty() {
@@ -101,10 +101,10 @@ public class ReprojectingFilterVisitorTest extends TestCase {
         assertEquals(isClone.getExpression1(), original.getExpression1());
 
         LineString clonedLs = (LineString) ((Literal) isClone.getExpression2()).getValue();
-        assertTrue(15 == clonedLs.getCoordinateN(0).x);
-        assertTrue(10 == clonedLs.getCoordinateN(0).y);
-        assertTrue(25 == clonedLs.getCoordinateN(1).x);
-        assertTrue(20 == clonedLs.getCoordinateN(1).y);
+        assertTrue(10 == clonedLs.getCoordinateN(0).x);
+        assertTrue(15 == clonedLs.getCoordinateN(0).y);
+        assertTrue(20 == clonedLs.getCoordinateN(1).x);
+        assertTrue(25 == clonedLs.getCoordinateN(1).y);
         assertEquals(CRS.decode("EPSG:4326"), clonedLs.getUserData());
     }
 
