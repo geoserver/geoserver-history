@@ -30,7 +30,7 @@ public class GetCapabilitiesTest extends WCSTestSupport {
     public void testGetBasic() throws Exception {
         List<Exception> errors = new ArrayList<Exception>();
         Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&acceptversions=1.1.1", errors);
-         print(dom);
+//         print(dom);
         checkValidationErrors(errors);
         
         // make sure we provided the store values (for the moment, unsupported, so store param should
@@ -49,7 +49,7 @@ public class GetCapabilitiesTest extends WCSTestSupport {
         
         List<Exception> errors = new ArrayList<Exception>();
         Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS", errors);
-         print(dom);
+//         print(dom);
         checkValidationErrors(errors);
     }
 
@@ -60,7 +60,7 @@ public class GetCapabilitiesTest extends WCSTestSupport {
                 + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>";
         List<Exception> errors = new ArrayList<Exception>();
         Document dom = postAsDOM(BASEPATH, request, errors);
-        print(dom);
+//        print(dom);
         checkValidationErrors(errors);
     }
 
