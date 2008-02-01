@@ -151,29 +151,25 @@ public class GetCoverageTest extends WCSTestSupport {
         assertEquals(0.0, flippedTx.getTranslateX(), EPS);
     }
     
-    /**
-     * This one needs to be reactivated when GEOS-1701 is fixed (along with other tests
-     * to make sure rotated tx are correct)
-     */
-//    public void testGridOffsetsSubsample() throws Exception {
-//        Map<String, Object> raw = new HashMap<String, Object>();
-//        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
-//        raw.put("identifier", layerId);
-//        raw.put("format", "image/geotiff");
-//        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
-//        raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:4326");
-//        raw.put("GridType", "urn:ogc:def:method:WCS:1.1:2dSimpleGrid");
-//        raw.put("GridOffsets", "0.1,0.1");
-//        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-//        final AffineTransform2D flippedTx = (AffineTransform2D) coverages[0].getGridGeometry()
-//        .getGridToCRS();
-//        assertEquals(0.0, flippedTx.getShearY(), EPS);
-//        assertEquals(0.0, flippedTx.getShearX(), EPS);
-//        assertEquals(0.1, flippedTx.getScaleY(), EPS);
-//        assertEquals(0.1, flippedTx.getScaleX(), EPS);
-//        assertEquals(0.0, flippedTx.getTranslateY(), EPS);
-//        assertEquals(0.0, flippedTx.getTranslateX(), EPS);
-//    }
+    public void testGridOffsetsSubsample() throws Exception {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        raw.put("identifier", layerId);
+        raw.put("format", "image/geotiff");
+        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
+        raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:4326");
+        raw.put("GridType", "urn:ogc:def:method:WCS:1.1:2dSimpleGrid");
+        raw.put("GridOffsets", "0.1,0.1");
+        GridCoverage[] coverages = executeGetCoverageKvp(raw);
+        final AffineTransform2D flippedTx = (AffineTransform2D) coverages[0].getGridGeometry()
+        .getGridToCRS();
+        assertEquals(0.0, flippedTx.getShearY(), EPS);
+        assertEquals(0.0, flippedTx.getShearX(), EPS);
+        assertEquals(0.1, flippedTx.getScaleY(), EPS);
+        assertEquals(0.1, flippedTx.getScaleX(), EPS);
+        assertEquals(0.0, flippedTx.getTranslateY(), EPS);
+        assertEquals(0.0, flippedTx.getTranslateX(), EPS);
+    }
 
     /**
      * Tests valid range subset expressions, but with a mix of valid and invalid
@@ -229,7 +225,7 @@ public class GetCoverageTest extends WCSTestSupport {
 
         // extract all bands. We had two bugs here, one related to the case sensitiveness
         // and the other about the inability to extract bands at all (with exception of the red one) 
-        String[] bands = new String[] {"Red_Band", "GREEN_BAND", "blue_band"};
+        String[] bands = new String[] {"red", "grEEN", "Blue"};
         for (int i = 0; i < bands.length; i++) {
             raw.put("rangeSubset", "contents:nearest[Bands[" + bands[i] + "]]");
             GridCoverage[] coverages = executeGetCoverageKvp(raw);
@@ -238,34 +234,34 @@ public class GetCoverageTest extends WCSTestSupport {
             assertEquals(bands[i].replace('_', ' ').toLowerCase(), coverageBand.toLowerCase());
         }
     }
-//    
-//    public void testRangeSubsetMulti() throws Exception {
-//        Map<String, Object> raw = new HashMap<String, Object>();
-//        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
-//        raw.put("identifier", layerId);
-//        raw.put("format", "image/geotiff");
-//        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
-//
-//        raw.put("rangeSubset", "contents:nearest[Bands[Red_band,Blue_band]]");
-//        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-//        assertEquals(2, coverages[0].getNumSampleDimensions());
-//        assertEquals("Red band", coverages[0].getSampleDimension(0).getDescription().toString());
-//        assertEquals("Blue band", coverages[0].getSampleDimension(1).getDescription().toString());
-//    }
-//    
-//    public void testRangeSubsetSwap() throws Exception {
-//        Map<String, Object> raw = new HashMap<String, Object>();
-//        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
-//        raw.put("identifier", layerId);
-//        raw.put("format", "image/geotiff");
-//        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
-//
-//        raw.put("rangeSubset", "contents:nearest[Bands[Blue_band,Green_band]]");
-//        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-//        assertEquals(2, coverages[0].getNumSampleDimensions());
-//        assertEquals("Blue band", coverages[0].getSampleDimension(0).getDescription().toString());
-//        assertEquals("Green band", coverages[0].getSampleDimension(1).getDescription().toString());
-//    }
+    
+    public void testRangeSubsetMulti() throws Exception {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        raw.put("identifier", layerId);
+        raw.put("format", "image/geotiff");
+        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
+
+        raw.put("rangeSubset", "contents:nearest[Bands[RED,BLUE]]");
+        GridCoverage[] coverages = executeGetCoverageKvp(raw);
+        assertEquals(2, coverages[0].getNumSampleDimensions());
+        assertEquals("RED", coverages[0].getSampleDimension(0).getDescription().toString());
+        assertEquals("BLUE", coverages[0].getSampleDimension(1).getDescription().toString());
+    }
+    
+    public void testRangeSubsetSwap() throws Exception {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        raw.put("identifier", layerId);
+        raw.put("format", "image/geotiff");
+        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
+
+        raw.put("rangeSubset", "contents:nearest[Bands[BLUE,GREEN]]");
+        GridCoverage[] coverages = executeGetCoverageKvp(raw);
+        assertEquals(2, coverages[0].getNumSampleDimensions());
+        assertEquals("BLUE", coverages[0].getSampleDimension(0).getDescription().toString());
+        assertEquals("GREEN", coverages[0].getSampleDimension(1).getDescription().toString());
+    }
     
     public void testRangeSubsetOnlyInterpolation() throws Exception {
           Map<String, Object> raw = new HashMap<String, Object>();
