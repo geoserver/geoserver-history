@@ -173,7 +173,7 @@
           </ClientProperty>
           <ClientProperty>
             <name>xlink:href</name>
-            <value>"urn:x-ogc:def:nil:OGC:unknown"</value>
+            <value>'urn:x-ogc:def:nil:OGC:unknown'</value>
           </ClientProperty>
         </AttributeMapping>
 
