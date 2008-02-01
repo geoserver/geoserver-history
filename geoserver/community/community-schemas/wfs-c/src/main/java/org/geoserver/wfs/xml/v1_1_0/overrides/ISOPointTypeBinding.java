@@ -20,7 +20,13 @@ import com.vividsolutions.jts.geom.Point;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.gml3.bindings.GML;
 import org.geotools.gml3.bindings.PointTypeBinding;
+import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.DefaultGeocentricCRS;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.Attribute;
+import org.opengis.feature.GeometryAttribute;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import javax.xml.namespace.QName;
@@ -36,15 +42,10 @@ public class ISOPointTypeBinding extends PointTypeBinding {
     }
 
     public Object getProperty(Object object, QName name) {
+        GeometryAttribute attribute = (GeometryAttribute) object;
         if (GML.pos.equals(name)) {
             Point point;
-
-            if (object instanceof Attribute) {
-                Attribute att = (Attribute) object;
-                point = (Point) att.getValue();
-            } else {
-                point = (Point) object;
-            }
+                point = (Point) attribute.getValue();
 
             if (point != null) {
                 DirectPosition2D dp = new DirectPosition2D();
@@ -53,6 +54,21 @@ public class ISOPointTypeBinding extends PointTypeBinding {
 
                 return dp;
             }
+        }else if("srsName".equals(name.getLocalPart())){
+            CoordinateReferenceSystem crs = attribute.getCRS();
+
+            if(crs == null){
+                crs = DefaultGeographicCRS.WGS84;
+            }
+            try {
+                String identifier = CRS.lookupIdentifier(crs, true);
+                return identifier;
+            } catch (FactoryException e) {
+                e.printStackTrace();
+            }
+        }else if("id".equals(name.getLocalPart())){
+            String id = attribute.getID();
+            return id;
         }
 
         return null;
