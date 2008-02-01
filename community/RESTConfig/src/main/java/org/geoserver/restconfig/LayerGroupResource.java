@@ -101,7 +101,7 @@ class LayerGroupResource extends MapResource {
 
     public Map getSupportedFormats() {
         Map m = new HashMap();
-        m.put("html", new HTMLFormat("HTMLTemplates/layergroups.ftl"));
+        m.put("html", new HTMLFormat("HTMLTemplates/layergroup.ftl"));
         m.put("json", new JSONFormat());
         m.put("xml",  new AutoXMLFormat("layergroups"));
         m.put(null, m.get("html"));

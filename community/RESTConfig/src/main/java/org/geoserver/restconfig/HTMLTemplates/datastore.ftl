@@ -1,19 +1,19 @@
 <#include "head.ftl">
-<h1>Featuretypes in ${datastoreid}</h1>
 <ul>
-<li> Enabled : <#if Enabled> yes <#else> no </#if>
+<li> Enabled : <#if Enabled == "true"> yes <#else> false </#if> 
 <li> Namespace : ${Namespace} </li>
 <li> Description : ${Description} </li>
-<li> Data URL: ${DataURL} </li>
-<li> Spatial Indexing : <#if SpatialIndexingEnabled> yes <#else> no </#if> </li>
-<li> Character Set : ${CharSet} </li>
-<li> Memory Mapping : <#if MemoryMappingEnabled> Enabled <#else> Disabled </#if> </li>
-<#if featuretypes??>
-<#list featuretypes as ft>
-  <li><a href="${page.currentURL}/featuretypes/${ft.name}">${ft.name} (SRS: <#if ft.srs??>${ft.srs}<#else>unknown</#if>)</a></li>
-</#list>
+<li> Parameters: 
+<ul>
+<#if Params??>
+    <#list Params as param>
+       <li>${param.name} = <#if (param.value)??>${param.value}<#else>null</#if></li>
+    </#list>
 <#else>
-	<li>no feature types</li>
+   <li>No parameters</li>
 </#if>
+</ul>
+</li>
+<li> <a href="${page.currentURL}/featuretypes">FeatureTypes</a> </li>
 </ul>
 <#include "tail.ftl">

@@ -66,7 +66,7 @@ public class CoverageStoreResource extends MapResource {
         m.put("Enabled", csc.isEnabled());
         m.put("Namespace", csc.getNameSpaceId());
         m.put("URL", csc.getUrl());
-        m.put("Description", csc.getAbstract());
+        m.put("Description", (csc.getAbstract() == null ? "" : csc.getAbstract()));
         m.put("Type", csc.getFactory().getName());
         
         return m;

@@ -1,18 +1,26 @@
 <#include "head.ftl">
-<h1>Featuretype ${name}</h1>
 <ul>
-<li>Source: <a href="../../${datastoreid}">${datastoreid}</a></li>
-<li>Namespace: ${namespace}</li>
-<#if schemaattributes??>
-<li>Schema Attributes:
+<li>Default Style: ${Style}</li>
+<li>Additional Styles: <#if AdditionalStyles??>
 <ul>
-	<#list schemaattributes as sa>
-  		<li>${sa}</li>
-	</#list>
-</li>
+<#list AdditionalStyles as st>
+<li>${st}</li>
+</#list>
 </ul>
 <#else>
-	<li>no feature types</li>
+[None]
 </#if>
+</li>
+<li> SRS: ${SRS} </li>
+<li> SRS Handling: ${SRSHandling} </li>
+<li> Title: ${Title} </li>
+<li> Bounding Box: [${BBox[0]}, ${BBox[1]}, ${BBox[2]}, ${BBox[3]}] </li>
+<li> Keywords: <#list Keywords as w>${w}, </#list> </li>
+<li> Description: ${Abstract} </li>
+<li> WMS Path: ${WMSPath} </li>
+<li> Metadata Links: <br/> <#list MetadataLinks as ml> ${ml} <br/> </#list> </li>
+<li> Caching: <#if CachingEnabled == "true"> Enabled <#else> Disabled </#if> </li>
+<li> Caching Interval: <#if CacheTime??> ${CacheTime} <#else> [None] </#if> </li>
+<li> Schema Base: ${SchemaBase} </li>
 </ul>
 <#include "tail.ftl">
