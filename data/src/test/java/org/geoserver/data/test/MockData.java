@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -632,19 +633,26 @@ public class MockData {
             writer.write("<min>" + sd[i].getMinimumValue() + "</min>\n");
             writer.write("<max>" + sd[i].getMaximumValue() + "</max>\n");
             writer.write("</interval>\n");
-            writer.write("<nullValues>\n");
-            for (Iterator it = sd[i].getCategories().iterator(); it.hasNext();) {
-                Category cat = (Category) it.next();
-
-                if ((cat != null) && cat.getName().toString().equalsIgnoreCase("no data")) {
-                    double min = cat.getRange().getMinimum();
-                    double max = cat.getRange().getMaximum();
-                    writer.write("<value>" + min + "</value>\n");
-                    if(min != max)
-                        writer.write("<value>" + max + "</value>\n");
-                }
-            }
-            writer.write("</nullValues>\n");
+            final List<Category> categories = sd[i].getCategories();
+            if (categories != null && categories.size() >= 1) {
+				writer.write("<nullValues>\n");
+				for (Iterator<Category> it = sd[i].getCategories().iterator(); it
+						.hasNext();) {
+					Category cat = (Category) it.next();
+					if ((cat != null)
+							&& cat.getName().toString().equalsIgnoreCase(
+									"no data")) {
+						double min = cat.getRange().getMinimum();
+						double max = cat.getRange().getMaximum();
+						writer.write("<value>" + min + "</value>\n");
+						if (min != max)
+							writer.write("<value>" + max + "</value>\n");
+					}
+				}
+				writer.write("</nullValues>\n");
+			}
+            else
+            	 writer.write("<nullValues/>\n");
             writer.write("</CoverageDimension>\n");
         }
         
