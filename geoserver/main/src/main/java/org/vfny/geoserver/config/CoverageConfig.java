@@ -467,33 +467,20 @@ public class CoverageConfig {
             dims[i].setDescription(label.toString());
             dims[i].setRange(sampleDimensions[i].getRange());
 
-            final List categories = sampleDimensions[i].getCategories();
-
-            Category cat = null;
-
-            for (Iterator c_iT = categories.iterator(); c_iT.hasNext();) {
-                cat = (Category) c_iT.next();
-
-                if ((cat != null) && cat.getName().toString().equalsIgnoreCase("no data")) {
-                    double min = cat.getRange().getMinimum();
-                    double max = cat.getRange().getMaximum();
-
-                    dims[i].setNullValues(((min == max) ? new Double[] { new Double(min) }
-                                                        : new Double[] {
-                            new Double(min), new Double(max)
-                        }));
-                }
-            }
-
-            /*double[] nTemp = sampleDimensions[i].getNoDataValues();
-            if (nTemp != null) {
-                    final int ntLength = nTemp.length;
-                    Double[] nulls = new Double[ntLength];
-                    for (int nd = 0; nd < ntLength; nd++) {
-                            nulls[nd] = new Double(nTemp[nd]);
-                    }
-                    dims[i].setNullValues(nulls);
-            }*/
+            final List<Category> categories = sampleDimensions[i].getCategories();
+            if(categories!=null)
+	            for (Category cat:categories) {
+	
+	                if ((cat != null) && cat.getName().toString().equalsIgnoreCase("no data")) {
+	                    double min = cat.getRange().getMinimum();
+	                    double max = cat.getRange().getMaximum();
+	
+	                    dims[i].setNullValues(((min == max) ? new Double[] { new Double(min) }
+	                                                        : new Double[] {
+	                            new Double(min), new Double(max)
+	                        }));
+	                }
+	            }
         }
 
         return dims;
