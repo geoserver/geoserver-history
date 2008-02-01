@@ -29,7 +29,7 @@ public class GetCapabilitiesTest extends WCSTestSupport {
 
     public void testGetBasic() throws Exception {
         List<Exception> errors = new ArrayList<Exception>();
-        Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS", errors);
+        Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&acceptversions=1.1.1", errors);
          print(dom);
         checkValidationErrors(errors);
         
