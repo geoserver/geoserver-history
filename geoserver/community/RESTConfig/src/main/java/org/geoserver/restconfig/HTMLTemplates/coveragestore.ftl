@@ -1,13 +1,10 @@
-<html>
-<head>
-<title> Testing Thingy </title>
-</head>
-<body>
-<h2> Coverage Listing </h2>
+<#include "head.ftl">
 <ul>
-   <#list coverages as cov>
-   <li> <a href="${page.currentURL}/coverages/${cov}">${cov}</a> </li>
-   </#list>
+<li> Enabled: <#if Enabled> Yes <#else> No </#if> </li>
+<li> Namespace: ${Namespace} </li>
+<li> URL: ${URL} </li>
+<li> Description: ${Description} </li>
+<li> Type: ${Type} </li>
+<li> <a href="${page.currentURL}/coverages">Coverages</a> </li>
 </ul>
-</body>
-</html>
+<#include "tail.ftl">

@@ -38,7 +38,7 @@ public class FeatureTypeListResource extends MapResource {
     public Map getSupportedFormats() {
         Map m = new HashMap();
 
-        m.put("html", new HTMLFormat("HTMLTemplates/featuretype.ftl"));
+        m.put("html", new HTMLFormat("HTMLTemplates/featuretypes.ftl"));
         m.put("json", new JSONFormat());
         m.put("xml", new AutoXMLFormat("FeatureTypes"));
         m.put(null, m.get("html"));

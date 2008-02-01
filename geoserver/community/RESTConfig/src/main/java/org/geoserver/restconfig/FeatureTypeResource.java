@@ -83,7 +83,7 @@ public class FeatureTypeResource extends MapResource {
         m.put("Abstract", myFTC.getAbstract());
         m.put("WMSPath", myFTC.getWmsPath());
         m.put("MetadataLinks", getMetadataLinks());
-        m.put("CachingEnabled", myFTC.isCachingEnabled());
+        m.put("CachingEnabled", Boolean.toString(myFTC.isCachingEnabled()));
         m.put("CacheTime", (myFTC.isCachingEnabled() ? 
                     Integer.valueOf(myFTC.getCacheMaxAge()) : 
                     null
