@@ -219,25 +219,25 @@ public class GetCoverageTest extends WCSTestSupport {
         }
     }
     
-    // disabling tests up until the gt2 code is working again
-//    public void testRangeSubsetSingle() throws Exception {
-//        Map<String, Object> raw = new HashMap<String, Object>();
-//        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
-//        raw.put("identifier", layerId);
-//        raw.put("format", "image/geotiff");
-//        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
-//
-//        // extract all bands. We had two bugs here, one related to the case sensitiveness
-//        // and the other about the inability to extract bands at all (with exception of the red one) 
-//        String[] bands = new String[] {"Red_Band", "GREEN_BAND", "blue_band"};
-//        for (int i = 0; i < bands.length; i++) {
-//            raw.put("rangeSubset", "contents:nearest[Bands[" + bands[i] + "]]");
-//            GridCoverage[] coverages = executeGetCoverageKvp(raw);
-//            assertEquals(1, coverages[0].getNumSampleDimensions());
-//            final String coverageBand = coverages[0].getSampleDimension(0).getDescription().toString();
-//            assertEquals(bands[i].replace('_', ' ').toLowerCase(), coverageBand.toLowerCase());
-//        }
-//    }
+//     disabling tests up until the gt2 code is working again
+    public void testRangeSubsetSingle() throws Exception {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String layerId = layerId(WCSTestSupport.TASMANIA_BM);
+        raw.put("identifier", layerId);
+        raw.put("format", "image/geotiff");
+        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
+
+        // extract all bands. We had two bugs here, one related to the case sensitiveness
+        // and the other about the inability to extract bands at all (with exception of the red one) 
+        String[] bands = new String[] {"Red_Band", "GREEN_BAND", "blue_band"};
+        for (int i = 0; i < bands.length; i++) {
+            raw.put("rangeSubset", "contents:nearest[Bands[" + bands[i] + "]]");
+            GridCoverage[] coverages = executeGetCoverageKvp(raw);
+            assertEquals(1, coverages[0].getNumSampleDimensions());
+            final String coverageBand = coverages[0].getSampleDimension(0).getDescription().toString();
+            assertEquals(bands[i].replace('_', ' ').toLowerCase(), coverageBand.toLowerCase());
+        }
+    }
 //    
 //    public void testRangeSubsetMulti() throws Exception {
 //        Map<String, Object> raw = new HashMap<String, Object>();
