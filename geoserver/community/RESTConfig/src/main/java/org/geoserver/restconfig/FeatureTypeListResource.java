@@ -11,7 +11,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.FeatureTypeConfig;
+import org.vfny.geoserver.util.DataStoreUtils;
+import org.geotools.data.DataStore;
+
+import javax.servlet.ServletContext;
 
 
 /**
@@ -43,22 +48,33 @@ public class FeatureTypeListResource extends MapResource {
 
     public Map getMap() {
     	String dataStoreName = (String)getRequest().getAttributes().get("datastore");
+        DataStoreConfig dsc = (DataStoreConfig)myDC.getDataStores().get(dataStoreName);
     	
-    	if (myDC.getDataStores().containsKey(dataStoreName)){
+    	if (dsc != null){
+            try{
             Map m = new HashMap();
-            List featureTypes = new ArrayList();
-            
-            Iterator it = myDC.getFeaturesTypes().values().iterator();
-            while (it.hasNext()){
-                FeatureTypeConfig ftc = (FeatureTypeConfig)it.next();
-                if (ftc.getDataStoreId().equals(dataStoreName)){
-                	featureTypes.add(ftc.getName());
+            List configured = new ArrayList();
+            List available = new ArrayList();
+            DataStore store = DataStoreUtils.acquireDataStore(dsc.getConnectionParams(), (ServletContext)null);
+
+            String[] featureTypes = store.getTypeNames();
+            for (int i = 0; i < featureTypes.length; i++){
+                if (myDC.getFeaturesTypes().containsKey(dataStoreName + ":" + featureTypes[i])){
+                    configured.add(featureTypes[i]);
+                } else {
+                    available.add(featureTypes[i]);
                 }
             }
             
-            m.put("FeatureTypes", featureTypes);
+            m.put("Configured", configured);
+            m.put("Available", available);
             
             return m;    		
+            } catch (Exception e){
+                LOG.severe("Failure while retrieving " + dataStoreName + "; " + e);
+                e.printStackTrace();
+                return null;
+            }
     	} else return null;    	
     }
 
