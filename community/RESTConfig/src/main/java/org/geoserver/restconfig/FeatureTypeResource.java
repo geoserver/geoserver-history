@@ -23,6 +23,10 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
+import org.vfny.geoserver.util.DataStoreUtils;
+import org.geotools.data.DataStore;
+import org.opengis.feature.simple.SimpleFeatureType;
+import javax.servlet.ServletContext;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -98,52 +102,67 @@ public class FeatureTypeResource extends MapResource {
     	String dataStoreName = (String) getRequest().getAttributes().get("datastore");
  
         if (myFTC == null){
-        	throw new Exception("FeatureType " + featureTypeName + " in DataStore " + dataStoreName + "not found.");
-        } else {
-        	myFTC.setDefaultStyle((String)m.get("Style"));
-        	ArrayList styles = (ArrayList)m.get("AdditionalStyles");
-        	myFTC.setStyles(styles == null ? new ArrayList() : styles);
-        	myFTC.setSRS(Integer.valueOf((String)m.get("SRS")));
-        	myFTC.setSRSHandling(decodeSRSHandling((String)m.get("SRSHandling")));
-        	myFTC.setTitle((String)m.get("Title"));
-        	
-        	Envelope latLonBbox = decodeBoundingBox((List)m.get("BBox"));
-        	if(!myFTC.getLatLongBBox().equals(latLonBbox)) {
-                myFTC.setLatLongBBox(latLonBbox);
+            DataStore store = DataStoreUtils.acquireDataStore(
+                    myDSC.getConnectionParams(),
+                    (ServletContext)null
+                    );
 
-                try{
-                    Envelope nativeBBox = convertBBoxFromLatLon(latLonBbox, "EPSG:" + myFTC.getSRS());
-                    myFTC.setNativeBBox(nativeBBox);
-                } catch (Exception e) {
-                    LOG.severe("Couldn't convert new BBox to native coordinate system! Error was:" + e);
-                }
+            SimpleFeatureType type = store.getSchema(featureTypeName);
+
+            if (type == null){
+                throw new Exception(
+                        "FeatureType " + featureTypeName + 
+                        " in DataStore " + dataStoreName +
+                        "not found."
+                        );
+            } else {
+                myFTC = new FeatureTypeConfig(dataStoreName, type, false);
             }
+        } 
 
-        	List keywords = (List)m.get("Keywords");
-        	myFTC.setKeywords(keywords == null ?
-        			new TreeSet() :
-        		    new TreeSet((List)m.get("Keywords"))
-        			);
-        	myFTC.setAbstract((String)m.get("Abstract"));
-        	myFTC.setWmsPath((String)m.get("WMSPath"));
-        	
-        	List metadataLinks = (List)m.get("MetadataLinks");
-        	myFTC.setMetadataLinks(metadataLinks == null ?
-        			new TreeSet() :
-        		    new TreeSet((metadataLinks))
-        			);
-        	myFTC.setCachingEnabled(Boolean.valueOf((String)m.get("CachingEnabled")));
-        	myFTC.setCacheMaxAge((String)myFTC.getCacheMaxAge());
-        	myFTC.setSchemaBase((String)m.get("SchemaBase"));
-        	
-        	String qualifiedName = dataStoreName + ":" + featureTypeName;
-        	myDC.removeFeatureType(qualifiedName);
-        	myDC.addFeatureType(qualifiedName, myFTC); // TODO: This isn't needed, is it?
-        	
-        	myData.load(myDC.toDTO());
-        	
-        	saveConfiguration();
+        myFTC.setDefaultStyle((String)m.get("Style"));
+        ArrayList styles = (ArrayList)m.get("AdditionalStyles");
+        myFTC.setStyles(styles == null ? new ArrayList() : styles);
+        myFTC.setSRS(Integer.valueOf((String)m.get("SRS")));
+        myFTC.setSRSHandling(decodeSRSHandling((String)m.get("SRSHandling")));
+        myFTC.setTitle((String)m.get("Title"));
+
+        Envelope latLonBbox = decodeBoundingBox((List)m.get("BBox"));
+        if(!myFTC.getLatLongBBox().equals(latLonBbox)) {
+            myFTC.setLatLongBBox(latLonBbox);
+
+            try{
+                Envelope nativeBBox = convertBBoxFromLatLon(latLonBbox, "EPSG:" + myFTC.getSRS());
+                myFTC.setNativeBBox(nativeBBox);
+            } catch (Exception e) {
+                LOG.severe("Couldn't convert new BBox to native coordinate system! Error was:" + e);
+            }
         }
+
+        List keywords = (List)m.get("Keywords");
+        myFTC.setKeywords(keywords == null ?
+                new TreeSet() :
+                new TreeSet((List)m.get("Keywords"))
+                );
+        myFTC.setAbstract((String)m.get("Abstract"));
+        myFTC.setWmsPath((String)m.get("WMSPath"));
+
+        List metadataLinks = (List)m.get("MetadataLinks");
+        myFTC.setMetadataLinks(metadataLinks == null ?
+                new TreeSet() :
+                new TreeSet((metadataLinks))
+                );
+        myFTC.setCachingEnabled(Boolean.valueOf((String)m.get("CachingEnabled")));
+        myFTC.setCacheMaxAge((String)myFTC.getCacheMaxAge());
+        myFTC.setSchemaBase((String)m.get("SchemaBase"));
+
+        String qualifiedName = dataStoreName + ":" + featureTypeName;
+        myDC.removeFeatureType(qualifiedName);
+        myDC.addFeatureType(qualifiedName, myFTC); // TODO: This isn't needed, is it?
+
+        myData.load(myDC.toDTO());
+
+        saveConfiguration();
     }
 
     private void saveConfiguration() throws ConfigurationException{
