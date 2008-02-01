@@ -25,6 +25,12 @@ public class WcsGetCapabilitiesRequestReader extends EMFKvpRequestReader {
     }
 
     public Object read(Object request, Map kvp, Map rawKvp) throws Exception {
+        // make sure we get the right accepts versions param -> workaround for GEOS-1719
+        if(rawKvp.containsKey("acceptVersions")) {
+            AcceptVersionsKvpParser avp = new AcceptVersionsKvpParser();
+            AcceptVersionsType avt = (AcceptVersionsType) avp.parse((String) rawKvp.get("acceptVersions"));
+            kvp.put("acceptVersions", avt);
+        }
         request = super.read(request, kvp, rawKvp);
 
         // set the version attribute on the request
