@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.restconfig;
+package org.geoserver.rest;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -57,6 +57,8 @@ public class WrappingController extends AbstractController {
 
         while (it.hasNext()){
             String key = (String)it.next();
+
+            System.out.println("Registering REST path " + key);
 
             r.attach(key, (Restlet)m.get(key));
         }

@@ -31,6 +31,11 @@ import org.restlet.resource.StringRepresentation;
 
 import org.springframework.context.ApplicationContext;
 
+import org.geoserver.rest.MapResource;
+import org.geoserver.rest.HTMLFormat;
+import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.JSONFormat;
+
 import org.vfny.geoserver.config.CoverageConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.global.Data;

@@ -12,6 +12,10 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.vfny.geoserver.config.DataConfig;
 
+import org.geoserver.rest.MapResource;
+import org.geoserver.rest.HTMLFormat;
+import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.JSONFormat;
 
 public class CoverageStoreListResource extends MapResource {
     private DataConfig myDataConfig;

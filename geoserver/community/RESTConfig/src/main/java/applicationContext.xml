@@ -3,9 +3,9 @@
 
 <beans>
 
-<bean id="restWrapper" class="org.geoserver.restconfig.WrappingController"/>
+<bean id="restWrapper" class="org.geoserver.rest.WrappingController"/>
 
-<bean id="restConfigMapping" class="org.geoserver.restconfig.RESTMapping">
+<bean id="restConfigMapping" class="org.geoserver.rest.RESTMapping">
 <property name="routes">
   <map>
         <entry>
@@ -124,7 +124,7 @@
 </property>
 </bean>
 
-<bean id="featureTypeFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+<bean id="featureTypeFinder" class="org.geoserver.rest.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.FeatureTypeResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
@@ -132,14 +132,14 @@
     </bean>
   </property>
 </bean>
-<bean id="featureTypeListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+<bean id="featureTypeListFinder" class="org.geoserver.rest.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.FeatureTypeListResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
     </bean>
   </property>
 </bean>
-<bean id="datastoreFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+<bean id="datastoreFinder" class="org.geoserver.rest.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.DataStoreResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
@@ -147,7 +147,7 @@
     </bean>
   </property>
 </bean>
-<bean id="datastoreFileFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+<bean id="datastoreFileFinder" class="org.geoserver.rest.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.DataStoreFileResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
@@ -155,14 +155,14 @@
     </bean>
   </property>
 </bean>
-<bean id="datastoreListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+<bean id="datastoreListFinder" class="org.geoserver.rest.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.DataStoreListResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
     </bean>
   </property>
 </bean>
-<bean id="styleFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+<bean id="styleFinder" class="org.geoserver.rest.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.StyleResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
@@ -170,14 +170,14 @@
     </bean>
   </property>
 </bean>
-<bean id="styleListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+<bean id="styleListFinder" class="org.geoserver.rest.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.StyleListResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
     </bean>
   </property>
 </bean>
-<bean id="coverageFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+<bean id="coverageFinder" class="org.geoserver.rest.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.CoverageResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
@@ -185,14 +185,14 @@
     </bean>
   </property>
 </bean>
-<bean id="coverageListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+<bean id="coverageListFinder" class="org.geoserver.rest.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.CoverageListResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
     </bean>
   </property>
 </bean>
-<bean id="coverageStoreFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+<bean id="coverageStoreFinder" class="org.geoserver.rest.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.CoverageStoreResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
@@ -200,14 +200,14 @@
     </bean>
   </property>
 </bean>
-<bean id="coverageStoreListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+<bean id="coverageStoreListFinder" class="org.geoserver.rest.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.CoverageStoreListResource">
       <property name="dataConfig"><ref bean="dataConfig"/></property>
     </bean>
   </property>
 </bean> 
-<bean id="layerGroupFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+<bean id="layerGroupFinder" class="org.geoserver.rest.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.LayerGroupResource">
       <property name="WMSConfig"><ref bean="wmsConfig"/></property>
@@ -218,7 +218,7 @@
     </bean>
   </property>
 </bean> 
-<bean name="layerGroupListFinder" class="org.geoserver.restconfig.BeanResourceFinder">
+<bean name="layerGroupListFinder" class="org.geoserver.rest.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.LayerGroupListResource">
       <property name="WMSConfig"><ref bean="wmsConfig"/></property>

@@ -25,6 +25,11 @@ import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.geoserver.data.util.CoverageStoreUtils;
 
+import org.geoserver.rest.MapResource;
+import org.geoserver.rest.HTMLFormat;
+import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.JSONFormat;
+
 public class CoverageStoreResource extends MapResource {
     private DataConfig myDataConfig;
     private Data myData;
