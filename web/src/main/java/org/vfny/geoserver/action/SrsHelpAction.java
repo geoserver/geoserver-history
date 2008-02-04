@@ -51,14 +51,14 @@ public class SrsHelpAction extends Action {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
         HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
-        ArrayList defs = new ArrayList();
-        ArrayList ids_string = new ArrayList();
+        List<String> defs = new ArrayList<String>();
+        List<String> ids_string = new ArrayList<String>();
 
-        Set codes = CRS.getSupportedCodes("EPSG");
+        Set<String> codes = CRS.getSupportedCodes("EPSG");
 
         CRSAuthorityFactory customFactory = ReferencingFactoryFinder.getCRSAuthorityFactory("EPSG",
                 new Hints(Hints.CRS_AUTHORITY_FACTORY, GeoserverCustomWKTFactory.class));
-        Set customCodes = new HashSet();
+        Set<String> customCodes = new HashSet<String>();
 
         try {
             customCodes = customFactory.getAuthorityCodes(CoordinateReferenceSystem.class);
@@ -66,33 +66,20 @@ public class SrsHelpAction extends Action {
             LOGGER.log(Level.WARNING, "Error occurred while trying to gather custom CRS codes", e);
         }
 
-        // make an array of each code (as an int)
-        HashSet idSet = new HashSet();
-        Iterator codeIt = codes.iterator();
-
-        while (codeIt.hasNext()) {
-            String code = (String) codeIt.next();
-            String id = code.substring(code.indexOf(':') + 1); //just the number
-
-            idSet.add(Integer.valueOf(id));
+        // make a set with each code
+        Set<String> idSet = new HashSet<String>();
+        for (String code : codes) {
+            String id = code.substring(code.indexOf(':') + 1); // just the non prefix part
+            idSet.add(id);
         }
-
-        List ids = new ArrayList(idSet);
+        List<String> ids = new ArrayList<String>(idSet);
         Collections.sort(ids); //sort to get them in order
 
         CoordinateReferenceSystem crs;
-        String def;
-        codeIt = ids.iterator();
-
-        Integer id;
-
-        while (codeIt.hasNext()) //for each id (in sorted order)
-         {
-            id = (Integer) codeIt.next();
-
+        for (String id : ids) {
             try { //get its definition
                 crs = CRS.decode("EPSG:" + id);
-                def = crs.toString();
+                String def = crs.toString();
                 defs.add(def);
                 ids_string.add(id.toString());
             } catch (Exception e) {
@@ -113,8 +100,8 @@ public class SrsHelpAction extends Action {
         //send off to the .jsp
         DynaActionForm myForm = (DynaActionForm) form;
 
-        myForm.set("srsDefinitionList", defs.toArray(new String[1]));
-        myForm.set("srsIDList", ids_string.toArray(new String[1]));
+        myForm.set("srsDefinitionList", defs.toArray(new String[defs.size()]));
+        myForm.set("srsIDList", ids_string.toArray(new String[ids_string.size()]));
 
         // return back to the admin demo
         //
