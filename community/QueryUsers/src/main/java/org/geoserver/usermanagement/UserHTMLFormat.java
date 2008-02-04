@@ -4,7 +4,7 @@
  */
 package org.geoserver.usermanagement;
 
-import org.geoserver.restconfig.HTMLFormat;
+import org.geoserver.rest.HTMLFormat;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;

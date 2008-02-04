@@ -13,10 +13,10 @@ import org.acegisecurity.userdetails.UserDetails;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.acegisecurity.userdetails.memory.UserAttribute;
 import org.acegisecurity.userdetails.memory.UserAttributeEditor;
-import org.geoserver.restconfig.HTMLFormat;
-import org.geoserver.restconfig.JSONFormat;
-import org.geoserver.restconfig.MapResource;
-import org.geoserver.restconfig.XMLFormat;
+import org.geoserver.rest.HTMLFormat;
+import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.MapResource;
+import org.geoserver.rest.XMLFormat;
 import org.geoserver.security.EditableUserDAO;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
@@ -48,12 +48,13 @@ import java.util.Map;
  */
 public class UserResource extends MapResource {
     private EditableUserDAO myUserService;
-    private String myUserName;
 
-    public UserResource(Context context, Request request, Response response, EditableUserDAO eud) {
-        super(context, request, response);
-        myUserName = (String) request.getAttributes().get("name");
-        myUserService = eud;
+    public void setUserDAO(EditableUserDAO dao){
+        myUserService = dao;
+    }
+
+    public EditableUserDAO getUserDAO(){
+        return myUserService;
     }
 
     public Map getSupportedFormats() {
@@ -71,7 +72,8 @@ public class UserResource extends MapResource {
     }
 
     public Map getMap() {
-        return getUserInfo(myUserName);
+        String username = (String)getRequest().getAttributes().get("user");
+        return getUserInfo(username);
     }
 
     public boolean allowPut() {
@@ -79,12 +81,13 @@ public class UserResource extends MapResource {
     }
 
     protected void putMap(Map details) throws Exception {
+        String username = (String)getRequest().getAttributes().get("user");
         UserAttribute attr = new UserAttribute();
         attr.setPassword(details.get("password").toString());
         attr.setEnabled(true);
         attr.setAuthoritiesAsString((List) details.get("roles"));
 
-        myUserService.setUserDetails(myUserName, attr);
+        myUserService.setUserDetails(username, attr);
     }
 
     public boolean allowDelete() {
@@ -92,13 +95,14 @@ public class UserResource extends MapResource {
     }
 
     public void handleDelete() {
-        UserDetails details = myUserService.loadUserByUsername(myUserName);
+        String username = (String) getRequest().getAttributes().get("user");
+        UserDetails details = myUserService.loadUserByUsername(username);
 
         if (details != null) {
             try {
-                myUserService.deleteUser(myUserName);
+                myUserService.deleteUser(username);
                 getResponse()
-                    .setEntity(new StringRepresentation(myUserName + " deleted",
+                    .setEntity(new StringRepresentation(username + " deleted",
                         MediaType.TEXT_PLAIN));
             } catch (Exception e) {
                 e.printStackTrace();
