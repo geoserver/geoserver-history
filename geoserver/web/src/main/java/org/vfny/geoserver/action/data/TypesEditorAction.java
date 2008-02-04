@@ -486,17 +486,28 @@ public class TypesEditorAction extends ConfigAction {
         UserContainer user, HttpServletRequest request) {
         FeatureTypeConfig config = user.getFeatureTypeConfig();
         
-        // clean up old names
+        // clean up old names (but make sure not to delete another config which happens
+        // to use the same name
         DataConfig dataConfig = (DataConfig) getDataConfig();
-        dataConfig.removeFeatureType(config.getDataStoreId() + ":" + config.getName());
-        if(config.getAlias() != null)
-            dataConfig.removeFeatureType(config.getDataStoreId() + ":" + config.getAlias());
+        String keyName = config.getDataStoreId() + ":" + config.getName();
+        String keyAlias = config.getDataStoreId() + ":" + config.getAlias();
+        FeatureTypeConfig oldConfig = dataConfig.getFeatureTypeConfig(keyName);
+        if(oldConfig != null && oldConfig == config)
+            dataConfig.removeFeatureType(keyName);
+        if(config.getAlias() != null) {
+            oldConfig = dataConfig.getFeatureTypeConfig(keyAlias);
+            if(oldConfig != null && oldConfig == config)
+                dataConfig.removeFeatureType(keyAlias);
+        }
         
         sync(form, config, request);
+        // recompute after synch
+        keyName = config.getDataStoreId() + ":" + config.getName();
+        keyAlias = config.getDataStoreId() + ":" + config.getAlias();
         if(config.getAlias() != null && !"".equals(config.getAlias()))
-            dataConfig.addFeatureType(config.getDataStoreId() + ":" + config.getAlias(), config);
+            dataConfig.addFeatureType(keyAlias, config);
         else
-            dataConfig.addFeatureType(config.getDataStoreId() + ":" + config.getName(), config);
+            dataConfig.addFeatureType(keyName, config);
 
         // Don't think reset is needed (as me have moved on to new page)
         // form.reset(mapping, request);
