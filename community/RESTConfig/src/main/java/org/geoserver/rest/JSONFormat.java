@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.restconfig;
+package org.geoserver.rest;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

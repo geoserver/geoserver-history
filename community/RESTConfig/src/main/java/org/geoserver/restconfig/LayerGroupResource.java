@@ -34,6 +34,11 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 
 
+import org.geoserver.rest.MapResource;
+import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.HTMLFormat;
+import org.geoserver.rest.JSONFormat;
+
 import com.vividsolutions.jts.geom.Envelope;
 
 

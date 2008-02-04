@@ -26,6 +26,11 @@ import org.vfny.geoserver.global.xml.XMLConfigWriter;
 import org.vfny.geoserver.util.DataStoreUtils;
 
 
+import org.geoserver.rest.MapResource;
+import org.geoserver.rest.AutoXMLFormat;
+import org.geoserver.rest.HTMLFormat;
+import org.geoserver.rest.JSONFormat;
+
 /**
  * Restlet for DataStore resources
  *

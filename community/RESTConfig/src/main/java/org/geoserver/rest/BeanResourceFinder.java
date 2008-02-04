@@ -1,4 +1,4 @@
-package org.geoserver.restconfig;
+package org.geoserver.rest;
 
 import org.restlet.Finder;
 import org.restlet.data.Request;

@@ -2,22 +2,20 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.restconfig;
-
-import java.util.Map;
-
-import org.restlet.data.MediaType;
-import org.restlet.ext.freemarker.TemplateRepresentation;
+package org.geoserver.rest;
 
 import freemarker.template.Configuration;
+import org.restlet.data.MediaType;
+import org.restlet.ext.freemarker.TemplateRepresentation;
+import java.util.Map;
 
 
 /**
  *
- * @author aaime, The Open Planning Project
+ * @author ak@openplans.org, The Open Planning Project
  *
  */
-public class HTMLTemplate {
+public class XMLTemplate {
     /**
      * static freemaker configuration
      */
@@ -25,10 +23,10 @@ public class HTMLTemplate {
 
     static {
         cfg = new Configuration();
-        cfg.setClassForTemplateLoading(HTMLTemplate.class, "");
+        cfg.setClassForTemplateLoading(XMLTemplate.class, "");
     }
 
-    public static TemplateRepresentation getHtmlRepresentation(String template, Map map) {
-        return new TemplateRepresentation(template, cfg, map, MediaType.TEXT_HTML);
+    public static TemplateRepresentation getXmlRepresentation(String template, Map map) {
+        return new TemplateRepresentation(template, cfg, map, MediaType.TEXT_XML);
     }
 }
