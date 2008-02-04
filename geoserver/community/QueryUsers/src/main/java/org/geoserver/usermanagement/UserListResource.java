@@ -13,10 +13,10 @@ import org.acegisecurity.userdetails.UserDetails;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.acegisecurity.userdetails.memory.UserAttribute;
 import org.acegisecurity.userdetails.memory.UserAttributeEditor;
-import org.geoserver.restconfig.HTMLFormat;
-import org.geoserver.restconfig.JSONFormat;
-import org.geoserver.restconfig.MapResource;
-import org.geoserver.restconfig.XMLFormat;
+import org.geoserver.rest.HTMLFormat;
+import org.geoserver.rest.JSONFormat;
+import org.geoserver.rest.MapResource;
+import org.geoserver.rest.XMLFormat;
 import org.geoserver.security.EditableUserDAO;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
@@ -49,9 +49,12 @@ import java.util.Map;
 public class UserListResource extends MapResource {
     private EditableUserDAO myUserService;
 
-    public UserListResource(Context context, Request request, Response response, EditableUserDAO eud) {
-        super(context, request, response);
-        myUserService = eud;
+    public void setUserDAO(EditableUserDAO dao){
+        myUserService = dao;
+    }
+
+    public EditableUserDAO getUserDAO(){
+        return myUserService;
     }
 
     public Map getSupportedFormats() {

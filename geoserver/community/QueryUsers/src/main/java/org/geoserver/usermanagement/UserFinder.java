@@ -26,9 +26,9 @@ public class UserFinder extends Finder {
 
     public Resource findTarget(Request request, Response response) {
         if (request.getAttributes().containsKey("name")) {
-            return new UserResource(getContext(), request, response, myUserService);
+            return new UserResource();
         } else {
-            return new UserListResource(getContext(), request, response, myUserService);
+            return new UserListResource();
         }
     }
 }
