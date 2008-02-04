@@ -943,6 +943,7 @@ public class XMLConfigWriter {
                     }
                 }
 
+                files = fa[j].listFiles();
                 if ((files != null) && (files.length == 0)) {
                     fa[j].delete();
                 }

@@ -430,7 +430,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * @return dataStoreId.typeName
      */
     public String getKey() {
-        return getDataStoreId() + DataConfig.SEPARATOR + getName();
+        return getDataStoreId() + DataConfig.SEPARATOR + (getAlias() != null ? getAlias() : getName());
     }
 
     /**
