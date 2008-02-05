@@ -14,6 +14,6 @@
 </#if>
 </ul>
 </li>
-<li> <a href="${page.currentURL}/featuretypes">FeatureTypes</a> </li>
+<li> <a href="featuretypes">FeatureTypes</a> </li>
 </ul>
 <#include "tail.ftl">
