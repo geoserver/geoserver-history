@@ -44,6 +44,10 @@ public abstract class MapResource extends Resource {
         myRequestFormat = (DataFormat) myFormatMap.get(request.getAttributes().get("type"));
     }
 
+    /**
+     * This method should return a map of format name == Dataformat for the MapResource to use 
+     * in translating to and from different output Formats
+     */
     public abstract Map getSupportedFormats();
 
     public void handleGet() {
@@ -73,8 +77,18 @@ public abstract class MapResource extends Resource {
         }
     }
 
+    /**
+     * This method must be overridden by subclasses; it will be called to handle the HTTP GET method.
+     * @param details the Map equivalent of the uploaded Representation
+     */
     public abstract Map getMap();
 
+    /**
+     * Put some metadata about the HTTP location of the resource into a
+     * map so that it is available to the DataFormat.
+     *
+     * @return a Map containing page metadata
+     */
     public Map getPageDetails() {
         Map map = new HashMap();
         String currentURL = getRequest().getResourceRef().getBaseRef().toString();
@@ -121,7 +135,10 @@ public abstract class MapResource extends Resource {
         }
     }
 
+    /**
+     * This method should be overridden by subclasses that wish to implement the HTTP PUT method.
+     * @param details the Map equivalent of the uploaded Representation
+     */
     protected void putMap(Map details) throws Exception {
-        // nothing to do; this should be overridden by subclasses
     }
 }

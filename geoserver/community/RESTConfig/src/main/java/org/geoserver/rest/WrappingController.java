@@ -58,8 +58,6 @@ public class WrappingController extends AbstractController {
         while (it.hasNext()){
             String key = (String)it.next();
 
-            System.out.println("Registering REST path " + key);
-
             r.attach(key, (Restlet)m.get(key));
         }
     }

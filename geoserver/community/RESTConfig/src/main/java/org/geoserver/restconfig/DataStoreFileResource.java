@@ -219,7 +219,6 @@ public class DataStoreFileResource extends Resource{
         } catch (Exception e){
             LOG.severe("Failure while autoconfiguring uploaded datastore of type " + format);
             e.printStackTrace();
-            //LOG.throwing("DataStoreFileResource", "handlePut", e);
         }
 
         myData.load(myDataConfig.toDTO());
