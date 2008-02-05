@@ -32,7 +32,7 @@ import org.restlet.resource.StringRepresentation;
 import org.springframework.context.ApplicationContext;
 
 import org.geoserver.rest.MapResource;
-import org.geoserver.rest.HTMLFormat;
+import org.geoserver.rest.FreemarkerFormat;
 import org.geoserver.rest.AutoXMLFormat;
 import org.geoserver.rest.JSONFormat;
 
@@ -58,7 +58,7 @@ public class CoverageResource extends MapResource {
     public Map getSupportedFormats() {
         Map m = new HashMap();
         m.put("html",
-            new HTMLFormat("HTMLTemplates/coverage.ftl") {
+            new FreemarkerFormat("HTMLTemplates/coverage.ftl", getClass(), MediaType.TEXT_HTML) {
                 public Map readRepresentation(Representation rep) {
                     try {
                         SAXBuilder builder = new SAXBuilder();

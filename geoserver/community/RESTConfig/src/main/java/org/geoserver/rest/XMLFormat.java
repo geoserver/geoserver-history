@@ -21,8 +21,8 @@ import org.restlet.resource.Representation;
 public class XMLFormat implements DataFormat {
     String myTemplate;
 
-    public XMLFormat(String templ) {
-        myTemplate = templ;
+    public XMLFormat(Map templ) {
+        myTemplate = templ.toString();
     }
 
     public Representation makeRepresentation(Map map) {

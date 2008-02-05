@@ -15,6 +15,7 @@ import org.restlet.Route;
 import org.restlet.Router;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
+import org.restlet.data.MediaType;
 
 
 class IndexResource extends MapResource {
@@ -32,7 +33,7 @@ class IndexResource extends MapResource {
     public Map getSupportedFormats() {
         Map m = new HashMap();
 
-        m.put("html", new HTMLFormat("HTMLTemplates/index.ftl"));
+        m.put("html", new FreemarkerFormat("HTMLTemplates/index.ftl", getClass(), MediaType.TEXT_HTML));
         m.put(null, m.get("html"));
 
         return m;

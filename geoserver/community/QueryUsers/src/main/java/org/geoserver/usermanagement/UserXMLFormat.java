@@ -4,7 +4,7 @@
  */
 package org.geoserver.usermanagement;
 
-import org.geoserver.restconfig.XMLFormat;
+import org.geoserver.rest.FreemarkerFormat;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Map;
 
 
-public class UserXMLFormat extends XMLFormat {
+public class UserXMLFormat extends FreemarkerFormat {
     public UserXMLFormat(String templ) {
-        super(templ);
+        super(templ, UserXMLFormat.class, MediaType.TEXT_XML);
     }
 
     public Map readRepresentation(Representation rep) {

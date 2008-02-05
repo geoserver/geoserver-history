@@ -13,8 +13,8 @@ import org.restlet.resource.Representation;
 public class HTMLFormat implements DataFormat {
     private String myTemplateName;
 
-    public HTMLFormat(String templateName) {
-        myTemplateName = templateName;
+    public HTMLFormat(Map templateName) {
+        myTemplateName = templateName.toString();
     }
 
     public Representation makeRepresentation(Map map) {

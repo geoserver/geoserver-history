@@ -18,10 +18,11 @@ import org.geotools.data.DataStore;
 
 import javax.servlet.ServletContext;
 
+import org.restlet.data.MediaType;
 
 import org.geoserver.rest.MapResource;
 import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.HTMLFormat;
+import org.geoserver.rest.FreemarkerFormat;
 import org.geoserver.rest.JSONFormat;
 
 /**
@@ -43,7 +44,7 @@ public class FeatureTypeListResource extends MapResource {
     public Map getSupportedFormats() {
         Map m = new HashMap();
 
-        m.put("html", new HTMLFormat("HTMLTemplates/featuretypes.ftl"));
+        m.put("html", new FreemarkerFormat("HTMLTemplates/featuretypes.ftl", getClass(), MediaType.TEXT_HTML));
         m.put("json", new JSONFormat());
         m.put("xml", new AutoXMLFormat("FeatureTypes"));
         m.put(null, m.get("html"));
