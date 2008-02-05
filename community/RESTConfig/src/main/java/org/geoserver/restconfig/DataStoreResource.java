@@ -28,7 +28,7 @@ import org.vfny.geoserver.util.DataStoreUtils;
 
 import org.geoserver.rest.MapResource;
 import org.geoserver.rest.AutoXMLFormat;
-import org.geoserver.rest.HTMLFormat;
+import org.geoserver.rest.FreemarkerFormat;
 import org.geoserver.rest.JSONFormat;
 
 /**
@@ -75,7 +75,7 @@ public class DataStoreResource extends MapResource {
 
     public Map getSupportedFormats() {
         Map m = new HashMap();
-        m.put("html", new HTMLFormat("HTMLTemplates/datastore.ftl"));
+        m.put("html", new FreemarkerFormat("HTMLTemplates/datastore.ftl", getClass(), MediaType.TEXT_HTML));
         m.put("json", new JSONFormat());
         m.put("xml", new AutoXMLFormat("datastore"));
         m.put(null, m.get("html"));

@@ -4,13 +4,14 @@
  */
 package org.geoserver.usermanagement;
 
-import org.geoserver.rest.HTMLFormat;
+import org.geoserver.rest.FreemarkerFormat;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
 import org.restlet.resource.Representation;
+import org.restlet.data.MediaType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,9 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 
-public class UserHTMLFormat extends HTMLFormat {
+public class UserHTMLFormat extends FreemarkerFormat {
     public UserHTMLFormat(String templateName) {
-        super(templateName);
+        super(templateName, UserHTMLFormat.class, MediaType.TEXT_HTML);
     }
 
     public Map readRepresentation(Representation rep) {

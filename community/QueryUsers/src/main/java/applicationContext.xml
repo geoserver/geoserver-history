@@ -7,11 +7,19 @@
 <property name="routes">
 	<map>
 		<entry>
-            <key><value>/users/users</value></key>
-            <ref bean="userListFinder"/>
+            <key><value>/users/users/{user}.{type}</value></key>
+            <ref bean="userFinder"/>
+        </entry>
+		<entry>
+            <key><value>/users/users/{user}</value></key>
+            <ref bean="userFinder"/>
         </entry>
 		<entry>
             <key><value>/users/users.{type}</value></key>
+            <ref bean="userListFinder"/>
+        </entry>
+		<entry>
+            <key><value>/users/users</value></key>
             <ref bean="userListFinder"/>
         </entry>
 	</map>
@@ -25,6 +33,7 @@
     </bean>
 </property>
 </bean>
+
 <bean id="userFinder" class="org.geoserver.rest.BeanResourceFinder">
 <property name="beanToFind">
     <bean class="org.geoserver.usermanagement.UserResource">

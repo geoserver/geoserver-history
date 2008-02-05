@@ -4,7 +4,7 @@ All known layer groups:
   <ul>
   <#if layers??>
 <#list layers as layer>
-  <li><a href="${page.currentURL}/${layer}"</li>
+  <li><a href="${page.currentURL}/${layer}">${layer}</a></li>
 </#list>
   <#else>
     <li> [No layers defined] </li>

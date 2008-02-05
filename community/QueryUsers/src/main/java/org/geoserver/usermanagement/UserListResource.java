@@ -13,10 +13,10 @@ import org.acegisecurity.userdetails.UserDetails;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.acegisecurity.userdetails.memory.UserAttribute;
 import org.acegisecurity.userdetails.memory.UserAttributeEditor;
-import org.geoserver.rest.HTMLFormat;
+import org.geoserver.rest.FreemarkerFormat;
 import org.geoserver.rest.JSONFormat;
 import org.geoserver.rest.MapResource;
-import org.geoserver.rest.XMLFormat;
+import org.geoserver.rest.AutoXMLFormat;
 import org.geoserver.security.EditableUserDAO;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
@@ -60,8 +60,8 @@ public class UserListResource extends MapResource {
     public Map getSupportedFormats() {
         Map theMap = new HashMap();
         theMap.put("json", new JSONFormat());
-        theMap.put("html", new HTMLFormat("HTMLTemplates/users.ftl"));
-        theMap.put("xml", new XMLFormat("XMLTemplates/users.ftl"));
+        theMap.put("html", new FreemarkerFormat("HTMLTemplates/users.ftl", getClass(), MediaType.TEXT_HTML));
+        theMap.put("xml", new AutoXMLFormat());
         theMap.put(null, theMap.get("html"));
 
         return theMap;
