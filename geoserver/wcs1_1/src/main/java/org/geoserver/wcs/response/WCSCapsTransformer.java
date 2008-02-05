@@ -205,6 +205,15 @@ public class WCSCapsTransformer extends TransformerBase {
                 put("store", Collections.singletonList("False"));
             }});
             
+            // specify that we do support xml post encoding, clause 8.3.2.2 of the WCS 1.1.1 spec
+            AttributesImpl attributes = new AttributesImpl();
+            attributes.addAttribute(null, "name", "name", null, "PostEncoding");
+            start("ows:Constraint", attributes);
+            start("ows:AllowedValues");
+            element("ows:Value", "XML");
+            end("ows:AllowedValues");    
+            end("ows:Constraint");
+            
             end("ows:OperationsMetadata");
         }
 

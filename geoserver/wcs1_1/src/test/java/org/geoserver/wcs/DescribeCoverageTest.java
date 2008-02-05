@@ -46,6 +46,17 @@ public class DescribeCoverageTest extends WCSTestSupport {
         assertTrue(element.getTextContent().contains("plop"));
     }
     
+    public void testDescribeMissingVersion() throws Exception {
+        Document dom = getAsDOM(BASEPATH
+                + "?request=DescribeCoverage&service=WCS&identifiers=" 
+                + layerId(WCSTestSupport.TASMANIA_DEM));
+//        print(dom);
+        checkOws11Exception(dom);
+        Element element = (Element) dom.getElementsByTagName("ows:Exception").item(0);
+        assertEquals("MissingParameterValue", element.getAttribute("exceptionCode"));
+        assertEquals("version", element.getAttribute("locator"));
+    }
+    
     public void testDescribeUnknownCoverageXml() throws Exception {
         List<Exception> errors = new ArrayList<Exception>();
         String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + // 

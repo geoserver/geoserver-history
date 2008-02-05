@@ -14,6 +14,7 @@ import org.geoserver.ows.kvp.EMFKvpRequestReader;
 import org.geoserver.ows.util.KvpUtils;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wcs.WcsException;
+import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 
 /**
  * Describe coverage kvp reader TODO: check if this reader class is really
@@ -40,9 +41,7 @@ public class DescribeCoverageKvpRequestReader extends EMFKvpRequestReader {
         final String identifiersValue = (String) rawKvp.get("identifiers");
         final List identifiers = KvpUtils.readFlat(identifiersValue);
         if(identifiers == null || identifiers.size() == 0) {
-            WcsException ex = new WcsException("Required paramer, identifiers, missing", "identifiers");
-            ex.setCode("MissingParameterValue");
-            throw ex;
+            throw new WcsException("Required paramer, identifiers, missing", WcsExceptionCode.MissingParameterValue, "identifiers");
         }
         
         // all right, set into the model (note there is a mismatch between the kvp name and the
@@ -50,9 +49,9 @@ public class DescribeCoverageKvpRequestReader extends EMFKvpRequestReader {
         describeCoverage.getIdentifier().addAll(identifiers);
         
         
-        // if not specified, stick in the default version
+        // if not specified, throw a resounding exception (by spec)
         if(!describeCoverage.isSetVersion())
-            describeCoverage.setVersion("1.1.1");
+            throw new WcsException("Version has not been specified", WcsExceptionCode.MissingParameterValue, "version");
 
         return request;
     }
