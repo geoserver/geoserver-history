@@ -22,7 +22,11 @@ import org.restlet.data.MediaType;
 import org.restlet.resource.OutputRepresentation;
 import org.restlet.resource.Representation;
 
-
+/**
+ * The JSONFormat class uses json-lib to convert a map directly to the json equivalent and back.
+ *
+ * @author David Winslow <dwinslow@openplans.org>
+ */
 public class JSONFormat implements DataFormat {
     public Representation makeRepresentation(final Map map) {
         return new OutputRepresentation(MediaType.APPLICATION_JSON) {

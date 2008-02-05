@@ -18,6 +18,13 @@ import org.restlet.data.Response;
 import org.restlet.data.MediaType;
 
 
+/**
+ * The IndexResource class lists the paths available for a Router.
+ * Specifically, it auto-generates an index page containing all 
+ * non-templated paths relative to the router root.
+ *
+ * @author David Winslow <dwinslow@openplans.org>
+ */
 class IndexResource extends MapResource {
     private Router myRouter;
 
