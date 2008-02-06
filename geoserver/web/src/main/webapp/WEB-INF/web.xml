@@ -100,7 +100,12 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
   
-    <!-- logging initializer, should be first thing to execute -->
+  <!-- logging initializer, should be first thing to execute -->
+  <listener>
+    <listener-class>org.geoserver.GeoserverInitStartupListener</listener-class>
+  </listener>
+  
+  <!-- logging initializer, should execute before spring context startup -->
   <listener>
     <listener-class>org.geoserver.logging.LoggingStartupContextListener</listener-class>
   </listener>

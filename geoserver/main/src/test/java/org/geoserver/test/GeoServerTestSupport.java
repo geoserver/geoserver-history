@@ -31,6 +31,7 @@ import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.data.FeatureSource;
+import org.geotools.factory.Hints;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
@@ -78,6 +79,10 @@ public class GeoServerTestSupport extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
+        
+        // configure axis ordering
+        Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE);
+        Hints.putSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING, "http");
 
         //set up the data directory
         dataDirectory = new MockData();
