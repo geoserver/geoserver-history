@@ -18,6 +18,7 @@ import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
+import org.geotools.data.ResourceInfo;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
 import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.factory.CommonFactoryFinder;
@@ -523,5 +524,9 @@ public class GeoServerFeatureSource implements FeatureSource {
     
     public Set getSupportedHints() {
         return source.getSupportedHints();
+    }
+
+    public ResourceInfo getInfo() {
+        return source.getInfo();
     }   
 }
