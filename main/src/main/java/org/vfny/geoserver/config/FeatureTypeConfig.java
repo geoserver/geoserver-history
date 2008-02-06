@@ -409,7 +409,13 @@ public class FeatureTypeConfig {
 
         f.setDefaultStyle(defaultStyle);
         f.setStyles(styles);
-        f.setDirName(dirName);
+        // override the dir name to make sure 
+        if(alias != null)
+            f.setDirName(dataStoreId + "_" + alias);
+        else if(dirName.endsWith(name))
+            f.setDirName(dirName);
+        else
+            f.setDirName(dataStoreId + "_" + name);
         f.setSchemaBase(schemaBase);
         f.setSchemaName(schemaName);
 
