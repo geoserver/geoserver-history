@@ -27,7 +27,8 @@ public class WcsException extends ServiceException {
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.wcs");
     
     public enum WcsExceptionCode {
-        MissingParameterValue, InvalidParameterValue, NoApplicableCode, UnsupportedCombination, NotEnoughStorage
+        MissingParameterValue, InvalidParameterValue, NoApplicableCode, UnsupportedCombination, NotEnoughStorage,
+        InvalidUpdateSequence
     }
 
     /**
