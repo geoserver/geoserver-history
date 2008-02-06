@@ -19,6 +19,7 @@ import org.geotools.data.FeatureStore;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.LockingManager;
 import org.geotools.data.Query;
+import org.geotools.data.ServiceInfo;
 import org.geotools.data.Transaction;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -253,6 +254,10 @@ public class RetypingDataStore implements DataStore {
     Filter retypeFilter(Filter filter, FeatureTypeMap typeMap) {
         FidTransformeVisitor visitor = new FidTransformeVisitor(typeMap);
         return (Filter) filter.accept(visitor, null);
+    }
+
+    public ServiceInfo getInfo() {
+        return wrapped.getInfo();
     }
     
     
