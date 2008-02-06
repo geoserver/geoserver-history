@@ -958,6 +958,7 @@ public class Dispatcher extends AbstractController {
             //find the parser for this key value pair
             Object parsed = null;
 
+//            for (Iterator pitr = parsers.iterator(); pitr.hasNext() && parsed == null;) {
             for (Iterator pitr = parsers.iterator(); pitr.hasNext();) {
                 KvpParser parser = (KvpParser) pitr.next();
 
