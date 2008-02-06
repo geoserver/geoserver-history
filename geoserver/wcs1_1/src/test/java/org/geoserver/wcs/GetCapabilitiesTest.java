@@ -159,7 +159,7 @@ public class GetCapabilitiesTest extends WCSTestSupport {
         List<Exception> errors = new ArrayList<Exception>();
         Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&updateSequence=1", errors);
         checkValidationErrors(errors);
-        print(dom);
+//        print(dom);
         assertXpathEvaluatesTo("1", "count(/ows:ExceptionReport)", dom);
     }
     
@@ -172,8 +172,17 @@ public class GetCapabilitiesTest extends WCSTestSupport {
                 + " updateSequence=\"1\"/>";
         Document dom = postAsDOM(BASEPATH, request);
         checkValidationErrors(errors);
-        print(dom);
+//        print(dom);
         assertXpathEvaluatesTo("1", "count(/ows:ExceptionReport)", dom);
+    }
+    
+    public void testSectionsIgnoreGet() throws Exception {
+        List<Exception> errors = new ArrayList<Exception>();
+        Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&sections=Bogus", errors);
+        checkValidationErrors(errors);
+        final Node root = dom.getFirstChild();
+        assertEquals("wcs:Capabilities", root.getNodeName());
+        assertTrue(root.getChildNodes().getLength() > 0);
     }
     
 //    public void testBogusSectionPost() throws Exception {
