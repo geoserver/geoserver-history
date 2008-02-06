@@ -1,9 +1,10 @@
 package org.geoserver.wcs;
 
+import static org.custommonkey.xmlunit.XMLAssert.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.xpath.XPathAPI;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.dto.ContactDTO;
@@ -33,16 +34,16 @@ public class GetCapabilitiesTest extends WCSTestSupport {
 //         print(dom);
         checkValidationErrors(errors);
         
-        // make sure we provided the store values (for the moment, unsupported, so store param should
-        // be false
-        NodeList values = XPathAPI.selectNodeList(dom, "wcs:Capabilities/ows:OperationsMetadata" +
-        		"/ows:Operation[@name=\"GetCoverage\"]/ows:Parameter/ows:AllowedValues");
-        assertEquals(1, values.getLength());
-        assertEquals("False", values.item(0).getTextContent());
+        // make sure we provided the store values (for the moment, unsupported, 
+        // so store param should be false
+        assertXpathEvaluatesTo("False", "/wcs:Capabilities/ows:OperationsMetadata" +
+        		"/ows:Operation[@name=\"GetCoverage\"]/ows:Parameter/ows:AllowedValues", dom);
     }
     
+    
+    
     public void testNoServiceContactInfo() throws Exception {
-        // alter geoserver state so that there is no concact information
+        // alter geoserver state so that there is no contact information
         GeoServerDTO dto = (GeoServerDTO) geoServer.toDTO();
         dto.setContact(new ContactDTO());
         geoServer.load(dto);
@@ -78,8 +79,7 @@ public class GetCapabilitiesTest extends WCSTestSupport {
         checkValidationErrors(errors);
         checkOws11Exception(dom);
         assertEquals("ows:ExceptionReport", dom.getFirstChild().getNodeName());
-        Node node = XPathAPI.selectSingleNode(dom, "ows:ExceptionReport/ows:Exception/@exceptionCode");
-        assertEquals("VersionNegotiationFailed", node.getTextContent());
+        assertXpathEvaluatesTo("VersionNegotiationFailed", "ows:ExceptionReport/ows:Exception/@exceptionCode", dom);
     }
     
     public void testUnsupportedVersionGet() throws Exception {
@@ -87,8 +87,7 @@ public class GetCapabilitiesTest extends WCSTestSupport {
         Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&acceptVersions=9.9.9,8.8.8", errors);
         checkValidationErrors(errors);
         checkOws11Exception(dom);
-        Node node = XPathAPI.selectSingleNode(dom, "ows:ExceptionReport/ows:Exception/@exceptionCode");
-        assertEquals("VersionNegotiationFailed", node.getTextContent());
+        assertXpathEvaluatesTo("VersionNegotiationFailed", "ows:ExceptionReport/ows:Exception/@exceptionCode", dom);
     }
     
     public void testSupportedVersionGet() throws Exception {
@@ -110,5 +109,83 @@ public class GetCapabilitiesTest extends WCSTestSupport {
         assertEquals("wcs:Capabilities", dom.getFirstChild().getNodeName());
     }
     
+    public void testUpdateSequenceInferiorGet() throws Exception {
+        List<Exception> errors = new ArrayList<Exception>();
+        Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&updateSequence=-1", errors);
+        checkValidationErrors(errors);
+        final Node root = dom.getFirstChild();
+        assertEquals("wcs:Capabilities", root.getNodeName());
+        assertTrue(root.getChildNodes().getLength() > 0);
+    }
     
+    public void testUpdateSequenceInferiorPost() throws Exception {
+        List<Exception> errors = new ArrayList<Exception>();
+        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                + "<wcs:GetCapabilities service=\"WCS\" xmlns:ows=\"http://www.opengis.net/ows/1.1\""
+                + " xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\""
+                + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                + " updateSequence=\"-1\"/>";
+        Document dom = postAsDOM(BASEPATH, request);
+        checkValidationErrors(errors);
+        final Node root = dom.getFirstChild();
+        assertEquals("wcs:Capabilities", root.getNodeName());
+        assertTrue(root.getChildNodes().getLength() > 0);
+    }
+    
+    public void testUpdateSequenceEqualsGet() throws Exception {
+        List<Exception> errors = new ArrayList<Exception>();
+        Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&updateSequence=0", errors);
+        checkValidationErrors(errors);
+        final Node root = dom.getFirstChild();
+        assertEquals("wcs:Capabilities", root.getNodeName());
+        assertEquals(0, root.getChildNodes().getLength());
+    }
+    
+    public void testUpdateSequenceEqualsPost() throws Exception {
+        List<Exception> errors = new ArrayList<Exception>();
+        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                + "<wcs:GetCapabilities service=\"WCS\" xmlns:ows=\"http://www.opengis.net/ows/1.1\""
+                + " xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\""
+                + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                + " updateSequence=\"0\"/>";
+        Document dom = postAsDOM(BASEPATH, request);
+        checkValidationErrors(errors);
+        final Node root = dom.getFirstChild();
+        assertEquals("wcs:Capabilities", root.getNodeName());
+        assertEquals(0, root.getChildNodes().getLength());
+    }
+    
+    public void testUpdateSequenceSuperiorGet() throws Exception {
+        List<Exception> errors = new ArrayList<Exception>();
+        Document dom = getAsDOM(BASEPATH + "?request=GetCapabilities&service=WCS&updateSequence=1", errors);
+        checkValidationErrors(errors);
+        print(dom);
+        assertXpathEvaluatesTo("1", "count(/ows:ExceptionReport)", dom);
+    }
+    
+    public void testUpdateSequenceSuperiorPost() throws Exception {
+        List<Exception> errors = new ArrayList<Exception>();
+        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                + "<wcs:GetCapabilities service=\"WCS\" xmlns:ows=\"http://www.opengis.net/ows/1.1\""
+                + " xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\""
+                + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                + " updateSequence=\"1\"/>";
+        Document dom = postAsDOM(BASEPATH, request);
+        checkValidationErrors(errors);
+        print(dom);
+        assertXpathEvaluatesTo("1", "count(/ows:ExceptionReport)", dom);
+    }
+    
+//    public void testBogusSectionPost() throws Exception {
+//        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+//            + "<wcs:GetCapabilities service=\"WCS\" xmlns:ows=\"http://www.opengis.net/ows/1.1\""
+//            + " xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\""
+//            + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+//            + "  <ows:Sections>\r\n" 
+//            + "    <ows:Section>Bogus</ows:Section>\r\n" 
+//            + "  </ows:Sections> " 
+//            + "</wcs:GetCapabilities>";
+//        Document dom = postAsDOM(BASEPATH, request);
+//        assertEquals("ows:ExceptionReport", dom.getFirstChild().getNodeName());
+//    }
 }

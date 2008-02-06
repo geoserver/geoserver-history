@@ -1,5 +1,7 @@
 package org.geoserver.wcs;
 
+import static org.custommonkey.xmlunit.XMLAssert.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,14 +26,13 @@ import org.geotools.gce.geotiff.GeoTiffReader;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
-import com.sun.org.apache.xpath.internal.XPathAPI;
 
 public class GetCoverageEncodingTest extends WCSTestSupport {
 
-//    @Override
-//    protected String getDefaultLogConfiguration() {
-//        return "/DEFAULT_LOGGING.properties";
-//    }
+    // @Override
+    // protected String getDefaultLogConfiguration() {
+    // return "/DEFAULT_LOGGING.properties";
+    // }
 
     public void testKvpBasic() throws Exception {
         String request = "?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
@@ -39,7 +40,7 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
                 + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
                 + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=geotiff";
         MockHttpServletResponse response = getAsServletResponse(request);
-//        System.out.println(response.getOutputStreamContent());
+        // System.out.println(response.getOutputStreamContent());
         // make sure we got a multipart
         assertTrue(response.getContentType().matches("multipart/related;\\s*boundary=\".*\""));
 
@@ -56,8 +57,8 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
         List<Exception> validationErrors = new ArrayList<Exception>();
         Document dom = dom(coveragesPart.getDataHandler().getInputStream(), validationErrors);
         checkValidationErrors(validationErrors);
-        assertEquals(WCSTestSupport.TASMANIA_BM.getLocalPart(), XPathAPI.selectSingleNode(dom,
-                "wcs:Coverages/wcs:Coverage/ows:Title").getTextContent());
+        assertXpathEvaluatesTo(WCSTestSupport.TASMANIA_BM.getLocalPart(),
+                "wcs:Coverages/wcs:Coverage/ows:Title", dom);
 
         // the second part is the actual coverage
         BodyPart coveragePart = multipart.getBodyPart(1);
@@ -72,7 +73,8 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
     private Multipart getMultipart(MockHttpServletResponse response) throws MessagingException,
             IOException {
         String content = response.getOutputStreamContent();
-        MimeMessage body = new MimeMessage((Session) null, new ByteArrayInputStream(content.getBytes()));
+        MimeMessage body = new MimeMessage((Session) null, new ByteArrayInputStream(content
+                .getBytes()));
         Multipart multipart = (Multipart) body.getContent();
         return multipart;
     }
@@ -88,7 +90,8 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
         return coverage;
     }
 
-    private File storeToTempFile(InputStream is, String extension) throws IOException, FileNotFoundException {
+    private File storeToTempFile(InputStream is, String extension) throws IOException,
+            FileNotFoundException {
         File f = File.createTempFile("coverage", extension, dataDirectory.getDataDirectoryRoot());
         FileOutputStream fos = new FileOutputStream(f);
         byte[] buffer = new byte[4096];
@@ -98,12 +101,12 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
         fos.close();
         return f;
     }
-    
+
     public void testTiffOutput() throws Exception {
         String request = "?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
-        + layerId(WCSTestSupport.TASMANIA_BM)
-        + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
-        + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=image/tiff";
+                + layerId(WCSTestSupport.TASMANIA_BM)
+                + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
+                + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=image/tiff";
         MockHttpServletResponse response = getAsServletResponse(request);
 
         // parse the multipart, check there are two parts
@@ -120,12 +123,12 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
         reader.setInput(ImageIO.createImageInputStream(temp));
         reader.read(0);
     }
-    
+
     public void testPngOutput() throws Exception {
         String request = "?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
-        + layerId(WCSTestSupport.TASMANIA_BM)
-        + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
-        + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=image/png";
+                + layerId(WCSTestSupport.TASMANIA_BM)
+                + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
+                + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=image/png";
         MockHttpServletResponse response = getAsServletResponse(request);
 
         // parse the multipart, check there are two parts

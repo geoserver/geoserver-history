@@ -5,7 +5,6 @@
 package org.geoserver.wcs.response;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,6 +25,8 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.WCS;
+import org.vfny.geoserver.wcs.WcsException;
+import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -102,6 +103,24 @@ public class WCSCapsTransformer extends TransformerBase {
             }
 
             this.request = (GetCapabilitiesType) o;
+            
+            // check the update sequence
+            final int updateSequence = wcs.getGeoServer().getUpdateSequence();
+            int requestedUpdateSequence = -1;
+            if(request.getUpdateSequence() != null) {
+                try {
+                    requestedUpdateSequence = Integer.parseInt(request.getUpdateSequence());
+                } catch(NumberFormatException e) {
+                    throw new WcsException("Invalid update sequence number format, " +
+                    		"should be an integer", 
+                    		WcsExceptionCode.InvalidUpdateSequence, "updateSequence");
+                }
+                if(requestedUpdateSequence > updateSequence) {
+                    throw new WcsException("Invalid update sequence value, it's higher " +
+                    		"than the current value, " + updateSequence, 
+                            WcsExceptionCode.InvalidUpdateSequence, "updateSequence");
+                }
+            }
 
             final AttributesImpl attributes = new AttributesImpl();
             attributes.addAttribute("", "version", "version", "", CUR_VERSION);
@@ -124,12 +143,16 @@ public class WCSCapsTransformer extends TransformerBase {
                 + proxifiedBaseUrl
                 + "schemas/wcs/1.1.1/wcsGetCapabilities.xsd";
             attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
+            attributes.addAttribute("", "updateSequence", "updateSequence", "",
+                    String.valueOf(updateSequence));
             start("wcs:Capabilities", attributes);
 
-            handleServiceIdentification();
-            handleServiceProvider();
-            handleOperationsMetadata();
-            handleContents();
+            if(requestedUpdateSequence < updateSequence) {
+                handleServiceIdentification();
+                handleServiceProvider();
+                handleOperationsMetadata();
+                handleContents();
+            }
 
             end("wcs:Capabilities");
         }

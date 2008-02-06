@@ -1,12 +1,12 @@
 package org.geoserver.wcs;
 
+import static org.custommonkey.xmlunit.XMLAssert.*;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.transform.TransformerException;
-
-import org.apache.xpath.XPathAPI;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -24,8 +24,7 @@ public class DescribeCoverageTest extends WCSTestSupport {
 //        System.out.println(CRS.decode("EPSG:4326"));
 //        System.out.println(CRS.decode("urn:ogc:def:crs:EPSG:4326"));
 //    }
-
-
+    
     public void testDescribeNoIdentifiers() throws Exception {
         Document dom = getAsDOM(BASEPATH + "?request=DescribeCoverage&service=WCS&version=1.1.1");
 //        print(dom);
@@ -101,15 +100,15 @@ public class DescribeCoverageTest extends WCSTestSupport {
         checkDemCoverageDescription(dom);
     }
 
-    private void checkDemCoverageDescription(Document dom) throws TransformerException {
+    private void checkDemCoverageDescription(Document dom) throws Exception {
         // check the basics, the output is a single coverage description with the expected id
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescriptions").getLength());
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescription").getLength());
-        Node identifier = XPathAPI.selectSingleNode(dom, "/wcs:CoverageDescriptions/wcs:CoverageDescription/wcs:Identifier");
-        assertEquals(layerId(WCSTestSupport.TASMANIA_DEM), identifier.getTextContent());
+        assertXpathEvaluatesTo(layerId(WCSTestSupport.TASMANIA_DEM), 
+                "/wcs:CoverageDescriptions/wcs:CoverageDescription/wcs:Identifier", dom);
         // check there is no rotation
-        Node gridOffsets = XPathAPI.selectSingleNode(dom, "/wcs:CoverageDescriptions/wcs:CoverageDescription/" +
-                "wcs:Domain/wcs:SpatialDomain/wcs:GridCRS/wcs:GridOffsets");
+        Node gridOffsets = xpath.getMatchingNodes("/wcs:CoverageDescriptions/wcs:CoverageDescription/" +
+                "wcs:Domain/wcs:SpatialDomain/wcs:GridCRS/wcs:GridOffsets", dom).item(0);
         String[] offsetStrs = gridOffsets.getTextContent().split(" ");
         assertEquals(4, offsetStrs.length);
         double[] offsets = new double[4];
@@ -136,11 +135,11 @@ public class DescribeCoverageTest extends WCSTestSupport {
         // check the basics, the output is a single coverage description with the expected id
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescriptions").getLength());
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescription").getLength());
-        Node identifier = XPathAPI.selectSingleNode(dom, "/wcs:CoverageDescriptions/wcs:CoverageDescription/wcs:Identifier");
-        assertEquals(layerId(WCSTestSupport.ROTATED_CAD), identifier.getTextContent());
+        assertXpathEvaluatesTo(layerId(WCSTestSupport.ROTATED_CAD), 
+                "/wcs:CoverageDescriptions/wcs:CoverageDescription/wcs:Identifier", dom);
         // check there is no rotation
-        Node gridOffsets = XPathAPI.selectSingleNode(dom, "/wcs:CoverageDescriptions/wcs:CoverageDescription/" +
-                "wcs:Domain/wcs:SpatialDomain/wcs:GridCRS/wcs:GridOffsets");
+        Node gridOffsets = xpath.getMatchingNodes("/wcs:CoverageDescriptions/wcs:CoverageDescription/" +
+                "wcs:Domain/wcs:SpatialDomain/wcs:GridCRS/wcs:GridOffsets", dom).item(0);
         String[] offsetStrs = gridOffsets.getTextContent().split(" ");
         assertEquals(4, offsetStrs.length);
         double[] offsets = new double[4];
@@ -169,11 +168,11 @@ public class DescribeCoverageTest extends WCSTestSupport {
         // check the basics, the output is a single coverage description with the expected id
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescriptions").getLength());
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescription").getLength());
-        Node identifier = XPathAPI.selectSingleNode(dom, "/wcs:CoverageDescriptions/wcs:CoverageDescription/wcs:Identifier");
-        assertEquals(layerId(WCSTestSupport.TASMANIA_BM), identifier.getTextContent());
+        assertXpathEvaluatesTo(layerId(WCSTestSupport.TASMANIA_BM), 
+                "/wcs:CoverageDescriptions/wcs:CoverageDescription/wcs:Identifier", dom);
         // check there is no rotation
-        Node gridOffsets = XPathAPI.selectSingleNode(dom, "/wcs:CoverageDescriptions/wcs:CoverageDescription/" +
-                "wcs:Domain/wcs:SpatialDomain/wcs:GridCRS/wcs:GridOffsets");
+        Node gridOffsets = xpath.getMatchingNodes("/wcs:CoverageDescriptions/wcs:CoverageDescription/" +
+                "wcs:Domain/wcs:SpatialDomain/wcs:GridCRS/wcs:GridOffsets", dom).item(0);
         String[] offsetStrs = gridOffsets.getTextContent().split(" ");
         assertEquals(4, offsetStrs.length);
         double[] offsets = new double[4];
@@ -198,9 +197,8 @@ public class DescribeCoverageTest extends WCSTestSupport {
         }
         
         // make sure the field name is "contents" (just a reasonable default)
-        Node fieldName = XPathAPI.selectSingleNode(dom, "/wcs:CoverageDescriptions/wcs:CoverageDescription/" +
-        "wcs:Range/wcs:Field/wcs:Identifier");
-        assertEquals("contents", fieldName.getTextContent());
+        assertXpathEvaluatesTo("contents", "/wcs:CoverageDescriptions/wcs:CoverageDescription/" +
+                "wcs:Range/wcs:Field/wcs:Identifier", dom);
     }
     
 }

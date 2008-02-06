@@ -4,10 +4,16 @@
  */
 package org.geoserver.wcs.test;
 
-import javax.xml.namespace.QName;
-import javax.xml.transform.TransformerException;
+import static org.custommonkey.xmlunit.XMLAssert.*;
 
-import org.apache.xpath.XPathAPI;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
+import org.custommonkey.xmlunit.SimpleNamespaceContext;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
 import org.vfny.geoserver.global.WCS;
@@ -34,6 +40,8 @@ public class WCSTestSupport extends KvpRequestReaderTestSupport {
     public static QName TASMANIA_BM = new QName(WCS_URI, "BlueMarble", WCS_PREFIX);
     
     public static QName ROTATED_CAD = new QName(WCS_URI, "RotatedCad", WCS_PREFIX);
+    
+    protected XpathEngine xpath;
 
     /**
      * @return The global wfs instance from the application context.
@@ -45,7 +53,16 @@ public class WCSTestSupport extends KvpRequestReaderTestSupport {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        
+        // to allow validators to find the schemas in this module
         org.geoserver.ows.util.RequestUtils.setForcedBaseUrl("");
+        
+        // init xmlunit
+        Map<String, String> namespaces = new HashMap<String, String>();
+        namespaces.put("wcs", "http://www.opengis.net/wcs/1.1.1");
+        namespaces.put("ows", "http://www.opengis.net/ows/1.1");
+        XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
+        xpath = XMLUnit.newXpathEngine();
     }
 
     @Override
@@ -59,12 +76,11 @@ public class WCSTestSupport extends KvpRequestReaderTestSupport {
                 TIFF, null);
     }
     
-    protected void checkOws11Exception(Document dom) throws TransformerException {
+    protected void checkOws11Exception(Document dom) throws Exception {
         assertEquals("ows:ExceptionReport", dom.getFirstChild().getNodeName());
-        Node node = XPathAPI.selectSingleNode(dom, "ows:ExceptionReport/@version");
-        assertEquals("1.1.0", node.getTextContent());
-        node = XPathAPI.selectSingleNode(dom, "ows:ExceptionReport");
-        Node attr = node.getAttributes().getNamedItem("xmlns:ows");
+        assertXpathEvaluatesTo("1.1.0", "/ows:ExceptionReport/@version", dom);
+        Node root  = xpath.getMatchingNodes("/ows:ExceptionReport", dom).item(0);
+        Node attr = root.getAttributes().getNamedItem("xmlns:ows");
         assertEquals("http://www.opengis.net/ows/1.1", attr.getTextContent());
     }
 }
