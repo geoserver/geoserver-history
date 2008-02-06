@@ -9,7 +9,7 @@ public class GeometrylessTest extends WFSTestSupport {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=cite:Geometryless&version=1.0.0&service=wfs");
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
                 .getNodeName());
-        print(doc);
+//        print(doc);
 
         NodeList featureMembers = doc.getElementsByTagName("gml:featureMember");
         assertFalse(featureMembers.getLength() == 0);
@@ -22,7 +22,7 @@ public class GeometrylessTest extends WFSTestSupport {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=cite:Geometryless&version=1.0.0&service=wfs&srsName=EPSG:900913");
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
                 .getNodeName());
-        print(doc);
+//        print(doc);
 
         NodeList featureMembers = doc.getElementsByTagName("gml:featureMember");
         assertFalse(featureMembers.getLength() == 0);
@@ -34,7 +34,7 @@ public class GeometrylessTest extends WFSTestSupport {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=cite:Geometryless&version=1.1.0&service=wfs");
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
                 .getNodeName());
-        print(doc);
+//        print(doc);
 
         NodeList featureMembers = doc.getElementsByTagName("gml:featureMembers");
         assertFalse(featureMembers.getLength() == 0);
