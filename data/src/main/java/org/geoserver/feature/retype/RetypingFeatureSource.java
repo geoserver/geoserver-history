@@ -15,6 +15,7 @@ import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureListener;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.data.ResourceInfo;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -100,6 +101,10 @@ public class RetypingFeatureSource implements FeatureSource {
 
     public Set getSupportedHints() {
         return wrapped.getSupportedHints();
+    }
+
+    public ResourceInfo getInfo() {
+        return wrapped.getInfo();
     }
 
 }
