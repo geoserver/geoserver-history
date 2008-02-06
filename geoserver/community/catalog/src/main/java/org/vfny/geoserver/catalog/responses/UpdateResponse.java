@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -198,8 +199,31 @@ public class UpdateResponse implements Response {
             // //
             // update the data config
             dataConfig.getNameSpaces().putAll(namepsaces);
+            
+            for (Iterator keySetIterator = dataConfig.getDataStores()
+					.keySet().iterator(); keySetIterator.hasNext();) {
+				String key = (String) keySetIterator.next();
+				
+				if (datastores.containsKey(key)) {
+					dataConfig.getDataStores().put(key, datastores.get(key));
+					datastores.put(key, null);
+					datastores.remove(key);
+				}
+			}
             dataConfig.getDataStores().putAll(datastores);
+
+            for (Iterator keySetIterator = dataConfig.getDataFormats()
+					.keySet().iterator(); keySetIterator.hasNext();) {
+				String key = (String) keySetIterator.next();
+				
+				if (coveragestores.containsKey(key)) {
+					dataConfig.getDataFormats().put(key, coveragestores.get(key));
+					coveragestores.put(key, null);
+					coveragestores.remove(key);
+				}
+			}
             dataConfig.getDataFormats().putAll(coveragestores);
+            
             dataConfig.getStyles().putAll(styles);
 
             request.getCATALOG().getData().load(dataConfig.toDTO());

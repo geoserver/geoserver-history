@@ -31,11 +31,11 @@
       <artifactId>struts</artifactId>
     </dependency>
 
-    <!-- dependency>
+    <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>catalog</artifactId>
       <version>1.0.6b4</version>
-    </dependency -->
+    </dependency>
 
     <dependency>
       <groupId>org.geoserver</groupId>
