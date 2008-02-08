@@ -53,13 +53,13 @@ INSERT INTO "geometry_associations" VALUES ('PrimitiveGeoFeature.8', 'polygonPro
 INSERT INTO "PrimitiveGeoFeature" VALUES (NULL, 'name-f015',  NULL, GeomFromText('POINT(-10.52 34.94)',4326), NULL, -900, NULL, 2.4, NULL, NULL, 7.90, NULL, 15);
 
 -- PrimitiveGeoFeature.f091 (xlink)
-INSERT INTO "PrimitiveGeoFeature" VALUES ('description-f091', 'name-f091',  NULL, NULL, NULL, -12678967543233, NULL, -0.1278, NULL, NULL, 21.98, 'f003',91);
+INSERT INTO "PrimitiveGeoFeature" VALUES ('description-f091', 'name-f091',  NULL, NULL, NULL, -12678967543233, NULL, -0.1278, NULL, NULL, 21.98, '3',91);
 INSERT INTO "geometry" values ('g091', NULL, NULL, 'POINT', GeomFromText('POINT(-2.19433 49.84136)',4326));
 INSERT INTO "geometry_associations" VALUES ('PrimitiveGeoFeature.91', 'pointProperty', 'g091', false );
-INSERT INTO "feature_associations" VALUES ('PrimitiveGeoFeature.91', 'PrimitiveGeoFeature', 'id', 'f003' );
+INSERT INTO "feature_associations" VALUES ('PrimitiveGeoFeature.91', 'PrimitiveGeoFeature', 'id', '3' );
 
 -- PrimitiveGeoFeature.f092 (xlink)
-INSERT INTO "PrimitiveGeoFeature" VALUES ('description-f092', 'name-f092',  NULL, NULL, NULL, 4567, NULL, 1445.57, '2007-08-21T14:47:24+01:00', NULL, 3.14, 'f091',92);
+INSERT INTO "PrimitiveGeoFeature" VALUES ('description-f092', 'name-f092',  NULL, NULL, NULL, 4567, NULL, 1445.57, '2007-08-21T14:47:24+01:00', NULL, 3.14, '91',92);
 INSERT INTO "feature_associations" VALUES ('PrimitiveGeoFeature.92', 'PrimitiveGeoFeature', 'id', '91' );
 
 -- PrimitiveGeoFeature.f093 (xlink)
@@ -133,7 +133,7 @@ INSERT INTO "feature_relationships" VALUES ( 'LinkedFeature', 'reference' );
 
 -- LinkedFeature.f201
 INSERT INTO "LinkedFeature" VALUES ( NULL, 'name-f201', '91', NULL, 201 );
-INSERT INTO "feature_associations" VALUES ( 'LinkedFeature.f201', 'PrimitiveGeoFeature', 'id', '91' );
+INSERT INTO "feature_associations" VALUES ( 'LinkedFeature.201', 'PrimitiveGeoFeature', 'id', '91' );
 
 -- LinkedFeature.f202
 INSERT INTO "LinkedFeature" VALUES ( 'description-f202', 'name-f202', '92', NULL, 202 );
