@@ -14,6 +14,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletContext;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -26,6 +27,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
+import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
@@ -33,6 +35,9 @@ import org.geotools.data.FeatureSource;
 import org.geotools.factory.Hints;
 import org.geotools.util.logging.Log4JLoggerFactory;
 import org.geotools.util.logging.Logging;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
@@ -47,6 +52,7 @@ import org.xml.sax.SAXParseException;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
+import com.mockrunner.mock.web.MockServletConfig;
 import com.mockrunner.mock.web.MockServletContext;
 
 import junit.framework.TestCase;
@@ -97,9 +103,13 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
         // set up a mock servlet context
         MockServletContext servletContext = new MockServletContext();
         servletContext.setInitParameter("GEOSERVER_DATA_DIR", getDataDirLocation());
-
+        
         applicationContext = new GeoServerTestApplicationContext(getSpringContextLocations(), servletContext);
         applicationContext.refresh();
+    
+        //set the parameter after a refresh because it appears a refresh wipes
+        // out all parameters
+        servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, applicationContext);
     }
     
     /**
@@ -230,6 +240,7 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
         request.setContextPath("/geoserver");
         request.setRequestURI(ResponseUtils.stripQueryString(ResponseUtils.appendPath(
                     "/geoserver/", path)));
+        request.setRequestURL(ResponseUtils.appendPath("http://localhost/geoserver", path ) );
         request.setQueryString(ResponseUtils.stripQueryString(path));
         request.setRemoteAddr("127.0.0.1");
         request.setServletPath(path);
@@ -670,9 +681,22 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
 //            }
         };
         
+        //create an instance of the spring dispatcher
+        ServletContext context = applicationContext.getServletContext();
+        
+        MockServletConfig config = new MockServletConfig();
+        config.setServletContext(context);
+        config.setServletName("dispatcher");
+        
+        DispatcherServlet dispatcher = new DispatcherServlet();
+        
+        dispatcher.setContextConfigLocation(GeoServerAbstractTestSupport.class.getResource("dispatcher-servlet.xml").toString());
+        dispatcher.init(config);
+        
+        
         //look up the handler
-        Dispatcher dispatcher = 
-                (Dispatcher) applicationContext.getBean( "dispatcher" ); 
+//        Dispatcher dispatcher = 
+//                (Dispatcher) applicationContext.getBean( "dispatcher" ); 
         //dispatcher.setApplicationContext( getGeoServer().getApplicationContext() );
         
         //excute the pre handler step
@@ -684,7 +708,8 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
         }
         
         //execute 
-        dispatcher.handleRequest( request, response );
+        //dispatcher.handleRequest( request, response );
+        dispatcher.service(request, response);
         
         //execute the post handler step
         for ( Iterator i = interceptors.iterator(); i.hasNext(); ) {
