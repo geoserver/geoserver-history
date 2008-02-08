@@ -935,7 +935,7 @@
 
  <properties>
   <gs.version>1.6.0</gs.version>
-  <gt.version>2.4-SNAPSHOT</gt.version>
+  <gt.version>2.4.0</gt.version>
   <java.awt.headless>true</java.awt.headless>
   <jalopy.phase>disabled</jalopy.phase>
   <jalopy.srcExcludesPattern>disabled</jalopy.srcExcludesPattern>
