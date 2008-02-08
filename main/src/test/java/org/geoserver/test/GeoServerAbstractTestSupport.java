@@ -296,6 +296,71 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
         MockHttpServletResponse response = dispatch( request );
         return new ByteArrayInputStream( response.getOutputStreamContent().getBytes() );
     }
+
+    /**
+     * Executes a request with an empty body using the PUT method.
+     *
+     * @param path the portion of the request after the context, for example:
+     *      "api/datastores.xml"
+     *
+     * @throws Exception
+     */
+    protected InputStream put(String path) throws Exception{
+        return put(path, "");
+    }
+
+    /**
+     * Executes a request with a default mimetype using the PUT method.
+     *
+     * @param path the portion of the request after the context, for example:
+     *      "api/datastores.xml"
+     * @param body the content to send as the body of the request
+     *
+     * @throws Exception
+     */
+    protected InputStream put(String path, String body) throws Exception{
+        return put(path, body, "text/plain");
+    }
+
+    /**
+     * Executes a request using the PUT method.
+     *
+     * @param path the portion of the request after the context, for example:
+     *      "api/datastores.xml"
+     * @param body the content to send as the body of the request
+     * @param contentType the mime-type to set for the request being sent
+     *
+     * @throws Exception
+     */
+    protected InputStream put(String path, String body, String contentType) throws Exception {
+        MockHttpServletRequest request = createRequest(path);
+        request.setMethod("PUT");
+        request.setContentType(contentType);
+        request.setBodyContent(body);
+
+        MockHttpServletResponse response = dispatch(request);
+        return new ByteArrayInputStream(response.getOutputStreamContent().getBytes());
+    }
+
+    /**
+     * Executes a request using the PUT method.
+     *
+     * @param path the portion of the request after the context, for example:
+     *      "api/datastores.xml"
+     * @param body the content to send as the body of the request
+     * @param contentType the mime-type to set for the request being sent
+     *
+     * @throws Exception
+     */
+    protected InputStream put(String path, byte[] body, String contentType) throws Exception {
+        MockHttpServletRequest request = createRequest(path);
+        request.setMethod("PUT");
+        request.setContentType(contentType);
+        request.setBodyContent(body);
+
+        MockHttpServletResponse response = dispatch(request);
+        return new ByteArrayInputStream(response.getOutputStreamContent().getBytes());
+    }
     
     /**
      * Executes an ows request using the POST method.
@@ -317,6 +382,29 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
         
         MockHttpServletResponse response = dispatch( request );
         return new ByteArrayInputStream( response.getOutputStreamContent().getBytes() );
+    }
+
+    /**
+     * Executes an ows request using the POST method.
+     *
+     * @param path The porition of the request after the context ( no query string ), 
+     *      example: 'wms'. 
+     *
+     * @param body the body of the request
+     * @param contentType the mimetype to set for the request
+     * 
+     * @return An input stream which is the result of the request.
+     * 
+     * @throws Exception
+     */
+    protected InputStream post(String path, String body, String contentType) throws Exception{
+        MockHttpServletRequest request = createRequest(path);
+        request.setMethod("POST");
+        request.setContentType(contentType);
+        request.setBodyContent(body);
+
+        MockHttpServletResponse response = dispatch(request);
+        return new ByteArrayInputStream(response.getOutputStreamContent().getBytes());
     }
     
     /**
