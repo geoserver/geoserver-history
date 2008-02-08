@@ -1,3 +1,22 @@
+GeoServer 1.6.0
+---------------
+
+The official 1.6.0 release of GeoServer. The 1.6 branch contians new features not present in 1.5. The highlights include:
+
+* WFS 1.1 
+* WMS performance enhancements
+* Security
+* WFS Versioning Extension (experimental)
+* WFS reprojection 
+* KML Superoverlays, Templates, and general improvements 
+* GeoJSON and GeoRSS output formats
+
+And many many more. Check out the entire 1.6.x changelog:
+
+http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&&fixfor=12871&fixfor=13993&fixfor=13874&fixfor=13631&fixfor=13619&fixfor=13675&fixfor=13547&fixfor=13250&fixfor=13200&pid=10311&sorter/field=issuekey&sorter/order=DESC
+
+This release is based off of Geotools 2.4.0. 
+
 GeoServer 1.6.0-RC3
 -------------------
 
