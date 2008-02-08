@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>community-schemas</artifactId>
-    <version>1.6.0-RC3</version>
+    <version>1.6.0</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -48,18 +48,18 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>platform</artifactId>
-      <version>1.6.0-RC3</version>
+      <version>1.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.6.0-RC3</version>
+      <version>1.6.0</version>
     </dependency>
     
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.6.0-RC3</version>
+      <version>1.6.0</version>
       <exclusions>
         <exclusion>
           <!-- 
@@ -75,17 +75,17 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wcs</artifactId>
-      <version>1.6.0-RC3</version>
+      <version>1.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wfs-c</artifactId>
-      <version>1.6.0-RC3</version>
+      <version>1.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wms</artifactId>
-      <version>1.6.0-RC3</version>
+      <version>1.6.0</version>
       <exclusions>
         <exclusion>
           <groupId>org.geoserver</groupId>
@@ -98,7 +98,7 @@
       all datastores that have a "url" parameter 
       <groupId>org.geoserver</groupId>
       <artifactId>validation</artifactId>
-      <version>1.6.0-RC3</version>
+      <version>1.6.0</version>
       </dependency>
     -->
 
@@ -214,14 +214,14 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.6.0-RC3</version>
+      <version>1.6.0</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.6.0-RC3</version>
+      <version>1.6.0</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
