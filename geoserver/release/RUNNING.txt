@@ -6,7 +6,7 @@ $Id: RUNNING.txt,v 1.3 2004/09/22 13:31:18 cholmesny Exp $
 
 This release of GeoServer comes with a built-in Jetty servlet container, 
 so that it can be run directly with out the need to download and configure
-extra software.  GeoServer 1.5 fully implements the Web Feature Service (WFS)
+extra software.  GeoServer fully implements the Web Feature Service (WFS)
 specification, as well as a working implementation of the Web Map Service (WMS)
 specification, both from the Open GIS Consortium (OGC).  In order to install
 and run this application you must do the following:
@@ -23,7 +23,7 @@ and run this application you must do the following:
   into which you installed the JDK release.
 
 
-(1) Download and Install the GeoServer 1.5 Binary Distribution
+(1) Download and Install the GeoServer Binary Distribution
 
 There is more help available at the <a href='http://docs.codehaus.org/display/GEOS/Home'>Geoserver WIKI</a> 
 
@@ -32,10 +32,10 @@ There is more help available at the <a href='http://docs.codehaus.org/display/GE
     http://sourceforge.net/projects/geoserver
 
   On a Windows platform, you will need:
-    geoserver-1.5.*-bin.zip
+    geoserver-1.6.*-bin.zip
 
   On a Unix platform, you will need:
-    geoserver-1.5.*-bin.zip
+    geoserver-1.6.*-bin.zip
 
 * Unpack the binary distribution into a convenient location so that the
   distribution resides in its own directory (conventionally named
@@ -44,13 +44,13 @@ There is more help available at the <a href='http://docs.codehaus.org/display/GE
   pathname of the release directory.
 
 
-(2) Start Up GeoServer 1.5
+(2) Start Up GeoServer 
 
-There are two techniques by which GeoServer 1.5 can be started:
+There are two techniques by which GeoServer can be started:
 
 * Via an environment variable:
   - Set an environment variable GEOSERVER_HOME to the path of the directory
-    into which you have installed GeoServer 1.5.
+    into which you have installed GeoServer.
   - Execute the shell command:
 
       %GEOSERVER_HOME%\bin\startup             (Windows)
@@ -66,21 +66,21 @@ There are two techniques by which GeoServer 1.5 can be started:
       cd $GEOSERVER_HOME/bin                   (Unix)
       ./startup.sh                            (Unix)
 
-After startup, the default web administration tool included with GeoServer 1.5 
+After startup, the default web administration tool included with GeoServer 
 will be available by browsing:
 
     http://localhost:8080/
 
-Further information about configuring and running GeoServer 1.5 can be found in
+Further information about configuring and running GeoServer can be found in
 the documentation included in the documentss directory, as well as on the 
 GeoServer web site:
 
     http://geoserver.sourceforge.net
 
 
-(3) Shut Down GeoServer 1.5
+(3) Shut Down GeoServer
 
-There are two techniques by which GeoServer 1.5 can be stopped:
+There are two techniques by which GeoServer can be stopped:
 
 * Via an environment variable:
   - Set an environment variable GEOSERVER_HOME to the path of the directory
