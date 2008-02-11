@@ -142,6 +142,27 @@ public class ResponseUtils {
 
         return url.substring(0, index);
     }
+    
+    /**
+     * Returns the query string part of a request url.
+     * <p>
+     * If the url does not have a query string compopnent, the empty string is 
+     * returned. 
+     * </p>
+     * 
+     * @param url The url.
+     * 
+     * @return The query string part of the url.
+     */
+    public static String getQueryString(String url) {
+        int index = url.indexOf('?');
+
+        if (index == -1 || index == url.length()-1 ) {
+            return "";
+        }
+
+        return url.substring(index+1);
+    }
 
     /**
      * Appends a path tpo a url.
@@ -161,5 +182,45 @@ public class ResponseUtils {
         }
 
         return url.endsWith("/") ? (url + path) : (url + "/" + path);
+    }
+    
+    /**
+     * Strips any remaining part from a path, returning only the first component.
+     * <p>
+     * Examples: 
+     * <ul>
+     *   <li>foo/bar -> foo
+     *   <li>/foo/bar -> /foo
+     * </ul>
+     * </p>
+     * @param url
+     * @return
+     */
+    public static String stripRemainingPath(String path) {
+        int i = 0;
+        if  (path.startsWith("/")) {
+            i = 1;
+        }
+        
+        int index = path.indexOf('/',i);
+        if ( i > -1 ) {
+            return path.substring( 0, index );
+        }
+        return path;
+    }
+    
+    /**
+     * Ensures a path is absolute (starting with '/').
+     * 
+     * @param path The path.
+     * 
+     * @return The path starting with '/'.
+     */
+    public static String makePathAbsolute(String path) {
+        if ( path.startsWith("/") ) {
+            return path;
+        }
+        
+        return "/" + path;
     }
 }
