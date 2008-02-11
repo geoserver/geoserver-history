@@ -8,5 +8,6 @@
 <#foreach link in links>
 <li><a href="${page.currentURL}/${link}">${link}</a></li>
 </#foreach>
+</ul>
 </body>
 </html>
