@@ -921,7 +921,7 @@ public class Dispatcher extends AbstractController {
         return (cache == null) ? null : new BufferedInputStream(new FileInputStream(cache));
     }
 
-    void parseKVP(Request req) throws ServiceException {
+    void preParseKVP(Request req) throws ServiceException {
         HttpServletRequest request = req.httpRequest;
 
         //unparsed kvp set
@@ -933,8 +933,7 @@ public class Dispatcher extends AbstractController {
             return;
         }
 
-        //look up parser objects
-        Collection parsers = GeoServerExtensions.extensions(KvpParser.class);
+        //track parsed kvp and unparsd
         Map parsedKvp = new KvpMap();
         Map rawKvp = new KvpMap();
         
@@ -955,11 +954,54 @@ public class Dispatcher extends AbstractController {
                 value = value.trim(); 
             }
             
+            //convert key to lowercase 
+            parsedKvp.put(key.toLowerCase(), value);
+            rawKvp.put(key.toLowerCase(), value );
+        }
+
+        req.kvp = parsedKvp;
+        req.rawKvp = rawKvp;
+    }
+    
+    void parseKVP(Request req) throws ServiceException {
+        
+        preParseKVP( req );
+        
+        //look up parser objects
+        Collection parsers = GeoServerExtensions.extensions(KvpParser.class);
+       
+        //strip out parsers which do not match current service/request/version
+        String service = (String) req.kvp.get( "service" );
+        String version = (String) req.kvp.get( "version" );
+        String request = (String) req.kvp.get( "request" );
+        for (Iterator p = parsers.iterator(); p.hasNext(); ) {
+            KvpParser parser = (KvpParser) p.next();
+            
+            if ( parser.getService() != null && !parser.getService().equals(service) ) {
+                p.remove();
+                continue;
+            }
+            
+            if ( parser.getVersion() != null && !parser.getVersion().equals(version) ) {
+                p.remove();
+                continue;
+            }
+            
+            if ( parser.getRequest() != null && !parser.getRequest().equals(request) ) {
+                p.remove();
+            }
+        }
+        
+        //parser the kvp's
+        for (Iterator itr = req.kvp.entrySet().iterator(); itr.hasNext();) {
+            Map.Entry entry = (Map.Entry) itr.next();
+            String key = (String) entry.getKey();
+            String value = (String) entry.getValue();
+            
             //find the parser for this key value pair
             Object parsed = null;
 
-//            for (Iterator pitr = parsers.iterator(); pitr.hasNext() && parsed == null;) {
-            for (Iterator pitr = parsers.iterator(); pitr.hasNext();) {
+            for (Iterator pitr = parsers.iterator(); pitr.hasNext() && parsed == null;) {
                 KvpParser parser = (KvpParser) pitr.next();
 
                 if (key.equalsIgnoreCase(parser.getKey())) {
@@ -974,17 +1016,10 @@ public class Dispatcher extends AbstractController {
             }
 
             //if noone could parse, just set to string value
-            if (parsed == null) {
-                parsed = value;
+            if (parsed != null) {
+                entry.setValue(parsed);
             }
-
-            //convert key to lowercase 
-            parsedKvp.put(key.toLowerCase(), parsed);
-            rawKvp.put(key.toLowerCase(), value );
         }
-
-        req.kvp = parsedKvp;
-        req.rawKvp = rawKvp;
     }
 
     Object parseRequestKVP(Class type, Request request)
