@@ -203,7 +203,7 @@ public class ResponseUtils {
         }
         
         int index = path.indexOf('/',i);
-        if ( i > -1 ) {
+        if ( index > -1 ) {
             return path.substring( 0, index );
         }
         return path;
