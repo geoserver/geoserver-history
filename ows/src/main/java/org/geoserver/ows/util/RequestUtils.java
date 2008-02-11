@@ -25,7 +25,6 @@ import org.geotools.util.Version;
  * TODO: this class needs to be merged with org.vfny.geoserver.Requests.
  */
 public class RequestUtils {
-    static String forcedBaseUrl;
     
     /**
      * Returns the url which is hte base of schemas stored / served by
@@ -53,11 +52,8 @@ public class RequestUtils {
      *
      */
     public static String baseURL(HttpServletRequest req) {
-        if(forcedBaseUrl == null)
             return req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort()
                 + req.getContextPath() + "/";
-        else
-            return forcedBaseUrl;
     }
     
     /**
@@ -81,17 +77,6 @@ public class RequestUtils {
             //hmm...guess the proxy base must be invalid
             throw new RuntimeException("Invalid Proxy Base URL property is set in your GeoServer installation.",urise);
         }
-    }
-    
-    
-    
-    /**
-     * Forces the base url to a certain string. Useful to redirect the xml schema
-     * locations to the local file system during testing (since no web server is running during unit tests)
-     * @param url
-     */
-    public static void setForcedBaseUrl(String url) {
-        forcedBaseUrl = url;
     }
 
     /**

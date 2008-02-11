@@ -2,11 +2,13 @@ package org.geoserver.test;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,6 +27,10 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import javax.xml.validation.ValidatorHandler;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
@@ -424,21 +431,6 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
      * 
      * @param path The portion of the request after the context, 
      *      example: 'wms?request=GetMap&version=1.1.1&..."
-     * 
-     * @return A result of the request parsed into a dom.
-     * 
-     * @throws Exception
-     */
-    protected Document getAsDOM( String path ) throws Exception {
-        return getAsDOM(path, null);
-    }
-    
-    /**
-     * Executes an ows request using the GET method and returns the result as an 
-     * xml document.
-     * 
-     * @param path The portion of the request after the context, 
-     *      example: 'wms?request=GetMap&version=1.1.1&..."
      * @param the list of validation errors encountered during document parsing (validation
      *        will be activated only if this list is non null)
      * 
@@ -446,9 +438,9 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
      * 
      * @throws Exception
      */
-    protected Document getAsDOM(final String path, List<Exception> validationErrors)
+    protected Document getAsDOM(final String path)
             throws Exception {
-        return dom(get(path), validationErrors);
+        return dom(get(path));
     }
 
     
@@ -481,7 +473,7 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
      * @throws Exception
      */
     protected Document postAsDOM( String path, List<Exception> validationErrors ) throws Exception {
-        return dom( post( path ), validationErrors );
+        return dom( post( path ));
     }
     
     /**
@@ -515,7 +507,7 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
      * @throws Exception
      */
     protected Document postAsDOM( String path, String xml, List<Exception> validationErrors ) throws Exception {
-            return dom( post( path, xml ), validationErrors );
+            return dom( post( path, xml ));
     }
     
     protected String getAsString(String path) throws Exception {
@@ -524,52 +516,48 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
     
     /**
      * Parses a stream into a dom.
+     * @throws IOException 
+     * @throws SAXException 
      */
-    protected Document dom( InputStream input ) throws Exception {
-        return dom(input, null);
-    }
-    
-    /**
-     * Parses a stream into a dom. If the validationErrors collection is provided (not null) then
-     * schema validation is activated and the validation errors will be added to it.
-     */
-    protected Document dom(InputStream is, final List<Exception> validationErrors)
-            throws ParserConfigurationException, SAXException, IOException {
+    protected Document dom(InputStream is) throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
-        if (validationErrors != null) {
-            factory.setValidating(true);
-            factory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage",
-                    "http://www.w3.org/2001/XMLSchema");
-        }
-
         DocumentBuilder builder = factory.newDocumentBuilder();
-        if (validationErrors != null) {
-            builder.setErrorHandler(new ErrorHandler() {
-
-                public void warning(SAXParseException exception) throws SAXException {
-                    System.out.println(exception.getMessage());
-                }
-
-                public void fatalError(SAXParseException exception) throws SAXException {
-                    validationErrors.add(exception);
-                }
-
-                public void error(SAXParseException exception) throws SAXException {
-                    validationErrors.add(exception);
-                }
-
-            });
-        }
         return builder.parse(is);
+    }
+            
+    protected void checkValidationErorrs(Document dom, String schemaLocation) throws SAXException, IOException {
+        final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        Schema schema = factory.newSchema(new File(schemaLocation));
+        checkValidationErrors(dom, schema);
     }
 
     /**
-     * Given a list of validation exceptions, checks it's empty, or fails the test with a list
+     * Given a dom and a schema, checks that the dom validates against the schema 
      * of the validation errors instead
      * @param validationErrors
+     * @throws IOException 
+     * @throws SAXException 
      */
-    protected void checkValidationErrors(List<Exception> validationErrors) {
+    protected void checkValidationErrors(Document dom, Schema schema) throws SAXException, IOException {
+        final Validator validator = schema.newValidator();
+        final List<Exception> validationErrors = new ArrayList<Exception>();
+        validator.setErrorHandler(new ErrorHandler() {
+            
+            public void warning(SAXParseException exception) throws SAXException {
+                System.out.println(exception.getMessage());
+            }
+
+            public void fatalError(SAXParseException exception) throws SAXException {
+                validationErrors.add(exception);
+            }
+
+            public void error(SAXParseException exception) throws SAXException {
+                validationErrors.add(exception);
+            }
+
+          });
+        validator.validate(new DOMSource(dom));
         if (validationErrors != null && validationErrors.size() > 0) {
             StringBuilder sb = new StringBuilder();
             for (Exception ve : validationErrors) {
