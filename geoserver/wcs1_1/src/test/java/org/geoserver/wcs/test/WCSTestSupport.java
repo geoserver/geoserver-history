@@ -69,9 +69,6 @@ public class WCSTestSupport extends KvpRequestReaderTestSupport {
     protected void setUp() throws Exception {
         super.setUp();
         
-        // to allow validators to find the schemas in this module
-//        org.geoserver.ows.util.RequestUtils.setForcedBaseUrl("");
-        
         // init xmlunit
         Map<String, String> namespaces = new HashMap<String, String>();
         namespaces.put("wcs", "http://www.opengis.net/wcs/1.1.1");
