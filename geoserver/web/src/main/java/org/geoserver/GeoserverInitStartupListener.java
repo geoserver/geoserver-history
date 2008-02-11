@@ -27,8 +27,9 @@ public class GeoserverInitStartupListener implements ServletContextListener {
         // before any other opeation can trigger the initialization of the CRS
         // subsystem
         if (System.getProperty("org.geotools.referencing.forceXY") == null) {
-            Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
-                    Boolean.TRUE);
+//            Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
+//                    Boolean.TRUE);
+            System.setProperty("org.geotools.referencing.forceXY", "true");
         }
         if (Boolean.TRUE.equals(Hints
                 .getSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER))) {
