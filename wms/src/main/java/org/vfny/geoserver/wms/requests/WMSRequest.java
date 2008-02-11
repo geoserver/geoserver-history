@@ -59,4 +59,12 @@ public class WMSRequest extends Request {
 
         return gs;
     }
+    
+    /**
+     * Setter for the 'WMTVER' parameter, which is an alias for 'VERSION'.§ 
+     * 
+     */
+    public void setWmtVer( String version ) {
+        setVersion( version );
+    }
 }
