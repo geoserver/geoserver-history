@@ -35,7 +35,7 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
     // }
 
     public void testKvpBasic() throws Exception {
-        String request = "?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
+        String request = "wcs?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
                 + layerId(WCSTestSupport.TASMANIA_BM)
                 + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
                 + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=geotiff";
@@ -54,9 +54,8 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
         System.out.println("Coverages part: " + coveragesPart.getContent());
         assertEquals("<urn:ogc:wcs:1.1:coverages>", coveragesPart.getHeader("Content-ID")[0]);
         // read the xml document into a dom
-        List<Exception> validationErrors = new ArrayList<Exception>();
-        Document dom = dom(coveragesPart.getDataHandler().getInputStream(), validationErrors);
-        checkValidationErrors(validationErrors);
+        Document dom = dom(coveragesPart.getDataHandler().getInputStream());
+        checkValidationErrors(dom, WCS11_SCHEMA);
         assertXpathEvaluatesTo(WCSTestSupport.TASMANIA_BM.getLocalPart(),
                 "wcs:Coverages/wcs:Coverage/ows:Title", dom);
 
@@ -103,7 +102,7 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
     }
 
     public void testTiffOutput() throws Exception {
-        String request = "?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
+        String request = "wcs?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
                 + layerId(WCSTestSupport.TASMANIA_BM)
                 + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
                 + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=image/tiff";
@@ -125,7 +124,7 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
     }
 
     public void testPngOutput() throws Exception {
-        String request = "?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
+        String request = "wcs?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
                 + layerId(WCSTestSupport.TASMANIA_BM)
                 + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
                 + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=image/png";
@@ -147,7 +146,7 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
     }
 
     public void testGeotiffNamesGalore() throws Exception {
-        String requestBase = "?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
+        String requestBase = "wcs?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
                 + layerId(WCSTestSupport.TASMANIA_BM)
                 + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
                 + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326";

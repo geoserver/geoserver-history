@@ -6,10 +6,14 @@ package org.geoserver.wcs.test;
 
 import static org.custommonkey.xmlunit.XMLAssert.*;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -42,6 +46,17 @@ public class WCSTestSupport extends KvpRequestReaderTestSupport {
     public static QName ROTATED_CAD = new QName(WCS_URI, "RotatedCad", WCS_PREFIX);
     
     protected XpathEngine xpath;
+    
+    protected static final Schema WCS11_SCHEMA;
+    
+    static {
+        try {
+            final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            WCS11_SCHEMA = factory.newSchema(new File("./schemas/wcs/1.1.1/wcsAll.xsd"));
+        } catch(Exception e) {
+            throw new RuntimeException("Could not parse the WCS 1.1.1 schemas", e);
+        }
+    }
 
     /**
      * @return The global wfs instance from the application context.
@@ -55,7 +70,7 @@ public class WCSTestSupport extends KvpRequestReaderTestSupport {
         super.setUp();
         
         // to allow validators to find the schemas in this module
-        org.geoserver.ows.util.RequestUtils.setForcedBaseUrl("");
+//        org.geoserver.ows.util.RequestUtils.setForcedBaseUrl("");
         
         // init xmlunit
         Map<String, String> namespaces = new HashMap<String, String>();

@@ -5,8 +5,6 @@ import static org.custommonkey.xmlunit.XMLAssert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.custommonkey.xmlunit.XMLUnit;
-import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -76,12 +74,11 @@ public class DescribeCoverageTest extends WCSTestSupport {
     }
 
     public void testDescribeDemCoverageKvp() throws Exception {
-        List<Exception> errors = new ArrayList<Exception>();
         Document dom = getAsDOM(BASEPATH
                 + "?request=DescribeCoverage&service=WCS&version=1.1.1&identifiers="
-                + layerId(WCSTestSupport.TASMANIA_DEM), errors);
+                + layerId(WCSTestSupport.TASMANIA_DEM));
 //        print(dom);
-        checkValidationErrors(errors);
+        checkValidationErrors(dom, WCS11_SCHEMA);
         checkDemCoverageDescription(dom);
     }
     
@@ -96,7 +93,7 @@ public class DescribeCoverageTest extends WCSTestSupport {
             "  <wcs:Identifier>" + layerId(WCSTestSupport.TASMANIA_DEM) + "</wcs:Identifier>\r\n" + // 
             "</wcs:DescribeCoverage>";
         Document dom = postAsDOM(BASEPATH, request, errors);
-        checkValidationErrors(errors);
+        checkValidationErrors(dom, WCS11_SCHEMA);
         checkDemCoverageDescription(dom);
     }
 
@@ -126,12 +123,11 @@ public class DescribeCoverageTest extends WCSTestSupport {
     }
     
     public void testDescribeRotatedCoverage() throws Exception {
-        List<Exception> errors = new ArrayList<Exception>();
         Document dom = getAsDOM(BASEPATH
                 + "?request=DescribeCoverage&service=WCS&version=1.1.1&identifiers="
-                + layerId(WCSTestSupport.ROTATED_CAD), errors);
+                + layerId(WCSTestSupport.ROTATED_CAD));
 //        print(dom);
-        checkValidationErrors(errors);
+        checkValidationErrors(dom, WCS11_SCHEMA);
         // check the basics, the output is a single coverage description with the expected id
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescriptions").getLength());
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescription").getLength());
@@ -159,12 +155,11 @@ public class DescribeCoverageTest extends WCSTestSupport {
     }
     
     public void testDescribeImageCoverage() throws Exception {
-        List<Exception> errors = new ArrayList<Exception>();
         Document dom = getAsDOM(BASEPATH
                 + "?request=DescribeCoverage&service=WCS&version=1.1.1&identifiers="
-                + layerId(WCSTestSupport.TASMANIA_BM), errors);
+                + layerId(WCSTestSupport.TASMANIA_BM));
 //        print(dom);
-        checkValidationErrors(errors);
+        checkValidationErrors(dom, WCS11_SCHEMA);
         // check the basics, the output is a single coverage description with the expected id
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescriptions").getLength());
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescription").getLength());
