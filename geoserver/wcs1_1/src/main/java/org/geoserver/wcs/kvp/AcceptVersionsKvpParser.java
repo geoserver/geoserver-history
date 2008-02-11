@@ -19,13 +19,12 @@ import org.geoserver.ows.util.RequestUtils;
  * @author Andrea Aime - TOPP
  * 
  */
-public class AcceptVersionsKvpParser extends KvpParser {
+public class AcceptVersionsKvpParser extends WcsKvpParser {
 
     public AcceptVersionsKvpParser() {
         super("AcceptVersions", AcceptVersionsType.class);
     }
 
-    @Override
     public Object parse(String value) throws Exception {
         List<String> versions = KvpUtils.readFlat(value);
         for (String version : versions) {
