@@ -248,9 +248,9 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
         request.setRequestURI(ResponseUtils.stripQueryString(ResponseUtils.appendPath(
                     "/geoserver/", path)));
         request.setRequestURL(ResponseUtils.appendPath("http://localhost/geoserver", path ) );
-        request.setQueryString(ResponseUtils.stripQueryString(path));
+        request.setQueryString(ResponseUtils.getQueryString(path));
         request.setRemoteAddr("127.0.0.1");
-        request.setServletPath(path);
+        request.setServletPath(ResponseUtils.makePathAbsolute( ResponseUtils.stripRemainingPath(path)) );
         kvp(request, path);
 
         MockHttpSession session = new MockHttpSession();
