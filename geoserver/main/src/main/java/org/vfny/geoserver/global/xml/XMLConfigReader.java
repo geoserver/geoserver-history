@@ -1565,6 +1565,7 @@ public class XMLConfigReader {
 
         try {
             ft.setName(ReaderUtils.getChildText(fTypeRoot, "name", true));
+            ft.setAlias(ReaderUtils.getChildText(fTypeRoot, "alias", false));
             ft.setTitle(ReaderUtils.getChildText(fTypeRoot, "title", true));
             ft.setAbstract(ReaderUtils.getChildText(fTypeRoot, "abstract"));
             ft.setWmsPath(ReaderUtils.getChildText(fTypeRoot, "wmspath" /*

@@ -74,6 +74,11 @@ public class FeatureTypeConfig {
 
     /** Name (must match DataStore typeName). */
     private String name;
+    
+    /**
+     * The user facing alias for this feature type, if any
+     */
+    private String alias;
 
     /**
      *
@@ -314,6 +319,7 @@ public class FeatureTypeConfig {
         }
 
         name = dto.getName();
+        alias = dto.getAlias();
         wmsPath = dto.getWmsPath();
         title = dto.getTitle();
         _abstract = dto.getAbstract();
@@ -377,6 +383,7 @@ public class FeatureTypeConfig {
         }
 
         f.setName(name);
+        f.setAlias(alias);
         f.setWmsPath(wmsPath);
         f.setTitle(title);
         f.setAbstract(_abstract);
@@ -757,7 +764,7 @@ public class FeatureTypeConfig {
     }
 
     public String toString() {
-        return "FeatureTypeConfig[name: " + name + " schemaName: " + schemaName + " SRS: " + SRS
+        return "FeatureTypeConfig[name: " + name + " alias: " + alias + " schemaName: " + schemaName + " SRS: " + SRS
         + " schemaAttributes: " + schemaAttributes + " schemaBase " + schemaBase + "]";
     }
 
@@ -791,5 +798,13 @@ public class FeatureTypeConfig {
 
     public void setMaxFeatures(int maxFeatures) {
         this.maxFeatures = maxFeatures;
+    }
+    
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 }

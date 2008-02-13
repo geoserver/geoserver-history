@@ -339,6 +339,10 @@ public class TypesEditorAction extends ConfigAction {
      */
     private void sync(TypesEditorForm form, FeatureTypeConfig config, HttpServletRequest request) {
         config.setName(form.getTypeName());
+        if(form.getAlias() != null && "".equals(form.getAlias().trim()))
+            config.setAlias(null);
+        else
+            config.setAlias(form.getAlias());
         config.setAbstract(form.getAbstract());
         config.setDefaultStyle(form.getStyleId());
 
@@ -481,10 +485,18 @@ public class TypesEditorAction extends ConfigAction {
     private ActionForward executeSubmit(ActionMapping mapping, TypesEditorForm form,
         UserContainer user, HttpServletRequest request) {
         FeatureTypeConfig config = user.getFeatureTypeConfig();
-        sync(form, config, request);
-
+        
+        // clean up old names
         DataConfig dataConfig = (DataConfig) getDataConfig();
-        dataConfig.addFeatureType(config.getDataStoreId() + ":" + config.getName(), config);
+        dataConfig.removeFeatureType(config.getDataStoreId() + ":" + config.getName());
+        if(config.getAlias() != null)
+            dataConfig.removeFeatureType(config.getDataStoreId() + ":" + config.getAlias());
+        
+        sync(form, config, request);
+        if(config.getAlias() != null && !"".equals(config.getAlias()))
+            dataConfig.addFeatureType(config.getDataStoreId() + ":" + config.getAlias(), config);
+        else
+            dataConfig.addFeatureType(config.getDataStoreId() + ":" + config.getName(), config);
 
         // Don't think reset is needed (as me have moved on to new page)
         // form.reset(mapping, request);

@@ -23,7 +23,8 @@ import org.opengis.filter.Filter;
 import com.vividsolutions.jts.geom.Envelope;
 
 /**
- * Renaming wrapper for a {@link FeatureSource} instance, to be used along with {@link RetypingDataStore} 
+ * Renaming wrapper for a {@link FeatureSource} instance, to be used along with
+ * {@link RetypingDataStore}
  */
 public class RetypingFeatureSource implements FeatureSource {
 
@@ -31,12 +32,12 @@ public class RetypingFeatureSource implements FeatureSource {
 
     FeatureTypeMap typeMap;
 
-    DataStore ds;
-    
+    RetypingDataStore store;
+
     Map listeners = new HashMap();
 
-    public RetypingFeatureSource(DataStore ds, FeatureSource wrapped, FeatureTypeMap typeMap) {
-        this.ds = ds;
+    RetypingFeatureSource(RetypingDataStore ds, FeatureSource wrapped, FeatureTypeMap typeMap) {
+        this.store = ds;
         this.wrapped = wrapped;
         this.typeMap = typeMap;
     }
@@ -49,7 +50,7 @@ public class RetypingFeatureSource implements FeatureSource {
 
     public void removeFeatureListener(FeatureListener listener) {
         FeatureListener wrapper = (FeatureListener) listeners.get(listener);
-        if(wrapper != null) {
+        if (wrapper != null) {
             wrapped.removeFeatureListener(listener);
             listeners.remove(listener);
         }
@@ -64,15 +65,15 @@ public class RetypingFeatureSource implements FeatureSource {
     public Envelope getBounds(Query query) throws IOException {
         // not fully correct if we use this to shave attributes too, but this is
         // not in the scope now
-        return wrapped.getBounds(retypeQuery(query));
+        return wrapped.getBounds(store.retypeQuery(query, typeMap));
     }
 
     public int getCount(Query query) throws IOException {
-        return wrapped.getCount(retypeQuery(query));
+        return wrapped.getCount(store.retypeQuery(query, typeMap));
     }
 
     public DataStore getDataStore() {
-        return ds;
+        return store;
     }
 
     public FeatureCollection getFeatures() throws IOException {
@@ -80,7 +81,14 @@ public class RetypingFeatureSource implements FeatureSource {
     }
 
     public FeatureCollection getFeatures(Query query) throws IOException {
-        return new RetypingFeatureCollection(wrapped.getFeatures(retypeQuery(query)), typeMap
+        if (query.getTypeName() == null) {
+            query = new DefaultQuery(query);
+            ((DefaultQuery) query).setTypeName(typeMap.getName());
+        } else if (!typeMap.getName().equals(query.getTypeName())) {
+            throw new IOException("Cannot query this feature source with " + query.getTypeName()
+                    + " since it serves only " + typeMap.getName());
+        }
+        return new RetypingFeatureCollection(wrapped.getFeatures(store.retypeQuery(query, typeMap)), typeMap
                 .getFeatureType());
     }
 
@@ -94,12 +102,6 @@ public class RetypingFeatureSource implements FeatureSource {
 
     public Set getSupportedHints() {
         return wrapped.getSupportedHints();
-    }
-
-    Query retypeQuery(Query q) {
-        DefaultQuery modified = new DefaultQuery(q);
-        modified.setTypeName(typeMap.getOriginalName());
-        return modified;
     }
 
 }

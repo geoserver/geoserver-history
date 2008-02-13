@@ -4,6 +4,7 @@
  */
 package org.geoserver.feature;
 
+import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureWriter;
 import org.geotools.feature.AttributeType;
@@ -69,7 +70,30 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
             attributes[i] = value;
         }
 
-        return target.create(attributes, source.getID());
+        String id = reTypeId(source.getID(), source.getFeatureType(), target);
+        return target.create(attributes, id);
+    }
+    
+    /**
+     * Given a feature id following the <typename>.<internalId> convention, the original 
+     * type and the destination type, this converts the id from <original>.<internalid>
+     * to <target>.<internalid>
+     * @param id
+     * @param original
+     * @param target
+     * @return
+     */
+    public static String reTypeId(String sourceId, FeatureType original, FeatureType target) {
+        final String originalTypeName = original.getTypeName();
+        final String destTypeName = target.getTypeName();
+        if(destTypeName.equals(originalTypeName))
+            return sourceId;
+        
+        final String prefix = originalTypeName + ".";
+        if(sourceId.startsWith(prefix)) {
+            return destTypeName + "." + sourceId.substring(prefix.length());
+        } else
+            return sourceId;
     }
 
     public static class RetypingIterator implements Iterator {

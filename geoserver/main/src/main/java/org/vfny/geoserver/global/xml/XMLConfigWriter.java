@@ -701,7 +701,7 @@ public class XMLConfigWriter {
          * </p>
          *
          * @param cw The Configuration Writer
-         * @param ds The Format.
+         * @param store The Format.
          *
          * @throws ConfigurationException When an IO exception occurs.
          */
@@ -974,6 +974,8 @@ public class XMLConfigWriter {
             WriterHelper cw = new WriterHelper(fw);
             Map m = new HashMap();
 
+            // oh the horror, a string comparison using !=... well, this 
+            // class is going to die soon so I won't touch it...
             if ((ft.getDataStoreId() != null) && (ft.getDataStoreId() != "")) {
                 m.put("datastore", ft.getDataStoreId());
             }
@@ -982,6 +984,10 @@ public class XMLConfigWriter {
 
             if ((ft.getName() != null) && (ft.getName() != "")) {
                 cw.textTag("name", ft.getName());
+            }
+            
+            if ((ft.getAlias() != null) && !ft.getAlias().equals("")) {
+                cw.textTag("alias", ft.getAlias());
             }
 
             cw.comment("native wich EPGS code for the FeatureTypeInfoDTO");

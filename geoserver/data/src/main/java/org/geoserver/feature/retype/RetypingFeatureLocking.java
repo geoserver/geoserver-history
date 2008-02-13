@@ -17,7 +17,7 @@ import org.opengis.filter.Filter;
  */
 class RetypingFeatureLocking extends RetypingFeatureStore implements FeatureLocking {
 
-    public RetypingFeatureLocking(DataStore ds, FeatureLocking wrapped, FeatureTypeMap typeMap) {
+    public RetypingFeatureLocking(RetypingDataStore ds, FeatureLocking wrapped, FeatureTypeMap typeMap) {
         super(ds, wrapped, typeMap);
     }
     
@@ -30,11 +30,11 @@ class RetypingFeatureLocking extends RetypingFeatureStore implements FeatureLock
     }
 
     public int lockFeatures(Query query) throws IOException {
-        return featureLocking().lockFeatures(retypeQuery(query));
+        return featureLocking().lockFeatures(store.retypeQuery(query, typeMap));
     }
 
     public int lockFeatures(Filter filter) throws IOException {
-        return featureLocking().lockFeatures(filter);
+        return featureLocking().lockFeatures(store.retypeFilter(filter, typeMap));
     }
 
     public void setFeatureLock(FeatureLock lock) {
@@ -46,11 +46,11 @@ class RetypingFeatureLocking extends RetypingFeatureStore implements FeatureLock
     }
 
     public void unLockFeatures(Filter filter) throws IOException {
-        featureLocking().unLockFeatures(filter);
+        featureLocking().unLockFeatures(store.retypeFilter(filter, typeMap));
     }
 
     public void unLockFeatures(Query query) throws IOException {
-        featureLocking().unLockFeatures(retypeQuery(query));
+        featureLocking().unLockFeatures(store.retypeQuery(query, typeMap));
     }
 
 }

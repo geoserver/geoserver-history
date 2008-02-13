@@ -4,9 +4,19 @@
  */
 package org.vfny.geoserver.global;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.geoserver.feature.FeatureSourceUtils;
+import org.geoserver.feature.retype.RetypingDataStore;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
@@ -33,16 +43,9 @@ import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.global.dto.LegendURLDTO;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
@@ -121,7 +124,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     private String schemaBase;
 
     /** typeName as defined by gt2 DataStore */
-    private String typeName;
+    String typeName;
 
     /**
      *
@@ -253,6 +256,12 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     private int maxFeatures;
     
     /**
+     * The typename alias. If set the typename will be recognized by the alias only, the original
+     * typename will be forgotten
+     */
+    private String alias;
+    
+    /**
      * FeatureTypeInfo constructor.
      *
      * <p>
@@ -284,6 +293,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         metadataLinks = dto.getMetadataLinks();
         latLongBBox = dto.getLatLongBBox();
         typeName = dto.getName();
+        alias = dto.getAlias();
         wmsPath = dto.getWmsPath();
         numDecimals = dto.getNumDecimals();
 
@@ -341,6 +351,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         dto.setLatLongBBox(latLongBBox);
         dto.setNativeBBox(nativeBBox);
         dto.setName(typeName);
+        dto.setAlias(typeName);
         dto.setWmsPath(wmsPath);
         dto.setNumDecimals(numDecimals);
 
@@ -477,7 +488,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      *         parent Data instance.
      */
     public String getName() {
-        return getPrefix() + ":" + typeName;
+        if(alias == null)
+            return getPrefix() + ":" + typeName;
+        else
+            return getPrefix() + ":" + alias;
     }
 
     /**
@@ -507,8 +521,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 + " does not have a properly configured " + "datastore");
         }
 
-        DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
-        FeatureSource realSource = dataStore.getFeatureSource(typeName);
+        FeatureSource realSource = getAliasedFeatureSource();
         
         // avoid reprojection if the calling code can do it better
         int localSrsHandling = srsHandling;
@@ -567,6 +580,52 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             } 
         }
     }
+
+    /**
+     * Returns the native feature source, eventually aliasing the name of the
+     * feature type with the specified alias
+     * @return
+     * @throws IOException
+     */
+    private FeatureSource getAliasedFeatureSource() throws IOException {
+        DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
+        FeatureSource fs;
+        if(alias == null) {
+            fs = dataStore.getFeatureSource(typeName);
+        } else {
+            fs = new RenamingDataStore(dataStore, typeName, alias).getFeatureSource(alias);
+        }
+        
+        return fs;
+    }
+    
+    /**
+     * JDK 4 compiler is behaving strangely, it's calling the super constructor
+     * before setting the anonymous inner class relationship with the parent.
+     * This leads to an NPE which does not occurr on trunk. So I had to roll
+     * this class that initializes the fields before calling the parent constructor
+     * (which in turn calls transformFeatureTypeName, and thus may cause an NPE since
+     * name and renameTo are not initialized).
+     * @author Administrator
+     *
+     */
+    private static class RenamingDataStore extends RetypingDataStore {
+        private String name;
+        private String renameTo;
+
+        public RenamingDataStore(DataStore wrapped, String typeName, String alias) throws IOException {
+            this.name = typeName;
+            this.renameTo = alias;
+            init(wrapped);
+        }
+
+        protected String transformFeatureTypeName(String originalName) {
+            if(!name.equals(originalName))
+                return originalName;
+            return renameTo;
+        }
+    }
+    
 
     /**
      * Checks if a interface is implemented by looking at implemented interfaces using reflection
@@ -660,9 +719,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
     private Envelope getBoundingBox(CoordinateReferenceSystem targetCrs)
         throws IOException {
-        // compute original bounding box
-        DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
-        FeatureSource realSource = dataStore.getFeatureSource(typeName);
+        FeatureSource realSource = getAliasedFeatureSource();
         Envelope bbox = FeatureSourceUtils.getBoundingBoxEnvelope(realSource);
 
         // check if the original CRS is not the declared one
@@ -683,7 +740,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         } catch (Exception e) {
             LOGGER.severe(
                 "Could not turn the original envelope in one into the declared CRS for type "
-                + typeName);
+                + getTypeName());
             LOGGER.severe("Original CRS is " + originalCRS);
             LOGGER.severe("Declared CRS is " + targetCrs);
         }
@@ -765,8 +822,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 + " does not have a properly configured " + "datastore");
         }
 
-        DataStore dataStore = data.getDataStoreInfo(dataStoreId).getDataStore();
-        FeatureSource realSource = dataStore.getFeatureSource(typeName);
+        FeatureSource realSource = getAliasedFeatureSource();
 
         return realSource.getSchema().getDefaultGeometry();
     }
@@ -1004,7 +1060,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     public String getSchemaName() {
         if (schemaName == null) {
-            return typeName + "_Type";
+            return getTypeName() + "_Type";
         }
 
         return schemaName;
@@ -1055,13 +1111,28 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     /**
      * Access the name of this FeatureType.
      * <p>
-     * This is the typeName as provided by the real gt2 DataStore.
+     * This is the typeName as provided by the gt2 datastore, unless an alias
+     * is set, in that case the alias is returned
      * </p>
      *
      * @return String getName()
      * @see org.geotools.data.FeatureTypeMetaData#getTypeName()
      */
     public String getTypeName() {
+        return alias == null ? typeName : alias;
+    }
+    
+    /**
+     * Access the name of this SimpleFeatureType.
+     * <p>
+     * This is the typeName as provided by the gt2 datastore, even when an alias
+     * is set
+     * </p>
+     *
+     * @return String getName()
+     * @see org.geotools.data.FeatureTypeMetaData#getTypeName()
+     */
+    public String getNativeTypeName() {
         return typeName;
     }
 
@@ -1087,9 +1158,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
         if (ft == null) {
             int count = 0;
             ft = fs.getSchema();
-
             URI namespace = ft.getNamespace(); //DJB:: change to #getNamespace() due to API change
-
+            
             String[] baseNames = DataTransferObjectFactory.getRequiredBaseAttributes(schemaBase);
             AttributeType[] attributes = new AttributeType[schema.size() + baseNames.length];
 
@@ -1149,7 +1219,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
                 }
 
                 try {
-                    ft = FeatureTypeFactory.newFeatureType(attributes, typeName, namespace);
+                    ft = FeatureTypeFactory.newFeatureType(attributes, getTypeName(), namespace);
                 } catch (SchemaException ex) {
                 } catch (FactoryConfigurationError ex) {
                 }
@@ -1244,6 +1314,7 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      * @see org.geotools.data.FeatureTypeMetaData#AttributeTypeMetaData(java.lang.String)
      */
     public synchronized AttributeTypeInfo AttributeTypeMetaData(String attributeName) {
+        // WARNING: this method has not been updated to handle aliases
         AttributeTypeInfo info = null;
 
         if (schema != null) {
