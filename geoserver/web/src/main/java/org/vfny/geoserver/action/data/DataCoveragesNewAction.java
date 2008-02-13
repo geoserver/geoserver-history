@@ -4,11 +4,14 @@
  */
 package org.vfny.geoserver.action.data;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
-import org.geotools.coverage.grid.io.AbstractGridCoverageNDReader;
+import org.geotools.coverage.grid.io.AbstractGridCoverageReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverageReader;
@@ -21,8 +24,6 @@ import org.vfny.geoserver.global.CoverageStoreInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.UserContainer;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -127,13 +128,13 @@ public class DataCoveragesNewAction extends ConfigAction {
             coverageConfigs = new CoverageConfig[1];
             coverageConfigs[0] = new CoverageConfig(formatID, format,
                     (AbstractGridCoverage2DReader) reader, request);
-        } else if (reader instanceof AbstractGridCoverageNDReader) {
-            final String[] listSubnames = ((AbstractGridCoverageNDReader) reader).listSubNames();
+        } else if (reader instanceof AbstractGridCoverageReader) {
+            final String[] listSubnames = ((AbstractGridCoverageReader) reader).listSubNames();
             coverageConfigs = new CoverageConfig[listSubnames.length];
 
             for (int c = 0; c < coverageConfigs.length; c++)
                 coverageConfigs[c] = new CoverageConfig(formatID, format,
-                        (AbstractGridCoverageNDReader) reader, listSubnames[c], request);
+                        (AbstractGridCoverageReader) reader, listSubnames[c], request);
         }
 
         request.setAttribute(NEW_COVERAGE_KEY, "true");

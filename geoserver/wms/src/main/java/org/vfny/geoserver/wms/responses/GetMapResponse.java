@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
-import org.geotools.coverage.grid.io.AbstractGridCoverageNDReader;
+import org.geotools.coverage.grid.io.AbstractGridCoverageReader;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
@@ -501,7 +501,7 @@ public class GetMapResponse implements Response {
 								}
 								
 								map.addLayer(layer);
-							} else if (reader instanceof AbstractGridCoverageNDReader) {
+							} else if (reader instanceof AbstractGridCoverageReader) {
 								final String coverageName = layers[i].getCoverage().getRealName();
 								
 		                        // //
@@ -514,7 +514,7 @@ public class GetMapResponse implements Response {
 			                              .getParameters().put("Coverage", coverageName);
 								
 								layer = new DefaultMapLayer(
-										wrapGridCoverageReader((AbstractGridCoverageNDReader)reader,
+										wrapGridCoverageReader((AbstractGridCoverageReader)reader,
 												layers[i].getCoverage().getRealName(), CoverageUtils
 												.getParameters(params, layers[i]
 												                              .getCoverage()
@@ -855,7 +855,7 @@ public class GetMapResponse implements Response {
 		return collection;
 	}
 
-    public static FeatureCollection wrapGridCoverageReader(final AbstractGridCoverageNDReader gridCoverageReader,
+    public static FeatureCollection wrapGridCoverageReader(final AbstractGridCoverageReader gridCoverageReader,
     		String coverageName, GeneralParameterValue[] params) throws TransformException,
 			FactoryConfigurationError, SchemaException,
 			IllegalAttributeException {
@@ -883,7 +883,7 @@ public class GetMapResponse implements Response {
 		final GeometricAttributeType geom = new GeometricAttributeType("geom",
 				Polygon.class, true, 1, 1, null, sourceCrs, null);
 		final AttributeType grid = AttributeTypeFactory.newAttributeType(
-				"grid", AbstractGridCoverageNDReader.class);
+				"grid", AbstractGridCoverageReader.class);
 		final AttributeType paramsAttr = AttributeTypeFactory.newAttributeType(
 				"params", GeneralParameterValue[].class);
 

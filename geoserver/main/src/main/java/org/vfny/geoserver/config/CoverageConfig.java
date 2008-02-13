@@ -4,12 +4,24 @@
  */
 package org.vfny.geoserver.config;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.units.Unit;
+
 import org.geotools.coverage.Category;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
-import org.geotools.coverage.grid.io.AbstractGridCoverageNDReader;
+import org.geotools.coverage.grid.io.AbstractGridCoverageReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.resources.XArray;
@@ -30,16 +42,6 @@ import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.dto.CoverageInfoDTO;
 import org.vfny.geoserver.util.CoverageStoreUtils;
 import org.vfny.geoserver.util.CoverageUtils;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import javax.units.Unit;
 
 
 /**
@@ -236,7 +238,7 @@ public class CoverageConfig {
      * @param gc
      * @throws ConfigurationException
      */
-    public CoverageConfig(String formatId, Format format, AbstractGridCoverageNDReader reader,
+    public CoverageConfig(String formatId, Format format, AbstractGridCoverageReader abstractGridCoverageReader,
         String coverageName, HttpServletRequest request)
         throws ConfigurationException {
         if ((formatId == null) || (formatId.length() == 0)) {
@@ -261,13 +263,13 @@ public class CoverageConfig {
             throw new RuntimeException("selectedCoverageSetId required in Session");
         }
 
-        crs = reader.getCrs(coverageName);
+        crs = abstractGridCoverageReader.getCrs(coverageName);
         srsName = (((crs != null) && !crs.getIdentifiers().isEmpty())
             ? crs.getIdentifiers().toArray()[0].toString() : "UNKNOWN");
         srsWKT = ((crs != null) ? crs.toWKT() : "UNKNOWN");
-        envelope = reader.getOriginalEnvelope(coverageName);
-        verticalExtent = reader.getVerticalExtent(coverageName);
-        temporalExtent = reader.getTemporalExtent(coverageName);
+        envelope = abstractGridCoverageReader.getOriginalEnvelope(coverageName);
+        verticalExtent = abstractGridCoverageReader.getVerticalExtent(coverageName);
+        temporalExtent = abstractGridCoverageReader.getTemporalExtent(coverageName);
 
         try {
             lonLatWGS84Envelope = CoverageStoreUtils.getWGS84LonLatEnvelope(envelope);
@@ -288,13 +290,13 @@ public class CoverageConfig {
             throw newEx;
         }
 
-        grid = new GridGeometry2D(reader.getOriginalGridRange(coverageName),
-                reader.getOriginalEnvelope(coverageName));
+        grid = new GridGeometry2D(abstractGridCoverageReader.getOriginalGridRange(coverageName),
+                abstractGridCoverageReader.getOriginalEnvelope(coverageName));
 
         // //
         // BANDS (RangeSet)
         // //
-        final String[] bandKeys = reader.getMetadataValue("band_keys", coverageName).split(", ");
+        final String[] bandKeys = abstractGridCoverageReader.getMetadataValue("band_keys", coverageName).split(", ");
         final int numBands = bandKeys.length;
         nDimensionalCoverage = true;
         dimensions = new CoverageDimension[numBands];
@@ -376,7 +378,7 @@ public class CoverageConfig {
         name = cvName.toString();
         real_name = coverageName;
         wmsPath = "/";
-        label = reader.getMetadataValue("description", coverageName);
+        label = abstractGridCoverageReader.getMetadataValue("description", coverageName);
         description = new StringBuffer(name).append(" [").append(label)
                                             .append("] has been generated from ").append(formatId)
                                             .toString();
@@ -391,17 +393,17 @@ public class CoverageConfig {
         dirName = new StringBuffer(formatId).append("_").append(name).toString();
         requestCRSs = new ArrayList(10);
 
-        if ((reader.getCrs(coverageName).getIdentifiers() != null)
-                && !reader.getCrs(coverageName).getIdentifiers().isEmpty()) {
-            requestCRSs.add(((Identifier) reader.getCrs(coverageName).getIdentifiers().toArray()[0])
+        if ((abstractGridCoverageReader.getCrs(coverageName).getIdentifiers() != null)
+                && !abstractGridCoverageReader.getCrs(coverageName).getIdentifiers().isEmpty()) {
+            requestCRSs.add(((Identifier) abstractGridCoverageReader.getCrs(coverageName).getIdentifiers().toArray()[0])
                 .toString());
         }
 
         responseCRSs = new ArrayList(10);
 
-        if ((reader.getCrs(coverageName).getIdentifiers() != null)
-                && !reader.getCrs(coverageName).getIdentifiers().isEmpty()) {
-            responseCRSs.add(((Identifier) reader.getCrs(coverageName).getIdentifiers().toArray()[0])
+        if ((abstractGridCoverageReader.getCrs(coverageName).getIdentifiers() != null)
+                && !abstractGridCoverageReader.getCrs(coverageName).getIdentifiers().isEmpty()) {
+            responseCRSs.add(((Identifier) abstractGridCoverageReader.getCrs(coverageName).getIdentifiers().toArray()[0])
                 .toString());
         }
 

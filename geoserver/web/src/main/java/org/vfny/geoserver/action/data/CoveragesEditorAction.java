@@ -9,7 +9,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
-import org.geotools.coverage.grid.io.AbstractGridCoverageNDReader;
+import org.geotools.coverage.grid.io.AbstractGridCoverageReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.factory.FactoryRegistryException;
 import org.geotools.geometry.GeneralEnvelope;
@@ -177,10 +177,10 @@ public final class CoveragesEditorAction extends ConfigAction {
         try {
             final CoordinateReferenceSystem sourceCRS = ((reader instanceof AbstractGridCoverage2DReader)
                 ? ((AbstractGridCoverage2DReader) reader).getCrs()
-                : ((AbstractGridCoverageNDReader) reader).getCrs(coverageForm.getRealName()));
+                : ((AbstractGridCoverageReader) reader).getCrs(coverageForm.getRealName()));
             final GeneralEnvelope gEnvelope = ((reader instanceof AbstractGridCoverage2DReader)
                 ? ((AbstractGridCoverage2DReader) reader).getOriginalEnvelope()
-                : ((AbstractGridCoverageNDReader) reader).getOriginalEnvelope(coverageForm
+                : ((AbstractGridCoverageReader) reader).getOriginalEnvelope(coverageForm
                     .getRealName()));
             final GeneralEnvelope targetEnvelope = gEnvelope;
             GeneralEnvelope envelope = targetEnvelope;
@@ -442,10 +442,10 @@ public final class CoveragesEditorAction extends ConfigAction {
         try {
             final CoordinateReferenceSystem sourceCRS = ((reader instanceof AbstractGridCoverage2DReader)
                 ? ((AbstractGridCoverage2DReader) reader).getCrs()
-                : ((AbstractGridCoverageNDReader) reader).getCrs(coverageForm.getRealName()));
+                : ((AbstractGridCoverageReader) reader).getCrs(coverageForm.getRealName()));
             final GeneralEnvelope gEnvelope = ((reader instanceof AbstractGridCoverage2DReader)
                 ? ((AbstractGridCoverage2DReader) reader).getOriginalEnvelope()
-                : ((AbstractGridCoverageNDReader) reader).getOriginalEnvelope(coverageForm
+                : ((AbstractGridCoverageReader) reader).getOriginalEnvelope(coverageForm
                     .getRealName()));
 
             final GeneralEnvelope targetEnvelope = gEnvelope;

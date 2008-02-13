@@ -4,16 +4,27 @@
  */
 package org.vfny.geoserver.wcs.responses;
 
+import java.awt.Rectangle;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.media.jai.Interpolation;
+
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
-import org.geotools.coverage.grid.io.AbstractGridCoverageNDReader;
+import org.geotools.coverage.grid.io.AbstractGridCoverageReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
-import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
@@ -36,17 +47,6 @@ import org.vfny.geoserver.util.CoverageUtils;
 import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.requests.CoverageRequest;
-import java.awt.Rectangle;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.media.jai.Interpolation;
 
 
 /**
@@ -379,7 +379,7 @@ public class CoverageResponse implements Response {
         final CoordinateReferenceSystem cvCRS = ((coverageReader instanceof AbstractGridCoverage2DReader)
             ? ((GeneralEnvelope) ((AbstractGridCoverage2DReader) coverageReader).getOriginalEnvelope())
             .getCoordinateReferenceSystem()
-            : ((AbstractGridCoverageNDReader) coverageReader).getCrs(meta.getRealName()));
+            : ((AbstractGridCoverageReader) coverageReader).getCrs(meta.getRealName()));
         final MathTransform GCCRSTodeviceCRSTransformdeviceCRSToGCCRSTransform = CRS
             .findMathTransform(cvCRS, sourceCRS, true);
         final MathTransform GCCRSTodeviceCRSTransform = CRS.findMathTransform(cvCRS, targetCRS, true);
