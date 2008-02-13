@@ -357,17 +357,22 @@ public class TypesEditorAction extends ConfigAction {
         config.setSRS(Integer.parseInt(form.getSRS()));
         config.setTitle(form.getTitle());
         Envelope latLonBbox = getBoundingBox(form);
-        Envelope nativeBbox = getNativeBBox(form);
         // if the lat/lon bbox did not change, don't try to update stuff, since we don't have
         // the native bbox calculated
-        if(!config.getLatLongBBox().equals(latLonBbox))  {
+        if(!(config.getLatLongBBox().equals(latLonBbox) && config.getSRS() == (Integer.parseInt(form.getSRS()))))  {
             config.setLatLongBBox(latLonBbox);
+            try{
+                Envelope nativeBBox = convertBBoxFromLatLon(latLonBbox, "EPSG: " + config.getSRS());
+                config.setNativeBBox(nativeBBox);
+            } catch (Exception e){
+                LOGGER.severe("Couldn't convert new BBox to native coordinate system! Error was" + e);
+            }
         }
         // may the native bbox have been changed due to a change
         // in the CRS code by the user
-        if(config.getNativeBBox() != null || (nativeBbox != null && !config.getNativeBBox().equals(nativeBbox))){
-            config.setNativeBBox(nativeBbox);            
-        }
+        // if(config.getNativeBBox() != null || (nativeBbox != null && !config.getNativeBBox().equals(nativeBbox))){
+            // config.setNativeBBox(nativeBbox);            
+        // }
         config.setKeywords(keyWords(form));
         config.setMetadataLinks(metadataLinks(form));
         config.setWmsPath(form.getWmsPath());
@@ -435,6 +440,28 @@ public class TypesEditorAction extends ConfigAction {
         LOGGER.fine("config schema atts is " + config.getSchemaAttributes());
 
         //config.setSchemaAttributes(form.toSchemaAttributes());
+    }
+
+    /**
+     * Convert a boudning box in latintute/longitude coordinates to another CRS, specified by name.
+     * @param latLonBbox the latitude/longitude boudning box
+     * @param crsName the name of the CRS to which it should be converted
+     * @return the converted bounding box
+     * @throws Exception if anything goes wrong
+     */
+    private Envelope convertBBoxFromLatLon(Envelope latLonBbox, String crsName) throws Exception {
+        CoordinateReferenceSystem latLon = CRS.decode("EPSG:4326");
+        CoordinateReferenceSystem nativeCRS = CRS.decode(crsName);
+
+        Envelope env = null;
+        if (!CRS.equalsIgnoreMetadata(latLon, nativeCRS)){
+            MathTransform xform = CRS.findMathTransform(latLon, nativeCRS, true);
+            env = JTS.transform(latLonBbox, null, xform, 10); // convert databbox to native CRS
+        } else {
+            env = latLonBbox;
+        }
+
+        return env;
     }
 
     private void executeAdd(ActionMapping mapping, TypesEditorForm form, UserContainer user,
