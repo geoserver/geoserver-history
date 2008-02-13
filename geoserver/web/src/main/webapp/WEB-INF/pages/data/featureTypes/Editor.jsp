@@ -400,6 +400,17 @@ function prepareFormData(){
     		<html:text property="cacheMaxAge" size="10" />
     	</td>
     </tr>
+    
+    <tr>
+    	<td class="label">
+    		<span class="help" title="<bean:message key="help.global.maxFeatures" />">
+    			<bean:message key="label.maxFeatures" />:
+    		</span>
+    	</td>
+    	<td class="datum">
+    		<html:text property="maxFeatures" size="10" />
+    	</td>
+    </tr>
 
     <tr>
       <td class="label">

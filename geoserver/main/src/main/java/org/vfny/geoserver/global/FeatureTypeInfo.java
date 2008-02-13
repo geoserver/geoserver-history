@@ -248,6 +248,11 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
     private int srsHandling;
     
     /**
+     * Maximum number of features served for this feature type in wfs requests. 0 for no limit
+     */
+    private int maxFeatures;
+    
+    /**
      * FeatureTypeInfo constructor.
      *
      * <p>
@@ -302,6 +307,8 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
 
         cacheMaxAge = dto.getCacheMaxAge();
         cachingEnabled = dto.isCachingEnabled();
+        
+        maxFeatures = dto.getMaxFeatures();
     }
 
     /**
@@ -1409,5 +1416,18 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     public void setCachingEnabled(boolean cachingEnabled) {
         this.cachingEnabled = cachingEnabled;
+    }
+    
+    /**
+     * Returns the maximum number of features to be served by WFS GetFeature for this feature
+     * type (or 0 for no limit)
+     * @return
+     */
+    public int getMaxFeatures() {
+        return maxFeatures;
+    }
+    
+    public void setMaxFeatures(int maxFeatures) {
+        this.maxFeatures = maxFeatures;
     }
 }

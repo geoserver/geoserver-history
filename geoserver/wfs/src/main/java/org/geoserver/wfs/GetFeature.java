@@ -247,7 +247,11 @@ public class GetFeature {
                     query.getFilter().accept(new AbstractFilterVisitor(visitor), null);
                 }
 
-                org.geotools.data.Query gtQuery = toDataQuery(query, maxFeatures - count, source, request.getVersion());
+                // handle local maximum
+                int queryMaxFeatures = maxFeatures - count;
+                if(meta.getMaxFeatures() > 0 && meta.getMaxFeatures() < queryMaxFeatures)
+                    queryMaxFeatures = meta.getMaxFeatures();
+                org.geotools.data.Query gtQuery = toDataQuery(query, queryMaxFeatures, source, request.getVersion());
                 LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery);
 
                 FeatureCollection features = getFeatures(request, source, gtQuery);

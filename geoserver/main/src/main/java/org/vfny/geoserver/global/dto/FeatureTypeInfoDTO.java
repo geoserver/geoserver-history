@@ -33,7 +33,6 @@ import java.util.List;
  * ftiDto.setName("My Feature Type");
  * ftiDto.setTitle("The Best Feature Type");
  * ftiDto.setSRS(23769);
- * ftiDto.setDataStoreId("myDataStore");
  * </code></pre>
  *
  * @author dzwiers, Refractions Research, Inc.
@@ -124,17 +123,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     /** Holds the location of the file that contains schema information.*/
     private File schemaFile;
-
-    /**
-     * FeatureTypeInfo constructor.
-     *
-     * <p>
-     * does nothing
-     * </p>
-     */
-    public FeatureTypeInfoDTO() {
-    }
-
+    
     /**
      * This value is added the headers of generated maps, marking them as being both
      * "cache-able" and designating the time for which they are to remain valid.
@@ -146,6 +135,23 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
      * Should we be adding the CacheControl: max-age header to outgoing maps which include this layer?
      */
     private boolean cachingEnabled;
+    
+    /**
+     * The maximum number of features to be served for this feature type (it's understood
+     * it's less than the global maxFeatures). 0 is used as the "no limit" flag
+     */
+     private int maxFeatures = 0;
+
+    /**
+     * FeatureTypeInfo constructor.
+     *
+     * <p>
+     * does nothing
+     * </p>
+     */
+    public FeatureTypeInfoDTO() {
+    }
+
 
     /**
      * FeatureTypeInfo constructor.
@@ -203,6 +209,8 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
         cachingEnabled = dto.isCachingEnabled();
         cacheMaxAge = dto.getCacheMaxAge();
+        
+        maxFeatures = dto.getMaxFeatures();
     }
 
     /**
@@ -276,6 +284,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         r = r && (title == f.getTitle());
         r = r && (_abstract == f.getAbstract());
         r = r && (numDecimals == f.getNumDecimals());
+        r = r && (maxFeatures == f.getMaxFeatures());
 
         if (definitionQuery != null) {
             r = r && definitionQuery.equals(f.getDefinitionQuery());
@@ -346,6 +355,8 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         if (cachingEnabled) {
             r += 1;
         }
+        
+        r += maxFeatures;
 
         return r;
     }
@@ -848,7 +859,7 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
         + latLongBBox + "\n  SRS: " + SRS + ", schema:" + schema + ", schemaName: " + schemaName
         + ", dirName: " + dirName + ", title: " + title + "\n  definitionQuery: " + definitionQuery
         + ", defaultStyle: " + defaultStyle + ", legend icon: " + legendURL + ", caching?: "
-        + cachingEnabled + ", max-age: " + cacheMaxAge;
+        + cachingEnabled + ", max-age: " + cacheMaxAge + ", maxFeatures: " + maxFeatures;
     }
 
     public String getWmsPath() {
@@ -887,5 +898,14 @@ public final class FeatureTypeInfoDTO implements DataTransferObject {
 
     public void setStyles(ArrayList styles) {
         this.styles = styles;
+    }
+    
+    public int getMaxFeatures() {
+        return maxFeatures;
+    }
+
+
+    public void setMaxFeatures(int maxFeatures) {
+        this.maxFeatures = maxFeatures;
     }
 }
