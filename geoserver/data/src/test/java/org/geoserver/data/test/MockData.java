@@ -209,7 +209,7 @@ public class MockData {
      * @throws IOException
      */
     public MockData() throws IOException {
-        data = File.createTempFile("mock", "data");
+        data = File.createTempFile("mock", "data", new File("./target"));
     }
 
     /**
