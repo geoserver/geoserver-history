@@ -38,6 +38,12 @@ public class CoverageStoreResource extends MapResource {
         super();
     }
 
+    public CoverageStoreResource(Data d, DataConfig dc){
+        super();
+        setData(d);
+        setDataConfig(dc);
+    }
+
     public CoverageStoreResource(org.restlet.Context context, Request request, Response response,
         DataConfig config) {
         super(context, request, response);
@@ -61,7 +67,7 @@ public class CoverageStoreResource extends MapResource {
     }
 
     public Map getMap(){
-    	String storeName = (String) getRequest().getAttributes().get("coveragestore");
+    	String storeName = (String) getRequest().getAttributes().get("folder");
         Map m = new HashMap();
         CoverageStoreConfig csc = myDataConfig.getDataFormat(storeName);
         if (csc == null){

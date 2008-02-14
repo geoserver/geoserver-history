@@ -30,6 +30,10 @@ import org.geoserver.rest.JSONFormat;
 public class CoverageListResource extends MapResource {
     private DataConfig myDC;
 
+    public CoverageListResource(DataConfig dc){
+        setDataConfig(dc);
+    }
+
     public Map getSupportedFormats() {
         Map m = new HashMap();
 
@@ -50,7 +54,7 @@ public class CoverageListResource extends MapResource {
     }
 
     public Map getMap() {
-        String coverageStoreName = (String)getRequest().getAttributes().get("coveragestore");
+        String coverageStoreName = (String)getRequest().getAttributes().get("folder");
         Map m = new HashMap();
         Map coverages = myDC.getCoverages();
         List coverageList = new ArrayList();

@@ -12,13 +12,6 @@ public class StyleTest extends GeoServerTestSupport {
 	public void testGetS() throws Exception {
 		String path = "api/styles";
         Document d = getAsDOM(path);
-//		InputStream in = get( path );
-//        BufferedReader br = new BufferedReader(new InputStreamReader(in));
-//        String line = null;
-//
-//        while ((line = br.readLine()) != null){
-//            System.out.println(line);
-//        }
 		
 		assertEquals( "html", d.getDocumentElement().getNodeName() );
 	}

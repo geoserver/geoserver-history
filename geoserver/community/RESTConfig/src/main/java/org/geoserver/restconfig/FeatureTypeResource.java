@@ -104,8 +104,8 @@ public class FeatureTypeResource extends MapResource {
     	// TODO: Don't blindly assume map contains valid config info
         myFTC = findMyFeatureTypeConfig();
 
-        String featureTypeName = (String) getRequest().getAttributes().get("featuretype");
-    	String dataStoreName = (String) getRequest().getAttributes().get("datastore");
+        String featureTypeName = (String) getRequest().getAttributes().get("layer");
+    	String dataStoreName = (String) getRequest().getAttributes().get("folder");
  
         if (myFTC == null){
             DataStore store = DataStoreUtils.acquireDataStore(
@@ -254,13 +254,13 @@ public class FeatureTypeResource extends MapResource {
         String dsid = null;
 
         //The key for the featureTypeConfig depends on the datastores name
-        if (attributes.containsKey("datastore")) {
-            dsid = (String) attributes.get("datastore");
+        if (attributes.containsKey("folder")) {
+            dsid = (String) attributes.get("folder");
             myDSC = myDC.getDataStore(dsid);
         }
 
-        if ((myDSC != null) && attributes.containsKey("featuretype")) {
-            String ftid = (String) attributes.get("featuretype");
+        if ((myDSC != null) && attributes.containsKey("layer")) {
+            String ftid = (String) attributes.get("layer");
 
             // Append the datastore prefix
             return myDC.getFeatureTypeConfig(dsid + ":" + ftid);
