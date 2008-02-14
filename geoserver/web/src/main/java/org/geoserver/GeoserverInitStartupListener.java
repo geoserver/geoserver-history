@@ -2,10 +2,12 @@ package org.geoserver;
 
 import java.util.logging.Logger;
 
+import javax.imageio.spi.ImageReaderSpi;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.geotools.factory.Hints;
+import org.geotools.resources.image.ImageUtilities;
 import org.geotools.util.logging.Logging;
 
 /**
@@ -51,6 +53,10 @@ public class GeoserverInitStartupListener implements ServletContextListener {
                     + "set -Dcom.sun.media.imageio.disableCodecLib=true "
                     + "in your virtual machine");
             System.setProperty("com.sun.media.imageio.disableCodecLib", "true");
+        } else {
+            // in any case, the native png reader is worse than the pure java ones, so
+            // let's disable it (the native png writer is on the other side faster)...
+            ImageUtilities.allowNativeCodec("png", false, false);
         }
     }
 
