@@ -44,6 +44,12 @@ public class DataStoreResource extends MapResource {
         super();
     }
 
+    public DataStoreResource(Data d, DataConfig dc){
+        super();
+        setData(d);
+        setDataConfig(dc);
+    }
+
     public void setDataConfig(DataConfig dc){
         myDC = dc;
     }
@@ -64,8 +70,8 @@ public class DataStoreResource extends MapResource {
     private DataStoreConfig findMyDataStore() {
         Map attributes = getRequest().getAttributes();
 
-        if (attributes.containsKey("datastore")) {
-            String dsid = (String) attributes.get("datastore");
+        if (attributes.containsKey("folder")) {
+            String dsid = (String) attributes.get("folder");
 
             return myDC.getDataStore(dsid);
         }

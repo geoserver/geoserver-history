@@ -55,6 +55,16 @@ public class CoverageResource extends MapResource {
     private DataConfig myDC;
     private Data myData;
 
+    public CoverageResource(){
+        super();
+    }
+
+    public CoverageResource(Data d, DataConfig dc){
+        super();
+        setData(d);
+        setDataConfig(dc);
+    }
+
     public Map getSupportedFormats() {
         Map m = new HashMap();
         m.put("html",
@@ -143,10 +153,6 @@ public class CoverageResource extends MapResource {
         myData = (Data) appCon.getBean("data");
     }
 
-    public CoverageResource(){
-        super();
-    }
-
     public void setDataConfig(DataConfig dc){
         myDC = dc;
     }
@@ -164,8 +170,8 @@ public class CoverageResource extends MapResource {
     }
 
     public Map getMap() {
-        String coverageStore = (String) getRequest().getAttributes().get("coveragestore");
-        String coverageName = (String) getRequest().getAttributes().get("coverage");
+        String coverageStore = (String) getRequest().getAttributes().get("folder");
+        String coverageName = (String) getRequest().getAttributes().get("layer");
         String qualified = coverageStore + ":" + coverageName;
         CoverageConfig cc = (CoverageConfig) myDC.getCoverages().get(qualified);
 
@@ -178,8 +184,8 @@ public class CoverageResource extends MapResource {
 
     public void putMap(Map details) throws Exception {
         //TODO: create the coverage
-        String coverageStore = (String) getRequest().getAttributes().get("coveragestore");
-        String coverageName = (String) getRequest().getAttributes().get("coverage");
+        String coverageStore = (String) getRequest().getAttributes().get("folder");
+        String coverageName = (String) getRequest().getAttributes().get("layer");
         String qualified = coverageStore + ":" + coverageName;
         CoverageConfig cc = null;
         cc = (CoverageConfig) myDC.getCoverages().get(qualified);

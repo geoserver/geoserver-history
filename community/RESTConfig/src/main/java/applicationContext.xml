@@ -9,48 +9,40 @@
 <property name="routes">
   <map>
         <entry>
-          <key><value>/datastores/{datastore}/featuretypes/{featuretype}.{type}</value></key>
-          <ref bean="featureTypeFinder"/>
+          <key><value>/folders/{folder}/layers/{layer}.{type}</value></key>
+          <ref bean="layerFinder"/>
         </entry>
         <entry>
-          <key><value>/datastores/{datastore}/featuretypes/{featuretype}</value></key>
-          <ref bean="featureTypeFinder"/>
+          <key><value>/folders/{folder}/layers/{layer}</value></key>
+          <ref bean="layerFinder"/>
         </entry>
         <entry>
-          <key><value>/datastores/{datastore}/featuretypes.{type}</value></key>
-          <ref bean="featureTypeListFinder"/>
+          <key><value>/folders/{folder}/layers.{type}</value></key>
+          <ref bean="layerListFinder"/>
         </entry>
         <entry>
-          <key><value>/datastores/{datastore}/featuretypes</value></key>
-          <ref bean="featureTypeListFinder"/>
+          <key><value>/folders/{folder}/layers</value></key>
+          <ref bean="layerListFinder"/>
         </entry>
         <entry>
-          <key><value>/datastores/{datastore}.{type}</value></key>
-          <ref bean="datastoreIndexFinder"/>
+          <key><value>/folders/{folder}.{type}</value></key>
+          <ref bean="folderConfigFinder"/>
         </entry>
         <entry>
-          <key><value>/datastores/{datastore}</value></key>
-          <ref bean="datastoreIndexFinder"/>
+          <key><value>/folders/{folder}</value></key>
+          <ref bean="folderConfigFinder"/>
+        </entry>
+        <!-- <entry>
+          <key><value>/folders/{folder}/file.{type}</value></key>
+          <ref bean="folderFileFinder"/>
+        </entry> -->
+        <entry>
+          <key><value>/folders.{type}</value></key>
+          <ref bean="folderListFinder"/>
         </entry>
         <entry>
-          <key><value>/datastores/{datastore}/config.{type}</value></key>
-          <ref bean="datastoreConfigFinder"/>
-        </entry>
-        <entry>
-          <key><value>/datastores/{datastore}/config</value></key>
-          <ref bean="datastoreConfigFinder"/>
-        </entry>
-        <entry>
-          <key><value>/datastores/{datastore}/file.{type}</value></key>
-          <ref bean="datastoreFileFinder"/>
-        </entry>
-        <entry>
-          <key><value>/datastores.{type}</value></key>
-          <ref bean="datastoreListFinder"/>
-        </entry>
-        <entry>
-          <key><value>/datastores</value></key>
-          <ref bean="datastoreListFinder"/>
+          <key><value>/folders</value></key>
+          <ref bean="folderListFinder"/>
         </entry>
         <entry>
           <key><value>/styles/{style}.{type}</value></key>
@@ -67,38 +59,6 @@
         <entry>
           <key><value>/styles</value></key>
           <ref bean="styleListFinder"/>
-        </entry>
-        <entry>
-          <key><value>/coveragestores/{coveragestore}/coverages/{coverage}.{type}</value></key>
-          <ref bean="coverageFinder"/>
-        </entry>
-        <entry>
-          <key><value>/coveragestores/{coveragestore}/coverages/{coverage}</value></key>
-          <ref bean="coverageFinder"/>
-        </entry>
-        <entry>
-          <key><value>/coveragestores/{coveragestore}/coverages.{type}</value></key>
-          <ref bean="coverageListFinder"/>
-        </entry>
-        <entry>
-          <key><value>/coveragestores/{coveragestore}/coverages</value></key>
-          <ref bean="coverageListFinder"/>
-        </entry>
-        <entry>
-          <key><value>/coveragestores/{coveragestore}.{type}</value></key>
-          <ref bean="coverageStoreFinder"/>
-        </entry>
-        <entry>
-          <key><value>/coveragestores/{coveragestore}</value></key>
-          <ref bean="coverageStoreFinder"/>
-        </entry>
-        <entry>
-          <key><value>/coveragestores.{type}</value></key>
-          <ref bean="coverageStoreListFinder"/>
-        </entry>
-        <entry>
-          <key><value>/coveragestores</value></key>
-          <ref bean="coverageStoreListFinder"/>
         </entry>
         <entry>
           <key><value>/layergroups/{group}.{type}</value></key>
@@ -132,49 +92,20 @@
 </property>
 </bean>
 
-<bean id="featureTypeFinder" class="org.geoserver.rest.BeanResourceFinder">
-  <property name="beanToFind">
-    <bean class="org.geoserver.restconfig.FeatureTypeResource">
-      <property name="dataConfig"><ref bean="dataConfig"/></property>
-      <property name="data"><ref bean="data"/></property>
-    </bean>
-  </property>
+<bean id="layerFinder" class="org.geoserver.restconfig.LayerFinder">
+    <property name="dataConfig"><ref bean="dataConfig"/></property>
+    <property name="data"><ref bean="data"/></property>
 </bean>
-<bean id="featureTypeListFinder" class="org.geoserver.rest.BeanResourceFinder">
-  <property name="beanToFind">
-    <bean class="org.geoserver.restconfig.FeatureTypeListResource">
-      <property name="dataConfig"><ref bean="dataConfig"/></property>
-    </bean>
-  </property>
+<bean id="layerListFinder" class="org.geoserver.restconfig.LayerListFinder">
+    <property name="dataConfig"><ref bean="dataConfig"/></property>
+    <property name="data"><ref bean="data"/></property>
 </bean>
-<bean id="datastoreConfigFinder" class="org.geoserver.rest.BeanResourceFinder">
-  <property name="beanToFind">
-    <bean class="org.geoserver.restconfig.DataStoreResource">
-      <property name="dataConfig"><ref bean="dataConfig"/></property>
-      <property name="data"><ref bean="data"/></property>
-    </bean>
-  </property>
+<bean id="folderConfigFinder" class="org.geoserver.restconfig.FolderConfigFinder">
+    <property name="dataConfig"><ref bean="dataConfig"/></property>
+    <property name="data"><ref bean="data"/></property>
 </bean>
-<bean id="datastoreIndexFinder" class="org.geoserver.rest.BeanResourceFinder">
-  <property name="beanToFind">
-    <bean class="org.geoserver.restconfig.DataStoreIndexResource">
-    </bean>
-  </property>
-</bean>
-<bean id="datastoreFileFinder" class="org.geoserver.rest.BeanResourceFinder">
-  <property name="beanToFind">
-    <bean class="org.geoserver.restconfig.DataStoreFileResource">
-      <property name="dataConfig"><ref bean="dataConfig"/></property>
-      <property name="data"><ref bean="data"/></property>
-    </bean>
-  </property>
-</bean>
-<bean id="datastoreListFinder" class="org.geoserver.rest.BeanResourceFinder">
-  <property name="beanToFind">
-    <bean class="org.geoserver.restconfig.DataStoreListResource">
-      <property name="dataConfig"><ref bean="dataConfig"/></property>
-    </bean>
-  </property>
+<bean id="folderListFinder" class="org.geoserver.restconfig.FolderListFinder">
+    <property name="dataConfig"><ref bean="dataConfig"/></property>
 </bean>
 <bean id="styleFinder" class="org.geoserver.rest.BeanResourceFinder">
   <property name="beanToFind">
@@ -191,36 +122,6 @@
     </bean>
   </property>
 </bean>
-<bean id="coverageFinder" class="org.geoserver.rest.BeanResourceFinder">
-  <property name="beanToFind">
-    <bean class="org.geoserver.restconfig.CoverageResource">
-      <property name="dataConfig"><ref bean="dataConfig"/></property>
-      <property name="data"><ref bean="data"/></property>
-    </bean>
-  </property>
-</bean>
-<bean id="coverageListFinder" class="org.geoserver.rest.BeanResourceFinder">
-  <property name="beanToFind">
-    <bean class="org.geoserver.restconfig.CoverageListResource">
-      <property name="dataConfig"><ref bean="dataConfig"/></property>
-    </bean>
-  </property>
-</bean>
-<bean id="coverageStoreFinder" class="org.geoserver.rest.BeanResourceFinder">
-  <property name="beanToFind">
-    <bean class="org.geoserver.restconfig.CoverageStoreResource">
-      <property name="dataConfig"><ref bean="dataConfig"/></property>
-      <property name="data"> <ref bean="data"/></property>
-    </bean>
-  </property>
-</bean>
-<bean id="coverageStoreListFinder" class="org.geoserver.rest.BeanResourceFinder">
-  <property name="beanToFind">
-    <bean class="org.geoserver.restconfig.CoverageStoreListResource">
-      <property name="dataConfig"><ref bean="dataConfig"/></property>
-    </bean>
-  </property>
-</bean> 
 <bean id="layerGroupFinder" class="org.geoserver.rest.BeanResourceFinder">
   <property name="beanToFind">
     <bean class="org.geoserver.restconfig.LayerGroupResource">

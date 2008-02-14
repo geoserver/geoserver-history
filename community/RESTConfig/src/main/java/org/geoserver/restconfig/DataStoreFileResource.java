@@ -121,6 +121,8 @@ public class DataStoreFileResource extends Resource{
         String extension = (String)getRequest().getAttributes().get("type");
         String format = (String) myFormats.get(extension);
 
+        LOG.info("Shapefile PUTted, mimetype was " + getRequest().getEntity().getMediaType());
+
         getResponse().setStatus(Status.SUCCESS_ACCEPTED);
 
         if (format == null){

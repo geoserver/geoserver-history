@@ -33,6 +33,10 @@ import org.geoserver.rest.JSONFormat;
 public class FeatureTypeListResource extends MapResource {
     private DataConfig myDC;
 
+    public FeatureTypeListResource(DataConfig dc){
+        setDataConfig(dc);
+    }
+
     public void setDataConfig(DataConfig dc){
         myDC = dc;
     }
@@ -53,7 +57,7 @@ public class FeatureTypeListResource extends MapResource {
     }
 
     public Map getMap() {
-    	String dataStoreName = (String)getRequest().getAttributes().get("datastore");
+    	String dataStoreName = (String)getRequest().getAttributes().get("folder");
         DataStoreConfig dsc = (DataStoreConfig)myDC.getDataStores().get(dataStoreName);
     	
     	if (dsc != null){
