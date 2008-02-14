@@ -13,6 +13,9 @@ import org.opengis.referencing.operation.MathTransform;
  * Mercator 1SP variation used by Google, which basically requires to accept lat/lon values
  * as spherical coordinates, that is, avoiding to do any conversion from ellipsoid to the sphere.
  * @author Andrea Aime
+ * @deprecated Since GeoTools 2.4.0 there is no need to use this custom projection anymore, use 
+ *             the WKT definition suggested in {@link http://jira.codehaus.org/browse/GEOT-1511}
+ *             instead
  */
 public class Mercator1SPGoogle extends Mercator {
 
