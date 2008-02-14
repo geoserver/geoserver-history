@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -25,6 +26,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.LogManager;
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.util.ResponseUtils;
@@ -32,6 +34,8 @@ import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.Hints;
+import org.geotools.util.logging.Log4JLoggerFactory;
+import org.geotools.util.logging.Logging;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.GeoServer;
@@ -87,6 +91,16 @@ public class GeoServerTestSupport extends TestCase {
         //set up the data directory
         dataDirectory = new MockData();
         dataDirectory.setUp();
+                 
+        // setup quiet logging (we need to to this here because Data
+        // is loaded before GoeServer has a chance to setup logging for good)
+        try {
+            Logging.ALL.setLoggerFactory(Log4JLoggerFactory.getInstance());
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Could not configure log4j logging redirection", e);
+        }
+        GeoServer.suppressLoggingConfiguration();
+        setupLogging(getClass().getResourceAsStream(getDefaultLogConfiguration()));
 
         //copy the service configuration to the data directory
         dataDirectory.copyTo(GeoServerTestSupport.class.getResourceAsStream("services.xml"),
@@ -102,6 +116,20 @@ public class GeoServerTestSupport extends TestCase {
         applicationContext.refresh();
     }
     
+    /**
+     * Returns the logging configuration path. The default value is "/TEST_LOGGING.properties", which
+     * is a pretty quiet configuration. Should you need more verbose logging override this method
+     * in subclasses and choose a different configuration, for example "/DEFAULT_LOGGING.properties".
+     * @return
+     */
+	protected String getDefaultLogConfiguration() {
+		return "/TEST_LOGGING.properties";
+	}
+    
+    protected void setupLogging(InputStream loggingConfigStream) throws Exception {
+    	GeoServer.configureGeoServerLogging(loggingConfigStream, false, true, null);
+    }
+
     /**
      * Returns the spring context locations to be used in order to build the GeoServer Spring
      * context. Subclasses might want to provide extra locations in order to test extension points.
