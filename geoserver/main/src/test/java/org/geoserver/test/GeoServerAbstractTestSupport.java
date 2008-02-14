@@ -141,6 +141,12 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
             };
     }
 
+    /**
+     * Returns the logging configuration path. The default value is "/TEST_LOGGING.properties", which
+     * is a pretty quiet configuration. Should you need more verbose logging override this method
+     * in subclasses and choose a different configuration, for example "/DEFAULT_LOGGING.properties".
+     * @return
+     */
     protected String getDefaultLogConfiguration() {
         return "/TEST_LOGGING.properties";
     }
