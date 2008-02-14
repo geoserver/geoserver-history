@@ -34,7 +34,12 @@ import java.util.List;
  */
 public class GeoServerExtensions implements ApplicationContextAware, ApplicationListener {
     
-    static SoftValueHashMap extensionsCache = new SoftValueHashMap(40);
+    /**
+     * Caches the names of the beans for a particular type, so that the lookup (expensive)
+     * wont' be needed. We cache names instead of beans because doing the latter we would
+     * break the "singleton=false" directive of some beans
+     */
+    static SoftValueHashMap<Class, String[]> extensionsCache = new SoftValueHashMap<Class, String[]>(40);
     
     /**
      * A static application context
@@ -68,7 +73,7 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
      * @return A collection of the extensions, or an empty collection.
      */
     public static final List extensions(Class extensionPoint, ApplicationContext context) {
-        String[] names = (String[]) extensionsCache.get(extensionPoint);
+        String[] names = extensionsCache.get(extensionPoint);
         if(names == null) {
             names = context.getBeanNamesForType(extensionPoint);
             extensionsCache.put(extensionPoint, names);
