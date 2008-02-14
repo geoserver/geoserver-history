@@ -33,6 +33,7 @@ import org.apache.xml.serialize.LineSeparator;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.geoserver.ows.util.XmlCharsetDetector;
+import org.geoserver.ows.xml.v1_0.UpdateSequenceTypeBinding;
 import org.geoserver.util.ReaderUtils;
 import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridGeometry2D;
@@ -701,6 +702,19 @@ public class XMLConfigReader {
             } else {
                 geoServer.setTileCache(null);
             }
+            
+            String gsUpdateSequence = ReaderUtils.getChildText(globalElem, "updateSequence");
+            if (gsUpdateSequence == null) {
+            	geoServer.setUpdateSequence(0);
+            } else {
+	            try {
+	            	geoServer.setUpdateSequence(Integer.parseInt(gsUpdateSequence));
+	            } catch (NumberFormatException nfe) {
+	            	LOGGER.warning("Couldn't parse update sequence " + gsUpdateSequence +".  Setting UpdateSequence to zero.");
+	            	geoServer.setUpdateSequence(0);
+	            }
+            }
+            
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }

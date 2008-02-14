@@ -11,24 +11,24 @@
  */
 package org.vfny.geoserver.action;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.UserContainer;
 import org.vfny.geoserver.global.dto.DataDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
 import org.vfny.geoserver.global.dto.WCSDTO;
 import org.vfny.geoserver.global.dto.WFSDTO;
 import org.vfny.geoserver.global.dto.WMSDTO;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -45,8 +45,9 @@ public class UpdateGSAction extends ConfigAction {
     public ActionForward execute(ActionMapping mapping, ActionForm form, UserContainer user,
         HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
-        ActionForward r1 = updateGeoserver(mapping, form, request, response);
-        ActionForward r2 = updateValidation(mapping, form, request, response);
+    	
+    	updateGeoserver(mapping, form, request, response);
+    	updateValidation(mapping, form, request, response);
 
         getApplicationState().fireChange();
         return mapping.findForward("config");
@@ -56,8 +57,6 @@ public class UpdateGSAction extends ConfigAction {
         // UserContainer user,
     HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
-        GeoServer gs;
-        ServletContext sc = request.getSession().getServletContext();
 
         try {
             WCSDTO wcsDTO = getWCSConfig().toDTO();
@@ -65,19 +64,24 @@ public class UpdateGSAction extends ConfigAction {
             WFSDTO wfsDTO = getWFSConfig().toDTO();
             GeoServerDTO geoserverDTO = getGlobalConfig().toDTO();
             DataDTO dataDTO = getDataConfig().toDTO();
-            
+
+            //we're updating...increment the updateSequence
+            final int gsUs = geoserverDTO.getUpdateSequence();
+            geoserverDTO.setUpdateSequence(gsUs + 1);
+
             //load each service global bean from the modified config DTO
             getWCS(request).load(wcsDTO);
             getWFS(request).load(wfsDTO);
             getWMS(request).load(wmsDTO);
-            
+
+            //also, don't forget to update the main global config with the changes to the updatesequence
+            getGlobalConfig().update(geoserverDTO);
+
             //load the main geoserver bean from the modified config DTO
             getWCS(request).getGeoServer().load(geoserverDTO);
             //load the data bean from the modified config DTO
-            getWCS(request).getData().load(dataDTO);
+            getWFS(request).getData().load(dataDTO);
 
-
-            getApplicationState().notifyToGeoServer();
         } catch (ConfigurationException e) {
             e.printStackTrace();
             throw new ServletException(e);
@@ -93,9 +97,6 @@ public class UpdateGSAction extends ConfigAction {
         // UserContainer user,
     HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException {
-        GeoServer gs;
-        ServletContext sc = request.getSession().getServletContext();
-        gs = (GeoServer) sc.getAttribute(GeoServer.WEB_CONTAINER_KEY);
 
         try {
             Map plugins = new HashMap();

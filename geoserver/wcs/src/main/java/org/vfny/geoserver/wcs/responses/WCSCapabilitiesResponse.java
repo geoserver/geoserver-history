@@ -70,6 +70,24 @@ public class WCSCapabilitiesResponse implements Response {
         if (!(request instanceof CapabilitiesRequest)) {
             throw new IllegalArgumentException("Not a GetCapabilities Request");
         }
+        
+        CapabilitiesRequest capreq = (CapabilitiesRequest)request;
+        int reqUS = -1;
+        if (capreq.getUpdateSequence() != null) {
+	        try {
+	        	reqUS = Integer.parseInt(capreq.getUpdateSequence());
+	        } catch (NumberFormatException nfe) {
+	        	throw new ServiceException("GeoServer only accepts numbers in the updateSequence parameter");
+	        }
+        }
+        int geoUS = request.getServiceRef().getServiceRef().getGeoServer().getUpdateSequence();
+    	if (reqUS > geoUS) {
+    		throw new ServiceException("Client supplied an updateSequence that is greater than the current sever updateSequence","InvalidUpdateSequence");
+    	}
+    	if (reqUS == geoUS) {
+    		throw new ServiceException("WCS capabilities document is current (updateSequence = " + geoUS + ")","CurrentUpdateSequence");
+    	}
+    	//otherwise it's a normal response...
 
         WCSCapsTransformer transformer = new WCSCapsTransformer(request
 				.getBaseUrl(), applicationContext);

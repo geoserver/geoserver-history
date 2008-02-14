@@ -112,6 +112,8 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     private List listeners;
     private Config config;
     
+    private int updateSequence;
+    
     /** Used by tests to use programmatic configuration of the logging level */
     private static boolean suppressLoggingConfiguration;
     
@@ -441,6 +443,20 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     }
 
     /**
+	 * @return the updateSequence
+	 */
+	public int getUpdateSequence() {
+		return updateSequence;
+	}
+
+	/**
+	 * @param updateSequence the updateSequence to set
+	 */
+	public void setUpdateSequence(int updateSequence) {
+		this.updateSequence = updateSequence;
+	}
+
+	/**
      * whether xml documents should be pretty formatted
      *
      * @return true when verbose
@@ -507,6 +523,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             adminUserName = dto.getAdminUserName();
             adminPassword = dto.getAdminPassword();
             verboseExceptions = dto.isVerboseExceptions();
+            updateSequence = dto.getUpdateSequence();
         } else {
             throw new ConfigurationException("load(GeoServerDTO) expected a non-null value");
         }
@@ -788,6 +805,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         dto.setImageIOCache(imageIOCache);
         dto.setJaiJPEGNative(JPEGnativeAcc);
         dto.setJaiPNGNative(PNGnativeAcc);
+        dto.setUpdateSequence(updateSequence);
 
         ContactDTO cdto = new ContactDTO();
         dto.setContact(cdto);
@@ -805,6 +823,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
         cdto.setContactPosition(contactPosition);
         cdto.setContactVoice(contactVoice);
         cdto.setOnlineResource(onlineResource);
+        
 
         return dto;
     }

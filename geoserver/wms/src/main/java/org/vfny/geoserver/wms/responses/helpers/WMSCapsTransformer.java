@@ -206,7 +206,10 @@ public class WMSCapsTransformer extends TransformerBase {
                         request).toString());
             }
 
-            start("WMT_MS_Capabilities", wmsVersion);
+            WMS wms = (WMS) request.getServiceRef().getServiceRef();
+            AttributesImpl rootAtts = new AttributesImpl(wmsVersion);
+            rootAtts.addAttribute("", "updateSequence", "updateSequence", "", wms.getGeoServer().getUpdateSequence() + "");
+            start("WMT_MS_Capabilities", rootAtts);
             handleService();
             handleCapability();
             end("WMT_MS_Capabilities");
