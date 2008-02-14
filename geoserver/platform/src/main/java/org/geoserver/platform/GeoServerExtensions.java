@@ -25,14 +25,20 @@ import java.util.List;
  *         &lt;bean id="geoserverExtensions" class="org.geoserver.GeoServerExtensions"/&gt;
  *         </pre>
  * </code>
- * It must be a singleton, and must not be loaded lazily. Futhermore, this
+ * It must be a singleton, and must not be loaded lazily. Furthermore, this
  * bean must be loaded before any beans that use it.
  * </p>
  * @author Justin Deoliveira, The Open Planning Project
+ * @author Andrea Aime, The Open Planning Project
  *
  */
 public class GeoServerExtensions implements ApplicationContextAware, ApplicationListener {
     
+    /**
+     * Caches the names of the beans for a particular type, so that the lookup (expensive)
+     * wont' be needed. We cache names instead of beans because doing the latter we would
+     * break the "singleton=false" directive of some beans
+     */
     static SoftValueHashMap extensionsCache = new SoftValueHashMap(40);
     
     /**
@@ -67,12 +73,16 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
      * @return A collection of the extensions, or an empty collection.
      */
     public static final List extensions(Class extensionPoint, ApplicationContext context) {
-        List result = (List) extensionsCache.get(extensionPoint);
-        if(result == null) {
-            result = new ArrayList(context.getBeansOfType(extensionPoint).values());
-            extensionsCache.put(extensionPoint, result);
+        String[] names = (String[]) extensionsCache.get(extensionPoint);
+        if(names == null) {
+            names = context.getBeanNamesForType(extensionPoint);
+            extensionsCache.put(extensionPoint, names);
         }
-        return new ArrayList(result);
+        List result = new ArrayList(names.length);
+        for (int i = 0; i < names.length; i++) {
+            result.add(context.getBean(names[i]));
+        }
+        return result;
     }
 
     /**
