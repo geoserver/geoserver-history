@@ -110,6 +110,7 @@ public class GeoServerTestSupport extends TestCase {
         MockServletContext servletContext = new MockServletContext();
         servletContext.setInitParameter("GEOSERVER_DATA_DIR",
             dataDirectory.getDataDirectoryRoot().getAbsolutePath());
+        servletContext.setInitParameter("serviceStrategy", "PARTIAL-BUFFER2");
 
         applicationContext = new GeoServerTestApplicationContext(getSpringContextLocations(), servletContext);
 
