@@ -170,40 +170,37 @@ public class PartialBufferedOutputStream2 extends OutputStream {
     /* (non-Javadoc)
      * @see java.io.OutputStream#flush()
      *
-     * If the buffer is not maxed yet, don't flush. If a flush is really really needed,
-     * call forceFlush().
+     * If the buffer is not maxed yet, it won't flush. If this is really needed, 
+     * call forceFlush
      */
     public synchronized void flush() throws IOException {
         if (closed) {
             return;
         }
 
+        if (currentStream == out_real) {
+            currentStream.flush();
+        }
+    }
+    
+    public synchronized void forceFlush() throws IOException {
         if (currentStream == out_buffer) {
             flushBuffer();
         }
-
-        currentStream.flush();
+        flush();
     }
 
-    /* (non-Javadoc)
-     * @see java.io.OutputStream#close()
+    /**
+     * Closes the stream. If we're still working against the in memory buffer that
+     * will be written out before close occurs
      */
     public void close() throws IOException {
         if (closed) {
             return;
         }
-
+        
         closed = true;
 
-        // It is not in the contract of close, for OutputStream, to call flush(), 
-        //  so I am dyking it out.
-        /*
-           try {
-                   flush();
-           }
-           catch (IOException ignored) {
-           }
-         */
         out_buffer.close();
         out_buffer = null;
         out_real = null; // get rid of our local pointer
