@@ -11,6 +11,7 @@ import net.opengis.wcs.v1_1_1.GridCrsType;
 
 import org.geoserver.wcs.xml.v1_1_1.WCSConfiguration;
 import org.geoserver.wcs.xml.v1_1_1.WcsXmlReader;
+import org.vfny.geoserver.wcs.WcsException;
 
 public class GetCoverageXmlParserTest extends TestCase {
 
@@ -23,6 +24,31 @@ public class GetCoverageXmlParserTest extends TestCase {
         super.setUp();
         configuration = new WCSConfiguration();
         reader = new WcsXmlReader("GetCoverage", "1.1.1", configuration);
+    }
+    
+    public void testInvalid() throws Exception {
+        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + //
+                "<wcs:GetCoverage service=\"WCS\" " + //
+                "xmlns:ows=\"http://www.opengis.net/ows/1.1\"\r\n" + //
+                "  xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\"\r\n" + //
+                "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \r\n" + //
+                "  xsi:schemaLocation=\"http://www.opengis.net/wcs/1.1.1 " + //
+                "                       schemas/wcs/1.1.1/wcsAll.xsd\"\r\n" + //
+                "  version=\"1.1.1\" >\r\n" + //
+                "  <Identifier>wcs:BlueMarble</Identifier>\r\n" + //
+                "    <ows:BoundingBox crs=\"urn:ogc:def:crs:EPSG:6.6:4326\">\r\n" + //
+                "      <ows:LowerCorner>-90 -180</ows:LowerCorner>\r\n" + //
+                "      <ows:UpperCorner>90 180</ows:UpperCorner>\r\n" + //
+                "    </ows:BoundingBox>\r\n" + //
+                "  <wcs:Output format=\"image/tiff\"/>\r\n" + //
+                "</wcs:GetCoverage>";
+
+        try { 
+            reader.read(null, new StringReader(request), null);
+            fail("This request is not valid!!!");
+        } catch(WcsException e) {
+            // ok, we do expect a validation exception in fact 
+        }
     }
 
     public void testBasic() throws Exception {
