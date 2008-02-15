@@ -1,3 +1,7 @@
+/* Copyright (c) 2007 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.restconfig;
 
 import org.restlet.Finder;
@@ -36,7 +40,7 @@ public class LayerFinder extends Finder {
         if (getDataConfig().getDataFormatIds().contains(folder)){
             r = new CoverageResource(getData(), getDataConfig());
         } else {
-            r = new DataStoreResource(getData(), getDataConfig());
+            r = new FeatureTypeResource(getData(), getDataConfig());
         }
 
         r.init(getContext(), request, response);
