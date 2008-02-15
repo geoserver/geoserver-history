@@ -21,6 +21,6 @@
 <li> Metadata Links: <br/> <#list MetadataLinks as ml> ${ml} <br/> </#list> </li>
 <li> Caching: <#if CachingEnabled == "true"> Enabled <#else> Disabled </#if> </li>
 <li> Caching Interval: <#if CacheTime??> ${CacheTime} <#else> [None] </#if> </li>
-<li> Schema Base: ${SchemaBase} </li>
+<li> Schema Base: <#if SchemaBase??> ${SchemaBase} <#else> [None] </#if> </li>
 </ul>
 <#include "tail.ftl">

@@ -48,6 +48,12 @@ public class FeatureTypeResource extends MapResource {
     private FeatureTypeConfig myFTC = null;
     private Data myData;
 
+    public FeatureTypeResource(Data d, DataConfig dc){
+        super();
+        setData(d);
+        setDataConfig(dc);
+    }
+
     public void setDataConfig(DataConfig dc){
         myDC = dc;
     }
