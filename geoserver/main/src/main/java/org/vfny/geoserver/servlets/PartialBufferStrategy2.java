@@ -66,7 +66,7 @@ public class PartialBufferStrategy2 implements ServiceStrategy {
      */
     public void flush(HttpServletResponse response) throws IOException {
         if (out != null) {
-            out.flush();
+            out.forceFlush();
             out = null;
         }
     }
