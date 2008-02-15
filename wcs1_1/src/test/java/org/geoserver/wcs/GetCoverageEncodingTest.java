@@ -8,8 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -67,6 +65,21 @@ public class GetCoverageEncodingTest extends WCSTestSupport {
         // make sure we can read the coverage back
         InputStream is = coveragePart.getDataHandler().getInputStream();
         readCoverage(is);
+    }
+
+    /**
+     * ArcGrid cannot encode rotate coverages, yet due to a bug the output was a
+     * garbled mime multipart instead of a service exception. This makes sure an
+     * exception is returned instead.
+     * 
+     * @throws Exception
+     */
+    public void testArcgridException() throws Exception {
+        String request = "wcs?service=WCS&version=1.1.1&request=GetCoverage&identifier="
+                + layerId(WCSTestSupport.TASMANIA_BM) + "&format=application/arcgrid"
+                + "&boundingbox=-90,-180,90,180,urn:ogc:def:crs:EPSG:6.6:4326";
+        Document dom = getAsDOM(request);
+        checkOws11Exception(dom);
     }
 
     private Multipart getMultipart(MockHttpServletResponse response) throws MessagingException,
