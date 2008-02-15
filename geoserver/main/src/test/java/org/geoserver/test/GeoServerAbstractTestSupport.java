@@ -110,6 +110,7 @@ public abstract class GeoServerAbstractTestSupport extends TestCase {
         // set up a mock servlet context
         MockServletContext servletContext = new MockServletContext();
         servletContext.setInitParameter("GEOSERVER_DATA_DIR", getDataDirLocation());
+        servletContext.setInitParameter("serviceStrategy", "PARTIAL-BUFFER2");
         
         applicationContext = new GeoServerTestApplicationContext(getSpringContextLocations(), servletContext);
         applicationContext.refresh();
