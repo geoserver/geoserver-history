@@ -38,20 +38,15 @@ public class WcsXmlReader extends XmlRequestReader {
         //create the parser instance
         Parser parser = new Parser(configuration);
         parser.setValidating(true);
+        parser.setFailOnValidationError(true);
+        parser.setStrict(true);
         
-        //parse
-        Object parsed = parser.parse(reader); 
-        
-        //if strict was set, check for validation errors and throw an exception 
-        if (!parser.getValidationErrors().isEmpty()) {
-            WcsException exception = new WcsException("Invalid request", "InvalidParameterValue");
-
-            for (Iterator e = parser.getValidationErrors().iterator(); e.hasNext();) {
-                Exception error = (Exception) e.next();
-                exception.getExceptionText().add(error.getLocalizedMessage());
-            }
-
-            throw exception;
+        // parse
+        Object parsed;
+        try {
+            parsed = parser.parse(reader);
+        } catch(Exception e) {
+            throw new WcsException("Parsing failed, the xml request is most probably not compliant to the wcs schema", e);
         }
         
         return parsed;
